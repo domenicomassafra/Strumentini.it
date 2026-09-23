@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "toolId": "tracking-cleaner",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "engineVersion": "1",
+  "oracleEntryId": "cand-063",
+  "fixtureFamilies": [
+    "utm-roundtrip",
+    "query-params"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "utilityos-quality",
+    "whatwg-url"
+  ],
+  "identities": {
+    "engineSha256": "7a052f36e8ddb2c72957f74f431f37139f90f46e25c8e625332b73744bffd8e9",
+    "fixtureSha256": "8a5cc1ae8ecd9dcb10415a19223a7c76e90e82aa7da836915bbfbcc926656f79",
+    "fixtureIndexSha256": "dd06b638d473b380f0a4315267e2976359292ae4fbb9f4415e708239609c10ba",
+    "oracleRegistrySha256": "020191228b8349cf9822be32d124c042cafbd39aeff6349aa8c3a1b91e3e041c"
+  }
+}

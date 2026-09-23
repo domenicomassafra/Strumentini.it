@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "utm-builder",
+    "tracking-cleaner",
+    "campaign-name"
+  ],
+  "keyboard": "submit via Enter",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "network": "zero external/task-content requests after task start",
+  "presetPersistence": "saved schema persists; current task values do not"
+}

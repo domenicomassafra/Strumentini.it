@@ -1,0 +1,5 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CampaignNameTool } from "../../components/tools/CampaignNameTool";
+---
+<BaseLayout title="Campaign Name Builder" description="Build deterministic campaign names from a small naming preset you control."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>Campaign Name Builder</h1><p class="lede">Choose a small field order and separator, preview the result, and save the convention only when you explicitly ask.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your preset and task values stay in this browser.</span></div></header><CampaignNameTool client:load /><section class="method-card"><h2>Naming method</h2><ul><li>The saved preset contains field order, separator and lowercase preference — never current campaign values.</li><li>Spaces inside a field become hyphens; Unicode is normalized to NFC.</li><li>Changing the current task is an override until you choose Save preset.</li></ul></section></article></BaseLayout>
