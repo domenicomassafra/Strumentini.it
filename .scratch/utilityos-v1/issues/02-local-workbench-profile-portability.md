@@ -8,16 +8,18 @@
 
 **Blocked by:** 01 — Gold tracer: Business Day Calculator.
 
-**Status:** ready-for-agent
+**Status:** complete
 
-- [ ] Workbench opens with Your Tools as primary content; the full Library is not rendered by default and no KPI/streak/dashboard furniture is added.
-- [ ] Installed state and manual ordering survive reload through a versioned persistence interface; raw IndexedDB handles do not leak into feature callers.
-- [ ] Recent stores tool-level activity only by default and can be cleared; no pasted text, files, URLs, or calculation inputs are silently retained.
-- [ ] Work Profile exposes only canonical safe fields, shows “from Work Profile” provenance at use sites, and explicit current-task overrides remain authoritative.
-- [ ] Storage-denied/quota failure preserves current in-memory use/result and displays a recoverable persistence warning rather than failing the tool.
-- [ ] Export produces a versioned configuration containing installed tools, pack selections when present, order/layout, safe profile values, and preferences but no task files/input/output.
-- [ ] Import validates schema/version, previews material changes, applies atomically, and leaves existing local state unchanged on malformed/unsupported input.
-- [ ] Add/remove/reorder, profile edit, export, and import are keyboard-operable and meet the current mobile/touch affordance contract.
-- [ ] There is no account, sync status, disabled login placeholder, or server dependency in this slice.
+- [x] Workbench opens with Your Tools as primary content; the full Library is not rendered by default and no KPI/streak/dashboard furniture is added.
+- [x] Installed state and manual ordering survive reload through a versioned persistence interface; raw IndexedDB handles do not leak into feature callers.
+- [x] Recent stores tool-level activity only by default and can be cleared; no pasted text, files, URLs, or calculation inputs are silently retained.
+- [x] Work Profile exposes only canonical safe fields, shows “from Work Profile” provenance at use sites, and explicit current-task overrides remain authoritative.
+- [x] Storage-denied/quota failure preserves current in-memory use/result and displays a recoverable persistence warning rather than failing the tool.
+- [x] Export produces a versioned configuration containing installed tools, pack selections when present, order/layout, safe profile values, and preferences but no task files/input/output.
+- [x] Import validates schema/version, previews material changes, applies atomically, and leaves existing local state unchanged on malformed/unsupported input.
+- [x] Add/remove/reorder, profile edit, export, and import are keyboard-operable and meet the current mobile/touch affordance contract.
+- [x] There is no account, sync status, disabled login placeholder, or server dependency in this slice.
 
 **Verification:** Run unit/integration tests through the persistence and Work Profile public seams, browser acceptance covering reload/add/remove/reorder/profile override/export/import, storage-denial/quota failure injection, and an exported-artifact inspection proving task content is absent.
+
+**Closure proof (2026-09-23):** lane tests 10/10; full `npm test` 65/65; `npm run check` PASS; `npm run build` PASS; `node scripts/acceptance-workbench.mjs` PASS; `npm run verify:ticket-01` PASS; `git diff --check` PASS.
