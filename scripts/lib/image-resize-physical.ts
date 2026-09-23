@@ -16,6 +16,7 @@ export interface PhysicalImageReceiptInput {
     verifiedDownloadOpened: "PASS";
     noCrashOrReload: "PASS";
     mobileLayoutUsable: "PASS";
+    boundaryPolicyCase: "PASS";
   };
   observedAt?: string;
   notes?: string;
@@ -33,6 +34,10 @@ export interface PhysicalImageReceipt {
   output: { width: number; height: number; pixels: number };
   maxSourcePixelsTested: number;
   maxEstimatedDecodedBytesTested: number;
+  thresholdCoverage: {
+    sourcePixelLimitFraction: number;
+    decodedWorkingSetLimitFraction: number;
+  };
   checks: PhysicalImageReceiptInput["checks"];
   policyLimits: typeof IMAGE_LIMITS;
   notes?: string;
@@ -83,6 +88,14 @@ export function buildPhysicalImageReceipt(input: PhysicalImageReceiptInput): Phy
   if (Object.values(input.checks).some((value) => value !== "PASS")) {
     throw new Error("every physical acceptance check must be an explicit PASS");
   }
+  const sourceCoverage = sourcePixels / IMAGE_LIMITS.maxSourcePixels;
+  const memoryCoverage = estimatedDecodedBytes / IMAGE_LIMITS.maxEstimatedDecodedBytes;
+  if (sourceCoverage < 0.95) {
+    throw new Error(`physical threshold case covers only ${(sourceCoverage * 100).toFixed(1)}% of the current source-pixel limit; at least 95% is required`);
+  }
+  if (memoryCoverage < 0.85) {
+    throw new Error(`physical threshold case covers only ${(memoryCoverage * 100).toFixed(1)}% of the current decoded-working-set limit; at least 85% is required`);
+  }
   const observedAt = input.observedAt ?? new Date().toISOString();
   if (!Number.isFinite(Date.parse(observedAt))) throw new Error("observedAt must be an ISO-compatible timestamp");
   const notes = input.notes?.trim();
@@ -98,6 +111,10 @@ export function buildPhysicalImageReceipt(input: PhysicalImageReceiptInput): Phy
     output: { width: outputWidth, height: outputHeight, pixels: outputPixels },
     maxSourcePixelsTested: sourcePixels,
     maxEstimatedDecodedBytesTested: estimatedDecodedBytes,
+    thresholdCoverage: {
+      sourcePixelLimitFraction: sourceCoverage,
+      decodedWorkingSetLimitFraction: memoryCoverage,
+    },
     checks: input.checks,
     policyLimits: IMAGE_LIMITS,
     ...(notes === undefined || notes === "" ? {} : { notes }),
@@ -143,12 +160,18 @@ export function validatePhysicalImageReceipt(value: unknown, target: PhysicalIma
           verifiedDownloadOpened: checks.verifiedDownloadOpened as "PASS",
           noCrashOrReload: checks.noCrashOrReload as "PASS",
           mobileLayoutUsable: checks.mobileLayoutUsable as "PASS",
+          boundaryPolicyCase: checks.boundaryPolicyCase as "PASS",
         },
         observedAt: value.observedAt as string,
       });
       if (value.maxSourcePixelsTested !== rebuilt.maxSourcePixelsTested) issues.push("maxSourcePixelsTested does not match source dimensions");
       if (value.maxEstimatedDecodedBytesTested !== rebuilt.maxEstimatedDecodedBytesTested) issues.push("maxEstimatedDecodedBytesTested does not match current policy estimate");
       if (source.pixels !== rebuilt.source.pixels || output.pixels !== rebuilt.output.pixels) issues.push("source/output pixel counts are inconsistent");
+      if (!isRecord(value.thresholdCoverage) ||
+          value.thresholdCoverage.sourcePixelLimitFraction !== rebuilt.thresholdCoverage.sourcePixelLimitFraction ||
+          value.thresholdCoverage.decodedWorkingSetLimitFraction !== rebuilt.thresholdCoverage.decodedWorkingSetLimitFraction) {
+        issues.push("thresholdCoverage does not match current policy");
+      }
     } catch (error) {
       issues.push(error instanceof Error ? error.message : "receipt measurements are invalid");
     }

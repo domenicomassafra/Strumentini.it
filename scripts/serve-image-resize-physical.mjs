@@ -12,9 +12,9 @@ const addresses = Object.values(networkInterfaces())
 console.log("Physical Image Resize acceptance server");
 console.log("Keep this terminal open while testing the phone on the same LAN.");
 console.log("Open one of these URLs on the physical device:");
-if (addresses.length === 0) console.log(`  http://<this-computer-lan-ip>:${port}/tools/image-resize/`);
-for (const address of addresses) console.log(`  http://${address}:${port}/tools/image-resize/`);
-console.log("Test with a real image chosen through Files/Photos, resize it, open the downloaded output, and note the source/output dimensions shown by the tool.");
+if (addresses.length === 0) console.log(`  http://<this-computer-lan-ip>:${port}/physical-fixtures/`);
+for (const address of addresses) console.log(`  http://${address}:${port}/physical-fixtures/`);
+console.log("Download the generated boundary JPEG to Files/Photos, then follow the fixture page into Image Resize and test the 16MP/current-policy boundary case.");
 console.log("Stop the server with Ctrl-C. Then record the observed run with npm run acceptance:image-resize:physical:record -- ...");
 
 const child = spawn("python3", ["-m", "http.server", String(port), "--bind", "0.0.0.0", "--directory", "dist"], {

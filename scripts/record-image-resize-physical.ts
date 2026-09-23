@@ -32,7 +32,7 @@ const [sourceWidth, sourceHeight] = dimensions("source");
 const [outputWidth, outputHeight] = dimensions("output");
 const observedAt = argument("observed-at");
 const notes = argument("notes");
-const passFlags = ["files-photos-pass", "resize-pass", "download-pass", "no-crash-pass", "layout-pass"];
+const passFlags = ["files-photos-pass", "resize-pass", "download-pass", "no-crash-pass", "layout-pass", "boundary-pass"];
 const missingPassFlags = passFlags.filter((flag) => !hasFlag(flag));
 if (missingPassFlags.length > 0) {
   throw new Error(`refusing to record PASS without explicit physical observations: ${missingPassFlags.map((flag) => `--${flag}`).join(", ")}`);
@@ -52,6 +52,7 @@ const receipt = buildPhysicalImageReceipt({
     verifiedDownloadOpened: "PASS",
     noCrashOrReload: "PASS",
     mobileLayoutUsable: "PASS",
+    boundaryPolicyCase: "PASS",
   },
   ...(observedAt === undefined ? {} : { observedAt }),
   ...(notes === undefined ? {} : { notes }),
