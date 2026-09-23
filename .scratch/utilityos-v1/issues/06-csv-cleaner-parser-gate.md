@@ -8,14 +8,26 @@
 
 **Blocked by:** 01 — Gold tracer: Business Day Calculator.
 
-**Status:** ready-for-agent
+**Status:** complete
 
-- [ ] Start from the completed donor census and compare at least Papa Parse and `csv-parse`; also inspect completed oracle output if present. Pin a winner only after the UtilityOS corpus/worker/bundle/license/security evidence.
-- [ ] The selected parser has a pinned version, recorded license/source, acceptable maintenance/security posture, measured lazy bundle cost, and no unexplained transitive/runtime burden.
-- [ ] The adversarial corpus covers quoted delimiters/newlines, escaped quotes, BOM, CRLF/LF, empty trailing cells, ragged rows, duplicate/odd headers, malformed quotes, UTF-8/Unicode, large streaming input, and cancellation.
-- [ ] CSV Cleaner accepts ordinary file input, shows a preview/change summary, never uploads the file, and produces output validated by independent fixtures/semantic reparse.
-- [ ] Hard/soft size limits and parser/capability failures are preflighted or normalized without unsafe allocation/fake success.
-- [ ] Perceptible work has truthful stable processing/progress behavior and cancellation where the chosen parser/runtime can support it.
-- [ ] CSV Cleaner reaches Gold with mobile file-picker acceptance and no dependency code in unrelated shell/tool routes.
+- [x] Start from the completed donor census and compare at least Papa Parse and `csv-parse`; also inspect completed oracle output if present. Pin a winner only after the UtilityOS corpus/worker/bundle/license/security evidence.
+- [x] The selected parser has a pinned version, recorded license/source, acceptable maintenance/security posture, measured lazy bundle cost, and no unexplained transitive/runtime burden.
+- [x] The adversarial corpus covers quoted delimiters/newlines, escaped quotes, BOM, CRLF/LF, empty trailing cells, ragged rows, duplicate/odd headers, malformed quotes, UTF-8/Unicode, large streaming input, and cancellation.
+- [x] CSV Cleaner accepts ordinary file input, shows a preview/change summary, never uploads the file, and produces output validated by independent fixtures/semantic reparse.
+- [x] Hard/soft size limits and parser/capability failures are preflighted or normalized without unsafe allocation/fake success.
+- [x] Perceptible work has truthful stable processing/progress behavior and cancellation where the chosen parser/runtime can support it.
+- [x] CSV Cleaner reaches Gold with mobile file-picker acceptance and no dependency code in unrelated shell/tool routes.
 
 **Verification:** Run the adversarial parser corpus, dependency/license/security and bundle checks, CSV Cleaner known-output/semantic-reparse tests, large-input cancellation/failure tests, LOCAL browser-network assertion, mobile file flow, and Gold certification.
+
+## Completion receipt — 2026-09-23
+
+- Papa Parse 5.7.0 selected over csv-parse 7.0.2 after exact corpus + malformed quote + browser bundle comparison (19,566 B vs 52,063 B minified comparison bundle); both MIT and zero direct runtime dependencies.
+- `npx vitest run tests/csv-cleaner-engine.test.ts` — 5/5 PASS.
+- `npx tsx scripts/gold/csv-parser-gate.ts` — PASS.
+- `npx tsx scripts/gold/csv-cleaner-certify.ts` — 6 exact vectors PASS.
+- `node scripts/acceptance-csv-cleaner.mjs` — 390 px local file picker/preview/BOM/locality PASS.
+- `npx tsx scripts/gold/csv-bundle.ts` — Papa production chunk absent from unrelated Business Day route.
+- `npm run build` — PASS with `/tools/csv-cleaner/` static route.
+- Root `npm audit` at parser selection — 0 vulnerabilities.
+- `git diff --check` — PASS.

@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CsvCleanerTool } from "../../components/tools/csv-cleaner/CsvCleanerTool";
+---
+<BaseLayout title="CSV Cleaner" description="Inspect and safely normalize a CSV locally without uploading it.">
+  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav><p class="eyebrow">Data cleanup</p><h1>CSV Cleaner</h1><p class="lede">Remove a UTF-8 BOM, normalize record line endings, and surface structural warnings without rewriting your cell values.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your CSV file is not uploaded.</span></div></header><CsvCleanerTool client:load /><section class="method-card"><h2>Bounded cleanup contract</h2><ul><li>Quoted delimiters, quoted newlines, escaped quotes and cell text are preserved semantically.</li><li>Only a leading UTF-8 BOM and record separators outside quoted fields are normalized.</li><li>Duplicate headers and ragged rows are warnings, not silently repaired.</li><li>Malformed quoting fails instead of producing a fake successful file.</li></ul></section></article>
+  <style is:global>
+    .tool-form-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+    .file-note, .csv-warning { color: var(--muted); font-size: .88rem; }
+    .csv-preview { max-height: 260px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--canvas); padding: 12px; border-radius: 8px; }
+    .tool-submit { border: 0; padding: 10px 15px; border-radius: 8px; background: var(--action); color: var(--action-ink); font-weight: 700; }
+    progress { width: 100%; margin: 8px 0; }
+  </style>
+</BaseLayout>

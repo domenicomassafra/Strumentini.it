@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "toolId": "csv-cleaner",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "engineVersion": "1",
+  "oracleEntryId": "cand-022",
+  "fixtureFamilies": [
+    "csv-rfc4180",
+    "csv-cleaning"
+  ],
+  "exactVectors": 6,
+  "truthSources": [
+    "fixture-policy",
+    "rfc4180",
+    "utilityos-quality",
+    "whatwg-encoding"
+  ],
+  "identities": {
+    "csv-rfc4180": "6f6f74846f47fd99866d6c8b024cf1a8af33f4d92a015ae0af2e09a539111765",
+    "csv-cleaning": "7fda383355e64c5c4ed2de39fb8f2a6f9dd167b5a59250c7d134616ce4b1b54d"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "mobileViewport": "390x844",
+  "filePicker": "PASS",
+  "network": "zero external/task-content requests",
+  "preview": "PASS"
+}
