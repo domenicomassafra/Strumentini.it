@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-23T19:05:37.522Z",
+  "generatedAt": "2026-09-23T19:06:39.232Z",
   "status": "PASS",
   "toolImplementationAssets": [
     "module.Bmr23zJa.js",
@@ -39,7 +39,7 @@
     "catalogItems": 500,
     "renderedRows": 50,
     "pageSize": 50,
-    "readyMs": 545
+    "readyMs": 871
   },
   "chunkProof": {
     "discoveryImplementationRequests": 0,
@@ -60,11 +60,11 @@
       "LibraryWorkspace.astro_astro_type_script_index_0_lang.CYNnxL7I.js",
       "browser-context.jJW_kBdW.js",
       "GlobalSearch.astro_astro_type_script_index_0_lang.QFKLbQjH.js",
+      "browser-context.jJW_kBdW.js",
       "Workbench.BgZD-1RQ.js",
       "client.9l1EFn1I.js",
       "preact.module.Bl7PEaKa.js",
       "preload-helper.B3nfOi5I.js",
-      "browser-context.jJW_kBdW.js",
       "hooks.module.BNbONuGS.js",
       "jsxRuntime.module.Bfdc-KV3.js",
       "GlobalSearch.astro_astro_type_script_index_0_lang.QFKLbQjH.js",
