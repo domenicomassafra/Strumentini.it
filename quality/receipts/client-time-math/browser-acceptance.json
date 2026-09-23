@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "workProfile": {
+    "timezone": "Europe/Rome",
+    "currency": "EUR",
+    "reusedAcross": [
+      "timezone-overlap",
+      "rate-converter",
+      "margin-markup"
+    ]
+  },
+  "keyboard": "submit actions exercised with Enter",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "network": "zero external/task-content requests after task start",
+  "localNetwork": {
+    "serverBind": "0.0.0.0",
+    "nonLoopbackRouteReachable": true
+  }
+}

@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { MarginMarkupTool } from "../../components/tools/MarginMarkupTool";
+---
+<BaseLayout title="Margin / Markup Calculator" description="Calculate profit, margin, and markup locally with their distinct formulas and denominator rules shown.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Client-work math</nav>
+      <p class="eyebrow">Client-work math</p>
+      <h1>Margin / Markup Calculator</h1>
+      <p class="lede">See profit, margin, and markup together so the two percentages cannot be mistaken for each other.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your commercial figures are not uploaded.</span></div>
+    </header>
+    <MarginMarkupTool client:load />
+    <section class="method-card" aria-labelledby="margin-method-title">
+      <p class="eyebrow">Rules &amp; assumptions</p>
+      <h2 id="margin-method-title">Margin and markup use different denominators</h2>
+      <ul>
+        <li>Profit = price/revenue − cost.</li>
+        <li>Margin % = profit ÷ price/revenue × 100.</li>
+        <li>Markup % = profit ÷ cost × 100.</li>
+        <li>Margin is undefined at zero price/revenue; markup is undefined at zero cost. The tool reports those cases explicitly.</li>
+      </ul>
+    </section>
+  </article>
+</BaseLayout>

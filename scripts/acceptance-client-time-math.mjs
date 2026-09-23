@@ -1,0 +1,141 @@
+import { chromium } from "@playwright/test";
+import { spawn } from "node:child_process";
+import { mkdir, writeFile } from "node:fs/promises";
+import { networkInterfaces } from "node:os";
+import { resolve } from "node:path";
+
+const root = resolve(import.meta.dirname, "..");
+const port = 18138;
+const origin = `http://127.0.0.1:${port}`;
+const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "0.0.0.0", "--directory", "dist"], {
+  stdio: "ignore",
+});
+const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
+
+function localNetworkIpv4() {
+  for (const entries of Object.values(networkInterfaces())) {
+    for (const entry of entries ?? []) {
+      if (entry.family === "IPv4" && !entry.internal) return entry.address;
+    }
+  }
+  return undefined;
+}
+
+async function acceptRoute(context, route, sensitiveValues, operate) {
+  const page = await context.newPage();
+  let started = false;
+  const requests = [];
+  page.on("request", (request) => {
+    if (started) requests.push({ url: request.url(), method: request.method(), postData: request.postData() });
+  });
+  const response = await page.goto(`${origin}${route}/`, { waitUntil: "networkidle" });
+  if (response?.status() !== 200) throw new Error(`${route}: HTTP ${response?.status()}`);
+  await page.getByText("Runs on this device.", { exact: true }).waitFor();
+  await operate(page, () => { started = true; });
+  await page.waitForTimeout(100);
+  if (requests.some((request) => {
+    const body = `${request.url}\n${request.postData ?? ""}`;
+    return !request.url.startsWith(origin) || request.method !== "GET" || sensitiveValues.some((value) => value !== "" && body.includes(value));
+  })) {
+    throw new Error(`${route}: external or task-content request observed`);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  if (await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)) {
+    throw new Error(`${route}: mobile horizontal overflow`);
+  }
+  await page.close();
+}
+
+try {
+  await sleep(500);
+  const browser = await chromium.launch({
+    executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    headless: true,
+  });
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+
+  const setup = await context.newPage();
+  await setup.goto(`${origin}/`, { waitUntil: "networkidle" });
+  await setup.locator('[data-ready="true"]').waitFor();
+  await setup.getByRole("heading", { name: "Work Profile" }).waitFor();
+  await setup.getByLabel("Timezone").fill("Europe/Rome");
+  await setup.getByLabel("Currency").fill("EUR");
+  await setup.getByRole("button", { name: "Save Work Profile" }).click();
+  await setup.waitForFunction(async () => {
+    const db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open("utility-workbench", 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const transaction = db.transaction("state", "readonly");
+    const state = await new Promise((resolve, reject) => {
+      const request = transaction.objectStore("state").get("workbench/state:v1");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    db.close();
+    return state?.profile?.timezone === "Europe/Rome" && state?.profile?.currency === "EUR";
+  });
+  await setup.close();
+
+  await acceptRoute(context, "/tools/timezone-overlap", ["Europe/Rome", "America/New_York"], async (page, start) => {
+    await page.getByText("Work Profile default", { exact: true }).waitFor();
+    const homeTimezone = page.locator("label").filter({ hasText: /^Home timezone/u }).locator("input").first();
+    if ((await homeTimezone.inputValue()) !== "Europe/Rome") {
+      throw new Error("Timezone tool did not receive saved Work Profile timezone");
+    }
+    await page.getByLabel("Date in your home timezone", { exact: true }).fill("2026-09-23");
+    start();
+    await page.getByRole("button", { name: "Find overlap" }).press("Enter");
+    await page.getByText("1 shared window", { exact: true }).waitFor();
+  });
+
+  await acceptRoute(context, "/tools/rate-converter", ["50.00"], async (page, start) => {
+    await page.getByText(/Work Profile default · label only/u).waitFor();
+    if ((await page.getByLabel("Currency label").inputValue()) !== "EUR") {
+      throw new Error("Rate tool did not receive saved Work Profile currency");
+    }
+    await page.getByLabel("Rate amount").fill("50.00");
+    start();
+    await page.getByRole("button", { name: "Convert rate" }).press("Enter");
+    await page.getByText("EUR 400.00 / day", { exact: true }).waitFor();
+  });
+
+  await acceptRoute(context, "/tools/margin-markup", ["100.00", "80.00"], async (page, start) => {
+    await page.getByText("Work Profile default", { exact: true }).waitFor();
+    if ((await page.getByLabel("Currency label").inputValue()) !== "EUR") {
+      throw new Error("Margin tool did not receive saved Work Profile currency");
+    }
+    await page.getByLabel("Price / revenue").fill("100.00");
+    await page.getByLabel("Cost").fill("80.00");
+    start();
+    await page.getByRole("button", { name: "Calculate margin & markup" }).press("Enter");
+    await page.getByText("EUR 20.00 profit", { exact: true }).waitFor();
+    await page.getByText(/20.00% · profit ÷ price/u).waitFor();
+    await page.getByText(/25.00% · profit ÷ cost/u).waitFor();
+  });
+
+  const lanAddress = localNetworkIpv4();
+  if (lanAddress === undefined) throw new Error("No non-loopback IPv4 interface available for local-network acceptance");
+  const lanResponse = await fetch(`http://${lanAddress}:${port}/tools/timezone-overlap/`);
+  if (lanResponse.status !== 200) throw new Error(`Local-network route returned HTTP ${lanResponse.status}`);
+
+  await context.close();
+  await browser.close();
+  await mkdir(resolve(root, "quality/receipts/client-time-math"), { recursive: true });
+  await writeFile(
+    resolve(root, "quality/receipts/client-time-math/browser-acceptance.json"),
+    `${JSON.stringify({
+      schemaVersion: 1,
+      status: "PASS",
+      workProfile: { timezone: "Europe/Rome", currency: "EUR", reusedAcross: ["timezone-overlap", "rate-converter", "margin-markup"] },
+      keyboard: "submit actions exercised with Enter",
+      mobileViewport: { width: 390, height: 844, horizontalOverflow: false },
+      network: "zero external/task-content requests after task start",
+      localNetwork: { serverBind: "0.0.0.0", nonLoopbackRouteReachable: true },
+    }, null, 2)}\n`,
+  );
+  console.log("client/time/math browser acceptance PASS: Work Profile reuse, keyboard/mobile, locality, local-network route");
+} finally {
+  server.kill("SIGTERM");
+}

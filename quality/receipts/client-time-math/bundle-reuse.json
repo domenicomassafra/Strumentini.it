@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "proof": "three independent dynamic tool modules import one identical client-time-math engine chunk",
+  "dynamicModules": {
+    "timezoneOverlap": "module.Ch6XMU6i.js",
+    "rateConverter": "module.BFxMpLrj.js",
+    "marginMarkup": "module.CTVIPBGx.js"
+  },
+  "sharedEngineChunk": "client-time-math.B2l4Etf1.js",
+  "sharedChunkContains": [
+    "IANA/DST local-time validation",
+    "exact business-math denominator rules"
+  ],
+  "eagerReferences": [],
+  "routesChecked": [
+    "tools/timezone-overlap/index.html",
+    "tools/rate-converter/index.html",
+    "tools/margin-markup/index.html"
+  ]
+}

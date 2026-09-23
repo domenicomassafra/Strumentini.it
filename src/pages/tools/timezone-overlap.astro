@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { TimezoneOverlapTool } from "../../components/tools/TimezoneOverlapTool";
+---
+<BaseLayout title="Timezone Overlap" description="Find shared working hours across two IANA timezones locally, with explicit DST rules.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
+      <p class="eyebrow">Date &amp; time</p>
+      <h1>Timezone Overlap</h1>
+      <p class="lede">Compare your working window with another timezone for one home-local date. IANA timezone rules come from the browser’s Intl runtime.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No calendar, location, or meeting data is uploaded.</span></div>
+    </header>
+    <TimezoneOverlapTool client:load />
+    <section class="method-card" aria-labelledby="timezone-method-title">
+      <p class="eyebrow">Rules &amp; assumptions</p>
+      <h2 id="timezone-method-title">How overlap is resolved</h2>
+      <ul>
+        <li>The selected date is interpreted in your home timezone.</li>
+        <li>Working-hour boundaries must be on the same local day, with start before end.</li>
+        <li>DST gaps and repeated local boundary times fail explicitly instead of guessing.</li>
+        <li>Your home timezone may come from Work Profile; the working window is visible task input.</li>
+      </ul>
+    </section>
+  </article>
+</BaseLayout>
