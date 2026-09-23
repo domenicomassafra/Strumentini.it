@@ -101,4 +101,5 @@ Read:
 
 - research/free-scale-monetization-stress-test-2026-09-23.md
 - research/tool-catalog-200-candidate-map-2026-09-23.md
+- research/catalog-prioritization-v1-2026-09-23.md
 - docs/07-tool-factory-quality-standard.md
