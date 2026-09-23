@@ -52,21 +52,22 @@ The separate `tasks/prompt2prompt/20260923-181500-utilityos-parallel-enablers/` 
 
 ## Current unblocked frontier
 
-Completed software tickets: **01, 02, 03, 04, 05, 06, 08, 10**.
+Completed software tickets: **01, 02, 03, 04, 05, 06, 07, 08, 10**.
 
 Ticket 09 — Image Resize is implementation-complete but remains **PARTIAL / WAIT_FOR_EXTERNAL** until real iOS Safari and Android Chrome physical-device memory/Files acceptance is recorded. It must not be counted as public Gold before those receipts exist.
 
-The current software frontier is therefore:
+There is currently **no unblocked software implementation ticket**. Ticket 11 is blocked only by the physical-Gold completion of Ticket 09. Tickets 12 and 13 remain transitively blocked behind Ticket 11.
 
-- **Ticket 07 — CSV Dedupe / Column Map + typed handoff** — unblocked because Tickets 02 and 06 are complete.
+External acceptance frontier:
 
-Ticket 11 remains blocked by Ticket 07 and the physical-Gold completion of Ticket 09. Tickets 12 and 13 remain transitively blocked behind Ticket 11.
+- **Ticket 09 — Image Resize:** real iOS Safari and Android Chrome physical-device memory threshold + Files/Photos acceptance. Automated/browser implementation remains complete but PARTIAL until both physical receipts pass.
 
 Recent completion evidence:
 
 - Ticket 04 — `3328f7b` + Gold hardening `3e5c323`.
 - Ticket 05 — `2f36c28`.
 - Ticket 06 — `49cad5a` + lazy-bundle receipt fix `d3d7dca`.
+- Ticket 07 — `7914de0`.
 
 ## Acceptance-criteria coverage
 
