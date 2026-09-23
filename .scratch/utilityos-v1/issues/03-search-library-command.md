@@ -8,14 +8,16 @@
 
 **Blocked by:** 01 — Gold tracer: Business Day Calculator.
 
-**Status:** ready-for-agent
+**Status:** implemented-awaiting-shared-typecheck
 
-- [ ] Catalog compiler emits search metadata for names, aliases, verbs/jobs, category, pack/role tags, input types, runtime, and install state without importing implementation chunks.
-- [ ] Cmd+K/Ctrl+K opens a semantic combobox/listbox palette with keyboard navigation, Enter to open, Esc to close, and focus restoration.
-- [ ] Ranking visibly separates Your Tools, Recent, and Library; exact installed matches precede task intent, recency, pack relevance, and general catalog matches.
-- [ ] Library renders dense rows and relevant facets rather than a decorative card wall and preserves filter/query/back-navigation state.
-- [ ] Zero-result state preserves the query, offers metadata-derived close intents when available, and exposes Request this tool without AI prose.
-- [ ] A generated large-catalog fixture proves the Library avoids unbounded DOM growth around the 500-tool scale target and search does not trigger tool chunk loads.
-- [ ] Mobile uses an explicit Search destination rather than depending on keyboard shortcuts.
+- [x] Catalog-derived search metadata covers names, aliases, verbs/jobs, category, optional pack/role tags, input types, runtime, and caller-supplied install/recent context without importing implementation chunks.
+- [x] Cmd+K/Ctrl+K opens a semantic combobox/listbox palette with keyboard navigation, Enter to open, Esc to close, and focus restoration.
+- [x] Ranking visibly separates Your Tools, Recent, and Library; exact installed matches precede task intent, recency, pack relevance, and general catalog matches.
+- [x] Library renders dense rows and relevant facets rather than a decorative card wall and preserves filter/query/back-navigation state.
+- [x] Zero-result state preserves the query, offers metadata-derived close intents when available, and exposes Request this tool without AI prose.
+- [x] A generated 500-tool browser fixture proves the Library caps rendered rows at 50 and discovery does not trigger tool implementation chunk loads.
+- [x] Mobile uses an explicit Search destination rather than depending on keyboard shortcuts.
 
 **Verification:** Run search ranking fixtures, keyboard accessibility browser tests, a 500-item generated-catalog rendering/performance test, and production-network/chunk inspection proving search and Library do not fetch tool implementations before a tool is opened.
+
+**Shared-gate note (2026-09-23):** Ticket 03 focused tests, production build, browser acceptance, chunk/network proof, diff-check, and all Ticket 01 gates except the shared `astro check` pass. The shared typecheck is currently blocked by concurrent Ticket 09/10 work in `scripts/gold/file-hash-dependency-benchmark.ts` and `tests/image-resize-engine.test.ts`, both outside this lane's ownership.

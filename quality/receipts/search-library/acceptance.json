@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-23T19:02:39.623Z",
+  "status": "PASS",
+  "toolImplementationAssets": [
+    "module.Bmr23zJa.js",
+    "module.CK53PA3s.js",
+    "module.C_MYuRwA.js",
+    "module.CkuUmzJG.js",
+    "module.D_Y51zvg.js",
+    "module.DmvG6L3E.js"
+  ],
+  "keyboard": {
+    "shortcut": "Meta+K",
+    "arrowNavigation": true,
+    "enterOpen": true,
+    "escapeClose": true,
+    "focusRestored": true
+  },
+  "libraryState": {
+    "urlAddressable": true,
+    "backNavigationPreserved": true,
+    "query": "working",
+    "runtime": "LOCAL"
+  },
+  "mobile": {
+    "explicitSearchDestination": true,
+    "searchFocused": true
+  },
+  "fixture500": {
+    "catalogItems": 500,
+    "renderedRows": 50,
+    "pageSize": 50,
+    "readyMs": 553
+  },
+  "chunkProof": {
+    "discoveryImplementationRequests": 0,
+    "actualScriptRequests": [
+      "GlobalSearch.astro_astro_type_script_index_0_lang.B9bUPZob.js",
+      "LibraryWorkspace.astro_astro_type_script_index_0_lang.C_K00ATx.js",
+      "browser-context.jJW_kBdW.js",
+      "GlobalSearch.astro_astro_type_script_index_0_lang.B9bUPZob.js",
+      "BusinessDayTool.D0xdZfOT.js",
+      "client.9l1EFn1I.js",
+      "browser-context.jJW_kBdW.js",
+      "preact.module.Bl7PEaKa.js",
+      "preload-helper.B3nfOi5I.js",
+      "hooks.module.BNbONuGS.js",
+      "tool-runtime.OlPDrr-Q.js",
+      "jsxRuntime.module.Bfdc-KV3.js",
+      "GlobalSearch.astro_astro_type_script_index_0_lang.B9bUPZob.js",
+      "LibraryWorkspace.astro_astro_type_script_index_0_lang.C_K00ATx.js",
+      "browser-context.jJW_kBdW.js",
+      "GlobalSearch.astro_astro_type_script_index_0_lang.B9bUPZob.js",
+      "Workbench.DrYY9Ggp.js",
+      "client.9l1EFn1I.js",
+      "browser-context.jJW_kBdW.js",
+      "preact.module.Bl7PEaKa.js",
+      "preload-helper.B3nfOi5I.js",
+      "hooks.module.BNbONuGS.js",
+      "jsxRuntime.module.Bfdc-KV3.js",
+      "GlobalSearch.astro_astro_type_script_index_0_lang.B9bUPZob.js",
+      "BusinessDayTool.D0xdZfOT.js",
+      "client.9l1EFn1I.js",
+      "browser-context.jJW_kBdW.js",
+      "preact.module.Bl7PEaKa.js",
+      "hooks.module.BNbONuGS.js",
+      "tool-runtime.OlPDrr-Q.js",
+      "jsxRuntime.module.Bfdc-KV3.js",
+      "preload-helper.B3nfOi5I.js",
+      "GlobalSearch.astro_astro_type_script_index_0_lang.B9bUPZob.js",
+      "browser-context.jJW_kBdW.js",
+      "Workbench.DrYY9Ggp.js",
+      "client.9l1EFn1I.js",
+      "preact.module.Bl7PEaKa.js",
+      "preload-helper.B3nfOi5I.js",
+      "hooks.module.BNbONuGS.js",
+      "jsxRuntime.module.Bfdc-KV3.js",
+      "GlobalSearch.astro_astro_type_script_index_0_lang.B9bUPZob.js",
+      "LibraryWorkspace.astro_astro_type_script_index_0_lang.C_K00ATx.js",
+      "browser-context.jJW_kBdW.js"
+    ],
+    "fixtureScriptRequests": [
+      "GlobalSearch.astro_astro_type_script_index_0_lang.B9bUPZob.js",
+      "LibraryWorkspace.astro_astro_type_script_index_0_lang.C_K00ATx.js",
+      "browser-context.jJW_kBdW.js"
+    ]
+  }
+}
