@@ -26,8 +26,8 @@
 - `npm test` — 88/88 PASS at closure.
 - `npm run check` — 0 errors / 0 warnings / 0 hints.
 - `npm run build` — PASS, 15 static pages.
-- `npx tsx scripts/gold/client-time-math-certify.ts` — Timezone Overlap 5 exact vectors, Rate Converter 2 exact vectors, Margin/Markup 1 exact vector; all Gold PASS.
-- DST gap/overlap rejection and explicit earlier/later fallback disambiguation are tested against IANA/Intl behavior.
+- `npx tsx scripts/gold/client-time-math-certify.ts` — Timezone Overlap 5 exact vectors, Rate Converter 4 exact vectors, Margin/Markup 3 exact vectors; all Gold PASS.
+- DST gap/overlap rejection and explicit earlier/later fallback disambiguation are tested against IANA/Intl behavior and cross-checked independently with Python `zoneinfo`; decimal outputs are cross-checked with Python `Decimal`.
 - Exact rational decimal arithmetic replaces the spike's binary-float rounding only after the measured `10.075` half-up discrepancy documented in `research/implementation/04-client-time-math-production-seams.md`.
 - `npx tsx scripts/gold/client-time-math-bundle.ts` — all three tools import one lazy shared `client-time-math` engine chunk; no route eagerly references it.
 - `node scripts/acceptance-client-time-math.mjs` — persisted `Europe/Rome`/`EUR` Work Profile reused across three tools, keyboard/mobile/local-network PASS.
