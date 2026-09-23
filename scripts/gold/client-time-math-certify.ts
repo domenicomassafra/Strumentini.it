@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -49,6 +50,15 @@ for (const vector of timezoneData.vectors) {
   const actual = formatInstantInZone(vector.instant, timezoneData.zone).local;
   if (actual !== vector.local) throw new Error(`timezone fixture mismatch: ${vector.instant} -> ${actual}`);
 }
+const zoneinfoLocals = JSON.parse(execFileSync("python3", ["-c", [
+  "import json,sys,datetime,zoneinfo",
+  "d=json.load(open(sys.argv[1]))",
+  "z=zoneinfo.ZoneInfo(d['zone'])",
+  "print(json.dumps([datetime.datetime.fromisoformat(v['instant'].replace('Z','+00:00')).astimezone(z).isoformat(timespec='seconds') for v in d['vectors']]))",
+].join(";"), resolve(root, timezoneEntry.path)], { encoding: "utf8" })) as string[];
+if (JSON.stringify(zoneinfoLocals) !== JSON.stringify(timezoneData.vectors.map((vector) => vector.local))) {
+  throw new Error("Python zoneinfo secondary cross-check mismatch");
+}
 
 try {
   resolveLocalDateTime("2024-03-31", "02:30", "Europe/Rome");
@@ -84,6 +94,12 @@ if (convertRate({ amount: hourly, from: "hour", to: "day", hoursPerDay }).amount
 if (convertRate({ amount: "100", from: "project", to: "hour", projectHours: "3" }).amount !== "33.33") {
   throw new Error("project-rate hand-worked vector mismatch");
 }
+if (convertRate({ amount: "1", from: "hour", to: "day", hoursPerDay: "2.345" }).amount !== "2.35") {
+  throw new Error("final half-up rounding vector mismatch");
+}
+if (convertRate({ amount: "10.075", from: "hour", to: "hour" }).amount !== "10.08") {
+  throw new Error("binary-float regression vector mismatch");
+}
 
 const marginVector = mathData.vectors.find((item) => item.case === "margin-vs-markup");
 if (marginVector === undefined) throw new Error("margin fixture missing");
@@ -105,6 +121,32 @@ if (
 }
 if (calculateMarginMarkup("0", "100").marginPercent !== null) throw new Error("zero-price margin policy failed");
 if (calculateMarginMarkup("100", "0").markupPercent !== null) throw new Error("zero-cost markup policy failed");
+if (calculateMarginMarkup("0", "100").denominatorErrors[0]?.code !== "INVALID_MARGIN_DENOMINATOR") throw new Error("typed zero-price denominator error missing");
+if (calculateMarginMarkup("100", "0").denominatorErrors[0]?.code !== "INVALID_MARKUP_DENOMINATOR") throw new Error("typed zero-cost denominator error missing");
+
+const decimalCrossCheck = execFileSync("python3", ["-c", [
+  "from decimal import Decimal,ROUND_HALF_UP",
+  "q=Decimal('0.01')",
+  "print(Decimal('10.075').quantize(q,rounding=ROUND_HALF_UP))",
+  "print((Decimal('100')/Decimal('3')).quantize(q,rounding=ROUND_HALF_UP))",
+  "p=Decimal('100');c=Decimal('80');profit=p-c",
+  "print((profit/p*100).quantize(q,rounding=ROUND_HALF_UP))",
+  "print((profit/c*100).quantize(q,rounding=ROUND_HALF_UP))",
+].join(";")], { encoding: "utf8" }).trim().split("\n");
+if (JSON.stringify(decimalCrossCheck) !== JSON.stringify(["10.08", "33.33", "20.00", "25.00"])) {
+  throw new Error("Python Decimal secondary cross-check mismatch");
+}
+
+const acceptanceText = await readFile(resolve(receiptRoot, "browser-acceptance.json"), "utf8");
+const acceptance = JSON.parse(acceptanceText) as { status?: string; localNetwork?: { nonLoopbackRouteReachable?: boolean } };
+if (acceptance.status !== "PASS" || acceptance.localNetwork?.nonLoopbackRouteReachable !== true) {
+  throw new Error("browser/mobile/keyboard/local-network acceptance receipt is missing or incomplete");
+}
+const bundleText = await readFile(resolve(receiptRoot, "bundle.json"), "utf8");
+const bundle = JSON.parse(bundleText) as { status?: string; eagerEngineReferences?: number };
+if (bundle.status !== "PASS" || bundle.eagerEngineReferences !== 0) {
+  throw new Error("lazy shared-engine bundle receipt is missing or incomplete");
+}
 
 await mkdir(receiptRoot, { recursive: true });
 
@@ -113,12 +155,15 @@ async function writeReceipt(options: {
   exactVectors: number;
   fixtureIds: string[];
   propertyChecks: string[];
+  additionalOracleIds?: string[];
+  independentCrossChecks: string[];
 }) {
   const { manifest } = options;
   if (manifest.runtime.location !== "LOCAL" || manifest.runtime.network !== "forbidden") {
     throw new Error(`${manifest.id}: Gold requires LOCAL + network=forbidden`);
   }
-  const oracleEntry = oracle(manifest.gold.oracleEntryId);
+  const oracleIds = [manifest.gold.oracleEntryId, ...(options.additionalOracleIds ?? [])];
+  const oracleEntries = oracleIds.map(oracle);
   const resolvedFixtures = await Promise.all(options.fixtureIds.map(async (id) => {
     const entry = fixture(id);
     const text = await readFile(resolve(root, entry.path), "utf8");
@@ -130,7 +175,7 @@ async function writeReceipt(options: {
     };
   }));
   const truthSources = [...new Set([
-    ...oracleEntry.truth_sources,
+    ...oracleEntries.flatMap((entry) => entry.truth_sources),
     ...options.fixtureIds.flatMap((id) => fixture(id).truth_sources),
   ])].sort();
   const receipt = {
@@ -141,18 +186,24 @@ async function writeReceipt(options: {
     maintenanceClass: manifest.gold.maintenanceClass,
     engineVersion: CLIENT_TIME_MATH_ENGINE_VERSION,
     oracleEntryId: manifest.gold.oracleEntryId,
+    oracleEntryIds: oracleIds,
     fixtureFamilies: options.fixtureIds,
     exactVectors: options.exactVectors,
     propertyChecks: options.propertyChecks,
+    independentCrossChecks: options.independentCrossChecks,
     truthSources,
     resolvedFixtures,
     fixtureIndexSchemaVersion: index.schema_version,
     oracleRegistrySchemaVersion: registry.schema_version,
     icuVersion: process.versions.icu ?? null,
+    tzVersion: process.versions.tz ?? null,
+    acceptance: { browserMobileKeyboardLocalNetwork: "PASS", lazySharedEngineBundle: "PASS" },
     identities: {
       engineSha256: sha(engineText),
       fixtureIndexSha256: sha(indexText),
       oracleRegistrySha256: sha(registryText),
+      browserAcceptanceSha256: sha(acceptanceText),
+      bundleSha256: sha(bundleText),
     },
   };
   await writeFile(resolve(receiptRoot, `${manifest.id}.gold.json`), `${JSON.stringify(receipt, null, 2)}\n`);
@@ -164,16 +215,20 @@ await writeReceipt({
   exactVectors: timezoneData.vectors.length,
   fixtureIds: ["timezone-dst"],
   propertyChecks: ["DST gap rejected", "DST overlap rejected unless disambiguated", "earlier/later overlap instants exact"],
+  independentCrossChecks: ["Python zoneinfo"],
 });
 await writeReceipt({
   manifest: rateConverterManifest,
-  exactVectors: 2,
+  exactVectors: 4,
   fixtureIds: ["business-math"],
-  propertyChecks: ["exact rational arithmetic", "final-only half-up 2dp", "project hours required"],
+  propertyChecks: ["exact rational arithmetic", "final-only half-up 2dp", "10.075 binary-float regression", "project hours required"],
+  independentCrossChecks: ["Python Decimal"],
 });
 await writeReceipt({
   manifest: marginMarkupManifest,
-  exactVectors: 1,
+  exactVectors: 3,
   fixtureIds: ["business-math"],
   propertyChecks: ["margin and markup use distinct denominators", "zero denominator policies explicit"],
+  additionalOracleIds: ["cand-109"],
+  independentCrossChecks: ["Python Decimal"],
 });
