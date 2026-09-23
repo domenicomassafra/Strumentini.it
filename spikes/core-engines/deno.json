@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable", "deno.ns"]
+  },
+  "tasks": {
+    "check": "deno check src/mod.ts tests/*.test.ts",
+    "test": "deno test tests"
+  }
+}
