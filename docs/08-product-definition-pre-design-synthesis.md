@@ -2,7 +2,7 @@
 
 Date: 2026-09-23
 
-Status: integrated working authority from completed lanes 01, 02, 03 and 05.  
+Status: integrated working authority from completed lanes 01, 02, 03 and 05.
 Pending before implementation planning: lane 04 product-design response.
 
 ## What exists today
