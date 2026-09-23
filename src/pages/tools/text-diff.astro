@@ -1,0 +1,40 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { TextDiffTool } from "../../components/tools/TextDiffTool";
+---
+<BaseLayout title="Text Diff" description="Compare two texts line by line locally with explicit added and removed semantics.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav>
+      <p class="eyebrow">Text</p>
+      <h1>Text Diff</h1>
+      <p class="lede">Compare two versions line by line with explicit unchanged, removed, and added operations.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your text is not uploaded.</span></div>
+    </header>
+
+    <TextDiffTool client:load />
+
+    <section class="method-card" aria-labelledby="diff-method-title">
+      <p class="eyebrow">Method</p>
+      <h2 id="diff-method-title">A bounded line diff, not semantic rewriting</h2>
+      <ul>
+        <li>CRLF and CR line endings are normalized to LF before comparison. Text content is otherwise compared exactly: no Unicode normalization or case folding.</li>
+        <li>The local line-based LCS matrix is capped at 1,000,000 cells. Larger comparisons fail explicitly instead of silently removing the safety guard.</li>
+        <li>Every operation is labeled with text and a symbol: <strong>= Unchanged</strong>, <strong>− Removed</strong>, <strong>+ Added</strong>. Meaning never depends on color alone.</li>
+        <li>No fuzzy, word-level, semantic, AI, or remote comparison is performed.</li>
+      </ul>
+    </section>
+  </article>
+  <style is:global>
+    .diff-operation { display: grid; gap: 18px; }
+    .diff-operation form, .diff-result { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+    .diff-summary { color: var(--muted); }
+    .diff-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+    .diff-row { display: grid; grid-template-columns: 1.5rem 6rem minmax(0, 1fr); gap: 8px; align-items: baseline; padding: 7px 8px; border-left: 3px solid var(--line); background: var(--canvas); }
+    .diff-row code { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .diff-add { border-left-color: var(--action); }
+    .diff-remove { border-left-color: var(--danger); }
+    .diff-symbol { font-weight: 900; text-align: center; }
+    @media (max-width: 760px) { .diff-row { grid-template-columns: 1.5rem 5.5rem minmax(0, 1fr); } }
+  </style>
+</BaseLayout>

@@ -1,0 +1,102 @@
+import { useState } from "preact/hooks";
+import { toolRuntime } from "../../runtime/tool-runtime";
+import type { EqualityMode } from "../../engines/text-list";
+import type { ListCompareOutput } from "../../tools/list-compare/types";
+
+const MODES: ReadonlyArray<{ value: EqualityMode; label: string }> = [
+  { value: "exact", label: "Exact" },
+  { value: "trim", label: "Trim edges" },
+  { value: "nfc", label: "Unicode NFC" },
+  { value: "trim-nfc", label: "Trim + NFC" },
+];
+
+function ResultList({ title, values }: { title: string; values: readonly string[] }) {
+  return (
+    <section class="list-result-block">
+      <h3>{title} <span class="count-chip">{values.length}</span></h3>
+      {values.length === 0 ? <p class="result-placeholder">None</p> : (
+        <ol>{values.map((value, index) => <li key={`${index}-${value}`}><code>{value === "" ? "(blank line)" : value}</code></li>)}</ol>
+      )}
+    </section>
+  );
+}
+
+export function ListCompareTool() {
+  const [left, setLeft] = useState("");
+  const [right, setRight] = useState("");
+  const [equality, setEquality] = useState<EqualityMode>("exact");
+  const [result, setResult] = useState<ListCompareOutput | null>(null);
+  const [error, setError] = useState("");
+
+  async function submit(event: Event) {
+    event.preventDefault();
+    setError("");
+    const run = await toolRuntime.run("list-compare", { left, right, equality });
+    if (!run.ok) {
+      setResult(null);
+      setError(run.message);
+      return;
+    }
+    setResult(run.value as ListCompareOutput);
+  }
+
+  function reset() {
+    setLeft("");
+    setRight("");
+    setEquality("exact");
+    setResult(null);
+    setError("");
+  }
+
+  return (
+    <div class="tool-operation">
+      <form onSubmit={submit}>
+        <fieldset class="segmented">
+          <legend>Equality rule</legend>
+          {MODES.map((mode) => (
+            <label key={mode.value}>
+              <input
+                type="radio"
+                name="equality"
+                value={mode.value}
+                checked={equality === mode.value}
+                onChange={() => setEquality(mode.value)}
+              />
+              {mode.label}
+            </label>
+          ))}
+        </fieldset>
+
+        <div class="field-grid">
+          <label class="field">
+            <span>List A</span>
+            <textarea rows={11} value={left} onInput={(event) => setLeft(event.currentTarget.value)} placeholder={"alpha\nbeta\nbeta"} />
+          </label>
+          <label class="field">
+            <span>List B</span>
+            <textarea rows={11} value={right} onInput={(event) => setRight(event.currentTarget.value)} placeholder={"beta\ngamma"} />
+          </label>
+        </div>
+
+        {error !== "" && <p class="error" role="alert">{error}</p>}
+        <div class="actions">
+          <button class="primary" type="submit">Compare lists</button>
+          <button type="button" onClick={reset}>Reset</button>
+        </div>
+      </form>
+
+      <section class="result-panel" aria-live="polite">
+        <p class="eyebrow">Result</p>
+        {result === null ? <p class="result-placeholder">Comparison results appear here.</p> : (
+          <div class="stacked-results">
+            <ResultList title="In both" values={result.intersection} />
+            <ResultList title="Only in A" values={result.onlyLeft} />
+            <ResultList title="Only in B" values={result.onlyRight} />
+            <ResultList title="A deduplicated" values={result.leftDeduped} />
+            <ResultList title="B deduplicated" values={result.rightDeduped} />
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}

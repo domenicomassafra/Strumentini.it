@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "toolId": "list-compare",
+  "status": "GOLD",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryIds": [
+    "cand-009",
+    "cand-010",
+    "cand-011"
+  ],
+  "fixtureFamilies": [
+    "list-set-ops",
+    "unicode-normalization",
+    "whitespace-normalization"
+  ],
+  "exactVectors": 2,
+  "propertyChecks": [
+    "dedupe idempotence",
+    "intersection commutativity under NFC set semantics",
+    "difference exclusion",
+    "CRLF/LF parsing"
+  ],
+  "engineVersion": "text-list-v1",
+  "truthSources": [
+    "fixture-policy",
+    "unicode-uax15",
+    "unicode-uax29",
+    "utilityos-lane05",
+    "utilityos-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "list-set-ops",
+      "path": "quality/fixtures/list-set-ops/vectors.json",
+      "sha256": "fb7ace5df99f085ecba1db80248f52b53955f07c0f81016e8109b07d6a96674e",
+      "schemaVersion": 1
+    },
+    {
+      "id": "unicode-normalization",
+      "path": "quality/fixtures/unicode-normalization/vectors.json",
+      "sha256": "be1445efa4f06603369fab44b61300eedfb95cab6786f534f9be85adb593733e",
+      "schemaVersion": 1
+    },
+    {
+      "id": "whitespace-normalization",
+      "path": "quality/fixtures/whitespace-normalization/vectors.json",
+      "sha256": "c9d96f032b2faf70f44e451ca3d27cdb52a657292ea12d89c3df93cf5ecb884b",
+      "schemaVersion": 1
+    }
+  ],
+  "fixtureIndexSchemaVersion": 1,
+  "oracleRegistrySchemaVersion": 1,
+  "identities": {
+    "manifestSha256": "903ae9614694d303b800cdf8384cb3b139aa77a8632d6476a8bb575d52386a05",
+    "engineSha256": "6401bf42affc8fcc020bb2450cf87dab678c4940f3c9c27b5336b0167ce8de40",
+    "fixtureIndexSha256": "dd06b638d473b380f0a4315267e2976359292ae4fbb9f4415e708239609c10ba",
+    "oracleRegistrySha256": "020191228b8349cf9822be32d124c042cafbd39aeff6349aa8c3a1b91e3e041c"
+  }
+}

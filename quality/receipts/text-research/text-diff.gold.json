@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "toolId": "text-diff",
+  "status": "GOLD",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryIds": [
+    "cand-013"
+  ],
+  "fixtureFamilies": [
+    "text-diff",
+    "whitespace-normalization"
+  ],
+  "exactVectors": 2,
+  "propertyChecks": [
+    "after reconstruction",
+    "CRLF/LF equivalence",
+    "1,000,000-cell LCS guard"
+  ],
+  "engineVersion": "text-list-v1",
+  "limits": {
+    "maxLcsCells": 1000000
+  },
+  "truthSources": [
+    "fixture-policy",
+    "unicode-uax15",
+    "unicode-uax29",
+    "utilityos-lane05",
+    "utilityos-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "text-diff",
+      "path": "quality/fixtures/text-diff/vectors.json",
+      "sha256": "5488dc89c532d5e0521db16de005b308f9e076cd3e35cebe668471e8faef7f2c",
+      "schemaVersion": 1
+    },
+    {
+      "id": "whitespace-normalization",
+      "path": "quality/fixtures/whitespace-normalization/vectors.json",
+      "sha256": "c9d96f032b2faf70f44e451ca3d27cdb52a657292ea12d89c3df93cf5ecb884b",
+      "schemaVersion": 1
+    }
+  ],
+  "fixtureIndexSchemaVersion": 1,
+  "oracleRegistrySchemaVersion": 1,
+  "identities": {
+    "manifestSha256": "b5bd90afa39fc97985d03e8b76dde2c45d853960d5d8303d902a58aa08f7efd8",
+    "engineSha256": "6401bf42affc8fcc020bb2450cf87dab678c4940f3c9c27b5336b0167ce8de40",
+    "fixtureIndexSha256": "dd06b638d473b380f0a4315267e2976359292ae4fbb9f4415e708239609c10ba",
+    "oracleRegistrySha256": "020191228b8349cf9822be32d124c042cafbd39aeff6349aa8c3a1b91e3e041c"
+  }
+}

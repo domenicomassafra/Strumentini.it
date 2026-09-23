@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "toolId": "doi-isbn-normalizer",
+  "status": "GOLD",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryIds": [
+    "cand-181",
+    "cand-183"
+  ],
+  "fixtureFamilies": [
+    "doi",
+    "isbn"
+  ],
+  "exactVectors": 7,
+  "propertyChecks": [
+    "DOI normalization idempotence",
+    "ISBN-10/13 check digits",
+    "ISBN-10 to 978 ISBN-13 conversion",
+    "no metadata resolution"
+  ],
+  "engineVersion": "research-reference-v1",
+  "truthSources": [
+    "doi-handbook",
+    "fixture-policy",
+    "isbn-manual",
+    "utilityos-quality",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "doi",
+      "path": "quality/fixtures/doi/vectors.json",
+      "sha256": "91108aaced0034ecfec037de85756f8f06b956dad106e4a361588e6c1ecd6e97",
+      "schemaVersion": 1
+    },
+    {
+      "id": "isbn",
+      "path": "quality/fixtures/isbn/vectors.json",
+      "sha256": "3ce8d937183d81664e1511f4e60c831c9008dd610db7ab66700e7de4bb52ecdc",
+      "schemaVersion": 1
+    }
+  ],
+  "fixtureIndexSchemaVersion": 1,
+  "oracleRegistrySchemaVersion": 1,
+  "identities": {
+    "manifestSha256": "c80641968a41fe7caa0af630c0a759582c229c6f546f88f1e5843df9639f63c1",
+    "engineSha256": "6585e1b6e3f055d91f565f36cd8f505d7b0f9ba8779ac42b7c0a40ad365176a3",
+    "fixtureIndexSha256": "dd06b638d473b380f0a4315267e2976359292ae4fbb9f4415e708239609c10ba",
+    "oracleRegistrySha256": "020191228b8349cf9822be32d124c042cafbd39aeff6349aa8c3a1b91e3e041c"
+  }
+}

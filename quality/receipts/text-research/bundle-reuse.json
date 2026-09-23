@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "proof": "list-compare and text-diff dynamic modules import one identical text-list engine chunk",
+  "listCompareModule": "module.CK53PA3s.js",
+  "textDiffModule": "module.DmvG6L3E.js",
+  "sharedTextListChunk": "text-list.CgzEIe9u.js",
+  "researchReferenceModule": "module.D_Y51zvg.js",
+  "sharedChunkContains": [
+    "trim-nfc equality",
+    "DIFF_TOO_LARGE guard",
+    "text-list-v1 engine identity"
+  ],
+  "eagerReferences": [],
+  "routesChecked": [
+    "tools/list-compare/index.html",
+    "tools/text-diff/index.html",
+    "tools/doi-isbn-normalizer/index.html"
+  ]
+}
