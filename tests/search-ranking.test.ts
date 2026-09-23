@@ -60,6 +60,28 @@ describe("search discovery seam", () => {
     expect(result.hits[0]).toMatchObject({ id: "business-day", section: "your-tools", match: "exact" });
   });
 
+  it("keeps the full deterministic tier order stable", () => {
+    const ranked = createSearch([
+      { ...tools[0], id: "exact", route: "/tools/exact", name: "Calendar Math", aliases: ["calendar math"] },
+      { ...tools[1], id: "intent", route: "/tools/intent", name: "Deadline Helper", jobs: ["calendar math for deadlines"] },
+      { ...tools[1], id: "recent", route: "/tools/recent", name: "Calendar Notes", summary: "Calendar math notes." },
+      { ...tools[2], id: "pack", route: "/tools/pack", name: "Calendar Reference", summary: "Calendar math reference.", packTags: ["calendar"] },
+      { ...tools[2], id: "catalog", route: "/tools/catalog", name: "Calendar Catalog", summary: "Calendar math catalog." },
+    ]).query("calendar math", {
+      installedToolIds: ["exact"],
+      recentToolIds: ["recent"],
+      installedPackTags: ["calendar"],
+    });
+
+    expect(ranked.hits.map(({ id, match }) => [id, match])).toEqual([
+      ["exact", "exact"],
+      ["intent", "intent"],
+      ["recent", "recent"],
+      ["pack", "pack"],
+      ["catalog", "catalog"],
+    ]);
+  });
+
   it("matches aliases, jobs, category, role/pack tags, input types, and runtime metadata", () => {
     expect(search.query("meeting overlap").hits[0]?.id).toBe("timezone-overlap");
     expect(search.query("find text changes").hits[0]?.id).toBe("text-diff");

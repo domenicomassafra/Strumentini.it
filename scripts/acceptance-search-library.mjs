@@ -101,6 +101,14 @@ try {
   if (!restored) throw new Error("Command palette did not restore focus to its invoking control");
   assertNoImplementationRequests(requestedScripts, toolAssets, "Command palette discovery");
 
+  await page.keyboard.press("Control+K");
+  await page.locator("[data-search-dialog][open]").waitFor();
+  await paletteInput.fill("workng day calcultor");
+  await page.getByRole("link", { name: "Request this tool", exact: true }).waitFor();
+  await page.getByRole("button", { name: /working day calculator|workday calculator/u }).first().waitFor();
+  await page.keyboard.press("Escape");
+  assertNoImplementationRequests(requestedScripts, toolAssets, "Zero-result discovery");
+
   await page.keyboard.press("Meta+K");
   await paletteInput.fill("business day calculator");
   await page.keyboard.press("Enter");
@@ -111,6 +119,7 @@ try {
   const mobileSearch = page.getByRole("link", { name: "Search", exact: true });
   await mobileSearch.click();
   await page.waitForURL(/\/library\/?\?focus=search/u);
+  await page.waitForFunction(() => document.activeElement?.id === "library-search");
   const mobileFocused = await page.evaluate(() => document.activeElement?.id === "library-search");
   if (!mobileFocused) throw new Error("Mobile Search destination did not focus the explicit Library search control");
 
@@ -147,12 +156,13 @@ try {
     status: "PASS",
     toolImplementationAssets: toolAssets,
     keyboard: {
-      shortcut: "Meta+K",
+      shortcuts: ["Meta+K", "Control+K"],
       arrowNavigation: true,
       enterOpen: true,
       escapeClose: true,
       focusRestored: restored,
     },
+    zeroResult: { queryPreserved: true, metadataCloseIntent: true, requestAction: true },
     libraryState: {
       urlAddressable: true,
       backNavigationPreserved: true,

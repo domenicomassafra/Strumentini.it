@@ -84,7 +84,8 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
         visibleRoutes.push(hit.route);
         return `<a id="global-search-option-${current}" class="palette-row" data-option-index="${current}" role="option" aria-selected="${current === activeIndex ? "true" : "false"}" href="${escapeHtml(hit.route)}"><span><strong>${escapeHtml(hit.name)}</strong><small>${escapeHtml(hit.summary)}</small></span><span class="row-meta">${escapeHtml(hit.category)} · ${hit.runtime.location === "LOCAL" ? "On this device" : "Network"}</span></a>`;
       }).join("");
-      return `<section class="palette-section" aria-label="${escapeHtml(section.label)}"><h3>${escapeHtml(section.label)}</h3>${rows}</section>`;
+      const groupId = `global-search-group-${section.id}`;
+      return `<div class="palette-section" role="group" aria-labelledby="${groupId}"><h3 id="${groupId}">${escapeHtml(section.label)}</h3>${rows}</div>`;
     }).join("");
 
     if (optionIndex === 0) {

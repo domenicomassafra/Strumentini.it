@@ -15,6 +15,7 @@ const libraryMetadata = catalog.map((tool) => ({
   runtime: tool.runtime,
 }));
 const facets = getLibraryFacets(libraryMetadata);
+const tagFacets = [...new Set([...facets.packTags, ...facets.roleTags])].sort((left, right) => left.localeCompare(right));
 const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u003c");
 ---
 
@@ -28,6 +29,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   <form class="library-controls" data-library-form>
     <label class="library-search" for="library-search"><span>Search</span><input id="library-search" name="q" type="search" autocomplete="off" placeholder="Try “working day”" /></label>
     <label><span>Category</span><select name="category"><option value="">All</option>{facets.categories.map((value) => <option value={value}>{value}</option>)}</select></label>
+    {tagFacets.length > 0 && <label><span>Pack / role</span><select name="tag"><option value="">All</option>{tagFacets.map((value) => <option value={value}>{value}</option>)}</select></label>}
     <label><span>Input</span><select name="input"><option value="">All</option>{facets.inputTypes.map((value) => <option value={value}>{value}</option>)}</select></label>
     <label><span>Runtime</span><select name="runtime"><option value="">All</option><option value="LOCAL">On this device</option><option value="NETWORK">Uses network</option></select></label>
     <label><span>Installed</span><select name="installed"><option value="">All</option><option value="installed">Installed</option><option value="not-installed">Not installed</option></select></label>
@@ -113,7 +115,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     if (!form) return;
     const values = new FormData(form);
     return {
-      q: String(values.get("q") ?? ""), category: String(values.get("category") ?? ""), tag: "",
+      q: String(values.get("q") ?? ""), category: String(values.get("category") ?? ""), tag: String(values.get("tag") ?? ""),
       input: String(values.get("input") ?? ""), runtime: String(values.get("runtime") ?? "") as LibraryState["runtime"],
       installed: String(values.get("installed") ?? "") as LibraryState["installed"], page: 1,
     };
@@ -144,7 +146,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     render();
   });
   requestButton?.addEventListener("click", () => {
-    if (requestStatus) requestStatus.textContent = `Request noted for “${stateFromLocation().q || "new utility"}” in this validation UI.`;
+    if (requestStatus) requestStatus.textContent = `Request target: “${stateFromLocation().q || "new utility"}”. Submission is not connected in this validation build.`;
   });
   render();
   if (new URLSearchParams(window.location.search).get("focus") === "search") {
