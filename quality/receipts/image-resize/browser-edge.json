@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "browser": "edge",
+  "route": "/tools/image-resize/",
+  "syntheticInput": {
+    "width": 1600,
+    "height": 1200,
+    "type": "image/png"
+  },
+  "verifiedOutputs": {
+    "webpCover": {
+      "width": 800,
+      "height": 800,
+      "type": "image/webp",
+      "size": 6712,
+      "riff": "RIFF",
+      "webp": "WEBP"
+    },
+    "jpegContain": {
+      "width": 800,
+      "height": 600,
+      "type": "image/jpeg",
+      "size": 11915,
+      "signatureHex": "ffd8ff"
+    }
+  },
+  "memoryPreflightText": "15.3 MiB estimated decoded working set",
+  "cancellation": "PASS",
+  "corruptDecode": "PASS",
+  "oversizedPredecode": "PASS",
+  "lazyScriptsAfterAction": 1,
+  "taskContentNetworkRequests": 0,
+  "externalRequests": 0,
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false,
+    "fileInputVisible": true
+  },
+  "physicalDeviceThresholds": {
+    "iosSafari": "NOT_RUN",
+    "androidChrome": "NOT_RUN"
+  }
+}

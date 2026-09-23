@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "toolId": "image-resize",
+  "status": "PARTIAL",
+  "goldEligible": false,
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "H",
+  "oracleEntryId": "cand-141",
+  "oracleCandidate": "Image resize",
+  "fixtureFamilies": [
+    "image-metadata",
+    "mime-file-signatures"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "image-metadata",
+      "path": "quality/fixtures/image-metadata/vectors.json"
+    },
+    {
+      "id": "mime-file-signatures",
+      "path": "quality/fixtures/mime-file-signatures/vectors.json"
+    }
+  ],
+  "automatedChecks": "PASS",
+  "desktopAutomation": {
+    "chrome": "PASS",
+    "edge": "PASS",
+    "lazyBundle": "PASS"
+  },
+  "physicalAcceptance": {
+    "iosSafari": "MISSING",
+    "androidChrome": "MISSING",
+    "requirement": "Actual physical/remote iOS Safari and Android Chrome memory thresholds before Gold publication"
+  },
+  "issues": [],
+  "identities": {
+    "src/engines/image/policy.ts": "a27be293fa69261b0927408407a1859d9cab3af41a3f9ff4deb33b1cf82a310c",
+    "src/engines/image/format.ts": "33cff596d3d5e617b519383e6e6a9eab968c15ab665ae3ee38183a8266d23e0a",
+    "src/tools/image-resize/module.ts": "a3a8f74315e6fa270f43c5ea4ab3af593cf0ba8a47e7a9e82c768e8c54875eac",
+    "oracleRegistrySha256": "020191228b8349cf9822be32d124c042cafbd39aeff6349aa8c3a1b91e3e041c",
+    "fixtureIndexSha256": "dd06b638d473b380f0a4315267e2976359292ae4fbb9f4415e708239609c10ba"
+  }
+}

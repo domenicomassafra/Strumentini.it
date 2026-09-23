@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { ImageResizeTool } from "../../components/tools/image-resize/ImageResizeTool";
+---
+<BaseLayout
+  title="Image Resize"
+  description="Resize or crop JPEG, PNG, and WebP images locally in your browser."
+>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Files &amp; assets</nav>
+      <p class="eyebrow">Files &amp; assets</p>
+      <h1>Image Resize</h1>
+      <p class="lede">
+        Resize an image to fit inside a box or crop it to exact dimensions. JPEG and WebP output
+        are encoded and verified locally.
+      </p>
+      <div class="trust-strip" role="note">
+        <strong>Runs on this device.</strong>
+        <span>No upload, remote fallback, or server-side image processing.</span>
+      </div>
+    </header>
+
+    <ImageResizeTool client:load />
+
+    <section class="method-card" aria-labelledby="image-method-title">
+      <p class="eyebrow">Safety &amp; format policy</p>
+      <h2 id="image-method-title">What this tool does</h2>
+      <ul>
+        <li>Accepts JPEG, PNG, or WebP and outputs JPEG or WebP using browser-native decoding and Canvas.</li>
+        <li>Checks image dimensions before full decode and rejects inputs whose decoded pixel working set is above the local limit.</li>
+        <li>Requests embedded image orientation during decode, then writes output pixels in that displayed orientation.</li>
+        <li>Re-encodes decoded pixels without intentionally copying EXIF/XMP/IPTC metadata; this is not a claim that every possible metadata carrier is removed.</li>
+        <li>Decodes the finished output again and checks its dimensions, MIME type, and file signature before offering a download.</li>
+        <li>Cancellation is checked between native decode, resize, encode, and verification phases; a browser-native operation already in flight may finish before cancellation takes effect.</li>
+      </ul>
+    </section>
+  </article>
+</BaseLayout>

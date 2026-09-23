@@ -8,15 +8,17 @@
 
 **Blocked by:** 01 — Gold tracer: Business Day Calculator.
 
-**Status:** ready-for-agent
+**Status:** partial-wait-for-physical-acceptance
 
-- [ ] Begin from the completed heavy-browser/donor evidence and record exactly which observed native behavior/fixtures are promoted; inspect the oracle lane too if it is complete by implementation time.
-- [ ] The tool accepts ordinary local image input and uses createImageBitmap/canvas or another justified native path before adding codec/WASM dependencies.
-- [ ] Output validation independently checks declared dimensions, decodability, and MIME/signature expectations rather than trusting the encoder call.
-- [ ] Orientation/metadata policy is explicit; the tool does not imply metadata removal or perfect privacy unless tested behavior proves it.
-- [ ] Soft/hard dimension/file-size guidance prevents known unsafe mobile allocations; unsupported capability/input returns a normalized recoverable error.
-- [ ] Memory preflight is based on decoded pixel dimensions/surfaces rather than compressed file bytes alone, and actual iOS Safari/Android Chrome thresholds are measured before Gold publication.
-- [ ] Perceptible processing has truthful state and meaningful cancellation; cancellation and worker/runtime failure never surface success/infinite progress.
-- [ ] Mobile Files/Photos flow works without drag/drop dependency and the tool reaches Gold across the declared browser matrix.
+- [x] Begin from the completed heavy-browser/donor evidence and record exactly which observed native behavior/fixtures are promoted; inspect the oracle lane too if it is complete by implementation time.
+- [x] The tool accepts ordinary local image input and uses createImageBitmap/canvas or another justified native path before adding codec/WASM dependencies.
+- [x] Output validation independently checks declared dimensions, decodability, and MIME/signature expectations rather than trusting the encoder call.
+- [x] Orientation/metadata policy is explicit; the tool does not imply metadata removal or perfect privacy unless tested behavior proves it.
+- [x] Soft/hard dimension/file-size guidance prevents known unsafe mobile allocations; unsupported capability/input returns a normalized recoverable error.
+- [ ] Memory preflight is based on decoded pixel dimensions/surfaces rather than compressed file bytes alone, and actual iOS Safari/Android Chrome thresholds are measured before Gold publication. **Automated decoded-pixel preflight PASS; physical iOS Safari + Android Chrome thresholds remain.**
+- [x] Perceptible processing has truthful state and meaningful cancellation; cancellation and worker/runtime failure never surface success/infinite progress.
+- [ ] Mobile Files/Photos flow works without drag/drop dependency and the tool reaches Gold across the declared browser matrix. **Files/Photos input + 390×844 viewport PASS in Chrome/Edge automation; physical iOS Safari + Android Chrome acceptance remains.**
 
 **Verification:** Run synthetic image fixtures with independent decoded-dimension/signature checks, corrupt/unsupported/large-image failure cases, cancellation/worker failure injection where applicable, representative mobile-memory acceptance, LOCAL network assertion, bundle-lazy-load inspection, and Gold certification.
+
+Implementation receipts live under `quality/receipts/image-resize/`. Automated certification is intentionally PARTIAL until valid physical-device receipts with measured thresholds exist for iOS Safari and Android Chrome.

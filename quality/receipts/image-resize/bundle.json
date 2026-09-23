@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "page": "tools/image-resize/index.html",
+  "htmlBytes": 13219,
+  "initialAssets": [
+    "GlobalSearch.astro_astro_type_script_index_0_lang.B9bUPZob.js"
+  ],
+  "implementationChunks": [
+    {
+      "file": "ImageResizeTool.C2f_9ZBU.js",
+      "bytes": 5953
+    },
+    {
+      "file": "module.C_MYuRwA.js",
+      "bytes": 8641
+    }
+  ],
+  "implementationEager": false
+}
