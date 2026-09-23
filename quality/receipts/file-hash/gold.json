@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "toolId": "file-hash",
+  "status": "GOLD",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "algorithm": "SHA-256",
+  "implementation": {
+    "package": "hash-wasm",
+    "version": "4.12.0",
+    "mode": "incremental-worker"
+  },
+  "oracle": {
+    "package": "Web Crypto",
+    "boundedMaxBytes": 1048576
+  },
+  "oracleEntryId": "cand-161",
+  "fixtureFamilies": [
+    "sha2-known-answers",
+    "file-hash"
+  ],
+  "knownAnswerCount": 2,
+  "webCryptoCrossChecks": 2,
+  "chunkSizesVerified": [
+    1,
+    2,
+    3,
+    65536
+  ],
+  "fixtureIndexSchemaVersion": 1,
+  "oracleRegistrySchemaVersion": 1,
+  "truthSources": [
+    "utilityos-quality",
+    "fixture-policy",
+    "nist-fips180-4"
+  ],
+  "identities": {
+    "manifestSha256": "cf7b1591cd42899ef43b472d5caf09e9ae7a8dbae88f7b12276581b6e9bc2d2a",
+    "engineSha256": "51a70b72e61b0156e97df5220c470bee794bb1a8ccff97ab1e03ce003c41d958",
+    "sha2FixtureSha256": "5ff14b5580656e339ad88a9b997204475c43c6c11b611ab98618796097fbb99b",
+    "fileHashFixtureSha256": "dcfff44b5e335c6c11c095783579641f8f4be62b481c7cd84adb9b5ef3300b5f",
+    "fixtureIndexSha256": "dd06b638d473b380f0a4315267e2976359292ae4fbb9f4415e708239609c10ba",
+    "oracleRegistrySha256": "020191228b8349cf9822be32d124c042cafbd39aeff6349aa8c3a1b91e3e041c"
+  }
+}

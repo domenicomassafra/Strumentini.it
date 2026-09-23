@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "route": "/tools/file-hash/",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "checksumVerification": "PASS",
+  "locality": {
+    "externalRequests": 0,
+    "privateValueRequestLeaks": 0
+  },
+  "lazyWorkerRequests": [
+    "http://127.0.0.1:18124/_astro/worker-DP4Ep3z2.js"
+  ],
+  "cancellation": "PASS",
+  "cancellationPayloadBytes": 50331648,
+  "horizontalOverflow": false
+}

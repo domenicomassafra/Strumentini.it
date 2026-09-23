@@ -8,15 +8,17 @@
 
 **Blocked by:** 01 — Gold tracer: Business Day Calculator.
 
-**Status:** ready-for-agent
+**Status:** complete
 
-- [ ] Use the completed heavy-browser/donor evidence to compare `hash-wasm` and `@noble/hashes` for exact version/license/security, worker/browser support, bundle cost, throughput, progress, cancellation, and memory; inspect oracle output too if complete.
-- [ ] Supported algorithms are explicitly enumerated and verified against published known-answer vectors.
-- [ ] The same file hash is invariant to internal chunk size in the incremental path and checksum comparison normalizes only documented representation differences.
-- [ ] File contents never leave the browser and analytics receives no filename/hash value/file content.
-- [ ] Large-file preflight/progress/cancel behavior is truthful; cancellation cannot produce a success receipt.
-- [ ] The incremental path reads bounded chunks from File/Blob streaming and never full-buffers a multi-gigabyte input merely to call Web Crypto.
-- [ ] Corrupt/read failure, unsupported algorithm, malformed expected checksum, and worker failure are normalized and recoverable.
-- [ ] The tool reaches Gold with mobile file selection, browser compatibility, and lazy dependency/worker proof if a non-native implementation is adopted.
+- [x] Use the completed heavy-browser/donor evidence to compare `hash-wasm` and `@noble/hashes` for exact version/license/security, worker/browser support, bundle cost, throughput, progress, cancellation, and memory; inspect oracle output too if complete.
+- [x] Supported algorithms are explicitly enumerated and verified against published known-answer vectors.
+- [x] The same file hash is invariant to internal chunk size in the incremental path and checksum comparison normalizes only documented representation differences.
+- [x] File contents never leave the browser and analytics receives no filename/hash value/file content.
+- [x] Large-file preflight/progress/cancel behavior is truthful; cancellation cannot produce a success receipt.
+- [x] The incremental path reads bounded chunks from File/Blob streaming and never full-buffers a multi-gigabyte input merely to call Web Crypto.
+- [x] Corrupt/read failure, unsupported algorithm, malformed expected checksum, and worker failure are normalized and recoverable.
+- [x] The tool reaches Gold with mobile file selection, browser compatibility, and lazy dependency/worker proof if a non-native implementation is adopted.
 
 **Verification:** Run published hash vectors, chunk-size invariance fixtures, malformed checksum cases, large-file/cancel/failure injection, LOCAL browser-network/content telemetry inspection, mobile file flow, dependency/bundle gate if applicable, and Gold certification.
+
+**Closure evidence:** `tests/file-hash-engine.test.ts`; `quality/receipts/file-hash/gold.json`; `quality/receipts/file-hash/browser-acceptance.json`; `quality/receipts/file-hash/dependency-benchmark.json`; `research/implementation/10-hash-dependency-gate.md`. Production selects `hash-wasm` 4.12.0; `@noble/hashes` 2.4.0 remains evaluation-only for coordinator removal.
