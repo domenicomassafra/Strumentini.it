@@ -480,7 +480,9 @@
       "coverage": [
         "weekend crossing",
         "inclusivity",
-        "no hidden holiday source"
+        "no hidden holiday source",
+        "custom workweek",
+        "explicit excluded dates"
       ]
     },
     {

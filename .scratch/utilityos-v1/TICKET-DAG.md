@@ -52,9 +52,18 @@ The separate `tasks/prompt2prompt/20260923-181500-utilityos-parallel-enablers/` 
 
 ## Current unblocked frontier
 
-**Ticket 01 only.**
+**Ticket 01 is complete.**
 
-This is intentional. It establishes the production seams that make later tickets implementable rather than speculative. After Ticket 01 closes, Tickets 02, 03, 06, 08, 09, and 10 can begin in parallel; Tickets 04 and 05 join after Ticket 02.
+The current parallel frontier is:
+
+- Ticket 02 — Local Workbench / Profile / Portability
+- Ticket 03 — Search / Command / Library
+- Ticket 06 — CSV parser gate + CSV Cleaner
+- Ticket 08 — Text/list + research Gold family
+- Ticket 09 — Image Resize Gold vertical
+- Ticket 10 — File Hash/Checksum Gold vertical
+
+Tickets 04 and 05 join the frontier after Ticket 02 completes. Ticket 07 requires both Ticket 02 and Ticket 06.
 
 ## Acceptance-criteria coverage
 
