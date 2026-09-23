@@ -109,6 +109,7 @@ At minimum read:
 - `research/tool-catalog-200-candidate-map-2026-09-23.md`
 - `research/catalog-prioritization-v1-2026-09-23.md`
 - `research/free-scale-monetization-stress-test-2026-09-23.md`
+- `research/platform-decision-spike-2026-09-23.md`
 
 # Owner intent to preserve
 
@@ -465,4 +466,3 @@ What the owner/main agent must preserve before generating the implementation wav
 
 ## Next exact action
 The first concrete continuation step, or `None — closure complete; generate implementation Prompt2Prompt wave from the unblocked ticket frontier`.
-

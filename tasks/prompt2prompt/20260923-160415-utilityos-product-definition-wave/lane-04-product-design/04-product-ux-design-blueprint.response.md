@@ -127,4 +127,3 @@ Do not copy the candidate color accent into a final public brand system until th
 ## Next exact action
 
 None — lane complete.
-
