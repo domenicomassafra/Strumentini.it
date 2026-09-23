@@ -1,7 +1,8 @@
-import { readdir, readFile, stat, mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { basename, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
+const updateBaseline = process.argv.includes("--update-baseline");
 const dist = resolve(root, "dist");
 const pagePath = resolve(dist, "tools/business-day/index.html");
 const page = await readFile(pagePath, "utf8");
@@ -34,10 +35,17 @@ const baseline = {
   unrelatedToolChunks: [],
 };
 
-await mkdir(resolve(root, "quality/receipts"), { recursive: true });
-await writeFile(
-  resolve(root, "quality/receipts/build-baseline.json"),
-  `${JSON.stringify(baseline, null, 2)}\n`,
-  "utf8",
+if (updateBaseline) {
+  await mkdir(resolve(root, "quality/receipts"), { recursive: true });
+  await writeFile(
+    resolve(root, "quality/receipts/build-baseline.json"),
+    `${JSON.stringify(baseline, null, 2)}\n`,
+    "utf8",
+  );
+}
+
+console.log(
+  `build inspection PASS: ${engineChunks.length} lazy Business Day chunk(s); ` +
+    `${baseline.jsAssetCount} JS asset(s), ${baseline.totalJsBytes} B total; ` +
+    `historical baseline ${updateBaseline ? "updated" : "preserved"}`,
 );
-console.log(`build inspection PASS: ${engineChunks.length} lazy Business Day chunk(s)`);
