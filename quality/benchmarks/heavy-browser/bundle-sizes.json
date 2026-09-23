@@ -1,0 +1,83 @@
+{
+  "generatedAt": "2026-09-23T16:48:10.623Z",
+  "bundles": {
+    "pdf-capabilities": {
+      "rawBytes": 2122213,
+      "gzipBytes": 677643,
+      "files": [
+        {
+          "file": "assets/pdf.worker.min-Dswkl-cV.mjs",
+          "rawBytes": 1265413,
+          "gzipBytes": 373554
+        },
+        {
+          "file": "assets/index-Hcfw61-N.js",
+          "rawBytes": 856346,
+          "gzipBytes": 303766
+        },
+        {
+          "file": "index.html",
+          "rawBytes": 454,
+          "gzipBytes": 323
+        }
+      ]
+    },
+    "image-pipeline": {
+      "rawBytes": 7312864,
+      "gzipBytes": 2348108,
+      "files": [
+        {
+          "file": "assets/avif_enc_mt-DFoVXd45.wasm",
+          "rawBytes": 3534665,
+          "gzipBytes": 1130150
+        },
+        {
+          "file": "assets/avif_enc-Co4TcJko.wasm",
+          "rawBytes": 3485872,
+          "gzipBytes": 1115948
+        },
+        {
+          "file": "assets/index-NdhV4lQq.js",
+          "rawBytes": 218150,
+          "gzipBytes": 73167
+        },
+        {
+          "file": "assets/avif_enc_mt.worker-BRrFxzKW.js",
+          "rawBytes": 28178,
+          "gzipBytes": 10790
+        },
+        {
+          "file": "assets/avif_enc_mt-TWDIhLIP.js",
+          "rawBytes": 26431,
+          "gzipBytes": 10219
+        },
+        {
+          "file": "assets/avif_enc-DR2BvhC0.js",
+          "rawBytes": 19114,
+          "gzipBytes": 7512
+        },
+        {
+          "file": "index.html",
+          "rawBytes": 454,
+          "gzipBytes": 322
+        }
+      ]
+    },
+    "file-pipeline": {
+      "rawBytes": 252963,
+      "gzipBytes": 87928,
+      "files": [
+        {
+          "file": "assets/index-CobnIwA1.js",
+          "rawBytes": 252503,
+          "gzipBytes": 87590
+        },
+        {
+          "file": "index.html",
+          "rawBytes": 460,
+          "gzipBytes": 338
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,397 @@
+{
+  "generatedAt": "2026-09-23T16:48:05.306Z",
+  "browser": "system Google Chrome headless via playwright-core 1.63.0",
+  "results": {
+    "pdf-capabilities": {
+      "ok": true,
+      "capability": "pdf",
+      "libraries": {
+        "pdf-lib": "1.17.1",
+        "pdfjs-dist": "6.3.289"
+      },
+      "bytes": {
+        "source": 1799,
+        "reordered": 1652,
+        "splitA": 1191,
+        "splitB": 1184,
+        "merged": 1719
+      },
+      "timingsMs": {
+        "fixture": 12.100000023841858,
+        "mutationSplitMerge": 5.300000011920929,
+        "extractionMetadata": 503.5999999642372,
+        "renderFirstPage": 16.5
+      },
+      "heap": {
+        "before": 13536109,
+        "after": 19933322,
+        "delta": 6397213
+      },
+      "extracted": [
+        "UTILITYOS-PAGE-4  synthetic fixture 4",
+        "UTILITYOS-PAGE-2  synthetic fixture 2",
+        "UTILITYOS-PAGE-1  synthetic fixture 1",
+        "UTILITYOS-PAGE-3  synthetic fixture 3"
+      ],
+      "metadata": {
+        "sourceTitle": "Synthetic UtilityOS Fixture",
+        "sourceAuthor": "UtilityOS Lane 04",
+        "scrubbedTitle": null,
+        "scrubbedAuthor": null,
+        "note": "Targeted Info fields were blanked; this is not a proof of complete privacy metadata removal."
+      },
+      "rotationDegrees": 90,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "crossOriginIsolated": false,
+      "wallMs": 1185.974791,
+      "browserMetrics": {
+        "usedJSHeapSize": 20608638,
+        "totalJSHeapSize": 23930782,
+        "jsHeapSizeLimit": 4395630592,
+        "resources": [
+          {
+            "name": "client",
+            "transferSize": 211063,
+            "decodedBodySize": 210763,
+            "duration": 102.30000001192093
+          },
+          {
+            "name": "main.js",
+            "transferSize": 25576,
+            "decodedBodySize": 25276,
+            "duration": 9.899999976158142
+          },
+          {
+            "name": "pdf-lib.js?v=7815b891",
+            "transferSize": 2943591,
+            "decodedBodySize": 2943291,
+            "duration": 72.20000004768372
+          },
+          {
+            "name": "harness.js",
+            "transferSize": 6550,
+            "decodedBodySize": 6250,
+            "duration": 40.39999997615814
+          },
+          {
+            "name": "pdfjs-dist.js?v=7815b891",
+            "transferSize": 2636252,
+            "decodedBodySize": 2635952,
+            "duration": 65.60000002384186
+          },
+          {
+            "name": "rolldown-runtime-DUp30N8C.js?v=7815b891",
+            "transferSize": 9551,
+            "decodedBodySize": 9251,
+            "duration": 1.699999988079071
+          },
+          {
+            "name": "env.mjs",
+            "transferSize": 3778,
+            "decodedBodySize": 3478,
+            "duration": 1.899999976158142
+          },
+          {
+            "name": "pdf.worker.min.mjs",
+            "transferSize": 6808902,
+            "decodedBodySize": 6808602,
+            "duration": 10.699999988079071
+          },
+          {
+            "name": "client",
+            "transferSize": 300,
+            "decodedBodySize": 210763,
+            "duration": 1.199999988079071
+          },
+          {
+            "name": "env.mjs",
+            "transferSize": 300,
+            "decodedBodySize": 3478,
+            "duration": 0.6000000238418579
+          },
+          {
+            "name": "pdf.worker.min.mjs",
+            "transferSize": 6808902,
+            "decodedBodySize": 6808602,
+            "duration": 11.5
+          },
+          {
+            "name": "client",
+            "transferSize": 300,
+            "decodedBodySize": 210763,
+            "duration": 1.100000023841858
+          },
+          {
+            "name": "env.mjs",
+            "transferSize": 300,
+            "decodedBodySize": 3478,
+            "duration": 0.6000000238418579
+          }
+        ]
+      },
+      "consoleErrors": []
+    },
+    "image-pipeline": {
+      "ok": true,
+      "capability": "image",
+      "libraries": {
+        "pica": "10.0.3",
+        "browser-image-compression": "2.0.2",
+        "exifr": "7.1.3",
+        "piexifjs": "1.0.6 fixture-only",
+        "@jsquash/avif": "2.1.1"
+      },
+      "dimensions": {
+        "source": [
+          1600,
+          1200
+        ],
+        "crop": [
+          800,
+          800
+        ],
+        "output": [
+          400,
+          400
+        ]
+      },
+      "bytes": {
+        "sourceJpeg": 160439,
+        "taggedJpeg": 160606,
+        "jpeg": 18329,
+        "webp": 10240,
+        "wasmAvif": 6031,
+        "nativeAvifAttempt": 224738,
+        "browserImageCompression": 88904
+      },
+      "timingsMs": {
+        "fixture": 44.5,
+        "cropAndPicaResize": 61.89999997615814,
+        "jpegWebpAvifEncode": 129.19999998807907,
+        "browserImageCompressionWorker": 268
+      },
+      "heap": {
+        "before": 5273722,
+        "after": 9223187,
+        "delta": 3949465
+      },
+      "formats": {
+        "jpeg": "image/jpeg",
+        "webp": "image/webp",
+        "nativeAvif": false,
+        "wasmAvif": "image/avif"
+      },
+      "exif": {
+        "before": {
+          "ImageDescription": "Synthetic EXIF for local browser spike",
+          "Artist": "UtilityOS Synthetic Fixture"
+        },
+        "afterReencode": null,
+        "note": "Canvas decode/re-encode strips parsed EXIF in this fixture; this does not prove removal of every metadata carrier."
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "crossOriginIsolated": false,
+      "wallMs": 1045.0680830000001,
+      "browserMetrics": {
+        "usedJSHeapSize": 9899294,
+        "totalJSHeapSize": 14124326,
+        "jsHeapSizeLimit": 4395630592,
+        "resources": [
+          {
+            "name": "client",
+            "transferSize": 211063,
+            "decodedBodySize": 210763,
+            "duration": 6.199999988079071
+          },
+          {
+            "name": "main.js",
+            "transferSize": 31440,
+            "decodedBodySize": 31140,
+            "duration": 7.800000011920929
+          },
+          {
+            "name": "env.mjs",
+            "transferSize": 3778,
+            "decodedBodySize": 3478,
+            "duration": 2.5
+          },
+          {
+            "name": "pica.js?v=7815b891",
+            "transferSize": 247454,
+            "decodedBodySize": 247154,
+            "duration": 2.800000011920929
+          },
+          {
+            "name": "browser-image-compression.js?v=7815b891",
+            "transferSize": 272912,
+            "decodedBodySize": 272612,
+            "duration": 5.300000011920929
+          },
+          {
+            "name": "exifr.js?v=7815b891",
+            "transferSize": 298721,
+            "decodedBodySize": 298421,
+            "duration": 5.900000035762787
+          },
+          {
+            "name": "harness.js",
+            "transferSize": 6550,
+            "decodedBodySize": 6250,
+            "duration": 3.800000011920929
+          },
+          {
+            "name": "@jsquash_avif_encode__js.js?v=7815b891",
+            "transferSize": 20128,
+            "decodedBodySize": 19828,
+            "duration": 7
+          },
+          {
+            "name": "piexifjs.js?v=7815b891",
+            "transferSize": 208434,
+            "decodedBodySize": 208134,
+            "duration": 6.600000023841858
+          },
+          {
+            "name": "rolldown-runtime-DUp30N8C.js?v=7815b891",
+            "transferSize": 9551,
+            "decodedBodySize": 9251,
+            "duration": 1
+          },
+          {
+            "name": "avif_enc-vvOTsGqC.js?v=7815b891",
+            "transferSize": 140829,
+            "decodedBodySize": 140529,
+            "duration": 9.199999988079071
+          },
+          {
+            "name": "avif_enc.wasm",
+            "transferSize": 3486172,
+            "decodedBodySize": 3485872,
+            "duration": 8.5
+          }
+        ]
+      },
+      "consoleErrors": []
+    },
+    "file-pipeline": {
+      "ok": true,
+      "capability": "file-pipeline",
+      "libraries": {
+        "fflate": "0.8.3",
+        "qrcode": "1.5.4",
+        "jsqr": "1.4.0",
+        "hash-wasm": "4.12.0",
+        "file-type": "22.1.1"
+      },
+      "zip": {
+        "bytes": 418,
+        "entries": [
+          "README.txt",
+          "data/items.csv",
+          "nested/note.json"
+        ],
+        "timingMs": 1.2999999523162842
+      },
+      "qr": {
+        "payload": "utilityos://synthetic/lane-04?fixture=qr",
+        "decoded": "utilityos://synthetic/lane-04?fixture=qr",
+        "timingMs": 19.600000023841858
+      },
+      "hash": {
+        "bytes": 25165824,
+        "sha256": "f5990e08e841a5f856d4a0442881a63c263e526e9b474a3302943b5bf2d3bfc2",
+        "timingMs": 105,
+        "progressEvents": 13,
+        "oracle1MiBMatched": true,
+        "abortObserved": true
+      },
+      "signatures": {
+        "zip": {
+          "ext": "zip",
+          "mime": "application/zip"
+        },
+        "png": {
+          "ext": "png",
+          "mime": "image/png"
+        },
+        "timingMs": 2.800000011920929
+      },
+      "heap": {
+        "before": 7097794,
+        "after": 41548494,
+        "delta": 34450700
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "crossOriginIsolated": false,
+      "wallMs": 572.6765000000005,
+      "browserMetrics": {
+        "usedJSHeapSize": 42214701,
+        "totalJSHeapSize": 45001061,
+        "jsHeapSizeLimit": 4395630592,
+        "resources": [
+          {
+            "name": "client",
+            "transferSize": 211063,
+            "decodedBodySize": 210763,
+            "duration": 6.599999964237213
+          },
+          {
+            "name": "main.js",
+            "transferSize": 25771,
+            "decodedBodySize": 25471,
+            "duration": 10.900000035762787
+          },
+          {
+            "name": "env.mjs",
+            "transferSize": 3778,
+            "decodedBodySize": 3478,
+            "duration": 4.300000011920929
+          },
+          {
+            "name": "fflate.js?v=7815b891",
+            "transferSize": 262823,
+            "decodedBodySize": 262523,
+            "duration": 4.300000011920929
+          },
+          {
+            "name": "qrcode.js?v=7815b891",
+            "transferSize": 228007,
+            "decodedBodySize": 227707,
+            "duration": 10
+          },
+          {
+            "name": "jsqr.js?v=7815b891",
+            "transferSize": 762800,
+            "decodedBodySize": 762500,
+            "duration": 20.19999998807907
+          },
+          {
+            "name": "hash-wasm.js?v=7815b891",
+            "transferSize": 675654,
+            "decodedBodySize": 675354,
+            "duration": 23.200000047683716
+          },
+          {
+            "name": "harness.js",
+            "transferSize": 6550,
+            "decodedBodySize": 6250,
+            "duration": 7.199999988079071
+          },
+          {
+            "name": "file-type.js?v=7815b891",
+            "transferSize": 466597,
+            "decodedBodySize": 466297,
+            "duration": 23.899999976158142
+          },
+          {
+            "name": "rolldown-runtime-DUp30N8C.js?v=7815b891",
+            "transferSize": 9551,
+            "decodedBodySize": 9251,
+            "duration": 7.300000011920929
+          }
+        ]
+      },
+      "consoleErrors": []
+    }
+  }
+}
