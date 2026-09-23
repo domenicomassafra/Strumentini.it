@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "directCrossToolImports": [],
+  "descriptorCompatibility": [
+    "csv-cleaner table/csv -> csv-dedupe",
+    "csv-cleaner table/csv -> csv-column-map"
+  ],
+  "sharedEngineChunk": "csv.BLM7ZwVh.js",
+  "moduleChunks": {
+    "csv-dedupe": "module.DjcK90CI.js",
+    "csv-column-map": "module.DmdWWOFO.js",
+    "csv-cleaner": "module.DuSe0Ce2.js"
+  },
+  "eagerRouteReferences": 0
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "dedupe": [
+    {
+      "case": "whole-row-stable",
+      "input": "id,name\n1,Ada\n1,Ada\n2,Grace\n1,Ada",
+      "mode": "whole-row",
+      "expected": "id,name\n1,Ada\n2,Grace",
+      "removed_rows": 2
+    },
+    {
+      "case": "key-column-empty-values-stay-distinct",
+      "input": "id,name\n1,Ada\n1,A. Lovelace\n,Unknown A\n,Unknown B",
+      "mode": "key-columns",
+      "key_columns": [0],
+      "expected": "id,name\n1,Ada\n,Unknown A\n,Unknown B",
+      "removed_rows": 1,
+      "empty_key_policy": "keep"
+    },
+    {
+      "case": "duplicate-header-addressed-by-index",
+      "input": "id,id,name\nA,1,Ada\nB,1,Grace\nC,2,Linus",
+      "mode": "key-columns",
+      "key_columns": [1],
+      "expected": "id,id,name\nA,1,Ada\nC,2,Linus",
+      "removed_rows": 1
+    }
+  ],
+  "column_map": [
+    {
+      "case": "select-rename-reorder",
+      "input": "first,last,email\nAda,Lovelace,ada@example.com\nGrace,Hopper,grace@example.com",
+      "mapping": [
+        { "source_index": 2, "output_name": "email" },
+        { "source_index": 0, "output_name": "first_name" }
+      ],
+      "expected": "email,first_name\nada@example.com,Ada\ngrace@example.com,Grace",
+      "dropped_columns": [1]
+    },
+    {
+      "case": "duplicate-input-header-explicit-index",
+      "input": "id,id,name\ninternal-1,external-7,Ada",
+      "mapping": [
+        { "source_index": 1, "output_name": "external_id" },
+        { "source_index": 0, "output_name": "internal_id" }
+      ],
+      "expected": "external_id,internal_id\nexternal-7,internal-1"
+    },
+    {
+      "case": "ragged-row-fills-selected-missing-cell",
+      "input": "a,b,c\n1,2",
+      "mapping": [
+        { "source_index": 2, "output_name": "c" },
+        { "source_index": 0, "output_name": "a" }
+      ],
+      "expected": "c,a\n,1",
+      "filled_missing_cells": 1
+    }
+  ]
+}

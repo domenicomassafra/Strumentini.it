@@ -13,6 +13,9 @@ export const csvCleanerManifest = {
   engine: "table-csv",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  handoff: {
+    emits: [{ type: "table", format: "csv" }],
+  },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-022", fixtureFamilies: ["csv-rfc4180", "csv-cleaning"] },
 } as const satisfies ToolManifest;
 

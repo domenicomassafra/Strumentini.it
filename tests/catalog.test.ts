@@ -28,4 +28,17 @@ describe("catalog compilation seam", () => {
     };
     expect(() => compileCatalog([invalid])).toThrow(/LOCAL tools must declare network=forbidden/u);
   });
+
+  it("preserves typed handoff descriptors and rejects duplicate declarations", () => {
+    const withHandoff = {
+      ...businessDayManifest,
+      handoff: { emits: [{ type: "table" as const, format: "csv" }] },
+    };
+    expect(compileCatalog([withHandoff]).summaries[0]?.handoff).toEqual(withHandoff.handoff);
+    const invalid = {
+      ...withHandoff,
+      handoff: { accepts: [{ type: "table" as const, format: "csv" }, { type: "table" as const, format: "csv" }] },
+    };
+    expect(() => compileCatalog([invalid])).toThrow(/duplicate handoff accepts descriptor table:csv/u);
+  });
 });

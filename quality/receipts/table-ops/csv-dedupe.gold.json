@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "toolId": "csv-dedupe",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "engineVersion": "1",
+  "oracleEntryId": "cand-025",
+  "oracleEntryIds": [
+    "cand-025"
+  ],
+  "fixtureFamilies": [
+    "csv-rfc4180",
+    "csv-table-ops"
+  ],
+  "exactVectors": 3,
+  "properties": [
+    "stable first occurrence",
+    "idempotent under same rule",
+    "empty all-key rows stay distinct",
+    "duplicate headers addressed by index"
+  ],
+  "independentValidation": "Every produced CSV is reparsed through the pinned production parser; expected outputs remain hand-authored literals.",
+  "truthSources": [
+    "fixture-policy",
+    "rfc4180",
+    "utilityos-quality",
+    "whatwg-encoding"
+  ],
+  "identities": {
+    "engineSha256": "a4664d571d209ed0c90b9663b7b8b8ee7b958f27aadb32746902cba28d1f7cfc",
+    "fixtureSha256": "d9fed155c6536ca6ee6c60c5209cf7499d9ad7cc4b8d9c5cfe9461efa1cf91f2",
+    "rfcFixtureSha256": "6f6f74846f47fd99866d6c8b024cf1a8af33f4d92a015ae0af2e09a539111765",
+    "fixtureIndexSha256": "cb85d2f639359880fde99f8bec5f89e7b73565ae2ae0adfb2a045e848e907543",
+    "oracleRegistrySha256": "020191228b8349cf9822be32d124c042cafbd39aeff6349aa8c3a1b91e3e041c"
+  }
+}

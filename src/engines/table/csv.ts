@@ -22,12 +22,44 @@ export interface CsvCleanResult {
   output: string;
   rows: number;
   columns: number;
+  headers: string[];
   delimiter: string;
   warnings: CsvWarning[];
   changes: {
     strippedBom: boolean;
     normalizedRecordBreaks: number;
   };
+}
+
+export interface CsvTable {
+  header: string[];
+  rows: string[][];
+  delimiter: string;
+  warnings: CsvWarning[];
+}
+
+export interface CsvDedupeResult {
+  output: string;
+  table: CsvTable;
+  inputRows: number;
+  outputRows: number;
+  removedRows: number;
+  mode: "whole-row" | "key-columns";
+  keyColumns: number[];
+  emptyKeyPolicy: "keep";
+}
+
+export interface CsvColumnMapEntry {
+  sourceIndex: number;
+  outputName: string;
+}
+
+export interface CsvColumnMapResult {
+  output: string;
+  table: CsvTable;
+  mapping: CsvColumnMapEntry[];
+  droppedColumns: Array<{ index: number; name: string }>;
+  filledMissingCells: number;
 }
 
 export class CsvCleanerError extends Error {
@@ -114,6 +146,86 @@ export function parseCsvText(text: string): ParsedCsv {
   return { rows, delimiter: result.meta.delimiter || ",", warnings };
 }
 
+export function parseCsvTable(text: string): CsvTable {
+  const parsed = parseCsvText(text);
+  const [header = [], ...rows] = parsed.rows;
+  return { header: [...header], rows: rows.map((row) => [...row]), delimiter: parsed.delimiter, warnings: parsed.warnings };
+}
+
+export function serializeCsvTable(table: Pick<CsvTable, "header" | "rows" | "delimiter">): string {
+  return Papa.unparse([table.header, ...table.rows], { delimiter: table.delimiter, newline: "\n" });
+}
+
+function validateColumnIndexes(indexes: readonly number[], columnCount: number, code: string): number[] {
+  if (indexes.length === 0 || new Set(indexes).size !== indexes.length) throw new Error(code);
+  if (indexes.some((index) => !Number.isInteger(index) || index < 0 || index >= columnCount)) throw new Error(code);
+  return [...indexes];
+}
+
+export function dedupeCsvTable(
+  table: CsvTable,
+  options: { mode: "whole-row" | "key-columns"; keyColumns?: readonly number[]; emptyKeyPolicy?: "keep" },
+): CsvDedupeResult {
+  const keyColumns = options.mode === "key-columns"
+    ? validateColumnIndexes(options.keyColumns ?? [], table.header.length, "INVALID_KEY_COLUMNS")
+    : [];
+  const seen = new Set<string>();
+  const rows: string[][] = [];
+  for (let index = 0; index < table.rows.length; index += 1) {
+    const row = table.rows[index] ?? [];
+    const keyValues = options.mode === "whole-row" ? row : keyColumns.map((column) => row[column] ?? "");
+    const emptyKey = options.mode === "key-columns" && keyValues.every((value) => value === "");
+    const key = emptyKey ? `__empty_key_row_${index}` : JSON.stringify(keyValues);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    rows.push([...row]);
+  }
+  const outputTable: CsvTable = { ...table, header: [...table.header], rows, warnings: [...table.warnings] };
+  return {
+    output: serializeCsvTable(outputTable),
+    table: outputTable,
+    inputRows: table.rows.length,
+    outputRows: rows.length,
+    removedRows: table.rows.length - rows.length,
+    mode: options.mode,
+    keyColumns,
+    emptyKeyPolicy: "keep",
+  };
+}
+
+export function mapCsvColumns(table: CsvTable, mapping: readonly CsvColumnMapEntry[]): CsvColumnMapResult {
+  if (mapping.length === 0) throw new Error("INVALID_COLUMN_MAP");
+  const sourceIndexes = validateColumnIndexes(mapping.map((entry) => entry.sourceIndex), table.header.length, "INVALID_COLUMN_MAP");
+  const outputNames = mapping.map((entry) => entry.outputName.trim());
+  if (outputNames.some((name) => name === "") || new Set(outputNames).size !== outputNames.length) {
+    throw new Error("INVALID_OUTPUT_HEADERS");
+  }
+  let filledMissingCells = 0;
+  const rows = table.rows.map((row) => sourceIndexes.map((index) => {
+    const value = row[index];
+    if (value === undefined) {
+      filledMissingCells += 1;
+      return "";
+    }
+    return value;
+  }));
+  const selected = new Set(sourceIndexes);
+  const droppedColumns = table.header.flatMap((name, index) => selected.has(index) ? [] : [{ index, name }]);
+  const outputTable: CsvTable = {
+    header: outputNames,
+    rows,
+    delimiter: table.delimiter,
+    warnings: inspectShape([outputNames, ...rows]),
+  };
+  return {
+    output: serializeCsvTable(outputTable),
+    table: outputTable,
+    mapping: mapping.map((_entry, index) => ({ sourceIndex: sourceIndexes[index]!, outputName: outputNames[index]! })),
+    droppedColumns,
+    filledMissingCells,
+  };
+}
+
 export function normalizeRecordLineEndings(text: string): { output: string; normalized: number } {
   let output = "";
   let inQuotes = false;
@@ -154,6 +266,7 @@ export function cleanCsvText(input: string): CsvCleanResult {
     output: lineEndings.output,
     rows: after.rows.length,
     columns: after.rows[0]?.length ?? 0,
+    headers: [...(after.rows[0] ?? [])],
     delimiter: after.delimiter,
     warnings: after.warnings,
     changes: { strippedBom, normalizedRecordBreaks: lineEndings.normalized },

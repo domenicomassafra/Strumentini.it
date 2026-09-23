@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "cleanerToDedupe": {
+    "preview": "PASS",
+    "dismiss": "PASS",
+    "explicitTransfer": "PASS",
+    "targetReceivesPayload": "PASS",
+    "payloadInUrl": false,
+    "payloadPersisted": false
+  },
+  "csvDedupe": {
+    "keyboard": "PASS",
+    "mobile390": "PASS",
+    "stableOutput": "PASS"
+  },
+  "csvColumnMap": {
+    "keyboard": "PASS",
+    "mobile390": "PASS",
+    "schemaPreview": "PASS",
+    "reorderRename": "PASS"
+  },
+  "network": "same-origin GET assets only; no task content"
+}

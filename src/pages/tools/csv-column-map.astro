@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CsvColumnMapTool } from "../../components/tools/csv-column-map/CsvColumnMapTool";
+---
+<BaseLayout title="CSV Column Map / Reorder" description="Select, rename, and reorder CSV columns locally with an explicit output schema preview.">
+  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav><p class="eyebrow">Data cleanup</p><h1>CSV Column Map / Reorder</h1><p class="lede">Choose source columns by position, rename them, reorder them, and inspect the exact output schema before applying the transformation.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your CSV stays local; dropped columns and blank-filled ragged cells are disclosed before/after output.</span></div></header><CsvColumnMapTool client:load /><section class="method-card"><h2>Mapping contract</h2><ul><li>Input columns are identified by zero-ambiguity source position even when header names repeat.</li><li>Output header names must be non-empty and unique.</li><li>Dropping a source column is explicit and visible in the schema preview.</li><li>If a ragged row lacks a selected source cell, the output cell is blank and the filled-cell count is reported.</li></ul></section></article>
+  <style is:global>
+    .tool-form-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+    .file-note { color: var(--muted); font-size: .88rem; }
+    .column-map-list { display: grid; gap: 10px; margin: 16px 0; }
+    .column-map-row { display: grid; grid-template-columns: minmax(140px,.7fr) minmax(180px,1fr) auto; gap: 10px; align-items: end; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+    .column-source { align-self: center; overflow-wrap: anywhere; }
+    .compact-field { margin: 0; }
+    .column-actions { display: flex; gap: 6px; }
+    .schema-preview { overflow-wrap: anywhere; }
+    .csv-preview { max-height: 280px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--canvas); padding: 12px; border-radius: 8px; }
+    .tool-submit { border: 0; padding: 10px 15px; border-radius: 8px; background: var(--action); color: var(--action-ink); font-weight: 700; }
+    @media (max-width: 760px) { .column-map-row { grid-template-columns: 1fr; } .column-actions button { min-height: 44px; } }
+  </style>
+</BaseLayout>

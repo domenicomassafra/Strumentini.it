@@ -7,6 +7,32 @@ export interface ProfileFieldDeclaration {
   sensitive?: boolean;
 }
 
+export type HandoffDescriptorType =
+  | "text"
+  | "lines"
+  | "number"
+  | "date-time"
+  | "url"
+  | "table"
+  | "structured"
+  | "file"
+  | "image"
+  | "bytes"
+  | "none";
+
+export interface HandoffDescriptorDeclaration {
+  type: HandoffDescriptorType;
+  format?: string;
+  maxBytes?: number;
+  requiresUniqueHeaders?: boolean;
+  acceptsRaggedRows?: boolean;
+}
+
+export interface HandoffDeclaration {
+  accepts?: readonly HandoffDescriptorDeclaration[];
+  emits?: readonly HandoffDescriptorDeclaration[];
+}
+
 export interface ToolManifest {
   id: string;
   route: string;
@@ -23,6 +49,7 @@ export interface ToolManifest {
     network: "forbidden" | "reference-only" | "required";
   };
   profileFields: readonly ProfileFieldDeclaration[];
+  handoff?: HandoffDeclaration;
   gold: {
     maintenanceClass: MaintenanceClass;
     oracleEntryId: string;

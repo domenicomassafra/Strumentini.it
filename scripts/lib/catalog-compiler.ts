@@ -7,6 +7,19 @@ const profileFieldSchema = z.object({
   sensitive: z.boolean().optional(),
 });
 
+const handoffDescriptorSchema = z.object({
+  type: z.enum(["text", "lines", "number", "date-time", "url", "table", "structured", "file", "image", "bytes", "none"]),
+  format: z.string().min(1).optional(),
+  maxBytes: z.number().int().positive().optional(),
+  requiresUniqueHeaders: z.boolean().optional(),
+  acceptsRaggedRows: z.boolean().optional(),
+});
+
+const handoffSchema = z.object({
+  accepts: z.array(handoffDescriptorSchema).readonly().optional(),
+  emits: z.array(handoffDescriptorSchema).readonly().optional(),
+});
+
 const manifestSchema = z.object({
   id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/u),
   route: z.string().regex(/^\/tools\/[a-z0-9]+(?:-[a-z0-9]+)*$/u),
@@ -23,6 +36,7 @@ const manifestSchema = z.object({
     network: z.enum(["forbidden", "reference-only", "required"]),
   }),
   profileFields: z.array(profileFieldSchema).readonly(),
+  handoff: handoffSchema.optional(),
   gold: z.object({
     maintenanceClass: z.enum(["E", "D", "R", "H", "S"]),
     oracleEntryId: z.string().min(1),
@@ -67,6 +81,15 @@ export function compileCatalog(rawManifests: readonly unknown[]): CatalogArtifac
     if (seenRoutes.has(manifest.route)) issues.push(`${manifest.route}: duplicate tool route`);
     seenIds.add(manifest.id);
     seenRoutes.add(manifest.route);
+    for (const direction of ["accepts", "emits"] as const) {
+      const descriptors = manifest.handoff?.[direction] ?? [];
+      const seenDescriptors = new Set<string>();
+      for (const descriptor of descriptors) {
+        const key = `${descriptor.type}:${descriptor.format ?? "*"}`;
+        if (seenDescriptors.has(key)) issues.push(`${manifest.id}: duplicate handoff ${direction} descriptor ${key}`);
+        seenDescriptors.add(key);
+      }
+    }
   }
 
   if (issues.length > 0) throw new CatalogCompileError(issues);
