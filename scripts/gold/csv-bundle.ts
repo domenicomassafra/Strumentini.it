@@ -25,7 +25,7 @@ await writeFile(
     schemaVersion: 1,
     status: "PASS",
     papaChunks,
-    csvRouteReferencesToolUi: /CsvCleanerTool\.[^\"']+\.js/u.test(csvHtml),
+    csvRouteReferencesToolUi: /CsvCleanerTool\.[^"']+\.js/u.test(csvHtml),
     unrelatedBusinessDayReferencesPapa: false,
   }, null, 2)}\n`,
 );
