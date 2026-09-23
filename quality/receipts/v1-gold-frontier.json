@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "expectedToolCount": 15,
+  "catalogToolCount": 15,
+  "goldCount": 14,
+  "blockedCount": 1,
+  "readyForTicket11": false,
+  "tools": [
+    {
+      "toolId": "business-day",
+      "name": "Business Day Calculator",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/business-day.gold.json"
+    },
+    {
+      "toolId": "campaign-name",
+      "name": "Campaign Name Builder",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/campaign-url/campaign-name.gold.json"
+    },
+    {
+      "toolId": "csv-cleaner",
+      "name": "CSV Cleaner",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/csv-cleaner/gold.json"
+    },
+    {
+      "toolId": "csv-column-map",
+      "name": "CSV Column Map / Reorder",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/table-ops/csv-column-map.gold.json"
+    },
+    {
+      "toolId": "csv-dedupe",
+      "name": "CSV Dedupe",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/table-ops/csv-dedupe.gold.json"
+    },
+    {
+      "toolId": "doi-isbn-normalizer",
+      "name": "DOI / ISBN Normalizer",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/text-research/doi-isbn-normalizer.gold.json"
+    },
+    {
+      "toolId": "file-hash",
+      "name": "File Hash / Checksum Verifier",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/file-hash/gold.json"
+    },
+    {
+      "toolId": "image-resize",
+      "name": "Image Resize",
+      "status": "PARTIAL",
+      "gold": false,
+      "receipt": "quality/receipts/image-resize/certification.json"
+    },
+    {
+      "toolId": "list-compare",
+      "name": "List Compare & Dedupe",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/text-research/list-compare.gold.json"
+    },
+    {
+      "toolId": "margin-markup",
+      "name": "Margin / Markup Calculator",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/client-time-math/margin-markup.gold.json"
+    },
+    {
+      "toolId": "rate-converter",
+      "name": "Rate Converter",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/client-time-math/rate-converter.gold.json"
+    },
+    {
+      "toolId": "text-diff",
+      "name": "Text Diff",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/text-research/text-diff.gold.json"
+    },
+    {
+      "toolId": "timezone-overlap",
+      "name": "Timezone Overlap",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/client-time-math/timezone-overlap.gold.json"
+    },
+    {
+      "toolId": "tracking-cleaner",
+      "name": "Tracking Parameter Cleaner",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/campaign-url/tracking-cleaner.gold.json"
+    },
+    {
+      "toolId": "utm-builder",
+      "name": "UTM Builder",
+      "status": "GOLD",
+      "gold": true,
+      "receipt": "quality/receipts/campaign-url/utm-builder.gold.json"
+    }
+  ],
+  "blockers": [
+    {
+      "toolId": "image-resize",
+      "status": "PARTIAL",
+      "receipt": "quality/receipts/image-resize/certification.json"
+    }
+  ]
+}

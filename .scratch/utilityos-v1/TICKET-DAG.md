@@ -58,6 +58,8 @@ Ticket 09 — Image Resize is implementation-complete but remains **PARTIAL / WA
 
 There is currently **no unblocked software implementation ticket**. Ticket 11 is blocked only by the physical-Gold completion of Ticket 09. Tickets 12 and 13 remain transitively blocked behind Ticket 11.
 
+Machine gate: `npm run frontier:v1:require-gold` must PASS before Ticket 11 enters implementation. The non-strict `npm run frontier:v1` command records the current state without pretending a blocker is success.
+
 External acceptance frontier:
 
 - **Ticket 09 — Image Resize:** real iOS Safari and Android Chrome physical-device memory threshold + Files/Photos acceptance. Automated/browser implementation remains complete but PARTIAL until both physical receipts pass.

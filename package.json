@@ -15,6 +15,8 @@
     "acceptance:image-resize:physical:serve": "npm run build && tsx scripts/generate-image-resize-physical-fixtures.ts && node scripts/serve-image-resize-physical.mjs",
     "acceptance:image-resize:physical:record": "tsx scripts/record-image-resize-physical.ts",
     "gold:image-resize": "tsx scripts/gold/image-resize-certify.ts",
+    "frontier:v1": "tsx scripts/check-v1-gold-frontier.ts",
+    "frontier:v1:require-gold": "tsx scripts/check-v1-gold-frontier.ts --require-all-gold",
     "deploy:check": "wrangler deploy --dry-run --outdir .wrangler-dry-run",
     "verify:ticket-01": "npm test && npm run check && npm run build && npm run catalog:check && npm run gold:business-day && npm run gold:sabotage && npm run acceptance:browser && npm run deploy:check"
   },

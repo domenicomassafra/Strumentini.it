@@ -8,7 +8,7 @@
 
 **Blocked by:** 02 — Local Workbench, Work Profile, and portable configuration; 03 — Deterministic Search, Command Palette, and compact Library; 04 — Client time and business-math Gold family; 05 — Campaign URL and naming Gold family; 07 — CSV Dedupe, Column Map, and typed handoff; 08 — Text/list and research-reference Gold family; 09 — Native-first Image Resize Gold vertical; 10 — File Hash / Checksum Verifier Gold vertical.
 
-**Status:** ready-for-agent
+**Status:** blocked-wait-for-09-physical
 
 - [ ] Promise screen offers Set up my tools and Skip/Browse Library; no account gate or feature-tour carousel is introduced.
 - [ ] Setup has at most four substantive stages: work context, recurring jobs, safe defaults, starter-set review.
@@ -21,3 +21,9 @@
 - [ ] Mobile onboarding preserves task hierarchy and all selection/accept actions are keyboard/touch accessible.
 
 **Verification:** Run deterministic recommendation fixtures for four+ contexts, an exact pairwise symmetric-difference >=4 assertion, a guard that rejects non-Gold recommendations/unresolved pack IDs, browser acceptance for skip/setup/review/edit/install/remove, Work Profile cross-tool proof, and 390 px/keyboard accessibility acceptance.
+
+## Readiness gate
+
+Ticket 11 must not start while any validation-set tool is non-Gold. `npm run frontier:v1` writes the current 15-tool certification frontier to `quality/receipts/v1-gold-frontier.json`; `npm run frontier:v1:require-gold` is the fail-closed implementation gate and must exit successfully before this ticket changes to in-progress.
+
+As of 2026-09-23, 14/15 tools are Gold. Image Resize remains PARTIAL solely because the required real iOS Safari and Android Chrome boundary/Files acceptance receipts are absent. No onboarding/pack implementation should silently substitute that PARTIAL tool or advertise a 15-Gold set early.
