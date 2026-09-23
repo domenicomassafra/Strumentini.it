@@ -33,7 +33,13 @@
   "physicalAcceptance": {
     "iosSafari": "MISSING",
     "androidChrome": "MISSING",
-    "requirement": "Actual physical/remote iOS Safari and Android Chrome memory thresholds before Gold publication"
+    "requirement": "Actual physical/remote iOS Safari and Android Chrome memory thresholds before Gold publication",
+    "iosIssues": [
+      "receipt missing"
+    ],
+    "androidIssues": [
+      "receipt missing"
+    ]
   },
   "issues": [],
   "identities": {

@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { imageResizeManifest } from "../../src/tools/image-resize/manifest";
+import { validatePhysicalImageReceipt } from "../lib/image-resize-physical";
 
 const root = resolve(import.meta.dirname, "../..");
 
@@ -38,21 +39,6 @@ async function readJsonIfExists(path: string): Promise<unknown | null> {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
-}
-
-function validPhysicalReceipt(value: unknown): boolean {
-  if (!isRecord(value)) return false;
-  return (
-    value.status === "PASS" &&
-    typeof value.device === "string" &&
-    value.device.length > 0 &&
-    typeof value.browser === "string" &&
-    value.browser.length > 0 &&
-    typeof value.maxSourcePixelsTested === "number" &&
-    value.maxSourcePixelsTested > 0 &&
-    typeof value.maxEstimatedDecodedBytesTested === "number" &&
-    value.maxEstimatedDecodedBytesTested > 0
-  );
 }
 
 function validBrowserReceipt(value: unknown): boolean {
@@ -103,8 +89,10 @@ const [iosReceipt, androidReceipt, chromeReceipt, edgeReceipt, bundleReceipt] = 
   readJsonIfExists(edgePath),
   readJsonIfExists(bundlePath),
 ]);
-const iosPass = validPhysicalReceipt(iosReceipt);
-const androidPass = validPhysicalReceipt(androidReceipt);
+const iosIssues = iosReceipt === null ? ["receipt missing"] : validatePhysicalImageReceipt(iosReceipt, "ios-safari");
+const androidIssues = androidReceipt === null ? ["receipt missing"] : validatePhysicalImageReceipt(androidReceipt, "android-chrome");
+const iosPass = iosIssues.length === 0;
+const androidPass = androidIssues.length === 0;
 const physicalAcceptanceComplete = iosPass && androidPass;
 const desktopAutomationComplete =
   validBrowserReceipt(chromeReceipt) &&
@@ -145,6 +133,8 @@ const receipt = {
     iosSafari: iosPass ? "PASS" : iosReceipt === null ? "MISSING" : "INVALID",
     androidChrome: androidPass ? "PASS" : androidReceipt === null ? "MISSING" : "INVALID",
     requirement: "Actual physical/remote iOS Safari and Android Chrome memory thresholds before Gold publication",
+    iosIssues: iosPass ? [] : iosIssues,
+    androidIssues: androidPass ? [] : androidIssues,
   },
   issues,
   identities: {

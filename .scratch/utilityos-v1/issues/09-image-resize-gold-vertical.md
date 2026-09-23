@@ -22,3 +22,14 @@
 **Verification:** Run synthetic image fixtures with independent decoded-dimension/signature checks, corrupt/unsupported/large-image failure cases, cancellation/worker failure injection where applicable, representative mobile-memory acceptance, LOCAL network assertion, bundle-lazy-load inspection, and Gold certification.
 
 Implementation receipts live under `quality/receipts/image-resize/`. Automated certification is intentionally PARTIAL until valid physical-device receipts with measured thresholds exist for iOS Safari and Android Chrome.
+
+## Physical acceptance recorder
+
+The physical gate is executable but intentionally cannot self-certify without an observed device run:
+
+1. `npm run acceptance:image-resize:physical:serve` builds and exposes `/tools/image-resize/` on the local LAN.
+2. On the physical device, choose a real image through Files/Photos, complete a resize, open the downloaded result, confirm no crash/reload and usable mobile layout, and note the source/output dimensions shown by the tool.
+3. Optionally validate the command first by appending `--dry-run` (no receipt is written). Then record the observation with `npm run acceptance:image-resize:physical:record -- --target ios-safari|android-chrome --device "..." --browser "..." --source WIDTHxHEIGHT --output WIDTHxHEIGHT --files-photos-pass --resize-pass --download-pass --no-crash-pass --layout-pass`.
+4. Re-run `npm run gold:image-resize`. Gold remains impossible until both validated target receipts exist.
+
+The recorder computes source pixels and the current engine's estimated decoded working set from the observed dimensions; it rejects browser/target mismatches, dimensions beyond current policy, missing explicit PASS observations, and internally inconsistent receipts. It does not synthesize physical evidence.
