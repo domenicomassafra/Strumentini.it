@@ -88,3 +88,17 @@ Current message to test:
 **Your everyday work tools, already set up for you.**
 
 Read research/competitive-brand-gtm-2026-09-23.md, docs/05-brand-positioning.md and docs/06-go-to-market.md before further product work.
+
+## Scale / free-model update
+
+The preferred business hypothesis is now deliberately compatible with being fully free, potentially open source, and useful primarily as a brand/distribution asset.
+
+Advertising is optional and should not shape the product early. If tested later, prefer public discovery/documentation surfaces; keep the personal workspace clean and never place ads adjacent to critical tool controls.
+
+The catalog may grow to hundreds of tools, but only through a Tool Factory with a single quality contract. Only Gold-certified tools should count toward public catalog-size claims.
+
+Read:
+
+- research/free-scale-monetization-stress-test-2026-09-23.md
+- research/tool-catalog-200-candidate-map-2026-09-23.md
+- docs/07-tool-factory-quality-standard.md

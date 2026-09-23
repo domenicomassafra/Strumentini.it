@@ -11,6 +11,9 @@ Current stage: product research and validation.
 - decide anonymous/local mode plus optional sync model;
 - define smallest credible starter pack.
 - run a dedicated public-brand naming sprint; UtilityOS is codename-only and externally blocked.
+- define and validate the Tool Factory quality contract before scaling catalog implementation.
+- classify the 200-candidate catalog by demand, duplication, maintenance class and test oracle.
+- keep full-free as the default business hypothesis; test advertising only after meaningful traffic exists.
 
 
 ## P1 — interaction prototype
@@ -36,3 +39,5 @@ Only after interaction model survives testing:
 ## Stop rules
 
 Pause or narrow if users prefer bookmarks/search over a persistent workspace, onboarding does not beat manual category browsing, shared defaults save negligible time, a direct incumbent already solves the combined problem, maintenance grows disproportionately, or server-side/LLM use becomes the normal path.
+
+Do not scale raw tool count if Gold-quality percentage falls, regressions grow, initial bundle size grows with catalog size, or new pages exist mainly as keyword variants.
