@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "input": "0-306-40615-2",
+      "kind": "ISBN-10",
+      "digits": "0306406152",
+      "valid": true,
+      "isbn13": "9780306406157"
+    },
+    {
+      "input": "978-0-306-40615-7",
+      "kind": "ISBN-13",
+      "digits": "9780306406157",
+      "valid": true
+    },
+    {
+      "input": "9780306406158",
+      "kind": "ISBN-13",
+      "valid": false,
+      "reason": "check digit mismatch"
+    }
+  ]
+}

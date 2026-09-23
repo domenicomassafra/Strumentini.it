@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "kind": "DATE",
+      "value": "19970714",
+      "semantic": "1997-07-14"
+    },
+    {
+      "kind": "DATE-TIME",
+      "value": "19980119T070000Z",
+      "semantic": "1998-01-19T07:00:00Z"
+    },
+    {
+      "kind": "folding",
+      "physical": "DESCRIPTION:This is a lo\r\n ng description\r\n",
+      "unfolded": "DESCRIPTION:This is a long description\r\n"
+    }
+  ],
+  "invalid": [
+    {
+      "value": "1997-07-14",
+      "context": "DATE",
+      "reason": "basic DATE form has no separators"
+    },
+    {
+      "value": "19980119T070000+0100",
+      "context": "DATE-TIME",
+      "reason": "numeric UTC offset form is forbidden by RFC 5545 DATE-TIME"
+    }
+  ]
+}

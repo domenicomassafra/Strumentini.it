@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "form": "NFC",
+      "input": "é",
+      "expected": "é"
+    },
+    {
+      "form": "NFD",
+      "input": "é",
+      "expected": "é"
+    },
+    {
+      "form": "NFKC",
+      "input": "①",
+      "expected": "1"
+    },
+    {
+      "form": "NFD",
+      "input": "q̣̇",
+      "expected": "q̣̇"
+    },
+    {
+      "form": "NFC",
+      "input": "Å",
+      "expected": "Å"
+    }
+  ],
+  "properties": [
+    "normalization is idempotent for a fixed form",
+    "canonically equivalent inputs normalize identically under the appropriate canonical form"
+  ]
+}

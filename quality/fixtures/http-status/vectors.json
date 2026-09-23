@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "status": 200,
+      "class": "successful",
+      "reason_hint": "OK"
+    },
+    {
+      "status": 301,
+      "class": "redirection",
+      "reason_hint": "Moved Permanently"
+    },
+    {
+      "status": 404,
+      "class": "client-error",
+      "reason_hint": "Not Found"
+    },
+    {
+      "status": 500,
+      "class": "server-error",
+      "reason_hint": "Internal Server Error"
+    }
+  ],
+  "policy": "Reason phrases are display hints, not protocol-required semantics."
+}

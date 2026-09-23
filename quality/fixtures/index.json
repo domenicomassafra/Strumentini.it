@@ -1,0 +1,1006 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-23",
+  "family_count": 44,
+  "families": [
+    {
+      "id": "unicode-normalization",
+      "candidate_families": [
+        "Unicode normalizer"
+      ],
+      "path": "quality/fixtures/unicode-normalization/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "unicode-uax15"
+      ],
+      "coverage": [
+        "NFC/NFD/NFKC",
+        "combining-mark order",
+        "idempotence"
+      ]
+    },
+    {
+      "id": "invisible-characters",
+      "candidate_families": [
+        "Invisible-character detector"
+      ],
+      "path": "quality/fixtures/invisible-characters/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "unicode-uts39",
+        "unicode-uax15"
+      ],
+      "coverage": [
+        "format controls",
+        "joiner",
+        "BOM-like character",
+        "non-mutating detection"
+      ]
+    },
+    {
+      "id": "whitespace-normalization",
+      "candidate_families": [
+        "Whitespace normalizer"
+      ],
+      "path": "quality/fixtures/whitespace-normalization/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "unicode-uax15"
+      ],
+      "coverage": [
+        "CRLF/LF",
+        "tabs/spaces",
+        "empty",
+        "idempotence"
+      ]
+    },
+    {
+      "id": "word-character-line-count",
+      "candidate_families": [
+        "Word/character/line counter"
+      ],
+      "path": "quality/fixtures/word-character-line-count/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "unicode-uax29",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "empty",
+        "CRLF",
+        "word count",
+        "code-point/grapheme distinction"
+      ]
+    },
+    {
+      "id": "list-set-ops",
+      "candidate_families": [
+        "Line deduplicator",
+        "List intersection",
+        "List difference"
+      ],
+      "path": "quality/fixtures/list-set-ops/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "utilityos-lane05"
+      ],
+      "coverage": [
+        "duplicates",
+        "empty",
+        "algebraic properties",
+        "stable order"
+      ]
+    },
+    {
+      "id": "line-sorting",
+      "candidate_families": [
+        "Line sorter"
+      ],
+      "path": "quality/fixtures/line-sorting/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "unicode-uax15"
+      ],
+      "coverage": [
+        "explicit comparator",
+        "normalization distinction",
+        "empty"
+      ]
+    },
+    {
+      "id": "text-diff",
+      "candidate_families": [
+        "Text diff",
+        "File-list diff"
+      ],
+      "path": "quality/fixtures/text-diff/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "utilityos-lane05",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "replacement",
+        "empty-to-content",
+        "reconstruction invariant"
+      ]
+    },
+    {
+      "id": "markdown-xss",
+      "candidate_families": [
+        "Markdown preview"
+      ],
+      "path": "quality/fixtures/markdown-xss/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "commonmark",
+        "owasp-xss",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "normal Markdown",
+        "raw HTML",
+        "event handler",
+        "javascript URL",
+        "SVG active content"
+      ]
+    },
+    {
+      "id": "csv-rfc4180",
+      "candidate_families": [
+        "CSV viewer",
+        "CSV cleaner",
+        "CSV delimiter detector",
+        "CSV deduplicator",
+        "CSV column selector",
+        "CSV filter",
+        "CSV sort",
+        "CSV to JSON",
+        "JSON to CSV"
+      ],
+      "path": "quality/fixtures/csv-rfc4180/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc4180"
+      ],
+      "coverage": [
+        "quoted delimiter",
+        "escaped quote",
+        "quoted newline",
+        "empty fields",
+        "malformed quote",
+        "duplicate header"
+      ]
+    },
+    {
+      "id": "csv-cleaning",
+      "candidate_families": [
+        "CSV cleaner",
+        "CSV delimiter/encoding detector"
+      ],
+      "path": "quality/fixtures/csv-cleaning/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc4180",
+        "whatwg-encoding",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "BOM",
+        "semicolon/tab",
+        "ragged row",
+        "cleaning policy distinction"
+      ]
+    },
+    {
+      "id": "json-grammar",
+      "candidate_families": [
+        "JSON formatter/validator"
+      ],
+      "path": "quality/fixtures/json-grammar/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc8259"
+      ],
+      "coverage": [
+        "valid scalars",
+        "invalid literal",
+        "leading zero",
+        "trailing comma",
+        "duplicate member interoperability"
+      ]
+    },
+    {
+      "id": "yaml-core",
+      "candidate_families": [
+        "YAML formatter/validator",
+        "JSON/YAML converter"
+      ],
+      "path": "quality/fixtures/yaml-core/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "yaml12",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "scalars",
+        "sequence",
+        "anchor/alias",
+        "tab indentation",
+        "resource bounds"
+      ]
+    },
+    {
+      "id": "base64-rfc4648",
+      "candidate_families": [
+        "Base64 encode/decode"
+      ],
+      "path": "quality/fixtures/base64-rfc4648/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc4648"
+      ],
+      "coverage": [
+        "empty",
+        "padding variants",
+        "invalid alphabet"
+      ]
+    },
+    {
+      "id": "sha2-known-answers",
+      "candidate_families": [
+        "Hash generator",
+        "File hash",
+        "Checksum verifier"
+      ],
+      "path": "quality/fixtures/sha2-known-answers/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "nist-fips180-4",
+        "openssl-cli"
+      ],
+      "coverage": [
+        "empty",
+        "abc known answer",
+        "SHA-256",
+        "SHA-512",
+        "chunk independence"
+      ]
+    },
+    {
+      "id": "uuid-rfc9562",
+      "candidate_families": [
+        "UUID generator"
+      ],
+      "path": "quality/fixtures/uuid-rfc9562/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc9562"
+      ],
+      "coverage": [
+        "version bits",
+        "variant bits",
+        "nil UUID"
+      ]
+    },
+    {
+      "id": "url-percent-encoding",
+      "candidate_families": [
+        "URL encode/decode"
+      ],
+      "path": "quality/fixtures/url-percent-encoding/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "whatwg-url"
+      ],
+      "coverage": [
+        "UTF-8 encoding",
+        "uppercase hex",
+        "space",
+        "malformed percent sequence"
+      ]
+    },
+    {
+      "id": "query-params",
+      "candidate_families": [
+        "Query-string editor"
+      ],
+      "path": "quality/fixtures/query-params/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "whatwg-url"
+      ],
+      "coverage": [
+        "repeated keys",
+        "blank value",
+        "space plus",
+        "literal plus"
+      ]
+    },
+    {
+      "id": "utm-roundtrip",
+      "candidate_families": [
+        "UTM builder",
+        "UTM parser",
+        "Tracking-parameter cleaner"
+      ],
+      "path": "quality/fixtures/utm-roundtrip/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "whatwg-url",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "builder/parser round-trip",
+        "duplicates",
+        "tracking removal",
+        "fragment"
+      ]
+    },
+    {
+      "id": "date-arithmetic",
+      "candidate_families": [
+        "Unix timestamp converter",
+        "Date difference",
+        "Add/subtract days",
+        "Duration calculator"
+      ],
+      "path": "quality/fixtures/date-arithmetic/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc3339",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "epoch",
+        "negative timestamp",
+        "leap day",
+        "month/year boundary",
+        "difference"
+      ]
+    },
+    {
+      "id": "timezone-dst",
+      "candidate_families": [
+        "Timezone converter",
+        "Multi-timezone overlap",
+        "Meeting-time planner"
+      ],
+      "path": "quality/fixtures/timezone-dst/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "iana-tzdb",
+        "rfc3339"
+      ],
+      "coverage": [
+        "winter/summer",
+        "DST gap",
+        "DST overlap",
+        "instant preservation"
+      ]
+    },
+    {
+      "id": "business-days",
+      "candidate_families": [
+        "Business-day calculator"
+      ],
+      "path": "quality/fixtures/business-days/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "utilityos-lane05"
+      ],
+      "coverage": [
+        "weekend crossing",
+        "inclusivity",
+        "no hidden holiday source"
+      ]
+    },
+    {
+      "id": "decimal-hours",
+      "candidate_families": [
+        "Decimal-hours converter",
+        "Timesheet totaler"
+      ],
+      "path": "quality/fixtures/decimal-hours/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy"
+      ],
+      "coverage": [
+        "quarter hour",
+        "non-quarter decimal",
+        "exact decimal"
+      ]
+    },
+    {
+      "id": "business-math",
+      "candidate_families": [
+        "Margin calculator",
+        "Markup calculator",
+        "Project profitability calculator",
+        "Hour/day/project rate converter",
+        "Effective hourly rate",
+        "Break-even calculator"
+      ],
+      "path": "quality/fixtures/business-math/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "utilityos-lane05"
+      ],
+      "coverage": [
+        "margin/markup distinction",
+        "zero denominator",
+        "rates",
+        "profitability",
+        "break-even"
+      ]
+    },
+    {
+      "id": "marketing-math",
+      "candidate_families": [
+        "ROAS calculator",
+        "CPA/CPC/CPM calculator",
+        "Conversion-rate scenario calculator"
+      ],
+      "path": "quality/fixtures/marketing-math/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy"
+      ],
+      "coverage": [
+        "ROAS",
+        "CPA",
+        "CPC",
+        "CPM",
+        "conversion rate",
+        "zero denominator"
+      ]
+    },
+    {
+      "id": "filename-sanitization",
+      "candidate_families": [
+        "Filename sanitizer",
+        "Batch rename preview"
+      ],
+      "path": "quality/fixtures/filename-sanitization/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "unicode-uax15"
+      ],
+      "coverage": [
+        "path separators",
+        "NUL",
+        "Windows reserved",
+        "trailing dot/space",
+        "Unicode"
+      ]
+    },
+    {
+      "id": "mime-file-signatures",
+      "candidate_families": [
+        "MIME type lookup",
+        "File signature/type detector"
+      ],
+      "path": "quality/fixtures/mime-file-signatures/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "iana-media-types",
+        "w3c-png3",
+        "google-webp",
+        "iso-pdf2",
+        "pkware-appnote"
+      ],
+      "coverage": [
+        "PNG/JPEG/WebP/PDF/ZIP/GIF signatures",
+        "signature safety boundary"
+      ]
+    },
+    {
+      "id": "image-metadata",
+      "candidate_families": [
+        "Image resize",
+        "Image format conversion",
+        "Image compression",
+        "Image metadata viewer",
+        "Image dimensions batch inspector"
+      ],
+      "path": "quality/fixtures/image-metadata/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Locally generated synthetic pixels and metadata; no third-party copyrighted sample."
+      },
+      "truth_sources": [
+        "w3c-png3"
+      ],
+      "coverage": [
+        "1x1",
+        "2x3",
+        "RGB/RGBA",
+        "text metadata",
+        "truncated input"
+      ]
+    },
+    {
+      "id": "isbn",
+      "candidate_families": [
+        "ISBN validator/converter"
+      ],
+      "path": "quality/fixtures/isbn/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "isbn-manual"
+      ],
+      "coverage": [
+        "ISBN-10",
+        "ISBN-13",
+        "bad check digit",
+        "10-to-13 conversion"
+      ]
+    },
+    {
+      "id": "doi",
+      "candidate_families": [
+        "DOI normalizer",
+        "DOI link builder"
+      ],
+      "path": "quality/fixtures/doi/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "doi-handbook",
+        "whatwg-url"
+      ],
+      "coverage": [
+        "plain",
+        "doi prefix",
+        "resolver URL",
+        "percent encoding"
+      ]
+    },
+    {
+      "id": "bibtex",
+      "candidate_families": [
+        "BibTeX formatter",
+        "BibTeX deduplicator",
+        "Citation key generator"
+      ],
+      "path": "quality/fixtures/bibtex/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Synthetic bibliographic records; no xampl.bib or external citation corpus copied."
+      },
+      "truth_sources": [
+        "bibtex-ctan"
+      ],
+      "coverage": [
+        "brace/quoted values",
+        "entry type/key",
+        "lossless default"
+      ]
+    },
+    {
+      "id": "ris",
+      "candidate_families": [
+        "RIS/BibTeX converter"
+      ],
+      "path": "quality/fixtures/ris/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Synthetic tagged records; no external RIS sample corpus copied."
+      },
+      "truth_sources": [
+        "ris-policy"
+      ],
+      "coverage": [
+        "repeated tags",
+        "CRLF/LF",
+        "unknown-tag preservation"
+      ]
+    },
+    {
+      "id": "ics",
+      "candidate_families": [
+        "ICS event builder",
+        "ICS viewer"
+      ],
+      "path": "quality/fixtures/ics/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc5545"
+      ],
+      "coverage": [
+        "DATE",
+        "UTC DATE-TIME",
+        "folding",
+        "invalid offset form"
+      ]
+    },
+    {
+      "id": "html-entities",
+      "candidate_families": [
+        "HTML entity encode/decode"
+      ],
+      "path": "quality/fixtures/html-entities/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "whatwg-html",
+        "owasp-xss"
+      ],
+      "coverage": [
+        "named reference",
+        "numeric reference",
+        "encoding ampersand",
+        "sanitization boundary"
+      ]
+    },
+    {
+      "id": "url-security",
+      "candidate_families": [
+        "Open Graph preview",
+        "Redirect-chain inspector",
+        "Canonical URL helper"
+      ],
+      "path": "quality/fixtures/url-security/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "whatwg-url",
+        "owasp-xss"
+      ],
+      "coverage": [
+        "dangerous schemes",
+        "credentials",
+        "invalid host percent encoding",
+        "non-execution"
+      ]
+    },
+    {
+      "id": "qr-contract",
+      "candidate_families": [
+        "QR generator",
+        "QR reader"
+      ],
+      "path": "quality/fixtures/qr-contract/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "iso-qr-18004",
+        "utilityos-lane05"
+      ],
+      "coverage": [
+        "ASCII",
+        "URL",
+        "Unicode",
+        "independent decoder"
+      ]
+    },
+    {
+      "id": "file-hash",
+      "candidate_families": [
+        "File hash",
+        "Batch checksum manifest",
+        "Checksum verifier"
+      ],
+      "path": "quality/fixtures/file-hash/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "nist-fips180-4",
+        "openssl-cli"
+      ],
+      "coverage": [
+        "known bytes",
+        "known digest",
+        "chunk independence"
+      ]
+    },
+    {
+      "id": "json-csv-conversion",
+      "candidate_families": [
+        "CSV to JSON",
+        "JSON to CSV"
+      ],
+      "path": "quality/fixtures/json-csv-conversion/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc4180",
+        "rfc8259",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "quoted comma",
+        "header order",
+        "semantic round trip"
+      ]
+    },
+    {
+      "id": "zip-signatures",
+      "candidate_families": [
+        "ZIP contents inspector",
+        "ZIP creator",
+        "Clean ZIP creator"
+      ],
+      "path": "quality/fixtures/zip-signatures/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "pkware-appnote",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "signatures",
+        "zip-slip boundary",
+        "resource limits"
+      ]
+    },
+    {
+      "id": "pdf-signature",
+      "candidate_families": [
+        "PDF page-count verifier",
+        "PDF metadata inspector",
+        "PDF merge/split family"
+      ],
+      "path": "quality/fixtures/pdf-signature/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "iso-pdf2"
+      ],
+      "coverage": [
+        "signature positive/negative",
+        "preflight/conformance distinction"
+      ]
+    },
+    {
+      "id": "percentage-math",
+      "candidate_families": [
+        "VAT/general percentage helper",
+        "Discount impact calculator"
+      ],
+      "path": "quality/fixtures/percentage-math/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy"
+      ],
+      "coverage": [
+        "percentage of base",
+        "percent change",
+        "part/whole",
+        "zero denominator"
+      ]
+    },
+    {
+      "id": "hmac-rfc2104",
+      "candidate_families": [
+        "HMAC generator"
+      ],
+      "path": "quality/fixtures/hmac-rfc2104/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc2104",
+        "nist-fips180-4",
+        "openssl-cli"
+      ],
+      "coverage": [
+        "known answer",
+        "key/message separation"
+      ]
+    },
+    {
+      "id": "jwt-structure",
+      "candidate_families": [
+        "JWT inspector"
+      ],
+      "path": "quality/fixtures/jwt-structure/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc7519",
+        "rfc4648"
+      ],
+      "coverage": [
+        "three-part parsing",
+        "unsecured token warning",
+        "malformed token"
+      ]
+    },
+    {
+      "id": "http-status",
+      "candidate_families": [
+        "HTTP status reference"
+      ],
+      "path": "quality/fixtures/http-status/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc9110"
+      ],
+      "coverage": [
+        "status classes",
+        "common codes",
+        "display-vs-protocol distinction"
+      ]
+    },
+    {
+      "id": "robots",
+      "candidate_families": [
+        "Robots directive helper"
+      ],
+      "path": "quality/fixtures/robots/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc9309"
+      ],
+      "coverage": [
+        "user-agent group",
+        "allow/disallow",
+        "non-enforcement caveat"
+      ]
+    }
+  ]
+}

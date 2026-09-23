@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "order": "preserve first occurrence"
+  },
+  "vectors": [
+    {
+      "a": [
+        "a",
+        "b",
+        "b",
+        "c"
+      ],
+      "b": [
+        "b",
+        "d"
+      ],
+      "dedupe_a": [
+        "a",
+        "b",
+        "c"
+      ],
+      "intersection": [
+        "b"
+      ],
+      "difference_a_minus_b": [
+        "a",
+        "c"
+      ]
+    },
+    {
+      "a": [],
+      "b": [
+        "x"
+      ],
+      "intersection": [],
+      "difference_a_minus_b": []
+    }
+  ],
+  "properties": [
+    "dedupe is idempotent",
+    "intersection is commutative under set semantics",
+    "difference contains no element from the subtracting set"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "input": "a​b",
+      "code_points": [
+        "U+200B"
+      ],
+      "label": "ZERO WIDTH SPACE"
+    },
+    {
+      "input": "a‍b",
+      "code_points": [
+        "U+200D"
+      ],
+      "label": "ZERO WIDTH JOINER"
+    },
+    {
+      "input": "a⁠b",
+      "code_points": [
+        "U+2060"
+      ],
+      "label": "WORD JOINER"
+    },
+    {
+      "input": "﻿hello",
+      "code_points": [
+        "U+FEFF"
+      ],
+      "label": "ZERO WIDTH NO-BREAK SPACE"
+    }
+  ],
+  "policy": "Detection reports code point and position; it never silently mutates text."
+}

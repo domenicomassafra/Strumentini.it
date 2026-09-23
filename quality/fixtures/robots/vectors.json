@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "input": "User-agent: *\nDisallow: /private\n",
+      "groups": [
+        {
+          "user_agents": [
+            "*"
+          ],
+          "rules": [
+            [
+              "disallow",
+              "/private"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "input": "User-agent: ExampleBot\nAllow: /\n",
+      "groups": [
+        {
+          "user_agents": [
+            "ExampleBot"
+          ],
+          "rules": [
+            [
+              "allow",
+              "/"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "security": "Helper parses/constructs directives only; it does not claim enforcement by crawlers."
+}

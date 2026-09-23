@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "input": "a: 1\nb: true\n",
+      "semantic": {
+        "a": 1,
+        "b": true
+      }
+    },
+    {
+      "input": "list:\n  - a\n  - b\n",
+      "semantic": {
+        "list": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    {
+      "input": "a: &x [1, 2]\nb: *x\n",
+      "semantic": {
+        "a": [
+          1,
+          2
+        ],
+        "b": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "input": "a:\n\t- tab-indent\n",
+      "expected": "typed-parse-error-or-explicit-parser-policy"
+    }
+  ],
+  "security": [
+    "bound aliases/nesting/input size",
+    "never instantiate application objects from tags"
+  ]
+}

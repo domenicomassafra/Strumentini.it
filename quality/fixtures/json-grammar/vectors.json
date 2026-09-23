@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "input": "null",
+      "valid": true,
+      "semantic": null
+    },
+    {
+      "input": "[1,true,\"x\"]",
+      "valid": true,
+      "semantic": [
+        1,
+        true,
+        "x"
+      ]
+    },
+    {
+      "input": "{\"a\":1,\"b\":2}",
+      "valid": true,
+      "semantic": {
+        "a": 1,
+        "b": 2
+      }
+    },
+    {
+      "input": "True",
+      "valid": false
+    },
+    {
+      "input": "01",
+      "valid": false
+    },
+    {
+      "input": "{\"a\":1,}",
+      "valid": false
+    },
+    {
+      "input": "{\"a\":1,\"a\":2}",
+      "valid": true,
+      "warning": "member names SHOULD be unique; duplicate handling differs across implementations"
+    }
+  ],
+  "format_policy": {
+    "indent": 2,
+    "line_ending": "LF",
+    "duplicate_names": "warn before any lossy format"
+  }
+}

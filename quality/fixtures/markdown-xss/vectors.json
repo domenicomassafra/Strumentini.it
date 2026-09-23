@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "raw_html": "sanitize-or-escape",
+    "javascript_urls": "blocked",
+    "event_handlers": "blocked",
+    "scripts_execute": false
+  },
+  "vectors": [
+    {
+      "input": "# Hello\n\n**world**",
+      "security": "safe",
+      "expected_contains": [
+        "h1",
+        "strong"
+      ]
+    },
+    {
+      "input": "<script>alert(1)</script>",
+      "security": "unsafe-raw-html",
+      "must_not_execute": true
+    },
+    {
+      "input": "<img src=x onerror=alert(1)>",
+      "security": "unsafe-event-handler",
+      "must_not_execute": true
+    },
+    {
+      "input": "[x](javascript:alert(1))",
+      "security": "unsafe-url-scheme",
+      "must_not_navigate": true
+    },
+    {
+      "input": "<svg><a xlink:href=\"javascript:alert(1)\">x</a></svg>",
+      "security": "unsafe-active-content",
+      "must_not_execute": true
+    }
+  ]
+}

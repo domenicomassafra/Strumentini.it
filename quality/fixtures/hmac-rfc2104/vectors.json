@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "algorithm": "HMAC-SHA256",
+      "key_utf8": "key",
+      "message_utf8": "The quick brown fox jumps over the lazy dog",
+      "digest_hex": "f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8"
+    }
+  ],
+  "property": "Changing key or message changes the authentication tag except for cryptographic collision chance; this smoke property is secondary to known answers."
+}
