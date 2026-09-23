@@ -8,7 +8,7 @@
 
 **Blocked by:** 01 — Gold tracer: Business Day Calculator.
 
-**Status:** implemented-awaiting-shared-typecheck
+**Status:** complete
 
 - [x] Catalog-derived search metadata covers names, aliases, verbs/jobs, category, optional pack/role tags, input types, runtime, and caller-supplied install/recent context without importing implementation chunks.
 - [x] Cmd+K/Ctrl+K opens a semantic combobox/listbox palette with keyboard navigation, Enter to open, Esc to close, and focus restoration.
@@ -20,4 +20,4 @@
 
 **Verification:** Run search ranking fixtures, keyboard accessibility browser tests, a 500-item generated-catalog rendering/performance test, and production-network/chunk inspection proving search and Library do not fetch tool implementations before a tool is opened.
 
-**Shared-gate note (2026-09-23):** Ticket 03 focused tests, production build, browser acceptance, chunk/network proof, diff-check, and all Ticket 01 gates except the shared `astro check` pass. The shared typecheck is currently blocked by concurrent Ticket 09/10 work in `scripts/gold/file-hash-dependency-benchmark.ts` and `tests/image-resize-engine.test.ts`, both outside this lane's ownership.
+**Shared-gate note (2026-09-23):** Ticket 03 focused tests, production build, browser acceptance, chunk/network proof, diff-check, shared `astro check`, and the complete Ticket 01 verification chain all pass on shared `main`.
