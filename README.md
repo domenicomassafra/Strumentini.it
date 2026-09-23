@@ -76,3 +76,15 @@ The aspirational target is domain-level or similarly small annual infrastructure
 This repository currently owns product research, positioning, architecture hypotheses and decision history. There is intentionally no production implementation yet.
 
 Read docs/ and HANDOFF.md before starting implementation.
+
+## Brand warning
+
+UtilityOS is an internal codename only. A current Canadian software company already operates under UtilityOS and has an active Canadian trademark application.
+
+Public naming requires a separate naming and clearance sprint.
+
+See:
+
+- docs/05-brand-positioning.md
+- docs/06-go-to-market.md
+- research/competitive-brand-gtm-2026-09-23.md

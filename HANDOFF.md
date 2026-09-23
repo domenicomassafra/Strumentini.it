@@ -69,3 +69,22 @@ These contain earlier rejected/narrowed candidates too. Read the latest scope co
 Product research only. No production app exists yet.
 
 Next work should deepen novelty/user-value validation and define a small interaction prototype. Do not immediately build hundreds of utilities.
+
+## Brand / GTM update
+
+UtilityOS must remain an internal codename. UtilityOS Inc. is an active Canadian utility-software company and has an active Canadian trademark application.
+
+Important deeper blockers:
+
+- SolveKit already owns multi-tool workspaces and connected workflows.
+- smarterfaster already uses profession-based workspace generation and professional packs.
+- FreelTools already calls itself a freelancer operating system and has 242 tools.
+- ToopTools already offers a personalized client-side workspace.
+
+Current differentiation hypothesis depends on the full combination of role onboarding + shared profile + executable deterministic utilities + packs + persistent workspace + context handoff + portable config.
+
+Current message to test:
+
+**Your everyday work tools, already set up for you.**
+
+Read research/competitive-brand-gtm-2026-09-23.md, docs/05-brand-positioning.md and docs/06-go-to-market.md before further product work.

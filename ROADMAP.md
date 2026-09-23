@@ -4,12 +4,14 @@ Current stage: product research and validation.
 
 ## P0 — prove the shape
 
-- deepen direct/adjacent competitor map;
+- deepen direct/adjacent competitor map, especially SolveKit / ToopTools / smarterfaster / Raycast;
 - identify the 20–30 highest-value utility jobs for independent knowledge workers;
 - test whether onboarding improves discovery;
 - test whether shared profile defaults save real time;
 - decide anonymous/local mode plus optional sync model;
 - define smallest credible starter pack.
+- run a dedicated public-brand naming sprint; UtilityOS is codename-only and externally blocked.
+
 
 ## P1 — interaction prototype
 
