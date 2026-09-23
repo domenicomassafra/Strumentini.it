@@ -28,3 +28,5 @@ export const businessDayManifest = {
     fixtureFamilies: ["business-days"],
   },
 } as const satisfies ToolManifest;
+
+export default businessDayManifest;

@@ -11,3 +11,4 @@ dist/
 .astro/
 .wrangler/
 .wrangler-dry-run/
+src/generated/
