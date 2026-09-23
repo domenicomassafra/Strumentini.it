@@ -23,6 +23,8 @@
 
 Implementation receipts live under `quality/receipts/image-resize/`. Automated certification is intentionally PARTIAL until valid physical-device receipts with measured thresholds exist for iOS Safari and Android Chrome.
 
+Supplementary Playwright WebKit acceptance is also recorded. That runtime currently reports Canvas WebP encoding unavailable; the UI capability-detects this, disables WebP, and the full JPEG/cancel/corrupt/oversized/mobile/locality path passes. This is regression evidence only and does **not** count as the physical iOS Safari receipt.
+
 ## Physical acceptance recorder
 
 The physical gate is executable but intentionally cannot self-certify without an observed device run:

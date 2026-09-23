@@ -81,12 +81,14 @@ const iosPath = resolve(root, "quality/receipts/image-resize/ios-safari-physical
 const androidPath = resolve(root, "quality/receipts/image-resize/android-chrome-physical.json");
 const chromePath = resolve(root, "quality/receipts/image-resize/browser-chrome.json");
 const edgePath = resolve(root, "quality/receipts/image-resize/browser-edge.json");
+const webkitPath = resolve(root, "quality/receipts/image-resize/browser-webkit.json");
 const bundlePath = resolve(root, "quality/receipts/image-resize/bundle.json");
-const [iosReceipt, androidReceipt, chromeReceipt, edgeReceipt, bundleReceipt] = await Promise.all([
+const [iosReceipt, androidReceipt, chromeReceipt, edgeReceipt, webkitReceipt, bundleReceipt] = await Promise.all([
   readJsonIfExists(iosPath),
   readJsonIfExists(androidPath),
   readJsonIfExists(chromePath),
   readJsonIfExists(edgePath),
+  readJsonIfExists(webkitPath),
   readJsonIfExists(bundlePath),
 ]);
 const iosIssues = iosReceipt === null ? ["receipt missing"] : validatePhysicalImageReceipt(iosReceipt, "ios-safari");
@@ -128,6 +130,10 @@ const receipt = {
     lazyBundle: isRecord(bundleReceipt) && bundleReceipt.implementationEager === false
       ? "PASS"
       : "MISSING_OR_INVALID",
+  },
+  supplementaryAutomation: {
+    playwrightWebkit: validBrowserReceipt(webkitReceipt) ? "PASS" : webkitReceipt === null ? "MISSING" : "INVALID",
+    note: "Playwright WebKit is a Safari-like regression lane only; it never substitutes for the required physical iOS Safari receipt.",
   },
   physicalAcceptance: {
     iosSafari: iosPass ? "PASS" : iosReceipt === null ? "MISSING" : "INVALID",

@@ -41,6 +41,7 @@ export function ImageResizeTool() {
   const [height, setHeight] = useState("1200");
   const [fit, setFit] = useState<"contain" | "cover">("contain");
   const [outputMime, setOutputMime] = useState<"image/jpeg" | "image/webp">("image/jpeg");
+  const [webpEncodeSupported, setWebpEncodeSupported] = useState<boolean | null>(null);
   const [quality, setQuality] = useState("0.88");
   const [status, setStatus] = useState<ProcessingState>("idle");
   const [progress, setProgress] = useState<ImageResizeProgress | null>(null);
@@ -48,6 +49,15 @@ export function ImageResizeTool() {
   const [result, setResult] = useState<ImageResizeOutput | null>(null);
   const [downloadUrl, setDownloadUrl] = useState("");
   const controller = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1;
+    canvas.height = 1;
+    const supported = canvas.toDataURL("image/webp").startsWith("data:image/webp");
+    setWebpEncodeSupported(supported);
+    if (!supported) setOutputMime("image/jpeg");
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -230,8 +240,11 @@ export function ImageResizeTool() {
               disabled={status === "working"}
             >
               <option value="image/jpeg">JPEG</option>
-              <option value="image/webp">WebP</option>
+              <option value="image/webp" disabled={webpEncodeSupported === false}>WebP</option>
             </select>
+            {webpEncodeSupported === false && (
+              <small>WebP encoding is unavailable in this browser; JPEG remains fully local.</small>
+            )}
           </label>
           <label class="field">
             <span>Quality</span>

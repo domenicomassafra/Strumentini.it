@@ -46,6 +46,19 @@ try {
   const response = await page.goto(`${origin}/tools/image-resize/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`image resize route returned ${response?.status()}`);
   await page.getByText("Runs on this device.").waitFor();
+  const webpEncodeSupported = await page.evaluate(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1;
+    canvas.height = 1;
+    return canvas.toDataURL("image/webp").startsWith("data:image/webp");
+  });
+  if (!webpEncodeSupported) {
+    await page.getByText("WebP encoding is unavailable in this browser; JPEG remains fully local.", { exact: true }).waitFor();
+    const webpDisabled = await page.locator('option[value="image/webp"]').evaluate((option) => option.disabled);
+    if (!webpDisabled) {
+      throw new Error("WebP capability probe failed to disable unsupported output option");
+    }
+  }
 
   await page.evaluate(async () => {
     const canvas = document.createElement("canvas");
@@ -73,7 +86,8 @@ try {
   await page.getByLabel("Width").fill("800");
   await page.getByLabel("Height").fill("800");
   await page.getByLabel("Crop to fill").check();
-  await page.getByLabel("Output format").selectOption("image/webp");
+  const primaryMime = webpEncodeSupported ? "image/webp" : "image/jpeg";
+  await page.getByLabel("Output format").selectOption(primaryMime);
 
   await page.route("**/*.js", async (route) => {
     if (started && !delayedLazyScript) {
@@ -121,15 +135,19 @@ try {
       size: blob.size,
       riff: new TextDecoder().decode(bytes.subarray(0, 4)),
       webp: new TextDecoder().decode(bytes.subarray(8, 12)),
+      signatureHex: [...bytes.subarray(0, 3)].map((value) => value.toString(16).padStart(2, "0")).join(""),
     };
     bitmap.close();
     return result;
   }, href);
-  if (decoded.width !== 800 || decoded.height !== 800 || decoded.type !== "image/webp") {
+  if (decoded.width !== 800 || decoded.height !== 800 || decoded.type !== primaryMime) {
     throw new Error(`Independent output decode failed: ${JSON.stringify(decoded)}`);
   }
-  if (decoded.riff !== "RIFF" || decoded.webp !== "WEBP") {
+  if (primaryMime === "image/webp" && (decoded.riff !== "RIFF" || decoded.webp !== "WEBP")) {
     throw new Error(`WebP signature mismatch: ${JSON.stringify(decoded)}`);
+  }
+  if (primaryMime === "image/jpeg" && decoded.signatureHex !== "ffd8ff") {
+    throw new Error(`JPEG signature mismatch: ${JSON.stringify(decoded)}`);
   }
   const memoryPreflightText = await page.getByText(/estimated decoded working set/u).innerText();
 
@@ -210,8 +228,11 @@ try {
     route: "/tools/image-resize/",
     syntheticInput: { width: 1600, height: 1200, type: "image/png" },
     verifiedOutputs: {
-      webpCover: decoded,
+      cover: decoded,
       jpegContain: decodedJpeg,
+    },
+    capabilities: {
+      canvasWebpEncode: webpEncodeSupported,
     },
     memoryPreflightText,
     cancellation: "PASS",

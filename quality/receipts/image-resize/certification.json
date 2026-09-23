@@ -30,6 +30,10 @@
     "edge": "PASS",
     "lazyBundle": "PASS"
   },
+  "supplementaryAutomation": {
+    "playwrightWebkit": "PASS",
+    "note": "Playwright WebKit is a Safari-like regression lane only; it never substitutes for the required physical iOS Safari receipt."
+  },
   "physicalAcceptance": {
     "iosSafari": "MISSING",
     "androidChrome": "MISSING",

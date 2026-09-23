@@ -8,13 +8,14 @@
     "type": "image/png"
   },
   "verifiedOutputs": {
-    "webpCover": {
+    "cover": {
       "width": 800,
       "height": 800,
       "type": "image/webp",
       "size": 6712,
       "riff": "RIFF",
-      "webp": "WEBP"
+      "webp": "WEBP",
+      "signatureHex": "524946"
     },
     "jpegContain": {
       "width": 800,
@@ -23,6 +24,9 @@
       "size": 11915,
       "signatureHex": "ffd8ff"
     }
+  },
+  "capabilities": {
+    "canvasWebpEncode": true
   },
   "memoryPreflightText": "15.3 MiB estimated decoded working set",
   "cancellation": "PASS",
