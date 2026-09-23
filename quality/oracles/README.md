@@ -17,4 +17,3 @@ python3 quality/oracles/validate.py
 ```
 
 The validator fails closed if the registry has fewer than 80 entries, the fixture index has fewer than 25 families, source references are broken, fixture provenance is missing, or indexed fixture files are absent/invalid.
-
