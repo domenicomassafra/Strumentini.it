@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { QuarterDateMapperTool } from "../../components/tools/QuarterDateMapperTool";
+---
+<BaseLayout title="Quarter / Date Mapper" description="Map dates to calendar quarters or quarters to exact date ranges locally.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
+      <p class="eyebrow">Date &amp; time</p>
+      <h1>Quarter / Date Mapper</h1>
+      <p class="lede">Map a date to a Gregorian calendar quarter or a quarter number to its exact start and end dates.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Calendar-quarter rules are explicit; company fiscal calendars are not inferred.</span></div>
+    </header>
+    <QuarterDateMapperTool client:load />
+    <section class="method-card" aria-labelledby="quarter-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="quarter-method">Calendar quarters</h2><ul><li>Q1 starts in January and Q4 ends in December.</li><li>Leap-year day counts are included in boundaries.</li><li>No fiscal year start month is assumed.</li></ul></section>
+  </article>
+</BaseLayout>

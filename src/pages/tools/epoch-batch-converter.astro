@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { EpochBatchConverterTool } from "../../components/tools/EpochBatchConverterTool";
+---
+<BaseLayout title="Epoch Batch Converter" description="Convert Unix seconds or milliseconds to UTC and local ISO timestamps in batches.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
+      <p class="eyebrow">Date &amp; time</p>
+      <h1>Epoch Batch Converter</h1>
+      <p class="lede">Convert a newline-separated batch of signed Unix timestamps with explicit input units and display timezone.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No timestamp service or clock synchronization is used.</span></div>
+    </header>
+    <EpochBatchConverterTool client:load />
+    <section class="method-card" aria-labelledby="epoch-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="epoch-method">Epoch units</h2><ul><li>Seconds and milliseconds are never guessed.</li><li>Out-of-range values are reported per row.</li><li>UTC ISO output preserves the original epoch value.</li></ul></section>
+  </article>
+</BaseLayout>

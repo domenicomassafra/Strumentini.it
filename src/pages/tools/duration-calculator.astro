@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { DurationCalculatorTool } from "../../components/tools/DurationCalculatorTool";
+---
+<BaseLayout title="Duration Calculator" description="Measure elapsed duration between timestamps in useful units locally.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
+      <p class="eyebrow">Date &amp; time</p>
+      <h1>Duration Calculator</h1>
+      <p class="lede">Measure the exact elapsed interval between two ISO timestamps and express it in calendar-friendly units.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No clock service is contacted.</span></div>
+    </header>
+    <DurationCalculatorTool client:load />
+    <section class="method-card" aria-labelledby="duration-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="duration-method">Elapsed duration</h2><ul><li>Offset-aware values preserve the instant.</li><li>Local values need an explicit IANA timezone.</li><li>Negative intervals are reported as backward without hidden absolute-value conversion.</li></ul></section>
+  </article>
+</BaseLayout>

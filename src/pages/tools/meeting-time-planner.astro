@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { MeetingTimePlannerTool } from "../../components/tools/MeetingTimePlannerTool";
+---
+<BaseLayout title="Meeting-Time Planner" description="Find shared meeting windows across timezone working-hour schedules locally.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
+      <p class="eyebrow">Date &amp; time</p>
+      <h1>Meeting-Time Planner</h1>
+      <p class="lede">Enter each participant’s IANA timezone and working window to find shared 15-minute-grid openings.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No invites are sent and no meeting service is queried.</span></div>
+    </header>
+    <MeetingTimePlannerTool client:load />
+    <section class="method-card" aria-labelledby="meeting-planner-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="meeting-planner-method">Window generation</h2><ul><li>All schedules refer to the same selected calendar date.</li><li>Only working-hour intervals are considered.</li><li>No holiday or attendee availability source is inferred.</li></ul></section>
+  </article>
+</BaseLayout>
