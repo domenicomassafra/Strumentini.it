@@ -1,0 +1,269 @@
+.surface {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  color: var(--ink, #171714);
+  background: var(--surface, #ffffff);
+}
+
+.target {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.focusable:focus-visible {
+  outline: 3px solid #0b5cab;
+  outline-offset: 3px;
+}
+
+.control {
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 44px;
+  min-height: 44px;
+  border: 1px solid #76766f;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--ink, #171714);
+  background: var(--canvas, #f4f4f1);
+  font: inherit;
+}
+
+.control:focus-visible,
+.target:focus-visible {
+  outline: 3px solid #0b5cab;
+  outline-offset: 3px;
+}
+
+.required {
+  color: #7a1f1f;
+  font-weight: 700;
+}
+
+.hint,
+.status {
+  color: var(--muted, #62625c);
+}
+
+.hint {
+  margin-block-start: 6px;
+  font-size: 0.875rem;
+}
+
+.error {
+  margin-block: 8px;
+  border-inline-start: 4px solid #8b2525;
+  padding: 10px 12px;
+  color: #7a1f1f;
+  background: #fff4f4;
+  font-weight: 650;
+}
+
+.status {
+  margin: 0;
+  min-block-size: 1.5em;
+}
+
+.result {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  border: 1px solid var(--line, #76766f);
+  border-radius: 10px;
+  padding: 22px;
+  background: var(--surface, #ffffff);
+  overflow-wrap: anywhere;
+}
+
+.result[data-busy="true"] {
+  cursor: progress;
+}
+
+.dialog {
+  inline-size: min(720px, calc(100vw - 2rem));
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  max-block-size: min(85vh, 48rem);
+  margin: auto;
+  border: 1px solid var(--line, #76766f);
+  border-radius: 10px;
+  padding: 0;
+  color: var(--ink, #171714);
+  background: var(--surface, #ffffff);
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 45%);
+}
+
+.dialogShell {
+  min-inline-size: 0;
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+}
+
+.dialogHeader {
+  min-inline-size: 0;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dialogTitle {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.25;
+}
+
+.closeButton {
+  flex: 0 0 auto;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  max-inline-size: 100%;
+  border: 1px solid #76766f;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--ink, #171714);
+  background: var(--canvas, #f4f4f1);
+  cursor: pointer;
+}
+
+.nav {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.navList {
+  min-inline-size: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  border-color: var(--line, #76766f);
+}
+
+.navLink:focus-visible {
+  outline: 3px solid #0b5cab;
+  outline-offset: 3px;
+}
+
+.navLink[aria-current="page"] {
+  border-color: #0b5cab;
+  font-weight: 750;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.navCurrent {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.srOnly {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 40rem) {
+  .dialog {
+    inline-size: calc(100vw - 1rem);
+    max-block-size: calc(100dvh - 1rem);
+  }
+
+  .dialogShell,
+  .result {
+    padding: 16px;
+  }
+
+  .navList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(44px, 100%), 1fr));
+  }
+
+  .navLink {
+    inline-size: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface *,
+  .surface *::before,
+  .surface *::after,
+  .dialog *,
+  .dialog *::before,
+  .dialog *::after,
+  .result,
+  .result *,
+  .result *::before,
+  .result *::after,
+  .nav *,
+  .nav *::before,
+  .nav *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+@media (prefers-color-scheme: dark) {
+  .required {
+    color: #ffb4ab;
+  }
+
+  .error {
+    color: #ffd1ce;
+    background: #3a1c1c;
+    border-color: #ff9b95;
+  }
+
+  .navLink[aria-current="page"] {
+    border-color: #9bc8b8;
+  }
+
+  .focusable:focus-visible,
+  .control:focus-visible,
+  .target:focus-visible,
+  .closeButton:focus-visible,
+  .navLink:focus-visible {
+    outline-color: #9bc8b8;
+  }
+}
