@@ -1,7 +1,7 @@
 # Ticket 10 — File hash dependency gate
 
 Date: 2026-09-23
-Decision: **`hash-wasm` 4.12.0 for production incremental SHA-256**. **`@noble/hashes` 2.4.0 remains evaluation-only** and can be removed by the coordinator after integration.
+Decision: **`hash-wasm` 4.12.0 for production incremental SHA-256**. **`@noble/hashes` 2.4.0 was evaluation-only** and was removed from the shared package files after integration.
 
 ## Scope and authorities
 
@@ -11,7 +11,6 @@ This gate compares the two packages already pinned for evaluation. It does not a
 - `research/lanes/06-oss-donor-matrix.csv`;
 - `quality/fixtures/sha2-known-answers/vectors.json` and `quality/fixtures/file-hash/vectors.json`;
 - `quality/oracles/registry.json` entry `cand-161`;
-- `quality/receipts/file-hash/dependency-benchmark.json`;
 - `quality/receipts/file-hash/browser-acceptance.json`.
 
 ## Exact comparison
@@ -36,7 +35,7 @@ This gate compares the two packages already pinned for evaluation. It does not a
 
 ## Production decision
 
-Select `hash-wasm` despite the ~12.5 KiB candidate-transfer premium because the measured Chrome throughput is roughly 4.7× higher, the digest agrees exactly with `@noble/hashes`, published SHA-256 vectors and bounded Web Crypto, and the selected implementation has direct production worker/cancel/locality acceptance. `@noble/hashes` remains useful as an evaluation comparator but does not justify a second production hash implementation.
+Select `hash-wasm` despite the ~12.5 KiB candidate-transfer premium because the measured Chrome throughput is roughly 4.7× higher, the digest agrees exactly with the evaluated `@noble/hashes` implementation, published SHA-256 vectors and bounded Web Crypto, and the selected implementation has direct production worker/cancel/locality acceptance. The evaluation comparator was removed after this decision; it does not justify a second production hash implementation.
 
 The product supports **SHA-256 only** in this Gold vertical. SHA-512 has a published fixture but is intentionally not exposed because the current product job is integrity/checksum verification, SHA-256 is the declared baseline, and expanding algorithms would add UI/support surface without a demonstrated need.
 

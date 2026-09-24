@@ -24,7 +24,7 @@
 
 - Papa Parse 5.7.0 selected over csv-parse 7.0.2 after exact corpus + malformed quote + browser bundle comparison (19,566 B vs 52,063 B minified comparison bundle); both MIT and zero direct runtime dependencies.
 - `npx vitest run tests/csv-cleaner-engine.test.ts` — 5/5 PASS.
-- `npx tsx scripts/gold/csv-parser-gate.ts` — PASS.
+- The one-time parser gate was run before integration; its losing evaluation dependency was removed afterward.
 - `npx tsx scripts/gold/csv-cleaner-certify.ts` — 6 exact vectors PASS.
 - `node scripts/acceptance-csv-cleaner.mjs` — 390 px local file picker/preview/BOM/locality PASS.
 - `npx tsx scripts/gold/csv-bundle.ts` — Papa production chunk absent from unrelated Business Day route.

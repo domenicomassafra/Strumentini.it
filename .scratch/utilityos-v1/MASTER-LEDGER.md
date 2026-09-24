@@ -126,7 +126,13 @@ V1 is not done until the canonical Gold frontier, onboarding/packs, telemetry, r
 - Integrated verification: 27 test files / 121 tests PASS; `astro check` PASS with 0 errors, 0 warnings, 0 hints; 17-page static build PASS; browser acceptance PASS with zero task-content network requests; Workbench acceptance PASS; Cloudflare deploy dry-run PASS.
 - Performance receipt: Chrome and Edge observed PASS with lazy engine gate PASS and long-task gate PASS. Firefox, WebKit, and Chromium executables are unavailable on the local runner. The total JS artifact delta against the historical six-asset baseline is reported as REGRESSION and requires deliberate baseline/cost reduction before release certification.
 - Gold frontier: 14/15; Image Resize remains PARTIAL solely because physical iOS Safari and Android Chrome Files/Photos boundary receipts are absent. No receipt was synthesized.
-- Dependency decision: `@noble/hashes` remains installed because the reproducible hash dependency benchmark under `scripts/gold/file-hash-dependency-benchmark.ts` consumes it as the recorded evaluation comparator. It is not a production implementation.
+- Dependency decision: `hash-wasm` 4.12.0 remains the production incremental hash; the evaluation-only `@noble/hashes` and `csv-parse` dependencies were removed after integration.
 - Owner correction: the mission target is **200 public tools implemented**, not only 200 researched candidates. The qualification matrix is now an implementation queue, not a completion claim.
 - Previous expansion blocker was interpreted too narrowly: the 15-tool v1 gate remains preserved as a compatibility milestone, but it no longer prevents a separate 200-tool expansion tranche. Every final catalog entry must have a real route, implementation, tests, and quality receipt; generated placeholders are prohibited.
-- Next executable frontier: implement the candidate queue in disjoint family tranches, while retaining physical Image Resize acceptance as an explicit v1 Gold blocker.
+- Next executable frontier: complete physical Image Resize acceptance and coordinator worktree settlement; the 200-tool candidate queue is integrated as 200 catalog routes.
+
+## Expansion reconciliation — 2026-09-24
+
+- Canonical catalog now contains 200 tool routes/manifests, generated through Tool Factory v2.
+- The legacy catalog compiler, evaluation-only dependency gates/receipts, and unreferenced helper barrels were removed; quality fixtures and oracles remain.
+- Registered external worktrees are not repository debris: active or dirty worktrees remain preserved for coordinator settlement.

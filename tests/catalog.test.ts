@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { businessDayManifest } from "../src/tools/business-day/manifest";
-import { CatalogCompileError, compileCatalog } from "../scripts/lib/catalog-compiler";
+import { compileFactoryCatalog } from "../src/tool-factory/catalog";
+import { ToolFactoryValidationError } from "../src/tool-factory/manifest";
 
 describe("catalog compilation seam", () => {
   it("compiles one canonical manifest into metadata and lazy loader metadata", () => {
-    const compiled = compileCatalog([businessDayManifest]);
+    const compiled = compileFactoryCatalog([businessDayManifest]);
     expect(compiled.summaries).toHaveLength(1);
     expect(compiled.summaries[0]).toMatchObject({
       id: "business-day",
@@ -18,7 +19,7 @@ describe("catalog compilation seam", () => {
   });
 
   it("fails duplicate ids and routes", () => {
-    expect(() => compileCatalog([businessDayManifest, businessDayManifest])).toThrow(CatalogCompileError);
+    expect(() => compileFactoryCatalog([businessDayManifest, businessDayManifest])).toThrow(ToolFactoryValidationError);
   });
 
   it("fails LOCAL manifests that permit network", () => {
@@ -26,7 +27,7 @@ describe("catalog compilation seam", () => {
       ...businessDayManifest,
       runtime: { location: "LOCAL", network: "required" },
     };
-    expect(() => compileCatalog([invalid])).toThrow(/LOCAL tools must declare network=forbidden/u);
+    expect(() => compileFactoryCatalog([invalid])).toThrow(/LOCAL tools must declare network=forbidden/u);
   });
 
   it("preserves typed handoff descriptors and rejects duplicate declarations", () => {
@@ -34,11 +35,11 @@ describe("catalog compilation seam", () => {
       ...businessDayManifest,
       handoff: { emits: [{ type: "table" as const, format: "csv" }] },
     };
-    expect(compileCatalog([withHandoff]).summaries[0]?.handoff).toEqual(withHandoff.handoff);
+    expect(compileFactoryCatalog([withHandoff]).summaries[0]?.handoff).toEqual(withHandoff.handoff);
     const invalid = {
       ...withHandoff,
       handoff: { accepts: [{ type: "table" as const, format: "csv" }, { type: "table" as const, format: "csv" }] },
     };
-    expect(() => compileCatalog([invalid])).toThrow(/duplicate handoff accepts descriptor table:csv/u);
+    expect(() => compileFactoryCatalog([invalid])).toThrow(/duplicate handoff accepts descriptor/u);
   });
 });

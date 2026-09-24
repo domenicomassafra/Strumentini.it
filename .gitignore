@@ -6,8 +6,6 @@ dist/
 !.env.example
 coverage/
 *.log
-node_modules/
-dist/
 .astro/
 .wrangler/
 .wrangler-dry-run/

@@ -21,4 +21,4 @@
 
 **Verification:** Run published hash vectors, chunk-size invariance fixtures, malformed checksum cases, large-file/cancel/failure injection, LOCAL browser-network/content telemetry inspection, mobile file flow, dependency/bundle gate if applicable, and Gold certification.
 
-**Closure evidence:** `tests/file-hash-engine.test.ts`; `quality/receipts/file-hash/gold.json`; `quality/receipts/file-hash/browser-acceptance.json`; `quality/receipts/file-hash/dependency-benchmark.json`; `research/implementation/10-hash-dependency-gate.md`. Production selects `hash-wasm` 4.12.0; `@noble/hashes` 2.4.0 remains evaluation-only for coordinator removal.
+**Closure evidence:** `tests/file-hash-engine.test.ts`; `quality/receipts/file-hash/gold.json`; `quality/receipts/file-hash/browser-acceptance.json`; `research/implementation/10-hash-dependency-gate.md`. Production selects `hash-wasm` 4.12.0; the `@noble/hashes` 2.4.0 evaluation-only dependency was removed after the decision.
