@@ -1,5 +1,18 @@
 export type RuntimeLocation = "LOCAL" | "REFERENCE" | "REMOTE";
 export type MaintenanceClass = "E" | "D" | "R" | "H" | "S";
+export type ToolCapability =
+  | "clipboard"
+  | "share"
+  | "file-read"
+  | "file-write"
+  | "image-decode"
+  | "worker"
+  | "wasm"
+  | "local-db"
+  | "opfs"
+  | "reference-network"
+  | "content-network"
+  | "ai-provider";
 
 export interface ProfileFieldDeclaration {
   key: string;
@@ -42,6 +55,7 @@ export interface ToolManifest {
   jobs: readonly string[];
   category: string;
   inputTypes: readonly string[];
+  capabilities?: readonly ToolCapability[];
   implementation: string;
   engine: string;
   runtime: {

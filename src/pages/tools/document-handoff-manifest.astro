@@ -1,0 +1,5 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { DocumentHandoffManifestTool } from "../../components/tools/DocumentHandoffManifestTool";
+---
+<BaseLayout title="Document Handoff Manifest" description="Create a deterministic local manifest for PDF handoff files."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>Document Handoff Manifest</h1><p class="lede">Create a JSON handoff index with safe names, sizes, structure flags, and SHA-256 digests.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Manifest content stays in this page until you download it.</span></div></header><DocumentHandoffManifestTool client:load /><section class="method-card"><h2>Manifest contract</h2><ul><li>Sanitizes names and never uses them as file paths.</li><li>Records PDF signature, page count, and encryption markers.</li><li>Uses local Web Crypto and never uploads document bytes.</li></ul></section></article></BaseLayout>

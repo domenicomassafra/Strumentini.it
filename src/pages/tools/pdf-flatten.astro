@@ -1,0 +1,5 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { PdfFlattenTool } from "../../components/tools/PdfFlattenTool";
+---
+<BaseLayout title="PDF Flatten Helper" description="Drop supported interactive PDF hooks locally."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Flatten Helper</h1><p class="lede">Create a page-only local copy by dropping supported interactive hooks.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No visual rendering or upload is used.</span></div></header><PdfFlattenTool client:load /><section class="method-card"><h2>Flatten contract</h2><ul><li>Removes supported page annotation and action hooks.</li><li>Leaves page content streams intact.</li><li>Does not claim pixel-perfect flattening for every PDF feature.</li></ul></section></article></BaseLayout>

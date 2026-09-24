@@ -1,0 +1,5 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { PdfSplitTool } from "../../components/tools/PdfSplitTool";
+---
+<BaseLayout title="PDF Split" description="Split a local PDF into explicit page groups."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Split</h1><p class="lede">Split a PDF into explicit one-based page groups.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Page ranges are explicit and bounded.</span></div></header><PdfSplitTool client:load /><section class="method-card"><h2>Bounded contract</h2><ul><li>Each output is parsed and page-count checked before download.</li><li>Empty or out-of-range groups fail visibly.</li><li>No server-side splitting or file upload is used.</li></ul></section></article></BaseLayout>
