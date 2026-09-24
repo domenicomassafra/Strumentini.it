@@ -1,0 +1,7 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { InvisibleCharacterDetectorTool } from "../../components/tools/InvisibleCharacterDetectorTool";
+---
+<BaseLayout title="Invisible-Character Detector" description="Find Unicode format and zero-width characters with code points and offsets.">
+  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Invisible-Character Detector</h1><p class="lede">Inspect hidden format characters that can make copied text behave unexpectedly.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Character inspection stays local.</span></div></header><InvisibleCharacterDetectorTool client:load /><section class="method-card"><h2>What is detected</h2><ul><li>Unicode Format characters, including zero-width spaces, joiners, marks, and directional controls, are reported.</li><li>Offsets are UTF-16 offsets so they correspond to browser string indexes.</li><li>The clean preview removes detected format characters only; ordinary whitespace is unchanged.</li></ul></section></article>
+</BaseLayout>

@@ -1,0 +1,7 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { LineDeduplicatorTool } from "../../components/tools/LineDeduplicatorTool";
+---
+<BaseLayout title="Line Deduplicator" description="Remove duplicate lines with explicit exact, trim, or Unicode equality rules.">
+  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Line Deduplicator</h1><p class="lede">Keep the first spelling of each line under a declared equality rule.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your list is not uploaded.</span></div></header><LineDeduplicatorTool client:load /><section class="method-card"><h2>Equality policy</h2><ul><li>Exact compares line text unchanged; trim, NFC, and trim-plus-NFC are explicit alternatives.</li><li>The first-seen spelling and order are preserved.</li><li>No case folding, fuzzy matching, or semantic deduplication is performed.</li></ul></section></article>
+</BaseLayout>

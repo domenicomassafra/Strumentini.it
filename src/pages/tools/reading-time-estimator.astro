@@ -1,0 +1,7 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { ReadingTimeEstimatorTool } from "../../components/tools/ReadingTimeEstimatorTool";
+---
+<BaseLayout title="Reading-Time Estimator" description="Estimate how long text takes to read at a chosen words-per-minute rate.">
+  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Reading-Time Estimator</h1><p class="lede">Estimate reading duration with a transparent words-per-minute assumption.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No text leaves this page.</span></div></header><ReadingTimeEstimatorTool client:load /><section class="method-card"><h2>Estimate</h2><ul><li>The default rate is 200 words per minute and can be changed per run.</li><li>Duration is rounded up to the next whole minute; exact minutes and seconds are also shown.</li><li>This is a deterministic estimate, not a guarantee of individual reading speed.</li></ul></section></article>
+</BaseLayout>
