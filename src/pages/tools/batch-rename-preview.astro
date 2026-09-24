@@ -1,0 +1,7 @@
+---
+import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import { BatchRenamePreviewTool } from "../../components/tools/file-privacy/BatchRenamePreviewTool";
+---
+<FilePrivacyPage title="Batch Rename Preview" description="Preview a deterministic rename pattern and collision-safe output names." methodTitle="No destructive rename" methodItems={["Use {name}, {index}, and {ext} placeholders in a pattern.", "Unsafe characters and traversal segments are normalized before preview.", "The tool never changes the selected files or your device file system."]}>
+  <BatchRenamePreviewTool client:load />
+</FilePrivacyPage>
