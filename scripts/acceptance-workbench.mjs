@@ -212,7 +212,7 @@ try {
   if (buttonHeights.some((height) => height < 44)) {
     throw new Error("Visible Workbench button below 44px touch target");
   }
-  await page.getByRole("navigation", { name: "Workbench sections" }).waitFor();
+  await page.getByRole("navigation", { name: "Mobile primary" }).waitFor();
 
   await context.close();
 

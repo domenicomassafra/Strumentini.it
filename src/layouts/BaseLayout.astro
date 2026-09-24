@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import GlobalSearch from "../components/search/GlobalSearch.astro";
+import ShellChrome from "../components/shell/ShellChrome.astro";
 
 interface Props {
   title: string;
@@ -13,38 +13,13 @@ const { title, description } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
   <body>
-    <header class="site-header">
-      <a class="home-link" href="/">Workbench preview</a>
-      <GlobalSearch />
-      <nav class="header-nav" aria-label="Primary"><a href="/library/">Library</a><span class="status-chip">Local-first validation build</span></nav>
-    </header>
-    <main>
+    <ShellChrome pathname={Astro.url.pathname} search={Astro.url.search}>
       <slot />
-    </main>
-    <nav class="mobile-bottom-nav" aria-label="Mobile primary">
-      <a href="/">Tools</a>
-      <a href="/library/?focus=search">Search</a>
-      <a href="/library/">Library</a>
-      <span aria-disabled="true">You</span>
-    </nav>
+    </ShellChrome>
   </body>
 </html>
-
-<style>
-  .site-header { gap: 18px; }
-  .header-nav { display: flex; align-items: center; gap: 14px; white-space: nowrap; }
-  .header-nav a { font-size: .86rem; font-weight: 700; text-decoration: none; }
-  .mobile-bottom-nav { display: none; }
-  @media (max-width: 640px) {
-    .site-header { justify-content: space-between; }
-    .header-nav { margin-left: auto; }
-    .header-nav > a { display: none; }
-    .mobile-bottom-nav { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; min-height: 62px; padding: 6px 8px max(6px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; border-top: 1px solid var(--line); background: var(--surface); }
-    .mobile-bottom-nav a, .mobile-bottom-nav span { min-height: 44px; display: grid; place-items: center; color: var(--muted); font-size: .78rem; font-weight: 700; text-decoration: none; }
-  }
-</style>

@@ -1,6 +1,14 @@
 import { useState } from "preact/hooks";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import type { TextDiffOutput } from "../../tools/text-diff/types";
+import {
+  InlineError,
+  ToolActions,
+  ToolResetButton,
+  ToolResultPanel,
+  ToolSubmitButton,
+  useToolOperation,
+} from "./shared";
 
 const OPERATION_LABELS = {
   equal: { symbol: "=", label: "Unchanged" },
@@ -11,32 +19,28 @@ const OPERATION_LABELS = {
 export function TextDiffTool() {
   const [before, setBefore] = useState("");
   const [after, setAfter] = useState("");
-  const [result, setResult] = useState<TextDiffOutput | null>(null);
-  const [error, setError] = useState("");
-
-  async function submit(event: Event) {
-    event.preventDefault();
-    setError("");
-    const run = await toolRuntime.run("text-diff", { before, after });
-    if (!run.ok) {
-      setResult(null);
-      setError(run.message === "INVALID_DIFF_TOO_LARGE"
+  const operation = useToolOperation<TextDiffOutput>(
+    (signal: AbortSignal) => toolRuntime.run("text-diff", { before, after }, {}, signal),
+    {
+      formatError: (run) => run.message === "INVALID_DIFF_TOO_LARGE"
         ? "This line-by-line diff exceeds the bounded local LCS limit. Split the text into smaller sections."
-        : run.message);
-      return;
-    }
-    setResult(run.value as TextDiffOutput);
+        : run.message,
+    },
+  );
+
+  function submit(event: Event) {
+    event.preventDefault();
+    void operation.run();
   }
 
   function reset() {
     setBefore("");
     setAfter("");
-    setResult(null);
-    setError("");
+    operation.reset();
   }
 
   return (
-    <div class="diff-operation">
+    <div className="diff-operation">
       <form onSubmit={submit}>
         <div class="field-grid">
           <label class="field">
@@ -48,33 +52,31 @@ export function TextDiffTool() {
             <textarea rows={13} value={after} onInput={(event) => setAfter(event.currentTarget.value)} placeholder={"alpha\ngamma"} />
           </label>
         </div>
-        {error !== "" && <p class="error" role="alert">{error}</p>}
-        <div class="actions">
-          <button class="primary" type="submit">Compare text</button>
-          <button type="button" onClick={reset}>Reset</button>
-        </div>
+        <InlineError message={operation.error} />
+        <ToolActions>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel="Comparing…">Compare text</ToolSubmitButton>
+          <ToolResetButton onClick={reset} disabled={operation.isRunning} />
+        </ToolActions>
       </form>
-
-      <section class="diff-result" aria-live="polite" aria-atomic="false">
-        <p class="eyebrow">Line diff</p>
-        {result === null ? <p class="result-placeholder">The diff appears here.</p> : (
+      <ToolResultPanel eyebrow="Line diff" placeholder="The diff appears here." className="diff-result" bare atomic={false} busy={operation.isRunning}>
+        {operation.result !== null && (
           <>
-            <p class="diff-summary">{result.additions} added · {result.removals} removed · {result.unchanged} unchanged</p>
+            <p class="diff-summary">{operation.result.additions} added · {operation.result.removals} removed · {operation.result.unchanged} unchanged</p>
             <ol class="diff-list">
-              {result.operations.map((operation, index) => {
-                const presentation = OPERATION_LABELS[operation.kind];
+              {operation.result.operations.map((operationItem, index) => {
+                const presentation = OPERATION_LABELS[operationItem.kind];
                 return (
-                  <li class={`diff-row diff-${operation.kind}`} data-kind={operation.kind} key={`${index}-${operation.text}`}>
+                  <li class={`diff-row diff-${operationItem.kind}`} data-kind={operationItem.kind} key={`${index}-${operationItem.text}`}>
                     <span class="diff-symbol" aria-hidden="true">{presentation.symbol}</span>
                     <strong>{presentation.label}</strong>
-                    <code>{operation.text.replace(/\n$/u, "") || "(blank line)"}</code>
+                    <code>{operationItem.text.replace(/\n$/u, "") || "(blank line)"}</code>
                   </li>
                 );
               })}
             </ol>
           </>
         )}
-      </section>
+      </ToolResultPanel>
     </div>
   );
 }

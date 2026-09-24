@@ -1,6 +1,16 @@
 import { useRef, useState } from "preact/hooks";
 import { FileHashError, checksumMatches, parseExpectedChecksum } from "../../../engines/file-hash";
 import { hashBlobInWorker } from "../../../engines/file-hash/worker-client";
+import {
+  InlineError,
+  ToolActions,
+  ToolCancelButton,
+  ToolOperation,
+  ToolProgress,
+  ToolResetButton,
+  ToolResultPanel,
+  ToolSubmitButton,
+} from "../shared";
 
 interface CompletedHash {
   digestHex: string;
@@ -92,7 +102,7 @@ export function FileHashTool() {
   }
 
   return (
-    <div class="tool-operation">
+    <ToolOperation busy={running}>
       <form onSubmit={submit} noValidate>
         <label class="field">
           <span>File</span>
@@ -131,26 +141,23 @@ export function FileHashTool() {
           <small id="checksum-help">Only surrounding whitespace and hexadecimal letter case are normalized.</small>
         </label>
 
-        <div class="field">
-          <span>Progress</span>
-          <progress value={progress} max={1} style={{ width: "100%" }} aria-label="Hashing progress" />
-          <small>{running ? `${Math.floor(progress * 100)}% hashed` : result === null ? "Not started" : "100% complete"}</small>
-        </div>
+        <ToolProgress
+          value={progress}
+          label="Hashing progress"
+          status={running ? `${Math.floor(progress * 100)}% hashed` : result === null ? "Not started" : "100% complete"}
+        />
 
-        {error !== "" && <p class="error" role="alert">{error}</p>}
+        <InlineError message={error} />
 
-        <div class="actions">
-          <button class="primary" type="submit" disabled={running}>{running ? "Hashing…" : "Calculate SHA-256"}</button>
-          {running && <button type="button" onClick={() => controllerRef.current?.abort()}>Cancel</button>}
-          <button type="button" onClick={reset}>Reset</button>
-        </div>
+        <ToolActions>
+          <ToolSubmitButton busy={running} busyLabel="Hashing…">Calculate SHA-256</ToolSubmitButton>
+          {running && <ToolCancelButton onCancel={() => controllerRef.current?.abort()} />}
+          <ToolResetButton onClick={reset} />
+        </ToolActions>
       </form>
 
-      <section class="result-panel" aria-live="polite" aria-atomic="true">
-        <p class="eyebrow">Result</p>
-        {result === null ? (
-          <p class="result-placeholder">Your SHA-256 digest appears here.</p>
-        ) : (
+      <ToolResultPanel eyebrow="Result" placeholder="Your SHA-256 digest appears here." busy={running}>
+        {result !== null && (
           <>
             {result.matchesExpected !== null && (
               <strong class="result-value">{result.matchesExpected ? "Checksum matches" : "Checksum does not match"}</strong>
@@ -163,7 +170,7 @@ export function FileHashTool() {
             </dl>
           </>
         )}
-      </section>
-    </div>
+      </ToolResultPanel>
+    </ToolOperation>
   );
 }

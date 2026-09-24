@@ -1,0 +1,412 @@
+---
+import GlobalSearch from "../search/GlobalSearch.astro";
+
+interface Props {
+  pathname: string;
+  search?: string;
+}
+
+const { pathname, search = "" } = Astro.props;
+const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/+$/u, "") || "/";
+const isLibrary = normalizedPath === "/library";
+const isSearchDestination = isLibrary && new URLSearchParams(search).get("focus") === "search";
+const isWorkbench = !isLibrary;
+---
+
+<a class="shell-skip-link" href="#main-content">Skip to content</a>
+<div class="app-shell" data-shell-root data-shell-path={normalizedPath}>
+  <aside class="shell-rail" aria-label="Application shell">
+    <a class="shell-brand" href="/" aria-label="UtilityOS Workbench">
+      <span class="shell-brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <span>UtilityOS</span>
+    </a>
+    <nav class="shell-rail-nav" aria-label="Primary" data-shell-nav="desktop">
+      <div class="shell-nav-group">
+        <p class="shell-nav-label">Your work</p>
+        <a href="/" data-shell-destination="workbench" data-shell-nav-item aria-current={isWorkbench ? "page" : undefined}>Your Tools</a>
+        <a href="/#recent" data-shell-destination="recent" data-shell-nav-item>Recent</a>
+      </div>
+      <div class="shell-nav-group">
+        <p class="shell-nav-label">Discover</p>
+        <a href="/library/" data-shell-destination="library" data-shell-nav-item aria-current={isLibrary ? "page" : undefined}>Library</a>
+      </div>
+      <div class="shell-nav-group shell-rail-nav-bottom">
+        <p class="shell-nav-label">Workspace</p>
+        <a href="/#work-profile" data-shell-destination="profile" data-shell-nav-item>Work Profile</a>
+      </div>
+    </nav>
+    <p class="shell-local-note">Local-first · no account required</p>
+  </aside>
+
+  <div class="shell-body">
+    <header class="shell-header">
+      <a class="shell-header-brand" href="/" aria-label="UtilityOS Workbench">UtilityOS</a>
+      <div class="shell-header-search">
+        <GlobalSearch />
+      </div>
+      <span class="shell-local-badge">Local-first</span>
+    </header>
+    <main id="main-content" class="shell-main" tabindex="-1">
+      <slot />
+    </main>
+  </div>
+
+  <nav class="shell-mobile-nav" aria-label="Mobile primary" data-shell-nav="mobile" data-shell-mobile-nav>
+    <a href="/" data-shell-destination="workbench" data-shell-nav-item aria-current={isWorkbench ? "page" : undefined}>
+      <span class="shell-nav-symbol" aria-hidden="true">▦</span>
+      <span>Tools</span>
+    </a>
+    <a href="/library/?focus=search" data-shell-destination="search" data-shell-nav-item data-shell-search-link aria-current={isSearchDestination ? "page" : undefined}>
+      <span class="shell-nav-symbol" aria-hidden="true">⌕</span>
+      <span>Search</span>
+    </a>
+    <a href="/library/" data-shell-destination="library" data-shell-nav-item aria-current={isLibrary && !isSearchDestination ? "page" : undefined}>
+      <span class="shell-nav-symbol" aria-hidden="true">▫</span>
+      <span>Library</span>
+    </a>
+    <a href="/#work-profile" data-shell-destination="profile" data-shell-nav-item>
+      <span class="shell-nav-symbol" aria-hidden="true">◌</span>
+      <span>You</span>
+    </a>
+  </nav>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-shell-root]");
+  if (root) {
+    const normalizePath = () => window.location.pathname.replace(/\/+$/u, "") || "/";
+    const update = () => {
+      const path = normalizePath();
+      const hash = window.location.hash;
+      const searchDestination = path === "/library" && new URLSearchParams(window.location.search).get("focus") === "search";
+      const activeDestination = path === "/library"
+        ? searchDestination ? "search" : "library"
+        : hash === "#work-profile"
+          ? "profile"
+          : hash === "#recent"
+            ? "recent"
+            : "workbench";
+      root.dataset.shellPath = path;
+      root.querySelectorAll<HTMLElement>("[data-shell-destination]").forEach((link) => {
+        const active = link.dataset.shellDestination === activeDestination;
+        if (active) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+        link.toggleAttribute("data-active", active);
+      });
+    };
+    window.addEventListener("hashchange", update);
+    window.addEventListener("popstate", update);
+    update();
+  }
+</script>
+
+<style>
+  .shell-skip-link {
+    position: fixed;
+    z-index: 100;
+    top: 8px;
+    left: 8px;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--ink);
+    transform: translateY(-160%);
+  }
+
+  .shell-skip-link:focus {
+    transform: translateY(0);
+  }
+
+  .app-shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 232px minmax(0, 1fr);
+    background: var(--canvas);
+  }
+
+  .shell-rail {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    padding: 20px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border-right: 1px solid var(--line);
+    background: color-mix(in srgb, var(--canvas), var(--surface) 28%);
+  }
+
+  .shell-brand,
+  .shell-header-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--ink);
+    font-weight: 750;
+    text-decoration: none;
+  }
+
+  .shell-brand {
+    min-height: 44px;
+    padding: 0 8px;
+  }
+
+  .shell-brand-mark {
+    width: 22px;
+    height: 22px;
+    padding: 3px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    border: 1px solid currentColor;
+    border-radius: 5px;
+  }
+
+  .shell-brand-mark span {
+    border-radius: 1px;
+    background: currentColor;
+  }
+
+  .shell-rail-nav {
+    display: grid;
+    gap: 22px;
+  }
+
+  .shell-nav-group {
+    display: grid;
+    gap: 3px;
+  }
+
+  .shell-rail-nav-bottom {
+    margin-top: auto;
+  }
+
+  .shell-nav-label {
+    margin: 0;
+    padding: 0 10px 5px;
+    color: var(--muted);
+    font-size: .72rem;
+    font-weight: 750;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .shell-rail-nav a {
+    min-height: 40px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    color: var(--ink);
+    font-size: .9rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .shell-rail-nav a:hover,
+  .shell-rail-nav a[aria-current="page"] {
+    background: var(--surface);
+  }
+
+  .shell-rail-nav a[aria-current="page"] {
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .shell-local-note,
+  .shell-local-badge {
+    color: var(--muted);
+    font-size: .75rem;
+  }
+
+  .shell-local-note {
+    margin: 0 8px;
+  }
+
+  .shell-body {
+    min-width: 0;
+  }
+
+  .shell-header {
+    position: sticky;
+    z-index: 10;
+    top: 0;
+    min-height: 64px;
+    padding: 10px clamp(16px, 3vw, 32px);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--canvas), transparent 5%);
+  }
+
+  .shell-header-brand {
+    display: none;
+    min-height: 44px;
+  }
+
+  .shell-header-search {
+    min-width: 0;
+    flex: 1 1 auto;
+    max-width: 680px;
+  }
+
+  .shell-header-search :global(.global-search .search-trigger) {
+    min-height: 44px;
+  }
+
+  .shell-local-badge {
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .shell-main {
+    min-width: 0;
+    padding-bottom: 72px;
+  }
+
+  .shell-main:focus-visible {
+    outline-offset: -4px;
+  }
+
+  .shell-main :global(#work-profile),
+  .shell-main :global(#recent) {
+    scroll-margin-top: 84px;
+  }
+
+  .shell-main :global(nav[aria-label="Workbench sections"]) {
+    display: none !important;
+  }
+
+  .shell-main :global(.shell) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .shell-main :global([class*="sectionHeading"]) {
+    flex-wrap: wrap;
+  }
+
+  .shell-main :global([class*="rowActions"]) {
+    max-width: 100%;
+  }
+
+  .shell-main :global(input[type="file"]) {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .shell-main :global(label:has(input[type="file"])) {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .shell-mobile-nav {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .app-shell {
+      display: block;
+    }
+
+    .shell-rail {
+      display: none;
+    }
+
+    .shell-header {
+      min-height: 60px;
+      padding: 8px 16px;
+      gap: 10px;
+    }
+
+    .shell-header-brand {
+      display: inline-flex;
+      flex: 0 0 auto;
+    }
+
+    .shell-header-search {
+      display: none;
+      max-width: none;
+    }
+
+    .shell-local-badge {
+      display: none;
+    }
+
+    .shell-main {
+      padding-bottom: 88px;
+    }
+
+    .shell-mobile-nav {
+      position: fixed;
+      z-index: 30;
+      inset: auto 0 0;
+      min-height: 62px;
+      padding: 6px 8px max(6px, env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      align-items: stretch;
+      border-top: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .shell-mobile-nav a {
+      min-width: 0;
+      min-height: 44px;
+      padding: 4px 2px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 1px;
+      border-radius: 5px;
+      color: var(--muted);
+      font-size: .74rem;
+      font-weight: 700;
+      line-height: 1.1;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .shell-mobile-nav a[aria-current="page"] {
+      color: var(--action);
+      background: var(--surface-muted);
+    }
+
+    .shell-nav-symbol {
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .shell-main :global([class*="rowActions"]) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .shell-header-brand {
+      display: inline-flex;
+    }
+
+    .shell-header {
+      padding-inline: 12px;
+    }
+
+    .shell-header-search :global(.global-search .search-trigger) {
+      padding-inline: 8px;
+    }
+
+    .shell-header-search :global(.global-search .search-trigger kbd) {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shell-skip-link {
+      transition: none;
+    }
+  }
+</style>

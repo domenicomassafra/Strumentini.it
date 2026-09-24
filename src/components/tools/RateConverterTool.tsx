@@ -5,6 +5,18 @@ import type { RateUnit } from "../../engines/client-time-math";
 import { rateConverterManifest } from "../../tools/rate-converter/manifest";
 import type { RateConverterOutput } from "../../tools/rate-converter/types";
 import { useWorkProfile } from "./client-time-math/work-profile";
+import {
+  InlineError,
+  ProfileOverrideHint,
+  ProfileResetButton,
+  ProvenanceBadge,
+  ToolActions,
+  ToolOperation,
+  ToolResetButton,
+  ToolResultPanel,
+  ToolSubmitButton,
+  useToolOperation,
+} from "./shared";
 
 const UNITS: readonly RateUnit[] = ["hour", "day", "project"];
 
@@ -16,17 +28,11 @@ export function RateConverterTool() {
   const [hoursPerDayOverride, setHoursPerDayOverride] = useState<string | undefined>();
   const [projectHours, setProjectHours] = useState("40");
   const [currencyOverride, setCurrencyOverride] = useState<string | undefined>();
-  const [result, setResult] = useState<RateConverterOutput | null>(null);
-  const [error, setError] = useState("");
   const currency = currencyOverride ?? profile.currency;
   const hoursPerDay = hoursPerDayOverride ?? "8";
   const usesProject = from === "project" || to === "project";
-
-  async function submit(event: Event) {
-    event.preventDefault();
-    setError("");
-    setResult(null);
-    const run = await toolRuntime.run(
+  const operation = useToolOperation<RateConverterOutput>(
+    (signal: AbortSignal) => toolRuntime.run(
       rateConverterManifest.id,
       { amount, from, to, ...(usesProject ? { projectHours } : {}) },
       {
@@ -36,12 +42,18 @@ export function RateConverterTool() {
         },
         profile: profileValuesForTool(rateConverterManifest, profile),
       },
-    );
-    if (!run.ok) {
-      setError(run.message === "INVALID_PROJECT_HOURS_REQUIRED" ? "Project hours are required when either side is a project rate." : "Check the amount and work-basis assumptions.");
-      return;
-    }
-    setResult(run.value as RateConverterOutput);
+      signal,
+    ),
+    {
+      formatError: (run) => run.message === "INVALID_PROJECT_HOURS_REQUIRED"
+        ? "Project hours are required when either side is a project rate."
+        : "Check the amount and work-basis assumptions.",
+    },
+  );
+
+  function submit(event: Event) {
+    event.preventDefault();
+    void operation.run();
   }
 
   function reset() {
@@ -51,51 +63,58 @@ export function RateConverterTool() {
     setHoursPerDayOverride(undefined);
     setProjectHours("40");
     setCurrencyOverride(undefined);
-    setResult(null);
-    setError("");
+    operation.reset();
   }
 
   return (
-    <div class="tool-operation">
+    <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit} noValidate>
         <div class="field-grid">
           <label class="field"><span>Rate amount</span><input required inputMode="decimal" value={amount} onInput={(event) => setAmount(event.currentTarget.value)} placeholder="50.00" /></label>
           <label class="field">
             <span>Currency label</span>
             <input required value={currency} onInput={(event) => setCurrencyOverride(event.currentTarget.value.toUpperCase())} aria-describedby="currency-help" />
-            <small id="currency-help">{ready && currencyOverride === undefined ? "Work Profile default · label only, no FX conversion" : "Current task override · label only, no FX conversion"}</small>
-            <button class="text-button" type="button" disabled={currencyOverride === undefined} onClick={() => setCurrencyOverride(undefined)}>Use Work Profile currency</button>
+            <ProfileOverrideHint
+              id="currency-help"
+              ready={ready}
+              overridden={currencyOverride !== undefined}
+              profileLabel="Work Profile default · label only, no FX conversion"
+              overrideLabel="Current task override · label only, no FX conversion"
+            />
+            <ProfileResetButton disabled={currencyOverride === undefined} onReset={() => setCurrencyOverride(undefined)}>Use Work Profile currency</ProfileResetButton>
           </label>
         </div>
         <div class="field-grid">
-          <label class="field"><span>From</span><select value={from} onChange={(event) => setFrom(event.currentTarget.value as RateUnit)}>{UNITS.map((unit) => <option value={unit}>{unit}</option>)}</select></label>
-          <label class="field"><span>To</span><select value={to} onChange={(event) => setTo(event.currentTarget.value as RateUnit)}>{UNITS.map((unit) => <option value={unit}>{unit}</option>)}</select></label>
+          <label class="field"><span>From</span><select value={from} onChange={(event) => setFrom(event.currentTarget.value as RateUnit)}>{UNITS.map((unit) => <option value={unit} key={unit}>{unit}</option>)}</select></label>
+          <label class="field"><span>To</span><select value={to} onChange={(event) => setTo(event.currentTarget.value as RateUnit)}>{UNITS.map((unit) => <option value={unit} key={unit}>{unit}</option>)}</select></label>
         </div>
         <label class="field">
           <span>Hours per day</span>
           <input required inputMode="decimal" value={hoursPerDay} onInput={(event) => setHoursPerDayOverride(event.currentTarget.value)} />
           <small>{hoursPerDayOverride === undefined ? "Tool default: 8 hours/day" : "Current task override"}</small>
-          <button class="text-button" type="button" disabled={hoursPerDayOverride === undefined} onClick={() => setHoursPerDayOverride(undefined)}>Use 8-hour tool default</button>
+          <ProfileResetButton disabled={hoursPerDayOverride === undefined} onReset={() => setHoursPerDayOverride(undefined)}>Use 8-hour tool default</ProfileResetButton>
         </label>
         {usesProject && <label class="field"><span>Project hours</span><input required inputMode="decimal" value={projectHours} onInput={(event) => setProjectHours(event.currentTarget.value)} /><small>Required dimensional basis for a project rate.</small></label>}
-        {error !== "" && <p class="error" role="alert">{error}</p>}
-        <div class="actions"><button class="primary" type="submit">Convert rate</button><button type="button" onClick={reset}>Reset</button></div>
+        <InlineError message={operation.error} />
+        <ToolActions>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel="Converting…">Convert rate</ToolSubmitButton>
+          <ToolResetButton onClick={reset} disabled={operation.isRunning} />
+        </ToolActions>
       </form>
-      <section class="result-panel" aria-live="polite" aria-atomic="true">
-        <p class="eyebrow">Converted rate</p>
-        {result === null ? <p class="result-placeholder">Your converted rate appears here.</p> : (
+      <ToolResultPanel eyebrow="Converted rate" placeholder="Your converted rate appears here." busy={operation.isRunning}>
+        {operation.result !== null && (
           <>
-            <strong class="result-value">{result.currency} {result.amount} / {to}</strong>
+            <strong class="result-value">{operation.result.currency} {operation.result.amount} / {to}</strong>
             <dl class="assumptions">
-              <div><dt>Formula</dt><dd>{result.formula}</dd></div>
-              <div><dt>Hours/day</dt><dd>{result.assumptions.hoursPerDay} · {result.provenance.hoursPerDay === "tool-default" ? "tool default" : "current task override"}</dd></div>
-              {result.assumptions.projectHours !== undefined && <div><dt>Project hours</dt><dd>{result.assumptions.projectHours}</dd></div>}
+              <div><dt>Formula</dt><dd>{operation.result.formula}</dd></div>
+              <div><dt>Hours/day</dt><dd>{operation.result.assumptions.hoursPerDay} · <ProvenanceBadge provenance={operation.result.provenance.hoursPerDay} /></dd></div>
+              {operation.result.assumptions.projectHours !== undefined && <div><dt>Project hours</dt><dd>{operation.result.assumptions.projectHours}</dd></div>}
               <div><dt>Rounding</dt><dd>Final result only · half-up · 2 decimal places</dd></div>
-              <div><dt>Currency</dt><dd>{result.currency} is a label only. No live or implied FX conversion.</dd></div>
+              <div><dt>Currency</dt><dd>{operation.result.currency} is a label only. No live or implied FX conversion.</dd></div>
             </dl>
           </>
         )}
-      </section>
-    </div>
+      </ToolResultPanel>
+    </ToolOperation>
   );
 }

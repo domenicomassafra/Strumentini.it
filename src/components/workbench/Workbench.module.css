@@ -1,10 +1,5 @@
 .shell {
-  --wb-border: #d8d6d1;
-  --wb-muted: #66645f;
-  --wb-surface: #fff;
-  --wb-text: #1e1e1c;
-  --wb-action: #1859d1;
-  color: var(--wb-text);
+  color: var(--ink);
   max-width: 1180px;
   margin: 0 auto;
   padding: 32px clamp(20px, 4vw, 48px) 88px;
@@ -15,19 +10,19 @@
 .section h2 { margin: 4px 0 8px; letter-spacing: -0.025em; }
 .intro h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
 .lede,
-.muted { color: var(--wb-muted); line-height: 1.55; }
+.muted { color: var(--muted); line-height: 1.55; }
 .eyebrow {
   margin: 0;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--wb-muted);
+  color: var(--muted);
 }
 
 .section {
   margin-top: 18px;
-  border-top: 1px solid var(--wb-border);
+  border-top: 1px solid var(--line);
   padding-top: 22px;
 }
 
@@ -41,8 +36,8 @@
 .count,
 .localBadge {
   font-size: 0.78rem;
-  color: var(--wb-muted);
-  border: 1px solid var(--wb-border);
+  color: var(--muted);
+  border: 1px solid var(--line);
   border-radius: 999px;
   padding: 6px 9px;
   white-space: nowrap;
@@ -60,7 +55,7 @@
   align-items: center;
   min-height: 68px;
   padding: 12px 0;
-  border-bottom: 1px solid var(--wb-border);
+  border-bottom: 1px solid var(--line);
 }
 
 .toolList.compact .toolRow { min-height: 52px; padding-block: 6px; }
@@ -68,13 +63,10 @@
 .toolIdentity { display: grid; gap: 3px; min-width: 0; }
 .toolIdentity span,
 .toolIdentity small,
-.recentList span { color: var(--wb-muted); }
-.toolIdentity small b { color: var(--wb-text); font-weight: 650; }
+.recentList span { color: var(--muted); }
+.toolIdentity small b { color: var(--ink); font-weight: 650; }
 
-.rowActions,
-.profileActions,
-.portableActions,
-.previewActions {
+.rowActions {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -83,15 +75,28 @@
 
 .shell button,
 .openLink,
-.fileButton > span {
+.manage > summary,
+.emptyActions a {
   min-height: 44px;
-  border: 1px solid #b8b6b0;
+  border: 1px solid var(--line);
   border-radius: 6px;
-  background: var(--wb-surface);
-  color: var(--wb-text);
+  background: var(--surface);
+  color: var(--ink);
   font: inherit;
   padding: 9px 12px;
   cursor: pointer;
+}
+
+.shell input:not([type="checkbox"]):not([type="file"]),
+.shell select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  padding: 8px 10px;
 }
 
 .shell button:focus-visible,
@@ -99,7 +104,7 @@
 .shell input:focus-visible,
 .shell select:focus-visible,
 .shell summary:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--wb-action) 45%, white);
+  outline: 3px solid color-mix(in srgb, var(--action) 45%, white);
   outline-offset: 2px;
 }
 
@@ -107,23 +112,50 @@
 
 .primary,
 .openLink {
-  background: var(--wb-action) !important;
-  border-color: var(--wb-action) !important;
-  color: white !important;
+  background: var(--action) !important;
+  border-color: var(--action) !important;
+  color: var(--action-ink) !important;
   text-decoration: none;
 }
 
 .empty { margin-top: 12px; padding: 18px 0; }
+.emptyActions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.emptyActions a { display: inline-flex; align-items: center; text-decoration: none; }
 .addTools { margin-top: 16px; }
-.addTools li {
+.addTools > button { margin-bottom: 2px; }
+.addTools li,
+.suggestionList li {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   padding: 10px 0;
+  border-bottom: 1px solid var(--line);
 }
+.addTools li > span,
+.suggestionList li > div { min-width: 0; }
+.suggestionList { list-style: none; margin: 14px 0 0; padding: 0; }
+.suggestionList li > div { display: grid; gap: 3px; }
+.suggestionList small { color: var(--muted); }
+.libraryLink {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  color: var(--action);
+  font-weight: 700;
+  text-decoration: none;
+}
+.libraryLink span { color: var(--muted); font-weight: 500; }
 .recentList li > div { display: grid; gap: 3px; }
-
+.recentList a { min-height: 44px; display: inline-flex; align-items: center; }
+.manage > summary { list-style: none; text-align: center; }
+.manage > summary::-webkit-details-marker { display: none; }
+.manageActions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.manageActions button { min-height: 44px; }
+.remove { color: var(--danger); }
 .warning {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -131,98 +163,42 @@
   gap: 12px;
   border: 1px solid #b98319;
   background: #fff8e7;
+  color: #3b2a00;
   padding: 12px;
   border-radius: 8px;
 }
 
-.profileGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 16px;
-}
-.profileGrid label {
-  display: grid;
-  gap: 6px;
-  font-weight: 650;
-}
-.profileGrid input,
-.profileGrid select {
-  width: 100%;
-  min-height: 44px;
-  border: 1px solid #aaa8a1;
-  border-radius: 6px;
-  background: white;
-  color: var(--wb-text);
-  font: inherit;
-  padding: 8px 10px;
-}
-
-.workweek { margin: 18px 0; border: 0; padding: 0; }
-.workweek legend { margin-bottom: 8px; font-weight: 650; }
-.workweek > div { display: flex; gap: 6px; flex-wrap: wrap; }
-.workweek label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 44px;
-  border: 1px solid var(--wb-border);
-  border-radius: 6px;
-  padding: 6px 10px;
-}
-
 .checkboxLine,
 .importFile { display: inline-grid; gap: 6px; min-height: 44px; }
-.importFile input {
-  min-height: 44px;
-  max-width: 100%;
-}
-
-.preview,
-.importError {
+.importFile input { min-height: 44px; max-width: 100%; }
+.preview {
   margin-top: 14px;
   display: grid;
   gap: 10px;
-  border: 1px solid var(--wb-border);
+  border: 1px solid var(--line);
   border-radius: 8px;
   padding: 14px;
 }
-.importError { border-color: #b64141; background: #fff4f4; }
 .preview ul { margin: 0; padding-left: 20px; }
-
-.mobileNav { display: none; }
 
 @media (max-width: 760px) {
   .shell { padding: 20px 16px 84px; }
-  .profileGrid { grid-template-columns: 1fr; }
+  .sectionHeading { flex-wrap: wrap; }
+  .count,
+  .localBadge { white-space: normal; }
   .toolRow,
   .recentList li,
   .warning { align-items: stretch; flex-direction: column; }
   .warning { display: flex; }
-  .rowActions {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(44px, auto));
-  }
-  .rowActions > * { text-align: center; }
-  .addTools li { align-items: stretch; flex-direction: column; }
-  .mobileNav {
-    position: fixed;
-    z-index: 10;
-    inset: auto 0 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    border-top: 1px solid var(--wb-border);
-    background: color-mix(in srgb, white 96%, transparent);
-    backdrop-filter: blur(10px);
-  }
-  .mobileNav a {
-    min-height: 56px;
-    display: grid;
-    place-items: center;
-    color: var(--wb-text);
-    text-decoration: none;
-    font-weight: 650;
-  }
+  .rowActions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  .rowActions > * { min-width: 0; text-align: center; }
+  .manage { width: 100%; }
+  .manageActions { display: grid; grid-template-columns: 1fr; }
+  .addTools li,
+  .suggestionList li { align-items: stretch; flex-direction: column; }
+  .addTools li button,
+  .suggestionList li button { width: 100%; }
+  .libraryLink { align-items: baseline; }
 }
 
 @media (prefers-reduced-motion: reduce) {
