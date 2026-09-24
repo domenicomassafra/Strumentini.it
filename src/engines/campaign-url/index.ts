@@ -1,3 +1,5 @@
+import { hasUrlCredentials, parseHttpUrl, redactUrl } from "../url-marketing";
+
 export const CAMPAIGN_URL_ENGINE_VERSION = "1";
 
 export const TRACKING_PARAMETER_KEYS = new Set([
@@ -44,9 +46,7 @@ export interface CampaignNamingValues {
 }
 
 function parseAbsoluteUrl(input: string): URL {
-  const url = new URL(input);
-  if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error("INVALID_URL");
-  return url;
+  return parseHttpUrl(input);
 }
 
 function setOrDelete(search: URLSearchParams, key: string, value: string | undefined) {
@@ -57,6 +57,7 @@ function setOrDelete(search: URLSearchParams, key: string, value: string | undef
 
 export function buildUtmUrl(baseUrl: string, values: UtmValues): string {
   const url = parseAbsoluteUrl(baseUrl);
+  if (hasUrlCredentials(url)) throw new Error("URL_CREDENTIALS_NOT_ALLOWED");
   if (values.source.trim() === "" || values.medium.trim() === "" || values.campaign.trim() === "") {
     throw new Error("INVALID_UTM");
   }
@@ -85,7 +86,7 @@ export function cleanTrackingParameters(input: string): TrackingCleanResult {
     }
   }
   url.search = kept.toString();
-  return { url: url.href, dropped };
+  return { url: redactUrl(url), dropped };
 }
 
 function normalizeCampaignPart(value: string, lowercase: boolean): string {

@@ -8,7 +8,9 @@ export const PDF_LIMITS = {
   maxTextBytes: 2 * 1024 * 1024,
   maxImages: 256,
   maxImageBytes: 12 * 1024 * 1024,
+  maxImagePixels: 16_000_000,
   maxFiles: 50,
+  maxTotalInputBytes: 100 * 1024 * 1024,
   maxTotalImageBytes: 40 * 1024 * 1024,
 } as const;
 

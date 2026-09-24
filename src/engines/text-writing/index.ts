@@ -1,6 +1,10 @@
 import { compareLists, dedupeLines, diffText, parseListText, type EqualityMode } from "../text-list";
 
 export const TEXT_WRITING_ENGINE_VERSION = "text-writing-v1";
+const MAX_TEXT_INPUT = 2 * 1024 * 1024;
+const MAX_TEXT_ROWS = 100_000;
+const MAX_TEXT_CELLS = 2_000_000;
+const MAX_TEXT_REGEX_LENGTH = 1_000;
 export { diffText };
 
 export type CaseMode =
@@ -292,7 +296,7 @@ function requireObject(value: unknown, field: string): Record<string, unknown> {
 function requireText(value: unknown, field = "text"): string {
   if (typeof value !== "object" || value === null) throw new Error("INVALID_INPUT");
   const text = (value as Record<string, unknown>)[field];
-  if (typeof text !== "string") throw new Error("INVALID_INPUT");
+  if (typeof text !== "string" || text.length > MAX_TEXT_INPUT) throw new Error("INVALID_INPUT");
   return text;
 }
 
@@ -300,9 +304,14 @@ function lineList(value: unknown, field: "text" | "left" | "right"): string[] {
   if (typeof value !== "object" || value === null) throw new Error("INVALID_INPUT");
   const input = value as Record<string, unknown>;
   const raw = input[field];
-  if (typeof raw === "string") return parseListText(raw);
-  if (Array.isArray(raw) && raw.every((line) => typeof line === "string")) return [...raw];
-  if (field === "text" && Array.isArray(input.lines) && input.lines.every((line) => typeof line === "string")) return [...input.lines];
+  if (typeof raw === "string") {
+    if (raw.length > MAX_TEXT_INPUT) throw new Error("INVALID_INPUT");
+    const lines = parseListText(raw);
+    if (lines.length > MAX_TEXT_ROWS) throw new Error("INVALID_INPUT");
+    return lines;
+  }
+  if (Array.isArray(raw) && raw.length <= MAX_TEXT_ROWS && raw.every((line) => typeof line === "string")) return [...raw];
+  if (field === "text" && Array.isArray(input.lines) && input.lines.length <= MAX_TEXT_ROWS && input.lines.every((line) => typeof line === "string")) return [...input.lines];
   throw new Error("INVALID_INPUT");
 }
 
@@ -568,11 +577,17 @@ export function differenceLists(value: unknown): ListDifferenceResult {
   return { difference: onlyLeft, onlyLeft, count: onlyLeft.length, equality, engineVersion: TEXT_WRITING_ENGINE_VERSION };
 }
 
+function validateTextRegex(pattern: string): void {
+  if (pattern.length > MAX_TEXT_REGEX_LENGTH) throw new Error("REGEX_TOO_LARGE");
+  if (/\([^)]*[+*][^)]*\)[+*]/u.test(pattern) || /\([^)]*\{[^}]+\}[^)]*\)[+*]/u.test(pattern)) throw new Error("REGEX_COMPLEXITY");
+}
+
 function replacementMatches(text: string, find: string, replace: string, regex: boolean, caseSensitive: boolean, all: boolean): FindReplaceResult {
   if (find.length === 0) throw new Error("INVALID_FIND_REQUIRED");
   const matches: ReplacementMatch[] = [];
   let output = text;
   if (regex) {
+    validateTextRegex(find);
     let expression: RegExp;
     try {
       expression = new RegExp(find, `${caseSensitive ? "" : "i"}${all ? "g" : ""}`);
@@ -617,7 +632,7 @@ function escapeHtml(value: string): string {
 
 function safeMarkdownUrl(value: string): string {
   const trimmed = value.trim();
-  if (trimmed.startsWith("//")) return "#";
+  if (/[\u0000-\u0020\\]/u.test(trimmed) || trimmed.startsWith("//")) return "#";
   return /^(?:https?:|mailto:|tel:|#|\/|\.\/|\.\.\/)/iu.test(trimmed) ? trimmed : "#";
 }
 
@@ -847,19 +862,24 @@ function validateDelimiter(value: unknown, fallback = ","): string {
 
 export function parseDelimitedRows(text: string, delimiter: string): string[][] {
   if (Array.from(delimiter).length !== 1) throw new Error("INVALID_DELIMITER");
+  if (text.length > MAX_TEXT_INPUT) throw new Error("INPUT_TOO_LARGE");
   if (text === "") return [];
   const rows: string[][] = [];
   let row: string[] = [];
   let field = "";
   let quoted = false;
   let fieldStarted = false;
+  let cellCount = 0;
   const pushField = (): void => {
+    cellCount += 1;
+    if (cellCount > MAX_TEXT_CELLS) throw new Error("INPUT_TOO_LARGE");
     row.push(field);
     field = "";
     fieldStarted = false;
   };
   const pushRow = (): void => {
     pushField();
+    if (rows.length >= MAX_TEXT_ROWS) throw new Error("INPUT_TOO_LARGE");
     rows.push(row);
     row = [];
   };
@@ -899,7 +919,8 @@ export function parseDelimitedRows(text: string, delimiter: string): string[][] 
 }
 
 function escapeCsvField(value: string, delimiter: string): string {
-  return /["\r\n]/u.test(value) || value.includes(delimiter) ? `"${value.replace(/"/gu, "\"\"")}"` : value;
+  const safeValue = /^[\u0000-\u0020]*[=+\-@]/u.test(value) ? `'${value}` : value;
+  return /["\r\n]/u.test(safeValue) || safeValue.includes(delimiter) ? `"${safeValue.replace(/"/gu, "\"\"")}"` : safeValue;
 }
 
 export function textToCsv(value: unknown): TextToCsvResult {

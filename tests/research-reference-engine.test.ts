@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { normalizeDoi, normalizeIsbn } from "../src/engines/research-reference";
+import { cleanResearchUrl } from "../src/engines/research-knowledge";
 import doiIsbnModule from "../src/tools/doi-isbn-normalizer/module";
 
 const doiFixtures = JSON.parse(
@@ -30,6 +31,12 @@ describe("research-reference engine seam", () => {
         url: vector.url,
       });
     }
+  });
+
+  it("redacts credentials from research URL outputs", () => {
+    const result = cleanResearchUrl("https://user:pass@example.org/paper?utm_source=x");
+    expect(result.url).toBe("https://example.org/paper");
+    expect(JSON.stringify(result)).not.toContain("pass");
   });
 
   it("rejects DOI inputs outside the declared deterministic syntax", () => {

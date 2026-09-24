@@ -1,4 +1,5 @@
 export const URL_MARKETING_ENGINE_VERSION = "url-marketing-v1";
+const MAX_URL_MARKETING_TEXT = 2 * 1024 * 1024;
 
 const TRACKING_KEYS = new Set([
   "dclid",
@@ -197,6 +198,18 @@ function invalid(code: string): never {
   throw new Error(code);
 }
 
+function assertMarketingText(value: string): void {
+  if (value.length > MAX_URL_MARKETING_TEXT) invalid("INPUT_TOO_LARGE");
+}
+
+function redactMarketingOutput(value: string): string {
+  try {
+    return redactUrl(new URL(value));
+  } catch {
+    return redactUrlCredentials(value);
+  }
+}
+
 function validatePercentEscapes(value: string): void {
   for (let index = 0; index < value.length; index += 1) {
     if (value[index] !== "%") continue;
@@ -229,6 +242,17 @@ export function redactUrl(url: URL): string {
   copy.username = "";
   copy.password = "";
   return copy.href;
+}
+
+export function redactUrlCredentials(input: string): string {
+  const value = input.trim();
+  try {
+    const url = new URL(value);
+    if (url.username === "" && url.password === "") return value;
+    return value.replace(/^([a-z][a-z0-9+.-]*:\/\/)[^/\s@]*@/iu, "$1[redacted]@");
+  } catch {
+    return value.replace(/^((?:[a-z][a-z0-9+.-]*:)?\/\/)[^/\s@]*@/iu, "$1[redacted]@");
+  }
 }
 
 export function displayUrl(input: URL | string): string {
@@ -410,7 +434,7 @@ function redactToken(value: string): string {
   try {
     return value.includes("://") ? redactUrl(parseHttpUrl(value)) : value;
   } catch {
-    return value.replace(/(https?:\/\/)[^\s/@]+@/giu, "$1[redacted]@");
+    return redactUrlCredentials(value);
   }
 }
 
@@ -464,6 +488,7 @@ const EMAIL_PATTERN = /[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[
 
 export function extractEmailDomains(input: string | readonly string[]): EmailDomainResult {
   const source = typeof input === "string" ? input : input.join("\n");
+  assertMarketingText(source);
   const emails: string[] = [];
   for (const match of source.matchAll(EMAIL_PATTERN)) {
     const email = match[0].toLowerCase();
@@ -519,15 +544,16 @@ function metadataValues(value: unknown): Readonly<Record<string, unknown>> {
 export function parseOpenGraph(value: string | Readonly<Record<string, unknown>>): OpenGraphResult {
   const tags: Record<string, string> = {};
   if (typeof value === "string") {
+    assertMarketingText(value);
     if (value.trim() === "") invalid("INVALID_INPUT");
     for (const match of value.matchAll(/<meta\b[^>]*>/giu)) {
       const attributes = parseAttributes(match[0]);
       const key = attributes.property ?? attributes.name;
-      if (key !== undefined && (key.toLowerCase().startsWith("og:") || key.toLowerCase().startsWith("twitter:"))) tags[key.toLowerCase()] = attributes.content ?? "";
+      if (key !== undefined && (key.toLowerCase().startsWith("og:") || key.toLowerCase().startsWith("twitter:"))) tags[key.toLowerCase()] = redactUrlCredentials(attributes.content ?? "");
     }
   } else {
     for (const [key, raw] of Object.entries(metadataValues(value))) {
-      if (typeof raw === "string" && (key.toLowerCase().startsWith("og:") || key.toLowerCase().startsWith("twitter:"))) tags[key.toLowerCase()] = decodeEntities(raw);
+      if (typeof raw === "string" && (key.toLowerCase().startsWith("og:") || key.toLowerCase().startsWith("twitter:"))) tags[key.toLowerCase()] = redactUrlCredentials(decodeEntities(raw));
     }
   }
   const warnings: string[] = [];
@@ -540,7 +566,7 @@ export function parseOpenGraph(value: string | Readonly<Record<string, unknown>>
         warnings.push(`UNSAFE_${key.toUpperCase().replaceAll(":", "_")}`);
         return null;
       }
-      return resolved.href;
+      return redactUrl(resolved);
     } catch {
       warnings.push(`INVALID_${key.toUpperCase().replaceAll(":", "_")}`);
       return null;
@@ -564,6 +590,7 @@ function parseRobotsLine(line: string): { readonly directive: string; readonly v
 
 export function parseRobots(text: string): RobotsResult {
   if (typeof text !== "string") invalid("INVALID_INPUT");
+  assertMarketingText(text);
   const groups: RobotsGroup[] = [];
   const sitemaps: string[] = [];
   const errors: string[] = [];
@@ -588,7 +615,8 @@ export function parseRobots(text: string): RobotsResult {
       if (current === null) current = { userAgents: ["*"], rules: [] };
       current.rules.push({ directive: parsed.directive, path: parsed.value });
     } else if (parsed.directive === "sitemap") {
-      if (parsed.value !== "" && !sitemaps.includes(parsed.value)) sitemaps.push(parsed.value);
+      const sitemap = redactMarketingOutput(parsed.value);
+      if (sitemap !== "" && !sitemaps.includes(sitemap)) sitemaps.push(sitemap);
     } else {
       errors.push(rawLine);
     }

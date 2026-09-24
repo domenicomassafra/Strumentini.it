@@ -20,6 +20,12 @@ interface JsonParser {
   readonly path: string[];
 }
 
+const MAX_JSON_DEPTH = 128;
+
+function defineRecordValue(record: JsonRecord, key: string, value: unknown): void {
+  Object.defineProperty(record, key, { configurable: true, enumerable: true, value, writable: true });
+}
+
 function jsonFail(parser: JsonParser, message: string): never {
   invalid("INVALID_JSON", `${message} at character ${parser.index + 1}.`);
 }
@@ -89,7 +95,8 @@ function parseJsonNumber(parser: JsonParser): number {
   return result;
 }
 
-function parseJsonValue(parser: JsonParser): unknown {
+function parseJsonValue(parser: JsonParser, depth = 0): unknown {
+  if (depth > MAX_JSON_DEPTH) invalid("JSON_TOO_DEEP", "JSON nesting exceeds the local safety limit.");
   skipJsonWhitespace(parser);
   const character = parser.input[parser.index];
   if (character === "\"") return parseJsonString(parser);
@@ -115,7 +122,7 @@ function parseJsonValue(parser: JsonParser): unknown {
       return values;
     }
     while (true) {
-      values.push(parseJsonValue(parser));
+      values.push(parseJsonValue(parser, depth + 1));
       skipJsonWhitespace(parser);
       const separator = parser.input[parser.index];
       if (separator === ",") {
@@ -148,7 +155,7 @@ function parseJsonValue(parser: JsonParser): unknown {
       if (parser.input[parser.index] !== ":") jsonFail(parser, "Expected a colon after member name");
       parser.index += 1;
       parser.path.push(key);
-      value[key] = parseJsonValue(parser);
+      defineRecordValue(value, key, parseJsonValue(parser, depth + 1));
       parser.path.pop();
       skipJsonWhitespace(parser);
       const separator = parser.input[parser.index];
@@ -169,7 +176,7 @@ function parseJsonValue(parser: JsonParser): unknown {
 export function parseJsonWithMetadata(input: string): JsonParseResult {
   assertInputSize(input);
   const parser: JsonParser = { input, index: 0, duplicates: [], path: [] };
-  const value = parseJsonValue(parser);
+  const value = parseJsonValue(parser, 0);
   skipJsonWhitespace(parser);
   if (parser.index !== input.length) jsonFail(parser, "Unexpected trailing characters");
   return { value, duplicateKeys: [...new Set(parser.duplicates)] };
@@ -350,7 +357,7 @@ function parseYamlFlow(value: string, anchors: Map<string, unknown>, depth: numb
     const separator = item.indexOf(":");
     if (separator < 0) invalid("INVALID_YAML", "YAML flow mappings require key: value pairs.");
     const key = String(parseYamlScalar(item.slice(0, separator), anchors, depth + 1));
-    result[key] = parseYamlScalar(item.slice(separator + 1), anchors, depth + 1);
+    defineRecordValue(result, key, parseYamlScalar(item.slice(separator + 1), anchors, depth + 1));
   }
   return result;
 }
@@ -378,10 +385,10 @@ function parseYamlBlock(lines: readonly YamlLine[], start: number, indent: numbe
         const value = rest.slice(separator + 1).trim();
         if (value === "" && index < lines.length && lines[index]!.indent > indent) {
           const child = parseYamlBlock(lines, index, lines[index]!.indent, anchors, depth + 1);
-          item[key] = child.value;
+          defineRecordValue(item, key, child.value);
           index = child.next;
         } else {
-          item[key] = value === "" ? null : parseYamlScalar(value, anchors, depth + 1);
+          defineRecordValue(item, key, value === "" ? null : parseYamlScalar(value, anchors, depth + 1));
         }
         while (index < lines.length && lines[index]!.indent > indent && !lines[index]!.text.startsWith("- ")) {
           const continuation = lines[index]!;
@@ -393,10 +400,10 @@ function parseYamlBlock(lines: readonly YamlLine[], start: number, indent: numbe
           index += 1;
           if (continuationValue === "" && index < lines.length && lines[index]!.indent > indent) {
             const child = parseYamlBlock(lines, index, lines[index]!.indent, anchors, depth + 1);
-            item[continuationKey] = child.value;
+            defineRecordValue(item, continuationKey, child.value);
             index = child.next;
           } else {
-            item[continuationKey] = continuationValue === "" ? null : parseYamlScalar(continuationValue, anchors, depth + 1);
+            defineRecordValue(item, continuationKey, continuationValue === "" ? null : parseYamlScalar(continuationValue, anchors, depth + 1));
           }
         }
         values.push(item);
@@ -420,13 +427,13 @@ function parseYamlBlock(lines: readonly YamlLine[], start: number, indent: numbe
     if (rest === "") {
       if (index < lines.length && lines[index]!.indent > indent) {
         const child = parseYamlBlock(lines, index, lines[index]!.indent, anchors, depth + 1);
-        value[key] = child.value;
+        defineRecordValue(value, key, child.value);
         index = child.next;
       } else {
-        value[key] = null;
+        defineRecordValue(value, key, null);
       }
     } else {
-      value[key] = parseYamlScalar(rest, anchors, depth + 1);
+      defineRecordValue(value, key, parseYamlScalar(rest, anchors, depth + 1));
     }
   }
   return { value, next: index };
@@ -596,7 +603,7 @@ function parseTomlScalar(raw: string, depth: number): unknown {
       if (separator < 0) invalid("INVALID_TOML", "TOML inline tables require key = value pairs.");
       const key = parseTomlKey(item.slice(0, separator));
       if (Object.hasOwn(result, key)) invalid("INVALID_TOML", `Duplicate TOML key: ${key}.`);
-      result[key] = parseTomlScalar(item.slice(separator + 1), depth + 1);
+      defineRecordValue(result, key, parseTomlScalar(item.slice(separator + 1), depth + 1));
     }
     return result;
   }
@@ -612,10 +619,11 @@ function assignTomlPath(root: JsonRecord, path: readonly string[], value: unknow
   if (path.length === 0) invalid("INVALID_TOML", "A TOML key path cannot be empty.");
   let target = root;
   for (const key of path.slice(0, -1)) {
-    const existing = target[key];
-    if (existing === undefined) {
+    const hasExisting = Object.hasOwn(target, key);
+    const existing = hasExisting ? target[key] : undefined;
+    if (!hasExisting) {
       const child: JsonRecord = {};
-      target[key] = child;
+      defineRecordValue(target, key, child);
       target = child;
     } else if (typeof existing === "object" && existing !== null && !Array.isArray(existing)) {
       target = existing as JsonRecord;
@@ -625,7 +633,7 @@ function assignTomlPath(root: JsonRecord, path: readonly string[], value: unknow
   }
   const key = path[path.length - 1]!;
   if (Object.hasOwn(target, key)) invalid("INVALID_TOML", `Duplicate TOML key: ${key}.`);
-  target[key] = value;
+  defineRecordValue(target, key, value);
 }
 
 function stripTomlComment(text: string): string {
@@ -668,10 +676,11 @@ export function parseToml(input: string): { value: JsonRecord; warnings: string[
       const path = splitTomlTopLevel(body, ".").map(parseTomlKey);
       let target = root;
       for (const key of path) {
-        const existing = target[key];
-        if (existing === undefined) {
+        const hasExisting = Object.hasOwn(target, key);
+        const existing = hasExisting ? target[key] : undefined;
+        if (!hasExisting) {
           const child: JsonRecord = {};
-          target[key] = isArray ? [child] : child;
+          defineRecordValue(target, key, isArray ? [child] : child);
           target = child;
         } else if (Array.isArray(existing) && isArray) {
           const child = existing[existing.length - 1];
@@ -812,8 +821,7 @@ export function queryJsonPath(document: unknown, path: string): { matches: Array
         }
       } else if (item.value !== null && typeof item.value === "object" && !Array.isArray(item.value)) {
         const key = String(token.value);
-        const child = (item.value as JsonRecord)[key];
-        if (child !== undefined || Object.hasOwn(item.value as JsonRecord, key)) next.push({ path: `${item.path}.${key}`, value: child });
+        if (Object.hasOwn(item.value as JsonRecord, key)) next.push({ path: `${item.path}.${key}`, value: (item.value as JsonRecord)[key] });
       }
       if (next.length > MAX_JSON_PATH_MATCHES) invalid("JSON_PATH_TOO_LARGE", "JSON path returned too many matches.");
     }

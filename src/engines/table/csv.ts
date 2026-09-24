@@ -3,6 +3,8 @@ import Papa from "papaparse";
 export const CSV_ENGINE_VERSION = "1";
 export const CSV_SOFT_FILE_BYTES = 10 * 1024 * 1024;
 export const CSV_HARD_FILE_BYTES = 50 * 1024 * 1024;
+export const CSV_MAX_ROWS = 100_000;
+export const CSV_MAX_CELLS = 2_000_000;
 
 export type CsvWarningCode = "DUPLICATE_HEADER" | "RAGGED_ROW" | "DELIMITER_FALLBACK";
 
@@ -134,11 +136,13 @@ function detectDelimiter(text: string): { delimiter: string; confident: boolean 
 }
 
 export function parseCsvText(text: string): ParsedCsv {
+  if (new TextEncoder().encode(text).byteLength > CSV_HARD_FILE_BYTES) throw new CsvCleanerError("FILE_TOO_LARGE", "CSV exceeds the 50 MiB hard limit.");
   const detected = detectDelimiter(text);
   const result = Papa.parse<string[]>(text, { delimiter: detected.delimiter, skipEmptyLines: false, dynamicTyping: false });
   const fatal = result.errors.filter((error) => error.code !== "UndetectableDelimiter");
   if (fatal.length > 0) throw new CsvCleanerError("PARSE_ERROR", fatal.map((error) => error.message).join("; "));
   const rows = dropTerminalEmptyRow(result.data.map((row) => row.map((cell) => String(cell))), text);
+  if (rows.length > CSV_MAX_ROWS || rows.reduce((sum, row) => sum + row.length, 0) > CSV_MAX_CELLS) throw new CsvCleanerError("FILE_TOO_LARGE", "CSV row or cell count exceeds the local safety limit.");
   const warnings = inspectShape(rows);
   if (!detected.confident || result.errors.some((error) => error.code === "UndetectableDelimiter")) {
     warnings.push({ code: "DELIMITER_FALLBACK", message: "Delimiter could not be inferred confidently; comma fallback was used." });
@@ -153,7 +157,7 @@ export function parseCsvTable(text: string): CsvTable {
 }
 
 export function serializeCsvTable(table: Pick<CsvTable, "header" | "rows" | "delimiter">): string {
-  return Papa.unparse([table.header, ...table.rows], { delimiter: table.delimiter, newline: "\n" });
+  return Papa.unparse([table.header, ...table.rows], { delimiter: table.delimiter, newline: "\n", escapeFormulae: true });
 }
 
 function validateColumnIndexes(indexes: readonly number[], columnCount: number, code: string): number[] {

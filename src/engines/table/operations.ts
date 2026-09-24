@@ -568,6 +568,11 @@ export function selectTableColumns(table: CsvTable, indexes: readonly number[]):
   };
 }
 
+function validateTableRegex(pattern: string): void {
+  if (pattern.length > TABLE_MAX_REGEX_LENGTH) throw new Error("REGEX_TOO_LARGE");
+  if (/\([^)]*[+*][^)]*\)[+*]/u.test(pattern) || /\([^)]*\{[^}]+\}[^)]*\)[+*]/u.test(pattern)) throw new Error("REGEX_COMPLEXITY");
+}
+
 function filterValue(value: string, operator: TableFilterOperator, query: string, caseSensitive: boolean): boolean {
   const left = caseSensitive ? value : value.toLocaleLowerCase();
   const right = caseSensitive ? query : query.toLocaleLowerCase();
@@ -579,7 +584,7 @@ function filterValue(value: string, operator: TableFilterOperator, query: string
   if (operator === "not-contains") return !left.includes(right);
   if (operator === "starts-with") return left.startsWith(right);
   if (operator === "ends-with") return left.endsWith(right);
-  if (query.length > TABLE_MAX_REGEX_LENGTH) throw new Error("REGEX_TOO_LARGE");
+  validateTableRegex(query);
   return new RegExp(query, caseSensitive ? "u" : "iu").test(value);
 }
 

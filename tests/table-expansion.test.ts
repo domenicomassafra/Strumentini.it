@@ -143,6 +143,12 @@ describe("table and CSV expansion", () => {
     expect(result.removedRows).toBe(1);
   });
 
+  it("escapes formula-leading cells in generated CSV and rejects nested regex filters", () => {
+    const table = parseCsvTable("value\n=1+1\n@SUM(1,1)");
+    expect(dedupeCsvTable(table, { mode: "whole-row" }).output).toContain("'=1+1");
+    expect(() => filterTable(table, { column: 0, operator: "regex", value: "(a+)+" })).toThrow(/REGEX_COMPLEXITY/u);
+  });
+
   it("26 selects and reorders columns and fills missing cells", () => {
     const table = parseCsvTable("a,b,c\n1,2\n");
     expect(selectTableColumns(table, [2, 0]).output).toBe("c,a\n,1");

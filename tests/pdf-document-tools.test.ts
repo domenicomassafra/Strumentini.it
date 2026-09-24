@@ -2,6 +2,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import {
   checkPdfPassword,
+  buildPdfFromJpegs,
   createSimplePdf,
   extractPdfImages,
   extractPdfText,
@@ -111,6 +112,9 @@ describe("PDF and document tool tranche", () => {
     const file = asBlob(source);
     const reordered = await invoke<{ artifacts: readonly { bytes: Uint8Array }[] }>(pageReorder, { file, order: [3, 1, 2] });
     expect((await extractPdfText(reordered.artifacts[0]!.bytes)).map((page) => page.text)).toEqual(["three", "one", "two"]);
+    const safeReorder = await invoke<{ artifacts: readonly { bytes: Uint8Array }[] }>(pageReorder, { file: asBlob(annotatedPdf()), order: [1] });
+    expect(inspectPdfBytes(safeReorder.artifacts[0]!.bytes).links).toHaveLength(0);
+    expect(inspectPdfBytes(safeReorder.artifacts[0]!.bytes).forms).toHaveLength(0);
     const rotated = await invoke<{ artifacts: readonly { bytes: Uint8Array }[] }>(pageRotate, { file, rotations: { 1: 90 } });
     expect(inspectPdfBytes(rotated.artifacts[0]!.bytes).pages[0]?.rotation).toBe(90);
     const split = await invoke<{ artifacts: readonly { bytes: Uint8Array }[] }>(pageSplit, { file, groups: [[1], [2, 3]] });
@@ -119,6 +123,14 @@ describe("PDF and document tool tranche", () => {
     expect(inspectPdfBytes(deleted.artifacts[0]!.bytes).pageCount).toBe(2);
     const merged = await mergePdfs([source, source]);
     expect(inspectPdfBytes(merged.bytes).pageCount).toBe(6);
+  });
+
+  it("redacts PDF link credentials and rejects oversized image dimensions", () => {
+    const credentialBytes = new TextEncoder().encode(new TextDecoder().decode(annotatedPdf()).replace("https://example.test/a", "https://user:pass@example.test/a"));
+    const inspection = inspectPdfBytes(credentialBytes);
+    expect(inspection.links[0]?.uri).toBe("https://example.test/a");
+    expect(JSON.stringify(inspection)).not.toContain("pass");
+    expect(() => buildPdfFromJpegs([{ bytes: new Uint8Array([0xff, 0xd8]), width: 20_001, height: 1, name: "huge.jpg" }])).toThrow(/PDF_LIMIT/u);
   });
 
   it("supports JPEG embedding/extraction and rejects non-JPEG input explicitly", async () => {

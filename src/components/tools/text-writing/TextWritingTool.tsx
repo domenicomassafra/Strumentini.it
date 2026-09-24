@@ -137,10 +137,44 @@ function outputValue(value: unknown): string | null {
   return null;
 }
 
+const MARKDOWN_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6", "p", "br", "strong", "em", "del", "code", "pre", "blockquote", "ul", "ol", "li", "hr", "a"]);
+
+function safePreviewHtml(value: string): string | null {
+  if (typeof DOMParser === "undefined") return null;
+  const parsed = new DOMParser().parseFromString(`<body>${value}</body>`, "text/html");
+  for (const element of [...parsed.body.querySelectorAll("*")]) {
+    const tag = element.tagName.toLowerCase();
+    if (!MARKDOWN_TAGS.has(tag)) {
+      element.remove();
+      continue;
+    }
+    for (const attribute of [...element.attributes]) {
+      if (tag === "a" && attribute.name === "href") continue;
+      if (tag === "a" && attribute.name === "rel") continue;
+      element.removeAttribute(attribute.name);
+    }
+    if (tag === "a") {
+      const href = element.getAttribute("href");
+      if (href === null) continue;
+      try {
+        const protocol = new URL(href, "https://preview.invalid/").protocol;
+        if (protocol !== "http:" && protocol !== "https:" && protocol !== "mailto:" && protocol !== "tel:") element.removeAttribute("href");
+      } catch {
+        element.removeAttribute("href");
+      }
+    }
+  }
+  return parsed.body.innerHTML;
+}
+
 function ResultOutput({ tool, value }: { tool: TextWritingToolId; value: unknown }) {
   if (tool === "markdown-preview" && typeof value === "object" && value !== null) {
     const html = stringValue((value as Record<string, unknown>).html);
-    if (html !== null) return <div class="markdown-output" dangerouslySetInnerHTML={{ __html: html }} />;
+    if (html !== null) {
+      const safeHtml = safePreviewHtml(html);
+      if (safeHtml !== null) return <div class="markdown-output" dangerouslySetInnerHTML={{ __html: safeHtml }} />;
+      return <pre class="text-result">{html}</pre>;
+    }
   }
   const text = outputValue(value);
   if (text !== null) return <pre class="text-result">{text === "" ? "(empty output)" : text}</pre>;

@@ -118,6 +118,11 @@ describe("text-writing engine", () => {
     expect(result.html).toContain("<strong>safe</strong>");
     expect(result.html).not.toContain("<script>");
     expect(result.html).toContain("href=\"#\"");
+    const active = renderMarkdown({ text: '<img src=x onerror=alert(1)>\n\n<svg><a xlink:href="javascript:alert(1)">x</a></svg>' });
+    expect(active.html).toContain("&lt;img");
+    expect(active.html).toContain("&lt;svg");
+    expect(active.html).not.toContain("<img");
+    expect(active.html).not.toContain("<svg");
   });
 
   it("formats Markdown tables and round-trips quoted CSV rows", () => {
@@ -125,6 +130,11 @@ describe("text-writing engine", () => {
     const csv = textToCsv({ text: "one,\"two, values\"\nthree,\"say \"\"hi\"\"\"" }).csv;
     expect(csv).toBe("column1,column2\none,\"two, values\"\nthree,\"say \"\"hi\"\"\"");
     expect(csvColumnToList({ csv: "name,note\nAda,\"hello, world\"", column: "note" })).toMatchObject({ values: ["hello, world"], list: "hello, world", column: "note" });
+  });
+
+  it("neutralizes spreadsheet formulas in generated CSV and rejects risky replacement regexes", () => {
+    expect(textToCsv({ text: "=1+1\n@SUM(1,1)\n+1\n-1+1" }).csv).toContain("'=1+1");
+    expect(() => previewFindReplace({ text: "a", find: "(a+)+", replace: "x", regex: true })).toThrow(/REGEX_COMPLEXITY/u);
   });
 
   it("creates bounded slugs, deterministic samples, and heuristic language statistics", () => {

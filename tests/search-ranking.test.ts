@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createSearch } from "../src/search/search";
+import { sanitizeSearchContext } from "../src/search/browser-context";
 import type { SearchToolMetadata } from "../src/search/types";
 
 const tools = [
@@ -101,6 +102,12 @@ describe("search discovery seam", () => {
     expect(result.sections[0]?.hits.map((hit) => hit.id)).toEqual(["business-day"]);
     expect(result.sections[1]?.hits.map((hit) => hit.id)).toEqual(["timezone-overlap"]);
     expect(new Set(result.hits.map((hit) => hit.id)).size).toBe(result.hits.length);
+  });
+
+  it("bounds and sanitizes persisted search context identifiers", () => {
+    const context = sanitizeSearchContext({ installedToolIds: ["business-day", "../../escape", "business-day", "x".repeat(65)], recentToolIds: new Array(600).fill("timezone-overlap") });
+    expect(context.installedToolIds).toEqual(["business-day"]);
+    expect(context.recentToolIds).toEqual(["timezone-overlap"]);
   });
 
   it("returns only metadata-derived close intents for a zero result", () => {

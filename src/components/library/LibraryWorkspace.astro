@@ -52,9 +52,10 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
 </section>
 
 <script>
+  import { isLocalToolRoute } from "../../catalog/manifest";
   import { filterLibrary, pageLibrary, parseLibraryState, serializeLibraryState } from "../../library/library";
   import { createSearch } from "../../search/search";
-  import { SEARCH_CONTEXT_EVENT } from "../../search/browser-context";
+  import { SEARCH_CONTEXT_EVENT, sanitizeSearchContext } from "../../search/browser-context";
   import { getTelemetryAdapter, rememberToolEntrySource } from "../../telemetry/browser";
   import { classifySearchCategory, classifySearchIntent, trackSearchZeroResult } from "../../telemetry/events";
   import type { LibraryState } from "../../library/library";
@@ -75,12 +76,12 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   try {
     const stored = window.sessionStorage.getItem("utilityos:workbench-context:v1");
     if (stored !== null) {
-      const parsed = JSON.parse(stored) as Partial<SearchContext>;
-      context = {
-        ...(Array.isArray(parsed.installedToolIds) ? { installedToolIds: parsed.installedToolIds.filter((id): id is string => typeof id === "string") } : {}),
-        ...(Array.isArray(parsed.recentToolIds) ? { recentToolIds: parsed.recentToolIds.filter((id): id is string => typeof id === "string") } : {}),
-        ...(Array.isArray(parsed.installedPackTags) ? { installedPackTags: parsed.installedPackTags.filter((id): id is string => typeof id === "string") } : {}),
-      };
+import { SEARCH_CONTEXT_EVENT, sanitizeSearchContext } from "../../search/browser-context";
+import { getTelemetryAdapter, rememberToolEntrySource } from "../../telemetry/browser";
+import { classifySearchCategory, classifySearchIntent, trackSearchZeroResult } from "../../telemetry/events";
+
+
+      context = sanitizeSearchContext(JSON.parse(stored));
     }
   } catch (error) {
     void error;
@@ -133,7 +134,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
       const reason = state.q ? `No tools match “${escapeHtml(state.q)}”.` : "No tools match these filters.";
       results.innerHTML = `<div class="library-zero"><strong>${reason}</strong><p>Your query and filters are preserved. Try fewer filters or request this exact tool.</p>${suggestions ? `<div class="close-intents">${suggestions}</div>` : ""}</div>`;
     } else {
-      results.innerHTML = page.items.map((tool) => {
+      results.innerHTML = page.items.filter((tool) => isLocalToolRoute(tool.route)).map((tool) => {
         const installed = (context.installedToolIds ?? []).includes(tool.id);
         return `<a class="library-row" data-library-tool-id="${escapeHtml(tool.id)}" href="${escapeHtml(tool.route)}"><span class="tool-main"><strong>${escapeHtml(tool.name)}</strong><small>${escapeHtml(tool.summary)}</small></span><span class="tool-category">${escapeHtml(tool.category)}</span><span class="tool-runtime">${runtimeLabel(tool)}</span><span class="tool-action">${installed ? "Added · Open" : "Open"}</span></a>`;
       }).join("");
@@ -186,7 +187,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   });
   window.addEventListener("popstate", render);
   window.addEventListener(SEARCH_CONTEXT_EVENT, (event) => {
-    context = (event as CustomEvent<SearchContext>).detail ?? {};
+    context = sanitizeSearchContext((event as CustomEvent<SearchContext>).detail);
     try {
       window.sessionStorage.setItem("utilityos:workbench-context:v1", JSON.stringify(context));
     } catch (error) {

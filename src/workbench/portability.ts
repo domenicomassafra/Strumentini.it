@@ -33,6 +33,10 @@ export type ImportPreview =
     };
 
 const DAY_CODES = new Set<DayCode>(["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]);
+const MAX_CONFIG_BYTES = 1024 * 1024;
+const MAX_CONFIG_IDS = 500;
+const MAX_PROFILE_STRING = 128;
+const TOOL_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const DATE_FORMATS = new Set(["system", "day-first", "month-first"]);
 const NUMBER_FORMATS = new Set(["system", "decimal-comma", "decimal-point"]);
 const UNIT_SYSTEMS = new Set(["metric", "imperial", "mixed"]);
@@ -48,7 +52,7 @@ function hasExactKeys(value: Record<string, unknown>, keys: readonly string[]): 
 }
 
 function stringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item) => typeof item === "string" && item.trim() !== "");
+  return Array.isArray(value) && value.length <= MAX_CONFIG_IDS && value.every((item) => typeof item === "string" && item.trim() !== "" && item.length <= 64 && TOOL_ID_PATTERN.test(item));
 }
 
 function unique(values: readonly string[]): boolean {
@@ -87,6 +91,7 @@ function parseProfile(value: unknown): WorkProfile | undefined {
   ) {
     return undefined;
   }
+  if (![value.locale, value.timezone, value.currency].every((item) => typeof item === "string" && item.length <= MAX_PROFILE_STRING && !/[\u0000-\u001f\u007f]/u.test(item))) return undefined;
 
   return {
     locale: value.locale,
@@ -157,6 +162,7 @@ export function previewWorkbenchImport(
   serialized: string,
   current: WorkbenchState,
 ): ImportPreview {
+  if (serialized.length > MAX_CONFIG_BYTES) return { ok: false, error: "This configuration exceeds the local size limit." };
   let parsed: unknown;
   try {
     parsed = JSON.parse(serialized);
