@@ -424,14 +424,13 @@ export function viewCsvTable(text: string, options: TableTextOptions = {}): Tabl
   };
 }
 
-export function readTableBlobBytes(blob: Blob, signal?: AbortSignal, onProgress?: (fraction: number) => void): Promise<Uint8Array> {
-  if (blob.size > CSV_HARD_FILE_BYTES) return Promise.reject(new CsvCleanerError("FILE_TOO_LARGE", "File exceeds the 50 MiB hard limit."));
-  if (signal?.aborted) return Promise.reject(new DOMException("Operation cancelled", "AbortError"));
-  return blob.arrayBuffer().then((buffer) => {
-    if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
-    onProgress?.(1);
-    return new Uint8Array(buffer);
-  });
+export async function readTableBlobBytes(blob: Blob, signal?: AbortSignal, onProgress?: (fraction: number) => void): Promise<Uint8Array> {
+  if (blob.size > CSV_HARD_FILE_BYTES) throw new CsvCleanerError("FILE_TOO_LARGE", "File exceeds the 50 MiB hard limit.");
+  if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+  const buffer = await blob.arrayBuffer();
+  if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+  onProgress?.(1);
+  return new Uint8Array(buffer);
 }
 
 function toBytes(value: ArrayBuffer | Uint8Array | number[]): Uint8Array {
