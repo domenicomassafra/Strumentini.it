@@ -1,19 +1,4 @@
 ---
-import { catalog } from "../../generated/catalog";
-
-const searchMetadata = catalog.map((tool) => ({
-  id: tool.id,
-  route: tool.route,
-  name: tool.name,
-  summary: tool.summary,
-  aliases: tool.aliases,
-  jobs: tool.jobs,
-  category: tool.category,
-  inputTypes: tool.inputTypes,
-  engine: tool.engine,
-  runtime: tool.runtime,
-}));
-const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u003c");
 ---
 
 <div class="global-search">
@@ -42,23 +27,30 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
       <div class="palette-help" aria-hidden="true"><span>↑↓ navigate</span><span>Enter open</span><span>Esc close</span></div>
     </div>
   </dialog>
-  <script is:inline type="application/json" id="utilityos-search-catalog" set:html={searchMetadataJson}></script>
 </div>
 
 <script>
   import { createSearch } from "../../search/search";
   import { SEARCH_CONTEXT_EVENT } from "../../search/browser-context";
-  import type { SearchContext, SearchToolMetadata } from "../../search/types";
+  import type { SearchContext } from "../../search/types";
 
   const root = document.querySelector<HTMLElement>(".global-search");
   const trigger = root?.querySelector<HTMLButtonElement>("[data-search-trigger]");
   const dialog = root?.querySelector<HTMLDialogElement>("[data-search-dialog]");
   const input = root?.querySelector<HTMLInputElement>("[data-search-input]");
   const results = root?.querySelector<HTMLElement>("[data-search-results]");
-  const dataNode = root?.querySelector<HTMLScriptElement>("#utilityos-search-catalog");
-  const tools = JSON.parse(dataNode?.textContent ?? "[]") as SearchToolMetadata[];
-  const search = createSearch(tools);
+  let search: ReturnType<typeof createSearch> | undefined;
+  let searchLoad: Promise<ReturnType<typeof createSearch>> | undefined;
   let context: SearchContext = {};
+
+  function loadSearch(): Promise<ReturnType<typeof createSearch>> {
+    if (search !== undefined) return Promise.resolve(search);
+    searchLoad ??= import("../../generated/search-catalog").then(({ searchCatalog }) => {
+      search = createSearch(searchCatalog);
+      return search;
+    });
+    return searchLoad;
+  }
   let activeIndex = 0;
   let invoker: HTMLElement | null = null;
   let visibleRoutes: string[] = [];
@@ -73,6 +65,12 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
 
   function render(): void {
     if (!results || !input) return;
+    if (search === undefined) {
+      visibleRoutes = [];
+      results.innerHTML = `<div class="zero-results" role="status"><strong>Loading tools</strong><p>The local catalog index is loading.</p></div>`;
+      input.setAttribute("aria-activedescendant", "");
+      return;
+    }
     const result = search.query(input.value, context, 18);
     visibleRoutes = [];
     let optionIndex = 0;
@@ -111,13 +109,19 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
     active?.scrollIntoView({ block: "nearest" });
   }
 
-  function openPalette(source: HTMLElement | null): void {
+  async function openPalette(source: HTMLElement | null): Promise<void> {
     if (!dialog || !input || dialog.open) return;
     invoker = source ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     activeIndex = 0;
     dialog.showModal();
     render();
     input.focus();
+    try {
+      await loadSearch();
+      if (dialog.open) render();
+    } catch {
+      if (results) results.innerHTML = `<div class="zero-results" role="alert"><strong>Search is unavailable</strong><p>Reload the page to try the local catalog again.</p></div>`;
+    }
   }
 
   function closePalette(): void {
@@ -126,7 +130,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
     invoker?.focus();
   }
 
-  trigger?.addEventListener("click", () => openPalette(trigger));
+  trigger?.addEventListener("click", () => void openPalette(trigger));
   window.addEventListener(SEARCH_CONTEXT_EVENT, (event) => {
     context = (event as CustomEvent<SearchContext>).detail ?? {};
     if (dialog?.open) render();
@@ -134,7 +138,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
   window.addEventListener("keydown", (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === "k") {
       event.preventDefault();
-      dialog?.open ? closePalette() : openPalette(document.activeElement instanceof HTMLElement ? document.activeElement : trigger ?? null);
+      dialog?.open ? closePalette() : void openPalette(document.activeElement instanceof HTMLElement ? document.activeElement : trigger ?? null);
     }
   });
   dialog?.addEventListener("cancel", (event) => {

@@ -4,9 +4,9 @@ import { pathToFileURL } from "node:url";
 import {
   assertGeneratedCatalogCurrent,
   compileFactoryCatalog,
-  renderCatalogSource,
-  renderLoaderSource,
+  toLegacyCatalogSummary,
 } from "../../src/tool-factory/catalog";
+import { renderCatalogSources } from "../../src/catalog/projections";
 import type { ToolManifest } from "../../src/catalog/manifest";
 import type { FixtureIndex, OracleRegistry } from "../../src/tool-factory/manifest";
 
@@ -42,19 +42,30 @@ const artifacts = compileFactoryCatalog(await discoverManifests(), {
   requireOracleBindings: true,
   requireAcceptance: true,
 });
-const catalogPath = resolve(root, "src/generated/catalog.ts");
-const loadersPath = resolve(root, "src/generated/tool-loaders.ts");
-const outputs = [
-  [catalogPath, renderCatalogSource(artifacts)] as const,
-  [loadersPath, renderLoaderSource(artifacts)] as const,
-];
+const legacySummaries = artifacts.summaries.map(toLegacyCatalogSummary);
+const sources = renderCatalogSources(legacySummaries, artifacts.loaders);
+const generatedPaths = {
+  catalog: resolve(root, "src/generated/catalog.ts"),
+  loaders: resolve(root, "src/generated/tool-loaders.ts"),
+  searchCatalog: resolve(root, "src/generated/search-catalog.ts"),
+  workbenchCatalog: resolve(root, "src/generated/workbench-catalog.ts"),
+  runtimeToolIndex: resolve(root, "src/generated/runtime-tool-index.ts"),
+  handoffCatalog: resolve(root, "src/generated/handoff-catalog.ts"),
+};
+const outputs = Object.entries(sources).map(([key, content]) => [generatedPaths[key as keyof typeof generatedPaths], content] as const);
 
 if (checkOnly) {
   const files = {
-    catalog: await readFile(catalogPath, "utf8").catch(() => ""),
-    loaders: await readFile(loadersPath, "utf8").catch(() => ""),
+    catalog: await readFile(generatedPaths.catalog, "utf8").catch(() => ""),
+    loaders: await readFile(generatedPaths.loaders, "utf8").catch(() => ""),
   };
   assertGeneratedCatalogCurrent(artifacts, files);
+  for (const [key, path] of Object.entries(generatedPaths)) {
+    if (key === "catalog" || key === "loaders") continue;
+    if (await readFile(path, "utf8").catch(() => "") !== sources[key as keyof typeof sources]) {
+      throw new Error(`tool-factory catalog output is stale: ${path}`);
+    }
+  }
   console.log(`tool-factory catalog: ${artifacts.summaries.length} tool(s), outputs current`);
 } else {
   for (const [path, content] of outputs) {

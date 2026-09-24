@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
-import { CSV_HARD_FILE_BYTES, readBlobText, type CsvColumnMapEntry } from "../../../engines/table/csv";
+import { CSV_HARD_FILE_BYTES, readBlobText } from "../../../engines/table/io";
+import type { CsvColumnMapEntry } from "../../../engines/table/csv";
 import { receiveHandoffFromOpener } from "../../../runtime/handoff";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { csvColumnMapManifest } from "../../../tools/csv-column-map/manifest";

@@ -72,3 +72,15 @@ export interface ToolManifest {
 }
 
 export type ToolSummary = Omit<ToolManifest, "implementation">;
+
+export type WorkbenchToolSummary = Pick<
+  ToolSummary,
+  "id" | "route" | "name" | "summary" | "category" | "inputTypes" | "runtime" | "profileFields" | "handoff"
+>;
+
+export type HandoffToolSummary = Pick<ToolSummary, "id" | "route" | "name" | "handoff">;
+
+export type RuntimeToolIndexEntry = Pick<
+  ToolSummary,
+  "id" | "route" | "name" | "profileFields"
+>;

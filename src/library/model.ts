@@ -1,5 +1,5 @@
 import { createSearchIndex, searchCatalog } from "../search/catalog-search";
-import type { SearchContext, SearchToolMetadata } from "../search/types";
+import type { SearchContext, SearchIndexEntry, SearchToolMetadata } from "../search/types";
 
 export type RuntimeFilter = "any" | "local" | "network";
 export type InstallStateFilter = "any" | "installed" | "not-installed";
@@ -29,6 +29,16 @@ export interface LibraryPage<T> {
   total: number;
 }
 
+const searchIndexCache = new WeakMap<object, readonly SearchIndexEntry[]>();
+
+function searchIndexFor(tools: readonly SearchToolMetadata[]): readonly SearchIndexEntry[] {
+  const cached = searchIndexCache.get(tools);
+  if (cached !== undefined) return cached;
+  const index = createSearchIndex(tools);
+  searchIndexCache.set(tools, index);
+  return index;
+}
+
 const sortedUnique = (values: readonly string[]): string[] => [...new Set(values)].sort((left, right) => left.localeCompare(right));
 
 export function getLibraryFacets(tools: readonly SearchToolMetadata[]): LibraryFacets {
@@ -47,7 +57,7 @@ export function filterLibrary(
 ): SearchToolMetadata[] {
   const installed = new Set(context.installedToolIds ?? []);
   const byQuery = filters.query?.trim()
-    ? searchCatalog(filters.query, createSearchIndex(tools), context, tools.length).map(({ tool }) => tool)
+    ? searchCatalog(filters.query, searchIndexFor(tools), context, tools.length).map(({ tool }) => tool)
     : [...tools];
 
   return byQuery.filter((tool) => {

@@ -1,20 +1,47 @@
-import { registry, type ToolRegistry } from "./registry";
+import { runtimeToolIndex } from "../generated/runtime-tool-index";
+import type { RuntimeToolIndexEntry, ToolSummary } from "../catalog/manifest";
+import type { ToolRegistry } from "./registry";
 import { resolveToolDefaults, type ProfileResolutionInput } from "./profile";
 import type { PreflightResult, ToolRunResult } from "./types";
 
 export interface RuntimeContext extends ProfileResolutionInput {}
 
+const runtimeToolsById = new Map<string, RuntimeToolIndexEntry>(
+  runtimeToolIndex.map((tool) => [tool.id, tool]),
+);
+type RegistryPreflightResult =
+  | { ok: true; tool: ToolSummary }
+  | { ok: false; code: "NOT_FOUND"; message: string };
+
+let defaultRegistryPromise: Promise<ToolRegistry> | undefined;
+
+function loadDefaultRegistry(): Promise<ToolRegistry> {
+  defaultRegistryPromise ??= import("./registry").then((module) => module.registry);
+  return defaultRegistryPromise;
+}
+
+function preflightWithRegistry(registry: ToolRegistry, toolId: string): RegistryPreflightResult {
+  const tool = registry.get(toolId);
+  return tool === undefined
+    ? { ok: false, code: "NOT_FOUND", message: `Unknown tool: ${toolId}` }
+    : { ok: true, tool };
+}
+
+function preflightFromIndex(toolId: string): PreflightResult {
+  const tool = runtimeToolsById.get(toolId);
+  return tool === undefined
+    ? { ok: false, code: "NOT_FOUND", message: `Unknown tool: ${toolId}` }
+    : { ok: true, tool };
+}
+
 function normalizeMessage(error: unknown): string {
   return error instanceof Error ? error.message : "Unknown runtime failure";
 }
 
-export function createToolRuntime(toolRegistry: ToolRegistry = registry) {
+export function createToolRuntime(toolRegistry?: ToolRegistry) {
   return {
     preflight(toolId: string): PreflightResult {
-      const tool = toolRegistry.get(toolId);
-      return tool === undefined
-        ? { ok: false, code: "NOT_FOUND", message: `Unknown tool: ${toolId}` }
-        : { ok: true, tool };
+      return toolRegistry === undefined ? preflightFromIndex(toolId) : preflightWithRegistry(toolRegistry, toolId);
     },
 
     async run(
@@ -23,18 +50,20 @@ export function createToolRuntime(toolRegistry: ToolRegistry = registry) {
       context: RuntimeContext = {},
       signal?: AbortSignal,
     ): Promise<ToolRunResult> {
-      const preflight = this.preflight(toolId);
-      if (!preflight.ok) return preflight;
-
       if (signal?.aborted) {
         return { ok: false, code: "CANCELLED", message: "Operation cancelled" };
       }
 
-      const defaults = resolveToolDefaults(preflight.tool, context);
-      const defaultMap = Object.fromEntries(defaults.map((entry) => [entry.field, entry]));
-
       try {
-        const module = await toolRegistry.load(toolId, signal);
+        const activeRegistry = toolRegistry ?? await loadDefaultRegistry();
+        if (signal?.aborted) {
+          return { ok: false, code: "CANCELLED", message: "Operation cancelled" };
+        }
+        const preflight = preflightWithRegistry(activeRegistry, toolId);
+        if (!preflight.ok) return preflight;
+        const defaults = resolveToolDefaults(preflight.tool, context);
+        const defaultMap = Object.fromEntries(defaults.map((entry) => [entry.field, entry]));
+        const module = await activeRegistry.load(toolId, signal);
         const value = await module.run(input, { defaults: defaultMap }, signal);
         return { ok: true, tool: preflight.tool, value, defaults };
       } catch (error) {

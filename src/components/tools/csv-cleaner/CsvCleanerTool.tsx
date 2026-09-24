@@ -1,6 +1,6 @@
 import { useRef, useState } from "preact/hooks";
-import { CSV_HARD_FILE_BYTES, CSV_SOFT_FILE_BYTES, CsvCleanerError, readBlobText } from "../../../engines/table/csv";
-import { catalog } from "../../../generated/catalog";
+import { CSV_HARD_FILE_BYTES, CSV_SOFT_FILE_BYTES, CsvCleanerError, readBlobText } from "../../../engines/table/io";
+import { handoffCatalog } from "../../../generated/handoff-catalog";
 import { compatibleHandoffTargets, openHandoffTarget } from "../../../runtime/handoff";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import type { CsvCleanerOutput } from "../../../tools/csv-cleaner/types";
@@ -36,7 +36,7 @@ export function CsvCleanerTool() {
     const anchor = document.createElement("a"); anchor.href = url; anchor.download = file.name.replace(/\.csv$/iu, "") + ".clean.csv"; anchor.click(); URL.revokeObjectURL(url);
   }
 
-  const handoffTargets = result === null ? [] : compatibleHandoffTargets(result.handoff, catalog);
+  const handoffTargets = result === null ? [] : compatibleHandoffTargets(result.handoff, handoffCatalog);
 
   return <div class="tool-operation">
     <section class="tool-form-card">

@@ -59,8 +59,9 @@ try {
   await page.getByRole("button", { name: "Reset" }).click();
   const large = Buffer.alloc(48 * 1024 * 1024, 0x5a);
   await page.getByLabel("File").setInputFiles({ name: "cancel-me.bin", mimeType: "application/octet-stream", buffer: large });
-  await page.getByRole("button", { name: "Calculate SHA-256" }).click();
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  const cancellationRun = page.getByRole("button", { name: "Calculate SHA-256" }).click({ noWaitAfter: true });
+  await page.getByRole("button", { name: "Cancel", exact: true }).click({ timeout: 5000 });
+  await cancellationRun;
   await page.getByRole("alert").filter({ hasText: "Hashing cancelled." }).waitFor();
   await sleep(200);
   await page.getByText("Your SHA-256 digest appears here.").waitFor();

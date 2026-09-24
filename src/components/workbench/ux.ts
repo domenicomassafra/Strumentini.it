@@ -1,8 +1,8 @@
-import type { ToolSummary } from "../../catalog/manifest";
+import type { WorkbenchToolSummary } from "../../catalog/manifest";
 import type { WorkbenchState } from "../../workbench/state";
 
 export interface WorkbenchSuggestion {
-  tool: ToolSummary;
+  tool: WorkbenchToolSummary;
   reason: string;
 }
 
@@ -32,11 +32,11 @@ function readableLabel(value: string): string {
   return value.replaceAll("-", " ").replace(/\b\w/gu, (character) => character.toUpperCase());
 }
 
-function sharedInputType(source: ToolSummary, tool: ToolSummary): string | undefined {
+function sharedInputType(source: WorkbenchToolSummary, tool: WorkbenchToolSummary): string | undefined {
   return source.inputTypes.find((input) => tool.inputTypes.includes(input));
 }
 
-function handoffSourceFor(tool: ToolSummary, installed: readonly ToolSummary[]): ToolSummary | undefined {
+function handoffSourceFor(tool: WorkbenchToolSummary, installed: readonly WorkbenchToolSummary[]): WorkbenchToolSummary | undefined {
   return installed.find((source) => {
     const outputs = source.handoff?.emits ?? [];
     const inputs = tool.handoff?.accepts ?? [];
@@ -47,8 +47,8 @@ function handoffSourceFor(tool: ToolSummary, installed: readonly ToolSummary[]):
 }
 
 function suggestionForTool(
-  tool: ToolSummary,
-  installed: readonly ToolSummary[],
+  tool: WorkbenchToolSummary,
+  installed: readonly WorkbenchToolSummary[],
   recent: ReadonlySet<string>,
 ): { reason: string; score: number } | undefined {
   if (recent.has(tool.id)) return { reason: "You used this tool recently.", score: 50 };
@@ -81,7 +81,7 @@ function suggestionForTool(
 }
 
 export function getWorkbenchSuggestions(
-  tools: readonly ToolSummary[],
+  tools: readonly WorkbenchToolSummary[],
   state: WorkbenchState,
   limit = 3,
 ): WorkbenchSuggestion[] {

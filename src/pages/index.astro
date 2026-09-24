@@ -1,11 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { catalog } from "../generated/catalog";
 import { Workbench } from "../components/workbench/Workbench";
 ---
 <BaseLayout
   title="Personal Workbench"
   description="A local personal workbench for the small utilities you use repeatedly."
 >
-  <Workbench tools={catalog} client:load />
+  <Workbench client:load />
 </BaseLayout>

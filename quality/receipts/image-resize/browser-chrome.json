@@ -32,7 +32,7 @@
   "cancellation": "PASS",
   "corruptDecode": "PASS",
   "oversizedPredecode": "PASS",
-  "lazyScriptsAfterAction": 1,
+  "lazyScriptsAfterAction": 2,
   "taskContentNetworkRequests": 0,
   "externalRequests": 0,
   "mobileViewport": {

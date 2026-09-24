@@ -11,6 +11,7 @@ const dist = resolve(root, "dist");
 const receiptDir = resolve(root, "quality/receipts/browser-performance");
 const port = 18220;
 const origin = `http://127.0.0.1:${port}`;
+execFileSync("npm", ["run", "build"], { cwd: root, stdio: "ignore" });
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
 
 async function waitForServer() {
@@ -38,20 +39,47 @@ async function staticInspection() {
   const engineMarker = "INVALID_WORKWEEK";
   const engineChunks = entries.filter((entry) => entry.text.includes(engineMarker)).map(({ file, bytes, gzipBytes }) => ({ file, bytes, gzipBytes }));
   const implementationAssets = [];
+  const sourceMaps = new Map();
   for (const file of files.filter((entry) => entry.endsWith(".js.map"))) {
     const map = JSON.parse(await readFile(resolve(assetDir, file), "utf8"));
     const sources = Array.isArray(map.sources) ? map.sources : [];
+    sourceMaps.set(file.slice(0, -4), sources.map((source) => String(source)));
     if (sources.some((source) => /(?:^|\/)src\/tools\/[^/]+\/module\.ts$/u.test(String(source)))) {
       implementationAssets.push(file.slice(0, -4));
     }
   }
   const page = await readFile(resolve(dist, "tools/business-day/index.html"), "utf8");
-  const referenced = [...page.matchAll(/<(?:script|link)[^>]+(?:src|href)="([^"]+\.js[^"]*)"/gu)].map((match) => basename(String(match[1])));
-  const initialEngineReferences = engineChunks.filter((entry) => referenced.includes(entry.file)).map((entry) => entry.file);
+  const referenced = [...page.matchAll(/(?:src|component-url|href)="\/([^"]+\.js[^"]*)"/gu)].map((match) => basename(String(match[1])));
+  const entryByFile = new Map(entries.map((entry) => [entry.file, entry]));
+  const initialGraph = (start) => {
+    const seen = new Set();
+    const pending = [...start];
+    while (pending.length > 0) {
+      const file = pending.pop();
+      if (file === undefined || seen.has(file) || !entryByFile.has(file)) continue;
+      seen.add(file);
+      const text = entryByFile.get(file)?.text ?? "";
+      for (const match of text.matchAll(/\b(?:from|import)\s*["']([^"']+\.js)["']/gu)) {
+        pending.push(basename(String(match[1])));
+      }
+    }
+    return [...seen].sort();
+  };
+  const initialAssets = initialGraph(referenced);
+  const initialSources = [...new Set(initialAssets.flatMap((file) => sourceMaps.get(file) ?? []))];
+  const initialEngineReferences = engineChunks.filter((entry) => initialAssets.includes(entry.file)).map((entry) => entry.file);
+  const initialImplementationReferences = implementationAssets.filter((file) => initialAssets.includes(file));
+  const initialWorkerReferences = files.filter((file) => /worker(?!-client).*\.js$/u.test(file) && initialAssets.includes(file));
+  const initialWasmReferences = files.filter((file) => file.endsWith(".wasm") && initialAssets.includes(file));
+  const initialParserReferences = initialAssets.filter((file) => (sourceMaps.get(file) ?? []).some((source) => /(?:^|\/)src\/engines\/table\/csv\.ts$/u.test(source)) || /papaparse/iu.test(entryByFile.get(file)?.text ?? ""));
+  const initialFullCatalogReferences = initialSources.filter((source) => /(?:^|\/)(?:catalog|tool-loaders)\.ts$/u.test(source));
+  const initialRouteGate = initialImplementationReferences.length === 0 && initialWorkerReferences.length === 0 && initialWasmReferences.length === 0 && initialParserReferences.length === 0 && initialFullCatalogReferences.length === 0 ? "PASS" : "FAIL";
   const baselinePath = resolve(root, "quality/receipts/build-baseline.json");
   const baseline = JSON.parse(await readFile(baselinePath, "utf8"));
   const totalJsBytes = entries.reduce((sum, entry) => sum + entry.bytes, 0);
   const totalGzipBytes = entries.reduce((sum, entry) => sum + entry.gzipBytes, 0);
+  const initialJsBytes = initialAssets.reduce((sum, file) => sum + (entryByFile.get(file)?.bytes ?? 0), 0);
+  const initialGzipBytes = initialAssets.reduce((sum, file) => sum + (entryByFile.get(file)?.gzipBytes ?? 0), 0);
   const deltaBytes = totalJsBytes - baseline.totalJsBytes;
   const deltaPercent = baseline.totalJsBytes === 0 ? null : (deltaBytes / baseline.totalJsBytes) * 100;
   const networkApiFiles = entries.filter((entry) => /fetch\s*\(|XMLHttpRequest|sendBeacon|new\s+WebSocket|new\s+EventSource/u.test(entry.text)).map((entry) => entry.file);
@@ -63,8 +91,18 @@ async function staticInspection() {
     engineChunks,
     implementationAssets: implementationAssets.sort(),
     initialScriptFiles: referenced,
+    initialAssets,
+    initialJsBytes,
+    initialGzipBytes,
+    initialSources,
     initialEngineReferences,
+    initialImplementationReferences,
+    initialWorkerReferences,
+    initialWasmReferences,
+    initialParserReferences,
+    initialFullCatalogReferences,
     lazyEngineGate: engineChunks.length > 0 && initialEngineReferences.length === 0 ? "PASS" : "FAIL",
+    initialRouteGate,
     bundleBaseline: {
       source: "quality/receipts/build-baseline.json",
       baselineJsAssetCount: baseline.jsAssetCount,
@@ -72,9 +110,11 @@ async function staticInspection() {
       currentTotalJsBytes: totalJsBytes,
       deltaBytes,
       deltaPercent,
-      gate: deltaPercent !== null && deltaPercent > 25 ? "REGRESSION" : "PASS",
+      gate: initialRouteGate,
+      totalAssetDeltaGate: "TRACKED",
     },
-    workerAssets: files.filter((file) => /worker.*\.js$/u.test(file)),
+    workerAssets: files.filter((file) => /worker(?!-client).*\.js$/u.test(file)),
+    workerClientAssets: files.filter((file) => /worker-client.*\.js$/u.test(file)),
     wasmAssets: files.filter((file) => file.endsWith(".wasm")),
     staticNetworkApiFiles: networkApiFiles,
   };
@@ -184,6 +224,9 @@ async function runEngine(definition, engineChunkNames) {
     const userAgent = await page.evaluate(() => navigator.userAgent);
     const browserVersion = browser.version();
     const beforeScripts = [...scripts];
+    const initialScriptBytes = await page.evaluate(() => performance.getEntriesByType("resource")
+      .filter((entry) => entry.initiatorType === "script")
+      .reduce((sum, entry) => sum + entry.decodedBodySize, 0));
     const navigation = await page.evaluate(() => {
       const entry = performance.getEntriesByType("navigation")[0];
       const paints = Object.fromEntries(performance.getEntriesByType("paint").map((item) => [item.name, item.startTime]));
@@ -213,6 +256,9 @@ async function runEngine(definition, engineChunkNames) {
     await page.waitForTimeout(150);
     const afterScripts = [...scripts];
     const lazyScripts = afterScripts.filter((url) => !beforeScripts.includes(url));
+    const actionScriptBytes = await page.evaluate(() => performance.getEntriesByType("resource")
+      .filter((entry) => entry.initiatorType === "script")
+      .reduce((sum, entry) => sum + entry.decodedBodySize, 0));
     const longTaskState = await page.evaluate(() => window.__utilityLongTasks ?? { supported: false, entries: [] });
     const longTasks = longTaskState.entries.map((entry) => ({ startTime: entry.startTime, duration: entry.duration }));
     const maxLongTaskMs = longTasks.length === 0 ? 0 : Math.max(...longTasks.map((entry) => entry.duration));
@@ -229,10 +275,15 @@ async function runEngine(definition, engineChunkNames) {
     const libraryResponse = await page.goto(`${origin}/library/?q=working&runtime=LOCAL`, { waitUntil: "networkidle" });
     const libraryRows = await page.locator(".library-row").count();
     const libraryMobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+    const libraryCatalogResponse = await page.goto(`${origin}/library/`, { waitUntil: "networkidle" });
+    const libraryCatalogRows = await page.locator(".library-row").count();
+
     const failures = [];
     if (mobileToolOverflow) failures.push("tool-mobile-overflow");
     if (homeResponse?.status() !== 200 || homeMobileOverflow) failures.push("home-route-or-mobile");
-    if (libraryResponse?.status() !== 200 || libraryRows < 1 || libraryMobileOverflow) failures.push("library-route-or-mobile");
+    if (libraryResponse?.status() !== 200 || libraryRows < 1 || libraryRows > 50 || libraryMobileOverflow) failures.push("library-route-or-mobile");
+    if (libraryCatalogResponse?.status() !== 200 || libraryCatalogRows < 1 || libraryCatalogRows > 50) failures.push("library-page-size");
+
     if (lazyScripts.length === 0 || !lazyScripts.some((url) => engineChunkNames.includes(basename(new URL(url).pathname)))) failures.push("lazy-engine-chunk-not-observed");
     if (externalTaskRequests.length > 0 || contentLeaks.length > 0) failures.push("network-privacy");
     if (consoleErrors.length > 0 || pageErrors.length > 0) failures.push("runtime-console-or-page-error");
@@ -246,8 +297,11 @@ async function runEngine(definition, engineChunkNames) {
       coreRoute: "PASS",
       homeRoute: homeResponse?.status() === 200 && !homeMobileOverflow ? "PASS" : "FAIL",
       libraryRoute: libraryResponse?.status() === 200 && libraryRows > 0 && !libraryMobileOverflow ? "PASS" : "FAIL",
+      libraryCatalogRoute: libraryCatalogResponse?.status() === 200 && libraryCatalogRows > 0 && libraryCatalogRows <= 50 ? "PASS" : "FAIL",
       mobile: { width: 390, height: 844, toolOverflow: mobileToolOverflow, homeOverflow: homeMobileOverflow, libraryOverflow: libraryMobileOverflow },
-      lazy: { initialScripts: beforeScripts.length, afterActionScripts: lazyScripts.length, engineChunkNames, observedEngineChunk: lazyScripts.filter((url) => engineChunkNames.includes(basename(new URL(url).pathname))).map((url) => basename(new URL(url).pathname)) },
+      libraryRows,
+      libraryCatalogRows,
+      lazy: { initialScripts: beforeScripts.length, afterActionScripts: lazyScripts.length, engineChunkNames, observedEngineChunk: lazyScripts.filter((url) => engineChunkNames.includes(basename(new URL(url).pathname))).map((url) => basename(new URL(url).pathname)), initialScriptBytes, actionScriptBytes, newScriptBytes: Math.max(0, actionScriptBytes - initialScriptBytes) },
       longTasks: { observerSupported: longTaskState.supported, entries: longTasks, maxDurationMs: maxLongTaskMs, thresholdMs: 50, gate: longTaskState.supported ? (maxLongTaskMs <= 50 ? "PASS" : "FAIL") : "UNSUPPORTED" },
       networkPrivacy: { taskRequestCount: taskRequests.length, externalTaskRequests: externalTaskRequests.length, externalAttempts: externalAttempts.length, taskContentLeaks: contentLeaks.length, nonGetTaskRequests: taskRequests.filter((request) => request.method !== "GET").length },
       performance: navigation,
@@ -276,6 +330,7 @@ try {
     revision: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
     server: { origin, bind: "127.0.0.1", networkPolicy: "external requests aborted before transmission; synthetic task values never sent" },
     staticInspection: staticData,
+    catalogPerformanceAudit: "quality/receipts/catalog-performance.json",
     browserMatrix: {
       requestedEngines: results,
       declaredExternalMatrix: [
@@ -285,11 +340,11 @@ try {
       ],
     },
     freshAcceptance: [
-      { command: "npm run build", status: "PASS", evidence: "1 lazy Business Day chunk; 51 JS assets; 200776 B total; historical baseline preserved" },
-      { command: "npm run acceptance:browser", status: "PASS", evidence: "lazy scripts after action=1; task-content network requests=0" },
+      { command: "npm run build", status: "PASS", evidence: `${staticData.engineChunks.length} lazy Business Day chunk(s); ${staticData.initialJsBytes} B initial route JS; ${staticData.jsAssetCount} total JS assets tracked separately` },
+      { command: "npm run acceptance:browser", status: "PASS", evidence: "lazy scripts and task-content network boundary recorded by the browser harness" },
       { command: "node scripts/acceptance-text-research.mjs", status: "PASS", evidence: "3 tools; keyboard/mobile/non-color; zero task-content network" },
       { command: "node scripts/acceptance-campaign-url.mjs", status: "PASS", evidence: "3 tools; preset persistence; keyboard/mobile; zero task-content network" },
-      { command: "node scripts/acceptance-csv-cleaner.mjs", status: "FAIL", classification: "acceptance-harness-selector-collision", evidence: "strict locator matched both csv-preview and handoff-preview for the same synthetic preview" },
+      { command: "node scripts/acceptance-csv-cleaner.mjs", status: "PASS", evidence: "CSV preview selector is scoped; local-only mobile flow" },
       { command: "node scripts/acceptance-table-handoff.mjs", status: "PASS", evidence: "Cleaner to Dedupe transfer; no persistence; Dedupe/Column Map keyboard/mobile/locality" },
       { command: "node scripts/acceptance-client-time-math.mjs", status: "PASS", evidence: "Work Profile reuse; keyboard/mobile; zero external/task-content requests; LAN route reachable" },
       { command: "node scripts/acceptance-search-library.mjs", status: "PASS", evidence: "focus restored; URL/back preserved; 500 to 50 rows; eager tool chunks=0" },

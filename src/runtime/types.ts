@@ -1,4 +1,4 @@
-import type { ToolSummary } from "../catalog/manifest";
+import type { RuntimeToolIndexEntry, ToolSummary } from "../catalog/manifest";
 
 export type DefaultProvenance =
   | "explicit"
@@ -38,5 +38,5 @@ export type ToolRunResult =
     };
 
 export type PreflightResult =
-  | { ok: true; tool: ToolSummary }
+  | { ok: true; tool: RuntimeToolIndexEntry }
   | { ok: false; code: "NOT_FOUND"; message: string };

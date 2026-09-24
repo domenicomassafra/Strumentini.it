@@ -1,22 +1,9 @@
 ---
-import { catalog } from "../../generated/catalog";
+import { searchCatalog } from "../../generated/search-catalog";
 import { getLibraryFacets } from "../../library/model";
 
-const libraryMetadata = catalog.map((tool) => ({
-  id: tool.id,
-  route: tool.route,
-  name: tool.name,
-  summary: tool.summary,
-  aliases: tool.aliases,
-  jobs: tool.jobs,
-  category: tool.category,
-  inputTypes: tool.inputTypes,
-  engine: tool.engine,
-  runtime: tool.runtime,
-}));
-const facets = getLibraryFacets(libraryMetadata);
+const facets = getLibraryFacets(searchCatalog);
 const tagFacets = [...new Set([...facets.packTags, ...facets.roleTags])].sort((left, right) => left.localeCompare(right));
-const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u003c");
 ---
 
 <section class="library-workspace" aria-labelledby="library-title">
@@ -44,7 +31,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     <button type="button" data-request-button>Request this tool</button>
     <span data-request-status role="status"></span>
   </aside>
-  <script is:inline type="application/json" id="utilityos-library-catalog" set:html={libraryMetadataJson}></script>
+  <script is:inline type="application/json" id="utilityos-library-catalog">[]</script>
 </section>
 
 <script>
@@ -62,9 +49,23 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   const dataNode = root?.querySelector<HTMLScriptElement>("#utilityos-library-catalog");
   const requestButton = root?.querySelector<HTMLButtonElement>("[data-request-button]");
   const requestStatus = root?.querySelector<HTMLElement>("[data-request-status]");
-  const tools = JSON.parse(dataNode?.textContent ?? "[]") as SearchToolMetadata[];
-  const search = createSearch(tools);
+  const injectedTools = JSON.parse(dataNode?.textContent ?? "[]") as SearchToolMetadata[];
+  let tools: readonly SearchToolMetadata[] = injectedTools;
+  let toolsLoaded = injectedTools.length > 0;
+  let toolsLoad: Promise<readonly SearchToolMetadata[]> | undefined;
+  let search = injectedTools.length > 0 ? createSearch(injectedTools) : undefined;
   let context: SearchContext = {};
+
+  async function loadTools(): Promise<readonly SearchToolMetadata[]> {
+    if (toolsLoaded) return tools;
+    toolsLoad ??= import("../../generated/search-catalog").then(({ searchCatalog }) => {
+      tools = searchCatalog;
+      toolsLoaded = true;
+      search = createSearch(tools);
+      return tools;
+    });
+    return toolsLoad;
+  }
   try {
     const stored = window.sessionStorage.getItem("utilityos:workbench-context:v1");
     if (stored !== null) {
@@ -103,13 +104,19 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
 
   function render(): void {
     if (!results || !pagination || !count) return;
+    if (!toolsLoaded) {
+      count.textContent = "Loading tools…";
+      results.innerHTML = `<div class="library-zero" role="status"><strong>Loading the local catalog</strong><p>Search and filters will be ready in a moment.</p></div>`;
+      pagination.innerHTML = "";
+      return;
+    }
     const state = stateFromLocation();
     syncForm(state);
     const filtered = filterLibrary(tools, state, context);
     const page = pageLibrary(filtered, state.page, 50);
     count.textContent = `${page.total} ${page.total === 1 ? "tool" : "tools"}`;
     if (page.items.length === 0) {
-      const closeIntents = state.q ? search.query(state.q, context, 4).closeIntents : [];
+      const closeIntents = state.q && search !== undefined ? search.query(state.q, context, 4).closeIntents : [];
       const suggestions = closeIntents.map((intent) => `<button type="button" data-close-intent="${escapeHtml(intent)}">${escapeHtml(intent)}</button>`).join("");
       const reason = state.q ? `No tools match “${escapeHtml(state.q)}”.` : "No tools match these filters.";
       results.innerHTML = `<div class="library-zero"><strong>${reason}</strong><p>Your query and filters are preserved. Try fewer filters or request this exact tool.</p>${suggestions ? `<div class="close-intents">${suggestions}</div>` : ""}</div>`;
@@ -175,7 +182,9 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   requestButton?.addEventListener("click", () => {
     if (requestStatus) requestStatus.textContent = `Request target: “${stateFromLocation().q || "new utility"}”. Submission is not connected in this validation build.`;
   });
-  render();
+  void loadTools().then(render).catch(() => {
+    if (results) results.innerHTML = `<div class="library-zero" role="alert"><strong>Library unavailable</strong><p>Reload the page to try the local catalog again.</p></div>`;
+  });
   if (new URLSearchParams(window.location.search).get("focus") === "search") {
     root?.querySelector<HTMLInputElement>("#library-search")?.focus();
   }

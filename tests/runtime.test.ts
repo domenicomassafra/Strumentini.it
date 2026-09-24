@@ -39,6 +39,21 @@ describe("registry and runtime seams", () => {
     }
   });
 
+  it("caches a loaded tool module across repeated runs", async () => {
+    let loads = 0;
+    const registry = createRegistry([summary], {
+      "business-day": async () => {
+        loads += 1;
+        return { default: businessDayModule as ToolModule };
+      },
+    });
+    const runtime = createToolRuntime(registry);
+    const input = { mode: "add", startDate: "2026-09-18", amount: 1 };
+    await runtime.run("business-day", input, { profile: { workweek: ["MON", "TUE", "WED", "THU", "FRI"] } });
+    await runtime.run("business-day", input, { profile: { workweek: ["MON", "TUE", "WED", "THU", "FRI"] } });
+    expect(loads).toBe(1);
+  });
+
   it("normalizes unknown tools and invalid input", async () => {
     const registry = createRegistry([summary], { "business-day": async () => ({ default: businessDayModule }) });
     const runtime = createToolRuntime(registry);

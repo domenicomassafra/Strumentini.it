@@ -1,8 +1,8 @@
 import Papa from "papaparse";
+import { CsvCleanerError } from "./io";
+export { CsvCleanerError, CSV_HARD_FILE_BYTES, CSV_SOFT_FILE_BYTES, readBlobText } from "./io";
 
 export const CSV_ENGINE_VERSION = "1";
-export const CSV_SOFT_FILE_BYTES = 10 * 1024 * 1024;
-export const CSV_HARD_FILE_BYTES = 50 * 1024 * 1024;
 
 export type CsvWarningCode = "DUPLICATE_HEADER" | "RAGGED_ROW" | "DELIMITER_FALLBACK";
 
@@ -60,13 +60,6 @@ export interface CsvColumnMapResult {
   mapping: CsvColumnMapEntry[];
   droppedColumns: Array<{ index: number; name: string }>;
   filledMissingCells: number;
-}
-
-export class CsvCleanerError extends Error {
-  constructor(readonly code: "PARSE_ERROR" | "FILE_TOO_LARGE" | "SEMANTIC_MISMATCH" | "CANCELLED", message: string) {
-    super(message);
-    this.name = "CsvCleanerError";
-  }
 }
 
 function dropTerminalEmptyRow(rows: string[][], text: string): string[][] {
@@ -271,37 +264,6 @@ export function cleanCsvText(input: string): CsvCleanResult {
     warnings: after.warnings,
     changes: { strippedBom, normalizedRecordBreaks: lineEndings.normalized },
   };
-}
-
-export async function readBlobText(
-  blob: Blob,
-  signal?: AbortSignal,
-  onProgress?: (fraction: number) => void,
-): Promise<string> {
-  if (blob.size > CSV_HARD_FILE_BYTES) throw new CsvCleanerError("FILE_TOO_LARGE", "File exceeds the 50 MiB hard limit.");
-  if (signal?.aborted) throw new CsvCleanerError("CANCELLED", "Operation cancelled");
-  const reader = blob.stream().getReader();
-  const decoder = new TextDecoder("utf-8", { ignoreBOM: true });
-  let read = 0;
-  let output = "";
-  try {
-    while (true) {
-      if (signal?.aborted) {
-        await reader.cancel();
-        throw new CsvCleanerError("CANCELLED", "Operation cancelled");
-      }
-      const chunk = await reader.read();
-      if (chunk.done) break;
-      read += chunk.value.byteLength;
-      output += decoder.decode(chunk.value, { stream: true });
-      onProgress?.(blob.size === 0 ? 1 : Math.min(1, read / blob.size));
-    }
-    output += decoder.decode();
-    onProgress?.(1);
-    return output;
-  } finally {
-    reader.releaseLock();
-  }
 }
 
 export function provePapaAbort(text: string, stopAfterRows: number): boolean {

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "preact/hooks";
-import { readBlobText } from "../../../engines/table/csv";
-import { readTableBlobBytes } from "../../../engines/table/operations";
+import { readBlobText, readTableBlobBytes } from "../../../engines/table/io";
 import { receiveHandoffFromOpener } from "../../../runtime/handoff";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import type { ToolSummary } from "../../../catalog/manifest";

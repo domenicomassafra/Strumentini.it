@@ -104,11 +104,10 @@ function classifyTier(
   entry: SearchIndexEntry,
   query: string,
   tokens: readonly string[],
-  context: SearchContext,
+  installed: ReadonlySet<string>,
+  recent: ReadonlySet<string>,
+  installedPackTags: ReadonlySet<string>,
 ): SearchTier {
-  const installed = new Set(context.installedToolIds ?? []);
-  const recent = new Set(context.recentToolIds ?? []);
-  const installedPackTags = new Set(normalizedList(context.installedPackTags));
   const exactIdentity = entry.normalized.name === query
     || entry.normalized.id === query
     || entry.normalized.aliases.includes(query);
@@ -143,12 +142,13 @@ export function searchCatalog(
   const tokens = query === "" ? [] : query.split(" ");
   const installed = new Set(context.installedToolIds ?? []);
   const recent = new Set(context.recentToolIds ?? []);
+  const installedPackTags = new Set(normalizedList(context.installedPackTags));
 
   return index
     .map((entry): RankedToolHit | null => {
       const relevance = matchScore(entry, query, tokens);
       if (query !== "" && relevance === 0) return null;
-      const tier = classifyTier(entry, query, tokens, context);
+      const tier = classifyTier(entry, query, tokens, installed, recent, installedPackTags);
       const bucket = installed.has(entry.id) ? "Your Tools" : recent.has(entry.id) ? "Recent" : "Library";
       return { tool: entry, tier, bucket, score: tierWeight[tier] + relevance };
     })

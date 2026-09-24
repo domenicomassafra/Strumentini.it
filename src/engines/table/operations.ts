@@ -2,11 +2,14 @@ import Papa from "papaparse";
 import {
   CSV_HARD_FILE_BYTES,
   CsvCleanerError,
+} from "./io";
+import {
   parseCsvTable,
   serializeCsvTable,
   type CsvTable,
   type CsvWarning,
 } from "./csv";
+export { readTableBlobBytes } from "./io";
 
 export const TABLE_ENGINE_VERSION = "table-ops-v1";
 export const TABLE_MAX_ROWS = 100_000;
@@ -422,15 +425,6 @@ export function viewCsvTable(text: string, options: TableTextOptions = {}): Tabl
     previewTruncated: table.rows.length > maxPreviewRows,
     engineVersion: TABLE_ENGINE_VERSION,
   };
-}
-
-export async function readTableBlobBytes(blob: Blob, signal?: AbortSignal, onProgress?: (fraction: number) => void): Promise<Uint8Array> {
-  if (blob.size > CSV_HARD_FILE_BYTES) throw new CsvCleanerError("FILE_TOO_LARGE", "File exceeds the 50 MiB hard limit.");
-  if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
-  const buffer = await blob.arrayBuffer();
-  if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
-  onProgress?.(1);
-  return new Uint8Array(buffer);
 }
 
 function toBytes(value: ArrayBuffer | Uint8Array | number[]): Uint8Array {

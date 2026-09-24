@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
-import { CSV_HARD_FILE_BYTES, readBlobText } from "../../../engines/table/csv";
+import { CSV_HARD_FILE_BYTES, readBlobText } from "../../../engines/table/io";
 import { receiveHandoffFromOpener } from "../../../runtime/handoff";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { csvDedupeManifest } from "../../../tools/csv-dedupe/manifest";

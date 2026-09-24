@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "preact/hooks";
-import type { ToolSummary } from "../../catalog/manifest";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import type { WorkbenchToolSummary } from "../../catalog/manifest";
 import { createIndexedDbPersistence } from "../../persistence/persistence";
 import { publishSearchContext } from "../../search/browser-context";
 import {
@@ -55,17 +55,17 @@ function browserProfile(): WorkProfile {
   });
 }
 
-function toolName(toolId: string, tools: readonly ToolSummary[]): string {
+function toolName(toolId: string, tools: readonly WorkbenchToolSummary[]): string {
   return tools.find((tool) => tool.id === toolId)?.name ?? "Unavailable tool — " + toolId;
 }
 
-function runtimeLabel(tool: ToolSummary): string {
+function runtimeLabel(tool: WorkbenchToolSummary): string {
   if (tool.runtime.location === "LOCAL") return "On this device";
   if (tool.runtime.location === "REFERENCE") return "Reference only";
   return "Uses network";
 }
 
-function profileUsage(tool: ToolSummary | undefined, profile: WorkProfile): string {
+function profileUsage(tool: WorkbenchToolSummary | undefined, profile: WorkProfile): string {
   if (tool === undefined || tool.profileFields.length === 0) return "";
   const source = profile as unknown as Readonly<Record<string, unknown>>;
   return tool.profileFields
@@ -78,27 +78,42 @@ function profileUsage(tool: ToolSummary | undefined, profile: WorkProfile): stri
 }
 
 
-export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
+export function Workbench({ tools: initialTools = [] }: { tools?: readonly WorkbenchToolSummary[] }) {
+  const [tools, setTools] = useState<readonly WorkbenchToolSummary[]>(initialTools);
   const [state, setState] = useState<WorkbenchState>(serverSafeInitialState);
   const [profileDraft, setProfileDraft] = useState<WorkProfile>(state.profile);
   const [warning, setWarning] = useState("");
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showAvailable, setShowAvailable] = useState(false);
+  const [availableLimit, setAvailableLimit] = useState(100);
   const [importPreview, setImportPreview] = useState<ImportPreview | null>(null);
   const repositoryRef = useRef<Repository | null>(null);
   const pendingSavesRef = useRef(0);
 
   useEffect(() => {
+    let active = true;
     const initial = createDefaultWorkbenchState(browserProfile());
     const repository = createWorkbenchRepository(createIndexedDbPersistence(), initial);
     repositoryRef.current = repository;
-    void repository.load().then((loaded) => {
+    const toolsPromise = initialTools.length > 0
+      ? Promise.resolve(initialTools)
+      : import("../../generated/workbench-catalog").then(({ workbenchCatalog }) => workbenchCatalog);
+    void Promise.all([repository.load(), toolsPromise]).then(([loaded, loadedTools]) => {
+      if (!active) return;
+      setTools(loadedTools);
       setState(loaded.state);
       setProfileDraft(loaded.state.profile);
       setWarning(loaded.warning ?? "");
       setReady(true);
+    }).catch((error) => {
+      if (!active) return;
+      setWarning(error instanceof Error ? error.message : "The local Workbench could not be prepared.");
+      setReady(true);
     });
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -140,7 +155,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
     await persist(moveTool(state, toolId, direction));
   }
 
-  async function openTool(tool: ToolSummary, event: MouseEvent) {
+  async function openTool(tool: WorkbenchToolSummary, event: MouseEvent) {
     event.preventDefault();
     const next = recordRecentTool(state, tool.id);
     await persist(next);
@@ -190,12 +205,15 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
     setImportPreview(null);
   }
 
-  const installed = state.installedTools.map((id) => ({
-    id,
-    tool: tools.find((tool) => tool.id === id),
-  }));
-  const available = tools.filter((tool) => !state.installedTools.includes(tool.id));
-  const suggestions = getWorkbenchSuggestions(tools, state);
+  const toolsById = useMemo(() => new Map(tools.map((tool) => [tool.id, tool])), [tools]);
+  const installed = useMemo(
+    () => state.installedTools.map((id) => ({ id, tool: toolsById.get(id) })),
+    [state.installedTools, toolsById],
+  );
+  const installedIds = useMemo(() => new Set(state.installedTools), [state.installedTools]);
+  const available = useMemo(() => tools.filter((tool) => !installedIds.has(tool.id)), [installedIds, tools]);
+  const visibleAvailable = available.slice(0, availableLimit);
+  const suggestions = useMemo(() => getWorkbenchSuggestions(tools, state), [state, tools]);
   const firstTool = tools[0];
 
   return (
@@ -312,14 +330,22 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
               {showAvailable ? "Hide available tools" : "Add a tool"}
             </button>
             {showAvailable && (
-              <ul id="available-tools">
-                {available.map((tool) => (
-                  <li key={tool.id}>
-                    <span><strong>{tool.name}</strong> — {tool.summary}</span>
-                    <button type="button" onClick={() => void add(tool.id)}>Add</button>
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul id="available-tools">
+                  {visibleAvailable.map((tool) => (
+                    <li key={tool.id}>
+                      <span><strong>{tool.name}</strong> — {tool.summary}</span>
+                      <button type="button" onClick={() => void add(tool.id)}>Add</button>
+                    </li>
+                  ))}
+                </ul>
+                {visibleAvailable.length < available.length && (
+                  <button type="button" onClick={() => setAvailableLimit((current) => current + 50)}>
+                    Show 50 more tools
+                  </button>
+                )}
+                <p class="muted">Showing {Math.min(visibleAvailable.length, available.length)} of {available.length} available tools. <a href="/library/">Browse the full Library</a>.</p>
+              </>
             )}
           </div>
         )}

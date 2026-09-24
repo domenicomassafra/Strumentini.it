@@ -1,4 +1,4 @@
-import type { HandoffDescriptorDeclaration, ToolSummary } from "../catalog/manifest";
+import type { HandoffDescriptorDeclaration, HandoffToolSummary } from "../catalog/manifest";
 
 export interface TableHandoffDescriptor {
   type: "table";
@@ -21,7 +21,7 @@ export interface TableHandoffEnvelope {
 export type HandoffProposal =
   | {
       compatible: true;
-      target: ToolSummary;
+      target: HandoffToolSummary;
       acceptedBy: HandoffDescriptorDeclaration;
       descriptor: TableHandoffDescriptor;
       preview: string;
@@ -29,7 +29,7 @@ export type HandoffProposal =
     }
   | {
       compatible: false;
-      target: ToolSummary;
+      target: HandoffToolSummary;
       descriptor: TableHandoffDescriptor;
       reason: string;
     };
@@ -52,7 +52,7 @@ function compatibleDeclaration(
   return null;
 }
 
-export function proposeHandoff(envelope: TableHandoffEnvelope, target: ToolSummary): HandoffProposal {
+export function proposeHandoff(envelope: TableHandoffEnvelope, target: HandoffToolSummary): HandoffProposal {
   const accepts = target.handoff?.accepts ?? [];
   if (accepts.length === 0) {
     return { compatible: false, target, descriptor: envelope.descriptor, reason: "target declares no compatible handoff input" };
@@ -83,7 +83,7 @@ export function proposeHandoff(envelope: TableHandoffEnvelope, target: ToolSumma
 
 export function compatibleHandoffTargets(
   envelope: TableHandoffEnvelope,
-  tools: readonly ToolSummary[],
+  tools: readonly HandoffToolSummary[],
 ): Array<Extract<HandoffProposal, { compatible: true }>> {
   return tools
     .map((tool) => proposeHandoff(envelope, tool))
@@ -131,7 +131,7 @@ export function openHandoffTarget(
 }
 
 export function receiveHandoffFromOpener(
-  target: ToolSummary,
+  target: HandoffToolSummary,
   onReceive: (envelope: TableHandoffEnvelope, proposal: Extract<HandoffProposal, { compatible: true }>) => void,
 ): () => void {
   const match = /^#handoff=([^&]+)$/u.exec(window.location.hash);
