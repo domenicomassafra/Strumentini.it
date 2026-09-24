@@ -72,7 +72,10 @@ try {
   await doiAdd.focus();
   await page.keyboard.press("Enter");
 
-  await page.getByRole("button", { name: "Add File Hash / Checksum Verifier to Workbench" }).click();
+  const addToolsToggle = page.locator("[aria-controls='available-tools']");
+  if ((await addToolsToggle.getAttribute("aria-expanded")) !== "true") await addToolsToggle.click();
+  const fileHashChoice = page.locator("#available-tools li").filter({ hasText: "File Hash / Checksum Verifier" });
+  await fileHashChoice.getByRole("button", { name: "Add" }).click();
 
   let ids = await installedIds(page);
   if (!ids.includes("business-day") || !ids.includes("doi-isbn-normalizer") || !ids.includes("file-hash")) {
