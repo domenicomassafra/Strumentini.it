@@ -16,6 +16,7 @@ const VERSION_SPECS: readonly VersionSpec[] = [
 ];
 
 const MAX_BYTES = 78;
+const MAX_MATRIX_INPUT = 64 * 1024;
 const GF_EXP = new Uint8Array(512);
 const GF_LOG = new Uint8Array(256);
 (() => {
@@ -372,8 +373,11 @@ export function generateQr(payload: string, options: { readonly mask?: number } 
 }
 
 function normalizeMatrixInput(value: unknown): boolean[][] {
-  if (Array.isArray(value) && value.every((row) => Array.isArray(row))) return matrixFromRows((value as unknown[][]).map((row) => row.map((cell) => cell ? "1" : "0").join("")));
-  if (typeof value !== "string") throw new Error("INVALID_QR_INPUT");
+  if (Array.isArray(value)) {
+    if (value.length > 1000 || !value.every((row) => Array.isArray(row) && row.length <= 1000)) throw new Error("INVALID_QR_MATRIX");
+    return matrixFromRows((value as unknown[][]).map((row) => row.map((cell) => cell ? "1" : "0").join("")));
+  }
+  if (typeof value !== "string" || value.length > MAX_MATRIX_INPUT) throw new Error("INVALID_QR_INPUT");
   const trimmed = value.trim();
   if (trimmed.startsWith("[")) {
     try {

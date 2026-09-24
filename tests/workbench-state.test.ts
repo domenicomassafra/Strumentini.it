@@ -91,6 +91,10 @@ describe("portable Workbench configuration seam", () => {
     expect(current.profile.currency).toBe("USD");
   });
 
+  it("rejects oversized imports before parsing", () => {
+    expect(previewWorkbenchImport("x".repeat(1024 * 1024 + 1), state()).ok).toBe(false);
+  });
+
   it("rejects malformed/unsupported imports without mutating current state", () => {
     const current = state();
     const before = structuredClone(current);

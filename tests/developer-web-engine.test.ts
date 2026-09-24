@@ -88,6 +88,23 @@ describe("developer/web structured data", () => {
     expect(() => parseToml("a = 1\na = 2\n")).toThrow(/Duplicate/u);
   });
 
+  it("keeps parser data keys from traversing object prototypes", () => {
+    const prototype = Object.prototype as Record<string, unknown>;
+    delete prototype.polluted;
+    try {
+      const toml = parseToml("__proto__.polluted = true\n[constructor.prototype.x]\ny = 1\n");
+      expect(Object.hasOwn(toml.value, "__proto__")).toBe(true);
+      expect(prototype.polluted).toBeUndefined();
+      const yaml = parseYaml("__proto__:\n  polluted: true\n");
+      expect(Object.hasOwn(yaml.value as Record<string, unknown>, "__proto__")).toBe(true);
+      expect(prototype.polluted).toBeUndefined();
+      expect(queryJsonPath({}, "$.toString").matches).toHaveLength(0);
+      expect(() => formatJson(`${"[".repeat(129)}1${"]".repeat(129)}`)).toThrow(/JSON_TOO_DEEP/u);
+    } finally {
+      delete prototype.polluted;
+    }
+  });
+
   it("queries a bounded JSONPath subset", () => {
     const result = queryJsonPath({ users: [{ name: "Ada" }, { name: "Grace" }] }, "$.users[*].name");
     expect(result.matches.map(({ value }) => value)).toEqual(["Ada", "Grace"]);

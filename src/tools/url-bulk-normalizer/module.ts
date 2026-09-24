@@ -1,4 +1,4 @@
-import { normalizeUrlDetails, URL_MARKETING_ENGINE_VERSION } from "../../engines/url-marketing";
+import { normalizeUrlDetails, redactUrlCredentials, URL_MARKETING_ENGINE_VERSION } from "../../engines/url-marketing";
 import type { ToolModule } from "../../runtime/types";
 
 interface RawItem {
@@ -10,7 +10,7 @@ interface RawItem {
 }
 
 function safeInput(value: string): string {
-  return value.replace(/(https?:\/\/)[^\s/@]+@/giu, "$1[redacted]@");
+  return redactUrlCredentials(value);
 }
 
 function input(value: unknown): { urls: readonly string[]; sortQuery: boolean; removeFragment: boolean; removeTrailingSlash: boolean; dropTracking: boolean } {

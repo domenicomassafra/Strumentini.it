@@ -5,6 +5,8 @@ export const FILE_PRIVACY_LIMITS = {
   maxTextBytes: 2 * 1024 * 1024,
   maxZipBytes: 100 * 1024 * 1024,
   maxZipEntries: 10_000,
+  maxZipUncompressedBytes: 200 * 1024 * 1024,
+  maxZipEntryNameBytes: 64 * 1024,
   maxFilenameLength: 180,
   maxManifestBytes: 2 * 1024 * 1024,
 } as const;
@@ -471,7 +473,8 @@ function findEndOfCentralDirectory(bytes: Uint8Array): number {
 
 function zipEntryPath(name: string): { path: string; pathTraversal: boolean } {
   const normalized = name.replace(/\\/gu, "/");
-  const pathTraversal = normalized.startsWith("/") || /^[A-Za-z]:\//u.test(normalized) || normalized.split("/").some((part) => part === "..");
+  const decodedForTraversal = normalized.replace(/%2e/giu, ".");
+  const pathTraversal = normalized.includes("\u0000") || normalized.startsWith("/") || /^[A-Za-z]:\//u.test(normalized) || decodedForTraversal.split("/").some((part) => part === "..");
   return { path: normalized, pathTraversal };
 }
 
@@ -488,8 +491,10 @@ export async function inspectZip(input: unknown, signal?: AbortSignal): Promise<
   const count = littleEndian16(view, eocd + 10);
   const directorySize = littleEndian32(view, eocd + 12);
   const directoryOffset = littleEndian32(view, eocd + 16);
-  if (count > FILE_PRIVACY_LIMITS.maxZipEntries || directoryOffset + directorySize > bytes.length) fail("CORRUPT_ARCHIVE", "ZIP central-directory bounds are invalid");
+  if (count > FILE_PRIVACY_LIMITS.maxZipEntries || directoryOffset > bytes.length || directorySize > bytes.length - directoryOffset) fail("CORRUPT_ARCHIVE", "ZIP central-directory bounds are invalid");
+  if (count > 0 && littleEndian32(view, directoryOffset) !== 0x02014b50) fail("CORRUPT_ARCHIVE", "ZIP central-directory signature is invalid");
   const entries: ZipEntryRecord[] = [];
+  let totalUncompressedBytes = 0;
   let cursor = directoryOffset;
   for (let index = 0; index < count; index += 1) {
     if (cursor + 46 > bytes.length || littleEndian32(view, cursor) !== 0x02014b50) fail("CORRUPT_ARCHIVE", `Invalid central-directory entry ${index + 1}`);
@@ -504,9 +509,12 @@ export async function inspectZip(input: unknown, signal?: AbortSignal): Promise<
     const start = cursor + 46;
     const end = start + nameLength;
     if (end > bytes.length) fail("CORRUPT_ARCHIVE", "ZIP entry name exceeds the archive bounds");
+    if (nameLength > FILE_PRIVACY_LIMITS.maxZipEntryNameBytes) fail("ARCHIVE_TOO_LARGE", "ZIP entry name exceeds the local limit");
+    if (uncompressedSize > FILE_PRIVACY_LIMITS.maxZipUncompressedBytes - totalUncompressedBytes) fail("ARCHIVE_TOO_LARGE", "ZIP uncompressed content exceeds the local limit");
     const name = textDecoder.decode(bytes.slice(start, end));
     const parsed = zipEntryPath(name);
     entries.push({ path: parsed.path, compressedSize, uncompressedSize, method, crc32, encrypted: (flags & 1) === 1, pathTraversal: parsed.pathTraversal });
+    totalUncompressedBytes += uncompressedSize;
     cursor = end + extraLength + commentLength;
     if (cursor > bytes.length) fail("CORRUPT_ARCHIVE", "ZIP entry metadata exceeds the archive bounds");
   }
@@ -604,6 +612,8 @@ async function createZipArchive(input: unknown, clean: boolean, signal?: AbortSi
   writeUint32(endView, 12, centralDirectory.byteLength);
   writeUint32(endView, 16, localOffset);
   writeUint16(endView, 20, 0);
+  const projectedSize = localOffset + centralDirectory.byteLength + end.byteLength;
+  if (projectedSize > FILE_PRIVACY_LIMITS.maxZipBytes) fail("ARCHIVE_TOO_LARGE", "Generated ZIP exceeds the local size limit");
   const archive = concatBytes([...localChunks, centralDirectory, end]);
   const archiveCopy = new Uint8Array(archive.byteLength);
   archiveCopy.set(archive);
@@ -645,8 +655,8 @@ const secretPatterns: ReadonlyArray<{ kind: string; pattern: RegExp }> = [
 ];
 
 function redact(value: string): string {
-  if (value.length <= 72) return `${value.slice(0, 4)}…${value.slice(-4)}`;
-  return `${value.slice(0, 4)}…${value.slice(-4)}`;
+  if (value.length <= 8) return "[redacted]";
+  return `${value.slice(0, 2)}…${value.slice(-2)}`;
 }
 
 export async function scanSecretPatterns(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {

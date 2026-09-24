@@ -71,4 +71,10 @@ export interface ToolManifest {
   };
 }
 
+export const LOCAL_TOOL_ROUTE_PATTERN = /^\/tools\/[a-z0-9]+(?:-[a-z0-9]+)*$/u;
+
+export function isLocalToolRoute(value: unknown): value is string {
+  return typeof value === "string" && LOCAL_TOOL_ROUTE_PATTERN.test(value);
+}
+
 export type ToolSummary = Omit<ToolManifest, "implementation">;

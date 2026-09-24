@@ -69,6 +69,12 @@ describe("URL, marketing, and web operations", () => {
     expect(() => compareUrls("javascript:alert(1)", "https://example.com")).toThrow("UNSAFE_URL_SCHEME");
   });
 
+  it("redacts credentials from non-HTTP invalid URL tokens without echoing them", () => {
+    const output = urlBulkNormalizerModule.run({ urls: ["ftp://user:pass@example.com/private"] }, context) as { results: Array<{ input: string; error?: string }> };
+    expect(output.results[0]?.input).toBe("ftp://[redacted]@example.com/private");
+    expect(JSON.stringify(output)).not.toContain("pass");
+  });
+
   it("normalizes a bulk list with row-level errors and stable output", () => {
     const output = urlBulkNormalizerModule.run({ urls: ["HTTPS://EXAMPLE.com/?b=2&a=1", "not a url"] }, context) as { normalizedUrls: string[]; errorCount: number };
     expect(output.errorCount).toBe(1);
@@ -102,6 +108,14 @@ describe("URL, marketing, and web operations", () => {
     expect(social.image).toBe("https://preview.invalid/image.png");
     expect(social.warnings).toEqual(expect.arrayContaining(["MISSING_DESCRIPTION", "MISSING_URL"]));
     expect(robotsDirectiveHelperModule.run({ text: "User-agent: *\nDisallow: /private\nSitemap: https://example.com/sitemap.xml" }, context)).toMatchObject({ groups: [{ userAgents: ["*"], rules: [{ directive: "disallow", path: "/private" }] }], sitemaps: ["https://example.com/sitemap.xml"] });
+  });
+
+  it("redacts credentials from Open Graph and robots URL metadata", () => {
+    const social = openGraphPreviewModule.run({ html: '<meta property="og:image" content="https://user:pass@example.com/image.png">' }, context) as { image: string; tags: Record<string, string> };
+    expect(social.image).toBe("https://example.com/image.png");
+    expect(JSON.stringify(social)).not.toContain("pass");
+    const robots = robotsDirectiveHelperModule.run({ text: "Sitemap: https://user:pass@example.com/sitemap.xml" }, context) as { sitemaps: string[] };
+    expect(robots.sitemaps[0]).toBe("https://example.com/sitemap.xml");
   });
 
   it("builds safe canonical tags and inspects pasted redirect hops", () => {

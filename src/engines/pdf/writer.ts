@@ -1,3 +1,4 @@
+import { PDF_LIMITS } from "./types";
 import {
   dictionaryWith,
   encodeLiteralString,
@@ -43,12 +44,17 @@ function isDictionary(value: PdfValue): value is PdfDictionary {
   return value.kind === "dict";
 }
 
+const INTERACTIVE_PDF_KEYS = new Set(["A", "AA", "AcroForm", "Annots", "EmbeddedFiles", "JavaScript", "JS", "Launch", "Names", "OpenAction", "URI"]);
+
 function isMetadataObject(value: PdfValue): boolean {
   return isDictionary(value) && nameValue(value.entries.get("Type")) === "Metadata";
 }
 
-function isObjectToSkip(value: PdfValue): boolean {
-  return isMetadataObject(value);
+function isObjectToSkip(value: PdfValue, flatten: boolean): boolean {
+  if (isMetadataObject(value)) return true;
+  if (!flatten) return false;
+  if (isDictionary(value)) return [...value.entries.keys()].some((key) => INTERACTIVE_PDF_KEYS.has(key));
+  return value.kind === "stream" && [...value.dictionary.entries.keys()].some((key) => INTERACTIVE_PDF_KEYS.has(key));
 }
 
 function omitNullEntries(entries: ReadonlyMap<string, PdfValue | null>): PdfDictionary {
@@ -76,7 +82,10 @@ function cloneSourceValue(value: PdfValue, state: CloneState, depth = 0): PdfVal
   }
   if (value.kind === "dict") {
     const entries = new Map<string, PdfValue | null>();
-    for (const [key, entry] of value.entries) entries.set(key, cloneSourceValue(entry, state, depth + 1));
+    for (const [key, entry] of value.entries) {
+      if (state.options.flatten !== false && INTERACTIVE_PDF_KEYS.has(key)) continue;
+      entries.set(key, cloneSourceValue(entry, state, depth + 1));
+    }
     return omitNullEntries(entries);
   }
   if (state.options.compress === true && nameValue(value.dictionary.entries.get("Subtype")) !== "Image") return normalizeStreamBytes(value);
@@ -88,7 +97,7 @@ function cloneSourceReference(reference: PdfValue & { kind: "ref" }, state: Clon
   if (mapped !== undefined) return mapped;
   const sourceObject = state.source.objects.get(reference.id);
   if (sourceObject === undefined) throw new Error("MALFORMED_PDF: referenced object is missing");
-  if (state.skip.has(reference.id) || isObjectToSkip(sourceObject.value)) return null;
+  if (state.skip.has(reference.id) || isObjectToSkip(sourceObject.value, state.options.flatten !== false)) return null;
   if (state.active.has(reference.id)) return reference;
   state.active.add(reference.id);
   const targetReference = state.allocate();
@@ -121,7 +130,7 @@ function pageValue(page: PdfPageNode, state: CloneState): PdfDictionary {
       entries.set(key, null);
       continue;
     }
-    if (state.options.flatten === true && ["Annots", "AA", "OpenAction", "StructParents", "Tabs"].includes(key)) {
+    if (state.options.flatten !== false && ["Annots", "AA", "OpenAction", "AcroForm", "Names", "StructParents", "Tabs"].includes(key)) {
       entries.set(key, null);
       continue;
     }
@@ -178,11 +187,11 @@ function skipIdsFor(document: PdfDocumentModel, options: PdfBuildOptions): Set<n
   const skip = new Set<number>();
   if (options.stripMetadata === true) {
     if (document.info !== null) skip.add(document.info.id);
-    for (const object of document.objects.values()) if (isObjectToSkip(object.value)) skip.add(object.id);
+    for (const object of document.objects.values()) if (isObjectToSkip(object.value, false)) skip.add(object.id);
   }
-  if (options.flatten === true) {
+  if (options.flatten !== false) {
     for (const object of document.objects.values()) {
-      if (object.value.kind === "dict" && object.value.entries.has("AcroForm")) skip.add(object.id);
+      if (isObjectToSkip(object.value, true)) skip.add(object.id);
     }
   }
   return skip;
@@ -248,6 +257,7 @@ export class PdfBuilder {
     const tail = encoder.encode(xrefLines.join(""));
     chunks.push(tail);
     total += tail.byteLength;
+    if (total > PDF_LIMITS.maxOutputBytes) throw new Error("PDF_LIMIT: generated PDF exceeds the local output limit");
     return concatBytes(chunks, total);
   }
 }
@@ -301,8 +311,12 @@ export function buildPdfFromPages(pages: readonly PdfBuildPage[], options: PdfBu
 }
 
 export function createSimplePdf(pageTexts: readonly string[], options: { readonly width?: number; readonly height?: number; readonly metadata?: Readonly<Record<string, string>> } = {}): Uint8Array {
+  if (pageTexts.length > PDF_LIMITS.maxPages) throw new Error("PDF_LIMIT: page count exceeds the local safety limit");
   const width = options.width ?? 612;
   const height = options.height ?? 792;
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width < 1 || height < 1 || width > PDF_LIMITS.maxPageDimension || height > PDF_LIMITS.maxPageDimension) throw new Error("PDF_LIMIT: page dimensions exceed the local safety limit");
+  if (pageTexts.some((text) => typeof text !== "string" || text.length > PDF_LIMITS.maxTextBytes)) throw new Error("PDF_LIMIT: page text exceeds the local safety limit");
+  if (Object.values(options.metadata ?? {}).some((value) => typeof value !== "string" || value.length > PDF_LIMITS.maxTextBytes)) throw new Error("PDF_LIMIT: PDF metadata exceeds the local safety limit");
   const objects: PdfObject[] = [];
   const pageIds = pageTexts.map((_, index) => 4 + index * 2);
   const contentIds = pageIds.map((id) => id + 1);
@@ -371,6 +385,14 @@ export function parseJpeg(bytes: Uint8Array, name = "image.jpg"): EmbeddedJpeg |
 
 export function buildPdfFromJpegs(images: readonly EmbeddedJpeg[]): Uint8Array {
   if (images.length === 0) throw new Error("INVALID_INPUT: choose at least one JPEG image");
+  if (images.length > PDF_LIMITS.maxFiles) throw new Error("PDF_LIMIT: too many images");
+  let totalBytes = 0;
+  for (const image of images) {
+    if (!Number.isInteger(image.width) || !Number.isInteger(image.height) || image.width < 1 || image.height < 1 || image.width > PDF_LIMITS.maxPageDimension || image.height > PDF_LIMITS.maxPageDimension || image.width * image.height > PDF_LIMITS.maxImagePixels) throw new Error("PDF_LIMIT: image dimensions exceed the local safety limit");
+    if (image.bytes.byteLength > PDF_LIMITS.maxImageBytes) throw new Error("PDF_LIMIT: image exceeds the local byte limit");
+    totalBytes += image.bytes.byteLength;
+    if (totalBytes > PDF_LIMITS.maxTotalImageBytes) throw new Error("PDF_LIMIT: images exceed the local total byte limit");
+  }
   const builder = new PdfBuilder();
   const pagesReference = builder.reserve();
   const pageReferences: ReturnType<typeof pdfReference>[] = [];

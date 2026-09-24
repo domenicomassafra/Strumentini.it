@@ -74,6 +74,8 @@ export interface PdfDocumentModel {
 
 const WHITESPACE = new Set([0, 9, 10, 12, 13, 32]);
 const DELIMITERS = new Set([0, 9, 10, 12, 13, 32, 40, 41, 60, 62, 91, 93, 123, 125, 47, 37]);
+const MAX_VALUE_DEPTH = 128;
+const MAX_COLLECTION_ITEMS = 100_000;
 
 function isWhitespace(code: number): boolean {
   return WHITESPACE.has(code);
@@ -200,17 +202,18 @@ function parseHexString(text: string, start: number): { value: PdfString; end: n
   const close = text.indexOf(">", start + 1);
   if (close < 0) throw new Error("MALFORMED_PDF: unterminated hex string");
   const hex = text.slice(start + 1, close).replaceAll(/\s+/gu, "");
-  if (hex.length % 2 !== 0) throw new Error("MALFORMED_PDF: odd-length hex string");
+  if (hex.length % 2 !== 0 || !/^[0-9a-f]*$/iu.test(hex)) throw new Error("MALFORMED_PDF: invalid hex string");
   const bytes = new Uint8Array(hex.length / 2);
   for (let index = 0; index < bytes.length; index += 1) bytes[index] = Number.parseInt(hex.slice(index * 2, index * 2 + 2), 16);
   return { value: { kind: "string", bytes, hex: true }, end: close + 1 };
 }
 
-function parseValue(text: string, start: number, bytes: Uint8Array): { value: PdfValue; end: number } {
+function parseValue(text: string, start: number, bytes: Uint8Array, depth = 0): { value: PdfValue; end: number } {
+  if (depth > MAX_VALUE_DEPTH) throw new Error("PDF_LIMIT: object nesting exceeds the local safety limit");
   const index = skipWhitespace(text, start);
   if (index >= text.length) throw new Error("MALFORMED_PDF: missing value");
-  if (text.startsWith("<<", index)) return parseDictionary(text, index, bytes);
-  if (text[index] === "[") return parseArray(text, index, bytes);
+  if (text.startsWith("<<", index)) return parseDictionary(text, index, bytes, depth);
+  if (text[index] === "[") return parseArray(text, index, bytes, depth);
   if (text[index] === "(") return parseLiteralString(text, index);
   if (text[index] === "<") return parseHexString(text, index);
   if (text[index] === "/") {
@@ -233,11 +236,12 @@ function parseValue(text: string, start: number, bytes: Uint8Array): { value: Pd
   return { value: { kind: "literal", value: token.token }, end: token.end };
 }
 
-function parseArray(text: string, start: number, bytes: Uint8Array): { value: PdfArray; end: number } {
+function parseArray(text: string, start: number, bytes: Uint8Array, depth = 0): { value: PdfArray; end: number } {
   const items: PdfValue[] = [];
   let index = skipWhitespace(text, start + 1);
   while (index < text.length && text[index] !== "]") {
-    const parsed = parseValue(text, index, bytes);
+    if (items.length >= MAX_COLLECTION_ITEMS) throw new Error("PDF_LIMIT: array item count exceeds the local safety limit");
+    const parsed = parseValue(text, index, bytes, depth + 1);
     items.push(parsed.value);
     index = skipWhitespace(text, parsed.end);
   }
@@ -245,14 +249,15 @@ function parseArray(text: string, start: number, bytes: Uint8Array): { value: Pd
   return { value: { kind: "array", items }, end: index + 1 };
 }
 
-function parseDictionary(text: string, start: number, bytes: Uint8Array): { value: PdfDictionary | PdfStream; end: number } {
+function parseDictionary(text: string, start: number, bytes: Uint8Array, depth = 0): { value: PdfDictionary | PdfStream; end: number } {
   const entries = new Map<string, PdfValue>();
   let index = skipWhitespace(text, start + 2);
   while (index < text.length && !text.startsWith(">>", index)) {
+    if (entries.size >= MAX_COLLECTION_ITEMS) throw new Error("PDF_LIMIT: dictionary entry count exceeds the local safety limit");
     if (text[index] !== "/") throw new Error("MALFORMED_PDF: dictionary key is not a name");
     const keyToken = readNameToken(text, index);
     const key = decodeName(keyToken.token);
-    const parsed = parseValue(text, keyToken.end, bytes);
+    const parsed = parseValue(text, keyToken.end, bytes, depth + 1);
     entries.set(key, parsed.value);
     index = skipWhitespace(text, parsed.end);
   }
@@ -354,7 +359,7 @@ function expandObjectStreams(objects: Map<number, PdfObject>): void {
     const firstValue = object.value.dictionary.entries.get("First");
     const count = countValue?.kind === "literal" ? Number(countValue.value) : Number.NaN;
     const first = firstValue?.kind === "literal" ? Number(firstValue.value) : Number.NaN;
-    if (!Number.isInteger(count) || count < 0 || !Number.isInteger(first) || first < 0 || first > inflated.length) throw new Error("MALFORMED_PDF: invalid object stream header");
+    if (!Number.isInteger(count) || count < 0 || count > PDF_LIMITS.maxObjects || !Number.isInteger(first) || first < 0 || first > inflated.length) throw new Error("PDF_LIMIT: object stream header exceeds the local safety limit");
     const header = text.slice(0, first);
     const pairs = [...header.matchAll(/(\d+)\s+(\d+)/gu)];
     if (pairs.length < count) throw new Error("MALFORMED_PDF: incomplete object stream header");
@@ -367,6 +372,7 @@ function expandObjectStreams(objects: Map<number, PdfObject>): void {
       const end = nextPair === undefined ? inflated.length : first + Number(nextPair[2]);
       const start = first + offset;
       if (!Number.isInteger(id) || id < 0 || !Number.isInteger(offset) || offset < 0 || start >= end || end > inflated.length) throw new Error("MALFORMED_PDF: invalid object stream entry");
+      if (objects.size >= PDF_LIMITS.maxObjects) throw new Error("PDF_LIMIT: object count exceeds the local safety limit");
       if (objects.has(id)) continue;
       const parsed = parseValue(text, start, inflated);
       objects.set(id, { id, generation: 0, value: parsed.value });

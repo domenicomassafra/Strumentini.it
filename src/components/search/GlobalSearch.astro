@@ -47,6 +47,8 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
 
 <script>
   import { createSearch } from "../../search/search";
+  import { isLocalToolRoute } from "../../catalog/manifest";
+  import { sanitizeSearchContext } from "../../search/browser-context";
   import { SEARCH_CONTEXT_EVENT } from "../../search/browser-context";
   import type { SearchContext, SearchToolMetadata } from "../../search/types";
 
@@ -79,6 +81,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
     const sections = result.sections.map((section) => {
       if (section.hits.length === 0) return "";
       const rows = section.hits.map((hit) => {
+        if (!isLocalToolRoute(hit.route)) return "";
         const current = optionIndex;
         optionIndex += 1;
         visibleRoutes.push(hit.route);
@@ -128,7 +131,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
 
   trigger?.addEventListener("click", () => openPalette(trigger));
   window.addEventListener(SEARCH_CONTEXT_EVENT, (event) => {
-    context = (event as CustomEvent<SearchContext>).detail ?? {};
+    context = sanitizeSearchContext((event as CustomEvent<SearchContext>).detail);
     if (dialog?.open) render();
   });
   window.addEventListener("keydown", (event) => {

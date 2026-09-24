@@ -56,6 +56,20 @@ describe("Workbench repository persistence behavior", () => {
     ]);
   });
 
+  it("rejects malformed persisted state instead of hydrating it", async () => {
+    const initial = state();
+    const persistence: PersistenceAdapter = {
+      get: async <T>() => ({ ...initial, installedTools: ["../../outside"], rawTaskInput: "secret" } as T),
+      put: async () => undefined,
+      delete: async () => undefined,
+    };
+    const loaded = await createWorkbenchRepository(persistence, initial).load();
+    expect(loaded.persisted).toBe(false);
+    expect(loaded.warning).toMatch(/storage/u);
+    expect(loaded.state).toEqual(initial);
+    expect(JSON.stringify(loaded.state)).not.toContain("secret");
+  });
+
   it("keeps current session state usable when durable storage rejects writes", async () => {
     const oldState = state();
     const denied: PersistenceAdapter = {

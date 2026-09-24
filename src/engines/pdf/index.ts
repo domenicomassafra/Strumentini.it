@@ -40,6 +40,7 @@ import {
   type PdfBuildPage,
 } from "./writer";
 import { inflatePdfStream } from "./inflate";
+import { redactUrl, redactUrlCredentials } from "../url-marketing";
 
 export * from "./types";
 export { buildPdfFromJpegs, buildPdfFromPages, createSimplePdf, parseJpeg };
@@ -76,17 +77,39 @@ function abortIfNeeded(signal?: AbortSignal): void {
   if (signal?.aborted) throw new PdfError("CANCELLED", "Operation cancelled");
 }
 
+function assertPdfSize(size: number): void {
+  if (!Number.isSafeInteger(size) || size < 0 || size > PDF_LIMITS.maxBytes) throw new PdfError("PDF_LIMIT", "PDF exceeds the local byte limit.");
+}
+
 async function readInput(input: PdfInput, signal?: AbortSignal): Promise<Uint8Array> {
   abortIfNeeded(signal);
   try {
-    if (input instanceof Uint8Array) return input.slice();
-    if (input instanceof ArrayBuffer) return new Uint8Array(input.slice(0));
-    if (typeof Blob !== "undefined" && input instanceof Blob) return new Uint8Array(await input.arrayBuffer());
+    if (input instanceof Uint8Array) {
+      assertPdfSize(input.byteLength);
+      return input.slice();
+    }
+    if (input instanceof ArrayBuffer) {
+      assertPdfSize(input.byteLength);
+      return new Uint8Array(input.slice(0));
+    }
+    if (typeof Blob !== "undefined" && input instanceof Blob) {
+      assertPdfSize(input.size);
+      return new Uint8Array(await input.arrayBuffer());
+    }
     if (typeof input === "object" && input !== null) {
       const object = input as PdfBlobInput;
-      if (object.bytes !== undefined) return object.bytes.slice();
-      if (object.buffer !== undefined) return new Uint8Array(object.buffer.slice(0));
-      if (object.blob !== undefined) return new Uint8Array(await object.blob.arrayBuffer());
+      if (object.bytes !== undefined) {
+        assertPdfSize(object.bytes.byteLength);
+        return object.bytes.slice();
+      }
+      if (object.buffer !== undefined) {
+        assertPdfSize(object.buffer.byteLength);
+        return new Uint8Array(object.buffer.slice(0));
+      }
+      if (object.blob !== undefined) {
+        assertPdfSize(object.blob.size);
+        return new Uint8Array(await object.blob.arrayBuffer());
+      }
     }
   } catch (error) {
     if (error instanceof PdfError) throw error;
@@ -289,7 +312,7 @@ function metadataFromDocument(document: PdfDocumentModel): PdfMetadata {
   const known = new Set(["Title", "Author", "Subject", "Keywords", "Creator", "Producer", "CreationDate", "ModDate"]);
   for (const [key, value] of info?.entries ?? []) {
     const text = valueToText(resolveReference(document, value));
-    if (text !== null) custom[key] = text;
+    if (text !== null) Object.defineProperty(custom, key, { configurable: true, enumerable: true, value: text, writable: true });
   }
   const hasXmp = [...document.objects.values()].some((object) => object.value.kind === "stream" && nameValue(object.value.dictionary.entries.get("Type")) === "Metadata");
   return {
@@ -332,6 +355,14 @@ function imageInfo(document: PdfDocumentModel, object: PdfObject): PdfImageInfo 
   };
 }
 
+function redactPdfUri(value: string): string {
+  try {
+    return redactUrl(new URL(value));
+  } catch {
+    return redactUrlCredentials(value);
+  }
+}
+
 function collectLinks(document: PdfDocumentModel): PdfLink[] {
   const links: PdfLink[] = [];
   const seen = new Set<string>();
@@ -343,7 +374,8 @@ function collectLinks(document: PdfDocumentModel): PdfLink[] {
     const direct = object.value.entries.get("URI");
     const action = dictionaryOrNull(document, object.value.entries.get("A"));
     const uriValue = direct ?? action?.entries.get("URI");
-    const uri = valueToText(resolveReference(document, uriValue));
+    const rawUri = valueToText(resolveReference(document, uriValue));
+    const uri = rawUri === null ? null : redactPdfUri(rawUri);
     if (uri === null || uri.length === 0 || seen.has(uri)) continue;
     seen.add(uri);
     const source = object.value.entries.has("Subtype") && nameValue(object.value.entries.get("Subtype")) === "Link" ? "annotation" : page === null ? "catalog" : "page";
@@ -402,11 +434,12 @@ function pageSummaries(document: PdfDocumentModel): PdfPageSummary[] {
 
 export function inspectPdfBytes(bytes: Uint8Array): PdfInspection {
   const document = parseDocument(bytes);
-  const images = [...document.objects.values()].map((object) => imageInfo(document, object)).filter((image): image is PdfImageInfo => image !== null);
+  const allImages = [...document.objects.values()].map((object) => imageInfo(document, object)).filter((image): image is PdfImageInfo => image !== null);
+  const images = allImages.slice(0, PDF_LIMITS.maxImages);
   const warnings: string[] = [];
   if (document.pages.length === 0) warnings.push("No page tree was found; page-specific operations are unavailable.");
   if (document.encrypted) warnings.push("Encryption was detected. Inspection is local; password cracking is intentionally unavailable.");
-  if (images.length > PDF_LIMITS.maxImages) warnings.push("Image count exceeds the local inspection limit.");
+  if (allImages.length > PDF_LIMITS.maxImages) warnings.push("Image count exceeds the local inspection limit; the image list was truncated.");
   return {
     version: document.version,
     byteLength: bytes.byteLength,
@@ -529,7 +562,8 @@ export async function mutatePdf(input: PdfInput, request: PdfMutationRequest, si
   const allPages = document.pages.map((_, index) => index + 1);
   const selected = request.pages ?? allPages;
   const stripMetadata = request.stripMetadata ?? request.kind === "metadata-remove";
-  const flatten = request.flatten ?? request.kind === "flatten";
+  if (request.flatten === false) throw new PdfError("UNSUPPORTED_CAPABILITY", "Generated PDFs always remove interactive page hooks; preserving them is not supported.");
+  const flatten = request.flatten ?? true;
   const compress = request.compress ?? request.kind === "compress";
   const buildOptions = {
     ...(stripMetadata === undefined ? {} : { stripMetadata }),
@@ -589,32 +623,31 @@ export async function mergePdfs(inputs: readonly PdfInput[], signal?: AbortSigna
   if (inputs.length < 2) throw new PdfError("INVALID_INPUT", "Choose at least two PDF files to merge.");
   if (inputs.length > PDF_LIMITS.maxFiles) throw new PdfError("PDF_LIMIT", "Too many files were selected.");
   const pages: PdfBuildPage[] = [];
+  let totalInputBytes = 0;
   for (const input of inputs) {
     abortIfNeeded(signal);
-    const document = parseDocument(await readInput(input, signal));
+    const bytes = await readInput(input, signal);
+    totalInputBytes += bytes.byteLength;
+    if (totalInputBytes > PDF_LIMITS.maxTotalInputBytes) throw new PdfError("PDF_LIMIT", "Selected PDFs exceed the local total byte limit.");
+    const document = parseDocument(bytes);
     const capability = capabilityReport(document, "mutate-pages");
     if (!capability.available) throw new PdfError("UNSUPPORTED_CAPABILITY", capability.reason ?? "PDF mutation is unavailable.");
     pages.push(...document.pages.map((page) => ({ document, page })));
   }
   if (pages.length > PDF_LIMITS.maxPages) throw new PdfError("PDF_LIMIT", "Merged document exceeds the local page limit.");
-  const bytes = buildPdfFromPages(pages, { stripMetadata: true });
+  const bytes = buildPdfFromPages(pages, { stripMetadata: true, flatten: true });
   return outputArtifact(bytes, "merged.pdf", pages.length);
-}
-
-function imageFiles(inputs: readonly PdfInput[], signal?: AbortSignal): Promise<Uint8Array[]> {
-  return Promise.all(inputs.map(async (input) => {
-    abortIfNeeded(signal);
-    return readInput(input, signal);
-  }));
 }
 
 export async function imagesToPdf(inputs: readonly PdfInput[], signal?: AbortSignal): Promise<PdfArtifact> {
   if (inputs.length === 0 || inputs.length > PDF_LIMITS.maxFiles) throw new PdfError("INVALID_INPUT", "Choose between one and fifty images.");
-  const bytes = await imageFiles(inputs, signal);
-  const total = bytes.reduce((sum, value) => sum + value.byteLength, 0);
-  if (total > PDF_LIMITS.maxTotalImageBytes) throw new PdfError("PDF_LIMIT", "Selected images exceed the local total byte limit.");
   const images: EmbeddedJpeg[] = [];
-  for (const value of bytes) {
+  let total = 0;
+  for (const input of inputs) {
+    abortIfNeeded(signal);
+    const value = await readInput(input, signal);
+    total += value.byteLength;
+    if (total > PDF_LIMITS.maxTotalImageBytes) throw new PdfError("PDF_LIMIT", "Selected images exceed the local total byte limit.");
     if (value.byteLength > PDF_LIMITS.maxImageBytes) throw new PdfError("PDF_LIMIT", "An image exceeds the local byte limit.");
     const image = parseJpeg(value);
     if (image === null) throw new PdfError("UNSUPPORTED_CAPABILITY", "Images to PDF currently accepts JPEG images only; no server conversion is used.");
@@ -633,6 +666,11 @@ export async function extractPdfImages(input: PdfInput, signal?: AbortSignal): P
     if (object.value.kind !== "stream" || nameValue(object.value.dictionary.entries.get("Subtype")) !== "Image") continue;
     const filters = filterNames(document, object.value.dictionary.entries.get("Filter"));
     if (!filters.includes("DCTDecode")) continue;
+    if (artifacts.length >= PDF_LIMITS.maxImages) throw new PdfError("PDF_LIMIT", "Extracted image count exceeds the local safety limit.");
+    const width = numberValue(object.value.dictionary.entries.get("Width"));
+    const height = numberValue(object.value.dictionary.entries.get("Height"));
+    if (width === null || height === null || width < 1 || height < 1 || width > PDF_LIMITS.maxPageDimension || height > PDF_LIMITS.maxPageDimension || width * height > PDF_LIMITS.maxImagePixels) throw new PdfError("PDF_LIMIT", "Extracted image dimensions exceed the local safety limit.");
+    if (object.value.bytes.byteLength > PDF_LIMITS.maxImageBytes) throw new PdfError("PDF_LIMIT", "Extracted image exceeds the local byte limit.");
     artifacts.push({ bytes: object.value.bytes.slice(), blob: new Blob([ownedArrayBuffer(object.value.bytes)], { type: "image/jpeg" }), filename: `image-${artifacts.length + 1}.jpg`, mime: "image/jpeg" });
   }
   if (artifacts.length === 0) throw new PdfError("UNSUPPORTED_CAPABILITY", "No directly extractable JPEG image streams were found; vector/raster rendering is not silently substituted.");
@@ -668,7 +706,7 @@ export async function checkPdfPassword(input: PdfInput, signal?: AbortSignal): P
 export async function removePdfPassword(input: PdfInput, signal?: AbortSignal): Promise<PdfArtifact> {
   const document = parseDocument(await readInput(input, signal));
   if (document.encrypted) throw new PdfError("UNSUPPORTED_CAPABILITY", "Encrypted PDFs are not brute-forced or bypassed. Open a permitted copy in an authorized viewer first.");
-  const bytes = buildPdfFromPages(document.pages.map((page) => ({ document, page })), { stripMetadata: true });
+  const bytes = buildPdfFromPages(document.pages.map((page) => ({ document, page })), { stripMetadata: true, flatten: true });
   return outputArtifact(bytes, "password-checked.pdf", document.pages.length);
 }
 
@@ -683,9 +721,12 @@ async function sha256(bytes: Uint8Array, signal?: AbortSignal): Promise<string> 
 export async function createDocumentManifest(inputs: readonly PdfInput[], signal?: AbortSignal): Promise<PdfDocumentManifest> {
   if (inputs.length === 0 || inputs.length > PDF_LIMITS.maxFiles) throw new PdfError("INVALID_INPUT", "Choose between one and fifty files for the manifest.");
   const files: Array<{ name: string; byteLength: number; mime: string; signature: "pdf" | "unknown"; pageCount: number | null; encrypted: boolean | null; sha256: string }> = [];
+  let totalInputBytes = 0;
   for (const input of inputs) {
     abortIfNeeded(signal);
     const bytes = await readInput(input, signal);
+    totalInputBytes += bytes.byteLength;
+    if (totalInputBytes > PDF_LIMITS.maxTotalInputBytes) throw new PdfError("PDF_LIMIT", "Selected files exceed the local total byte limit.");
     const name = inputFilename(input) ?? "document";
     const isPdf = new TextDecoder("latin1").decode(bytes.slice(0, 5)) === "%PDF-";
     let inspection: PdfInspection | null = null;

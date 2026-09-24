@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import type { ToolSummary } from "../../catalog/manifest";
+import { isLocalToolRoute, type ToolSummary } from "../../catalog/manifest";
 import { createIndexedDbPersistence } from "../../persistence/persistence";
-import { publishSearchContext } from "../../search/browser-context";
+import { publishSearchContext, sanitizeSearchContext } from "../../search/browser-context";
 import {
   createDefaultWorkProfile,
   type DayCode,
@@ -41,6 +41,7 @@ const DAYS: ReadonlyArray<{ code: DayCode; label: string }> = [
 ];
 
 type Repository = ReturnType<typeof createWorkbenchRepository>;
+const MAX_CONFIG_FILE_BYTES = 1024 * 1024;
 
 function serverSafeInitialState(): WorkbenchState {
   return createDefaultWorkbenchState(
@@ -103,10 +104,10 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
 
   useEffect(() => {
     if (!ready) return;
-    const context = {
+    const context = sanitizeSearchContext({
       installedToolIds: state.installedTools,
       recentToolIds: state.recent.map(({ toolId }) => toolId),
-    };
+    });
     publishSearchContext(context);
     try {
       window.sessionStorage.setItem("utilityos:workbench-context:v1", JSON.stringify(context));
@@ -142,6 +143,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
 
   async function openTool(tool: ToolSummary, event: MouseEvent) {
     event.preventDefault();
+    if (!isLocalToolRoute(tool.route)) return;
     const next = recordRecentTool(state, tool.id);
     await persist(next);
     window.location.assign(tool.route);
@@ -175,6 +177,10 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
 
   async function previewImport(file: File | undefined) {
     if (file === undefined) return;
+    if (file.size > MAX_CONFIG_FILE_BYTES) {
+      setImportPreview({ ok: false, error: "This configuration exceeds the local size limit." });
+      return;
+    }
     try {
       setImportPreview(previewWorkbenchImport(await file.text(), state));
     } catch {

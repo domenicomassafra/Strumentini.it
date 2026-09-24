@@ -13,6 +13,11 @@ describe("campaign URL engine", () => {
   it("normalizes Unicode campaign parts under an explicit preset", () => {
     expect(buildCampaignName({ fields: ["client", "campaign", "market"], separator: "_", lowercase: true }, { client: "Café", campaign: "Fall Sale", market: "IT" })).toBe("café_fall-sale_it");
   });
+  it("redacts credentials from cleaner output and rejects them in generated links", () => {
+    expect(cleanTrackingParameters("https://user:pass@example.com/?a=1#frag")).toEqual({ url: "https://example.com/?a=1#frag", dropped: [] });
+    expect(() => buildUtmUrl("https://user:pass@example.com/landing", { source: "a", medium: "b", campaign: "c" })).toThrow(/URL_CREDENTIALS_NOT_ALLOWED/u);
+  });
+
   it("rejects invalid urls and naming schemas", () => {
     expect(() => buildUtmUrl("not a url", { source: "a", medium: "b", campaign: "c" })).toThrow();
     expect(() => parseCampaignFieldOrder("client,nope")).toThrow("INVALID_NAMING_PRESET");

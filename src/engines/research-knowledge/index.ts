@@ -1,7 +1,9 @@
 import { isTrackingKey } from "../campaign-url";
 import { normalizeDoi as normalizeDoiReference, normalizeIsbn as normalizeIsbnReference } from "../research-reference";
+import { redactUrl, redactUrlCredentials } from "../url-marketing";
 
 export const RESEARCH_KNOWLEDGE_ENGINE_VERSION = "research-knowledge-v1";
+const MAX_RESEARCH_INPUT = 2 * 1024 * 1024;
 
 export type Primitive = string | number | boolean | null;
 export type UnknownRecord = Record<string, unknown>;
@@ -201,12 +203,24 @@ const MONTHS: Record<string, number> = {
   december: 12,
 };
 
+function defineRecordValue(record: UnknownRecord, key: string, value: unknown): void {
+  Object.defineProperty(record, key, { configurable: true, enumerable: true, value, writable: true });
+}
+
 function compareText(left: string, right: string): number {
   return left < right ? -1 : left > right ? 1 : 0;
 }
 
 function normalizeText(value: string): string {
   return value.normalize("NFC").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/gu, "").replace(/\s+/gu, " ").trim();
+}
+
+function redactResearchOutput(value: string): string {
+  try {
+    return redactUrl(new URL(value));
+  } catch {
+    return redactUrlCredentials(value);
+  }
 }
 
 function foldText(value: string): string {
@@ -229,8 +243,13 @@ function field(record: UnknownRecord, ...keys: string[]): string {
   return "";
 }
 
+function assertResearchInput(value: string): void {
+  if (value.length > MAX_RESEARCH_INPUT) throw new Error("INPUT_TOO_LARGE");
+}
+
 function requiredString(value: unknown, label: string): string {
   if (typeof value !== "string" || value.trim() === "") throw new Error(`INVALID_INPUT:${label}`);
+  assertResearchInput(value);
   return value;
 }
 
@@ -239,7 +258,7 @@ function stableValue(value: unknown): unknown {
   if (typeof value === "object" && value !== null) {
     const record = value as UnknownRecord;
     const result: UnknownRecord = {};
-    for (const key of Object.keys(record).sort(compareText)) result[key] = stableValue(record[key]);
+    for (const key of Object.keys(record).sort(compareText)) defineRecordValue(result, key, stableValue(record[key]));
     return result;
   }
   if (typeof value === "bigint") return String(value);
@@ -268,6 +287,7 @@ function recordList(value: unknown): UnknownRecord[] {
     });
   }
   if (typeof value === "string") {
+    assertResearchInput(value);
     const trimmed = value.trim();
     if (trimmed === "") return [];
     try {
@@ -435,6 +455,7 @@ function parseBibtexValue(text: string, start: number): { value: string; end: nu
 }
 
 export function parseBibtex(text: string): BibtexEntry[] {
+  assertResearchInput(text);
   const source = text.replace(/^\uFEFF/u, "").replace(/\r\n?/gu, "\n");
   const entries: BibtexEntry[] = [];
   const header = /@([A-Za-z][A-Za-z0-9_-]*)\s*\{\s*([^,\s}]+)\s*,/gu;
@@ -455,7 +476,10 @@ export function parseBibtex(text: string): BibtexEntry[] {
       if (equals < 0) break;
       const name = body.slice(cursor, equals).trim().toLowerCase();
       const parsedValue = parseBibtexValue(body, equals + 1);
-      if (name !== "") fields[name] = normalizeText(parsedValue.value);
+      if (name !== "") {
+        const normalized = normalizeText(parsedValue.value);
+        defineRecordValue(fields, name, name === "url" || name === "uri" ? redactResearchOutput(normalized) : normalized);
+      }
       cursor = parsedValue.end;
       if (body[cursor] === ",") cursor += 1;
     }
@@ -513,11 +537,12 @@ function risFieldsToRecord(fields: Map<string, string[]>): CitationRecord {
   const doi = first("DO");
   if (doi !== "") record.doi = doi;
   const url = first("UR") || first("L1");
-  if (url !== "") record.url = url;
+  if (url !== "") record.url = redactResearchOutput(url);
   return record;
 }
 
 export function parseRis(text: string): CitationRecord[] {
+  assertResearchInput(text);
   const records: CitationRecord[] = [];
   let current = new Map<string, string[]>();
   for (const line of text.replace(/\r\n?/gu, "\n").split("\n")) {
@@ -783,7 +808,7 @@ export function sortTimeline(records: readonly UnknownRecord[], direction: "asce
 }
 
 export function cleanResearchUrl(value: string): UrlCleanResult {
-  const input = requiredString(value, "url");
+  const input = redactUrlCredentials(requiredString(value, "url"));
   let candidate = normalizeText(input);
   if (!/^[a-z][a-z0-9+.-]*:\/\//iu.test(candidate)) candidate = `https://${candidate}`;
   let url: URL;
@@ -804,7 +829,7 @@ export function cleanResearchUrl(value: string): UrlCleanResult {
   const removedFragment = url.hash !== "" && /^(?:#(?:!|\/?))(?:spm|utm_|share)/iu.test(url.hash);
   if (removedFragment) url.hash = "";
   url.searchParams.sort();
-  return { valid: true, input, url: url.toString(), removedParameters: [...new Set(removedParameters)].sort(compareText), removedFragment };
+  return { valid: true, input, url: redactUrl(url), removedParameters: [...new Set(removedParameters)].sort(compareText), removedFragment };
 }
 
 export function countSourceDomains(values: readonly string[]): { domains: DomainCount[]; total: number; unique: number } {
@@ -822,11 +847,12 @@ export function countSourceDomains(values: readonly string[]): { domains: Domain
 }
 
 function csvCell(value: string): string {
-  return /[",\n\r]/u.test(value) ? `"${value.replace(/"/gu, "\"\"")}"` : value;
+  const safeValue = /^[\u0000-\u0020]*[=+\-@]/u.test(value) ? `'${value}` : value;
+  return /[",\n\r]/u.test(safeValue) ? `"${safeValue.replace(/"/gu, "\"\"")}"` : safeValue;
 }
 
 function recordEvidenceRow(record: UnknownRecord): EvidenceRow {
-  const url = field(record, "url", "URL", "link");
+  const url = redactResearchOutput(field(record, "url", "URL", "link"));
   let source = field(record, "source", "publisher", "site");
   if (source === "" && url !== "") {
     try {

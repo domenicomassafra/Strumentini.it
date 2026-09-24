@@ -1,4 +1,4 @@
-import type { HandoffDescriptorDeclaration, ToolSummary } from "../catalog/manifest";
+import { isLocalToolRoute, type HandoffDescriptorDeclaration, type ToolSummary } from "../catalog/manifest";
 
 export interface TableHandoffDescriptor {
   type: "table";
@@ -91,6 +91,9 @@ export function compatibleHandoffTargets(
 }
 
 const MESSAGE_KIND = "utilityos-handoff-v1";
+const MAX_HANDOFF_BYTES = 2 * 1024 * 1024;
+const MAX_HANDOFF_ROWS = 100_000;
+const MAX_HANDOFF_COLUMNS = 1_000;
 
 function isTableHandoffEnvelope(value: unknown): value is TableHandoffEnvelope {
   if (typeof value !== "object" || value === null) return false;
@@ -105,7 +108,10 @@ function isTableHandoffEnvelope(value: unknown): value is TableHandoffEnvelope {
     !Array.isArray(descriptor.columns) || descriptor.columns.some((column) => typeof column !== "string") ||
     typeof descriptor.duplicateHeaders !== "boolean" || typeof descriptor.raggedRows !== "boolean"
   ) return false;
-  if (descriptor.columnCount !== descriptor.columns.length) return false;
+  if (descriptor.columnCount !== descriptor.columns.length ||
+    (descriptor.bytes ?? 0) > MAX_HANDOFF_BYTES ||
+    (descriptor.rowCount ?? 0) > MAX_HANDOFF_ROWS ||
+    (descriptor.columnCount ?? 0) > MAX_HANDOFF_COLUMNS) return false;
   return descriptor.bytes === new TextEncoder().encode(envelope.payload).byteLength;
 }
 
@@ -113,6 +119,7 @@ export function openHandoffTarget(
   proposal: Extract<HandoffProposal, { compatible: true }>,
   envelope: TableHandoffEnvelope,
 ): boolean {
+  if (!isLocalToolRoute(proposal.target.route) || !isTableHandoffEnvelope(envelope)) return false;
   const token = crypto.randomUUID();
   const targetWindow = window.open(`${proposal.target.route}/#handoff=${encodeURIComponent(token)}`, "_blank");
   if (targetWindow === null) return false;

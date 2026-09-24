@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { imageResizeManifest } from "../src/tools/image-resize/manifest";
 import { imageVisualToolDefinitions } from "../src/tools/image-visual-definitions";
-import { aspectRatio, contrastRatio, extractPalette, fitDimensions, parseHexColor, rgbToHsl } from "../src/engines/image/visual";
+import { aspectRatio, contrastRatio, extractPalette, fitDimensions, imageDataPixels, parseHexColor, rgbToHsl } from "../src/engines/image/visual";
 import { calculateAspectRatioLocal, checkContrastLocal, convertColorLocal, previewImageRenamesLocal } from "../src/engines/image/visual-tools";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -44,6 +44,10 @@ describe("image/visual pure operations", () => {
       { hex: "#ff0000", pixels: 3 },
       { hex: "#0000ff", pixels: 1 },
     ]);
+  });
+
+  it("rejects oversized pixel buffers before palette sampling", () => {
+    expect(() => imageDataPixels({ width: 20_000, height: 1, data: new Uint8ClampedArray(80_000) } as ImageData)).toThrow(/PIXEL_LIMIT/u);
   });
 
   it("previews safe batch names without mutating the input", () => {

@@ -110,6 +110,23 @@ describe("file/privacy engine", () => {
     await expect(createCleanZip({ files: [file("safe.txt", "x", "text/plain", "../escape.txt")] })).rejects.toMatchObject({ code: "UNSAFE_ARCHIVE_PATH" });
   });
 
+  it("rejects ZIP central-directory size claims beyond the local uncompressed limit", async () => {
+    const created = await createZip({ files: [file("small.txt", "x")] });
+    const bytes = new Uint8Array(await (created.blob as Blob).arrayBuffer());
+    const view = new DataView(bytes.buffer);
+    let central = -1;
+    for (let offset = 0; offset <= bytes.length - 46; offset += 1) {
+      if (view.getUint32(offset, true) === 0x02014b50) {
+        central = offset;
+        break;
+      }
+    }
+    expect(central).toBeGreaterThanOrEqual(0);
+    view.setUint32(central + 24, 0xffffffff, true);
+    const bomb = new File([bytes], "bomb.zip", { type: "application/zip" });
+    await expect(inspectZip({ files: [bomb] })).rejects.toMatchObject({ code: "ARCHIVE_TOO_LARGE" });
+  });
+
   it("generates a bounded client handoff index with hashes", async () => {
     const result = await clientHandoffIndex({ files: [file("brief.txt", "brief")], title: "Acme handoff" });
     expect(result.title).toBe("Acme handoff");

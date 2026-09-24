@@ -1,3 +1,5 @@
+import { inspectImageHeader } from "./format";
+
 export type ImageVisualToolId =
   | "image-crop"
   | "image-format-conversion"
@@ -22,6 +24,7 @@ export type ImageVisualToolId =
 export const IMAGE_VISUAL_LIMITS = {
   maxFiles: 40,
   maxFileBytes: 40 * 1024 * 1024,
+  maxTotalBytes: 200 * 1024 * 1024,
   maxPixels: 16_000_000,
   maxDimension: 8_192,
   maxContactSheetPixels: 12_000_000,
@@ -62,7 +65,7 @@ export function assertFile(input: unknown, label = "image"): ImageVisualFile {
     type: typeof source.type === "string" ? source.type : "",
     blob: source,
   };
-  if (file.size < 1) throw new ImageVisualError("INVALID_INPUT", "The selected file is empty");
+  if (!Number.isSafeInteger(file.size) || file.size < 1) throw new ImageVisualError("INVALID_INPUT", "The selected file is empty or has an invalid size");
   if (file.size > IMAGE_VISUAL_LIMITS.maxFileBytes) {
     throw new ImageVisualError("FILE_TOO_LARGE", `The selected file exceeds ${IMAGE_VISUAL_LIMITS.maxFileBytes} bytes`);
   }
@@ -73,7 +76,10 @@ export function assertFiles(input: unknown, maxFiles: number = IMAGE_VISUAL_LIMI
   if (!Array.isArray(input) || input.length < 1 || input.length > maxFiles) {
     throw new ImageVisualError("INVALID_INPUT", `Choose between 1 and ${maxFiles} local files`);
   }
-  return input.map((file) => assertFile(file));
+  const files = input.map((file) => assertFile(file));
+  const total = files.reduce((sum, file) => sum + file.size, 0);
+  if (total > IMAGE_VISUAL_LIMITS.maxTotalBytes) throw new ImageVisualError("FILE_TOO_LARGE", `The selected files exceed ${IMAGE_VISUAL_LIMITS.maxTotalBytes} bytes`);
+  return files;
 }
 
 export function assertDimension(value: unknown, label: string): number {
@@ -122,10 +128,14 @@ export function canvasToBlob(canvas: HTMLCanvasElement, mime: string, quality?: 
 
 export async function decodeBitmap(file: Blob, signal?: AbortSignal): Promise<ImageBitmap> {
   abortIfNeeded(signal);
+  if (!Number.isSafeInteger(file.size) || file.size < 1 || file.size > IMAGE_VISUAL_LIMITS.maxFileBytes) throw new ImageVisualError("FILE_TOO_LARGE", `The selected file exceeds ${IMAGE_VISUAL_LIMITS.maxFileBytes} bytes`);
   if (typeof createImageBitmap !== "function") {
     throw new ImageVisualError("UNSUPPORTED_BROWSER", "This browser does not expose local image decoding");
   }
   try {
+    const header = inspectImageHeader(new Uint8Array(await file.slice(0, 2 * 1024 * 1024).arrayBuffer()));
+    if (header.width > IMAGE_VISUAL_LIMITS.maxDimension || header.height > IMAGE_VISUAL_LIMITS.maxDimension) throw new ImageVisualError("PIXEL_LIMIT", "The image dimensions exceed the local limit");
+    assertPixels(header.width, header.height);
     const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
     abortIfNeeded(signal);
     assertPixels(bitmap.width, bitmap.height);
@@ -221,6 +231,9 @@ export function contrastRatio(first: { r: number; g: number; b: number }, second
 }
 
 export function imageDataPixels(image: ImageData, maxPixels = IMAGE_VISUAL_LIMITS.maxPalettePixels): Uint8ClampedArray {
+  if (!Number.isInteger(image.width) || !Number.isInteger(image.height) || image.width < 1 || image.height < 1 || image.width > IMAGE_VISUAL_LIMITS.maxDimension || image.height > IMAGE_VISUAL_LIMITS.maxDimension) throw new ImageVisualError("PIXEL_LIMIT", "Image data dimensions exceed the local limit");
+  assertPixels(image.width, image.height);
+  if (!Number.isSafeInteger(maxPixels) || maxPixels < 1 || maxPixels > IMAGE_VISUAL_LIMITS.maxPalettePixels) throw new ImageVisualError("INVALID_INPUT", "Pixel sample limit is invalid");
   const stride = Math.max(1, Math.floor((image.width * image.height) / maxPixels));
   const pixels = new Uint8ClampedArray(Math.ceil(image.width * image.height / stride) * 4);
   let count = 0;
