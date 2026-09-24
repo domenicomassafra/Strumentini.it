@@ -1,0 +1,7 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { LineSorterTool } from "../../components/tools/LineSorterTool";
+---
+<BaseLayout title="Line Sorter" description="Sort text lines in stable ascending or descending order locally.">
+  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Line Sorter</h1><p class="lede">Order line lists with an explicit direction and case-sensitivity policy.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your list is not uploaded.</span></div></header><LineSorterTool client:load /><section class="method-card"><h2>Sorting policy</h2><ul><li>Ordering uses a deterministic Unicode code-point comparison, not locale collation.</li><li>Ascending is the default; descending and case-insensitive comparison are explicit options.</li><li>Empty line endings are normalized when the list is split and rejoined.</li></ul></section></article>
+</BaseLayout>

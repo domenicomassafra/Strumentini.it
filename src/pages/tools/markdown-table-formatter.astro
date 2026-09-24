@@ -1,0 +1,7 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { MarkdownTableFormatterTool } from "../../components/tools/MarkdownTableFormatterTool";
+---
+<BaseLayout title="Markdown Table Formatter" description="Align Markdown pipe-table rows and preserve cell content locally.">
+  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Markdown Table Formatter</h1><p class="lede">Turn uneven Markdown pipe tables into readable, aligned output.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your table is not uploaded.</span></div></header><MarkdownTableFormatterTool client:load /><section class="method-card"><h2>Formatting policy</h2><ul><li>Header, separator, and data rows are padded to the widest cell in each column.</li><li>Existing left, center, right, and default separator markers are preserved.</li><li>Input without a valid pipe-table separator is returned unchanged with a warning.</li></ul></section></article>
+</BaseLayout>
