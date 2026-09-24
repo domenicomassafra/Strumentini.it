@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ToolModule } from "../src/runtime/types";
-import { compileCatalog } from "../scripts/lib/catalog-compiler";
+import { compileFactoryCatalog } from "../src/tool-factory/catalog";
 import batchChecksumManifest from "../src/tools/batch-checksum-manifest/module";
 import checksumVerifier from "../src/tools/checksum-verifier/module";
 import fileSignatureDetector from "../src/tools/file-signature-detector/module";
@@ -66,7 +66,7 @@ describe("file/privacy tool modules", () => {
       compareManifest,
       orphanManifest,
     ];
-    const artifacts = compileCatalog(manifests);
+    const artifacts = compileFactoryCatalog(manifests);
     expect(artifacts.summaries).toHaveLength(19);
     expect(new Set(artifacts.summaries.map((summary) => summary.id)).size).toBe(19);
     expect(artifacts.summaries.every((summary) => summary.runtime.location === "LOCAL" && summary.runtime.network === "forbidden")).toBe(true);

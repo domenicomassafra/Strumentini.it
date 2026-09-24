@@ -7,7 +7,6 @@ import {
   renderCatalogSource,
   renderLoaderSource,
 } from "../../src/tool-factory/catalog";
-import type { ToolManifest } from "../../src/catalog/manifest";
 import type { FixtureIndex, OracleRegistry } from "../../src/tool-factory/manifest";
 
 const root = resolve(import.meta.dirname, "../..");
@@ -26,7 +25,7 @@ async function discoverManifests(): Promise<unknown[]> {
       continue;
     }
     const imported = await import(`${pathToFileURL(manifestPath).href}?factory=${Date.now()}`) as {
-      default?: ToolManifest;
+      default?: unknown;
     };
     if (imported.default === undefined) throw new Error(`${manifestPath}: missing default ToolManifest export`);
     manifests.push(imported.default);

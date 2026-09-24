@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { compileCatalog } from "../scripts/lib/catalog-compiler";
+import { compileFactoryCatalog } from "../src/tool-factory/catalog";
 import { caseConverterManifest } from "../src/tools/case-converter/manifest";
 import { csvColumnToListManifest } from "../src/tools/csv-column-to-list/manifest";
 import { findReplacePreviewManifest } from "../src/tools/find-replace-preview/manifest";
@@ -47,7 +47,7 @@ const textManifests = [
 
 describe("20-tool text and writing catalog family", () => {
   it("compiles all 20 candidates as independent LOCAL routes", () => {
-    const compiled = compileCatalog(textManifests);
+    const compiled = compileFactoryCatalog(textManifests);
     expect(compiled.summaries).toHaveLength(20);
     expect(new Set(compiled.summaries.map(({ id }) => id)).size).toBe(20);
     expect(new Set(compiled.summaries.map(({ route }) => route)).size).toBe(20);
@@ -61,7 +61,7 @@ describe("20-tool text and writing catalog family", () => {
   });
 
   it("gives every candidate a distinct lazy module implementation", () => {
-    const compiled = compileCatalog(textManifests);
+    const compiled = compileFactoryCatalog(textManifests);
     expect(new Set(compiled.loaders.map(({ implementation }) => implementation)).size).toBe(20);
     expect(compiled.loaders.every(({ implementation }) => implementation.endsWith("/module.ts"))).toBe(true);
   });

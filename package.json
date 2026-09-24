@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "catalog:build": "tsx scripts/build-catalog.ts",
-    "catalog:check": "tsx scripts/build-catalog.ts --check",
+    "catalog:build": "tsx scripts/tool-factory/generate-catalog.ts",
+    "catalog:check": "tsx scripts/tool-factory/generate-catalog.ts --check",
     "test": "npm run catalog:build && vitest run",
     "check": "npm run catalog:build && astro check",
     "build": "npm run catalog:build && astro build && tsx scripts/inspect-build.ts",
@@ -27,11 +27,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
-    "@noble/hashes": "^2.4.0",
     "@playwright/test": "1.63.0",
     "@types/node": "26.6.2",
     "@types/papaparse": "^5.5.2",
-    "csv-parse": "^7.0.2",
     "hash-wasm": "^4.12.0",
     "papaparse": "^5.7.0",
     "tsx": "4.23.15",

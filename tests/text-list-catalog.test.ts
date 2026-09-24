@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { compileCatalog } from "../scripts/lib/catalog-compiler";
+import { compileFactoryCatalog } from "../src/tool-factory/catalog";
 import { doiIsbnNormalizerManifest } from "../src/tools/doi-isbn-normalizer/manifest";
 import { listCompareManifest } from "../src/tools/list-compare/manifest";
 import { textDiffManifest } from "../src/tools/text-diff/manifest";
@@ -7,7 +7,7 @@ import { textDiffManifest } from "../src/tools/text-diff/manifest";
 describe("Ticket 08 catalog seams", () => {
   it("compiles three independently openable and searchable LOCAL tools", () => {
     const manifests = [listCompareManifest, textDiffManifest, doiIsbnNormalizerManifest] as const;
-    const compiled = compileCatalog(manifests);
+    const compiled = compileFactoryCatalog(manifests);
     expect(compiled.summaries.map(({ id }) => id)).toEqual([
       "doi-isbn-normalizer",
       "list-compare",
