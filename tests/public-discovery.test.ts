@@ -33,8 +33,8 @@ describe("public discovery surfaces", () => {
   it("builds one canonical sitemap entry for every public route", () => {
     const xml = buildSitemapXml(catalog, "https://example.test");
     const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((match) => match[1]);
-    expect(locations).toHaveLength(catalog.length + 2);
-    expect(new Set(locations).size).toBe(catalog.length + 2);
+    expect(locations).toHaveLength(catalog.length + 3);
+    expect(new Set(locations).size).toBe(catalog.length + 3);
     expect(locations).toContain("https://example.test/");
     expect(locations).toContain("https://example.test/library");
     for (const tool of catalog) expect(locations).toContain(`https://example.test${tool.route}`);

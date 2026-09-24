@@ -150,7 +150,7 @@ async function loadMetadata(catalog: readonly ReleaseCatalogEntry[], site: URL):
   }
   const sitemapPath = resolve(distRoot, "sitemap.xml");
   const robotsPath = resolve(distRoot, "robots.txt");
-  const routes = ["/", "/library/", ...catalog.map((entry) => entry.route)];
+  const routes = ["/", "/library/", "/onboarding/", ...catalog.map((entry) => entry.route)];
   const expectedUrls = routes.map((route) => new URL(route === "/" ? "/" : `${route.replace(/\/+$/u, "")}/`, site).href);
   const sitemap = await pathExists(sitemapPath) ? {
     xml: await readFile(sitemapPath, "utf8"),
