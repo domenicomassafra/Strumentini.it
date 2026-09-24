@@ -98,6 +98,9 @@ export function PdfTool({ toolId, title, description, actionLabel, inputMode = "
 
   useEffect(() => () => {
     controller.current?.abort();
+  }, []);
+
+  useEffect(() => () => {
     for (const item of urls) URL.revokeObjectURL(item.url);
   }, [urls]);
 

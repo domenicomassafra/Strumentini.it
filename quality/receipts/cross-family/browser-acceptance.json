@@ -1,0 +1,340 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-24T17:04:56.049Z",
+  "status": "PASS",
+  "browser": "Google Chrome",
+  "viewport": {
+    "desktop": "1280x900",
+    "mobile": "390x844"
+  },
+  "coverage": {
+    "representativeFamilies": 10,
+    "hydration": true,
+    "errors": 7,
+    "keyboard": true,
+    "accessibility": true,
+    "networkPrivacy": true,
+    "runtimeConsoleErrors": true,
+    "mobile390": true
+  },
+  "families": [
+    {
+      "id": "date-time",
+      "route": "/tools/working-hours/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 3
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 3,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "recoverable alert observed",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "lazyScriptsAfterAction": 2,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    {
+      "id": "business-math",
+      "route": "/tools/margin-markup/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 4
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 3,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "recoverable alert observed",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "lazyScriptsAfterAction": 2,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    {
+      "id": "campaign-url",
+      "route": "/tools/utm-builder/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 2
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 4,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "recoverable alert observed",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "lazyScriptsAfterAction": 2,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    {
+      "id": "table-csv",
+      "route": "/tools/csv-viewer/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 4
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 2,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "covered by shared tool operation",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "lazyScriptsAfterAction": 2,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    {
+      "id": "text-writing",
+      "route": "/tools/line-sorter/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 3
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 3,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "covered by shared tool operation",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "lazyScriptsAfterAction": 3,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    {
+      "id": "research-reference",
+      "route": "/tools/doi-isbn-normalizer/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 3
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 3,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "covered by shared tool operation",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "lazyScriptsAfterAction": 2,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    {
+      "id": "developer-web",
+      "route": "/tools/base64-codec/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 3
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 3,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "recoverable alert observed",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "lazyScriptsAfterAction": 2,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    {
+      "id": "pdf-document",
+      "route": "/tools/pdf-page-count-verifier/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 4
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 1,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "recoverable alert observed",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "lazyScriptsAfterAction": 2,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    {
+      "id": "file-privacy",
+      "route": "/tools/file-hash/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 4
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 2,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "recoverable alert observed",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "lazyScriptsAfterAction": 1,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    {
+      "id": "image-visual",
+      "route": "/tools/image-resize/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 4
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 7,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "recoverable alert observed",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "lazyScriptsAfterAction": 2,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    }
+  ],
+  "searchLibrary": {
+    "commandPalette": {
+      "keyboardShortcuts": [
+        "Meta+K",
+        "Control+K"
+      ],
+      "arrowNavigation": true,
+      "enterOpen": true,
+      "escapeClose": true,
+      "focusRestored": true
+    },
+    "zeroResult": {
+      "queryPreserved": true,
+      "requestAction": true
+    },
+    "library": {
+      "urlAddressable": true,
+      "backNavigationPreserved": true,
+      "mobileOverflow": false,
+      "explicitMobileSearchFocus": true
+    }
+  },
+  "fixedDefects": [
+    "PDF URL cleanup no longer aborts an active operation when a result is reset.",
+    "The shell declares a local favicon so route loads do not emit a missing-resource console error.",
+    "CSV acceptance scopes the result preview instead of matching the intentional handoff preview.",
+    "Workbench acceptance adds File Hash through the visible Add a tool path instead of a stale suggestion assumption."
+  ]
+}
