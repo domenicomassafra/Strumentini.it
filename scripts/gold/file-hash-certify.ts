@@ -3,8 +3,10 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileHashManifest } from "../../src/tools/file-hash/manifest";
 import { hashBlobIncremental, hashBlobWithWebCrypto } from "../../src/engines/file-hash";
+import { currentRevision } from "../lib/current-revision";
 
 const root = resolve(import.meta.dirname, "../..");
+const revision = await currentRevision(root);
 const readText = (path: string) => readFile(resolve(root, path), "utf8");
 const sha256 = (value: string | Uint8Array) => createHash("sha256").update(value).digest("hex");
 
@@ -73,6 +75,7 @@ const receipt = {
   schemaVersion: 1,
   toolId: fileHashManifest.id,
   status: "GOLD",
+  revision,
   runtime: fileHashManifest.runtime,
   algorithm: "SHA-256",
   implementation: { package: "hash-wasm", version: "4.12.0", mode: "incremental-worker" },

@@ -776,7 +776,7 @@ function deterministicUid(input: IcsEventInput, start: string): string {
   if (input.uid !== undefined && input.uid.trim() !== "") return input.uid.trim();
   let hash = 2166136261;
   for (const character of `${input.summary}\u0000${start}`) { hash ^= character.codePointAt(0) ?? 0; hash = Math.imul(hash, 16777619) >>> 0; }
-  return `${hash.toString(16).padStart(8, "0")}-utilityos@local`;
+  return `${hash.toString(16).padStart(8, "0")}-local-utility-workspace@local`;
 }
 
 function icsDateValue(value: string, timeZone: string | undefined, allDay: boolean): string {
@@ -810,7 +810,7 @@ export function buildIcsEvent(input: IcsEventInput): { text: string; uid: string
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//UtilityOS//Date Tools//EN",
+    "PRODID:-//Local Utility Workspace//Date Tools//EN",
     "CALSCALE:GREGORIAN",
     "BEGIN:VEVENT",
     `UID:${escapeIcsText(uid)}`,

@@ -4,8 +4,10 @@ import { resolve } from "node:path";
 import { businessDayManifest } from "../src/tools/business-day/manifest";
 import { addBusinessDays, businessDaysBetween, BUSINESS_DAY_ENGINE_VERSION, type DayCode } from "../src/engines/date-time/business-days";
 import type { ToolManifest } from "../src/catalog/manifest";
+import { currentRevision } from "./lib/current-revision";
 
 const root = resolve(import.meta.dirname, "..");
+const revision = await currentRevision(root);
 const sabotageMode = process.argv[process.argv.indexOf("--sabotage") + 1];
 const manifest: ToolManifest = sabotageMode === "missing-oracle"
   ? { ...businessDayManifest, gold: { ...businessDayManifest.gold, fixtureFamilies: [] } }
@@ -91,6 +93,7 @@ const receipt = {
   schemaVersion: 1,
   toolId: manifest.id,
   status: "GOLD",
+  revision,
   runtime: manifest.runtime,
   maintenanceClass: manifest.gold.maintenanceClass,
   oracleEntryId: manifest.gold.oracleEntryId,

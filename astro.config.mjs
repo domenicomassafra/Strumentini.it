@@ -10,8 +10,9 @@ if (site !== undefined) {
 }
 
 export default defineConfig({
-  output: "static",
   site,
+  output: "static",
+  trailingSlash: "always",
   integrations: [preact()],
   vite: {
     build: {

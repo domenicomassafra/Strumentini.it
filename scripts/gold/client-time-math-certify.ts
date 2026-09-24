@@ -14,6 +14,7 @@ import { rateConverterManifest } from "../../src/tools/rate-converter/manifest";
 import { timezoneOverlapManifest } from "../../src/tools/timezone-overlap/manifest";
 
 const root = resolve(import.meta.dirname, "../..");
+const revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
 const receiptRoot = resolve(root, "quality/receipts/client-time-math");
 const indexText = await readFile(resolve(root, "quality/fixtures/index.json"), "utf8");
 const registryText = await readFile(resolve(root, "quality/oracles/registry.json"), "utf8");
@@ -181,6 +182,7 @@ async function writeReceipt(options: {
   const receipt = {
     schemaVersion: 1,
     status: "GOLD",
+    revision,
     toolId: manifest.id,
     runtime: manifest.runtime,
     maintenanceClass: manifest.gold.maintenanceClass,
