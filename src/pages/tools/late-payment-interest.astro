@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { LatePaymentInterestTool } from "../../components/tools/business-math/LatePaymentInterestTool";
+import { latePaymentInterestConfig } from "../../components/tools/business-math/configs";
+---
+<BaseLayout title={latePaymentInterestConfig.title} description={latePaymentInterestConfig.lede}>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
+      <p class="eyebrow">Business math</p>
+      <h1>{latePaymentInterestConfig.title}</h1>
+      <p class="lede">{latePaymentInterestConfig.lede}</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>This is a simple-interest estimate, not legal or statutory advice.</span></div>
+    </header>
+    <LatePaymentInterestTool client:load />
+    <section class="method-card" aria-labelledby="late-method">
+      <p class="eyebrow">Rules &amp; assumptions</p>
+      <h2 id="late-method">Simple interest with an explicit basis</h2>
+      <ul><li>Interest = principal × annual rate × days late ÷ day-count basis.</li><li>Choose 360 or 365 days deliberately; no rate is inferred.</li></ul>
+    </section>
+  </article>
+</BaseLayout>

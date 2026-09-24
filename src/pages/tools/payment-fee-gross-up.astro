@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { PaymentFeeGrossUpTool } from "../../components/tools/business-math/PaymentFeeGrossUpTool";
+import { paymentFeeGrossUpConfig } from "../../components/tools/business-math/configs";
+---
+<BaseLayout title={paymentFeeGrossUpConfig.title} description={paymentFeeGrossUpConfig.lede}>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
+      <p class="eyebrow">Business math</p>
+      <h1>{paymentFeeGrossUpConfig.title}</h1>
+      <p class="lede">{paymentFeeGrossUpConfig.lede}</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>The fee is an explicit user input; no payment provider is contacted.</span></div>
+    </header>
+    <PaymentFeeGrossUpTool client:load />
+    <section class="method-card" aria-labelledby="fee-method">
+      <p class="eyebrow">Rules &amp; assumptions</p>
+      <h2 id="fee-method">Gross-up protects the net</h2>
+      <ul><li>Gross = target net ÷ (1 − fee rate).</li><li>The result rounds only after the complete decimal calculation.</li></ul>
+    </section>
+  </article>
+</BaseLayout>

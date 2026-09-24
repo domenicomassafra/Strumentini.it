@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CapacityPlannerTool } from "../../components/tools/business-math/CapacityPlannerTool";
+import { capacityPlannerConfig } from "../../components/tools/business-math/configs";
+---
+<BaseLayout title={capacityPlannerConfig.title} description={capacityPlannerConfig.lede}>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
+      <p class="eyebrow">Business math</p>
+      <h1>{capacityPlannerConfig.title}</h1>
+      <p class="lede">{capacityPlannerConfig.lede}</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Capacity assumptions are local and editable.</span></div>
+    </header>
+    <CapacityPlannerTool client:load />
+    <section class="method-card" aria-labelledby="capacity-method">
+      <p class="eyebrow">Rules &amp; assumptions</p>
+      <h2 id="capacity-method">Planned versus reserved capacity</h2>
+      <ul><li>Planned billable hours = available hours × target utilization.</li><li>Available for delivery subtracts reserved hours and flags an overallocation.</li></ul>
+    </section>
+  </article>
+</BaseLayout>

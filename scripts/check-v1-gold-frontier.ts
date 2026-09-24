@@ -4,7 +4,7 @@ import { catalog } from "../src/generated/catalog";
 
 const root = resolve(import.meta.dirname, "..");
 const receiptRoot = resolve(root, "quality/receipts");
-const expectedToolCount = 15;
+const expectedToolCount: number = 15;
 
 async function jsonFiles(path: string): Promise<string[]> {
   const entries = await readdir(path, { withFileTypes: true });
