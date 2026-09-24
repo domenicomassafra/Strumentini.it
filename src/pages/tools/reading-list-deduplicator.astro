@@ -1,0 +1,7 @@
+---
+import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import { ReadingListDeduplicatorTool } from "../../components/tools/research-knowledge";
+---
+<ResearchKnowledgePage title="Reading List Deduplicator" description="Deduplicate reading-list records by stable source identity.">
+  <ReadingListDeduplicatorTool client:load />
+</ResearchKnowledgePage>

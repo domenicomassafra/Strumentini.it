@@ -5,6 +5,23 @@ import { catalog } from "../src/generated/catalog";
 const root = resolve(import.meta.dirname, "..");
 const receiptRoot = resolve(root, "quality/receipts");
 const expectedToolCount = 15;
+const v1ToolIds = new Set([
+  "business-day",
+  "campaign-name",
+  "csv-cleaner",
+  "csv-column-map",
+  "csv-dedupe",
+  "doi-isbn-normalizer",
+  "file-hash",
+  "image-resize",
+  "list-compare",
+  "margin-markup",
+  "rate-converter",
+  "text-diff",
+  "timezone-overlap",
+  "tracking-cleaner",
+  "utm-builder",
+]);
 
 async function jsonFiles(path: string): Promise<string[]> {
   const entries = await readdir(path, { withFileTypes: true });
@@ -43,11 +60,12 @@ for (const path of await jsonFiles(receiptRoot)) {
   });
 }
 
-if (catalog.length !== expectedToolCount) {
-  throw new Error(`V1 catalog must contain exactly ${expectedToolCount} tools before Ticket 11; found ${catalog.length}`);
+const v1Tools = catalog.filter((tool) => v1ToolIds.has(tool.id));
+if (v1Tools.length !== expectedToolCount) {
+  throw new Error(`V1 frontier must contain exactly ${expectedToolCount} tools before Ticket 11; found ${v1Tools.length}`);
 }
 
-const tools = catalog.map((tool) => {
+const tools = v1Tools.map((tool) => {
   const candidates = toolReceipts.filter((receipt) => receipt.toolId === tool.id);
   if (candidates.length !== 1) {
     throw new Error(`${tool.id}: expected exactly one tool certification receipt, found ${candidates.length}`);
