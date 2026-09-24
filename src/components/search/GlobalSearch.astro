@@ -1,5 +1,8 @@
 ---
 import { catalog } from "../../generated/catalog";
+import { contextTagsForTools } from "../../onboarding/membership";
+
+const contextTags = contextTagsForTools(catalog);
 
 const searchMetadata = catalog.map((tool) => ({
   id: tool.id,
@@ -10,6 +13,7 @@ const searchMetadata = catalog.map((tool) => ({
   jobs: tool.jobs,
   category: tool.category,
   inputTypes: tool.inputTypes,
+  packTags: contextTags.get(tool.id) ?? [],
   engine: tool.engine,
   runtime: tool.runtime,
 }));

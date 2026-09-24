@@ -12,6 +12,7 @@
 .intro h1 { font-size: var(--font-size-h1); }
 .lede,
 .muted { color: var(--text-muted); line-height: var(--line-height-relaxed); }
+.setupLink { display: inline-flex; align-items: center; min-height: var(--control-height-touch); color: var(--action); font-weight: var(--font-weight-semibold); }
 .eyebrow {
   margin: 0;
   color: var(--text-muted);

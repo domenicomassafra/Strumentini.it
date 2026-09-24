@@ -1,6 +1,9 @@
 ---
 import { catalog } from "../../generated/catalog";
+import { contextTagsForTools } from "../../onboarding/membership";
 import { getLibraryFacets } from "../../library/model";
+
+const contextTags = contextTagsForTools(catalog);
 
 const libraryMetadata = catalog.map((tool) => ({
   id: tool.id,
@@ -11,6 +14,7 @@ const libraryMetadata = catalog.map((tool) => ({
   jobs: tool.jobs,
   category: tool.category,
   inputTypes: tool.inputTypes,
+  packTags: contextTags.get(tool.id) ?? [],
   engine: tool.engine,
   runtime: tool.runtime,
 }));
@@ -75,6 +79,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
       context = {
         ...(Array.isArray(parsed.installedToolIds) ? { installedToolIds: parsed.installedToolIds.filter((id): id is string => typeof id === "string") } : {}),
         ...(Array.isArray(parsed.recentToolIds) ? { recentToolIds: parsed.recentToolIds.filter((id): id is string => typeof id === "string") } : {}),
+        ...(Array.isArray(parsed.installedPackTags) ? { installedPackTags: parsed.installedPackTags.filter((id): id is string => typeof id === "string") } : {}),
       };
     }
   } catch (error) {

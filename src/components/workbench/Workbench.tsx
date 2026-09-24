@@ -116,6 +116,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
     const context = {
       installedToolIds: state.installedTools,
       recentToolIds: state.recent.map(({ toolId }) => toolId),
+      installedPackTags: state.packs,
     };
     publishSearchContext(context);
     try {
@@ -123,7 +124,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
     } catch (error) {
       void error;
     }
-  }, [ready, state.installedTools, state.recent]);
+  }, [ready, state.installedTools, state.recent, state.packs]);
 
   async function persist(next: WorkbenchState) {
     setState(next);
@@ -256,6 +257,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
         <p class={styles.eyebrow}>Local personal workspace</p>
         <h1>Workbench</h1>
         <p class={styles.lede}>The small set of utilities you use most, ready with your local defaults.</p>
+        <a class={styles.setupLink} href="/onboarding/">Set up a starter set</a>
       </header>
 
       {warning !== "" && (
@@ -285,6 +287,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
                   Add {firstTool.name}
                 </button>
               )}
+              <a href="/onboarding/">Set up my tools</a>
               <a href="/library/">Browse Library</a>
             </div>
           </div>
