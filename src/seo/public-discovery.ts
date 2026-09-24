@@ -48,7 +48,7 @@ function escapeXml(value: string): string {
 }
 
 export function buildSitemapXml(tools: readonly DiscoveryTool[], siteUrl?: string | URL): string {
-  const paths = [...new Set(["/", "/library", ...tools.map((tool) => tool.route)])];
+  const paths = [...new Set(["/", "/library", "/onboarding", ...tools.map((tool) => tool.route)])];
   const entries = paths.map((path) => `  <url><loc>${escapeXml(resolveDiscoveryUrl(path, siteUrl))}</loc></url>`).join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
 }
