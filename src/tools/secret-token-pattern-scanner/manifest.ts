@@ -13,7 +13,7 @@ export const manifest = {
   engine: "file-privacy",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-secret-token-pattern-scanner", fixtureFamilies: ["file-privacy", "secret-token-pattern-scanner"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-175", fixtureFamilies: ["file-privacy", "secret-token-pattern-scanner"] },
 } as const satisfies ToolManifest;
 
 export default manifest;

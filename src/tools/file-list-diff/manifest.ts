@@ -13,7 +13,7 @@ export const manifest = {
   engine: "file-privacy",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-file-list-diff", fixtureFamilies: ["file-privacy", "file-list-diff"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-178", fixtureFamilies: ["file-privacy", "file-list-diff"] },
 } as const satisfies ToolManifest;
 
 export default manifest;
