@@ -30,7 +30,7 @@ const pageMetadata = htmlPages.map(({ path, html }) => ({
   jsonLd: html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/u)?.[1] ?? "",
   h1: html.match(/<h1\b[^>]*>/u)?.[0] ?? "",
 }));
-const expectedPageCount = catalog.length + 2;
+const expectedPageCount = catalog.length + 3;
 if (htmlPages.length !== expectedPageCount) throw new Error(`Expected ${expectedPageCount} HTML pages, found ${htmlPages.length}`);
 for (const metadata of pageMetadata) {
   if (metadata.title === "" || metadata.description === "" || metadata.canonical === "" || metadata.ogTitle === "" || metadata.jsonLd === "" || metadata.h1 === "") {

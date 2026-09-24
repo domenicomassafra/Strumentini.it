@@ -36,22 +36,24 @@ describe("catalog compilation seam", () => {
       id: "other-tool",
       route: "/tools/other-tool",
       name: "Other Tool",
+      implementation: "../tools/other-tool/module.ts",
     };
-    expect(() => compileCatalog([businessDayManifest, duplicateSummary])).toThrow(/duplicate tool summary/u);
+    expect(() => compileFactoryCatalog([businessDayManifest, duplicateSummary])).toThrow(/duplicate tool summary/u);
 
     const duplicateName = {
       ...businessDayManifest,
       id: "other-tool",
       route: "/tools/other-tool",
       summary: "A distinct public summary.",
+      implementation: "../tools/other-tool/module.ts",
     };
-    expect(() => compileCatalog([businessDayManifest, duplicateName])).toThrow(/duplicate tool name/u);
+    expect(() => compileFactoryCatalog([businessDayManifest, duplicateName])).toThrow(/duplicate tool name/u);
 
     const longSummary = {
       ...businessDayManifest,
       summary: "x".repeat(161),
     };
-    expect(() => compileCatalog([longSummary])).toThrow();
+    expect(() => compileFactoryCatalog([longSummary])).toThrow();
   });
   it("preserves typed handoff descriptors and rejects duplicate declarations", () => {
     const withHandoff = {

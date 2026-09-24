@@ -57,8 +57,8 @@ describe("expanded catalog certification index", () => {
       },
     });
     const csvCleaner = index.tools.find((tool) => tool.id === "csv-cleaner");
-    expect(csvCleaner?.releaseGate).toBe("BLOCKED");
-    expect(csvCleaner?.goldEligible).toBe(false);
+    expect(csvCleaner?.releaseGate).toBe("PASS");
+    expect(csvCleaner?.goldEligible).toBe(true);
     expect(index.tools.some((tool) => tool.physicalDevice.status === "PASS")).toBe(false);
   }, 30_000);
 

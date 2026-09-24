@@ -13,9 +13,6 @@ import {
   serializeJsonLd,
 } from "../seo/public-discovery";
 
-    <ShellChrome pathname={pathname} search={Astro.url.search}>
-      <ToolRouteTelemetry pathname={pathname} />
-
 interface Props {
   title: string;
   description: string;
@@ -57,9 +54,6 @@ const structuredDataJson = serializeJsonLd(structuredData);
     <script type="application/ld+json" set:html={structuredDataJson}></script>
   </head>
   <body>
-import ToolRouteTelemetry from "../components/telemetry/ToolRouteTelemetry.astro";
-    <ShellChrome pathname={pathname} search={Astro.url.search}>
-
     <ShellChrome pathname={pathname} search={Astro.url.search}>
       <ToolRouteTelemetry pathname={pathname} />
       <slot />
