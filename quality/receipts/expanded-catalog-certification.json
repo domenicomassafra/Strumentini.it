@@ -9267,7 +9267,8 @@
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
-          "tests/image-visual-tools.test.ts"
+          "tests/image-visual-tools.test.ts",
+          "tests/release-validation.test.ts"
         ]
       },
       "oracle": {
