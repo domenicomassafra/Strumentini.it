@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { UrlBulkNormalizerTool } from "../../components/tools/UrlBulkNormalizerTool";
+---
+<BaseLayout title="URL Bulk Normalizer" description="Normalize a list of URLs locally with explicit query and tracking policy.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Web operations</nav><p class="eyebrow">Web operations</p><h1>URL Bulk Normalizer</h1><p class="lede">Normalize many links in one pass while retaining row-level errors.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No URL list is uploaded or persisted.</span></div></header>
+    <UrlBulkNormalizerTool client:load />
+    <section class="method-card"><h2>Normalization policy</h2><ul><li>Query keys are sorted deterministically; repeated values remain repeated.</li><li>Tracking removal is opt-in and uses the same known-key policy as the cleaner.</li><li>Invalid rows are reported without stopping valid rows.</li></ul></section>
+  </article>
+</BaseLayout>

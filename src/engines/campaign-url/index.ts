@@ -114,3 +114,17 @@ export function parseCampaignFieldOrder(value: string): CampaignField[] {
   if (new Set(fields).size !== fields.length) throw new Error("INVALID_NAMING_PRESET");
   return fields;
 }
+
+export {
+  canonicalUrlDetails,
+  compareUrls,
+  extractDomains,
+  extractEmailDomains,
+  groupDomains,
+  normalizeUrl,
+  normalizeUrlDetails,
+  parseOpenGraph,
+  parseRobots,
+  parseUtmUrl,
+  URL_MARKETING_ENGINE_VERSION,
+} from "../url-marketing";

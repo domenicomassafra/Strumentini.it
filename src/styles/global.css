@@ -235,7 +235,7 @@ legend, .field > span { display: block; margin-bottom: var(--space-2); font-weig
 .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
 .field { display: block; margin-bottom: var(--space-5); }
 .field em { color: var(--text-muted); font-weight: var(--font-weight-regular); }
-.field input, .field textarea {
+.field input, .field textarea, .field select {
   width: 100%;
   min-height: var(--control-height);
   padding: var(--space-2) var(--space-3);
@@ -244,6 +244,8 @@ legend, .field > span { display: block; margin-bottom: var(--space-2); font-weig
   background: var(--canvas);
   color: var(--text);
 }
+.field input[type="checkbox"] { width: auto; min-height: auto; accent-color: var(--action); }
+.json-result { max-width: 100%; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); font-size: var(--font-size-sm); }
 .field small { display: block; margin-top: var(--space-2); color: var(--text-muted); }
 
 .workweek-fieldset legend { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }

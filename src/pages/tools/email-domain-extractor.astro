@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { EmailDomainExtractorTool } from "../../components/tools/EmailDomainExtractorTool";
+---
+<BaseLayout title="Email-Domain Extractor" description="Extract unique email addresses and domains from pasted text locally.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Web operations</nav><p class="eyebrow">Web operations</p><h1>Email-Domain Extractor</h1><p class="lede">Deduplicate pasted email addresses and collect their domains without uploading the list.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Email text is not sent to a service.</span></div></header>
+    <EmailDomainExtractorTool client:load />
+    <section class="method-card"><h2>Extraction policy</h2><ul><li>Addresses are matched with a conservative mailbox pattern and lowercased for deduplication.</li><li>Domains are derived after the final @ and remain visible with the source addresses.</li><li>Unmatched @ tokens are listed instead of being silently discarded.</li></ul></section>
+  </article>
+</BaseLayout>

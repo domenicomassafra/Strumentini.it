@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { QrReaderTool } from "../../components/tools/QrReaderTool";
+---
+<BaseLayout title="QR Reader" description="Decode a local QR matrix or SVG payload without a network service.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>QR Reader</h1><p class="lede">Decode a pasted QR matrix or SVG locally, with native image detection when available.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Pasted matrix data stays in the browser runtime.</span></div></header>
+    <QrReaderTool client:load />
+    <section class="method-card"><h2>Reader boundary</h2><ul><li>Matrix and SVG inputs are decoded by the local QR parser.</li><li>Image decoding uses the browser's native BarcodeDetector when the host exposes it.</li><li>No camera upload or third-party decoder is performed by this route.</li></ul></section>
+  </article>
+</BaseLayout>
