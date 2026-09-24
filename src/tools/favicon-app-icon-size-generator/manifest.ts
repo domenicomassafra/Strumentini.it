@@ -4,7 +4,7 @@ export const favicon_app_icon_size_generatorManifest = {
   id: "favicon-app-icon-size-generator",
   route: "/tools/favicon-app-icon-size-generator",
   name: "Favicon / App Icon Size Generator",
-  summary: "Generate a bounded set of square favicon and app-icon PNG sizes from one local image.",
+  summary: "Generate and download a bounded set of square favicon and app-icon PNG sizes from one local image.",
   aliases: ["favicon generator","app icon sizes"],
   jobs: ["generate favicon sizes","create app icon sizes"],
   category: "files-assets",

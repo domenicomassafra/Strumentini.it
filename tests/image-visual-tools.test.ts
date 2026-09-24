@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { imageResizeManifest } from "../src/tools/image-resize/manifest";
 import { imageVisualToolDefinitions } from "../src/tools/image-visual-definitions";
+import { catalog } from "../src/generated/catalog";
 import { aspectRatio, contrastRatio, extractPalette, fitDimensions, parseHexColor, rgbToHsl } from "../src/engines/image/visual";
 import { calculateAspectRatioLocal, checkContrastLocal, convertColorLocal, previewImageRenamesLocal } from "../src/engines/image/visual-tools";
 import { readFile } from "node:fs/promises";
@@ -21,6 +22,13 @@ describe("image/visual expansion manifests", () => {
     expect(imageResizeManifest.runtime).toEqual({ location: "LOCAL", network: "forbidden" });
     for (const [, , , , , , , oracleEntryId] of imageVisualToolDefinitions) {
       expect(oracleEntryId).toMatch(/^cand-\d{3}$/u);
+    }
+  });
+
+  it("keeps generated visual definitions aligned with public manifests", () => {
+    const manifests = new Map(catalog.map((tool) => [tool.id, tool]));
+    for (const [id, name, summary] of imageVisualToolDefinitions) {
+      expect(manifests.get(id)).toMatchObject({ name, summary });
     }
   });
 });

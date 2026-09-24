@@ -2,16 +2,16 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { ColorConverterTool } from "../../components/tools/image-visual/ColorConverterTool";
 ---
-<BaseLayout title="Color Converter" description="Color Converter runs locally in your browser with bounded inputs and explicit results.">
+<BaseLayout title="Color Converter" description="Convert hexadecimal colors to RGB and HSL locally with explicit channel rounding.">
   <article class="tool-page">
     <header class="tool-heading">
       <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
       <p class="eyebrow">Image &amp; visual</p>
       <h1>Color Converter</h1>
-      <p class="lede">A bounded local operation with no upload, remote fallback, or hidden persistence.</p>
+      <p class="lede">Convert hexadecimal colors to RGB and HSL locally with explicit channel rounding.</p>
       <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
     </header>
     <ColorConverterTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Local, explicit, verifiable</h2><ul><li>Input is read locally and is never sent to a network service.</li><li>Size, dimension, pixel, and file-count limits fail closed before expensive work.</li><li>Result fields show the actual computed values and any warnings.</li></ul></section>
+    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Color conversion rules</h2><ul><li>Converts hexadecimal color values into RGB and HSL with explicit channel rounding.</li><li>Does not name CSS colors or resolve a remote image.</li><li>Invalid hexadecimal input is reported instead of guessed.</li></ul></section>
   </article>
 </BaseLayout>

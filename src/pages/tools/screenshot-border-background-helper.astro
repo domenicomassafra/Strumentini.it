@@ -2,16 +2,16 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { ScreenshotBorderBackgroundHelperTool } from "../../components/tools/image-visual/ScreenshotBorderBackgroundHelperTool";
 ---
-<BaseLayout title="Screenshot Border / Background Helper" description="Screenshot Border / Background Helper runs locally in your browser with bounded inputs and explicit results.">
+<BaseLayout title="Screenshot Border / Background Helper" description="Add a measured border and background around a local screenshot using a bounded canvas output.">
   <article class="tool-page">
     <header class="tool-heading">
       <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
       <p class="eyebrow">Image &amp; visual</p>
       <h1>Screenshot Border / Background Helper</h1>
-      <p class="lede">A bounded local operation with no upload, remote fallback, or hidden persistence.</p>
+      <p class="lede">Add a measured border and background around a local screenshot using a bounded canvas output.</p>
       <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
     </header>
     <ScreenshotBorderBackgroundHelperTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Local, explicit, verifiable</h2><ul><li>Input is read locally and is never sent to a network service.</li><li>Size, dimension, pixel, and file-count limits fail closed before expensive work.</li><li>Result fields show the actual computed values and any warnings.</li></ul></section>
+    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Border policy</h2><ul><li>Adds a measured border and background around a local screenshot with bounded canvas output.</li><li>Uses explicit dimensions and color; the source screenshot is not modified.</li><li>No screenshot is uploaded.</li></ul></section>
   </article>
 </BaseLayout>

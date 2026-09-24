@@ -2,16 +2,16 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { ImageCompareSliderTool } from "../../components/tools/image-visual/ImageCompareSliderTool";
 ---
-<BaseLayout title="Image Compare Slider" description="Image Compare Slider runs locally in your browser with bounded inputs and explicit results.">
+<BaseLayout title="Image Compare" description="Compare two local images with a deterministic pixel-difference summary and metadata.">
   <article class="tool-page">
     <header class="tool-heading">
       <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
       <p class="eyebrow">Image &amp; visual</p>
-      <h1>Image Compare Slider</h1>
-      <p class="lede">A bounded local operation with no upload, remote fallback, or hidden persistence.</p>
+      <h1>Image Compare</h1>
+      <p class="lede">Compare two local images with a deterministic pixel-difference summary and metadata.</p>
       <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
     </header>
     <ImageCompareSliderTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Local, explicit, verifiable</h2><ul><li>Input is read locally and is never sent to a network service.</li><li>Size, dimension, pixel, and file-count limits fail closed before expensive work.</li><li>Result fields show the actual computed values and any warnings.</li></ul></section>
+    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Comparison policy</h2><ul><li>Compares two local images with a deterministic pixel-difference summary.</li><li>A match is a pixel signal, not proof of visual identity.</li><li>Both files stay in the browser.</li></ul></section>
   </article>
 </BaseLayout>

@@ -2,16 +2,16 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { ColorPickerTool } from "../../components/tools/image-visual/ColorPickerTool";
 ---
-<BaseLayout title="Color Picker" description="Color Picker runs locally in your browser with bounded inputs and explicit results.">
+<BaseLayout title="Color Picker" description="Pick a color with a native browser control and inspect its exact RGB, HSL, and hexadecimal values.">
   <article class="tool-page">
     <header class="tool-heading">
       <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
       <p class="eyebrow">Image &amp; visual</p>
       <h1>Color Picker</h1>
-      <p class="lede">A bounded local operation with no upload, remote fallback, or hidden persistence.</p>
+      <p class="lede">Pick a color with a native browser control and inspect its exact RGB, HSL, and hexadecimal values.</p>
       <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
     </header>
     <ColorPickerTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Local, explicit, verifiable</h2><ul><li>Input is read locally and is never sent to a network service.</li><li>Size, dimension, pixel, and file-count limits fail closed before expensive work.</li><li>Result fields show the actual computed values and any warnings.</li></ul></section>
+    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Picker scope</h2><ul><li>Uses the browser color control to inspect RGB, HSL, and hexadecimal values.</li><li>Does not sample an uploaded image or persist a palette.</li><li>Keeps the selected value in this page.</li></ul></section>
   </article>
 </BaseLayout>

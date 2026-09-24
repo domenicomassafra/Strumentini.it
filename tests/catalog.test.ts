@@ -30,6 +30,29 @@ describe("catalog compilation seam", () => {
     expect(() => compileFactoryCatalog([invalid])).toThrow(/LOCAL tools must declare network=forbidden/u);
   });
 
+  it("fails duplicate public names and summaries", () => {
+    const duplicateSummary = {
+      ...businessDayManifest,
+      id: "other-tool",
+      route: "/tools/other-tool",
+      name: "Other Tool",
+    };
+    expect(() => compileCatalog([businessDayManifest, duplicateSummary])).toThrow(/duplicate tool summary/u);
+
+    const duplicateName = {
+      ...businessDayManifest,
+      id: "other-tool",
+      route: "/tools/other-tool",
+      summary: "A distinct public summary.",
+    };
+    expect(() => compileCatalog([businessDayManifest, duplicateName])).toThrow(/duplicate tool name/u);
+
+    const longSummary = {
+      ...businessDayManifest,
+      summary: "x".repeat(161),
+    };
+    expect(() => compileCatalog([longSummary])).toThrow();
+  });
   it("preserves typed handoff descriptors and rejects duplicate declarations", () => {
     const withHandoff = {
       ...businessDayManifest,

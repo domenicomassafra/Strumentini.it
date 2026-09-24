@@ -4,7 +4,7 @@ export const image_cropManifest = {
   id: "image-crop",
   route: "/tools/image-crop",
   name: "Image Crop",
-  summary: "Crop a local image to an exact rectangle with a bounded browser-local output.",
+  summary: "Crop a local image to a bounded top-left rectangle with browser-local output.",
   aliases: ["image crop","crop photo"],
   jobs: ["crop an image","crop image to size"],
   category: "files-assets",

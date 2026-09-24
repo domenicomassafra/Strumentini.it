@@ -2,6 +2,19 @@
 import "../styles/global.css";
 import ShellChrome from "../components/shell/ShellChrome.astro";
 import ToolRouteTelemetry from "../components/telemetry/ToolRouteTelemetry.astro";
+import { catalog } from "../generated/catalog";
+import {
+  buildLibraryStructuredData,
+  buildToolStructuredData,
+  buildWebsiteStructuredData,
+  formatPageTitle,
+  normalizeDiscoveryPath,
+  selectPageDescription,
+  serializeJsonLd,
+} from "../seo/public-discovery";
+
+    <ShellChrome pathname={pathname} search={Astro.url.search}>
+      <ToolRouteTelemetry pathname={pathname} />
 
 interface Props {
   title: string;
@@ -9,18 +22,46 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+const pathname = normalizeDiscoveryPath(Astro.url.pathname);
+const configuredSite = Astro.site?.href ?? import.meta.env.PUBLIC_SITE_URL;
+const canonicalUrl = configuredSite === undefined ? pathname : new URL(pathname, configuredSite).href;
+const tool = catalog.find((entry) => entry.route === pathname);
+const pageTitle = formatPageTitle(tool?.name ?? title);
+const pageDescription = selectPageDescription(description, tool);
+const structuredData = tool === undefined
+  ? pathname === "/library"
+    ? buildLibraryStructuredData(catalog, canonicalUrl, configuredSite)
+    : pathname === "/"
+      ? buildWebsiteStructuredData(canonicalUrl)
+      : { "@context": "https://schema.org", "@type": "WebPage", name: pageTitle, description: pageDescription, url: canonicalUrl }
+  : buildToolStructuredData(tool, canonicalUrl);
+const structuredDataJson = serializeJsonLd(structuredData);
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
-    <title>{title}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="UtilityOS" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <title>{pageTitle}</title>
+    <script type="application/ld+json" set:html={structuredDataJson}></script>
   </head>
   <body>
-    <ShellChrome pathname={Astro.url.pathname} search={Astro.url.search}>
-      <ToolRouteTelemetry pathname={Astro.url.pathname} />
+import ToolRouteTelemetry from "../components/telemetry/ToolRouteTelemetry.astro";
+    <ShellChrome pathname={pathname} search={Astro.url.search}>
+
+    <ShellChrome pathname={pathname} search={Astro.url.search}>
+      <ToolRouteTelemetry pathname={pathname} />
       <slot />
     </ShellChrome>
   </body>

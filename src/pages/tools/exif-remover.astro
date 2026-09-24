@@ -2,16 +2,16 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { ExifRemoverTool } from "../../components/tools/image-visual/ExifRemoverTool";
 ---
-<BaseLayout title="EXIF Remover" description="EXIF Remover runs locally in your browser with bounded inputs and explicit results.">
+<BaseLayout title="EXIF Remover" description="Create a new local image output from decoded pixels and state the bounded metadata policy explicitly.">
   <article class="tool-page">
     <header class="tool-heading">
       <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
       <p class="eyebrow">Image &amp; visual</p>
       <h1>EXIF Remover</h1>
-      <p class="lede">A bounded local operation with no upload, remote fallback, or hidden persistence.</p>
+      <p class="lede">Create a new local image output from decoded pixels and state the bounded metadata policy explicitly.</p>
       <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
     </header>
     <ExifRemoverTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Local, explicit, verifiable</h2><ul><li>Input is read locally and is never sent to a network service.</li><li>Size, dimension, pixel, and file-count limits fail closed before expensive work.</li><li>Result fields show the actual computed values and any warnings.</li></ul></section>
+    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Metadata policy</h2><ul><li>Creates a new image from decoded pixels and applies the tool's bounded metadata policy.</li><li>Does not guarantee that every metadata carrier is absent.</li><li>The source file is never changed in place.</li></ul></section>
   </article>
 </BaseLayout>
