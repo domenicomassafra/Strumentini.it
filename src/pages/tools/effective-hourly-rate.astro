@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { EffectiveHourlyRateTool } from "../../components/tools/business-math/EffectiveHourlyRateTool";
+import { effectiveHourlyRateConfig } from "../../components/tools/business-math/configs";
+---
+<BaseLayout title={effectiveHourlyRateConfig.title} description={effectiveHourlyRateConfig.lede}>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
+      <p class="eyebrow">Business math</p>
+      <h1>{effectiveHourlyRateConfig.title}</h1>
+      <p class="lede">{effectiveHourlyRateConfig.lede}</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Revenue and cost figures stay in this browser.</span></div>
+    </header>
+    <EffectiveHourlyRateTool client:load />
+    <section class="method-card" aria-labelledby="effective-rate-method">
+      <p class="eyebrow">Rules &amp; assumptions</p>
+      <h2 id="effective-rate-method">What the result means</h2>
+      <ul><li>Effective hourly rate = (revenue − costs) ÷ total hours.</li><li>Exact decimals are retained until the final two-place result.</li></ul>
+    </section>
+  </article>
+</BaseLayout>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { UtilizationCalculatorTool } from "../../components/tools/business-math/UtilizationCalculatorTool";
+import { utilizationCalculatorConfig } from "../../components/tools/business-math/configs";
+---
+<BaseLayout title={utilizationCalculatorConfig.title} description={utilizationCalculatorConfig.lede}>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
+      <p class="eyebrow">Business math</p>
+      <h1>{utilizationCalculatorConfig.title}</h1>
+      <p class="lede">{utilizationCalculatorConfig.lede}</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Hours are calculated locally.</span></div>
+    </header>
+    <UtilizationCalculatorTool client:load />
+    <section class="method-card" aria-labelledby="utilization-method">
+      <p class="eyebrow">Rules &amp; assumptions</p>
+      <h2 id="utilization-method">Utilization is a ratio</h2>
+      <ul><li>Utilization = billable hours ÷ available hours × 100.</li><li>Values above 100% remain visible rather than being silently capped.</li></ul>
+    </section>
+  </article>
+</BaseLayout>

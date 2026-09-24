@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { InvoiceNumberGeneratorTool } from "../../components/tools/business-math/InvoiceNumberGeneratorTool";
+import { invoiceNumberGeneratorConfig } from "../../components/tools/business-math/configs";
+---
+<BaseLayout title={invoiceNumberGeneratorConfig.title} description={invoiceNumberGeneratorConfig.lede}>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
+      <p class="eyebrow">Business math</p>
+      <h1>{invoiceNumberGeneratorConfig.title}</h1>
+      <p class="lede">{invoiceNumberGeneratorConfig.lede}</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No clock or random sequence is generated.</span></div>
+    </header>
+    <InvoiceNumberGeneratorTool client:load />
+    <section class="method-card" aria-labelledby="invoice-number-method">
+      <p class="eyebrow">Rules &amp; assumptions</p>
+      <h2 id="invoice-number-method">The format is deterministic</h2>
+      <ul><li>The sequence is left-padded to the requested width.</li><li>Prefix, year, separator, and padding are all explicit inputs.</li></ul>
+    </section>
+  </article>
+</BaseLayout>

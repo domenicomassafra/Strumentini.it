@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { InvoiceMathValidatorTool } from "../../components/tools/business-math/InvoiceMathValidatorTool";
+import { invoiceMathValidatorConfig } from "../../components/tools/business-math/configs";
+---
+<BaseLayout title={invoiceMathValidatorConfig.title} description={invoiceMathValidatorConfig.lede}>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
+      <p class="eyebrow">Business math</p>
+      <h1>{invoiceMathValidatorConfig.title}</h1>
+      <p class="lede">{invoiceMathValidatorConfig.lede}</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Invoice figures stay local.</span></div>
+    </header>
+    <InvoiceMathValidatorTool client:load />
+    <section class="method-card" aria-labelledby="invoice-math-method">
+      <p class="eyebrow">Rules &amp; assumptions</p>
+      <h2 id="invoice-math-method">Recalculate before sending</h2>
+      <ul><li>Taxable amount = subtotal − discount.</li><li>Expected total = taxable amount + tax; a mismatch is reported explicitly.</li></ul>
+    </section>
+  </article>
+</BaseLayout>
