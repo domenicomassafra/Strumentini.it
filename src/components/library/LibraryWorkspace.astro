@@ -76,11 +76,6 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   try {
     const stored = window.sessionStorage.getItem("utilityos:workbench-context:v1");
     if (stored !== null) {
-import { SEARCH_CONTEXT_EVENT, sanitizeSearchContext } from "../../search/browser-context";
-import { getTelemetryAdapter, rememberToolEntrySource } from "../../telemetry/browser";
-import { classifySearchCategory, classifySearchIntent, trackSearchZeroResult } from "../../telemetry/events";
-
-
       context = sanitizeSearchContext(JSON.parse(stored));
     }
   } catch (error) {
