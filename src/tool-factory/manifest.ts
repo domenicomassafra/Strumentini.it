@@ -98,7 +98,7 @@ export const toolManifestSchema = z.object({
   id: idSchema,
   route: routeSchema,
   name: z.string().min(1),
-  summary: z.string().min(1),
+  summary: z.string().min(1).max(160),
   aliases: z.array(z.string().min(1)).readonly(),
   keywords: z.array(z.string().min(1)).readonly().optional(),
   jobs: z.array(z.string().min(1)).min(1).readonly(),

@@ -2,16 +2,16 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { FaviconAppIconSizeGeneratorTool } from "../../components/tools/image-visual/FaviconAppIconSizeGeneratorTool";
 ---
-<BaseLayout title="Favicon / App Icon Size Generator" description="Favicon / App Icon Size Generator runs locally in your browser with bounded inputs and explicit results.">
+<BaseLayout title="Favicon / App Icon Size Generator" description="Generate and download a bounded set of square favicon and app-icon PNG sizes from one local image.">
   <article class="tool-page">
     <header class="tool-heading">
       <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
       <p class="eyebrow">Image &amp; visual</p>
       <h1>Favicon / App Icon Size Generator</h1>
-      <p class="lede">A bounded local operation with no upload, remote fallback, or hidden persistence.</p>
+      <p class="lede">Generate and download a bounded set of square favicon and app-icon PNG sizes from one local image.</p>
       <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
     </header>
     <FaviconAppIconSizeGeneratorTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Local, explicit, verifiable</h2><ul><li>Input is read locally and is never sent to a network service.</li><li>Size, dimension, pixel, and file-count limits fail closed before expensive work.</li><li>Result fields show the actual computed values and any warnings.</li></ul></section>
+    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Output size policy</h2><ul><li>Generates a bounded set of square PNG sizes from one local image.</li><li>Each generated size is available as a local download link.</li><li>Does not claim a platform upload or asset publication step.</li></ul></section>
   </article>
 </BaseLayout>

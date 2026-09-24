@@ -4,7 +4,7 @@ export const image_compressionManifest = {
   id: "image-compression",
   route: "/tools/image-compression",
   name: "Image Compression",
-  summary: "Compress a local image with an explicit quality setting and verified output.",
+  summary: "Compress a local image to a selected browser-supported format and verify the result.",
   aliases: ["compress image","image compressor"],
   jobs: ["compress an image","reduce image file size"],
   category: "files-assets",

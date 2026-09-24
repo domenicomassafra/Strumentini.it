@@ -24,7 +24,7 @@ const manifestSchema = z.object({
   id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/u),
   route: z.string().regex(/^\/tools\/[a-z0-9]+(?:-[a-z0-9]+)*$/u),
   name: z.string().min(1),
-  summary: z.string().min(1),
+  summary: z.string().min(1).max(160),
   aliases: z.array(z.string()).readonly(),
   jobs: z.array(z.string()).min(1).readonly(),
   category: z.string().min(1),
@@ -76,11 +76,19 @@ export function compileCatalog(rawManifests: readonly unknown[]): CatalogArtifac
 
   const seenIds = new Set<string>();
   const seenRoutes = new Set<string>();
+  const seenNames = new Set<string>();
+  const seenSummaries = new Set<string>();
   for (const manifest of manifests) {
     if (seenIds.has(manifest.id)) issues.push(`${manifest.id}: duplicate tool id`);
     if (seenRoutes.has(manifest.route)) issues.push(`${manifest.route}: duplicate tool route`);
+    const nameKey = manifest.name.trim().toLocaleLowerCase("en");
+    const summaryKey = manifest.summary.trim().replace(/\s+/gu, " ").toLocaleLowerCase("en");
+    if (seenNames.has(nameKey)) issues.push(`${manifest.id}: duplicate tool name`);
+    if (seenSummaries.has(summaryKey)) issues.push(`${manifest.id}: duplicate tool summary`);
     seenIds.add(manifest.id);
     seenRoutes.add(manifest.route);
+    seenNames.add(nameKey);
+    seenSummaries.add(summaryKey);
     for (const direction of ["accepts", "emits"] as const) {
       const descriptors = manifest.handoff?.[direction] ?? [];
       const seenDescriptors = new Set<string>();

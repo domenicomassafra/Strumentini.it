@@ -4,7 +4,7 @@ export const image_rename_batch_previewManifest = {
   id: "image-rename-batch-preview",
   route: "/tools/image-rename-batch-preview",
   name: "Image Rename Batch Preview",
-  summary: "Preview safe, deterministic filename changes for local images without writing or uploading anything.",
+  summary: "Preview deterministic filename changes for local images without writing or uploading anything.",
   aliases: ["batch rename images","image filename preview"],
   jobs: ["preview image renames","rename image files safely"],
   category: "files-assets",

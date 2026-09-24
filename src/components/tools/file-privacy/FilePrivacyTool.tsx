@@ -148,12 +148,12 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
           <div class="field-grid">
             <label class="field">
               <span>Before files</span>
-              <input type="file" multiple required onChange={(event) => setBeforeFiles(filesFromInput(event.currentTarget))} />
+              <input type="file" multiple required onChange={(event) => setBeforeFiles(filesFromInput(event.currentTarget))} {...(directory ? ({ webkitdirectory: true } as Record<string, boolean>) : {})} />
               <small>{beforeFiles.length} selected</small>
             </label>
             <label class="field">
               <span>After files</span>
-              <input type="file" multiple required onChange={(event) => setAfterFiles(filesFromInput(event.currentTarget))} />
+              <input type="file" multiple required onChange={(event) => setAfterFiles(filesFromInput(event.currentTarget))} {...(directory ? ({ webkitdirectory: true } as Record<string, boolean>) : {})} />
               <small>{afterFiles.length} selected</small>
             </label>
           </div>

@@ -68,6 +68,26 @@ describe("tool factory", () => {
     expect(same).toContain("duplicate tool route");
   });
 
+  it("fails duplicate public names and summaries", () => {
+    const duplicateSummary = {
+      ...businessDayManifest,
+      id: "other-tool",
+      route: "/tools/other-tool",
+      implementation: "../tools/other-tool/module.ts",
+      name: "Other Tool",
+    };
+    expect(issueText(() => compileFactoryCatalog([businessDayManifest, duplicateSummary]))).toContain("duplicate tool summary");
+
+    const duplicateName = {
+      ...businessDayManifest,
+      id: "other-tool",
+      route: "/tools/other-tool",
+      implementation: "../tools/other-tool/module.ts",
+      summary: "A distinct public summary.",
+    };
+    expect(issueText(() => compileFactoryCatalog([businessDayManifest, duplicateName]))).toContain("duplicate tool name");
+  });
+
   it("fails malformed manifests and mismatched canonical routes", () => {
     const badRoute = { ...businessDayManifest, route: "/tools/not-business-day" };
     expect(issueText(() => compileFactoryCatalog([badRoute]))).toContain("route must be /tools/business-day");

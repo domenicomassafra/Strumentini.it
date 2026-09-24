@@ -71,6 +71,8 @@ function crossManifestIssues(manifests: readonly FactoryToolManifest[]): string[
   const issues: string[] = [];
   const ids = new Map<string, string>();
   const routes = new Map<string, string>();
+  const names = new Map<string, string>();
+  const summaries = new Map<string, string>();
   const aliases = new Map<string, string>();
   const jobs = new Map<string, string>();
   for (const manifest of manifests) {
@@ -80,6 +82,14 @@ function crossManifestIssues(manifests: readonly FactoryToolManifest[]): string[
     const previousRoute = routes.get(manifest.route);
     if (previousRoute !== undefined) issues.push(`${manifest.route}: duplicate tool route`);
     routes.set(manifest.route, manifest.id);
+    const nameKey = normalize(manifest.name);
+    const summaryKey = normalize(manifest.summary.replace(/\s+/gu, " "));
+    const previousName = names.get(nameKey);
+    if (previousName !== undefined) issues.push(`${manifest.id}: duplicate tool name ${previousName}`);
+    const previousSummary = summaries.get(summaryKey);
+    if (previousSummary !== undefined) issues.push(`${manifest.id}: duplicate tool summary ${previousSummary}`);
+    names.set(nameKey, manifest.id);
+    summaries.set(summaryKey, manifest.id);
     for (const alias of manifest.aliases) {
       const key = normalize(alias);
       const previous = aliases.get(key);
