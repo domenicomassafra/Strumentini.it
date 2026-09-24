@@ -1,0 +1,29 @@
+---
+interface Props {
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+---
+
+<div hidden data-tool-route-path={pathname}></div>
+<script>
+  import { consumeToolEntrySource, getTelemetryAdapter, markToolOpened } from "../../telemetry/browser";
+  import { trackToolOpened } from "../../telemetry/events";
+  import { isSafeTelemetryIdentifier } from "../../telemetry/schema";
+
+  const routeNode = document.querySelector<HTMLElement>("[data-tool-route-path]");
+  const match = /^\/tools\/([^/]+)\/?$/u.exec(routeNode?.dataset.toolRoutePath ?? "");
+  if (match !== null) {
+    let toolId = "";
+    try {
+      toolId = decodeURIComponent(match[1] ?? "");
+    } catch {
+      toolId = "";
+    }
+    if (isSafeTelemetryIdentifier(toolId)) {
+      trackToolOpened(getTelemetryAdapter(), toolId, consumeToolEntrySource(toolId) ?? "public");
+      markToolOpened(toolId);
+    }
+  }
+</script>

@@ -1,4 +1,7 @@
 import type { HandoffDescriptorDeclaration, ToolSummary } from "../catalog/manifest";
+import { getTelemetryAdapter } from "../telemetry/browser";
+import { trackHandoffUsed } from "../telemetry/events";
+import type { TelemetryAdapter } from "../telemetry/adapter";
 
 export interface TableHandoffDescriptor {
   type: "table";
@@ -92,6 +95,11 @@ export function compatibleHandoffTargets(
 
 const MESSAGE_KIND = "utilityos-handoff-v1";
 
+export interface HandoffTelemetryOptions {
+  sourceToolId: string;
+  adapter?: TelemetryAdapter;
+}
+
 function isTableHandoffEnvelope(value: unknown): value is TableHandoffEnvelope {
   if (typeof value !== "object" || value === null) return false;
   const envelope = value as Partial<TableHandoffEnvelope>;
@@ -112,10 +120,19 @@ function isTableHandoffEnvelope(value: unknown): value is TableHandoffEnvelope {
 export function openHandoffTarget(
   proposal: Extract<HandoffProposal, { compatible: true }>,
   envelope: TableHandoffEnvelope,
+  telemetry?: HandoffTelemetryOptions,
 ): boolean {
   const token = crypto.randomUUID();
   const targetWindow = window.open(`${proposal.target.route}/#handoff=${encodeURIComponent(token)}`, "_blank");
   if (targetWindow === null) return false;
+  if (telemetry !== undefined) {
+    trackHandoffUsed(
+      telemetry.adapter ?? getTelemetryAdapter(),
+      telemetry.sourceToolId,
+      proposal.target.id,
+      envelope.descriptor.type,
+    );
+  }
   const origin = window.location.origin;
   const timeout = window.setTimeout(() => window.removeEventListener("message", listener), 30_000);
   const listener = (event: MessageEvent) => {

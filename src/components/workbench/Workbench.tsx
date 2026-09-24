@@ -25,6 +25,15 @@ import {
   type WorkbenchState,
 } from "../../workbench/state";
 import { formatRecentActivity, getWorkbenchSuggestions } from "./ux";
+import { getTelemetryAdapter, rememberToolEntrySource } from "../../telemetry/browser";
+import {
+  trackConfigExported,
+  trackConfigImported,
+  trackPackInstalled,
+  trackPackRemoved,
+  trackWorkspaceToolAdded,
+  trackWorkspaceToolRemoved,
+} from "../../telemetry/events";
 import styles from "./Workbench.module.css";
 
 export { formatRecentActivity, getWorkbenchSuggestions } from "./ux";
@@ -88,6 +97,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   const [importPreview, setImportPreview] = useState<ImportPreview | null>(null);
   const repositoryRef = useRef<Repository | null>(null);
   const pendingSavesRef = useRef(0);
+  const currentTelemetry = () => getTelemetryAdapter();
 
   useEffect(() => {
     const initial = createDefaultWorkbenchState(browserProfile());
@@ -129,10 +139,14 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   }
 
   async function add(toolId: string) {
+    if (state.installedTools.includes(toolId)) return;
+    trackWorkspaceToolAdded(currentTelemetry(), toolId);
     await persist(installTool(state, toolId));
   }
 
   async function remove(toolId: string) {
+    if (!state.installedTools.includes(toolId)) return;
+    trackWorkspaceToolRemoved(currentTelemetry(), toolId);
     await persist(removeTool(state, toolId));
   }
 
@@ -142,6 +156,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
 
   async function openTool(tool: ToolSummary, event: MouseEvent) {
     event.preventDefault();
+    rememberToolEntrySource(tool.id, "workbench");
     const next = recordRecentTool(state, tool.id);
     await persist(next);
     window.location.assign(tool.route);
@@ -164,7 +179,12 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   }
 
   function downloadConfig() {
-    const blob = new Blob([exportWorkbenchConfig(state)], { type: "application/json" });
+    const config = exportWorkbenchConfig(state);
+    trackConfigExported(currentTelemetry(), {
+      toolCount: state.installedTools.length,
+      packCount: state.packs.length,
+    });
+    const blob = new Blob([config], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -176,8 +196,19 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   async function previewImport(file: File | undefined) {
     if (file === undefined) return;
     try {
-      setImportPreview(previewWorkbenchImport(await file.text(), state));
+      const preview = previewWorkbenchImport(await file.text(), state);
+      if (!preview.ok) {
+        trackConfigImported(currentTelemetry(), "rejected", {
+          toolCount: state.installedTools.length,
+          packCount: state.packs.length,
+        });
+      }
+      setImportPreview(preview);
     } catch {
+      trackConfigImported(currentTelemetry(), "failed", {
+        toolCount: state.installedTools.length,
+        packCount: state.packs.length,
+      });
       setImportPreview({ ok: false, error: "This configuration could not be read. Try another file." });
     }
   }
@@ -185,6 +216,22 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   async function applyImport() {
     if (importPreview === null || !importPreview.ok) return;
     const next = applyImportedConfig(state, importPreview.config);
+    for (const toolId of next.installedTools.filter((tool) => !state.installedTools.includes(tool))) {
+      trackWorkspaceToolAdded(currentTelemetry(), toolId);
+    }
+    for (const toolId of state.installedTools.filter((tool) => !next.installedTools.includes(tool))) {
+      trackWorkspaceToolRemoved(currentTelemetry(), toolId);
+    }
+    for (const packId of next.packs.filter((pack) => !state.packs.includes(pack))) {
+      trackPackInstalled(currentTelemetry(), packId);
+    }
+    for (const packId of state.packs.filter((pack) => !next.packs.includes(pack))) {
+      trackPackRemoved(currentTelemetry(), packId);
+    }
+    trackConfigImported(currentTelemetry(), "success", {
+      toolCount: next.installedTools.length,
+      packCount: next.packs.length,
+    });
     setProfileDraft(next.profile);
     await persist(next);
     setImportPreview(null);

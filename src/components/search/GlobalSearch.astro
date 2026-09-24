@@ -48,6 +48,8 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
 <script>
   import { createSearch } from "../../search/search";
   import { SEARCH_CONTEXT_EVENT } from "../../search/browser-context";
+  import { getTelemetryAdapter, rememberToolEntrySource } from "../../telemetry/browser";
+  import { classifySearchIntent, trackSearchZeroResult } from "../../telemetry/events";
   import type { SearchContext, SearchToolMetadata } from "../../search/types";
 
   const root = document.querySelector<HTMLElement>(".global-search");
@@ -62,6 +64,8 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
   let activeIndex = 0;
   let invoker: HTMLElement | null = null;
   let visibleRoutes: string[] = [];
+  let visibleToolIds: string[] = [];
+  let lastZeroResultKey = "";
 
   const escapeHtml = (value: string): string => value.replace(/[&<>"']/gu, (character) => ({
     "&": "&amp;",
@@ -75,6 +79,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
     if (!results || !input) return;
     const result = search.query(input.value, context, 18);
     visibleRoutes = [];
+    visibleToolIds = [];
     let optionIndex = 0;
     const sections = result.sections.map((section) => {
       if (section.hits.length === 0) return "";
@@ -82,6 +87,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
         const current = optionIndex;
         optionIndex += 1;
         visibleRoutes.push(hit.route);
+        visibleToolIds.push(hit.id);
         return `<a id="global-search-option-${current}" class="palette-row" data-option-index="${current}" role="option" aria-selected="${current === activeIndex ? "true" : "false"}" href="${escapeHtml(hit.route)}"><span><strong>${escapeHtml(hit.name)}</strong><small>${escapeHtml(hit.summary)}</small></span><span class="row-meta">${escapeHtml(hit.category)} · ${hit.runtime.location === "LOCAL" ? "On this device" : "Network"}</span></a>`;
       }).join("");
       const groupId = `global-search-group-${section.id}`;
@@ -89,6 +95,11 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
     }).join("");
 
     if (optionIndex === 0) {
+      const intentCode = classifySearchIntent(result.query);
+      if (intentCode !== lastZeroResultKey) {
+        trackSearchZeroResult(getTelemetryAdapter(), intentCode);
+        lastZeroResultKey = intentCode;
+      }
       const suggestions = result.closeIntents.map((intent) => `<button type="button" class="intent-button" data-intent="${escapeHtml(intent)}">${escapeHtml(intent)}</button>`).join("");
       results.innerHTML = `<div class="zero-results"><strong>No matching tool</strong><p>Keep “${escapeHtml(result.query)}” and try a close catalog intent.</p>${suggestions ? `<div class="intent-list">${suggestions}</div>` : ""}<a class="request-tool" href="/library/?q=${encodeURIComponent(result.query)}#request-tool">Request this tool</a></div>`;
       input.setAttribute("aria-activedescendant", "");
@@ -96,6 +107,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
       return;
     }
 
+    lastZeroResultKey = "";
     activeIndex = Math.min(activeIndex, optionIndex - 1);
     results.innerHTML = sections;
     updateActiveOption();
@@ -156,6 +168,8 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
       updateActiveOption();
     } else if (event.key === "Enter" && visibleRoutes[activeIndex]) {
       event.preventDefault();
+      const toolId = visibleToolIds[activeIndex];
+      if (toolId !== undefined) rememberToolEntrySource(toolId, "search");
       window.location.assign(visibleRoutes[activeIndex] ?? "/library/");
     } else if (event.key === "Escape") {
       event.preventDefault();
@@ -163,6 +177,12 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
     }
   });
   results?.addEventListener("click", (event) => {
+    const option = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-option-index]") : null;
+    const optionIndex = option?.dataset.optionIndex;
+    if (optionIndex !== undefined) {
+      const toolId = visibleToolIds[Number(optionIndex)];
+      if (toolId !== undefined) rememberToolEntrySource(toolId, "search");
+    }
     const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-intent]") : null;
     if (!target || !input) return;
     input.value = target.dataset.intent ?? "";
