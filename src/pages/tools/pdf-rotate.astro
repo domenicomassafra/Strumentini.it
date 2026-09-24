@@ -1,0 +1,5 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { PdfRotateTool } from "../../components/tools/PdfRotateTool";
+---
+<BaseLayout title="PDF Rotate" description="Rotate selected local PDF pages."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Rotate</h1><p class="lede">Rotate selected pages by an explicit 90, 180, or 270 degrees.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No remote rendering or upload.</span></div></header><PdfRotateTool client:load /><section class="method-card"><h2>Bounded contract</h2><ul><li>Only selected page numbers are changed.</li><li>Rotation values are normalized to supported PDF angles.</li><li>The output is checked for page count and geometry.</li></ul></section></article></BaseLayout>

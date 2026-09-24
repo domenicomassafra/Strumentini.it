@@ -1,0 +1,390 @@
+import {
+  dictionaryWith,
+  encodeLiteralString,
+  nameValue,
+  numberValue,
+  pdfArray,
+  pdfDict,
+  pdfName,
+  pdfNumber,
+  pdfReference,
+  pdfString,
+  type PdfDictionary,
+  type PdfDocumentModel,
+  type PdfObject,
+  type PdfPageNode,
+  type PdfStream,
+  type PdfValue,
+} from "./parser";
+
+export interface PdfBuildPage {
+  readonly document: PdfDocumentModel;
+  readonly page: PdfPageNode;
+}
+
+export interface PdfBuildOptions {
+  readonly stripMetadata?: boolean;
+  readonly flatten?: boolean;
+  readonly compress?: boolean;
+  readonly preserveInfo?: boolean;
+}
+
+interface CloneState {
+  readonly source: PdfDocumentModel;
+  readonly mapped: Map<number, ReturnType<typeof pdfReference>>;
+  readonly skip: Set<number>;
+  readonly options: PdfBuildOptions;
+  readonly active: Set<number>;
+  readonly pending: Map<number, PdfObject>;
+  readonly allocate: () => ReturnType<typeof pdfReference>;
+}
+
+function isDictionary(value: PdfValue): value is PdfDictionary {
+  return value.kind === "dict";
+}
+
+function isMetadataObject(value: PdfValue): boolean {
+  return isDictionary(value) && nameValue(value.entries.get("Type")) === "Metadata";
+}
+
+function isObjectToSkip(value: PdfValue): boolean {
+  return isMetadataObject(value);
+}
+
+function omitNullEntries(entries: ReadonlyMap<string, PdfValue | null>): PdfDictionary {
+  const result = new Map<string, PdfValue>();
+  for (const [key, value] of entries) if (value !== null) result.set(key, value);
+  return { kind: "dict", entries: result };
+}
+
+function normalizeStreamBytes(value: PdfStream): PdfStream {
+  if (value.dictionary.entries.has("Filter")) return value;
+  const source = new TextDecoder("latin1").decode(value.bytes);
+  const normalized = source.replaceAll(/[\r\n\t]+/gu, " ").replaceAll(/ {2,}/gu, " ");
+  return { kind: "stream", dictionary: value.dictionary, bytes: new TextEncoder().encode(normalized) };
+}
+
+function cloneSourceValue(value: PdfValue, state: CloneState, depth = 0): PdfValue | null {
+  if (depth > 128) throw new Error("MALFORMED_PDF: object graph exceeds the local nesting limit");
+  if (value.kind === "name" || value.kind === "literal") return value;
+  if (value.kind === "string") return { ...value, bytes: value.bytes.slice() };
+  if (value.kind === "ref") return cloneSourceReference(value, state, depth);
+  if (value.kind === "array") {
+    const items = value.items.map((item) => cloneSourceValue(item, state, depth + 1));
+    if (items.some((item) => item === null)) return null;
+    return { kind: "array", items: items as PdfValue[] };
+  }
+  if (value.kind === "dict") {
+    const entries = new Map<string, PdfValue | null>();
+    for (const [key, entry] of value.entries) entries.set(key, cloneSourceValue(entry, state, depth + 1));
+    return omitNullEntries(entries);
+  }
+  if (state.options.compress === true && nameValue(value.dictionary.entries.get("Subtype")) !== "Image") return normalizeStreamBytes(value);
+  return { kind: "stream", dictionary: cloneSourceValue(value.dictionary, state, depth + 1) as PdfDictionary, bytes: value.bytes.slice() };
+}
+
+function cloneSourceReference(reference: PdfValue & { kind: "ref" }, state: CloneState, depth: number): PdfValue | null {
+  const mapped = state.mapped.get(reference.id);
+  if (mapped !== undefined) return mapped;
+  const sourceObject = state.source.objects.get(reference.id);
+  if (sourceObject === undefined) throw new Error("MALFORMED_PDF: referenced object is missing");
+  if (state.skip.has(reference.id) || isObjectToSkip(sourceObject.value)) return null;
+  if (state.active.has(reference.id)) return reference;
+  state.active.add(reference.id);
+  const targetReference = state.allocate();
+  state.mapped.set(reference.id, targetReference);
+  const cloned = cloneSourceValue(sourceObject.value, state, depth + 1);
+  state.active.delete(reference.id);
+  if (cloned === null) {
+    state.mapped.delete(reference.id);
+    return null;
+  }
+  state.pending.set(targetReference.id, { id: targetReference.id, generation: 0, value: cloned });
+  return targetReference;
+}
+
+function createState(
+  source: PdfDocumentModel,
+  options: PdfBuildOptions,
+  skip: Set<number>,
+  allocate: () => ReturnType<typeof pdfReference>,
+): CloneState {
+  return { source, options, skip, mapped: new Map(), active: new Set(), pending: new Map(), allocate };
+}
+
+function pageValue(page: PdfPageNode, state: CloneState): PdfDictionary {
+  const original = page.object.value;
+  if (!isDictionary(original)) throw new Error("MALFORMED_PDF: page object is not a dictionary");
+  const entries = new Map<string, PdfValue | null>();
+  for (const [key, value] of original.entries) {
+    if (key === "Parent" || (state.options.stripMetadata === true && key === "Metadata")) {
+      entries.set(key, null);
+      continue;
+    }
+    if (state.options.flatten === true && ["Annots", "AA", "OpenAction", "StructParents", "Tabs"].includes(key)) {
+      entries.set(key, null);
+      continue;
+    }
+    entries.set(key, cloneSourceValue(value, state));
+  }
+  for (const key of ["Resources", "MediaBox", "CropBox", "Rotate"]) {
+    if (original.entries.has(key)) continue;
+    const inherited = page.inherited[key];
+    if (inherited !== undefined) entries.set(key, cloneSourceValue(inherited, state));
+  }
+  const rotation = numberValue(original.entries.get("Rotate") ?? page.inherited.Rotate);
+  if (rotation !== null && Number.isFinite(rotation)) entries.set("Rotate", pdfNumber(normalizeRotation(rotation)));
+  return omitNullEntries(entries);
+}
+
+function normalizeRotation(value: number): number {
+  const normalized = ((Math.round(value / 90) * 90) % 360 + 360) % 360;
+  return normalized;
+}
+
+function serializeName(value: string): string {
+  const escaped = value.replaceAll("#", "#23").replaceAll(/[()<>\[\]{}/%]/gu, (character) => `#${character.charCodeAt(0).toString(16).padStart(2, "0")}`);
+  return `/${escaped}`;
+}
+
+function serializeValue(value: PdfValue): string {
+  if (value.kind === "name") return serializeName(value.value);
+  if (value.kind === "literal") return value.value;
+  if (value.kind === "string") return value.hex ? `<${Array.from(value.bytes, (byte) => byte.toString(16).padStart(2, "0")).join("")}>` : encodeLiteralString(value.bytes);
+  if (value.kind === "ref") return `${value.id} ${value.generation} R`;
+  if (value.kind === "array") return `[${value.items.map(serializeValue).join(" ")}]`;
+  if (value.kind === "dict") return `<<${[...value.entries].map(([key, entry]) => `${serializeName(key)} ${serializeValue(entry)}`).join(" ")}>>`;
+  return "null";
+}
+
+function serializeObject(object: PdfObject): { dictionary: string; stream: Uint8Array | null } {
+  if (object.value.kind !== "stream") return { dictionary: serializeValue(object.value), stream: null };
+  const length = object.value.bytes.byteLength;
+  const dictionary = dictionaryWith(object.value.dictionary, "Length", pdfNumber(length));
+  return { dictionary: serializeValue(dictionary), stream: object.value.bytes };
+}
+
+function concatBytes(chunks: readonly Uint8Array[], total: number): Uint8Array {
+  const output = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    output.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return output;
+}
+
+function skipIdsFor(document: PdfDocumentModel, options: PdfBuildOptions): Set<number> {
+  const skip = new Set<number>();
+  if (options.stripMetadata === true) {
+    if (document.info !== null) skip.add(document.info.id);
+    for (const object of document.objects.values()) if (isObjectToSkip(object.value)) skip.add(object.id);
+  }
+  if (options.flatten === true) {
+    for (const object of document.objects.values()) {
+      if (object.value.kind === "dict" && object.value.entries.has("AcroForm")) skip.add(object.id);
+    }
+  }
+  return skip;
+}
+
+export class PdfBuilder {
+  private readonly objects = new Map<number, PdfObject>();
+  private nextId = 1;
+
+  reserve(): ReturnType<typeof pdfReference> {
+    const id = this.nextId;
+    this.nextId += 1;
+    this.objects.set(id, { id, generation: 0, value: pdfDict({}) });
+    return pdfReference(id, 0);
+  }
+
+  put(reference: ReturnType<typeof pdfReference>, value: PdfValue): void {
+    this.objects.set(reference.id, { id: reference.id, generation: 0, value });
+  }
+
+  putAuto(value: PdfValue): ReturnType<typeof pdfReference> {
+    const reference = this.reserve();
+    this.put(reference, value);
+    return reference;
+  }
+
+  build(root: ReturnType<typeof pdfReference>, info: ReturnType<typeof pdfReference> | null): Uint8Array {
+    const encoder = new TextEncoder();
+    const chunks: Uint8Array[] = [encoder.encode("%PDF-1.7\n%\xE2\xE3\xCF\xD3\n")];
+    let total = chunks[0]?.byteLength ?? 0;
+    const offsets = new Map<number, number>();
+    const ids = [...this.objects.keys()].sort((left, right) => left - right);
+    for (const id of ids) {
+      const object = this.objects.get(id);
+      if (object === undefined) continue;
+      offsets.set(id, total);
+      const serialized = serializeObject(object);
+      const prefix = encoder.encode(`${id} 0 obj\n${serialized.dictionary}\n`);
+      chunks.push(prefix);
+      total += prefix.byteLength;
+      if (serialized.stream !== null) {
+        const streamPrefix = encoder.encode("stream\n");
+        chunks.push(streamPrefix, serialized.stream, encoder.encode("\nendstream\n"));
+        total += streamPrefix.byteLength + serialized.stream.byteLength + "\nendstream\n".length;
+      }
+      const suffix = encoder.encode("endobj\n");
+      chunks.push(suffix);
+      total += suffix.byteLength;
+    }
+    const xrefOffset = total;
+    const maxId = ids.at(-1) ?? 0;
+    const xrefLines = [`xref\n0 ${maxId + 1}\n`, "0000000000 65535 f \n"];
+    for (let id = 1; id <= maxId; id += 1) {
+      const offset = offsets.get(id);
+      xrefLines.push(offset === undefined ? "0000000000 65535 f \n" : `${offset.toString().padStart(10, "0")} 00000 n \n`);
+    }
+    const trailer = pdfDict({
+      Size: pdfNumber(maxId + 1),
+      Root: root,
+      ...(info === null ? {} : { Info: info }),
+    });
+    xrefLines.push(`trailer\n${serializeValue(trailer)}\nstartxref\n${xrefOffset}\n%%EOF\n`);
+    const tail = encoder.encode(xrefLines.join(""));
+    chunks.push(tail);
+    total += tail.byteLength;
+    return concatBytes(chunks, total);
+  }
+}
+
+function addClonedObjects(builder: PdfBuilder, state: CloneState): void {
+  for (const object of state.pending.values()) builder.put(pdfReference(object.id), object.value);
+  state.pending.clear();
+}
+
+function clonePage(builder: PdfBuilder, page: PdfBuildPage, options: PdfBuildOptions): ReturnType<typeof pdfReference> {
+  const sourceReference = pdfReference(page.page.object.id, page.page.object.generation);
+  const state = createState(page.document, options, skipIdsFor(page.document, options), () => builder.reserve());
+  const targetReference = builder.reserve();
+  state.mapped.set(sourceReference.id, targetReference);
+  const value = pageValue(page.page, state);
+  state.pending.set(targetReference.id, { id: targetReference.id, generation: 0, value });
+  addClonedObjects(builder, state);
+  return targetReference;
+}
+
+function cloneInfo(builder: PdfBuilder, document: PdfDocumentModel, options: PdfBuildOptions): ReturnType<typeof pdfReference> | null {
+  if (options.stripMetadata === true || document.info === null) return null;
+  const state = createState(document, options, new Set(), () => builder.reserve());
+  const value = cloneSourceValue(document.objects.get(document.info.id)?.value ?? pdfDict({}), state);
+  if (value === null) return null;
+  const reference = builder.reserve();
+  state.pending.set(reference.id, { id: reference.id, generation: 0, value });
+  addClonedObjects(builder, state);
+  return reference;
+}
+
+function catalogValue(pages: ReturnType<typeof pdfReference>): PdfDictionary {
+  return pdfDict({ Type: pdfName("Catalog"), Pages: pages });
+}
+
+function buildFromPages(pagesToBuild: readonly PdfBuildPage[], options: PdfBuildOptions = {}): { bytes: Uint8Array; pageCount: number } {
+  if (pagesToBuild.length === 0) throw new Error("INVALID_INPUT: at least one page is required");
+  const builder = new PdfBuilder();
+  const pagesReference = builder.reserve();
+  const pageReferences = pagesToBuild.map((page) => clonePage(builder, page, options));
+  builder.put(pagesReference, pdfDict({ Type: pdfName("Pages"), Kids: pdfArray(pageReferences), Count: pdfNumber(pageReferences.length) }));
+  const rootReference = builder.reserve();
+  const source = pagesToBuild[0]?.document ?? null;
+  builder.put(rootReference, catalogValue(pagesReference));
+  const info = source === null ? null : cloneInfo(builder, source, options);
+  return { bytes: builder.build(rootReference, info), pageCount: pageReferences.length };
+}
+
+export function buildPdfFromPages(pages: readonly PdfBuildPage[], options: PdfBuildOptions = {}): Uint8Array {
+  return buildFromPages(pages, options).bytes;
+}
+
+export function createSimplePdf(pageTexts: readonly string[], options: { readonly width?: number; readonly height?: number; readonly metadata?: Readonly<Record<string, string>> } = {}): Uint8Array {
+  const width = options.width ?? 612;
+  const height = options.height ?? 792;
+  const objects: PdfObject[] = [];
+  const pageIds = pageTexts.map((_, index) => 4 + index * 2);
+  const contentIds = pageIds.map((id) => id + 1);
+  const fontId = 3;
+  const catalogId = 1;
+  const pagesId = 2;
+  const infoId = 4 + pageTexts.length * 2;
+  objects.push({ id: catalogId, generation: 0, value: pdfDict({ Type: pdfName("Catalog"), Pages: pdfReference(pagesId) }) });
+  objects.push({ id: pagesId, generation: 0, value: pdfDict({ Type: pdfName("Pages"), Kids: pdfArray(pageIds.map((id) => pdfReference(id))), Count: pdfNumber(pageTexts.length) }) });
+  objects.push({ id: fontId, generation: 0, value: pdfDict({ Type: pdfName("Font"), Subtype: pdfName("Type1"), BaseFont: pdfName("Helvetica") }) });
+  pageTexts.forEach((text, index) => {
+    const pageId = pageIds[index] ?? 0;
+    const contentId = contentIds[index] ?? 0;
+    const escaped = text.replaceAll("\\", "\\\\").replaceAll("(", "\\(").replaceAll(")", "\\)");
+    const streamText = `BT /F1 18 Tf 72 ${Math.max(72, height - 96)} Td (${escaped}) Tj ET`;
+    objects.push({ id: pageId, generation: 0, value: pdfDict({ Type: pdfName("Page"), Parent: pdfReference(pagesId), MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(width), pdfNumber(height)]), Resources: pdfDict({ Font: pdfDict({ F1: pdfReference(fontId) }) }), Contents: pdfReference(contentId) }) });
+    objects.push({ id: contentId, generation: 0, value: { kind: "stream", dictionary: pdfDict({}), bytes: new TextEncoder().encode(streamText) } });
+  });
+  const metadata = options.metadata ?? {};
+  const infoEntries: Record<string, PdfValue> = {};
+  const keyMap: Record<string, string> = { title: "Title", author: "Author", subject: "Subject", keywords: "Keywords", creator: "Creator", producer: "Producer" };
+  for (const [key, pdfKey] of Object.entries(keyMap)) if (metadata[key] !== undefined) infoEntries[pdfKey] = pdfString(metadata[key]);
+  if (Object.keys(infoEntries).length > 0) objects.push({ id: infoId, generation: 0, value: pdfDict(infoEntries) });
+  const builder = new PdfBuilder();
+  for (const object of objects) builder.put(pdfReference(object.id), object.value);
+  const root = pdfReference(catalogId);
+  return builder.build(root, Object.keys(infoEntries).length > 0 ? pdfReference(infoId) : null);
+}
+
+export interface EmbeddedJpeg {
+  readonly bytes: Uint8Array;
+  readonly width: number;
+  readonly height: number;
+  readonly name: string;
+}
+
+function jpegDimension(bytes: Uint8Array): { width: number; height: number } | null {
+  if (bytes[0] !== 0xff || bytes[1] !== 0xd8) return null;
+  let offset = 2;
+  while (offset + 9 < bytes.length) {
+    if (bytes[offset] !== 0xff) {
+      offset += 1;
+      continue;
+    }
+    const marker = bytes[offset + 1] ?? 0;
+    if (marker === 0xd8 || marker === 0xd9) {
+      offset += 2;
+      continue;
+    }
+    const length = (bytes[offset + 2] ?? 0) * 256 + (bytes[offset + 3] ?? 0);
+    if (length < 2 || offset + length + 2 > bytes.length) return null;
+    if (marker >= 0xc0 && marker <= 0xc3) {
+      const height = (bytes[offset + 5] ?? 0) * 256 + (bytes[offset + 6] ?? 0);
+      const width = (bytes[offset + 7] ?? 0) * 256 + (bytes[offset + 8] ?? 0);
+      return width > 0 && height > 0 ? { width, height } : null;
+    }
+    offset += length + 2;
+  }
+  return null;
+}
+
+export function parseJpeg(bytes: Uint8Array, name = "image.jpg"): EmbeddedJpeg | null {
+  const dimensions = jpegDimension(bytes);
+  return dimensions === null ? null : { bytes: bytes.slice(), ...dimensions, name };
+}
+
+export function buildPdfFromJpegs(images: readonly EmbeddedJpeg[]): Uint8Array {
+  if (images.length === 0) throw new Error("INVALID_INPUT: choose at least one JPEG image");
+  const builder = new PdfBuilder();
+  const pagesReference = builder.reserve();
+  const pageReferences: ReturnType<typeof pdfReference>[] = [];
+  for (const image of images) {
+    const imageReference = builder.putAuto({ kind: "stream", dictionary: pdfDict({ Type: pdfName("XObject"), Subtype: pdfName("Image"), Width: pdfNumber(image.width), Height: pdfNumber(image.height), ColorSpace: pdfName("DeviceRGB"), BitsPerComponent: pdfNumber(8), Filter: pdfName("DCTDecode") }), bytes: image.bytes.slice() });
+    const contentText = `q\n${image.width} 0 0 ${image.height} 0 0 cm\n/Im0 Do\nQ\n`;
+    const contentReference = builder.putAuto({ kind: "stream", dictionary: pdfDict({}), bytes: new TextEncoder().encode(contentText) });
+    const pageReference = builder.putAuto(pdfDict({ Type: pdfName("Page"), MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(image.width), pdfNumber(image.height)]), Resources: pdfDict({ XObject: pdfDict({ Im0: imageReference }) }), Contents: contentReference }));
+    pageReferences.push(pageReference);
+  }
+  builder.put(pagesReference, pdfDict({ Type: pdfName("Pages"), Kids: pdfArray(pageReferences), Count: pdfNumber(pageReferences.length) }));
+  const rootReference = builder.reserve();
+  builder.put(rootReference, pdfDict({ Type: pdfName("Catalog"), Pages: pagesReference }));
+  return builder.build(rootReference, null);
+}
+
+export { jpegDimension, normalizeStreamBytes, serializeValue };

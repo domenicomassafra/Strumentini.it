@@ -1,0 +1,5 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { PdfPageReorderTool } from "../../components/tools/PdfPageReorderTool";
+---
+<BaseLayout title="PDF Page Reorder" description="Reorder every page of a local PDF."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Page Reorder</h1><p class="lede">Provide every page exactly once in the desired order.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Page order is explicit and deterministic.</span></div></header><PdfPageReorderTool client:load /><section class="method-card"><h2>Bounded contract</h2><ul><li>Rejects missing, duplicate, or out-of-range page numbers.</li><li>Preserves page content while rebuilding a validated page tree.</li><li>Encrypted documents are not modified.</li></ul></section></article></BaseLayout>

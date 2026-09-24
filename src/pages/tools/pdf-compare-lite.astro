@@ -1,0 +1,5 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { PdfCompareLiteTool } from "../../components/tools/PdfCompareLiteTool";
+---
+<BaseLayout title="PDF Compare Lite" description="Compare two local PDFs by bounded observable properties."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Compare Lite</h1><p class="lede">Compare page count, geometry, rotation, and extracted text between two local PDFs.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Comparison is structural and text-based, not a pixel diff.</span></div></header><PdfCompareLiteTool client:load /><section class="method-card"><h2>Comparison contract</h2><ul><li>Reports changed geometry and text pages explicitly.</li><li>Uses the same bounded parser as the other PDF routes.</li><li>Unsupported streams remain an explicit capability difference.</li></ul></section></article></BaseLayout>
