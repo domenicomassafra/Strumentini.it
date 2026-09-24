@@ -51,6 +51,8 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   import { filterLibrary, pageLibrary, parseLibraryState, serializeLibraryState } from "../../library/library";
   import { createSearch } from "../../search/search";
   import { SEARCH_CONTEXT_EVENT } from "../../search/browser-context";
+  import { getTelemetryAdapter, rememberToolEntrySource } from "../../telemetry/browser";
+  import { classifySearchCategory, classifySearchIntent, trackSearchZeroResult } from "../../telemetry/events";
   import type { LibraryState } from "../../library/library";
   import type { SearchContext, SearchToolMetadata } from "../../search/types";
 
@@ -65,6 +67,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   const tools = JSON.parse(dataNode?.textContent ?? "[]") as SearchToolMetadata[];
   const search = createSearch(tools);
   let context: SearchContext = {};
+  let lastZeroResultKey = "";
   try {
     const stored = window.sessionStorage.getItem("utilityos:workbench-context:v1");
     if (stored !== null) {
@@ -107,6 +110,17 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     syncForm(state);
     const filtered = filterLibrary(tools, state, context);
     const page = pageLibrary(filtered, state.page, 50);
+    if (page.total === 0) {
+      const intentCode = classifySearchIntent(state.q);
+      const categoryCode = classifySearchCategory(state.category);
+      const zeroResultKey = `${intentCode}:${categoryCode}`;
+      if (zeroResultKey !== lastZeroResultKey) {
+        trackSearchZeroResult(getTelemetryAdapter(), intentCode, categoryCode);
+        lastZeroResultKey = zeroResultKey;
+      }
+    } else {
+      lastZeroResultKey = "";
+    }
     count.textContent = `${page.total} ${page.total === 1 ? "tool" : "tools"}`;
     if (page.items.length === 0) {
       const closeIntents = state.q ? search.query(state.q, context, 4).closeIntents : [];
@@ -152,6 +166,9 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     if (state) replaceState(state, "push");
   });
   results?.addEventListener("click", (event) => {
+    const toolLink = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-library-tool-id]") : null;
+    const toolId = toolLink?.dataset.libraryToolId;
+    if (toolId !== undefined) rememberToolEntrySource(toolId, "public");
     const button = event.target instanceof Element ? event.target.closest<HTMLButtonElement>("[data-close-intent]") : null;
     if (!button) return;
     replaceState({ ...stateFromLocation(), q: button.dataset.closeIntent ?? "", page: 1 }, "push");

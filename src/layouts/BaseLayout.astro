@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import ShellChrome from "../components/shell/ShellChrome.astro";
+import ToolRouteTelemetry from "../components/telemetry/ToolRouteTelemetry.astro";
 
 interface Props {
   title: string;
@@ -19,6 +20,7 @@ const { title, description } = Astro.props;
   </head>
   <body>
     <ShellChrome pathname={Astro.url.pathname} search={Astro.url.search}>
+      <ToolRouteTelemetry pathname={Astro.url.pathname} />
       <slot />
     </ShellChrome>
   </body>

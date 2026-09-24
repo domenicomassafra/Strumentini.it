@@ -1,4 +1,5 @@
 import type { ToolSummary } from "../catalog/manifest";
+import type { ToolEntrySource } from "../telemetry/schema";
 
 export type DefaultProvenance =
   | "explicit"
@@ -14,6 +15,11 @@ export interface ResolvedDefault {
 
 export interface ToolExecutionContext {
   defaults: Readonly<Record<string, ResolvedDefault>>;
+}
+
+export interface RuntimeTelemetryContext {
+  entrySource?: ToolEntrySource;
+  telemetrySubjectId?: string;
 }
 
 export interface ToolModule {
