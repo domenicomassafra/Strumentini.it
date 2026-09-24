@@ -71,9 +71,9 @@ export function RateConverterTool() {
       <form onSubmit={submit} noValidate>
         <div class="field-grid">
           <label class="field"><span>Rate amount</span><input required inputMode="decimal" value={amount} onInput={(event) => setAmount(event.currentTarget.value)} placeholder="50.00" /></label>
-          <label class="field">
-            <span>Currency label</span>
-            <input required value={currency} onInput={(event) => setCurrencyOverride(event.currentTarget.value.toUpperCase())} aria-describedby="currency-help" />
+          <div class="field">
+            <label htmlFor="rate-currency">Currency label</label>
+            <input id="rate-currency" required value={currency} onInput={(event) => setCurrencyOverride(event.currentTarget.value.toUpperCase())} aria-describedby="currency-help" />
             <ProfileOverrideHint
               id="currency-help"
               ready={ready}
@@ -82,18 +82,18 @@ export function RateConverterTool() {
               overrideLabel="Current task override · label only, no FX conversion"
             />
             <ProfileResetButton disabled={currencyOverride === undefined} onReset={() => setCurrencyOverride(undefined)}>Use Work Profile currency</ProfileResetButton>
-          </label>
+          </div>
         </div>
         <div class="field-grid">
           <label class="field"><span>From</span><select value={from} onChange={(event) => setFrom(event.currentTarget.value as RateUnit)}>{UNITS.map((unit) => <option value={unit} key={unit}>{unit}</option>)}</select></label>
           <label class="field"><span>To</span><select value={to} onChange={(event) => setTo(event.currentTarget.value as RateUnit)}>{UNITS.map((unit) => <option value={unit} key={unit}>{unit}</option>)}</select></label>
         </div>
-        <label class="field">
-          <span>Hours per day</span>
-          <input required inputMode="decimal" value={hoursPerDay} onInput={(event) => setHoursPerDayOverride(event.currentTarget.value)} />
+        <div class="field">
+          <label htmlFor="rate-hours-per-day">Hours per day</label>
+          <input id="rate-hours-per-day" required inputMode="decimal" value={hoursPerDay} onInput={(event) => setHoursPerDayOverride(event.currentTarget.value)} />
           <small>{hoursPerDayOverride === undefined ? "Tool default: 8 hours/day" : "Current task override"}</small>
           <ProfileResetButton disabled={hoursPerDayOverride === undefined} onReset={() => setHoursPerDayOverride(undefined)}>Use 8-hour tool default</ProfileResetButton>
-        </label>
+        </div>
         {usesProject && <label class="field"><span>Project hours</span><input required inputMode="decimal" value={projectHours} onInput={(event) => setProjectHours(event.currentTarget.value)} /><small>Required dimensional basis for a project rate.</small></label>}
         <InlineError message={operation.error} />
         <ToolActions>

@@ -55,12 +55,12 @@ export function MarginMarkupTool() {
           <label class="field"><span>Price / revenue</span><input required inputMode="decimal" value={price} onInput={(event) => setPrice(event.currentTarget.value)} placeholder="100.00" /></label>
           <label class="field"><span>Cost</span><input required inputMode="decimal" value={cost} onInput={(event) => setCost(event.currentTarget.value)} placeholder="80.00" /></label>
         </div>
-        <label class="field">
-          <span>Currency label</span>
-          <input required value={currency} onInput={(event) => setCurrencyOverride(event.currentTarget.value.toUpperCase())} aria-describedby="margin-currency-help" />
+        <div class="field">
+          <label htmlFor="margin-currency">Currency label</label>
+          <input id="margin-currency" required value={currency} onInput={(event) => setCurrencyOverride(event.currentTarget.value.toUpperCase())} aria-describedby="margin-currency-help" />
           <ProfileOverrideHint id="margin-currency-help" ready={ready} overridden={currencyOverride !== undefined} />
           <ProfileResetButton disabled={currencyOverride === undefined} onReset={() => setCurrencyOverride(undefined)}>Use Work Profile currency</ProfileResetButton>
-        </label>
+        </div>
         <InlineError message={operation.error} />
         <ToolActions>
           <ToolSubmitButton busy={operation.isRunning} busyLabel="Calculating…">Calculate margin &amp; markup</ToolSubmitButton>

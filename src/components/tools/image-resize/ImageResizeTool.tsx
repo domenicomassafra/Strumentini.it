@@ -268,7 +268,13 @@ export function ImageResizeTool() {
         {error !== "" && <p class="error" role="alert">{error}</p>}
 
         <div class="actions">
-          <button class="primary" type="submit" disabled={status === "working"}>
+          <button
+            class="primary"
+            type="submit"
+            aria-disabled={status === "working" ? "true" : undefined}
+            aria-busy={status === "working" ? "true" : undefined}
+            onClick={(event) => { if (status === "working") { event.preventDefault(); event.stopPropagation(); } }}
+          >
             {status === "working" ? "Processing…" : "Resize"}
           </button>
           {status === "working" ? (
@@ -279,7 +285,7 @@ export function ImageResizeTool() {
         </div>
       </form>
 
-      <section class="result-panel" aria-live="polite" aria-atomic="true">
+      <section class="result-panel" aria-label="Output" aria-live="polite" aria-atomic="false">
         <p class="eyebrow">Output</p>
         {result === null ? (
           <p class="result-placeholder">Your verified local output appears here.</p>

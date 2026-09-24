@@ -35,7 +35,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     <label><span>Installed</span><select name="installed"><option value="">All</option><option value="installed">Installed</option><option value="not-installed">Not installed</option></select></label>
   </form>
 
-  <div class="library-summary" aria-live="polite"><strong data-library-count>0 tools</strong><a href="/library/">Clear filters</a></div>
+  <div class="library-summary"><strong data-library-count role="status" aria-live="polite" aria-atomic="true">0 tools</strong><a href="/library/">Clear filters</a></div>
   <div class="library-list" data-library-results></div>
   <nav class="library-pagination" aria-label="Library pages" data-library-pagination></nav>
   <aside class="request-box" id="request-tool">
@@ -108,6 +108,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     const filtered = filterLibrary(tools, state, context);
     const page = pageLibrary(filtered, state.page, 50);
     count.textContent = `${page.total} ${page.total === 1 ? "tool" : "tools"}`;
+    const pageLabel = `Page ${page.page} of ${page.totalPages}`;
     if (page.items.length === 0) {
       const closeIntents = state.q ? search.query(state.q, context, 4).closeIntents : [];
       const suggestions = closeIntents.map((intent) => `<button type="button" data-close-intent="${escapeHtml(intent)}">${escapeHtml(intent)}</button>`).join("");
@@ -120,9 +121,9 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
       }).join("");
     }
     const links: string[] = [];
-    if (page.page > 1) links.push(`<button type="button" data-page="${page.page - 1}">Previous</button>`);
-    links.push(`<span>Page ${page.page} of ${page.totalPages}</span>`);
-    if (page.page < page.totalPages) links.push(`<button type="button" data-page="${page.page + 1}">Next</button>`);
+    if (page.page > 1) links.push(`<button type="button" data-page="${page.page - 1}" aria-label="Previous page, page ${page.page - 1} of ${page.totalPages}">Previous</button>`);
+    links.push(`<span data-library-page-status role="status" tabindex="-1" aria-live="polite" aria-atomic="true">${pageLabel}</span>`);
+    if (page.page < page.totalPages) links.push(`<button type="button" data-page="${page.page + 1}" aria-label="Next page, page ${page.page + 1} of ${page.totalPages}">Next</button>`);
     pagination.innerHTML = links.join("");
   }
 
@@ -131,6 +132,15 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     const url = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`;
     window.history[mode === "push" ? "pushState" : "replaceState"]({}, "", url);
     render();
+  }
+
+  function focusPageControl(pageNumber: number): void {
+    window.requestAnimationFrame(() => {
+      const target = pagination?.querySelector<HTMLElement>(`[data-page="${pageNumber}"]`);
+      const pageStatus = pagination?.querySelector<HTMLElement>("[data-library-page-status]");
+      const fallback = root?.querySelector<HTMLInputElement>("#library-search");
+      (target ?? pageStatus ?? fallback)?.focus({ preventScroll: true });
+    });
   }
 
   const readFormState = (): LibraryState | undefined => {
@@ -160,7 +170,9 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   pagination?.addEventListener("click", (event) => {
     const button = event.target instanceof Element ? event.target.closest<HTMLButtonElement>("[data-page]") : null;
     if (!button) return;
-    replaceState({ ...stateFromLocation(), page: Number(button.dataset.page ?? 1) }, "push");
+    const pageNumber = Number(button.dataset.page ?? 1);
+    replaceState({ ...stateFromLocation(), page: pageNumber }, "push");
+    focusPageControl(pageNumber);
   });
   window.addEventListener("popstate", render);
   window.addEventListener(SEARCH_CONTEXT_EVENT, (event) => {
@@ -191,10 +203,10 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   .library-controls label { display: grid; gap: 4px; }
   .library-controls label > span { color: var(--muted); font-size: .72rem; font-weight: 700; }
   .library-controls input, .library-controls select { width: 100%; min-height: 44px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: inherit; }
-  .library-summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font-size: .82rem; }
+  .library-summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; color: var(--muted); font-size: .82rem; }
   .library-summary a { min-height: 44px; display: inline-flex; align-items: center; }
   .library-list { border-top: 1px solid var(--line); }
-  .library-workspace :global(.library-row) { min-height: 52px; display: grid; grid-template-columns: minmax(0, 1fr) 130px 140px minmax(90px, auto); gap: 14px; align-items: center; border-bottom: 1px solid var(--line); text-decoration: none; }
+  .library-workspace :global(.library-row) { min-height: 52px; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) 130px 140px minmax(90px, auto); gap: 14px; align-items: center; border-bottom: 1px solid var(--line); text-decoration: none; }
   .library-workspace :global(.tool-main) { min-width: 0; }
   .library-workspace :global(.tool-main strong), .library-workspace :global(.tool-main small) { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .library-workspace :global(.tool-main small), .library-workspace :global(.tool-category), .library-workspace :global(.tool-runtime) { color: var(--muted); font-size: .8rem; }

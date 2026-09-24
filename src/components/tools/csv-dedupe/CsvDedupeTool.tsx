@@ -60,6 +60,6 @@ export function CsvDedupeTool() {
       {error && <p class="error" role="alert">{error}</p>}
       <button class="primary tool-submit" type="submit">Remove duplicates</button>
     </section>
-    <section class="result-panel" aria-live="polite"><p class="eyebrow">Deduped result</p>{result ? <><strong>{result.removedRows} duplicate row{result.removedRows === 1 ? "" : "s"} removed · {result.outputRows} data rows remain</strong><p class="file-note">Stable first occurrence wins. Empty all-key rows stay distinct.</p><pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Download deduped CSV</button></> : <p class="result-placeholder">The stable deduped output and exact removed-row count appear here.</p>}</section>
+    <section class="result-panel" aria-live="polite"><p class="eyebrow">Deduped result</p>{result ? <><strong>{result.removedRows} duplicate row{result.removedRows === 1 ? "" : "s"} removed · {result.outputRows} data rows remain</strong><p class="file-note">Stable first occurrence wins. Empty all-key rows stay distinct.</p><pre class="csv-preview" tabIndex={0} aria-label="Deduped CSV preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Download deduped CSV</button></> : <p class="result-placeholder">The stable deduped output and exact removed-row count appear here.</p>}</section>
   </form>;
 }

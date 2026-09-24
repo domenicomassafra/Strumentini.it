@@ -41,6 +41,7 @@ const DAYS: ReadonlyArray<{ code: DayCode; label: string }> = [
 ];
 
 type Repository = ReturnType<typeof createWorkbenchRepository>;
+type FocusIntent = readonly string[];
 
 function serverSafeInitialState(): WorkbenchState {
   return createDefaultWorkbenchState(
@@ -88,6 +89,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   const [importPreview, setImportPreview] = useState<ImportPreview | null>(null);
   const repositoryRef = useRef<Repository | null>(null);
   const pendingSavesRef = useRef(0);
+  const pendingFocusRef = useRef<FocusIntent | null>(null);
 
   useEffect(() => {
     const initial = createDefaultWorkbenchState(browserProfile());
@@ -115,6 +117,18 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
     }
   }, [ready, state.installedTools, state.recent]);
 
+  useEffect(() => {
+    const intent = pendingFocusRef.current;
+    if (intent === null) return;
+    pendingFocusRef.current = null;
+    const frame = window.requestAnimationFrame(() => {
+      const elements = [...document.querySelectorAll<HTMLElement>("[data-focus-key]")];
+      const target = intent.map((key) => elements.find((element) => element.dataset.focusKey === key)).find((element) => element !== undefined);
+      target?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [state, importPreview]);
+
   async function persist(next: WorkbenchState) {
     setState(next);
     pendingSavesRef.current += 1;
@@ -129,10 +143,19 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   }
 
   async function add(toolId: string) {
+    pendingFocusRef.current = [`open:${toolId}`, "add-tool-toggle", "your-tools-title"];
     await persist(installTool(state, toolId));
   }
 
   async function remove(toolId: string) {
+    const index = state.installedTools.indexOf(toolId);
+    const fallbackToolId = state.installedTools[index + 1] ?? state.installedTools[index - 1];
+    pendingFocusRef.current = [
+      `open:${toolId}`,
+      ...(fallbackToolId === undefined ? [] : [`open:${fallbackToolId}`]),
+      "add-tool-toggle",
+      "your-tools-title",
+    ];
     await persist(removeTool(state, toolId));
   }
 
@@ -186,6 +209,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
     if (importPreview === null || !importPreview.ok) return;
     const next = applyImportedConfig(state, importPreview.config);
     setProfileDraft(next.profile);
+    pendingFocusRef.current = ["import-file", "portable-title"];
     await persist(next);
     setImportPreview(null);
   }
@@ -223,9 +247,9 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
         <div class={styles.sectionHeading}>
           <div>
             <p class={styles.eyebrow}>Start here</p>
-            <h2 id="your-tools-title">Your Tools</h2>
+            <h2 id="your-tools-title" data-focus-key="your-tools-title" tabIndex={-1}>Your Tools</h2>
           </div>
-          <span class={styles.count}>{state.installedTools.length} installed · 10–15 target</span>
+          <span class={styles.count} role="status" aria-live="polite" aria-atomic="true">{state.installedTools.length} installed · 10–15 target</span>
         </div>
 
         {installed.length === 0 ? (
@@ -234,7 +258,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
             <p class={styles.muted}>Start with one utility. Suggestions and the full Library stay out of the way until you ask for them.</p>
             <div class={styles.emptyActions}>
               {firstTool !== undefined && (
-                <button class={styles.primary} type="button" onClick={() => void add(firstTool.id)}>
+                <button class={styles.primary} type="button" data-focus-key="add-first-tool" onClick={() => void add(firstTool.id)}>
                   Add {firstTool.name}
                 </button>
               )}
@@ -266,7 +290,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
                   </div>
                   <div class={styles.rowActions}>
                     {tool !== undefined && (
-                      <a class={styles.openLink} href={tool.route} onClick={(event) => void openTool(tool, event)}>
+                      <a class={styles.openLink} data-focus-key={`open:${id}`} href={tool.route} onClick={(event) => void openTool(tool, event)}>
                         Open
                       </a>
                     )}
@@ -289,7 +313,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
                         >
                           Move down
                         </button>
-                        <button class={styles.remove} type="button" onClick={() => void remove(id)}>
+                        <button class={styles.remove} type="button" data-focus-key={`remove:${id}`} onClick={() => void remove(id)}>
                           Remove
                         </button>
                       </div>
@@ -305,6 +329,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
           <div class={styles.addTools}>
             <button
               type="button"
+              data-focus-key="add-tool-toggle"
               aria-expanded={showAvailable}
               aria-controls="available-tools"
               onClick={() => setShowAvailable((visible) => !visible)}
@@ -316,7 +341,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
                 {available.map((tool) => (
                   <li key={tool.id}>
                     <span><strong>{tool.name}</strong> — {tool.summary}</span>
-                    <button type="button" onClick={() => void add(tool.id)}>Add</button>
+                    <button type="button" aria-label={`Add ${tool.name} to Workbench`} data-focus-key={`add:${tool.id}`} onClick={() => void add(tool.id)}>Add</button>
                   </li>
                 ))}
               </ul>
@@ -329,10 +354,10 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
         <div class={styles.sectionHeading}>
           <div>
             <p class={styles.eyebrow}>Tool-level activity only</p>
-            <h2 id="recent-title">Recent</h2>
+            <h2 id="recent-title" data-focus-key="recent-title" tabIndex={-1}>Recent</h2>
           </div>
           {state.recent.length > 0 && (
-            <button type="button" onClick={() => void persist(clearRecent(state))}>Clear recent</button>
+            <button type="button" data-focus-key="clear-recent" onClick={() => { pendingFocusRef.current = ["recent-title"]; void persist(clearRecent(state)); }}>Clear recent</button>
           )}
         </div>
         {state.recent.length === 0 ? (
@@ -382,6 +407,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
                   type="button"
                   aria-label={"Add " + tool.name + " to Workbench"}
                   data-suggestion-action
+                  data-focus-key={`suggestion:${tool.id}`}
                   onClick={() => void add(tool.id)}
                 >
                   Add
@@ -476,7 +502,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
         <div class={styles.sectionHeading}>
           <div>
             <p class={styles.eyebrow}>No cloud sync required</p>
-            <h2 id="portable-title">Portable configuration</h2>
+            <h2 id="portable-title" data-focus-key="portable-title" tabIndex={-1}>Portable configuration</h2>
           </div>
         </div>
         <p class={styles.muted}>
@@ -487,6 +513,8 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
           <label class={styles.importFile}>
             <span>Choose configuration to import</span>
             <input
+              id="portable-file"
+              data-focus-key="import-file"
               type="file"
               accept="application/json,.json"
               onChange={(event) => void previewImport(event.currentTarget.files?.[0])}

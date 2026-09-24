@@ -6,7 +6,8 @@
   color: var(--text);
 }
 
-.intro { max-width: var(--reading-max); margin-bottom: var(--space-7); }
+.intro { max-width: var(--reading-max); margin-bottom: var(--space-7); min-width: 0; }
+.intro h1, .section h2, .sectionHeading, .toolIdentity, .libraryLink { min-width: 0; overflow-wrap: anywhere; }
 .intro h1,
 .section h2 { margin: var(--space-1) 0 var(--space-2); letter-spacing: -0.025em; }
 .intro h1 { font-size: var(--font-size-h1); }
@@ -106,7 +107,7 @@
 .libraryLink span { color: var(--text-muted); font-weight: var(--font-weight-regular); }
 .recentList li > div { display: grid; gap: var(--space-1); }
 .recentList a { display: inline-flex; align-items: center; min-height: var(--control-height-touch); }
-.manage > summary { list-style: none; text-align: center; }
+.manage > summary { min-height: var(--control-height-touch); display: flex; align-items: center; justify-content: center; list-style: none; text-align: center; }
 .manage > summary::-webkit-details-marker { display: none; }
 .manageActions { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-2); }
 .manageActions button { min-height: var(--control-height-touch); }
@@ -185,4 +186,12 @@
   .addTools li button,
   .suggestionList li button { width: 100%; }
   .libraryLink { align-items: baseline; }
+  .sectionHeading { align-items: flex-start; }
+  .count, .localBadge { white-space: normal; }
+  .manageActions button { min-width: 0; width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell button,
+  .shell .openLink { transition: none; }
 }

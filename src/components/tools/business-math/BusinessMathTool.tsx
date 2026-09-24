@@ -155,8 +155,8 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
             );
           })}
           {config.showCurrency === true && (
-            <label class="field" htmlFor={`${config.id}-currency`}>
-              <span>Currency label</span>
+            <div class="field">
+              <label htmlFor={`${config.id}-currency`}>Currency label</label>
               <input
                 id={`${config.id}-currency`}
                 required
@@ -172,7 +172,7 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
                 overrideLabel="Current task currency label"
               />
               <ProfileResetButton disabled={currencyOverride === undefined} onReset={() => setCurrencyOverride(undefined)}>Use Work Profile currency</ProfileResetButton>
-            </label>
+            </div>
           )}
         </div>
         <InlineError message={operation.error} />

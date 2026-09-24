@@ -116,7 +116,7 @@ export function DateTimeOperation({ config }: { config: DateTimeToolConfig }) {
         {operation.result !== null && (
           <>
             {config.resultLabel !== undefined && <strong class="result-value">{config.resultLabel(operation.result)}</strong>}
-            <pre class="result-json">{resultText}</pre>
+            <pre class="result-json" tabIndex={0} aria-label={`${config.eyebrow} JSON result`}>{resultText}</pre>
             {config.download !== undefined && <button type="button" onClick={() => downloadResult(config, operation.result)}>Download result</button>}
           </>
         )}

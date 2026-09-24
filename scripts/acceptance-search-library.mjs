@@ -59,6 +59,11 @@ function assertNoImplementationRequests(requestedScripts, toolAssets, label) {
   if (eager.length > 0) throw new Error(`${label} eagerly loaded tool implementation chunk(s): ${eager.join(", ")}`);
 }
 
+async function assertNoHorizontalOverflow(page, label) {
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+  if (overflow) throw new Error(`${label} has horizontal overflow`);
+}
+
 try {
   await waitForServer();
   const toolAssets = await implementationAssets();
@@ -149,6 +154,31 @@ try {
   if (fixtureReadyMs > 5000) throw new Error(`500-tool fixture exceeded 5s local acceptance budget: ${fixtureReadyMs}ms`);
   assertNoImplementationRequests(fixtureScripts, toolAssets, "500-tool Library fixture");
 
+  await fixturePage.setViewportSize({ width: 390, height: 844 });
+  await assertNoHorizontalOverflow(fixturePage, "390px Library");
+  await fixturePage.setViewportSize({ width: 195, height: 844 });
+  await assertNoHorizontalOverflow(fixturePage, "200% reflow Library");
+
+  const nextPage = fixturePage.getByRole("button", { name: /Next page/u });
+  await nextPage.focus();
+  await nextPage.press("Enter");
+  await fixturePage.locator("[data-library-page-status]").filter({ hasText: "Page 2 of 10" }).waitFor();
+  await fixturePage.waitForFunction(() => document.activeElement?.matches("[data-library-page-status], [data-page]"));
+  const paginationFocus = await fixturePage.evaluate(() => ({
+    page: document.activeElement?.getAttribute("data-page"),
+    status: document.activeElement?.getAttribute("data-library-page-status"),
+  }));
+  if (paginationFocus.page === null && paginationFocus.status === null) {
+    throw new Error("Library pagination did not retain a focus target after page replacement");
+  }
+
+  await fixturePage.emulateMedia({ reducedMotion: "reduce" });
+  const motionDuration = await fixturePage.locator("[data-library-page-status]").evaluate((element) => getComputedStyle(element).transitionDuration);
+  const motionSeconds = Number.parseFloat(motionDuration);
+  if (!Number.isFinite(motionSeconds) || motionSeconds > 0.00001) {
+    throw new Error(`Reduced motion did not disable Library transitions: ${motionDuration}`);
+  }
+
   await mkdir(receiptDir, { recursive: true });
   const receipt = {
     schemaVersion: 1,
@@ -170,6 +200,7 @@ try {
       runtime: "LOCAL",
     },
     mobile: { explicitSearchDestination: true, searchFocused: mobileFocused },
+    reflow: { width390: true, width200Percent: 195, paginationFocusRetained: true, reducedMotion: true },
     fixture500: { catalogItems: 500, renderedRows, pageSize: 50, readyMs: fixtureReadyMs },
     chunkProof: {
       discoveryImplementationRequests: 0,

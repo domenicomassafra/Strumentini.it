@@ -211,10 +211,10 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
             {result.blob instanceof Blob && (
               <button class="primary" type="button" onClick={() => downloadBlob(result.blob as Blob, resultFilename)}>Download result</button>
             )}
-            {typeof result.manifest === "string" && <pre class="result-code">{result.manifest}</pre>}
-            {typeof result.markdown === "string" && <pre class="result-code">{result.markdown}</pre>}
-            {typeof result.json === "string" && <pre class="result-code">{result.json}</pre>}
-            <pre class="result-code">{resultText(result)}</pre>
+            {typeof result.manifest === "string" && <pre class="result-code" tabIndex={0} aria-label={`${title} result`}>{result.manifest}</pre>}
+            {typeof result.markdown === "string" && <pre class="result-code" tabIndex={0} aria-label={`${title} result`}>{result.markdown}</pre>}
+            {typeof result.json === "string" && <pre class="result-code" tabIndex={0} aria-label={`${title} result`}>{result.json}</pre>}
+            <pre class="result-code" tabIndex={0} aria-label={`${title} result`}>{resultText(result)}</pre>
           </>
         )}
       </ToolResultPanel>

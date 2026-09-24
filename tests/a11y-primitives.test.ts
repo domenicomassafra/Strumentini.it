@@ -118,6 +118,10 @@ describe("accessibility primitive markup and styles", () => {
   const formSource = readFileSync(new URL("../src/components/a11y/FormField.tsx", import.meta.url), "utf8");
   const navSource = readFileSync(new URL("../src/components/a11y/AccessibleNav.tsx", import.meta.url), "utf8");
   const statusSource = readFileSync(new URL("../src/components/a11y/StatusAnnouncement.tsx", import.meta.url), "utf8");
+  const searchSource = readFileSync(new URL("../src/components/search/GlobalSearch.astro", import.meta.url), "utf8");
+  const librarySource = readFileSync(new URL("../src/components/library/LibraryWorkspace.astro", import.meta.url), "utf8");
+  const workbenchSource = readFileSync(new URL("../src/components/workbench/Workbench.tsx", import.meta.url), "utf8");
+  const tableSource = readFileSync(new URL("../src/components/tools/table/TableWorkbench.tsx", import.meta.url), "utf8");
   const styles = readFileSync(new URL("../src/components/a11y/primitives.module.css", import.meta.url), "utf8");
 
   it("provides labelled landmarks, focus restoration, and keyboard close paths", () => {
@@ -150,5 +154,16 @@ describe("accessibility primitive markup and styles", () => {
     expect(styles).toMatch(/@media \(prefers-color-scheme: dark\)/u);
     expect(styles).toMatch(/\.required\s*\{[\s\S]*color: #ffb4ab/u);
     expect(styles).toMatch(/\.navLink\[aria-current="page"\][\s\S]*border-color: #9bc8b8/u);
+  });
+
+  it("keeps expanded search, library, workbench, and chart semantics explicit", () => {
+    expect(searchSource).toContain("aria-describedby=\"global-search-help\"");
+    expect(searchSource).toContain("results.setAttribute(\"role\", \"region\")");
+    expect(searchSource).toContain("aria-expanded=\"false\"");
+    expect(librarySource).toContain("data-library-page-status");
+    expect(librarySource).toContain("focusPageControl");
+    expect(workbenchSource).toContain("pendingFocusRef");
+    expect(workbenchSource).toContain("aria-live=\"polite\"");
+    expect(tableSource).toContain("points.map((point) => `${point.label}: ${point.value}`)");
   });
 });

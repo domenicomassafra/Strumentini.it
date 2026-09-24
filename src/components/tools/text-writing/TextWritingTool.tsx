@@ -143,8 +143,8 @@ function ResultOutput({ tool, value }: { tool: TextWritingToolId; value: unknown
     if (html !== null) return <div class="markdown-output" dangerouslySetInnerHTML={{ __html: html }} />;
   }
   const text = outputValue(value);
-  if (text !== null) return <pre class="text-result">{text === "" ? "(empty output)" : text}</pre>;
-  return <pre class="text-result">{JSON.stringify(value, null, 2)}</pre>;
+  if (text !== null) return <pre class="text-result" tabIndex={0} aria-label="Text result">{text === "" ? "(empty output)" : text}</pre>;
+  return <pre class="text-result" tabIndex={0} aria-label="JSON result">{JSON.stringify(value, null, 2)}</pre>;
 }
 
 export function TextWritingTool({ tool }: TextWritingToolProps) {

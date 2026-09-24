@@ -142,6 +142,9 @@ describe("canonical design-system tokens", () => {
       "button, input, select, textarea",
       ":focus-visible",
       "prefers-reduced-motion",
+      "scroll-padding-top",
+      "scroll-padding-bottom",
+      "scroll-margin-block",
       "prefers-color-scheme: dark",
       "@media (max-width: 760px)",
       "@media (min-width: 960px)",
@@ -184,5 +187,22 @@ describe("canonical design-system tokens", () => {
       const surfaceValue = theme.get("canvas")!;
       expect(contrast(focusValue, surfaceValue)).toBeGreaterThanOrEqual(3);
     }
+  });
+
+  it("keeps control boundaries at the 3:1 non-text contrast floor", () => {
+    for (const theme of [lightTokens, darkTokens]) {
+      for (const boundary of ["border", "border-strong"]) {
+        for (const background of ["canvas", "surface"]) {
+          expect(contrast(theme.get(boundary)!, theme.get(background)!), `${boundary} on ${background}`).toBeGreaterThanOrEqual(3);
+        }
+      }
+    }
+  });
+
+  it("keeps generated output blocks reflowable and keyboard-scrollable", () => {
+    expect(globalCss).toMatch(/pre\s*\{[\s\S]*overflow-x:\s*auto/u);
+    expect(globalCss).toMatch(/\.result-json, \.result-code, \.csv-preview, \.table-output/u);
+    expect(globalCss).toMatch(/overflow-wrap:\s*anywhere/u);
+    expect(globalCss).toMatch(/scroll-padding-bottom:\s*88px/u);
   });
 });

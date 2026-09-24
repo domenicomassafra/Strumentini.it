@@ -26,6 +26,11 @@ async function installedIds(page) {
   );
 }
 
+async function assertNoHorizontalOverflow(page, label) {
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+  if (overflow) throw new Error(`${label} has horizontal overflow`);
+}
+
 async function readStoredState(page) {
   return page.evaluate(async () => {
     const db = await new Promise((resolve, reject) => {
@@ -71,6 +76,10 @@ try {
   const doiAdd = doiRow.getByRole("button", { name: "Add" });
   await doiAdd.focus();
   await page.keyboard.press("Enter");
+  await page.locator('[data-focus-key="open:doi-isbn-normalizer"]').waitFor();
+  await page.waitForFunction(() => document.activeElement?.getAttribute("data-focus-key") === "open:doi-isbn-normalizer");
+  const addFocus = await page.evaluate(() => document.activeElement?.getAttribute("data-focus-key"));
+  if (addFocus !== "open:doi-isbn-normalizer") throw new Error(`Add action lost focus: ${addFocus ?? "none"}`);
 
   await page.getByRole("button", { name: "Add File Hash / Checksum Verifier to Workbench" }).click();
 
@@ -133,6 +142,13 @@ try {
   if (!recent || Object.keys(recent).sort().join(",") !== "lastUsedAt,toolId,useCount") {
     throw new Error("Recent contains fields beyond tool-level activity metadata");
   }
+  const clearRecent = page.getByRole("button", { name: "Clear recent", exact: true });
+  await clearRecent.focus();
+  await clearRecent.press("Enter");
+  await page.locator("#recent").getByText("No recent tool activity. Inputs, outputs, URLs and files are not stored here.", { exact: true }).waitFor();
+  await page.waitForFunction(() => document.activeElement?.id === "recent-title");
+  const clearFocus = await page.evaluate(() => document.activeElement?.id);
+  if (clearFocus !== "recent-title") throw new Error(`Clear recent lost focus: ${clearFocus ?? "none"}`);
 
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export configuration" }).click();
@@ -202,10 +218,10 @@ try {
   }
 
   await page.setViewportSize({ width: 390, height: 844 });
-  const overflow = await page.evaluate(
-    () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
-  );
-  if (overflow) throw new Error("390px Workbench has horizontal overflow");
+  await assertNoHorizontalOverflow(page, "390px Workbench");
+  await page.setViewportSize({ width: 195, height: 844 });
+  await assertNoHorizontalOverflow(page, "200% reflow Workbench");
+  await page.setViewportSize({ width: 390, height: 844 });
   const buttonHeights = await page.locator("button:visible").evaluateAll((buttons) =>
     buttons.map((button) => button.getBoundingClientRect().height),
   );
@@ -213,6 +229,12 @@ try {
     throw new Error("Visible Workbench button below 44px touch target");
   }
   await page.getByRole("navigation", { name: "Mobile primary" }).waitFor();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const motionDuration = await page.locator("button:visible").first().evaluate((element) => getComputedStyle(element).transitionDuration);
+  const motionSeconds = Number.parseFloat(motionDuration);
+  if (!Number.isFinite(motionSeconds) || motionSeconds > 0.00001) {
+    throw new Error(`Reduced motion did not disable Workbench transitions: ${motionDuration}`);
+  }
 
   await context.close();
 
@@ -236,11 +258,14 @@ try {
   await deniedBusinessRow.getByRole("button", { name: "Remove" }).focus();
   await deniedPage.keyboard.press("Enter");
   await deniedPage.getByText("No tools installed yet.", { exact: true }).waitFor();
+  await deniedPage.waitForFunction(() => document.activeElement?.getAttribute("data-focus-key") !== null);
+  const removeFocus = await deniedPage.evaluate(() => document.activeElement?.getAttribute("data-focus-key"));
+  if (removeFocus === null) throw new Error("Remove action lost focus");
   await deniedPage.getByRole("status", { name: "Storage warning" }).waitFor();
   await deniedContext.close();
 
   await browser.close();
-  console.log("workbench acceptance PASS: IndexedDB reload, add/remove/reorder, Recent privacy, profile provenance/override, config export/import, storage denial, keyboard, 390px");
+  console.log("workbench acceptance PASS: IndexedDB reload, focus retention, add/remove/reorder, Recent privacy, profile provenance/override, config export/import, storage denial, keyboard, 390px, 200% reflow, reduced motion");
 } finally {
   server.kill("SIGTERM");
 }

@@ -115,7 +115,7 @@ export function TimezoneOverlapTool() {
           <button type="button" onClick={reset}>Reset</button>
         </div>
       </form>
-      <section class="result-panel" aria-live="polite" aria-atomic="true">
+      <section class="result-panel" aria-label="Shared working time" aria-live="polite" aria-atomic="false">
         <p class="eyebrow">Shared working time</p>
         {result === null ? <p class="result-placeholder">Your overlap appears here.</p> : result.segments.length === 0 ? (
           <strong class="result-value">No overlap</strong>

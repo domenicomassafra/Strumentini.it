@@ -33,13 +33,14 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
         autocomplete="off"
         role="combobox"
         aria-autocomplete="list"
-        aria-expanded="true"
+        aria-expanded="false"
         aria-controls="global-search-results"
         aria-activedescendant=""
+        aria-describedby="global-search-help"
         data-search-input
       />
       <div id="global-search-results" class="palette-results" role="listbox" aria-label="Tool results" data-search-results></div>
-      <div class="palette-help" aria-hidden="true"><span>↑↓ navigate</span><span>Enter open</span><span>Esc close</span></div>
+      <div id="global-search-help" class="palette-help"><span>↑↓ navigate</span><span>Enter open</span><span>Esc close</span></div>
     </div>
   </dialog>
   <script is:inline type="application/json" id="utilityos-search-catalog" set:html={searchMetadataJson}></script>
@@ -89,6 +90,8 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
     }).join("");
 
     if (optionIndex === 0) {
+      results.setAttribute("role", "region");
+      results.setAttribute("aria-live", "polite");
       const suggestions = result.closeIntents.map((intent) => `<button type="button" class="intent-button" data-intent="${escapeHtml(intent)}">${escapeHtml(intent)}</button>`).join("");
       results.innerHTML = `<div class="zero-results"><strong>No matching tool</strong><p>Keep “${escapeHtml(result.query)}” and try a close catalog intent.</p>${suggestions ? `<div class="intent-list">${suggestions}</div>` : ""}<a class="request-tool" href="/library/?q=${encodeURIComponent(result.query)}#request-tool">Request this tool</a></div>`;
       input.setAttribute("aria-activedescendant", "");
@@ -96,6 +99,8 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
       return;
     }
 
+    results.setAttribute("role", "listbox");
+    results.removeAttribute("aria-live");
     activeIndex = Math.min(activeIndex, optionIndex - 1);
     results.innerHTML = sections;
     updateActiveOption();
@@ -116,6 +121,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
     invoker = source ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     activeIndex = 0;
     dialog.showModal();
+    input.setAttribute("aria-expanded", "true");
     render();
     input.focus();
   }
@@ -123,6 +129,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
   function closePalette(): void {
     if (!dialog?.open) return;
     dialog.close();
+    input?.setAttribute("aria-expanded", "false");
     invoker?.focus();
   }
 
@@ -180,7 +187,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
   .search-dialog::backdrop { background: rgb(0 0 0 / .3); }
   .palette-shell { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; max-height: 72vh; }
   .search-label { padding: 14px 16px 5px; color: var(--muted); font-size: .76rem; font-weight: 700; }
-  .palette-input { margin: 0 12px 10px; width: calc(100% - 24px); border: 1px solid var(--line); border-radius: 7px; padding: 11px 12px; background: var(--canvas); }
+  .palette-input { margin: 0 12px 10px; width: calc(100% - 24px); min-height: 44px; border: 1px solid var(--line); border-radius: 7px; padding: 11px 12px; background: var(--canvas); }
   .palette-results { overflow: auto; border-top: 1px solid var(--line); }
   .palette-section h3 { margin: 0; padding: 11px 14px 5px; color: var(--muted); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
   .palette-row { min-height: 54px; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--line); text-decoration: none; }
@@ -191,9 +198,9 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
   .zero-results { padding: 24px 16px; }
   .zero-results p { color: var(--muted); }
   .intent-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
-  .intent-button, .request-tool { border: 1px solid var(--line); border-radius: 6px; background: var(--canvas); padding: 8px 10px; color: inherit; cursor: pointer; text-decoration: none; }
+  .intent-button, .request-tool { min-height: 44px; border: 1px solid var(--line); border-radius: 6px; background: var(--canvas); padding: 8px 10px; color: inherit; cursor: pointer; text-decoration: none; }
   .request-tool { display: inline-flex; margin-top: 8px; }
-  .palette-help { padding: 8px 14px; display: flex; gap: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: .72rem; }
+  .palette-help { padding: 8px 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: .72rem; }
   .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
   @media (max-width: 640px) { .search-trigger { display: none; } .row-meta { display: none; } }
 </style>

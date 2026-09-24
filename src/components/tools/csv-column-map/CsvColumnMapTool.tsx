@@ -66,6 +66,6 @@ export function CsvColumnMapTool() {
       {error && <p class="error" role="alert">{error}</p>}
       <button class="primary tool-submit" type="submit">Apply column map</button>
     </section>
-    <section class="result-panel" aria-live="polite"><p class="eyebrow">Mapped result</p>{result ? <><strong>{result.headers.length} output columns · {result.droppedColumns.length} dropped · {result.filledMissingCells} missing selected cells filled blank</strong><pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Download mapped CSV</button></> : <p class="result-placeholder">The output schema and mapped CSV appear here only after you apply the visible mapping.</p>}</section>
+    <section class="result-panel" aria-live="polite"><p class="eyebrow">Mapped result</p>{result ? <><strong>{result.headers.length} output columns · {result.droppedColumns.length} dropped · {result.filledMissingCells} missing selected cells filled blank</strong><pre class="csv-preview" tabIndex={0} aria-label="Mapped CSV preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Download mapped CSV</button></> : <p class="result-placeholder">The output schema and mapped CSV appear here only after you apply the visible mapping.</p>}</section>
   </form>;
 }

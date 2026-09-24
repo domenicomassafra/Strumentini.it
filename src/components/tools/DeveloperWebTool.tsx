@@ -140,7 +140,7 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
         </ToolActions>
       </form>
       <ToolResultPanel eyebrow={config.eyebrow} placeholder={config.placeholder} busy={operation.isRunning} atomic={false}>
-        {operation.result !== null && <pre class="developer-result-json" aria-label={`${config.title} result`}>{resultText(operation.result)}</pre>}
+        {operation.result !== null && <pre class="developer-result-json" tabIndex={0} aria-label={`${config.title} result`}>{resultText(operation.result)}</pre>}
       </ToolResultPanel>
     </ToolOperation>
   );

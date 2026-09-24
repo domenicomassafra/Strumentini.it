@@ -217,7 +217,7 @@ export function BusinessDayTool() {
         </div>
       </form>
 
-      <section class="result-panel" aria-live="polite" aria-atomic="true">
+      <section class="result-panel" aria-label="Result" aria-live="polite" aria-atomic="false">
         <p class="eyebrow">Result</p>
         {result === null ? (
           <p class="result-placeholder">Your result appears here.</p>

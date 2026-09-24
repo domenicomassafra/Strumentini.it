@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { InlineError } from "../src/components/tools/shared/InlineError";
 import { ToolResultPanel } from "../src/components/tools/shared/ToolResultPanel";
+import { ToolSubmitButton } from "../src/components/tools/shared/ToolActions";
 import { ProvenanceBadge } from "../src/components/tools/shared/Provenance";
 import {
   cancelToolOperation,
@@ -48,6 +49,15 @@ describe("shared tool operation vocabulary", () => {
     expect(panel.props["aria-live"]).toBe("polite");
     expect(panel.props["aria-atomic"]).toBe("false");
     expect(panel.props["aria-busy"]).toBe("true");
+    expect(panel.props["aria-label"]).toBe("Result");
+
+    const defaultPanel = ToolResultPanel({ eyebrow: "Result", placeholder: "Nothing yet." }) as unknown as { props: Record<string, unknown> };
+    expect(defaultPanel.props["aria-atomic"]).toBe("false");
+
+    const busyButton = ToolSubmitButton({ children: "Run", busy: true }) as unknown as { props: Record<string, unknown> };
+    expect(busyButton.props.disabled).toBe(false);
+    expect(busyButton.props["aria-disabled"]).toBe("true");
+    expect(busyButton.props["aria-busy"]).toBe("true");
 
     const provenance = ProvenanceBadge({ provenance: "profile" }) as unknown as { props: Record<string, unknown> };
     expect(provenance.props.class).toBe("provenance");

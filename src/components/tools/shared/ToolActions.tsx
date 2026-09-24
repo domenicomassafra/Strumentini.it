@@ -27,7 +27,19 @@ export function ToolSubmitButton({
 }: ToolSubmitButtonProps) {
   const classes = ["primary", className].filter(Boolean).join(" ");
   return (
-    <button class={classes} type="submit" disabled={disabled || busy}>
+    <button
+      class={classes}
+      type="submit"
+      disabled={disabled && !busy}
+      aria-disabled={busy || disabled ? "true" : undefined}
+      aria-busy={busy ? "true" : undefined}
+      onClick={(event) => {
+        if (busy || disabled) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }}
+    >
       {busy ? busyLabel ?? children : children}
     </button>
   );

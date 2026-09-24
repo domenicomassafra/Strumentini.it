@@ -98,7 +98,7 @@ export function ResearchKnowledgeTool({ config }: { config: ResearchKnowledgeToo
         </ToolActions>
       </form>
       <ToolResultPanel eyebrow={config.resultLabel} placeholder="The deterministic result appears here." className="research-result" busy={busy}>
-        {result !== null && <pre class="research-output">{outputText(result)}</pre>}
+        {result !== null && <pre class="research-output" tabIndex={0} aria-label="Research result">{outputText(result)}</pre>}
       </ToolResultPanel>
       <p class="research-method">{config.description}</p>
     </div>

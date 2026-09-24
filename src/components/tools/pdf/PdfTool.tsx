@@ -216,15 +216,15 @@ export function PdfTool({ toolId, title, description, actionLabel, inputMode = "
         {optionMode === "delete-extract" && <div class="field-grid"><label class="field"><span>Pages</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3" disabled={isWorking} /></label><label class="field"><span>Operation</span><select value={deleteMode} onChange={(event) => setDeleteMode(event.currentTarget.value as "delete" | "extract")} disabled={isWorking}><option value="extract">Extract selected pages</option><option value="delete">Delete selected pages</option></select></label></div>}
         {optionMode === "password" && <label class="field"><span>Mode</span><select value={passwordMode} onChange={(event) => setPasswordMode(event.currentTarget.value as "check" | "remove")} disabled={isWorking}><option value="check">Check encryption only</option><option value="remove">Create a safe copy when unencrypted</option></select></label>}
         {error !== "" && <p class="error" role="alert">{error}</p>}
-        <div class="actions"><button class="primary" type="submit" disabled={isWorking}>{isWorking ? "Working locally…" : actionLabel}</button>{isWorking && <button type="button" onClick={() => controller.current?.abort()}>Cancel</button>}<button type="button" onClick={reset} disabled={isWorking}>Reset</button></div>
+        <div class="actions"><button class="primary" type="submit" aria-disabled={isWorking ? "true" : undefined} aria-busy={isWorking ? "true" : undefined} onClick={(event) => { if (isWorking) { event.preventDefault(); event.stopPropagation(); } }}>{isWorking ? "Working locally…" : actionLabel}</button>{isWorking && <button type="button" onClick={() => controller.current?.abort()}>Cancel</button>}<button type="button" onClick={reset} disabled={isWorking}>Reset</button></div>
       </section>
-      <section class="result-panel" aria-live="polite" aria-atomic="true">
+      <section class="result-panel" aria-label="Local result" aria-live="polite" aria-atomic="false">
         <p class="eyebrow">Local result</p>
         {result === null ? <p class="result-placeholder">The verified local result and capability notes appear here.</p> : <>
           {inspection?.capabilities !== undefined && <ul class="file-note">{inspection.capabilities.map((capability) => <li key={capability.capability}>{capability.available ? "✓" : "!"} {capability.capability}{capability.reason === undefined ? "" : ` — ${capability.reason}`}</li>)}</ul>}
           {urls.length > 0 && <div class="actions">{urls.map((item) => <a class="button primary" href={item.url} download={item.filename} key={item.url}>{item.filename}</a>)}</div>}
           {typeof result.value === "object" && result.value !== null && typeof (result.value as { text?: unknown }).text === "string" && <textarea class="csv-preview" readOnly rows={8} value={(result.value as { text: string }).text} aria-label="Extracted text" />}
-          <details open><summary>Machine-readable result</summary><pre class="csv-preview">{displayValue(result.value)}</pre></details>
+          <details open><summary>Machine-readable result</summary><pre class="csv-preview" tabIndex={0} aria-label="Machine-readable result">{displayValue(result.value)}</pre></details>
         </>}
       </section>
     </form>

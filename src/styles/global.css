@@ -71,8 +71,8 @@
   --text: #171714;
   --text-muted: #62625c;
   --text-faint: #74776f;
-  --border: #d6d6cf;
-  --border-strong: #b8b6b0;
+  --border: #85847d;
+  --border-strong: #6f6e68;
   --action: #274e45;
   --action-hover: #1d3e37;
   --action-soft: #dce9e4;
@@ -100,10 +100,12 @@
 *::after { box-sizing: border-box; }
 
 html {
-  min-width: 320px;
+  min-width: 0;
   font-family: var(--font-family-ui);
   font-size: 100%;
   text-size-adjust: 100%;
+  scroll-padding-top: 84px;
+  scroll-padding-bottom: 88px;
 }
 
 body {
@@ -121,6 +123,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 button:not(:disabled), select:not(:disabled) { cursor: pointer; }
 :where(button, input, select, textarea):disabled { cursor: not-allowed; }
 img, svg, video, canvas { display: block; max-width: 100%; }
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  scroll-margin-block: 84px 88px;
+}
 
 :focus-visible {
   outline: var(--focus-width) solid var(--focus-ring);
@@ -205,6 +216,7 @@ img, svg, video, canvas { display: block; max-width: 100%; }
 }
 
 .tool-operation { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr); gap: var(--space-5); align-items: start; }
+.tool-operation > *, .tool-operation form, .result-panel, .method-card { min-width: 0; }
 .tool-operation form, .result-panel, .method-card {
   background: var(--surface);
   border: var(--border-width) solid var(--border);
@@ -246,6 +258,8 @@ legend, .field > span { display: block; margin-bottom: var(--space-2); font-weig
 }
 .field input[type="checkbox"] { width: auto; min-height: auto; accent-color: var(--action); }
 .json-result { max-width: 100%; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); font-size: var(--font-size-sm); }
+.result-json, .result-code, .csv-preview, .table-output { max-width: 100%; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.field > label { display: block; margin-bottom: var(--space-2); font-weight: var(--font-weight-semibold); }
 .field small { display: block; margin-top: var(--space-2); color: var(--text-muted); }
 
 .workweek-fieldset legend { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }
@@ -318,6 +332,7 @@ legend, .field > span { display: block; margin-bottom: var(--space-2); font-weig
 }
 
 @media (prefers-reduced-motion: reduce) {
+  :root { scroll-behavior: auto; }
   *, *::before, *::after {
     scroll-behavior: auto !important;
     transition-duration: var(--motion-reduced) !important;
@@ -330,7 +345,8 @@ legend, .field > span { display: block; margin-bottom: var(--space-2); font-weig
 .table-control-grid select { width: 100%; min-height: var(--control-height); padding: var(--space-2) var(--space-3); border: var(--border-width) solid var(--border-strong); border-radius: var(--radius-sm); background: var(--canvas); }
 .table-output { max-height: 360px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: var(--space-3); border-radius: var(--radius-sm); background: var(--canvas); font-family: var(--font-family-mono); font-size: var(--font-size-mono); }
 .table-chart { display: grid; gap: var(--space-2); margin: var(--space-4) 0; }
-.table-chart-row { display: grid; grid-template-columns: minmax(90px, 0.8fr) minmax(100px, 2fr) auto; gap: var(--space-2); align-items: center; font-size: var(--font-size-sm); }
+.table-chart-row { display: grid; grid-template-columns: minmax(90px, 0.8fr) minmax(100px, 2fr) auto; gap: var(--space-2); align-items: center; min-width: 0; font-size: var(--font-size-sm); }
+.table-chart-row > span, .table-chart-row > strong { min-width: 0; overflow-wrap: anywhere; }
 .table-chart-row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .table-chart-track { height: 14px; overflow: hidden; border-radius: var(--radius-full); background: var(--surface-subtle); }
 .table-chart-bar { height: 100%; min-width: 3px; border-radius: inherit; background: var(--action); }
@@ -354,8 +370,8 @@ legend, .field > span { display: block; margin-bottom: var(--space-2); font-weig
     --text: #f4f4ed;
     --text-muted: #b9baaf;
     --text-faint: #999c92;
-    --border: #3b3d35;
-    --border-strong: #5b5e55;
+    --border: #77796f;
+    --border-strong: #9a9d90;
     --action: #9bc8b8;
     --action-hover: #b6ddce;
     --action-soft: #263a34;

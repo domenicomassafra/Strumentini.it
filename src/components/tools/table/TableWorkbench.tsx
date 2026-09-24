@@ -273,9 +273,9 @@ export function TableWorkbench({ toolId, title, description, mode, manifest, inp
     <ToolResultPanel eyebrow="Result" placeholder="Run the tool to see a bounded local result." busy={operation.isRunning}>
       {result !== null && <>
         {summary && <p class="file-note" role="status">{summary}</p>}
-        {points.length > 0 && <div class="table-chart" role="img" aria-label={`${title} bar chart`}>{points.map((point) => <div class="table-chart-row" key={point.label}><span>{point.label}</span><div class="table-chart-track"><div class="table-chart-bar" style={{ width: `${Math.max(1, Math.round(Math.abs(point.value) / maxPoint * 100))}%` }} /></div><strong>{point.value}</strong></div>)}</div>}
+        {points.length > 0 && <div class="table-chart" role="img" aria-label={`${title} bar chart. ${points.map((point) => `${point.label}: ${point.value}`).join("; ")}`}>{points.map((point) => <div class="table-chart-row" key={point.label}><span>{point.label}</span><div class="table-chart-track"><div class="table-chart-bar" style={{ width: `${Math.max(1, Math.round(Math.abs(point.value) / maxPoint * 100))}%` }} /></div><strong>{point.value}</strong></div>)}</div>}
         {result.previewRows !== undefined && result.headers !== undefined && <div class="table-preview-scroll"><table class="table-preview"><caption>{title} preview</caption><thead><tr>{result.headers.map((header, index) => <th scope="col" key={`${index}-${header}`}>{header || "(blank header)"}</th>)}</tr></thead><tbody>{result.previewRows.map((row, rowIndex) => <tr key={rowIndex}>{result.headers?.map((_header, index) => <td key={index}>{row[index] ?? ""}</td>)}</tr>)}</tbody></table></div>}
-        {outputText && <pre class="table-output">{outputText}</pre>}
+        {outputText && <pre class="table-output" tabIndex={0} aria-label={`${title} output`}>{outputText}</pre>}
         {(typeof result.output === "string" || typeof result.json === "string" || typeof result.svg === "string") && <ToolActions><button type="button" onClick={download}>Download result</button></ToolActions>}
       </>}
     </ToolResultPanel>

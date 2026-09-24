@@ -16,7 +16,7 @@ export function ToolResultPanel({
   children,
   className = "",
   bare = false,
-  atomic = true,
+  atomic = false,
   busy = false,
 }: ToolResultPanelProps) {
   const classes = [bare ? "" : "result-panel", className].filter(Boolean).join(" ");
@@ -27,6 +27,7 @@ export function ToolResultPanel({
   return (
     <section
       class={classes}
+      aria-label={eyebrow}
       aria-live="polite"
       aria-atomic={atomic ? "true" : "false"}
       aria-busy={busy ? "true" : "false"}
