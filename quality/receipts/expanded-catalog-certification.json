@@ -18932,7 +18932,7 @@
         },
         "module": {
           "path": "src/tools/url-bulk-normalizer/module.ts",
-          "sha256": "844a31a71760e52d0f761ab2c762e724a3f295ccedaafadf3fe048672a3dd833"
+          "sha256": "8e08d58c920953ad0d3da63cffbf100ceb9d39e2e1e39d716882357056959e65"
         },
         "page": {
           "path": "src/pages/tools/url-bulk-normalizer.astro",
