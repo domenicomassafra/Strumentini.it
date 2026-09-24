@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { TimesheetTotalerTool } from "../../components/tools/TimesheetTotalerTool";
+---
+<BaseLayout title="Timesheet Totaler" description="Total local timesheet entries, breaks, and exact decimal hours.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
+      <p class="eyebrow">Date &amp; time</p>
+      <h1>Timesheet Totaler</h1>
+      <p class="lede">Add clock-time entries and breaks, then inspect exact totals by date and across the sheet.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Timesheet text is not uploaded.</span></div>
+    </header>
+    <TimesheetTotalerTool client:load />
+    <section class="method-card" aria-labelledby="timesheet-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="timesheet-method">Entry policy</h2><ul><li>Each entry uses date|start|end|optional break minutes.</li><li>Entries ending before they start are rejected.</li><li>No payroll, overtime, or tax rule is inferred.</li></ul></section>
+  </article>
+</BaseLayout>

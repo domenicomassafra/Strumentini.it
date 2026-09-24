@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { AddSubtractDaysTool } from "../../components/tools/AddSubtractDaysTool";
+---
+<BaseLayout title="Add or Subtract Days" description="Shift an ISO calendar date by a signed number of days locally.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
+      <p class="eyebrow">Date &amp; time</p>
+      <h1>Add or Subtract Days</h1>
+      <p class="lede">Shift a calendar date by a whole number of days. Negative values subtract days.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No date service is queried.</span></div>
+    </header>
+    <AddSubtractDaysTool client:load />
+    <section class="method-card" aria-labelledby="add-days-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="add-days-method">Calendar arithmetic</h2><ul><li>The result is a Gregorian calendar date, not a 24-hour instant.</li><li>Leap days and month/year boundaries are handled by the calendar.</li><li>The input date is never mutated.</li></ul></section>
+  </article>
+</BaseLayout>

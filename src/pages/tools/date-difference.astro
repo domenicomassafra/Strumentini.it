@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { DateDifferenceTool } from "../../components/tools/DateDifferenceTool";
+---
+<BaseLayout title="Date Difference" description="Compare calendar dates or ISO instants locally with explicit elapsed-time rules.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
+      <p class="eyebrow">Date &amp; time</p>
+      <h1>Date Difference</h1>
+      <p class="lede">Compare two dates or instants. Date-only values use calendar-day arithmetic; offset-aware values preserve elapsed time.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your dates are not uploaded.</span></div>
+    </header>
+    <DateDifferenceTool client:load />
+    <section class="method-card" aria-labelledby="date-difference-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="date-difference-method">Calendar dates versus instants</h2><ul><li>Date-only inputs are interpreted as UTC calendar dates.</li><li>ISO instants use the offset or Z marker and compare elapsed milliseconds.</li><li>No timezone or daylight-saving data is inferred for a date-only value.</li></ul></section>
+  </article>
+</BaseLayout>

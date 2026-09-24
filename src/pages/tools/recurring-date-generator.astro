@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { RecurringDateGeneratorTool } from "../../components/tools/RecurringDateGeneratorTool";
+---
+<BaseLayout title="Recurring-Date Generator" description="Generate deterministic daily, weekly, monthly, or yearly date lists locally.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
+      <p class="eyebrow">Date &amp; time</p>
+      <h1>Recurring-Date Generator</h1>
+      <p class="lede">Generate a bounded series of dates with an explicit frequency, interval, and month-overflow policy.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Dates are generated locally and are not scheduled automatically.</span></div>
+    </header>
+    <RecurringDateGeneratorTool client:load />
+    <section class="method-card" aria-labelledby="recurrence-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="recurrence-method">Series policy</h2><ul><li>Daily, weekly, monthly, and yearly frequencies use calendar steps.</li><li>Monthly dates that do not exist are skipped by default.</li><li>Count and iteration limits prevent unbounded output.</li></ul></section>
+  </article>
+</BaseLayout>
