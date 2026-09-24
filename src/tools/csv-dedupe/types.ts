@@ -4,6 +4,8 @@ export interface CsvDedupeInput {
   keyColumns?: number[];
 }
 
+import type { TableHandoff } from "../table/types";
+
 export interface CsvDedupeOutput {
   output: string;
   inputRows: number;
@@ -15,4 +17,5 @@ export interface CsvDedupeOutput {
   headers: string[];
   warnings: Array<{ code: string; message: string; row?: number }>;
   engineVersion: string;
+  handoff: TableHandoff;
 }

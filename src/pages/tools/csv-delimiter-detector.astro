@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CsvDelimiterDetectorTool } from "../../components/tools/csv-delimiter-detector/CsvDelimiterDetectorTool";
+---
+<BaseLayout title="CSV Delimiter Detector" description="Detect CSV delimiters locally using quoted-field-aware evidence.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
+      <p class="eyebrow">Data tables</p>
+      <h1>CSV Delimiter Detector</h1>
+      <p class="lede">Compare comma, semicolon, tab, and pipe candidates while ignoring delimiters inside quoted fields.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Only the supplied text is analyzed locally.</span></div>
+    </header>
+    <CsvDelimiterDetectorTool client:load />
+    <section class="method-card"><h2>Detection contract</h2><ul><li>Candidate scores use field counts and record consistency outside quotes.</li><li>Low-confidence input falls back to comma and reports the fallback.</li><li>Malformed quoting is reported rather than silently repaired.</li></ul></section>
+  </article>
+</BaseLayout>

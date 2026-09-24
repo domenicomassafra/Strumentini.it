@@ -1,4 +1,5 @@
 import { CSV_ENGINE_VERSION, mapCsvColumns, parseCsvTable } from "../../engines/table/csv";
+import { assertBoundedTable, assertBoundedTableText, makeTableHandoff } from "../../engines/table/operations";
 import type { ToolModule } from "../../runtime/types";
 import type { CsvColumnMapInput, CsvColumnMapOutput } from "./types";
 
@@ -7,7 +8,8 @@ const module: ToolModule = {
     if (typeof value !== "object" || value === null) throw new Error("INVALID_INPUT");
     const input = value as Partial<CsvColumnMapInput>;
     if (typeof input.text !== "string" || !Array.isArray(input.mapping)) throw new Error("INVALID_INPUT");
-    const result = mapCsvColumns(parseCsvTable(input.text), input.mapping);
+    assertBoundedTableText(input.text);
+    const result = mapCsvColumns(assertBoundedTable(parseCsvTable(input.text)), input.mapping);
     return {
       output: result.output,
       headers: result.table.header,
@@ -16,6 +18,7 @@ const module: ToolModule = {
       filledMissingCells: result.filledMissingCells,
       warnings: result.table.warnings,
       engineVersion: CSV_ENGINE_VERSION,
+      handoff: makeTableHandoff(result.output, result.table),
     };
   },
 };

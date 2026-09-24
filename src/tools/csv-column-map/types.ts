@@ -1,4 +1,5 @@
 import type { CsvColumnMapEntry } from "../../engines/table/csv";
+import type { TableHandoff } from "../table/types";
 
 export interface CsvColumnMapInput {
   text: string;
@@ -13,4 +14,5 @@ export interface CsvColumnMapOutput {
   filledMissingCells: number;
   warnings: Array<{ code: string; message: string; row?: number }>;
   engineVersion: string;
+  handoff: TableHandoff;
 }

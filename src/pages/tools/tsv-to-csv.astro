@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { TsvToCsvTool } from "../../components/tools/tsv-to-csv/TsvToCsvTool";
+---
+<BaseLayout title="TSV to CSV" description="Convert tab-separated values to CSV locally.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
+      <p class="eyebrow">Data tables</p>
+      <h1>TSV to CSV</h1>
+      <p class="lede">Parse tab-separated values, including quoted tabs, and emit comma-separated CSV with normalized line endings.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>TSV bytes stay in the browser.</span></div>
+    </header>
+    <TsvToCsvTool client:load />
+    <section class="method-card"><h2>TSV contract</h2><ul><li>Tab is explicit; commas inside cells remain cell text.</li><li>Quoted tabs, quotes, and record breaks are parsed before conversion.</li><li>The output uses comma delimiters and visible structural warnings.</li></ul></section>
+  </article>
+</BaseLayout>
