@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { buildPhysicalImageReceipt, type PhysicalImageTarget } from "./lib/image-resize-physical";
+import { currentRevision } from "./lib/current-revision";
 
 function argument(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`);
@@ -24,6 +25,8 @@ function dimensions(name: string): [number, number] {
   return [Number(match[1]), Number(match[2])];
 }
 
+const root = resolve(import.meta.dirname, "..");
+const revision = await currentRevision(root);
 const target = required("target") as PhysicalImageTarget;
 if (target !== "ios-safari" && target !== "android-chrome") {
   throw new Error("--target must be ios-safari or android-chrome");
@@ -54,11 +57,11 @@ const receipt = buildPhysicalImageReceipt({
     mobileLayoutUsable: "PASS",
     boundaryPolicyCase: "PASS",
   },
+  revision,
   ...(observedAt === undefined ? {} : { observedAt }),
   ...(notes === undefined ? {} : { notes }),
 });
 
-const root = resolve(import.meta.dirname, "..");
 const filename = target === "ios-safari" ? "ios-safari-physical.json" : "android-chrome-physical.json";
 const path = resolve(root, "quality/receipts/image-resize", filename);
 if (hasFlag("dry-run")) {

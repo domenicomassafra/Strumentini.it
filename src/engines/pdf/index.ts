@@ -699,7 +699,7 @@ export async function createDocumentManifest(inputs: readonly PdfInput[], signal
     files.push({ name: safeStem(name, "document"), byteLength: bytes.byteLength, mime: isPdf ? "application/pdf" : "application/octet-stream", signature: isPdf ? "pdf" : "unknown", pageCount: inspection?.pageCount ?? null, encrypted: inspection?.encrypted ?? null, sha256: await sha256(bytes, signal) });
   }
   const generatedAt = new Date().toISOString();
-  const json = JSON.stringify({ schema: "utilityos-document-manifest-v1", generatedAt, files }, null, 2);
+  const json = JSON.stringify({ schema: "local-document-manifest-v1", generatedAt, files }, null, 2);
   return { generatedAt, files, json };
 }
 

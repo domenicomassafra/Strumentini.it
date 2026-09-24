@@ -18,8 +18,10 @@ import {
 import { doiIsbnNormalizerManifest } from "../../src/tools/doi-isbn-normalizer/manifest";
 import { listCompareManifest } from "../../src/tools/list-compare/manifest";
 import { textDiffManifest } from "../../src/tools/text-diff/manifest";
+import { currentRevision } from "../lib/current-revision";
 
 const root = resolve(import.meta.dirname, "../..");
+const revision = await currentRevision(root);
 const receiptRoot = resolve(root, "quality/receipts/text-research");
 
 function sha256(value: string): string {
@@ -266,6 +268,7 @@ async function writeReceipt(options: {
     schemaVersion: 1,
     toolId: options.manifest.id,
     status: "GOLD",
+    revision,
     runtime: options.manifest.runtime,
     maintenanceClass: options.manifest.gold.maintenanceClass,
     oracleEntryIds: options.oracleIds,

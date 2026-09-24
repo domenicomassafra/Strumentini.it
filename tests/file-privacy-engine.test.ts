@@ -114,7 +114,7 @@ describe("file/privacy engine", () => {
     const result = await clientHandoffIndex({ files: [file("brief.txt", "brief")], title: "Acme handoff" });
     expect(result.title).toBe("Acme handoff");
     expect(String(result.markdown)).toContain("# Acme handoff");
-    expect(String(result.json)).toContain("utilityos-handoff-index-v1");
+    expect(String(result.json)).toContain("local-utility-handoff-index-v1");
   });
 
   it("normalizes invalid and cancelled operations", async () => {

@@ -1,0 +1,18 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Page not found"
+  description="The requested static workbench page does not exist."
+  noindex
+>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <p class="eyebrow">Not found</p>
+      <h1>That page is not available</h1>
+      <p class="lede">Return to the workbench or search the tool library for a task.</p>
+    </header>
+    <p><a href="/">Open the workbench</a> · <a href="/library/">Search the library</a></p>
+  </article>
+</BaseLayout>

@@ -5,9 +5,18 @@ import ShellChrome from "../components/shell/ShellChrome.astro";
 interface Props {
   title: string;
   description: string;
+  image?: string;
+  imageAlt?: string;
+  type?: "website" | "article";
+  noindex?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, image = "/og-image.png", imageAlt = "Local utility workbench", type = "website", noindex = false } = Astro.props;
+const site = Astro.site ?? new URL("https://example.invalid");
+const canonicalPath = Astro.url.pathname === "/" ? "/" : `${Astro.url.pathname.replace(/\/+$/u, "")}/`;
+const canonicalUrl = new URL(canonicalPath, site).href;
+const imageUrl = new URL(image, site).href;
+const robots = noindex ? "noindex, nofollow" : "index, follow";
 ---
 <!doctype html>
 <html lang="en">
@@ -15,6 +24,23 @@ const { title, description } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <meta name="theme-color" content="#f5f6f2" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:site_name" content="Local Utility Workbench" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={imageAlt} />
     <title>{title}</title>
   </head>
   <body>

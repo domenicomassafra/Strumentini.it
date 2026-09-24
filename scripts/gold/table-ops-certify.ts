@@ -4,8 +4,10 @@ import { resolve } from "node:path";
 import { dedupeCsvTable, mapCsvColumns, parseCsvTable, parseCsvText } from "../../src/engines/table/csv";
 import { csvColumnMapManifest } from "../../src/tools/csv-column-map/manifest";
 import { csvDedupeManifest } from "../../src/tools/csv-dedupe/manifest";
+import { currentRevision } from "../lib/current-revision";
 
 const root = resolve(import.meta.dirname, "../..");
+const revision = await currentRevision(root);
 const receiptRoot = resolve(root, "quality/receipts/table-ops");
 const indexText = await readFile(resolve(root, "quality/fixtures/index.json"), "utf8");
 const registryText = await readFile(resolve(root, "quality/oracles/registry.json"), "utf8");
@@ -68,6 +70,7 @@ async function certify(options: {
   const receipt = {
     schemaVersion: 1,
     status: "GOLD",
+    revision,
     toolId: options.manifest.id,
     runtime: options.manifest.runtime,
     engineVersion: "1",

@@ -19,6 +19,7 @@ export interface PhysicalImageReceiptInput {
     boundaryPolicyCase: "PASS";
   };
   observedAt?: string;
+  revision?: string;
   notes?: string;
 }
 
@@ -29,6 +30,7 @@ export interface PhysicalImageReceipt {
   device: string;
   browser: string;
   observedAt: string;
+  revision?: string;
   route: "/tools/image-resize/";
   source: { width: number; height: number; pixels: number };
   output: { width: number; height: number; pixels: number };
@@ -106,6 +108,7 @@ export function buildPhysicalImageReceipt(input: PhysicalImageReceiptInput): Phy
     device,
     browser,
     observedAt: new Date(observedAt).toISOString(),
+    ...(input.revision === undefined ? {} : { revision: input.revision }),
     route: "/tools/image-resize/",
     source: { width: sourceWidth, height: sourceHeight, pixels: sourcePixels },
     output: { width: outputWidth, height: outputHeight, pixels: outputPixels },
@@ -134,6 +137,7 @@ export function validatePhysicalImageReceipt(value: unknown, target: PhysicalIma
   if (typeof value.device !== "string" || value.device.trim().length < 2) issues.push("device is required");
   if (typeof value.browser !== "string" || value.browser.trim().length < 2) issues.push("browser is required");
   if (typeof value.observedAt !== "string" || !Number.isFinite(Date.parse(value.observedAt))) issues.push("observedAt is invalid");
+  if (value.revision !== undefined && (typeof value.revision !== "string" || value.revision.length === 0)) issues.push("revision must be a non-empty string when present");
   if (value.route !== "/tools/image-resize/") issues.push("route must be /tools/image-resize/");
   if (!isRecord(value.source) || !isRecord(value.output)) issues.push("source/output measurements are required");
   if (!isRecord(value.checks)) issues.push("physical checks are required");
@@ -163,6 +167,7 @@ export function validatePhysicalImageReceipt(value: unknown, target: PhysicalIma
           boundaryPolicyCase: checks.boundaryPolicyCase as "PASS",
         },
         observedAt: value.observedAt as string,
+        ...(typeof value.revision === "string" ? { revision: value.revision } : {}),
       });
       if (value.maxSourcePixelsTested !== rebuilt.maxSourcePixelsTested) issues.push("maxSourcePixelsTested does not match source dimensions");
       if (value.maxEstimatedDecodedBytesTested !== rebuilt.maxEstimatedDecodedBytesTested) issues.push("maxEstimatedDecodedBytesTested does not match current policy estimate");

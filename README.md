@@ -2,7 +2,7 @@
 
 Working codename. Product name and brand are intentionally not final.
 
-UtilityOS is a research-stage concept for a personal utility workspace for knowledge work.
+UtilityOS is a working codename for a personal utility workspace for knowledge work.
 
 The thesis is not another website with 200 tools. The product should understand enough about what a person does for work to assemble a small relevant toolbox, reuse safe profile defaults across utilities, and let the user add or remove professional tool packs over time.
 
@@ -23,7 +23,7 @@ Expected experience:
 
 ## Differentiation under test
 
-None of these alone are sufficient: many tools, categories, favorites, privacy-first processing, files staying in-browser, WASM, visible formulas, freelancer calculators or role tabs.
+None of these alone are sufficient: many tools, categories, favorites, client-side processing, files staying in-browser, WASM, visible formulas, freelancer calculators or role tabs.
 
 The combination still being researched is:
 - role-aware onboarding selecting the first toolset;
@@ -73,9 +73,17 @@ The aspirational target is domain-level or similarly small annual infrastructure
 
 ## Repository status
 
-This repository currently owns product research, positioning, architecture hypotheses and decision history. There is intentionally no production implementation yet.
+The checkout contains a static Astro/Preact implementation with 200 generated tool entries, public static routes, shared local execution seams, and release-validation tooling. Release certification remains blocked until the current Gold receipts, fresh browser matrix, physical-device receipts, explicit public site URL, and an externally verified rollback receipt exist; local validation never substitutes those external proofs.
 
-Read docs/ and HANDOFF.md before starting implementation.
+The consolidated validator writes ignored evidence under `quality/receipts/release/` and does not deploy externally:
+
+```sh
+npm run release:validate
+npm run release:validate:require-ready
+npm run deploy:check
+```
+
+`release:validate` checks the 200-tool surface, static asset inventory, public metadata and discovery files, Cloudflare configuration, truthful copy, certification receipts, and evidence boundaries. Set `PUBLIC_SITE_URL` to the approved HTTPS origin before strict validation; the local fallback is intentionally a blocked placeholder. `release:validate:require-ready` runs the unit suite, Astro check, and Wrangler dry run before exiting nonzero until every blocker is resolved. `deploy:check` is a Wrangler dry run only.
 
 ## Brand warning
 

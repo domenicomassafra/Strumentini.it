@@ -12,3 +12,4 @@ dist/
 .wrangler/
 .wrangler-dry-run/
 src/generated/
+quality/receipts/release/

@@ -607,7 +607,7 @@ async function createZipArchive(input: unknown, clean: boolean, signal?: AbortSi
   const archive = concatBytes([...localChunks, centralDirectory, end]);
   const archiveCopy = new Uint8Array(archive.byteLength);
   archiveCopy.set(archive);
-  return { operation: clean ? "clean-zip-creator" : "zip-creator", filename: clean ? "utilityos-clean.zip" : "utilityos-files.zip", blob: new Blob([archiveCopy.buffer], { type: "application/zip" }), byteLength: archive.byteLength, entries, compression: "store", note: "ZIP is created in memory with the store method; no files are uploaded." };
+  return { operation: clean ? "clean-zip-creator" : "zip-creator", filename: clean ? "local-clean.zip" : "local-files.zip", blob: new Blob([archiveCopy.buffer], { type: "application/zip" }), byteLength: archive.byteLength, entries, compression: "store", note: "ZIP is created in memory with the store method; no files are uploaded." };
 }
 
 export function createZip(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> { return createZipArchive(input, false, signal); }
@@ -711,7 +711,7 @@ export async function clientHandoffIndex(input: unknown, signal?: AbortSignal): 
   const includeHashes = source.includeHashes !== false;
   const entries = includeHashes ? await fileDigests(files, signal) : recordsFor(files);
   const title = typeof source.title === "string" && source.title.trim() !== "" ? source.title.trim().replace(/[\r\n]+/gu, " ").slice(0, 120) : "Client handoff";
-  const json = JSON.stringify({ schema: "utilityos-handoff-index-v1", title, files: entries }, null, 2);
+  const json = JSON.stringify({ schema: "local-utility-handoff-index-v1", title, files: entries }, null, 2);
   const markdownLines = [
     `# ${title}`,
     "",
