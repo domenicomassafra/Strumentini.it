@@ -117,3 +117,15 @@ Fresh commands are appended only after their output is read. Historical PASS val
 ## Definition of done
 
 V1 is not done until the canonical Gold frontier, onboarding/packs, telemetry, release/deploy, real browser/device/privacy/accessibility evidence, clean main, and zero stale workers/worktrees/branches are all proven.
+
+## Reconciliation update — 2026-09-24
+
+- Main revision: `1127286` (`docs: qualify 200 tool candidates`), with subsequent validation-only receipts committed separately where applicable.
+- Integrated work: shell/navigation authority, Workbench/Library UX, shared tool operation vocabulary, canonical design tokens, accessibility primitives, Tool Factory v2, browser-performance acceptance, and 200/200 candidate dispositions.
+- Worktree cleanup: all nine UtilityOS worker worktrees and their branches removed; only the main worktree remains.
+- Integrated verification: 27 test files / 121 tests PASS; `astro check` PASS with 0 errors, 0 warnings, 0 hints; 17-page static build PASS; browser acceptance PASS with zero task-content network requests; Workbench acceptance PASS; Cloudflare deploy dry-run PASS.
+- Performance receipt: Chrome and Edge observed PASS with lazy engine gate PASS and long-task gate PASS. Firefox, WebKit, and Chromium executables are unavailable on the local runner. The total JS artifact delta against the historical six-asset baseline is reported as REGRESSION and requires deliberate baseline/cost reduction before release certification.
+- Gold frontier: 14/15; Image Resize remains PARTIAL solely because physical iOS Safari and Android Chrome Files/Photos boundary receipts are absent. No receipt was synthesized.
+- Dependency decision: `@noble/hashes` remains installed because the reproducible hash dependency benchmark under `scripts/gold/file-hash-dependency-benchmark.ts` consumes it as the recorded evaluation comparator. It is not a production implementation.
+- Catalog expansion: the first attempted 16th tool was removed before integration because the canonical v1 gate requires exactly 15 tools before Ticket 11. Candidate dispositions are research inputs, not implementation or public-count claims.
+- Next executable frontier: physical device acceptance; after 15/15 Gold, Tickets 11 → 12 → 13. Tool expansion remains gated by the product stop rule and Gold integrity.
