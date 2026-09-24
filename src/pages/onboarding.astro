@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Onboarding } from "../components/onboarding/Onboarding";
+import { catalog } from "../generated/catalog";
+import { qualityIndex } from "../generated/quality";
+---
+
+<BaseLayout
+  title="Set up your Workbench"
+  description="Build a small, editable local starter set from your work context and recurring jobs."
+>
+  <Onboarding tools={catalog} quality={qualityIndex} client:load />
+</BaseLayout>

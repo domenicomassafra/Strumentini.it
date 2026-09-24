@@ -9,8 +9,9 @@ interface Props {
 const { pathname, search = "" } = Astro.props;
 const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/+$/u, "") || "/";
 const isLibrary = normalizedPath === "/library";
+const isOnboarding = normalizedPath === "/onboarding";
 const isSearchDestination = isLibrary && new URLSearchParams(search).get("focus") === "search";
-const isWorkbench = !isLibrary;
+const isWorkbench = !isLibrary && !isOnboarding;
 ---
 
 <a class="shell-skip-link" href="#main-content">Skip to content</a>
@@ -32,6 +33,7 @@ const isWorkbench = !isLibrary;
       </div>
       <div class="shell-nav-group shell-rail-nav-bottom">
         <p class="shell-nav-label">Workspace</p>
+        <a href="/onboarding/" data-shell-destination="onboarding" data-shell-nav-item>Set up tools</a>
         <a href="/#work-profile" data-shell-destination="profile" data-shell-nav-item>Work Profile</a>
       </div>
     </nav>
@@ -81,7 +83,9 @@ const isWorkbench = !isLibrary;
       const searchDestination = path === "/library" && new URLSearchParams(window.location.search).get("focus") === "search";
       const activeDestination = path === "/library"
         ? searchDestination ? "search" : "library"
-        : hash === "#work-profile"
+        : path === "/onboarding"
+          ? "onboarding"
+          : hash === "#work-profile"
           ? "profile"
           : hash === "#recent"
             ? "recent"
