@@ -1,4 +1,5 @@
 export { InlineError } from "./InlineError";
+export { JsonResult } from "./JsonResult";
 export { ProfileOverrideHint, ProfileResetButton, ProvenanceBadge } from "./Provenance";
 export { ToolActions, ToolCancelButton, ToolResetButton, ToolSubmitButton } from "./ToolActions";
 export { ToolFormCard, ToolOperation } from "./ToolOperation";

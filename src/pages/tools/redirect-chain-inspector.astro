@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { RedirectChainInspectorTool } from "../../components/tools/RedirectChainInspectorTool";
+---
+<BaseLayout title="Redirect-Chain Inspector" description="Inspect pasted redirect hops locally for loops, status, and credential redaction.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Web operations</nav><p class="eyebrow">Web operations</p><h1>Redirect-Chain Inspector</h1><p class="lede">Review a hop list supplied from an existing trace without making a network request.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No destination is fetched by this route.</span></div></header>
+    <RedirectChainInspectorTool client:load />
+    <section class="method-card"><h2>Input format</h2><ul><li>Enter one hop per line as URL | status | location | delayMs.</li><li>Only HTTP(S) URLs and statuses in the 100–599 range are accepted.</li><li>Duplicate hop URLs are flagged as a possible loop and credentials are redacted.</li></ul></section>
+  </article>
+</BaseLayout>

@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CanonicalUrlHelperTool } from "../../components/tools/CanonicalUrlHelperTool";
+---
+<BaseLayout title="Canonical URL Helper" description="Resolve a canonical target and build an escaped canonical link tag locally.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Web operations</nav><p class="eyebrow">Web operations</p><h1>Canonical URL Helper</h1><p class="lede">Resolve relative canonical targets against a page and review the exact tag before publishing.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>URLs are resolved in the browser and never fetched.</span></div></header>
+    <CanonicalUrlHelperTool client:load />
+    <section class="method-card"><h2>Canonical safety</h2><ul><li>Only HTTP(S) targets are accepted; credentials are rejected instead of emitted.</li><li>Cross-origin and query-bearing targets are surfaced as review warnings.</li><li>The returned link tag escapes attribute-sensitive characters.</li></ul></section>
+  </article>
+</BaseLayout>

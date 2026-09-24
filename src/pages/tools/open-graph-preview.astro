@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { OpenGraphPreviewTool } from "../../components/tools/OpenGraphPreviewTool";
+---
+<BaseLayout title="Open Graph Preview" description="Extract Open Graph and Twitter card metadata from pasted HTML locally.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>Open Graph Preview</h1><p class="lede">Inspect social-card tags from HTML you already have, without fetching a destination.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Pasted HTML is parsed as data and is never executed.</span></div></header>
+    <OpenGraphPreviewTool client:load />
+    <section class="method-card"><h2>Safety boundary</h2><ul><li>Only og:* and twitter:* metadata is extracted; active HTML is not rendered.</li><li>HTML entities are decoded into inert text values.</li><li>Missing title, description, image, or URL fields are reported as warnings.</li></ul></section>
+  </article>
+</BaseLayout>

@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { DomainSubdomainGrouperTool } from "../../components/tools/DomainSubdomainGrouperTool";
+---
+<BaseLayout title="Domain / Subdomain Grouper" description="Group observed hosts by a deterministic registrable-domain heuristic locally.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Web operations</nav><p class="eyebrow">Web operations</p><h1>Domain / Subdomain Grouper</h1><p class="lede">See which observed hosts belong to the same root-domain group.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No host is contacted or looked up.</span></div></header>
+    <DomainSubdomainGrouperTool client:load />
+    <section class="method-card"><h2>Grouping policy</h2><ul><li>The heuristic uses the final two labels and a small set of common second-level suffixes.</li><li>Observed hosts remain visible as subdomains; grouping does not claim public-suffix ownership.</li><li>Input order is normalized into deterministic root-domain groups.</li></ul></section>
+  </article>
+</BaseLayout>

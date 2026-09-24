@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { BulkDomainExtractorTool } from "../../components/tools/BulkDomainExtractorTool";
+---
+<BaseLayout title="Bulk Domain Extractor" description="Extract unique domains from pasted URLs and domain tokens locally.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Web operations</nav><p class="eyebrow">Web operations</p><h1>Bulk Domain Extractor</h1><p class="lede">Collect unique hostnames from a pasted list and keep invalid tokens visible.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your list is processed locally.</span></div></header>
+    <BulkDomainExtractorTool client:load />
+    <section class="method-card"><h2>Extraction policy</h2><ul><li>Full URLs are reduced to their normalized hostname; bare domains are accepted as HTTPS candidates.</li><li>Email-like tokens and malformed URL candidates are reported as invalid rather than guessed.</li><li>Duplicate hostnames are removed case-insensitively while preserving first-seen order.</li></ul></section>
+  </article>
+</BaseLayout>
