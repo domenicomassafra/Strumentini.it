@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CsvViewerTool } from "../../components/tools/csv-viewer/CsvViewerTool";
+---
+<BaseLayout title="CSV Viewer" description="Preview a bounded CSV table locally without uploading it.">
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
+      <p class="eyebrow">Data tables</p>
+      <h1>CSV Viewer</h1>
+      <p class="lede">Inspect delimiters, shape, warnings, and a bounded row preview without changing the source.</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your table is not uploaded or retained as task history.</span></div>
+    </header>
+    <CsvViewerTool client:load />
+    <section class="method-card"><h2>Bounded viewer contract</h2><ul><li>RFC-style quoted delimiters, escaped quotes, and quoted newlines are parsed before display.</li><li>Duplicate headers and ragged rows are surfaced as warnings.</li><li>The preview is capped and the complete result can be downloaded locally.</li></ul></section>
+  </article>
+</BaseLayout>

@@ -1,4 +1,5 @@
 import { cleanCsvText, CSV_ENGINE_VERSION } from "../../engines/table/csv";
+import { assertBoundedTableText } from "../../engines/table/operations";
 import type { ToolModule } from "../../runtime/types";
 import type { TableHandoffEnvelope } from "../../runtime/handoff";
 import type { CsvCleanerInput, CsvCleanerOutput } from "./types";
@@ -6,6 +7,7 @@ import type { CsvCleanerInput, CsvCleanerOutput } from "./types";
 const module: ToolModule = {
   run(value): CsvCleanerOutput {
     if (typeof value !== "object" || value === null || typeof (value as Partial<CsvCleanerInput>).text !== "string") throw new Error("INVALID_INPUT");
+    assertBoundedTableText((value as CsvCleanerInput).text);
     const cleaned = cleanCsvText((value as CsvCleanerInput).text);
     const duplicateHeaders = cleaned.warnings.some((warning) => warning.code === "DUPLICATE_HEADER");
     const raggedRows = cleaned.warnings.some((warning) => warning.code === "RAGGED_ROW");

@@ -325,6 +325,27 @@ legend, .field > span { display: block; margin-bottom: var(--space-2); font-weig
   }
 }
 
+.table-control-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+.table-control-grid .choice-line { grid-column: 1 / -1; display: flex; align-items: center; gap: var(--space-2); margin: 0; }
+.table-control-grid select { width: 100%; min-height: var(--control-height); padding: var(--space-2) var(--space-3); border: var(--border-width) solid var(--border-strong); border-radius: var(--radius-sm); background: var(--canvas); }
+.table-output { max-height: 360px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: var(--space-3); border-radius: var(--radius-sm); background: var(--canvas); font-family: var(--font-family-mono); font-size: var(--font-size-mono); }
+.table-chart { display: grid; gap: var(--space-2); margin: var(--space-4) 0; }
+.table-chart-row { display: grid; grid-template-columns: minmax(90px, 0.8fr) minmax(100px, 2fr) auto; gap: var(--space-2); align-items: center; font-size: var(--font-size-sm); }
+.table-chart-row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.table-chart-track { height: 14px; overflow: hidden; border-radius: var(--radius-full); background: var(--surface-subtle); }
+.table-chart-bar { height: 100%; min-width: 3px; border-radius: inherit; background: var(--action); }
+.table-preview-scroll { max-height: 300px; overflow: auto; margin: var(--space-4) 0; border: var(--border-width) solid var(--line); border-radius: var(--radius-sm); }
+.table-preview { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+.table-preview caption { padding: var(--space-2) var(--space-3); color: var(--muted); text-align: left; font-weight: var(--font-weight-semibold); }
+.table-preview th, .table-preview td { padding: var(--space-2) var(--space-3); border-bottom: var(--border-width) solid var(--line); text-align: left; vertical-align: top; }
+.table-preview th { position: sticky; top: 0; background: var(--surface-subtle); font-weight: var(--font-weight-bold); }
+.table-preview td { max-width: 240px; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .table-control-grid { grid-template-columns: 1fr; }
+  .table-chart-row { grid-template-columns: minmax(72px, 0.8fr) minmax(70px, 1.5fr) auto; }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --canvas: #151613;
