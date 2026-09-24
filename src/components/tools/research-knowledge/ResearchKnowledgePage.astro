@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+<BaseLayout title={title} description={description}>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Research</nav>
+      <p class="eyebrow">Research</p>
+      <h1>{title}</h1>
+      <p class="lede">{description}</p>
+      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Inputs stay in the local browser; no network lookup is performed.</span></div>
+    </header>
+    <slot />
+    <section class="method-card" aria-labelledby="research-method-title">
+      <p class="eyebrow">Method</p>
+      <h2 id="research-method-title">Deterministic local contract</h2>
+      <ul>
+        <li>The operation uses only the values entered in this form and does not resolve identifiers, fetch citations, or infer missing metadata.</li>
+        <li>Input order is preserved unless the selected operation explicitly sorts or deduplicates it.</li>
+        <li>Invalid or unsupported input is reported as a result or an explicit local error; no placeholder output is substituted.</li>
+      </ul>
+    </section>
+  </article>
+  <style is:global>
+    .research-method { grid-column: 1 / -1; margin: 0; color: var(--muted); }
+    .research-result { overflow: hidden; }
+    .research-output { max-height: 420px; margin: var(--space-3) 0 0; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); font-size: var(--font-size-mono); }
+    select { width: 100%; min-height: var(--control-height); padding: var(--space-2) var(--space-3); border: var(--border-width) solid var(--border-strong); border-radius: var(--radius-sm); background: var(--canvas); }
+    @media (max-width: 760px) { .research-method { grid-column: auto; } }
+  </style>
+</BaseLayout>
