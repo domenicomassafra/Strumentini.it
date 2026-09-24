@@ -1,0 +1,7 @@
+---
+import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import { CleanZipCreatorTool } from "../../components/tools/file-privacy/CleanZipCreatorTool";
+---
+<FilePrivacyPage title="Clean ZIP Creator" description="Create a ZIP with sanitized relative paths and a local-only store-method archive." methodTitle="Path-safe archive creation" methodItems={["Each selected path is reduced to a portable relative path before writing.", "Duplicate archive paths and ZIP-slip traversal are rejected.", "Clean refers to path handling only; it is not a malware or privacy guarantee."]}>
+  <CleanZipCreatorTool client:load />
+</FilePrivacyPage>

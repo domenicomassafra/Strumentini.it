@@ -1,0 +1,7 @@
+---
+import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import { BatchChecksumManifestTool } from "../../components/tools/file-privacy/BatchChecksumManifestTool";
+---
+<FilePrivacyPage title="Batch Checksum Manifest" description="Create a SHA-256 manifest for several local files without uploading their contents." methodTitle="Deterministic local manifest" methodItems={["Each selected file is read in bounded chunks of memory.", "The manifest uses the portable `<sha256>  <path>` format.", "Names are normalized for safe output and task content is not retained."]}>
+  <BatchChecksumManifestTool client:load />
+</FilePrivacyPage>

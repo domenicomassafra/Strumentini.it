@@ -1,0 +1,7 @@
+---
+import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import { ZeroByteOrphanFinderTool } from "../../components/tools/file-privacy/ZeroByteOrphanFinderTool";
+---
+<FilePrivacyPage title="Zero-Byte / Orphan Finder" description="Find empty selected files and references that do not exist in the selected local file list." methodTitle="Bounded handoff hygiene" methodItems={["Empty files are reported by their relative path.", "References are compared literally after trimming surrounding whitespace.", "Browser folder selection exposes files, not the full directory tree or link graph."]}>
+  <ZeroByteOrphanFinderTool client:load />
+</FilePrivacyPage>

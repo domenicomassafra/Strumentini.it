@@ -1,0 +1,816 @@
+export const FILE_PRIVACY_LIMITS = {
+  maxFiles: 2_000,
+  maxFileBytes: 50 * 1024 * 1024,
+  maxTotalBytes: 200 * 1024 * 1024,
+  maxTextBytes: 2 * 1024 * 1024,
+  maxZipBytes: 100 * 1024 * 1024,
+  maxZipEntries: 10_000,
+  maxFilenameLength: 180,
+  maxManifestBytes: 2 * 1024 * 1024,
+} as const;
+
+export type FilePrivacyOperation =
+  | "file-hash"
+  | "batch-checksum-manifest"
+  | "checksum-verifier"
+  | "file-signature-detector"
+  | "folder-inventory"
+  | "folder-size-type-summary"
+  | "duplicate-file-finder"
+  | "filename-sanitizer"
+  | "batch-rename-preview"
+  | "zip-contents-inspector"
+  | "zip-creator"
+  | "clean-zip-creator"
+  | "archive-checksum-manifest"
+  | "metadata-risk-inspector"
+  | "secret-token-pattern-scanner"
+  | "safe-share-checklist"
+  | "client-handoff-index-generator"
+  | "file-list-diff"
+  | "folder-compare"
+  | "zero-byte-orphan-finder";
+
+export type FilePrivacyErrorCode =
+  | "INVALID_INPUT"
+  | "UNSUPPORTED_INPUT"
+  | "FILE_TOO_LARGE"
+  | "TOO_MANY_FILES"
+  | "TEXT_TOO_LARGE"
+  | "CORRUPT_ARCHIVE"
+  | "UNSUPPORTED_ARCHIVE"
+  | "ARCHIVE_TOO_LARGE"
+  | "UNSAFE_ARCHIVE_PATH"
+  | "HASH_FAILED"
+  | "IO_FAILED"
+  | "CANCELLED";
+
+export class FilePrivacyError extends Error {
+  constructor(readonly code: FilePrivacyErrorCode, message: string) {
+    super(`${code}: ${message}`);
+    this.name = "FilePrivacyError";
+  }
+}
+
+export interface FilePrivacyResult {
+  readonly operation: FilePrivacyOperation;
+  readonly [key: string]: unknown;
+}
+
+export interface FileRecord {
+  readonly name: string;
+  readonly path: string;
+  readonly size: number;
+  readonly type: string;
+  readonly extension: string;
+  readonly empty: boolean;
+  readonly lastModified: number;
+}
+
+export interface FileDigestRecord extends FileRecord {
+  readonly sha256: string;
+}
+
+export interface ZipEntryRecord {
+  readonly path: string;
+  readonly compressedSize: number;
+  readonly uncompressedSize: number;
+  readonly method: number;
+  readonly crc32: number;
+  readonly encrypted: boolean;
+  readonly pathTraversal: boolean;
+}
+
+export interface SecretFinding {
+  readonly file: string;
+  readonly line: number;
+  readonly kind: string;
+  readonly preview: string;
+}
+
+const textDecoder = new TextDecoder("utf-8");
+const textEncoder = new TextEncoder();
+
+function fail(code: FilePrivacyErrorCode, message: string): never {
+  throw new FilePrivacyError(code, message);
+}
+
+function recordOf(value: unknown): Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return fail("INVALID_INPUT", "Expected an input object");
+  return value as Record<string, unknown>;
+}
+
+function throwIfAborted(signal?: AbortSignal): void {
+  if (signal?.aborted) fail("CANCELLED", "Operation cancelled");
+}
+
+function isFile(value: unknown): value is File {
+  return typeof File !== "undefined" && value instanceof File;
+}
+
+function pathOf(file: File): string {
+  const relative = (file as File & { webkitRelativePath?: unknown }).webkitRelativePath;
+  return typeof relative === "string" && relative.length > 0 ? relative : file.name;
+}
+
+function extensionOf(path: string): string {
+  const base = path.split(/[\\/]/u).at(-1) ?? path;
+  const dot = base.lastIndexOf(".");
+  return dot > 0 && dot < base.length - 1 ? base.slice(dot).toLocaleLowerCase("en-US") : "";
+}
+
+function safeSegment(value: string): string {
+  const normalized = value.normalize("NFKC").replace(/[\u0000-\u001f\u007f]/gu, "");
+  const reserved = /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?$/iu;
+  const stemExtension = normalized.match(/^(.*?)(\.[^.]*)?$/u);
+  const stem = (stemExtension?.[1] ?? normalized).replace(/[\\/:*?"<>|]+/gu, "-");
+  const extension = stemExtension?.[2] ?? "";
+  const trimmed = `${stem}${extension}`.replace(/[. ]+$/u, "").trim();
+  const prefixed = reserved.test(trimmed) ? `_${trimmed}` : trimmed;
+  return prefixed.slice(0, FILE_PRIVACY_LIMITS.maxFilenameLength) || "file";
+}
+
+export function sanitizeRelativePath(value: string): string {
+  if (typeof value !== "string" || value.length === 0) fail("INVALID_INPUT", "A file path is required");
+  const normalized = value.trim().replace(/\\/gu, "/");
+  if (normalized.startsWith("/") || /^[A-Za-z]:\//u.test(normalized) || normalized.includes("\u0000")) {
+    fail("UNSAFE_ARCHIVE_PATH", "Absolute and NUL-containing paths are not allowed");
+  }
+  const segments = normalized.split("/").filter((segment) => segment.length > 0 && segment !== ".");
+  if (segments.some((segment) => segment === "..")) fail("UNSAFE_ARCHIVE_PATH", "Parent-directory path segments are not allowed");
+  const safe = segments.map(safeSegment).filter(Boolean);
+  if (safe.length === 0) fail("INVALID_INPUT", "Path did not contain a usable file name");
+  return safe.join("/");
+}
+
+function fileList(value: unknown, key = "files"): File[] {
+  if (!Array.isArray(value)) fail("INVALID_INPUT", `${key} must be an array of files`);
+  if (value.length === 0) fail("INVALID_INPUT", "Choose at least one file");
+  if (value.length > FILE_PRIVACY_LIMITS.maxFiles) fail("TOO_MANY_FILES", `At most ${FILE_PRIVACY_LIMITS.maxFiles} files are supported`);
+  const files = value.map((candidate) => {
+    if (!isFile(candidate)) fail("INVALID_INPUT", `${key} must contain File objects`);
+    if (!Number.isSafeInteger(candidate.size) || candidate.size < 0) fail("INVALID_INPUT", "File size is invalid");
+    return candidate;
+  });
+  const total = files.reduce((sum, file) => sum + file.size, 0);
+  if (total > FILE_PRIVACY_LIMITS.maxTotalBytes) fail("FILE_TOO_LARGE", "The selected files exceed the local total-size limit");
+  return files;
+}
+
+function optionalFileList(value: unknown, key: string): File[] {
+  if (value === undefined || (Array.isArray(value) && value.length === 0)) return [];
+  return fileList(value, key);
+}
+
+function recordsFor(files: readonly File[]): FileRecord[] {
+  return files.map((file) => {
+    const path = pathOf(file);
+    const safePath = sanitizeRelativePath(path);
+    return {
+      name: file.name,
+      path: safePath,
+      size: file.size,
+      type: file.type || "application/octet-stream",
+      extension: extensionOf(file.name),
+      empty: file.size === 0,
+      lastModified: Number.isFinite(file.lastModified) ? file.lastModified : 0,
+    };
+  });
+}
+
+async function readBytes(file: File, signal?: AbortSignal, maxBytes = FILE_PRIVACY_LIMITS.maxFileBytes): Promise<Uint8Array> {
+  throwIfAborted(signal);
+  if (file.size > maxBytes) fail("FILE_TOO_LARGE", `File exceeds the ${maxBytes}-byte local limit`);
+  let buffer: ArrayBuffer;
+  try {
+    buffer = await file.arrayBuffer();
+  } catch {
+    fail("IO_FAILED", "The selected file could not be read");
+  }
+  throwIfAborted(signal);
+  if (buffer.byteLength > maxBytes) fail("FILE_TOO_LARGE", "Read data exceeded the local limit");
+  return new Uint8Array(buffer);
+}
+
+async function readPrefix(file: File, length: number): Promise<Uint8Array> {
+  if (file.size === 0) return new Uint8Array(0);
+  const buffer = await file.slice(0, Math.min(length, file.size)).arrayBuffer();
+  return new Uint8Array(buffer);
+}
+
+function extensionMatches(path: string, mime: string): boolean {
+  const extension = extensionOf(path);
+  const expected: Record<string, readonly string[]> = {
+    "image/png": [".png"],
+    "image/jpeg": [".jpg", ".jpeg"],
+    "image/gif": [".gif"],
+    "image/webp": [".webp"],
+    "application/pdf": [".pdf"],
+    "application/zip": [".zip"],
+    "application/gzip": [".gz"],
+    "audio/mpeg": [".mp3"],
+    "video/mp4": [".mp4"],
+    "text/plain": [".txt", ".md", ".csv", ".json", ".log"],
+    "text/xml": [".xml", ".svg"],
+  };
+  return expected[mime]?.includes(extension) ?? true;
+}
+
+export async function detectFileSignature(file: File, signal?: AbortSignal): Promise<Record<string, unknown>> {
+  throwIfAborted(signal);
+  const bytes = await readPrefix(file, 64);
+  const hex = [...bytes.slice(0, 12)].map((byte) => byte.toString(16).padStart(2, "0")).join(" ");
+  let detectedMime = "application/octet-stream";
+  let label = "Unknown binary signature";
+  let confidence = "low";
+  if (bytes.length >= 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47 && bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a && bytes[7] === 0x0a) {
+    detectedMime = "image/png";
+    label = "PNG signature";
+    confidence = "high";
+  } else if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+    detectedMime = "image/jpeg";
+    label = "JPEG SOI signature";
+    confidence = "high";
+  } else if (bytes.length >= 6 && textDecoder.decode(bytes.slice(0, 6)).startsWith("GIF8")) {
+    detectedMime = "image/gif";
+    label = "GIF signature";
+    confidence = "high";
+  } else if (bytes.length >= 12 && textDecoder.decode(bytes.slice(0, 4)) === "RIFF" && textDecoder.decode(bytes.slice(8, 12)) === "WEBP") {
+    detectedMime = "image/webp";
+    label = "WebP RIFF signature";
+    confidence = "high";
+  } else if (bytes.length >= 4 && textDecoder.decode(bytes.slice(0, 4)) === "%PDF") {
+    detectedMime = "application/pdf";
+    label = "PDF header";
+    confidence = "high";
+  } else if (bytes.length >= 4 && bytes[0] === 0x50 && bytes[1] === 0x4b && (bytes[2] === 3 || bytes[2] === 5 || bytes[2] === 7)) {
+    detectedMime = "application/zip";
+    label = "ZIP local or central-directory signature";
+    confidence = "high";
+  } else if (bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b) {
+    detectedMime = "application/gzip";
+    label = "GZIP signature";
+    confidence = "high";
+  } else if (bytes.length >= 12 && textDecoder.decode(bytes.slice(4, 8)) === "ftyp") {
+    detectedMime = "video/mp4";
+    label = "ISO-BMFF ftyp box";
+    confidence = "medium";
+  }
+  const declared = file.type || "application/octet-stream";
+  return {
+    file: pathOf(file),
+    detectedMime,
+    label,
+    confidence,
+    firstBytesHex: hex,
+    declaredType: declared,
+    extension: extensionOf(file.name),
+    extensionMatches: extensionMatches(file.name, detectedMime),
+    note: detectedMime === "application/octet-stream" ? "No bounded signature matched; the extension is not proof of content." : "Signature check is bounded to the first bytes and does not validate the entire file.",
+  };
+}
+
+async function sha256Hex(bytes: Uint8Array): Promise<string> {
+  if (typeof crypto === "undefined" || crypto.subtle === undefined) fail("HASH_FAILED", "Web Crypto is unavailable");
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  try {
+    const digest = await crypto.subtle.digest("SHA-256", copy.buffer);
+    return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  } catch {
+    return fail("HASH_FAILED", "SHA-256 calculation failed");
+  }
+}
+
+async function digestFile(file: File, signal?: AbortSignal): Promise<string> {
+  const bytes = await readBytes(file, signal);
+  return sha256Hex(bytes);
+}
+
+function checksum(value: string): string {
+  const normalized = value.trim();
+  if (!/^[0-9a-f]{64}$/iu.test(normalized)) fail("INVALID_INPUT", "Expected a 64-character hexadecimal SHA-256 value");
+  return normalized.toLocaleLowerCase("en-US");
+}
+
+function parseExpectedChecksums(value: unknown): Map<string, string> {
+  const result = new Map<string, string>();
+  if (typeof value === "string") {
+    for (const line of value.split(/\r?\n/u)) {
+      const trimmed = line.trim();
+      if (trimmed === "" || trimmed.startsWith("#")) continue;
+      const match = /^([0-9a-f]{64})\s+[*]?(.+)$/iu.exec(trimmed);
+      if (match === null) fail("INVALID_INPUT", "Expected checksum lines must be a SHA-256 digest and path");
+      const digest = match[1];
+      const path = match[2];
+      if (digest === undefined || path === undefined) fail("INVALID_INPUT", "Expected checksum line is incomplete");
+      result.set(sanitizeRelativePath(path), checksum(digest));
+    }
+    if (result.size === 0) fail("INVALID_INPUT", "Enter at least one expected checksum");
+    return result;
+  }
+  if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    for (const [path, digest] of Object.entries(value as Record<string, unknown>)) {
+      if (typeof digest !== "string") fail("INVALID_INPUT", "Expected checksums must map paths to strings");
+      result.set(sanitizeRelativePath(path), checksum(digest));
+    }
+    if (result.size === 0) fail("INVALID_INPUT", "Enter at least one expected checksum");
+  }
+  return result;
+}
+
+async function fileDigests(files: readonly File[], signal?: AbortSignal): Promise<FileDigestRecord[]> {
+  const records = recordsFor(files);
+  const digests: FileDigestRecord[] = [];
+  for (const [index, file] of files.entries()) {
+    throwIfAborted(signal);
+    const record = records[index];
+    if (record === undefined) fail("IO_FAILED", "File record could not be prepared");
+    digests.push({ ...record, sha256: await digestFile(file, signal) });
+  }
+  return digests;
+}
+
+export async function batchChecksumManifest(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const files = fileList(recordOf(input).files);
+  const entries = await fileDigests(files, signal);
+  const manifest = `${entries.map((entry) => `${entry.sha256}  ${entry.path}`).join("\n")}\n`;
+  if (textEncoder.encode(manifest).byteLength > FILE_PRIVACY_LIMITS.maxManifestBytes) fail("FILE_TOO_LARGE", "The checksum manifest exceeds the local output limit");
+  return { operation: "batch-checksum-manifest", algorithm: "SHA-256", entries, manifest, count: entries.length, totalBytes: entries.reduce((sum, entry) => sum + entry.size, 0) };
+}
+
+export async function verifyChecksums(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const source = recordOf(input);
+  const files = fileList(source.files);
+  const expected = parseExpectedChecksums(source.expected ?? source.expectedChecksums);
+  const entries = await fileDigests(files, signal);
+  const checks = entries.map((entry) => {
+    const expectedDigest = expected.get(entry.path) ?? expected.get(entry.name);
+    return { path: entry.path, size: entry.size, actual: entry.sha256, expected: expectedDigest ?? null, status: expectedDigest === undefined ? "missing" : expectedDigest === entry.sha256 ? "match" : "mismatch" };
+  });
+  return { operation: "checksum-verifier", algorithm: "SHA-256", checks, matchCount: checks.filter((check) => check.status === "match").length, mismatchCount: checks.filter((check) => check.status === "mismatch").length, missingCount: checks.filter((check) => check.status === "missing").length, allMatch: checks.length > 0 && checks.every((check) => check.status === "match") };
+}
+
+export function folderInventory(input: unknown): FilePrivacyResult {
+  const files = fileList(recordOf(input).files);
+  const records = recordsFor(files).toSorted((left, right) => left.path.localeCompare(right.path));
+  return { operation: "folder-inventory", files: records, count: records.length, totalBytes: records.reduce((sum, record) => sum + record.size, 0), emptyCount: records.filter((record) => record.empty).length };
+}
+
+export function folderSizeTypeSummary(input: unknown): FilePrivacyResult {
+  const files = fileList(recordOf(input).files);
+  const records = recordsFor(files);
+  const groups = new Map<string, { extension: string; type: string; count: number; bytes: number }>();
+  for (const record of records) {
+    const key = `${record.extension || "(none)"}\u0000${record.type}`;
+    const current = groups.get(key) ?? { extension: record.extension || "(none)", type: record.type, count: 0, bytes: 0 };
+    current.count += 1;
+    current.bytes += record.size;
+    groups.set(key, current);
+  }
+  const byType = [...groups.values()].toSorted((left, right) => right.bytes - left.bytes || left.type.localeCompare(right.type));
+  return { operation: "folder-size-type-summary", count: records.length, totalBytes: records.reduce((sum, record) => sum + record.size, 0), groups: byType, largest: records.toSorted((left, right) => right.size - left.size || left.path.localeCompare(right.path))[0] ?? null };
+}
+
+export async function duplicateFileFinder(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const files = fileList(recordOf(input).files);
+  const records = recordsFor(files);
+  const candidates = new Map<number, number[]>();
+  records.forEach((record, index) => {
+    const current = candidates.get(record.size) ?? [];
+    current.push(index);
+    candidates.set(record.size, current);
+  });
+  const groupsByDigest = new Map<string, { size: number; paths: string[] }>();
+  for (const indices of candidates.values()) {
+    if (indices.length < 2) continue;
+    for (const index of indices) {
+      throwIfAborted(signal);
+      const file = files[index];
+      const record = records[index];
+      if (file === undefined || record === undefined) continue;
+      const digest = await digestFile(file, signal);
+      const group = groupsByDigest.get(digest) ?? { size: file.size, paths: [] };
+      group.paths.push(record.path);
+      groupsByDigest.set(digest, group);
+    }
+  }
+  const duplicateGroups = [...groupsByDigest.entries()]
+    .filter(([, group]) => group.paths.length > 1)
+    .map(([sha256, group]) => ({ ...group, paths: group.paths.toSorted((left, right) => left.localeCompare(right)), sha256 }))
+    .toSorted((left, right) => right.paths.length - left.paths.length || (left.paths[0]?.localeCompare(right.paths[0] ?? "") ?? 0));
+  return { operation: "duplicate-file-finder", algorithm: "SHA-256", duplicateGroups, duplicateFileCount: duplicateGroups.reduce((sum, group) => sum + group.paths.length, 0), inspectedCount: files.length };
+}
+
+export function filenameSanitizer(input: unknown): FilePrivacyResult {
+  const source = recordOf(input);
+  const rawNames = Array.isArray(source.names) ? source.names : source.files === undefined ? undefined : recordsFor(fileList(source.files)).map((record) => record.path);
+  if (!Array.isArray(rawNames) || rawNames.length === 0) fail("INVALID_INPUT", "names must be a non-empty array");
+  const entries: Array<{ original: string; sanitized: string; changed: boolean; collision: boolean }> = [];
+  const seen = new Set<string>();
+  for (const rawName of rawNames) {
+    if (typeof rawName !== "string") fail("INVALID_INPUT", "Every name must be text");
+    const sanitized = sanitizeRelativePath(rawName);
+    const key = sanitized.toLocaleLowerCase("en-US");
+    const collision = seen.has(key);
+    seen.add(key);
+    entries.push({ original: rawName, sanitized, changed: sanitized !== rawName, collision });
+  }
+  return { operation: "filename-sanitizer", entries, changedCount: entries.filter((entry) => entry.changed).length, collisionCount: entries.filter((entry) => entry.collision).length };
+}
+
+function renderRenamePattern(pattern: string, index: number, name: string): string {
+  const extension = extensionOf(name);
+  const stem = name.slice(0, name.length - extension.length);
+  return pattern.replaceAll("{index}", String(index + 1)).replaceAll("{name}", stem).replaceAll("{ext}", extension);
+}
+
+export function batchRenamePreview(input: unknown): FilePrivacyResult {
+  const source = recordOf(input);
+  const rawNames = Array.isArray(source.names) ? source.names : source.files === undefined ? undefined : recordsFor(fileList(source.files)).map((record) => record.name);
+  if (!Array.isArray(rawNames) || rawNames.length === 0) fail("INVALID_INPUT", "names must be a non-empty array");
+  const pattern = source.pattern === undefined ? "{name}" : source.pattern;
+  if (typeof pattern !== "string" || pattern.length === 0) fail("INVALID_INPUT", "pattern must be non-empty text");
+  const used = new Set<string>();
+  let collisionCount = 0;
+  const entries = rawNames.map((rawName, index) => {
+    if (typeof rawName !== "string") fail("INVALID_INPUT", "Every name must be text");
+    const candidate = sanitizeRelativePath(renderRenamePattern(pattern, index, rawName));
+    let sanitized = candidate;
+    let suffix = 2;
+    while (used.has(sanitized.toLocaleLowerCase("en-US"))) {
+      collisionCount += 1;
+      const extension = extensionOf(sanitized);
+      const stem = sanitized.slice(0, sanitized.length - extension.length);
+      sanitized = `${stem}-${suffix}${extension}`;
+      suffix += 1;
+    }
+    used.add(sanitized.toLocaleLowerCase("en-US"));
+    return { original: rawName, renamed: sanitized, changed: sanitized !== rawName };
+  });
+  return { operation: "batch-rename-preview", pattern, entries, changedCount: entries.filter((entry) => entry.changed).length, collisionCount };
+}
+
+function littleEndian16(view: DataView, offset: number): number {
+  return view.getUint16(offset, true);
+}
+
+function littleEndian32(view: DataView, offset: number): number {
+  return view.getUint32(offset, true);
+}
+
+function findEndOfCentralDirectory(bytes: Uint8Array): number {
+  const minimum = 22;
+  if (bytes.length < minimum) fail("CORRUPT_ARCHIVE", "The archive is too short to contain a ZIP directory");
+  const start = Math.max(0, bytes.length - minimum - 65_557);
+  for (let offset = bytes.length - minimum; offset >= start; offset -= 1) {
+    if (bytes[offset] === 0x50 && bytes[offset + 1] === 0x4b && bytes[offset + 2] === 0x05 && bytes[offset + 3] === 0x06) return offset;
+  }
+  fail("CORRUPT_ARCHIVE", "ZIP end-of-directory record was not found");
+}
+
+function zipEntryPath(name: string): { path: string; pathTraversal: boolean } {
+  const normalized = name.replace(/\\/gu, "/");
+  const pathTraversal = normalized.startsWith("/") || /^[A-Za-z]:\//u.test(normalized) || normalized.split("/").some((part) => part === "..");
+  return { path: normalized, pathTraversal };
+}
+
+export async function inspectZip(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const source = recordOf(input);
+  const files = fileList(source.files);
+  if (files.length !== 1) fail("INVALID_INPUT", "ZIP inspector accepts exactly one archive file");
+  const file = files[0];
+  if (file === undefined) fail("INVALID_INPUT", "ZIP archive is required");
+  if (file.size > FILE_PRIVACY_LIMITS.maxZipBytes) fail("ARCHIVE_TOO_LARGE", "The ZIP archive exceeds the local size limit");
+  const bytes = await readBytes(file, signal, FILE_PRIVACY_LIMITS.maxZipBytes);
+  const eocd = findEndOfCentralDirectory(bytes);
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const count = littleEndian16(view, eocd + 10);
+  const directorySize = littleEndian32(view, eocd + 12);
+  const directoryOffset = littleEndian32(view, eocd + 16);
+  if (count > FILE_PRIVACY_LIMITS.maxZipEntries || directoryOffset + directorySize > bytes.length) fail("CORRUPT_ARCHIVE", "ZIP central-directory bounds are invalid");
+  const entries: ZipEntryRecord[] = [];
+  let cursor = directoryOffset;
+  for (let index = 0; index < count; index += 1) {
+    if (cursor + 46 > bytes.length || littleEndian32(view, cursor) !== 0x02014b50) fail("CORRUPT_ARCHIVE", `Invalid central-directory entry ${index + 1}`);
+    const flags = littleEndian16(view, cursor + 8);
+    const method = littleEndian16(view, cursor + 10);
+    const crc32 = littleEndian32(view, cursor + 16);
+    const compressedSize = littleEndian32(view, cursor + 20);
+    const uncompressedSize = littleEndian32(view, cursor + 24);
+    const nameLength = littleEndian16(view, cursor + 28);
+    const extraLength = littleEndian16(view, cursor + 30);
+    const commentLength = littleEndian16(view, cursor + 32);
+    const start = cursor + 46;
+    const end = start + nameLength;
+    if (end > bytes.length) fail("CORRUPT_ARCHIVE", "ZIP entry name exceeds the archive bounds");
+    const name = textDecoder.decode(bytes.slice(start, end));
+    const parsed = zipEntryPath(name);
+    entries.push({ path: parsed.path, compressedSize, uncompressedSize, method, crc32, encrypted: (flags & 1) === 1, pathTraversal: parsed.pathTraversal });
+    cursor = end + extraLength + commentLength;
+    if (cursor > bytes.length) fail("CORRUPT_ARCHIVE", "ZIP entry metadata exceeds the archive bounds");
+  }
+  return { operation: "zip-contents-inspector", archive: pathOf(file), entryCount: entries.length, entries, totalUncompressedBytes: entries.reduce((sum, entry) => sum + entry.uncompressedSize, 0), hasPathTraversal: entries.some((entry) => entry.pathTraversal), hasEncryptedEntries: entries.some((entry) => entry.encrypted), methodNote: "Central-directory inspection only; file contents are not decompressed." };
+}
+
+function crc32(bytes: Uint8Array): number {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function writeUint16(view: DataView, offset: number, value: number): void { view.setUint16(offset, value, true); }
+function writeUint32(view: DataView, offset: number, value: number): void { view.setUint32(offset, value >>> 0, true); }
+function concatBytes(chunks: readonly Uint8Array[]): Uint8Array {
+  const total = chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0);
+  const result = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) { result.set(chunk, offset); offset += chunk.byteLength; }
+  return result;
+}
+
+async function createZipArchive(input: unknown, clean: boolean, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const files = fileList(recordOf(input).files);
+  const localChunks: Uint8Array[] = [];
+  const centralChunks: Uint8Array[] = [];
+  const entries: Array<ZipEntryRecord & { offset: number }> = [];
+  let localOffset = 0;
+  const usedPaths = new Set<string>();
+  for (const file of files) {
+    throwIfAborted(signal);
+    const originalPath = pathOf(file);
+    const parsedPath = zipEntryPath(originalPath);
+    if (parsedPath.pathTraversal) fail("UNSAFE_ARCHIVE_PATH", "Archive paths must be relative and cannot contain parent segments");
+    const archivePath = clean ? sanitizeRelativePath(originalPath) : parsedPath.path;
+    if (archivePath.length === 0 || archivePath.split("/").some((part) => part === "..")) fail("UNSAFE_ARCHIVE_PATH", "Archive paths must be relative and cannot contain parent segments");
+    const key = archivePath.toLocaleLowerCase("en-US");
+    if (usedPaths.has(key)) fail("INVALID_INPUT", "Archive paths must be unique");
+    usedPaths.add(key);
+    const name = textEncoder.encode(archivePath);
+    const bytes = await readBytes(file, signal);
+    if (bytes.byteLength > 0xffffffff || localOffset > 0xffffffff) fail("ARCHIVE_TOO_LARGE", "ZIP32 size limits were exceeded");
+    const crc = crc32(bytes);
+    const local = new Uint8Array(30 + name.byteLength);
+    const localView = new DataView(local.buffer);
+    writeUint32(localView, 0, 0x04034b50);
+    writeUint16(localView, 4, 20);
+    writeUint16(localView, 6, 0x0800);
+    writeUint16(localView, 8, 0);
+    writeUint16(localView, 10, 0);
+    writeUint16(localView, 12, 0);
+    writeUint32(localView, 14, crc);
+    writeUint32(localView, 18, bytes.byteLength);
+    writeUint32(localView, 22, bytes.byteLength);
+    writeUint16(localView, 26, name.byteLength);
+    writeUint16(localView, 28, 0);
+    local.set(name, 30);
+    localChunks.push(local, bytes);
+    const central = new Uint8Array(46 + name.byteLength);
+    const centralView = new DataView(central.buffer);
+    writeUint32(centralView, 0, 0x02014b50);
+    writeUint16(centralView, 4, 20);
+    writeUint16(centralView, 6, 20);
+    writeUint16(centralView, 8, 0x0800);
+    writeUint16(centralView, 10, 0);
+    writeUint16(centralView, 12, 0);
+    writeUint16(centralView, 14, 0);
+    writeUint32(centralView, 16, crc);
+    writeUint32(centralView, 20, bytes.byteLength);
+    writeUint32(centralView, 24, bytes.byteLength);
+    writeUint16(centralView, 28, name.byteLength);
+    writeUint16(centralView, 30, 0);
+    writeUint16(centralView, 32, 0);
+    writeUint16(centralView, 34, 0);
+    writeUint16(centralView, 36, 0);
+    writeUint32(centralView, 38, 0);
+    writeUint32(centralView, 42, localOffset);
+    central.set(name, 46);
+    centralChunks.push(central);
+    entries.push({ path: archivePath, compressedSize: bytes.byteLength, uncompressedSize: bytes.byteLength, method: 0, crc32: crc, encrypted: false, pathTraversal: false, offset: localOffset });
+    localOffset += local.byteLength + bytes.byteLength;
+  }
+  const centralDirectory = concatBytes(centralChunks);
+  if (centralDirectory.byteLength > 0xffffffff) fail("ARCHIVE_TOO_LARGE", "ZIP central directory exceeds the ZIP32 limit");
+  const end = new Uint8Array(22);
+  const endView = new DataView(end.buffer);
+  writeUint32(endView, 0, 0x06054b50);
+  writeUint16(endView, 4, 0);
+  writeUint16(endView, 6, 0);
+  writeUint16(endView, 8, entries.length);
+  writeUint16(endView, 10, entries.length);
+  writeUint32(endView, 12, centralDirectory.byteLength);
+  writeUint32(endView, 16, localOffset);
+  writeUint16(endView, 20, 0);
+  const archive = concatBytes([...localChunks, centralDirectory, end]);
+  const archiveCopy = new Uint8Array(archive.byteLength);
+  archiveCopy.set(archive);
+  return { operation: clean ? "clean-zip-creator" : "zip-creator", filename: clean ? "utilityos-clean.zip" : "utilityos-files.zip", blob: new Blob([archiveCopy.buffer], { type: "application/zip" }), byteLength: archive.byteLength, entries, compression: "store", note: "ZIP is created in memory with the store method; no files are uploaded." };
+}
+
+export function createZip(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> { return createZipArchive(input, false, signal); }
+export function createCleanZip(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> { return createZipArchive(input, true, signal); }
+
+export async function archiveChecksumManifest(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const source = recordOf(input);
+  const files = fileList(source.files);
+  if (files.length === 1 && extensionOf(files[0]?.name ?? "") === ".zip") {
+    const archive = files[0];
+    if (archive === undefined) fail("INVALID_INPUT", "Archive is required");
+    const digest = await digestFile(archive, signal);
+    const inspected = await inspectZip({ files: [archive] }, signal);
+    return { operation: "archive-checksum-manifest", algorithm: "SHA-256", archive: pathOf(archive), sha256: digest, entries: inspected.entries, manifest: `${digest}  ${sanitizeRelativePath(pathOf(archive))}\n`, entryCount: inspected.entryCount };
+  }
+  return batchChecksumManifest(input, signal);
+}
+
+function isTextPath(file: File): boolean {
+  return file.type.startsWith("text/") || [".txt", ".md", ".csv", ".json", ".log", ".xml", ".svg", ".yaml", ".yml", ".env", ".js", ".ts", ".py", ".html", ".css"].includes(extensionOf(file.name));
+}
+
+async function readableText(file: File, signal?: AbortSignal): Promise<string | null> {
+  if (!isTextPath(file) || file.size > FILE_PRIVACY_LIMITS.maxTextBytes) return null;
+  const bytes = await readBytes(file, signal, FILE_PRIVACY_LIMITS.maxTextBytes);
+  return textDecoder.decode(bytes);
+}
+
+const secretPatterns: ReadonlyArray<{ kind: string; pattern: RegExp }> = [
+  { kind: "private-key", pattern: /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/iu },
+  { kind: "aws-access-key", pattern: /\bAKIA[0-9A-Z]{16}\b/gu },
+  { kind: "github-token", pattern: /\bgh[pousr]_[A-Za-z0-9_]{20,}\b/gu },
+  { kind: "slack-token", pattern: /\bxox[baprs]-[A-Za-z0-9-]{10,}\b/gu },
+  { kind: "secret-assignment", pattern: /\b(?:api[_-]?key|secret|access[_-]?token|password|passwd)\s*[:=]\s*["']?[^\s"']{8,}/giu },
+];
+
+function redact(value: string): string {
+  if (value.length <= 72) return `${value.slice(0, 4)}…${value.slice(-4)}`;
+  return `${value.slice(0, 4)}…${value.slice(-4)}`;
+}
+
+export async function scanSecretPatterns(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const source = recordOf(input);
+  const files = optionalFileList(source.files, "files");
+  const text = typeof source.text === "string" ? source.text : null;
+  const findings: SecretFinding[] = [];
+  const inspectText = (fileName: string, value: string) => {
+    value.split(/\r?\n/u).forEach((line, index) => {
+      for (const { kind, pattern } of secretPatterns) {
+        const matcher = new RegExp(pattern.source, pattern.flags.replace("g", ""));
+        const match = matcher.exec(line);
+        if (match !== null) findings.push({ file: fileName, line: index + 1, kind, preview: redact(match[0]) });
+      }
+    });
+  };
+  if (text !== null) inspectText("pasted text", text);
+  for (const file of files) {
+    const content = await readableText(file, signal);
+    if (content !== null) inspectText(pathOf(file), content);
+  }
+  if (files.length === 0 && text === null) fail("INVALID_INPUT", "Choose a text file or paste text to scan");
+  return { operation: "secret-token-pattern-scanner", findings, findingCount: findings.length, inspectedFiles: files.length, note: "Findings are heuristic pattern matches; review and rotate any real secret before sharing." };
+}
+
+export async function inspectMetadataRisk(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const files = fileList(recordOf(input).files);
+  const results: Array<Record<string, unknown>> = [];
+  for (const file of files) {
+    const signature = await detectFileSignature(file, signal);
+    const content = await readableText(file, signal);
+    const risks: string[] = [];
+    if (/(?:exif|xmp|iptc|gps| latitude|longitude)/iu.test(content ?? "")) risks.push("text contains a metadata-like marker");
+    if (/(?:[A-Z]:\\|\/(?:home|Users|private|var)\/)/u.test(content ?? "")) risks.push("text contains an absolute path-like value");
+    if (/(?:@|mailto:)/iu.test(content ?? "")) risks.push("text contains an email-like marker");
+    if (/(?:token|secret|password|api[_-]?key)/iu.test(content ?? "")) risks.push("text contains a secret-like keyword");
+    if (/\.(?:tmp|log|bak|old|swp)$/iu.test(file.name)) risks.push("temporary or backup extension");
+    if (file.size === 0) risks.push("file is zero bytes");
+    if (signature.detectedMime === "application/octet-stream" && content === null) risks.push("content signature is not verified as a supported text format");
+    results.push({ file: pathOf(file), size: file.size, detectedMime: signature.detectedMime, risks, riskCount: risks.length, inspectedText: content !== null });
+  }
+  return { operation: "metadata-risk-inspector", files: results, riskFileCount: results.filter((result) => Number(result.riskCount ?? 0) > 0).length, note: "This is a bounded marker inspection, not a complete EXIF/XMP/IPTC metadata parser." };
+}
+
+export async function safeShareChecklist(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const files = fileList(recordOf(input).files);
+  const [metadata, secrets] = await Promise.all([inspectMetadataRisk({ files }, signal), scanSecretPatterns({ files }, signal)]);
+  const metadataResults = metadata.files as Array<Record<string, unknown>>;
+  const secretResults = secrets.findings as SecretFinding[];
+  const checks = [
+    { id: "no-empty-files", label: "No zero-byte files are included", passed: metadataResults.every((result) => result.size !== 0), detail: `${metadataResults.filter((result) => result.size === 0).length} empty file(s)` },
+    { id: "no-secret-patterns", label: "No obvious secret/token patterns were found", passed: secretResults.length === 0, detail: `${secretResults.length} finding(s)` },
+    { id: "no-metadata-markers", label: "No metadata-like text markers were found", passed: metadataResults.every((result) => Array.isArray(result.risks) && !(result.risks as string[]).some((risk) => risk.includes("metadata"))), detail: `${metadataResults.filter((result) => Array.isArray(result.risks) && (result.risks as string[]).some((risk) => risk.includes("metadata"))).length} file(s) flagged` },
+    { id: "safe-names", label: "File names contain no temporary/backup markers", passed: metadataResults.every((result) => !/\.(?:tmp|log|bak|old|swp)$/iu.test(String(result.file))), detail: "Names are checked locally" },
+  ];
+  return { operation: "safe-share-checklist", files: files.map((file) => pathOf(file)), checks, passedCount: checks.filter((check) => check.passed).length, totalChecks: checks.length, allPassed: checks.every((check) => check.passed), note: "A checklist is guidance, not a guarantee that a file is safe to publish." };
+}
+
+export async function clientHandoffIndex(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const source = recordOf(input);
+  const files = fileList(source.files);
+  const includeHashes = source.includeHashes !== false;
+  const entries = includeHashes ? await fileDigests(files, signal) : recordsFor(files);
+  const title = typeof source.title === "string" && source.title.trim() !== "" ? source.title.trim().replace(/[\r\n]+/gu, " ").slice(0, 120) : "Client handoff";
+  const json = JSON.stringify({ schema: "utilityos-handoff-index-v1", title, files: entries }, null, 2);
+  const markdownLines = [
+    `# ${title}`,
+    "",
+    `| Path | Bytes |${includeHashes ? " SHA-256 |" : ""}`,
+    `| --- | ---: |${includeHashes ? " --- |" : ""}`,
+    ...entries.map((entry) => includeHashes && "sha256" in entry ? `| ${entry.path} | ${entry.size} | ${entry.sha256} |` : `| ${entry.path} | ${entry.size} |`),
+    "",
+  ];
+  const markdown = markdownLines.join("\n");
+  return { operation: "client-handoff-index-generator", title, includeHashes, files: entries, json, markdown, count: entries.length };
+}
+
+function diffLists(beforeFiles: readonly File[], afterFiles: readonly File[]): Array<{ path: string; before: FileRecord | null; after: FileRecord | null; status: string }> {
+  const before = new Map(recordsFor(beforeFiles).map((record, index) => [record.path, { record, file: beforeFiles[index] }]));
+  const after = new Map(recordsFor(afterFiles).map((record, index) => [record.path, { record, file: afterFiles[index] }]));
+  const paths = [...new Set([...before.keys(), ...after.keys()])].toSorted((left, right) => left.localeCompare(right));
+  return paths.map((path) => {
+    const oldValue = before.get(path);
+    const newValue = after.get(path);
+    const status = oldValue === undefined ? "added" : newValue === undefined ? "removed" : oldValue.record.size === newValue.record.size ? "unchanged" : "changed";
+    return { path, before: oldValue?.record ?? null, after: newValue?.record ?? null, status };
+  });
+}
+
+export async function fileListDiff(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const source = recordOf(input);
+  const before = fileList(source.before, "before");
+  const after = fileList(source.after, "after");
+  const compareHashes = source.compareHashes === true;
+  const differences = await Promise.all(diffLists(before, after).map(async (difference) => {
+    if (!compareHashes || difference.status === "added" || difference.status === "removed") return difference;
+    const oldFile = before.find((file) => pathOf(file) === difference.path);
+    const newFile = after.find((file) => pathOf(file) === difference.path);
+    if (oldFile === undefined || newFile === undefined) return difference;
+    const [oldHash, newHash] = await Promise.all([digestFile(oldFile, signal), digestFile(newFile, signal)]);
+    return { ...difference, status: oldHash === newHash ? "unchanged" : "changed" };
+  }));
+  return { operation: "file-list-diff", differences, addedCount: differences.filter((difference) => difference.status === "added").length, removedCount: differences.filter((difference) => difference.status === "removed").length, changedCount: differences.filter((difference) => difference.status === "changed").length, unchangedCount: differences.filter((difference) => difference.status === "unchanged").length, comparedBytes: before.reduce((sum, file) => sum + file.size, 0) + after.reduce((sum, file) => sum + file.size, 0) };
+}
+
+export async function folderCompare(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const result = await fileListDiff(input, signal);
+  return { ...result, operation: "folder-compare" };
+}
+
+export function zeroByteOrphanFinder(input: unknown): FilePrivacyResult {
+  const source = recordOf(input);
+  const files = fileList(source.files);
+  const records = recordsFor(files);
+  const references = new Set<string>();
+  const rawReferences = source.references;
+  if (typeof rawReferences === "string") {
+    for (const line of rawReferences.split(/[\r\n,]/u)) {
+      const trimmed = line.trim();
+      if (trimmed !== "") references.add(trimmed);
+    }
+  } else if (Array.isArray(rawReferences)) {
+    for (const reference of rawReferences) {
+      if (typeof reference !== "string" || reference.trim() === "") fail("INVALID_INPUT", "References must be non-empty strings");
+      references.add(reference.trim());
+    }
+  } else if (rawReferences !== undefined) fail("INVALID_INPUT", "references must be text or an array");
+  const known = new Set(records.map((record) => record.path));
+  const orphanPaths = [...references].filter((reference) => !known.has(reference)).toSorted((left, right) => left.localeCompare(right));
+  const unreferenced = records.filter((record) => !references.has(record.path));
+  return { operation: "zero-byte-orphan-finder", emptyFiles: records.filter((record) => record.empty).map((record) => record.path), unreferencedFiles: unreferenced.map((record) => record.path), orphanReferences: orphanPaths, referencedCount: references.size, fileCount: records.length, note: "An orphan is a referenced path that is absent from the selected file list; browser folder selection exposes files, not directory metadata." };
+}
+
+export async function runFilePrivacyOperation(operation: FilePrivacyOperation, input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  switch (operation) {
+    case "file-hash": {
+      const files = fileList(recordOf(input).files);
+      if (files.length !== 1) fail("INVALID_INPUT", "File hash accepts exactly one file");
+      const file = files[0];
+      if (file === undefined) fail("INVALID_INPUT", "File is required");
+      const sha256 = await digestFile(file, signal);
+      return { operation, file: pathOf(file), sha256, bytes: file.size };
+    }
+    case "batch-checksum-manifest": return batchChecksumManifest(input, signal);
+    case "checksum-verifier": return verifyChecksums(input, signal);
+    case "file-signature-detector": {
+      const files = fileList(recordOf(input).files);
+      return { operation, files: await Promise.all(files.map((file) => detectFileSignature(file, signal))) };
+    }
+    case "folder-inventory": return folderInventory(input);
+    case "folder-size-type-summary": return folderSizeTypeSummary(input);
+    case "duplicate-file-finder": return duplicateFileFinder(input, signal);
+    case "filename-sanitizer": return filenameSanitizer(input);
+    case "batch-rename-preview": return batchRenamePreview(input);
+    case "zip-contents-inspector": return inspectZip(input, signal);
+    case "zip-creator": return createZip(input, signal);
+    case "clean-zip-creator": return createCleanZip(input, signal);
+    case "archive-checksum-manifest": return archiveChecksumManifest(input, signal);
+    case "metadata-risk-inspector": return inspectMetadataRisk(input, signal);
+    case "secret-token-pattern-scanner": return scanSecretPatterns(input, signal);
+    case "safe-share-checklist": return safeShareChecklist(input, signal);
+    case "client-handoff-index-generator": return clientHandoffIndex(input, signal);
+    case "file-list-diff": return fileListDiff(input, signal);
+    case "folder-compare": return folderCompare(input, signal);
+    case "zero-byte-orphan-finder": return zeroByteOrphanFinder(input);
+  }
+}

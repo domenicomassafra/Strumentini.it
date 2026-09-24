@@ -1,0 +1,7 @@
+---
+import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import { FilenameSanitizerTool } from "../../components/tools/file-privacy/FilenameSanitizerTool";
+---
+<FilePrivacyPage title="Filename Sanitizer" description="Preview portable, safe names while preserving the original files." methodTitle="Preview-only naming" methodItems={["Path separators, control characters, reserved names, and traversal segments are removed or rejected.", "Collisions are reported instead of silently overwriting a name.", "No file-system rename is performed."]}>
+  <FilenameSanitizerTool client:load />
+</FilePrivacyPage>

@@ -1,0 +1,7 @@
+---
+import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import { SafeShareChecklistTool } from "../../components/tools/file-privacy/SafeShareChecklistTool";
+---
+<FilePrivacyPage title="Safe-Share Checklist" description="Run a small local checklist for empty files, secret-like markers, metadata markers, and temporary names." methodTitle="Pre-share guardrails" methodItems={["Each check is deterministic and bounded to the selected files.", "A failed check is a prompt to inspect the original, not a claim that a file is unsafe.", "The checklist does not replace access control, encryption, or legal review."]}>
+  <SafeShareChecklistTool client:load />
+</FilePrivacyPage>

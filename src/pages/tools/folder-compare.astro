@@ -1,0 +1,7 @@
+---
+import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import { FolderCompareTool } from "../../components/tools/file-privacy/FolderCompareTool";
+---
+<FilePrivacyPage title="Folder Compare" description="Compare two bounded local folder selections before a handoff." methodTitle="Relative-path comparison" methodItems={["Files are matched by normalized relative path and size.", "Optional SHA-256 comparison catches same-size content changes.", "Directory metadata outside the selected File objects is not inferred."]}>
+  <FolderCompareTool client:load />
+</FilePrivacyPage>
