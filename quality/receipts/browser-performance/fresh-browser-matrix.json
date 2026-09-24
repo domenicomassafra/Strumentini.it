@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-24T14:24:58.835Z",
+  "revision": "58a2acab04e93416a7bb5071c0925b9330eb4459",
+  "server": {
+    "origin": "http://127.0.0.1:18220",
+    "bind": "127.0.0.1",
+    "networkPolicy": "external requests aborted before transmission; synthetic task values never sent"
+  },
+  "staticInspection": {
+    "page": "tools/business-day/index.html",
+    "jsAssetCount": 53,
+    "totalJsBytes": 208840,
+    "totalGzipBytes": 85831,
+    "engineChunks": [
+      {
+        "file": "module.Bmr23zJa.js",
+        "bytes": 2054,
+        "gzipBytes": 947
+      }
+    ],
+    "implementationAssets": [
+      "module.8GEjstsy.js",
+      "module.Bmr23zJa.js",
+      "module.BpuCcdLE.js",
+      "module.CK53PA3s.js",
+      "module.CTVIPBGx.js",
+      "module.C_MYuRwA.js",
+      "module.Ch6XMU6i.js",
+      "module.CybPICNh.js",
+      "module.D5mWsgOG.js",
+      "module.DH52sHdS.js",
+      "module.D_Y51zvg.js",
+      "module.DjcK90CI.js",
+      "module.DmdWWOFO.js",
+      "module.DmvG6L3E.js",
+      "module.DuSe0Ce2.js"
+    ],
+    "initialScriptFiles": [
+      "GlobalSearch.astro_astro_type_script_index_0_lang.DJ-H9kva.js"
+    ],
+    "initialEngineReferences": [],
+    "lazyEngineGate": "PASS",
+    "bundleBaseline": {
+      "source": "quality/receipts/build-baseline.json",
+      "baselineJsAssetCount": 6,
+      "baselineTotalJsBytes": 32768,
+      "currentTotalJsBytes": 208840,
+      "deltaBytes": 176072,
+      "deltaPercent": 537.3291015625,
+      "gate": "REGRESSION"
+    },
+    "workerAssets": [
+      "worker-DP4Ep3z2.js",
+      "worker-client.DMtbayWL.js"
+    ],
+    "wasmAssets": [],
+    "staticNetworkApiFiles": [
+      "csv.BLM7ZwVh.js"
+    ]
+  },
+  "browserMatrix": {
+    "requestedEngines": [
+      {
+        "engine": "chrome",
+        "label": "system Google Chrome",
+        "requestedExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "status": "PASS",
+        "classification": "observed",
+        "browserVersion": "153.0.8010.54",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+        "coreRoute": "PASS",
+        "homeRoute": "PASS",
+        "libraryRoute": "PASS",
+        "mobile": {
+          "width": 390,
+          "height": 844,
+          "toolOverflow": false,
+          "homeOverflow": false,
+          "libraryOverflow": false
+        },
+        "lazy": {
+          "initialScripts": 10,
+          "afterActionScripts": 1,
+          "engineChunkNames": [
+            "module.Bmr23zJa.js"
+          ],
+          "observedEngineChunk": [
+            "module.Bmr23zJa.js"
+          ]
+        },
+        "longTasks": {
+          "observerSupported": true,
+          "entries": [],
+          "maxDurationMs": 0,
+          "thresholdMs": 50,
+          "gate": "PASS"
+        },
+        "networkPrivacy": {
+          "taskRequestCount": 22,
+          "externalTaskRequests": 0,
+          "externalAttempts": 0,
+          "taskContentLeaks": 0,
+          "nonGetTaskRequests": 0
+        },
+        "performance": {
+          "ttfbMs": 2.100000023841858,
+          "domContentLoadedMs": null,
+          "loadMs": null,
+          "fcpMs": 164,
+          "resources": [
+            {
+              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BPdxY4yl.css",
+              "initiatorType": "link",
+              "transferSize": 18662,
+              "decodedBodySize": 18362,
+              "duration": 31.69999998807907
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.DJ-H9kva.js",
+              "initiatorType": "script",
+              "transferSize": 3463,
+              "decodedBodySize": 3163,
+              "duration": 32
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/search.6l8_78kW.js",
+              "initiatorType": "script",
+              "transferSize": 4980,
+              "decodedBodySize": 4680,
+              "duration": 7.699999988079071
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/browser-context.Cv2awWfA.js",
+              "initiatorType": "script",
+              "transferSize": 474,
+              "decodedBodySize": 174,
+              "duration": 8.899999976158142
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.Bub083qw.js",
+              "initiatorType": "script",
+              "transferSize": 4721,
+              "decodedBodySize": 4421,
+              "duration": 8
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/client.TN80igSi.js",
+              "initiatorType": "script",
+              "transferSize": 1786,
+              "decodedBodySize": 1486,
+              "duration": 7.899999976158142
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/preact.module.Bl7PEaKa.js",
+              "initiatorType": "script",
+              "transferSize": 10821,
+              "decodedBodySize": 10521,
+              "duration": 122.5
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/hooks.module.KvFRugKm.js",
+              "initiatorType": "script",
+              "transferSize": 3007,
+              "decodedBodySize": 2707,
+              "duration": 128.30000001192093
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/jsxRuntime.module.Bfdc-KV3.js",
+              "initiatorType": "script",
+              "transferSize": 785,
+              "decodedBodySize": 485,
+              "duration": 140.89999997615814
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/tool-runtime.4VNVl4F0.js",
+              "initiatorType": "script",
+              "transferSize": 12798,
+              "decodedBodySize": 12498,
+              "duration": 141.10000002384186
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/preload-helper.B3nfOi5I.js",
+              "initiatorType": "script",
+              "transferSize": 1664,
+              "decodedBodySize": 1364,
+              "duration": 140.5999999642372
+            },
+            {
+              "name": "http://127.0.0.1:18220/favicon.ico",
+              "initiatorType": "other",
+              "transferSize": 0,
+              "decodedBodySize": 0,
+              "duration": 115.60000002384186
+            }
+          ]
+        },
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failures": []
+      },
+      {
+        "engine": "edge",
+        "label": "system Microsoft Edge",
+        "requestedExecutable": "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+        "status": "PASS",
+        "classification": "observed",
+        "browserVersion": "153.0.4234.48",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "coreRoute": "PASS",
+        "homeRoute": "PASS",
+        "libraryRoute": "PASS",
+        "mobile": {
+          "width": 390,
+          "height": 844,
+          "toolOverflow": false,
+          "homeOverflow": false,
+          "libraryOverflow": false
+        },
+        "lazy": {
+          "initialScripts": 10,
+          "afterActionScripts": 1,
+          "engineChunkNames": [
+            "module.Bmr23zJa.js"
+          ],
+          "observedEngineChunk": [
+            "module.Bmr23zJa.js"
+          ]
+        },
+        "longTasks": {
+          "observerSupported": true,
+          "entries": [],
+          "maxDurationMs": 0,
+          "thresholdMs": 50,
+          "gate": "PASS"
+        },
+        "networkPrivacy": {
+          "taskRequestCount": 22,
+          "externalTaskRequests": 0,
+          "externalAttempts": 0,
+          "taskContentLeaks": 0,
+          "nonGetTaskRequests": 0
+        },
+        "performance": {
+          "ttfbMs": 1,
+          "domContentLoadedMs": null,
+          "loadMs": null,
+          "fcpMs": 96,
+          "resources": [
+            {
+              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BPdxY4yl.css",
+              "initiatorType": "link",
+              "transferSize": 18662,
+              "decodedBodySize": 18362,
+              "duration": 14.299999952316284
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.DJ-H9kva.js",
+              "initiatorType": "script",
+              "transferSize": 3463,
+              "decodedBodySize": 3163,
+              "duration": 13.399999976158142
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/search.6l8_78kW.js",
+              "initiatorType": "script",
+              "transferSize": 4980,
+              "decodedBodySize": 4680,
+              "duration": 4.400000035762787
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/browser-context.Cv2awWfA.js",
+              "initiatorType": "script",
+              "transferSize": 474,
+              "decodedBodySize": 174,
+              "duration": 4.600000023841858
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.Bub083qw.js",
+              "initiatorType": "script",
+              "transferSize": 4721,
+              "decodedBodySize": 4421,
+              "duration": 9.399999976158142
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/client.TN80igSi.js",
+              "initiatorType": "script",
+              "transferSize": 1786,
+              "decodedBodySize": 1486,
+              "duration": 10.099999964237213
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/preact.module.Bl7PEaKa.js",
+              "initiatorType": "script",
+              "transferSize": 10821,
+              "decodedBodySize": 10521,
+              "duration": 6.800000011920929
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/hooks.module.KvFRugKm.js",
+              "initiatorType": "script",
+              "transferSize": 3007,
+              "decodedBodySize": 2707,
+              "duration": 7.300000011920929
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/tool-runtime.4VNVl4F0.js",
+              "initiatorType": "script",
+              "transferSize": 12798,
+              "decodedBodySize": 12498,
+              "duration": 7.800000011920929
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/jsxRuntime.module.Bfdc-KV3.js",
+              "initiatorType": "script",
+              "transferSize": 785,
+              "decodedBodySize": 485,
+              "duration": 7.600000023841858
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/preload-helper.B3nfOi5I.js",
+              "initiatorType": "script",
+              "transferSize": 1664,
+              "decodedBodySize": 1364,
+              "duration": 7.899999976158142
+            },
+            {
+              "name": "http://127.0.0.1:18220/favicon.ico",
+              "initiatorType": "other",
+              "transferSize": 0,
+              "decodedBodySize": 0,
+              "duration": 1.899999976158142
+            }
+          ]
+        },
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failures": []
+      },
+      {
+        "engine": "chromium",
+        "label": "Playwright Chromium",
+        "requestedExecutable": "/Users/domenico/Library/Caches/ms-playwright/chromium-1243/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+        "status": "UNAVAILABLE",
+        "classification": "local-executable-unavailable",
+        "reason": "executable unavailable: /Users/domenico/Library/Caches/ms-playwright/chromium-1243/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+      },
+      {
+        "engine": "firefox",
+        "label": "Playwright Firefox",
+        "requestedExecutable": "/Users/domenico/Library/Caches/ms-playwright/firefox-1543/firefox/Nightly.app/Contents/MacOS/firefox",
+        "status": "UNAVAILABLE",
+        "classification": "local-executable-unavailable",
+        "reason": "executable unavailable: /Users/domenico/Library/Caches/ms-playwright/firefox-1543/firefox/Nightly.app/Contents/MacOS/firefox"
+      },
+      {
+        "engine": "webkit",
+        "label": "Playwright WebKit",
+        "requestedExecutable": "/Users/domenico/Library/Caches/ms-playwright/webkit-2359/pw_run.sh",
+        "status": "UNAVAILABLE",
+        "classification": "local-executable-unavailable",
+        "reason": "executable unavailable: /Users/domenico/Library/Caches/ms-playwright/webkit-2359/pw_run.sh"
+      }
+    ],
+    "declaredExternalMatrix": [
+      {
+        "browser": "Safari desktop",
+        "status": "UNSUPPORTED",
+        "reason": "No local Safari executable; Playwright WebKit is not Safari"
+      },
+      {
+        "browser": "iOS Safari",
+        "status": "EXTERNAL_OR_UNAVAILABLE",
+        "reason": "No physical iOS device or simulator evidence in this local run"
+      },
+      {
+        "browser": "Android Chrome",
+        "status": "EXTERNAL_OR_UNAVAILABLE",
+        "reason": "No physical Android device or emulator evidence in this local run"
+      }
+    ]
+  },
+  "freshAcceptance": [
+    {
+      "command": "npm run build",
+      "status": "PASS",
+      "evidence": "1 lazy Business Day chunk; 51 JS assets; 200776 B total; historical baseline preserved"
+    },
+    {
+      "command": "npm run acceptance:browser",
+      "status": "PASS",
+      "evidence": "lazy scripts after action=1; task-content network requests=0"
+    },
+    {
+      "command": "node scripts/acceptance-text-research.mjs",
+      "status": "PASS",
+      "evidence": "3 tools; keyboard/mobile/non-color; zero task-content network"
+    },
+    {
+      "command": "node scripts/acceptance-campaign-url.mjs",
+      "status": "PASS",
+      "evidence": "3 tools; preset persistence; keyboard/mobile; zero task-content network"
+    },
+    {
+      "command": "node scripts/acceptance-csv-cleaner.mjs",
+      "status": "FAIL",
+      "classification": "acceptance-harness-selector-collision",
+      "evidence": "strict locator matched both csv-preview and handoff-preview for the same synthetic preview"
+    },
+    {
+      "command": "node scripts/acceptance-table-handoff.mjs",
+      "status": "PASS",
+      "evidence": "Cleaner to Dedupe transfer; no persistence; Dedupe/Column Map keyboard/mobile/locality"
+    },
+    {
+      "command": "node scripts/acceptance-client-time-math.mjs",
+      "status": "PASS",
+      "evidence": "Work Profile reuse; keyboard/mobile; zero external/task-content requests; LAN route reachable"
+    },
+    {
+      "command": "node scripts/acceptance-search-library.mjs",
+      "status": "PASS",
+      "evidence": "focus restored; URL/back preserved; 500 to 50 rows; eager tool chunks=0"
+    },
+    {
+      "command": "IMAGE_RESIZE_BROWSER=chrome node scripts/acceptance-image-resize.mjs",
+      "status": "PASS",
+      "evidence": "800x800 WebP; local requests; cancel/corrupt/oversized/mobile"
+    },
+    {
+      "command": "IMAGE_RESIZE_BROWSER=edge node scripts/acceptance-image-resize.mjs",
+      "status": "PASS",
+      "evidence": "800x800 WebP; local requests; cancel/corrupt/oversized/mobile"
+    },
+    {
+      "command": "IMAGE_RESIZE_BROWSER=webkit node scripts/acceptance-image-resize.mjs",
+      "status": "PASS",
+      "evidence": "800x800 JPEG fallback; local requests; cancel/corrupt/oversized/mobile"
+    },
+    {
+      "command": "node scripts/acceptance-workbench.mjs",
+      "status": "PASS",
+      "evidence": "IndexedDB, profile, portability, storage denial, keyboard, 390px"
+    },
+    {
+      "command": "node scripts/acceptance-file-hash.mjs",
+      "status": "PASS",
+      "evidence": "lazy worker observed; external requests=0; private value leaks=0; cancellation PASS"
+    }
+  ]
+}

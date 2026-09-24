@@ -72,14 +72,14 @@ try {
   await doiAdd.focus();
   await page.keyboard.press("Enter");
 
-  const hashRow = page.locator("li").filter({ hasText: "File Hash / Checksum Verifier" });
-  await hashRow.getByRole("button", { name: "Add" }).click();
+  await page.getByRole("button", { name: "Add File Hash / Checksum Verifier to Workbench" }).click();
 
   let ids = await installedIds(page);
   if (!ids.includes("business-day") || !ids.includes("doi-isbn-normalizer") || !ids.includes("file-hash")) {
     throw new Error("Add-tool behavior did not update installed state");
   }
 
+  await page.getByLabel("Manage File Hash / Checksum Verifier").click();
   const moveHashUp = page.getByRole("button", { name: "Move File Hash / Checksum Verifier up" });
   await moveHashUp.focus();
   await page.keyboard.press("Enter");
@@ -108,8 +108,8 @@ try {
   if (!(await page.getByLabel("Sun").isChecked())) {
     throw new Error("Work Profile workweek did not persist");
   }
-  const businessProfileProvenance = page.locator('[data-tool-id="business-day"] small');
-  await businessProfileProvenance.getByText("from Work Profile", { exact: true }).waitFor();
+  const businessProfileProvenance = page.locator('[data-tool-id="business-day"] small', { hasText: "from Work Profile" });
+  await businessProfileProvenance.waitFor();
   if (!(await businessProfileProvenance.innerText()).includes("SUN")) {
     throw new Error("Saved Work Profile value is not visible at the tool use site");
   }
@@ -232,6 +232,7 @@ try {
   await waitReady(deniedPage);
   await deniedPage.getByRole("status", { name: "Storage warning" }).waitFor();
   const deniedBusinessRow = deniedPage.locator('[data-tool-id="business-day"]');
+  await deniedPage.getByLabel("Manage Business Day Calculator").click();
   await deniedBusinessRow.getByRole("button", { name: "Remove" }).focus();
   await deniedPage.keyboard.press("Enter");
   await deniedPage.getByText("No tools installed yet.", { exact: true }).waitFor();
