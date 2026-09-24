@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CronNextRunTool } from "../../components/tools/CronNextRunTool";
+const title = "Cron Next-Run Calculator";
+---
+<BaseLayout title={title} description="Calculate upcoming UTC runs for a POSIX cron expression.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Calculate upcoming UTC runs for a POSIX cron expression.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>UTC is explicit; local scheduler behavior is not inferred.</span></div></header>
+    <CronNextRunTool client:load />
+    <section class="method-card"><p class="eyebrow">Method</p><h2>Bounded UTC search</h2><p>The calculator searches minute boundaries from the supplied ISO time, excludes the starting minute, and stops after a bounded one-year search if no match exists.</p></section>
+  </article>
+  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
+</BaseLayout>

@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { QueryStringEditorTool } from "../../components/tools/QueryStringEditorTool";
+const title = "Query-String Editor";
+---
+<BaseLayout title={title} description="Edit and re-serialize URL query pairs locally with repeated-key order preserved.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Edit and re-serialize URL query pairs locally with repeated-key order preserved.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No navigation or network request is performed.</span></div></header>
+    <QueryStringEditorTool client:load />
+    <section class="method-card"><p class="eyebrow">Method</p><h2>URLSearchParams round trip</h2><p>Repeated keys, blank values, literal plus signs, and UTF-8 percent encoding are preserved through the native URLSearchParams parser.</p></section>
+  </article>
+  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
+</BaseLayout>

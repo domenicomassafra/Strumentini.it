@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { RegexTesterTool } from "../../components/tools/RegexTesterTool";
+const title = "Regex Tester";
+---
+<BaseLayout title={title} description="Test bounded ECMAScript regular expressions locally.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Test bounded ECMAScript regular expressions locally.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No pattern or subject is uploaded.</span></div></header>
+    <RegexTesterTool client:load />
+    <section class="method-card"><p class="eyebrow">Method</p><h2>Native RegExp with safety bounds</h2><p>Patterns use ECMAScript regular-expression semantics. Input and pattern lengths are bounded, and obvious nested unbounded quantifiers are rejected to reduce catastrophic backtracking risk.</p></section>
+  </article>
+  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
+</BaseLayout>

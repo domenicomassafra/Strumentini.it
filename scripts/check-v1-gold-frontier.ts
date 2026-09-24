@@ -5,6 +5,24 @@ import { catalog } from "../src/generated/catalog";
 const root = resolve(import.meta.dirname, "..");
 const receiptRoot = resolve(root, "quality/receipts");
 const expectedToolCount = 15;
+const v1ToolIds = new Set([
+  "business-day",
+  "campaign-name",
+  "csv-cleaner",
+  "csv-column-map",
+  "csv-dedupe",
+  "doi-isbn-normalizer",
+  "file-hash",
+  "image-resize",
+  "list-compare",
+  "margin-markup",
+  "rate-converter",
+  "text-diff",
+  "timezone-overlap",
+  "tracking-cleaner",
+  "utm-builder",
+]);
+const v1Catalog = catalog.filter((tool) => v1ToolIds.has(tool.id));
 
 async function jsonFiles(path: string): Promise<string[]> {
   const entries = await readdir(path, { withFileTypes: true });
@@ -43,11 +61,11 @@ for (const path of await jsonFiles(receiptRoot)) {
   });
 }
 
-if (catalog.length !== expectedToolCount) {
-  throw new Error(`V1 catalog must contain exactly ${expectedToolCount} tools before Ticket 11; found ${catalog.length}`);
+if (v1Catalog.length !== expectedToolCount) {
+  throw new Error(`V1 catalog must contain exactly ${expectedToolCount} tools before Ticket 11; found ${v1Catalog.length}`);
 }
 
-const tools = catalog.map((tool) => {
+const tools = v1Catalog.map((tool) => {
   const candidates = toolReceipts.filter((receipt) => receipt.toolId === tool.id);
   if (candidates.length !== 1) {
     throw new Error(`${tool.id}: expected exactly one tool certification receipt, found ${candidates.length}`);
@@ -68,7 +86,7 @@ const blocked = tools.filter((tool) => !tool.gold);
 const report = {
   schemaVersion: 1,
   expectedToolCount,
-  catalogToolCount: catalog.length,
+  catalogToolCount: v1Catalog.length,
   goldCount,
   blockedCount: blocked.length,
   readyForTicket11: goldCount === expectedToolCount,

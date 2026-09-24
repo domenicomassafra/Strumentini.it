@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { HmacGeneratorTool } from "../../components/tools/HmacGeneratorTool";
+const title = "HMAC Generator";
+---
+<BaseLayout title={title} description="Generate HMAC-SHA-2 tags locally with Web Crypto.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Generate HMAC-SHA-2 tags locally with Web Crypto.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Keys are used in memory and are not persisted.</span></div></header>
+    <HmacGeneratorTool client:load />
+    <section class="method-card"><p class="eyebrow">Method</p><h2>Explicit key and message boundary</h2><p>The UTF-8 key and message are passed to Web Crypto HMAC. The result includes lowercase hexadecimal and standard Base64 forms.</p></section>
+  </article>
+  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
+</BaseLayout>

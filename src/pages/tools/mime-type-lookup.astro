@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { MimeTypeLookupTool } from "../../components/tools/MimeTypeLookupTool";
+const title = "MIME Type Lookup";
+---
+<BaseLayout title={title} description="Look up common MIME types by extension or inspect signature evidence locally.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Look up common MIME types by extension or inspect signature evidence locally.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Extensions and signatures are not safety verdicts.</span></div></header>
+    <MimeTypeLookupTool client:load />
+    <section class="method-card"><p class="eyebrow">Method</p><h2>Labels and signature hints</h2><p>Extension lookup uses a small local IANA-inspired set. Signature mode only reports evidence; it does not claim full file conformance or safety.</p></section>
+  </article>
+  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
+</BaseLayout>
