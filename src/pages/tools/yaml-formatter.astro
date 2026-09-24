@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { YamlFormatterTool } from "../../components/tools/YamlFormatterTool";
+const title = "YAML Formatter & Validator";
+---
+<BaseLayout title={title} description="Format a bounded safe YAML subset locally.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Format a bounded safe YAML subset locally.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Tags and unsupported constructs are not executed.</span></div></header>
+    <YamlFormatterTool client:load />
+    <section class="method-card"><p class="eyebrow">Method</p><h2>Bounded YAML subset</h2><p>Basic mappings, sequences, flow collections, quoted scalars, and safe anchors are supported. Tabs, tags, unknown aliases, and excessive nesting fail explicitly.</p></section>
+  </article>
+  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
+</BaseLayout>

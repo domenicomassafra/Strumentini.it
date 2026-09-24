@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { UserAgentParserTool } from "../../components/tools/UserAgentParserTool";
+const title = "User-Agent Parser";
+---
+<BaseLayout title={title} description="Parse descriptive user-agent hints locally without capability decisions.">
+  <article class="tool-page">
+    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Parse descriptive user-agent hints locally without capability decisions.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>User-agent strings are not trusted capability signals.</span></div></header>
+    <UserAgentParserTool client:load />
+    <section class="method-card"><p class="eyebrow">Method</p><h2>Descriptive parsing only</h2><p>Common browser, engine, operating-system, device, and bot hints are extracted with bounded patterns. Applications must feature-detect capabilities rather than infer them here.</p></section>
+  </article>
+  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
+</BaseLayout>

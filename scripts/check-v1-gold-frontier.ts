@@ -60,22 +60,13 @@ for (const path of await jsonFiles(receiptRoot)) {
   });
 }
 
-<<<<<<< HEAD
-const v1Tools = catalog.filter((tool) => v1ToolIds.has(tool.id));
-if (v1Tools.length !== expectedToolCount) {
-  throw new Error(`V1 frontier must contain exactly ${expectedToolCount} tools before Ticket 11; found ${v1Tools.length}`);
-}
-
-const tools = v1Tools.map((tool) => {
-=======
-const v1Catalog = catalog.filter((tool) => v1BaselineToolIds.has(tool.id));
-const expansionCatalog = catalog.filter((tool) => !v1BaselineToolIds.has(tool.id));
+const v1Catalog = catalog.filter((tool) => v1ToolIds.has(tool.id));
+const expansionCatalog = catalog.filter((tool) => !v1ToolIds.has(tool.id));
 if (v1Catalog.length !== expectedToolCount) {
-  throw new Error(`V1 catalog must contain exactly ${expectedToolCount} baseline tools before Ticket 11; found ${v1Catalog.length}`);
+  throw new Error(`V1 catalog must contain exactly ${expectedToolCount} tools before Ticket 11; found ${v1Catalog.length}`);
 }
 
 const tools = v1Catalog.map((tool) => {
->>>>>>> utilityos-pdf-expansion
   const candidates = toolReceipts.filter((receipt) => receipt.toolId === tool.id);
   if (candidates.length !== 1) {
     throw new Error(`${tool.id}: expected exactly one tool certification receipt, found ${candidates.length}`);
