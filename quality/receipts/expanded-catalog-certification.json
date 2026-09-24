@@ -38,7 +38,7 @@
         {
           "dimension": "privacy",
           "path": "quality/receipts/v1-gold-frontier.json",
-          "sha256": "b8429579de0aa0146960be407c871633eb99f2c374925ac02ec9728be6f82cfd",
+          "sha256": "b01badab175db249eab8b7fc3a8d124218b6d688340c38aa31c5b365ab9d26ab",
           "status": "DECLARED"
         }
       ]
@@ -49,7 +49,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "7a8f1378e3b0f628a4b148f06bf569d77dc28ebcba1ab936692cead4f5197bfe",
+          "sha256": "1bd3a02c726dd5adf5fad455ab18e18b8a8b9e011ea5aeaf6bd62e7252a45ab6",
           "status": "PASS"
         }
       ],
@@ -63,7 +63,7 @@
         {
           "dimension": "mobileA11y",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "7a8f1378e3b0f628a4b148f06bf569d77dc28ebcba1ab936692cead4f5197bfe",
+          "sha256": "1bd3a02c726dd5adf5fad455ab18e18b8a8b9e011ea5aeaf6bd62e7252a45ab6",
           "status": "PASS"
         }
       ],
@@ -77,7 +77,7 @@
         {
           "dimension": "lazyLoad",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "7a8f1378e3b0f628a4b148f06bf569d77dc28ebcba1ab936692cead4f5197bfe",
+          "sha256": "1bd3a02c726dd5adf5fad455ab18e18b8a8b9e011ea5aeaf6bd62e7252a45ab6",
           "status": "UNVERIFIED"
         },
         {
@@ -97,7 +97,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "7a8f1378e3b0f628a4b148f06bf569d77dc28ebcba1ab936692cead4f5197bfe",
+          "sha256": "1bd3a02c726dd5adf5fad455ab18e18b8a8b9e011ea5aeaf6bd62e7252a45ab6",
           "status": "PARTIAL"
         },
         {
@@ -122,8 +122,8 @@
       "IMPLEMENTED_UNVERIFIED": 185
     },
     "certificationGoldCount": 14,
-    "releaseEligibleGoldCount": 13,
-    "releaseBlockedCount": 187,
+    "releaseEligibleGoldCount": 14,
+    "releaseBlockedCount": 186,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 200,
     "fixtureBoundCount": 200,
@@ -444,7 +444,7 @@
         },
         "page": {
           "path": "src/pages/tools/aspect-ratio-calculator.astro",
-          "sha256": "d66a13cf2ee8eabe3888e180751878b66a6432c777840d1dd70f610cbff36e41"
+          "sha256": "0384e374acc5efdab195db07e05cadc984cc733f9cd114fa52a1dbeb97dfcba3"
         },
         "testFiles": [
           "tests/image-visual-tools.test.ts"
@@ -1238,6 +1238,7 @@
           "tests/profile.test.ts",
           "tests/runtime.test.ts",
           "tests/search-ranking.test.ts",
+          "tests/telemetry.test.ts",
           "tests/tool-factory/factory.test.ts"
         ]
       },
@@ -1286,7 +1287,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "7a8f1378e3b0f628a4b148f06bf569d77dc28ebcba1ab936692cead4f5197bfe",
+            "sha256": "1bd3a02c726dd5adf5fad455ab18e18b8a8b9e011ea5aeaf6bd62e7252a45ab6",
             "status": "PASS"
           }
         ]
@@ -1297,7 +1298,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "7a8f1378e3b0f628a4b148f06bf569d77dc28ebcba1ab936692cead4f5197bfe",
+            "sha256": "1bd3a02c726dd5adf5fad455ab18e18b8a8b9e011ea5aeaf6bd62e7252a45ab6",
             "status": "PASS"
           }
         ]
@@ -1308,7 +1309,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "7a8f1378e3b0f628a4b148f06bf569d77dc28ebcba1ab936692cead4f5197bfe",
+            "sha256": "1bd3a02c726dd5adf5fad455ab18e18b8a8b9e011ea5aeaf6bd62e7252a45ab6",
             "status": "UNVERIFIED"
           },
           {
@@ -1336,7 +1337,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "7a8f1378e3b0f628a4b148f06bf569d77dc28ebcba1ab936692cead4f5197bfe",
+          "sha256": "1bd3a02c726dd5adf5fad455ab18e18b8a8b9e011ea5aeaf6bd62e7252a45ab6",
           "status": "PASS"
         },
         {
@@ -2263,7 +2264,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/client-handoff-index-generator/manifest.ts",
-          "sha256": "38687306b413b35783dd0496fc1d8cb8b5eaea2379c2e1eca4035ff3b6b363f5"
+          "sha256": "e2b428b7b2ec7448f6dbb2472cb9dd1ff1db5259ea970bde95cca4f39dbabc94"
         },
         "module": {
           "path": "src/tools/client-handoff-index-generator/module.ts",
@@ -2376,7 +2377,7 @@
         },
         "page": {
           "path": "src/pages/tools/color-converter.astro",
-          "sha256": "9a5cd8a66c44a33e553980c2bbc4a81db94ade7063400d7a9a8db02d092f69e0"
+          "sha256": "6b8b96056ac96af08d245e2e2a60175a33c0242e2414471f3ac8876b20402c67"
         },
         "testFiles": [
           "tests/image-visual-tools.test.ts"
@@ -2484,7 +2485,7 @@
         },
         "page": {
           "path": "src/pages/tools/color-picker.astro",
-          "sha256": "88858efa80ee34cb4023b8d11ad0171acf3ed091e3ef0d88413e6ac81808c2d1"
+          "sha256": "b7cf7bf5d2bf3f4967dff7e5bf86c5f02950c6f5f39b4f901885f5e40f23a70a"
         },
         "testFiles": [
           "tests/image-visual-tools.test.ts"
@@ -2691,7 +2692,7 @@
         },
         "page": {
           "path": "src/pages/tools/contact-sheet-generator.astro",
-          "sha256": "d6b2ade206be939d14d93bfeac11e4f363c4099e4dabcb5ca6014506662b3dfb"
+          "sha256": "13bccc85e9e61d30d7338c6a6dd9b862e67881dbf1f89058b44e1a3d9358b4bb"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -2800,7 +2801,7 @@
         },
         "page": {
           "path": "src/pages/tools/contrast-checker.astro",
-          "sha256": "4c8603054b314d406af0a4196a701abab3cdbc2b00e0fd14ef915e3e1df1071b"
+          "sha256": "d3a48b325c9ca89ccd2bfc63daf7aeada5c97902cbff5a09ef39de877b9970cc"
         },
         "testFiles": [
           "tests/image-visual-tools.test.ts"
@@ -3274,8 +3275,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/csv-cleaner/gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-cleaner/manifest.ts",
@@ -3402,9 +3403,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "ACCEPTANCE_EVIDENCE_FAILURE:node scripts/acceptance-csv-cleaner.mjs: acceptance evidence is FAIL"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -6081,7 +6080,7 @@
         },
         "page": {
           "path": "src/pages/tools/dominant-color-extractor.astro",
-          "sha256": "036bf60ad74387887fdc94fb5fa3bb873f58f5a14296f6d8f33623ad1836ac72"
+          "sha256": "3ec3aeed6538aa758a5e0e97c24aa167366f5bd36be9c9decdd509808007ed37"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -6873,7 +6872,7 @@
         },
         "page": {
           "path": "src/pages/tools/exif-remover.astro",
-          "sha256": "1b981c5613d03fc63b7529f9b5b0f79b053c7482322e19fede76be2ddb33ad31"
+          "sha256": "3a1bae912c983ae19a699224e20c80edef479757b9046571095c0204641eae60"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -6976,7 +6975,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/favicon-app-icon-size-generator/manifest.ts",
-          "sha256": "b06e142a348f5fbc2af9ace0204ce349d7850bb90286dcd822132c03ccb1b36c"
+          "sha256": "1e5932dff7b03272422e2810ca552303700ef10851a525441a7cea684f7a2b6e"
         },
         "module": {
           "path": "src/tools/favicon-app-icon-size-generator/module.ts",
@@ -6984,7 +6983,7 @@
         },
         "page": {
           "path": "src/pages/tools/favicon-app-icon-size-generator.astro",
-          "sha256": "18ce57a7fbe0be9c6fb5321f68ca2b6869589080f7bb7a0bd6e3e778bb6f2901"
+          "sha256": "55787b4b952be5261945355ca21a92b56485afa248759b026575e1adef92f08a"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -7218,7 +7217,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/file-list-diff/manifest.ts",
-          "sha256": "bd24ec4a3c8166c04a8ad8255c209b8062d1576198c6058accdc9f42a3278daa"
+          "sha256": "ee21da5e42eae3ac3eaf8ce9e37879d6ae2a05c867ac6f855ccbc734407f7a7d"
         },
         "module": {
           "path": "src/tools/file-list-diff/module.ts",
@@ -7616,7 +7615,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/folder-compare/manifest.ts",
-          "sha256": "78927c627456e3b24a522e75cf4d519c869fccd44612972f2c2ee67817df4e03"
+          "sha256": "53d454220c8148def37b2f0ca2049eb62d78154e7f7cbc985115effbeccf97fc"
         },
         "module": {
           "path": "src/tools/folder-compare/module.ts",
@@ -8481,7 +8480,7 @@
     {
       "id": "image-compare-slider",
       "route": "/tools/image-compare-slider",
-      "name": "Image Compare Slider",
+      "name": "Image Compare",
       "category": "files-assets",
       "engine": "image",
       "maintenanceClass": "E",
@@ -8492,7 +8491,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/image-compare-slider/manifest.ts",
-          "sha256": "3498c3f49f26f0ff077c33fb35e113b5481b52fdfdb464694c0a0e59f127bee1"
+          "sha256": "a4ec3878465695851d858862d11370e343b9df7c40f690f9523ccf75ed68b99f"
         },
         "module": {
           "path": "src/tools/image-compare-slider/module.ts",
@@ -8500,7 +8499,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-compare-slider.astro",
-          "sha256": "4f36c340865d0211224b837a2ef13d7f61699b0eb29ace1ad0a04602a49a07e8"
+          "sha256": "eee0d9675517567ac66f32b074e377206a50746df917a245b5441a3669420e05"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -8601,7 +8600,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/image-compression/manifest.ts",
-          "sha256": "aa73a621a5a4830fca52e5dbc5594e16dfe006af2b9ff02090c6e9c5d0fec8b6"
+          "sha256": "3f3a328ffdc6c6ee033d841ecc717ed51c406a8183a2bd415344892c56a7774a"
         },
         "module": {
           "path": "src/tools/image-compression/module.ts",
@@ -8609,7 +8608,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-compression.astro",
-          "sha256": "414f52e076e5444b3557cfa2e0f02fbc77392ff6d1cfea2faa5b2d5d882da5d4"
+          "sha256": "148f7d8ae52a396293edd704a0aa508e912d7f87453233ec4019f59365c86287"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -8710,7 +8709,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/image-crop/manifest.ts",
-          "sha256": "c8377a156b94d6ab941ddf7424871e327b7fe80d0af8d512870c0943ace719f6"
+          "sha256": "0c156cebdee37958e7e4916c98dce3e88fab11adb3f6caf9010a2b431a46790f"
         },
         "module": {
           "path": "src/tools/image-crop/module.ts",
@@ -8718,7 +8717,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-crop.astro",
-          "sha256": "1186b7fbcbd59bb65c42e0a78bbeabe7507fbb153fa91689e10d40b1976d66ea"
+          "sha256": "4d97c473ded51eb7079ba369cd76b8fa78a6d4acf9b2fe0fccdebfa18c969d4f"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -8827,7 +8826,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-dimensions-batch-inspector.astro",
-          "sha256": "a0a1f5422951d78ad486c95a0f0c06cbb2fa57486949788d09f0c39dbe17b622"
+          "sha256": "efbe4cb287df446ba4f90437f3fe57e77689ea63987945a71381e5cf52ec674f"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -8936,7 +8935,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-format-conversion.astro",
-          "sha256": "95a4165e6cef0ed488f0a0b53107cc7ae79666b3cc88f1082a1125a8664a1c99"
+          "sha256": "66ca8c481c79cf977d136750d3cb7b430d6ac08b294187ca2c98f6a06d9e12d1"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -9045,7 +9044,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-metadata-viewer.astro",
-          "sha256": "2917ebe40c21005c9598ac103206aaab223d49b9b80ac3833afe0630f6c623db"
+          "sha256": "80fba5e1a57a1cc9730133430fbc58e9e281d7de61c77aacc1659eb51eeab6c1"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -9147,7 +9146,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/image-rename-batch-preview/manifest.ts",
-          "sha256": "7146b0adeb00218090f341c89d73df33e6f52081ca536339e687cc136d3700c4"
+          "sha256": "d5b7a80233ebe4c45374820252153e59c88205f311de8149b09a309168d0ab3d"
         },
         "module": {
           "path": "src/tools/image-rename-batch-preview/module.ts",
@@ -9155,7 +9154,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-rename-batch-preview.astro",
-          "sha256": "d2dec594dcb53ce1449093377832b6f9291d8a915e216d91e30ffe077f3e6f72"
+          "sha256": "1c1ecff8f5738c8066bdcb9d49075e0964bea66eeef29fe8bf00dbd10518f7d4"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -12297,7 +12296,7 @@
         },
         "page": {
           "path": "src/pages/tools/palette-extractor.astro",
-          "sha256": "d7af5e1cb35dc56753397434c9b4ad01a4cad86bab5c730f381c79cad4441e72"
+          "sha256": "9d19651351a6e6376c70d6e6922add664f72e57e7aeb6ed8a062704d34242a1b"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -14456,7 +14455,7 @@
         },
         "page": {
           "path": "src/pages/tools/perceptual-duplicate-finder.astro",
-          "sha256": "82f75526933e34070e39f3d7aaf625a83498847aa2cef10dca7370349c3e7858"
+          "sha256": "036606d4e9b3ca3ffb34901e79bb37d8a2774026b0a56ec59cd2ffddc8935d4a"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -14565,7 +14564,7 @@
         },
         "page": {
           "path": "src/pages/tools/platform-size-presets.astro",
-          "sha256": "74a49e7b18d5e62f189c6aa5cd929943d2b3d92cd4cd1490c12f217a536357a2"
+          "sha256": "6591195b9d6d92f000360eb7b800e582a7f4e192783922167d94b717f1ee1d03"
         },
         "testFiles": [
           "tests/image-visual-tools.test.ts"
@@ -16839,7 +16838,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/safe-share-checklist/manifest.ts",
-          "sha256": "95b0c283d1f8aac14482c69aaf8b8390a385fa002a5fcdd4f8d3b491ad757552"
+          "sha256": "5bbfab5ee823925f096ba4765765ac5bb808084a9fc95ccbcbb95df38a1f8489"
         },
         "module": {
           "path": "src/tools/safe-share-checklist/module.ts",
@@ -17050,7 +17049,7 @@
         },
         "page": {
           "path": "src/pages/tools/screenshot-border-background-helper.astro",
-          "sha256": "7a5f40a4fd6331c8fad8bb0ecdd1e697a178d4e24970f79e3175bb5ae2c696f4"
+          "sha256": "cc364ac0ff674bf34adf8d9134e1834e697fdb56f55b38db9d52789959ee1ee3"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -17151,7 +17150,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/secret-token-pattern-scanner/manifest.ts",
-          "sha256": "cf5ec1fd870351f374af01f31e383a24457df58ad1f3feca256b076dc2de7de3"
+          "sha256": "94df2338bc63524da0e1afe7448cf7d79dc7131a9c8d97ca376a41dbb01a674a"
         },
         "module": {
           "path": "src/tools/secret-token-pattern-scanner/module.ts",
@@ -20330,7 +20329,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/zero-byte-orphan-finder/manifest.ts",
-          "sha256": "62eb38d993e3e6ca1dfb661cd4d01a5afc5aa6db93bf53cce02037a6a1245f1e"
+          "sha256": "27d3775022c5613e81373132407c29043e69be25165c5ff07b90d37a4336b87c"
         },
         "module": {
           "path": "src/tools/zero-byte-orphan-finder/module.ts",
