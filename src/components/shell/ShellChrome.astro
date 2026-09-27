@@ -1,5 +1,7 @@
 ---
 import GlobalSearch from "../search/GlobalSearch.astro";
+import BrandMark from "./BrandMark.astro";
+import ShellIcon, { type ShellIconName } from "./ShellIcon.astro";
 
 interface Props {
   pathname: string;
@@ -12,64 +14,146 @@ const isLibrary = normalizedPath === "/library";
 const isOnboarding = normalizedPath === "/onboarding";
 const isSearchDestination = isLibrary && new URLSearchParams(search).get("focus") === "search";
 const isWorkbench = !isLibrary && !isOnboarding;
+
+/**
+ * One declaration table, rendered twice: the desktop rail and the mobile bar.
+ * Adding a destination is a single edit here, which is what makes `/onboarding`
+ * and `/#recent` reachable on every viewport instead of being desktop-only.
+ */
+interface NavDestination {
+  readonly id: string;
+  readonly label: string;
+  readonly short: string;
+  readonly href: string;
+  readonly icon: ShellIconName;
+  readonly current: boolean;
+}
+
+const destinations: readonly NavDestination[] = [
+  { id: "workbench", label: "Your Tools", short: "Tools", href: "/", icon: "tools", current: isWorkbench },
+  { id: "recent", label: "Recent", short: "Recent", href: "/#recent", icon: "recent", current: false },
+  { id: "library", label: "Library", short: "Library", href: "/library/", icon: "library", current: isLibrary && !isSearchDestination },
+  { id: "search", label: "Search", short: "Search", href: "/library/?focus=search", icon: "search", current: isSearchDestination },
+  { id: "onboarding", label: "Set up tools", short: "Set up", href: "/onboarding/", icon: "onboarding", current: isOnboarding },
+  { id: "profile", label: "Work Profile", short: "Profile", href: "/#work-profile", icon: "profile", current: false },
+];
+
+const railGroups: readonly { readonly label: string; readonly ids: readonly string[]; readonly bottom?: boolean }[] = [
+  { label: "Your work", ids: ["workbench", "recent"] },
+  { label: "Discover", ids: ["library", "search"] },
+  { label: "Workspace", ids: ["onboarding", "profile"], bottom: true },
+];
+
+/**
+ * The mobile bar is the four highest-traffic destinations plus the ledger's own
+ * Recent section, named explicitly. A positional slice is what silently stranded
+ * Work Profile: every destination must be in this list or in
+ * `headerDestinationIds` below, or it does not exist on mobile. Together the two
+ * lists are exhaustive, and the guard below fails the build if they ever are not.
+ */
+const primaryBarIds: readonly string[] = ["workbench", "recent", "library", "search"];
+
+/**
+ * The rail's Workspace group — the set-once destinations the ledger makes you
+ * configure once. They promote to the mobile header because the rail has no
+ * mobile counterpart, not because they are top-level: Work Profile is a section
+ * of the Workbench, sitting beside Recent, and gets no fifth bar slot.
+ */
+const headerDestinationIds: readonly string[] = ["onboarding", "profile"];
+
+const resolveAll = (ids: readonly string[]): readonly NavDestination[] =>
+  ids
+    .map((id) => destinations.find((entry) => entry.id === id))
+    .filter((entry): entry is NavDestination => entry !== undefined);
+
+const primaryBar = resolveAll(primaryBarIds);
+const headerDestinations = resolveAll(headerDestinationIds);
+
+const stranded = destinations.filter(
+  (entry) => !primaryBarIds.includes(entry.id) && !headerDestinationIds.includes(entry.id),
+);
+if (stranded.length > 0) {
+  throw new Error(`shell: destination(s) unreachable on mobile: ${stranded.map((entry) => entry.id).join(", ")}`);
+}
 ---
 
 <a class="shell-skip-link" href="#main-content">Skip to content</a>
-<div class="app-shell" data-shell-root data-shell-path={normalizedPath}>
+<div
+  class="app-shell"
+  data-shell-root
+  data-shell-path={normalizedPath}
+  style={`--shell-bar-slots: ${primaryBar.length};`}
+>
   <aside class="shell-rail" aria-label="Application shell">
     <a class="shell-brand" href="/" aria-label="Local utility workbench">
-      <span class="shell-brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
-      <span>Workbench</span>
+      <BrandMark />
+      <span class="shell-brand-word">Workbench</span>
     </a>
     <nav class="shell-rail-nav" aria-label="Primary" data-shell-nav="desktop">
-      <div class="shell-nav-group">
-        <p class="shell-nav-label">Your work</p>
-        <a href="/" data-shell-destination="workbench" data-shell-nav-item aria-current={isWorkbench ? "page" : undefined}>Your Tools</a>
-        <a href="/#recent" data-shell-destination="recent" data-shell-nav-item>Recent</a>
-      </div>
-      <div class="shell-nav-group">
-        <p class="shell-nav-label">Discover</p>
-        <a href="/library/" data-shell-destination="library" data-shell-nav-item aria-current={isLibrary ? "page" : undefined}>Library</a>
-      </div>
-      <div class="shell-nav-group shell-rail-nav-bottom">
-        <p class="shell-nav-label">Workspace</p>
-        <a href="/onboarding/" data-shell-destination="onboarding" data-shell-nav-item>Set up tools</a>
-        <a href="/#work-profile" data-shell-destination="profile" data-shell-nav-item>Work Profile</a>
-      </div>
+      {railGroups.map((group) => (
+        <div class:list={["shell-nav-group", group.bottom === true && "shell-nav-group-bottom"]}>
+          <p class="shell-nav-label">{group.label}</p>
+          {group.ids.map((id) => {
+            const destination = destinations.find((entry) => entry.id === id);
+            if (destination === undefined) return null;
+            return (
+              <a
+                href={destination.href}
+                data-shell-destination={destination.id}
+                data-shell-nav-item
+                aria-current={destination.current ? "page" : undefined}
+              >
+                <ShellIcon name={destination.icon} size={18} />
+                <span>{destination.label}</span>
+              </a>
+            );
+          })}
+        </div>
+      ))}
     </nav>
     <p class="shell-local-note">Local-first · no account required</p>
   </aside>
 
   <div class="shell-body">
     <header class="shell-header">
-      <a class="shell-header-brand" href="/" aria-label="Local utility workbench">Workbench</a>
+      <a class="shell-header-brand" href="/" aria-label="Local utility workbench">
+        <BrandMark size={24} />
+        <span class="shell-brand-word">Workbench</span>
+      </a>
       <div class="shell-header-search">
         <GlobalSearch />
       </div>
-      <span class="shell-local-badge">Local-first</span>
+      <div class="shell-header-setup">
+        {headerDestinations.map((destination) => (
+          <a
+            href={destination.href}
+            data-shell-destination={destination.id}
+            data-shell-nav-item
+            aria-current={destination.current ? "page" : undefined}
+          >
+            <ShellIcon name={destination.icon} size={18} />
+            <span>{destination.short}</span>
+          </a>
+        ))}
+      </div>
     </header>
     <main id="main-content" class="shell-main" tabindex="-1">
       <slot />
     </main>
   </div>
 
-  <nav class="shell-mobile-nav" aria-label="Mobile primary" data-shell-nav="mobile" data-shell-mobile-nav>
-    <a href="/" data-shell-destination="workbench" data-shell-nav-item aria-current={isWorkbench ? "page" : undefined}>
-      <span class="shell-nav-symbol" aria-hidden="true">▦</span>
-      <span>Tools</span>
-    </a>
-    <a href="/library/?focus=search" data-shell-destination="search" data-shell-nav-item data-shell-search-link aria-current={isSearchDestination ? "page" : undefined}>
-      <span class="shell-nav-symbol" aria-hidden="true">⌕</span>
-      <span>Search</span>
-    </a>
-    <a href="/library/" data-shell-destination="library" data-shell-nav-item aria-current={isLibrary && !isSearchDestination ? "page" : undefined}>
-      <span class="shell-nav-symbol" aria-hidden="true">▫</span>
-      <span>Library</span>
-    </a>
-    <a href="/#work-profile" data-shell-destination="profile" data-shell-nav-item>
-      <span class="shell-nav-symbol" aria-hidden="true">◌</span>
-      <span>You</span>
-    </a>
+  <nav class="shell-mobile-nav" aria-label="Primary" data-shell-nav="mobile" data-shell-mobile-nav>
+    {primaryBar.map((destination) => (
+      <a
+        href={destination.href}
+        data-shell-destination={destination.id}
+        data-shell-nav-item
+        aria-current={destination.current ? "page" : undefined}
+      >
+        <ShellIcon name={destination.icon} size={20} />
+        <span>{destination.short}</span>
+      </a>
+    ))}
   </nav>
 </div>
 
@@ -105,28 +189,45 @@ const isWorkbench = !isLibrary && !isOnboarding;
 </script>
 
 <style>
+  /* W1's token sheet has no rail token yet. Consumer fallback only; the token
+     request is reported so the sheet can absorb it and this becomes var(--rail-width). */
+  .app-shell {
+    --shell-rail-width: var(--rail-width, 15rem);
+    --shell-rail-pad: var(--space-5);
+    --shell-nav-ink: var(--inchiostro, #1a1714);
+    --shell-nav-ink-muted: var(--inchiostro-3, #7a7367);
+    --shell-nav-rule: color-mix(in srgb, var(--inchiostro-3, #7a7367) 34%, transparent);
+    --shell-nav-surface: var(--carta-alta, #fbf9f4);
+    --shell-nav-surface-active: var(--carta, #f4f1ea);
+    --shell-nav-marker: 2px;
+
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: var(--shell-rail-width) minmax(0, 1fr);
+    background: var(--canvas);
+    color: var(--ink);
+  }
+
   .shell-skip-link {
     position: fixed;
     z-index: 100;
-    top: 8px;
-    left: 8px;
-    padding: 9px 12px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
+    top: var(--space-2);
+    left: var(--space-2);
+    min-height: var(--control-height-touch);
+    padding: 0 var(--space-4);
+    display: inline-flex;
+    align-items: center;
+    border: var(--border-width) solid var(--border-strong, var(--line));
+    border-radius: var(--radius-sm);
     background: var(--surface);
     color: var(--ink);
+    text-decoration: none;
     transform: translateY(-160%);
+    transition: transform var(--motion-fast) var(--motion-ease);
   }
 
-  .shell-skip-link:focus {
+  .shell-skip-link:focus-visible {
     transform: translateY(0);
-  }
-
-  .app-shell {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 232px minmax(0, 1fr);
-    background: var(--canvas);
   }
 
   .shell-rail {
@@ -134,98 +235,83 @@ const isWorkbench = !isLibrary && !isOnboarding;
     top: 0;
     align-self: start;
     height: 100vh;
-    padding: 20px 14px 16px;
+    padding: var(--space-5) var(--space-3) var(--space-4);
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    border-right: 1px solid var(--line);
-    background: color-mix(in srgb, var(--canvas), var(--surface) 28%);
+    gap: var(--space-6);
+    border-right: var(--border-width) solid var(--shell-nav-rule);
+    background: var(--surface-subtle);
   }
 
   .shell-brand,
   .shell-header-brand {
+    min-height: var(--control-height-touch);
     display: inline-flex;
     align-items: center;
-    gap: 9px;
-    color: var(--ink);
-    font-weight: 750;
+    gap: var(--space-2);
+    color: var(--shell-nav-ink);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.02em;
     text-decoration: none;
   }
 
   .shell-brand {
-    min-height: 44px;
-    padding: 0 8px;
-  }
-
-  .shell-brand-mark {
-    width: 22px;
-    height: 22px;
-    padding: 3px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2px;
-    border: 1px solid currentColor;
-    border-radius: 5px;
-  }
-
-  .shell-brand-mark span {
-    border-radius: 1px;
-    background: currentColor;
+    padding-inline: var(--space-2);
   }
 
   .shell-rail-nav {
     display: grid;
-    gap: 22px;
+    gap: var(--space-5);
   }
 
   .shell-nav-group {
     display: grid;
-    gap: 3px;
+    gap: var(--space-0);
   }
 
-  .shell-rail-nav-bottom {
+  .shell-nav-group-bottom {
     margin-top: auto;
   }
 
   .shell-nav-label {
     margin: 0;
-    padding: 0 10px 5px;
-    color: var(--muted);
-    font-size: .72rem;
-    font-weight: 750;
-    letter-spacing: .08em;
+    padding: 0 var(--space-2) var(--space-2);
+    color: var(--shell-nav-ink-muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .shell-rail-nav a {
-    min-height: 40px;
-    padding: 8px 10px;
+    min-height: var(--control-height-touch);
+    padding: var(--space-2) var(--space-2);
     display: flex;
     align-items: center;
-    border-radius: 6px;
-    color: var(--ink);
-    font-size: .9rem;
-    font-weight: 600;
+    gap: var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--shell-nav-ink);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
     text-decoration: none;
   }
 
-  .shell-rail-nav a:hover,
-  .shell-rail-nav a[aria-current="page"] {
-    background: var(--surface);
+  .shell-rail-nav a:hover {
+    background: var(--shell-nav-surface);
   }
 
   .shell-rail-nav a[aria-current="page"] {
-    box-shadow: inset 0 0 0 1px var(--line);
-  }
-
-  .shell-local-note,
-  .shell-local-badge {
-    color: var(--muted);
-    font-size: .75rem;
+    background: var(--shell-nav-surface-active);
+    box-shadow: inset var(--shell-nav-marker) 0 0 var(--rossa, #9e2b1f);
   }
 
   .shell-local-note {
-    margin: 0 8px;
+    margin: 0;
+    padding: var(--space-3) var(--space-2) 0;
+    border-top: var(--border-width) solid var(--shell-nav-rule);
+    color: var(--shell-nav-ink-muted);
+    font-size: var(--font-size-xs);
   }
 
   .shell-body {
@@ -236,76 +322,69 @@ const isWorkbench = !isLibrary && !isOnboarding;
     position: sticky;
     z-index: 10;
     top: 0;
-    min-height: 64px;
-    padding: 10px clamp(16px, 3vw, 32px);
+    min-height: var(--nav-height);
+    padding: var(--space-2) var(--container-gutter);
     display: flex;
     align-items: center;
-    gap: 16px;
-    border-bottom: 1px solid var(--line);
-    background: color-mix(in srgb, var(--canvas), transparent 5%);
+    gap: var(--space-4);
+    border-bottom: var(--border-width) solid var(--shell-nav-rule);
+    background: var(--canvas);
   }
 
   .shell-header-brand {
     display: none;
-    min-height: 44px;
   }
 
   .shell-header-search {
     min-width: 0;
     flex: 1 1 auto;
-    max-width: 680px;
+    max-width: var(--measure-tool);
   }
 
-  .shell-header-search :global(.global-search .search-trigger) {
-    min-height: 44px;
-  }
-
-  .shell-local-badge {
+  .shell-header-setup {
     margin-left: auto;
-    white-space: nowrap;
+    display: none;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .shell-header-setup a {
+    min-height: var(--control-height-touch);
+    padding: 0 var(--space-3);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    border: var(--border-width) solid var(--shell-nav-rule);
+    border-radius: var(--radius-sm);
+    color: var(--shell-nav-ink);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+  }
+
+  .shell-header-setup a:hover {
+    background: var(--shell-nav-surface);
+  }
+
+  .shell-header-setup a[aria-current="page"] {
+    background: var(--shell-nav-surface);
   }
 
   .shell-main {
     min-width: 0;
-    padding-bottom: 72px;
+    padding-bottom: var(--space-16);
   }
 
   .shell-main:focus-visible {
-    outline-offset: -4px;
+    outline-offset: calc(-1 * var(--focus-width));
   }
 
+  /* Anchor targets scroll under the sticky header. `#recent` / `#work-profile`
+     are the shell's published in-page destinations; ID selectors, not class
+     coupling — a renamed section class can never break the shell again. */
   .shell-main :global(#work-profile),
   .shell-main :global(#recent) {
-    scroll-margin-top: 84px;
-  }
-
-  .shell-main :global(nav[aria-label="Workbench sections"]) {
-    display: none !important;
-  }
-
-  .shell-main :global(.shell) {
-    min-width: 0;
-    max-width: 100%;
-  }
-
-  .shell-main :global([class*="sectionHeading"]) {
-    flex-wrap: wrap;
-  }
-
-  .shell-main :global([class*="rowActions"]) {
-    max-width: 100%;
-  }
-
-  .shell-main :global(input[type="file"]) {
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-  }
-
-  .shell-main :global(label:has(input[type="file"])) {
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
+    scroll-margin-top: calc(var(--nav-height) + var(--space-4));
   }
 
   .shell-mobile-nav {
@@ -322,9 +401,8 @@ const isWorkbench = !isLibrary && !isOnboarding;
     }
 
     .shell-header {
-      min-height: 60px;
-      padding: 8px 16px;
-      gap: 10px;
+      padding-inline: var(--space-4);
+      gap: var(--space-3);
     }
 
     .shell-header-brand {
@@ -334,77 +412,71 @@ const isWorkbench = !isLibrary && !isOnboarding;
 
     .shell-header-search {
       display: none;
-      max-width: none;
     }
 
-    .shell-local-badge {
-      display: none;
+    /* The rail has no mobile counterpart, so its Workspace group promotes to the
+       header — the same declarations, never a second copy of the string. */
+    .shell-header-setup {
+      display: inline-flex;
     }
 
     .shell-main {
-      padding-bottom: 88px;
+      padding-bottom: calc(var(--nav-height) + var(--space-16));
     }
 
     .shell-mobile-nav {
       position: fixed;
       z-index: 30;
       inset: auto 0 0;
-      min-height: 62px;
-      padding: 6px 8px max(6px, env(safe-area-inset-bottom));
+      min-height: calc(var(--control-height-touch) + var(--space-4));
+      padding: var(--space-1) var(--space-2) max(var(--space-1), env(safe-area-inset-bottom));
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(var(--shell-bar-slots), minmax(0, 1fr));
       align-items: stretch;
-      border-top: 1px solid var(--line);
+      border-top: var(--border-width) solid var(--shell-nav-rule);
       background: var(--surface);
     }
 
     .shell-mobile-nav a {
       min-width: 0;
-      min-height: 44px;
-      padding: 4px 2px;
+      min-height: var(--control-height-touch);
+      padding: var(--space-1) var(--space-1);
       display: grid;
       place-items: center;
       align-content: center;
-      gap: 1px;
-      border-radius: 5px;
-      color: var(--muted);
-      font-size: .74rem;
-      font-weight: 700;
+      gap: var(--space-half);
+      border-radius: var(--radius-sm);
+      color: var(--shell-nav-ink-muted);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
       line-height: 1.1;
       text-align: center;
       text-decoration: none;
     }
 
     .shell-mobile-nav a[aria-current="page"] {
-      color: var(--action);
-      background: var(--surface-muted);
-    }
-
-    .shell-nav-symbol {
-      font-size: 1.05rem;
-      line-height: 1;
+      color: var(--shell-nav-ink);
+      box-shadow: inset 0 var(--shell-nav-marker) 0 var(--rossa, #9e2b1f);
     }
   }
 
   @media (max-width: 420px) {
-    .shell-main :global([class*="rowActions"]) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .shell-header-brand {
-      display: inline-flex;
-    }
-
     .shell-header {
-      padding-inline: 12px;
+      padding-inline: var(--space-3);
     }
 
-    .shell-header-search :global(.global-search .search-trigger) {
-      padding-inline: 8px;
-    }
-
-    .shell-header-search :global(.global-search .search-trigger kbd) {
-      display: none;
+    /* At the narrowest width the setup group sheds its shorter label and keeps
+       its icon at 44px rather than squeezing two labelled buttons. The remaining
+       label carries the accessible name, so the pair is never ambiguous. */
+    .shell-header-setup a[data-shell-destination="onboarding"] span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
   }
 
