@@ -134,7 +134,7 @@ try {
     const response = await route.fetch();
     const html = await response.text();
     const replaced = html.replace(
-      /(<script[^>]+id="utilityos-library-catalog"[^>]*>)(.*?)(<\/script>)/su,
+      /(<script[^>]+id="strumentiutili-library-catalog"[^>]*>)(.*?)(<\/script>)/su,
       `$1${JSON.stringify(fixtures)}$3`,
     );
     if (replaced === html) throw new Error("Could not inject generated 500-tool Library fixture");

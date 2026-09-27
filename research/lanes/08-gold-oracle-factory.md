@@ -5,7 +5,7 @@ Status: implemented research/fixture authority for the parallel-enablers wave.
 
 ## Result
 
-UtilityOS now has a fail-closed, implementation-independent correctness layer for the catalog. The machine-readable registry covers all 200 candidates in the current discovery map rather than stopping at the required 80. The fixture index contains 44 concrete families rather than the required 25, including all families called out in the lane prompt.
+StrumentiUtili.it now has a fail-closed, implementation-independent correctness layer for the catalog. The machine-readable registry covers all 200 candidates in the current discovery map rather than stopping at the required 80. The fixture index contains 44 concrete families rather than the required 25, including all families called out in the lane prompt.
 
 The artifacts are deliberately separate from future production engines:
 
@@ -14,7 +14,7 @@ The artifacts are deliberately separate from future production engines:
 - `quality/fixtures/index.json` records every fixture family, provenance, rights statement, source references and coverage.
 - `quality/fixtures/*/vectors.json` contains known-answer, hand-worked, policy or synthetic vectors.
 - `quality/oracles/validate.py` fails closed on count, schema, missing source references, missing provenance, missing fixture files and missing synthetic artifacts.
-- `quality/oracles/build_gold_data.py` rebuilds only the metadata/literal fixture corpus. It never imports or calls a UtilityOS production implementation to generate expected results.
+- `quality/oracles/build_gold_data.py` rebuilds only the metadata/literal fixture corpus. It never imports or calls a StrumentiUtili.it production implementation to generate expected results.
 
 ## Oracle hierarchy
 
@@ -54,7 +54,7 @@ The exhaustive machine-readable bibliography is `quality/oracles/sources.json`. 
 | ZIP | PKWARE | APPNOTE, https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT | local-header/central-directory signatures |
 | DOI | DOI Foundation | DOI Handbook, https://www.doi.org/doi-handbook/html/ | DOI representation and resolver/encoding rules |
 | ISBN | International ISBN Agency | Users Manual 7th edition, https://www.isbn-international.org/content/isbn-users-manual/29 | ISBN-10/13 and check-digit authority |
-| BibTeX | BibTeX/CTAN | Base distribution, https://www.ctan.org/tex-archive/biblio/bibtex/base/ | entry syntax and standard types; UtilityOS records remain synthetic |
+| BibTeX | BibTeX/CTAN | Base distribution, https://www.ctan.org/tex-archive/biblio/bibtex/base/ | entry syntax and standard types; StrumentiUtili.it records remain synthetic |
 | QR | ISO | ISO/IEC 18004:2024 metadata, https://www.iso.org/standard/83389.html | format authority only; full normative text is not silently assumed |
 | PDF | ISO | ISO 32000-2:2020 metadata, https://www.iso.org/standard/75839.html | format authority only; full conformance requires a licensed parser/standard |
 
@@ -71,7 +71,7 @@ Additional families cover list/set operations, line sorting, text diff, HTML ent
 No external sample corpus is vendored in this lane.
 
 - Specification-backed fixtures use only small factual/known-answer values required to state interoperability behavior.
-- BibTeX and RIS bibliographic records are synthetic and authored for UtilityOS.
+- BibTeX and RIS bibliographic records are synthetic and authored for StrumentiUtili.it.
 - PNG files are generated locally from a tiny deterministic chunk writer and contain synthetic pixels/metadata only.
 - No ISO PDF or QR copyrighted conformance corpus is copied. The machine-readable registry explicitly records that the full normative ISO text is paywalled and that deeper Gold conformance needs an independently selected parser/test source with license review.
 - Every fixture-index row carries a provenance kind and an explicit `license_or_rights` statement plus source IDs.

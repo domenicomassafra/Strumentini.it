@@ -28,7 +28,7 @@
   "truthSources": [
     "fixture-policy",
     "rfc4180",
-    "utilityos-quality",
+    "strumentiutili-quality",
     "whatwg-encoding"
   ],
   "identities": {

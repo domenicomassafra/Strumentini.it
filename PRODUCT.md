@@ -58,13 +58,13 @@ Confirmed and binding:
 
 Explicitly out of scope, never to reintroduce: account/sync, ads, generic AI features, runtime plugins, PWA/offline marketing claims, the historical 40-tool wave, and the legacy "signed-in" shell.
 
-Undecided, recorded as open rather than invented: the final public brand name, the logo, the type licence and source, and the accent colour are open at the moment this record was written. Any name, mark, or palette introduced afterwards is a design decision recorded in DESIGN.md, not a product fact.
+Resolved: the public brand name is StrumentiUtili.it. The logo, type licence/source, and accent colour remain design decisions recorded in DESIGN.md rather than product facts.
 
 ## Brand Commitments
 
-UtilityOS is an internal codename only and must not ship publicly. UtilityOS Inc. is an active Canadian utility-software company with an active Canadian trademark application; shipping the codename as a public brand carries avoidable legal exposure.
+StrumentiUtili.it is the owner-selected public brand and is the name that should ship on public product surfaces. Any legal/trademark review is tracked separately from implementation of the selected identity.
 
-The public brand is **Italian-primary**. The owner named `StrumentiUtili.it` as the register to work in, and rejected further reuse of the codename.
+The public brand is **StrumentiUtili.it** and is Italian-primary. Product copy, repository identity, deployment metadata, and public discovery surfaces should use that identity consistently.
 
 Confirmed voice traits, carried from PRODUCT-MARKETING-CONTEXT.md: plain, concrete, specific, un-hyped, no AI-adjacent language, no invented claims. An instrument does not congratulate you.
 
@@ -78,10 +78,10 @@ Real and must not be fabricated away:
 - `DESIGN.md` — accepted structural system: Workbench (what I use) versus Library (what exists), two deliberately distinct layers.
 - `PRODUCT-SPEC.md` — the full acceptance-criterion contract, US-01 through US-17.
 - `design/lane-04/UX-BLUEPRINT.md`, `design/lane-04/DESIGN-SYSTEM-CANDIDATE.md` — the incumbent "Quiet Workbench" direction, now superseded as visual authority by this redesign.
-- `.scratch/utilityos-v1/TICKET-DAG.md` — 13 tickets, 9 complete, Ticket 09 blocked on physical-device receipts only.
+- `.scratch/strumentiutili-v1/TICKET-DAG.md` — 13 tickets, 9 complete, Ticket 09 blocked on physical-device receipts only.
 - `quality/receipts/**` — per-tool certification.
 
-Absences future work must not invent: no user testimonials, no customer logos, no performance benchmarks beyond the measured receipts, no pricing, no public name or logo, no paid-traffic or conversion data, no market-share claims. The 200-tool figure is a build fact, not a popularity claim.
+Absences future work must not invent: no user testimonials, no customer logos, no performance benchmarks beyond the measured receipts, no pricing, no unapproved logo, no paid-traffic or conversion data, no market-share claims. The public name is StrumentiUtili.it; the 200-tool figure is a build fact, not a popularity claim.
 
 ## Product Principles
 

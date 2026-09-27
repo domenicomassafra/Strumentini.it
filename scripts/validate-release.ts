@@ -25,7 +25,7 @@ const args = new Set(process.argv.slice(2));
 const requireReady = args.has("--require-ready");
 const writeReceipts = !args.has("--no-write-receipt");
 const receiptDirectory = resolve(root, process.argv.find((value) => value.startsWith("--receipt-dir="))?.slice("--receipt-dir=".length) ?? "quality/receipts/release");
-const fallbackSite = new URL("https://example.invalid");
+const defaultSite = new URL("https://strumentiutili.it");
 
 async function git(...command: string[]): Promise<string> {
   const result = await execFileAsync("git", command, { cwd: root });
@@ -193,12 +193,12 @@ async function main(): Promise<void> {
   const catalog = await loadCatalog();
   const manifestFiles = (await relativeFiles(resolve(root, "src/tools"))).filter((path) => path.endsWith("/manifest.ts"));
   const toolPageFiles = (await relativeFiles(resolve(root, "src/pages/tools"))).filter((path) => path.endsWith(".astro"));
-  const siteUrl = process.env.PUBLIC_SITE_URL ?? fallbackSite.href;
+  const siteUrl = process.env.PUBLIC_SITE_URL ?? defaultSite.href;
   let site: URL;
   try {
     site = new URL(siteUrl);
   } catch {
-    site = fallbackSite;
+    site = defaultSite;
   }
   const distExists = await pathExists(distRoot);
   const distFiles = distExists ? (await walk(distRoot)).map((path) => relative(distRoot, path).replaceAll("\\", "/")) : [];
@@ -244,7 +244,7 @@ async function main(): Promise<void> {
       publicSiteUrl: checkStatus(["PUBLIC_SITE_URL_"], true),
       publicMetadata: checkStatus(["METADATA_", "SITEMAP_", "ROBOTS_", "PUBLIC_METADATA_", "PUBLIC_SITEMAP_", "PUBLIC_ROBOTS_"], metadata.surfaces.length > 0),
       staticAssets: checkStatus(["STATIC_"], distExists),
-      truthfulClaims: checkStatus(["PUBLIC_CODENAME", "PUBLIC_COPY_", "UNSUPPORTED_"], true),
+      truthfulClaims: checkStatus(["PUBLIC_BRAND_", "PUBLIC_COPY_", "UNSUPPORTED_"], true),
       gold: checkStatus(["GOLD_"], true),
       browserEvidence: checkStatus(["BROWSER_", "EXTERNAL_EVIDENCE_"], true),
       physicalDeviceEvidence: checkStatus(["PHYSICAL_", "EXTERNAL_EVIDENCE_"], true),

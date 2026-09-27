@@ -10,7 +10,7 @@ Current stage: product research and validation.
 - test whether shared profile defaults save real time;
 - decide anonymous/local mode plus optional sync model;
 - define smallest credible starter pack.
-- run a dedicated public-brand naming sprint; UtilityOS is codename-only and externally blocked.
+- complete StrumentiUtili.it brand rollout across product, repository, deployment metadata, and public discovery surfaces.
 - define and validate the Tool Factory quality contract before scaling catalog implementation.
 - classify the 200-candidate catalog by demand, duplication, maintenance class and test oracle.
 - keep full-free as the default business hypothesis; test advertising only after meaningful traffic exists.

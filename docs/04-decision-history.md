@@ -2,7 +2,7 @@
 
 ## Origin
 
-UtilityOS originated inside the research-only ProgettoAmbizioso master while exploring software assets that could be built once, remain useful for years and operate with extremely low recurring compute/token cost.
+StrumentiUtili.it originated inside the research-only ProgettoAmbizioso master while exploring software assets that could be built once, remain useful for years and operate with extremely low recurring compute/token cost.
 
 ## Rejected as core identities
 

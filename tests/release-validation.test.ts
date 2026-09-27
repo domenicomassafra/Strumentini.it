@@ -20,7 +20,7 @@ import {
 } from "../src/release/validation";
 
 const validCloudflareConfig = `{
-  "name": "utilityos-validation",
+  "name": "strumentiutili-it",
   "compatibility_date": "2026-09-24",
   "assets": { "directory": "./dist", "not_found_handling": "404-page" }
 }`;
@@ -123,12 +123,13 @@ describe("public metadata and discovery", () => {
 describe("truthful claims and evidence boundaries", () => {
   it("allows concrete local mechanics and rejects unsupported public claims", () => {
     expect(validateTruthfulClaims([{ path: "src/pages/tools/example.astro", text: "Runs on this device. The file is not uploaded." }])).toEqual([]);
+    expect(validateTruthfulClaims([{ path: "src/pages/index.astro", text: "StrumentiUtili.it" }])).toEqual([]);
     const findings = validateTruthfulClaims([
       { path: "src/pages/index.astro", text: "The best unique workspace for 200 Gold tools." },
-      { path: "src/pages/tools/other.astro", text: "UtilityOS is privacy-first and available offline." },
+      { path: "src/pages/tools/other.astro", text: "[BRAND] is privacy-first and available offline." },
     ]);
     expect(findings.map((item) => item.code)).toEqual(expect.arrayContaining([
-      "PUBLIC_CODENAME",
+      "PUBLIC_BRAND_PLACEHOLDER",
       "UNSUPPORTED_BEST",
       "UNSUPPORTED_UNIQUE",
       "UNSUPPORTED_PRIVACY",

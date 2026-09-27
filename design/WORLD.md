@@ -1,4 +1,4 @@
-# RESTRETTO — the visual world for the UtilityOS redesign
+# RESTRETTO — the visual world for the StrumentiUtili.it redesign
 
 Status: **canonical design authority for the redesign wave.** Every worker reads this before writing code.
 Supersedes `DESIGN.md` §2–§6 (structure and content survive; the visual world is replaced). `DESIGN.md` is rewritten at finish from the built result.

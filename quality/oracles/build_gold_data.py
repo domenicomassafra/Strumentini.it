@@ -21,8 +21,8 @@ def dump(path: Path, value) -> None:
 
 
 SOURCES = [
-    {"id":"utilityos-quality","source_class":"project-policy","authority":"UtilityOS","locator":"docs/07-tool-factory-quality-standard.md","supports":["Gold quality gate","independent oracle rule","maintenance classes"]},
-    {"id":"utilityos-lane05","source_class":"project-policy","authority":"UtilityOS","locator":"docs/architecture/lane-05-test-seams-and-acceptance.md","supports":["public behavior seams","Wave A oracle mapping","fixture dimensions"]},
+    {"id":"strumentiutili-quality","source_class":"project-policy","authority":"StrumentiUtili.it","locator":"docs/07-tool-factory-quality-standard.md","supports":["Gold quality gate","independent oracle rule","maintenance classes"]},
+    {"id":"strumentiutili-lane05","source_class":"project-policy","authority":"StrumentiUtili.it","locator":"docs/architecture/lane-05-test-seams-and-acceptance.md","supports":["public behavior seams","Wave A oracle mapping","fixture dimensions"]},
     {"id":"unicode-uax15","source_class":"official-primary","authority":"Unicode Consortium","url":"https://www.unicode.org/reports/tr15/","locator":"UAX #15 Unicode Normalization Forms, revision 58 / Unicode 18.0.0","supports":["NFC","NFD","NFKC","NFKD","normalization idempotence"],"checked_at":"2026-09-23"},
     {"id":"unicode-uax29","source_class":"official-primary","authority":"Unicode Consortium","url":"https://www.unicode.org/reports/tr29/","locator":"UAX #29 Unicode Text Segmentation","supports":["grapheme","word and sentence boundaries"],"checked_at":"2026-09-23"},
     {"id":"unicode-uts39","source_class":"official-primary","authority":"Unicode Consortium","url":"https://www.unicode.org/reports/tr39/","locator":"UTS #39 Unicode Security Mechanisms","supports":["confusables","identifier security"],"checked_at":"2026-09-23"},
@@ -50,7 +50,7 @@ SOURCES = [
     {"id":"rfc5322","source_class":"official-primary","authority":"IETF / RFC Editor","url":"https://www.rfc-editor.org/rfc/rfc5322.html","locator":"RFC 5322 Internet Message Format","supports":["addr-spec syntax"],"checked_at":"2026-09-23"},
     {"id":"commonmark","source_class":"official-primary","authority":"CommonMark","url":"https://spec.commonmark.org/0.31.2/","locator":"CommonMark 0.31.2","supports":["Markdown parsing","raw HTML behavior"],"checked_at":"2026-09-23"},
     {"id":"owasp-xss","source_class":"official-primary","authority":"OWASP","url":"https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html","locator":"XSS Prevention Cheat Sheet","supports":["untrusted HTML","sanitization","safe sinks"],"checked_at":"2026-09-23"},
-    {"id":"iso-qr-18004","source_class":"official-primary","authority":"ISO","url":"https://www.iso.org/standard/83389.html","locator":"ISO/IEC 18004:2024 metadata page","supports":["QR Code symbology authority"],"checked_at":"2026-09-23","notes":"Full normative text is paywalled. UtilityOS does not fabricate unavailable vectors; Gold requires an independent decoder cross-check."},
+    {"id":"iso-qr-18004","source_class":"official-primary","authority":"ISO","url":"https://www.iso.org/standard/83389.html","locator":"ISO/IEC 18004:2024 metadata page","supports":["QR Code symbology authority"],"checked_at":"2026-09-23","notes":"Full normative text is paywalled. StrumentiUtili.it does not fabricate unavailable vectors; Gold requires an independent decoder cross-check."},
     {"id":"w3c-png3","source_class":"official-primary","authority":"W3C","url":"https://www.w3.org/TR/png-3/","locator":"PNG Specification Third Edition","supports":["PNG signature","IHDR","IDAT","IEND","dimensions"],"checked_at":"2026-09-23"},
     {"id":"google-webp","source_class":"official-primary","authority":"Google","url":"https://developers.google.com/speed/webp/docs/riff_container","locator":"WebP Container Specification","supports":["RIFF/WEBP signature","chunks","dimensions","metadata"],"checked_at":"2026-09-23"},
     {"id":"cipa-exif","source_class":"official-primary","authority":"CIPA","url":"https://www.cipa.jp/std/documents/e/DC-008-Translation-2023-E.pdf","locator":"Exif 3.0 / CIPA DC-008-Translation-2023","supports":["Exif metadata structure"],"checked_at":"2026-09-23"},
@@ -59,9 +59,9 @@ SOURCES = [
     {"id":"pkware-appnote","source_class":"official-primary","authority":"PKWARE","url":"https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT","locator":"APPNOTE.TXT ZIP File Format Specification","supports":["ZIP signatures","central directory"],"checked_at":"2026-09-23"},
     {"id":"doi-handbook","source_class":"official-primary","authority":"DOI Foundation","url":"https://www.doi.org/doi-handbook/html/","locator":"DOI Handbook","supports":["DOI syntax","representation","percent encoding","case handling"],"checked_at":"2026-09-23"},
     {"id":"isbn-manual","source_class":"official-primary","authority":"International ISBN Agency","url":"https://www.isbn-international.org/content/isbn-users-manual/29","locator":"ISBN Users Manual, 7th edition","supports":["ISBN-13","ISBN-10 legacy conversion","check digit"],"checked_at":"2026-09-23"},
-    {"id":"bibtex-ctan","source_class":"official-primary","authority":"BibTeX / CTAN distribution","url":"https://www.ctan.org/tex-archive/biblio/bibtex/base/","locator":"BibTeX base distribution, btxdoc and xampl.bib","supports":["BibTeX syntax","standard entry types"],"checked_at":"2026-09-23","notes":"UtilityOS fixtures are synthetic rather than copied from xampl.bib."},
-    {"id":"fixture-policy","source_class":"project-policy","authority":"UtilityOS","locator":"quality/fixtures/README.md","supports":["hand-worked literal oracle policy","synthetic fixture provenance","no self-generated expected values"]},
-    {"id":"ris-policy","source_class":"project-policy","authority":"UtilityOS","locator":"research/lanes/08-gold-oracle-factory.md","supports":["RIS minimal tagged-record policy"],"notes":"RIS vendor lineage has uneven freely accessible normative documentation. Use synthetic records plus independent parser cross-check."},
+    {"id":"bibtex-ctan","source_class":"official-primary","authority":"BibTeX / CTAN distribution","url":"https://www.ctan.org/tex-archive/biblio/bibtex/base/","locator":"BibTeX base distribution, btxdoc and xampl.bib","supports":["BibTeX syntax","standard entry types"],"checked_at":"2026-09-23","notes":"StrumentiUtili.it fixtures are synthetic rather than copied from xampl.bib."},
+    {"id":"fixture-policy","source_class":"project-policy","authority":"StrumentiUtili.it","locator":"quality/fixtures/README.md","supports":["hand-worked literal oracle policy","synthetic fixture provenance","no self-generated expected values"]},
+    {"id":"ris-policy","source_class":"project-policy","authority":"StrumentiUtili.it","locator":"research/lanes/08-gold-oracle-factory.md","supports":["RIS minimal tagged-record policy"],"notes":"RIS vendor lineage has uneven freely accessible normative documentation. Use synthetic records plus independent parser cross-check."},
     {"id":"python-stdlib","source_class":"independent-implementation","authority":"CPython","url":"https://docs.python.org/3/library/","locator":"Python standard library used only as a secondary test implementation","supports":["csv","json","base64","hashlib","urllib","datetime","zoneinfo"]},
     {"id":"openssl-cli","source_class":"independent-implementation","authority":"OpenSSL Project","url":"https://docs.openssl.org/master/man1/openssl-dgst/","locator":"openssl dgst CLI","supports":["hash and HMAC cross-check"]},
     {"id":"wpt-url","source_class":"independent-implementation","authority":"web-platform-tests","url":"https://github.com/web-platform-tests/wpt/tree/master/url","locator":"URL conformance suite","supports":["WHATWG URL cross-check"]},
@@ -81,7 +81,7 @@ def fixture(fid, candidates, payload, sources, coverage, kind="hand-worked", rig
         "format":"json",
         "provenance":{
             "kind":kind,
-            "license_or_rights":rights or "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+            "license_or_rights":rights or "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
         },
         "truth_sources":sources,
         "coverage":coverage,
@@ -141,7 +141,7 @@ fixture("list-set-ops",["Line deduplicator","List intersection","List difference
         {"a":[],"b":["x"],"intersection":[],"difference_a_minus_b":[]}
     ],
     "properties":["dedupe is idempotent","intersection is commutative under set semantics","difference contains no element from the subtracting set"]
-},["fixture-policy","utilityos-lane05"],["duplicates","empty","algebraic properties","stable order"])
+},["fixture-policy","strumentiutili-lane05"],["duplicates","empty","algebraic properties","stable order"])
 
 fixture("line-sorting",["Line sorter"],{
     "schema_version":1,
@@ -160,7 +160,7 @@ fixture("text-diff",["Text diff","File-list diff"],{
         {"before":"","after":"x","expected_ops":[{"op":"insert","text":"x"}]}
     ],
     "property":"Applying the emitted edit script to before must reconstruct after exactly. Exact visual hunk formatting is presentation policy."
-},["utilityos-lane05","fixture-policy"],["replacement","empty-to-content","reconstruction invariant"])
+},["strumentiutili-lane05","fixture-policy"],["replacement","empty-to-content","reconstruction invariant"])
 
 fixture("markdown-xss",["Markdown preview"],{
     "schema_version":1,
@@ -322,7 +322,7 @@ fixture("business-days",["Business-day calculator"],{
         {"start":"2026-09-21","business_days_until":"2026-09-25","expected":4}
     ],
     "note":"Holiday-aware variants require a versioned external data source and are not silently inferred."
-},["fixture-policy","utilityos-lane05"],["weekend crossing","inclusivity","no hidden holiday source"],"project-policy")
+},["fixture-policy","strumentiutili-lane05"],["weekend crossing","inclusivity","no hidden holiday source"],"project-policy")
 
 fixture("decimal-hours",["Decimal-hours converter","Timesheet totaler"],{
     "schema_version":1,
@@ -349,7 +349,7 @@ fixture("business-math",["Margin calculator","Markup calculator","Project profit
         {"case":"markup-zero-cost","expected":"typed-undefined-or-explicit-policy-result"}
     ],
     "policy":"Use decimal arithmetic and do not round intermediate results unless a tool manifest explicitly states otherwise."
-},["fixture-policy","utilityos-lane05"],["margin/markup distinction","zero denominator","rates","profitability","break-even"])
+},["fixture-policy","strumentiutili-lane05"],["margin/markup distinction","zero denominator","rates","profitability","break-even"])
 
 fixture("marketing-math",["ROAS calculator","CPA/CPC/CPM calculator","Conversion-rate scenario calculator"],{
     "schema_version":1,
@@ -416,7 +416,7 @@ def make_png(width: int, height: int, rgba: bool, comment: str | None = None) ->
 image_dir = FIXTURES / "image-metadata"
 image_dir.mkdir(parents=True, exist_ok=True)
 (image_dir / "synthetic-1x1-rgb.png").write_bytes(make_png(1, 1, False))
-full = make_png(2, 3, True, "synthetic UtilityOS fixture")
+full = make_png(2, 3, True, "synthetic StrumentiUtili.it fixture")
 (image_dir / "synthetic-2x3-rgba-text.png").write_bytes(full)
 (image_dir / "corrupt-truncated.png").write_bytes(full[:24])
 
@@ -424,7 +424,7 @@ fixture("image-metadata",["Image resize","Image format conversion","Image compre
     "schema_version":1,
     "artifacts":[
         {"path":"quality/fixtures/image-metadata/synthetic-1x1-rgb.png","format":"PNG","width":1,"height":1,"color_type":2},
-        {"path":"quality/fixtures/image-metadata/synthetic-2x3-rgba-text.png","format":"PNG","width":2,"height":3,"color_type":6,"metadata":{"Comment":"synthetic UtilityOS fixture"}},
+        {"path":"quality/fixtures/image-metadata/synthetic-2x3-rgba-text.png","format":"PNG","width":2,"height":3,"color_type":6,"metadata":{"Comment":"synthetic StrumentiUtili.it fixture"}},
         {"path":"quality/fixtures/image-metadata/corrupt-truncated.png","decode":"error","reason":"truncated"}
     ],
     "provenance":"Generated locally from PNG chunk rules; no third-party pixels or metadata."
@@ -457,7 +457,7 @@ fixture("bibtex",["BibTeX formatter","BibTeX deduplicator","Citation key generat
         {"input":"@book{quoted, title=\"Quoted Title\", author={Doe, Jane}, year=2020}\n","semantic":{"type":"book","key":"quoted","fields":{"title":"Quoted Title","author":"Doe, Jane","year":"2020"}}}
     ],
     "formatter_policy":{"field_order":"preserve by default","indent":2,"lossy_macro_expansion":False},
-    "provenance":"Synthetic records written for UtilityOS."
+    "provenance":"Synthetic records written for StrumentiUtili.it."
 },["bibtex-ctan"],["brace/quoted values","entry type/key","lossless default"],"synthetic-local","Synthetic bibliographic records; no xampl.bib or external citation corpus copied.")
 
 fixture("ris",["RIS/BibTeX converter"],{
@@ -515,7 +515,7 @@ fixture("qr-contract",["QR generator","QR reader"],{
     ],
     "oracle":"Generated symbols must be decoded by an independent decoder; byte equality is authoritative for this fixture.",
     "rights":"No ISO sample symbol bytes are copied."
-},["iso-qr-18004","utilityos-lane05"],["ASCII","URL","Unicode","independent decoder"],"project-policy")
+},["iso-qr-18004","strumentiutili-lane05"],["ASCII","URL","Unicode","independent decoder"],"project-policy")
 
 fixture("file-hash",["File hash","Batch checksum manifest","Checksum verifier"],{
     "schema_version":1,
@@ -610,7 +610,7 @@ dump(FIXTURES / "index.json", {"schema_version":1,"generated_at":"2026-09-23","f
     "- locally generated binary/image fixtures contain no third-party content;\n"
     "- malformed and XSS fixture payloads are inert test data and must never be executed;\n"
     "- a file signature is evidence of format, never proof that content is safe;\n"
-    "- where no universal standard exists, a fixture states the UtilityOS product policy explicitly.\n",
+    "- where no universal standard exists, a fixture states the StrumentiUtili.it product policy explicitly.\n",
     encoding="utf-8",
 )
 
@@ -673,7 +673,7 @@ def maintenance_for(n: int, name: str) -> str:
 
 def truth_sources(n: int, name: str) -> list[str]:
     low = name.lower()
-    src = ["utilityos-quality","fixture-policy"]
+    src = ["strumentiutili-quality","fixture-policy"]
     if n <= 20:
         src += ["unicode-uax29"]
         if any(x in low for x in ["unicode","whitespace","invisible","case","smart-quote","slug"]):
@@ -734,7 +734,7 @@ def truth_sources(n: int, name: str) -> list[str]:
         if "ics" in low:
             src += ["rfc5545"]
     elif n <= 120:
-        src += ["utilityos-lane05"]
+        src += ["strumentiutili-lane05"]
     elif n <= 140:
         src += ["iso-pdf2"]
     elif n <= 160:
@@ -894,7 +894,7 @@ def cross_check(n: int, name: str) -> dict:
 REGISTRY = []
 for n, name in CANDIDATES:
     src = truth_sources(n, name)
-    official = [s for s in src if s not in {"utilityos-quality","utilityos-lane05","fixture-policy"}]
+    official = [s for s in src if s not in {"strumentiutili-quality","strumentiutili-lane05","fixture-policy"}]
     gaps = []
     confidence = "high"
     low = name.lower()
@@ -917,7 +917,7 @@ for n, name in CANDIDATES:
         "tool_family":family_for(n, name),
         "maintenance_class":maintenance_for(n, name),
         "truth_sources":src,
-        "standard_or_official_example":", ".join(official) if official else "Hand-worked UtilityOS literals/project policy; no universal normative standard is claimed.",
+        "standard_or_official_example":", ".join(official) if official else "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
         "invariants":invariants(name),
         "adversarial_cases":adversarial(n, name),
         "expected_output_strategy":strategy(n, name),

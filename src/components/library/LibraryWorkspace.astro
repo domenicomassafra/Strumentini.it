@@ -48,7 +48,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     <button type="button" data-request-tool data-request-button>Richiedi questo strumento</button>
     <span data-request-status role="status"></span>
   </aside>
-  <script is:inline type="application/json" id="utilityos-library-catalog" set:html={libraryMetadataJson}></script>
+  <script is:inline type="application/json" id="strumentiutili-library-catalog" set:html={libraryMetadataJson}></script>
 </section>
 
 <script>
@@ -66,7 +66,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   const results = root?.querySelector<HTMLElement>("[data-library-results]");
   const pagination = root?.querySelector<HTMLElement>("[data-library-pagination]");
   const count = root?.querySelector<HTMLElement>("[data-library-count]");
-  const dataNode = root?.querySelector<HTMLScriptElement>("#utilityos-library-catalog");
+  const dataNode = root?.querySelector<HTMLScriptElement>("#strumentiutili-library-catalog");
   const requestButton = root?.querySelector<HTMLButtonElement>("[data-request-button]");
   const requestStatus = root?.querySelector<HTMLElement>("[data-request-status]");
   const tools = JSON.parse(dataNode?.textContent ?? "[]") as SearchToolMetadata[];
@@ -74,7 +74,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   let context: SearchContext = {};
   let lastZeroResultKey = "";
   try {
-    const stored = window.sessionStorage.getItem("utilityos:workbench-context:v1");
+    const stored = window.sessionStorage.getItem("strumentiutili:workbench-context:v1");
     if (stored !== null) {
       context = sanitizeSearchContext(JSON.parse(stored));
     }
@@ -203,7 +203,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   window.addEventListener(SEARCH_CONTEXT_EVENT, (event) => {
     context = sanitizeSearchContext((event as CustomEvent<SearchContext>).detail);
     try {
-      window.sessionStorage.setItem("utilityos:workbench-context:v1", JSON.stringify(context));
+      window.sessionStorage.setItem("strumentiutili:workbench-context:v1", JSON.stringify(context));
     } catch (error) {
       void error;
     }

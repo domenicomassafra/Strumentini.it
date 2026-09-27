@@ -1,6 +1,6 @@
 import type { SearchContext } from "./types";
 
-export const SEARCH_CONTEXT_EVENT = "utilityos:search-context";
+export const SEARCH_CONTEXT_EVENT = "strumentiutili:search-context";
 const MAX_CONTEXT_IDS = 500;
 const CONTEXT_ID_PATTERN = /^[a-z0-9][a-z0-9._-]{0,63}$/u;
 

@@ -1,8 +1,8 @@
-# HANDOFF — UtilityOS
+# HANDOFF — StrumentiUtili.it
 
-Repository: /Users/domenico/Code/UtilityOS
+Repository: /Users/domenico/Code/StrumentiUtili.it
 Branch: main
-Working codename: UtilityOS. Brand is not final.
+Public brand: StrumentiUtili.it.
 
 ## Thesis
 
@@ -72,7 +72,7 @@ Next work should deepen novelty/user-value validation and define a small interac
 
 ## Brand / GTM update
 
-UtilityOS must remain an internal codename. UtilityOS Inc. is an active Canadian utility-software company and has an active Canadian trademark application.
+StrumentiUtili.it is the owner-selected public brand. The prior codename collision is historical and no longer defines the product identity.
 
 Important deeper blockers:
 

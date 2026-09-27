@@ -1,6 +1,6 @@
 # Gold oracle registry
 
-This directory is the machine-readable correctness-oracle contract for UtilityOS tools.
+This directory is the machine-readable correctness-oracle contract for StrumentiUtili.it tools.
 
 It deliberately separates:
 

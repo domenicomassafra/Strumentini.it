@@ -1,4 +1,4 @@
-# UtilityOS — Canonical Implementation Plan
+# StrumentiUtili.it — Canonical Implementation Plan
 
 Status: backlog-ready implementation authority; **this file does not contain production implementation**
 Date: 2026-09-23
@@ -537,7 +537,7 @@ Do not create in this wave:
 
 ## 17. Ticket execution model
 
-The local tracker is `.scratch/utilityos-v1/issues/`.
+The local tracker is `.scratch/strumentiutili-v1/issues/`.
 
 Each ticket:
 
@@ -550,7 +550,7 @@ Each ticket:
 - includes runnable verification;
 - reaches the required Gold level for any tool it makes default/public.
 
-The canonical dependency graph is `.scratch/utilityos-v1/TICKET-DAG.md`.
+The canonical dependency graph is `.scratch/strumentiutili-v1/TICKET-DAG.md`.
 
 First implementation frontier: **Ticket 01 — Gold tracer: Business Day Calculator**. The separate 20260923-181500 technical-enabler wave may continue in parallel on disjoint paths.
 
@@ -580,6 +580,6 @@ First implementation frontier: **Ticket 01 — Gold tracer: Business Day Calcula
 
 ### Known non-blocking uncertainty
 
-- Public brand clearance is unresolved by design.
+- The public brand is selected as StrumentiUtili.it; formal legal/trademark clearance remains a separate governance check.
 - Product-market success, retention, Work Profile reuse, pack comprehension, and handoff value remain experiment outcomes; the implementation must measure them rather than encode a favorable answer.
 - Remaining parallel oracle/heavy-browser lanes may improve implementation choices, but they do not invalidate the current Ticket 01 frontier.

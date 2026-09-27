@@ -29,7 +29,7 @@
     "fixture-policy",
     "iana-tzdb",
     "rfc3339",
-    "utilityos-quality"
+    "strumentiutili-quality"
   ],
   "resolvedFixtures": [
     {

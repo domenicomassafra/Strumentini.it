@@ -37,7 +37,7 @@ async function makeSyntheticCanvas(width = 1600, height = 1200) {
   }
   ctx.fillStyle = "white";
   ctx.font = "bold 64px sans-serif";
-  ctx.fillText("UTILITYOS SYNTHETIC", 80, 140);
+  ctx.fillText("STRUMENTIUTILI SYNTHETIC", 80, 140);
   return canvas;
 }
 
@@ -45,10 +45,10 @@ async function addSyntheticExif(jpegBlob) {
   const bytes = new Uint8Array(await jpegBlob.arrayBuffer());
   const binary = bytesToBinary(bytes);
   const zeroth = {};
-  zeroth[piexif.ImageIFD.Artist] = "UtilityOS Synthetic Fixture";
+  zeroth[piexif.ImageIFD.Artist] = "StrumentiUtili.it Synthetic Fixture";
   zeroth[piexif.ImageIFD.ImageDescription] = "Synthetic EXIF for local browser spike";
   const exif = {};
-  exif[piexif.ExifIFD.UserComment] = "ASCII\0\0\0UtilityOS-Lane-04";
+  exif[piexif.ExifIFD.UserComment] = "ASCII\0\0\0StrumentiUtili.it-Lane-04";
   const exifBytes = piexif.dump({ "0th": zeroth, Exif: exif });
   const inserted = piexif.insert(exifBytes, `data:image/jpeg;base64,${btoa(binary)}`);
   const base64 = inserted.split(",")[1];
@@ -68,7 +68,7 @@ async function run() {
   const fixtureMs = now() - fixtureStart;
 
   const exifBefore = await exifr.parse(taggedJpeg, ["Artist", "ImageDescription"]);
-  assert(exifBefore?.Artist === "UtilityOS Synthetic Fixture", "synthetic EXIF artist is readable");
+  assert(exifBefore?.Artist === "StrumentiUtili.it Synthetic Fixture", "synthetic EXIF artist is readable");
 
   const resizeStart = now();
   const bitmap = await createImageBitmap(taggedJpeg);

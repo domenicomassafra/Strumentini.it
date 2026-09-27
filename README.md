@@ -1,8 +1,8 @@
-# UtilityOS
+# StrumentiUtili.it
 
-Working codename. Product name and brand are intentionally not final.
+Public brand and repository identity.
 
-UtilityOS is a working codename for a personal utility workspace for knowledge work.
+StrumentiUtili.it is a personal utility workspace for knowledge work.
 
 The thesis is not another website with 200 tools. The product should understand enough about what a person does for work to assemble a small relevant toolbox, reuse safe profile defaults across utilities, and let the user add or remove professional tool packs over time.
 
@@ -34,7 +34,7 @@ The combination still being researched is:
 - optional account primarily for sync/configuration;
 - portable toolbox configuration.
 
-The intended feeling is closer to a browser-based utility OS for work than a calculator directory or SaaS back office.
+The intended feeling is closer to a browser-based workspace di strumenti per il lavoro than a calculator directory or SaaS back office.
 
 ## Principles
 
@@ -73,7 +73,7 @@ The aspirational target is domain-level or similarly small annual infrastructure
 
 ## Repository status
 
-The checkout contains a static Astro/Preact implementation with 200 generated tool entries, public static routes, shared local execution seams, and release-validation tooling. Release certification remains blocked until the current Gold receipts, fresh browser matrix, physical-device receipts, explicit public site URL, and an externally verified rollback receipt exist; local validation never substitutes those external proofs.
+The checkout contains a static Astro/Preact implementation with 200 generated tool entries, public static routes, shared local execution seams, and release-validation tooling. Release certification remains blocked until the current Gold receipts, fresh browser matrix, physical-device receipts, and an externally verified rollback receipt exist; local validation never substitutes those external proofs.
 
 The consolidated validator writes ignored evidence under `quality/receipts/release/` and does not deploy externally:
 
@@ -83,13 +83,13 @@ npm run release:validate:require-ready
 npm run deploy:check
 ```
 
-`release:validate` checks the 200-tool surface, static asset inventory, public metadata and discovery files, Cloudflare configuration, truthful copy, certification receipts, and evidence boundaries. Set `PUBLIC_SITE_URL` to the approved HTTPS origin before strict validation; the local fallback is intentionally a blocked placeholder. `release:validate:require-ready` runs the unit suite, Astro check, and Wrangler dry run before exiting nonzero until every blocker is resolved. `deploy:check` is a Wrangler dry run only.
+`release:validate` checks the 200-tool surface, static asset inventory, public metadata and discovery files, Cloudflare configuration, truthful copy, certification receipts, and evidence boundaries. The canonical production origin defaults to `https://strumentiutili.it`; `PUBLIC_SITE_URL` can override it for an explicitly configured preview or alternate environment. `release:validate:require-ready` runs the unit suite, Astro check, and Wrangler dry run before exiting nonzero until every blocker is resolved. `deploy:check` is a Wrangler dry run only.
 
-## Brand warning
+## Brand
 
-UtilityOS is an internal codename only. A current Canadian software company already operates under UtilityOS and has an active Canadian trademark application.
+StrumentiUtili.it is the selected public brand. Historical naming-collision research concerned the former codename and is retained only as decision history.
 
-Public naming requires a separate naming and clearance sprint.
+Implementation should use StrumentiUtili.it consistently. Any formal legal/trademark clearance is a separate release-governance activity.
 
 See:
 

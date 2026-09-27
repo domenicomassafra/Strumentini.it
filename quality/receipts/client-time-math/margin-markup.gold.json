@@ -27,8 +27,8 @@
   ],
   "truthSources": [
     "fixture-policy",
-    "utilityos-lane05",
-    "utilityos-quality"
+    "strumentiutili-lane05",
+    "strumentiutili-quality"
   ],
   "resolvedFixtures": [
     {

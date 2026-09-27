@@ -54,7 +54,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
       <div class="palette-help"><span><kbd>↑</kbd><kbd>↓</kbd> naviga</span><span><kbd>Invio</kbd> apri</span><span><kbd>Esc</kbd> chiudi</span><span class="palette-help-hint"><kbd>⌘K</kbd> ovunque</span></div>
     </div>
   </dialog>
-  <script is:inline type="application/json" id="utilityos-search-catalog" set:html={searchMetadataJson}></script>
+  <script is:inline type="application/json" id="strumentiutili-search-catalog" set:html={searchMetadataJson}></script>
 </div>
 
 <script>
@@ -71,7 +71,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
   const dialog = root?.querySelector<HTMLDialogElement>("[data-search-dialog]");
   const input = root?.querySelector<HTMLInputElement>("[data-search-input]");
   const results = root?.querySelector<HTMLElement>("[data-search-results]");
-  const dataNode = root?.querySelector<HTMLScriptElement>("#utilityos-search-catalog");
+  const dataNode = root?.querySelector<HTMLScriptElement>("#strumentiutili-search-catalog");
   const tools = JSON.parse(dataNode?.textContent ?? "[]") as SearchToolMetadata[];
   const search = createSearch(tools);
   let context: SearchContext = {};

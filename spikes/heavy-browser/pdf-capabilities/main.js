@@ -7,12 +7,12 @@ GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", i
 async function makeFixture() {
   const pdf = await PDFDocument.create();
   const font = await pdf.embedFont(StandardFonts.Helvetica);
-  pdf.setTitle("Synthetic UtilityOS Fixture");
-  pdf.setAuthor("UtilityOS Lane 04");
+  pdf.setTitle("Synthetic StrumentiUtili.it Fixture");
+  pdf.setAuthor("StrumentiUtili.it Lane 04");
   pdf.setSubject("Synthetic browser-local PDF spike");
   for (let index = 1; index <= 4; index += 1) {
     const page = pdf.addPage([420, 240]);
-    page.drawText(`UTILITYOS-PAGE-${index}`, { x: 36, y: 150, size: 28, font });
+    page.drawText(`STRUMENTIUTILI-PAGE-${index}`, { x: 36, y: 150, size: 28, font });
     page.drawText(`synthetic fixture ${index}`, { x: 36, y: 110, size: 14, font });
   }
   return pdf.save();
@@ -76,9 +76,9 @@ async function run() {
 
   assert(sourceView.doc.numPages === 4, "fixture has four pages");
   assert(mergedView.doc.numPages === 4, "split + merge preserves page count");
-  assert(mergedView.texts[0].includes("UTILITYOS-PAGE-4"), "reorder puts page 4 first");
-  assert(mergedView.texts[1].includes("UTILITYOS-PAGE-2"), "reorder puts page 2 second");
-  assert(sourceView.metadata.info?.Title === "Synthetic UtilityOS Fixture", "metadata title is readable");
+  assert(mergedView.texts[0].includes("STRUMENTIUTILI-PAGE-4"), "reorder puts page 4 first");
+  assert(mergedView.texts[1].includes("STRUMENTIUTILI-PAGE-2"), "reorder puts page 2 second");
+  assert(sourceView.metadata.info?.Title === "Synthetic StrumentiUtili.it Fixture", "metadata title is readable");
 
   const renderStart = now();
   const firstPage = await mergedView.doc.getPage(1);

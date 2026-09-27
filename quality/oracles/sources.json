@@ -3,9 +3,9 @@
   "generated_at": "2026-09-23",
   "sources": [
     {
-      "id": "utilityos-quality",
+      "id": "strumentiutili-quality",
       "source_class": "project-policy",
-      "authority": "UtilityOS",
+      "authority": "StrumentiUtili.it",
       "locator": "docs/07-tool-factory-quality-standard.md",
       "supports": [
         "Gold quality gate",
@@ -14,9 +14,9 @@
       ]
     },
     {
-      "id": "utilityos-lane05",
+      "id": "strumentiutili-lane05",
       "source_class": "project-policy",
-      "authority": "UtilityOS",
+      "authority": "StrumentiUtili.it",
       "locator": "docs/architecture/lane-05-test-seams-and-acceptance.md",
       "supports": [
         "public behavior seams",
@@ -369,7 +369,7 @@
         "QR Code symbology authority"
       ],
       "checked_at": "2026-09-23",
-      "notes": "Full normative text is paywalled. UtilityOS does not fabricate unavailable vectors; Gold requires an independent decoder cross-check."
+      "notes": "Full normative text is paywalled. StrumentiUtili.it does not fabricate unavailable vectors; Gold requires an independent decoder cross-check."
     },
     {
       "id": "w3c-png3",
@@ -485,12 +485,12 @@
         "standard entry types"
       ],
       "checked_at": "2026-09-23",
-      "notes": "UtilityOS fixtures are synthetic rather than copied from xampl.bib."
+      "notes": "StrumentiUtili.it fixtures are synthetic rather than copied from xampl.bib."
     },
     {
       "id": "fixture-policy",
       "source_class": "project-policy",
-      "authority": "UtilityOS",
+      "authority": "StrumentiUtili.it",
       "locator": "quality/fixtures/README.md",
       "supports": [
         "hand-worked literal oracle policy",
@@ -501,7 +501,7 @@
     {
       "id": "ris-policy",
       "source_class": "project-policy",
-      "authority": "UtilityOS",
+      "authority": "StrumentiUtili.it",
       "locator": "research/lanes/08-gold-oracle-factory.md",
       "supports": [
         "RIS minimal tagged-record policy"

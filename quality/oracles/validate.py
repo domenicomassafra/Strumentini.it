@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed validator for UtilityOS Gold oracle and fixture metadata."""
+"""Fail-closed validator for StrumentiUtili.it Gold oracle and fixture metadata."""
 
 from __future__ import annotations
 

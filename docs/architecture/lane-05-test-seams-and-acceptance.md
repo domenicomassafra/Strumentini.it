@@ -14,7 +14,7 @@ The downstream TDD loop should be vertical:
 4. repeat;
 5. perform structural refactoring during review, not by prebuilding abstractions in advance.
 
-Mock only true system boundaries such as clock, browser capability, storage, external network and worker process failure. Do not mock UtilityOS engines merely to make runtime tests pass.
+Mock only true system boundaries such as clock, browser capability, storage, external network and worker process failure. Do not mock StrumentiUtili.it engines merely to make runtime tests pass.
 
 ## 2. Approved public-behavior seams
 
@@ -210,7 +210,7 @@ This seam is the rendered tool route in a real browser.
 - copy/download output is valid;
 - offline behavior matches the manifest.
 
-Browser tests should exercise the real tool runtime and real engine where feasible rather than mocking UtilityOS internals.
+Browser tests should exercise the real tool runtime and real engine where feasible rather than mocking StrumentiUtili.it internals.
 
 ## 3. Tool-class correctness oracles
 

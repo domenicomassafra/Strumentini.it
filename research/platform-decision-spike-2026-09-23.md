@@ -38,7 +38,7 @@ Ordinary deterministic tool execution must not route through a Worker.
 
 ## Framework shape
 
-UtilityOS needs both hundreds of crawlable public pages and a highly interactive personal Workbench. Astro is well aligned because static content renders to HTML with no client JavaScript by default while explicit client islands hydrate only the interactive pieces.
+StrumentiUtili.it needs both hundreds of crawlable public pages and a highly interactive personal Workbench. Astro is well aligned because static content renders to HTML with no client JavaScript by default while explicit client islands hydrate only the interactive pieces.
 
 Sources:
 
@@ -194,7 +194,7 @@ Recommendation: use Analytics Engine only if an experiment needs server aggregat
 
 ## Account and sync
 
-Google Identity Services provides Sign in with Google, but authentication alone does not provide UtilityOS account/session/config-sync storage.
+Google Identity Services provides Sign in with Google, but authentication alone does not provide StrumentiUtili.it account/session/config-sync storage.
 
 Source: https://developers.google.com/identity/gsi/web/guides/overview
 

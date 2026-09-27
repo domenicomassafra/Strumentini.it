@@ -389,7 +389,7 @@ export function validateStaticAssetSurface(surface: StaticAssetSurface, catalog:
 }
 
 const forbiddenClaims: readonly { readonly code: string; readonly pattern: RegExp; readonly message: string }[] = [
-  { code: "PUBLIC_CODENAME", pattern: /\bUtilityOS\b/iu, message: "public copy must use neutral brand treatment until naming clearance" },
+  { code: "PUBLIC_BRAND_PLACEHOLDER", pattern: /\[BRAND\]|\bworking codename\b|\bbrand is not final\b/iu, message: "public copy must use the selected StrumentiUtili.it brand rather than a placeholder" },
   { code: "UNSUPPORTED_BEST", pattern: /\b(?:the\s+)?best\b/iu, message: "unsupported superiority claim" },
   { code: "UNSUPPORTED_UNIQUE", pattern: /\bunique\s+(?:technology|tool|suite|platform|product|workspace)\b/iu, message: "unsupported uniqueness claim" },
   { code: "UNSUPPORTED_PRIVACY", pattern: /\b(?:most\s+private|privacy[- ]first|private\s+by\s+design)\b/iu, message: "generic privacy claim must state concrete mechanics near the operation" },

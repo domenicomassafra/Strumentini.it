@@ -1,10 +1,10 @@
 # Brand and positioning brief
 
-## Codename status
+## Brand status
 
-UtilityOS is internal only.
+StrumentiUtili.it is the selected public brand.
 
-A current Canadian company already uses UtilityOS for electric/water/gas utility software and has an active Canadian trademark application. Public naming requires a separate naming/clearance sprint.
+Historical research found a collision involving the former codename. That finding is retained as decision history; StrumentiUtili.it is the selected replacement identity.
 
 ## Brand idea
 
@@ -19,7 +19,7 @@ The product should feel like:
 
 ## Positioning draft
 
-For independent knowledge workers who constantly jump between tiny online utilities, [BRAND] is a personal work-utility workspace that starts with the tools relevant to your job and keeps them ready with your safe defaults.
+For independent knowledge workers who constantly jump between tiny online utilities, StrumentiUtili.it is a personal work-utility workspace that starts with the tools relevant to your job and keeps them ready with your safe defaults.
 
 Unlike generic tool directories, it is person-first: you begin with a small configured workspace, not hundreds of cards.
 
@@ -53,7 +53,7 @@ Privacy is a proof point, not the hero claim.
 
 ## Naming brief
 
-Public name should:
+The selected public name, StrumentiUtili.it, should continue to:
 
 - be short and pronounceable in English and Italian;
 - not contain OS;
@@ -62,17 +62,15 @@ Public name should:
 - support a simple domain and abstract icon;
 - survive web, app-store, package-registry and trademark screening.
 
-Dedicated naming sprint:
+Brand verification checklist:
 
-1. generate 30–50 candidates;
-2. exact web search;
-3. domain search;
-4. GitHub/npm/PyPI/App Store/Play Store collision search;
-5. EUIPO/USPTO/UKIPO initial trademark screen;
-6. pronunciation test;
-7. social-handle check.
+1. verify exact web/domain ownership and canonical origin;
+2. verify GitHub/npm/PyPI/App Store/Play Store namespace conflicts where relevant;
+3. run EUIPO/USPTO/UKIPO initial trademark screening where required;
+4. verify Italian and English pronunciation/readability;
+5. verify social handles where they matter.
 
-Do not select a public name from brainstorming alone.
+Do not silently replace StrumentiUtili.it with a new public name without an explicit owner decision.
 
 ## Visual direction
 
@@ -88,4 +86,3 @@ Explore:
 - strong distinction between installed tools and the full library.
 
 The product should feel like an instrument panel, not a content site.
-

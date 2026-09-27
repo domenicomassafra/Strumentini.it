@@ -1,8 +1,8 @@
-# UtilityOS — Canonical Product Marketing Context
+# StrumentiUtili.it — Canonical Product Marketing Context
 
 Status: implementation and launch-messaging authority for the first validation build
 Date: 2026-09-23
-Naming status: **UtilityOS is an internal codename only. No public brand is selected or legally cleared.**
+Naming status: **StrumentiUtili.it is the owner-selected public brand. Legal/trademark clearance remains a separate release-risk check where required.**
 
 This file is not a launch announcement. It is the shared truth source for product copy, onboarding language, public tool pages, acquisition experiments, and future naming work.
 
@@ -62,13 +62,13 @@ Do not exaggerate the pain into “your workflow is broken.” These jobs are in
 
 They win for one-off facts, explanations, formulas, prose transformation, and ambiguous/semantic jobs.
 
-UtilityOS must earn preference when the operation is repeated, deterministic, file/table based, benefits from saved defaults, needs visible rules, or should stay local.
+StrumentiUtili.it must earn preference when the operation is repeated, deterministic, file/table based, benefits from saved defaults, needs visible rules, or should stay local.
 
 ### Excel / Google Sheets / Power Query
 
 They win when work already lives in a workbook, the user needs an exploratory model, or a reusable query/formula belongs inside a larger analysis.
 
-UtilityOS should target bounded moments such as:
+StrumentiUtili.it should target bounded moments such as:
 
 > I exported this file and need it ready for the next system in two minutes.
 
@@ -76,7 +76,7 @@ UtilityOS should target bounded moments such as:
 
 They win for users already living in native command/search flows, especially developers and tiny text/link commands.
 
-UtilityOS must earn value through no-install cross-platform access, local browser file/data tools, shared work defaults, role-relevant setup, and portable configuration.
+StrumentiUtili.it must earn value through no-install cross-platform access, local browser file/data tools, shared work defaults, role-relevant setup, and portable configuration.
 
 ### Established utility suites
 
@@ -151,11 +151,11 @@ Because the target value is repeat setup and deterministic/file-heavy operations
 
 ### “Why not ChatGPT?”
 
-Use ChatGPT when interpretation or generative reasoning is the job. UtilityOS is for exact/reproducible transforms, fast file-in/file-out work, visible rules, local execution, and reusable defaults without prompt/model variability.
+Use ChatGPT when interpretation or generative reasoning is the job. StrumentiUtili.it is for exact/reproducible transforms, fast file-in/file-out work, visible rules, local execution, and reusable defaults without prompt/model variability.
 
 ### “Why not Excel/Sheets?”
 
-For a durable workbook model, use a spreadsheet. UtilityOS must be faster for a bounded cleanup/transform/check task where creating or maintaining a query is overhead.
+For a durable workbook model, use a spreadsheet. StrumentiUtili.it must be faster for a bounded cleanup/transform/check task where creating or maintaining a query is overhead.
 
 ### “Why another 200-tool site?”
 
@@ -171,7 +171,7 @@ Not in the first validation build. Configuration is local and exportable. Cloud 
 
 ## Anti-fit
 
-UtilityOS is not the best choice when the user needs:
+StrumentiUtili.it is not the best choice when the user needs:
 
 - semantic interpretation or open-ended writing;
 - a project/CRM/ERP/accounting workflow;
@@ -206,7 +206,7 @@ Do not claim:
 - offline/PWA support;
 - cloud sync;
 - AI personalization;
-- selected public brand clearance.
+- formal legal/trademark review of the selected StrumentiUtili.it brand, where required.
 
 ## Customer language to test
 
@@ -370,7 +370,7 @@ Do not broad-launch the product until:
 - local configuration portability works;
 - mobile/keyboard/accessibility acceptance is green;
 - public tool pages are real working tools, not mockups;
-- public branding is either still clearly placeholder/neutral or has passed the separate naming-clearance gate.
+- public branding consistently uses StrumentiUtili.it and does not regress to placeholder or former-codename treatment.
 
 Product Hunt/community launch should wait for real interaction quality. A technical launch story is credible only if local deterministic execution, no unnecessary AI, transparent quality, and immediate try-now behavior are actually present.
 

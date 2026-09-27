@@ -7,6 +7,6 @@ Decision: **Papa Parse 5.7.0** for the first browser-local CSV vertical.
 - Root `npm audit` at selection time: 0 vulnerabilities.
 - Both candidates match the canonical RFC-style exact vectors and reject/flag the malformed-quote adversarial case.
 
-Papa wins this bounded v1 lane because browser streaming/abort ergonomics and the materially smaller browser bundle outweigh csv-parse's stronger type surface. UtilityOS does not trust Papa's permissive defaults: the production wrapper promotes quote errors to typed fatal failures, preserves duplicate headers as warnings, flags ragged rows, and independently reparses cleaned output to prove cell semantics were not changed.
+Papa wins this bounded v1 lane because browser streaming/abort ergonomics and the materially smaller browser bundle outweigh csv-parse's stronger type surface. StrumentiUtili.it does not trust Papa's permissive defaults: the production wrapper promotes quote errors to typed fatal failures, preserves duplicate headers as warnings, flags ragged rows, and independently reparses cleaned output to prove cell semantics were not changed.
 
 The losing `csv-parse` evaluation dependency was removed from the shared package files after integration; the decision remains recorded here and in Git history.

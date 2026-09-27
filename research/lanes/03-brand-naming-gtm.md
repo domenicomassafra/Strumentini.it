@@ -1,6 +1,6 @@
 # Brand, naming and go-to-market lane — 2026-09-23
 
-Status: research package for later integration. UtilityOS remains an internal codename. No name in this document has legal clearance.
+Status: historical naming research retained for decision history. StrumentiUtili.it is now the selected public brand; this document does not constitute legal clearance.
 
 ## Executive summary
 
@@ -868,9 +868,9 @@ Carry forward the shortlist and the three positioning territories, but do not co
 
 Preserve the distinction:
 
-- UtilityOS = codename;
+- StrumentiUtili.it = selected public brand;
 - shortlist = research candidates;
-- public brand = unresolved pending clearance and owner decision.
+- public brand = StrumentiUtili.it; formal legal/trademark review is separate.
 
 Most important strategic constraint:
 

@@ -3,7 +3,7 @@ import type { ToolSummary } from "../catalog/manifest";
 export type DiscoveryTool = Pick<ToolSummary, "route" | "name" | "summary" | "category">;
 
 const GENERIC_DESCRIPTION = "runs locally in your browser with bounded inputs and explicit results.";
-const BRAND = "UtilityOS";
+const BRAND = "StrumentiUtili.it";
 
 function normalizedSiteUrl(siteUrl: string | URL | undefined): string | undefined {
   if (siteUrl === undefined) return undefined;
@@ -83,7 +83,7 @@ export function buildLibraryStructuredData(
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "UtilityOS Tool Library",
+    name: "StrumentiUtili.it Tool Library",
     description: "Search deterministic local tools by task, input, category, and runtime.",
     url: canonicalUrl,
     mainEntity: {

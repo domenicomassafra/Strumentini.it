@@ -15,7 +15,7 @@
   "exactVectors": 2,
   "truthSources": [
     "fixture-policy",
-    "utilityos-quality",
+    "strumentiutili-quality",
     "whatwg-url"
   ],
   "identities": {

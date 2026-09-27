@@ -76,8 +76,8 @@ describe("public discovery surfaces", () => {
     const tool = catalog[0];
     expect(tool).toBeDefined();
     if (tool === undefined) return;
-    expect(formatPageTitle(tool.name)).toBe(`${tool.name} · UtilityOS`);
-    expect(formatPageTitle("Library · UtilityOS")).toBe("Library · UtilityOS");
+    expect(formatPageTitle(tool.name)).toBe(`${tool.name} · StrumentiUtili.it`);
+    expect(formatPageTitle("Library · StrumentiUtili.it")).toBe("Library · StrumentiUtili.it");
     expect(selectPageDescription(`${tool.name} ${genericCopy}`, tool)).toBe(tool.summary);
   });
 });

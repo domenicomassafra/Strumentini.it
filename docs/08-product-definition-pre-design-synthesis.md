@@ -7,7 +7,7 @@ Pending before implementation planning: lane 04 product-design response.
 
 ## What exists today
 
-UtilityOS is **not yet an implemented product**.
+StrumentiUtili.it is **not yet an implemented product**.
 
 There is currently:
 
@@ -242,11 +242,9 @@ Ordinary deterministic utilities may remain free forever.
 
 ## Brand status
 
-UtilityOS is codename-only.
+StrumentiUtili.it is the selected public brand.
 
-No public brand has been selected.
-
-Lane 03 preliminary shortlist:
+Historical Lane 03 preliminary shortlist, retained only as decision history:
 
 - Plerova
 - Tivanoa
@@ -259,9 +257,9 @@ Lane 03 preliminary shortlist:
 - Sivela
 - Nolda
 
-Plerova and Tivanoa had the cleanest bounded namespace observations in the lane, but **neither is selected or legally cleared**.
+Plerova and Tivanoa had the cleanest bounded namespace observations in that historical lane, but **neither is selected**.
 
-Public naming requires a second-round clearance and owner choice.
+The owner selected StrumentiUtili.it; any formal legal/trademark clearance is tracked separately.
 
 ## Engineering architecture already settled enough to preserve
 

@@ -431,7 +431,7 @@ The combination to research is:
 7. **optional account only for sync**, not required to process files/data;
 8. **portable toolbox configuration** that can be exported/imported.
 
-The intended feeling is closer to a browser-based “utility OS” for work than to a calculator directory.
+The intended feeling is closer to a browser-based “utility workspace” for work than to a calculator directory.
 
 ### Candidate target hierarchy
 

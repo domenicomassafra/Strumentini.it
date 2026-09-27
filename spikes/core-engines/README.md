@@ -1,6 +1,6 @@
 # Deterministic core-engine spikes
 
-Isolated TypeScript spikes for UtilityOS deterministic primitive engines. This
+Isolated TypeScript spikes for StrumentiUtili.it deterministic primitive engines. This
 directory is deliberately framework-neutral and has zero third-party runtime
 dependencies.
 

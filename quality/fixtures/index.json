@@ -12,7 +12,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "unicode-uax15"
@@ -32,7 +32,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "unicode-uts39",
@@ -54,7 +54,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
@@ -76,7 +76,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "unicode-uax29",
@@ -100,11 +100,11 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
-        "utilityos-lane05"
+        "strumentiutili-lane05"
       ],
       "coverage": [
         "duplicates",
@@ -122,7 +122,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
@@ -144,10 +144,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
-        "utilityos-lane05",
+        "strumentiutili-lane05",
         "fixture-policy"
       ],
       "coverage": [
@@ -165,7 +165,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "commonmark",
@@ -197,7 +197,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc4180"
@@ -221,7 +221,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc4180",
@@ -246,7 +246,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc4180",
@@ -270,7 +270,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc8259"
@@ -293,7 +293,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "yaml12",
@@ -316,7 +316,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc4648"
@@ -338,7 +338,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "nist-fips180-4",
@@ -361,7 +361,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc9562"
@@ -381,7 +381,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "whatwg-url"
@@ -402,7 +402,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "whatwg-url"
@@ -425,7 +425,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "whatwg-url",
@@ -450,7 +450,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc3339",
@@ -475,7 +475,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "iana-tzdb",
@@ -497,11 +497,11 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
-        "utilityos-lane05"
+        "strumentiutili-lane05"
       ],
       "coverage": [
         "weekend crossing",
@@ -521,7 +521,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy"
@@ -546,11 +546,11 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
-        "utilityos-lane05"
+        "strumentiutili-lane05"
       ],
       "coverage": [
         "margin/markup distinction",
@@ -571,7 +571,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy"
@@ -595,7 +595,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
@@ -619,7 +619,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "iana-media-types",
@@ -668,7 +668,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "isbn-manual"
@@ -690,7 +690,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "doi-handbook",
@@ -755,7 +755,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc5545"
@@ -776,7 +776,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "whatwg-html",
@@ -800,7 +800,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "whatwg-url",
@@ -823,11 +823,11 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "iso-qr-18004",
-        "utilityos-lane05"
+        "strumentiutili-lane05"
       ],
       "coverage": [
         "ASCII",
@@ -847,7 +847,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "nist-fips180-4",
@@ -869,7 +869,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc4180",
@@ -893,7 +893,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "pkware-appnote",
@@ -916,7 +916,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "iso-pdf2"
@@ -936,7 +936,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy"
@@ -957,7 +957,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc2104",
@@ -978,7 +978,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc7519",
@@ -999,7 +999,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc9110"
@@ -1019,7 +1019,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for UtilityOS; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc9309"

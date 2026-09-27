@@ -18,7 +18,7 @@
   "fixtureIndexSchemaVersion": 1,
   "fixtureSchemaVersion": 1,
   "truthSources": [
-    "utilityos-quality",
+    "strumentiutili-quality",
     "fixture-policy",
     "rfc3339",
     "iana-tzdb"

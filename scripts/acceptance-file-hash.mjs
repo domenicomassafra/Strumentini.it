@@ -35,7 +35,7 @@ try {
     throw new Error("mobile file-hash layout has horizontal overflow");
   }
 
-  const payload = Buffer.from("private-file-payload-utilityos-ticket-10", "utf8");
+  const payload = Buffer.from("private-file-payload-strumentiutili-ticket-10", "utf8");
   const expected = createHash("sha256").update(payload).digest("hex");
   selected = true;
   await page.getByLabel("File").setInputFiles({ name: "owner-private-name.txt", mimeType: "text/plain", buffer: payload });

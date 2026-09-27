@@ -8,4 +8,4 @@ Rules:
 - locally generated binary/image fixtures contain no third-party content;
 - malformed and XSS fixture payloads are inert test data and must never be executed;
 - a file signature is evidence of format, never proof that content is safe;
-- where no universal standard exists, a fixture states the UtilityOS product policy explicitly.
+- where no universal standard exists, a fixture states the StrumentiUtili.it product policy explicitly.

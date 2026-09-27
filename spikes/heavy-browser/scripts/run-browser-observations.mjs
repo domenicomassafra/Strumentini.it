@@ -24,8 +24,8 @@ try {
     page.on("pageerror", (error) => consoleErrors.push(error.message));
     const started = performance.now();
     await page.goto(`http://127.0.0.1:41741/${target}/`, { waitUntil: "networkidle" });
-    await page.waitForFunction(() => window.__UTILITYOS_SPIKE_RESULT__ != null, null, { timeout: 120000 });
-    const result = await page.evaluate(() => window.__UTILITYOS_SPIKE_RESULT__);
+    await page.waitForFunction(() => window.__STRUMENTIUTILI_SPIKE_RESULT__ != null, null, { timeout: 120000 });
+    const result = await page.evaluate(() => window.__STRUMENTIUTILI_SPIKE_RESULT__);
     const browserMetrics = await page.evaluate(() => ({
       usedJSHeapSize: performance.memory?.usedJSHeapSize ?? null,
       totalJSHeapSize: performance.memory?.totalJSHeapSize ?? null,

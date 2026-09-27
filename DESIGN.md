@@ -1,4 +1,4 @@
-# UtilityOS — Canonical Product Design
+# StrumentiUtili.it — Canonical Product Design
 
 Status: implementation design authority for the first validation build
 Date: 2026-09-23

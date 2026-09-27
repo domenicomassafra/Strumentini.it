@@ -6,7 +6,7 @@ Status: product research. Brand, pricing and launch model are not final.
 
 The online utility market is substantially more crowded than the initial scan suggested.
 
-UtilityOS cannot differentiate on:
+StrumentiUtili.it cannot differentiate on:
 
 - tool count;
 - privacy/client-side execution;
@@ -72,7 +72,7 @@ Observed:
 - no-login browser experience;
 - category hubs, newsletter and "Request a Tool" feedback loop.
 
-Blocker: broad freelancer utility-OS positioning is already occupied.
+Blocker: broad freelancer utility-workspace positioning is already occupied.
 
 Potential gap: no generated personal workspace, shared profile or pack installation model found.
 
@@ -252,16 +252,11 @@ Privacy-first is already common marketing. Treat local execution as architecture
 
 ## Branding findings
 
-### UtilityOS is blocked as a public brand
+### Historical codename collision
 
-Sources:
+The original naming pass found a current software-company and trademark collision involving the former codename. That collision is preserved here only as decision history and does not describe the replacement identity.
 
-- https://utilityos.com/
-- https://ised-isde.canada.ca/cipo/trademark-search/2476346
-
-UtilityOS Inc. is an active Canadian software company serving electric, water and gas utilities. A Canadian UtilityOS logo trademark application was filed on 2026-05-20 and is active/pending examination.
-
-Decision: UtilityOS remains internal codename only.
+Decision superseded by owner direction on 2026-09-27: **StrumentiUtili.it is the selected public brand.** Formal legal/trademark review, if required for release, remains a separate governance activity.
 
 ### Literal naming territory is crowded
 
@@ -418,4 +413,3 @@ Keep ordinary deterministic utilities free enough to preserve acquisition and tr
 > **Your everyday work tools, already set up for you.**
 
 The product should win on personal relevance and repeated-use convenience, not tool count.
-

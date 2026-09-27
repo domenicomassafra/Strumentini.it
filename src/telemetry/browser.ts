@@ -6,8 +6,8 @@ import {
 } from "./adapter";
 import { isSafeTelemetryIdentifier, type ToolEntrySource } from "./schema";
 
-const ENTRY_SOURCE_KEY = "utilityos:tool-entry-source:v1";
-const OPENED_KEY = "utilityos:tool-opened:v1";
+const ENTRY_SOURCE_KEY = "strumentiutili:tool-entry-source:v1";
+const OPENED_KEY = "strumentiutili:tool-opened:v1";
 let currentAdapter: TelemetryAdapter = noopTelemetryAdapter;
 let openedMarker: string | undefined;
 const pendingEntrySources = new Map<string, ToolEntrySource>();

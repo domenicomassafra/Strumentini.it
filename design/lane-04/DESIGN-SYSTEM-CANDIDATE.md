@@ -1,4 +1,4 @@
-# UtilityOS Design System Candidate
+# StrumentiUtili.it Design System Candidate
 
 Status: candidate only — intended to guide prototypes and implementation planning
 Date: 2026-09-23

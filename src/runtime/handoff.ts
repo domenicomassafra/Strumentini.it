@@ -93,7 +93,7 @@ export function compatibleHandoffTargets(
     .filter((proposal): proposal is Extract<HandoffProposal, { compatible: true }> => proposal.compatible);
 }
 
-const MESSAGE_KIND = "utilityos-handoff-v1";
+const MESSAGE_KIND = "strumentiutili-handoff-v1";
 const MAX_HANDOFF_BYTES = 2 * 1024 * 1024;
 const MAX_HANDOFF_ROWS = 100_000;
 const MAX_HANDOFF_COLUMNS = 1_000;

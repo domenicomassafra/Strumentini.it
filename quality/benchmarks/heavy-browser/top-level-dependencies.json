@@ -1,6 +1,6 @@
 {
   "version": "0.0.0",
-  "name": "utilityos-heavy-browser-spikes",
+  "name": "strumentiutili-heavy-browser-spikes",
   "dependencies": {
     "@jsquash/avif": {
       "version": "2.1.1",

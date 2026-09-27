@@ -41,7 +41,7 @@ describe("file-hash engine seam", () => {
   });
 
   it("agrees with the bounded independent Web Crypto oracle", async () => {
-    const blob = new Blob(["UtilityOS independent oracle"]);
+    const blob = new Blob(["StrumentiUtili.it independent oracle"]);
     const [incremental, oracle] = await Promise.all([
       hashBlobIncremental(blob, { chunkSize: 7 }),
       hashBlobWithWebCrypto(blob, { maxBytes: 1024 }),

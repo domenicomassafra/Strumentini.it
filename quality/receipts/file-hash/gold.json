@@ -33,7 +33,7 @@
   "fixtureIndexSchemaVersion": 1,
   "oracleRegistrySchemaVersion": 1,
   "truthSources": [
-    "utilityos-quality",
+    "strumentiutili-quality",
     "fixture-policy",
     "nist-fips180-4"
   ],

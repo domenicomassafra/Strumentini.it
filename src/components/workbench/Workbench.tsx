@@ -131,7 +131,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
     });
     publishSearchContext(context);
     try {
-      window.sessionStorage.setItem("utilityos:workbench-context:v1", JSON.stringify(context));
+      window.sessionStorage.setItem("strumentiutili:workbench-context:v1", JSON.stringify(context));
     } catch (error) {
       void error;
     }
