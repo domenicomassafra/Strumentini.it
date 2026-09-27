@@ -22,28 +22,36 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
 
 <div class="global-search">
   <button class="search-trigger" type="button" data-search-trigger aria-haspopup="dialog">
-    <span>Search tools</span>
-    <kbd>⌘/Ctrl K</kbd>
+    <span class="search-trigger-label">
+      <svg class="search-trigger-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="4.25"/><path d="M10.2 10.2 14 14"/></svg>
+      <span>Cerca uno strumento</span>
+    </span>
+    <kbd class="search-trigger-keys" aria-hidden="true">⌘K</kbd>
+    <span class="visually-hidden">Comandi: ⌘K o Ctrl+K</span>
   </button>
 
   <dialog class="search-dialog" data-search-dialog aria-labelledby="global-search-title">
     <div class="palette-shell">
-      <h2 id="global-search-title" class="visually-hidden">Search tools</h2>
-      <label class="search-label" for="global-search-input">Search by task, tool, input, or category</label>
-      <input
-        id="global-search-input"
-        class="palette-input"
-        type="search"
-        autocomplete="off"
-        role="combobox"
-        aria-autocomplete="list"
-        aria-expanded="true"
-        aria-controls="global-search-results"
-        aria-activedescendant=""
-        data-search-input
-      />
-      <div id="global-search-results" class="palette-results" role="listbox" aria-label="Tool results" data-search-results></div>
-      <div class="palette-help" aria-hidden="true"><span>↑↓ navigate</span><span>Enter open</span><span>Esc close</span></div>
+      <h2 id="global-search-title" class="visually-hidden">Cerca uno strumento</h2>
+      <div class="palette-field">
+        <svg class="palette-field-icon" viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="4.25"/><path d="M10.2 10.2 14 14"/></svg>
+        <label class="visually-hidden" for="global-search-input">Cerca per attività, strumento, ingresso o categoria</label>
+        <input
+          id="global-search-input"
+          class="palette-input"
+          type="search"
+          autocomplete="off"
+          placeholder="Cerca per attività, strumento, ingresso o categoria"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded="true"
+          aria-controls="global-search-results"
+          aria-activedescendant=""
+          data-search-input
+        />
+      </div>
+      <div id="global-search-results" class="palette-results" role="listbox" aria-label="Risultati degli strumenti" data-search-results></div>
+      <div class="palette-help"><span><kbd>↑</kbd><kbd>↓</kbd> naviga</span><span><kbd>Invio</kbd> apri</span><span><kbd>Esc</kbd> chiudi</span><span class="palette-help-hint"><kbd>⌘K</kbd> ovunque</span></div>
     </div>
   </dialog>
   <script is:inline type="application/json" id="utilityos-search-catalog" set:html={searchMetadataJson}></script>
@@ -81,6 +89,20 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
     "'": "&#39;",
   })[character] ?? character);
 
+  const runtimeLabel = (location: SearchToolMetadata["runtime"]["location"]): string => {
+    if (location === "LOCAL") return "Su questo dispositivo";
+    if (location === "REFERENCE") return "Solo riferimento";
+    return "Dati di rete";
+  };
+
+  const runtimeCode = (location: SearchToolMetadata["runtime"]["location"]): string => {
+    if (location === "LOCAL") return "locale";
+    if (location === "REFERENCE") return "rif.";
+    return "rete";
+  };
+
+  const rowIcon = '<svg class="palette-row-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 2.5h8v11l-4-2.5-4 2.5z"/></svg>';
+
   function render(): void {
     if (!results || !input) return;
     const result = search.query(input.value, context, 18);
@@ -95,7 +117,12 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
         optionIndex += 1;
         visibleRoutes.push(hit.route);
         visibleToolIds.push(hit.id);
-        return `<a id="global-search-option-${current}" class="palette-row" data-option-index="${current}" role="option" aria-selected="${current === activeIndex ? "true" : "false"}" href="${escapeHtml(hit.route)}"><span><strong>${escapeHtml(hit.name)}</strong><small>${escapeHtml(hit.summary)}</small></span><span class="row-meta">${escapeHtml(hit.category)} · ${hit.runtime.location === "LOCAL" ? "On this device" : "Network"}</span></a>`;
+        const name = escapeHtml(hit.name);
+        const summary = escapeHtml(hit.summary);
+        const detail = `${summary} · ${escapeHtml(hit.category)} · ${runtimeLabel(hit.runtime.location)}`;
+        return `<a id="global-search-option-${current}" class="palette-row" data-option-index="${current}" role="option" aria-selected="${current === activeIndex ? "true" : "false"}" href="${escapeHtml(hit.route)}" title="${detail}">`
+          + `<span class="palette-row-main"><strong title="${name}">${rowIcon}${name}</strong><small title="${summary}">${summary}</small></span>`
+          + `<span class="row-meta"><span class="row-meta-full" title="${runtimeLabel(hit.runtime.location)}">${escapeHtml(hit.category)} · ${runtimeLabel(hit.runtime.location)}</span><span class="row-meta-code">${runtimeCode(hit.runtime.location)}</span></span></a>`;
       }).join("");
       const groupId = `global-search-group-${section.id}`;
       return `<div class="palette-section" role="group" aria-labelledby="${groupId}"><h3 id="${groupId}">${escapeHtml(section.label)}</h3>${rows}</div>`;
@@ -108,7 +135,7 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
         lastZeroResultKey = intentCode;
       }
       const suggestions = result.closeIntents.map((intent) => `<button type="button" class="intent-button" data-intent="${escapeHtml(intent)}">${escapeHtml(intent)}</button>`).join("");
-      results.innerHTML = `<div class="zero-results"><strong>No matching tool</strong><p>Keep “${escapeHtml(result.query)}” and try a close catalog intent.</p>${suggestions ? `<div class="intent-list">${suggestions}</div>` : ""}<a class="request-tool" href="/library/?q=${encodeURIComponent(result.query)}#request-tool">Request this tool</a></div>`;
+      results.innerHTML = `<div class="zero-results"><strong>Nessuno strumento corrispondente</strong><p>Mantieni “${escapeHtml(result.query)}” e prova un'intenzione vicina del catalogo.</p>${suggestions ? `<div class="intent-list">${suggestions}</div>` : ""}<a class="request-tool" data-request-tool href="/library/?q=${encodeURIComponent(result.query)}#request-tool">Richiedi questo strumento</a></div>`;
       input.setAttribute("aria-activedescendant", "");
       activeIndex = 0;
       return;
@@ -200,27 +227,168 @@ const searchMetadataJson = JSON.stringify(searchMetadata).replaceAll("<", "\\u00
 </script>
 
 <style>
-  .global-search { flex: 1; max-width: 640px; }
-  .search-trigger { width: 100%; min-height: 40px; padding: 7px 10px 7px 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; text-align: left; }
-  .search-trigger kbd { border: 1px solid var(--line); border-radius: 4px; padding: 2px 5px; background: var(--canvas); font-size: .72rem; font-family: inherit; }
-  .search-dialog { width: min(720px, calc(100vw - 32px)); max-height: 72vh; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); box-shadow: 0 20px 60px rgb(0 0 0 / .2); }
-  .search-dialog::backdrop { background: rgb(0 0 0 / .3); }
-  .palette-shell { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; max-height: 72vh; }
-  .search-label { padding: 14px 16px 5px; color: var(--muted); font-size: .76rem; font-weight: 700; }
-  .palette-input { margin: 0 12px 10px; width: calc(100% - 24px); border: 1px solid var(--line); border-radius: 7px; padding: 11px 12px; background: var(--canvas); }
-  .palette-results { overflow: auto; border-top: 1px solid var(--line); }
-  .palette-section h3 { margin: 0; padding: 11px 14px 5px; color: var(--muted); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
-  .palette-row { min-height: 54px; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--line); text-decoration: none; }
-  .palette-row[aria-selected="true"] { background: var(--surface-muted); outline: 2px solid var(--action); outline-offset: -2px; }
-  .palette-row strong, .palette-row small { display: block; }
-  .palette-row small, .row-meta { color: var(--muted); font-size: .78rem; }
-  .row-meta { white-space: nowrap; }
-  .zero-results { padding: 24px 16px; }
-  .zero-results p { color: var(--muted); }
-  .intent-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
-  .intent-button, .request-tool { border: 1px solid var(--line); border-radius: 6px; background: var(--canvas); padding: 8px 10px; color: inherit; cursor: pointer; text-decoration: none; }
-  .request-tool { display: inline-flex; margin-top: 8px; }
-  .palette-help { padding: 8px 14px; display: flex; gap: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: .72rem; }
+  /* Consumer rules only. Missing W1 token-sheet entries reported to the coordinator:
+     --carta / --carta-alta / --carta-fonda, --inchiostro-2 / --inchiostro-3,
+     --rossa, --rossa-tenue, --overlay-backdrop, --gutter-width, --numeric. */
+  .global-search { flex: 1; min-width: 0; max-width: var(--container-workbench-max); }
+
+  .search-trigger {
+    width: 100%;
+    min-height: var(--control-height);
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-width) solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    text-align: start;
+    transition: border-color var(--motion-fast) var(--motion-ease), background-color var(--motion-fast) var(--motion-ease);
+  }
+  .search-trigger:hover { background: var(--surface-muted); border-color: var(--border-strong); }
+  .search-trigger-label { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; }
+  .search-trigger-icon { flex: 0 0 auto; }
+  .search-trigger kbd {
+    flex: 0 0 auto;
+    padding: var(--space-1) var(--space-2);
+    border: var(--border-width) solid var(--line);
+    border-radius: var(--radius-xs);
+    background: var(--canvas);
+    font-family: inherit;
+    font-size: var(--font-size-xs);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  /* The one sanctioned overlay exception: offset plus blur, from the elevation scale. */
+  .search-dialog {
+    width: min(100% - (var(--container-gutter) * 2), var(--measure-tool));
+    max-height: 72vh;
+    padding: 0;
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--elevation-2);
+  }
+  /* Backdrop steps with the theme instead of pinning one alpha over both. */
+  .search-dialog::backdrop { background: var(--overlay-backdrop, color-mix(in srgb, var(--canvas) 32%, black)); }
+
+  .palette-shell { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; max-height: 72vh; }
+
+  .palette-field {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: var(--space-3) var(--space-3) var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    border: var(--border-width) solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--canvas);
+    color: var(--muted);
+  }
+  .palette-field:focus-within { border-color: var(--border-strong); }
+  .palette-field-icon { flex: 0 0 auto; }
+  .palette-input {
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-2) 0;
+    border: 0;
+    background: transparent;
+  }
+  .palette-input:focus { outline: none; }
+
+  .palette-results { overflow: auto; border-top: var(--border-width) solid var(--line); }
+  /* Result markup is injected at runtime, so these rules cannot be Astro-scoped. */
+  :global(.palette-section h3) {
+    margin: 0;
+    padding: var(--space-3) var(--space-4) var(--space-1);
+    color: var(--muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  :global(.palette-row) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: var(--row-height-compact);
+    padding: var(--space-2) var(--space-4);
+    border-bottom: var(--border-width) solid var(--line);
+    text-decoration: none;
+  }
+  :global(.palette-row:hover) { background: var(--surface-muted); }
+  :global(.palette-row[aria-selected="true"]) {
+    background: var(--surface-muted);
+    /* Active marker is a rule, not a glow: one hairline at the row's own left edge. */
+    box-shadow: inset var(--state-border-width) 0 0 0 var(--action);
+  }
+  :global(.palette-row-main) { min-width: 0; display: grid; gap: var(--space-1); }
+  :global(.palette-row strong) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: var(--font-weight-semibold);
+    overflow-wrap: anywhere;
+  }
+  :global(.palette-row-icon) { flex: 0 0 auto; color: var(--muted); }
+  :global(.palette-row small) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    color: var(--muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-body);
+  }
+  :global(.row-meta) { flex: 0 0 auto; display: flex; align-items: baseline; gap: var(--space-2); color: var(--muted); font-size: var(--font-size-sm); font-variant-numeric: tabular-nums lining-nums; }
+  :global(.row-meta-full) { white-space: nowrap; }
+  :global(.row-meta-code) { display: none; font-variant-numeric: tabular-nums lining-nums; }
+
+  :global(.zero-results) { padding: var(--space-6) var(--space-4); }
+  :global(.zero-results p) { max-width: var(--measure-copy); color: var(--muted); }
+  :global(.intent-list) { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-4) 0; }
+  :global(.intent-button), :global(.request-tool) {
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-width) solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--canvas);
+    color: inherit;
+    text-decoration: none;
+  }
+  :global(.intent-button:hover), :global(.request-tool:hover) { background: var(--surface-muted); }
+  :global(.request-tool) { display: inline-flex; margin-top: var(--space-2); }
+
+  .palette-help {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    padding: var(--space-2) var(--space-4);
+    border-top: var(--border-width) solid var(--line);
+    color: var(--muted);
+    font-size: var(--font-size-xs);
+  }
+  .palette-help kbd {
+    padding: 0 var(--space-1);
+    border: var(--border-width) solid var(--line);
+    border-radius: var(--radius-xs);
+    font-family: inherit;
+    font-size: inherit;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .palette-help-hint { margin-inline-start: auto; }
+
   .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-  @media (max-width: 640px) { .search-trigger { display: none; } .row-meta { display: none; } }
+
+  @media (max-width: 640px) {
+    .search-trigger { display: none; }
+    :global(.row-meta) { display: none; }
+    .palette-help-hint { display: none; }
+  }
 </style>
