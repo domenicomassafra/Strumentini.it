@@ -1,0 +1,35 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { BusinessDayTool } from "../../components/tools/BusinessDayTool";
+---
+<BaseLayout
+  title="Business Day Calculator"
+  description="Add or count business days locally with your own workweek and excluded dates."
+>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
+      <p class="eyebrow">Date &amp; time</p>
+      <h1>Business Day Calculator</h1>
+      <p class="lede">Add working days or count them between two dates. Choose your workweek and any dates you want excluded.</p>
+      <div class="trust-strip" role="note">
+        <strong>Runs on this device.</strong>
+        <span>Your dates are not uploaded. No holiday service is queried.</span>
+      </div>
+    </header>
+
+    <BusinessDayTool client:load />
+
+    <section class="method-card" aria-labelledby="method-title">
+      <p class="eyebrow">Rules &amp; assumptions</p>
+      <h2 id="method-title">What this calculation means</h2>
+      <ul>
+        <li>The start date is excluded and the resulting/end date is included.</li>
+        <li>Your workweek controls which weekdays can count.</li>
+        <li>Excluded dates are skipped even when they fall on a working weekday.</li>
+        <li>No country holiday calendar is inferred or fetched.</li>
+        <li>Dates are calculated as calendar dates in UTC; locale changes display only.</li>
+      </ul>
+    </section>
+  </article>
+</BaseLayout>

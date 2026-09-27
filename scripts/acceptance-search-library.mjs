@@ -142,7 +142,8 @@ try {
   });
   const fixtureStarted = Date.now();
   await fixturePage.goto(`${origin}/library/?fixture=500`, { waitUntil: "networkidle" });
-  await fixturePage.getByText("500 tools", { exact: true }).waitFor();
+  await fixturePage.locator("[data-library-count]").waitFor();
+  await fixturePage.waitForFunction(() => document.querySelector("[data-library-count]")?.textContent?.trim().startsWith("500 "));
   const fixtureReadyMs = Date.now() - fixtureStarted;
   const renderedRows = await fixturePage.locator(".library-row").count();
   if (renderedRows !== 50) throw new Error(`500-tool fixture rendered ${renderedRows} rows; expected exactly 50`);

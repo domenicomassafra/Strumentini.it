@@ -36,8 +36,8 @@ describe("public discovery surfaces", () => {
     expect(locations).toHaveLength(catalog.length + 3);
     expect(new Set(locations).size).toBe(catalog.length + 3);
     expect(locations).toContain("https://example.test/");
-    expect(locations).toContain("https://example.test/library");
-    for (const tool of catalog) expect(locations).toContain(`https://example.test${tool.route}`);
+    expect(locations).toContain("https://example.test/library/");
+    for (const tool of catalog) expect(locations).toContain(`https://example.test${tool.route}/`);
   });
 
   it("advertises the sitemap without blocking public tool pages", () => {
@@ -48,7 +48,7 @@ describe("public discovery surfaces", () => {
   });
 
   it("does not invent a public host when site configuration is absent", () => {
-    expect(resolveDiscoveryUrl("/tools/example")).toBe("/tools/example");
+    expect(resolveDiscoveryUrl("/tools/example")).toBe("/tools/example/");
     expect(buildRobotsTxt()).toContain("Sitemap: /sitemap.xml");
   });
 

@@ -66,11 +66,14 @@ const quality = buildGoldQualityIndex(
 const catalogPath = resolve(root, "src/generated/catalog.ts");
 const loadersPath = resolve(root, "src/generated/tool-loaders.ts");
 const qualityPath = resolve(root, "src/generated/quality.ts");
+const catalogOutput = renderCatalogSource(artifacts);
+const loadersOutput = renderLoaderSource(artifacts);
+const qualityOutput = renderGoldQualitySource(quality.index);
 const outputs = [
-  [catalogPath, renderCatalogSource(artifacts)] as const,
-  [loadersPath, renderLoaderSource(artifacts)] as const,
-  [qualityPath, renderGoldQualitySource(quality.index)] as const,
-];
+  [catalogPath, catalogOutput],
+  [loadersPath, loadersOutput],
+  [qualityPath, qualityOutput],
+] as const;
 
 if (checkOnly) {
   const files = {
@@ -79,7 +82,7 @@ if (checkOnly) {
     quality: await readFile(qualityPath, "utf8").catch(() => ""),
   };
   assertGeneratedCatalogCurrent(artifacts, files);
-  if (files.quality !== outputs[2][1]) throw new Error(`factory catalog output is stale: src/generated/quality.ts`);
+  if (files.quality !== qualityOutput) throw new Error(`factory catalog output is stale: src/generated/quality.ts`);
   console.log(`tool-factory catalog: ${artifacts.summaries.length} tool(s), Gold receipts ${quality.index.tools.length}, outputs current`);
 } else {
   for (const [path, content] of outputs) {

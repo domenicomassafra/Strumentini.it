@@ -549,7 +549,7 @@ progress { width: 100%; margin: var(--space-2, 8px) 0; }
 
 @media (max-width: 900px) {
   .tool-surface { grid-template-columns: minmax(0, 1fr); }
-  .tool-operation { grid-template-columns: minmax(0, 1fr); }
+  .tool-operation.tool-operation { grid-template-columns: minmax(0, 1fr); }
   .tool-operation.single-column { grid-template-columns: minmax(0, 1fr); }
   .tool-operation > .result-panel { position: static; }
   .gutter {

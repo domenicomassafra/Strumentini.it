@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "toolId": "business-day",
+  "status": "GOLD",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-083",
+  "fixtureFamilies": [
+    "business-days"
+  ],
+  "exactVectors": 5,
+  "engineVersion": "1",
+  "oracleRegistrySchemaVersion": 1,
+  "fixtureIndexSchemaVersion": 1,
+  "fixtureSchemaVersion": 1,
+  "truthSources": [
+    "utilityos-quality",
+    "fixture-policy",
+    "rfc3339",
+    "iana-tzdb"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "business-days",
+      "path": "quality/fixtures/business-days/vectors.json"
+    }
+  ],
+  "identities": {
+    "manifestSha256": "edecc0b976df0f9089815f4d4d64ba36f35ac4fa6aacb56cb2ac3da95a017eb9",
+    "engineSha256": "ed8fd8a90c56ef617a06ac6dad2a36b99a9648b00b1015b230748d0801800b52",
+    "fixtureSha256": "1edebf58d15ec4672014a05554e28e229c44dd6484edb4a1069bfed7b588d4b3",
+    "fixtureIndexSha256": "dd06b638d473b380f0a4315267e2976359292ae4fbb9f4415e708239609c10ba",
+    "oracleRegistrySha256": "020191228b8349cf9822be32d124c042cafbd39aeff6349aa8c3a1b91e3e041c"
+  }
+}

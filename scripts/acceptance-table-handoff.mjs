@@ -51,7 +51,8 @@ try{
   if(dedupe.url().includes("1%2CAda")||dedupe.url().includes("1,Ada")||dedupe.url().includes("handoff="))throw new Error("handoff payload/token remained in target URL after transfer");
   if(await storageContains(dedupe,"1,Ada"))throw new Error("handoff payload persisted in browser storage");
   await dedupe.getByRole("button",{name:"Remove duplicates"}).press("Enter");
-  await dedupe.getByText("1 duplicate row removed · 2 data rows remain",{exact:true}).waitFor();
+  await dedupe.getByText("1 riga duplicata rimossa",{exact:true}).waitFor();
+  await dedupe.locator(".gutter-rows").getByText("2",{exact:true}).waitFor();
   await dedupe.getByText("id,name\n1,Ada\n2,Grace",{exact:true}).waitFor();
   await dedupe.setViewportSize({width:390,height:844});
   if(await dedupe.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth))throw new Error("CSV Dedupe 390px horizontal overflow");
@@ -61,12 +62,13 @@ try{
   await mapper.goto(`${origin}/tools/csv-column-map/`,{waitUntil:"networkidle"});
   const mapCsv="first,last,email\nAda,Lovelace,ada@example.com\nGrace,Hopper,grace@example.com";
   await mapper.getByLabel("CSV file").setInputFiles({name:"contacts.csv",mimeType:"text/csv",buffer:Buffer.from(mapCsv)});
-  await mapper.getByRole("button",{name:"Move source column 3 up"}).click();
-  await mapper.getByRole("button",{name:"Move source column 3 up"}).click();
+  await mapper.getByRole("button",{name:"Sposta in su la colonna di origine 3"}).click();
+  await mapper.getByRole("button",{name:"Sposta in su la colonna di origine 3"}).click();
   await mapper.getByLabel("Output name for source column 1").fill("first_name");
-  await mapper.getByText("Output schema:").waitFor();
-  await mapper.getByRole("button",{name:"Apply column map"}).press("Enter");
-  await mapper.getByText(/3 output columns · 0 dropped/u).waitFor();
+  await mapper.getByText("Schema di output:",{exact:false}).waitFor();
+  await mapper.getByRole("button",{name:"Applica la mappatura"}).press("Enter");
+  await mapper.getByText("3 colonne di output",{exact:true}).waitFor();
+  await mapper.locator(".gutter-rows").getByText("0",{exact:true}).first().waitFor();
   await mapper.getByText(/email,first_name,last/u).waitFor();
   await mapper.setViewportSize({width:390,height:844});
   if(await mapper.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth))throw new Error("CSV Column Map 390px horizontal overflow");

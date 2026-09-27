@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "comparison": "Unicode code-point order",
+    "stable": true,
+    "locale_aware": false
+  },
+  "vectors": [
+    {
+      "input": [
+        "b",
+        "a",
+        "A"
+      ],
+      "expected": [
+        "A",
+        "a",
+        "b"
+      ]
+    },
+    {
+      "input": [
+        "é",
+        "é"
+      ],
+      "expected": [
+        "é",
+        "é"
+      ],
+      "note": "No implicit normalization"
+    },
+    {
+      "input": [],
+      "expected": []
+    }
+  ]
+}

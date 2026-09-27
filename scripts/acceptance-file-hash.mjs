@@ -41,7 +41,7 @@ try {
   await page.getByLabel("File").setInputFiles({ name: "owner-private-name.txt", mimeType: "text/plain", buffer: payload });
   await page.getByLabel("Expected SHA-256 optional").fill(`  ${expected.toUpperCase()}  `);
   await page.getByRole("button", { name: "Calculate SHA-256" }).click();
-  await page.getByText("Checksum matches", { exact: true }).waitFor();
+  await page.getByText("Il checksum corrisponde", { exact: true }).waitFor();
   await page.getByText(expected, { exact: true }).waitFor();
 
   const allNetworkText = JSON.stringify(requestsAfterSelection);
@@ -56,14 +56,14 @@ try {
     throw new Error(`hash worker was not observed as a lazy request: ${JSON.stringify(lazyRequests)}`);
   }
 
-  await page.getByRole("button", { name: "Reset" }).click();
+  await page.getByRole("button", { name: "Reimposta" }).click();
   const large = Buffer.alloc(48 * 1024 * 1024, 0x5a);
   await page.getByLabel("File").setInputFiles({ name: "cancel-me.bin", mimeType: "application/octet-stream", buffer: large });
   await page.getByRole("button", { name: "Calculate SHA-256" }).click();
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Annulla", exact: true }).click();
   await page.getByRole("alert").filter({ hasText: "Hashing cancelled." }).waitFor();
   await sleep(200);
-  await page.getByText("Your SHA-256 digest appears here.").waitFor();
+  await page.getByText("Nessun risultato. Compila i campi e avvia lo strumento.").waitFor();
 
   const receipt = {
     schemaVersion: 1,

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "input": "&amp;",
+      "decoded": "&"
+    },
+    {
+      "input": "&lt;",
+      "decoded": "<"
+    },
+    {
+      "input": "&#x1F600;",
+      "decoded": "😀"
+    },
+    {
+      "input": "A & B",
+      "encoded_text": "A &amp; B"
+    }
+  ],
+  "security": "Entity decoding is not sanitization. Decoded text must not be inserted into an unsafe HTML sink."
+}

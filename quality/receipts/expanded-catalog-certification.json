@@ -49,7 +49,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "b63ab9ab871bbeae6786730e8d914bba08e8158fef24b13e919038161c9611fa",
+          "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
           "status": "PASS"
         }
       ],
@@ -63,7 +63,7 @@
         {
           "dimension": "mobileA11y",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "b63ab9ab871bbeae6786730e8d914bba08e8158fef24b13e919038161c9611fa",
+          "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
           "status": "PASS"
         }
       ],
@@ -77,7 +77,7 @@
         {
           "dimension": "lazyLoad",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "b63ab9ab871bbeae6786730e8d914bba08e8158fef24b13e919038161c9611fa",
+          "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
           "status": "UNVERIFIED"
         },
         {
@@ -97,7 +97,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "b63ab9ab871bbeae6786730e8d914bba08e8158fef24b13e919038161c9611fa",
+          "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
           "status": "PARTIAL"
         },
         {
@@ -1287,7 +1287,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "b63ab9ab871bbeae6786730e8d914bba08e8158fef24b13e919038161c9611fa",
+            "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
             "status": "PASS"
           }
         ]
@@ -1298,7 +1298,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "b63ab9ab871bbeae6786730e8d914bba08e8158fef24b13e919038161c9611fa",
+            "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
             "status": "PASS"
           }
         ]
@@ -1309,7 +1309,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "b63ab9ab871bbeae6786730e8d914bba08e8158fef24b13e919038161c9611fa",
+            "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
             "status": "UNVERIFIED"
           },
           {
@@ -1337,7 +1337,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "b63ab9ab871bbeae6786730e8d914bba08e8158fef24b13e919038161c9611fa",
+          "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
           "status": "PASS"
         },
         {
@@ -9328,7 +9328,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/image-resize/browser-chrome.json",
-            "sha256": "a786e2d5603516a1048aa8ae16712236ca975c62bdbc51f1f95384289b679241",
+            "sha256": "6e7e446e499bab3c881c1ca7447fd4c9b45611e2672e119f5d77a679251b9946",
             "status": "PASS"
           },
           {
@@ -9351,7 +9351,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/image-resize/browser-chrome.json",
-            "sha256": "a786e2d5603516a1048aa8ae16712236ca975c62bdbc51f1f95384289b679241",
+            "sha256": "6e7e446e499bab3c881c1ca7447fd4c9b45611e2672e119f5d77a679251b9946",
             "status": "PASS"
           },
           {
@@ -9403,7 +9403,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/image-resize/browser-chrome.json",
-          "sha256": "a786e2d5603516a1048aa8ae16712236ca975c62bdbc51f1f95384289b679241",
+          "sha256": "6e7e446e499bab3c881c1ca7447fd4c9b45611e2672e119f5d77a679251b9946",
           "status": "PASS"
         },
         {

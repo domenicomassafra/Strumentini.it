@@ -65,7 +65,7 @@ try {
     throw new Error(`Unexpected external requests after task start: ${JSON.stringify(externalRequests)}`);
   }
 
-  await page.getByRole("button", { name: "Reset" }).click();
+  await page.getByRole("button", { name: /^(?:Reset|Reimposta)$/u }).click();
   await page.getByText("Your result appears here.").waitFor();
   if ((await page.getByLabel("Start date").inputValue()) !== "") {
     throw new Error("Reset did not clear the operation state");

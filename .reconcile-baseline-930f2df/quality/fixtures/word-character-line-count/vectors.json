@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "word_boundary": "Unicode UAX #29 default",
+    "character_modes": [
+      "code_point",
+      "grapheme_cluster"
+    ],
+    "crlf": "one line break"
+  },
+  "vectors": [
+    {
+      "input": "",
+      "words": 0,
+      "lines": 0
+    },
+    {
+      "input": "hello world",
+      "words": 2,
+      "lines": 1
+    },
+    {
+      "input": "hello\r\nworld",
+      "words": 2,
+      "lines": 2
+    },
+    {
+      "input": "é",
+      "code_points": 2,
+      "grapheme_clusters": 1
+    }
+  ]
+}

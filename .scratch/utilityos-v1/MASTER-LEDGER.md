@@ -175,3 +175,16 @@ The two physical-device receipts and the rollback receipt remain EXTERNAL and ar
 2. **Gold frontier** — `GOLD_RECEIPT_MISSING` (185 tools implemented but not yet certified) and `GOLD_RECEIPT_NOT_GOLD` (Image Resize, PARTIAL pending physical receipts). This is the real 14/200 frontier, not a documentation error.
 3. **Browser evidence** — `BROWSER_ENGINE_UNPROVEN` for firefox/webkit/chromium (executables unavailable on this runner) and `BROWSER_ACCEPTANCE_BLOCKED` for the two acceptance scripts that are honestly red: `acceptance-telemetry` (the wiring defect) and `acceptance-search-library` (the pending `data-request-tool` hook owned by W4). Chrome and Edge both PASS.
 4. **New defect found by W6, owned outside this lane** — with `SITE_URL` set, 202 `METADATA_CANONICAL_MISMATCH` and 202 `SITEMAP_MISSING_URL`/`SITEMAP_UNEXPECTED_URL` remain. The build emits trailing-slash-free discovery URLs (`https://…/tools/business-day`) because `src/seo/public-discovery.ts::normalizeDiscoveryPath` strips trailing slashes, while `scripts/validate-release.ts:154` expects trailing slashes and `astro.config.mjs` sets `trailingSlash: "always"`. Either the SEO helper or the validator expectation is wrong. This is a genuine contract mismatch between two live seams, not a stale receipt, and it needs whoever owns `src/seo/**` and `src/layouts/**`. W6 did not edit across that ownership boundary.
+
+## Coordinator consolidation — 2026-09-27
+
+- All six registered redesign worktrees were audited for unique dirty state, preserved as commits, and merged into `main`.
+- The design-system merge conflict was reconciled against the live ledger token sheet and `design/WORLD.md`; dead `--radius-full` / `--radius` tokens were removed rather than weakening the guard.
+- Ticket 12 blockers are closed: a shipped telemetry bootstrap calls `configureTelemetry`, renders disclosure, requires the explicit validation cohort, and remains default-off with zero off-origin requests. Fresh telemetry acceptance: PASS.
+- The W6 canonical/sitemap mismatch is closed: discovery URLs now use the same trailing-slash contract as Astro. Public-discovery tests pass.
+- Search/Library and Onboarding acceptance were made locale-stable with semantic hooks; both pass against the built product.
+- Cross-family acceptance passes all 10 representative families, including 390px mobile, accessibility, runtime errors, hydration and task-content network privacy.
+- A real mobile regression found by that matrix was fixed: the desktop doubled selector specificity prevented the gutter from collapsing below 900px. The mobile rule now matches that specificity.
+- The fresh browser matrix records Chrome PASS and Edge PASS; Playwright Chromium/Firefox/WebKit are UNAVAILABLE on this host rather than reported as failures. Every runnable sibling acceptance is PASS.
+- Current software gates: `npm test` 316/316 PASS; `npm run check` 0 errors/warnings/hints; static build 204 pages PASS; `wrangler deploy --dry-run` PASS.
+- Remaining boundaries are not synthesized: physical iOS Safari + Android Chrome Image Resize evidence, verified rollback evidence, a real public production URL, browser engines unavailable on this host, and Gold certification for 185 implemented-but-unverified catalog tools.

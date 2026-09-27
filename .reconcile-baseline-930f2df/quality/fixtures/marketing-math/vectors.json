@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "spend": "200.00",
+      "revenue": "1000.00",
+      "roas": "5",
+      "roas_percent": "500"
+    },
+    {
+      "spend": "200.00",
+      "conversions": "8",
+      "cpa": "25.00"
+    },
+    {
+      "spend": "200.00",
+      "clicks": "100",
+      "cpc": "2.00"
+    },
+    {
+      "spend": "200.00",
+      "impressions": "100000",
+      "cpm": "2.00"
+    },
+    {
+      "conversions": "25",
+      "visits": "1000",
+      "conversion_rate_percent": "2.5"
+    }
+  ],
+  "invalid": [
+    {
+      "denominator": "0",
+      "expected": "typed-undefined-error"
+    }
+  ]
+}

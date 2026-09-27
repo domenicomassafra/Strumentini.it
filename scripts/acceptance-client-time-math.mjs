@@ -57,10 +57,10 @@ try {
   const setup = await context.newPage();
   await setup.goto(`${origin}/`, { waitUntil: "networkidle" });
   await setup.locator('[data-ready="true"]').waitFor();
-  await setup.getByRole("heading", { name: "Work Profile" }).waitFor();
-  await setup.getByLabel("Timezone").fill("Europe/Rome");
-  await setup.getByLabel("Currency").fill("EUR");
-  await setup.getByRole("button", { name: "Save Work Profile" }).click();
+  await setup.locator("#profile-title").waitFor();
+  await setup.getByLabel("Fuso orario").fill("Europe/Rome");
+  await setup.getByLabel("Valuta").fill("EUR");
+  await setup.getByRole("button", { name: "Salva il Profilo di lavoro" }).click();
   await setup.waitForFunction(async () => {
     const db = await new Promise((resolve, reject) => {
       const request = indexedDB.open("utility-workbench", 1);
@@ -79,15 +79,15 @@ try {
   await setup.close();
 
   await acceptRoute(context, "/tools/timezone-overlap", ["Europe/Rome", "America/New_York"], async (page, start) => {
-    await page.getByText("Work Profile default", { exact: true }).waitFor();
+    await page.getByText(/^(?:Work Profile default|Valore predefinito dal profilo)$/u, { exact: true }).waitFor();
     const homeTimezone = page.locator("label").filter({ hasText: /^Home timezone/u }).locator("input").first();
     if ((await homeTimezone.inputValue()) !== "Europe/Rome") {
       throw new Error("Timezone tool did not receive saved Work Profile timezone");
     }
     await page.getByLabel("Date in your home timezone", { exact: true }).fill("2026-09-23");
     start();
-    await page.getByRole("button", { name: "Find overlap" }).press("Enter");
-    await page.getByText("1 shared window", { exact: true }).waitFor();
+    await page.getByRole("button", { name: "Trova la sovrapposizione" }).press("Enter");
+    await page.getByText("1 finestra condivisa", { exact: true }).waitFor();
   });
 
   await acceptRoute(context, "/tools/rate-converter", ["50.00"], async (page, start) => {
@@ -102,7 +102,7 @@ try {
   });
 
   await acceptRoute(context, "/tools/margin-markup", ["100.00", "80.00"], async (page, start) => {
-    await page.getByText("Work Profile default", { exact: true }).waitFor();
+    await page.getByText(/^(?:Work Profile default|Valore predefinito dal profilo)$/u, { exact: true }).waitFor();
     if ((await page.getByLabel("Currency label").inputValue()) !== "EUR") {
       throw new Error("Margin tool did not receive saved Work Profile currency");
     }
@@ -110,7 +110,7 @@ try {
     await page.getByLabel("Cost").fill("80.00");
     start();
     await page.getByRole("button", { name: "Calculate margin & markup" }).press("Enter");
-    await page.getByText("EUR 20.00 profit", { exact: true }).waitFor();
+    await page.getByText("EUR 20.00 di profitto", { exact: true }).waitFor();
     await page.getByText(/20.00% · profit ÷ price/u).waitFor();
     await page.getByText(/25.00% · profit ÷ cost/u).waitFor();
   });

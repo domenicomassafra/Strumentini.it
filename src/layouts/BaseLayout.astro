@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import ShellChrome from "../components/shell/ShellChrome.astro";
+import TelemetryBootstrap from "../components/telemetry/TelemetryBootstrap.astro";
 import ToolRouteTelemetry from "../components/telemetry/ToolRouteTelemetry.astro";
 import { catalog } from "../generated/catalog";
 import tokenSheet from "../styles/global.css?raw";
@@ -10,6 +11,7 @@ import {
   buildWebsiteStructuredData,
   formatPageTitle,
   normalizeDiscoveryPath,
+  resolveDiscoveryUrl,
   selectPageDescription,
   serializeJsonLd,
 } from "../seo/public-discovery";
@@ -28,7 +30,7 @@ interface Props {
 const { title, description, image = "/og-image.png", imageAlt = "Local utility workbench", type = "website", noindex = false, lang = "it" } = Astro.props;
 const pathname = normalizeDiscoveryPath(Astro.url.pathname);
 const configuredSite = Astro.site?.href ?? import.meta.env.PUBLIC_SITE_URL;
-const canonicalUrl = configuredSite === undefined ? pathname : new URL(pathname, configuredSite).href;
+const canonicalUrl = resolveDiscoveryUrl(pathname, configuredSite);
 const imageUrl = configuredSite === undefined ? image : new URL(image, configuredSite).href;
 const robots = noindex ? "noindex, nofollow" : "index, follow";
 const tool = catalog.find((entry) => entry.route === pathname);
@@ -92,5 +94,6 @@ const darkThemeColor = tokenSheet.split("prefers-color-scheme: dark")[1] === und
       <ToolRouteTelemetry pathname={pathname} />
       <slot />
     </ShellChrome>
+    <TelemetryBootstrap />
   </body>
 </html>

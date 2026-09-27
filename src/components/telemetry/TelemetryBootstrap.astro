@@ -1,0 +1,52 @@
+---
+const cohortEnabled = import.meta.env.PUBLIC_VALIDATION_COHORT === "true";
+const endpointConfigured = typeof import.meta.env.PUBLIC_TELEMETRY_ENDPOINT === "string"
+  && import.meta.env.PUBLIC_TELEMETRY_ENDPOINT.trim() !== "";
+const active = cohortEnabled && endpointConfigured;
+---
+
+<details class="telemetry-disclosure" data-telemetry-disclosure data-telemetry-active={active ? "true" : "false"}>
+  <summary>Privacy e telemetria di validazione</summary>
+  <p>
+    La telemetria di validazione è {active ? "attiva per questa coorte esplicitamente comunicata" : "disattivata per impostazione predefinita"}.
+    Quando è attiva invia solo eventi consentiti e privi del contenuto delle attività.
+  </p>
+</details>
+
+<script>
+  import { createHttpTelemetryTransport } from "../../telemetry/adapter";
+  import { configureTelemetry } from "../../telemetry/browser";
+
+  const enabled = import.meta.env.PUBLIC_VALIDATION_COHORT === "true";
+  const endpoint = import.meta.env.PUBLIC_TELEMETRY_ENDPOINT?.trim();
+  const transport = enabled && endpoint ? createHttpTelemetryTransport(endpoint) : undefined;
+
+  configureTelemetry({
+    enabled: enabled && transport !== undefined,
+    disclosed: true,
+    cohort: "validation",
+    ...(transport === undefined ? {} : { transport }),
+  });
+</script>
+
+<style>
+  .telemetry-disclosure {
+    width: min(100% - (var(--container-gutter) * 2), var(--container-max));
+    margin: 0 auto var(--space-6);
+    padding-top: var(--space-3);
+    border-top: var(--border-width) solid var(--line);
+    color: var(--muted);
+    font-size: var(--font-size-xs);
+  }
+
+  .telemetry-disclosure summary {
+    width: fit-content;
+    cursor: pointer;
+    color: var(--text-muted);
+  }
+
+  .telemetry-disclosure p {
+    max-width: var(--measure-copy);
+    margin: var(--space-2) 0 0;
+  }
+</style>

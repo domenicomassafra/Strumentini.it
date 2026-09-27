@@ -193,7 +193,7 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
             ))}
           </div>
           <div class={styles.actions}>
-            <button class={styles.primary} type="button" disabled={!canContinue} onClick={() => setStage(2)}>
+            <button class={styles.primary} type="button" data-onboarding-action="continue-context" disabled={!canContinue} onClick={() => setStage(2)}>
               {COPY.onboarding.continue}
             </button>
             <a href="/library/">{COPY.yourTools.browseLibrary}</a>
@@ -218,7 +218,7 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
           </div>
           <div class={styles.actions}>
             <button type="button" onClick={() => setStage(1)}>{COPY.onboarding.back}</button>
-            <button class={styles.primary} type="button" onClick={() => setStage(3)}>{COPY.onboarding.continue}</button>
+            <button class={styles.primary} type="button" data-onboarding-action="continue-jobs" onClick={() => setStage(3)}>{COPY.onboarding.continue}</button>
           </div>
         </section>
       )}
@@ -231,10 +231,10 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
           </div>
           <p class={styles.muted}>{COPY.onboarding.hints[3]}</p>
           <div class={styles.profileGrid}>
-            <label><span>{COPY.workProfile.fields.locale}</span><input value={profileDraft.locale} onInput={(event) => setProfile("locale", event.currentTarget.value)} /></label>
-            <label><span>{COPY.workProfile.fields.timezone}</span><input value={profileDraft.timezone} onInput={(event) => setProfile("timezone", event.currentTarget.value)} /></label>
-            <label><span>{COPY.workProfile.fields.currency}</span><input value={profileDraft.currency} onInput={(event) => setProfile("currency", event.currentTarget.value.toUpperCase())} /></label>
-            <label><span>{COPY.workProfile.fields.dateFormat}</span><select value={profileDraft.dateFormat} onChange={(event) => setProfile("dateFormat", event.currentTarget.value as WorkProfile["dateFormat"])}><option value="system">{COPY.workProfile.options.system}</option><option value="day-first">{COPY.workProfile.options.dayFirst}</option><option value="month-first">{COPY.workProfile.options.monthFirst}</option></select></label>
+            <label><span>{COPY.workProfile.fields.locale}</span><input name="locale" value={profileDraft.locale} onInput={(event) => setProfile("locale", event.currentTarget.value)} /></label>
+            <label><span>{COPY.workProfile.fields.timezone}</span><input name="timezone" value={profileDraft.timezone} onInput={(event) => setProfile("timezone", event.currentTarget.value)} /></label>
+            <label><span>{COPY.workProfile.fields.currency}</span><input name="currency" value={profileDraft.currency} onInput={(event) => setProfile("currency", event.currentTarget.value.toUpperCase())} /></label>
+            <label><span>{COPY.workProfile.fields.dateFormat}</span><select name="dateFormat" value={profileDraft.dateFormat} onChange={(event) => setProfile("dateFormat", event.currentTarget.value as WorkProfile["dateFormat"])}><option value="system">{COPY.workProfile.options.system}</option><option value="day-first">{COPY.workProfile.options.dayFirst}</option><option value="month-first">{COPY.workProfile.options.monthFirst}</option></select></label>
             <label><span>{COPY.workProfile.fields.numberFormat}</span><select value={profileDraft.numberFormat} onChange={(event) => setProfile("numberFormat", event.currentTarget.value as WorkProfile["numberFormat"])}><option value="system">{COPY.workProfile.options.system}</option><option value="decimal-comma">{COPY.workProfile.options.decimalComma}</option><option value="decimal-point">{COPY.workProfile.options.decimalPoint}</option></select></label>
             <label><span>{COPY.workProfile.fields.preferredUnits}</span><select value={profileDraft.preferredUnits} onChange={(event) => setProfile("preferredUnits", event.currentTarget.value as WorkProfile["preferredUnits"])}><option value="metric">{COPY.workProfile.options.metric}</option><option value="imperial">{COPY.workProfile.options.imperial}</option><option value="mixed">{COPY.workProfile.options.mixed}</option></select></label>
           </div>
@@ -244,7 +244,7 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
           </fieldset>
           <div class={styles.actions}>
             <button type="button" onClick={() => setStage(2)}>{COPY.onboarding.back}</button>
-            <button class={styles.primary} type="button" onClick={beginReview}>{COPY.onboarding.review}</button>
+            <button class={styles.primary} type="button" data-onboarding-action="review" onClick={beginReview}>{COPY.onboarding.review}</button>
           </div>
         </section>
       )}
@@ -287,7 +287,7 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
           </div>
           <div class={styles.actions}>
             <button type="button" onClick={() => setStage(3)}>{COPY.onboarding.back}</button>
-            <button class={styles.primary} type="button" disabled={!ready || selectedCount === 0 || saving || completed} onClick={() => void acceptStarter()}>{saving ? COPY.onboarding.saving : COPY.onboarding.save}</button>
+            <button class={styles.primary} type="button" data-onboarding-action="save" disabled={!ready || selectedCount === 0 || saving || completed} onClick={() => void acceptStarter()}>{saving ? COPY.onboarding.saving : COPY.onboarding.save}</button>
           </div>
           {completed && <p class={styles.success} role="status">{COPY.onboarding.saved}</p>}
         </section>

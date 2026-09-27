@@ -79,23 +79,23 @@ try {
   record("first-task-uninterrupted", "A tool job stays fully usable without ever completing onboarding", "tool route hydrated with no onboarding interstitial");
 
   // AC-02.1: the flow gates on a real answer rather than pre-selecting for the user.
-  const continueButton = page.getByRole("button", { name: "Continue" });
+  const continueButton = page.locator("[data-onboarding-action='continue-context']");
   assert(await continueButton.isDisabled(), "Stage 1 Continue was enabled with no work context selected");
   await page.locator("[data-context-id]").first().click();
   await continueButton.click();
   record("context-required", "Stage 1 cannot advance until a work context is chosen", "Continue stayed disabled until a context was selected");
 
-  await page.getByRole("heading", { name: "Which small jobs repeat?" }).waitFor();
-  await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("heading", { name: "Set safe defaults" }).waitFor();
+  await page.locator("#jobs-title").waitFor();
+  await page.locator("[data-onboarding-action='continue-jobs']").click();
+  await page.locator("#defaults-title").waitFor();
   record("jobs-stage-traversed", "The recurring-jobs stage is reachable and does not trap the user", "advanced to safe defaults without selecting a job");
 
   // AC-03: safe defaults are captured once here rather than re-asked per tool.
-  await page.getByLabel("Locale").fill("it-IT");
-  await page.getByLabel("Currency").fill("EUR");
-  await page.getByLabel("Date format").selectOption("day-first");
-  await page.getByRole("button", { name: "Review starter tools" }).click();
-  await page.getByRole("heading", { name: "Review your starter tools" }).waitFor();
+  await page.locator("[name='locale']").fill("it-IT");
+  await page.locator("[name='currency']").fill("EUR");
+  await page.locator("[name='dateFormat']").selectOption("day-first");
+  await page.locator("[data-onboarding-action='review']").click();
+  await page.locator("#review-title").waitFor();
 
   // AC-05: a small, distinct, reviewable set — never the 200-tool catalogue.
   const review = page.locator("section[aria-labelledby='review-title']");
@@ -112,23 +112,23 @@ try {
   assert(unproven.length === 0, `Starter review offered non-Gold tool(s): ${unproven.join(", ")}`);
   record("starter-tools-gold", "Every starter tool is Gold-certified before it can be a default surface", `all ${offeredIds.length} starter tool(s) are Gold in the certification index`);
 
-  const save = page.getByRole("button", { name: "Save starter set" });
+  const save = page.locator("[data-onboarding-action='save']");
   await save.waitFor();
   assert(await save.isEnabled(), "Save starter set stayed disabled for a valid review");
   await save.click();
 
   // AC-02.4: the saved starter set lands in the local workbench, with no account.
   await page.waitForURL(`${origin}/`, { timeout: 15000 });
-  await page.getByRole("heading", { name: "Your Tools" }).waitFor();
+  await page.locator("#your-tools").waitFor();
   const workbenchRows = await page.locator("[data-tool-id]").count();
   assert(workbenchRows > 0, "Workbench shows no tools after onboarding saved a starter set");
   record("starter-persisted-locally", "The saved starter set is installed in the local Workbench", `${workbenchRows} installed tool row(s) after save`);
 
   // AC-03 / PRODUCT.md principle 2: the profile captured once in onboarding is reused by
   // the installed tools, so the user is never asked the same question twice.
-  const localeRow = page.getByText("locale: it-IT from Work Profile", { exact: false });
+  const localeRow = page.locator("#your-tools").getByText("it-IT", { exact: false });
   await localeRow.first().waitFor();
-  record("profile-default-reused", "Onboarding defaults are reused by installed tools instead of being re-asked", "an installed tool displays 'locale: it-IT from Work Profile'");
+  record("profile-default-reused", "Onboarding defaults are reused by installed tools instead of being re-asked", "an installed tool displays the persisted it-IT profile value");
 
   // DEC-21 / principle 4: onboarding answers never leave the device.
   const offOrigin = requests.filter((request) => !request.url.startsWith(origin));

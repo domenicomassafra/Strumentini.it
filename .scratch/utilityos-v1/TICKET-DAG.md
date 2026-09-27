@@ -58,9 +58,9 @@ Ticket 09 — Image Resize is implementation-complete but remains **PARTIAL / WA
 
 **Ticket 11 — Generated onboarding + packs — is implemented and browser-accepted.** The onboarding flow runs end to end against the real build: 4 stages, no blocking modal, an interrupted first task stays usable, and the saved starter set installs into the local Workbench. Proof: `quality/receipts/onboarding/browser-acceptance.json` (11 checks, PASS). The starter set is 10 tools, and every one of them is Gold-certified — verified against the certification index, not asserted.
 
-**Ticket 12 — Falsification telemetry — is substantially built, with one real defect.** The privacy-safe schema, allowlisted adapter, explicit disclosed-validation-cohort gate, and experiment reporting all exist and are covered by `tests/telemetry.test.ts`. The defect: no shipped caller ever invokes `configureTelemetry`, so every tracked event currently resolves to the permanent no-op adapter, and the disclosed-cohort flag is never passed and no disclosure surface is rendered. Proof: `quality/receipts/telemetry/browser-acceptance.json`, which reports these three blockers rather than passing over them. Ticket 12 is therefore **BUILT, NOT SHIPPED**.
+**Ticket 12 — Falsification telemetry — SHIPPED in the local product surface.** The privacy-safe schema, allowlisted adapter, explicit disclosed-validation-cohort gate, disclosure UI, and a shipped `configureTelemetry` caller now exist. Default posture remains disabled and the fresh browser acceptance observes zero off-origin writes; a validation cohort only enables the adapter when the explicit public cohort flag and endpoint are both present. Proof: `quality/receipts/telemetry/browser-acceptance.json`, PASS.
 
-**Ticket 13 — Release certification + validation deploy — the validator exists and runs; the receipts it demands do not all exist.** `scripts/validate-release.ts` checks tool surface, Cloudflare static assets, public metadata, sitemap/robots, truthful claims, Gold receipt binding, browser evidence, physical-device evidence, and rollback. It currently reports FAIL, and that is the correct output. Proof: `quality/receipts/release/validation.json`.
+**Ticket 13 — Release certification + validation deploy — software path complete, release evidence still gated.** `scripts/validate-release.ts` checks tool surface, Cloudflare static assets, public metadata, sitemap/robots, truthful claims, Gold receipt binding, browser evidence, physical-device evidence, and rollback. Canonical/sitemap trailing-slash drift is fixed, all runnable sibling browser acceptances pass, Chrome and Edge pass the fresh matrix, and `wrangler deploy --dry-run` passes. The release gate must still remain closed where evidence does not exist: physical iOS/Android receipts, verified rollback, public production URL, unavailable local browser engines, and the 185 implemented-but-unverified Gold frontier.
 
 There is currently **no unblocked software implementation ticket** in the original v1 gate sense, because Ticket 09's physical acceptance is external. The 200-tool expansion tranche proceeded in parallel and is integrated.
 
@@ -77,8 +77,8 @@ Recent completion evidence:
 - Ticket 06 — `49cad5a` + lazy-bundle receipt fix `d3d7dca`.
 - Ticket 07 — `7914de0`.
 - Ticket 11 — onboarding browser acceptance PASS, 11 checks (`quality/receipts/onboarding/browser-acceptance.json`).
-- Ticket 12 — telemetry acceptance ran and reports 3 real blockers (`quality/receipts/telemetry/browser-acceptance.json`).
-- Ticket 13 — release validator runs and reports FAIL against real, unfabricated external gaps (`quality/receipts/release/validation.json`).
+- Ticket 12 — telemetry acceptance PASS with default-off locality, disclosure and explicit validation-cohort wiring (`quality/receipts/telemetry/browser-acceptance.json`).
+- Ticket 13 — software acceptance matrix is green for every runnable sibling; Chrome/Edge and Cloudflare dry-run pass. Remaining release blockers are evidence/certification boundaries and are not synthesized.
 
 ## Acceptance-criteria coverage
 

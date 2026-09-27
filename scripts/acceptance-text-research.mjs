@@ -77,20 +77,20 @@ try {
   const diffBefore = "a\nb\n";
   const diffAfter = "a\nc\n";
   const diffReceipt = await acceptPage(browser, "/tools/text-diff", ["a%0Ab", "a%0Ac", "a\nb", "a\nc"], async (page, startTask) => {
-    await page.getByLabel("Before").fill(diffBefore);
-    await page.getByLabel("After").fill(diffAfter);
+    await page.getByRole("textbox", { name: "Prima", exact: true }).fill(diffBefore);
+    await page.getByRole("textbox", { name: "Dopo", exact: true }).fill(diffAfter);
     startTask();
-    const submit = page.getByRole("button", { name: "Compare text" });
+    const submit = page.getByRole("button", { name: "Confronta i testi" });
     await submit.focus();
     await page.keyboard.press("Enter");
-    await page.getByText("Removed", { exact: true }).waitFor();
-    await page.getByText("Added", { exact: true }).waitFor();
+    await page.getByText("Rimossa", { exact: true }).waitFor();
+    await page.getByText("Aggiunta", { exact: true }).waitFor();
     const removedText = await page.locator(".diff-remove").innerText();
     const addedText = await page.locator(".diff-add").innerText();
-    if (!removedText.includes("−") || !removedText.includes("Removed")) {
+    if (!removedText.includes("Rimossa")) {
       throw new Error("text diff removal semantics depend on more than visible symbol+text");
     }
-    if (!addedText.includes("+") || !addedText.includes("Added")) {
+    if (!addedText.includes("Aggiunta")) {
       throw new Error("text diff addition semantics depend on more than visible symbol+text");
     }
   });

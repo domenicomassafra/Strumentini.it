@@ -18,8 +18,14 @@ export function normalizeDiscoveryPath(pathname: string): string {
   return absolute.length > 1 ? absolute.replace(/\/+$/u, "") : absolute;
 }
 
-export function resolveDiscoveryUrl(pathname: string, siteUrl?: string | URL): string {
+export function canonicalDiscoveryPath(pathname: string): string {
   const path = normalizeDiscoveryPath(pathname);
+  if (path === "/" || /\/[^/]+\.[a-z0-9]+$/iu.test(path)) return path;
+  return `${path}/`;
+}
+
+export function resolveDiscoveryUrl(pathname: string, siteUrl?: string | URL): string {
+  const path = canonicalDiscoveryPath(pathname);
   const base = normalizedSiteUrl(siteUrl);
   return base === undefined ? path : new URL(path, base).href;
 }

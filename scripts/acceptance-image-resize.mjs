@@ -99,8 +99,8 @@ try {
 
   started = true;
   await page.getByRole("button", { name: "Resize" }).click();
-  await page.getByRole("button", { name: "Cancel" }).waitFor();
-  await page.getByRole("button", { name: "Cancel" }).click();
+  await page.getByRole("button", { name: /^(?:Cancel|Annulla)$/u }).waitFor();
+  await page.getByRole("button", { name: /^(?:Cancel|Annulla)$/u }).click();
   const cancelledAlert = page.getByRole("alert");
   await cancelledAlert.waitFor();
   if (!/Cancelled/u.test(await cancelledAlert.innerText())) {
@@ -186,7 +186,7 @@ try {
   const fileInput = page.locator("#image-resize-file");
   if (!(await fileInput.isVisible())) throw new Error("Mobile Files/Photos input is not visible");
 
-  await page.getByRole("button", { name: "Reset" }).click();
+  await page.getByRole("button", { name: /^(?:Reset|Reimposta)$/u }).click();
   await page.getByText("Your verified local output appears here.").waitFor();
 
   const corruptPng = await readFile(

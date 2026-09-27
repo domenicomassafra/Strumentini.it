@@ -207,7 +207,7 @@ const families = [
       await page.getByLabel("Price / revenue").fill("100");
       await page.getByLabel("Cost").fill("80");
       await page.getByRole("button", { name: "Calculate margin & markup" }).press("Enter");
-      await page.getByText(/20\.00 profit/u).waitFor();
+      await page.getByText(/20\.00 (?:profit|di profit)/u).waitFor();
     },
   },
   {
@@ -299,7 +299,7 @@ const families = [
       await page.getByLabel("File").setInputFiles({ name: "owner-private-name.txt", mimeType: "text/plain", buffer: fileFixture });
       await page.getByLabel("Expected SHA-256 optional").fill(fileDigest);
       await page.getByRole("button", { name: "Calculate SHA-256" }).press("Enter");
-      await page.getByText("Checksum matches", { exact: true }).waitFor();
+      await page.getByText(/checksum (?:matches|corrisponde)/u).waitFor();
       await page.getByText(fileDigest, { exact: true }).waitFor();
     },
   },
@@ -315,7 +315,7 @@ const families = [
       await page.getByLabel("Width").fill("1");
       await page.getByLabel("Height").fill("1");
       await page.getByRole("button", { name: "Resize" }).press("Enter");
-      await page.locator(".result-value").filter({ hasText: "1×1" }).waitFor();
+      await page.locator(".gutter-value").filter({ hasText: "1×1" }).waitFor();
     },
   },
 ];

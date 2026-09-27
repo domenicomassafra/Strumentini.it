@@ -3,7 +3,7 @@
   "kind": "browser-acceptance",
   "subject": "onboarding",
   "generatedBy": "scripts/acceptance-onboarding.mjs",
-  "revision": "155c4cd1413031d6e66913fb02cda35673dfef92",
+  "revision": "909c181f8382e17c691e5cf6369738b019a448f5",
   "status": "PASS",
   "browser": "chrome",
   "viewport": {
@@ -52,13 +52,13 @@
       "id": "starter-persisted-locally",
       "description": "The saved starter set is installed in the local Workbench",
       "status": "PASS",
-      "observed": "1 installed tool row(s) after save"
+      "observed": "10 installed tool row(s) after save"
     },
     {
       "id": "profile-default-reused",
       "description": "Onboarding defaults are reused by installed tools instead of being re-asked",
       "status": "PASS",
-      "observed": "an installed tool displays 'locale: it-IT from Work Profile'"
+      "observed": "an installed tool displays the persisted it-IT profile value"
     },
     {
       "id": "no-off-origin-traffic",

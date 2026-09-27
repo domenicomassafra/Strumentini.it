@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "base": "200",
+      "percent": "20",
+      "result": "40"
+    },
+    {
+      "from": "80",
+      "to": "100",
+      "change_percent": "25"
+    },
+    {
+      "part": "25",
+      "whole": "200",
+      "percent": "12.5"
+    }
+  ],
+  "invalid": [
+    {
+      "whole": "0",
+      "expected": "typed-undefined-error"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "type": "image/png",
+      "offset": 0,
+      "magic_hex": "89504e470d0a1a0a"
+    },
+    {
+      "type": "image/jpeg",
+      "offset": 0,
+      "magic_hex": "ffd8ff",
+      "note": "prefix only; complete structural validation is separate"
+    },
+    {
+      "type": "image/webp",
+      "offset": 0,
+      "magic_ascii": "RIFF",
+      "secondary_offset": 8,
+      "secondary_ascii": "WEBP"
+    },
+    {
+      "type": "application/pdf",
+      "offset": 0,
+      "magic_ascii": "%PDF-",
+      "note": "preflight discriminator, not full conformance"
+    },
+    {
+      "type": "application/zip",
+      "offset": 0,
+      "magic_hex_any": [
+        "504b0304",
+        "504b0506",
+        "504b0708"
+      ]
+    },
+    {
+      "type": "image/gif",
+      "offset": 0,
+      "magic_ascii_any": [
+        "GIF87a",
+        "GIF89a"
+      ]
+    }
+  ],
+  "policy": "Magic bytes are evidence, not proof of safety. Extension and MIME labels do not override content validation."
+}

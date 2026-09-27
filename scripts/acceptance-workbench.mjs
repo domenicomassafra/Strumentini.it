@@ -57,36 +57,36 @@ try {
   if (response?.status() !== 200) throw new Error("Workbench route did not return 200");
   await waitReady(page);
 
-  await page.getByRole("heading", { name: "Your Tools", exact: true }).first().waitFor();
+  await page.locator("#your-tools-title").waitFor();
   if (await page.getByText("DOI / ISBN Normalizer", { exact: true }).count()) {
     throw new Error("Full catalog rendered before user requested add-tool choices");
   }
 
-  const addTool = page.getByRole("button", { name: "Add a tool" });
+  const addTool = page.getByRole("button", { name: "Aggiungi uno strumento" });
   await addTool.focus();
   await page.keyboard.press("Enter");
   await page.getByText("DOI / ISBN Normalizer", { exact: true }).waitFor();
 
   const doiRow = page.locator("li").filter({ hasText: "DOI / ISBN Normalizer" });
-  const doiAdd = doiRow.getByRole("button", { name: "Add" });
+  const doiAdd = doiRow.getByRole("button", { name: "Aggiungi" });
   await doiAdd.focus();
   await page.keyboard.press("Enter");
 
   const addToolsToggle = page.locator("[aria-controls='available-tools']");
   if ((await addToolsToggle.getAttribute("aria-expanded")) !== "true") await addToolsToggle.click();
   const fileHashChoice = page.locator("#available-tools li").filter({ hasText: "File Hash / Checksum Verifier" });
-  await fileHashChoice.getByRole("button", { name: "Add" }).click();
+  await fileHashChoice.getByRole("button", { name: "Aggiungi" }).click();
 
   let ids = await installedIds(page);
   if (!ids.includes("business-day") || !ids.includes("doi-isbn-normalizer") || !ids.includes("file-hash")) {
     throw new Error("Add-tool behavior did not update installed state");
   }
 
-  await page.getByLabel("Manage File Hash / Checksum Verifier").click();
-  const moveHashUp = page.getByRole("button", { name: "Move File Hash / Checksum Verifier up" });
+  await page.getByLabel("Gestisci File Hash / Checksum Verifier").click();
+  const moveHashUp = page.getByRole("button", { name: "Sposta File Hash / Checksum Verifier in alto" });
   await moveHashUp.focus();
   await page.keyboard.press("Enter");
-  await page.getByRole("button", { name: "Move File Hash / Checksum Verifier up" }).focus();
+  await page.getByRole("button", { name: "Sposta File Hash / Checksum Verifier in alto" }).focus();
   await page.keyboard.press("Enter");
   await waitSaved(page);
   ids = await installedIds(page);
@@ -99,26 +99,26 @@ try {
     throw new Error("Installed order did not survive reload through IndexedDB");
   }
 
-  await page.getByLabel("Currency").fill("EUR");
-  await page.getByLabel("Sun").check();
-  await page.getByRole("button", { name: "Save Work Profile" }).click();
+  await page.getByLabel("Valuta").fill("EUR");
+  await page.getByLabel("Dom").check();
+  await page.getByRole("button", { name: "Salva il Profilo di lavoro" }).click();
   await waitSaved(page);
   await page.reload({ waitUntil: "networkidle" });
   await waitReady(page);
-  if ((await page.getByLabel("Currency").inputValue()) !== "EUR") {
+  if ((await page.getByLabel("Valuta").inputValue()) !== "EUR") {
     throw new Error("Work Profile edit did not persist");
   }
-  if (!(await page.getByLabel("Sun").isChecked())) {
+  if (!(await page.getByLabel("Dom").isChecked())) {
     throw new Error("Work Profile workweek did not persist");
   }
-  const businessProfileProvenance = page.locator('[data-tool-id="business-day"] small', { hasText: "from Work Profile" });
+  const businessProfileProvenance = page.locator('[data-tool-id="business-day"] small', { hasText: "dal Profilo di lavoro" });
   await businessProfileProvenance.waitFor();
   if (!(await businessProfileProvenance.innerText()).includes("SUN")) {
     throw new Error("Saved Work Profile value is not visible at the tool use site");
   }
 
   const businessRow = page.locator('[data-tool-id="business-day"]');
-  await businessRow.getByRole("link", { name: "Open" }).click();
+  await businessRow.getByRole("link", { name: "Apri" }).click();
   await page.getByText("Work Profile default", { exact: true }).waitFor();
   await page.getByLabel("Sat").check();
   await page.getByText("Current task override", { exact: true }).waitFor();
@@ -138,7 +138,7 @@ try {
   }
 
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Export configuration" }).click();
+  await page.getByRole("button", { name: "Esporta la configurazione" }).click();
   const download = await downloadPromise;
   const path = await download.path();
   if (!path) throw new Error("Config export did not produce a downloadable artifact");
@@ -152,12 +152,12 @@ try {
   }
 
   const beforeInvalid = await installedIds(page);
-  await page.getByLabel("Choose configuration to import").setInputFiles({
+  await page.getByLabel("Scegli la configurazione da importare").setInputFiles({
     name: "bad.json",
     mimeType: "application/json",
     buffer: Buffer.from("{not-json"),
   });
-  await page.getByRole("alert").getByText("Import not applied.").waitFor();
+  await page.getByRole("alert").getByText("Importazione non applicata.").waitFor();
   const afterInvalid = await installedIds(page);
   if (JSON.stringify(beforeInvalid) !== JSON.stringify(afterInvalid)) {
     throw new Error("Malformed import mutated Workbench state");
@@ -180,21 +180,21 @@ try {
     },
     preferences: { compactRows: true },
   };
-  await page.getByLabel("Choose configuration to import").setInputFiles({
+  await page.getByLabel("Scegli la configurazione da importare").setInputFiles({
     name: "valid.json",
     mimeType: "application/json",
     buffer: Buffer.from(JSON.stringify(validConfig)),
   });
-  await page.getByText("Import preview", { exact: true }).waitFor();
+  await page.getByText("Anteprima importazione", { exact: true }).waitFor();
   if (JSON.stringify(await installedIds(page)) !== JSON.stringify(beforeInvalid)) {
     throw new Error("Validated import mutated state before explicit apply");
   }
-  await page.getByRole("button", { name: "Apply import" }).click();
+  await page.getByRole("button", { name: "Applica l'importazione" }).click();
   await waitSaved(page);
   if (JSON.stringify(await installedIds(page)) !== JSON.stringify(validConfig.installedTools)) {
     throw new Error("Validated import did not apply atomically");
   }
-  if ((await page.getByLabel("Currency").inputValue()) !== "GBP") {
+  if ((await page.getByLabel("Valuta").inputValue()) !== "GBP") {
     throw new Error("Imported Work Profile was not applied");
   }
 
@@ -215,7 +215,7 @@ try {
   if (buttonHeights.some((height) => height < 44)) {
     throw new Error("Visible Workbench button below 44px touch target");
   }
-  await page.getByRole("navigation", { name: "Mobile primary" }).waitFor();
+  await page.locator("[data-shell-mobile-nav]").waitFor();
 
   await context.close();
 
@@ -235,10 +235,10 @@ try {
   await waitReady(deniedPage);
   await deniedPage.getByRole("status", { name: "Storage warning" }).waitFor();
   const deniedBusinessRow = deniedPage.locator('[data-tool-id="business-day"]');
-  await deniedPage.getByLabel("Manage Business Day Calculator").click();
-  await deniedBusinessRow.getByRole("button", { name: "Remove" }).focus();
+  await deniedPage.getByLabel("Gestisci Business Day Calculator").click();
+  await deniedBusinessRow.getByRole("button", { name: "Rimuovi" }).focus();
   await deniedPage.keyboard.press("Enter");
-  await deniedPage.getByText("No tools installed yet.", { exact: true }).waitFor();
+  await deniedPage.getByText("Nessuno strumento installato.", { exact: true }).waitFor();
   await deniedPage.getByRole("status", { name: "Storage warning" }).waitFor();
   await deniedContext.close();
 

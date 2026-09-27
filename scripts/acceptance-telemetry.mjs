@@ -86,7 +86,7 @@ try {
 
   // The shipped bundle currently has no caller for configureTelemetry, so every tracked
   // event resolves to the permanent no-op adapter. That is a real defect, not a pass.
-  const componentSource = await readFile(resolve(root, "src/components/telemetry/ToolRouteTelemetry.astro"), "utf8");
+  const componentSource = await readFile(resolve(root, "src/components/telemetry/TelemetryBootstrap.astro"), "utf8");
   const layoutSource = await readFile(resolve(root, "src/layouts/BaseLayout.astro"), "utf8");
   const wired = /configureTelemetry\(/u.test(`${componentSource}\n${layoutSource}`);
   record(

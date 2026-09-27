@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "input": "﻿a,b\r\n 1 , 2 \r\n",
+      "policy": {
+        "strip_utf8_bom": true,
+        "line_endings": "LF",
+        "trim_unquoted_outer_space": false
+      },
+      "expected": "a,b\n 1 , 2 \n"
+    },
+    {
+      "input": "a;b\n1;2\n",
+      "detected_delimiter": ";",
+      "confidence": "high"
+    },
+    {
+      "input": "a\tb\n1\t2\n",
+      "detected_delimiter": "TAB",
+      "confidence": "high"
+    },
+    {
+      "input": "a,b\n1,2,3\n",
+      "expected": "ragged-row-warning"
+    }
+  ]
+}
