@@ -25,27 +25,27 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
 
 <section class="library-workspace" aria-labelledby="library-title">
   <header class="library-heading">
-    <p class="library-eyebrow">Library</p>
-    <h1 id="library-title">Find the tool, not a card wall.</h1>
-    <p>Search deterministic catalog metadata and narrow by what the tool accepts or where it runs.</p>
+    <p class="library-eyebrow">Libreria</p>
+    <h1 id="library-title">Trova lo strumento, non un muro di schede.</h1>
+    <p>Cerca fra i metadati deterministici del catalogo e restringi per ciò che lo strumento accetta o per dove viene eseguito.</p>
   </header>
 
-  <form class="library-controls" data-library-form aria-label="Filter Library tools">
-    <label class="library-search" for="library-search"><span>Search</span><input id="library-search" name="q" type="search" autocomplete="off" placeholder="Try “working day”" /></label>
-    <label><span>Category</span><select name="category"><option value="">All</option>{facets.categories.map((value) => <option value={value}>{value}</option>)}</select></label>
-    {tagFacets.length > 0 && <label><span>Pack / role</span><select name="tag"><option value="">All</option>{tagFacets.map((value) => <option value={value}>{value}</option>)}</select></label>}
-    <label><span>Input</span><select name="input"><option value="">All</option>{facets.inputTypes.map((value) => <option value={value}>{value}</option>)}</select></label>
-    <label><span>Runtime</span><select name="runtime"><option value="">All</option><option value="LOCAL">On this device</option><option value="NETWORK">Uses network</option></select></label>
-    <label><span>Installed</span><select name="installed"><option value="">All</option><option value="installed">Installed</option><option value="not-installed">Not installed</option></select></label>
+  <form class="library-controls" data-library-form aria-label="Filtra gli strumenti della Libreria">
+    <label class="library-search" for="library-search"><span>Ricerca</span><input id="library-search" name="q" type="search" autocomplete="off" placeholder="Prova “giornata lavorativa”" /></label>
+    <label><span>Categoria</span><select name="category"><option value="">Tutte</option>{facets.categories.map((value) => <option value={value}>{value}</option>)}</select></label>
+    {tagFacets.length > 0 && <label><span>Pack / ruolo</span><select name="tag"><option value="">Tutti</option>{tagFacets.map((value) => <option value={value}>{value}</option>)}</select></label>}
+    <label><span>Ingresso</span><select name="input"><option value="">Tutti</option>{facets.inputTypes.map((value) => <option value={value}>{value}</option>)}</select></label>
+    <label><span>Esecuzione</span><select name="runtime"><option value="">Tutte</option><option value="LOCAL">Su questo dispositivo</option><option value="NETWORK">Usa la rete</option></select></label>
+    <label><span>Installati</span><select name="installed"><option value="">Tutti</option><option value="installed">Installati</option><option value="not-installed">Non installati</option></select></label>
   </form>
 
-  <div class="library-summary" aria-live="polite"><strong data-library-count>0 tools</strong><a href="/library/">Clear filters</a></div>
+  <div class="library-summary" aria-live="polite"><strong data-library-count>0 strumenti</strong><a href="/library/" data-library-clear><svg class="library-icon" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M3 8h10"/></svg><span>Azzera i filtri</span></a></div>
   <div class="library-list" data-library-results></div>
-  <nav class="library-pagination" aria-label="Library pages" data-library-pagination></nav>
+  <nav class="library-pagination" aria-label="Pagine della Libreria" data-library-pagination></nav>
   <aside class="request-box" id="request-tool">
-    <strong>Missing a deterministic utility?</strong>
-    <p>Keep your current search in the URL and request the tool without generated filler.</p>
-    <button type="button" data-request-button>Request this tool</button>
+    <strong>Manca un'utilità deterministica?</strong>
+    <p>Tieni la ricerca corrente nell'URL e richiedi lo strumento senza riempitivi generati.</p>
+    <button type="button" data-request-tool data-request-button>Richiedi questo strumento</button>
     <span data-request-status role="status"></span>
   </aside>
   <script is:inline type="application/json" id="utilityos-library-catalog" set:html={libraryMetadataJson}></script>
@@ -87,10 +87,22 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   })[character] ?? character);
 
   const runtimeLabel = (tool: SearchToolMetadata): string => {
-    if (tool.runtime.location === "LOCAL") return "On this device";
-    if (tool.runtime.location === "REFERENCE") return "Reference only";
-    return "Uses network data";
+    if (tool.runtime.location === "LOCAL") return "Su questo dispositivo";
+    if (tool.runtime.location === "REFERENCE") return "Solo riferimento";
+    return "Usa dati di rete";
   };
+
+  const runtimeCode = (tool: SearchToolMetadata): string => {
+    if (tool.runtime.location === "LOCAL") return "locale";
+    if (tool.runtime.location === "REFERENCE") return "rif.";
+    return "rete";
+  };
+
+  // A 1px hairline marker, not a coloured card: the row is ruled like the rest of the ledger.
+  const searchIcon = '<svg class="library-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="4.25"/><path d="M10.2 10.2 14 14"/></svg>';
+  const openIcon = '<svg class="library-icon library-icon-open" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 3l7 5-7 5"/></svg>';
+  const prevIcon = '<svg class="library-icon" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 3L5 8l5 5"/></svg>';
+  const nextIcon = '<svg class="library-icon" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3l5 5-5 5"/></svg>';
 
   function stateFromLocation(): LibraryState {
     return parseLibraryState(window.location.search);
@@ -122,22 +134,29 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     } else {
       lastZeroResultKey = "";
     }
-    count.textContent = `${page.total} ${page.total === 1 ? "tool" : "tools"}`;
+    count.textContent = `${page.total} ${page.total === 1 ? "strumento" : "strumenti"}`;
     if (page.items.length === 0) {
       const closeIntents = state.q ? search.query(state.q, context, 4).closeIntents : [];
       const suggestions = closeIntents.map((intent) => `<button type="button" data-close-intent="${escapeHtml(intent)}">${escapeHtml(intent)}</button>`).join("");
-      const reason = state.q ? `No tools match “${escapeHtml(state.q)}”.` : "No tools match these filters.";
-      results.innerHTML = `<div class="library-zero"><strong>${reason}</strong><p>Your query and filters are preserved. Try fewer filters or request this exact tool.</p>${suggestions ? `<div class="close-intents">${suggestions}</div>` : ""}</div>`;
+      const reason = state.q ? `Nessuno strumento corrisponde a “${escapeHtml(state.q)}”.` : "Nessuno strumento corrisponde a questi filtri.";
+      results.innerHTML = `<div class="library-zero"><strong>${reason}</strong><p>Ricerca e filtri restano nell'URL. Prova a togliere qualche filtro o richiedi esattamente questo strumento.</p>${suggestions ? `<div class="close-intents">${suggestions}</div>` : ""}</div>`;
     } else {
       results.innerHTML = page.items.filter((tool) => isLocalToolRoute(tool.route)).map((tool) => {
         const installed = (context.installedToolIds ?? []).includes(tool.id);
-        return `<a class="library-row" data-library-tool-id="${escapeHtml(tool.id)}" href="${escapeHtml(tool.route)}"><span class="tool-main"><strong>${escapeHtml(tool.name)}</strong><small>${escapeHtml(tool.summary)}</small></span><span class="tool-category">${escapeHtml(tool.category)}</span><span class="tool-runtime">${runtimeLabel(tool)}</span><span class="tool-action">${installed ? "Added · Open" : "Open"}</span></a>`;
+        const name = escapeHtml(tool.name);
+        const summary = escapeHtml(tool.summary);
+        const detail = `${summary} · ${escapeHtml(tool.category)} · ${runtimeLabel(tool)}`;
+        return `<a class="library-row" data-library-tool-id="${escapeHtml(tool.id)}" href="${escapeHtml(tool.route)}" title="${detail}">`
+          + `<span class="tool-main"><strong title="${name}">${searchIcon}${name}</strong><small title="${summary}">${summary}</small></span>`
+          + `<span class="tool-category" title="${escapeHtml(tool.category)}">${escapeHtml(tool.category)}</span>`
+          + `<span class="tool-runtime"><span class="tool-runtime-full" title="${runtimeLabel(tool)}">${runtimeLabel(tool)}</span><span class="tool-runtime-code">${runtimeCode(tool)}</span></span>`
+          + `<span class="tool-action">${installed ? "Aggiunto · Apri" : "Apri"}${openIcon}</span></a>`;
       }).join("");
     }
     const links: string[] = [];
-    if (page.page > 1) links.push(`<button type="button" data-page="${page.page - 1}">Previous</button>`);
-    links.push(`<span>Page ${page.page} of ${page.totalPages}</span>`);
-    if (page.page < page.totalPages) links.push(`<button type="button" data-page="${page.page + 1}">Next</button>`);
+    if (page.page > 1) links.push(`<button type="button" data-page="${page.page - 1}">${prevIcon}<span>Precedente</span></button>`);
+    links.push(`<span class="library-page-label">Pagina ${page.page} di ${page.totalPages}</span>`);
+    if (page.page < page.totalPages) links.push(`<button type="button" data-page="${page.page + 1}"><span>Successiva</span>${nextIcon}</button>`);
     pagination.innerHTML = links.join("");
   }
 
@@ -191,7 +210,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     render();
   });
   requestButton?.addEventListener("click", () => {
-    if (requestStatus) requestStatus.textContent = `Request target: “${stateFromLocation().q || "new utility"}”. Submission is not connected in this validation build.`;
+    if (requestStatus) requestStatus.textContent = `Richiesta: “${stateFromLocation().q || "nuova utilità"}”. L'invio non è collegato in questa build di validazione.`;
   });
   render();
   if (new URLSearchParams(window.location.search).get("focus") === "search") {
@@ -200,32 +219,204 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
 </script>
 
 <style>
-  .library-workspace { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 44px 0 88px; }
-  .library-heading { max-width: 760px; margin-bottom: 28px; }
-  .library-heading h1 { margin: 4px 0 10px; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1; letter-spacing: -.035em; }
-  .library-heading p { color: var(--muted); }
-  .library-eyebrow { margin: 0; font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; font-weight: 800; color: var(--muted); }
-  .library-controls { display: grid; grid-template-columns: minmax(260px, 1fr) repeat(4, minmax(120px, auto)); gap: 8px; padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .library-controls label { display: grid; gap: 4px; }
-  .library-controls label > span { color: var(--muted); font-size: .72rem; font-weight: 700; }
-  .library-controls input, .library-controls select { width: 100%; min-height: 44px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: inherit; }
-  .library-summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font-size: .82rem; }
-  .library-summary a { min-height: 44px; display: inline-flex; align-items: center; }
-  .library-list { border-top: 1px solid var(--line); }
-  .library-workspace :global(.library-row) { min-height: 52px; display: grid; grid-template-columns: minmax(0, 1fr) 130px 140px minmax(90px, auto); gap: 14px; align-items: center; border-bottom: 1px solid var(--line); text-decoration: none; }
-  .library-workspace :global(.tool-main) { min-width: 0; }
-  .library-workspace :global(.tool-main strong), .library-workspace :global(.tool-main small) { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .library-workspace :global(.tool-main small), .library-workspace :global(.tool-category), .library-workspace :global(.tool-runtime) { color: var(--muted); font-size: .8rem; }
-  .library-workspace :global(.tool-action) { justify-self: end; font-weight: 700; color: var(--action); }
-  .library-workspace :global(.library-zero) { padding: 32px 0; border-bottom: 1px solid var(--line); }
-  .library-workspace :global(.library-zero p) { color: var(--muted); }
-  .library-workspace :global(.close-intents) { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .library-workspace :global(.close-intents button) { min-height: 44px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: inherit; padding: 7px 9px; cursor: pointer; }
-  .library-pagination { min-height: 56px; display: flex; justify-content: center; align-items: center; gap: 12px; }
-  .library-pagination :global(button), .request-box button { min-height: 44px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: inherit; padding: 8px 10px; cursor: pointer; }
-  .request-box { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); }
+  /* Consumer rules only. Missing W1 token-sheet entries reported to the coordinator:
+     --carta / --carta-alta / --carta-fonda, --inchiostro / --inchiostro-2 / --inchiostro-3,
+     --rossa / --rossa-tenue, --verde / --ambra / --blu-nota, --gutter-width, --numeric. */
+  .library-workspace {
+    width: min(100% - (var(--container-gutter) * 2), var(--container-workbench-max));
+    margin-inline: auto;
+    padding-block: var(--space-12) var(--space-16);
+  }
+
+  .library-heading { max-width: var(--reading-max); margin-bottom: var(--space-8); }
+  .library-heading h1 {
+    margin: var(--space-1) 0 var(--space-3);
+    max-width: var(--measure-copy);
+    font-size: var(--font-size-h2);
+    line-height: var(--line-height-heading);
+    letter-spacing: -0.02em;
+  }
+  .library-heading p { margin: 0; color: var(--muted); }
+  .library-eyebrow {
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Six controls, fluid tracks: the grid fits as many as the width allows instead of
+     forcing six fields into four fixed columns. */
+  .library-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    gap: var(--space-3) var(--space-4);
+    padding-block: var(--space-4);
+    border-block: var(--border-width) solid var(--line);
+  }
+  .library-controls label { display: grid; gap: var(--space-1); min-width: 0; }
+  .library-controls label > span {
+    color: var(--muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+  }
+  .library-controls input, .library-controls select {
+    width: 100%;
+    min-width: 0;
+    min-height: var(--control-height-touch);
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-width) solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: inherit;
+  }
+  .library-search { grid-column: span 2; }
+
+  .library-summary {
+    min-height: var(--control-height-touch);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    color: var(--muted);
+    font-size: var(--font-size-sm);
+  }
+  .library-summary strong { font-variant-numeric: tabular-nums lining-nums; font-weight: var(--font-weight-semibold); }
+  .library-summary a { min-height: var(--control-height-touch); display: inline-flex; align-items: center; gap: var(--space-2); }
+  .library-summary a:hover { color: var(--ink); }
+
+  .library-list { border-top: var(--border-width) solid var(--line); }
+
+  /* Fluid ledger columns: name takes the remaining width, the two metadata columns
+     share it by ratio, and the action column is content-sized. */
+  .library-workspace :global(.library-row) {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.34fr) minmax(0, 0.42fr) auto;
+    gap: var(--space-4);
+    align-items: baseline;
+    min-height: var(--row-height-compact);
+    padding-block: var(--space-3);
+    border-bottom: var(--border-width) solid var(--line);
+    text-decoration: none;
+    transition: background-color var(--motion-fast) var(--motion-ease);
+  }
+  /* Active-row marker: one hairline rule, ink only, inside the row's own left edge. */
+  .library-workspace :global(.library-row::before) {
+    content: "";
+    position: absolute;
+    inset-block: -1px;
+    inset-inline-start: calc(var(--space-4) * -1);
+    width: var(--state-border-width);
+    background: var(--action);
+    opacity: 0;
+    transition: opacity var(--motion-fast) var(--motion-ease);
+  }
+  .library-workspace :global(.library-row:hover) { background: var(--surface-muted); }
+  .library-workspace :global(.library-row:hover::before),
+  .library-workspace :global(.library-row:focus-visible::before) { opacity: 1; }
+  .library-workspace :global(.library-row:focus-visible) {
+    outline: var(--focus-width) solid var(--focus-ring);
+    outline-offset: calc(var(--focus-offset) * -1);
+    background: var(--surface-muted);
+  }
+
+  .library-workspace :global(.tool-main) { min-width: 0; display: grid; gap: var(--space-1); }
+  .library-workspace :global(.tool-main strong) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: var(--font-weight-semibold);
+    /* Name wraps to a second line rather than truncating silently. */
+    overflow-wrap: anywhere;
+  }
+  .library-workspace :global(.tool-main small) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    color: var(--muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-body);
+  }
+  .library-workspace :global(.tool-category),
+  .library-workspace :global(.tool-runtime) {
+    min-width: 0;
+    color: var(--muted);
+    font-size: var(--font-size-sm);
+    overflow-wrap: anywhere;
+  }
+  .library-workspace :global(.tool-runtime) { display: flex; align-items: baseline; gap: var(--space-2); }
+  .library-workspace :global(.tool-runtime-code) { display: none; font-variant-numeric: tabular-nums lining-nums; }
+  .library-workspace :global(.tool-action) {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+  }
+  .library-workspace :global(.library-row:hover .tool-action) { color: var(--action); }
+  .library-workspace :global(.library-icon) { flex: 0 0 auto; }
+  .library-workspace :global(.tool-main .library-icon) { color: var(--muted); }
+  .library-workspace :global(.tool-action .library-icon-open) { opacity: 0; transition: opacity var(--motion-fast) var(--motion-ease); }
+  .library-workspace :global(.library-row:hover .tool-action .library-icon-open) { opacity: 1; }
+
+  .library-workspace :global(.library-zero) { padding-block: var(--space-8); border-bottom: var(--border-width) solid var(--line); }
+  .library-workspace :global(.library-zero p) { max-width: var(--measure-copy); color: var(--muted); }
+  .library-workspace :global(.close-intents) { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
+  .library-workspace :global(.close-intents button) {
+    min-height: var(--control-height-touch);
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-width) solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: inherit;
+  }
+  .library-workspace :global(.close-intents button:hover) { background: var(--surface-muted); }
+
+  .library-pagination {
+    min-height: var(--space-16);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .library-pagination :global(button), .request-box button {
+    min-height: var(--control-height-touch);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border: var(--border-width) solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: inherit;
+  }
+  .library-pagination :global(button:hover), .request-box button:hover { background: var(--surface-muted); }
+  .library-pagination :global(.library-page-label) { color: var(--muted); font-size: var(--font-size-sm); font-variant-numeric: tabular-nums lining-nums; }
+
+  .request-box { margin-top: var(--space-8); padding-top: var(--space-6); border-top: var(--border-width) solid var(--line); }
   .request-box p, .request-box span { color: var(--muted); }
-  .request-box span { margin-left: 10px; font-size: .8rem; }
-  @media (max-width: 840px) { .library-controls { grid-template-columns: 1fr 1fr; } .library-search { grid-column: 1 / -1; } .library-workspace :global(.library-row) { grid-template-columns: minmax(0, 1fr) auto; padding: 8px 0; } .library-workspace :global(.tool-category), .library-workspace :global(.tool-runtime) { display: none; } }
-  @media (max-width: 520px) { .library-workspace { padding-top: 28px; padding-bottom: 104px; } .library-controls { grid-template-columns: 1fr; } .library-search { grid-column: auto; } }
+  .request-box span { margin-left: var(--space-3); font-size: var(--font-size-sm); }
+
+  @media (max-width: 840px) {
+    .library-controls { grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); }
+    .library-search { grid-column: 1 / -1; }
+    .library-workspace :global(.library-row) { grid-template-columns: minmax(0, 1fr) auto; }
+    .library-workspace :global(.tool-category) { display: none; }
+    .library-workspace :global(.tool-runtime-full) { display: none; }
+    .library-workspace :global(.tool-runtime-code) { display: inline; }
+  }
+
+  @media (max-width: 520px) {
+    .library-workspace { padding-block: var(--space-8) var(--space-16); }
+    .library-search { grid-column: auto; }
+    .library-summary { align-items: flex-start; flex-direction: column; gap: var(--space-2); }
+  }
 </style>
