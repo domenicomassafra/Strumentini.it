@@ -306,6 +306,75 @@
 
 .recentList a { display: inline-flex; }
 
+/* ------------------------------------------------------------------- packs -- */
+
+.packList {
+  border-top: var(--border-width) solid var(--border);
+}
+
+.pack {
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.pack > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--gutter-width);
+  gap: var(--space-5);
+  min-height: var(--row-height);
+  padding: var(--space-3) 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.pack > summary::-webkit-details-marker { display: none; }
+.pack > summary > span:first-child { display: grid; gap: var(--space-1); min-width: 0; }
+.pack > summary small { color: var(--text-muted); }
+
+.packCount {
+  align-self: stretch;
+  display: grid;
+  place-items: center end;
+  min-width: 0;
+  padding-left: var(--space-4);
+  border-left: var(--border-width) solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.packBody {
+  padding: 0 0 var(--space-5);
+}
+
+.packJobs {
+  margin: 0 0 var(--space-3);
+  color: var(--text-muted);
+}
+
+.packChecklist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.packChecklist li {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-top: var(--border-width) solid var(--border);
+}
+
+.packChecklist li > span:first-child {
+  color: var(--text-muted);
+  font-family: var(--font-family-mono);
+}
+
+.packChecklist li > span:last-child { display: grid; gap: var(--space-1); }
+.packChecklist small { color: var(--text-muted); }
+.packActions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
+
 /* ----------------------------------------------------------------- warning -- */
 
 .warning {
@@ -462,4 +531,6 @@
 
   .warning { align-items: stretch; flex-direction: column; }
   .addTools li { align-items: stretch; flex-direction: column; }
+  .pack > summary { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+  .packCount { place-items: start; padding: var(--space-2) 0 0; border-left: 0; border-top: var(--border-width) solid var(--border); }
 }

@@ -1,0 +1,15 @@
+---
+const token = typeof import.meta.env.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN === "string"
+  ? import.meta.env.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN.trim()
+  : "";
+const configuration = token === "" ? "" : JSON.stringify({ token });
+---
+
+{token !== "" && (
+  <script
+    is:inline
+    type="module"
+    src="https://static.cloudflareinsights.com/beacon.min.js"
+    data-cf-beacon={configuration}
+  ></script>
+)}

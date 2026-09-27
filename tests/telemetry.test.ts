@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { businessDayManifest } from "../src/tools/business-day/manifest";
 import businessDayModule from "../src/tools/business-day/module";
@@ -62,6 +63,13 @@ describe("privacy-safe telemetry schema", () => {
 });
 
 describe("telemetry adapter isolation", () => {
+  it("keeps aggregate Cloudflare Web Analytics outside Tool Runtime and longitudinal telemetry", () => {
+    const source = readFileSync(new URL("../src/components/analytics/CloudflareWebAnalytics.astro", import.meta.url), "utf8");
+    expect(source).toContain("PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN");
+    expect(source).toContain("https://static.cloudflareinsights.com/beacon.min.js");
+    expect(source).not.toMatch(/tool-runtime|telemetry\/|configureTelemetry|createHttpTelemetryTransport/u);
+  });
+
   it("is disabled without an explicit disclosed validation cohort", () => {
     const transport = createMemoryTelemetryTransport();
     const adapter = createAllowlistedTelemetryAdapter({ enabled: true, transport });

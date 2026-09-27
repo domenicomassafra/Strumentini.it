@@ -78,6 +78,19 @@ export const COPY = {
     addLabel: (name: string) => `Aggiungi ${name} alla tua area di lavoro`,
   },
 
+  packs: {
+    title: "Pacchetti di lavoro",
+    lede: "Ogni pacchetto spiega a chi serve, quali attività copre e perché propone ogni strumento. Aggiunge solo strumenti già certificati Gold.",
+    installedCount: (count: number) => `${count} installati`,
+    progress: (installed: number, total: number) => `${installed}/${total} presenti`,
+    jobs: "Attività",
+    defaultReason: (label: string) => `Incluso nel contesto ${label}.`,
+    addRecommended: (count: number) => `Aggiungi ${count} consigliati`,
+    complete: "Consigliati già presenti",
+    remove: "Rimuovi il pacchetto",
+    manualRemoval: "Il pacchetto resta comprensibile anche se rimuovi manualmente uno dei suoi strumenti: il tool non viene reinstallato finché non scegli di aggiungere di nuovo i consigliati.",
+  },
+
   workProfile: {
     title: "Profilo di lavoro",
     storedLocally: "Salvato in locale",

@@ -2,6 +2,8 @@
 
 This validation build keeps deterministic product behavior independent from analytics. The default adapter is a no-op. Longitudinal custom telemetry is enabled only when an application explicitly supplies a disclosed validation cohort and a transport; the tool runtime, Workbench persistence, onboarding, search, handoff, and configuration import/export do not wait for or depend on that transport.
 
+Aggregate page/performance measurement is a separate optional seam: `src/components/analytics/CloudflareWebAnalytics.astro` emits Cloudflare's Web Analytics beacon only when `PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN` is configured. It imports neither Tool Runtime nor the longitudinal telemetry adapter. With no token, as in local validation builds, no Cloudflare script or request is emitted.
+
 ## Event contract
 
 `src/telemetry/schema.ts` is the fail-closed allowlist. The approved event names are:

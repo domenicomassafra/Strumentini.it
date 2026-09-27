@@ -58,16 +58,16 @@ try {
   await waitReady(page);
 
   await page.locator("#your-tools-title").waitFor();
-  if (await page.getByText("DOI / ISBN Normalizer", { exact: true }).count()) {
+  if (await page.locator("#your-tools").getByText("DOI / ISBN Normalizer", { exact: true }).count()) {
     throw new Error("Full catalog rendered before user requested add-tool choices");
   }
 
   const addTool = page.getByRole("button", { name: "Aggiungi uno strumento" });
   await addTool.focus();
   await page.keyboard.press("Enter");
-  await page.getByText("DOI / ISBN Normalizer", { exact: true }).waitFor();
+  await page.locator("#available-tools").getByText("DOI / ISBN Normalizer", { exact: true }).waitFor();
 
-  const doiRow = page.locator("li").filter({ hasText: "DOI / ISBN Normalizer" });
+  const doiRow = page.locator("#available-tools li").filter({ hasText: "DOI / ISBN Normalizer" });
   const doiAdd = doiRow.getByRole("button", { name: "Aggiungi" });
   await doiAdd.focus();
   await page.keyboard.press("Enter");
@@ -204,6 +204,44 @@ try {
     throw new Error("Imported configuration did not persist across reload");
   }
 
+  const clientPack = page.locator("[data-pack-id='client-services']");
+  await clientPack.locator("summary").click();
+  const addRecommended = clientPack.locator("[data-pack-add='client-services']");
+  await addRecommended.focus();
+  await page.keyboard.press("Enter");
+  await waitSaved(page);
+  let packedState = await readStoredState(page);
+  if (!packedState?.packs?.includes("client-services")) {
+    throw new Error("Installing a recommended pack did not persist the pack identity");
+  }
+  if (!packedState?.installedTools?.includes("rate-converter")) {
+    throw new Error("Installing a recommended pack did not add its missing Gold tools");
+  }
+
+  await page.getByLabel("Gestisci Rate Converter").click();
+  await page.locator('[data-tool-id="rate-converter"]').getByRole("button", { name: "Rimuovi" }).click();
+  await waitSaved(page);
+  packedState = await readStoredState(page);
+  if (packedState?.installedTools?.includes("rate-converter")) {
+    throw new Error("Manual tool removal after pack installation did not stick");
+  }
+  if (!packedState?.packs?.includes("client-services")) {
+    throw new Error("Manual tool removal corrupted the installed pack identity");
+  }
+
+  if (!(await clientPack.evaluate((element) => element instanceof HTMLDetailsElement && element.open))) {
+    await clientPack.locator("summary").click();
+  }
+  await clientPack.locator("[data-pack-remove='client-services']").click();
+  await waitSaved(page);
+  packedState = await readStoredState(page);
+  if (packedState?.packs?.includes("client-services")) {
+    throw new Error("Removing pack identity did not persist");
+  }
+  if (!packedState?.installedTools?.includes("business-day")) {
+    throw new Error("Removing pack identity unexpectedly removed installed tools");
+  }
+
   await page.setViewportSize({ width: 390, height: 844 });
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
@@ -243,7 +281,7 @@ try {
   await deniedContext.close();
 
   await browser.close();
-  console.log("workbench acceptance PASS: IndexedDB reload, add/remove/reorder, Recent privacy, profile provenance/override, config export/import, storage denial, keyboard, 390px");
+  console.log("workbench acceptance PASS: IndexedDB reload, add/remove/reorder, pack install/customize/remove, Recent privacy, profile provenance/override, config export/import, storage denial, keyboard, 390px");
 } finally {
   server.kill("SIGTERM");
 }

@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import CloudflareWebAnalytics from "../components/analytics/CloudflareWebAnalytics.astro";
 import ShellChrome from "../components/shell/ShellChrome.astro";
 import TelemetryBootstrap from "../components/telemetry/TelemetryBootstrap.astro";
 import ToolRouteTelemetry from "../components/telemetry/ToolRouteTelemetry.astro";
@@ -95,5 +96,6 @@ const darkThemeColor = tokenSheet.split("prefers-color-scheme: dark")[1] === und
       <slot />
     </ShellChrome>
     <TelemetryBootstrap />
+    <CloudflareWebAnalytics />
   </body>
 </html>

@@ -37,6 +37,24 @@ export function installTool(state: WorkbenchState, toolId: string): WorkbenchSta
   return { ...state, installedTools: [...state.installedTools, toolId] };
 }
 
+export function installPack(
+  state: WorkbenchState,
+  packId: string,
+  toolIds: readonly string[],
+): WorkbenchState {
+  const normalizedPackId = packId.trim();
+  if (normalizedPackId === "") return state;
+  const installedTools = [...new Set([...state.installedTools, ...toolIds.filter((id) => id.trim() !== "")])];
+  const packs = state.packs.includes(normalizedPackId) ? state.packs : [...state.packs, normalizedPackId];
+  if (installedTools.length === state.installedTools.length && packs === state.packs) return state;
+  return { ...state, installedTools, packs };
+}
+
+export function removePack(state: WorkbenchState, packId: string): WorkbenchState {
+  if (!state.packs.includes(packId)) return state;
+  return { ...state, packs: state.packs.filter((id) => id !== packId) };
+}
+
 export function applyStarterSelection(
   state: WorkbenchState,
   toolIds: readonly string[],

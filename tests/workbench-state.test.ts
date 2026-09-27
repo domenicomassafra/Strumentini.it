@@ -8,9 +8,11 @@ import {
 import {
   clearRecent,
   createDefaultWorkbenchState,
+  installPack,
   installTool,
   moveTool,
   recordRecentTool,
+  removePack,
   removeTool,
 } from "../src/workbench/state";
 
@@ -40,6 +42,21 @@ describe("Workbench state seam", () => {
     ]);
     expect(JSON.stringify(recent.recent)).not.toMatch(/input|output|url|file|startDate/ui);
     expect(clearRecent(recent).recent).toEqual([]);
+  });
+
+  it("installs a pack without coupling pack state to later manual tool removal", () => {
+    const initial = state();
+    const packed = installPack(initial, "client-services", ["business-day", "rate-converter", "margin-markup"]);
+    expect(packed.packs).toEqual(["client-services"]);
+    expect(packed.installedTools).toEqual(["business-day", "rate-converter", "margin-markup"]);
+
+    const customized = removeTool(packed, "rate-converter");
+    expect(customized.packs).toEqual(["client-services"]);
+    expect(customized.installedTools).toEqual(["business-day", "margin-markup"]);
+
+    const forgotten = removePack(customized, "client-services");
+    expect(forgotten.packs).toEqual([]);
+    expect(forgotten.installedTools).toEqual(["business-day", "margin-markup"]);
   });
 });
 

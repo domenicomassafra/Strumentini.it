@@ -18,12 +18,17 @@ import { createWorkbenchRepository } from "../../workbench/repository";
 import {
   clearRecent,
   createDefaultWorkbenchState,
+  installPack,
   installTool,
   moveTool,
   recordRecentTool,
+  removePack,
   removeTool,
   type WorkbenchState,
 } from "../../workbench/state";
+import { WORK_CONTEXT_PACKS, getRecurringJob } from "../../onboarding/contexts";
+import { goldToolIds } from "../../onboarding/quality";
+import { qualityIndex } from "../../generated/quality";
 import { formatRecentActivity, getWorkbenchSuggestions } from "./ux";
 import { COPY, WEEKDAYS } from "./copy";
 import { LedgerRow, type LedgerValue } from "./LedgerRow";
@@ -157,6 +162,25 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
     await persist(removeTool(state, toolId));
   }
 
+  async function addPack(packId: string, toolIds: readonly string[]) {
+    const next = installPack(state, packId, toolIds);
+    if (next === state) return;
+    if (!state.packs.includes(packId) && next.packs.includes(packId)) {
+      trackPackInstalled(currentTelemetry(), packId);
+    }
+    for (const toolId of next.installedTools.filter((id) => !state.installedTools.includes(id))) {
+      trackWorkspaceToolAdded(currentTelemetry(), toolId);
+    }
+    await persist(next);
+  }
+
+  async function forgetPack(packId: string) {
+    const next = removePack(state, packId);
+    if (next === state) return;
+    trackPackRemoved(currentTelemetry(), packId);
+    await persist(next);
+  }
+
   async function move(toolId: string, direction: -1 | 1) {
     await persist(moveTool(state, toolId, direction));
   }
@@ -255,6 +279,21 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   }));
   const available = tools.filter((tool) => !state.installedTools.includes(tool.id));
   const suggestions = getWorkbenchSuggestions(tools, state);
+  const gold = goldToolIds(qualityIndex);
+  const packs = WORK_CONTEXT_PACKS.map((pack) => {
+    const packTools = pack.toolIds
+      .filter((id) => gold.has(id))
+      .map((id) => tools.find((tool) => tool.id === id))
+      .filter((tool): tool is ToolSummary => tool !== undefined);
+    const installedCount = packTools.filter((tool) => state.installedTools.includes(tool.id)).length;
+    return {
+      pack,
+      tools: packTools,
+      installedCount,
+      missingToolIds: packTools.filter((tool) => !state.installedTools.includes(tool.id)).map((tool) => tool.id),
+      installed: state.packs.includes(pack.id),
+    };
+  });
   const firstTool = tools[0];
 
   /**
@@ -480,6 +519,63 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
           {COPY.suggestions.browseFull}
           <span>{COPY.suggestions.toolsCount(tools.length)}</span>
         </a>
+      </section>
+
+      <section id="packs" class={styles.section} aria-labelledby="packs-title">
+        <div class={styles.sectionHeading}>
+          <h2 id="packs-title">{COPY.packs.title}</h2>
+          <span class={styles.count}>{COPY.packs.installedCount(state.packs.length)}</span>
+        </div>
+        <p class={styles.muted}>{COPY.packs.lede}</p>
+        <div class={styles.packList}>
+          {packs.map(({ pack, tools: packTools, installedCount, missingToolIds, installed }) => (
+            <details class={styles.pack} key={pack.id} data-pack-id={pack.id}>
+              <summary>
+                <span>
+                  <strong>{pack.label}</strong>
+                  <small>{pack.description}</small>
+                </span>
+                <span class={styles.packCount}>
+                  {COPY.packs.progress(installedCount, packTools.length)}
+                </span>
+              </summary>
+              <div class={styles.packBody}>
+                <p class={styles.packJobs}>
+                  <strong>{COPY.packs.jobs}</strong>{" "}
+                  {pack.jobIds.map((jobId) => getRecurringJob(jobId).label).join(" · ")}
+                </p>
+                <ul class={styles.packChecklist}>
+                  {packTools.map((tool) => (
+                    <li key={tool.id} data-pack-tool-id={tool.id}>
+                      <span aria-hidden="true">{state.installedTools.includes(tool.id) ? "✓" : "—"}</span>
+                      <span>
+                        <strong>{tool.name}</strong>
+                        <small>{pack.reasons[tool.id] ?? COPY.packs.defaultReason(pack.label)}</small>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <div class={styles.packActions}>
+                  <button
+                    class={styles.primary}
+                    type="button"
+                    data-pack-add={pack.id}
+                    disabled={missingToolIds.length === 0 && installed}
+                    onClick={() => void addPack(pack.id, missingToolIds)}
+                  >
+                    {missingToolIds.length === 0 ? COPY.packs.complete : COPY.packs.addRecommended(missingToolIds.length)}
+                  </button>
+                  {installed && (
+                    <button type="button" data-pack-remove={pack.id} onClick={() => void forgetPack(pack.id)}>
+                      {COPY.packs.remove}
+                    </button>
+                  )}
+                </div>
+                <p class={styles.muted}>{COPY.packs.manualRemoval}</p>
+              </div>
+            </details>
+          ))}
+        </div>
       </section>
 
       {/*
