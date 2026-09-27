@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { JsonFormatterTool } from "../../components/tools/JsonFormatterTool";
+import "../../components/tools/tool-surface.css";
 const title = "JSON Formatter & Validator";
 ---
 <BaseLayout title={title} description="Validate and format JSON locally with explicit duplicate-key warnings.">
@@ -15,5 +16,4 @@ const title = "JSON Formatter & Validator";
     <JsonFormatterTool client:load />
     <section class="method-card" aria-labelledby="method-title"><p class="eyebrow">Method</p><h2 id="method-title">Native JSON grammar</h2><p>Parsing uses the RFC 8259 grammar. Duplicate member names are reported as a warning and resolved last-value-wins for the displayed value.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

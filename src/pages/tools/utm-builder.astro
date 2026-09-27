@@ -1,16 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { UtmBuilderTool } from "../../components/tools/UtmBuilderTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="UTM Builder" description="Build campaign URLs locally with explicit UTM fields.">
   <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>UTM Builder</h1><p class="lede">Add explicit campaign parameters without changing unrelated query parameters or fragments.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your destination and campaign values are not uploaded.</span></div></header><UtmBuilderTool client:load /><section class="method-card"><h2>Rules</h2><ul><li>Source, medium and campaign are required; term and content are optional in the engine.</li><li>Existing unrelated query parameters and the fragment are preserved.</li><li>This tool builds URLs only; it does not verify analytics platforms or destinations.</li></ul></section></article>
-  <style is:global>
-    .single-column { grid-template-columns: minmax(0,1.3fr) minmax(260px,.7fr); }
-    .tool-form-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
-    .tool-submit { border: 0; padding: 10px 15px; border-radius: 8px; background: var(--action); color: var(--action-ink); font-weight: 700; }
-    .long-result { white-space: pre-wrap; overflow-wrap: anywhere; }
-    .preset-provenance { color: var(--muted); font-size: .85rem; }
-    .checkbox-field span span { display: flex; gap: 8px; align-items: center; }
-    @media (max-width: 760px) { .single-column { grid-template-columns: 1fr; } }
-  </style>
 </BaseLayout>

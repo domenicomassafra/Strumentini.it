@@ -50,6 +50,7 @@ export function CsvDedupeTool() {
     const anchor = document.createElement("a"); anchor.href = url; anchor.download = "deduped.csv"; anchor.click(); URL.revokeObjectURL(url);
   }
 
+  const gutterState = gutterStateFromResult(result, error);
   return <form class="tool-operation" onSubmit={dedupe}>
     <section class="tool-form-card">
       <label class="field"><span>CSV file</span><input aria-label="CSV file" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => void loadFile(event.currentTarget.files?.[0])} /></label>
@@ -60,6 +61,8 @@ export function CsvDedupeTool() {
       {error && <p class="error" role="alert">{error}</p>}
       <button class="primary tool-submit" type="submit">Remove duplicates</button>
     </section>
-    <section class="result-panel" aria-live="polite"><p class="eyebrow">Deduped result</p>{result ? <><strong>{result.removedRows} duplicate row{result.removedRows === 1 ? "" : "s"} removed · {result.outputRows} data rows remain</strong><p class="file-note">Stable first occurrence wins. Empty all-key rows stay distinct.</p><pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Download deduped CSV</button></> : <p class="result-placeholder">The stable deduped output and exact removed-row count appear here.</p>}</section>
+    <section class="result-panel gutter" data-state={gutterState} aria-live="polite"><p class="gutter-label eyebrow">Risultato deduplicato</p>{result ? <><strong class="gutter-value">{result.removedRows} {result.removedRows === 1 ? "riga duplicata rimossa" : "righe duplicate rimosse"}</strong><dl class="gutter-rows"><div><dt>Righe dati rimanenti</dt><dd>{result.outputRows}</dd></div></dl><p class="file-note">Stable first occurrence wins. Empty all-key rows stay distinct.</p><pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Scarica CSV deduplicato</button></> : <p class="gutter-placeholder result-placeholder">L'output deduplicato stabile e il numero esatto di righe rimosse compaiono qui.</p>}</section>
   </form>;
 }
+
+import { gutterStateFromResult } from "../shared/ToolGutter";

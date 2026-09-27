@@ -24,7 +24,8 @@ export interface ToolOperationController<T> extends ToolOperationState<T> {
   reset: () => void;
 }
 
-const DEFAULT_CANCELLED_MESSAGE = "Operation cancelled. No output was produced.";
+// Italian-first, per WORLD.md: this string is shown on every cancellable tool.
+const DEFAULT_CANCELLED_MESSAGE = "Operazione annullata. Nessun risultato è stato prodotto.";
 
 function isAbortError(error: unknown): boolean {
   return typeof DOMException !== "undefined"
@@ -100,7 +101,7 @@ export function useToolOperation<T>(
       setState({
         status: "error",
         result: null,
-        error: formatThrownError?.(error) ?? (error instanceof Error ? error.message : "Operation failed."),
+        error: formatThrownError?.(error) ?? (error instanceof Error ? error.message : "Operazione non riuscita."),
       });
     } finally {
       if (controllerRef.current === controller) controllerRef.current = null;

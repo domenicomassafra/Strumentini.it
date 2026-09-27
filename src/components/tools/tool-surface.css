@@ -1,0 +1,576 @@
+/*
+ * UtilityOS — tool surface vocabulary (lane W3).
+ *
+ * One spacing system, one component vocabulary, shared by the 13 family
+ * renderers and the bespoke tools. Tokens resolve as `var(--ledger-*, fallback)`
+ * so this sheet renders correctly against today's token sheet and adopts the
+ * ledger token sheet the moment it lands, without a second edit.
+ *
+ * W1 owns src/styles/**. This file adds no token definitions — it only consumes.
+ */
+
+/* ── The gutter ────────────────────────────────────────────────────────────
+   The signature element: a fixed-position right column where every produced
+   value lands at the same x-offset on every one of the 200 tools. */
+
+.gutter {
+  --gutter-width: clamp(9rem, 22vw, 15rem);
+  position: sticky;
+  top: var(--space-5, 20px);
+  align-self: start;
+  width: var(--gutter-width);
+  flex: 0 0 var(--gutter-width);
+  padding: var(--space-5, 20px) 0 var(--space-5, 20px) var(--space-5, 20px);
+  border-left: 1px solid var(--inchiostro-2, var(--border-strong, #b8b6b0));
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+/* Every value in the gutter sits on a baseline grid; digits never reflow. */
+.gutter-headline { display: block; }
+
+.gutter-value {
+  display: block;
+  margin: 0;
+  color: var(--rossa, var(--action, #274e45));
+  font-family: var(--font-family-mono);
+  font-size: clamp(1.5rem, 3.2vw, 2.1rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums lining-nums;
+  overflow-wrap: anywhere;
+  transition: color var(--motion-fast, 120ms) var(--motion-ease, cubic-bezier(0.2, 0, 1));
+}
+
+.gutter-label {
+  display: block;
+  margin: 0 0 var(--space-2, 8px);
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-bold, 700);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.gutter-unit {
+  display: block;
+  margin: var(--space-2, 8px) 0 0;
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+  font-size: var(--font-size-sm, 0.8125rem);
+}
+
+/* The previous value, dimmed, directly above the new one. */
+.gutter-previous {
+  display: block;
+  margin: 0 0 var(--space-2, 8px);
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm, 0.8125rem);
+  font-variant-numeric: tabular-nums lining-nums;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  overflow-wrap: anywhere;
+}
+
+.gutter-rows {
+  display: grid;
+  gap: var(--space-5, 20px);
+  margin: 0;
+}
+
+.gutter-rows > div {
+  margin: 0;
+  padding-top: var(--space-3, 12px);
+  border-top: 1px solid var(--inchiostro-3, var(--border, #d6d6cf));
+}
+
+.gutter-rows dt {
+  margin: 0 0 var(--space-1, 4px);
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+  font-size: var(--font-size-xs, 0.75rem);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.gutter-rows dd {
+  margin: 0;
+  color: var(--inchiostro, var(--text, #171714));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-body, 0.9375rem);
+  font-variant-numeric: tabular-nums lining-nums;
+  overflow-wrap: anywhere;
+}
+
+.gutter-placeholder {
+  margin: 0;
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+  font-size: var(--font-size-sm, 0.8125rem);
+}
+
+/* Semantic state is a 3px rule inside the gutter's own border, in ink.
+   Never a coloured card, never a coloured left border on the gutter itself. */
+.gutter[data-state="success"] { box-shadow: inset 3px 0 0 0 var(--verde, var(--success, #1d704b)); }
+.gutter[data-state="error"] { box-shadow: inset 3px 0 0 0 var(--rossa, var(--danger, #8b2525)); }
+.gutter[data-state="warning"] { box-shadow: inset 3px 0 0 0 var(--ambra, var(--warning, #8a5a00)); }
+.gutter[data-state="info"] { box-shadow: inset 3px 0 0 0 var(--blu-nota, var(--info, #315e9b)); }
+.gutter[data-state="idle"] { box-shadow: inset 3px 0 0 0 var(--inchiostro-3, var(--border, #d6d6cf)); }
+.gutter[data-state="running"] { box-shadow: inset 3px 0 0 0 var(--inchiostro-2, var(--border-strong, #b8b6b0)); }
+
+/* The two-column frame the gutter sits in.
+
+   `.tool-operation` is doubled deliberately. W1's base sheet still ships a
+   `.tool-operation` grid (`1.4fr / 0.6fr`) that loads after this file, so an
+   equal-specificity rule would lose to it and the gutter would render at
+   whatever that grid hands it. Doubling the class keeps the gutter width
+   authoritative on every tool. When W1's sheet is retired in favour of the
+   ledger token sheet this collapses back to a single class. */
+.tool-surface,
+.tool-operation.tool-operation {
+  --gutter-width: clamp(9rem, 22vw, 15rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(9rem, 22vw, 15rem);
+  gap: var(--space-7, 28px);
+  align-items: start;
+}
+
+.tool-surface-main { min-width: 0; }
+
+/* Legacy two-column tool-operation grids, before a tool adopts ToolSurface.
+   Retired per-tool as each renderer moves onto the gutter. */
+/* `.single-column` was a per-tool width tweak that put the result column at a
+   different x-offset on exactly the two tools that used it — the opposite of
+   what the gutter is for. The frame is now the only width authority, so the
+   class is inert and kept only so existing markup keeps parsing. */
+.tool-operation.single-column { grid-template-columns: minmax(0, 1fr) clamp(9rem, 22vw, 15rem); }
+
+/* Inside a tool-operation frame the children *are* the two columns: the form
+   leaf on the left, the result panel in the gutter position on the right. This
+   is what moves all 33 renderers onto gutter geometry from one rule. */
+.tool-operation > form,
+.tool-operation > .tool-form-card { min-width: 0; }
+
+.tool-operation > .result-panel {
+  position: sticky;
+  top: var(--space-5, 20px);
+  align-self: start;
+  min-width: 0;
+}
+
+/* ── Field vocabulary ───────────────────────────────────────────────────── */
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--space-4, 16px);
+}
+
+.field {
+  display: block;
+  margin-bottom: var(--space-5, 20px);
+}
+
+.field > span,
+.field > label,
+legend {
+  display: block;
+  margin-bottom: var(--space-2, 8px);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.field em {
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+  font-weight: var(--font-weight-regular, 400);
+  font-style: normal;
+}
+
+.field small {
+  display: block;
+  margin-top: var(--space-2, 8px);
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+  font-size: var(--font-size-sm, 0.8125rem);
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  min-height: var(--control-height, 40px);
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  border: 1px solid var(--inchiostro-2, var(--border-strong, #b8b6b0));
+  border-radius: var(--radius-xs, 3px);
+  background: var(--carta, var(--canvas, #f4f4f1));
+  color: var(--inchiostro, var(--text, #171714));
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.field input[type="checkbox"],
+.field input[type="radio"] {
+  width: auto;
+  min-height: auto;
+  accent-color: var(--rossa, var(--action, #274e45));
+}
+
+.field textarea { min-height: calc(var(--control-height, 40px) * 3); resize: vertical; }
+
+/* A checkbox that carries its own caption, not a bare control. */
+.check-field {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2, 8px);
+  margin-bottom: var(--space-3, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-body, 1.4667);
+}
+
+.check-field input {
+  flex: 0 0 auto;
+  width: auto;
+  min-height: auto;
+  margin: 0.2em 0 0;
+  accent-color: var(--rossa, var(--action, #274e45));
+}
+
+.check-field span { min-width: 0; }
+
+/* ── Actions vocabulary ─────────────────────────────────────────────────── */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 8px);
+  margin-top: var(--space-5, 20px);
+}
+
+.actions button,
+.actions .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 8px);
+  min-height: var(--control-height, 40px);
+  padding: var(--space-2, 8px) var(--space-4, 16px);
+  border: 1px solid var(--inchiostro-2, var(--border-strong, #b8b6b0));
+  border-radius: var(--radius-xs, 3px);
+  background: var(--carta, var(--canvas, #f4f4f1));
+  color: var(--inchiostro, var(--text, #171714));
+  font-weight: var(--font-weight-semibold, 600);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.actions .primary,
+.actions button.primary {
+  border-color: var(--rossa, var(--action, #274e45));
+  background: var(--rossa, var(--action, #274e45));
+  color: var(--carta-alta, #ffffff);
+}
+
+.actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* A button-shaped link, wherever it appears. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 8px);
+  min-height: var(--control-height, 40px);
+  padding: var(--space-2, 8px) var(--space-4, 16px);
+  border: 1px solid var(--inchiostro-2, var(--border-strong, #b8b6b0));
+  border-radius: var(--radius-xs, 3px);
+  background: var(--carta, var(--canvas, #f4f4f1));
+  color: var(--inchiostro, var(--text, #171714));
+  font-weight: var(--font-weight-semibold, 600);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button.primary {
+  border-color: var(--rossa, var(--action, #274e45));
+  background: var(--rossa, var(--action, #274e45));
+  color: var(--carta-alta, #ffffff);
+}
+
+.text-button {
+  margin-top: var(--space-2, 8px);
+  padding: var(--space-1, 4px) 0;
+  border: 0;
+  background: transparent;
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.text-button:disabled { opacity: 0.45; cursor: default; }
+
+/* The form leaf that the inputs sit on. Previously re-declared in five tool
+   pages' own <style is:global> blocks, each with a different radius. */
+.tool-form-card {
+  padding: var(--space-6, 24px);
+  border: 1px solid var(--inchiostro-2, var(--border, #d6d6cf));
+  border-radius: var(--radius-xs, 3px);
+  background: var(--carta-alta, var(--surface, #ffffff));
+}
+
+/* A bare submit button, outside .actions. */
+.tool-submit {
+  min-height: var(--control-height, 40px);
+  padding: var(--space-2, 8px) var(--space-4, 16px);
+  border: 0;
+  border-radius: var(--radius-xs, 3px);
+  background: var(--rossa, var(--action, #274e45));
+  color: var(--carta-alta, #ffffff);
+  font-weight: var(--font-weight-semibold, 600);
+  cursor: pointer;
+}
+
+.tool-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── Result panel vocabulary ────────────────────────────────────────────── */
+
+.result-panel {
+  min-height: 200px;
+  padding: var(--space-5, 20px);
+  border: 1px solid var(--inchiostro-2, var(--border, #d6d6cf));
+  border-radius: var(--radius-xs, 3px);
+  background: var(--carta-alta, var(--surface, #ffffff));
+}
+
+.result-panel > .eyebrow:first-child { margin-top: 0; }
+
+.result-placeholder {
+  margin: var(--space-2, 8px) 0 0;
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+}
+
+/* ── Result payload blocks (the six previously-orphaned classes) ──────────
+   All six were emitted by renderers with no rule behind them. They now share
+   one scroll container, one mono face, and one wrap policy. */
+
+.result-json,
+.result-code,
+.developer-result-json,
+.json-result {
+  max-width: 100%;
+  max-height: 34rem;
+  margin: var(--space-3, 12px) 0 0;
+  padding: var(--space-3, 12px);
+  overflow: auto;
+  border: 1px solid var(--inchiostro-3, var(--border, #d6d6cf));
+  border-radius: var(--radius-xs, 3px);
+  background: var(--carta, var(--canvas, #f4f4f1));
+  color: var(--inchiostro, var(--text, #171714));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono, 0.8125rem);
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: var(--line-height-body, 1.4667);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.developer-result-json { font-size: var(--font-size-mono, 0.8125rem); }
+
+/* A single-line result value too long for the measure: wraps, stays selectable. */
+.long-result {
+  display: block;
+  max-width: 100%;
+  margin-top: var(--space-3, 12px);
+  color: var(--inchiostro, var(--text, #171714));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm, 0.8125rem);
+  font-variant-numeric: tabular-nums lining-nums;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+/* ── Status marks ──────────────────────────────────────────────────────────
+   Authored SVG, not Unicode glyphs: the mark is a drawing in the same ink as
+   the ledger, and it inherits colour instead of shipping its own emoji font. */
+
+.status-mark {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  margin-right: var(--space-2, 8px);
+  vertical-align: -0.08em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.status-mark[data-mark="ok"] { color: var(--verde, var(--success, #1d704b)); }
+.status-mark[data-mark="missing"] { color: var(--inchiostro-3, var(--text-muted, #62625c)); }
+.status-mark[data-mark="warn"] { color: var(--ambra, var(--warning, #8a5a00)); }
+.status-mark[data-mark="error"] { color: var(--rossa, var(--danger, #8b2525)); }
+.status-mark[data-mark="info"] { color: var(--blu-nota, var(--info, #315e9b)); }
+
+.status-list { margin: var(--space-3, 12px) 0 0; padding: 0; list-style: none; }
+.status-list li { padding: var(--space-2, 8px) 0; border-top: 1px solid var(--inchiostro-3, var(--border, #d6d6cf)); }
+.status-list li:first-child { border-top: 0; }
+
+/* An interval: start, drawn arrow, end. */
+.range-mark { display: inline-flex; align-items: center; gap: var(--space-1, 4px); }
+.range-mark .status-mark { margin-right: 0; }
+.range-mark-bound { font-family: var(--font-family-mono); font-variant-numeric: tabular-nums lining-nums; }
+
+/* ── File, table, and note blocks ─────────────────────────────────────────
+   These were declared in the tool pages' own <style is:global> blocks, each
+   copy drifting on radius and padding. They now live in the one sheet, so
+   deleting those blocks is a cutover and not a regression. */
+
+.file-note {
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+  font-size: var(--font-size-sm, 0.8125rem);
+}
+
+.csv-warning { color: var(--ambra, var(--warning, #8a5a00)); font-size: var(--font-size-sm, 0.8125rem); }
+
+.csv-preview,
+.schema-preview,
+.handoff-preview {
+  max-width: 100%;
+  margin: var(--space-3, 12px) 0 0;
+  padding: var(--space-3, 12px);
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--inchiostro-3, var(--border, #d6d6cf));
+  border-radius: var(--radius-xs, 3px);
+  background: var(--carta, var(--canvas, #f4f4f1));
+  color: var(--inchiostro, var(--text, #171714));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono, 0.8125rem);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.csv-preview { max-height: 280px; }
+.handoff-preview { max-height: 150px; }
+.schema-preview { max-height: 200px; }
+
+/* A ruled offer to hand this result to the next compatible tool in memory. */
+.handoff-card {
+  margin-top: var(--space-5, 20px);
+  padding-top: var(--space-4, 16px);
+  border-top: 1px solid var(--inchiostro-2, var(--border, #d6d6cf));
+}
+
+.choice-line {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2, 8px);
+  margin: var(--space-2, 8px) 0;
+}
+
+.compact-field { margin: 0; }
+
+progress { width: 100%; margin: var(--space-2, 8px) 0; }
+
+/* A nested caption inside a checkbox label, laid out as a row. */
+.checkbox-field span span { display: flex; gap: var(--space-2, 8px); align-items: center; }
+
+/* ── Column mapping (csv-column-map) ───────────────────────────────────── */
+
+.column-map-list { display: grid; gap: var(--space-3, 12px); margin: var(--space-4, 16px) 0; }
+
+.column-map-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.7fr) minmax(180px, 1fr) auto;
+  gap: var(--space-3, 12px);
+  align-items: end;
+  padding-bottom: var(--space-3, 12px);
+  border-bottom: 1px solid var(--inchiostro-3, var(--border, #d6d6cf));
+}
+
+.column-source { align-self: center; overflow-wrap: anywhere; }
+.column-actions { display: flex; gap: var(--space-2, 8px); }
+
+/* ── List results (list-compare) ───────────────────────────────────────── */
+
+.stacked-results { display: grid; gap: var(--space-5, 20px); }
+
+.list-result-block h3 { margin: 0 0 var(--space-2, 8px); font-size: var(--font-size-body, 0.9375rem); }
+.list-result-block ol { margin: 0; padding-left: var(--space-6, 24px); }
+.list-result-block code { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.count-chip {
+  color: var(--inchiostro-3, var(--text-muted, #62625c));
+  font-size: 0.8em;
+  font-weight: var(--font-weight-semibold, 600);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ── Diff (text-diff) ──────────────────────────────────────────────────── */
+
+.diff-result {
+  padding: var(--space-6, 24px);
+  border: 1px solid var(--inchiostro-2, var(--border, #d6d6cf));
+  border-radius: var(--radius-xs, 3px);
+  background: var(--carta-alta, var(--surface, #ffffff));
+}
+
+.diff-summary { color: var(--inchiostro-3, var(--text-muted, #62625c)); }
+
+.diff-list { display: grid; gap: var(--space-1, 4px); margin: 0; padding: 0; list-style: none; }
+
+.diff-row {
+  display: grid;
+  grid-template-columns: 1.5rem 6rem minmax(0, 1fr);
+  gap: var(--space-2, 8px);
+  align-items: baseline;
+  padding: var(--space-2, 8px);
+  background: var(--carta, var(--canvas, #f4f4f1));
+  border-left: 3px solid var(--inchiostro-2, var(--border-strong, #b8b6b0));
+}
+
+.diff-row code { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* The add/remove rule is a semantic mark, not a decoration. */
+.diff-add { border-left-color: var(--verde, var(--success, #1d704b)); }
+.diff-remove { border-left-color: var(--rossa, var(--danger, #8b2525)); }
+
+.diff-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--inchiostro-2, var(--text, #171714));
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* ── Markdown preview (markdown-preview) ──────────────────────────────── */
+
+.markdown-output { overflow-wrap: anywhere; }
+.markdown-output pre { padding: var(--space-3, 12px); overflow: auto; background: var(--carta, var(--canvas, #f4f4f1)); }
+.markdown-output a { color: var(--blu-nota, var(--action, #274e45)); }
+
+.preset-provenance { color: var(--inchiostro-3, var(--text-muted, #62625c)); font-size: var(--font-size-sm, 0.8125rem); }
+
+/* ── Mobile: the gutter drops below the input, full width, always present ── */
+
+@media (max-width: 900px) {
+  .tool-surface { grid-template-columns: minmax(0, 1fr); }
+  .tool-operation { grid-template-columns: minmax(0, 1fr); }
+  .tool-operation.single-column { grid-template-columns: minmax(0, 1fr); }
+  .tool-operation > .result-panel { position: static; }
+  .gutter {
+    position: static;
+    width: 100%;
+    flex: 1 1 auto;
+    margin-top: var(--space-5, 20px);
+    padding: var(--space-4, 16px) 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--inchiostro-2, var(--border-strong, #b8b6b0));
+  }
+  .gutter-value { font-size: clamp(1.75rem, 8vw, 2.4rem); }
+}
+
+@media (max-width: 640px) {
+  .field-grid { grid-template-columns: minmax(0, 1fr); }
+  .column-map-row { grid-template-columns: minmax(0, 1fr); }
+  .column-actions button { min-height: var(--control-height-touch, 44px); }
+  .diff-row { grid-template-columns: 1.5rem 5.5rem minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gutter-value { transition: none; }
+}

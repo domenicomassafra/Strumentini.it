@@ -15,6 +15,7 @@ import {
   ToolSubmitButton,
   useToolOperation,
 } from "../shared";
+import { CONTROL, it } from "../shared/controlLabels";
 
 export type TableWorkbenchMode =
   | "viewer"
@@ -267,7 +268,7 @@ export function TableWorkbench({ toolId, title, description, mode, manifest, inp
         {mode === "duplicate-profile" && <div class="table-control-grid"><label class="field"><span>Key columns (optional)</span><input value={String(options.keyColumns ?? "")} onInput={(event) => setOption("keyColumns", event.currentTarget.value)} /></label><label class="field"><span>Maximum examples</span><input type="number" min="0" max="1000" value={String(options.maxExamples ?? "100")} onInput={(event) => setOption("maxExamples", event.currentTarget.value)} /></label></div>}
         {mode === "chart" && <div class="table-control-grid"><label class="field"><span>Label column</span><input type="number" min="0" value={String(options.labelColumn ?? "0")} onInput={(event) => setOption("labelColumn", event.currentTarget.value)} /></label><label class="field"><span>Value column (optional for count)</span><input type="number" min="0" value={String(options.valueColumn ?? "")} onInput={(event) => setOption("valueColumn", event.currentTarget.value)} /></label><label class="field"><span>Aggregate</span><select value={String(options.aggregate ?? "count")} onChange={(event) => setOption("aggregate", event.currentTarget.value)}>{AGGREGATES.map((aggregate) => <option value={aggregate}>{aggregate}</option>)}</select></label><label class="field"><span>Maximum bars</span><input type="number" min="1" max="100" value={String(options.maxBars ?? "30")} onInput={(event) => setOption("maxBars", event.currentTarget.value)} /></label></div>}
         <InlineError message={fileError || operation.error} />
-        <ToolActions><ToolSubmitButton busy={operation.isRunning} busyLabel="Working…">{title}</ToolSubmitButton><ToolResetButton onClick={reset} disabled={operation.isRunning} /></ToolActions>
+        <ToolActions><ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{title}</ToolSubmitButton><ToolResetButton onClick={reset} disabled={operation.isRunning} /></ToolActions>
       </form>
     </ToolFormCard>
     <ToolResultPanel eyebrow="Result" placeholder="Run the tool to see a bounded local result." busy={operation.isRunning}>
@@ -276,7 +277,7 @@ export function TableWorkbench({ toolId, title, description, mode, manifest, inp
         {points.length > 0 && <div class="table-chart" role="img" aria-label={`${title} bar chart`}>{points.map((point) => <div class="table-chart-row" key={point.label}><span>{point.label}</span><div class="table-chart-track"><div class="table-chart-bar" style={{ width: `${Math.max(1, Math.round(Math.abs(point.value) / maxPoint * 100))}%` }} /></div><strong>{point.value}</strong></div>)}</div>}
         {result.previewRows !== undefined && result.headers !== undefined && <div class="table-preview-scroll"><table class="table-preview"><caption>{title} preview</caption><thead><tr>{result.headers.map((header, index) => <th scope="col" key={`${index}-${header}`}>{header || "(blank header)"}</th>)}</tr></thead><tbody>{result.previewRows.map((row, rowIndex) => <tr key={rowIndex}>{result.headers?.map((_header, index) => <td key={index}>{row[index] ?? ""}</td>)}</tr>)}</tbody></table></div>}
         {outputText && <pre class="table-output">{outputText}</pre>}
-        {(typeof result.output === "string" || typeof result.json === "string" || typeof result.svg === "string") && <ToolActions><button type="button" onClick={download}>Download result</button></ToolActions>}
+        {(typeof result.output === "string" || typeof result.json === "string" || typeof result.svg === "string") && <ToolActions><button type="button" onClick={download}>Scarica risultato</button></ToolActions>}
       </>}
     </ToolResultPanel>
   </ToolOperation>;

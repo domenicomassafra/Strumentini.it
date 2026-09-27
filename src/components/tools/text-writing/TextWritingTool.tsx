@@ -9,6 +9,8 @@ import {
   ToolSubmitButton,
   useToolOperation,
 } from "../shared";
+import { CONTROL, it } from "../shared/controlLabels";
+import { gutterStateFor } from "../shared/ToolGutter";
 
 export type TextWritingToolId =
   | "word-character-line-counter"
@@ -277,10 +279,10 @@ export function TextWritingTool({ tool }: TextWritingToolProps) {
         {tool === "csv-column-to-list" && <label class="checkbox-field"><input type="checkbox" checked={hasHeader} onChange={(event) => setHasHeader(event.currentTarget.checked)} /> First row is a header</label>}
         {tool === "lorem-sample-data-generator" && <div class="field-grid"><label class="field"><span>Data type</span><select value={sampleType} onChange={(event) => setSampleType(event.currentTarget.value as SampleType)}>{["lorem", "words", "sentences", "paragraphs", "names", "emails", "numbers", "rows"].map((option) => <option value={option} key={option}>{option}</option>)}</select></label><label class="field"><span>Count</span><input inputMode="numeric" value={count} onInput={(event) => setCount(event.currentTarget.value)} /></label><label class="field"><span>Seed</span><input inputMode="numeric" value={seed} onInput={(event) => setSeed(event.currentTarget.value)} /></label></div>}
         <InlineError message={operation.error} />
-        <ToolActions><ToolSubmitButton busy={operation.isRunning} busyLabel="Working…">{TOOL_LABELS[tool]}</ToolSubmitButton><ToolResetButton onClick={reset} disabled={operation.isRunning} /></ToolActions>
+        <ToolActions><ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{TOOL_LABELS[tool]}</ToolSubmitButton><ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton></ToolActions>
       </form>
-      <ToolResultPanel eyebrow="Result" placeholder="The local result appears here." busy={operation.isRunning}>
-        {operation.result !== null && <><ResultOutput tool={tool} value={operation.result} />{tool !== "markdown-preview" && <div class="actions"><button type="button" onClick={() => void copyOutput()}>Copy output</button></div>}{copyStatus !== "" && <p class="success" role="status">{copyStatus}</p>}</>}
+      <ToolResultPanel eyebrow="Risultato" placeholder={it(CONTROL.gutterIdle)} busy={operation.isRunning} state={gutterStateFor(operation.status)}>
+        {operation.result !== null && <><ResultOutput tool={tool} value={operation.result} />{tool !== "markdown-preview" && <div class="actions"><button type="button" onClick={() => void copyOutput()}>{it(CONTROL.copy)}</button></div>}{copyStatus !== "" && <p class="success" role="status" aria-live="polite">{copyStatus}</p>}</>}
       </ToolResultPanel>
     </ToolOperation>
   );

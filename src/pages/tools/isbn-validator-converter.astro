@@ -1,6 +1,7 @@
 ---
 import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
 import { IsbnValidatorConverterTool } from "../../components/tools/research-knowledge";
+import "../../components/tools/tool-surface.css";
 ---
 <ResearchKnowledgePage title="ISBN Validator / Converter" description="Validate ISBN-10 and ISBN-13 check digits and convert valid ISBN-10 values locally.">
   <IsbnValidatorConverterTool client:load />

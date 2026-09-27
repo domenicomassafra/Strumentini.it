@@ -9,6 +9,7 @@ import {
   ToolSubmitButton,
   useToolOperation,
 } from "./shared";
+import { CONTROL, it } from "./shared/controlLabels";
 
 export function TrackingCleanerTool() {
   const [url, setUrl] = useState("");
@@ -31,7 +32,7 @@ export function TrackingCleanerTool() {
         </label>
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel="Cleaning…">Remove tracking parameters</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Remove tracking parameters</ToolSubmitButton>
         </ToolActions>
       </form>
       <ToolResultPanel eyebrow="Result" placeholder="The cleaned URL and exact removed keys appear here." busy={operation.isRunning}>

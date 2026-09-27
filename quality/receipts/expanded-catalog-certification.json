@@ -152,7 +152,7 @@
         },
         "page": {
           "path": "src/pages/tools/add-subtract-days.astro",
-          "sha256": "f0add1397b28bb7b2a6e33c175d543858abe28641b6d7ad4b0c5ded0f4a71eef"
+          "sha256": "7b15a3f97e2b886f6a79cbd035c59955fef0b61b487fc61f4281fb821602220a"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -249,7 +249,7 @@
         },
         "page": {
           "path": "src/pages/tools/age-date-anniversary.astro",
-          "sha256": "c1ec62c5db185d3867e0280e37956cfe40232890ad2a92a3aea170ba2f388be4"
+          "sha256": "e8c421c0eac1b0670160251e7303fac66e58d7236401d4ced2ec3b01cfd5eb64"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -346,7 +346,7 @@
         },
         "page": {
           "path": "src/pages/tools/archive-checksum-manifest.astro",
-          "sha256": "38a368162ab8b9d3be84fb936ff408c67d0c206f507043124c02bd788b5483ae"
+          "sha256": "372b61c538301169dac601d9e840c21741c4964e40a5c8a70e9b3cf3f66266fa"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -444,7 +444,7 @@
         },
         "page": {
           "path": "src/pages/tools/aspect-ratio-calculator.astro",
-          "sha256": "0384e374acc5efdab195db07e05cadc984cc733f9cd114fa52a1dbeb97dfcba3"
+          "sha256": "d0f9d7c1e2e4e62c3f53673f1d3d5282c31aec53cdca14a874c4684839ceb9f5"
         },
         "testFiles": [
           "tests/image-visual-tools.test.ts"
@@ -552,7 +552,7 @@
         },
         "page": {
           "path": "src/pages/tools/base64-codec.astro",
-          "sha256": "de15a723b164ad53e459af5e157e439966b94431ce467caa8a7e7a330e18d1f6"
+          "sha256": "7e45b2a9e6ebaca3a40034ff5a2ca42a6f117c658c85016f15a07fd5870496f4"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -646,7 +646,7 @@
         },
         "page": {
           "path": "src/pages/tools/batch-checksum-manifest.astro",
-          "sha256": "f3d0d178f31ebc49c35746c50c555021b47e3b06737a68f08244a5d91a0f94c8"
+          "sha256": "08636e6b61131f2445daf2281f2e8ad7e46a93fa4263628550662f8d42eb8442"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -742,7 +742,7 @@
         },
         "page": {
           "path": "src/pages/tools/batch-rename-preview.astro",
-          "sha256": "50b187c1ad0f11bd2bc247665a552b9b56bc8458a376d66686af880374a48222"
+          "sha256": "ab9aaa1186976831a7a9945fedba4443d0fbd7969f8f37998d87ef07d245f900"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -838,7 +838,7 @@
         },
         "page": {
           "path": "src/pages/tools/bibtex-deduplicator.astro",
-          "sha256": "36da3c93f95c5249b2b1d91825ed2aa2d09f1a4c70dbdff26b99259b1050ed80"
+          "sha256": "ae2f55bc1a390ec3660a7f5915027a062331c619ee4dba850883080fd0508900"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -933,7 +933,7 @@
         },
         "page": {
           "path": "src/pages/tools/bibtex-formatter.astro",
-          "sha256": "d2f88dcbc84b93e83558453a0351be15714648f90cf57f15967837d75356028f"
+          "sha256": "3fa7707eb09871206066f602f5fbe77738115f5ec35d287b240850a06b4d28a5"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -1028,7 +1028,7 @@
         },
         "page": {
           "path": "src/pages/tools/break-even.astro",
-          "sha256": "7b38b3b34d596cc595dd71f82051bd5e1374d65e536d2771ab4078faf3d0b522"
+          "sha256": "b4cdc9e4975ca5b77a0410716a1c6bafdd27cc6f8ecc026b386d1a4f2ea587b1"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -1123,7 +1123,7 @@
         },
         "page": {
           "path": "src/pages/tools/bulk-domain-extractor.astro",
-          "sha256": "802e1424ccbc97247efe91b9d6bdb0e700b1b062b7bb59f3de50bc0537cd6f57"
+          "sha256": "90261195f95da0c8d53ee5b23e538721eecbc449aa3d4424609024b8e70ca5e4"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -1227,7 +1227,7 @@
         },
         "page": {
           "path": "src/pages/tools/business-day.astro",
-          "sha256": "4a9a100e628aaa3fe083bc30ee789b977fc49398136ea5e104f540226dc36577"
+          "sha256": "84cc68c35a3e79e214c8a15a909a83ec324115279be174019cf87576aaadd584"
         },
         "testFiles": [
           "tests/catalog.test.ts",
@@ -1372,7 +1372,7 @@
         },
         "page": {
           "path": "src/pages/tools/calendar-date-list-generator.astro",
-          "sha256": "7860e3e1f0b4519d549f259607a6c9818d551477b799c222347232a20d0f2817"
+          "sha256": "992dbe94ad01725c7668efc21e3e47c03d3608855c0bf98ee6658ea9aa5b1305"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -1469,7 +1469,7 @@
         },
         "page": {
           "path": "src/pages/tools/campaign-name.astro",
-          "sha256": "e3eb4edb9b04958429e410094406ff8fa7a91ca85cef597c82dce17ad0fea87f"
+          "sha256": "89c61b1be5113b9af9dab68bbe0a43dd2c880e900a8dfe0415929bd3edf46435"
         },
         "testFiles": []
       },
@@ -1596,7 +1596,7 @@
         },
         "page": {
           "path": "src/pages/tools/canonical-url-helper.astro",
-          "sha256": "5dad26bca9c6c137bd7a0c42017031fd0ccdca08e1a8e26c7249a829c89067af"
+          "sha256": "77fea5c418cf65af1dbb4a93d4ecac994a850262449c62476f8d576ecaf80803"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -1700,7 +1700,7 @@
         },
         "page": {
           "path": "src/pages/tools/capacity-planner.astro",
-          "sha256": "86b704727ec9611e9c09ed959e8ddba49f822d32b62c721f6441e456ab9da64a"
+          "sha256": "e0af8276d7234df54cccaa1300adb830eb0c81962b8f4c366f3a5a0bacdeceb8"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -1795,7 +1795,7 @@
         },
         "page": {
           "path": "src/pages/tools/case-converter.astro",
-          "sha256": "56b002f9d2b26f46c98584b2abdb3741969f94a1d5b2ea668e420f10cd5142f8"
+          "sha256": "091e12da8f75b0b5ab197e0cb9a1741cef2a83db274b722a9611666ace5edf2d"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -1891,7 +1891,7 @@
         },
         "page": {
           "path": "src/pages/tools/checksum-verifier.astro",
-          "sha256": "44fa6851fdc962b874ed5689445f06993327f60229d76e7802d60d08a4735b7f"
+          "sha256": "4592a2e0aa064acb0df09979861df7cfe81af643d4739df04cdf8762fafc1ac4"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -1987,7 +1987,7 @@
         },
         "page": {
           "path": "src/pages/tools/citation-deduplicator.astro",
-          "sha256": "940ee49f7cf07ca6cece6148b1b0f8a3d809726315b36d322c06335620840bf6"
+          "sha256": "9b053e1d67e7b7084eb91b3c9989a63f7a587953f0b58efa529f528304aa4556"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -2082,7 +2082,7 @@
         },
         "page": {
           "path": "src/pages/tools/citation-key-generator.astro",
-          "sha256": "ee0425285872db2e336bcb1d4c90766c2861b16f549ddd500a05f0fe59dd0aec"
+          "sha256": "4a6c8016edc6262cd58920557aeacd29c84c1cf4eec93a58649833c863ac582c"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -2176,7 +2176,7 @@
         },
         "page": {
           "path": "src/pages/tools/clean-zip-creator.astro",
-          "sha256": "d1c3df45e78e3d6ae240e6745430db8f5a1dab668872d54b626f379ce9c2deb2"
+          "sha256": "1e97615dfe6df68a50100db58686c61296a03db3ec0ba21c65ea9b585c129ab3"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -2272,7 +2272,7 @@
         },
         "page": {
           "path": "src/pages/tools/client-handoff-index-generator.astro",
-          "sha256": "1a793d15c122323503e878c662ac29e27113d5e55cbd52bfc362c297fde58f0d"
+          "sha256": "777c502fe0e435e713a7caa28ecd6d6f8be9ee69fbd9db27708e72132bfe7176"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -2377,7 +2377,7 @@
         },
         "page": {
           "path": "src/pages/tools/color-converter.astro",
-          "sha256": "6b8b96056ac96af08d245e2e2a60175a33c0242e2414471f3ac8876b20402c67"
+          "sha256": "5a34e9bab18c4a7a61395a2bbd001d981128ce3e00e0ef9b43cd7cda333eb157"
         },
         "testFiles": [
           "tests/image-visual-tools.test.ts"
@@ -2485,7 +2485,7 @@
         },
         "page": {
           "path": "src/pages/tools/color-picker.astro",
-          "sha256": "b7cf7bf5d2bf3f4967dff7e5bf86c5f02950c6f5f39b4f901885f5e40f23a70a"
+          "sha256": "4fcec85deb08bc6f5e526404edd90d47a75f779598d25f521850290d009013be"
         },
         "testFiles": [
           "tests/image-visual-tools.test.ts"
@@ -2593,7 +2593,7 @@
         },
         "page": {
           "path": "src/pages/tools/column-type-profiler.astro",
-          "sha256": "643846dbb35c1da5a2d6ff76c94c8e40f336f342cb468cf0bcf656b162c74391"
+          "sha256": "530f34b3fda3afc7740baf29cf5bd6a932057e0ac8f6dfeb7468a40e43fb0fe6"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -2692,7 +2692,7 @@
         },
         "page": {
           "path": "src/pages/tools/contact-sheet-generator.astro",
-          "sha256": "13bccc85e9e61d30d7338c6a6dd9b862e67881dbf1f89058b44e1a3d9358b4bb"
+          "sha256": "41b957a0779fcbbf20e7578b8a3a9b4b2bc7446c688105c3dcf4a2abca0af26f"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -2801,7 +2801,7 @@
         },
         "page": {
           "path": "src/pages/tools/contrast-checker.astro",
-          "sha256": "d3a48b325c9ca89ccd2bfc63daf7aeada5c97902cbff5a09ef39de877b9970cc"
+          "sha256": "db0aab9e873ea5969c3f634299d5cf4968020168d28c3b290aaefca1d1ffa74b"
         },
         "testFiles": [
           "tests/image-visual-tools.test.ts"
@@ -2910,7 +2910,7 @@
         },
         "page": {
           "path": "src/pages/tools/conversion-rate-scenario.astro",
-          "sha256": "6735ca1827bc27422cd0275c9c9e7ea383b899b007c79dc23a2bbebc0ff8468a"
+          "sha256": "13556c3698da1d88f72906e8c179a7e487cf1dd63504ad54cef1be4e0058f2d6"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -3004,7 +3004,7 @@
         },
         "page": {
           "path": "src/pages/tools/cpa-cpc-cpm-calculator.astro",
-          "sha256": "878716312729c791629118512c4aaee695bb1db23d1bbbfd6fbd75ccce9d9b1b"
+          "sha256": "38c53e6e095fda730d1803e10a39fcd6b4e7c2fe85e992166bcfa1e653d99996"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -3098,7 +3098,7 @@
         },
         "page": {
           "path": "src/pages/tools/cron-explainer.astro",
-          "sha256": "f20a4b66ad823735503c80ba07bcb71dc2dba6fe21562946ddf6e6469410572d"
+          "sha256": "2c461f03587fe527165dbc89f652f2b1d6420c365e7af708158a0f71844a971a"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -3193,7 +3193,7 @@
         },
         "page": {
           "path": "src/pages/tools/cron-next-run.astro",
-          "sha256": "b9c3e6085af6575ddbf65e2d2d7ec99f868c987936b793c5d80a2a902160ee98"
+          "sha256": "6b0086bf94d22d27369bfd795261dcc88fdf2ad8f1d3dd6f9ea0d9bc84a752e2"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -3288,7 +3288,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-cleaner.astro",
-          "sha256": "91309e33064f85bbd5ec782c6847ce728c3c391d379df77d88a37307d77c6f5d"
+          "sha256": "32633dce49a331f82268984054916435d8450d5a8f0bebc2a6d7360e6d6f33d1"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -3428,7 +3428,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-column-map.astro",
-          "sha256": "ae0f803f349dc54dce884bc7c8723d65d1b1a702624f0dd26fcf0c1baf5ad82c"
+          "sha256": "a14d29bb825718f19cca5ede5fcc0ecf2467b8ae299261fb721826ace7e1e302"
         },
         "testFiles": [
           "tests/table-expansion.test.ts",
@@ -3568,7 +3568,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-column-selector.astro",
-          "sha256": "f1cd9343f832f094ee574b922dc4f37184cf4d8f9aaa5366e4ea9fa609d5801b"
+          "sha256": "dc263b521064f500c23563d3cfcd71e70ef2e9192a567f6936ca28679a3472b5"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -3676,7 +3676,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-column-to-list.astro",
-          "sha256": "ca997ec35e2ddb81412a50d0ce8078d01c6266e79a01444e00540e59a3ff82c6"
+          "sha256": "0f250815844a2337baa54bb9921fd80aa0b88091c9ff4239686135f7d9bf2d33"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -3772,7 +3772,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-dedupe.astro",
-          "sha256": "7742b64437785202d7350b63639894f97de6dde64c26c0c922a08d6f1cb5a9b9"
+          "sha256": "e4ccca5f8a39f376488f0d2c235f4889b6a9baa3c28deefbf4b5217ae907d755"
         },
         "testFiles": [
           "tests/table-expansion.test.ts",
@@ -3912,7 +3912,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-delimiter-detector.astro",
-          "sha256": "aaa3998c08876b325a96cf0cddfc03c9d755d6c18e2cf48413a62c41198f6a05"
+          "sha256": "519e2beee0b792335a5e28ad86bedeb5e918244fb335e46ce6f92ae8acfa00ed"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -4021,7 +4021,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-encoding-fixer.astro",
-          "sha256": "1f81836206613e4976a1e992727b96ea73c3e2c516f156a9c0d6e14f7f44be83"
+          "sha256": "dc252d73c9dd935f37892f57f93f72daaee0ab49ed1e9748951fcb96781b9d08"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -4130,7 +4130,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-filter.astro",
-          "sha256": "55cd84b1b92cd00918e09882c0cfb9d2121d88ac6f1f962a898ca7579b09344d"
+          "sha256": "195921c3cab4d7f2390702e751221115dcba10ac007908476c7475579ec1e2c4"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -4238,7 +4238,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-group-count.astro",
-          "sha256": "8142c621b6be600fd3368136347c36623d982a666d9642b7414a5e0a00618134"
+          "sha256": "4a4acad81a596859b4968a15e5b5f26a0a15584658da4e229c5a18754bc7f444"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -4346,7 +4346,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-join.astro",
-          "sha256": "1b9edce9ee75893b4949505cb92ac4be998a58e74f15fe3055fab76ff8366427"
+          "sha256": "56fdfe2bfc444425222ef20b56eace36ef8409e9cd90ee234a43158549c0cb27"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -4454,7 +4454,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-pivot-lite.astro",
-          "sha256": "5187c7624c1e4bc530572fb16f4ec779092cd6e24a2f5e7901e0172a47e134f2"
+          "sha256": "48d86fcc025ed00a7b71d943536e4a578cbc4abf9574f32392b295bc5a88ebaa"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -4562,7 +4562,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-sort.astro",
-          "sha256": "44f7a527832adcec8fd66027731cca89d4cabbb2470f0affbf76490b99d67e40"
+          "sha256": "b94d9878aeaa009fb0d18fe5d49af8b9f42aca00d616a3801c26de54e376a629"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -4670,7 +4670,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-to-json.astro",
-          "sha256": "34ed27ac000a5dfbd834c7d75ee8cb2a9e34595c64f2669e17479ca4137378d2"
+          "sha256": "a03f79b99727dca7ce2de64e57d62122f21bc59878bdea4bbb3a492d39c5b1f3"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -4780,7 +4780,7 @@
         },
         "page": {
           "path": "src/pages/tools/csv-viewer.astro",
-          "sha256": "9b6bd60faa6e71ddf3a3779bdbe3f95d08cb5d4e76b34699651be4516141bf87"
+          "sha256": "e7d4dc7376c57553a4d01cdd58c1f3be4aa08ab6e8a4bed4c3e28a493fb4e967"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -4878,7 +4878,7 @@
         },
         "page": {
           "path": "src/pages/tools/currency-scenario.astro",
-          "sha256": "2f23e929dfdccd93bd7f0fc8b29b57ba0495df9bb91c79869bb495a77f5b9e3e"
+          "sha256": "1cd34c6be3908ddd9eb60ab5eae7137e7136d33f5b758c8ab67c2dfcae66908e"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -4973,7 +4973,7 @@
         },
         "page": {
           "path": "src/pages/tools/date-difference.astro",
-          "sha256": "17f8705c34260022521ca3bf842863eb18a093e6f52a71f4c754457fda857323"
+          "sha256": "a4a95611e11ea7ccb0f4baeb916a857f50c3ee3ceaa9da49212046b51699eaa2"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -5070,7 +5070,7 @@
         },
         "page": {
           "path": "src/pages/tools/date-source-normalizer.astro",
-          "sha256": "e63d44dd8872dd2060ce6eb892529fd6262f6296941e23f35f7ac50b8cfc62dc"
+          "sha256": "390544e2bf6b33a5e076ac3a0132ac823597ad7ca03b7ad973952f26ca7b5a26"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -5166,7 +5166,7 @@
         },
         "page": {
           "path": "src/pages/tools/deadline-countdown.astro",
-          "sha256": "67d8d114ea9cba35a6658822a45c61c96a5bc97c1edb355a22da0ad54232ea7f"
+          "sha256": "88a0751437295005e4de75befbb2974cd357bf3936bcec1d115e44805ff0f1ba"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -5263,7 +5263,7 @@
         },
         "page": {
           "path": "src/pages/tools/decimal-hours-converter.astro",
-          "sha256": "b4d0b265ae6451c0d5637ba99a86eb34aa3e352891e0904f100034adc18a19fd"
+          "sha256": "d840b4559ce87b64d92055c6531e5dd65884cffaa17b5cf763b408def36d8af1"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -5359,7 +5359,7 @@
         },
         "page": {
           "path": "src/pages/tools/discount-impact.astro",
-          "sha256": "c95d308b344ba1256c9d268720df56f542cf42c93f1195bc2b99123cd78930d1"
+          "sha256": "f592a6453bb954ed22947a2ff90480e6023a3f6580a726d7e837c8e2d109ab4f"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -5453,7 +5453,7 @@
         },
         "page": {
           "path": "src/pages/tools/document-handoff-manifest.astro",
-          "sha256": "5cc90aeb8dcac8e5ddc560de0688a644f52c71f848f728934be12d131602756d"
+          "sha256": "b95fe9d1312469423509b433d2e39803d6fb44d5d5fbf4e80edb89edf706b2e7"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -5550,7 +5550,7 @@
         },
         "page": {
           "path": "src/pages/tools/doi-isbn-normalizer.astro",
-          "sha256": "e8a454a748e763b8b02c54c52288674b5411bde6619144cb310ebbe5a1bdd6c8"
+          "sha256": "15b28f42b806e5234647a1244844498e516867e576790e626b4f8349910eb1e2"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts",
@@ -5690,7 +5690,7 @@
         },
         "page": {
           "path": "src/pages/tools/doi-link-builder.astro",
-          "sha256": "309029256fef5d1d71c395fdf4e5e465e656fb052d6fa3e71698fb74409cae0d"
+          "sha256": "63ca8ec17eed03dd6dbec84c7affff9691fac93b933fe4a69584bee4aedf9130"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -5786,7 +5786,7 @@
         },
         "page": {
           "path": "src/pages/tools/doi-normalizer.astro",
-          "sha256": "0c13f7658c7a6b633bc2bdc81c1780067d224171e0c2ae2117aa2286bc1cc695"
+          "sha256": "2bbccd5016bf32670030a4d195b77c216aa56269be478844e714b735a0dc069b"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -5882,7 +5882,7 @@
         },
         "page": {
           "path": "src/pages/tools/domain-frequency-counter.astro",
-          "sha256": "1b0b3938cb330a09601808457ab4ad4fb131faedba945c08f3db14d377f5105b"
+          "sha256": "260539aafee1e78ebc5f88969cdf390e556bd105e7b614beff82498deb3d1bd4"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -5976,7 +5976,7 @@
         },
         "page": {
           "path": "src/pages/tools/domain-subdomain-grouper.astro",
-          "sha256": "f07c8c0d686be99aa20241a049af79561456b40c94e2387db0a893e86977ad23"
+          "sha256": "be151746a22b7a72e3c6c4759352264ba4071c42116777fb2f27869a11c91381"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -6080,7 +6080,7 @@
         },
         "page": {
           "path": "src/pages/tools/dominant-color-extractor.astro",
-          "sha256": "3ec3aeed6538aa758a5e0e97c24aa167366f5bd36be9c9decdd509808007ed37"
+          "sha256": "fb45920fa5be3435acffe9345dc06de4778a1b6557754d447f1c803890c5a01f"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -6189,7 +6189,7 @@
         },
         "page": {
           "path": "src/pages/tools/duplicate-file-finder.astro",
-          "sha256": "82f5a14da2526b9bcb564d669fabcac8cd6c853da65660b023b46918b933d605"
+          "sha256": "53bbd05cf80ca6daee3dc5036aa9e524811813951cb68ec17198736716442b47"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -6284,7 +6284,7 @@
         },
         "page": {
           "path": "src/pages/tools/duplicate-row-profiler.astro",
-          "sha256": "2ad2c800b4fe6facdc674364b5dffcd4a02dae2ae918441ca2879207d6c1954c"
+          "sha256": "46fe82073ad265a0fddcbd99ea5a68fd158d82ba911277d64a904eeebc1de383"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -6383,7 +6383,7 @@
         },
         "page": {
           "path": "src/pages/tools/duration-calculator.astro",
-          "sha256": "c43dea3aba6e41d2f2aa0a33fc4186a7c0d7d30ab35a4eb9c6922d591914b9da"
+          "sha256": "ab75f8818dfc19ca90e8291ae790e1cfd377bf3957eed7b0deca8bbee10f4b02"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -6480,7 +6480,7 @@
         },
         "page": {
           "path": "src/pages/tools/effective-hourly-rate.astro",
-          "sha256": "e5e0aa70082ecbd32701357ed731190f43581efb51b540c5a345de5919ff2837"
+          "sha256": "9e9c44b417c32134040777b8b981612ef3729bd612a8f912013eaaf9a052c2c1"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -6575,7 +6575,7 @@
         },
         "page": {
           "path": "src/pages/tools/email-domain-extractor.astro",
-          "sha256": "1ca9d2cf021a4f14e67ade0d28f14be80a48ee920e21ce97864cf63db8059fc0"
+          "sha256": "cfb48d2a255d81beed320a70536adaa26f36685c73d536bfdbc64b06c9f9dc53"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -6680,7 +6680,7 @@
         },
         "page": {
           "path": "src/pages/tools/epoch-batch-converter.astro",
-          "sha256": "6615cc05ca9ee150d540f8476d534f2abec36ac6d8a39a4ce2662ada8262e3b7"
+          "sha256": "316d055be2cc03ec24e31109baa79f868a554c9b0617ab81786f78463a9fdb94"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -6777,7 +6777,7 @@
         },
         "page": {
           "path": "src/pages/tools/evidence-table-builder.astro",
-          "sha256": "be6c61822fbd384a0c784336703bd78a3bf70b35f49fae456d148f732b0728fb"
+          "sha256": "81acdd1310c4fd2bed7a2628e7768734caffbbc3d120a3ed682cad5bb97e5b3d"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -6872,7 +6872,7 @@
         },
         "page": {
           "path": "src/pages/tools/exif-remover.astro",
-          "sha256": "3a1bae912c983ae19a699224e20c80edef479757b9046571095c0204641eae60"
+          "sha256": "28e766aef9def8d4339c5caeaa660f9f813b4ab7cd89ebe7c864c66f24c0d8bf"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -6983,7 +6983,7 @@
         },
         "page": {
           "path": "src/pages/tools/favicon-app-icon-size-generator.astro",
-          "sha256": "55787b4b952be5261945355ca21a92b56485afa248759b026575e1adef92f08a"
+          "sha256": "f1be8ff894bfd6e5a2f6eca8b25dcff43bb58d04c7d3585c736fb9e046627dce"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -7092,7 +7092,7 @@
         },
         "page": {
           "path": "src/pages/tools/file-hash.astro",
-          "sha256": "348c0f8afeee76f88e00293ea4b4e7e84929e35da1fc98d61b015740da2e3aaa"
+          "sha256": "42ac8d8fddfd7f147455129e649d76e4d7b40077d26aaf3b605fa84eca9977e7"
         },
         "testFiles": [
           "tests/file-hash-engine.test.ts"
@@ -7225,7 +7225,7 @@
         },
         "page": {
           "path": "src/pages/tools/file-list-diff.astro",
-          "sha256": "c5be8e538f395a19e8e9a00a39f77a0019d6832ae75c3fc7af0389a4b4b419d1"
+          "sha256": "cc9305aab953788991ffe60a7608c01de7eeca53b41f7434f4c1438011f31ef0"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -7330,7 +7330,7 @@
         },
         "page": {
           "path": "src/pages/tools/file-signature-detector.astro",
-          "sha256": "5e31ccbce5fd86edeb7e9d89baa066cb6792070c34b96547d05d6f9b208f57c2"
+          "sha256": "c748c0053389670f8b442686aad17536c97a1d70153b182c97cca2dd2600f476"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -7432,7 +7432,7 @@
         },
         "page": {
           "path": "src/pages/tools/filename-sanitizer.astro",
-          "sha256": "f47c5d777898c33f1705fceb6db44c13697e2e8a0678308388d476c57722594a"
+          "sha256": "c01a4e9b35c9f89b17928e6400e6854154d4f934eeba1ee170fcd7ab7de10f82"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -7527,7 +7527,7 @@
         },
         "page": {
           "path": "src/pages/tools/find-replace-preview.astro",
-          "sha256": "ba529a6aec578bb19791641d400aa81525b89fa56ca17fdb4ef7a915dae77b64"
+          "sha256": "d9aa2bfb6a8d7c21e900bee1e74d564948efb851ca6ba60ea0b4d75662500a77"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -7623,7 +7623,7 @@
         },
         "page": {
           "path": "src/pages/tools/folder-compare.astro",
-          "sha256": "67884737c7881ff11c23f7cf7b8da2157c375d8c1666759745f385a96f7f134f"
+          "sha256": "c0d360cb8f7b8d9d179c7c413dab4893f3cf575c1a2ff8d6582a19ed97fcc3c8"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -7729,7 +7729,7 @@
         },
         "page": {
           "path": "src/pages/tools/folder-inventory.astro",
-          "sha256": "f2b48276bb900b760485f6f88bf00b271a7ba484a1cf22621b14e195a947f078"
+          "sha256": "4ee612b1ef51bc54fc90459fffc4cee2c611421e8e7ca870b8e300a9885214ff"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -7824,7 +7824,7 @@
         },
         "page": {
           "path": "src/pages/tools/folder-size-type-summary.astro",
-          "sha256": "d77dbf509a7193937cf09cfc719cffcfae3f17f68a257fa756422195016ee7b9"
+          "sha256": "57d1979f57cccb9396945b7299cfacc140d3f8622e3060529c48213d7afe5fa4"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -7922,7 +7922,7 @@
         },
         "page": {
           "path": "src/pages/tools/hash-generator.astro",
-          "sha256": "99e4bdc4a4918af039b5f0cef8c3146532e58ef8d589ed64583730b37a325d4d"
+          "sha256": "3e3e08055dc9e3bd51628b4cc01709eed83b1d26da1739173047eec9826861b7"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -8017,7 +8017,7 @@
         },
         "page": {
           "path": "src/pages/tools/hmac-generator.astro",
-          "sha256": "4d6192a066e4cb083d18213002e2f505689db90bd1fa8d8557c1002a28151742"
+          "sha256": "a9fbd8cc7d73a7c81574b7c32e2c1e1790b10ff9c42876642ff81f99760105f7"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -8114,7 +8114,7 @@
         },
         "page": {
           "path": "src/pages/tools/html-entity-codec.astro",
-          "sha256": "9626b4aea6fb1b1beef25868fb9624b5c19a15fc0ca35e1ce54412b9c4854f60"
+          "sha256": "9b74db582539b00597ff915c41cdcec6c5f6bcb3cbe869a164ec43fc21cb3400"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -8210,7 +8210,7 @@
         },
         "page": {
           "path": "src/pages/tools/http-status-reference.astro",
-          "sha256": "2fa7ac76d792e1aa6e159fde06e94aec3a604b578c45b735dcb53a57ca7a03c9"
+          "sha256": "3f0b6c370019101a8688af21fffb4589d2f6d5055611a99389516e75a57c4bbd"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -8305,7 +8305,7 @@
         },
         "page": {
           "path": "src/pages/tools/ics-event-builder.astro",
-          "sha256": "99f64f46e8550e71ae1b4db149d7c0d6e8c46bd920583d73e02fb5436e6a93a8"
+          "sha256": "62bc1d0b34572e7103f689aabf7eef6c5b89f342639f9b4ac97298265ca08563"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -8402,7 +8402,7 @@
         },
         "page": {
           "path": "src/pages/tools/ics-viewer.astro",
-          "sha256": "d6d840d8a795a3683fa0fc8349829b556ebce7b49cbba0a2f6caffeb9e2b44e9"
+          "sha256": "edc20c6253bcbf9c55f818a2a98c504e50a53e709c4366ff1f1cf4687573cb56"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -8499,7 +8499,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-compare-slider.astro",
-          "sha256": "eee0d9675517567ac66f32b074e377206a50746df917a245b5441a3669420e05"
+          "sha256": "c6d6a7a3317e0785362070231a95fc25ac2f8f9264936455d0a864d801775f97"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -8608,7 +8608,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-compression.astro",
-          "sha256": "148f7d8ae52a396293edd704a0aa508e912d7f87453233ec4019f59365c86287"
+          "sha256": "182e2bd85f36084e2f945103b24f664a43802ec2d94c0e932c41c7e37ac7195d"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -8717,7 +8717,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-crop.astro",
-          "sha256": "4d97c473ded51eb7079ba369cd76b8fa78a6d4acf9b2fe0fccdebfa18c969d4f"
+          "sha256": "5cbcf1ca54627b3f18b2ad7875c8cb37fb3fb8c5cf26785ffdb610ad5698c07e"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -8826,7 +8826,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-dimensions-batch-inspector.astro",
-          "sha256": "efbe4cb287df446ba4f90437f3fe57e77689ea63987945a71381e5cf52ec674f"
+          "sha256": "f635614aad391a5a532892683726377dd0dda5e6adc05ee9c5868a257d399363"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -8935,7 +8935,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-format-conversion.astro",
-          "sha256": "66ca8c481c79cf977d136750d3cb7b430d6ac08b294187ca2c98f6a06d9e12d1"
+          "sha256": "367c5aeae55540407f9e391626a2e0c10994bf66a5b748301bed48881c830d85"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -9044,7 +9044,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-metadata-viewer.astro",
-          "sha256": "80fba5e1a57a1cc9730133430fbc58e9e281d7de61c77aacc1659eb51eeab6c1"
+          "sha256": "fca1fa5154034605c78c3b7af63cd4302c2a364f5e23c6ca66eefba27c160026"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -9154,7 +9154,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-rename-batch-preview.astro",
-          "sha256": "1c1ecff8f5738c8066bdcb9d49075e0964bea66eeef29fe8bf00dbd10518f7d4"
+          "sha256": "3748448b5d1149c018deaff4bf6287c394ba73476d86432546c570eb96a4d2bc"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -9263,7 +9263,7 @@
         },
         "page": {
           "path": "src/pages/tools/image-resize.astro",
-          "sha256": "a6e65c27afc47ee72922a165b5bea5afa2c4d04d7375ce704537f73e6586897e"
+          "sha256": "1912c7899815486911a4a262a48fc4536453158c89a2f6f6564f1f9c8af3fba8"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -9453,7 +9453,7 @@
         },
         "page": {
           "path": "src/pages/tools/images-to-pdf.astro",
-          "sha256": "b2a7113b9d832812c1c98defb5f36a805868273a24328694cca12d42de2d09bb"
+          "sha256": "dc28d48895d9bb080f273067bb143056b1198c838baa66e211e777e3053a027d"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -9564,7 +9564,7 @@
         },
         "page": {
           "path": "src/pages/tools/invisible-character-detector.astro",
-          "sha256": "25eff77e2faf789293d534aab18719c019839cf372d1f3a204b202ea2c71dc2c"
+          "sha256": "3868c895e882b89e8106d9d998b04da80a2436f6b4de45614951985677929ab1"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -9661,7 +9661,7 @@
         },
         "page": {
           "path": "src/pages/tools/invoice-math-validator.astro",
-          "sha256": "2c5e4e15e753bae003bd21ddb93b4704467aa6b853d6549d5484e8b291d139e9"
+          "sha256": "30ba86741048ff0b5a649db1b30b52d7e1f625a3c3c97acd3746194d2391d7a0"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -9756,7 +9756,7 @@
         },
         "page": {
           "path": "src/pages/tools/invoice-number-generator.astro",
-          "sha256": "6ba9ca969378038814ef262febb5c33408ef34ee6a76c5038384281611be9b6b"
+          "sha256": "73de0494edc1adfb8d32429507d8c7c3f5135a45e45a2b2a57dfc7ecc2d3f8e5"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -9851,7 +9851,7 @@
         },
         "page": {
           "path": "src/pages/tools/isbn-validator-converter.astro",
-          "sha256": "bd3bc9110d73ff0ee9c98dc45886af5f27efc383eb22190a9977b49a7e38ecbb"
+          "sha256": "8c5aad9a655521b74951f5e557a98c6c38373c0e31ad153fbca5f4ad81f536ba"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -9945,7 +9945,7 @@
         },
         "page": {
           "path": "src/pages/tools/json-formatter.astro",
-          "sha256": "3eeac840c22dff96080745b97816e4b616a19d5be164206f0fcc5cff0755ffc2"
+          "sha256": "aa1db4cca2d47766dc2b917270fc8873a3a8e1ec19f54b21963a6d0adfd36dc9"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -10039,7 +10039,7 @@
         },
         "page": {
           "path": "src/pages/tools/json-path-playground.astro",
-          "sha256": "22e363ee5c4eba9636c5dd23a494dbaa191ffef5d72eee612c640f3f1a6c6503"
+          "sha256": "473afe0c71aa6fe83d21d12c60f80cf5c0e8a1f85e1eefa2f67a5d89de8a7073"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -10134,7 +10134,7 @@
         },
         "page": {
           "path": "src/pages/tools/json-to-csv.astro",
-          "sha256": "db475d4a16bc3762828a929156abeede2f453207103664e420aa31eac4d871da"
+          "sha256": "681e4cf7f1f72df3dad33590da52961898f81574a90f854ac4718b242ceda8ae"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -10244,7 +10244,7 @@
         },
         "page": {
           "path": "src/pages/tools/json-yaml-converter.astro",
-          "sha256": "61ba20963b6dc66e8fd589107af9d8dbf026a1f12088b99d89124e88e4db240a"
+          "sha256": "38d41c352b010febc5e5a97ae049ce29f12903f19f2ee0aa09a96d90ee8f3822"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -10349,7 +10349,7 @@
         },
         "page": {
           "path": "src/pages/tools/jwt-inspector.astro",
-          "sha256": "ef64336af29c5f561f5a7bf734b0f6cf4a9f36d3cfce5626a0a6213ea7ba91c7"
+          "sha256": "af76f2cd127a61c82c71e3ed388884d9fc7def20621afa936474ef148e13008d"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -10444,7 +10444,7 @@
         },
         "page": {
           "path": "src/pages/tools/language-aware-text-statistics.astro",
-          "sha256": "8e39a9e78ddb03f49b06f4dd3bfb127a05d3958c3689ffc27a3fe29b5e8cae2c"
+          "sha256": "2abcee2651acf52b2f4e4971a29c5645f734143478582fabfa2d31824db9c968"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -10539,7 +10539,7 @@
         },
         "page": {
           "path": "src/pages/tools/late-payment-interest.astro",
-          "sha256": "89a45a32ed9531382a8288daa05b24f24fdfef3086c74f46d5dd32196e0e9df9"
+          "sha256": "ef945dad7aa8a20e4b2978537dd4d729d73012811c7c7d1c00a14fb1aa87f4fd"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -10634,7 +10634,7 @@
         },
         "page": {
           "path": "src/pages/tools/line-deduplicator.astro",
-          "sha256": "ef3bfc57be8acb3af1e8e1861f6aa6ab8086a8d23c3cc0df9f31c7f135e46345"
+          "sha256": "87f823696c3d9f1b511b4c67c559fc0e2d3704233616653fb52004a0068b5f37"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -10739,7 +10739,7 @@
         },
         "page": {
           "path": "src/pages/tools/line-sorter.astro",
-          "sha256": "c23133cd671f9e5e258cf6b0d73f1496d40e80403a593e6cad8e879519d7f239"
+          "sha256": "f8144540c6bf1ec58fb456e97b2db8f2fa9229770d15a53fe80965d206b2b4cf"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -10835,7 +10835,7 @@
         },
         "page": {
           "path": "src/pages/tools/list-compare.astro",
-          "sha256": "744531cf584ab83b57052491f64e9be53eaa374fa56d844131ebfc930d164904"
+          "sha256": "0418429d8bda7224be76bc2dcb54d02f339647e9ec13a5e3312b14aa42d00746"
         },
         "testFiles": [
           "tests/text-list-catalog.test.ts",
@@ -10984,7 +10984,7 @@
         },
         "page": {
           "path": "src/pages/tools/list-difference.astro",
-          "sha256": "95c2e930a7e0d23e4df4039eb6614e413d1b63ddfc5c57238dd9635b2d9c2fe3"
+          "sha256": "28c164ba55c4dccb055a0d89bf6acc5bfb1f06299a2b4f8e8aa52ebf9afa033a"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -11080,7 +11080,7 @@
         },
         "page": {
           "path": "src/pages/tools/list-intersection.astro",
-          "sha256": "0766f3129f1c5a0389341f5aefbe018d7cc5d5958533c68f1aaa4df6edd5ec2f"
+          "sha256": "8ada804052e34235b46841752b72f7bbe3b6f4ea3857f0f9c589752d97222b96"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -11176,7 +11176,7 @@
         },
         "page": {
           "path": "src/pages/tools/lorem-sample-data-generator.astro",
-          "sha256": "4230d75867bed860015ddd055e73d664acbda89e9cbf41b176d79a7f9e25d843"
+          "sha256": "8ed5e059dac04d8cf4207d27829e3ab65390a1785f982cb121fbd142c8c75d05"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -11272,7 +11272,7 @@
         },
         "page": {
           "path": "src/pages/tools/margin-markup.astro",
-          "sha256": "bd2e630b54bb8fd850fa033d356fcf536f9bebea01c81527c96b9d7802e0b917"
+          "sha256": "2aa53aee088b973fb8a5c64f07ce91abc8ab4853408e767ddd26b8dfc62bdd96"
         },
         "testFiles": [
           "tests/business-tools.test.ts",
@@ -11404,7 +11404,7 @@
         },
         "page": {
           "path": "src/pages/tools/markdown-preview.astro",
-          "sha256": "1af95773da0801a019274932e5bf4829b1a7a7936c58e816834d16470bc6f207"
+          "sha256": "28a066d5914a8c397f7a22ff9ab9ab01ccc85528a4181b9978e2852c914f3f7f"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -11504,7 +11504,7 @@
         },
         "page": {
           "path": "src/pages/tools/markdown-table-formatter.astro",
-          "sha256": "0cbb1d35e0b5e392fab214d0eae1db2416fd8f25768e810918ebf078902ad6d6"
+          "sha256": "a8c1a491f961e11fde4105d9451d3309bbbcc36e41839e84fff3e9001f4c5b73"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -11602,7 +11602,7 @@
         },
         "page": {
           "path": "src/pages/tools/meeting-time-planner.astro",
-          "sha256": "7af5865afe3e7d99cb66c095b96e00ef9492760ced9fe318a816bbaecd9be491"
+          "sha256": "97a440865e9cc52d462c2ed9781c1160d60b78bc772dd8952170af103f69be99"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -11699,7 +11699,7 @@
         },
         "page": {
           "path": "src/pages/tools/meta-preview.astro",
-          "sha256": "edccc4a3d26b41ec99f93f04253fd1f805277291818abd52c975fe430e47db71"
+          "sha256": "d6f6e54fdc1ba47cfaf3dd46a9b4380b89a87d88c71cfbef621896f5807ef827"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -11804,7 +11804,7 @@
         },
         "page": {
           "path": "src/pages/tools/metadata-risk-inspector.astro",
-          "sha256": "01818ca9570e952ba439c7644bd7e3fc8c6ed96371bc57055bf2d56169828acc"
+          "sha256": "5d0a1b8fe805e8bc61c5613da4eaccc0d0669534fd04ed050d69570c4edeb093"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -11899,7 +11899,7 @@
         },
         "page": {
           "path": "src/pages/tools/mime-type-lookup.astro",
-          "sha256": "ba3cd1b8747e7c2ae4b6c5a6b87e4fcb8aa98d26f0c1bfd7a418783bcc41cab9"
+          "sha256": "cd22d19899c584eb753428d98415aed537a4d09c61353c6d7379212ed25a81f8"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -11998,7 +11998,7 @@
         },
         "page": {
           "path": "src/pages/tools/missing-value-profiler.astro",
-          "sha256": "749df5d05cfc7a4300b7facb589fb63efe46958f70c805e68b6dbaed8b8f3244"
+          "sha256": "0dcb9b88d50713f39da5cb8c5958a063dc1c03531e908d842babe048fd424d3b"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -12097,7 +12097,7 @@
         },
         "page": {
           "path": "src/pages/tools/notes-deduplicator.astro",
-          "sha256": "917ff63e683d0c5eec287b210aac4d852d75bec2b8f4f833de1d698c0da6f959"
+          "sha256": "f842cbb77a3367a255cf1ea7eb983ebaf68d9685dcf1be70087b722541402631"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -12192,7 +12192,7 @@
         },
         "page": {
           "path": "src/pages/tools/open-graph-preview.astro",
-          "sha256": "33b471c5712c9e08e6b6ca1d15f8e3058207357c6c6b2fb36d8690123d56c0ca"
+          "sha256": "7f6f37284f9947a34d923246cd5f3f85279a93c30158996caaa0323d0657e22c"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -12297,7 +12297,7 @@
         },
         "page": {
           "path": "src/pages/tools/palette-extractor.astro",
-          "sha256": "9d19651351a6e6376c70d6e6922add664f72e57e7aeb6ed8a062704d34242a1b"
+          "sha256": "75c087dd0bf9b13ccb29b6434abd14fc6621899e3914f241afae2df5df79ccdb"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -12406,7 +12406,7 @@
         },
         "page": {
           "path": "src/pages/tools/payment-fee-gross-up.astro",
-          "sha256": "6803ef32ab1adc510122620218ca5501be7432aaf12ca8cb8a27ab61be5b028c"
+          "sha256": "584f8b984c0b695d647b1c2111f2dbbbe1d5e7525992187d1b2b7f279c93a14d"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -12501,7 +12501,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-compare-lite.astro",
-          "sha256": "d7f9dd25c74cc46c7564e63f32ecf97889f1cf321977cbe7662fddf7da4a3f6a"
+          "sha256": "284abd6028f5612348a05d889895d63d87c7e839f367ee0c0b2f60eb033e4921"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -12597,7 +12597,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-compression-lite.astro",
-          "sha256": "e5de3d52affb2d0aa1d162edff5f681080e505b7956497a6acd3c1444c54f7d3"
+          "sha256": "340b94e90b99203243205bf0e2e02f90ced44b8fe2074c1ebd524b532c5e9063"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -12694,7 +12694,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-flatten.astro",
-          "sha256": "bf3b074924742e5aeecf3012e8600931357a06604836dc9533bc43005cdc9f67"
+          "sha256": "009ce20da7de07e41230c44de8a2d11b22b53b226fd7861d87b331ce89ca2618"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -12791,7 +12791,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-form-inspector.astro",
-          "sha256": "d1eda55d64b939a028ddbaad554a832a8e8deee06eec30e373496a440203519f"
+          "sha256": "da303456e44e9c2519c4f115e7282fd92865a045eef7e55f5c0ce8cf402e40b8"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -12887,7 +12887,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-image-extractor.astro",
-          "sha256": "d70b3c85a006daa4bd35b3e4f055ab81b4611ef4c5b5175898e32ff0f3cc66a6"
+          "sha256": "86d8255a91098b5b1553ca73a694a9777087f2f68cbebf93bf721a4a84fa38fc"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -12998,7 +12998,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-link-extractor.astro",
-          "sha256": "ac316fd87132d76ab1c55b4a40c3acd945e5e64fb0bc2a16b1556f4e6fee6431"
+          "sha256": "0b0c0a15616ff24e3c97331d7f07e8bacb74efd5a75ec748d246181f9949a086"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -13094,7 +13094,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-merge.astro",
-          "sha256": "93dba14d897bcc8f5b5d207e9427d036bb0f9055dd8eb9b126f76469047f0ab5"
+          "sha256": "8e3ab9e06722a6c152cfe26c8938e7d2c2def7995a3f6aee4b7640f198b5fee5"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -13191,7 +13191,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-metadata-inspector.astro",
-          "sha256": "fb274811cd9f050125180c387496915be4437a5555ea6869033d142be065e1b0"
+          "sha256": "b404b6488490d2491ba0d38ef03fdea205f70ab6ab57dc89888681815a81ab9c"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -13287,7 +13287,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-metadata-remover.astro",
-          "sha256": "22e32a86aad86fc75b8fc64eeb285c36b7bf0446447ad6985543a2744c3a2037"
+          "sha256": "7ba946456cd4e9783f7e9dfcdd823b35ddec4622757ae7ce28298c463bb6813b"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -13384,7 +13384,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-page-citation-helper.astro",
-          "sha256": "ce853f66050ec26a7c3c6ffd498898bafc894ed645add967efc9f6b964e09839"
+          "sha256": "88b97d8de3ed980cdcad19aa5741af4f80cb0a220a85cb5169155149c07d504d"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -13478,7 +13478,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-page-count-verifier.astro",
-          "sha256": "0c9e9c1a41dd7784e7fd3a253391364f21663cd58963647cefe812aa3e187273"
+          "sha256": "ca7271f708020b2ec88c33881949e70b7cd78f85b18a51a6855d809c51fc8ced"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -13574,7 +13574,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-page-delete-extract.astro",
-          "sha256": "10ef61362d641c6ea4e3b53817552eec9e67b5d076c6162f648e533a2fb210d0"
+          "sha256": "de7f933ad5f5c63a231f05f4f309e16339e452705040adf57488526be5f85e9d"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -13671,7 +13671,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-page-reorder.astro",
-          "sha256": "604fbf8f2b965ab8b462e70ae84cdc223dde5b68be5317e3a67ebd125179a236"
+          "sha256": "342baf9746a0ee4ef26ae85565958131ad650727c82c8d6859ac854557a87245"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -13768,7 +13768,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-page-size-inspector.astro",
-          "sha256": "c14401c7119453b34e83035d808052bff9c7650af5944c369e7d066274c221ad"
+          "sha256": "e2617d929d47c9e836927e851f67c05fbd016685152e62330e9490badddbc088"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -13864,7 +13864,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-password-check-remove.astro",
-          "sha256": "9ebce88d2f577ec4838b36fc42c24432355368bbf1e4ca5c70d8c23a221df5b9"
+          "sha256": "0bd810e5f00c9dbecbc7a624682b62a30dd9ecd6bc9d581d151e14f3b22d250f"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -13961,7 +13961,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-rotate.astro",
-          "sha256": "606c171a9005f23e5080daf9c529ec03dacb37983dfd0a9a1ce930b21e475b64"
+          "sha256": "e81ea3bd2e2714f3b13df27eec26aed6f1fabc9fe2b24636fb576afe25fc7f58"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -14058,7 +14058,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-split.astro",
-          "sha256": "a207ca97b7cd4c3b9798b44083a4d793701ef23ad34b8fc7dd29a7f193c20733"
+          "sha256": "64e97c8f7e704435974a93d04d02a4903b49b4618ae9f05e7689e00466e2ac04"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -14155,7 +14155,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-text-extraction.astro",
-          "sha256": "406b8dccd33b767a5294e686207d24068e3a449ecb067020f49b968b52490114"
+          "sha256": "9b8bcff6acd8e301d3c2a161675a3963a88ca6d856ff940a2cac94d59708d5fe"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -14251,7 +14251,7 @@
         },
         "page": {
           "path": "src/pages/tools/pdf-to-images.astro",
-          "sha256": "ea1fea8c9897ca0ab4ba493d4a223e47cc021c9887cf8379bc69b5794905fa6c"
+          "sha256": "5f3674a2711579a00409d2a7dfd6e38adf4b1b63c3fb1485d88a5f8c575ce55c"
         },
         "testFiles": [
           "tests/pdf-document-tools.test.ts"
@@ -14362,7 +14362,7 @@
         },
         "page": {
           "path": "src/pages/tools/percentage-helper.astro",
-          "sha256": "7345350dabd6fed9a2948b68b199f5c0d8f5cf87cb18cad52a5482c59de74e02"
+          "sha256": "d69e383adfc1d476b1d6230c3d9d43e7d50cff23c677218e6a54b934008a25a0"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -14456,7 +14456,7 @@
         },
         "page": {
           "path": "src/pages/tools/perceptual-duplicate-finder.astro",
-          "sha256": "036606d4e9b3ca3ffb34901e79bb37d8a2774026b0a56ec59cd2ffddc8935d4a"
+          "sha256": "20b02f967efc98ef6617b5bf4d8ac22de5ffb2db38d91b45e5c2718f301af0f5"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -14565,7 +14565,7 @@
         },
         "page": {
           "path": "src/pages/tools/platform-size-presets.astro",
-          "sha256": "6591195b9d6d92f000360eb7b800e582a7f4e192783922167d94b717f1ee1d03"
+          "sha256": "f3eae38dd82ef310a614844ff532e966d2c64392f1c248e8df122876ac87897a"
         },
         "testFiles": [
           "tests/image-visual-tools.test.ts"
@@ -14674,7 +14674,7 @@
         },
         "page": {
           "path": "src/pages/tools/project-profitability.astro",
-          "sha256": "af1de4584336aec351037e6187c0ae5486b5bc027859135d2c088958f969dedb"
+          "sha256": "ec873e9fea450cb9b27aac7a315e64195af7eb88ec76ddff42c456f09e619e18"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -14769,7 +14769,7 @@
         },
         "page": {
           "path": "src/pages/tools/proposal-budget-checker.astro",
-          "sha256": "f2448bacd52351cf26eb8d74d8deeb5ad93c5a02406c3eac5f1a8244a1e229a9"
+          "sha256": "d45b957893ed329984dd8681fd2f9726c83eb9402256fd4add0d497b31209e73"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -14864,7 +14864,7 @@
         },
         "page": {
           "path": "src/pages/tools/public-holiday-lookup.astro",
-          "sha256": "3f368ee901cd29d80624fa3abea440d9d54019e5a57460ffc1db28b76fd57423"
+          "sha256": "9a33b440bd76ea709e6ac767ba3e965dc89f683c7940b33c24d5e9d8ad53fabb"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -14961,7 +14961,7 @@
         },
         "page": {
           "path": "src/pages/tools/qr-generator.astro",
-          "sha256": "eccc9bd0be441e11938f948188001de80d738ec4e7081bd2ac08112955883cbd"
+          "sha256": "91305abd571cccfba3436ace67090c21531fd51a5262699b297ad152c92ba365"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -15057,7 +15057,7 @@
         },
         "page": {
           "path": "src/pages/tools/qr-reader.astro",
-          "sha256": "b5b0c9553f21fe6b6e274f97a1858de195210707dad55aaebf6da422682f5104"
+          "sha256": "baf0cb6fd6b86e827449b512476429e4e1b9a6e7e213e098c799908cdedf2da1"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -15153,7 +15153,7 @@
         },
         "page": {
           "path": "src/pages/tools/quarter-date-mapper.astro",
-          "sha256": "e6768e67896d718b04c1109e63f01396f34026443212aa8962ede08cb490fd47"
+          "sha256": "9ccbb2595a0480fc4c627b95fa82c6b7c068107b3d7984b93ec7b7a87e8201ca"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -15250,7 +15250,7 @@
         },
         "page": {
           "path": "src/pages/tools/query-string-editor.astro",
-          "sha256": "8e98d4636462ef59d6163da648ac52dd8b8855eef66b9a9d954d68a73833f6b1"
+          "sha256": "0ec0fde2a756ab8ad4dc14cdb218d0bcfd9abe1e05bd24758e913f15b0e7ee4c"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -15344,7 +15344,7 @@
         },
         "page": {
           "path": "src/pages/tools/quick-chart.astro",
-          "sha256": "5ed06b9552f4795dd9d6e6486dcfad783d195ffe986e593faff4aa67f831bbea"
+          "sha256": "648542fe7342737658aff8f4cdd04b277597611c49973f73e1f12c3658c53530"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -15443,7 +15443,7 @@
         },
         "page": {
           "path": "src/pages/tools/quote-counter.astro",
-          "sha256": "0be13e61f85d5c597e31251f286c7cc42182a7120843d8d3fa75684505b4de3b"
+          "sha256": "911d44d6fc220a1e08087c6602fffc08e6dfa4441c90c5c7ff8283b768092b93"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -15537,7 +15537,7 @@
         },
         "page": {
           "path": "src/pages/tools/rate-converter.astro",
-          "sha256": "7a27436eeede665386a1b1a2f37eb70bbdaf5d68b6a3d85e94a7fb6b34f4d11a"
+          "sha256": "a74ec833a2814baffa3a0381f560f48d585e17aba2d8893919dff7cac4c7c5f4"
         },
         "testFiles": [
           "tests/business-tools.test.ts",
@@ -15669,7 +15669,7 @@
         },
         "page": {
           "path": "src/pages/tools/reading-list-deduplicator.astro",
-          "sha256": "945ab19dccb2b055a13572369dca0835ca6d78b5949688bf3eb02cfad9c2d3b9"
+          "sha256": "150e296057771b3d23f3ce349f19acf2bcc8f28cb4c78deb2ad677f0e64de907"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -15764,7 +15764,7 @@
         },
         "page": {
           "path": "src/pages/tools/reading-time-estimator.astro",
-          "sha256": "31032a290beead38a0c9e97c3c2377c126ab6bbc264409ff76792d3807ec2ce9"
+          "sha256": "04ad1c9a31cf6f7bb9d9cece947e09d877703fc2adcda26fd1883e12f1f0f7c2"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -15860,7 +15860,7 @@
         },
         "page": {
           "path": "src/pages/tools/recurring-date-generator.astro",
-          "sha256": "020f274c50e7136e1706125c87edb03c793f197ebc897a0e815cd0633216e54d"
+          "sha256": "8c84dcb8b606260ef756aaa77952f5bfbf1a1db379bc3d987a32a9747f7cca3b"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -15957,7 +15957,7 @@
         },
         "page": {
           "path": "src/pages/tools/redirect-chain-inspector.astro",
-          "sha256": "2489b9b4d3532176d37d535318e08863e56370b43f05e9cafcfb0e9563f21d9f"
+          "sha256": "09506cb8680afe01ed39568d652042af4da8d858fa044afea3e95e602806fe42"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -16062,7 +16062,7 @@
         },
         "page": {
           "path": "src/pages/tools/reference-list-sorter.astro",
-          "sha256": "9434da29dcb7b7b34dfe39d2e593f5834d2675ef44d6fafe387d8bd25cc4f61d"
+          "sha256": "1fbce544bfb32c7d5c8bc76561817e9afeac2c6029f6518f9d18d413e4f4f3fc"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -16157,7 +16157,7 @@
         },
         "page": {
           "path": "src/pages/tools/regex-tester.astro",
-          "sha256": "6ba19e7eb534e3bf29966baa436c6a10584a6f0e27f6b6f7d77f4122f0d61925"
+          "sha256": "4a7c4523b7f994e217c759e58e231e495b9a1f1e5b011308458d77fdfe967491"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -16251,7 +16251,7 @@
         },
         "page": {
           "path": "src/pages/tools/research-pack-manifest.astro",
-          "sha256": "7103077738b2dcdc327e3635990a233819328c90399023a8a95f12fb6b5ae0d8"
+          "sha256": "73abce0a52a2ed3689316754f1d353269e0ac6ff66e2717ac61bee97b75d8b00"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -16345,7 +16345,7 @@
         },
         "page": {
           "path": "src/pages/tools/research-url-cleaner.astro",
-          "sha256": "6ca368f8437965f91fe7caba4d793bbc4ecc7d27fac467fa1a9f383b52fa7007"
+          "sha256": "d54e0d6d09bad9c45652b391dc6076d2ebd294e9f2ca75e7e300764e2afc928c"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -16448,7 +16448,7 @@
         },
         "page": {
           "path": "src/pages/tools/retainer-capacity.astro",
-          "sha256": "06843f6cd5cc7aa229b5facadf4f440b8c734636ddf9f6c542046bfa3ea67ad2"
+          "sha256": "565041d98615edb67a5155471848dc1bf98549da2a2f3d13dd03a63100e4a7ee"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -16543,7 +16543,7 @@
         },
         "page": {
           "path": "src/pages/tools/ris-bibtex-converter.astro",
-          "sha256": "16bbf85c6aab6ea0710d7eeafad01d26fa90683999a4cd4533fddd7854b154a9"
+          "sha256": "37c60aa4d04d1f4b4c4974af2472b279e60b0db47af2b968fe589783913971d4"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -16648,7 +16648,7 @@
         },
         "page": {
           "path": "src/pages/tools/roas-calculator.astro",
-          "sha256": "d4ef60aea8f72d397a838e26d51ffaab414ec807c5b302702b4b8206eb49d9bb"
+          "sha256": "93f36f75608468ae240cc83bf98cc1a1e6f03e2f8e20eece245e4e4a80491ef9"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -16742,7 +16742,7 @@
         },
         "page": {
           "path": "src/pages/tools/robots-directive-helper.astro",
-          "sha256": "7c28c14b75a6c1b9836d97735e2f47fe94fb173ca949b9a7b0175f172fa48afc"
+          "sha256": "74b3118f64d3eb9e65bc85a6dd991305bbfd30c0d640cc38c9c741387970a565"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -16847,7 +16847,7 @@
         },
         "page": {
           "path": "src/pages/tools/safe-share-checklist.astro",
-          "sha256": "ea848d1936db1878d2d5197177b5a9b15344694d8e9677c105f50d565fe19760"
+          "sha256": "398a0cd65a2a81520cdafc03894b6a817880889ce85c8d144560c546d4c80ff2"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -16955,7 +16955,7 @@
         },
         "page": {
           "path": "src/pages/tools/scope-creep-cost.astro",
-          "sha256": "26a5a9ab42ef3afe3ef567f31cc57ac6d21e5da59ecfdb9e988a8dbc6c14e98c"
+          "sha256": "5787db09e8e081663d24b01ebea3c74533986d170f410e6fd6a5583f2d1846e9"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -17050,7 +17050,7 @@
         },
         "page": {
           "path": "src/pages/tools/screenshot-border-background-helper.astro",
-          "sha256": "cc364ac0ff674bf34adf8d9134e1834e697fdb56f55b38db9d52789959ee1ee3"
+          "sha256": "2066499724da8ae89e705359bd898f1d9b25e8ad57110aa0091ed33fd3deba9f"
         },
         "testFiles": [
           "tests/image-resize-engine.test.ts",
@@ -17159,7 +17159,7 @@
         },
         "page": {
           "path": "src/pages/tools/secret-token-pattern-scanner.astro",
-          "sha256": "10a19bba3222cffc434e37b927083f1c0044fc2072869dd84039fffd1cc04e6f"
+          "sha256": "5d8090ecbdcd59c5801d4635df22966eaa38ba2978a13feeaf5d9b1940b60dd2"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -17264,7 +17264,7 @@
         },
         "page": {
           "path": "src/pages/tools/slug-generator.astro",
-          "sha256": "dbccc19f07547765b4ae35c4b9b264eed57547f0a36fe516d411df7796cb7049"
+          "sha256": "229e87582ef221df1dd68c28a5f59fcdf588404ecc054029c810a8b090ae7ca4"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -17361,7 +17361,7 @@
         },
         "page": {
           "path": "src/pages/tools/smart-quote-normalizer.astro",
-          "sha256": "c475e687badfb437218c9ff0827697f851fd3d0b87ee55e57ea5e7e4617ad357"
+          "sha256": "634b357cbc3d795349f5966f24b3bc1b99054d26d871265eb502be109937617e"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -17457,7 +17457,7 @@
         },
         "page": {
           "path": "src/pages/tools/social-character-limit.astro",
-          "sha256": "f46ad53837c3ab77f47cca43213a970da944168933dce0af532bae31709ba9da"
+          "sha256": "3fabfca8b6a67170d1fc8caa5d226ef35c3b7c9e395e08f304e2b7912094f88c"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -17552,7 +17552,7 @@
         },
         "page": {
           "path": "src/pages/tools/table-transpose.astro",
-          "sha256": "d26a0b441f9fa071548e0ac02684c77ec55fdaca5eb3f4b8fa5540c778e197f2"
+          "sha256": "9523b7b6fd9131f30d310a5e899e656ca9a5d1097958a998d61bd9f1ffac9ea0"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -17660,7 +17660,7 @@
         },
         "page": {
           "path": "src/pages/tools/target-income-rate.astro",
-          "sha256": "4ca8905d5c01c0d6ce00c428b8379800fb73e4d5f160b344aee038c98bcf7ab7"
+          "sha256": "3aaf835f0c9cc1b695b7deb4df1c4dbb1a2b26ecd9f06a8babaf4eca37aed7ee"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -17755,7 +17755,7 @@
         },
         "page": {
           "path": "src/pages/tools/text-diff.astro",
-          "sha256": "83fb14a53ae69131287711104b21059dd67f236e8f51f08fb6fdd97ed4d171d3"
+          "sha256": "b48dcaacd7bef83cd42fb14f1de303deddec20d797637a141fb60ccfd587a84d"
         },
         "testFiles": [
           "tests/search-ranking.test.ts",
@@ -17898,7 +17898,7 @@
         },
         "page": {
           "path": "src/pages/tools/text-to-csv-rows.astro",
-          "sha256": "17d8c7ee4b173055f933b093052c061ebe4954b108962f31da1373a1b8437f05"
+          "sha256": "70f9d6d0578914ce995e5e2fca460b5b43f39ecef364af062450efab10953cad"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -17994,7 +17994,7 @@
         },
         "page": {
           "path": "src/pages/tools/timeline-sorter.astro",
-          "sha256": "cbbee5d904f44555c54853e1cf7a71453962ebfa299f8b993663d6ee966efd59"
+          "sha256": "adb664b2846c75bdb6a062530dff3ded670f67a727b8ab382ad5f27d094ec9d5"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -18089,7 +18089,7 @@
         },
         "page": {
           "path": "src/pages/tools/timesheet-totaler.astro",
-          "sha256": "a0fed302b14198a15571a327701c29632ddc6e8fb5610bed4243be80673c7452"
+          "sha256": "41b7b92075da8fb3f21644ca87245de9043817ad407bb651f1dfeb1b57972c16"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -18185,7 +18185,7 @@
         },
         "page": {
           "path": "src/pages/tools/timezone-converter.astro",
-          "sha256": "2603b7ef6a8503c7c574bd2136f7bedf6209531f024c1c1a691c2d879cdae1b6"
+          "sha256": "16563c8df805e8542368077e7e4ec06bf6fb67a2dc243a9afe0113bf31074fab"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -18282,7 +18282,7 @@
         },
         "page": {
           "path": "src/pages/tools/timezone-overlap.astro",
-          "sha256": "263de19bcc564e43aed2ac00de2545a08965283607432c268146e42e4c84bf86"
+          "sha256": "2a40711d1bc0304f7aac6e83e94560b8492a8f1f11acafbf783d6bd9126b09da"
         },
         "testFiles": [
           "tests/business-tools.test.ts",
@@ -18417,7 +18417,7 @@
         },
         "page": {
           "path": "src/pages/tools/toml-formatter.astro",
-          "sha256": "7cacb5231c26b1754c53ca2b1a9004663135bf6cf1ec42027d38714d03656296"
+          "sha256": "b7163f926047612da959bb558ec07606757dbd4526d65e70941d26649b49c4ab"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -18511,7 +18511,7 @@
         },
         "page": {
           "path": "src/pages/tools/tracking-cleaner.astro",
-          "sha256": "0fe0e295cc3cd66b726e0cb93da1a74be7fdbf6115d466d013a9ffc15f8e4a57"
+          "sha256": "ccc896aa149c1df22b6011b9bbc155bbaa735f01f4c467e67190d89b65fb9c94"
         },
         "testFiles": []
       },
@@ -18647,7 +18647,7 @@
         },
         "page": {
           "path": "src/pages/tools/tsv-to-csv.astro",
-          "sha256": "e8c473a30c7dc0b05af3a756840215d97946bca3bad9524bf56e983dabf532d1"
+          "sha256": "f6f6e53fddc3618abf0c03e09873642483ece3417f96276b59c9f66484b5953d"
         },
         "testFiles": [
           "tests/table-expansion.test.ts"
@@ -18745,7 +18745,7 @@
         },
         "page": {
           "path": "src/pages/tools/unicode-normalizer.astro",
-          "sha256": "4e496e70e047aea9fc3dcade3a68f1bff76257a32527ce94b23357832a984d9e"
+          "sha256": "4c576367c9ac7ad67018340e702ebde29e072d15208086065b6f9b97eb0ae97d"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -18841,7 +18841,7 @@
         },
         "page": {
           "path": "src/pages/tools/unix-timestamp.astro",
-          "sha256": "b892264bee473cc5f2e394a82618f68f68c07be04119cd23d846ce93e809e23c"
+          "sha256": "34c05ef7552c243aa7cc113a5ff022c61485ed7bbc953899b79229c5edb0702c"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -18936,7 +18936,7 @@
         },
         "page": {
           "path": "src/pages/tools/url-bulk-normalizer.astro",
-          "sha256": "cfa50efdbb8c92d24a9be645700f3f6fad388f40163256e738a7373002af358e"
+          "sha256": "a47423bf89fd2ebc7f9513469017a1a618f705babf4b5f1b7504cd8ef4837b57"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -19040,7 +19040,7 @@
         },
         "page": {
           "path": "src/pages/tools/url-codec.astro",
-          "sha256": "a7af02eea8dbf96cc1f94d2f7316b661d30d8a6d31f0972bbb2fe7c69af6c3d2"
+          "sha256": "dc344de1ca67adab7420d7bd9b7203a751f2ae4802d0cd44a2f43546afda9ae5"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -19134,7 +19134,7 @@
         },
         "page": {
           "path": "src/pages/tools/url-comparison.astro",
-          "sha256": "72a9340849f45f8f98e218aa4dc455ba23a5ccd4572e7cefb6cb6208756af59b"
+          "sha256": "9545b1f63ee21de957cc10ab13ded1e0383b6ee99c8982c44c41f49db50d583a"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -19238,7 +19238,7 @@
         },
         "page": {
           "path": "src/pages/tools/user-agent-parser.astro",
-          "sha256": "5dadc04d63e64c3129fb4c0d4b60164d3aedf1e3eada8c24ba2886561ad29a8d"
+          "sha256": "0221b6c280a88791e7adbba23e80949511c840d161b9b45a65bd25c066f7a199"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -19332,7 +19332,7 @@
         },
         "page": {
           "path": "src/pages/tools/utilization-calculator.astro",
-          "sha256": "ec8f0eef6595ccddb8bbb86d9af8f9e92d64cd56b9af6a8e42f9e8529f4a7fca"
+          "sha256": "b4ea59a840a26856288e4100d78c935cdb2d4dc22dd0ae29077e35c84f3a930b"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
@@ -19427,7 +19427,7 @@
         },
         "page": {
           "path": "src/pages/tools/utm-builder.astro",
-          "sha256": "c73183d6c61996d38f43800714b56b9a2be33da378c9c8e4a6815a6658841bc3"
+          "sha256": "758e7bddf649ae04f985e66933ef07570c2b395e105b3d489648343dc93a5150"
         },
         "testFiles": []
       },
@@ -19563,7 +19563,7 @@
         },
         "page": {
           "path": "src/pages/tools/utm-parser.astro",
-          "sha256": "642de038e041a6ec67f837ebbb10fca8021eced3fadaebde7ba93d4c1e2ef00c"
+          "sha256": "b637f41645495a6bc2c0d84e19efb885438d86cf7d794f5b7cf850640f4899d4"
         },
         "testFiles": [
           "tests/url-marketing-tools.test.ts"
@@ -19667,7 +19667,7 @@
         },
         "page": {
           "path": "src/pages/tools/uuid-generator.astro",
-          "sha256": "3de97d857fa1af8ace7b4ead300e98d4e3eeaed5aa94dcc8fc662d577a2ab3cf"
+          "sha256": "74a152a33498194b82108a37c50f7c125d9b53ef73423167284a7d89c33fecc5"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -19761,7 +19761,7 @@
         },
         "page": {
           "path": "src/pages/tools/vocabulary-frequency-analyzer.astro",
-          "sha256": "45e147ac1b95d985778a24dde69a133104e09ffdce0ce7e70c9544bcad623a99"
+          "sha256": "95314ead57b69aeded0cbe90e17362f9fbd9beb34810e21cd3cdfb03d33416fe"
         },
         "testFiles": [
           "tests/research-reference-engine.test.ts"
@@ -19856,7 +19856,7 @@
         },
         "page": {
           "path": "src/pages/tools/week-number-converter.astro",
-          "sha256": "5bf226e9b4c52b61d36fd799692ad6c1db1f941af705e97d8cb9b63a77e1b83d"
+          "sha256": "e61da8a31e9647e79937fb4db98da59ad6c6b2f711fad10376f8a645332fe8fe"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -19953,7 +19953,7 @@
         },
         "page": {
           "path": "src/pages/tools/whitespace-normalizer.astro",
-          "sha256": "f61321497cae24566b858c6eef45550f31546628e13922bd8efd1892be58b8be"
+          "sha256": "65d9f6c49db416b56dee4617640f2e57f7e68eb3b45fb318a4f80fe472efb3c6"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -20050,7 +20050,7 @@
         },
         "page": {
           "path": "src/pages/tools/word-character-line-counter.astro",
-          "sha256": "51bac2104dba35dfbf0275181e00f449c3bc68418023a42738b280b2b44006f3"
+          "sha256": "ac56ef0a402550fb32428b95f82c0fdcec73bfdbed0583fe65d7f0f5798e0d35"
         },
         "testFiles": [
           "tests/text-writing-catalog.test.ts",
@@ -20146,7 +20146,7 @@
         },
         "page": {
           "path": "src/pages/tools/working-hours.astro",
-          "sha256": "90c6adfdb37b1b4ca4d101382ff4443c400f98adec12a581903c72d5bbd0bf00"
+          "sha256": "14bfb515a55966457e43b8da685dc68db1a1f625aebf63a4cc9f0a5afd290e95"
         },
         "testFiles": [
           "tests/date-time-engine.test.ts",
@@ -20243,7 +20243,7 @@
         },
         "page": {
           "path": "src/pages/tools/yaml-formatter.astro",
-          "sha256": "9817e61380cf458a65d70bf3bb2f1b5504e7c4ddc1624f98b99aad787f35ca4c"
+          "sha256": "4b6426136dc70aba5afdac9db82997379b75ff0021202a17c2c9fd358c0fe047"
         },
         "testFiles": [
           "tests/developer-web-engine.test.ts"
@@ -20338,7 +20338,7 @@
         },
         "page": {
           "path": "src/pages/tools/zero-byte-orphan-finder.astro",
-          "sha256": "f07033ed29c8d89e828e9d12bab359bae6cbf2e21e556975abcead15948de586"
+          "sha256": "80008d5dd96a8a5ef0aa321772466a2661446da1ea141b0e14d1fabe1e4d20cd"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -20446,7 +20446,7 @@
         },
         "page": {
           "path": "src/pages/tools/zip-contents-inspector.astro",
-          "sha256": "bb71b45b618f870257e24fa0118f310772ec05c869613a1d674dece480abb6e7"
+          "sha256": "4a1263bdf117d68ad01e8bb694b71d0eaff68f871660dcb9be16470a7f761d80"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
@@ -20542,7 +20542,7 @@
         },
         "page": {
           "path": "src/pages/tools/zip-creator.astro",
-          "sha256": "2af3b692ba3852c82638dbbf9639508e2d639a98e667deed97ccd5ee882afcd2"
+          "sha256": "bcf555e01e2e8289570b2872ba4a6a473c04925adb6bd1feac977def52ef3a74"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",

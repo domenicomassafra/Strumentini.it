@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { UrlCodecTool } from "../../components/tools/UrlCodecTool";
+import "../../components/tools/tool-surface.css";
 const title = "URL Encode & Decode";
 ---
 <BaseLayout title={title} description="Percent-encode and decode text with explicit URL rules.">
@@ -9,5 +10,4 @@ const title = "URL Encode & Decode";
     <UrlCodecTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>WHATWG percent sets</h2><p>Choose the component, query, path, or userinfo encode set. Decoding preserves malformed percent sequences and reports invalid UTF-8 instead of silently replacing it.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

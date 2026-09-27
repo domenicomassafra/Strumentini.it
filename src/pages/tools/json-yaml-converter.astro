@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { JsonYamlConverterTool } from "../../components/tools/JsonYamlConverterTool";
+import "../../components/tools/tool-surface.css";
 const title = "JSON ↔ YAML Converter";
 ---
 <BaseLayout title={title} description="Convert JSON and a safe YAML subset locally.">
@@ -9,5 +10,4 @@ const title = "JSON ↔ YAML Converter";
     <JsonYamlConverterTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>Explicit direction</h2><p>JSON uses strict parsing; YAML uses the bounded safe parser exposed by the YAML formatter. The conversion never instantiates tags or application objects.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

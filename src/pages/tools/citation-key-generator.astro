@@ -1,6 +1,7 @@
 ---
 import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
 import { CitationKeyGeneratorTool } from "../../components/tools/research-knowledge";
+import "../../components/tools/tool-surface.css";
 ---
 <ResearchKnowledgePage title="Citation Key Generator" description="Generate stable author-year-title citation keys with collision suffixes.">
   <CitationKeyGeneratorTool client:load />

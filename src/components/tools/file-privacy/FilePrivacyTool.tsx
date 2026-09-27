@@ -2,6 +2,7 @@ import { useRef, useState } from "preact/hooks";
 import type { FilePrivacyOperation, FilePrivacyResult } from "../../../engines/file-privacy";
 import { FilePrivacyError, runFilePrivacyOperation } from "../../../engines/file-privacy";
 import { InlineError, ToolActions, ToolCancelButton, ToolOperation, ToolResetButton, ToolResultPanel, ToolSubmitButton } from "../shared";
+import { CONTROL, it } from "../shared/controlLabels";
 
 export interface FilePrivacyToolProps {
   operation: FilePrivacyOperation;
@@ -127,6 +128,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
   const showNames = operationUsesNames(operation);
   const showExpected = operation === "checksum-verifier";
   const resultFilename = typeof result?.filename === "string" ? result.filename : `${operation}.txt`;
+  const gutterState = running ? "running" : error !== "" ? "error" : result === null ? "idle" : "success";
 
   return (
     <ToolOperation busy={running}>
@@ -200,16 +202,16 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
         )}
         <InlineError message={error} />
         <ToolActions>
-          <ToolSubmitButton busy={running} busyLabel="Working…">Run locally</ToolSubmitButton>
+          <ToolSubmitButton busy={running} busyLabel={it(CONTROL.working)}>Esegui in locale</ToolSubmitButton>
           {running && <ToolCancelButton onCancel={() => controllerRef.current?.abort()} />}
           <ToolResetButton onClick={reset} />
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow={`${title} result`} placeholder={description} busy={running}>
+      <ToolResultPanel eyebrow={`${title} — risultato`} placeholder={description} busy={running} state={gutterState}>
         {result !== null && (
           <>
             {result.blob instanceof Blob && (
-              <button class="primary" type="button" onClick={() => downloadBlob(result.blob as Blob, resultFilename)}>Download result</button>
+              <div class="actions"><button class="primary" type="button" onClick={() => downloadBlob(result.blob as Blob, resultFilename)}>{it(CONTROL.download)}</button></div>
             )}
             {typeof result.manifest === "string" && <pre class="result-code">{result.manifest}</pre>}
             {typeof result.markdown === "string" && <pre class="result-code">{result.markdown}</pre>}

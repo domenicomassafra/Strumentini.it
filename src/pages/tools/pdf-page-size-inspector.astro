@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { PdfPageSizeInspectorTool } from "../../components/tools/PdfPageSizeInspectorTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="PDF Page Size Inspector" description="Inspect local PDF page dimensions and rotation."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Page Size Inspector</h1><p class="lede">Read page dimensions and rotation from a validated local page tree.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No page is rendered or uploaded.</span></div></header><PdfPageSizeInspectorTool client:load /><section class="method-card"><h2>Inspection contract</h2><ul><li>Uses MediaBox and inherited page attributes.</li><li>Rejects dimensions above the local safety limit.</li><li>Reports one row per observed page.</li></ul></section></article></BaseLayout>

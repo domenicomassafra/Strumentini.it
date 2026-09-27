@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { PdfLinkExtractorTool } from "../../components/tools/PdfLinkExtractorTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="PDF Link Extractor" description="List URI links found in a local PDF."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Link Extractor</h1><p class="lede">List URI links as inert text without opening or fetching them.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Links are never auto-opened.</span></div></header><PdfLinkExtractorTool client:load /><section class="method-card"><h2>Extraction contract</h2><ul><li>Reads annotation and action URI dictionaries.</li><li>Deduplicates repeated URIs while preserving first-seen order.</li><li>Does not execute document JavaScript.</li></ul></section></article></BaseLayout>

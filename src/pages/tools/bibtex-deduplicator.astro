@@ -1,6 +1,7 @@
 ---
 import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
 import { BibtexDeduplicatorTool } from "../../components/tools/research-knowledge";
+import "../../components/tools/tool-surface.css";
 ---
 <ResearchKnowledgePage title="BibTeX Deduplicator" description="Deduplicate BibTeX entries by DOI or normalized title, author, and year.">
   <BibtexDeduplicatorTool client:load />

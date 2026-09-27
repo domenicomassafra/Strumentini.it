@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { UserAgentParserTool } from "../../components/tools/UserAgentParserTool";
+import "../../components/tools/tool-surface.css";
 const title = "User-Agent Parser";
 ---
 <BaseLayout title={title} description="Parse descriptive user-agent hints locally without capability decisions.">
@@ -9,5 +10,4 @@ const title = "User-Agent Parser";
     <UserAgentParserTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>Descriptive parsing only</h2><p>Common browser, engine, operating-system, device, and bot hints are extracted with bounded patterns. Applications must feature-detect capabilities rather than infer them here.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

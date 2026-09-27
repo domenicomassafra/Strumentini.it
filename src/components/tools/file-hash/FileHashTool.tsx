@@ -11,6 +11,7 @@ import {
   ToolResultPanel,
   ToolSubmitButton,
 } from "../shared";
+import { CONTROL, it } from "../shared/controlLabels";
 
 interface CompletedHash {
   digestHex: string;
@@ -44,6 +45,7 @@ export function FileHashTool() {
   const [error, setError] = useState("");
   const [running, setRunning] = useState(false);
   const controllerRef = useRef<AbortController | null>(null);
+  const gutterState = running ? "running" : error !== "" ? "error" : result === null ? "idle" : "success";
 
   async function submit(event: Event) {
     event.preventDefault();
@@ -150,17 +152,17 @@ export function FileHashTool() {
         <InlineError message={error} />
 
         <ToolActions>
-          <ToolSubmitButton busy={running} busyLabel="Hashing…">Calculate SHA-256</ToolSubmitButton>
+          <ToolSubmitButton busy={running} busyLabel={it(CONTROL.working)}>Calculate SHA-256</ToolSubmitButton>
           {running && <ToolCancelButton onCancel={() => controllerRef.current?.abort()} />}
           <ToolResetButton onClick={reset} />
         </ToolActions>
       </form>
 
-      <ToolResultPanel eyebrow="Result" placeholder="Your SHA-256 digest appears here." busy={running}>
+      <ToolResultPanel eyebrow="Risultato" placeholder={it(CONTROL.gutterIdle)} busy={running} state={gutterState}>
         {result !== null && (
           <>
             {result.matchesExpected !== null && (
-              <strong class="result-value">{result.matchesExpected ? "Checksum matches" : "Checksum does not match"}</strong>
+              <strong class="gutter-value">{result.matchesExpected ? "Il checksum corrisponde" : "Il checksum non corrisponde"}</strong>
             )}
             <code style={{ overflowWrap: "anywhere" }}>{result.digestHex}</code>
             <dl class="assumptions">

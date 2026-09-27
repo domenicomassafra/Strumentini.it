@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { PdfPageDeleteExtractTool } from "../../components/tools/PdfPageDeleteExtractTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="PDF Page Delete / Extract" description="Delete or extract selected local PDF pages."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Page Delete / Extract</h1><p class="lede">Choose whether selected pages are extracted or removed.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Page numbers are explicit.</span></div></header><PdfPageDeleteExtractTool client:load /><section class="method-card"><h2>Bounded contract</h2><ul><li>Deleting every page is rejected.</li><li>Selected pages are checked against the parsed page tree.</li><li>The input file is never changed in place.</li></ul></section></article></BaseLayout>

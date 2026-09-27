@@ -39,7 +39,7 @@ export interface ToolResetButtonProps {
   children?: ComponentChildren;
 }
 
-export function ToolResetButton({ onClick, disabled = false, children = "Reset" }: ToolResetButtonProps) {
+export function ToolResetButton({ onClick, disabled = false, children = "Reimposta" }: ToolResetButtonProps) {
   return <button type="button" onClick={onClick} disabled={disabled}>{children}</button>;
 }
 
@@ -49,6 +49,6 @@ export interface ToolCancelButtonProps {
   children?: ComponentChildren;
 }
 
-export function ToolCancelButton({ onCancel, disabled = false, children = "Cancel" }: ToolCancelButtonProps) {
+export function ToolCancelButton({ onCancel, disabled = false, children = "Annulla" }: ToolCancelButtonProps) {
   return <button type="button" onClick={onCancel} disabled={disabled}>{children}</button>;
 }

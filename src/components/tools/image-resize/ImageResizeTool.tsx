@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { ImageResizeOutput, ImageResizeProgress } from "../../../tools/image-resize/types";
+import { PreviousValue } from "../shared/PreviousValue";
 
 type ProcessingState = "idle" | "working" | "done";
 
@@ -47,6 +48,10 @@ export function ImageResizeTool() {
   const [progress, setProgress] = useState<ImageResizeProgress | null>(null);
   const [error, setError] = useState("");
   const [result, setResult] = useState<ImageResizeOutput | null>(null);
+  const dimensions = result === null ? "" : `${result.outputWidth}×${result.outputHeight}`;
+  const gutterState = status === "working"
+    ? "running"
+    : error !== "" ? "error" : result === null ? "idle" : "success";
   const [downloadUrl, setDownloadUrl] = useState("");
   const controller = useRef<AbortController | null>(null);
 
@@ -272,20 +277,22 @@ export function ImageResizeTool() {
             {status === "working" ? "Processing…" : "Resize"}
           </button>
           {status === "working" ? (
-            <button type="button" onClick={cancel}>Cancel</button>
+            <button type="button" onClick={cancel}>Annulla</button>
           ) : (
-            <button type="button" onClick={reset}>Reset</button>
+            <button type="button" onClick={reset}>Reimposta</button>
           )}
         </div>
       </form>
 
-      <section class="result-panel" aria-live="polite" aria-atomic="true">
-        <p class="eyebrow">Output</p>
+      <section class="result-panel gutter" data-state={gutterState} aria-live="polite" aria-atomic="true">
+        <p class="gutter-label eyebrow">Output</p>
+        {/* Held outside the result branch: the tool clears its result while it
+            recomputes, and the headline has to keep its state through that. */}
+        <PreviousValue value={dimensions} retain={status === "working"} />
         {result === null ? (
           <p class="result-placeholder">Your verified local output appears here.</p>
         ) : (
           <>
-            <strong class="result-value">{result.outputWidth}×{result.outputHeight}</strong>
             <p>{result.filename}</p>
             <p>{formatBytes(result.blob.size)} · {result.outputMime}</p>
             <div class="actions">

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { WhitespaceNormalizerTool } from "../../components/tools/WhitespaceNormalizerTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="Whitespace Normalizer" description="Normalize line endings and Unicode whitespace locally with explicit blank-line behavior.">
   <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Whitespace Normalizer</h1><p class="lede">Clean copied text while keeping the operation deterministic and visible.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your text is not uploaded.</span></div></header><WhitespaceNormalizerTool client:load /><section class="method-card"><h2>Normalization policy</h2><ul><li>CRLF and CR become LF; non-breaking spaces and horizontal Unicode whitespace become ordinary spaces.</li><li>Leading and trailing whitespace on each line is removed, and edge blank lines are trimmed.</li><li>Internal blank lines are preserved by default and can be removed explicitly.</li></ul></section></article>

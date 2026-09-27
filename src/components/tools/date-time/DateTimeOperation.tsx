@@ -3,6 +3,7 @@ import { useMemo, useState } from "preact/hooks";
 import { profileValuesForTool } from "../../../profile/work-profile";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { useWorkProfile } from "../client-time-math/work-profile";
+import { CONTROL, it } from "../shared/controlLabels";
 import {
   InlineError,
   ToolActions,
@@ -10,9 +11,11 @@ import {
   ToolResetButton,
   ToolResultPanel,
   ToolSubmitButton,
+  gutterStateFor,
   useToolOperation,
 } from "../shared";
 import type { ToolSummary } from "../../../catalog/manifest";
+import { PreviousValue } from "../shared/PreviousValue";
 
 export type DateTimeFieldType = "date" | "time" | "number" | "text" | "textarea" | "select";
 
@@ -94,6 +97,12 @@ export function DateTimeOperation({ config }: { config: DateTimeToolConfig }) {
     operation.reset();
   }
 
+  const gutterState = gutterStateFor(operation.status);
+  // resultLabel reads a field off the result, so it must never see null — that
+  // is the state before the tool has run, which is every page's first render.
+  const headline = operation.result === null ? undefined : config.resultLabel?.(operation.result);
+  const resultHeadline = typeof headline === "string" ? headline : "";
+
   return (
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit} noValidate>
@@ -108,16 +117,16 @@ export function DateTimeOperation({ config }: { config: DateTimeToolConfig }) {
         </div>
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel="Working…">{config.submitLabel}</ToolSubmitButton>
-          <ToolResetButton onClick={reset} disabled={operation.isRunning} />
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{config.submitLabel}</ToolSubmitButton>
+          <ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton>
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow={config.eyebrow} placeholder={config.placeholder} busy={operation.isRunning}>
+      <ToolResultPanel eyebrow={config.eyebrow} placeholder={config.placeholder} busy={operation.isRunning} state={gutterState}>
+        {config.resultLabel !== undefined && <PreviousValue value={resultHeadline} retain={operation.isRunning} />}
         {operation.result !== null && (
           <>
-            {config.resultLabel !== undefined && <strong class="result-value">{config.resultLabel(operation.result)}</strong>}
             <pre class="result-json">{resultText}</pre>
-            {config.download !== undefined && <button type="button" onClick={() => downloadResult(config, operation.result)}>Download result</button>}
+            {config.download !== undefined && <div class="actions"><button type="button" onClick={() => downloadResult(config, operation.result)}>{it(CONTROL.download)}</button></div>}
           </>
         )}
       </ToolResultPanel>

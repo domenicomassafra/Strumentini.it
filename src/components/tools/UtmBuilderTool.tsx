@@ -10,6 +10,7 @@ import {
   ToolSubmitButton,
   useToolOperation,
 } from "./shared";
+import { CONTROL, it } from "./shared/controlLabels";
 
 export function UtmBuilderTool() {
   const [baseUrl, setBaseUrl] = useState("");
@@ -41,7 +42,7 @@ export function UtmBuilderTool() {
           <label class="field"><span>Campaign</span><input aria-label="Campaign" value={campaign} onInput={(event) => setCampaign(event.currentTarget.value)} /></label>
           <InlineError message={operation.error} />
           <ToolActions>
-            <ToolSubmitButton busy={operation.isRunning} busyLabel="Building…">Build URL</ToolSubmitButton>
+            <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Build URL</ToolSubmitButton>
           </ToolActions>
         </ToolFormCard>
       </form>

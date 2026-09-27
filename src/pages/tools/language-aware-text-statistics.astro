@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { LanguageAwareTextStatisticsTool } from "../../components/tools/LanguageAwareTextStatisticsTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="Language-Aware Text Statistics" description="Analyze text words, sentences, characters, and Unicode scripts with a heuristic language signal.">
   <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Language-Aware Text Statistics</h1><p class="lede">Profile writing with explicit Unicode script counts and clearly labeled heuristic language detection.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No text is sent to a language service.</span></div></header><LanguageAwareTextStatisticsTool client:load /><section class="method-card"><h2>Statistics policy</h2><ul><li>Words use the same Unicode word rule as the counter tool; sentences are punctuation-based estimates.</li><li>Script percentages count non-whitespace code points and are labeled as a heuristic signal.</li><li>The tool does not claim to identify a language perfectly or infer meaning.</li></ul></section></article>

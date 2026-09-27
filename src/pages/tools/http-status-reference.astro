@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { HttpStatusReferenceTool } from "../../components/tools/HttpStatusReferenceTool";
+import "../../components/tools/tool-surface.css";
 const title = "HTTP Status Reference";
 ---
 <BaseLayout title={title} description="Look up common HTTP status classes and descriptions locally.">
@@ -9,5 +10,4 @@ const title = "HTTP Status Reference";
     <HttpStatusReferenceTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>RFC 9110-aligned local reference</h2><p>Status classes and common codes are stored locally. Reason phrases are display hints; HTTP semantics do not require a particular phrase.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

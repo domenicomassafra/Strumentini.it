@@ -11,6 +11,7 @@ import {
   ToolSubmitButton,
   useToolOperation,
 } from "../shared";
+import { CONTROL, it } from "../shared/controlLabels";
 
 interface ImageVisualToolProps {
   readonly toolId: ImageVisualToolId;
@@ -115,7 +116,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
         {needsQuality(toolId) && <label class="field"><span>Quality (when supported)</span><input type="number" min="0.1" max="1" step="0.01" value={quality} onInput={(event) => setQuality(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel="Working locally…">Run locally</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Run locally</ToolSubmitButton>
           {operation.isRunning ? <ToolCancelButton onCancel={operation.cancel} /> : <ToolResetButton onClick={reset} />}
         </ToolActions>
       </form>

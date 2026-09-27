@@ -1,6 +1,7 @@
 ---
 import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
 import { ClientHandoffIndexGeneratorTool } from "../../components/tools/file-privacy/ClientHandoffIndexGeneratorTool";
+import "../../components/tools/tool-surface.css";
 ---
 <FilePrivacyPage title="Client Handoff Index" description="Generate a local Markdown and JSON index for the files you intend to hand off." methodTitle="Explicit portable handoff" methodItems={["The index contains relative paths, sizes, and optional SHA-256 digests.", "No file bytes are copied into the index or sent to a service.", "The generated artifact is an explicit handoff, not automatic publishing."]}>
   <ClientHandoffIndexGeneratorTool client:load />

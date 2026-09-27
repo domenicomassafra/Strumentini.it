@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { HtmlEntityCodecTool } from "../../components/tools/HtmlEntityCodecTool";
+import "../../components/tools/tool-surface.css";
 const title = "HTML Entity Encode & Decode";
 ---
 <BaseLayout title={title} description="Encode and decode HTML character references as text locally.">
@@ -9,5 +10,4 @@ const title = "HTML Entity Encode & Decode";
     <HtmlEntityCodecTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>Text conversion, not sanitization</h2><p>Named and numeric references are converted to plain text. This tool does not claim to make arbitrary HTML safe for a browser sink.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

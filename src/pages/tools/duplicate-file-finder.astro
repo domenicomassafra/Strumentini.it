@@ -1,6 +1,7 @@
 ---
 import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
 import { DuplicateFileFinderTool } from "../../components/tools/file-privacy/DuplicateFileFinderTool";
+import "../../components/tools/tool-surface.css";
 ---
 <FilePrivacyPage title="Duplicate File Finder" description="Find exact duplicate files in a bounded local selection using size and SHA-256." methodTitle="Content-aware local comparison" methodItems={["Files are grouped by size before bounded content hashing.", "Only exact SHA-256 matches are grouped; similar names are not treated as duplicates.", "The original files are never renamed or deleted."]}>
   <DuplicateFileFinderTool client:load />

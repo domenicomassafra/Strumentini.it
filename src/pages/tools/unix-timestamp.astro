@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { UnixTimestampTool } from "../../components/tools/UnixTimestampTool";
+import "../../components/tools/tool-surface.css";
 const title = "Unix Timestamp Converter";
 ---
 <BaseLayout title={title} description="Convert Unix seconds or milliseconds to UTC date-time locally.">
@@ -9,5 +10,4 @@ const title = "Unix Timestamp Converter";
     <UnixTimestampTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>Unix seconds and milliseconds</h2><p>Numeric timestamps and parseable date strings are supported. The selected unit is explicit and the result is always an ISO UTC string.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

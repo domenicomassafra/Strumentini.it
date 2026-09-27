@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { PdfMetadataInspectorTool } from "../../components/tools/PdfMetadataInspectorTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="PDF Metadata Inspector" description="Inspect local PDF metadata and structure."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Metadata Inspector</h1><p class="lede">Inspect metadata, page geometry, object count, and capability boundaries.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Inspection never mutates the input.</span></div></header><PdfMetadataInspectorTool client:load /><section class="method-card"><h2>Inspection contract</h2><ul><li>Checks the PDF signature and structural markers first.</li><li>Reports encryption markers without attempting decryption.</li><li>Distinguishes observed facts from unsupported capabilities.</li></ul></section></article></BaseLayout>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { PdfFormInspectorTool } from "../../components/tools/PdfFormInspectorTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="PDF Form Field Inspector" description="Inspect local PDF form fields without submitting them."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Form Field Inspector</h1><p class="lede">Inspect AcroForm names, types, values, and read-only flags.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Forms are read, never filled or submitted.</span></div></header><PdfFormInspectorTool client:load /><section class="method-card"><h2>Inspection contract</h2><ul><li>Walks bounded AcroForm field trees.</li><li>Does not execute JavaScript or document actions.</li><li>Reports encryption separately.</li></ul></section></article></BaseLayout>

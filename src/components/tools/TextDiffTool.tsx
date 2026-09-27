@@ -3,17 +3,21 @@ import { toolRuntime } from "../../runtime/tool-runtime";
 import type { TextDiffOutput } from "../../tools/text-diff/types";
 import {
   InlineError,
+  StatusMark,
   ToolActions,
   ToolResetButton,
   ToolResultPanel,
   ToolSubmitButton,
+  gutterStateFor,
   useToolOperation,
 } from "./shared";
+import { CONTROL, it } from "./shared/controlLabels";
+import type { StatusMarkKind } from "./shared/StatusMark";
 
 const OPERATION_LABELS = {
-  equal: { symbol: "=", label: "Unchanged" },
-  remove: { symbol: "−", label: "Removed" },
-  add: { symbol: "+", label: "Added" },
+  equal: { mark: "missing" as StatusMarkKind, label: "Invariata" },
+  remove: { mark: "error" as StatusMarkKind, label: "Rimossa" },
+  add: { mark: "ok" as StatusMarkKind, label: "Aggiunta" },
 } as const;
 
 export function TextDiffTool() {
@@ -39,37 +43,43 @@ export function TextDiffTool() {
     operation.reset();
   }
 
+  const gutterState = gutterStateFor(operation.status);
+
   return (
-    <div className="diff-operation">
+    <div class="tool-operation">
       <form onSubmit={submit}>
         <div class="field-grid">
           <label class="field">
-            <span>Before</span>
+            <span>Prima</span>
             <textarea rows={13} value={before} onInput={(event) => setBefore(event.currentTarget.value)} placeholder={"alpha\nbeta"} />
           </label>
           <label class="field">
-            <span>After</span>
+            <span>Dopo</span>
             <textarea rows={13} value={after} onInput={(event) => setAfter(event.currentTarget.value)} placeholder={"alpha\ngamma"} />
           </label>
         </div>
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel="Comparing…">Compare text</ToolSubmitButton>
-          <ToolResetButton onClick={reset} disabled={operation.isRunning} />
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Confronta i testi</ToolSubmitButton>
+          <ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton>
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow="Line diff" placeholder="The diff appears here." className="diff-result" bare atomic={false} busy={operation.isRunning}>
+      <ToolResultPanel eyebrow="Differenze riga per riga" placeholder={it(CONTROL.gutterIdle)} className="diff-result" atomic={false} busy={operation.isRunning} state={gutterState}>
         {operation.result !== null && (
           <>
-            <p class="diff-summary">{operation.result.additions} added · {operation.result.removals} removed · {operation.result.unchanged} unchanged</p>
+            <dl class="gutter-rows">
+              <div><dt>Aggiunte</dt><dd>{operation.result.additions}</dd></div>
+              <div><dt>Rimosse</dt><dd>{operation.result.removals}</dd></div>
+              <div><dt>Invariate</dt><dd>{operation.result.unchanged}</dd></div>
+            </dl>
             <ol class="diff-list">
               {operation.result.operations.map((operationItem, index) => {
                 const presentation = OPERATION_LABELS[operationItem.kind];
                 return (
                   <li class={`diff-row diff-${operationItem.kind}`} data-kind={operationItem.kind} key={`${index}-${operationItem.text}`}>
-                    <span class="diff-symbol" aria-hidden="true">{presentation.symbol}</span>
+                    <span class="diff-symbol"><StatusMark kind={presentation.mark} /></span>
                     <strong>{presentation.label}</strong>
-                    <code>{operationItem.text.replace(/\n$/u, "") || "(blank line)"}</code>
+                    <code>{operationItem.text.replace(/\n$/u, "") || "(riga vuota)"}</code>
                   </li>
                 );
               })}
