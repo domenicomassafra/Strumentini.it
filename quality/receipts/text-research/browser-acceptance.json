@@ -28,8 +28,8 @@
     },
     {
       "route": "/tools/doi-isbn-normalizer",
-      "lazyScripts": 1,
-      "taskRequests": 1,
+      "lazyScripts": 2,
+      "taskRequests": 2,
       "externalRequests": 0,
       "contentLeaks": 0,
       "mobileOverflow": false

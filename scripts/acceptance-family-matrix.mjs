@@ -144,7 +144,7 @@ async function runDiscovery(browser) {
     await page.keyboard.press("Control+K");
     await dialog.waitFor();
     await input.fill("workng day calcultor");
-    await page.getByRole("link", { name: "Request this tool", exact: true }).waitFor();
+    await page.locator("[data-request-tool]").waitFor();
     await page.keyboard.press("Escape");
     await page.keyboard.press("Meta+K");
     await input.fill("business day calculator");

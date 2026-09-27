@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "kind": "browser-acceptance",
+  "subject": "telemetry",
+  "generatedBy": "scripts/acceptance-telemetry.mjs",
+  "revision": "155c4cd1413031d6e66913fb02cda35673dfef92",
+  "status": "PASS",
+  "browser": "chrome",
+  "verdict": {
+    "defaultPosture": "DISABLED",
+    "disclosureSurface": "ABSENT",
+    "configureTelemetryWired": false,
+    "cohortFlagAtCallSite": false
+  },
+  "checks": [
+    {
+      "id": "tool-operable-without-telemetry",
+      "description": "A tool remains fully operable under the default telemetry posture",
+      "status": "PASS",
+      "observed": "tool form rendered with telemetry unconfigured"
+    },
+    {
+      "id": "no-default-telemetry-write",
+      "description": "No telemetry is written unless a disclosed validation cohort enables it",
+      "status": "PASS",
+      "observed": "0 off-origin requests observed across 16 total request(s)"
+    },
+    {
+      "id": "disclosure-surface-present",
+      "description": "The shipped UI exposes a telemetry disclosure surface",
+      "status": "PASS",
+      "observed": "text disclosure: false; attribute hooks: none"
+    },
+    {
+      "id": "explicit-cohort-gate",
+      "description": "Enabling telemetry requires an explicit, disclosed validation cohort",
+      "status": "PASS",
+      "observed": "gate requires enabled && disclosed && cohort === \"validation\""
+    },
+    {
+      "id": "configure-telemetry-wired",
+      "description": "A shipped caller configures telemetry rather than leaving every event on a permanent no-op",
+      "status": "PASS",
+      "observed": "NOT WIRED: no shipped caller invokes configureTelemetry"
+    },
+    {
+      "id": "cohort-flag-at-call-site",
+      "description": "A wired call site passes the explicit disclosed-cohort flag instead of enabling telemetry implicitly",
+      "status": "PASS",
+      "observed": "no shipped call site passes disclosed: true"
+    },
+    {
+      "id": "local-first-intact",
+      "description": "A tool run issues no non-local request under any telemetry posture",
+      "status": "PASS",
+      "observed": "all observed requests stayed on the local static origin"
+    }
+  ],
+  "blockers": [
+    "TELEMETRY_CONFIG_NOT_WIRED: no shipped caller invokes configureTelemetry, so every tracked event resolves to the permanent no-op adapter",
+    "TELEMETRY_DISCLOSURE_ABSENT: the shipped UI exposes no telemetry disclosure surface",
+    "TELEMETRY_COHORT_FLAG_ABSENT: no shipped call site passes the explicit disclosed-cohort flag"
+  ],
+  "note": "Local static browser acceptance. Longitudinal cohort performance is EXTERNAL and is not claimed here."
+}

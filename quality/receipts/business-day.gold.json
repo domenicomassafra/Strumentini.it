@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "toolId": "business-day",
   "status": "GOLD",
+  "revision": "155c4cd1413031d6e66913fb02cda35673dfef92",
   "runtime": {
     "location": "LOCAL",
     "network": "forbidden"
