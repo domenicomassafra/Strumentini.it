@@ -3,6 +3,7 @@ import "../styles/global.css";
 import ShellChrome from "../components/shell/ShellChrome.astro";
 import ToolRouteTelemetry from "../components/telemetry/ToolRouteTelemetry.astro";
 import { catalog } from "../generated/catalog";
+import tokenSheet from "../styles/global.css?raw";
 import {
   buildLibraryStructuredData,
   buildToolStructuredData,
@@ -20,9 +21,11 @@ interface Props {
   imageAlt?: string;
   type?: "website" | "article";
   noindex?: boolean;
+  /** Content language. Italian is the primary language of the register. */
+  lang?: "it" | "en";
 }
 
-const { title, description, image = "/og-image.png", imageAlt = "Local utility workbench", type = "website", noindex = false } = Astro.props;
+const { title, description, image = "/og-image.png", imageAlt = "Local utility workbench", type = "website", noindex = false, lang = "it" } = Astro.props;
 const pathname = normalizeDiscoveryPath(Astro.url.pathname);
 const configuredSite = Astro.site?.href ?? import.meta.env.PUBLIC_SITE_URL;
 const canonicalUrl = configuredSite === undefined ? pathname : new URL(pathname, configuredSite).href;
@@ -39,16 +42,34 @@ const structuredData = tool === undefined
       : { "@context": "https://schema.org", "@type": "WebPage", name: pageTitle, description: pageDescription, url: canonicalUrl }
   : buildToolStructuredData(tool, canonicalUrl);
 const structuredDataJson = serializeJsonLd(structuredData);
+// Paper, read from the token sheet rather than restated, so browser chrome can
+// never drift from the world. --carta is redefined for the night desk, so the
+// two theme-color values follow the two themes.
+function tokenValue(source: string, name: string): string {
+  const match = source.match(new RegExp(`${name}:\\s*(#[0-9a-f]{6})`, "iu"));
+  if (match === null) throw new Error(`Token ${name} is missing from the global token sheet`);
+  return match[1]!;
+}
+const themeColor = tokenValue(tokenSheet, "--carta");
+const darkThemeColor = tokenSheet.split("prefers-color-scheme: dark")[1] === undefined
+  ? themeColor
+  : tokenValue(tokenSheet.split("prefers-color-scheme: dark")[1]!, "--carta");
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={pageDescription} />
     <meta name="robots" content={robots} />
-    <meta name="theme-color" content="#f5f6f2" />
+    <meta name="theme-color" content={themeColor} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content={darkThemeColor} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/source-sans-3-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/roboto-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="sitemap" href="/sitemap.xml" />
     <meta property="og:title" content={pageTitle} />

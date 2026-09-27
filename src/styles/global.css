@@ -1,26 +1,112 @@
+/* ============================================================================
+   REGISTRO — the single token sheet and base element vocabulary.
+
+   One `:root` authority. Every surface reads these tokens; a second spacing,
+   colour, or type system is a defect (design/WORLD.md §CROSS-SURFACE REACH).
+
+   Three shared breakpoints, mobile-first:
+     base            narrow, single column, gutter drops below the input
+     >= 900px  (--bp-desk)   rail layout, gutter returns to the right column
+     >= 1200px (--bp-wide)   wider page measure, wider page gutters
+   Breakpoint values are plain media queries because custom media is not a
+   production CSS feature; keep the three numbers above in sync with
+   `--bp-desk` / `--bp-wide` and report any drift to the foundation lane.
+   ========================================================================== */
+
+/* --- Type: self-hosted variable subsets, latin + latin-ext, swap -------- */
+
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/archivo-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/archivo-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/source-sans-3-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/source-sans-3-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url("/fonts/roboto-mono-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url("/fonts/roboto-mono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: light dark;
 
-  --font-family-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  --font-size-display: clamp(2.6rem, 8vw, 5.8rem);
-  --font-size-h1: clamp(2.25rem, 5vw, 3.5rem);
-  --font-size-h2: clamp(1.375rem, 3vw, 1.75rem);
+  /* --- Type -------------------------------------------------------------- */
+
+  --font-family-display: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-ui: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-family-mono: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* The gutter column. Fixed-width by construction, tabular by mandate. */
+  --font-family-gutter: var(--font-family-mono);
+
+  --font-size-display: clamp(1.75rem, 3.2vw, 2.5rem);
+  --font-size-h1: clamp(1.5rem, 2.4vw, 1.875rem);
+  --font-size-h2: clamp(1.125rem, 1.6vw, 1.25rem);
   --font-size-body-lg: 1.0625rem;
   --font-size-body: 0.9375rem;
   --font-size-sm: 0.8125rem;
   --font-size-xs: 0.75rem;
   --font-size-mono: 0.8125rem;
-  --line-height-display: 0.96;
-  --line-height-heading: 1.2;
+
+  --line-height-display: 1.04;
+  --line-height-heading: 1.18;
   --line-height-body: 1.4667;
   --line-height-relaxed: 1.55;
+
+  --tracking-display: -0.028em;
+  --tracking-heading: -0.02em;
+  --tracking-label: 0.09em;
+
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
+  /* --- Space ------------------------------------------------------------- */
+
   --space-0: 0;
+  --space-half: 2px;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -29,71 +115,147 @@
   --space-6: 24px;
   --space-7: 28px;
   --space-8: 32px;
-  --space-10: 40px;
   --space-12: 48px;
   --space-16: 64px;
-  --space-px: 1px;
-  --space-half: 2px;
 
-  --radius-xs: 3px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  /* --- Material ---------------------------------------------------------- */
+
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
   --radius-full: 999px;
+  --radius: var(--radius-md);
+
   --border-width: 1px;
+  --rule-weight: var(--border-width);
   --state-border-width: 3px;
-  --focus-width: 3px;
-  --focus-offset: 3px;
-  --control-height: 40px;
+  --focus-width: 2px;
+  --focus-offset: 2px;
+  --focus-ring: var(--rossa);
+
+  /* Depth is one 1px edge plus a background step, never a soft glow. These
+     two are the single sanctioned exception, for the command palette and any
+     true overlay. Content stays flat: a ledger has no shadow. */
+  --elevation-overlay: 0 18px 44px rgb(26 23 20 / 0.18);
+  --elevation-2: 0 30px 68px rgb(26 23 20 / 0.26);
+  /* The dimmed desk the overlay sits on. Alpha over the page's own ground, so
+     it follows the theme rather than painting a fixed grey over it. */
+  --overlay-backdrop: rgb(26 23 20 / 0.42);
+
+  /* --- Metrics ----------------------------------------------------------- */
+
+  --control-height: 38px;
   --control-height-touch: 44px;
-  --row-height: 68px;
-  --row-height-compact: 52px;
+  --row-height: 56px;
+  --row-height-compact: 44px;
   --nav-height: 56px;
-  --container-gutter: 24px;
-  --container-max: 1080px;
+  /* The shell rail: one fixed width, the same on every page. */
+  --rail-width: 232px;
+  --shell-rail-width: 232px;
+  --shell-bar-slots: 4;
+  --container-gutter: 16px;
+  --container-max: 1180px;
   --container-workbench-max: 1180px;
   --reading-max: 720px;
   --measure-tool: 780px;
   --measure-copy: 680px;
+  /* The signature column. Fixed width, always in the same place. */
+  --gutter-width: clamp(9rem, 22vw, 15rem);
 
-  --motion-instant: 0ms;
+  /* --- Motion ------------------------------------------------------------ */
+
   --motion-fast: 120ms;
-  --motion-panel: 180ms;
   --motion-ease: cubic-bezier(0.2, 0, 0, 1);
   --motion-reduced: 0.01ms;
-  --elevation-0: none;
-  --elevation-1: 0 8px 24px rgb(0 0 0 / 0.12);
-  --elevation-2: 0 20px 60px rgb(0 0 0 / 0.2);
 
-  --canvas: #f4f4f1;
-  --surface: #ffffff;
-  --surface-subtle: #ecece8;
-  --text: #171714;
-  --text-muted: #62625c;
-  --text-faint: #74776f;
-  --border: #d6d6cf;
-  --border-strong: #b8b6b0;
-  --action: #274e45;
-  --action-hover: #1d3e37;
-  --action-soft: #dce9e4;
-  --action-ink: #ffffff;
-  --success: #1d704b;
-  --success-surface: #edf7f1;
-  --warning: #8a5a00;
-  --warning-surface: #fff8e7;
-  --danger: #8b2525;
-  --danger-surface: #fff4f4;
-  --info: #315e9b;
-  --info-surface: #edf3fc;
-  --focus-ring: var(--action);
+  /* --- Ink on paper (the light ledger) ----------------------------------- */
 
-  --ink: var(--text);
-  --muted: var(--text-muted);
-  --line: var(--border);
-  --surface-muted: var(--surface-subtle);
-  --accent: var(--action);
-  --radius: var(--radius-md);
+  --carta: #f4f1ea;
+  --carta-alta: #fbf9f4;
+  --carta-fonda: #e8e3d7;
+  --inchiostro: #1a1714;
+  --inchiostro-2: #4a443c;
+  /* Faded ink. Darkened from the world's #7A7367, which measured 4.16:1 on
+     --carta and broke the 4.5:1 secondary-text floor. This value clears 4.5:1
+     on all three grounds, including the desk step. */
+  --inchiostro-3: #6b6459;
+  --rossa: #9e2b1f;
+  --rossa-tenue: #f2e3e0;
+  /* Red as text on a red-tinted ground. The pen is legible on paper; the same
+     value on the tinted ground needs the lifted step. */
+  --rossa-su-tenue: #9e2b1f;
+  --verde: #3c5a45;
+  --ambra: #8a5a12;
+  --blu-nota: #2f4a6b;
+
+  /* Semantic surfaces, all warm, none neutral grey. */
+  --verde-tenue: #e6ece6;
+  --ambra-tenue: #f4ecdc;
+  --blu-nota-tenue: #e5eaf1;
+
+  /* --- Shell rail ---------------------------------------------------------
+     The rail is a bound edge of the book: the desk one step back from the
+     page, ruled off from it by a single 1px ink edge. The active item is a
+     red marker, never a coloured card. */
+  --shell-nav-surface: var(--carta-fonda);
+  --shell-nav-surface-active: var(--carta-alta);
+  --shell-nav-ink: var(--inchiostro);
+  --shell-nav-ink-muted: var(--inchiostro-3);
+  --shell-nav-rule: var(--inchiostro-3);
+  --shell-nav-marker: var(--rossa);
+
+  /* Compatibility aliases — the pre-ledger names other lanes already read. */
+  --canvas: var(--carta);
+  --surface: var(--carta-alta);
+  --surface-subtle: var(--carta-fonda);
+  --surface-muted: var(--carta-fonda);
+  --text: var(--inchiostro);
+  --text-muted: var(--inchiostro-3);
+  --border: var(--inchiostro-3);
+  --border-strong: var(--inchiostro-2);
+  --ink: var(--inchiostro);
+  --muted: var(--inchiostro-3);
+  --line: var(--inchiostro-3);
+  --action: var(--rossa);
+  --action-ink: var(--carta-alta);
+  --success: var(--verde);
+  --success-surface: var(--verde-tenue);
+  --warning: var(--ambra);
+  --warning-surface: var(--ambra-tenue);
+  --danger: var(--rossa);
+  --danger-surface: var(--rossa-tenue);
 }
+
+/* --- Dark: the same ledger under a desk lamp, not an inversion ------------ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --carta: #15130f;
+    --carta-alta: #1d1a15;
+    --carta-fonda: #100e0b;
+    --inchiostro: #ede7da;
+    --inchiostro-2: #b8b1a3;
+    --inchiostro-3: #8f8879;
+    --rossa: #d9634f;
+    --rossa-tenue: #33201c;
+    --rossa-su-tenue: #e07967;
+    --verde: #86b394;
+    --ambra: #d8a44a;
+    --blu-nota: #93b6dd;
+    --verde-tenue: #1c2620;
+    --ambra-tenue: #2a2317;
+    --blu-nota-tenue: #1a2130;
+    --elevation-overlay: 0 18px 44px rgb(0 0 0 / 0.5);
+    --elevation-2: 0 30px 68px rgb(0 0 0 / 0.62);
+    /* Under a desk lamp the dimmed desk is the night ground itself, so the
+       backdrop carries more weight and less of the warm ink in it. */
+    --overlay-backdrop: rgb(0 0 0 / 0.58);
+  }
+}
+
+/* ============================================================================
+   Base elements
+   ========================================================================== */
 
 *,
 *::before,
@@ -104,17 +266,29 @@ html {
   font-family: var(--font-family-ui);
   font-size: 100%;
   text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   min-height: 100vh;
   margin: 0;
-  background: var(--canvas);
-  color: var(--text);
+  background: var(--carta);
+  color: var(--inchiostro);
   font-family: var(--font-family-ui);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
 }
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+h1 { font-size: var(--font-size-h1); }
+h2 { font-size: var(--font-size-h2); }
 
 a { color: inherit; }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -127,246 +301,446 @@ img, svg, video, canvas { display: block; max-width: 100%; }
   outline-offset: var(--focus-offset);
 }
 
-.site-header {
-  min-height: var(--nav-height);
-  padding-inline: var(--container-gutter);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: var(--border-width) solid var(--border);
-  background: var(--canvas);
+/* Digits must not shift width as they change. Mandatory everywhere a value
+   is read, and applied as a rule rather than a per-component reminder. */
+.gutter,
+.rule-row,
+.result-value,
+.ledger-num,
+.assumptions dd,
+.table-output,
+.table-preview td,
+.table-preview th {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
 }
 
-.home-link { font-weight: var(--font-weight-bold); text-decoration: none; }
-.status-chip, .provenance {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  padding: var(--space-1) var(--space-2);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-full);
-  color: var(--text-muted);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-}
+/* --- The page measure: one x-offset for the gutter on every page ---------- */
 
-.landing-shell, .tool-page {
+.tool-page,
+.ledger-page {
   width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
   margin: 0 auto;
 }
 
-.landing-shell { padding: var(--space-16) 0; }
-.landing-shell h1 {
-  max-width: var(--reading-max);
-  margin: var(--space-2) 0 var(--space-6);
-  font-size: var(--font-size-display);
-  line-height: var(--line-height-display);
-  letter-spacing: -0.05em;
-}
-.primary-link {
-  display: inline-block;
-  margin-top: var(--space-4);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-sm);
-  background: var(--action);
-  color: var(--action-ink);
-  text-decoration: none;
-  font-weight: var(--font-weight-bold);
+/* --- The running gutter ------------------------------------------------- */
+
+.gutter {
+  width: 100%;
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
+  border-top: var(--border-width) solid var(--inchiostro-2);
+  background: var(--carta-alta);
+  font-family: var(--font-family-gutter);
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
-.tool-page { padding: var(--space-12) 0 var(--space-16); }
-.tool-heading { max-width: var(--measure-tool); margin-bottom: var(--space-7); }
-.tool-heading nav { margin-bottom: var(--space-8); color: var(--text-muted); font-size: var(--font-size-sm); }
-.eyebrow {
+.gutter-label {
   margin: 0 0 var(--space-2);
-  color: var(--text-muted);
+  color: var(--inchiostro-3);
+  font-family: var(--font-family-display);
   font-size: var(--font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
   font-weight: var(--font-weight-bold);
-}
-.tool-heading h1 {
-  margin: 0 0 var(--space-5);
-  font-size: var(--font-size-h1);
-  line-height: var(--line-height-heading);
-  letter-spacing: -0.04em;
-}
-.lede { max-width: var(--measure-copy); color: var(--text-muted); font-size: var(--font-size-body-lg); }
-.trust-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-5);
-  margin-top: var(--space-6);
-  padding: var(--space-3) var(--space-4);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface-subtle);
-  font-size: var(--font-size-body);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
 }
 
-.tool-operation { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr); gap: var(--space-5); align-items: start; }
-.tool-operation form, .result-panel, .method-card {
-  background: var(--surface);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-md);
+/* The current value. It settles into the column; nothing animates in. */
+.gutter-value {
+  margin: 0;
+  color: var(--rossa);
+  font-family: var(--font-family-display);
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--tracking-heading);
+  font-variant-numeric: tabular-nums lining-nums;
+  overflow-wrap: anywhere;
 }
-.tool-operation form { padding: var(--space-6); }
-.result-panel { min-height: 220px; padding: var(--space-6); position: sticky; top: var(--space-5); }
-.method-card { max-width: var(--measure-tool); margin-top: var(--space-5); padding: var(--space-6); }
-.method-card h2 { margin: 0 0 var(--space-3); }
-.method-card ul { margin: 0; padding-left: var(--space-5); color: var(--text-muted); }
+
+/* The previous value, still legible for ~4s, dimmed directly above. */
+.gutter-previous {
+  margin: 0 0 var(--space-2);
+  color: var(--inchiostro-3);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Semantic state is a 3px rule inside the gutter's own left border, in ink.
+   Never a coloured card, never a coloured border on the block. */
+.gutter-note {
+  margin: var(--space-3) 0 0;
+  padding-left: var(--space-3);
+  border-left: var(--state-border-width) solid var(--inchiostro-3);
+  color: var(--inchiostro-2);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-sm);
+}
+
+.gutter-note[data-state="success"] { border-left-color: var(--verde); }
+.gutter-note[data-state="warning"] { border-left-color: var(--ambra); }
+.gutter-note[data-state="error"] { border-left-color: var(--rossa); }
+
+/* --- Ruled rows --------------------------------------------------------- */
+
+.ledger {
+  border-top: var(--rule-weight) solid var(--inchiostro-2);
+}
+
+.rule-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2) var(--space-4);
+  align-items: baseline;
+  min-height: var(--row-height);
+  padding: var(--space-3) 0;
+  border-bottom: var(--rule-weight) solid var(--line);
+}
+
+.rule-row-main { min-width: 0; }
+
+.rule-row-name {
+  display: block;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-heading);
+  text-decoration: none;
+}
+
+.rule-row-task {
+  display: block;
+  color: var(--inchiostro-3);
+  font-size: var(--font-size-sm);
+}
+
+.rule-row-value {
+  color: var(--inchiostro);
+  font-family: var(--font-family-gutter);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums lining-nums;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rule-row[data-current="true"] { box-shadow: inset 3px 0 0 0 var(--rossa); padding-left: var(--space-3); }
+.rule-row:hover { background: var(--carta-alta); }
+
+/* --- Fields ------------------------------------------------------------- */
 
 fieldset { margin: 0 0 var(--space-6); border: 0; padding: 0; }
-legend, .field > span { display: block; margin-bottom: var(--space-2); font-weight: var(--font-weight-semibold); }
-.segmented { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.segmented legend { width: 100%; }
-.segmented label, .weekday-row label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--canvas);
-  cursor: pointer;
+legend, .field > span, .field > label {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--inchiostro-2);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.01em;
 }
-.segmented input, .weekday-row input { accent-color: var(--action); }
 
-.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
 .field { display: block; margin-bottom: var(--space-5); }
-.field em { color: var(--text-muted); font-weight: var(--font-weight-regular); }
-.field input, .field textarea, .field select {
+.field em { color: var(--inchiostro-3); font-weight: var(--font-weight-regular); }
+.field small { display: block; margin-top: var(--space-2); color: var(--inchiostro-3); font-size: var(--font-size-sm); }
+
+.field input,
+.field textarea,
+.field select,
+.table-control-grid select {
   width: 100%;
   min-height: var(--control-height);
   padding: var(--space-2) var(--space-3);
-  border: var(--border-width) solid var(--border-strong);
+  border: var(--border-width) solid var(--inchiostro-2);
   border-radius: var(--radius-sm);
-  background: var(--canvas);
-  color: var(--text);
+  background: var(--carta-alta);
+  color: var(--inchiostro);
+  font-size: var(--font-size-body);
 }
-.field input[type="checkbox"] { width: auto; min-height: auto; accent-color: var(--action); }
-.json-result { max-width: 100%; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); font-size: var(--font-size-sm); }
-.field small { display: block; margin-top: var(--space-2); color: var(--text-muted); }
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--inchiostro-3); }
+
+.field input[type="checkbox"],
+.field input[type="radio"] {
+  width: auto;
+  min-height: auto;
+  accent-color: var(--rossa);
+}
+
+.field-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+
+.segmented { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.segmented legend { width: 100%; }
+
+.segmented label,
+.weekday-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--inchiostro-2);
+  border-radius: var(--radius-sm);
+  background: var(--carta-alta);
+  cursor: pointer;
+}
+
+.segmented input,
+.weekday-row input { accent-color: var(--rossa); }
 
 .workweek-fieldset legend { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }
 .weekday-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+.checkbox-field { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-4); }
+.checkbox-field input { accent-color: var(--rossa); }
+
 .text-button {
   margin-top: var(--space-2);
   padding: var(--space-1) 0;
   border: 0;
   background: transparent;
-  color: var(--text-muted);
+  color: var(--inchiostro-3);
   text-decoration: underline;
   cursor: pointer;
 }
+
 .text-button:disabled { opacity: 0.45; cursor: default; }
 
+/* --- Actions ------------------------------------------------------------ */
+
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.actions button {
+
+.actions button,
+.tool-submit {
   min-height: var(--control-height);
   padding: var(--space-2) var(--space-4);
-  border: var(--border-width) solid var(--border);
+  border: var(--border-width) solid var(--inchiostro-2);
   border-radius: var(--radius-sm);
-  background: var(--canvas);
+  background: var(--carta-alta);
+  color: var(--inchiostro);
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  font-weight: var(--font-weight-bold);
 }
-.actions .primary { background: var(--action); border-color: var(--action); color: var(--action-ink); }
+
+/* The primary action is the only thing red is committed to besides the
+   running total, the active row marker, and the gutter value. */
+.actions .primary,
+.actions button:first-child { background: var(--rossa); border-color: var(--rossa); color: var(--carta-alta); }
+
+/* --- States ------------------------------------------------------------- */
+
 .error, .warning, .success, .info {
   padding: var(--space-3) var(--space-4);
-  border: var(--border-width) solid var(--border);
+  border: var(--border-width) solid var(--line);
   border-left: var(--state-border-width) solid currentColor;
-  background: var(--surface-subtle);
-  color: var(--text);
+  background: var(--carta-fonda);
+  color: var(--inchiostro);
 }
-.error { border-left-color: var(--danger); background: var(--danger-surface); color: var(--danger); }
-.warning { border-left-color: var(--warning); background: var(--warning-surface); color: var(--warning); }
-.success { border-left-color: var(--success); background: var(--success-surface); color: var(--success); }
-.info { border-left-color: var(--info); background: var(--info-surface); color: var(--info); }
+
+.error { color: var(--rossa-su-tenue); background: var(--rossa-tenue); }
+.warning { color: var(--ambra); background: var(--ambra-tenue); }
+.success { color: var(--verde); background: var(--verde-tenue); }
+.info { color: var(--blu-nota); background: var(--blu-nota-tenue); }
+
+/* --- Tool pages --------------------------------------------------------- */
+
+.tool-page { padding: var(--space-8) 0 var(--space-16); }
+.tool-heading { max-width: var(--measure-tool); margin-bottom: var(--space-7); }
+.tool-heading nav { margin-bottom: var(--space-6); color: var(--inchiostro-3); font-size: var(--font-size-sm); }
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--inchiostro-3);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+/* The largest type on a tool page names a state, not the product. */
+.tool-heading h1 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-display);
+  line-height: var(--line-height-display);
+  letter-spacing: var(--tracking-display);
+}
+.lede { max-width: var(--measure-copy); margin: 0; color: var(--inchiostro-2); font-size: var(--font-size-body-lg); }
+
+.trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin-top: var(--space-5);
+  padding: var(--space-3) 0;
+  border-top: var(--rule-weight) solid var(--line);
+  border-bottom: var(--rule-weight) solid var(--line);
+  color: var(--inchiostro-2);
+  font-size: var(--font-size-sm);
+}
+
+/* Input column and gutter column, always in the same relation. */
+.tool-operation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.tool-operation form,
+.result-panel,
+.method-card {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.result-panel {
+  padding: var(--space-4) 0 0;
+  border-top: var(--border-width) solid var(--inchiostro-2);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-body);
+  font-variant-numeric: inherit;
+}
 
 .result-value {
   display: block;
-  margin: var(--space-4) 0 var(--space-2);
-  font-size: clamp(1.7rem, 5vw, 2.6rem);
+  margin: var(--space-3) 0 var(--space-2);
+  color: var(--rossa);
+  font-family: var(--font-family-display);
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-weight: var(--font-weight-bold);
   line-height: var(--line-height-heading);
-  letter-spacing: -0.03em;
+  letter-spacing: var(--tracking-heading);
 }
-.result-placeholder { color: var(--text-muted); }
-.result-panel code { display: inline-block; margin-bottom: var(--space-5); color: var(--text-muted); font-family: var(--font-family-mono); }
+
+.result-placeholder { color: var(--inchiostro-3); }
+.result-panel code, .json-result {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+}
+.result-panel code { display: inline-block; margin-bottom: var(--space-4); color: var(--inchiostro-3); }
+.json-result { max-width: 100%; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.method-card {
+  max-width: var(--measure-tool);
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: var(--border-width) solid var(--inchiostro-2);
+}
+.method-card h2 { margin: 0 0 var(--space-3); }
+.method-card ul { margin: 0; padding-left: var(--space-5); color: var(--inchiostro-2); }
+
 .assumptions { display: grid; gap: var(--space-3); margin: var(--space-6) 0 0; }
-.assumptions div { padding-top: var(--space-3); border-top: var(--border-width) solid var(--border); }
-.assumptions dt { color: var(--text-muted); font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 0.08em; }
+.assumptions div { padding-top: var(--space-3); border-top: var(--rule-weight) solid var(--line); }
+.assumptions dt {
+  color: var(--inchiostro-3);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
 .assumptions dd { margin: var(--space-1) 0 0; }
 
-@media (max-width: 760px) {
-  .site-header { padding-inline: var(--container-gutter); }
-  .status-chip { display: none; }
-  .tool-page { padding-top: var(--space-7); }
-  .tool-heading nav { margin-bottom: var(--space-6); }
-  .tool-operation { grid-template-columns: 1fr; }
-  .result-panel { position: static; min-height: 160px; }
-  .field-grid { grid-template-columns: 1fr; gap: 0; }
-  .weekday-row label { flex: 1 0 calc(25% - var(--space-2)); justify-content: center; }
+.provenance { color: var(--inchiostro-3); font-size: var(--font-size-xs); }
+
+/* --- Tables ------------------------------------------------------------- */
+
+.table-control-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+.table-control-grid .choice-line {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
 }
 
-@media (min-width: 960px) {
+.table-output {
+  max-height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--carta-alta);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+}
+
+.table-chart { display: grid; gap: var(--space-2); margin: var(--space-4) 0; }
+.table-chart-row {
+  display: grid;
+  grid-template-columns: minmax(72px, 0.8fr) minmax(70px, 1.5fr) auto;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: var(--font-size-sm);
+}
+.table-chart-row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.table-chart-track { height: 10px; overflow: hidden; border-radius: var(--radius-sm); background: var(--carta-fonda); }
+.table-chart-bar { height: 100%; min-width: 3px; background: var(--inchiostro-2); }
+
+.table-preview-scroll { max-height: 300px; overflow: auto; margin: var(--space-4) 0; border: var(--border-width) solid var(--line); }
+.table-preview { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+.table-preview caption {
+  padding: var(--space-2) var(--space-3);
+  color: var(--inchiostro-3);
+  text-align: left;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-semibold);
+}
+.table-preview th, .table-preview td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--rule-weight) solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.table-preview th { position: sticky; top: 0; background: var(--carta-fonda); font-weight: var(--font-weight-bold); }
+.table-preview td { max-width: 240px; overflow-wrap: anywhere; }
+
+/* ============================================================================
+   Breakpoint 1 of 3: the desk. The gutter returns to the right column.
+   ========================================================================== */
+
+@media (min-width: 900px) {
+  :root { --container-gutter: 24px; }
+
+  .tool-operation {
+    grid-template-columns: minmax(0, 1fr) var(--gutter-width);
+    gap: var(--space-8);
+  }
+
+  .result-panel,
+  .gutter {
+    position: sticky;
+    top: var(--nav-height);
+    padding: var(--space-4) 0 0 var(--space-5);
+    border-top: 0;
+    border-left: var(--border-width) solid var(--inchiostro-2);
+    background: transparent;
+  }
+
+  .field-grid { grid-template-columns: 1fr 1fr; gap: var(--space-4) var(--space-5); }
+  .table-control-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .table-chart-row { grid-template-columns: minmax(90px, 0.8fr) minmax(100px, 2fr) auto; }
+}
+
+/* ============================================================================
+   Breakpoint 2 of 3: the wide desk.
+   ========================================================================== */
+
+@media (min-width: 1200px) {
   :root { --container-gutter: 32px; }
 }
 
-@media (max-width: 640px) {
-  :root { --container-gutter: 16px; }
-}
+/* ============================================================================
+   Motion
+   ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;
     transition-duration: var(--motion-reduced) !important;
     animation-duration: var(--motion-reduced) !important;
-  }
-}
-
-.table-control-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
-.table-control-grid .choice-line { grid-column: 1 / -1; display: flex; align-items: center; gap: var(--space-2); margin: 0; }
-.table-control-grid select { width: 100%; min-height: var(--control-height); padding: var(--space-2) var(--space-3); border: var(--border-width) solid var(--border-strong); border-radius: var(--radius-sm); background: var(--canvas); }
-.table-output { max-height: 360px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: var(--space-3); border-radius: var(--radius-sm); background: var(--canvas); font-family: var(--font-family-mono); font-size: var(--font-size-mono); }
-.table-chart { display: grid; gap: var(--space-2); margin: var(--space-4) 0; }
-.table-chart-row { display: grid; grid-template-columns: minmax(90px, 0.8fr) minmax(100px, 2fr) auto; gap: var(--space-2); align-items: center; font-size: var(--font-size-sm); }
-.table-chart-row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.table-chart-track { height: 14px; overflow: hidden; border-radius: var(--radius-full); background: var(--surface-subtle); }
-.table-chart-bar { height: 100%; min-width: 3px; border-radius: inherit; background: var(--action); }
-.table-preview-scroll { max-height: 300px; overflow: auto; margin: var(--space-4) 0; border: var(--border-width) solid var(--line); border-radius: var(--radius-sm); }
-.table-preview { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
-.table-preview caption { padding: var(--space-2) var(--space-3); color: var(--muted); text-align: left; font-weight: var(--font-weight-semibold); }
-.table-preview th, .table-preview td { padding: var(--space-2) var(--space-3); border-bottom: var(--border-width) solid var(--line); text-align: left; vertical-align: top; }
-.table-preview th { position: sticky; top: 0; background: var(--surface-subtle); font-weight: var(--font-weight-bold); }
-.table-preview td { max-width: 240px; overflow-wrap: anywhere; }
-
-@media (max-width: 760px) {
-  .table-control-grid { grid-template-columns: 1fr; }
-  .table-chart-row { grid-template-columns: minmax(72px, 0.8fr) minmax(70px, 1.5fr) auto; }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --canvas: #151613;
-    --surface: #1d1e1a;
-    --surface-subtle: #24251f;
-    --text: #f4f4ed;
-    --text-muted: #b9baaf;
-    --text-faint: #999c92;
-    --border: #3b3d35;
-    --border-strong: #5b5e55;
-    --action: #9bc8b8;
-    --action-hover: #b6ddce;
-    --action-soft: #263a34;
-    --action-ink: #11211c;
-    --success: #83cda7;
-    --success-surface: #1d3026;
-    --warning: #e4b25b;
-    --warning-surface: #332a16;
-    --danger: #ff9b95;
-    --danger-surface: #3b1f20;
-    --info: #9cc2f2;
-    --info-surface: #1c2a43;
   }
 }
