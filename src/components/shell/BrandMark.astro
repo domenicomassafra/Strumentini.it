@@ -1,0 +1,43 @@
+---
+/**
+ * The product mark: a bound ledger leaf with a single red pen rule committing a
+ * value into the fixed right-hand gutter. Authored geometry — the only shape in
+ * the shell that is drawn rather than typed. Sits at 28px in the rail and 24px
+ * in the mobile header, and inherits the ledger inks via `currentColor` plus a
+ * `--carta-alta` knockout so it reads on both paper and the dark desk.
+ */
+interface Props {
+  size?: number;
+}
+
+const { size = 28 } = Astro.props;
+---
+
+<svg
+  class="shell-brand-mark"
+  width={size}
+  height={size}
+  viewBox="0 0 28 28"
+  fill="none"
+  role="img"
+  aria-hidden="true"
+  focusable="false"
+>
+  {/* the bound leaf */}
+  <rect x="3.5" y="2.5" width="21" height="23" rx="1.5" fill="var(--carta-alta, #fbf9f4)" stroke="currentColor" stroke-width="1.5" />
+  {/* the gutter rule that separates ledger from value column */}
+  <path d="M17.5 6v16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.4" />
+  {/* three ruled ledger lines, the last one committing a value */}
+  <path d="M7 8.5h7M7 12.5h7M7 16.5h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+  {/* the accountant's red pen: the one committed value in the gutter */}
+  <path d="M19.5 20.5 22 18" stroke="var(--rossa, #9e2b1f)" stroke-width="2" stroke-linecap="round" />
+  <circle cx="22.5" cy="9.5" r="1.6" fill="var(--rossa, #9e2b1f)" />
+</svg>
+
+<style>
+  .shell-brand-mark {
+    display: block;
+    flex: 0 0 auto;
+    color: var(--inchiostro, #1a1714);
+  }
+</style>
