@@ -81,9 +81,10 @@ The consolidated validator writes ignored evidence under `quality/receipts/relea
 npm run release:validate
 npm run release:validate:require-ready
 npm run deploy:check
+npm run deploy:check:portable
 ```
 
-`release:validate` checks the 200-tool surface, static asset inventory, public metadata and discovery files, Cloudflare configuration, truthful copy, certification receipts, and evidence boundaries. The canonical production origin defaults to `https://strumentiutili.it`; `PUBLIC_SITE_URL` can override it for an explicitly configured preview or alternate environment. `release:validate:require-ready` runs the unit suite, Astro check, and Wrangler dry run before exiting nonzero until every blocker is resolved. `deploy:check` is a Wrangler dry run only.
+`release:validate` checks the 200-tool surface, static asset inventory, public metadata and discovery files, Cloudflare configuration, truthful copy, certification receipts, and evidence boundaries. The canonical production origin defaults to `https://strumentiutili.it`; `PUBLIC_SITE_URL` can override it for an explicitly configured preview or alternate environment. `release:validate:require-ready` runs the unit suite, Astro check, portable static-host validation, and Wrangler dry run before exiting nonzero until every blocker is resolved. `deploy:check` runs both deployment gates; `deploy:check:portable` proves that the built `dist/` artifact does not require Cloudflare or any other application runtime. See `docs/09-deployment-costs-and-portability.md`.
 
 ## Brand
 

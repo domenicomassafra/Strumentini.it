@@ -79,7 +79,7 @@ These constraints inherit into every implementation ticket.
 - **DEC-08 — Search:** deterministic structured metadata search ranks installed exact matches, task intent, recent use, installed-pack relevance, then general catalog results.
 - **DEC-09 — Tool page:** task and operation come first; context/trust/methodology follow. Runtime location is stated in literal language.
 - **DEC-10 — Stack:** Astro static-first shell with strict TypeScript and Preact for interactive islands unless an implementation ticket proves a concrete incompatibility.
-- **DEC-11 — Hosting:** Cloudflare Workers Static Assets. Ordinary deterministic tool execution does not route through a Worker.
+- **DEC-11 — Hosting:** Cloudflare Workers Static Assets is the default validation/production target, but the built `dist/` artifact must remain provider-portable static output. Ordinary deterministic tool execution does not route through a Worker.
 - **DEC-12 — Browser floor:** current and previous major Chrome, Edge, Firefox, Safari, plus current and previous iOS Safari; other browsers degrade gracefully.
 - **DEC-13 — File baseline:** File/Blob input, ordinary file picker, drag/drop where useful, and browser download. File System Access is progressive enhancement only.
 - **DEC-14 — Storage:** IndexedDB for structured local product state; localStorage only for tiny non-sensitive preferences when justified; OPFS only for scratch/cache, never the sole durable copy.
@@ -269,7 +269,7 @@ As the product owner, I can distinguish one-off acquisition from Workbench reten
 As the product owner, I can ship public tool/pack pages and the interactive Workbench without operating an application server for deterministic work.
 
 - **AC-16.1:** Public tool/pack discovery pages are statically rendered/crawlable and the operation surface hydrates only where needed.
-- **AC-16.2:** Deployment uses Cloudflare Workers Static Assets with content-hashed assets and no SSR requirement for normal use.
+- **AC-16.2:** The default deployment uses Cloudflare Workers Static Assets with content-hashed assets, while the same `dist/` artifact remains deployable on a generic static host with no SSR requirement for normal use.
 - **AC-16.3:** File System Access, OPFS, service worker/PWA installation, account, and sync are not required for any first-build core story.
 
 ### US-17 — Preserve product truth in copy and brand

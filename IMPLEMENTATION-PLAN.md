@@ -27,7 +27,7 @@ These choices resolve the owner-decision list from lane 05 for the first validat
 
 | Concern | Decision |
 |---|---|
-| Hosting | Cloudflare Workers Static Assets |
+| Hosting | Cloudflare Workers Static Assets by default; provider-portable static `dist/` is mandatory |
 | Page/build shell | Astro static-first |
 | Interactive UI | Preact islands/components |
 | Language | strict TypeScript |

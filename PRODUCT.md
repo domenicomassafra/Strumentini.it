@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Existing, not delegated: Astro 7 + Preact + TypeScript, static build, custom-property CSS (no utility framework), 200 generated tool routes through an in-repo Tool Factory, deployed to Cloudflare Workers Static Assets. Ownership question already answered by the repository itself; do not re-offer it.
+Existing, not delegated: Astro 7 + Preact + TypeScript, static build, custom-property CSS (no utility framework), 200 generated tool routes through an in-repo Tool Factory, with Cloudflare Workers Static Assets as the default deployment target. The built `dist/` artifact remains ordinary static output and must stay provider-portable. Ownership question already answered by the repository itself; do not re-offer it.
 
 ## Users
 
