@@ -1,6 +1,7 @@
 ---
 import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
 import { ArchiveChecksumManifestTool } from "../../components/tools/file-privacy/ArchiveChecksumManifestTool";
+import "../../components/tools/tool-surface.css";
 ---
 <FilePrivacyPage title="Archive Checksum Manifest" description="Hash a ZIP archive or selected files and emit a portable checksum manifest." methodTitle="Portable handoff proof" methodItems={["SHA-256 is calculated locally with bounded reads.", "For a ZIP, the central directory is also inspected for handoff metadata.", "The manifest contains paths and digests, not file contents."]}>
   <ArchiveChecksumManifestTool client:load />

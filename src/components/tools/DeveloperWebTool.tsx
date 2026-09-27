@@ -2,14 +2,16 @@ import { useMemo, useState } from "preact/hooks";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import {
   InlineError,
+  ToolGutter,
   ToolActions,
-  ToolOperation,
   ToolResetButton,
-  ToolResultPanel,
+  ToolSurface,
   ToolSubmitButton,
   useToolOperation,
 } from "./shared";
 import type { DeveloperWebToolId } from "../../engines/developer-web";
+import { gutterStateFor } from "./shared/ToolGutter";
+import { CONTROL, it } from "./shared/controlLabels";
 
 type FieldKind = "text" | "textarea" | "number" | "select";
 
@@ -117,31 +119,47 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
     operation.reset();
   }
 
+  const gutterState = gutterStateFor(operation.status);
+
   return (
-    <ToolOperation busy={operation.isRunning}>
-      <form onSubmit={submit} aria-label={config.title}>
-        {config.fields.map((field) => {
-          const id = fieldIds[field.key];
-          const value = values[field.key] ?? "";
-          return (
-            <label class="field" for={id} key={field.key}>
-              <span>{field.label}</span>
-              {field.kind === "textarea" && <textarea id={id} rows={field.rows ?? 8} value={value} placeholder={field.placeholder} onInput={(event) => update(field.key, event.currentTarget.value)} required={field.required} />}
-              {field.kind === "text" && <input id={id} type="text" value={value} placeholder={field.placeholder} onInput={(event) => update(field.key, event.currentTarget.value)} required={field.required} />}
-              {field.kind === "number" && <input id={id} type="number" value={value} onInput={(event) => update(field.key, event.currentTarget.value)} required={field.required} />}
-              {field.kind === "select" && <select id={id} value={value} onChange={(event) => update(field.key, event.currentTarget.value)} required={field.required}>{field.options?.map((option) => <option value={option} key={option}>{option}</option>)}</select>}
-            </label>
-          );
-        })}
+    <ToolSurface
+      gutter={
+        <ToolGutter
+          label={config.eyebrow}
+          state={gutterState}
+          placeholder={operation.isRunning ? it(CONTROL.gutterRunning) : it(CONTROL.gutterIdle)}
+          busy={operation.isRunning}
+        >
+          {operation.result !== null && (
+            <pre class="developer-result-json" aria-label={`${config.title} — risultato`}>
+              {resultText(operation.result)}
+            </pre>
+          )}
+        </ToolGutter>
+      }
+    >
+      <form onSubmit={submit} aria-label={config.title} noValidate aria-busy={operation.isRunning ? "true" : undefined}>
+        <div class="field-grid">
+          {config.fields.map((field) => {
+            const id = fieldIds[field.key];
+            const value = values[field.key] ?? "";
+            return (
+              <label class="field" for={id} key={field.key}>
+                <span>{field.label}</span>
+                {field.kind === "textarea" && <textarea id={id} rows={field.rows ?? 8} value={value} placeholder={field.placeholder} onInput={(event) => update(field.key, event.currentTarget.value)} required={field.required} />}
+                {field.kind === "text" && <input id={id} type="text" value={value} placeholder={field.placeholder} onInput={(event) => update(field.key, event.currentTarget.value)} required={field.required} />}
+                {field.kind === "number" && <input id={id} type="number" value={value} onInput={(event) => update(field.key, event.currentTarget.value)} required={field.required} />}
+                {field.kind === "select" && <select id={id} value={value} onChange={(event) => update(field.key, event.currentTarget.value)} required={field.required}>{field.options?.map((option) => <option value={option} key={option}>{option}</option>)}</select>}
+              </label>
+            );
+          })}
+        </div>
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel="Working…">{config.submitLabel}</ToolSubmitButton>
-          <ToolResetButton onClick={reset} disabled={operation.isRunning} />
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{config.submitLabel}</ToolSubmitButton>
+          <ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton>
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow={config.eyebrow} placeholder={config.placeholder} busy={operation.isRunning} atomic={false}>
-        {operation.result !== null && <pre class="developer-result-json" aria-label={`${config.title} result`}>{resultText(operation.result)}</pre>}
-      </ToolResultPanel>
-    </ToolOperation>
+    </ToolSurface>
   );
 }

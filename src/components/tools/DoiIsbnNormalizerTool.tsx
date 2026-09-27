@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import type { DoiIsbnOutput } from "../../tools/doi-isbn-normalizer/types";
+import { gutterStateFromResult } from "./shared/ToolGutter";
 
 export function DoiIsbnNormalizerTool() {
   const [kind, setKind] = useState<"doi" | "isbn">("doi");
@@ -33,6 +34,7 @@ export function DoiIsbnNormalizerTool() {
     setError("");
   }
 
+  const gutterState = gutterStateFromResult(result, error);
   return (
     <div class="tool-operation">
       <form onSubmit={submit}>
@@ -55,16 +57,16 @@ export function DoiIsbnNormalizerTool() {
         {error !== "" && <p class="error" role="alert">{error}</p>}
         <div class="actions">
           <button class="primary" type="submit">Normalize &amp; validate</button>
-          <button type="button" onClick={reset}>Reset</button>
+          <button type="button" onClick={reset}>Reimposta</button>
         </div>
       </form>
 
-      <section class="result-panel" aria-live="polite">
+      <section class="result-panel gutter" data-state={gutterState} aria-live="polite">
         <p class="eyebrow">Result</p>
         {result === null ? <p class="result-placeholder">The normalized identifier appears here.</p> : result.valid ? (
           result.kind === "DOI" ? (
             <>
-              <strong class="result-value">Valid DOI shape</strong>
+              <strong class="gutter-value">Valid DOI shape</strong>
               <dl class="assumptions">
                 <div><dt>Normalized</dt><dd><code>{result.normalized}</code></dd></div>
                 <div><dt>Resolver URL</dt><dd><code>{result.url}</code></dd></div>
@@ -72,7 +74,7 @@ export function DoiIsbnNormalizerTool() {
             </>
           ) : (
             <>
-              <strong class="result-value">Valid {result.kind}</strong>
+              <strong class="gutter-value">Valid {result.kind}</strong>
               <dl class="assumptions">
                 <div><dt>Digits</dt><dd><code>{result.digits}</code></dd></div>
                 {result.kind === "ISBN-10" && <div><dt>ISBN-13</dt><dd><code>{result.isbn13}</code></dd></div>}
@@ -81,7 +83,7 @@ export function DoiIsbnNormalizerTool() {
           )
         ) : (
           <>
-            <strong class="result-value">Invalid</strong>
+            <strong class="gutter-value">Invalid</strong>
             <p>{result.reason}</p>
           </>
         )}

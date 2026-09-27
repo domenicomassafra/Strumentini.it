@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { MarkdownPreviewTool } from "../../components/tools/MarkdownPreviewTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="Markdown Preview" description="Preview a safe local subset of Markdown with raw HTML escaped.">
   <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Markdown Preview</h1><p class="lede">Render headings, emphasis, links, lists, quotes, and code without trusting raw HTML.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Markdown stays in this page.</span></div></header><MarkdownPreviewTool client:load /><section class="method-card"><h2>Safe preview</h2><ul><li>Raw HTML and unsafe URL schemes are escaped or replaced with a harmless link target.</li><li>This is a deterministic local subset, not a full CommonMark implementation.</li><li>Unclosed code fences are closed and reported as a warning.</li></ul></section></article>
-  <style is:global>.markdown-output { overflow-wrap: anywhere; } .markdown-output pre { overflow: auto; padding: 12px; background: var(--canvas); } .markdown-output a { color: var(--action); }</style>
 </BaseLayout>

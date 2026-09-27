@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { LoremSampleDataGeneratorTool } from "../../components/tools/LoremSampleDataGeneratorTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="Lorem & Sample-Data Generator" description="Generate deterministic local sample text and CSV-like records.">
   <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Lorem &amp; Sample-Data Generator</h1><p class="lede">Create repeatable sample words, paragraphs, names, emails, numbers, or rows.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Generation is deterministic and local.</span></div></header><LoremSampleDataGeneratorTool client:load /><section class="method-card"><h2>Sample-data policy</h2><ul><li>The same type, count, and seed produce the same local output.</li><li>Rows are synthetic test data and do not identify real people or addresses.</li><li>Counts are bounded to keep the preview responsive.</li></ul></section></article>

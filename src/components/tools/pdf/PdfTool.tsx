@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import type { PdfArtifact } from "../../../engines/pdf";
+import { StatusMark, statusMarkLabel } from "../shared/StatusMark";
+import { CONTROL, it } from "../shared/controlLabels";
 
 export type PdfToolId =
   | "pdf-merge"
@@ -195,6 +197,7 @@ export function PdfTool({ toolId, title, description, actionLabel, inputMode = "
   }
 
   const isWorking = status === "working";
+  const gutterState = isWorking ? "running" : result === null ? "idle" : error !== "" ? "error" : "success";
   return (
     <form class="tool-operation" onSubmit={submit} noValidate>
       <section class="tool-form-card">
@@ -219,12 +222,21 @@ export function PdfTool({ toolId, title, description, actionLabel, inputMode = "
         {optionMode === "delete-extract" && <div class="field-grid"><label class="field"><span>Pages</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3" disabled={isWorking} /></label><label class="field"><span>Operation</span><select value={deleteMode} onChange={(event) => setDeleteMode(event.currentTarget.value as "delete" | "extract")} disabled={isWorking}><option value="extract">Extract selected pages</option><option value="delete">Delete selected pages</option></select></label></div>}
         {optionMode === "password" && <label class="field"><span>Mode</span><select value={passwordMode} onChange={(event) => setPasswordMode(event.currentTarget.value as "check" | "remove")} disabled={isWorking}><option value="check">Check encryption only</option><option value="remove">Create a safe copy when unencrypted</option></select></label>}
         {error !== "" && <p class="error" role="alert">{error}</p>}
-        <div class="actions"><button class="primary" type="submit" disabled={isWorking}>{isWorking ? "Working locally…" : actionLabel}</button>{isWorking && <button type="button" onClick={() => controller.current?.abort()}>Cancel</button>}<button type="button" onClick={reset} disabled={isWorking}>Reset</button></div>
+        <div class="actions"><button class="primary" type="submit" disabled={isWorking}>{isWorking ? it(CONTROL.working) : actionLabel}</button>{isWorking && <button type="button" onClick={() => controller.current?.abort()}>{it(CONTROL.cancel)}</button>}<button type="button" onClick={reset} disabled={isWorking}>{it(CONTROL.reset)}</button></div>
       </section>
-      <section class="result-panel" aria-live="polite" aria-atomic="true">
-        <p class="eyebrow">Local result</p>
-        {result === null ? <p class="result-placeholder">The verified local result and capability notes appear here.</p> : <>
-          {inspection?.capabilities !== undefined && <ul class="file-note">{inspection.capabilities.map((capability) => <li key={capability.capability}>{capability.available ? "✓" : "!"} {capability.capability}{capability.reason === undefined ? "" : ` — ${capability.reason}`}</li>)}</ul>}
+      <section class="result-panel gutter" data-state={gutterState} aria-live="polite" aria-atomic="true" aria-busy={isWorking ? "true" : "false"}>
+        <p class="gutter-label eyebrow">{it(CONTROL.localResult)}</p>
+        {result === null ? <p class="gutter-placeholder result-placeholder">{it(CONTROL.gutterIdle)}</p> : <>
+          {inspection?.capabilities !== undefined && (
+            <ul class="status-list">
+              {inspection.capabilities.map((capability) => (
+                <li key={capability.capability}>
+                  <StatusMark kind={capability.available ? "ok" : "missing"} label={statusMarkLabel(capability.available ? "ok" : "missing")} />
+                  {capability.capability}{capability.reason === undefined ? "" : ` — ${capability.reason}`}
+                </li>
+              ))}
+            </ul>
+          )}
           {urls.length > 0 && <div class="actions">{urls.map((item) => <a class="button primary" href={item.url} download={item.filename} key={item.url}>{item.filename}</a>)}</div>}
           {typeof result.value === "object" && result.value !== null && typeof (result.value as { text?: unknown }).text === "string" && <textarea class="csv-preview" readOnly rows={8} value={(result.value as { text: string }).text} aria-label="Extracted text" />}
           <details open><summary>Machine-readable result</summary><pre class="csv-preview">{displayValue(result.value)}</pre></details>

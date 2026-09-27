@@ -1,6 +1,7 @@
 ---
 import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
 import { VocabularyFrequencyAnalyzerTool } from "../../components/tools/research-knowledge";
+import "../../components/tools/tool-surface.css";
 ---
 <ResearchKnowledgePage title="Vocabulary / Frequency Analyzer" description="Count normalized vocabulary terms with deterministic stop-word and length policies.">
   <VocabularyFrequencyAnalyzerTool client:load />

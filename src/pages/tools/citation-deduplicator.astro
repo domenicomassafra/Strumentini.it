@@ -1,6 +1,7 @@
 ---
 import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
 import { CitationDeduplicatorTool } from "../../components/tools/research-knowledge";
+import "../../components/tools/tool-surface.css";
 ---
 <ResearchKnowledgePage title="Citation Deduplicator" description="Remove duplicate citation records with explicit, deterministic identity rules.">
   <CitationDeduplicatorTool client:load />

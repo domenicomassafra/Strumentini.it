@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { ImagesToPdfTool } from "../../components/tools/ImagesToPdfTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="Images to PDF" description="Create a PDF from local JPEG images."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>Images to PDF</h1><p class="lede">Create one PDF page per bounded local JPEG image.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>JPEG bytes are embedded directly; no converter service is contacted.</span></div></header><ImagesToPdfTool client:load /><section class="method-card"><h2>Bounded contract</h2><ul><li>Checks JPEG signatures and dimensions before embedding.</li><li>Rejects unsupported image formats instead of silently converting them.</li><li>Applies file, image, and page safety limits.</li></ul></section></article></BaseLayout>

@@ -2,6 +2,7 @@ import { useState } from "preact/hooks";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import type { EqualityMode } from "../../engines/text-list";
 import type { ListCompareOutput } from "../../tools/list-compare/types";
+import { gutterStateFromResult } from "./shared/ToolGutter";
 
 const MODES: ReadonlyArray<{ value: EqualityMode; label: string }> = [
   { value: "exact", label: "Exact" },
@@ -48,6 +49,7 @@ export function ListCompareTool() {
     setError("");
   }
 
+  const gutterState = gutterStateFromResult(result, error);
   return (
     <div class="tool-operation">
       <form onSubmit={submit}>
@@ -81,11 +83,11 @@ export function ListCompareTool() {
         {error !== "" && <p class="error" role="alert">{error}</p>}
         <div class="actions">
           <button class="primary" type="submit">Compare lists</button>
-          <button type="button" onClick={reset}>Reset</button>
+          <button type="button" onClick={reset}>Reimposta</button>
         </div>
       </form>
 
-      <section class="result-panel" aria-live="polite">
+      <section class="result-panel gutter" data-state={gutterState} aria-live="polite">
         <p class="eyebrow">Result</p>
         {result === null ? <p class="result-placeholder">Comparison results appear here.</p> : (
           <div class="stacked-results">

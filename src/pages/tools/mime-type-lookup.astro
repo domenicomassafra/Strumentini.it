@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { MimeTypeLookupTool } from "../../components/tools/MimeTypeLookupTool";
+import "../../components/tools/tool-surface.css";
 const title = "MIME Type Lookup";
 ---
 <BaseLayout title={title} description="Look up common MIME types by extension or inspect signature evidence locally.">
@@ -9,5 +10,4 @@ const title = "MIME Type Lookup";
     <MimeTypeLookupTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>Labels and signature hints</h2><p>Extension lookup uses a small local IANA-inspired set. Signature mode only reports evidence; it does not claim full file conformance or safety.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

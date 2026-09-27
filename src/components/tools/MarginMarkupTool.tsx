@@ -16,6 +16,9 @@ import {
   ToolSubmitButton,
   useToolOperation,
 } from "./shared";
+import { CONTROL, it } from "./shared/controlLabels";
+import { gutterStateFor } from "./shared/ToolGutter";
+import { PreviousValue } from "./shared/PreviousValue";
 
 export function MarginMarkupTool() {
   const { profile, ready } = useWorkProfile();
@@ -48,6 +51,10 @@ export function MarginMarkupTool() {
     operation.reset();
   }
 
+  const result = operation.result;
+  const profitHeadline = result === null
+    ? ""
+    : `${result.currency} ${result.profit} di profitto`;
   return (
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit} noValidate>
@@ -63,14 +70,16 @@ export function MarginMarkupTool() {
         </label>
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel="Calculating…">Calculate margin &amp; markup</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Calculate margin &amp; markup</ToolSubmitButton>
           <ToolResetButton onClick={reset} disabled={operation.isRunning} />
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow="Profitability" placeholder="Your margin and markup appear here." busy={operation.isRunning}>
+      <ToolResultPanel eyebrow="Redditività" placeholder={it(CONTROL.gutterIdle)} busy={operation.isRunning} state={gutterStateFor(operation.status)}>
+        {/* Outside the result branch on purpose: a recompute clears the result
+            for a tick, and the headline has to keep its state through that. */}
+        <PreviousValue value={profitHeadline} retain={operation.isRunning} />
         {operation.result !== null && (
           <>
-            <strong class="result-value">{operation.result.currency} {operation.result.profit} profit</strong>
             <dl class="assumptions">
               <div><dt>Margin</dt><dd>{operation.result.marginPercent === null ? "Undefined" : `${operation.result.marginPercent}%`} · profit ÷ price × 100</dd></div>
               <div><dt>Markup</dt><dd>{operation.result.markupPercent === null ? "Undefined" : `${operation.result.markupPercent}%`} · profit ÷ cost × 100</dd></div>

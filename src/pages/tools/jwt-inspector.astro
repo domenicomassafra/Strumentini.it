@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { JwtInspectorTool } from "../../components/tools/JwtInspectorTool";
+import "../../components/tools/tool-surface.css";
 const title = "JWT Inspector";
 ---
 <BaseLayout title={title} description="Inspect JWT structure and claims without verifying trust.">
@@ -9,5 +10,4 @@ const title = "JWT Inspector";
     <JwtInspectorTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>Inspection only</h2><p>The compact serialization is decoded with strict base64url and JSON parsing. A visible warning marks unsecured JWTs; the result must not be used as an authentication decision.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { TextDiffTool } from "../../components/tools/TextDiffTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="Text Diff" description="Compare two texts line by line locally with explicit added and removed semantics.">
   <article class="tool-page">
@@ -25,16 +26,4 @@ import { TextDiffTool } from "../../components/tools/TextDiffTool";
       </ul>
     </section>
   </article>
-  <style is:global>
-    .diff-operation { display: grid; gap: 18px; }
-    .diff-operation form, .diff-result { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
-    .diff-summary { color: var(--muted); }
-    .diff-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-    .diff-row { display: grid; grid-template-columns: 1.5rem 6rem minmax(0, 1fr); gap: 8px; align-items: baseline; padding: 7px 8px; border-left: 3px solid var(--line); background: var(--canvas); }
-    .diff-row code { white-space: pre-wrap; overflow-wrap: anywhere; }
-    .diff-add { border-left-color: var(--action); }
-    .diff-remove { border-left-color: var(--danger); }
-    .diff-symbol { font-weight: 900; text-align: center; }
-    @media (max-width: 760px) { .diff-row { grid-template-columns: 1.5rem 5.5rem minmax(0, 1fr); } }
-  </style>
 </BaseLayout>

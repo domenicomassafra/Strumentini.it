@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { PdfTextExtractionTool } from "../../components/tools/PdfTextExtractionTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="PDF Text Extraction" description="Extract bounded text from a local PDF."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Text Extraction</h1><p class="lede">Read text operators from supported local content streams.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Text is not uploaded or persisted as task content.</span></div></header><PdfTextExtractionTool client:load /><section class="method-card"><h2>Bounded contract</h2><ul><li>Flate streams use the browser's local decoder when available.</li><li>Unsupported filters fail explicitly instead of returning guessed text.</li><li>Output is capped and marks truncation.</li></ul></section></article></BaseLayout>

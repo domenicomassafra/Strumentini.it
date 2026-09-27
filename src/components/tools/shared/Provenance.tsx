@@ -2,10 +2,10 @@ import type { ComponentChildren } from "preact";
 import type { DefaultProvenance } from "../../../runtime/types";
 
 const PROVENANCE_LABELS: Readonly<Record<DefaultProvenance, string>> = {
-  explicit: "Current task override",
-  profile: "Work Profile default",
-  "tool-default": "Tool default",
-  "system-derived": "System derived",
+  explicit: "Sovrascrittura per questa attività",
+  profile: "Valore predefinito dal profilo",
+  "tool-default": "Valore predefinito dello strumento",
+  "system-derived": "Derivato dal sistema",
 };
 
 export interface ProvenanceBadgeProps {
@@ -30,9 +30,9 @@ export function ProfileOverrideHint({
   id,
   ready,
   overridden,
-  profileLabel = "Work Profile default",
-  overrideLabel = "Current task override",
-  loadingLabel = "Loading Work Profile…",
+  profileLabel = "Valore predefinito dal profilo",
+  overrideLabel = "Sovrascrittura per questa attività",
+  loadingLabel = "Caricamento del profilo…",
 }: ProfileOverrideHintProps) {
   const label = !ready && !overridden
     ? loadingLabel
@@ -51,7 +51,7 @@ export interface ProfileResetButtonProps {
 export function ProfileResetButton({
   onReset,
   disabled = false,
-  children = "Use Work Profile default",
+  children = "Usa il valore del profilo",
 }: ProfileResetButtonProps) {
   return (
     <button class="text-button" type="button" disabled={disabled} onClick={onReset}>

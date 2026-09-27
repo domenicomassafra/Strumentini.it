@@ -1,14 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { CsvDedupeTool } from "../../components/tools/csv-dedupe/CsvDedupeTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="CSV Dedupe" description="Remove duplicate CSV rows locally by whole-row equality or explicit key columns.">
   <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav><p class="eyebrow">Data cleanup</p><h1>CSV Dedupe</h1><p class="lede">Keep the first occurrence in stable order using exact whole-row equality or explicit key-column positions.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your CSV and handoff payload are not uploaded or retained as task history.</span></div></header><CsvDedupeTool client:load /><section class="method-card"><h2>Dedupe contract</h2><ul><li>Whole-row mode compares the exact parsed cell sequence.</li><li>Key-column mode uses explicit source positions, so duplicate header names remain addressable.</li><li>If all selected key cells are empty, that row is kept distinct instead of collapsing missing IDs together.</li><li>Stable first occurrence wins; running the same dedupe rule again is idempotent.</li></ul></section></article>
-  <style is:global>
-    .tool-form-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
-    .file-note { color: var(--muted); font-size: .88rem; }
-    .choice-line { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
-    .csv-preview { max-height: 280px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--canvas); padding: 12px; border-radius: 8px; }
-    .tool-submit { border: 0; padding: 10px 15px; border-radius: 8px; background: var(--action); color: var(--action-ink); font-weight: 700; }
-  </style>
 </BaseLayout>

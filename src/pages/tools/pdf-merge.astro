@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { PdfMergeTool } from "../../components/tools/PdfMergeTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="PDF Merge" description="Merge local PDF files without uploading them."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Merge</h1><p class="lede">Combine bounded local PDF files into one document.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No upload or remote fallback.</span></div></header><PdfMergeTool client:load /><section class="method-card"><h2>Bounded contract</h2><ul><li>Checks each PDF signature, object count, page count, and byte limit.</li><li>Rejects encrypted documents rather than attempting a bypass.</li><li>Reorders only validated page trees and downloads a new local file.</li></ul></section></article></BaseLayout>

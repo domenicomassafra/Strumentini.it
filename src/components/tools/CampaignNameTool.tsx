@@ -25,6 +25,6 @@ export function CampaignNameTool() {
       {message && <p role="status">{message}</p>}
       <div class="actions"><button class="primary" type="submit">Preview name</button><button type="button" onClick={savePreset}>Save preset</button></div>
     </div>
-    <section class="result-panel" aria-live="polite"><p class="eyebrow">Preview</p>{result ? <strong class="result-value">{result.name}</strong> : <p class="result-placeholder">Your campaign name appears here.</p>}</section>
+    <section class="result-panel" aria-live="polite"><p class="eyebrow">Preview</p>{result ? <strong class="gutter-value">{result.name}</strong> : <p class="result-placeholder">Your campaign name appears here.</p>}</section>
   </form>;
 }

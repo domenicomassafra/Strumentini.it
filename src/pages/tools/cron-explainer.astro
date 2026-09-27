@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { CronExplainerTool } from "../../components/tools/CronExplainerTool";
+import "../../components/tools/tool-surface.css";
 const title = "Cron Explainer";
 ---
 <BaseLayout title={title} description="Explain POSIX five-field cron expressions locally.">
@@ -9,5 +10,4 @@ const title = "Cron Explainer";
     <CronExplainerTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>Five-field POSIX schedule</h2><p>Minute, hour, day-of-month, month, and day-of-week fields support wildcards, lists, ranges, and steps. When both day fields are restricted, POSIX OR semantics are shown.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

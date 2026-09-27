@@ -2,6 +2,8 @@ import { useMemo, useState } from "preact/hooks";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import type { DayCode } from "../../engines/date-time/business-days";
 import type { BusinessDayOutput } from "../../tools/business-day/types";
+import { PreviousValue } from "./shared/PreviousValue";
+import { gutterStateFromResult } from "./shared/ToolGutter";
 
 const PROFILE_WORKWEEK: readonly DayCode[] = ["MON", "TUE", "WED", "THU", "FRI"];
 const DAY_LABELS: ReadonlyArray<{ code: DayCode; label: string }> = [
@@ -103,6 +105,7 @@ export function BusinessDayTool() {
     setError("");
   }
 
+  const gutterState = gutterStateFromResult(result, error);
   return (
     <div class="tool-operation">
       <form onSubmit={submit} noValidate>
@@ -213,17 +216,17 @@ export function BusinessDayTool() {
 
         <div class="actions">
           <button class="primary" type="submit">Calculate</button>
-          <button type="button" onClick={reset}>Reset</button>
+          <button type="button" onClick={reset}>Reimposta</button>
         </div>
       </form>
 
-      <section class="result-panel" aria-live="polite" aria-atomic="true">
-        <p class="eyebrow">Result</p>
+      <section class="result-panel gutter" data-state={gutterState} aria-live="polite" aria-atomic="true">
+        <p class="gutter-label eyebrow">Risultato</p>
         {result === null ? (
           <p class="result-placeholder">Your result appears here.</p>
         ) : (
           <>
-            <strong class="result-value">{resultText}</strong>
+            <PreviousValue value={resultText} />
             {result.mode === "add" && <code>{result.resultDate}</code>}
             <dl class="assumptions">
               <div><dt>Workweek</dt><dd>{result.assumptions.workweek.join(", ")}</dd></div>

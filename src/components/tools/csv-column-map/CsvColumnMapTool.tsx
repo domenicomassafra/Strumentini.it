@@ -4,6 +4,8 @@ import { receiveHandoffFromOpener } from "../../../runtime/handoff";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { csvColumnMapManifest } from "../../../tools/csv-column-map/manifest";
 import type { CsvColumnMapOutput } from "../../../tools/csv-column-map/types";
+import { CaretMark } from "../shared/StatusMark";
+import { CONTROL, it } from "../shared/controlLabels";
 
 export function CsvColumnMapTool() {
   const [text, setText] = useState("");
@@ -55,17 +57,19 @@ export function CsvColumnMapTool() {
   const selected = new Set(mapping.map((entry) => entry.sourceIndex));
   const dropped = headers.flatMap((name, index) => selected.has(index) ? [] : [{ index, name }]);
 
+  const gutterState = error ? "error" : result === null ? "idle" : "success";
+
   return <form class="tool-operation" onSubmit={apply}>
     <section class="tool-form-card">
       <label class="field"><span>CSV file</span><input aria-label="CSV file" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => void loadFile(event.currentTarget.files?.[0])} /></label>
       {sourceName && <p class="file-note" role="status">{sourceName}</p>}
       <p class="file-note">Direct file limit: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB. Duplicate input names are disambiguated by source position.</p>
-      {mapping.length > 0 && <div class="column-map-list" aria-label="Output column schema">{mapping.map((entry, index) => <div class="column-map-row" key={entry.sourceIndex}><span class="column-source">Source {entry.sourceIndex + 1}: {headers[entry.sourceIndex] || "(blank header)"}</span><label class="field compact-field"><span>Output name</span><input aria-label={`Output name for source column ${entry.sourceIndex + 1}`} value={entry.outputName} onInput={(event) => setMapping(mapping.map((item, itemIndex) => itemIndex === index ? { ...item, outputName: event.currentTarget.value } : item))} /></label><div class="column-actions"><button type="button" aria-label={`Move source column ${entry.sourceIndex + 1} up`} disabled={index === 0} onClick={() => move(index, -1)}>↑</button><button type="button" aria-label={`Move source column ${entry.sourceIndex + 1} down`} disabled={index === mapping.length - 1} onClick={() => move(index, 1)}>↓</button><button type="button" aria-label={`Drop source column ${entry.sourceIndex + 1}`} onClick={() => setMapping(mapping.filter((_, itemIndex) => itemIndex !== index))}>Drop</button></div></div>)}</div>}
+      {mapping.length > 0 && <div class="column-map-list" aria-label="Output column schema">{mapping.map((entry, index) => <div class="column-map-row" key={entry.sourceIndex}><span class="column-source">Source {entry.sourceIndex + 1}: {headers[entry.sourceIndex] || "(blank header)"}</span><label class="field compact-field"><span>Output name</span><input aria-label={`Output name for source column ${entry.sourceIndex + 1}`} value={entry.outputName} onInput={(event) => setMapping(mapping.map((item, itemIndex) => itemIndex === index ? { ...item, outputName: event.currentTarget.value } : item))} /></label><div class="column-actions"><button type="button" aria-label={`Sposta in su la colonna di origine ${entry.sourceIndex + 1}`} disabled={index === 0} onClick={() => move(index, -1)}><CaretMark direction="up" label="Sposta in su" /></button><button type="button" aria-label={`Sposta in giù la colonna di origine ${entry.sourceIndex + 1}`} disabled={index === mapping.length - 1} onClick={() => move(index, 1)}><CaretMark direction="down" label="Sposta in giù" /></button><button type="button" aria-label={`Drop source column ${entry.sourceIndex + 1}`} onClick={() => setMapping(mapping.filter((_, itemIndex) => itemIndex !== index))}>Drop</button></div></div>)}</div>}
       {dropped.length > 0 && <div><strong>Dropped before output</strong>{dropped.map((entry) => <p class="file-note" key={entry.index}>Column {entry.index + 1}: {entry.name || "(blank header)"} <button type="button" aria-label={`Add back source column ${entry.index + 1}`} onClick={() => setMapping([...mapping, { sourceIndex: entry.index, outputName: entry.name || `column_${entry.index + 1}` }])}>Add back</button></p>)}</div>}
-      {mapping.length > 0 && <p class="schema-preview"><strong>Output schema:</strong> {mapping.map((entry) => entry.outputName || "(blank)").join(" → ")}</p>}
+      {mapping.length > 0 && <p class="schema-preview"><strong>Schema di output:</strong> {mapping.map((entry) => entry.outputName || "(vuoto)").join(" · ")}</p>}
       {error && <p class="error" role="alert">{error}</p>}
-      <button class="primary tool-submit" type="submit">Apply column map</button>
+      <button class="primary tool-submit" type="submit">Applica la mappatura</button>
     </section>
-    <section class="result-panel" aria-live="polite"><p class="eyebrow">Mapped result</p>{result ? <><strong>{result.headers.length} output columns · {result.droppedColumns.length} dropped · {result.filledMissingCells} missing selected cells filled blank</strong><pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Download mapped CSV</button></> : <p class="result-placeholder">The output schema and mapped CSV appear here only after you apply the visible mapping.</p>}</section>
+    <section class="result-panel gutter" data-state={gutterState} aria-live="polite"><p class="gutter-label eyebrow">Risultato mappato</p>{result ? <><strong class="gutter-value">{result.headers.length} {result.headers.length === 1 ? "colonna di output" : "colonne di output"}</strong><dl class="gutter-rows"><div><dt>Colonne scartate</dt><dd>{result.droppedColumns.length}</dd></div><div><dt>Celle vuote compilate</dt><dd>{result.filledMissingCells}</dd></div></dl><pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><div class="actions"><button type="button" onClick={download}>{it(CONTROL.download)}</button></div></> : <p class="gutter-placeholder result-placeholder">Lo schema di output e il CSV mappato compaiono qui dopo aver applicato la mappatura visibile.</p>}</section>
   </form>;
 }

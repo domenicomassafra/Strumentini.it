@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { WordCharacterLineCounterTool } from "../../components/tools/WordCharacterLineCounterTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="Word, Character & Line Counter" description="Count words, characters, lines, paragraphs, and bytes locally.">
   <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Word, Character &amp; Line Counter</h1><p class="lede">Measure text with explicit code-point, word, line, paragraph, and UTF-8 byte counts.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your text is not uploaded.</span></div></header><WordCharacterLineCounterTool client:load /><section class="method-card"><h2>Counting rules</h2><ul><li>Words are Unicode letter, number, and mark runs with internal apostrophes.</li><li>Characters are counted as Unicode code points; code-unit and UTF-8 byte counts are reported separately.</li><li>Empty text has zero words, lines, and paragraphs.</li></ul></section></article>

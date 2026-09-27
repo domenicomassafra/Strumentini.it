@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { SlugGeneratorTool } from "../../components/tools/SlugGeneratorTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="Slug Generator" description="Generate readable Unicode-aware slugs with explicit separator and length policy.">
   <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Slug Generator</h1><p class="lede">Turn a title into a stable URL-friendly identifier with visible options.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your title is not uploaded.</span></div></header><SlugGeneratorTool client:load /><section class="method-card"><h2>Slug policy</h2><ul><li>Compatibility decomposition removes combining marks while retaining Unicode letters and numbers.</li><li>Separators are collapsed and edge separators are removed; length is measured in code points.</li><li>The generator does not perform transliteration, localization, or keyword optimization.</li></ul></section></article>

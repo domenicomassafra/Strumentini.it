@@ -1,6 +1,7 @@
 ---
 import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
 import { ChecksumVerifierTool } from "../../components/tools/file-privacy/ChecksumVerifierTool";
+import "../../components/tools/tool-surface.css";
 ---
 <FilePrivacyPage title="Checksum Verifier" description="Compare local file digests with an expected SHA-256 manifest." methodTitle="Transparent verification" methodItems={["Only surrounding whitespace and hexadecimal letter case are normalized.", "Missing, matching, and mismatching paths are reported separately.", "A malformed manifest fails without changing any selected file."]}>
   <ChecksumVerifierTool client:load />

@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { InlineError, ToolActions, ToolResetButton, ToolResultPanel, ToolSubmitButton } from "../shared";
+import { CONTROL, it } from "../shared/controlLabels";
 
 export interface ResearchToolField {
   name: string;
@@ -93,7 +94,7 @@ export function ResearchKnowledgeTool({ config }: { config: ResearchKnowledgeToo
         })}
         <InlineError message={error} />
         <ToolActions>
-          <ToolSubmitButton busy={busy} busyLabel="Working…">{config.submitLabel}</ToolSubmitButton>
+          <ToolSubmitButton busy={busy} busyLabel={it(CONTROL.working)}>{config.submitLabel}</ToolSubmitButton>
           <ToolResetButton onClick={reset} disabled={busy} />
         </ToolActions>
       </form>

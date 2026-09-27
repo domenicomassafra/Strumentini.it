@@ -4,6 +4,7 @@ import { toolRuntime } from "../../runtime/tool-runtime";
 import { timezoneOverlapManifest } from "../../tools/timezone-overlap/manifest";
 import type { TimezoneOverlapOutput } from "../../tools/timezone-overlap/types";
 import { useWorkProfile } from "./client-time-math/work-profile";
+import { RangeMark } from "./shared/StatusMark";
 
 const DEFAULT_HOURS = { start: "09:00", end: "17:00" } as const;
 
@@ -65,6 +66,8 @@ export function TimezoneOverlapTool() {
     setError("");
   }
 
+  const gutterState = error !== "" ? "error" : result === null ? "idle" : result.segments.length === 0 ? "warning" : "success";
+
   return (
     <div class="tool-operation">
       <form onSubmit={submit} noValidate>
@@ -111,23 +114,23 @@ export function TimezoneOverlapTool() {
         </div>
         {error !== "" && <p class="error" role="alert">{error}</p>}
         <div class="actions">
-          <button class="primary" type="submit">Find overlap</button>
-          <button type="button" onClick={reset}>Reset</button>
+          <button class="primary" type="submit">Trova la sovrapposizione</button>
+          <button type="button" onClick={reset}>Reimposta</button>
         </div>
       </form>
-      <section class="result-panel" aria-live="polite" aria-atomic="true">
-        <p class="eyebrow">Shared working time</p>
-        {result === null ? <p class="result-placeholder">Your overlap appears here.</p> : result.segments.length === 0 ? (
-          <strong class="result-value">No overlap</strong>
+      <section class="result-panel gutter" data-state={gutterState} aria-live="polite" aria-atomic="true">
+        <p class="gutter-label eyebrow">Orario di lavoro condiviso</p>
+        {result === null ? <p class="gutter-placeholder result-placeholder">La sovrapposizione compare qui.</p> : result.segments.length === 0 ? (
+          <strong class="gutter-value">Nessuna sovrapposizione</strong>
         ) : (
           <>
-            <strong class="result-value">{result.segments.length} shared window{result.segments.length === 1 ? "" : "s"}</strong>
-            <dl class="assumptions">
+            <strong class="gutter-value">{result.segments.length} {result.segments.length === 1 ? "finestra condivisa" : "finestre condivise"}</strong>
+            <dl class="gutter-rows">
               {result.segments.map((segment) => (
-                <div key={segment.startInstant}><dt>{segment.startInstant} → {segment.endInstant}</dt><dd>{result.homeTimeZone}: {segment.home}<br />{result.otherTimeZone}: {segment.other}</dd></div>
+                <div key={segment.startInstant}><dt><RangeMark start={segment.startInstant} end={segment.endInstant} /></dt><dd>{result.homeTimeZone}: {segment.home}<br />{result.otherTimeZone}: {segment.other}</dd></div>
               ))}
-              <div><dt>Timezone source</dt><dd>{result.provenance.homeTimeZone === "profile" ? "Work Profile default" : "Current task override"}</dd></div>
-              <div><dt>DST boundary policy</dt><dd>Gap and ambiguous boundary times are rejected explicitly.</dd></div>
+              <div><dt>Origine del fuso</dt><dd>{result.provenance.homeTimeZone === "profile" ? "Valore predefinito dal profilo" : "Sovrascrittura per questa attività"}</dd></div>
+              <div><dt>Confini DST</dt><dd>Gli orari nei salti e nelle ambiguità DST vengono rifiutati esplicitamente.</dd></div>
             </dl>
           </>
         )}

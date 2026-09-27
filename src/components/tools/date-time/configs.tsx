@@ -142,9 +142,9 @@ export const weekNumberConfig: DateTimeToolConfig = {
   tool: weekNumberConverterManifest,
   fields: [
     textField("direction", "Direction", "select", { defaultValue: "date-to-week", options: ["date-to-week", "week-to-date"] }),
-    textField("date", "Date (date → week)", "date", { required: false }),
-    textField("weekYear", "Week year (week → date)", "number", { defaultValue: "2024", required: false }),
-    textField("week", "Week number (week → date)", "number", { defaultValue: "1", required: false }),
+    textField("date", "Date (data → settimana)", "date", { required: false }),
+    textField("weekYear", "Anno della settimana (settimana → data)", "number", { defaultValue: "2024", required: false }),
+    textField("week", "Numero di settimana (settimana → data)", "number", { defaultValue: "1", required: false }),
     textField("weekSystem", "Week system", "select", { defaultValue: "iso", options: ["iso", "us"] }),
   ],
   buildInput: (values) => values.direction === "date-to-week"
@@ -160,9 +160,9 @@ export const quarterConfig: DateTimeToolConfig = {
   tool: quarterDateMapperManifest,
   fields: [
     textField("direction", "Direction", "select", { defaultValue: "date-to-quarter", options: ["date-to-quarter", "quarter-to-dates"] }),
-    textField("date", "Date (date → quarter)", "date", { required: false }),
-    textField("year", "Year (quarter → dates)", "number", { defaultValue: "2024", required: false }),
-    textField("quarter", "Quarter (quarter → dates)", "number", { defaultValue: "1", required: false }),
+    textField("date", "Date (data → trimestre)", "date", { required: false }),
+    textField("year", "Anno (trimestre → date)", "number", { defaultValue: "2024", required: false }),
+    textField("quarter", "Trimestre (trimestre → date)", "number", { defaultValue: "1", required: false }),
   ],
   buildInput: (values) => values.direction === "date-to-quarter" ? { direction: values.direction, date: values.date } : { direction: values.direction, year: number(values, "year"), quarter: number(values, "quarter") },
   eyebrow: "Calendar quarter",

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { RegexTesterTool } from "../../components/tools/RegexTesterTool";
+import "../../components/tools/tool-surface.css";
 const title = "Regex Tester";
 ---
 <BaseLayout title={title} description="Test bounded ECMAScript regular expressions locally.">
@@ -9,5 +10,4 @@ const title = "Regex Tester";
     <RegexTesterTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>Native RegExp with safety bounds</h2><p>Patterns use ECMAScript regular-expression semantics. Input and pattern lengths are bounded, and obvious nested unbounded quantifiers are rejected to reduce catastrophic backtracking risk.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

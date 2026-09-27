@@ -17,6 +17,9 @@ import {
   ToolSubmitButton,
   useToolOperation,
 } from "./shared";
+import { CONTROL, it } from "./shared/controlLabels";
+import { gutterStateFor } from "./shared/ToolGutter";
+import { PreviousValue } from "./shared/PreviousValue";
 
 const UNITS: readonly RateUnit[] = ["hour", "day", "project"];
 
@@ -66,6 +69,8 @@ export function RateConverterTool() {
     operation.reset();
   }
 
+  const rateResult = operation.result;
+  const rateHeadline = rateResult === null ? "" : `${rateResult.currency} ${rateResult.amount} / ${to}`;
   return (
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit} noValidate>
@@ -97,14 +102,16 @@ export function RateConverterTool() {
         {usesProject && <label class="field"><span>Project hours</span><input required inputMode="decimal" value={projectHours} onInput={(event) => setProjectHours(event.currentTarget.value)} /><small>Required dimensional basis for a project rate.</small></label>}
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel="Converting…">Convert rate</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Convert rate</ToolSubmitButton>
           <ToolResetButton onClick={reset} disabled={operation.isRunning} />
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow="Converted rate" placeholder="Your converted rate appears here." busy={operation.isRunning}>
+      <ToolResultPanel eyebrow="Tasso convertito" placeholder={it(CONTROL.gutterIdle)} busy={operation.isRunning} state={gutterStateFor(operation.status)}>
+        {/* Held outside the result branch: a recompute clears the result for a
+            tick, and the headline has to keep its state through that. */}
+        <PreviousValue value={rateHeadline} retain={operation.isRunning} />
         {operation.result !== null && (
           <>
-            <strong class="result-value">{operation.result.currency} {operation.result.amount} / {to}</strong>
             <dl class="assumptions">
               <div><dt>Formula</dt><dd>{operation.result.formula}</dd></div>
               <div><dt>Hours/day</dt><dd>{operation.result.assumptions.hoursPerDay} · <ProvenanceBadge provenance={operation.result.provenance.hoursPerDay} /></dd></div>

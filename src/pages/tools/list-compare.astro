@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { ListCompareTool } from "../../components/tools/ListCompareTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="List Compare & Dedupe" description="Compare and deduplicate line lists locally with explicit equality rules.">
   <article class="tool-page">
@@ -25,11 +26,4 @@ import { ListCompareTool } from "../../components/tools/ListCompareTool";
       </ul>
     </section>
   </article>
-  <style is:global>
-    .stacked-results { display: grid; gap: 18px; }
-    .list-result-block h3 { margin: 0 0 8px; font-size: 1rem; }
-    .list-result-block ol { margin: 0; padding-left: 22px; }
-    .list-result-block code { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-    .count-chip { color: var(--muted); font-size: .8em; font-weight: 600; }
-  </style>
 </BaseLayout>

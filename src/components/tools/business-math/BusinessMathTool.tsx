@@ -13,8 +13,11 @@ import {
   ToolResetButton,
   ToolResultPanel,
   ToolSubmitButton,
+  gutterStateFor,
   useToolOperation,
 } from "../shared";
+import { CONTROL, it } from "../shared/controlLabels";
+import { PreviousValue } from "../shared/PreviousValue";
 
 export type BusinessFieldKind = "text" | "number" | "select" | "date";
 
@@ -68,6 +71,34 @@ function objectEntries(value: unknown): Array<[string, unknown]> {
   return Object.entries(value as Record<string, unknown>);
 }
 
+/**
+ * The gutter headline: the one currency-bearing number the tool exists to
+ * produce, falling back to the generic word when a result has no single
+ * dominant figure (a ratio tool, a schedule, a plain yes/no).
+ */
+function headlineKey(value: Record<string, unknown>): string | null {
+  for (const key of HEADLINE_KEYS) {
+    if (typeof value[key] === "number") return key;
+  }
+  return null;
+}
+
+const HEADLINE_KEYS = [
+  "total",
+  "net",
+  "amount",
+  "result",
+  "value",
+  "cost",
+  "price",
+  "revenue",
+  "rate",
+] as const;
+
+function formatHeadline(value: number): string {
+  return new Intl.NumberFormat("it-IT", { maximumFractionDigits: 2 }).format(value);
+}
+
 function inputValue(values: Record<string, string>, config: BusinessToolConfig): Record<string, unknown> {
   return Object.fromEntries(
     config.fields
@@ -118,6 +149,13 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
   const formulas = result === null ? [] : objectEntries(result.formulas);
   const assumptions = result === null ? [] : objectEntries(result.assumptions);
   const currencyProvenance = result?.currencyProvenance;
+  const headline = result === null ? null : headlineKey(result);
+  const gutterState = gutterStateFor(operation.status);
+  const gutterHeadline = result === null || headline === null
+    ? ""
+    : typeof result.currency === "string"
+      ? `${currency} ${formatHeadline(result[headline] as number)}`
+      : formatHeadline(result[headline] as number);
 
   return (
     <ToolOperation busy={operation.isRunning}>
@@ -168,25 +206,29 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
                 id={`${config.id}-currency-help`}
                 ready={ready}
                 overridden={currencyOverride !== undefined}
-                profileLabel="Work Profile currency label"
-                overrideLabel="Current task currency label"
+                profileLabel={it(CONTROL.profileDefault)}
+                overrideLabel={it(CONTROL.taskOverride)}
               />
-              <ProfileResetButton disabled={currencyOverride === undefined} onReset={() => setCurrencyOverride(undefined)}>Use Work Profile currency</ProfileResetButton>
+              <ProfileResetButton disabled={currencyOverride === undefined} onReset={() => setCurrencyOverride(undefined)}>{it(CONTROL.useProfileDefault)}</ProfileResetButton>
             </label>
           )}
         </div>
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel="Calculating…">Calculate</ToolSubmitButton>
-          <ToolResetButton onClick={reset} disabled={operation.isRunning} />
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{it(CONTROL.submit)}</ToolSubmitButton>
+          <ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton>
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow={config.resultLabel} placeholder={config.placeholder} busy={operation.isRunning}>
+      <ToolResultPanel eyebrow={config.resultLabel} placeholder={config.placeholder} busy={operation.isRunning} state={gutterState}>
+        {/* Held outside the result branch: a recompute clears the result for a
+            tick, and the headline has to keep its state through that. */}
+        <PreviousValue value={gutterHeadline} retain={operation.isRunning} />
         {result !== null && (
           <>
-            {typeof result.currency === "string" && <strong class="result-value">{result.currency} result</strong>}
-            <dl class="assumptions">
-              {primaryEntries.map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{displayValue(value)}</dd></div>)}
+            <dl class="gutter-rows">
+              {primaryEntries
+                .filter(([key]) => key !== headline)
+                .map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{displayValue(value)}</dd></div>)}
               {typeof currencyProvenance === "string" && <div><dt>Currency source</dt><dd><ProvenanceBadge provenance={currencyProvenance as "explicit" | "profile" | "tool-default" | "system-derived"} /></dd></div>}
             </dl>
             {assumptions.length > 0 && <details><summary>Assumptions</summary><dl class="assumptions">{assumptions.map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{displayValue(value)}</dd></div>)}</dl></details>}

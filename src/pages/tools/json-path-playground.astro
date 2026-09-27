@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { JsonPathPlaygroundTool } from "../../components/tools/JsonPathPlaygroundTool";
+import "../../components/tools/tool-surface.css";
 const title = "JSON Path Playground";
 ---
 <BaseLayout title={title} description="Query JSON with a bounded JSONPath subset locally.">
@@ -9,5 +10,4 @@ const title = "JSON Path Playground";
     <JsonPathPlaygroundTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>Bounded path selectors</h2><p>Root, dot-key, bracket-key, array-index, wildcard, and recursive-descent selectors are supported with depth and match-count limits.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

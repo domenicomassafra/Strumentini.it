@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { TomlFormatterTool } from "../../components/tools/TomlFormatterTool";
+import "../../components/tools/tool-surface.css";
 const title = "TOML Formatter & Validator";
 ---
 <BaseLayout title={title} description="Validate and format a bounded safe TOML subset locally.">
@@ -9,5 +10,4 @@ const title = "TOML Formatter & Validator";
     <TomlFormatterTool client:load />
     <section class="method-card"><p class="eyebrow">Method</p><h2>Bounded TOML subset</h2><p>Key/value lines, tables, arrays, inline tables, strings, booleans, and numbers are parsed without a network dependency. Unsupported values and duplicate keys fail explicitly.</p></section>
   </article>
-  <style is:global>.developer-result-json { max-height: 34rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-family-mono); }</style>
 </BaseLayout>

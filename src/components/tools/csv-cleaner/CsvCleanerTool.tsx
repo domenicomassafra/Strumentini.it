@@ -4,6 +4,7 @@ import { catalog } from "../../../generated/catalog";
 import { compatibleHandoffTargets, openHandoffTarget } from "../../../runtime/handoff";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import type { CsvCleanerOutput } from "../../../tools/csv-cleaner/types";
+import { CONTROL, it } from "../shared/controlLabels";
 
 export function CsvCleanerTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -38,17 +39,20 @@ export function CsvCleanerTool() {
 
   const handoffTargets = result === null ? [] : compatibleHandoffTargets(result.handoff, catalog);
 
+  const gutterState = gutterStateFromResult(result, error, processing);
   return <div class="tool-operation">
     <section class="tool-form-card">
       <label class="field"><span>CSV file</span><input aria-label="CSV file" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => { setFile(event.currentTarget.files?.[0] ?? null); setResult(null); setError(""); setHandoffDismissed(false); setHandoffStatus(""); }} /></label>
       {file && <p class="file-note">{file.name} · {(file.size / 1024).toFixed(1)} KiB{file.size > CSV_SOFT_FILE_BYTES ? " · large file" : ""}</p>}
       <p class="file-note">Soft guidance: 10 MiB · hard limit: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB.</p>
-      {processing && <><progress max={1} value={progress} aria-label="CSV read progress" /><button type="button" onClick={() => controller.current?.abort()}>Cancel</button></>}
+      {processing && <><progress max={1} value={progress} aria-label="Lettura del CSV in corso" /><button type="button" onClick={() => controller.current?.abort()}>{it(CONTROL.cancel)}</button></>}
       {error && <p role="alert" class="error">{error}</p>}
       <button class="primary tool-submit" type="button" disabled={processing} onClick={clean}>Clean CSV</button>
     </section>
-    <section class="result-panel" aria-live="polite"><p class="eyebrow">Preview &amp; changes</p>{result ? <><strong>{result.rows} rows · {result.columns} columns · delimiter {result.delimiter === "\t" ? "TAB" : result.delimiter}</strong><ul><li>BOM removed: {result.changes.strippedBom ? "yes" : "no"}</li><li>Record line endings normalized: {result.changes.normalizedRecordBreaks}</li><li>Warnings: {result.warnings.length}</li></ul>{result.warnings.map((warning) => <p class="csv-warning" key={`${warning.code}-${warning.row ?? 0}`}>{warning.code}: {warning.message}</p>)}<pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Download cleaned CSV</button>
+    <section class="result-panel gutter" data-state={gutterState} aria-live="polite"><p class="gutter-label eyebrow">Anteprima e modifiche</p>{result ? <><strong class="gutter-value">{result.rows} {result.rows === 1 ? "riga" : "righe"}</strong><dl class="gutter-rows"><div><dt>Colonne</dt><dd>{result.columns}</dd></div><div><dt>Delimitatore</dt><dd>{result.delimiter === "\t" ? "TAB" : result.delimiter}</dd></div></dl><ul><li>BOM removed: {result.changes.strippedBom ? "yes" : "no"}</li><li>Record line endings normalized: {result.changes.normalizedRecordBreaks}</li><li>Warnings: {result.warnings.length}</li></ul>{result.warnings.map((warning) => <p class="csv-warning" key={`${warning.code}-${warning.row ?? 0}`}>{warning.code}: {warning.message}</p>)}<pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Scarica CSV pulito</button>
       {!handoffDismissed && handoffTargets.length > 0 && <aside class="handoff-card" aria-label="Compatible next tools"><p class="eyebrow">Next tool</p><strong>Pass this cleaned table without downloading and re-uploading.</strong><p>{handoffTargets[0]?.preview}</p><pre class="handoff-preview">{result.output.split("\n").slice(0, 4).join("\n")}</pre><p class="file-note">The payload is transferred one time in memory to a same-origin tool window. It is not placed in the URL, Recent, or local storage.</p><div class="actions">{handoffTargets.map((proposal) => <button type="button" key={proposal.target.id} onClick={() => { const opened = openHandoffTarget(proposal, result.handoff, { sourceToolId: "csv-cleaner" }); setHandoffStatus(opened ? `Opened ${proposal.target.name}; waiting for the target to receive this payload.` : "The browser blocked the new tool window. Allow pop-ups for this explicit handoff and try again."); }}>{`Pass to ${proposal.target.name}`}</button>)}<button type="button" onClick={() => { setHandoffDismissed(true); setHandoffStatus("Handoff dismissed. The cleaned result remains on this page only."); }}>Dismiss handoff</button></div></aside>}
       {handoffStatus && <p role="status">{handoffStatus}</p>}</> : <p class="result-placeholder">A bounded preview and exact change summary appear here.</p>}</section>
   </div>;
 }
+
+import { gutterStateFromResult } from "../shared/ToolGutter";

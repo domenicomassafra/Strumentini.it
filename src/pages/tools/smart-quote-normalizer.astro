@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { SmartQuoteNormalizerTool } from "../../components/tools/SmartQuoteNormalizerTool";
+import "../../components/tools/tool-surface.css";
 ---
 <BaseLayout title="Smart-Quote Normalizer" description="Convert straight and curly quotation marks with a deterministic local policy.">
   <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Smart-Quote Normalizer</h1><p class="lede">Standardize quotation marks without changing the surrounding words.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your text is not uploaded.</span></div></header><SmartQuoteNormalizerTool client:load /><section class="method-card"><h2>Quote policy</h2><ul><li>Straight quotes become opening or closing typographic marks based on surrounding whitespace and punctuation.</li><li>Curly quotes can be converted back to straight ASCII quotes in the opposite direction.</li><li>Conversions are local and count every changed quote mark.</li></ul></section></article>
