@@ -25,6 +25,9 @@ import {
   type WorkbenchState,
 } from "../../workbench/state";
 import { formatRecentActivity, getWorkbenchSuggestions } from "./ux";
+import { COPY, WEEKDAYS } from "./copy";
+import { LedgerRow, type LedgerValue } from "./LedgerRow";
+import { readLastValues, subscribeLastValues, type ToolLastValue } from "./last-value";
 import { getTelemetryAdapter, rememberToolEntrySource } from "../../telemetry/browser";
 import {
   trackConfigExported,
@@ -39,40 +42,32 @@ import styles from "./Workbench.module.css";
 export { formatRecentActivity, getWorkbenchSuggestions } from "./ux";
 export type { WorkbenchSuggestion } from "./ux";
 
-const DAYS: ReadonlyArray<{ code: DayCode; label: string }> = [
-  { code: "MON", label: "Mon" },
-  { code: "TUE", label: "Tue" },
-  { code: "WED", label: "Wed" },
-  { code: "THU", label: "Thu" },
-  { code: "FRI", label: "Fri" },
-  { code: "SAT", label: "Sat" },
-  { code: "SUN", label: "Sun" },
-];
+const DAYS = WEEKDAYS;
 
 type Repository = ReturnType<typeof createWorkbenchRepository>;
 const MAX_CONFIG_FILE_BYTES = 1024 * 1024;
 
 function serverSafeInitialState(): WorkbenchState {
   return createDefaultWorkbenchState(
-    createDefaultWorkProfile({ locale: "en-US", timezone: "UTC" }),
+    createDefaultWorkProfile({ locale: "it-IT", timezone: "UTC" }),
   );
 }
 
 function browserProfile(): WorkProfile {
   return createDefaultWorkProfile({
-    locale: navigator.language || "en-US",
+    locale: navigator.language || "it-IT",
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
   });
 }
 
 function toolName(toolId: string, tools: readonly ToolSummary[]): string {
-  return tools.find((tool) => tool.id === toolId)?.name ?? "Unavailable tool — " + toolId;
+  return tools.find((tool) => tool.id === toolId)?.name ?? COPY.unavailableTool + toolId;
 }
 
 function runtimeLabel(tool: ToolSummary): string {
-  if (tool.runtime.location === "LOCAL") return "On this device";
-  if (tool.runtime.location === "REFERENCE") return "Reference only";
-  return "Uses network";
+  if (tool.runtime.location === "LOCAL") return COPY.runtime.local;
+  if (tool.runtime.location === "REFERENCE") return COPY.runtime.reference;
+  return COPY.runtime.network;
 }
 
 function profileUsage(tool: ToolSummary | undefined, profile: WorkProfile): string {
@@ -96,6 +91,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   const [saving, setSaving] = useState(false);
   const [showAvailable, setShowAvailable] = useState(false);
   const [importPreview, setImportPreview] = useState<ImportPreview | null>(null);
+  const [lastValues, setLastValues] = useState<Readonly<Record<string, ToolLastValue>>>({});
   const repositoryRef = useRef<Repository | null>(null);
   const pendingSavesRef = useRef(0);
   const currentTelemetry = () => getTelemetryAdapter();
@@ -111,6 +107,15 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
       setReady(true);
     });
   }, []);
+
+  // Read the gutter store in its own effect so its update is not entangled
+  // with the asynchronous repository load above.
+  useEffect(() => { setLastValues(readLastValues()); }, []);
+
+  // The gutter is live: a value produced in a tool tab, or in this one, lands
+  // in the column without a reload. The subscriber passes freshly-read
+  // values, so this needs no dependency list.
+  useEffect(() => subscribeLastValues(setLastValues), []);
 
   useEffect(() => {
     if (!ready) return;
@@ -252,6 +257,17 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   const suggestions = getWorkbenchSuggestions(tools, state);
   const firstTool = tools[0];
 
+  /**
+   * The gutter cell for one tool. A tool that has produced a value shows it;
+   * one that has not shows the state it is in, so the column is populated
+   * rather than blank and never changes width between rows.
+   */
+  function toolValue(toolId: string, tool: ToolSummary | undefined): LedgerValue {
+    const record = lastValues[toolId];
+    if (record !== undefined) return { produced: record.value, unit: record.unit };
+    return { state: tool === undefined ? COPY.yourTools.unavailable : runtimeLabel(tool) };
+  }
+
   return (
     <div
       class={styles.shell}
@@ -259,42 +275,42 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
       data-saving={saving ? "true" : "false"}
       aria-busy={saving}
     >
+      {/*
+       * The apertura del libro. The heading names a state, not the product,
+       * and there is no eyebrow: the page does not introduce itself, it opens.
+       */}
       <header class={styles.intro}>
-        <p class={styles.eyebrow}>Local personal workspace</p>
-        <h1>Workbench</h1>
-        <p class={styles.lede}>The small set of utilities you use most, ready with your local defaults.</p>
-        <a class={styles.setupLink} href="/onboarding/">Set up a starter set</a>
+        <h1>{COPY.home.title}</h1>
+        <p class={styles.lede}>{COPY.home.lede}</p>
+        <a class={styles.setupLink} href="/onboarding/">{COPY.home.setupLink}</a>
       </header>
 
       {warning !== "" && (
         <section class={styles.warning} role="status" aria-label="Storage warning">
-          <strong>Storage is unavailable.</strong>
-          <span>Changes still work in this tab but may be lost on reload. {warning}</span>
-          <button type="button" onClick={() => void persist(state)}>Retry save</button>
+          <strong>{COPY.storage.title}</strong>
+          <span>{COPY.storage.body} {warning}</span>
+          <button type="button" onClick={() => void persist(state)}>{COPY.storage.retry}</button>
         </section>
       )}
 
       <section id="your-tools" class={styles.section} aria-labelledby="your-tools-title">
         <div class={styles.sectionHeading}>
-          <div>
-            <p class={styles.eyebrow}>Start here</p>
-            <h2 id="your-tools-title">Your Tools</h2>
-          </div>
-          <span class={styles.count}>{state.installedTools.length} installed · 10–15 target</span>
+          <h2 id="your-tools-title">{COPY.yourTools.title}</h2>
+          <span class={styles.count}>{COPY.yourTools.installedCount(state.installedTools.length)}</span>
         </div>
 
         {installed.length === 0 ? (
           <div class={styles.empty}>
-            <p>No tools installed yet.</p>
-            <p class={styles.muted}>Start with one utility. Suggestions and the full Library stay out of the way until you ask for them.</p>
+            <p>{COPY.yourTools.emptyTitle}</p>
+            <p class={styles.muted}>{COPY.yourTools.emptyBody}</p>
             <div class={styles.emptyActions}>
               {firstTool !== undefined && (
                 <button class={styles.primary} type="button" onClick={() => void add(firstTool.id)}>
-                  Add {firstTool.name}
+                  {COPY.yourTools.addFirst(firstTool.name)}
                 </button>
               )}
-              <a href="/onboarding/">Set up my tools</a>
-              <a href="/library/">Browse Library</a>
+              <a href="/onboarding/">{COPY.yourTools.setUpMine}</a>
+              <a href="/library/">{COPY.yourTools.browseLibrary}</a>
             </div>
           </div>
         ) : (
@@ -303,55 +319,59 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
               const usage = tool === undefined ? "" : profileUsage(tool, state.profile);
               const name = toolName(id, tools);
               return (
-                <li class={styles.toolRow} key={id} data-tool-id={id}>
-                  <div class={styles.toolIdentity}>
-                    <strong>{name}</strong>
-                    {tool === undefined ? (
-                      <small>Saved here, but unavailable in the current catalog.</small>
-                    ) : (
+                <LedgerRow
+                  key={id}
+                  rowId={id}
+                  installed
+                  title={name}
+                  task={tool === undefined ? undefined : tool.summary}
+                  value={toolValue(id, tool)}
+                  detail={tool === undefined
+                    ? <small class={styles.rowMeta}>{COPY.yourTools.unavailable}</small>
+                    : (
                       <>
-                        <span class={styles.task}>{tool.summary}</span>
                         <small class={styles.rowMeta}>{runtimeLabel(tool)}</small>
                         {usage !== "" && (
                           <small class={styles.rowMeta}>
-                            {usage} <b>from Work Profile</b>
+                            {usage} <b>{COPY.provenance}</b>
                           </small>
                         )}
                       </>
                     )}
-                  </div>
-                  <div class={styles.rowActions}>
-                    {tool !== undefined && (
-                      <a class={styles.openLink} href={tool.route} onClick={(event) => void openTool(tool, event)}>
-                        Open
-                      </a>
-                    )}
-                    <details class={styles.manage}>
-                      <summary aria-label={"Manage " + name}>Manage</summary>
-                      <div class={styles.manageActions}>
-                        <button
-                          type="button"
-                          aria-label={"Move " + name + " up"}
-                          disabled={index === 0}
-                          onClick={() => void move(id, -1)}
-                        >
-                          Move up
-                        </button>
-                        <button
-                          type="button"
-                          aria-label={"Move " + name + " down"}
-                          disabled={index === installed.length - 1}
-                          onClick={() => void move(id, 1)}
-                        >
-                          Move down
-                        </button>
-                        <button class={styles.remove} type="button" onClick={() => void remove(id)}>
-                          Remove
-                        </button>
-                      </div>
-                    </details>
-                  </div>
-                </li>
+                  actions={(
+                    <>
+                      {tool !== undefined && (
+                        <a class={styles.openLink} href={tool.route} onClick={(event) => void openTool(tool, event)}>
+                          {COPY.yourTools.open}
+                        </a>
+                      )}
+                      <details class={styles.manage}>
+                        <summary aria-label={COPY.yourTools.manage + " " + name}>{COPY.yourTools.manage}</summary>
+                        <div class={styles.manageActions}>
+                          <button
+                            type="button"
+                            aria-label={COPY.yourTools.moveUp(name)}
+                            disabled={index === 0}
+                            onClick={() => void move(id, -1)}
+                          >
+                            {COPY.yourTools.moveUp(name)}
+                          </button>
+                          <button
+                            type="button"
+                            aria-label={COPY.yourTools.moveDown(name)}
+                            disabled={index === installed.length - 1}
+                            onClick={() => void move(id, 1)}
+                          >
+                            {COPY.yourTools.moveDown(name)}
+                          </button>
+                          <button class={styles.remove} type="button" onClick={() => void remove(id)}>
+                            {COPY.yourTools.remove}
+                          </button>
+                        </div>
+                      </details>
+                    </>
+                  )}
+                />
               );
             })}
           </ol>
@@ -365,14 +385,14 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
               aria-controls="available-tools"
               onClick={() => setShowAvailable((visible) => !visible)}
             >
-              {showAvailable ? "Hide available tools" : "Add a tool"}
+              {showAvailable ? COPY.yourTools.hideAvailable : COPY.yourTools.addTool}
             </button>
             {showAvailable && (
               <ul id="available-tools">
                 {available.map((tool) => (
                   <li key={tool.id}>
                     <span><strong>{tool.name}</strong> — {tool.summary}</span>
-                    <button type="button" onClick={() => void add(tool.id)}>Add</button>
+                    <button type="button" onClick={() => void add(tool.id)}>{COPY.yourTools.add}</button>
                   </li>
                 ))}
               </ul>
@@ -381,139 +401,156 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
         )}
       </section>
 
+      {/* Recent: same rows, same gutter, directly beneath Your Tools. */}
       <section id="recent" class={styles.section} aria-labelledby="recent-title">
         <div class={styles.sectionHeading}>
-          <div>
-            <p class={styles.eyebrow}>Tool-level activity only</p>
-            <h2 id="recent-title">Recent</h2>
-          </div>
+          <h2 id="recent-title">{COPY.recent.title}</h2>
           {state.recent.length > 0 && (
-            <button type="button" onClick={() => void persist(clearRecent(state))}>Clear recent</button>
+            <button type="button" onClick={() => void persist(clearRecent(state))}>{COPY.recent.clear}</button>
           )}
         </div>
         {state.recent.length === 0 ? (
-          <p class={styles.muted}>No recent tool activity. Inputs, outputs, URLs and files are not stored here.</p>
+          <p class={styles.muted}>{COPY.recent.empty}</p>
         ) : (
           <ul class={styles.recentList}>
             {state.recent.map((entry) => {
               const tool = tools.find((item) => item.id === entry.toolId);
               return (
-                <li key={entry.toolId} data-recent-tool-id={entry.toolId}>
-                  <div>
-                    <strong>{toolName(entry.toolId, tools)}</strong>
-                    <span>{formatRecentActivity(entry.lastUsedAt)} · opened {entry.useCount}×</span>
-                  </div>
-                  {tool !== undefined && (
-                    <a href={tool.route} onClick={(event) => void openTool(tool, event)}>Run again</a>
+                <LedgerRow
+                  key={entry.toolId}
+                  rowId={entry.toolId}
+                  dataset={{ "data-recent-tool-id": entry.toolId }}
+                  title={toolName(entry.toolId, tools)}
+                  task={COPY.recent.openedTimes(entry.useCount)}
+                  // A tool with no produced value still reports its runtime
+                  // state here, so the column is never blank.
+                  value={toolValue(entry.toolId, tool)}
+                  detail={tool === undefined
+                    ? undefined
+                    : (
+                      <small class={styles.rowMeta}>
+                        {formatRecentActivity(entry.lastUsedAt)} · {COPY.recent.title}
+                      </small>
+                    )}
+                  actions={tool !== undefined && (
+                    <a href={tool.route} onClick={(event) => void openTool(tool, event)}>{COPY.recent.runAgain}</a>
                   )}
-                </li>
+                />
               );
             })}
           </ul>
         )}
       </section>
 
+      {/* Suggestions: at most four, each with one visible deterministic reason. */}
       <section id="suggestions" class={styles.section} aria-labelledby="suggestions-title">
         <div class={styles.sectionHeading}>
-          <div>
-            <p class={styles.eyebrow}>Deterministic local signals</p>
-            <h2 id="suggestions-title">Suggestions</h2>
-          </div>
-          {suggestions.length > 0 && <span class={styles.count}>{suggestions.length} shown</span>}
+          <h2 id="suggestions-title">{COPY.suggestions.title}</h2>
+          {suggestions.length > 0 && <span class={styles.count}>{COPY.suggestions.shown(suggestions.length)}</span>}
         </div>
         {suggestions.length === 0 ? (
-          <p class={styles.muted}>
-            Suggestions appear when an available tool shares a task, input, Work Profile default, or handoff with your installed tools.
-          </p>
+          <p class={styles.muted}>{COPY.suggestions.empty}</p>
         ) : (
           <ul class={styles.suggestionList}>
             {suggestions.map(({ tool, reason }) => (
-              <li key={tool.id} data-suggestion-id={tool.id}>
-                <div>
-                  <strong>{tool.name}</strong>
-                  <span>{tool.summary}</span>
-                  <small data-suggestion-reason>{reason}</small>
-                </div>
-                <button
-                  type="button"
-                  aria-label={"Add " + tool.name + " to Workbench"}
-                  data-suggestion-action
-                  onClick={() => void add(tool.id)}
-                >
-                  Add
-                </button>
-              </li>
+              <LedgerRow
+                key={tool.id}
+                rowId={tool.id}
+                dataset={{ "data-suggestion-id": tool.id }}
+                title={tool.name}
+                task={tool.summary}
+                value={{ state: runtimeLabel(tool) }}
+                detail={<small class={styles.reason} data-suggestion-reason>{reason}</small>}
+                actions={(
+                  <button
+                    type="button"
+                    aria-label={COPY.suggestions.addLabel(tool.name)}
+                    data-suggestion-action
+                    onClick={() => void add(tool.id)}
+                  >
+                    {COPY.yourTools.add}
+                  </button>
+                )}
+              />
             ))}
           </ul>
         )}
-        <a class={styles.libraryLink} href="/library/">Browse the full Library <span>{tools.length} tools</span></a>
+        {/* The Library is one link, and is never the first thing on the page. */}
+        <a class={styles.libraryLink} href="/library/">
+          {COPY.suggestions.browseFull}
+          <span>{COPY.suggestions.toolsCount(tools.length)}</span>
+        </a>
       </section>
 
+      {/*
+       * Work Profile is a ruled block on a baseline grid, not a card. Six
+       * fields in three columns, then the workweek as seven toggles in one
+       * ruled strip.
+       */}
       <section id="work-profile" class={styles.section} aria-labelledby="profile-title">
         <div class={styles.sectionHeading}>
-          <div>
-            <p class={styles.eyebrow}>Safe reusable defaults</p>
-            <h2 id="profile-title">Work Profile</h2>
-          </div>
-          <span class={styles.localBadge}>Stored locally</span>
+          <h2 id="profile-title">{COPY.workProfile.title}</h2>
+          <span class={styles.localBadge}>{COPY.workProfile.storedLocally}</span>
         </div>
-        <p class={styles.muted}>
-          Compatible tools receive only the fields they declare. A value changed for one task remains the current-task override.
-        </p>
+        <p class={styles.muted}>{COPY.workProfile.lede}</p>
 
-        <div class="field-grid">
-          <label class="field">
-            <span>Locale</span>
-            <input value={profileDraft.locale} onInput={(event) => setProfile("locale", event.currentTarget.value)} />
-          </label>
-          <label class="field">
-            <span>Timezone</span>
-            <input value={profileDraft.timezone} onInput={(event) => setProfile("timezone", event.currentTarget.value)} />
-          </label>
-          <label class="field">
-            <span>Currency</span>
-            <input value={profileDraft.currency} onInput={(event) => setProfile("currency", event.currentTarget.value.toUpperCase())} />
-          </label>
-          <label class="field">
-            <span>Date format</span>
-            <select value={profileDraft.dateFormat} onChange={(event) => setProfile("dateFormat", event.currentTarget.value as WorkProfile["dateFormat"])}>
-              <option value="system">System</option>
-              <option value="day-first">Day first</option>
-              <option value="month-first">Month first</option>
-            </select>
-          </label>
-          <label class="field">
-            <span>Number format</span>
-            <select value={profileDraft.numberFormat} onChange={(event) => setProfile("numberFormat", event.currentTarget.value as WorkProfile["numberFormat"])}>
-              <option value="system">System</option>
-              <option value="decimal-comma">Decimal comma</option>
-              <option value="decimal-point">Decimal point</option>
-            </select>
-          </label>
-          <label class="field">
-            <span>Preferred units</span>
-            <select value={profileDraft.preferredUnits} onChange={(event) => setProfile("preferredUnits", event.currentTarget.value as WorkProfile["preferredUnits"])}>
-              <option value="metric">Metric</option>
-              <option value="imperial">Imperial</option>
-              <option value="mixed">Mixed</option>
-            </select>
-          </label>
+        <div class={styles.profileBlock}>
+          <div class={styles.profileGrid}>
+            <label class={styles.profileField}>
+              <span>{COPY.workProfile.fields.locale}</span>
+              <input value={profileDraft.locale} onInput={(event) => setProfile("locale", event.currentTarget.value)} />
+            </label>
+            <label class={styles.profileField}>
+              <span>{COPY.workProfile.fields.timezone}</span>
+              <input value={profileDraft.timezone} onInput={(event) => setProfile("timezone", event.currentTarget.value)} />
+            </label>
+            <label class={styles.profileField}>
+              <span>{COPY.workProfile.fields.currency}</span>
+              <input value={profileDraft.currency} onInput={(event) => setProfile("currency", event.currentTarget.value.toUpperCase())} />
+            </label>
+            <label class={styles.profileField}>
+              <span>{COPY.workProfile.fields.dateFormat}</span>
+              <select value={profileDraft.dateFormat} onChange={(event) => setProfile("dateFormat", event.currentTarget.value as WorkProfile["dateFormat"])}>
+                <option value="system">{COPY.workProfile.options.system}</option>
+                <option value="day-first">{COPY.workProfile.options.dayFirst}</option>
+                <option value="month-first">{COPY.workProfile.options.monthFirst}</option>
+              </select>
+            </label>
+            <label class={styles.profileField}>
+              <span>{COPY.workProfile.fields.numberFormat}</span>
+              <select value={profileDraft.numberFormat} onChange={(event) => setProfile("numberFormat", event.currentTarget.value as WorkProfile["numberFormat"])}>
+                <option value="system">{COPY.workProfile.options.system}</option>
+                <option value="decimal-comma">{COPY.workProfile.options.decimalComma}</option>
+                <option value="decimal-point">{COPY.workProfile.options.decimalPoint}</option>
+              </select>
+            </label>
+            <label class={styles.profileField}>
+              <span>{COPY.workProfile.fields.preferredUnits}</span>
+              <select value={profileDraft.preferredUnits} onChange={(event) => setProfile("preferredUnits", event.currentTarget.value as WorkProfile["preferredUnits"])}>
+                <option value="metric">{COPY.workProfile.options.metric}</option>
+                <option value="imperial">{COPY.workProfile.options.imperial}</option>
+                <option value="mixed">{COPY.workProfile.options.mixed}</option>
+              </select>
+            </label>
+          </div>
+
+          <fieldset class={styles.workweek}>
+            <legend>{COPY.workProfile.workweek}</legend>
+            <div class={styles.weekdayStrip}>
+              {DAYS.map(({ code, label }) => (
+                <label key={code}>
+                  <input type="checkbox" checked={profileDraft.workweek.includes(code)} onChange={() => toggleDay(code)} />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
         </div>
 
-        <fieldset class="workweek-fieldset">
-          <legend>Workweek</legend>
-          <div class="weekday-row">
-            {DAYS.map(({ code, label }) => (
-              <label key={code}>
-                <input type="checkbox" checked={profileDraft.workweek.includes(code)} onChange={() => toggleDay(code)} />
-                <span>{label}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
-        <div class="actions">
-          <button class={styles.primary} type="button" onClick={() => void saveProfile()}>Save Work Profile</button>
+        <div class={styles.profileActions}>
+          <button class={styles.primary} type="button" onClick={() => void saveProfile()}>
+            {COPY.workProfile.save}
+          </button>
           <label class={styles.checkboxLine}>
             <input
               type="checkbox"
@@ -523,25 +560,20 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
                 preferences: { ...state.preferences, compactRows: event.currentTarget.checked },
               })}
             />
-            Compact tool rows
+            {COPY.workProfile.compactRows}
           </label>
         </div>
       </section>
 
       <section class={styles.section} aria-labelledby="portable-title">
         <div class={styles.sectionHeading}>
-          <div>
-            <p class={styles.eyebrow}>No cloud sync required</p>
-            <h2 id="portable-title">Portable configuration</h2>
-          </div>
+          <h2 id="portable-title">{COPY.portability.title}</h2>
         </div>
-        <p class={styles.muted}>
-          Export includes installed tools, packs, layout, safe Work Profile fields and preferences. It excludes Recent and task content.
-        </p>
-        <div class="actions">
-          <button type="button" onClick={downloadConfig}>Export configuration</button>
+        <p class={styles.muted}>{COPY.portability.lede}</p>
+        <div class={styles.portableActions}>
+          <button type="button" onClick={downloadConfig}>{COPY.portability.export}</button>
           <label class={styles.importFile}>
-            <span>Choose configuration to import</span>
+            <span>{COPY.portability.import}</span>
             <input
               type="file"
               accept="application/json,.json"
@@ -554,22 +586,24 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
           <div class={importPreview.ok ? styles.preview : "error"} role={importPreview.ok ? "status" : "alert"}>
             {importPreview.ok ? (
               <>
-                <strong>Import preview</strong>
+                <strong>{COPY.portability.importPreview}</strong>
                 <ul>
-                  <li>{importPreview.summary.addedTools.length} tool(s) added</li>
-                  <li>{importPreview.summary.removedTools.length} tool(s) removed</li>
-                  <li>Work Profile {importPreview.summary.profileChanged ? "will change" : "unchanged"}</li>
-                  <li>Preferences {importPreview.summary.preferencesChanged ? "will change" : "unchanged"}</li>
-                  <li>Packs {importPreview.summary.packsChanged ? "will change" : "unchanged"}</li>
+                  <li>{COPY.portability.addedTools(importPreview.summary.addedTools.length)}</li>
+                  <li>{COPY.portability.removedTools(importPreview.summary.removedTools.length)}</li>
+                  <li>{COPY.workProfile.title} {importPreview.summary.profileChanged ? COPY.portability.profileWillChange : COPY.portability.unchanged}</li>
+                  <li>{COPY.workProfile.compactRows} {importPreview.summary.preferencesChanged ? COPY.portability.preferencesWillChange : COPY.portability.unchanged}</li>
+                  <li>{COPY.portability.title} {importPreview.summary.packsChanged ? COPY.portability.packsWillChange : COPY.portability.unchanged}</li>
                 </ul>
-                <div class="actions">
-                  <button class={styles.primary} type="button" onClick={() => void applyImport()}>Apply import</button>
-                  <button type="button" onClick={() => setImportPreview(null)}>Cancel</button>
+                <div class={styles.previewActions}>
+                  <button class={styles.primary} type="button" onClick={() => void applyImport()}>
+                    {COPY.portability.applyImport}
+                  </button>
+                  <button type="button" onClick={() => setImportPreview(null)}>{COPY.portability.cancel}</button>
                 </div>
               </>
             ) : (
               <>
-                <strong>Import not applied.</strong>
+                <strong>{COPY.portability.importRejected}</strong>
                 <span>{importPreview.error}</span>
               </>
             )}

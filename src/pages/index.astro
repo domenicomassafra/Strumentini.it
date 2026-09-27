@@ -3,9 +3,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { catalog } from "../generated/catalog";
 import { Workbench } from "../components/workbench/Workbench";
 ---
+
+{/*
+  L'apertura del libro. The home page is the day-book opened to today: the
+  Workbench component is the whole first viewport, with no hero, no banner,
+  and no big number in front of it. Italian-first, per PRODUCT.md.
+*/}
 <BaseLayout
-  title="Personal Workbench"
-  description="A local personal workbench for the small utilities you use repeatedly."
+  title="La tua area di lavoro"
+  description="Gli strumenti che usi ogni giorno, in un libro delle scritture che ricorda i tuoi valori locali."
+  imageAlt="Un libro delle scritture aperto sul lavoro di oggi"
 >
   <Workbench tools={catalog} client:load />
 </BaseLayout>

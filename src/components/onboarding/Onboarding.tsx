@@ -24,6 +24,7 @@ import {
   type StarterReview,
 } from "../../onboarding/recommendations";
 import type { GoldQualityIndex } from "../../onboarding/quality";
+import { COPY, WEEKDAYS, stageIndexLabel } from "../workbench/copy";
 import styles from "./Onboarding.module.css";
 
 export interface OnboardingProps {
@@ -33,32 +34,17 @@ export interface OnboardingProps {
 
 type OnboardingStage = 1 | 2 | 3 | 4;
 
-const DAYS: ReadonlyArray<{ code: DayCode; label: string }> = [
-  { code: "MON", label: "Mon" },
-  { code: "TUE", label: "Tue" },
-  { code: "WED", label: "Wed" },
-  { code: "THU", label: "Thu" },
-  { code: "FRI", label: "Fri" },
-  { code: "SAT", label: "Sat" },
-  { code: "SUN", label: "Sun" },
-];
+const DAYS: ReadonlyArray<DayCode> = WEEKDAYS.map(({ code }) => code);
 
 function serverSafeProfile(): WorkProfile {
-  return createDefaultWorkProfile({ locale: "en-US", timezone: "UTC" });
+  return createDefaultWorkProfile({ locale: "it-IT", timezone: "UTC" });
 }
 
 function browserProfile(): WorkProfile {
   return createDefaultWorkProfile({
-    locale: navigator.language || "en-US",
+    locale: navigator.language || "it-IT",
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
   });
-}
-
-function stageLabel(stage: OnboardingStage): string {
-  if (stage === 1) return "Work context";
-  if (stage === 2) return "Recurring jobs";
-  if (stage === 3) return "Safe defaults";
-  return "Starter review";
 }
 
 export function Onboarding({ tools, quality }: OnboardingProps) {
@@ -121,7 +107,7 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
     const selected = new Set(profileDraft.workweek);
     if (selected.has(day)) selected.delete(day);
     else selected.add(day);
-    const ordered = DAYS.map(({ code }) => code).filter((code) => selected.has(code));
+    const ordered = DAYS.filter((code) => selected.has(code));
     if (ordered.length > 0) setProfile("workweek", ordered);
   }
 
@@ -156,46 +142,48 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
   return (
     <div class={styles.shell} data-ready={ready ? "true" : "false"} data-saving={saving ? "true" : "false"} aria-busy={saving}>
       <header class={styles.intro}>
-        <p class={styles.eyebrow}>Local setup · no account</p>
-        <h1>Build your everyday tool set</h1>
-        <p>Answer only what changes your tools or safe defaults. You can edit the result before saving it.</p>
-        <a class={styles.skipLink} href="/library/">Skip — browse the Library</a>
+        <h1>{COPY.onboarding.title}</h1>
+        <p>{COPY.onboarding.lede}</p>
+        <a class={styles.skipLink} href="/library/">{COPY.onboarding.skip}</a>
       </header>
 
       {warning !== "" && (
         <div class={styles.warning} role="status">
-          <strong>Setup is still usable.</strong>
+          <strong>{COPY.onboarding.storageWarning}</strong>
           <span>{warning}</span>
         </div>
       )}
 
-      <nav class={styles.steps} aria-label="Setup steps">
+      {/*
+        The stage counter is a real index: a numbered ruled strip, not an
+        uppercase eyebrow repeated above every heading. Position is readable
+        at a glance, and reached stages are navigable.
+      */}
+      <ol class={styles.stageIndex} aria-label={COPY.onboarding.title}>
         {([1, 2, 3, 4] as const).map((number) => (
-          <button
-            key={number}
-            type="button"
-            class={number === stage ? styles.currentStep : undefined}
-            aria-current={number === stage ? "step" : undefined}
-            onClick={() => {
-              if (number < stage) setStage(number);
-            }}
-            disabled={number > stage}
-          >
-            <span>{number}</span>{stageLabel(number)}
-          </button>
+          <li key={number}>
+            <button
+              type="button"
+              aria-current={number === stage ? "step" : undefined}
+              onClick={() => {
+                if (number < stage) setStage(number);
+              }}
+              disabled={number > stage}
+            >
+              <span class={styles.index}>{stageIndexLabel(number)}</span>
+              {COPY.onboarding.stages[number]}
+            </button>
+          </li>
         ))}
-      </nav>
+      </ol>
 
       {stage === 1 && (
         <section class={styles.stage} aria-labelledby="context-title">
           <div class={styles.stageHeading}>
-            <div>
-              <p class={styles.eyebrow}>Step 1 of 4</p>
-              <h2 id="context-title">What kind of work do you do?</h2>
-            </div>
-            <span class={styles.counter}>{contextIds.length}/3 selected</span>
+            <h2 id="context-title">{COPY.onboarding.prompts[1]}</h2>
+            <span class={styles.counter}>{COPY.onboarding.counters.context(contextIds.length)}</span>
           </div>
-          <p class={styles.muted}>Choose up to three contexts. The first choice shapes the starter pack most strongly.</p>
+          <p class={styles.muted}>{COPY.onboarding.hints[1]}</p>
           <div class={styles.choiceGrid}>
             {WORK_CONTEXT_PACKS.map((pack) => (
               <label class={styles.choice} key={pack.id} data-context-id={pack.id}>
@@ -205,8 +193,10 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
             ))}
           </div>
           <div class={styles.actions}>
-            <button class={styles.primary} type="button" disabled={!canContinue} onClick={() => setStage(2)}>Continue</button>
-            <a href="/library/">Browse Library instead</a>
+            <button class={styles.primary} type="button" disabled={!canContinue} onClick={() => setStage(2)}>
+              {COPY.onboarding.continue}
+            </button>
+            <a href="/library/">{COPY.yourTools.browseLibrary}</a>
           </div>
         </section>
       )}
@@ -214,24 +204,21 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
       {stage === 2 && (
         <section class={styles.stage} aria-labelledby="jobs-title">
           <div class={styles.stageHeading}>
-            <div>
-              <p class={styles.eyebrow}>Step 2 of 4</p>
-              <h2 id="jobs-title">Which small jobs repeat?</h2>
-            </div>
-            <span class={styles.counter}>{jobIds.length} selected</span>
+            <h2 id="jobs-title">{COPY.onboarding.prompts[2]}</h2>
+            <span class={styles.counter}>{COPY.onboarding.counters.jobs(jobIds.length)}</span>
           </div>
-          <p class={styles.muted}>Choose any that apply. These are structured task signals, not a promise that every tool is needed.</p>
+          <p class={styles.muted}>{COPY.onboarding.hints[2]}</p>
           <div class={styles.choiceGrid}>
             {RECURRING_JOBS.map((job) => (
               <label class={styles.choice} key={job.id}>
                 <input type="checkbox" checked={jobIds.includes(job.id)} onChange={() => toggleJob(job.id)} />
-                <span><strong>{job.label}</strong><small>Used to add matching Gold tools to the review.</small></span>
+                <span><strong>{job.label}</strong><small>{COPY.onboarding.jobLabel}</small></span>
               </label>
             ))}
           </div>
           <div class={styles.actions}>
-            <button type="button" onClick={() => setStage(1)}>Back</button>
-            <button class={styles.primary} type="button" onClick={() => setStage(3)}>Continue</button>
+            <button type="button" onClick={() => setStage(1)}>{COPY.onboarding.back}</button>
+            <button class={styles.primary} type="button" onClick={() => setStage(3)}>{COPY.onboarding.continue}</button>
           </div>
         </section>
       )}
@@ -239,28 +226,25 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
       {stage === 3 && (
         <section class={styles.stage} aria-labelledby="defaults-title">
           <div class={styles.stageHeading}>
-            <div>
-              <p class={styles.eyebrow}>Step 3 of 4</p>
-              <h2 id="defaults-title">Set safe defaults</h2>
-            </div>
-            <span class={styles.localBadge}>Stored locally</span>
+            <h2 id="defaults-title">{COPY.onboarding.prompts[3]}</h2>
+            <span class={styles.localBadge}>{COPY.workProfile.storedLocally}</span>
           </div>
-          <p class={styles.muted}>These values are reused only by tools that declare them. You can change them later in Work Profile.</p>
+          <p class={styles.muted}>{COPY.onboarding.hints[3]}</p>
           <div class={styles.profileGrid}>
-            <label><span>Locale</span><input value={profileDraft.locale} onInput={(event) => setProfile("locale", event.currentTarget.value)} /></label>
-            <label><span>Timezone</span><input value={profileDraft.timezone} onInput={(event) => setProfile("timezone", event.currentTarget.value)} /></label>
-            <label><span>Currency</span><input value={profileDraft.currency} onInput={(event) => setProfile("currency", event.currentTarget.value.toUpperCase())} /></label>
-            <label><span>Date format</span><select value={profileDraft.dateFormat} onChange={(event) => setProfile("dateFormat", event.currentTarget.value as WorkProfile["dateFormat"])}><option value="system">System</option><option value="day-first">Day first</option><option value="month-first">Month first</option></select></label>
-            <label><span>Number format</span><select value={profileDraft.numberFormat} onChange={(event) => setProfile("numberFormat", event.currentTarget.value as WorkProfile["numberFormat"])}><option value="system">System</option><option value="decimal-comma">Decimal comma</option><option value="decimal-point">Decimal point</option></select></label>
-            <label><span>Preferred units</span><select value={profileDraft.preferredUnits} onChange={(event) => setProfile("preferredUnits", event.currentTarget.value as WorkProfile["preferredUnits"])}><option value="metric">Metric</option><option value="imperial">Imperial</option><option value="mixed">Mixed</option></select></label>
+            <label><span>{COPY.workProfile.fields.locale}</span><input value={profileDraft.locale} onInput={(event) => setProfile("locale", event.currentTarget.value)} /></label>
+            <label><span>{COPY.workProfile.fields.timezone}</span><input value={profileDraft.timezone} onInput={(event) => setProfile("timezone", event.currentTarget.value)} /></label>
+            <label><span>{COPY.workProfile.fields.currency}</span><input value={profileDraft.currency} onInput={(event) => setProfile("currency", event.currentTarget.value.toUpperCase())} /></label>
+            <label><span>{COPY.workProfile.fields.dateFormat}</span><select value={profileDraft.dateFormat} onChange={(event) => setProfile("dateFormat", event.currentTarget.value as WorkProfile["dateFormat"])}><option value="system">{COPY.workProfile.options.system}</option><option value="day-first">{COPY.workProfile.options.dayFirst}</option><option value="month-first">{COPY.workProfile.options.monthFirst}</option></select></label>
+            <label><span>{COPY.workProfile.fields.numberFormat}</span><select value={profileDraft.numberFormat} onChange={(event) => setProfile("numberFormat", event.currentTarget.value as WorkProfile["numberFormat"])}><option value="system">{COPY.workProfile.options.system}</option><option value="decimal-comma">{COPY.workProfile.options.decimalComma}</option><option value="decimal-point">{COPY.workProfile.options.decimalPoint}</option></select></label>
+            <label><span>{COPY.workProfile.fields.preferredUnits}</span><select value={profileDraft.preferredUnits} onChange={(event) => setProfile("preferredUnits", event.currentTarget.value as WorkProfile["preferredUnits"])}><option value="metric">{COPY.workProfile.options.metric}</option><option value="imperial">{COPY.workProfile.options.imperial}</option><option value="mixed">{COPY.workProfile.options.mixed}</option></select></label>
           </div>
           <fieldset class={styles.workweek}>
-            <legend>Workweek</legend>
-            <div>{DAYS.map(({ code, label }) => <label key={code}><input type="checkbox" checked={profileDraft.workweek.includes(code)} onChange={() => toggleDay(code)} /><span>{label}</span></label>)}</div>
+            <legend>{COPY.workProfile.workweek}</legend>
+            <div>{WEEKDAYS.map(({ code, label }) => <label key={code}><input type="checkbox" checked={profileDraft.workweek.includes(code)} onChange={() => toggleDay(code)} /><span>{label}</span></label>)}</div>
           </fieldset>
           <div class={styles.actions}>
-            <button type="button" onClick={() => setStage(2)}>Back</button>
-            <button class={styles.primary} type="button" onClick={beginReview}>Review starter tools</button>
+            <button type="button" onClick={() => setStage(2)}>{COPY.onboarding.back}</button>
+            <button class={styles.primary} type="button" onClick={beginReview}>{COPY.onboarding.review}</button>
           </div>
         </section>
       )}
@@ -268,14 +252,13 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
       {stage === 4 && review !== null && (
         <section class={styles.stage} aria-labelledby="review-title" data-starter-selected={selectedCount}>
           <div class={styles.stageHeading}>
-            <div>
-              <p class={styles.eyebrow}>Step 4 of 4</p>
-              <h2 id="review-title">Review your starter tools</h2>
-              <p class={styles.muted}>{contextSummary || "Your work context"} · {selectedCount}/{MAX_STARTER_TOOLS} selected</p>
-            </div>
-            <span class={styles.localBadge}>{quality.tools.length} Gold-certified tools</span>
+            <h2 id="review-title">{COPY.onboarding.prompts[4]}</h2>
+            <span class={styles.localBadge}>{COPY.onboarding.goldCount(quality.tools.length)}</span>
           </div>
-          <p class={styles.muted}>Each reason comes from the selected context or job metadata. Remove anything that does not fit, or search the catalog for a deliberate addition.</p>
+          <p class={styles.muted}>
+            {contextSummary} · {selectedCount}/{MAX_STARTER_TOOLS}
+          </p>
+          <p class={styles.muted}>{COPY.onboarding.hints[4]}</p>
           <div class={styles.reviewLayout}>
             <div>
               <ul class={styles.reviewList}>
@@ -294,23 +277,23 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
               </ul>
             </div>
             <aside class={styles.alternativePanel} aria-labelledby="alternative-title">
-              <h3 id="alternative-title">Add another tool</h3>
-              <p class={styles.muted}>Search all 200 catalog tools. Only Gold-certified tools enter the generated set automatically.</p>
-              <label class={styles.searchLabel}><span>Search the Library</span><input type="search" value={alternativeQuery} onInput={(event) => setAlternativeQuery(event.currentTarget.value)} placeholder="e.g. JSON, image, calendar" /></label>
+              <h3 id="alternative-title">{COPY.suggestions.title}</h3>
+              <p class={styles.muted}>{COPY.onboarding.searchHint}</p>
+              <label class={styles.searchLabel}><span>{COPY.onboarding.searchLibrary}</span><input type="search" value={alternativeQuery} onInput={(event) => setAlternativeQuery(event.currentTarget.value)} placeholder={COPY.onboarding.searchPlaceholder} /></label>
               <ul class={styles.alternativeList}>
-                {alternativeQuery.trim() === "" ? <li class={styles.noResults}>Type a task, tool, or format.</li> : alternatives.length === 0 ? <li class={styles.noResults}>No matching tool.</li> : alternatives.map((item) => <li key={item.tool.id}><span><strong>{item.tool.name}</strong><small>{item.reason}</small></span><button type="button" onClick={() => updateReview(addStarterAlternative(review, item.tool, quality))} disabled={review.selectedToolIds.length >= MAX_STARTER_TOOLS}>Add</button></li>)}
+                {alternativeQuery.trim() === "" ? <li class={styles.noResults}>{COPY.onboarding.noResultsQuery}</li> : alternatives.length === 0 ? <li class={styles.noResults}>{COPY.onboarding.noMatch}</li> : alternatives.map((item) => <li key={item.tool.id}><span><strong>{item.tool.name}</strong><small>{item.reason}</small></span><button type="button" onClick={() => updateReview(addStarterAlternative(review, item.tool, quality))} disabled={review.selectedToolIds.length >= MAX_STARTER_TOOLS}>{COPY.yourTools.add}</button></li>)}
               </ul>
             </aside>
           </div>
           <div class={styles.actions}>
-            <button type="button" onClick={() => setStage(3)}>Back</button>
-            <button class={styles.primary} type="button" disabled={!ready || selectedCount === 0 || saving || completed} onClick={() => void acceptStarter()}>{saving ? "Saving locally…" : "Save starter set"}</button>
+            <button type="button" onClick={() => setStage(3)}>{COPY.onboarding.back}</button>
+            <button class={styles.primary} type="button" disabled={!ready || selectedCount === 0 || saving || completed} onClick={() => void acceptStarter()}>{saving ? COPY.onboarding.saving : COPY.onboarding.save}</button>
           </div>
-          {completed && <p class={styles.success} role="status">Saved locally. Opening your Workbench…</p>}
+          {completed && <p class={styles.success} role="status">{COPY.onboarding.saved}</p>}
         </section>
       )}
 
-      <p class={styles.footnote}>No sign-in, upload, model inference, or account is required. Your task content is not part of this setup.</p>
+      <p class={styles.footnote}>{COPY.onboarding.footnote}</p>
     </div>
   );
 }
