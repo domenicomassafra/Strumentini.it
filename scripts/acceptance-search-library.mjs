@@ -104,7 +104,7 @@ try {
   await page.keyboard.press("Control+K");
   await page.locator("[data-search-dialog][open]").waitFor();
   await paletteInput.fill("workng day calcultor");
-  await page.getByRole("link", { name: "Request this tool", exact: true }).waitFor();
+  await page.locator("[data-request-tool]").waitFor();
   await page.getByRole("button", { name: /working day calculator|workday calculator/u }).first().waitFor();
   await page.keyboard.press("Escape");
   assertNoImplementationRequests(requestedScripts, toolAssets, "Zero-result discovery");

@@ -29,7 +29,7 @@ The one idea this surface owns: **the running gutter.** A persistent right-hand 
 | `--carta-fonda` | `#E8E3D7` | the desk beneath, rails, gutters |
 | `--inchiostro` | `#1A1714` iron-gall black | body ink |
 | `--inchiostro-2` | `#4A443C` | second ink, for rules and borders |
-| `--inchiostro-3` | `#7A7367` | faded ink — secondary text, 4.5:1 on `--carta` minimum |
+| `--inchiostro-3` | `#6B6459` | faded ink — corrected to clear the 4.5:1 secondary-text floor on `--carta` |
 | `--rossa` | `#9E2B1F` | **the accountant's red pen. The only accent.** |
 | `--rossa-tenue` | `#F2E3E0` | red at 12% — fills, never text |
 | `--verde` | `#3C5A45` | semantic: success/local |

@@ -14,6 +14,8 @@
     "gold:business-day": "npm run catalog:build && tsx scripts/gold-certify.ts",
     "gold:sabotage": "npm run catalog:build && node scripts/verify-gold-sabotage.mjs",
     "acceptance:browser": "node scripts/browser-acceptance.mjs",
+    "acceptance:onboarding": "node scripts/acceptance-onboarding.mjs",
+    "acceptance:telemetry": "node scripts/acceptance-telemetry.mjs",
     "acceptance:image-resize:physical:serve": "npm run build && tsx scripts/generate-image-resize-physical-fixtures.ts && node scripts/serve-image-resize-physical.mjs",
     "acceptance:image-resize:physical:record": "tsx scripts/record-image-resize-physical.ts",
     "gold:image-resize": "tsx scripts/gold/image-resize-certify.ts",

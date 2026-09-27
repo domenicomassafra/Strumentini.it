@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 const globalCss = readFileSync(new URL("../src/styles/global.css", import.meta.url), "utf8");
 const workbenchCss = readFileSync(new URL("../src/components/workbench/Workbench.module.css", import.meta.url), "utf8");
 const baseLayout = readFileSync(new URL("../src/layouts/BaseLayout.astro", import.meta.url), "utf8");
+const worldMd = readFileSync(new URL("../design/WORLD.md", import.meta.url), "utf8");
 
 const rootEnd = globalCss.indexOf("\n}", globalCss.indexOf(":root {"));
 const lightCss = globalCss.slice(globalCss.indexOf(":root {"), rootEnd);
@@ -24,6 +25,14 @@ const darkTokens = tokens(darkCss);
 // Dark mode redefines the ink primitives only; the aliases and the scale are
 // inherited, exactly as the cascade does. Resolve against that merged view.
 const darkTheme = new Map([...lightTokens, ...darkTokens]);
+
+function declaredPalette(): ReadonlyArray<readonly [string, string]> {
+  const rows = [...worldMd.matchAll(/^\|\s*`(--[\w-]+)`\s*\|\s*`(#[0-9A-Fa-f]{6})`/gmu)];
+  expect(rows.length, "design/WORLD.md declares no palette rows; the token contract cannot be derived").toBeGreaterThan(0);
+  return rows.map((match) => [match[1]!.slice(2), match[2]!] as const);
+}
+
+const documentedPalette = declaredPalette();
 
 /** The world's own names. Every other lane reads these. */
 const inkTokens = [
@@ -62,7 +71,6 @@ const aliasTokens = [
   "danger",
   "danger-surface",
   "focus-ring",
-  "radius",
 ] as const;
 
 const scaleTokens = [
@@ -99,7 +107,6 @@ const scaleTokens = [
   "space-16",
   "radius-sm",
   "radius-md",
-  "radius-full",
   "border-width",
   "rule-weight",
   "state-border-width",
@@ -155,6 +162,13 @@ function contrast(theme: Map<string, string>, foreground: string, background: st
 }
 
 describe("canonical design-system tokens", () => {
+  it("keeps the light palette synchronized with design/WORLD.md", () => {
+    for (const [name, value] of documentedPalette) {
+      expect(lightTokens.get(name), `missing light token --${name}`).toBeDefined();
+      expect(lightTokens.get(name)!.toLowerCase(), `--${name} drifted from design/WORLD.md`).toBe(value.toLowerCase());
+    }
+  });
+
   it("keeps the complete token vocabulary in the light and dark authority blocks", () => {
     for (const name of [...inkTokens, ...aliasTokens, ...scaleTokens]) {
       expect(lightTokens.has(name), `missing light token --${name}`).toBe(true);

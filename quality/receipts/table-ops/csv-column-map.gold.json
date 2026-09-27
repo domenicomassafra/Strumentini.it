@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
+  "revision": "155c4cd1413031d6e66913fb02cda35673dfef92",
   "toolId": "csv-column-map",
   "runtime": {
     "location": "LOCAL",
@@ -31,7 +32,7 @@
     "whatwg-encoding"
   ],
   "identities": {
-    "engineSha256": "a4664d571d209ed0c90b9663b7b8b8ee7b958f27aadb32746902cba28d1f7cfc",
+    "engineSha256": "d84f81fef62f4acec84b3c236ea88cb9cd1deaba257083513923aaaa9e3d42b7",
     "fixtureSha256": "d9fed155c6536ca6ee6c60c5209cf7499d9ad7cc4b8d9c5cfe9461efa1cf91f2",
     "rfcFixtureSha256": "6f6f74846f47fd99866d6c8b024cf1a8af33f4d92a015ae0af2e09a539111765",
     "fixtureIndexSha256": "cb85d2f639359880fde99f8bec5f89e7b73565ae2ae0adfb2a045e848e907543",

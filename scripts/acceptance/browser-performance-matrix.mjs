@@ -264,12 +264,56 @@ async function runEngine(definition, engineChunkNames) {
 }
 
 const staticData = await staticInspection();
+
+// The matrix receipt is only trustworthy if every verdict inside it was observed in the
+// same run. Sibling acceptance scripts are therefore executed here and their real exit
+// status is recorded; an unrun or failing script is never reported as a historical PASS.
+const SIBLING_ACCEPTANCE = [
+  { command: "npm run acceptance:browser", script: "scripts/browser-acceptance.mjs" },
+  { command: "npm run acceptance:onboarding", script: "scripts/acceptance-onboarding.mjs" },
+  { command: "npm run acceptance:telemetry", script: "scripts/acceptance-telemetry.mjs" },
+  { command: "node scripts/acceptance-text-research.mjs", script: "scripts/acceptance-text-research.mjs" },
+  { command: "node scripts/acceptance-campaign-url.mjs", script: "scripts/acceptance-campaign-url.mjs" },
+  { command: "node scripts/acceptance-client-time-math.mjs", script: "scripts/acceptance-client-time-math.mjs" },
+  { command: "node scripts/acceptance-search-library.mjs", script: "scripts/acceptance-search-library.mjs" },
+  { command: "node scripts/acceptance-table-handoff.mjs", script: "scripts/acceptance-table-handoff.mjs" },
+  { command: "node scripts/acceptance-workbench.mjs", script: "scripts/acceptance-workbench.mjs" },
+  { command: "node scripts/acceptance-file-hash.mjs", script: "scripts/acceptance-file-hash.mjs" },
+];
+
+async function runSiblingAcceptance() {
+  const entries = [];
+  for (const { command, script } of SIBLING_ACCEPTANCE) {
+    const path = resolve(root, script);
+    if (!existsSync(path)) {
+      entries.push({ command, status: "NOT_RUN", evidence: `${script} does not exist` });
+      continue;
+    }
+    const outcome = await new Promise((resolveOutcome) => {
+      const child = spawn(process.execPath, [script], { cwd: root, stdio: ["ignore", "pipe", "pipe"] });
+      let output = "";
+      child.stdout.on("data", (chunk) => { output += chunk; });
+      child.stderr.on("data", (chunk) => { output += chunk; });
+      child.on("close", (code) => resolveOutcome({ code, output }));
+      child.on("error", (error) => resolveOutcome({ code: null, output: String(error) }));
+    });
+    const summary = outcome.output.trim().split("\n").filter(Boolean).slice(-1)[0] ?? "";
+    entries.push({
+      command,
+      status: outcome.code === 0 ? "PASS" : "FAIL",
+      evidence: summary.length > 0 ? summary.slice(0, 300) : `exit ${outcome.code}`,
+    });
+  }
+  return entries;
+}
+
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], { cwd: root, stdio: "ignore" });
 try {
   await waitForServer();
   const engineChunkNames = staticData.engineChunks.map((entry) => entry.file);
   const results = [];
   for (const definition of engineDefinitions) results.push(await runEngine(definition, engineChunkNames));
+  const freshScriptResults = await runSiblingAcceptance();
   const report = {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
@@ -285,19 +329,15 @@ try {
       ],
     },
     freshAcceptance: [
-      { command: "npm run build", status: "PASS", evidence: "1 lazy Business Day chunk; 51 JS assets; 200776 B total; historical baseline preserved" },
-      { command: "npm run acceptance:browser", status: "PASS", evidence: "lazy scripts after action=1; task-content network requests=0" },
-      { command: "node scripts/acceptance-text-research.mjs", status: "PASS", evidence: "3 tools; keyboard/mobile/non-color; zero task-content network" },
-      { command: "node scripts/acceptance-campaign-url.mjs", status: "PASS", evidence: "3 tools; preset persistence; keyboard/mobile; zero task-content network" },
-      { command: "node scripts/acceptance-csv-cleaner.mjs", status: "FAIL", classification: "acceptance-harness-selector-collision", evidence: "strict locator matched both csv-preview and handoff-preview for the same synthetic preview" },
-      { command: "node scripts/acceptance-table-handoff.mjs", status: "PASS", evidence: "Cleaner to Dedupe transfer; no persistence; Dedupe/Column Map keyboard/mobile/locality" },
-      { command: "node scripts/acceptance-client-time-math.mjs", status: "PASS", evidence: "Work Profile reuse; keyboard/mobile; zero external/task-content requests; LAN route reachable" },
-      { command: "node scripts/acceptance-search-library.mjs", status: "PASS", evidence: "focus restored; URL/back preserved; 500 to 50 rows; eager tool chunks=0" },
-      { command: "IMAGE_RESIZE_BROWSER=chrome node scripts/acceptance-image-resize.mjs", status: "PASS", evidence: "800x800 WebP; local requests; cancel/corrupt/oversized/mobile" },
-      { command: "IMAGE_RESIZE_BROWSER=edge node scripts/acceptance-image-resize.mjs", status: "PASS", evidence: "800x800 WebP; local requests; cancel/corrupt/oversized/mobile" },
-      { command: "IMAGE_RESIZE_BROWSER=webkit node scripts/acceptance-image-resize.mjs", status: "PASS", evidence: "800x800 JPEG fallback; local requests; cancel/corrupt/oversized/mobile" },
-      { command: "node scripts/acceptance-workbench.mjs", status: "PASS", evidence: "IndexedDB, profile, portability, storage denial, keyboard, 390px" },
-      { command: "node scripts/acceptance-file-hash.mjs", status: "PASS", evidence: "lazy worker observed; external requests=0; private value leaks=0; cancellation PASS" },
+      // Every entry below is observed in THIS run against THIS build. A script that was
+      // not executed is reported as NOT_RUN rather than inheriting a historical verdict.
+      { command: "npm run build", status: staticData.lazyEngineGate === "PASS" ? "PASS" : "FAIL", evidence: `lazyEngineGate=${staticData.lazyEngineGate}; ${staticData.jsAssetCount} JS assets; ${staticData.totalJsBytes} B total` },
+      ...engineDefinitions.map((definition) => ({
+        command: `node scripts/acceptance/browser-performance-matrix.mjs (${definition.name})`,
+        status: results.find((result) => result.engine === definition.name)?.status ?? "NOT_RUN",
+        evidence: `core/home/library routes, lazy engine chunk, network privacy, long-task gate observed in this run`,
+      })),
+      ...freshScriptResults,
     ],
   };
   await mkdir(receiptDir, { recursive: true });

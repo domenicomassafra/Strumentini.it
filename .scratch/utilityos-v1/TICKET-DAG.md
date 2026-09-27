@@ -52,13 +52,19 @@ The separate `tasks/prompt2prompt/20260923-181500-utilityos-parallel-enablers/` 
 
 ## Current unblocked frontier
 
-Completed software tickets: **01, 02, 03, 04, 05, 06, 07, 08, 10**.
+Completed software tickets: **01, 02, 03, 04, 05, 06, 07, 08, 10, 11, 12 (validator + schema + reporting), 13 (validator)**.
 
 Ticket 09 — Image Resize is implementation-complete but remains **PARTIAL / WAIT_FOR_EXTERNAL** until real iOS Safari and Android Chrome physical-device memory/Files acceptance is recorded. It must not be counted as public Gold before those receipts exist.
 
-There is currently **no unblocked software implementation ticket**. Ticket 11 is blocked only by the physical-Gold completion of Ticket 09. Tickets 12 and 13 remain transitively blocked behind Ticket 11.
+**Ticket 11 — Generated onboarding + packs — is implemented and browser-accepted.** The onboarding flow runs end to end against the real build: 4 stages, no blocking modal, an interrupted first task stays usable, and the saved starter set installs into the local Workbench. Proof: `quality/receipts/onboarding/browser-acceptance.json` (11 checks, PASS). The starter set is 10 tools, and every one of them is Gold-certified — verified against the certification index, not asserted.
 
-Machine gate: `npm run frontier:v1:require-gold` must PASS before Ticket 11 enters implementation. The non-strict `npm run frontier:v1` command records the current state without pretending a blocker is success.
+**Ticket 12 — Falsification telemetry — is substantially built, with one real defect.** The privacy-safe schema, allowlisted adapter, explicit disclosed-validation-cohort gate, and experiment reporting all exist and are covered by `tests/telemetry.test.ts`. The defect: no shipped caller ever invokes `configureTelemetry`, so every tracked event currently resolves to the permanent no-op adapter, and the disclosed-cohort flag is never passed and no disclosure surface is rendered. Proof: `quality/receipts/telemetry/browser-acceptance.json`, which reports these three blockers rather than passing over them. Ticket 12 is therefore **BUILT, NOT SHIPPED**.
+
+**Ticket 13 — Release certification + validation deploy — the validator exists and runs; the receipts it demands do not all exist.** `scripts/validate-release.ts` checks tool surface, Cloudflare static assets, public metadata, sitemap/robots, truthful claims, Gold receipt binding, browser evidence, physical-device evidence, and rollback. It currently reports FAIL, and that is the correct output. Proof: `quality/receipts/release/validation.json`.
+
+There is currently **no unblocked software implementation ticket** in the original v1 gate sense, because Ticket 09's physical acceptance is external. The 200-tool expansion tranche proceeded in parallel and is integrated.
+
+Machine gate: `npm run frontier:v1:require-gold` was the original 15-tool gate. It is now superseded as a *ticket-entry* gate by the 200-tool catalog, but it is retained and still reports honestly. Catalog size today is **200 tools**, not 15: 14 GOLD, 1 PARTIAL (Image Resize, awaiting physical receipts), 185 IMPLEMENTED_UNVERIFIED. The public catalog-size claim counts Gold-certified tools only.
 
 External acceptance frontier:
 
@@ -70,6 +76,9 @@ Recent completion evidence:
 - Ticket 05 — `2f36c28`.
 - Ticket 06 — `49cad5a` + lazy-bundle receipt fix `d3d7dca`.
 - Ticket 07 — `7914de0`.
+- Ticket 11 — onboarding browser acceptance PASS, 11 checks (`quality/receipts/onboarding/browser-acceptance.json`).
+- Ticket 12 — telemetry acceptance ran and reports 3 real blockers (`quality/receipts/telemetry/browser-acceptance.json`).
+- Ticket 13 — release validator runs and reports FAIL against real, unfabricated external gaps (`quality/receipts/release/validation.json`).
 
 ## Acceptance-criteria coverage
 

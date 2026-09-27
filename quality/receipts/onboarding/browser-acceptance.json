@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "kind": "browser-acceptance",
+  "subject": "onboarding",
+  "generatedBy": "scripts/acceptance-onboarding.mjs",
+  "revision": "155c4cd1413031d6e66913fb02cda35673dfef92",
+  "status": "PASS",
+  "browser": "chrome",
+  "viewport": {
+    "width": 1280,
+    "height": 900,
+    "mobileWidth": 390
+  },
+  "checks": [
+    {
+      "id": "no-blocking-modal",
+      "description": "No onboarding dialog blocks arrival",
+      "status": "PASS",
+      "observed": "no dialog element present on load"
+    },
+    {
+      "id": "first-task-uninterrupted",
+      "description": "A tool job stays fully usable without ever completing onboarding",
+      "status": "PASS",
+      "observed": "tool route hydrated with no onboarding interstitial"
+    },
+    {
+      "id": "context-required",
+      "description": "Stage 1 cannot advance until a work context is chosen",
+      "status": "PASS",
+      "observed": "Continue stayed disabled until a context was selected"
+    },
+    {
+      "id": "jobs-stage-traversed",
+      "description": "The recurring-jobs stage is reachable and does not trap the user",
+      "status": "PASS",
+      "observed": "advanced to safe defaults without selecting a job"
+    },
+    {
+      "id": "starter-set-bounded",
+      "description": "The starter review offers a small, distinct, editable set",
+      "status": "PASS",
+      "observed": "10 starter tool(s): business-day, timezone-overlap, rate-converter, margin-markup, list-compare, text-diff, file-hash, csv-cleaner, csv-dedupe, csv-column-map"
+    },
+    {
+      "id": "starter-tools-gold",
+      "description": "Every starter tool is Gold-certified before it can be a default surface",
+      "status": "PASS",
+      "observed": "all 10 starter tool(s) are Gold in the certification index"
+    },
+    {
+      "id": "starter-persisted-locally",
+      "description": "The saved starter set is installed in the local Workbench",
+      "status": "PASS",
+      "observed": "1 installed tool row(s) after save"
+    },
+    {
+      "id": "profile-default-reused",
+      "description": "Onboarding defaults are reused by installed tools instead of being re-asked",
+      "status": "PASS",
+      "observed": "an installed tool displays 'locale: it-IT from Work Profile'"
+    },
+    {
+      "id": "no-off-origin-traffic",
+      "description": "Onboarding performs no off-origin network request",
+      "status": "PASS",
+      "observed": "every observed request stayed on the local static origin"
+    },
+    {
+      "id": "no-page-errors",
+      "description": "Onboarding runs without uncaught page errors",
+      "status": "PASS",
+      "observed": "none observed"
+    },
+    {
+      "id": "mobile-usable",
+      "description": "The post-onboarding Workbench is usable at 390px",
+      "status": "PASS",
+      "observed": "no horizontal overflow at 390px"
+    }
+  ],
+  "note": "Local static browser acceptance. No physical-device or deployment evidence is produced here."
+}
