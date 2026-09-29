@@ -320,6 +320,7 @@ const SIBLING_ACCEPTANCE = [
   { command: "node scripts/acceptance-text-research.mjs", script: "scripts/acceptance-text-research.mjs" },
   { command: "node scripts/acceptance-campaign-url.mjs", script: "scripts/acceptance-campaign-url.mjs" },
   { command: "node scripts/acceptance-client-time-math.mjs", script: "scripts/acceptance-client-time-math.mjs" },
+  { command: "npm run acceptance:business-math", script: "scripts/acceptance-business-math.mjs" },
   { command: "node scripts/acceptance-search-library.mjs", script: "scripts/acceptance-search-library.mjs" },
   { command: "node scripts/acceptance-table-handoff.mjs", script: "scripts/acceptance-table-handoff.mjs" },
   { command: "node scripts/acceptance-workbench.mjs", script: "scripts/acceptance-workbench.mjs" },

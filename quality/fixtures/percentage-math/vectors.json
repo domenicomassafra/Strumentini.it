@@ -22,5 +22,19 @@
       "whole": "0",
       "expected": "typed-undefined-error"
     }
+  ],
+  "tool_vectors": [
+    {
+      "tool_id": "discount-impact",
+      "operation": "discount-impact",
+      "input": { "originalPrice": "100", "discountPercent": "10", "units": "100" },
+      "expected": { "discountedUnitPrice": "90.00", "amountSavedPerUnit": "10.00", "lostRevenue": "1000.00" }
+    },
+    {
+      "tool_id": "percentage-helper",
+      "operation": "percentage-helper",
+      "input": { "base": "100", "ratePercent": "20", "mode": "add" },
+      "expected": { "percentageAmount": "20.00", "result": "20.00", "total": "120.00", "net": "100.00" }
+    }
   ]
 }

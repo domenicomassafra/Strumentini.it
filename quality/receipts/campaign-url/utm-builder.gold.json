@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "fd21d9c1463dff0fe5f31383229a3a71a7edac79",
-  "sourceFingerprint": "7d24b146aa5f6fe768e6ef9a7d47dd5770e00595b93bece8a45cf28ed60f1b38",
+  "revision": "6b8793f17dc5749fee9e3f750931611ba1fc0797",
+  "sourceFingerprint": "6dba420afef72dca92add941d78cb10920943c78e52f395c9102767a9b31d64e",
   "toolId": "utm-builder",
   "runtime": {
     "location": "LOCAL",

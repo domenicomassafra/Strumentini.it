@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   calculateBreakEven,
@@ -15,7 +16,9 @@ import {
   generateInvoiceNumber,
   grossUpForFee,
   planCapacity,
+  runBusinessOperation,
   validateInvoiceMath,
+  type BusinessOperation,
 } from "../src/engines/business-math";
 import marginMarkupModule from "../src/tools/margin-markup/module";
 import rateConverterModule from "../src/tools/rate-converter/module";
@@ -48,11 +51,37 @@ const context: ToolExecutionContext = {
   },
 };
 
+interface BusinessGoldVector {
+  readonly tool_id: string;
+  readonly operation: BusinessOperation;
+  readonly input: Record<string, unknown>;
+  readonly expected: Record<string, unknown>;
+}
+
+function goldVectors(path: string): BusinessGoldVector[] {
+  const value = JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8")) as { tool_vectors?: BusinessGoldVector[] };
+  return value.tool_vectors ?? [];
+}
+
+const independentGoldVectors = [
+  ...goldVectors("../quality/fixtures/business-math/vectors.json"),
+  ...goldVectors("../quality/fixtures/percentage-math/vectors.json"),
+];
+
 function run<T>(module: { run: (input: unknown, context: ToolExecutionContext) => unknown }, input: unknown): T {
   return module.run(input, context) as T;
 }
 
 describe("business/independent-work deterministic engine", () => {
+  it("matches one independent literal Gold vector for every business-math tool", () => {
+    expect(independentGoldVectors).toHaveLength(16);
+    expect(new Set(independentGoldVectors.map((vector) => vector.tool_id)).size).toBe(16);
+    for (const vector of independentGoldVectors) {
+      const actual = runBusinessOperation(vector.operation, vector.input) as Record<string, unknown>;
+      for (const [key, expected] of Object.entries(vector.expected)) expect(actual[key], `${vector.tool_id}.${key}`).toEqual(expected);
+    }
+  });
+
   it("calculates effective hourly rate from net revenue", () => {
     expect(calculateEffectiveHourlyRate({ revenue: "1200", hours: "24", costs: "200" })).toMatchObject({
       effectiveHourlyRate: "41.67",

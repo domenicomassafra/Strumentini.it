@@ -49,7 +49,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
+          "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
           "status": "PASS"
         }
       ],
@@ -63,7 +63,7 @@
         {
           "dimension": "mobileA11y",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
+          "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
           "status": "PASS"
         }
       ],
@@ -77,7 +77,7 @@
         {
           "dimension": "lazyLoad",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
+          "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
           "status": "UNVERIFIED"
         },
         {
@@ -97,13 +97,13 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
+          "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
           "status": "PARTIAL"
         },
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "a4aa69ddd2032e4d5154c04a28e8b90a5ec107ed34fbc769b4c4ee7033432377",
+          "sha256": "c5a6d36209fdd20f74880bd817f5770e72598deeb47a4ea4a478944ab95428ee",
           "status": "PARTIAL"
         }
       ],
@@ -117,13 +117,13 @@
   },
   "summary": {
     "statusCounts": {
-      "GOLD": 14,
+      "GOLD": 30,
       "PARTIAL": 1,
-      "IMPLEMENTED_UNVERIFIED": 185
+      "IMPLEMENTED_UNVERIFIED": 169
     },
-    "certificationGoldCount": 14,
-    "releaseEligibleGoldCount": 14,
-    "releaseBlockedCount": 186,
+    "certificationGoldCount": 30,
+    "releaseEligibleGoldCount": 30,
+    "releaseBlockedCount": 170,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 200,
     "fixtureBoundCount": 200,
@@ -1013,10 +1013,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/break-even.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/break-even/manifest.ts",
@@ -1043,7 +1043,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -1062,7 +1062,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -1073,16 +1073,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -1091,15 +1112,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/break-even.gold.json",
+          "sha256": "60bc2b9a3751efbc8c2c46a08a30f2882080bf88a89d81f681f508c28ccd7759",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "bulk-domain-extractor",
@@ -1287,7 +1315,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
+            "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
             "status": "PASS"
           }
         ]
@@ -1298,7 +1326,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
+            "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
             "status": "PASS"
           }
         ]
@@ -1309,7 +1337,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
+            "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
             "status": "UNVERIFIED"
           },
           {
@@ -1331,13 +1359,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-day.gold.json",
-          "sha256": "3deb80af22ac66fddd02b8efe9edf6e42a7dbca4d84b006216a12ecee2cba5f2",
+          "sha256": "137532307cdd67f711adc0197e0d570e2aece48749dfe06d811d5e9794c29288",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
+          "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
           "status": "PASS"
         },
         {
@@ -1555,7 +1583,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/campaign-name.gold.json",
-          "sha256": "68827401cdd0c82e4916eb31cacefa553646abd639fe9706407ff1289caccc71",
+          "sha256": "e612a1efeaf7b27739c313d09103b27932bdd789b2dca2f3dcb3909693f868b1",
           "status": "PASS"
         },
         {
@@ -1685,10 +1713,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/capacity-planner.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/capacity-planner/manifest.ts",
@@ -1715,7 +1743,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -1734,7 +1762,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -1745,16 +1773,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -1763,15 +1812,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/capacity-planner.gold.json",
+          "sha256": "adc30a671aa62551dd2333ef0fdcae168cd8bb598cac0e407108f8e5926395f4",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "case-converter",
@@ -3387,7 +3443,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/csv-cleaner/gold.json",
-          "sha256": "4ba0e23a53e40bbdbfa34424a8d0c2dbc2da6e4e1e560be0a57ff3bef9fc53d4",
+          "sha256": "9f0fca648a8976aa7e10ac6c20252d5719a786fedf30895c92a1f97c8590e56c",
           "status": "PASS"
         },
         {
@@ -3527,7 +3583,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-column-map.gold.json",
-          "sha256": "795ab2f18ba7c0d4c39e5ae7187187ba2d5868b733974092fcb23c24a1aa6790",
+          "sha256": "31ff9cccb035815c976cc6038b37ea1b354eb3d77c8421f1be32fff9d58dff54",
           "status": "PASS"
         },
         {
@@ -3871,7 +3927,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-dedupe.gold.json",
-          "sha256": "0b5716958306932f2abf26b57726c8c49294258578550475fad8fbe6500e84b8",
+          "sha256": "f59839cab38196e49149e11029b5cf7cb9ea71920dbee46398368be6d178254b",
           "status": "PASS"
         },
         {
@@ -4863,10 +4919,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/currency-scenario.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/currency-scenario/manifest.ts",
@@ -4893,7 +4949,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -4912,7 +4968,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -4923,16 +4979,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -4941,15 +5018,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/currency-scenario.gold.json",
+          "sha256": "9f15d2107a62f13b5adb138b3103ea2acfe0c863978fc7a880a3c03da61d66a9",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "date-difference",
@@ -5344,10 +5428,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/discount-impact.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/discount-impact/manifest.ts",
@@ -5374,7 +5458,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -5392,7 +5476,7 @@
           "truthSources": [
             "fixture-policy"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -5403,16 +5487,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -5421,15 +5526,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/discount-impact.gold.json",
+          "sha256": "cf6732c29d8599ac8236233acd278e08431fd239ba6361e2fb0c4ddb4b3658f4",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "document-handoff-manifest",
@@ -5649,7 +5761,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/doi-isbn-normalizer.gold.json",
-          "sha256": "335706330ea6d5757852b8d69d63877eea4f88f0efa086855e62e38cd82ecb03",
+          "sha256": "2994ff61d002ab83bfe399fc48ae953445e67781c67506d21bb8544cc57e3c54",
           "status": "PASS"
         },
         {
@@ -6465,10 +6577,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/effective-hourly-rate.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/effective-hourly-rate/manifest.ts",
@@ -6495,7 +6607,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -6514,7 +6626,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -6525,16 +6637,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -6543,15 +6676,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/effective-hourly-rate.gold.json",
+          "sha256": "458041776f79d7462525e1380e892f43f7f83d5ade12720ad6615fcb340bad27",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "email-domain-extractor",
@@ -7190,7 +7330,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/file-hash/gold.json",
-          "sha256": "ef6233971c25a7a961505cc190c7c1a4cc7e94a3af72693bca990e4c43486252",
+          "sha256": "d76777c74467d94a72cc9cbeb4b8ba7f556ae715bf04717d536f7e6319c41994",
           "status": "PASS"
         },
         {
@@ -9388,7 +9528,7 @@
           {
             "dimension": "physicalDevice",
             "path": "quality/receipts/image-resize/certification.json",
-            "sha256": "a4aa69ddd2032e4d5154c04a28e8b90a5ec107ed34fbc769b4c4ee7033432377",
+            "sha256": "c5a6d36209fdd20f74880bd817f5770e72598deeb47a4ea4a478944ab95428ee",
             "status": "PARTIAL"
           }
         ]
@@ -9397,7 +9537,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "a4aa69ddd2032e4d5154c04a28e8b90a5ec107ed34fbc769b4c4ee7033432377",
+          "sha256": "c5a6d36209fdd20f74880bd817f5770e72598deeb47a4ea4a478944ab95428ee",
           "status": "PARTIAL"
         },
         {
@@ -9646,10 +9786,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/invoice-math-validator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/invoice-math-validator/manifest.ts",
@@ -9676,7 +9816,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -9695,7 +9835,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -9706,16 +9846,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -9724,15 +9885,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/invoice-math-validator.gold.json",
+          "sha256": "d23faab2a3d6ab70ab7de6d4cad38a245e75f4e3d2c7326e5057f28f2cfcfacc",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "invoice-number-generator",
@@ -9741,10 +9909,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/invoice-number-generator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/invoice-number-generator/manifest.ts",
@@ -9771,7 +9939,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -9790,7 +9958,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -9801,16 +9969,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -9819,15 +10008,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/invoice-number-generator.gold.json",
+          "sha256": "3f069d58be036c74e877dcaf7e17409fbb79e339416cd9df0725ac18a83d98a0",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "isbn-validator-converter",
@@ -10524,10 +10720,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "R",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/late-payment-interest.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/late-payment-interest/manifest.ts",
@@ -10554,7 +10750,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -10573,7 +10769,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -10584,16 +10780,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -10602,15 +10819,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/late-payment-interest.gold.json",
+          "sha256": "425bd9f8e8028b5bead0b14be103f7271368598cc46511d22f6d34df26705e59",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "line-deduplicator",
@@ -10943,7 +11167,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/list-compare.gold.json",
-          "sha256": "cbb64ae00acada412402abb1e95b14bd9c3a7c99f41c78ba893f97ec7d215fb8",
+          "sha256": "b2a2a0867268c2d79498ec10d5d5c90d9480344d4e73110be963d2191ac7d99a",
           "status": "PASS"
         },
         {
@@ -11363,7 +11587,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/margin-markup.gold.json",
-          "sha256": "4d3007d757c57bb3f10216e51d9b748e5b913316d76cab4de093a9010627461f",
+          "sha256": "82d2992044a7d692e41bbd8ab164cdc6d78b5ca206048f23e88d8bdc7eee9fc3",
           "status": "PASS"
         },
         {
@@ -12391,10 +12615,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/payment-fee-gross-up.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/payment-fee-gross-up/manifest.ts",
@@ -12421,7 +12645,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -12440,7 +12664,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -12451,16 +12675,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -12469,15 +12714,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/payment-fee-gross-up.gold.json",
+          "sha256": "38a740b89c5433a90f3302cebf511f4b945d3a68fa5d5911bcdb79c5bec94c09",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-compare-lite",
@@ -14347,10 +14599,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "R",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/percentage-helper.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/percentage-helper/manifest.ts",
@@ -14377,7 +14629,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -14395,7 +14647,7 @@
           "truthSources": [
             "fixture-policy"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -14406,16 +14658,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -14424,15 +14697,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/percentage-helper.gold.json",
+          "sha256": "1bb95043cb2ce38fc304cded176ded5c8b8bc84a91847b1acff197b16c99df7a",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "perceptual-duplicate-finder",
@@ -14659,10 +14939,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/project-profitability.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/project-profitability/manifest.ts",
@@ -14689,7 +14969,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -14708,7 +14988,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -14719,16 +14999,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -14737,15 +15038,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/project-profitability.gold.json",
+          "sha256": "9fcf397fe580c547a2789604de3f8f7f7f369adddfea7310c72efe484392b1ca",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "proposal-budget-checker",
@@ -14754,10 +15062,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/proposal-budget-checker.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/proposal-budget-checker/manifest.ts",
@@ -14784,7 +15092,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -14803,7 +15111,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -14814,16 +15122,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -14832,15 +15161,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/proposal-budget-checker.gold.json",
+          "sha256": "06fec24f22460332e461aa238715af1ac212a5b5676851007bbd9ca36df4f475",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "public-holiday-lookup",
@@ -15628,7 +15964,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/rate-converter.gold.json",
-          "sha256": "7033bd938d8a8c41d6f9e8547da49502e0ba40f8abe3377487764b6e6dd14569",
+          "sha256": "9e152c508b373aac280b10120e6b54bc7f5f2e648ec5d2266838d1f30db5445c",
           "status": "PASS"
         },
         {
@@ -16433,10 +16769,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/retainer-capacity.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/retainer-capacity/manifest.ts",
@@ -16463,7 +16799,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -16482,7 +16818,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -16493,16 +16829,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -16511,15 +16868,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/retainer-capacity.gold.json",
+          "sha256": "393c8f5ee154a971ecfb014b4e3ad30ad4f95d05a6371eb09e8235d553317b6d",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "ris-bibtex-converter",
@@ -16940,10 +17304,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/scope-creep-cost.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/scope-creep-cost/manifest.ts",
@@ -16970,7 +17334,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -16989,7 +17353,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -17000,16 +17364,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -17018,15 +17403,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/scope-creep-cost.gold.json",
+          "sha256": "71340047d29439f45158f4149960b70c367263352d2874b7ea89afb82d96c6bb",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "screenshot-border-background-helper",
@@ -17645,10 +18037,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/target-income-rate.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/target-income-rate/manifest.ts",
@@ -17675,7 +18067,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -17694,7 +18086,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -17705,16 +18097,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -17723,15 +18136,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/target-income-rate.gold.json",
+          "sha256": "a9148b6e221706ecdd9616a46ca1412b0b2619670af2c9ee125756201c560540",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "text-diff",
@@ -17857,7 +18277,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/text-diff.gold.json",
-          "sha256": "0e02eae71b38fe037ce959cc4ee44cc17a4b0638b49ea0717341f743fdab615b",
+          "sha256": "ff3793d672c929c93e242f6eedfdd97d421bceb96115753c62515acc03137050",
           "status": "PASS"
         },
         {
@@ -18376,7 +18796,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/timezone-overlap.gold.json",
-          "sha256": "29515c163df69030dd773b6c2651ef74f77150f700d5083eb94533ef90bc010b",
+          "sha256": "7f674aa23c85f95022ac5ac76705855d4a35507e277819855b10c858a8c65e47",
           "status": "PASS"
         },
         {
@@ -18606,7 +19026,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/tracking-cleaner.gold.json",
-          "sha256": "62a464a4faa0564e1fb0762aee0a3c571bc9a59739b355bf6b7254bc508210ad",
+          "sha256": "3776b469d444ab588bdb1a34ff6777c0e1a2f49394a460abb2c413f1d3e7d787",
           "status": "PASS"
         },
         {
@@ -19317,10 +19737,10 @@
       "category": "business-math",
       "engine": "business-math",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/business-math/utilization-calculator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/utilization-calculator/manifest.ts",
@@ -19347,7 +19767,7 @@
           "fixture-policy",
           "strumentiutili-lane05"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -19366,7 +19786,7 @@
             "fixture-policy",
             "strumentiutili-lane05"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -19377,16 +19797,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/business-math/browser-acceptance.json",
+            "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -19395,15 +19836,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/business-math/utilization-calculator.gold.json",
+          "sha256": "488a3a9f55daa9c4a734bf96fc4bf404bf651860477c2b99adf03d94611f7d46",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/business-math/browser-acceptance.json",
+          "sha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "utm-builder",
@@ -19522,7 +19970,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/utm-builder.gold.json",
-          "sha256": "9b3b17323d0cf6135cf67ee204791442cf7f451c395cbd9aa7941ebc3165ff97",
+          "sha256": "c48bf066b6bfd4f77ac7741e00e1a88a7f288d836ba8c6e4177d6a18dc41644f",
           "status": "PASS"
         },
         {

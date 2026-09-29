@@ -243,6 +243,12 @@ const familyTestFiles: Readonly<Record<string, readonly string[]>> = {
   "file-hash": ["tests/file-hash-engine.test.ts"],
 };
 
+const businessMathEvidence = {
+  locality: ["quality/receipts/business-math/browser-acceptance.json"],
+  mobileA11y: ["quality/receipts/business-math/browser-acceptance.json"],
+  lazyLoad: ["quality/receipts/business-math/browser-acceptance.json"],
+} as const;
+
 const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimension, readonly string[]>>>> = {
   "business-day": {
     locality: ["quality/receipts/browser-performance/fresh-browser-matrix.json"],
@@ -328,6 +334,22 @@ const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimensio
     lazyLoad: ["quality/receipts/image-resize/bundle.json"],
     physicalDevice: ["quality/receipts/image-resize/certification.json"],
   },
+  "effective-hourly-rate": businessMathEvidence,
+  "target-income-rate": businessMathEvidence,
+  "utilization-calculator": businessMathEvidence,
+  "capacity-planner": businessMathEvidence,
+  "retainer-capacity": businessMathEvidence,
+  "scope-creep-cost": businessMathEvidence,
+  "break-even": businessMathEvidence,
+  "payment-fee-gross-up": businessMathEvidence,
+  "late-payment-interest": businessMathEvidence,
+  "discount-impact": businessMathEvidence,
+  "proposal-budget-checker": businessMathEvidence,
+  "project-profitability": businessMathEvidence,
+  "invoice-number-generator": businessMathEvidence,
+  "invoice-math-validator": businessMathEvidence,
+  "percentage-helper": businessMathEvidence,
+  "currency-scenario": businessMathEvidence,
 };
 
 const globalEvidencePaths = {

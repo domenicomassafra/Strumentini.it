@@ -46,5 +46,91 @@
       "expected": "typed-undefined-or-explicit-policy-result"
     }
   ],
+  "tool_vectors": [
+    {
+      "tool_id": "effective-hourly-rate",
+      "operation": "effective-hourly-rate",
+      "input": { "revenue": "1200", "hours": "24", "costs": "200" },
+      "expected": { "profit": "1000.00", "effectiveHourlyRate": "41.67", "revenueHourlyRate": "50.00" }
+    },
+    {
+      "tool_id": "target-income-rate",
+      "operation": "target-income-rate",
+      "input": { "targetIncome": "60000", "expenses": "5000", "billableHours": "1200", "nonBillableHours": "200" },
+      "expected": { "requiredHourlyRate": "54.17", "requiredDailyRate": "433.33", "allHoursRate": "46.43" }
+    },
+    {
+      "tool_id": "utilization-calculator",
+      "operation": "utilization",
+      "input": { "availableHours": "160", "billableHours": "120" },
+      "expected": { "unbilledHours": "40", "utilizationPercent": "75.00" }
+    },
+    {
+      "tool_id": "capacity-planner",
+      "operation": "capacity-planner",
+      "input": { "availableHours": "160", "targetUtilizationPercent": "80", "reservedHours": "16" },
+      "expected": { "plannedBillableHours": "128.00", "availableForDelivery": "112.00", "overallocated": false }
+    },
+    {
+      "tool_id": "retainer-capacity",
+      "operation": "retainer-capacity",
+      "input": { "capacityHours": "120", "deliveryHoursPerClient": "20", "retainerAmount": "2000", "monthlyCosts": "0", "targetMarginPercent": "0" },
+      "expected": { "clientCapacity": "6", "capacityRemainderHours": "0.00", "contributionPerClientHour": "100.00" }
+    },
+    {
+      "tool_id": "scope-creep-cost",
+      "operation": "scope-creep-cost",
+      "input": { "hourlyRate": "100", "originalHours": "40", "additionalHours": "5", "originalBudget": "4000" },
+      "expected": { "additionalCost": "500.00", "revisedCost": "4500.00", "budgetVariance": "-500.00" }
+    },
+    {
+      "tool_id": "break-even",
+      "operation": "break-even",
+      "input": { "fixedCosts": "1000", "unitPrice": "25", "unitVariableCost": "15" },
+      "expected": { "contributionPerUnit": "10.00", "breakEvenUnits": "100", "breakEvenRevenue": "2500.00" }
+    },
+    {
+      "tool_id": "payment-fee-gross-up",
+      "operation": "payment-fee-gross-up",
+      "input": { "targetNet": "100", "feePercent": "3" },
+      "expected": { "gross": "103.09", "fee": "3.09", "net": "100.00" }
+    },
+    {
+      "tool_id": "late-payment-interest",
+      "operation": "late-payment-interest",
+      "input": { "principal": "1000", "annualRatePercent": "12", "daysLate": "30", "dayCountBasis": 365 },
+      "expected": { "interest": "9.86", "totalDue": "1009.86" }
+    },
+    {
+      "tool_id": "proposal-budget-checker",
+      "operation": "proposal-budget",
+      "input": { "quotedPrice": "10000", "estimatedHours": "80", "hourlyRate": "100", "directCosts": "500", "contingencyPercent": "10", "targetMarginPercent": "30" },
+      "expected": { "totalCost": "9300.00", "profit": "700.00", "requiredPriceForTargetMargin": "13285.71", "meetsTargetMargin": false }
+    },
+    {
+      "tool_id": "project-profitability",
+      "operation": "project-profitability",
+      "input": { "revenue": "10000", "fixedCosts": "1000", "hours": "80", "hourlyCost": "50" },
+      "expected": { "totalCost": "5000.00", "profit": "5000.00", "marginPercent": "50.00", "effectiveHourlyRate": "125.00" }
+    },
+    {
+      "tool_id": "invoice-number-generator",
+      "operation": "invoice-number",
+      "input": { "prefix": "inv", "year": "2026", "sequence": "7" },
+      "expected": { "sequence": "0007", "invoiceNumber": "INV-2026-0007", "padding": 4 }
+    },
+    {
+      "tool_id": "invoice-math-validator",
+      "operation": "invoice-math",
+      "input": { "subtotal": "100", "taxRatePercent": "20", "total": "120" },
+      "expected": { "taxAmount": "20.00", "expectedTotal": "120.00", "difference": "0.00", "valid": true }
+    },
+    {
+      "tool_id": "currency-scenario",
+      "operation": "currency-scenario",
+      "input": { "amount": "100", "rate": "1.2", "fromCurrency": "EUR", "toCurrency": "USD" },
+      "expected": { "convertedAmount": "120.00", "inverseRate": "0.83333333", "fromCurrency": "EUR", "toCurrency": "USD" }
+    }
+  ],
   "policy": "Use decimal arithmetic and do not round intermediate results unless a tool manifest explicitly states otherwise."
 }

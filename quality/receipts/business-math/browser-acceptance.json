@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "effective-hourly-rate",
+    "target-income-rate",
+    "utilization-calculator",
+    "capacity-planner",
+    "retainer-capacity",
+    "scope-creep-cost",
+    "break-even",
+    "payment-fee-gross-up",
+    "late-payment-interest",
+    "discount-impact",
+    "proposal-budget-checker",
+    "project-profitability",
+    "invoice-number-generator",
+    "invoice-math-validator",
+    "percentage-helper",
+    "currency-scenario"
+  ],
+  "routesChecked": 16,
+  "keyboard": "every submit action exercised with Enter",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObservedFor": [
+    "effective-hourly-rate",
+    "target-income-rate",
+    "utilization-calculator",
+    "capacity-planner",
+    "retainer-capacity",
+    "scope-creep-cost",
+    "break-even",
+    "payment-fee-gross-up",
+    "late-payment-interest",
+    "discount-impact",
+    "proposal-budget-checker",
+    "project-profitability",
+    "invoice-number-generator",
+    "invoice-math-validator",
+    "percentage-helper",
+    "currency-scenario"
+  ],
+  "results": [
+    {
+      "toolId": "effective-hourly-rate",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "target-income-rate",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "utilization-calculator",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "capacity-planner",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "retainer-capacity",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "scope-creep-cost",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "break-even",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "payment-fee-gross-up",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "late-payment-interest",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "discount-impact",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "proposal-budget-checker",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "project-profitability",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "invoice-number-generator",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "invoice-math-validator",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "percentage-helper",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "currency-scenario",
+      "taskRequestCount": 2,
+      "lazyScriptCount": 2,
+      "horizontalOverflow": false
+    }
+  ]
+}
