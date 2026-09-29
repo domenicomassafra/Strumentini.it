@@ -30,6 +30,7 @@ export interface ToolCertificationReceipt {
   readonly identities?: Readonly<Record<string, string>>;
   readonly goldEligible?: boolean;
   readonly revision?: string;
+  readonly sourceFingerprint?: string;
 }
 
 export interface PublicMetadataSurface {
@@ -82,6 +83,7 @@ export interface ReleaseValidationInput {
   readonly goldReceipts?: readonly ToolCertificationReceipt[];
   readonly evidence?: ReleaseEvidence;
   readonly revision?: string;
+  readonly sourceFingerprint?: string;
   readonly workingTreeDirty?: boolean;
 }
 
@@ -476,6 +478,7 @@ export function validateGoldReceipts(
   catalog: readonly ReleaseCatalogEntry[],
   receipts: readonly ToolCertificationReceipt[],
   revision?: string,
+  sourceFingerprint?: string,
 ): ReleaseFinding[] {
   const findings: ReleaseFinding[] = [];
   const byId = new Map<string, ToolCertificationReceipt[]>();
@@ -487,7 +490,8 @@ export function validateGoldReceipts(
   const missing: string[] = [];
   const duplicate: string[] = [];
   const notGold: string[] = [];
-  const stale: string[] = [];
+  const sourceMismatch: string[] = [];
+  const sourceUnbound: string[] = [];
   const unbound: string[] = [];
   const weakEvidence: string[] = [];
   for (const entry of catalog) {
@@ -498,24 +502,28 @@ export function validateGoldReceipts(
     if (receipt !== undefined && (receipt.status !== "GOLD" || receipt.goldEligible === false)) notGold.push(entry.id);
     if (receipt !== undefined && (receipt.schemaVersion !== 1 || receipt.runtime === undefined || (receipt.oracleEntryId === undefined && (receipt.oracleEntryIds === undefined || receipt.oracleEntryIds.length === 0)) || receipt.fixtureFamilies === undefined || receipt.fixtureFamilies.length === 0 || receipt.identities === undefined || Object.keys(receipt.identities).length === 0)) weakEvidence.push(entry.id);
     if (receipt !== undefined && revision !== undefined && receipt.revision === undefined) unbound.push(entry.id);
-    if (receipt?.revision !== undefined && revision !== undefined && receipt.revision !== revision) stale.push(entry.id);
+    if (receipt !== undefined && sourceFingerprint !== undefined && receipt.sourceFingerprint === undefined) sourceUnbound.push(entry.id);
+    if (receipt?.sourceFingerprint !== undefined && sourceFingerprint !== undefined && receipt.sourceFingerprint !== sourceFingerprint) sourceMismatch.push(entry.id);
   }
   if (missing.length > 0) findings.push(finding("GOLD_RECEIPT_MISSING", "blocker", `${missing.length} tool(s) have no certification receipt`, "quality/receipts"));
   if (duplicate.length > 0) findings.push(finding("GOLD_RECEIPT_DUPLICATE", "error", `${duplicate.length} tool(s) have duplicate certification receipts`, "quality/receipts"));
   if (notGold.length > 0) findings.push(finding("GOLD_RECEIPT_NOT_GOLD", "blocker", `${notGold.length} tool receipt(s) are not Gold`, "quality/receipts"));
   if (weakEvidence.length > 0) findings.push(finding("GOLD_RECEIPT_EVIDENCE_MISSING", "blocker", `${weakEvidence.length} Gold receipt(s) lack required certification evidence`, "quality/receipts"));
   if (unbound.length > 0) findings.push(finding("GOLD_RECEIPT_UNBOUND", "blocker", `${unbound.length} Gold receipt(s) do not identify the current revision`, "quality/receipts"));
-  if (stale.length > 0) findings.push(finding("GOLD_RECEIPT_STALE", "blocker", `${stale.length} tool receipt(s) target another revision`, "quality/receipts"));
+  if (sourceUnbound.length > 0) findings.push(finding("GOLD_RECEIPT_SOURCE_UNBOUND", "blocker", `${sourceUnbound.length} Gold receipt(s) do not identify the certified source fingerprint`, "quality/receipts"));
+  if (sourceMismatch.length > 0) findings.push(finding("GOLD_RECEIPT_SOURCE_STALE", "blocker", `${sourceMismatch.length} tool receipt(s) target different source content`, "quality/receipts"));
   return findings;
 }
 
-function browserFindings(value: unknown, revision: string | undefined): ReleaseFinding[] {
+function browserFindings(value: unknown, sourceFingerprint: string | undefined): ReleaseFinding[] {
   const record = asRecord(value);
   if (record === undefined) return [finding("BROWSER_EVIDENCE_MISSING", "blocker", "fresh browser evidence is missing", "quality/receipts/browser-performance/fresh-browser-matrix.json")];
   const findings: ReleaseFinding[] = [];
   const receiptRevision = asString(record.revision);
   if (receiptRevision === undefined) findings.push(finding("BROWSER_EVIDENCE_REVISION", "blocker", "browser evidence does not identify a revision", "quality/receipts/browser-performance/fresh-browser-matrix.json"));
-  else if (revision !== undefined && receiptRevision !== revision) findings.push(finding("BROWSER_EVIDENCE_STALE", "blocker", "browser evidence targets another revision", "quality/receipts/browser-performance/fresh-browser-matrix.json"));
+  const receiptSourceFingerprint = asString(record.sourceFingerprint);
+  if (sourceFingerprint !== undefined && receiptSourceFingerprint === undefined) findings.push(finding("BROWSER_EVIDENCE_SOURCE_UNBOUND", "blocker", "browser evidence does not identify the certified source fingerprint", "quality/receipts/browser-performance/fresh-browser-matrix.json"));
+  else if (sourceFingerprint !== undefined && receiptSourceFingerprint !== sourceFingerprint) findings.push(finding("BROWSER_EVIDENCE_SOURCE_STALE", "blocker", "browser evidence targets different source content", "quality/receipts/browser-performance/fresh-browser-matrix.json"));
   const matrix = asRecord(record.browserMatrix);
   const requested = matrix === undefined ? undefined : matrix.requestedEngines;
   const requiredEngines = new Set(["chrome", "edge", "chromium", "firefox", "webkit"]);
@@ -533,7 +541,10 @@ function browserFindings(value: unknown, revision: string | undefined): ReleaseF
       if (name === undefined) findings.push(finding("BROWSER_ENGINE_MALFORMED", "blocker", "browser matrix entry has no engine name", "quality/receipts/browser-performance/fresh-browser-matrix.json"));
       else if (seenEngines.has(name)) findings.push(finding("BROWSER_ENGINE_DUPLICATE", "blocker", `browser engine appears more than once: ${name}`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
       else seenEngines.add(name);
-      if (asString(item.status) !== "PASS" || asString(item.classification) !== "observed") {
+      const status = asString(item.status);
+      const classification = asString(item.classification);
+      const supportedClassification = classification === "observed" || classification === "longtask-observer-unsupported";
+      if (status !== "PASS" || !supportedClassification) {
         findings.push(finding("BROWSER_ENGINE_UNPROVEN", "blocker", `browser engine evidence is ${asString(item.status) ?? "missing"}`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
         continue;
       }
@@ -545,7 +556,13 @@ function browserFindings(value: unknown, revision: string | undefined): ReleaseF
       const lazy = asRecord(item.lazy);
       if (lazy === undefined || !Array.isArray(lazy.observedEngineChunk) || lazy.observedEngineChunk.length === 0) findings.push(finding("BROWSER_LAZY_UNPROVEN", "blocker", `${name ?? "browser engine"} has no observed lazy engine chunk`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
       const longTasks = asRecord(item.longTasks);
-      if (longTasks === undefined || asString(longTasks.gate) !== "PASS") findings.push(finding("BROWSER_LONG_TASK_UNPROVEN", "blocker", `${name ?? "browser engine"} long-task gate is not PASS`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
+      const longTaskObserverSupported = longTasks?.observerSupported;
+      const longTaskGate = longTasks === undefined ? undefined : asString(longTasks.gate);
+      const longTaskEvidenceValid = longTasks !== undefined && (
+        (longTaskObserverSupported === true && longTaskGate === "PASS")
+        || (longTaskObserverSupported === false && longTaskGate === "UNSUPPORTED" && classification === "longtask-observer-unsupported")
+      );
+      if (!longTaskEvidenceValid) findings.push(finding("BROWSER_LONG_TASK_UNPROVEN", "blocker", `${name ?? "browser engine"} long-task evidence is not valid for this engine`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
       const network = asRecord(item.networkPrivacy);
       if (network === undefined || network.externalTaskRequests !== 0 || network.taskContentLeaks !== 0 || network.nonGetTaskRequests !== 0) findings.push(finding("BROWSER_NETWORK_UNPROVEN", "blocker", `${name ?? "browser engine"} network/privacy evidence is not clean`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
       if (asRecord(item.performance) === undefined) findings.push(finding("BROWSER_PERFORMANCE_MISSING", "blocker", `${name ?? "browser engine"} performance evidence is missing`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
@@ -573,8 +590,8 @@ function browserFindings(value: unknown, revision: string | undefined): ReleaseF
   return findings;
 }
 
-export function validateExternalEvidence(evidence: ReleaseEvidence, revision: string | undefined): ReleaseFinding[] {
-  const findings = browserFindings(evidence.browser, revision);
+export function validateExternalEvidence(evidence: ReleaseEvidence, revision: string | undefined, sourceFingerprint?: string): ReleaseFinding[] {
+  const findings = browserFindings(evidence.browser, sourceFingerprint);
   const targets = new Set<string>();
   for (const value of evidence.physicalDeviceReceipts) {
     const record = asRecord(value);
@@ -593,7 +610,8 @@ export function validateExternalEvidence(evidence: ReleaseEvidence, revision: st
     if ((asString(record.device) ?? "").trim().length < 2 || (asString(record.browser) ?? "").trim().length < 2 || record.route !== "/tools/image-resize/") findings.push(finding("PHYSICAL_DEVICE_IDENTITY", "blocker", `${target} physical receipt does not identify a real route/device/browser`, "quality/receipts/image-resize"));
     if ((target === "ios-safari" && !/safari/iu.test(asString(record.browser) ?? "")) || (target === "android-chrome" && !/chrome/iu.test(asString(record.browser) ?? ""))) findings.push(finding("PHYSICAL_DEVICE_BROWSER", "blocker", `${target} receipt browser does not match the required physical browser`, "quality/receipts/image-resize"));
     if (record.schemaVersion !== 1) findings.push(finding("PHYSICAL_DEVICE_SCHEMA", "blocker", `${target} physical receipt schemaVersion must be 1`, "quality/receipts/image-resize"));
-    if (revision !== undefined && asString(record.revision) !== revision) findings.push(finding("PHYSICAL_DEVICE_REVISION", "blocker", `${target} physical receipt does not identify the release revision`, "quality/receipts/image-resize"));
+    if (revision !== undefined && asString(record.revision) === undefined) findings.push(finding("PHYSICAL_DEVICE_REVISION", "blocker", `${target} physical receipt does not identify an observed source revision`, "quality/receipts/image-resize"));
+    if (sourceFingerprint !== undefined && asString(record.sourceFingerprint) !== sourceFingerprint) findings.push(finding("PHYSICAL_DEVICE_SOURCE_STALE", "blocker", `${target} physical receipt does not match the certified source content`, "quality/receipts/image-resize"));
     if (asString(record.observedAt) === undefined || !Number.isFinite(Date.parse(asString(record.observedAt) ?? ""))) findings.push(finding("PHYSICAL_DEVICE_TIMESTAMP", "blocker", `${target} physical receipt has no valid observedAt`, "quality/receipts/image-resize"));
     const checks = asRecord(record.checks);
     const requiredChecks = ["filesOrPhotosPicker", "resizeCompleted", "verifiedDownloadOpened", "noCrashOrReload", "mobileLayoutUsable", "boundaryPolicyCase"];
@@ -635,11 +653,12 @@ export function validateRelease(input: ReleaseValidationInput): ReleaseValidatio
     ...(input.sitemap === undefined ? [finding("PUBLIC_SITEMAP_NOT_RUN", "blocker", "sitemap validation was not run", "dist/sitemap.xml")] : validateSitemapXml(input.sitemap.xml, input.sitemap.expectedUrls, input.sitemap.path)),
     ...(input.robots === undefined ? [finding("PUBLIC_ROBOTS_NOT_RUN", "blocker", "robots validation was not run", "dist/robots.txt")] : validateRobotsTxt(input.robots.text, input.robots.expectedSitemapUrl, input.robots.path)),
     ...(input.staticAssets === undefined ? [finding("STATIC_ASSETS_NOT_RUN", "blocker", "static asset inventory was not checked", "dist")] : validateStaticAssetSurface(input.staticAssets, input.catalog)),
-    ...(input.goldReceipts === undefined ? [finding("GOLD_RECEIPTS_NOT_RUN", "blocker", "Gold receipt validation was not run", "quality/receipts")] : validateGoldReceipts(input.catalog, input.goldReceipts, input.revision)),
-    ...(input.evidence === undefined ? [finding("EXTERNAL_EVIDENCE_NOT_RUN", "blocker", "external evidence boundaries were not checked", "quality/receipts")] : validateExternalEvidence(input.evidence, input.revision)),
+    ...(input.goldReceipts === undefined ? [finding("GOLD_RECEIPTS_NOT_RUN", "blocker", "Gold receipt validation was not run", "quality/receipts")] : validateGoldReceipts(input.catalog, input.goldReceipts, input.revision, input.sourceFingerprint)),
+    ...(input.evidence === undefined ? [finding("EXTERNAL_EVIDENCE_NOT_RUN", "blocker", "external evidence boundaries were not checked", "quality/receipts")] : validateExternalEvidence(input.evidence, input.revision, input.sourceFingerprint)),
     ...rollbackFindings,
   ];
   if (input.revision === undefined || input.revision.length === 0 || input.revision === "unknown") findings.push(finding("RELEASE_REVISION_NOT_RUN", "blocker", "release revision was not identified", "git"));
+  if (input.sourceFingerprint === undefined || !/^[a-f0-9]{64}$/u.test(input.sourceFingerprint)) findings.push(finding("RELEASE_SOURCE_FINGERPRINT_NOT_RUN", "blocker", "release source fingerprint was not identified", "git"));
   if (input.workingTreeDirty === undefined) findings.push(finding("RELEASE_TREE_STATE_NOT_RUN", "blocker", "working-tree state was not checked", "git"));
   else if (input.workingTreeDirty) findings.push(finding("WORKTREE_DIRTY", "blocker", "release receipt was generated from a dirty working tree", "git"));
   const counts = {

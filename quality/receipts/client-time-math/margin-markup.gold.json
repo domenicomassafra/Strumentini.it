@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "155c4cd1413031d6e66913fb02cda35673dfef92",
+  "revision": "fd21d9c1463dff0fe5f31383229a3a71a7edac79",
+  "sourceFingerprint": "7d24b146aa5f6fe768e6ef9a7d47dd5770e00595b93bece8a45cf28ed60f1b38",
   "toolId": "margin-markup",
   "runtime": {
     "location": "LOCAL",
@@ -41,15 +42,15 @@
   "fixtureIndexSchemaVersion": 1,
   "oracleRegistrySchemaVersion": 1,
   "icuVersion": "78.3",
-  "tzVersion": "2026b",
+  "tzVersion": "2026a",
   "acceptance": {
     "browserMobileKeyboardLocalNetwork": "PASS",
     "lazySharedEngineBundle": "PASS"
   },
   "identities": {
     "engineSha256": "cea30253741c1a5cf26e3da9119f9d73d5660477be458f88ac7588f018a382db",
-    "fixtureIndexSha256": "cb85d2f639359880fde99f8bec5f89e7b73565ae2ae0adfb2a045e848e907543",
-    "oracleRegistrySha256": "020191228b8349cf9822be32d124c042cafbd39aeff6349aa8c3a1b91e3e041c",
+    "fixtureIndexSha256": "6e1281a901b063d256d5e7961307e99ee0af45cd948c3d8e0d6216b155173f2d",
+    "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
     "browserAcceptanceSha256": "1014aae9b07d4c511533f60e05d6ee260f8498ee2cbb97f164dae8e9654f5ad7",
     "bundleSha256": "3452468325c7167e0c4885b7deea2bb12871409544146a5827b76ec08e52dab7"
   }

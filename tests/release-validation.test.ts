@@ -153,6 +153,25 @@ describe("truthful claims and evidence boundaries", () => {
     expect(evidence.map((item) => item.code)).toEqual(expect.arrayContaining(["BROWSER_EVIDENCE_MISSING", "PHYSICAL_DEVICE_EVIDENCE_MISSING"]));
   });
 
+  it("binds versioned Gold evidence to source content rather than the containing commit SHA", () => {
+    const surface = toolSurface();
+    const certified = "a".repeat(64);
+    const current = "b".repeat(64);
+    const findings = validateGoldReceipts([surface.catalog[0]!], [{
+      toolId: "tool-0",
+      status: "GOLD",
+      schemaVersion: 1,
+      revision: "older-provenance-commit",
+      sourceFingerprint: certified,
+      runtime: { location: "LOCAL", network: "forbidden" },
+      oracleEntryId: "oracle-0",
+      fixtureFamilies: ["fixture-0"],
+      identities: { manifestSha256: "identity" },
+    }], "newer-containing-commit", current);
+    expect(findings.map((item) => item.code)).toContain("GOLD_RECEIPT_SOURCE_STALE");
+    expect(findings.map((item) => item.code)).not.toContain("GOLD_RECEIPT_STALE");
+  });
+
   it("rejects malformed browser entries and incomplete physical checks", () => {
     const evidence = validateExternalEvidence({
       browser: {
@@ -179,6 +198,49 @@ describe("truthful claims and evidence boundaries", () => {
       "PHYSICAL_DEVICE_CHECKS",
       "PHYSICAL_DEVICE_EVIDENCE_MISSING",
     ]));
+  });
+
+  it("accepts a passing browser when the Long Tasks API is genuinely unsupported", () => {
+    const sourceFingerprint = "a".repeat(64);
+    const makeEngine = (engine: string, longTaskSupport: boolean) => ({
+      engine,
+      status: "PASS",
+      classification: longTaskSupport ? "observed" : "longtask-observer-unsupported",
+      coreRoute: "PASS",
+      homeRoute: "PASS",
+      libraryRoute: "PASS",
+      mobile: { toolOverflow: false, homeOverflow: false, libraryOverflow: false },
+      lazy: { observedEngineChunk: ["module.test.js"] },
+      longTasks: {
+        observerSupported: longTaskSupport,
+        gate: longTaskSupport ? "PASS" : "UNSUPPORTED",
+      },
+      networkPrivacy: { externalTaskRequests: 0, taskContentLeaks: 0, nonGetTaskRequests: 0 },
+      performance: { ttfbMs: 1 },
+      consoleErrors: [],
+      pageErrors: [],
+      failures: [],
+    });
+    const findings = validateExternalEvidence({
+      browser: {
+        revision: "abc123",
+        sourceFingerprint,
+        browserMatrix: {
+          requestedEngines: [
+            makeEngine("chrome", true),
+            makeEngine("edge", true),
+            makeEngine("chromium", true),
+            makeEngine("firefox", false),
+            makeEngine("webkit", false),
+          ],
+        },
+        staticInspection: { bundleBaseline: { gate: "PASS" } },
+        freshAcceptance: [{ status: "PASS" }],
+      },
+      physicalDeviceReceipts: [],
+    }, "abc123", sourceFingerprint);
+    expect(findings.map((item) => item.code)).not.toContain("BROWSER_ENGINE_UNPROVEN");
+    expect(findings.map((item) => item.code)).not.toContain("BROWSER_LONG_TASK_UNPROVEN");
   });
 });
 

@@ -70,7 +70,13 @@ const engineMarker = "INVALID_WORKWEEK";
 const engineChunks = jsStats.filter((entry) => entry.text.includes(engineMarker));
 if (engineChunks.length === 0) throw new Error("No lazy Business Day engine chunk found");
 
-const initialScriptFiles = [...page.matchAll(/<script[^>]+src="([^"]+)"/gu)].map((match) => basename(match[1] ?? ""));
+const initialScriptFiles = [...new Set(
+  [...page.matchAll(/<(?:script|link)[^>]+(?:src|href)="([^"]+\.js[^"]*)"/gu)]
+    .map((match) => basename((match[1] ?? "").split("?")[0] ?? ""))
+    .filter(Boolean),
+)];
+const initialJsStats = jsStats.filter((entry) => initialScriptFiles.includes(entry.file));
+const initialJsBytes = initialJsStats.reduce((sum, entry) => sum + entry.bytes, 0);
 for (const engineChunk of engineChunks) {
   if (initialScriptFiles.includes(engineChunk.file)) {
     throw new Error(`Business Day engine is eagerly referenced by HTML: ${engineChunk.file}`);
@@ -84,6 +90,7 @@ const baseline = {
   jsAssetCount: jsStats.length,
   totalJsBytes: jsStats.reduce((sum, entry) => sum + entry.bytes, 0),
   initialScriptFiles,
+  initialJsBytes,
   businessDayEngineChunks: engineChunks.map(({ file, bytes }) => ({ file, bytes })),
   unrelatedToolChunks: [],
 };
@@ -99,7 +106,7 @@ if (updateBaseline) {
 
 console.log(
   `build inspection PASS: ${engineChunks.length} lazy Business Day chunk(s); ` +
-    `${baseline.jsAssetCount} JS asset(s), ${baseline.totalJsBytes} B total; ` +
+    `${baseline.jsAssetCount} JS asset(s), ${baseline.totalJsBytes} B total, ${baseline.initialJsBytes} B initial route JS; ` +
     `${htmlPages.length} unique metadata page(s); ` +
     `${discoveryUrlMode}; ` +
     `historical baseline ${updateBaseline ? "updated" : "preserved"}`,

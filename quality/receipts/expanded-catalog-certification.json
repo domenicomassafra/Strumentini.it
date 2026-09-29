@@ -49,7 +49,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
+          "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
           "status": "PASS"
         }
       ],
@@ -63,7 +63,7 @@
         {
           "dimension": "mobileA11y",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
+          "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
           "status": "PASS"
         }
       ],
@@ -77,7 +77,7 @@
         {
           "dimension": "lazyLoad",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
+          "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
           "status": "UNVERIFIED"
         },
         {
@@ -97,13 +97,13 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
+          "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
           "status": "PARTIAL"
         },
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "66afebc3da922c9513e7de400ef513d339802bd088e530d90326fe3a26ab0265",
+          "sha256": "a4aa69ddd2032e4d5154c04a28e8b90a5ec107ed34fbc769b4c4ee7033432377",
           "status": "PARTIAL"
         }
       ],
@@ -122,8 +122,8 @@
       "IMPLEMENTED_UNVERIFIED": 185
     },
     "certificationGoldCount": 14,
-    "releaseEligibleGoldCount": 1,
-    "releaseBlockedCount": 199,
+    "releaseEligibleGoldCount": 14,
+    "releaseBlockedCount": 186,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 200,
     "fixtureBoundCount": 200,
@@ -1214,8 +1214,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-day.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/business-day/manifest.ts",
@@ -1287,7 +1287,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
+            "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
             "status": "PASS"
           }
         ]
@@ -1298,7 +1298,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
+            "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
             "status": "PASS"
           }
         ]
@@ -1309,7 +1309,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
+            "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
             "status": "UNVERIFIED"
           },
           {
@@ -1331,13 +1331,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-day.gold.json",
-          "sha256": "4fd51dd990e1dbec623cde48772b234b0add9404e590d0477db01e36e6215711",
+          "sha256": "3deb80af22ac66fddd02b8efe9edf6e42a7dbca4d84b006216a12ecee2cba5f2",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "8c3e10c15473d112ae79ef4f9e3dd232477b94b8223524a8281acc1e83d9cfb6",
+          "sha256": "1903d71b6f7e5fee149aa44965a5bd79e1fdd3fe76790cf63e0a6120517e6f4a",
           "status": "PASS"
         },
         {
@@ -1347,10 +1347,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -1459,8 +1456,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/campaign-url/campaign-name.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/campaign-name/manifest.ts",
@@ -1558,7 +1555,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/campaign-name.gold.json",
-          "sha256": "5ae6a29190d09a3b6eb097c7e75bf9f70af1a447e4dac2332da5732e7d7025e0",
+          "sha256": "68827401cdd0c82e4916eb31cacefa553646abd639fe9706407ff1289caccc71",
           "status": "PASS"
         },
         {
@@ -1574,10 +1571,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -3393,7 +3387,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/csv-cleaner/gold.json",
-          "sha256": "41f1e673b0b88ad0f86f81a9c9812d292ef14815de2130030ca7216f81cc21fa",
+          "sha256": "4ba0e23a53e40bbdbfa34424a8d0c2dbc2da6e4e1e560be0a57ff3bef9fc53d4",
           "status": "PASS"
         },
         {
@@ -3421,8 +3415,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/table-ops/csv-column-map.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-column-map/manifest.ts",
@@ -3533,7 +3527,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-column-map.gold.json",
-          "sha256": "1210dbf3337eeb223c4b4f5a0a594ec067bc8536296bf9c932b99ada02b59893",
+          "sha256": "795ab2f18ba7c0d4c39e5ae7187187ba2d5868b733974092fcb23c24a1aa6790",
           "status": "PASS"
         },
         {
@@ -3549,10 +3543,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -3768,8 +3759,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/table-ops/csv-dedupe.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-dedupe/manifest.ts",
@@ -3880,7 +3871,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-dedupe.gold.json",
-          "sha256": "0d6236ae8d916201edde00618f12df509a9e112d565cc181cc597f8345070336",
+          "sha256": "0b5716958306932f2abf26b57726c8c49294258578550475fad8fbe6500e84b8",
           "status": "PASS"
         },
         {
@@ -3896,10 +3887,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -5549,8 +5537,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-research/doi-isbn-normalizer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/doi-isbn-normalizer/manifest.ts",
@@ -5661,7 +5649,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/doi-isbn-normalizer.gold.json",
-          "sha256": "8996b81d7fbc337cfa3a56658b8224aedb8eca32cfb06f11cd3f2afa0afe2aff",
+          "sha256": "335706330ea6d5757852b8d69d63877eea4f88f0efa086855e62e38cd82ecb03",
           "status": "PASS"
         },
         {
@@ -5677,10 +5665,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -7094,8 +7079,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/file-hash/gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/file-hash/manifest.ts",
@@ -7205,7 +7190,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/file-hash/gold.json",
-          "sha256": "4da3207259a3f3de23d5cbe37c454e8d2def03db7c7ea98afb7d71a9b8110552",
+          "sha256": "ef6233971c25a7a961505cc190c7c1a4cc7e94a3af72693bca990e4c43486252",
           "status": "PASS"
         },
         {
@@ -7215,10 +7200,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -9406,7 +9388,7 @@
           {
             "dimension": "physicalDevice",
             "path": "quality/receipts/image-resize/certification.json",
-            "sha256": "66afebc3da922c9513e7de400ef513d339802bd088e530d90326fe3a26ab0265",
+            "sha256": "a4aa69ddd2032e4d5154c04a28e8b90a5ec107ed34fbc769b4c4ee7033432377",
             "status": "PARTIAL"
           }
         ]
@@ -9415,7 +9397,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "66afebc3da922c9513e7de400ef513d339802bd088e530d90326fe3a26ab0265",
+          "sha256": "a4aa69ddd2032e4d5154c04a28e8b90a5ec107ed34fbc769b4c4ee7033432377",
           "status": "PARTIAL"
         },
         {
@@ -9445,9 +9427,7 @@
       ],
       "blockers": [
         "CERTIFICATION_RECEIPT_NOT_GOLD",
-        "PHYSICAL_DEVICE_EVIDENCE_MISSING",
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
+        "PHYSICAL_DEVICE_EVIDENCE_MISSING"
       ],
       "coverageGaps": []
     },
@@ -10842,8 +10822,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-research/list-compare.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/list-compare/manifest.ts",
@@ -10963,7 +10943,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/list-compare.gold.json",
-          "sha256": "3d23ae2991da9d2e386ac31ef927e41ebb1b8a88bc23fd7d7bbc83accea2294f",
+          "sha256": "cbb64ae00acada412402abb1e95b14bd9c3a7c99f41c78ba893f97ec7d215fb8",
           "status": "PASS"
         },
         {
@@ -10979,10 +10959,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -11282,8 +11259,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/client-time-math/margin-markup.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/margin-markup/manifest.ts",
@@ -11386,7 +11363,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/margin-markup.gold.json",
-          "sha256": "f0a9811afd584025150e0c22c86e01909cc8a0075b0f1bdab590b446768de455",
+          "sha256": "4d3007d757c57bb3f10216e51d9b748e5b913316d76cab4de093a9010627461f",
           "status": "PASS"
         },
         {
@@ -11402,10 +11379,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -15550,8 +15524,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/client-time-math/rate-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/rate-converter/manifest.ts",
@@ -15654,7 +15628,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/rate-converter.gold.json",
-          "sha256": "42ba1a5041fe532f3f4f374fccc865d835f6c87f980a6892a3a6024d1b5ff9de",
+          "sha256": "7033bd938d8a8c41d6f9e8547da49502e0ba40f8abe3377487764b6e6dd14569",
           "status": "PASS"
         },
         {
@@ -15670,10 +15644,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -17771,8 +17742,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-research/text-diff.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/text-diff/manifest.ts",
@@ -17886,7 +17857,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/text-diff.gold.json",
-          "sha256": "ef2e830640258266f041b28917f7012acfddcae217323415f9829d63596af3a9",
+          "sha256": "0e02eae71b38fe037ce959cc4ee44cc17a4b0638b49ea0717341f743fdab615b",
           "status": "PASS"
         },
         {
@@ -17902,10 +17873,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -18301,8 +18269,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/client-time-math/timezone-overlap.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/timezone-overlap/manifest.ts",
@@ -18408,7 +18376,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/timezone-overlap.gold.json",
-          "sha256": "1e9d7cdaf347541f363b1ed99831a19c88a789c95be6c87a8cf0cfce976840f4",
+          "sha256": "29515c163df69030dd773b6c2651ef74f77150f700d5083eb94533ef90bc010b",
           "status": "PASS"
         },
         {
@@ -18424,10 +18392,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -18533,8 +18498,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/campaign-url/tracking-cleaner.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/tracking-cleaner/manifest.ts",
@@ -18641,7 +18606,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/tracking-cleaner.gold.json",
-          "sha256": "c251715701fc9efbfc495223e16379998be476e06c25fda31f41ec0bf7fa40e7",
+          "sha256": "62a464a4faa0564e1fb0762aee0a3c571bc9a59739b355bf6b7254bc508210ad",
           "status": "PASS"
         },
         {
@@ -18657,10 +18622,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -19452,8 +19414,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/campaign-url/utm-builder.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/utm-builder/manifest.ts",
@@ -19560,7 +19522,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/utm-builder.gold.json",
-          "sha256": "7da5f7b6498e8e5f7597e2fd89e54dff00fbb78cf6059fc0539eaaa601c43fcb",
+          "sha256": "9b3b17323d0cf6135cf67ee204791442cf7f451c395cbd9aa7941ebc3165ff97",
           "status": "PASS"
         },
         {
@@ -19576,10 +19538,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {

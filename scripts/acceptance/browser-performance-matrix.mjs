@@ -1,5 +1,6 @@
 import { chromium, firefox, webkit } from "@playwright/test";
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
@@ -12,6 +13,25 @@ const receiptDir = resolve(root, "quality/receipts/browser-performance");
 const port = 18220;
 const origin = `http://127.0.0.1:${port}`;
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
+
+const evidenceRootFiles = new Set(["astro.config.mjs", "package-lock.json", "package.json", "tsconfig.json", "wrangler.jsonc"]);
+const evidencePrefixes = ["public/", "quality/fixtures/", "quality/oracles/", "scripts/", "src/", "tests/"];
+
+async function currentEvidenceSourceFingerprint() {
+  const raw = execFileSync("git", ["ls-files", "-co", "--exclude-standard", "-z"], { cwd: root, encoding: "utf8" });
+  const paths = raw.split("\0")
+    .filter(Boolean)
+    .filter((path) => !path.startsWith("quality/receipts/") && (evidenceRootFiles.has(path) || evidencePrefixes.some((prefix) => path.startsWith(prefix))))
+    .sort();
+  const hash = createHash("sha256");
+  for (const path of paths) {
+    hash.update(path);
+    hash.update("\0");
+    hash.update(await readFile(resolve(root, path)));
+    hash.update("\0");
+  }
+  return hash.digest("hex");
+}
 
 async function waitForServer() {
   for (let attempt = 0; attempt < 40; attempt += 1) {
@@ -46,14 +66,33 @@ async function staticInspection() {
     }
   }
   const page = await readFile(resolve(dist, "tools/business-day/index.html"), "utf8");
-  const referenced = [...page.matchAll(/<(?:script|link)[^>]+(?:src|href)="([^"]+\.js[^"]*)"/gu)].map((match) => basename(String(match[1])));
+  const referenced = [...new Set(
+    [...page.matchAll(/<(?:script|link)[^>]+(?:src|href)="([^"]+\.js[^"]*)"/gu)]
+      .map((match) => basename(String(match[1]).split("?")[0])),
+  )];
   const initialEngineReferences = engineChunks.filter((entry) => referenced.includes(entry.file)).map((entry) => entry.file);
+  const eagerImplementationReferences = implementationAssets.filter((file) => referenced.includes(file));
   const baselinePath = resolve(root, "quality/receipts/build-baseline.json");
   const baseline = JSON.parse(await readFile(baselinePath, "utf8"));
   const totalJsBytes = entries.reduce((sum, entry) => sum + entry.bytes, 0);
   const totalGzipBytes = entries.reduce((sum, entry) => sum + entry.gzipBytes, 0);
-  const deltaBytes = totalJsBytes - baseline.totalJsBytes;
-  const deltaPercent = baseline.totalJsBytes === 0 ? null : (deltaBytes / baseline.totalJsBytes) * 100;
+  const initialEntries = entries.filter((entry) => referenced.includes(entry.file));
+  const initialJsBytes = initialEntries.reduce((sum, entry) => sum + entry.bytes, 0);
+  const initialGzipBytes = initialEntries.reduce((sum, entry) => sum + entry.gzipBytes, 0);
+  // Older receipts predate explicit initial-route accounting. Their total JS size is a
+  // conservative ceiling for the old initial route, so it is safe as a fallback: the
+  // current initial payload must fit under that historical whole-build budget. The
+  // aggregate size of every lazy tool chunk is intentionally not a shell regression
+  // metric because catalog growth is allowed to add on-demand code.
+  const baselineInitialJsBytes = typeof baseline.initialJsBytes === "number" ? baseline.initialJsBytes : baseline.totalJsBytes;
+  const deltaBytes = initialJsBytes - baselineInitialJsBytes;
+  const deltaPercent = baselineInitialJsBytes === 0 ? null : (deltaBytes / baselineInitialJsBytes) * 100;
+  const initialRouteGate = initialEngineReferences.length === 0
+    && eagerImplementationReferences.length === 0
+    && deltaPercent !== null
+    && deltaPercent <= 25
+    ? "PASS"
+    : "REGRESSION";
   const networkApiFiles = entries.filter((entry) => /fetch\s*\(|XMLHttpRequest|sendBeacon|new\s+WebSocket|new\s+EventSource/u.test(entry.text)).map((entry) => entry.file);
   return {
     page: "tools/business-day/index.html",
@@ -63,16 +102,22 @@ async function staticInspection() {
     engineChunks,
     implementationAssets: implementationAssets.sort(),
     initialScriptFiles: referenced,
+    initialJsBytes,
+    initialGzipBytes,
     initialEngineReferences,
+    eagerImplementationReferences,
     lazyEngineGate: engineChunks.length > 0 && initialEngineReferences.length === 0 ? "PASS" : "FAIL",
     bundleBaseline: {
       source: "quality/receipts/build-baseline.json",
+      metric: "initial-route-js",
+      baselineMetric: typeof baseline.initialJsBytes === "number" ? "initialJsBytes" : "historical-total-js-ceiling",
       baselineJsAssetCount: baseline.jsAssetCount,
-      baselineTotalJsBytes: baseline.totalJsBytes,
-      currentTotalJsBytes: totalJsBytes,
+      baselineInitialJsBytes,
+      currentInitialJsBytes: initialJsBytes,
       deltaBytes,
       deltaPercent,
-      gate: deltaPercent !== null && deltaPercent > 25 ? "REGRESSION" : "PASS",
+      eagerImplementationReferences,
+      gate: initialRouteGate,
     },
     workerAssets: files.filter((file) => /worker.*\.js$/u.test(file)),
     wasmAssets: files.filter((file) => file.endsWith(".wasm")),
@@ -310,6 +355,7 @@ async function runSiblingAcceptance() {
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], { cwd: root, stdio: "ignore" });
 try {
   await waitForServer();
+  const sourceFingerprint = await currentEvidenceSourceFingerprint();
   const engineChunkNames = staticData.engineChunks.map((entry) => entry.file);
   const results = [];
   for (const definition of engineDefinitions) results.push(await runEngine(definition, engineChunkNames));
@@ -318,6 +364,7 @@ try {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
     revision: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
+    sourceFingerprint,
     server: { origin, bind: "127.0.0.1", networkPolicy: "external requests aborted before transmission; synthetic task values never sent" },
     staticInspection: staticData,
     browserMatrix: {

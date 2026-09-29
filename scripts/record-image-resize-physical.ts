@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { buildPhysicalImageReceipt, type PhysicalImageTarget } from "./lib/image-resize-physical";
-import { currentRevision } from "./lib/current-revision";
+import { currentEvidenceSourceFingerprint, currentRevision } from "./lib/current-revision";
 
 function argument(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`);
@@ -27,6 +27,7 @@ function dimensions(name: string): [number, number] {
 
 const root = resolve(import.meta.dirname, "..");
 const revision = await currentRevision(root);
+const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
 const target = required("target") as PhysicalImageTarget;
 if (target !== "ios-safari" && target !== "android-chrome") {
   throw new Error("--target must be ios-safari or android-chrome");
@@ -58,6 +59,7 @@ const receipt = buildPhysicalImageReceipt({
     boundaryPolicyCase: "PASS",
   },
   revision,
+  sourceFingerprint,
   ...(observedAt === undefined ? {} : { observedAt }),
   ...(notes === undefined ? {} : { notes }),
 });

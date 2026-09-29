@@ -12,9 +12,11 @@ import {
 import { marginMarkupManifest } from "../../src/tools/margin-markup/manifest";
 import { rateConverterManifest } from "../../src/tools/rate-converter/manifest";
 import { timezoneOverlapManifest } from "../../src/tools/timezone-overlap/manifest";
+import { currentEvidenceSourceFingerprint } from "../lib/current-revision";
 
 const root = resolve(import.meta.dirname, "../..");
 const revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
 const receiptRoot = resolve(root, "quality/receipts/client-time-math");
 const indexText = await readFile(resolve(root, "quality/fixtures/index.json"), "utf8");
 const registryText = await readFile(resolve(root, "quality/oracles/registry.json"), "utf8");
@@ -183,6 +185,7 @@ async function writeReceipt(options: {
     schemaVersion: 1,
     status: "GOLD",
     revision,
+    sourceFingerprint,
     toolId: manifest.id,
     runtime: manifest.runtime,
     maintenanceClass: manifest.gold.maintenanceClass,

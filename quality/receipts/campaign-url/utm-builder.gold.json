@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "155c4cd1413031d6e66913fb02cda35673dfef92",
+  "revision": "fd21d9c1463dff0fe5f31383229a3a71a7edac79",
+  "sourceFingerprint": "7d24b146aa5f6fe768e6ef9a7d47dd5770e00595b93bece8a45cf28ed60f1b38",
   "toolId": "utm-builder",
   "runtime": {
     "location": "LOCAL",
@@ -22,7 +23,7 @@
   "identities": {
     "engineSha256": "782cc7f8b1f85f2bed0d9abd2885ac0ae60626707f60de2c5bedc4bbe63ece8f",
     "fixtureSha256": "8a5cc1ae8ecd9dcb10415a19223a7c76e90e82aa7da836915bbfbcc926656f79",
-    "fixtureIndexSha256": "cb85d2f639359880fde99f8bec5f89e7b73565ae2ae0adfb2a045e848e907543",
-    "oracleRegistrySha256": "020191228b8349cf9822be32d124c042cafbd39aeff6349aa8c3a1b91e3e041c"
+    "fixtureIndexSha256": "6e1281a901b063d256d5e7961307e99ee0af45cd948c3d8e0d6216b155173f2d",
+    "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0"
   }
 }

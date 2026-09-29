@@ -5,10 +5,11 @@ import { buildCampaignName, buildUtmUrl, CAMPAIGN_URL_ENGINE_VERSION, cleanTrack
 import { utmBuilderManifest } from "../../src/tools/utm-builder/manifest";
 import { trackingCleanerManifest } from "../../src/tools/tracking-cleaner/manifest";
 import { campaignNameManifest } from "../../src/tools/campaign-name/manifest";
-import { currentRevision } from "../lib/current-revision";
+import { currentEvidenceSourceFingerprint, currentRevision } from "../lib/current-revision";
 
 const root = resolve(import.meta.dirname, "../..");
 const revision = await currentRevision(root);
+const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
 const indexText = await readFile(resolve(root, "quality/fixtures/index.json"), "utf8");
 const registryText = await readFile(resolve(root, "quality/oracles/registry.json"), "utf8");
 const index = JSON.parse(indexText) as { schema_version:number; families:Array<{id:string;path:string;truth_sources:string[]}> };
@@ -51,7 +52,7 @@ await mkdir(resolve(root,"quality/receipts/campaign-url"),{recursive:true});
 const engineText=await readFile(resolve(root,"src/engines/campaign-url/index.ts"),"utf8"); const sha=(v:string)=>createHash("sha256").update(v).digest("hex");
 for (const [manifest,count] of [[utmBuilderManifest,utmVectors],[trackingCleanerManifest,cleanVectors],[campaignNameManifest,campaignVectors.length]] as const) {
   const oracle=registry.entries.find((entry)=>entry.id===manifest.gold.oracleEntryId); if(!oracle) throw new Error(`missing oracle ${manifest.gold.oracleEntryId}`);
-  const receipt={schemaVersion:1,status:"GOLD",revision,toolId:manifest.id,runtime:manifest.runtime,engineVersion:CAMPAIGN_URL_ENGINE_VERSION,oracleEntryId:manifest.gold.oracleEntryId,fixtureFamilies:manifest.gold.fixtureFamilies,exactVectors:count,truthSources:[...new Set([...oracle.truth_sources,...fixtureEntry.truth_sources])].sort(),identities:{engineSha256:sha(engineText),fixtureSha256:sha(fixtureText),fixtureIndexSha256:sha(indexText),oracleRegistrySha256:sha(registryText)}};
+  const receipt={schemaVersion:1,status:"GOLD",revision,sourceFingerprint,toolId:manifest.id,runtime:manifest.runtime,engineVersion:CAMPAIGN_URL_ENGINE_VERSION,oracleEntryId:manifest.gold.oracleEntryId,fixtureFamilies:manifest.gold.fixtureFamilies,exactVectors:count,truthSources:[...new Set([...oracle.truth_sources,...fixtureEntry.truth_sources])].sort(),identities:{engineSha256:sha(engineText),fixtureSha256:sha(fixtureText),fixtureIndexSha256:sha(indexText),oracleRegistrySha256:sha(registryText)}};
   await writeFile(resolve(root,`quality/receipts/campaign-url/${manifest.id}.gold.json`),`${JSON.stringify(receipt,null,2)}\n`);
   console.log(`Gold PASS: ${manifest.id}, ${count} exact vector(s)`);
 }

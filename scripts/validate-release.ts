@@ -17,6 +17,7 @@ import {
   extractPublicMetadata,
   validateRelease,
 } from "../src/release/validation";
+import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
 
 const execFileAsync = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
@@ -108,6 +109,7 @@ async function loadGoldReceipts(): Promise<ToolCertificationReceipt[]> {
       ...(identities === undefined ? {} : { identities }),
       ...(typeof record.goldEligible === "boolean" ? { goldEligible: record.goldEligible } : {}),
       ...(typeof record.revision === "string" ? { revision: record.revision } : {}),
+      ...(typeof record.sourceFingerprint === "string" ? { sourceFingerprint: record.sourceFingerprint } : {}),
     });
   }
   return receipts;
@@ -189,6 +191,7 @@ async function inventoryHash(files: readonly string[]): Promise<string> {
 
 async function main(): Promise<void> {
   const revision = await git("rev-parse", "HEAD").catch(() => "unknown");
+  const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
   const workingTreeDirty = (await git("status", "--porcelain").catch(() => "")).length > 0;
   const catalog = await loadCatalog();
   const manifestFiles = (await relativeFiles(resolve(root, "src/tools"))).filter((path) => path.endsWith("/manifest.ts"));
@@ -222,6 +225,7 @@ async function main(): Promise<void> {
     goldReceipts: await loadGoldReceipts(),
     evidence: { browser, physicalDeviceReceipts: await loadPhysicalReceipts() },
     revision,
+    sourceFingerprint,
     workingTreeDirty,
   };
   const result = validateRelease(input);
@@ -237,6 +241,7 @@ async function main(): Promise<void> {
     kind: "release-validation",
     generatedBy: "scripts/validate-release.ts",
     revision,
+    sourceFingerprint,
     workingTreeDirty,
     checks: {
       toolSurface: checkStatus(["TOOL_", "MANIFEST_", "DUPLICATE_", "UNINDEXED_", "INVALID_PUBLIC_"], true),

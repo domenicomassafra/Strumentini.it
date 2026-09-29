@@ -3,10 +3,11 @@ import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { imageResizeManifest } from "../../src/tools/image-resize/manifest";
 import { validatePhysicalImageReceipt } from "../lib/image-resize-physical";
-import { currentRevision } from "../lib/current-revision";
+import { currentEvidenceSourceFingerprint, currentRevision } from "../lib/current-revision";
 
 const root = resolve(import.meta.dirname, "../..");
 const revision = await currentRevision(root);
+const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
 
 interface OracleEntry {
   id: string;
@@ -119,6 +120,7 @@ const receipt = {
   toolId: imageResizeManifest.id,
   status: issues.length > 0 ? "BLOCKED" : physicalAcceptanceComplete ? "GOLD" : "PARTIAL",
   revision,
+  sourceFingerprint,
   goldEligible: issues.length === 0 && physicalAcceptanceComplete,
   runtime: imageResizeManifest.runtime,
   maintenanceClass: imageResizeManifest.gold.maintenanceClass,

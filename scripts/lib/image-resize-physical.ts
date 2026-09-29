@@ -20,6 +20,7 @@ export interface PhysicalImageReceiptInput {
   };
   observedAt?: string;
   revision?: string;
+  sourceFingerprint?: string;
   notes?: string;
 }
 
@@ -31,6 +32,7 @@ export interface PhysicalImageReceipt {
   browser: string;
   observedAt: string;
   revision?: string;
+  sourceFingerprint?: string;
   route: "/tools/image-resize/";
   source: { width: number; height: number; pixels: number };
   output: { width: number; height: number; pixels: number };
@@ -109,6 +111,7 @@ export function buildPhysicalImageReceipt(input: PhysicalImageReceiptInput): Phy
     browser,
     observedAt: new Date(observedAt).toISOString(),
     ...(input.revision === undefined ? {} : { revision: input.revision }),
+    ...(input.sourceFingerprint === undefined ? {} : { sourceFingerprint: input.sourceFingerprint }),
     route: "/tools/image-resize/",
     source: { width: sourceWidth, height: sourceHeight, pixels: sourcePixels },
     output: { width: outputWidth, height: outputHeight, pixels: outputPixels },
@@ -138,6 +141,7 @@ export function validatePhysicalImageReceipt(value: unknown, target: PhysicalIma
   if (typeof value.browser !== "string" || value.browser.trim().length < 2) issues.push("browser is required");
   if (typeof value.observedAt !== "string" || !Number.isFinite(Date.parse(value.observedAt))) issues.push("observedAt is invalid");
   if (value.revision !== undefined && (typeof value.revision !== "string" || value.revision.length === 0)) issues.push("revision must be a non-empty string when present");
+  if (value.sourceFingerprint !== undefined && (typeof value.sourceFingerprint !== "string" || !/^[a-f0-9]{64}$/u.test(value.sourceFingerprint))) issues.push("sourceFingerprint must be a SHA-256 hex string when present");
   if (value.route !== "/tools/image-resize/") issues.push("route must be /tools/image-resize/");
   if (!isRecord(value.source) || !isRecord(value.output)) issues.push("source/output measurements are required");
   if (!isRecord(value.checks)) issues.push("physical checks are required");
@@ -168,6 +172,7 @@ export function validatePhysicalImageReceipt(value: unknown, target: PhysicalIma
         },
         observedAt: value.observedAt as string,
         ...(typeof value.revision === "string" ? { revision: value.revision } : {}),
+        ...(typeof value.sourceFingerprint === "string" ? { sourceFingerprint: value.sourceFingerprint } : {}),
       });
       if (value.maxSourcePixelsTested !== rebuilt.maxSourcePixelsTested) issues.push("maxSourcePixelsTested does not match source dimensions");
       if (value.maxEstimatedDecodedBytesTested !== rebuilt.maxEstimatedDecodedBytesTested) issues.push("maxEstimatedDecodedBytesTested does not match current policy estimate");
