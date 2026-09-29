@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "toolId": "image-resize",
   "status": "PARTIAL",
-  "revision": "6b8793f17dc5749fee9e3f750931611ba1fc0797",
-  "sourceFingerprint": "6dba420afef72dca92add941d78cb10920943c78e52f395c9102767a9b31d64e",
+  "revision": "05a86960a6782527a089fb4847e24aaeba02c54f",
+  "sourceFingerprint": "282186e8df028409fe58d67e3c7b078165a8b333ae3b10e5ea1a7320990fcad1",
   "goldEligible": false,
   "runtime": {
     "location": "LOCAL",
@@ -53,6 +53,6 @@
     "src/engines/image/format.ts": "33cff596d3d5e617b519383e6e6a9eab968c15ab665ae3ee38183a8266d23e0a",
     "src/tools/image-resize/module.ts": "a3a8f74315e6fa270f43c5ea4ab3af593cf0ba8a47e7a9e82c768e8c54875eac",
     "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
-    "fixtureIndexSha256": "6e1281a901b063d256d5e7961307e99ee0af45cd948c3d8e0d6216b155173f2d"
+    "fixtureIndexSha256": "9b749144a7d3af2e7c27c42f3c6b1252ca3338887794e16c31e27b5248609e36"
   }
 }

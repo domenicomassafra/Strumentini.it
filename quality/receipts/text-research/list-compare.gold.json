@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "toolId": "list-compare",
   "status": "GOLD",
-  "revision": "6b8793f17dc5749fee9e3f750931611ba1fc0797",
-  "sourceFingerprint": "6dba420afef72dca92add941d78cb10920943c78e52f395c9102767a9b31d64e",
+  "revision": "05a86960a6782527a089fb4847e24aaeba02c54f",
+  "sourceFingerprint": "282186e8df028409fe58d67e3c7b078165a8b333ae3b10e5ea1a7320990fcad1",
   "runtime": {
     "location": "LOCAL",
     "network": "forbidden"
@@ -59,7 +59,7 @@
   "identities": {
     "manifestSha256": "903ae9614694d303b800cdf8384cb3b139aa77a8632d6476a8bb575d52386a05",
     "engineSha256": "6401bf42affc8fcc020bb2450cf87dab678c4940f3c9c27b5336b0167ce8de40",
-    "fixtureIndexSha256": "6e1281a901b063d256d5e7961307e99ee0af45cd948c3d8e0d6216b155173f2d",
+    "fixtureIndexSha256": "9b749144a7d3af2e7c27c42f3c6b1252ca3338887794e16c31e27b5248609e36",
     "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0"
   }
 }

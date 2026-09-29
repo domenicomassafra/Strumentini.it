@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "6b8793f17dc5749fee9e3f750931611ba1fc0797",
-  "sourceFingerprint": "6dba420afef72dca92add941d78cb10920943c78e52f395c9102767a9b31d64e",
+  "revision": "05a86960a6782527a089fb4847e24aaeba02c54f",
+  "sourceFingerprint": "282186e8df028409fe58d67e3c7b078165a8b333ae3b10e5ea1a7320990fcad1",
   "toolId": "rate-converter",
   "runtime": {
     "location": "LOCAL",
@@ -50,7 +50,7 @@
   },
   "identities": {
     "engineSha256": "cea30253741c1a5cf26e3da9119f9d73d5660477be458f88ac7588f018a382db",
-    "fixtureIndexSha256": "6e1281a901b063d256d5e7961307e99ee0af45cd948c3d8e0d6216b155173f2d",
+    "fixtureIndexSha256": "9b749144a7d3af2e7c27c42f3c6b1252ca3338887794e16c31e27b5248609e36",
     "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
     "browserAcceptanceSha256": "1014aae9b07d4c511533f60e05d6ee260f8498ee2cbb97f164dae8e9654f5ad7",
     "bundleSha256": "3452468325c7167e0c4885b7deea2bb12871409544146a5827b76ec08e52dab7"

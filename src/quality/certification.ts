@@ -249,6 +249,12 @@ const businessMathEvidence = {
   lazyLoad: ["quality/receipts/business-math/browser-acceptance.json"],
 } as const;
 
+const developerWebEvidence = {
+  locality: ["quality/receipts/developer-web/browser-acceptance.json"],
+  mobileA11y: ["quality/receipts/developer-web/browser-acceptance.json"],
+  lazyLoad: ["quality/receipts/developer-web/browser-acceptance.json"],
+} as const;
+
 const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimension, readonly string[]>>>> = {
   "business-day": {
     locality: ["quality/receipts/browser-performance/fresh-browser-matrix.json"],
@@ -350,6 +356,26 @@ const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimensio
   "invoice-math-validator": businessMathEvidence,
   "percentage-helper": businessMathEvidence,
   "currency-scenario": businessMathEvidence,
+  "json-formatter": developerWebEvidence,
+  "yaml-formatter": developerWebEvidence,
+  "toml-formatter": developerWebEvidence,
+  "json-yaml-converter": developerWebEvidence,
+  "url-codec": developerWebEvidence,
+  "html-entity-codec": developerWebEvidence,
+  "base64-codec": developerWebEvidence,
+  "jwt-inspector": developerWebEvidence,
+  "uuid-generator": developerWebEvidence,
+  "hash-generator": developerWebEvidence,
+  "hmac-generator": developerWebEvidence,
+  "regex-tester": developerWebEvidence,
+  "cron-explainer": developerWebEvidence,
+  "cron-next-run": developerWebEvidence,
+  "unix-timestamp": developerWebEvidence,
+  "http-status-reference": developerWebEvidence,
+  "mime-type-lookup": developerWebEvidence,
+  "user-agent-parser": developerWebEvidence,
+  "query-string-editor": developerWebEvidence,
+  "json-path-playground": developerWebEvidence,
 };
 
 const globalEvidencePaths = {

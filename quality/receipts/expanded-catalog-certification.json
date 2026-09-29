@@ -10,7 +10,7 @@
     },
     "fixtureIndex": {
       "path": "quality/fixtures/index.json",
-      "sha256": "6e1281a901b063d256d5e7961307e99ee0af45cd948c3d8e0d6216b155173f2d"
+      "sha256": "9b749144a7d3af2e7c27c42f3c6b1252ca3338887794e16c31e27b5248609e36"
     },
     "sourceRegistry": {
       "path": "quality/oracles/sources.json",
@@ -27,8 +27,8 @@
     "fixtures": {
       "status": "PASS",
       "path": "quality/fixtures/index.json",
-      "familyCount": 45,
-      "sha256": "6e1281a901b063d256d5e7961307e99ee0af45cd948c3d8e0d6216b155173f2d"
+      "familyCount": 46,
+      "sha256": "9b749144a7d3af2e7c27c42f3c6b1252ca3338887794e16c31e27b5248609e36"
     },
     "privacy": {
       "status": "DECLARED",
@@ -49,7 +49,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
+          "sha256": "3174f7cdb743f01028ab20ed5b5162afdcb1198b7403fcbe45451a8fc55d0d06",
           "status": "PASS"
         }
       ],
@@ -63,7 +63,7 @@
         {
           "dimension": "mobileA11y",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
+          "sha256": "3174f7cdb743f01028ab20ed5b5162afdcb1198b7403fcbe45451a8fc55d0d06",
           "status": "PASS"
         }
       ],
@@ -77,7 +77,7 @@
         {
           "dimension": "lazyLoad",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
+          "sha256": "3174f7cdb743f01028ab20ed5b5162afdcb1198b7403fcbe45451a8fc55d0d06",
           "status": "UNVERIFIED"
         },
         {
@@ -97,13 +97,13 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
+          "sha256": "3174f7cdb743f01028ab20ed5b5162afdcb1198b7403fcbe45451a8fc55d0d06",
           "status": "PARTIAL"
         },
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "c5a6d36209fdd20f74880bd817f5770e72598deeb47a4ea4a478944ab95428ee",
+          "sha256": "9e85c3319000f98a0fd8f4a2aa4aacf7a70230ed1a686f8ca5f29e74803915d4",
           "status": "PARTIAL"
         }
       ],
@@ -117,13 +117,13 @@
   },
   "summary": {
     "statusCounts": {
-      "GOLD": 30,
+      "GOLD": 50,
       "PARTIAL": 1,
-      "IMPLEMENTED_UNVERIFIED": 169
+      "IMPLEMENTED_UNVERIFIED": 149
     },
-    "certificationGoldCount": 30,
-    "releaseEligibleGoldCount": 30,
-    "releaseBlockedCount": 170,
+    "certificationGoldCount": 50,
+    "releaseEligibleGoldCount": 50,
+    "releaseBlockedCount": 150,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 200,
     "fixtureBoundCount": 200,
@@ -537,10 +537,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/base64-codec.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/base64-codec/manifest.ts",
@@ -567,7 +567,7 @@
           "fixture-policy",
           "rfc4648"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -585,7 +585,17 @@
           "truthSources": [
             "rfc4648"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -596,16 +606,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -614,15 +645,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/base64-codec.gold.json",
+          "sha256": "42ae366c5bdf7587c8bee422b56565b3f578c1af00db38cd3e5177a2146ce5ef",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "batch-checksum-manifest",
@@ -1116,7 +1154,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/break-even.gold.json",
-          "sha256": "60bc2b9a3751efbc8c2c46a08a30f2882080bf88a89d81f681f508c28ccd7759",
+          "sha256": "51209f8b52cca02821370d632179623f21762e72c00a8d9f21ad4717e69f9c59",
           "status": "PASS"
         },
         {
@@ -1315,7 +1353,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
+            "sha256": "3174f7cdb743f01028ab20ed5b5162afdcb1198b7403fcbe45451a8fc55d0d06",
             "status": "PASS"
           }
         ]
@@ -1326,7 +1364,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
+            "sha256": "3174f7cdb743f01028ab20ed5b5162afdcb1198b7403fcbe45451a8fc55d0d06",
             "status": "PASS"
           }
         ]
@@ -1337,7 +1375,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
+            "sha256": "3174f7cdb743f01028ab20ed5b5162afdcb1198b7403fcbe45451a8fc55d0d06",
             "status": "UNVERIFIED"
           },
           {
@@ -1359,13 +1397,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-day.gold.json",
-          "sha256": "137532307cdd67f711adc0197e0d570e2aece48749dfe06d811d5e9794c29288",
+          "sha256": "8504494a0fd5302f8da485ae16ea1f7e26e325b4dc9d401622a414c3239e16a4",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "635d29fdcdb4b80e82d66267b296d58510804fe1450a7c4d01e2ff18fdd4c05c",
+          "sha256": "3174f7cdb743f01028ab20ed5b5162afdcb1198b7403fcbe45451a8fc55d0d06",
           "status": "PASS"
         },
         {
@@ -1583,7 +1621,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/campaign-name.gold.json",
-          "sha256": "e612a1efeaf7b27739c313d09103b27932bdd789b2dca2f3dcb3909693f868b1",
+          "sha256": "03696e07fb1364e5a5b8a6f159bd0d2a5ac3a1da417753aa2cb8e893001e4d2b",
           "status": "PASS"
         },
         {
@@ -1816,7 +1854,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/capacity-planner.gold.json",
-          "sha256": "adc30a671aa62551dd2333ef0fdcae168cd8bb598cac0e407108f8e5926395f4",
+          "sha256": "a9657a26debe301adb8ad2881541e9c0ac3f66d747d286db838a0b43ac12971d",
           "status": "PASS"
         },
         {
@@ -3139,10 +3177,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/cron-explainer.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/cron-explainer/manifest.ts",
@@ -3169,7 +3207,7 @@
           "fixture-policy",
           "posix-crontab"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -3188,7 +3226,17 @@
             "rfc3339",
             "fixture-policy"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -3199,16 +3247,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -3217,15 +3286,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/cron-explainer.gold.json",
+          "sha256": "b053ef9022bc74660152df2dc06c40b5b2b81af09187d410463fde711c2d42b4",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "cron-next-run",
@@ -3234,10 +3310,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/cron-next-run.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/cron-next-run/manifest.ts",
@@ -3264,7 +3340,7 @@
           "fixture-policy",
           "posix-crontab"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -3283,7 +3359,17 @@
             "rfc3339",
             "fixture-policy"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -3294,16 +3380,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -3312,15 +3419,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/cron-next-run.gold.json",
+          "sha256": "35e7fd2f0998a11b7d9ab78998dc2be529fad3c1a592551c5c6aeb89c60ddbd9",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "csv-cleaner",
@@ -3443,7 +3557,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/csv-cleaner/gold.json",
-          "sha256": "9f0fca648a8976aa7e10ac6c20252d5719a786fedf30895c92a1f97c8590e56c",
+          "sha256": "a7d2416c47518659ab5debd4d9b9c6b67889aa0fc2a14f2f7682a8ca35a275e8",
           "status": "PASS"
         },
         {
@@ -3583,7 +3697,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-column-map.gold.json",
-          "sha256": "31ff9cccb035815c976cc6038b37ea1b354eb3d77c8421f1be32fff9d58dff54",
+          "sha256": "a948883256b00cf23681f298166eaddf4cd926a453863f1c02f967e4e673e199",
           "status": "PASS"
         },
         {
@@ -3927,7 +4041,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-dedupe.gold.json",
-          "sha256": "f59839cab38196e49149e11029b5cf7cb9ea71920dbee46398368be6d178254b",
+          "sha256": "4d28c3b73002fc46d1a8bb7baf5b5ee096c0f9e56d23cf3f7263c603b65864db",
           "status": "PASS"
         },
         {
@@ -5022,7 +5136,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/currency-scenario.gold.json",
-          "sha256": "9f15d2107a62f13b5adb138b3103ea2acfe0c863978fc7a880a3c03da61d66a9",
+          "sha256": "640a21379eb43996056dc980467077bd38ee426ea858230cdd2ef67764d8b4e5",
           "status": "PASS"
         },
         {
@@ -5530,7 +5644,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/discount-impact.gold.json",
-          "sha256": "cf6732c29d8599ac8236233acd278e08431fd239ba6361e2fb0c4ddb4b3658f4",
+          "sha256": "5a69e28ce602ef4357c561628c06dbf2fb3ee2f07d4fa039183d0c1c0633bc5a",
           "status": "PASS"
         },
         {
@@ -5761,7 +5875,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/doi-isbn-normalizer.gold.json",
-          "sha256": "2994ff61d002ab83bfe399fc48ae953445e67781c67506d21bb8544cc57e3c54",
+          "sha256": "2391ec238717871629d2e586f216d8d4c822cfbbe0a3c2488a800ba757fc9f09",
           "status": "PASS"
         },
         {
@@ -6680,7 +6794,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/effective-hourly-rate.gold.json",
-          "sha256": "458041776f79d7462525e1380e892f43f7f83d5ade12720ad6615fcb340bad27",
+          "sha256": "7891de8b6ae00ef0832a229f7f09a6079aba026dcdec419706255725dde7a1fe",
           "status": "PASS"
         },
         {
@@ -7330,7 +7444,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/file-hash/gold.json",
-          "sha256": "d76777c74467d94a72cc9cbeb4b8ba7f556ae715bf04717d536f7e6319c41994",
+          "sha256": "05b2b5caae36c536fca7afbfe17084cba0d5cd8b0e6310eccf733b5689ffe985",
           "status": "PASS"
         },
         {
@@ -8047,10 +8161,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/hash-generator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/hash-generator/manifest.ts",
@@ -8077,7 +8191,7 @@
           "fixture-policy",
           "nist-fips180-4"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -8096,7 +8210,17 @@
             "nist-fips180-4",
             "openssl-cli"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -8107,16 +8231,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -8125,15 +8270,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/hash-generator.gold.json",
+          "sha256": "3dd0eaf3a87e42227afa04db25473709976a4b8ad3eaee4bb8238e52fb939c64",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "hmac-generator",
@@ -8142,10 +8294,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/hmac-generator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/hmac-generator/manifest.ts",
@@ -8173,7 +8325,7 @@
           "rfc2104",
           "nist-fips180-4"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -8193,7 +8345,17 @@
             "nist-fips180-4",
             "openssl-cli"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -8204,16 +8366,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -8222,15 +8405,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/hmac-generator.gold.json",
+          "sha256": "d835ff7e68c55dce5cdffdad402a9d9d059ad268b60614386af1be9648f2176a",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "html-entity-codec",
@@ -8239,10 +8429,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/html-entity-codec.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/html-entity-codec/manifest.ts",
@@ -8270,7 +8460,7 @@
           "whatwg-html",
           "owasp-xss"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -8289,7 +8479,17 @@
             "whatwg-html",
             "owasp-xss"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -8300,16 +8500,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -8318,15 +8539,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/html-entity-codec.gold.json",
+          "sha256": "2cfdec849f27ddf7048701ed910745366be2ad2a4d72f9ae605f2fd7c1813b96",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "http-status-reference",
@@ -8334,15 +8562,15 @@
       "name": "HTTP Status Reference",
       "category": "developer",
       "engine": "developer-web",
-      "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "D",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/http-status-reference.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/http-status-reference/manifest.ts",
-          "sha256": "43c207a1b09d2924dec0098f4f8915b831717b370de90b00595d649dc219143e"
+          "sha256": "6c5b3e57fb48345387308fa213edf6ad96aa4b41e85a10436423d071940448b9"
         },
         "module": {
           "path": "src/tools/http-status-reference/module.ts",
@@ -8365,7 +8593,7 @@
           "fixture-policy",
           "rfc9110"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -8383,7 +8611,17 @@
           "truthSources": [
             "rfc9110"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -8394,16 +8632,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -8412,16 +8671,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/http-status-reference.gold.json",
+          "sha256": "770d42b548b1803d045c0f678182b1bcdc9b96d698d292a277962f5429c494ec",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "ics-event-builder",
@@ -9528,7 +9793,7 @@
           {
             "dimension": "physicalDevice",
             "path": "quality/receipts/image-resize/certification.json",
-            "sha256": "c5a6d36209fdd20f74880bd817f5770e72598deeb47a4ea4a478944ab95428ee",
+            "sha256": "9e85c3319000f98a0fd8f4a2aa4aacf7a70230ed1a686f8ca5f29e74803915d4",
             "status": "PARTIAL"
           }
         ]
@@ -9537,7 +9802,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "c5a6d36209fdd20f74880bd817f5770e72598deeb47a4ea4a478944ab95428ee",
+          "sha256": "9e85c3319000f98a0fd8f4a2aa4aacf7a70230ed1a686f8ca5f29e74803915d4",
           "status": "PARTIAL"
         },
         {
@@ -9889,7 +10154,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-math-validator.gold.json",
-          "sha256": "d23faab2a3d6ab70ab7de6d4cad38a245e75f4e3d2c7326e5057f28f2cfcfacc",
+          "sha256": "d6b46622b94fd9b97d6f13f4cd90ffd4c91d3035fb4f1459d2e47cf1e40d93aa",
           "status": "PASS"
         },
         {
@@ -10012,7 +10277,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-number-generator.gold.json",
-          "sha256": "3f069d58be036c74e877dcaf7e17409fbb79e339416cd9df0725ac18a83d98a0",
+          "sha256": "fe9e19ca5e1548aecf7e19a58f45f5b626b79ebaf420a1b00642cfe86999b9ef",
           "status": "PASS"
         },
         {
@@ -10126,10 +10391,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/json-formatter.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/json-formatter/manifest.ts",
@@ -10156,7 +10421,7 @@
           "fixture-policy",
           "rfc8259"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -10174,7 +10439,17 @@
           "truthSources": [
             "rfc8259"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -10185,16 +10460,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -10203,15 +10499,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/json-formatter.gold.json",
+          "sha256": "ce3fea749dd386a88e4cef5747937ecb6cae1b2aa0e4c7d138182521fd0719a3",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "json-path-playground",
@@ -10220,10 +10523,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/json-path-playground.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/json-path-playground/manifest.ts",
@@ -10251,7 +10554,7 @@
           "rfc8259",
           "whatwg-url"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -10269,7 +10572,17 @@
           "truthSources": [
             "rfc8259"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -10280,16 +10593,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -10298,15 +10632,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/json-path-playground.gold.json",
+          "sha256": "e8526bdfba3d0678b3db07a98c49a9e2e2677ad88a0ef2c40103b4abec17a00b",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "json-to-csv",
@@ -10425,10 +10766,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/json-yaml-converter.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/json-yaml-converter/manifest.ts",
@@ -10456,7 +10797,7 @@
           "rfc8259",
           "yaml12"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -10475,7 +10816,7 @@
             "yaml12",
             "fixture-policy"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         },
         {
           "id": "json-grammar",
@@ -10484,7 +10825,17 @@
           "truthSources": [
             "rfc8259"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -10495,16 +10846,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -10513,15 +10885,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/json-yaml-converter.gold.json",
+          "sha256": "7041078468dcfe399ecf3b62d051863a9ddff20507a4da3ee7e65adc9c75d759",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "jwt-inspector",
@@ -10530,10 +10909,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/jwt-inspector.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/jwt-inspector/manifest.ts",
@@ -10560,7 +10939,7 @@
           "fixture-policy",
           "rfc7519"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -10579,7 +10958,17 @@
             "rfc7519",
             "rfc4648"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -10590,16 +10979,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -10608,15 +11018,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/jwt-inspector.gold.json",
+          "sha256": "70a5e9271e30486be94b03048169111d022dbd314617a767a789036b5fd17863",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "language-aware-text-statistics",
@@ -10823,7 +11240,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/late-payment-interest.gold.json",
-          "sha256": "425bd9f8e8028b5bead0b14be103f7271368598cc46511d22f6d34df26705e59",
+          "sha256": "55ec7ab3c9cd9a4700d787dd78a7b24caad70db28d61ca144b85df5ebf719b49",
           "status": "PASS"
         },
         {
@@ -11167,7 +11584,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/list-compare.gold.json",
-          "sha256": "b2a2a0867268c2d79498ec10d5d5c90d9480344d4e73110be963d2191ac7d99a",
+          "sha256": "1cde84518b09661de2e3c08a91bf4ced857c778f59061ec4bbe71a73c91160b9",
           "status": "PASS"
         },
         {
@@ -11587,7 +12004,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/margin-markup.gold.json",
-          "sha256": "82d2992044a7d692e41bbd8ab164cdc6d78b5ca206048f23e88d8bdc7eee9fc3",
+          "sha256": "18b460d3e7bda2a85118c05f5d463abda82f3e5b38c807a9aeccab449dbc01b2",
           "status": "PASS"
         },
         {
@@ -12107,15 +12524,15 @@
       "name": "MIME Type Lookup",
       "category": "developer",
       "engine": "developer-web",
-      "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "D",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/mime-type-lookup.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/mime-type-lookup/manifest.ts",
-          "sha256": "3da7d3c090ff419f54a4714de5ff44c340f6a1e988b807f0d37ce9a786cd2f3a"
+          "sha256": "da174edf765c297b386f60455454b44be472c79258c3284302770d0c42ff753b"
         },
         "module": {
           "path": "src/tools/mime-type-lookup/module.ts",
@@ -12138,7 +12555,7 @@
           "fixture-policy",
           "iana-media-types"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -12160,7 +12577,17 @@
             "iso-pdf2",
             "pkware-appnote"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -12171,16 +12598,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -12189,16 +12637,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/mime-type-lookup.gold.json",
+          "sha256": "9bf801681fb72812e9bae4296899aeaf0a2ca3e0341d0e2ca37d492ff928cdc3",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "missing-value-profiler",
@@ -12718,7 +13172,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/payment-fee-gross-up.gold.json",
-          "sha256": "38a740b89c5433a90f3302cebf511f4b945d3a68fa5d5911bcdb79c5bec94c09",
+          "sha256": "471055850ade7a7c515572137c6f3eeba90f708503ae36eae64cd0c20be7ad56",
           "status": "PASS"
         },
         {
@@ -14701,7 +15155,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/percentage-helper.gold.json",
-          "sha256": "1bb95043cb2ce38fc304cded176ded5c8b8bc84a91847b1acff197b16c99df7a",
+          "sha256": "a46a4ea9ff5e9aec662150b3ebdd5dfe64ce8cfd9b3017a515d91484dab3418e",
           "status": "PASS"
         },
         {
@@ -15042,7 +15496,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/project-profitability.gold.json",
-          "sha256": "9fcf397fe580c547a2789604de3f8f7f7f369adddfea7310c72efe484392b1ca",
+          "sha256": "eee5d88f549a5535b5a66853c184c042ef40dcac49a203c93c59f1db3c58adaa",
           "status": "PASS"
         },
         {
@@ -15165,7 +15619,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/proposal-budget-checker.gold.json",
-          "sha256": "06fec24f22460332e461aa238715af1ac212a5b5676851007bbd9ca36df4f475",
+          "sha256": "43821810283e533d9dc19cec9781e016a5fb2e5ce02b336444766d230516c04a",
           "status": "PASS"
         },
         {
@@ -15571,10 +16025,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/query-string-editor.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/query-string-editor/manifest.ts",
@@ -15601,7 +16055,7 @@
           "fixture-policy",
           "whatwg-url"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -15619,7 +16073,17 @@
           "truthSources": [
             "whatwg-url"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15630,16 +16094,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15648,15 +16133,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/query-string-editor.gold.json",
+          "sha256": "d142d8c59c8c08452d67d431d9c4f55875937a0efefe60de5315ddf8887d9464",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "quick-chart",
@@ -15964,7 +16456,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/rate-converter.gold.json",
-          "sha256": "9e152c508b373aac280b10120e6b54bc7f5f2e648ec5d2266838d1f30db5445c",
+          "sha256": "a3f32094aa902f578996317d11fb3e87879bb4e5005fa550d45e12f83c363d1a",
           "status": "PASS"
         },
         {
@@ -16478,10 +16970,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/regex-tester.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/regex-tester/manifest.ts",
@@ -16508,7 +17000,7 @@
           "fixture-policy",
           "ecma262"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -16526,7 +17018,17 @@
           "truthSources": [
             "rfc8259"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -16537,16 +17039,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -16555,15 +17078,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/regex-tester.gold.json",
+          "sha256": "00623c2e9a7d47be66d11cb45015789d213063467c24414b05e803fae7388518",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "research-pack-manifest",
@@ -16872,7 +17402,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/retainer-capacity.gold.json",
-          "sha256": "393c8f5ee154a971ecfb014b4e3ad30ad4f95d05a6371eb09e8235d553317b6d",
+          "sha256": "bc9ffd3dbc2b1d4686f472b72737cf6e241cc2bc2498ef6529b61559d278cf2a",
           "status": "PASS"
         },
         {
@@ -17407,7 +17937,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/scope-creep-cost.gold.json",
-          "sha256": "71340047d29439f45158f4149960b70c367263352d2874b7ea89afb82d96c6bb",
+          "sha256": "a24b9d6a19ce59c0ac59e535135af0939b9e05a4b8b742d5cfdd09fa6062d574",
           "status": "PASS"
         },
         {
@@ -18140,7 +18670,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/target-income-rate.gold.json",
-          "sha256": "a9148b6e221706ecdd9616a46ca1412b0b2619670af2c9ee125756201c560540",
+          "sha256": "ffaf9825de0f188bf93ca2ba5955758737803400b6353f1c76eefa4156d8ba86",
           "status": "PASS"
         },
         {
@@ -18277,7 +18807,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/text-diff.gold.json",
-          "sha256": "ff3793d672c929c93e242f6eedfdd97d421bceb96115753c62515acc03137050",
+          "sha256": "d18f10542bf551fe83df63134239d10e3bc606cbee5b312bff7d6fc32a064481",
           "status": "PASS"
         },
         {
@@ -18796,7 +19326,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/timezone-overlap.gold.json",
-          "sha256": "7f674aa23c85f95022ac5ac76705855d4a35507e277819855b10c858a8c65e47",
+          "sha256": "8ba5422d29bb897c46a464801983e05f3b4f781eb2c08bc8dcf4b60e949aecf8",
           "status": "PASS"
         },
         {
@@ -18822,10 +19352,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/toml-formatter.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/toml-formatter/manifest.ts",
@@ -18852,7 +19382,7 @@
           "fixture-policy",
           "toml10"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -18870,7 +19400,17 @@
           "truthSources": [
             "rfc8259"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -18881,16 +19421,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -18899,15 +19460,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/toml-formatter.gold.json",
+          "sha256": "4736f39fc10ade9ef0ce291073931424fd3d5017ade854107b310d92e6b6c504",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "tracking-cleaner",
@@ -19026,7 +19594,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/tracking-cleaner.gold.json",
-          "sha256": "3776b469d444ab588bdb1a34ff6777c0e1a2f49394a460abb2c413f1d3e7d787",
+          "sha256": "685c2a901fbb4e441f3b9b3cce50912b9fb0ce7f7d7d0a7fb50a466036b7eb68",
           "status": "PASS"
         },
         {
@@ -19246,10 +19814,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/unix-timestamp.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/unix-timestamp/manifest.ts",
@@ -19276,7 +19844,7 @@
           "fixture-policy",
           "rfc3339"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -19295,7 +19863,17 @@
             "rfc3339",
             "fixture-policy"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -19306,16 +19884,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -19324,15 +19923,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/unix-timestamp.gold.json",
+          "sha256": "d32ad10c699145e4ccb30b7a79fc6f8d1f9e9564e68844105546cd06357283b6",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "url-bulk-normalizer",
@@ -19445,10 +20051,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/url-codec.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/url-codec/manifest.ts",
@@ -19475,7 +20081,7 @@
           "fixture-policy",
           "whatwg-url"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -19493,7 +20099,17 @@
           "truthSources": [
             "whatwg-url"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -19504,16 +20120,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -19522,15 +20159,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/url-codec.gold.json",
+          "sha256": "2d50b84134fda33e3b375701c0cf5fdf7a3c63f66d8b46adc21b4c086550c4f6",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "url-comparison",
@@ -19643,10 +20287,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/user-agent-parser.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/user-agent-parser/manifest.ts",
@@ -19673,7 +20317,7 @@
           "fixture-policy",
           "rfc9110"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -19691,7 +20335,17 @@
           "truthSources": [
             "rfc9110"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -19702,16 +20356,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -19720,15 +20395,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/user-agent-parser.gold.json",
+          "sha256": "6b3d0ad6e8111967dd897aec546c586fefe98c4469ab06d099ca7920446046ec",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "utilization-calculator",
@@ -19840,7 +20522,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/utilization-calculator.gold.json",
-          "sha256": "488a3a9f55daa9c4a734bf96fc4bf404bf651860477c2b99adf03d94611f7d46",
+          "sha256": "ef915d9aa1b69d0ddd64a9fae6dd3f3faa7dfc5898bf8b61985f7de60c63a634",
           "status": "PASS"
         },
         {
@@ -19970,7 +20652,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/utm-builder.gold.json",
-          "sha256": "c48bf066b6bfd4f77ac7741e00e1a88a7f288d836ba8c6e4177d6a18dc41644f",
+          "sha256": "ef52509d7c1353afa3ea24072f342bb8b27ebab2b1c927b9c676a8a330b6b59d",
           "status": "PASS"
         },
         {
@@ -20100,10 +20782,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/uuid-generator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/uuid-generator/manifest.ts",
@@ -20130,7 +20812,7 @@
           "fixture-policy",
           "rfc9562"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -20148,7 +20830,17 @@
           "truthSources": [
             "rfc9562"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -20159,16 +20851,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -20177,15 +20890,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/uuid-generator.gold.json",
+          "sha256": "250a045c9ff18d8575e6e4590e0edcf131f4fcd8fc816ec6669f3f1731bdca24",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "vocabulary-frequency-analyzer",
@@ -20676,10 +21396,10 @@
       "category": "developer",
       "engine": "developer-web",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/developer-web/yaml-formatter.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/yaml-formatter/manifest.ts",
@@ -20706,7 +21426,7 @@
           "fixture-policy",
           "yaml12"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -20725,7 +21445,17 @@
             "yaml12",
             "fixture-policy"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "developer-web-gold",
+          "path": "quality/fixtures/developer-web-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -20736,16 +21466,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/developer-web/browser-acceptance.json",
+            "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -20754,15 +21505,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/developer-web/yaml-formatter.gold.json",
+          "sha256": "ecf1a755fb8e89e5cc982e33122e985999ebe82c22701ebe92ad33afe46721e0",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/developer-web/browser-acceptance.json",
+          "sha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "zero-byte-orphan-finder",

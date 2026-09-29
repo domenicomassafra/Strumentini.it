@@ -67,12 +67,12 @@ describe("deterministic onboarding", () => {
     const review = resolveStarter({ contextIds: ["client-services"] }, catalog, qualityIndex);
     const removed = toggleStarterTool(review, review.selectedToolIds[0]!, false);
     expect(removed.selectedToolIds).toHaveLength(9);
-    const candidate = catalog.find(({ id }) => id === "json-formatter");
+    const candidate = catalog.find(({ id }) => id === "markdown-preview");
     expect(candidate).toBeDefined();
     const added = addStarterAlternative(removed, candidate!, qualityIndex);
-    expect(added.selectedToolIds).toContain("json-formatter");
-    expect(added.recommendations.find(({ tool }) => tool.id === "json-formatter")?.reason).toContain("Not Gold-certified");
-    const alternative = findStarterAlternatives("JSON", catalog, qualityIndex, added.selectedToolIds, 4);
+    expect(added.selectedToolIds).toContain("markdown-preview");
+    expect(added.recommendations.find(({ tool }) => tool.id === "markdown-preview")?.reason).toContain("Not Gold-certified");
+    const alternative = findStarterAlternatives("Markdown", catalog, qualityIndex, added.selectedToolIds, 4);
     expect(alternative.length).toBeGreaterThan(0);
   });
 

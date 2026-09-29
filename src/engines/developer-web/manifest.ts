@@ -29,7 +29,7 @@ export function defineDeveloperWebManifest(spec: DeveloperWebManifestSpec): Tool
     gold: {
       maintenanceClass: spec.maintenanceClass ?? "E",
       oracleEntryId: spec.oracleEntryId,
-      fixtureFamilies: [...spec.fixtureFamilies],
+      fixtureFamilies: [...spec.fixtureFamilies, "developer-web-gold"],
     },
   };
 }

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "tool_vectors": [
+    { "tool_id": "json-formatter", "input": { "text": "{\"b\":2,\"a\":1}", "sortKeys": true }, "expected": { "formatted": "{\n  \"a\": 1,\n  \"b\": 2\n}", "duplicateKeys": [] } },
+    { "tool_id": "yaml-formatter", "input": { "text": "a: 1\nb: true\n" }, "expected": { "formatted": "a: 1\nb: true\n", "value": { "a": 1, "b": true } } },
+    { "tool_id": "toml-formatter", "input": { "text": "name = \"Ada\"\nenabled = true\n" }, "expected": { "formatted": "name = \"Ada\"\nenabled = true\n", "value": { "name": "Ada", "enabled": true } } },
+    { "tool_id": "json-yaml-converter", "input": { "text": "a: 1\n", "direction": "yaml-to-json" }, "expected": { "direction": "yaml-to-json", "output": "{\n  \"a\": 1\n}", "value": { "a": 1 } } },
+    { "tool_id": "url-codec", "input": { "text": "Say what‽", "mode": "encode" }, "expected": { "mode": "encode", "value": "Say%20what%E2%80%BD", "roundTrip": true } },
+    { "tool_id": "html-entity-codec", "input": { "text": "<x>", "mode": "encode" }, "expected": { "mode": "encode", "value": "&lt;x&gt;" } },
+    { "tool_id": "base64-codec", "input": { "text": "foobar", "mode": "encode" }, "expected": { "mode": "encode", "value": "Zm9vYmFy", "byteLength": 6 } },
+    { "tool_id": "jwt-inspector", "input": { "token": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjMifQ." }, "expected": { "header": { "alg": "none", "typ": "JWT" }, "payload": { "sub": "123" }, "algorithm": "none", "unsecured": true } },
+    { "tool_id": "uuid-generator", "input": { "count": 1, "version": 4, "bytes": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }, "expected": { "version": 4, "count": 1, "uuids": ["00000000-0000-4000-8000-000000000000"], "randomness": "explicit-test-input" } },
+    { "tool_id": "hash-generator", "input": { "text": "abc", "algorithm": "SHA-256" }, "expected": { "algorithm": "SHA-256", "digestHex": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "byteLength": 3 } },
+    { "tool_id": "hmac-generator", "input": { "message": "The quick brown fox jumps over the lazy dog", "key": "key", "algorithm": "SHA-256" }, "expected": { "algorithm": "SHA-256", "digestHex": "f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8" } },
+    { "tool_id": "regex-tester", "input": { "pattern": "(\\w+)@(\\w+)", "flags": "g", "text": "a@b c@d" }, "expected": { "pattern": "(\\w+)@(\\w+)", "flags": "g", "matchCount": 2, "global": true } },
+    { "tool_id": "cron-explainer", "input": { "expression": "*/15 9-17 * * 1-5" }, "expected": { "expression": "*/15 9-17 * * 1-5", "semantics": "POSIX five-field syntax; when both day fields are restricted, either matching field runs." } },
+    { "tool_id": "cron-next-run", "input": { "expression": "*/15 * * * *", "from": "2026-01-01T00:00:00.000Z", "count": 3 }, "expected": { "runs": ["2026-01-01T00:15:00.000Z", "2026-01-01T00:30:00.000Z", "2026-01-01T00:45:00.000Z"], "timezone": "UTC" } },
+    { "tool_id": "unix-timestamp", "input": { "value": 0, "direction": "to-date" }, "expected": { "unit": "seconds", "timestamp": 0, "date": "1970-01-01T00:00:00.000Z" } },
+    { "tool_id": "http-status-reference", "input": { "status": 404 }, "expected": { "status": 404, "class": "client-error", "reason": "Not Found", "reasonPhraseIsDisplayHint": true } },
+    { "tool_id": "mime-type-lookup", "input": { "lookup": "png" }, "expected": { "extension": ".png", "mime": "image/png", "extensions": [".png"] } },
+    { "tool_id": "user-agent-parser", "input": { "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Version/17.0 Mobile/15E148 Safari/604.1" }, "expected": { "browser": "Safari", "version": "17.0", "os": "iOS", "device": "mobile", "mobile": true, "bot": false } },
+    { "tool_id": "query-string-editor", "input": { "query": "a=1&a=2&blank=&space=hello+world" }, "expected": { "query": "a=1&a=2&blank=&space=hello+world", "pairCount": 4, "finalQuery": "?a=1&a=2&blank=&space=hello+world" } },
+    { "tool_id": "json-path-playground", "input": { "json": "{\"users\":[{\"name\":\"Ada\"}]}", "path": "$.users[*].name" }, "expected": { "normalizedPath": ".users[*].name", "matchCount": 1, "matchTypes": ["string"] } }
+  ],
+  "policy": "Hand-worked end-to-end literals supplement each tool's declared standards-oriented fixture family; they do not replace the normative corpus."
+}

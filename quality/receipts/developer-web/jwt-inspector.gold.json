@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "05a86960a6782527a089fb4847e24aaeba02c54f",
+  "sourceFingerprint": "282186e8df028409fe58d67e3c7b078165a8b333ae3b10e5ea1a7320990fcad1",
+  "toolId": "jwt-inspector",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engineVersion": "developer-web-v1",
+  "oracleEntryId": "cand-048",
+  "fixtureFamilies": [
+    "jwt-structure",
+    "developer-web-gold"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "rfc4648",
+    "rfc7519",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "jwt-structure",
+      "path": "quality/fixtures/jwt-structure/vectors.json"
+    },
+    {
+      "id": "developer-web-gold",
+      "path": "quality/fixtures/developer-web-gold/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime",
+    "bounded parser/operation policy",
+    "tool-specific standards fixture remains bound"
+  ],
+  "identities": {
+    "manifestSha256": "de75e1f33c55c8f38c548e45b22207398157ffee3b43cc40d6adac4c9dfb9e0b",
+    "engineIndexSha256": "617ab6a3c652ef2daae8d33f02fe62f67c1d81e27e6f66ccd2812949ecb3241f",
+    "structuredDataSha256": "43d1e615c912ff704a41b1d1a5b4f4712a19f5dd2ee61945c03d03a6cba26d6e",
+    "encodingCryptoSha256": "683856912a8f21dd0e523e15886a4c510414dbec514483989cb3364ef1cc964c",
+    "webReferenceSha256": "c60c54fdad5e6820949f9491ce146cdff4d50b1d79dd255bf11f8ce5233134b4",
+    "fixtureIndexSha256": "9b749144a7d3af2e7c27c42f3c6b1252ca3338887794e16c31e27b5248609e36",
+    "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+    "browserAcceptanceSha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
+    "unitTestsSha256": "7106e0ffef4580c8689e812fbf5d0a955b0e9f0b687a8c74232e35e876f10ede",
+    "fixture:jwt-structure:sha256": "ba46e8331f8cf6bf7f1c2e0e386e839e3b76a63b0bb94ba8b2de15c2cabe44b6",
+    "fixture:developer-web-gold:sha256": "c3e9c5dbdd301f3a726b9e11c04f42e45b2fabc5d94206f0c6c69168b9a9ae65"
+  }
+}

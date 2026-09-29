@@ -43,6 +43,10 @@ import { jsonPathManifest } from "../src/tools/json-path-playground/manifest";
 
 const manifests = [jsonFormatterManifest, yamlFormatterManifest, tomlFormatterManifest, jsonYamlConverterManifest, urlCodecManifest, htmlEntityCodecManifest, base64CodecManifest, jwtInspectorManifest, uuidGeneratorManifest, hashGeneratorManifest, hmacGeneratorManifest, regexTesterManifest, cronExplainerManifest, cronNextRunManifest, unixTimestampManifest, httpStatusReferenceManifest, mimeTypeLookupManifest, userAgentParserManifest, queryStringEditorManifest, jsonPathManifest];
 
+const goldVectors = JSON.parse(
+  await readFile(new URL("../quality/fixtures/developer-web-gold/vectors.json", import.meta.url), "utf8"),
+) as { tool_vectors: Array<{ tool_id: Parameters<typeof runDeveloperWebTool>[0]; input: Record<string, unknown>; expected: Record<string, unknown> }> };
+
 const moduleInputs: Array<[Parameters<typeof runDeveloperWebTool>[0], Record<string, unknown>]> = [
   ["json-formatter", { text: "{\"b\":2,\"a\":1}", sortKeys: true }],
   ["yaml-formatter", { text: "a: 1\nb: true\n" }],
@@ -67,6 +71,15 @@ const moduleInputs: Array<[Parameters<typeof runDeveloperWebTool>[0], Record<str
 ];
 
 describe("developer/web structured data", () => {
+  it("matches one hand-worked Gold vector for every developer/web tool", async () => {
+    expect(goldVectors.tool_vectors).toHaveLength(20);
+    expect(new Set(goldVectors.tool_vectors.map((vector) => vector.tool_id)).size).toBe(20);
+    for (const vector of goldVectors.tool_vectors) {
+      const actual = await runDeveloperWebTool(vector.tool_id, vector.input) as Record<string, unknown>;
+      for (const [key, expected] of Object.entries(vector.expected)) expect(actual[key], `${vector.tool_id}.${key}`).toEqual(expected);
+    }
+  });
+
   it("formats strict JSON and surfaces duplicate member names", () => {
     const result = formatJson("{\"a\":1,\"a\":2}", 2, true);
     expect(result.formatted).toBe("{\n  \"a\": 2\n}");

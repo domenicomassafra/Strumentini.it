@@ -3,7 +3,7 @@
   "kind": "browser-acceptance",
   "subject": "onboarding",
   "generatedBy": "scripts/acceptance-onboarding.mjs",
-  "revision": "6b8793f17dc5749fee9e3f750931611ba1fc0797",
+  "revision": "05a86960a6782527a089fb4847e24aaeba02c54f",
   "status": "PASS",
   "browser": "chrome",
   "viewport": {
@@ -52,7 +52,7 @@
       "id": "starter-persisted-locally",
       "description": "The saved starter set is installed in the local Workbench",
       "status": "PASS",
-      "observed": "1 installed tool row(s) after save"
+      "observed": "10 installed tool row(s) after save"
     },
     {
       "id": "profile-default-reused",
