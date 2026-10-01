@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "toolId": "text-diff",
   "status": "GOLD",
-  "revision": "cd3b2f23754339853553504afea87a5242e66ebc",
-  "sourceFingerprint": "0aa8b75ca6ddf020c96628ca655632d93417cebe6a6efec5bf1b498659b4de42",
+  "revision": "8dc099fd42f74166bd25c51c4cb9d560cb3d100e",
+  "sourceFingerprint": "3392267d0c36b13a2f9c5902df04022e03477fb0b7dd5241dd3d8c56b077cbfc",
   "runtime": {
     "location": "LOCAL",
     "network": "forbidden"
@@ -52,7 +52,7 @@
   "identities": {
     "manifestSha256": "b5bd90afa39fc97985d03e8b76dde2c45d853960d5d8303d902a58aa08f7efd8",
     "engineSha256": "6401bf42affc8fcc020bb2450cf87dab678c4940f3c9c27b5336b0167ce8de40",
-    "fixtureIndexSha256": "a0252757480079036e4d41f92eabb84180aa102fff081f27f2f8d6686f590be6",
-    "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0"
+    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3"
   }
 }

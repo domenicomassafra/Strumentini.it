@@ -15,7 +15,7 @@ export const pdfCompareManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "structured", format: "pdf-compare" }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-138", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-138", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfCompareManifest;

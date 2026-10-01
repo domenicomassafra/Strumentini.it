@@ -15,7 +15,7 @@ export const pdfLinkExtractorManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "structured", format: "pdf-links" }] },
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-136", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-136", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfLinkExtractorManifest;

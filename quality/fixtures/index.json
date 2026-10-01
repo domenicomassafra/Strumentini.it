@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "family_count": 49,
+  "family_count": 50,
   "families": [
     {
       "id": "unicode-normalization",
@@ -924,6 +924,30 @@
       "coverage": [
         "signature positive/negative",
         "preflight/conformance distinction"
+      ]
+    },
+    {
+      "id": "pdf-gold",
+      "candidate_families": [
+        "PDF and document local tools"
+      ],
+      "path": "quality/fixtures/pdf-gold/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "iso-pdf2"
+      ],
+      "coverage": [
+        "one deterministic public-module vector per promoted PDF/document tool",
+        "merge, split, reorder, rotate, delete/extract page operations with re-inspected outputs",
+        "JPEG to PDF embedding and embedded-image extraction round-trip",
+        "text extraction, metadata inspection/removal, page geometry, page count, link and form inspection",
+        "encryption reporting without bypass, flatten, document comparison, bounded compression, handoff manifest"
       ]
     },
     {

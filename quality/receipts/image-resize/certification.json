@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "toolId": "image-resize",
   "status": "PARTIAL",
-  "revision": "cd3b2f23754339853553504afea87a5242e66ebc",
-  "sourceFingerprint": "0aa8b75ca6ddf020c96628ca655632d93417cebe6a6efec5bf1b498659b4de42",
+  "revision": "8dc099fd42f74166bd25c51c4cb9d560cb3d100e",
+  "sourceFingerprint": "3392267d0c36b13a2f9c5902df04022e03477fb0b7dd5241dd3d8c56b077cbfc",
   "goldEligible": false,
   "runtime": {
     "location": "LOCAL",
@@ -52,7 +52,7 @@
     "src/engines/image/policy.ts": "a27be293fa69261b0927408407a1859d9cab3af41a3f9ff4deb33b1cf82a310c",
     "src/engines/image/format.ts": "33cff596d3d5e617b519383e6e6a9eab968c15ab665ae3ee38183a8266d23e0a",
     "src/tools/image-resize/module.ts": "a3a8f74315e6fa270f43c5ea4ab3af593cf0ba8a47e7a9e82c768e8c54875eac",
-    "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
-    "fixtureIndexSha256": "a0252757480079036e4d41f92eabb84180aa102fff081f27f2f8d6686f590be6"
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d"
   }
 }

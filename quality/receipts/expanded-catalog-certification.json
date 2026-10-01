@@ -6,11 +6,11 @@
   "authorities": {
     "oracleRegistry": {
       "path": "quality/oracles/registry.json",
-      "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0"
+      "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3"
     },
     "fixtureIndex": {
       "path": "quality/fixtures/index.json",
-      "sha256": "a0252757480079036e4d41f92eabb84180aa102fff081f27f2f8d6686f590be6"
+      "sha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d"
     },
     "sourceRegistry": {
       "path": "quality/oracles/sources.json",
@@ -22,13 +22,13 @@
       "status": "PASS",
       "path": "quality/oracles/registry.json",
       "entryCount": 200,
-      "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0"
+      "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3"
     },
     "fixtures": {
       "status": "PASS",
       "path": "quality/fixtures/index.json",
-      "familyCount": 49,
-      "sha256": "a0252757480079036e4d41f92eabb84180aa102fff081f27f2f8d6686f590be6"
+      "familyCount": 50,
+      "sha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d"
     },
     "privacy": {
       "status": "DECLARED",
@@ -103,7 +103,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "0d5bfbf560ae819575bcef5535fdf7b6ebb6b2295df0137da3626bf7b7c36f61",
+          "sha256": "1af80519ed5270e34731035602c248f04f279d0ce353c3fbab97b6bbc094cc6a",
           "status": "PARTIAL"
         }
       ],
@@ -117,13 +117,13 @@
   },
   "summary": {
     "statusCounts": {
-      "GOLD": 99,
+      "GOLD": 119,
       "PARTIAL": 1,
-      "IMPLEMENTED_UNVERIFIED": 100
+      "IMPLEMENTED_UNVERIFIED": 80
     },
-    "certificationGoldCount": 99,
-    "releaseEligibleGoldCount": 99,
-    "releaseBlockedCount": 101,
+    "certificationGoldCount": 119,
+    "releaseEligibleGoldCount": 119,
+    "releaseBlockedCount": 81,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 200,
     "fixtureBoundCount": 200,
@@ -174,7 +174,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -255,7 +255,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/add-subtract-days.gold.json",
-          "sha256": "0b70c7bd79669d25a9ff3f0222079f88fba965fca7791bf9825b70efc7029972",
+          "sha256": "f669e1d6f6635df67d6605d4a7cf05f73805de824d95a45d585cfb1f8e494e55",
           "status": "PASS"
         },
         {
@@ -312,7 +312,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -393,7 +393,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/age-date-anniversary.gold.json",
-          "sha256": "cf499ea73dc38e3e5133915a6e92ceccafea017c29aa54829f0e6c017768faa5",
+          "sha256": "8d4ed306141f5e8f519c12f560e4abfd94a3a796c88e6363a79bd776ef9c11b4",
           "status": "PASS"
         },
         {
@@ -450,7 +450,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -547,7 +547,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -654,7 +654,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -731,7 +731,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/base64-codec.gold.json",
-          "sha256": "b3e21685a03f944f8e75d5e1efb24b5657d0dcb1f2d1e5a486689334081c9518",
+          "sha256": "da601240656b338eb34a7570cbf2e2287f18a760a581aba6efac4c6366d5bb05",
           "status": "PASS"
         },
         {
@@ -787,7 +787,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -882,7 +882,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -978,7 +978,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -1073,7 +1073,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -1168,7 +1168,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -1236,7 +1236,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/break-even.gold.json",
-          "sha256": "5858b040d938ae273e33d3d76c03e9ad4054eb9f486aeaaddd39212cdf23d4dd",
+          "sha256": "6c98182b7089b48951bcbb949cda71cb8d3209e72a58f8d343b7bf648b14b11e",
           "status": "PASS"
         },
         {
@@ -1291,7 +1291,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -1405,7 +1405,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -1479,7 +1479,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-day.gold.json",
-          "sha256": "85fd2c690acf29bd150bf1d846beb04c3f3097a3522d701b7150b170a5c63ab5",
+          "sha256": "12f9664b136933ad9b3360a939533333941e8f0b0b383cf2cd2b4d06dbbcf075",
           "status": "PASS"
         },
         {
@@ -1542,7 +1542,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -1623,7 +1623,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/calendar-date-list-generator.gold.json",
-          "sha256": "94eb77d545c74204fce74d1ac403f10d6171f0adb9a131460043ad554933ae60",
+          "sha256": "108faae4ffcc7bb5fbea046a3f98fde6bd789481cd7d23cc05655c210adb9b25",
           "status": "PASS"
         },
         {
@@ -1676,7 +1676,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -1744,7 +1744,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/campaign-name.gold.json",
-          "sha256": "daf73a12206b7a6d3f90b505e93dfed4657d4c53482340a468533acbcebfd848",
+          "sha256": "52a28403d2de9500f0c3a37e524be091b9c078e6c57573c257e7d3247be597cf",
           "status": "PASS"
         },
         {
@@ -1805,7 +1805,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -1909,7 +1909,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -1977,7 +1977,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/capacity-planner.gold.json",
-          "sha256": "51073965325e6bb2509e1e1490b68bb3cae1322deb2a3db65c64f9e635805844",
+          "sha256": "469f285ce06e1561c93117cf4f2375a0c1d84314a8bc9ca17a950aa63708bd92",
           "status": "PASS"
         },
         {
@@ -2034,7 +2034,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -2111,7 +2111,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/case-converter.gold.json",
-          "sha256": "2f452434e2d59bcba33dbf211d1ce1265d12eeff8b7964d6aa2717a36c7c1ec6",
+          "sha256": "b389d1b0b04eb163c65ac0fe06e990d69968f3eec707ae14b08855ca20495cc2",
           "status": "PASS"
         },
         {
@@ -2167,7 +2167,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -2261,7 +2261,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -2356,7 +2356,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -2452,7 +2452,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -2547,7 +2547,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -2653,7 +2653,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -2761,7 +2761,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -2869,7 +2869,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -2952,7 +2952,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/column-type-profiler.gold.json",
-          "sha256": "b1a1c157f3d5258f00f71efd9f65cdf0536443aa85e8623bbe0574a6e9f7086c",
+          "sha256": "2773742d1c87f3e6677fcce652adf4bf9145a9e1a9d3b817eec712eb3b1a5aa6",
           "status": "PASS"
         },
         {
@@ -3009,7 +3009,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -3118,7 +3118,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -3225,7 +3225,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -3319,7 +3319,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -3413,7 +3413,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -3491,7 +3491,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/cron-explainer.gold.json",
-          "sha256": "cb57c7abdbf3ed609ccb75585123f07064677c38bb7e2a64c9dc75d875841aba",
+          "sha256": "c798e8d0d8431cf1aeb1c568c364210801830a33b14a0cac7785cb0d766c2276",
           "status": "PASS"
         },
         {
@@ -3546,7 +3546,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -3624,7 +3624,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/cron-next-run.gold.json",
-          "sha256": "f5faecd2fb75adb03d66263cb967467b84fc071b6c29e4203267ccccecd38ae6",
+          "sha256": "c185fa6aae27b23c02717707a1fdfa30e5254de9eb1c1b92632f4c630ff2aa27",
           "status": "PASS"
         },
         {
@@ -3680,7 +3680,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -3758,7 +3758,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/csv-cleaner/gold.json",
-          "sha256": "96fe2d5a7e8ecb652db77ed39a1519a5009da5c23a15b6759c82eff3162e02d4",
+          "sha256": "2f0a55c5f210744be78bba1c688d7663e7deb491dd022f16f7e7408a114eb6fb",
           "status": "PASS"
         },
         {
@@ -3821,7 +3821,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -3898,7 +3898,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-column-map.gold.json",
-          "sha256": "429c658e7b51ce545876b03c348a734b2cd5d073824d0a4bad4a04187cbb8017",
+          "sha256": "151f28fbb7ee719ff9a9d28dfce7e7ed2da5eb674648ee9609546b24c60d81e2",
           "status": "PASS"
         },
         {
@@ -3960,7 +3960,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -4052,7 +4052,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-column-selector.gold.json",
-          "sha256": "9dbf3148d8e50a5814f3dd352e1943c7e0355b5d6887ac838fdfe33a9d902c67",
+          "sha256": "ec2bf9d4b5790345bb4a93e8c3f9ecb61f9a27ff61e44e4d6d89ffcbc8d0e7cd",
           "status": "PASS"
         },
         {
@@ -4109,7 +4109,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -4186,7 +4186,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/csv-column-to-list.gold.json",
-          "sha256": "a884156784c71b510f98099b4ef2b32bc173b07188f0478734d513436245ec7e",
+          "sha256": "77b24757566c19d3aac763e51ded3985623c77e56a7ee88155c34d25989e571e",
           "status": "PASS"
         },
         {
@@ -4243,7 +4243,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -4320,7 +4320,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-dedupe.gold.json",
-          "sha256": "1de07e16bbb24443991a355b65c26322ebbea049193539796ccaf6cac40058b1",
+          "sha256": "957e6c31b6e2ea51cccb1b60690c7bb17f76af1f1453469648a829be07e501de",
           "status": "PASS"
         },
         {
@@ -4382,7 +4382,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -4475,7 +4475,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-delimiter-detector.gold.json",
-          "sha256": "f527c772f898409942f263f61281bb4d4f1981f209a198b0d196369cbfa26001",
+          "sha256": "e5e025c198d7d2bcee6b25f67c4e608c9b9e0757ce08a4cbf398d987098b6444",
           "status": "PASS"
         },
         {
@@ -4531,7 +4531,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -4624,7 +4624,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-encoding-fixer.gold.json",
-          "sha256": "a465d3e1c2824dc0013852663f07216fc0e2c06a113e82748791ed42d70c8d9b",
+          "sha256": "71b37bb3ca9983c06f958f362c6ab9a1679b426d10f45eb0359a51e6039760c8",
           "status": "PASS"
         },
         {
@@ -4680,7 +4680,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -4772,7 +4772,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-filter.gold.json",
-          "sha256": "47f55c69aa02928342916009f59a63629df75b4e481fa9be43d59bf9db7ce081",
+          "sha256": "8b84e0391f39014590c456174facb8fc61a04b0b858e1a3c91cbb2e0c0a4e111",
           "status": "PASS"
         },
         {
@@ -4828,7 +4828,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -4920,7 +4920,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-group-count.gold.json",
-          "sha256": "b53d3ce6b30e7c1f4accb4dff47d56fc138a622251a079ce9b08fcaa3771b5b8",
+          "sha256": "c10aa2c471be50e69f441843c938e23e42c6df44613afad8d0a788b28eebbcfb",
           "status": "PASS"
         },
         {
@@ -4976,7 +4976,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -5068,7 +5068,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-join.gold.json",
-          "sha256": "d8c2a44260f8ab9ce553e0a94091d47d02558dfc30ef8c388c91758ab8b8b8ac",
+          "sha256": "4a86ae040481c1cffe97da07460f1ef554515c23361d0b69c1b5bf47c7034a8f",
           "status": "PASS"
         },
         {
@@ -5124,7 +5124,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -5216,7 +5216,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-pivot-lite.gold.json",
-          "sha256": "c15276705eb8e0d1e6dc6be248049a29191db858102a75b5abd6d47598eeb664",
+          "sha256": "90741b1892e63342c6e4f2ac9c9c05b3e9b8366c5c3632ace4a4243fae8765ee",
           "status": "PASS"
         },
         {
@@ -5272,7 +5272,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -5364,7 +5364,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-sort.gold.json",
-          "sha256": "167265dc62e1d3ea85123021e5ea6faee7e242f719a4c8f15824ffec8a092fd7",
+          "sha256": "d60c7e98bff717e8ed2cde30d76ac53e58079d8424685a416f1297362639a9ba",
           "status": "PASS"
         },
         {
@@ -5421,7 +5421,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -5514,7 +5514,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-to-json.gold.json",
-          "sha256": "797d5dd8879f2f43850200bc4e55ed2f49dfaecb52ec6682d809ae02e01243ce",
+          "sha256": "dc185af54ee6bd9497edd5cdd18708887f3e29e28257399274004799cf385f4f",
           "status": "PASS"
         },
         {
@@ -5570,7 +5570,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -5652,7 +5652,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-viewer.gold.json",
-          "sha256": "028294f18a79509206d01c2fbad605ab97c04c26a5498b6586f7df43c164d921",
+          "sha256": "2e4ae0358bb01b7d11ca9a18e52dab09c447911c008726e41c15c1052d2fcc2c",
           "status": "PASS"
         },
         {
@@ -5707,7 +5707,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -5775,7 +5775,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/currency-scenario.gold.json",
-          "sha256": "c0b8c70c6821d84ca7bd9de7fe122ccee335bdc4ee2ef67748178cd09db44353",
+          "sha256": "6fcc4615f4152b01ff13436ce1ded5ef19721b1bfea0c17b68eb466c543bcf7e",
           "status": "PASS"
         },
         {
@@ -5832,7 +5832,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -5913,7 +5913,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/date-difference.gold.json",
-          "sha256": "939944e9a1deffeb68c47f7ea8758ab5e3b3dbd7b1d52045e02b4e39b2180f81",
+          "sha256": "b631f178e2ac72cfca512e8ad02bc81bcf9dee94dd3caf4384719547fb5af598",
           "status": "PASS"
         },
         {
@@ -5968,7 +5968,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -6066,7 +6066,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -6147,7 +6147,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/deadline-countdown.gold.json",
-          "sha256": "070733192eded818b28018102a94a8645ac6e7b465b4e108f0a66db2c07c262d",
+          "sha256": "8b6b1711b0e995dc8eb54f5dd715c7c4c3bed1211801a42987618ec84cb94e93",
           "status": "PASS"
         },
         {
@@ -6204,7 +6204,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -6284,7 +6284,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/decimal-hours-converter.gold.json",
-          "sha256": "312f1e7ef2edf2e3c8b661a08daf7e3c97fbc836e14ec99ac169aa9eedf6c6a6",
+          "sha256": "7fffc6eb58e6b5d5d475fb8f9ca69b4dc01a68b7d60885cb146f23a2947cc3a1",
           "status": "PASS"
         },
         {
@@ -6339,7 +6339,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -6406,7 +6406,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/discount-impact.gold.json",
-          "sha256": "393db16bf5c1fd9a6af2d00ccabbe4f685964a11ba0ffa8dd5568e0d79c88dbe",
+          "sha256": "a60253146b10a86a17fc804e015fe40bc332cf7b266e26721bf9bed0e0728254",
           "status": "PASS"
         },
         {
@@ -6426,14 +6426,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/document-handoff-manifest.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/document-handoff-manifest/manifest.ts",
-          "sha256": "94cd4b5e5279caf95ab7d9ef8684ce6018e2bce090f5c26e4253219d3bae05cc"
+          "sha256": "96bef3ffa3171ff6b2dc99afab058540b501c8c61a027a562eb2b93c30242171"
         },
         "module": {
           "path": "src/tools/document-handoff-manifest/module.ts",
@@ -6444,6 +6444,7 @@
           "sha256": "aa843aacb07cbdb256632e11e0fe13c89d13b4f08918f9db775847cfcd6a56da"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -6456,12 +6457,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -6474,7 +6475,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -6488,16 +6500,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -6506,15 +6539,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/document-handoff-manifest.gold.json",
+          "sha256": "e33d4160cad388fcfb67f30cec47d34438badcb07c985f4b27fc4f1c037671ea",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "doi-isbn-normalizer",
@@ -6560,7 +6600,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -6637,7 +6677,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/doi-isbn-normalizer.gold.json",
-          "sha256": "d9450f44095ff1f9358e9faf551bf55c9fe21d7321185b2fe3dd0ad688850376",
+          "sha256": "aa1ffe92ffadb1d2e1f6c6ef73a418996f3f978d1c6c0642b9f3368096317457",
           "status": "PASS"
         },
         {
@@ -6699,7 +6739,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -6795,7 +6835,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -6889,7 +6929,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -6984,7 +7024,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -7090,7 +7130,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -7197,7 +7237,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -7293,7 +7333,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -7376,7 +7416,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/duplicate-row-profiler.gold.json",
-          "sha256": "95a52df88c3e74289c761e603acb5f470b71800beeeb95c5b8b38afcdec5df3d",
+          "sha256": "1cfecb029643de33ddb7e4828d89c5a96ea63167e78a3ae28b6cc63726366c58",
           "status": "PASS"
         },
         {
@@ -7433,7 +7473,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -7514,7 +7554,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/duration-calculator.gold.json",
-          "sha256": "43f2057220fdfefeba93ef01ec52c241c9e8f8cc6ddb73bf67c5ca93f74214fc",
+          "sha256": "4afb372f6d0fb0415ac92255e0de1e24a38c2a129ebbf59c5e6e65a6201c49f9",
           "status": "PASS"
         },
         {
@@ -7569,7 +7609,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -7637,7 +7677,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/effective-hourly-rate.gold.json",
-          "sha256": "1a65962cbb0bf397746613087ef15c9474928021aa46a155ea2c5fb8411ce2d9",
+          "sha256": "28bbd9fcbeb01485cf63a9d08801897e0939ae5452ce6c9dbedc879f5d016a67",
           "status": "PASS"
         },
         {
@@ -7693,7 +7733,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -7799,7 +7839,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -7880,7 +7920,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/epoch-batch-converter.gold.json",
-          "sha256": "d2c33b54c83581bfea1037167b0819d58c962430ea22ce55f7fde203453bc8e1",
+          "sha256": "af28dde7a6e09f5ad1bf474c8f668f18a1599b8eb506b95d49561accb058be0e",
           "status": "PASS"
         },
         {
@@ -7934,7 +7974,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -8033,7 +8073,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -8143,7 +8183,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -8250,7 +8290,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -8328,7 +8368,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/file-hash/gold.json",
-          "sha256": "da8dcd1ea5a7b00a438a8f08e06ca68f29f3c1bfd3d201f813aa6982708962b1",
+          "sha256": "6a3204d0489f95e0c1c3f5a2f59b536217e544ec2e4a3ed4b799f240954f9720",
           "status": "PASS"
         },
         {
@@ -8383,7 +8423,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -8492,7 +8532,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -8590,7 +8630,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -8686,7 +8726,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -8764,7 +8804,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/find-replace-preview.gold.json",
-          "sha256": "38d6de1b43103bb1863bc17edf2aa908d5db28b1566ecdb7da197d98519aca90",
+          "sha256": "fb856ac76a59dd2541b088680e09b4431f08a4f57e5178a9fe09ed524c930be4",
           "status": "PASS"
         },
         {
@@ -8819,7 +8859,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -8925,7 +8965,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -9020,7 +9060,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -9118,7 +9158,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -9196,7 +9236,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/hash-generator.gold.json",
-          "sha256": "a3126abeaee884996b88dbaeedd4188a40b38cfd3a78a754c5dac3820ef6c085",
+          "sha256": "90123a55404876d998822ca4291e7e432efdf24e0cc6aae79a07d0426f3d94fb",
           "status": "PASS"
         },
         {
@@ -9252,7 +9292,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -9331,7 +9371,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/hmac-generator.gold.json",
-          "sha256": "eabd7c1f3d3258a30f17f4b5b27870de19e2b78dfdbcf64a939e2e7226829e0a",
+          "sha256": "bba53b80a4d2870dc122487153a6335a667ab3da5fe1443a31fa168198f1c6ad",
           "status": "PASS"
         },
         {
@@ -9387,7 +9427,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -9465,7 +9505,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/html-entity-codec.gold.json",
-          "sha256": "48c6125542b45cf0461c11c8860d6ec26bb0716d61e43b4993f6c83c9fc890d7",
+          "sha256": "e794d6c3ad5947bddace6d4124b610b9e289060c172b597daa3dc4c1c21d2d77",
           "status": "PASS"
         },
         {
@@ -9520,7 +9560,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -9597,7 +9637,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/http-status-reference.gold.json",
-          "sha256": "0da4bd21770c920c8df2f7b60dad0aed2d0023c82bef048e1cdf458445f5884d",
+          "sha256": "e499e23bfcbdd921b067e546708b285f5f15b52a41c8c64a3914d8c825237672",
           "status": "PASS"
         },
         {
@@ -9655,7 +9695,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -9735,7 +9775,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/ics-event-builder.gold.json",
-          "sha256": "8566f9cadf812afda156620063e4b12fcfc85682f365427c3054c1b55f425fe1",
+          "sha256": "affbe49e81a1ff06221c25dc6f22ff4a05265d651a24324998a0ed9df611e808",
           "status": "PASS"
         },
         {
@@ -9793,7 +9833,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -9873,7 +9913,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/ics-viewer.gold.json",
-          "sha256": "8fddbbcb5084716449ff72dbb73ccd2d23886678c0af18abec31464a0045fc89",
+          "sha256": "7621cfb364cab810c6ddf5c0c6348877ea0b59a2fc3848da0538d70754c48afd",
           "status": "PASS"
         },
         {
@@ -9930,7 +9970,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -10039,7 +10079,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -10148,7 +10188,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -10257,7 +10297,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -10366,7 +10406,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -10476,7 +10516,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -10585,7 +10625,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -10695,7 +10735,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -10737,7 +10777,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/image-resize/browser-chrome.json",
-            "sha256": "6e7e446e499bab3c881c1ca7447fd4c9b45611e2672e119f5d77a679251b9946",
+            "sha256": "c4fc8c6f78b25091b34331f7d17ea84834e3a8e2d96e7b844c56b6f7ec768928",
             "status": "PASS"
           },
           {
@@ -10760,7 +10800,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/image-resize/browser-chrome.json",
-            "sha256": "6e7e446e499bab3c881c1ca7447fd4c9b45611e2672e119f5d77a679251b9946",
+            "sha256": "c4fc8c6f78b25091b34331f7d17ea84834e3a8e2d96e7b844c56b6f7ec768928",
             "status": "PASS"
           },
           {
@@ -10797,7 +10837,7 @@
           {
             "dimension": "physicalDevice",
             "path": "quality/receipts/image-resize/certification.json",
-            "sha256": "0d5bfbf560ae819575bcef5535fdf7b6ebb6b2295df0137da3626bf7b7c36f61",
+            "sha256": "1af80519ed5270e34731035602c248f04f279d0ce353c3fbab97b6bbc094cc6a",
             "status": "PARTIAL"
           }
         ]
@@ -10806,13 +10846,13 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "0d5bfbf560ae819575bcef5535fdf7b6ebb6b2295df0137da3626bf7b7c36f61",
+          "sha256": "1af80519ed5270e34731035602c248f04f279d0ce353c3fbab97b6bbc094cc6a",
           "status": "PARTIAL"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/image-resize/browser-chrome.json",
-          "sha256": "6e7e446e499bab3c881c1ca7447fd4c9b45611e2672e119f5d77a679251b9946",
+          "sha256": "c4fc8c6f78b25091b34331f7d17ea84834e3a8e2d96e7b844c56b6f7ec768928",
           "status": "PASS"
         },
         {
@@ -10847,14 +10887,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/images-to-pdf.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/images-to-pdf/manifest.ts",
-          "sha256": "f5521b6f264a395cccc2257c63fd0d3bcc8a455b30c3a64a983f71f5bd8b5e2d"
+          "sha256": "ea39dc03dd767bbb77c4db99e4e0d54d6c45bc31277763b48ec007327002bf24"
         },
         "module": {
           "path": "src/tools/images-to-pdf/module.ts",
@@ -10865,6 +10905,7 @@
           "sha256": "da2b8f8ca673de6392298d217e953837120b79afd490d542b8f221ddcbd3e721"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -10877,12 +10918,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -10895,7 +10936,7 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         },
         {
           "id": "mime-file-signatures",
@@ -10908,7 +10949,18 @@
             "iso-pdf2",
             "pkware-appnote"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -10923,16 +10975,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -10941,15 +11014,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/images-to-pdf.gold.json",
+          "sha256": "943afa2c07a23561b53472edf262016d3617587b4858a67962a2d0b8b14240b7",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "invisible-character-detector",
@@ -10995,7 +11075,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -11073,7 +11153,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/invisible-character-detector.gold.json",
-          "sha256": "e71fe242b3e174090c2b3f222112a17570fb1ca97e7bd94070962dff0bffe9be",
+          "sha256": "a381c4066a860435125c26b8af84a95b948b7c7715934d753e76c10d9949ee28",
           "status": "PASS"
         },
         {
@@ -11128,7 +11208,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -11196,7 +11276,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-math-validator.gold.json",
-          "sha256": "7ab2502f26581282fef4129d8508b9aa8ff37995dc33372ce21d3515720913b8",
+          "sha256": "6bf43d596cd90265b4874a6284a89a29b4d922265326ea0c2d4af27a86ad6ff3",
           "status": "PASS"
         },
         {
@@ -11251,7 +11331,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -11319,7 +11399,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-number-generator.gold.json",
-          "sha256": "a8178024e589e32b13f76eb253df739560fbd744d98deeaebb2b56c0a1492639",
+          "sha256": "659f2389d0fa15744353377f00fbee0c2d94d7a36a89d7706c77b3e0c1cf6cf3",
           "status": "PASS"
         },
         {
@@ -11374,7 +11454,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -11468,7 +11548,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -11545,7 +11625,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/json-formatter.gold.json",
-          "sha256": "85c745b59e816e168004ed4e790afb900ba41061710c2bffff049ac4bccb8137",
+          "sha256": "9ec0ccb68ba73394b4464bea5d0b82c9463de453a1e8939ad12d5b7386be93ad",
           "status": "PASS"
         },
         {
@@ -11601,7 +11681,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -11678,7 +11758,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/json-path-playground.gold.json",
-          "sha256": "1a747b39430b2c742030c88e8eb6631e11985e61df73773dfd0f94d8181ded72",
+          "sha256": "dbbb9de3f4ac06c046371b46ee035cb8a5d2fc6f0c350b799b64832143abc901",
           "status": "PASS"
         },
         {
@@ -11735,7 +11815,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -11828,7 +11908,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/json-to-csv.gold.json",
-          "sha256": "5a630d84a2c62f96e0e049373fdaf466f76d4eb4b2332998f9fe15aa2ba6c143",
+          "sha256": "7c23f14c35d53312ea187264108e784ff54fe19689aa73f5ee495550cb026cba",
           "status": "PASS"
         },
         {
@@ -11884,7 +11964,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -11971,7 +12051,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/json-yaml-converter.gold.json",
-          "sha256": "4f6b9b216a02f61731a0d43d9e915081e77ecb92d59bac1bf5b0612a650d5aca",
+          "sha256": "6f674a3c63b5947faf8d0b831089080b49b31136299c607f78a2c914e9c5773e",
           "status": "PASS"
         },
         {
@@ -12026,7 +12106,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -12104,7 +12184,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/jwt-inspector.gold.json",
-          "sha256": "aa34fa320a0d7d8c4bb6d832dc8f129b25c94f8b36be3fe1924eadeccb8146c0",
+          "sha256": "5784da4a15e89ea13e36d6b2fa439ce60eeb2ef5f7f8a4ebbb2f62f82998062e",
           "status": "PASS"
         },
         {
@@ -12160,7 +12240,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -12254,7 +12334,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -12322,7 +12402,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/late-payment-interest.gold.json",
-          "sha256": "9e2c360ee048cc9bd2a0bb87e53155932e58579057610e3aea145c7f3accc3ef",
+          "sha256": "10c277ad1f62b69ea6545b60b230ecf2ffe4b7fab1f3565c96af57f7bb507e05",
           "status": "PASS"
         },
         {
@@ -12378,7 +12458,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -12465,7 +12545,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/line-deduplicator.gold.json",
-          "sha256": "b49d202087a9960fc1300c9f8f9208be08fdfb07980648622b0a80e98f2c8bca",
+          "sha256": "68ab744e415304fc594fd9a5aa7d4a8b7579101200904e108989c317291a665e",
           "status": "PASS"
         },
         {
@@ -12521,7 +12601,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -12599,7 +12679,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/line-sorter.gold.json",
-          "sha256": "ec1757b68b586eccd7ef30f146f31d7c300f4a3d295d26588f2596fc1086bfa7",
+          "sha256": "1ce673b0d2e3a993415b43325961140b799b1ce795cd683a5b32c90a4b095d50",
           "status": "PASS"
         },
         {
@@ -12655,7 +12735,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -12742,7 +12822,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/list-compare.gold.json",
-          "sha256": "b69097a9a3c10b605047b32e91057a78b97d34c0bb564fb9b4e9e2e159521607",
+          "sha256": "0dffaab7956806298a52e23f5a48dd6b1fd905de6eb53b64e6b52fac2962f72b",
           "status": "PASS"
         },
         {
@@ -12804,7 +12884,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -12882,7 +12962,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/list-difference.gold.json",
-          "sha256": "23ff363bd841fc8ff2ddf432b10d3dd85f07be6f13cdd7e5c45e580ee4f42f13",
+          "sha256": "7e67b54c3383e6e27ad3f80837e44e1609a38864ecc6d694e5e451a3a38aae25",
           "status": "PASS"
         },
         {
@@ -12938,7 +13018,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -13016,7 +13096,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/list-intersection.gold.json",
-          "sha256": "29d53fa8fa53aea6abf6ab3573fe5f7ce0efcda1264181af3424607ee8e13eee",
+          "sha256": "18762408818ce9031efa665ee7ecfb5f19558c890ce15c76f45f9fdc6d7ff1db",
           "status": "PASS"
         },
         {
@@ -13072,7 +13152,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -13170,7 +13250,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -13238,7 +13318,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/margin-markup.gold.json",
-          "sha256": "a962530a06e926cd1ce535b486721083231ce5c372bdf84e70369b0c84922133",
+          "sha256": "d49c217f90d12d4c7c4f9d067b43b41e2fef6621c4535923952308df2a810eef",
           "status": "PASS"
         },
         {
@@ -13302,7 +13382,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -13381,7 +13461,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/markdown-preview.gold.json",
-          "sha256": "b74a5cb56cf8a72166e60b196823ec65e403284565ac9797961bdd120f166652",
+          "sha256": "b6aa4360467e6bb6ddd3f2a1702005a46df5ca22ab58a36b58d816057dff1304",
           "status": "PASS"
         },
         {
@@ -13439,7 +13519,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -13516,7 +13596,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/markdown-table-formatter.gold.json",
-          "sha256": "47ee0d5d01d1a480789de9666d9138af95356dccd1b728821abce44a12147128",
+          "sha256": "83533f1572a874387c070b688af8d8f0f450dd06d1de2a12d0d4cdfa6903b349",
           "status": "PASS"
         },
         {
@@ -13573,7 +13653,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -13654,7 +13734,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/meeting-time-planner.gold.json",
-          "sha256": "279d541004697bc5aa06cd886238b5e68259d5a357897b7832491b30b96121bf",
+          "sha256": "fcfd49f59b5e90b5b879a472514fdb01e45f805f6bc706e0fc2a50cb9c895195",
           "status": "PASS"
         },
         {
@@ -13709,7 +13789,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -13814,7 +13894,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -13909,7 +13989,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -13990,7 +14070,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/mime-type-lookup.gold.json",
-          "sha256": "90b2c51108a21e678c6e4e711957084cb2d8a9d1d4e35e8bf7f14bc61951cc88",
+          "sha256": "6c9fd6d96fcf4538756bcca246380f57aa529c73695bfb92c8499cf27d7e5a05",
           "status": "PASS"
         },
         {
@@ -14046,7 +14126,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -14129,7 +14209,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/missing-value-profiler.gold.json",
-          "sha256": "8c1a6b90e5d8919c656817b0c3ee2e5a4d1a0fe87754c5f7864206670a627523",
+          "sha256": "a257ea053b34c8894893708b8ae71a240162022fe7a9d5c95a936aea3a2a041b",
           "status": "PASS"
         },
         {
@@ -14183,7 +14263,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -14279,7 +14359,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -14386,7 +14466,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -14493,7 +14573,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -14561,7 +14641,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/payment-fee-gross-up.gold.json",
-          "sha256": "8cf194ff24343ba3d9b626997f0830bdcb7f12323b4a95bfe98e3600117ebb9d",
+          "sha256": "479a404f8d584d8fc1e482e05bcac428f37e0d211221b08bd436f5f2a4f9c619",
           "status": "PASS"
         },
         {
@@ -14581,14 +14661,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-compare-lite.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-compare-lite/manifest.ts",
-          "sha256": "cb3c2010a5a7887bfa45d97e7032fd1aa9f0cfa8cbea2992428025160b0017c6"
+          "sha256": "f596a092392661499e2a5a473c3c0e2277c155be704c64bd87f2235a86f4ae19"
         },
         "module": {
           "path": "src/tools/pdf-compare-lite/module.ts",
@@ -14599,6 +14679,7 @@
           "sha256": "0e374c1583d230ab261be4783c634203be5e8f6b26bcc75157d3b0e81f4869f7"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -14611,12 +14692,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -14629,7 +14710,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -14642,16 +14734,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -14660,15 +14773,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-compare-lite.gold.json",
+          "sha256": "d652a9249ec5e2a5ad3698e7c9771d2e2553cf54deca13bcb882c17e62a2cd4a",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-compression-lite",
@@ -14677,14 +14797,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-compression-lite.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-compression-lite/manifest.ts",
-          "sha256": "5489af75279d233ec2fd4fecd1481f72fdf40ed2caf1fff1ac449ed7d2d8c8ed"
+          "sha256": "4f67852267392006fb1169f6aaa290ab912866a67172f8412377e65fc79c1eac"
         },
         "module": {
           "path": "src/tools/pdf-compression-lite/module.ts",
@@ -14695,6 +14815,7 @@
           "sha256": "61da464f5245583c77b8b5e8b3db2b4694ef99d4b9d13bac741ae2e8426cb66a"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -14707,12 +14828,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -14725,7 +14846,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -14739,16 +14871,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -14757,15 +14910,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-compression-lite.gold.json",
+          "sha256": "6412f7e930fbb1fe5f7d4246db2188eca73fd89252ab0fd780a6b52a0c106608",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-flatten",
@@ -14774,14 +14934,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-flatten.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-flatten/manifest.ts",
-          "sha256": "893fd834c4f71760cc5bf224ff71ede4f766ed44d2017ee0848be6d7bd0ff931"
+          "sha256": "d9f9b0014784d77fd2ef6ea46831634b9808e8f8c94a8d12398f6a6d07f134bd"
         },
         "module": {
           "path": "src/tools/pdf-flatten/module.ts",
@@ -14792,6 +14952,7 @@
           "sha256": "e619e3f64184675c16625e3d9b21dcfc430f1c2ee9dd26b9edd8ff0d7487b951"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -14804,12 +14965,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -14822,7 +14983,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -14836,16 +15008,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -14854,15 +15047,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-flatten.gold.json",
+          "sha256": "5065aff245f7825c91c52646627a310ef4a1de0fd731aefebe5deb1453ed207b",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-form-inspector",
@@ -14871,14 +15071,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-form-inspector.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-form-inspector/manifest.ts",
-          "sha256": "031f80854f9f1d31b8ba37f89939cd4c94ceb485de61b4124896cbe1a48978ae"
+          "sha256": "b6060dec04b17ce62e52bd87f5525b69269b8bf2d59fdaecdcad787391899ec7"
         },
         "module": {
           "path": "src/tools/pdf-form-inspector/module.ts",
@@ -14889,6 +15089,7 @@
           "sha256": "db7a38bc4e1354e9db14380be276e7cdb8cfabc26bcf055b569597f4afae152e"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -14901,12 +15102,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -14919,7 +15120,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -14932,16 +15144,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -14950,15 +15183,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-form-inspector.gold.json",
+          "sha256": "116593fef0ddec6472d114b378313fbda2be8e9ddac979e85b46f8fa013664d1",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-image-extractor",
@@ -14967,14 +15207,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-image-extractor.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-image-extractor/manifest.ts",
-          "sha256": "216a6bdb101912ec352087d063b02aa6e40a2100d06608a7823d32396b5e9236"
+          "sha256": "d30138a5f4f8f72e165f885e0a82cf4c5b31c8195d4dfbc917bed02148fd137f"
         },
         "module": {
           "path": "src/tools/pdf-image-extractor/module.ts",
@@ -14985,6 +15225,7 @@
           "sha256": "8ab95068abe8552897f6dd84769a1ba9aaf32d1854ef9f01f3c207a512d98d8a"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -14997,12 +15238,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15015,7 +15256,7 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         },
         {
           "id": "mime-file-signatures",
@@ -15028,7 +15269,18 @@
             "iso-pdf2",
             "pkware-appnote"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15043,16 +15295,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15061,15 +15334,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-image-extractor.gold.json",
+          "sha256": "ed1639ff975113bc5376edc0b9b94142d37c16f3a114a7386f103989b251bd11",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-link-extractor",
@@ -15078,14 +15358,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-link-extractor.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-link-extractor/manifest.ts",
-          "sha256": "4bf052a1d628acaebc6ec6bdf2c113c718fc97b0ad4648618660e5203248e944"
+          "sha256": "b3b0ee7dc9f9f8f75b4bf1576f25a8ef173bee51ca4dd579b8cf5e741c089099"
         },
         "module": {
           "path": "src/tools/pdf-link-extractor/module.ts",
@@ -15096,6 +15376,7 @@
           "sha256": "4da7cc1d5a8965ea1325fdac7055bda9cc87efc0c8352d1e8fcbd3c386c5b9c4"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -15108,12 +15389,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15126,7 +15407,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15139,16 +15431,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15157,15 +15470,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-link-extractor.gold.json",
+          "sha256": "2c69e7e6de91569b833feb8e88a6a899083bd1f1df5d6c580cc91aa35e5ff8ba",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-merge",
@@ -15174,14 +15494,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-merge.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-merge/manifest.ts",
-          "sha256": "e736dd1ff4a0c39d4570597cdcf5f168081fb4746aa18bba010173fba071e18f"
+          "sha256": "94f3a3b5411571c08f537f5a1abe962e31c72042ed364b4a4ee5c02fc87c80ce"
         },
         "module": {
           "path": "src/tools/pdf-merge/module.ts",
@@ -15192,6 +15512,7 @@
           "sha256": "215568d96db0d731ad3d21dffec7413999d5767edc28ed9761af664c770ab9d1"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -15204,12 +15525,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15222,7 +15543,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15236,16 +15568,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15254,15 +15607,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-merge.gold.json",
+          "sha256": "97d10085e0e3ccc916685c24a8822555745d5b9636b6a0dddc99cf6ce5a2e3ea",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-metadata-inspector",
@@ -15271,14 +15631,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-metadata-inspector.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-metadata-inspector/manifest.ts",
-          "sha256": "6dd6f6b2541c27415c364fdf400e2563f0840875e7a49e514adf1da36535bf6f"
+          "sha256": "c3b20c25bc4f2535a9267c3d814fd4df2506fed8c42e5c91b7b8cec2b54d794f"
         },
         "module": {
           "path": "src/tools/pdf-metadata-inspector/module.ts",
@@ -15289,6 +15649,7 @@
           "sha256": "f93e6bb81c983a2b301eb2d201c14caedd15aba01c57ae151fc4a53e4ce378a2"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -15301,12 +15662,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15319,7 +15680,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15332,16 +15704,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15350,15 +15743,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-metadata-inspector.gold.json",
+          "sha256": "65e3c4c42211c0d5d93fea1e9582b7820738f1719ee018dcf3d708d9d5cfe83a",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-metadata-remover",
@@ -15367,14 +15767,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-metadata-remover.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-metadata-remover/manifest.ts",
-          "sha256": "0d2936a0250a345056423c1d5ea7381063133591d8ac7e22d84f31c2f8aada98"
+          "sha256": "7eff292649fdb38c13a3b595d5eddea6c4d800c2c34e786920ea75ba704b9649"
         },
         "module": {
           "path": "src/tools/pdf-metadata-remover/module.ts",
@@ -15385,6 +15785,7 @@
           "sha256": "7fa779ede992cc08a181bfb7cc0d58f4f5d1a1e46812d3b4f007f517befe35b6"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -15397,12 +15798,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15415,7 +15816,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15429,16 +15841,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15447,15 +15880,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-metadata-remover.gold.json",
+          "sha256": "97ab7b78d9506846b0d1f6a7f92573e06868bc7fa9b70411040c95028ac20cde",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-page-citation-helper",
@@ -15498,7 +15938,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15558,14 +15998,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-page-count-verifier.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-page-count-verifier/manifest.ts",
-          "sha256": "a981bd6bcb7a0aa4ddf9e600148e3acc69b7e02007540fc5da4dad9c714bc50c"
+          "sha256": "6b65d6cd52e9fe6f2163468f1ddaf901060dcbb1c062c2774c6add56055d1571"
         },
         "module": {
           "path": "src/tools/pdf-page-count-verifier/module.ts",
@@ -15576,6 +16016,7 @@
           "sha256": "e14e762cdcf3aeb930a26ea0e4eaf40e7e3c46f0833a8082ca2e2c17ccc47bda"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -15588,12 +16029,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15606,7 +16047,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15619,16 +16071,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15637,15 +16110,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-page-count-verifier.gold.json",
+          "sha256": "33a0ad895263b2ea3f6601fbc702b69fd55acff8a60cb25449a76a60b05ad349",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-page-delete-extract",
@@ -15654,14 +16134,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-page-delete-extract.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-page-delete-extract/manifest.ts",
-          "sha256": "3214e412ec0967e65ac348d800f10fedeab82478b3b7d52864300908aa2fd513"
+          "sha256": "1c74d8a1adc7edcfd773e3b34db21bfbffca9728a40a0b4e3a956f497c2b12ce"
         },
         "module": {
           "path": "src/tools/pdf-page-delete-extract/module.ts",
@@ -15672,6 +16152,7 @@
           "sha256": "ce43621e5733aec75846e068415dfb0dbbf42d98cb13b3947e1b50b3958e5f6a"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -15684,12 +16165,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15702,7 +16183,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15716,16 +16208,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15734,15 +16247,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-page-delete-extract.gold.json",
+          "sha256": "ddd76ba88b381bcf60e9ff2efefec564c8093644ea04f414a4ad06548e0d87d2",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-page-reorder",
@@ -15751,14 +16271,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-page-reorder.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-page-reorder/manifest.ts",
-          "sha256": "79685d4507485b3fae1310e4f229a8f227efd3b6c071bd0720321de63fa4009e"
+          "sha256": "e7827b5f582332f419e2288f575fbb45d7c69f25425ff1eed6985fa34c988655"
         },
         "module": {
           "path": "src/tools/pdf-page-reorder/module.ts",
@@ -15769,6 +16289,7 @@
           "sha256": "e5de81c1dc8173e31a676fe4c7938fb11b3c3f77b1bd58d343a20c4040924338"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -15781,12 +16302,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15799,7 +16320,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15813,16 +16345,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15831,15 +16384,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-page-reorder.gold.json",
+          "sha256": "24e1bdcaf419d7a7b82944b2b933686ab0f353c24724bfbd3238015509d26070",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-page-size-inspector",
@@ -15848,14 +16408,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-page-size-inspector.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-page-size-inspector/manifest.ts",
-          "sha256": "58f2aff59e067de433c0a92427d24775a2c2f50989ff9fc7fe2c43f914b1947b"
+          "sha256": "a0dbc9c61ed8c5d633158b278b5f67d95d4930a7bf79fea610ea0b014bdf92a6"
         },
         "module": {
           "path": "src/tools/pdf-page-size-inspector/module.ts",
@@ -15866,6 +16426,7 @@
           "sha256": "01e00d1aa0a3b260f02b71069655ca76aa3b35f63279ef0b958d037579204ebf"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -15878,12 +16439,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15896,7 +16457,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15909,16 +16481,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15927,15 +16520,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-page-size-inspector.gold.json",
+          "sha256": "a66954087c3a3d5776ed94d7b2f9d79aa7a5240b20ed92fb566c5848471c5e74",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-password-check-remove",
@@ -15944,14 +16544,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-password-check-remove.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-password-check-remove/manifest.ts",
-          "sha256": "85707df068cd2cb2862ff7dac05d83525d754cda96612a0c648cdbf937bdface"
+          "sha256": "6e7dd4dcf7470313cdcf8f5af0f4ad9768ceeb172af3033668688d8962a9197a"
         },
         "module": {
           "path": "src/tools/pdf-password-check-remove/module.ts",
@@ -15962,6 +16562,7 @@
           "sha256": "c0fde3d35c256fe2449206cc62865a44b3251013a5d1e4253f6a3d25f72ebe18"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -15974,12 +16575,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -15992,7 +16593,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -16006,16 +16618,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -16024,15 +16657,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-password-check-remove.gold.json",
+          "sha256": "85f185c33ad56f6b482f818b09fee2e4d0e2477653eef77a29765cfecd878623",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-rotate",
@@ -16041,14 +16681,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-rotate.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-rotate/manifest.ts",
-          "sha256": "fdd13a8efc45462e3c7d7b72565ec83509748160d362cf72cb964bc643be8a87"
+          "sha256": "e6e50122ff37ab9b31bd53e29882c62b663038c263bd023a954874a4632993da"
         },
         "module": {
           "path": "src/tools/pdf-rotate/module.ts",
@@ -16059,6 +16699,7 @@
           "sha256": "764b4f7dc1950911a62110d87831f13005d906ad990619c13c69929837b680d3"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -16071,12 +16712,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -16089,7 +16730,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -16103,16 +16755,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -16121,15 +16794,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-rotate.gold.json",
+          "sha256": "47dacc8b5a5bcd0716559b41c35644fae436cba9e5be7bf88972d1c9da1d4def",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-split",
@@ -16138,14 +16818,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-split.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-split/manifest.ts",
-          "sha256": "6a542ea57ba12fa6d3d0066e5e16d1c6a1336bb04971f2b1b4b499fed0c971a2"
+          "sha256": "ea6bf6500e055317bd93b2e17eace12aef4cada5bc2a81eb5b9486dc203b8047"
         },
         "module": {
           "path": "src/tools/pdf-split/module.ts",
@@ -16156,6 +16836,7 @@
           "sha256": "c185921fc4bd9251f404a501ea5f2564df715a9867d12a04e08331d6886d0f7e"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -16168,12 +16849,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -16186,7 +16867,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -16200,16 +16892,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -16218,15 +16931,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-split.gold.json",
+          "sha256": "0e96e26729ba0b6b2e44707daa484836929d59d885e787a1180350a804857ab6",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-text-extraction",
@@ -16235,14 +16955,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-text-extraction.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-text-extraction/manifest.ts",
-          "sha256": "88cb8fa71b1918353605bbdab64bce033d741ca6f20f38bf484abc860a07548d"
+          "sha256": "47c86bb1abc51991f272b0f03f8598a7cca55af205a668985bbc70e0173b2b16"
         },
         "module": {
           "path": "src/tools/pdf-text-extraction/module.ts",
@@ -16253,6 +16973,7 @@
           "sha256": "09748555664541d0f33dba387897063dcbb4f882f80c2b55873bdfb8ca43bf6e"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -16265,12 +16986,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -16283,7 +17004,18 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -16296,16 +17028,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -16314,15 +17067,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-text-extraction.gold.json",
+          "sha256": "3036a4623282672fe32c40c2539b191837b266f32142429923b4512084d88ffc",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-to-images",
@@ -16331,14 +17091,14 @@
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "H",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/pdf/pdf-to-images.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-to-images/manifest.ts",
-          "sha256": "0a8cfee56c59f06ddc3790011d98bd24e3c88cd4d5badf82a03fb4c934104379"
+          "sha256": "b72f709960fd6e56ee0c55ecad72779cc6f526a0e16c738bc5b55011393706cf"
         },
         "module": {
           "path": "src/tools/pdf-to-images/module.ts",
@@ -16349,6 +17109,7 @@
           "sha256": "cdff0235090d1e9622fabe531d6229c207aa76bfc9c013d963cfbff7db9940ad"
         },
         "testFiles": [
+          "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -16361,12 +17122,12 @@
           "fixture-policy",
           "iso-pdf2"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -16379,7 +17140,7 @@
           "truthSources": [
             "iso-pdf2"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         },
         {
           "id": "mime-file-signatures",
@@ -16392,7 +17153,18 @@
             "iso-pdf2",
             "pkware-appnote"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -16407,16 +17179,37 @@
         ]
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/pdf/browser-acceptance.json",
+            "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -16425,15 +17218,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/pdf/pdf-to-images.gold.json",
+          "sha256": "09078120cdd6a5ac31ca560726aee43fa96f9c433dced46d3e54c7ebdf392bdb",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/pdf/browser-acceptance.json",
+          "sha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "percentage-helper",
@@ -16477,7 +17277,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -16544,7 +17344,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/percentage-helper.gold.json",
-          "sha256": "4bb5f39bbc4526d75de2f8fd2300c91f18be442dc40342d0f914d1664e7cc928",
+          "sha256": "490c1d6c95bb894ffab74c10295afbdf7f6deaae1dae8e802c24f279c50ccf9d",
           "status": "PASS"
         },
         {
@@ -16601,7 +17401,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -16709,7 +17509,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -16817,7 +17617,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -16885,7 +17685,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/project-profitability.gold.json",
-          "sha256": "a6746f92ae7342d1c512c480af015bc12267995e4f07f25a781400dea9b3b6c8",
+          "sha256": "27399cb918950ea8ca4b124371ffa90595036e4c11c0b4c95f0edfdef1360002",
           "status": "PASS"
         },
         {
@@ -16940,7 +17740,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -17008,7 +17808,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/proposal-budget-checker.gold.json",
-          "sha256": "7d0b52ff4aca6b636af9fa131bea86ccc5b164dbbbbfdd92f94b5d233bc1041c",
+          "sha256": "402f732de53767e6401d01cf32455e880662e7dcba73642a2be0222cd1c0ff1f",
           "status": "PASS"
         },
         {
@@ -17065,7 +17865,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -17161,7 +17961,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -17257,7 +18057,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -17354,7 +18154,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -17435,7 +18235,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/quarter-date-mapper.gold.json",
-          "sha256": "ef785eb008fa66730bb020d64555e4e0e29febc27b8a1cb22cee8cc5734f38bb",
+          "sha256": "3a54aca14b720a2405ea2104fe1fe0ad3a0e7b611ed847ffe1f9731b72af8ee6",
           "status": "PASS"
         },
         {
@@ -17490,7 +18290,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -17567,7 +18367,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/query-string-editor.gold.json",
-          "sha256": "68c6dc7bf7e7e162091b61fd621f1e87abb1a60495658c675cf655a493f37792",
+          "sha256": "34037bbf251a5f20b498886ef3eff1abe54a9ebd292145b933a4e104a26a0357",
           "status": "PASS"
         },
         {
@@ -17623,7 +18423,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -17706,7 +18506,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/quick-chart.gold.json",
-          "sha256": "ad4f2fd26372f2e3fbe8b0f0f99efc74d55d88985ad0388111295303b2f484fc",
+          "sha256": "1bfc3e027a63c0c302e3201d55d1dece141259d03a17a1d876bba23b38715ded",
           "status": "PASS"
         },
         {
@@ -17760,7 +18560,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -17858,7 +18658,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -17926,7 +18726,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/rate-converter.gold.json",
-          "sha256": "923cade93e8c901ca86e2b0bd5f65becddd833135cd7dfc60e650c1f8e9470cd",
+          "sha256": "910000531af257aab12185107ff776b6d13e9e079c089001f71c1cd8c5d5a96e",
           "status": "PASS"
         },
         {
@@ -17986,7 +18786,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -18083,7 +18883,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -18180,7 +18980,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -18261,7 +19061,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/recurring-date-generator.gold.json",
-          "sha256": "130a9b385f7d11a4f82370df85a6aa955db8d8558b3417c472352e03d36bd4bd",
+          "sha256": "d469602fd31d1e3c95b4d0e1a845de5451c70b5b1078ccd901b88d7072d20d24",
           "status": "PASS"
         },
         {
@@ -18317,7 +19117,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -18420,7 +19220,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -18516,7 +19316,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -18593,7 +19393,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/regex-tester.gold.json",
-          "sha256": "c1cc319fe24525bb8e77bdad96d3e540edc22c630b80663f1a77a89b493053cc",
+          "sha256": "0767549b48733aebf87efd87e2501b354080806a2cc7c6223c8ca320c1c2f542",
           "status": "PASS"
         },
         {
@@ -18647,7 +19447,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -18742,7 +19542,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -18845,7 +19645,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -18913,7 +19713,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/retainer-capacity.gold.json",
-          "sha256": "48bce24a425ea5f31a132f96937148d6c2b047767a71518ec366e3266646110f",
+          "sha256": "e9f5e880d9fc1535c47434b7594b4282bc3db77f049101fab536e5402e935f60",
           "status": "PASS"
         },
         {
@@ -18969,7 +19769,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -19073,7 +19873,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -19168,7 +19968,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -19272,7 +20072,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -19380,7 +20180,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -19448,7 +20248,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/scope-creep-cost.gold.json",
-          "sha256": "9f19724537b6fade63546ad046920c4b87465dc43206172dac95bc1bc1b75c37",
+          "sha256": "63b384ecf676389008f9e66ead1007cce3c9d5a325e88ac923291be019148de2",
           "status": "PASS"
         },
         {
@@ -19505,7 +20305,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -19612,7 +20412,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -19719,7 +20519,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -19797,7 +20597,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/slug-generator.gold.json",
-          "sha256": "429f08af58660313a2f10dd65f2c48121119c4e25e270e1442aae4a79df94842",
+          "sha256": "822d4320cdf689fd740308c426e47c4c1c4bc37659ede40aa24a749d053fb394",
           "status": "PASS"
         },
         {
@@ -19854,7 +20654,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -19948,7 +20748,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -20044,7 +20844,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -20136,7 +20936,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/table-transpose.gold.json",
-          "sha256": "e44bb1b6232aab00d6274a886f5520ca959ebbd1a2c161be51eabb8fef63ad42",
+          "sha256": "503a618f1863ee2f9bf644e5eaf4c107ede8e1a45fb8d9889b1e50162cc4bb3c",
           "status": "PASS"
         },
         {
@@ -20191,7 +20991,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -20259,7 +21059,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/target-income-rate.gold.json",
-          "sha256": "9f853555945aa6f971d5aea16cf540c2424e30dd063eeeb440ec3446c29064a5",
+          "sha256": "b2440beeb5f519510dc6ae34667fe6ecbdfc91828e946b8429ff02502f6c698e",
           "status": "PASS"
         },
         {
@@ -20318,7 +21118,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -20396,7 +21196,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/text-diff.gold.json",
-          "sha256": "6220cde01d71f49e93d5334d05f337e0a902b65f72632fd53d47cfabecc0f880",
+          "sha256": "28efd520807040dae3fdc08eff7cc92f34d6d48c329fe984784823a68fee68b6",
           "status": "PASS"
         },
         {
@@ -20459,7 +21259,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -20536,7 +21336,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/text-to-csv-rows.gold.json",
-          "sha256": "19ede7000dfeff18f5ecbf8e1053007ba21d9de1ab14d023258cbd37d4938ed4",
+          "sha256": "a8d163c7156d334f3fd4eac687ff24bd82d06a1c9e8869391a4b11ba49492d2b",
           "status": "PASS"
         },
         {
@@ -20591,7 +21391,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -20688,7 +21488,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -20768,7 +21568,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/timesheet-totaler.gold.json",
-          "sha256": "34207d6b070a24aede4ccec2705657b3ca61946cb63e3d720ae7e10478b4c7de",
+          "sha256": "214535779e7fc81db45501b41fbb62bf2c34551f88e362eac8117ef4b3cbf791",
           "status": "PASS"
         },
         {
@@ -20825,7 +21625,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -20906,7 +21706,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/timezone-converter.gold.json",
-          "sha256": "07f67e69986bb2b6122eee31d762abf84afc036dde62ec3f74b59f5da7abd8d8",
+          "sha256": "11ac93ed5f130839b7e3294a08bfbd7825ad026fcf0d59d410dcdc838deab597",
           "status": "PASS"
         },
         {
@@ -20967,7 +21767,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -21035,7 +21835,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/timezone-overlap.gold.json",
-          "sha256": "f660698e120d4ad59fae5fa98151b04328e3152b59b38857a01f0701dc9e1d9f",
+          "sha256": "799844296de720da7a144816df31c1da0bc1feb2e7b948d20d47d15603b4ec85",
           "status": "PASS"
         },
         {
@@ -21096,7 +21896,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -21173,7 +21973,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/toml-formatter.gold.json",
-          "sha256": "099569af06aea0dee02058b4220a71c063cc998ebfd8c751d50d8daa3f7a9193",
+          "sha256": "262d6b9040e34e82b37f40578679001a39c8c9b71e8ff2d3dbf8960ad37b19c4",
           "status": "PASS"
         },
         {
@@ -21226,7 +22026,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -21303,7 +22103,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/tracking-cleaner.gold.json",
-          "sha256": "6d3c8802cfcfbdaf96b9d12d7599add453a4007e5b1e8fcfd36988511078b3c6",
+          "sha256": "be07fedeaf9b10c234ac1a11b088e844514504b05731435cac8f3166d1209446",
           "status": "PASS"
         },
         {
@@ -21365,7 +22165,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -21447,7 +22247,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/tsv-to-csv.gold.json",
-          "sha256": "1b1d0fff1efb6c86645bab027ece6e400a7eae2026b009a652c3e6ee5d365f7f",
+          "sha256": "dfc9a6503a4ccaa7514de92a0cddc911ae094f446d76a84fc2a1cce69c09f6bf",
           "status": "PASS"
         },
         {
@@ -21504,7 +22304,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -21581,7 +22381,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/unicode-normalizer.gold.json",
-          "sha256": "91e388ef84aba9e6d349bdcefb306f494b4c97166c2f0ea03f5494e0b3050cbf",
+          "sha256": "0039cfdf9969359f6b8ca30ea2b809dde348f331378c8acc46084882b7fbedb1",
           "status": "PASS"
         },
         {
@@ -21636,7 +22436,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -21714,7 +22514,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/unix-timestamp.gold.json",
-          "sha256": "55329211c38f709c194fbe339cb4b291bf5c36811cb46f68e08b8e18544e6015",
+          "sha256": "976ed7d41f351122cfdaa934eb052d248f94fb0090425200eff1764988624fdd",
           "status": "PASS"
         },
         {
@@ -21769,7 +22569,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -21873,7 +22673,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -21950,7 +22750,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/url-codec.gold.json",
-          "sha256": "1a2126a56230dce33930c8241170740dfcc748367d353ecaf27297d532479f39",
+          "sha256": "3d9f16044b53e2d6864281ec579699c33bafa0c1fcfab3abaac358a0149a40f3",
           "status": "PASS"
         },
         {
@@ -22005,7 +22805,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -22109,7 +22909,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -22186,7 +22986,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/user-agent-parser.gold.json",
-          "sha256": "573e59fa9f53a71be2e74a83360914b871251cd26e41e5d9542b29dfe6c7e8b8",
+          "sha256": "6f265c2e878a5b266b1f27cbc9677ed5a69815844e01626a1c4b738a2d7965c4",
           "status": "PASS"
         },
         {
@@ -22241,7 +23041,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -22309,7 +23109,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/utilization-calculator.gold.json",
-          "sha256": "ac5c982863872a68b09f7c668ca56a9360dfffa53bd28f29486f7b03bc135a67",
+          "sha256": "dcecbe3d23e0ec794950f8b29777089edc0714ce6e11654268d6c7bf26c11f68",
           "status": "PASS"
         },
         {
@@ -22362,7 +23162,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -22439,7 +23239,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/utm-builder.gold.json",
-          "sha256": "334302ca6c453977bedf75db5fdf5b1509425a611f12083f48a04b81347c7ef1",
+          "sha256": "7d1eb3f0db917187ca8939c4bf81327ea6dd587f2a4368c7739619c1943d18af",
           "status": "PASS"
         },
         {
@@ -22500,7 +23300,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -22604,7 +23404,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -22681,7 +23481,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/uuid-generator.gold.json",
-          "sha256": "ddd0c75ab0610e2ef7cb9a2529733b42c84890571ae265790106ceb09e2f8513",
+          "sha256": "5173a3e8e474be04ce0cabea8b63f422f27d9579a24677464e798bc82b708cff",
           "status": "PASS"
         },
         {
@@ -22735,7 +23535,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -22833,7 +23633,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -22914,7 +23714,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/week-number-converter.gold.json",
-          "sha256": "e7c64cf9d28524bcb5ff5f235786f6afef0c7d0282e1c47f8a970b66840e2c31",
+          "sha256": "7d0664806ee6cdaa086a5e38772dd64ee73259a5cfe83da93da734c18afc4d17",
           "status": "PASS"
         },
         {
@@ -22971,7 +23771,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -23049,7 +23849,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/whitespace-normalizer.gold.json",
-          "sha256": "fc4d598101a3012bf96c787536fff3c323d9ab307253dff532260cb68bb2baec",
+          "sha256": "b68bb8de7701e8f481b30b72eecc7c64833afee55c8359a4166515efce3f64c5",
           "status": "PASS"
         },
         {
@@ -23105,7 +23905,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -23183,7 +23983,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/word-character-line-counter.gold.json",
-          "sha256": "e31eae4eabc7f8f17cd7a66197518762f4e8795a801852e643640ba51145e17d",
+          "sha256": "fc65ccd5b609627c47360b27bfbd33db139fac561ab5568a8bca3cc5fe550bcb",
           "status": "PASS"
         },
         {
@@ -23240,7 +24040,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -23321,7 +24121,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/working-hours.gold.json",
-          "sha256": "2deafe128d0fefd024ace6d2a4c176044fe542aa57664764a6bbf00d116bd593",
+          "sha256": "1ca33a54438f1a1e47f594de792c04306681b97a5b6ba7666f149cc28c04b013",
           "status": "PASS"
         },
         {
@@ -23376,7 +24176,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -23454,7 +24254,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/yaml-formatter.gold.json",
-          "sha256": "db88c8ade6bc2e266aca72c836c3c721377ae47169eba14c6efa478d1e19dca4",
+          "sha256": "127ec3caa7be312fda1ef3ef33acd507cfb8ae40c735dd5d5327bf12d458d208",
           "status": "PASS"
         },
         {
@@ -23509,7 +24309,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -23618,7 +24418,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]
@@ -23714,7 +24514,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+            "sha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
             "status": "PASS"
           }
         ]

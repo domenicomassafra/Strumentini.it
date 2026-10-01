@@ -15,7 +15,7 @@ export const pdfImageExtractorManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "image", format: "jpeg" }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-137", fixtureFamilies: ["pdf-signature", "mime-file-signatures"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-137", fixtureFamilies: ["pdf-signature", "mime-file-signatures", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfImageExtractorManifest;

@@ -73,7 +73,7 @@ try {
 
   const direct = await context.newPage();
   await direct.goto(`${origin}/tools/business-day/`, { waitUntil: "networkidle" });
-  await direct.getByText("Runs on this device.", { exact: true }).waitFor();
+  await direct.getByText("Elaborazione sul dispositivo.", { exact: true }).waitFor();
   assert(await direct.locator("dialog[open], [role='dialog']").count() === 0, "An onboarding dialog appeared over an unrelated tool task");
   await direct.getByRole("button").first().waitFor();
   record("first-task-uninterrupted", "A tool job stays fully usable without ever completing onboarding", "tool route hydrated with no onboarding interstitial");

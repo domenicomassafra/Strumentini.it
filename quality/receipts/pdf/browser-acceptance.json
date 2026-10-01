@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "pdf-merge",
+    "pdf-split",
+    "pdf-page-reorder",
+    "pdf-rotate",
+    "pdf-page-delete-extract",
+    "images-to-pdf",
+    "pdf-to-images",
+    "pdf-text-extraction",
+    "pdf-metadata-inspector",
+    "pdf-metadata-remover",
+    "pdf-page-size-inspector",
+    "pdf-page-count-verifier",
+    "pdf-password-check-remove",
+    "pdf-flatten",
+    "pdf-form-inspector",
+    "pdf-link-extractor",
+    "pdf-image-extractor",
+    "pdf-compare-lite",
+    "pdf-compression-lite",
+    "document-handoff-manifest"
+  ],
+  "routesChecked": 20,
+  "keyboard": "every submit action exercised with Enter",
+  "accessibility": "all interactive controls in the tool form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObservedFor": [
+    "pdf-merge",
+    "pdf-split",
+    "pdf-page-reorder",
+    "pdf-rotate",
+    "pdf-page-delete-extract",
+    "images-to-pdf",
+    "pdf-to-images",
+    "pdf-text-extraction",
+    "pdf-metadata-inspector",
+    "pdf-metadata-remover",
+    "pdf-page-size-inspector",
+    "pdf-page-count-verifier",
+    "pdf-password-check-remove",
+    "pdf-flatten",
+    "pdf-form-inspector",
+    "pdf-link-extractor",
+    "pdf-image-extractor",
+    "pdf-compare-lite",
+    "pdf-compression-lite",
+    "document-handoff-manifest"
+  ],
+  "results": [
+    {
+      "toolId": "pdf-merge",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-split",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-page-reorder",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-rotate",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-page-delete-extract",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "images-to-pdf",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-to-images",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-text-extraction",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-metadata-inspector",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-metadata-remover",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-page-size-inspector",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-page-count-verifier",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-password-check-remove",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-flatten",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-form-inspector",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-link-extractor",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-image-extractor",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-compare-lite",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "pdf-compression-lite",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "document-handoff-manifest",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    }
+  ]
+}

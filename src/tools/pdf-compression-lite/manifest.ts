@@ -15,7 +15,7 @@ export const pdfCompressionManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "file", format: "pdf" }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-139", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-139", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfCompressionManifest;

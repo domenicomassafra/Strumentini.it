@@ -15,7 +15,7 @@ export const pdfMetadataRemoverManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "file", format: "pdf" }] },
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-130", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-130", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfMetadataRemoverManifest;

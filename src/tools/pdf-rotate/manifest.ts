@@ -15,7 +15,7 @@ export const pdfRotateManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "file", format: "pdf" }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-124", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-124", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfRotateManifest;

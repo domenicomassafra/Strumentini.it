@@ -51,7 +51,7 @@ try {
 
   // A tool page is the only place the shipped bundle currently emits telemetry.
   await page.goto(`${origin}/tools/business-day/`, { waitUntil: "networkidle" });
-  await page.getByText("Runs on this device.", { exact: true }).waitFor();
+  await page.getByText("Elaborazione sul dispositivo.", { exact: true }).waitFor();
 
   // The tool must be fully usable regardless of telemetry posture.
   assert(await page.locator("form").count() === 1, "Business Day tool form did not render");

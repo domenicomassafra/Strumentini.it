@@ -3,7 +3,7 @@
   "kind": "browser-acceptance",
   "subject": "telemetry",
   "generatedBy": "scripts/acceptance-telemetry.mjs",
-  "revision": "05a86960a6782527a089fb4847e24aaeba02c54f",
+  "revision": "8dc099fd42f74166bd25c51c4cb9d560cb3d100e",
   "status": "PASS",
   "browser": "chrome",
   "verdict": {
@@ -23,7 +23,7 @@
       "id": "no-default-telemetry-write",
       "description": "No telemetry is written unless a disclosed validation cohort enables it",
       "status": "PASS",
-      "observed": "0 off-origin requests observed across 25 total request(s)"
+      "observed": "0 off-origin requests observed across 26 total request(s)"
     },
     {
       "id": "disclosure-surface-present",

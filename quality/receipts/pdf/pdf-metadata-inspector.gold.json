@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "8dc099fd42f74166bd25c51c4cb9d560cb3d100e",
+  "sourceFingerprint": "3392267d0c36b13a2f9c5902df04022e03477fb0b7dd5241dd3d8c56b077cbfc",
+  "toolId": "pdf-metadata-inspector",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engineVersion": "pdf-engine-v1",
+  "oracleEntryId": "cand-129",
+  "fixtureFamilies": [
+    "pdf-signature",
+    "pdf-gold"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "iso-pdf2",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "pdf-signature",
+      "path": "quality/fixtures/pdf-signature/vectors.json"
+    },
+    {
+      "id": "pdf-gold",
+      "path": "quality/fixtures/pdf-gold/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime",
+    "high-confidence oracle with no open semantic gap",
+    "tool-specific PDF/document fixture remains bound",
+    "exact public-module vector plus re-inspected output bytes",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance"
+  ],
+  "identities": {
+    "manifestSha256": "c3b20c25bc4f2535a9267c3d814fd4df2506fed8c42e5c91b7b8cec2b54d794f",
+    "pdfEngineIndexSha256": "48f1f3568e453f683cefebc179444358bd458b8776cb01758fc7920607a78017",
+    "pdfEngineParserSha256": "c012706639797d68bfd0adbad941fd8b5db05f9376dfa05d4c921a2b900c9d46",
+    "pdfEngineWriterSha256": "dbb1f374a8c7f64a8962a41733d4c700102c1277fd8452ded0f8b89fcf09cc3a",
+    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "22cdbd3918146a7857bca36d9b913c7227344dd4d6b3eaf5b2ddfa51cea86042",
+    "unitTestsSha256": "9ee50a4490ce9b258be22f58e059b07e493df0de25408b8d58d928ec32ae74fb",
+    "fixture:pdf-signature:sha256": "7b927a96c3106a97a4c4022f175529e7b7a01f79b0dd05f77f71306eb5b1747f",
+    "fixture:pdf-gold:sha256": "8c16c7203f6bf57901189e9a044fecefd649df2829d524477b18fb469ec2d093",
+    "fixture:pdf-gold:annotated.pdf:sha256": "b7ed4b7b1e596d9b123947f28bcb1d507446582cdc636b1f7c2c2ddd658c6f8e",
+    "fixture:pdf-gold:simple-3page.pdf:sha256": "d919bbbcec4ae25a614fa6018720f22b0b5ccac35ebe440f91609bea3755a203",
+    "fixture:pdf-gold:simple-2page.pdf:sha256": "0a3ea973659ca6d454738bfe49dc14fe9e21acb0ae7c82f389b3c7c14768b551",
+    "fixture:pdf-gold:simple-2page-changed.pdf:sha256": "3f9d3ca5c63597184f3ec2344824d680cbf3ab94809a1113ef0cff9f0d382ab6",
+    "fixture:pdf-gold:jpeg-1page.pdf:sha256": "ad46989de58a0ed64555ecec711ded425cd8b1aad94ce14ae71ebba22a2242b6",
+    "fixture:pdf-gold:encrypted-mark.pdf:sha256": "0bed5afd5f385bcb55685396dda6dde332b11b43840be0bd1454c49d9f8412d1",
+    "fixture:pdf-gold:tiny.jpg:sha256": "63dc907b6262441b36fa89e125a6d07a503602fc6f7bed072685440c05b12c9a"
+  }
+}

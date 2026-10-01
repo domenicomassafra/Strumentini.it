@@ -34,22 +34,22 @@ try {
 
   const response = await page.goto(`${origin}/tools/business-day/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`tool route returned ${response?.status()}`);
-  await page.getByText("Runs on this device.").waitFor();
+  await page.getByText("Elaborazione sul dispositivo.").waitFor();
 
   taskStarted = true;
-  await page.getByRole("button", { name: "Calculate" }).click();
+  await page.getByRole("button", { name: "Calcola" }).click();
   await page.getByRole("alert").waitFor();
-  if (!(await page.getByRole("alert").innerText()).includes("Check the dates")) {
+  if (!(await page.getByRole("alert").innerText()).includes("Controlla le date")) {
     throw new Error("Invalid input did not produce the normalized recoverable error");
   }
   if (jsAfterAction.length === 0) {
     throw new Error("Expected the lazy tool implementation chunk to load on first operation attempt");
   }
 
-  await page.getByLabel("Start date").fill("2026-09-18");
-  await page.getByLabel("Business days to add").fill("1");
+  await page.getByLabel("Data iniziale").fill("2026-09-18");
+  await page.getByLabel("Giorni lavorativi da aggiungere").fill("1");
 
-  await page.getByRole("button", { name: "Calculate" }).click();
+  await page.getByRole("button", { name: "Calcola" }).click();
   await page.getByText("2026-09-21", { exact: true }).waitFor();
   await page.waitForTimeout(100);
 
@@ -66,11 +66,11 @@ try {
   }
 
   await page.getByRole("button", { name: /^(?:Reset|Reimposta)$/u }).click();
-  await page.getByText("Your result appears here.").waitFor();
-  if ((await page.getByLabel("Start date").inputValue()) !== "") {
+  await page.getByText("Il risultato apparirà qui.").waitFor();
+  if ((await page.getByLabel("Data iniziale").inputValue()) !== "") {
     throw new Error("Reset did not clear the operation state");
   }
-  await page.getByText("Work Profile default", { exact: true }).waitFor();
+  await page.getByText("Valore predefinito dal profilo", { exact: true }).waitFor();
 
   await page.setViewportSize({ width: 390, height: 844 });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);

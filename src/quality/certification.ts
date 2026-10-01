@@ -236,7 +236,7 @@ const familyTestFiles: Readonly<Record<string, readonly string[]>> = {
   "client-time-math": ["tests/business-tools.test.ts", "tests/client-time-math-engine.test.ts"],
   "research-knowledge": ["tests/research-reference-engine.test.ts"],
   "research-reference": ["tests/research-reference-engine.test.ts"],
-  pdf: ["tests/pdf-document-tools.test.ts"],
+  pdf: ["tests/pdf-document-tools.test.ts", "tests/pdf-catalog.test.ts"],
   "file-privacy": ["tests/file-privacy-engine.test.ts", "tests/file-privacy-modules.test.ts"],
   image: ["tests/image-resize-engine.test.ts", "tests/image-visual-tools.test.ts"],
   "image-visual": ["tests/image-visual-tools.test.ts"],
@@ -271,6 +271,12 @@ const dataTableEvidence = {
   locality: ["quality/receipts/data-table/browser-acceptance.json"],
   mobileA11y: ["quality/receipts/data-table/browser-acceptance.json"],
   lazyLoad: ["quality/receipts/data-table/browser-acceptance.json"],
+} as const;
+
+const pdfEvidence = {
+  locality: ["quality/receipts/pdf/browser-acceptance.json"],
+  mobileA11y: ["quality/receipts/pdf/browser-acceptance.json"],
+  lazyLoad: ["quality/receipts/pdf/browser-acceptance.json"],
 } as const;
 
 const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimension, readonly string[]>>>> = {
@@ -426,6 +432,26 @@ const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimensio
   "ics-event-builder": dateTimeEvidence,
   "ics-viewer": dateTimeEvidence,
   "epoch-batch-converter": dateTimeEvidence,
+  "pdf-merge": pdfEvidence,
+  "pdf-split": pdfEvidence,
+  "pdf-page-reorder": pdfEvidence,
+  "pdf-rotate": pdfEvidence,
+  "pdf-page-delete-extract": pdfEvidence,
+  "images-to-pdf": pdfEvidence,
+  "pdf-to-images": pdfEvidence,
+  "pdf-text-extraction": pdfEvidence,
+  "pdf-metadata-inspector": pdfEvidence,
+  "pdf-metadata-remover": pdfEvidence,
+  "pdf-page-size-inspector": pdfEvidence,
+  "pdf-page-count-verifier": pdfEvidence,
+  "pdf-password-check-remove": pdfEvidence,
+  "pdf-flatten": pdfEvidence,
+  "pdf-form-inspector": pdfEvidence,
+  "pdf-link-extractor": pdfEvidence,
+  "pdf-image-extractor": pdfEvidence,
+  "pdf-compare-lite": pdfEvidence,
+  "pdf-compression-lite": pdfEvidence,
+  "document-handoff-manifest": pdfEvidence,
   "csv-viewer": dataTableEvidence,
   "csv-delimiter-detector": dataTableEvidence,
   "csv-encoding-fixer": dataTableEvidence,

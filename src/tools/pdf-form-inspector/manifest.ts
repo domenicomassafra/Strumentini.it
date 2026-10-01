@@ -15,7 +15,7 @@ export const pdfFormInspectorManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "structured", format: "pdf-forms" }] },
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-135", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-135", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfFormInspectorManifest;

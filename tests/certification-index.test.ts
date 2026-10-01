@@ -35,11 +35,11 @@ describe("expanded catalog certification index", () => {
   it("preserves the certified frontier and exposes unresolved evidence", async () => {
     const index = await buildCertificationIndex();
     expect(index.summary.statusCounts).toEqual({
-      GOLD: 99,
+      GOLD: 119,
       PARTIAL: 1,
-      IMPLEMENTED_UNVERIFIED: 100,
+      IMPLEMENTED_UNVERIFIED: 80,
     });
-    expect(index.summary.certificationGoldCount).toBe(99);
+    expect(index.summary.certificationGoldCount).toBe(119);
     expect(index.summary.physicalDevicePassCount).toBe(0);
     expect(index.global.physicalDevice).toMatchObject({
       status: "EXTERNAL",
@@ -72,6 +72,9 @@ describe("expanded catalog certification index", () => {
     expect(dateTime.filter((tool) => tool.status === "GOLD")).toHaveLength(18);
     const textWriting = index.tools.filter((tool) => tool.engine === "text-writing");
     expect(textWriting.filter((tool) => tool.status === "GOLD")).toHaveLength(15);
+    const pdf = index.tools.filter((tool) => tool.engine === "pdf");
+    expect(pdf).toHaveLength(20);
+    expect(pdf.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
     expect(index.tools.some((tool) => tool.physicalDevice.status === "PASS")).toBe(false);
   }, 30_000);
 

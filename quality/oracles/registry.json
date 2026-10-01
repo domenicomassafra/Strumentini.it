@@ -5435,9 +5435,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5484,9 +5484,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5533,9 +5533,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5582,9 +5582,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5631,9 +5631,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5680,9 +5680,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5729,9 +5729,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5781,9 +5781,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5830,9 +5830,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5879,9 +5879,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5928,9 +5928,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -5977,9 +5977,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -6026,9 +6026,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -6075,9 +6075,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -6124,9 +6124,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -6173,9 +6173,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -6222,9 +6222,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -6271,9 +6271,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -6320,9 +6320,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {
@@ -6369,9 +6369,9 @@
         "implementation": "independent browser/system image or PDF parser",
         "role": "required for Gold where format permits"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review."
+        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
       ]
     },
     {

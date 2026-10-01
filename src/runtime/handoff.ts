@@ -70,7 +70,7 @@ export function proposeHandoff(envelope: TableHandoffEnvelope, target: ToolSumma
         target,
         acceptedBy: declaration,
         descriptor: envelope.descriptor,
-        preview: `${rowCount} data row${rowCount === 1 ? "" : "s"} × ${columnCount} column${columnCount === 1 ? "" : "s"} · ${bytes} bytes · ${encoding}`,
+        preview: `${rowCount} ${rowCount === 1 ? "riga di dati" : "righe di dati"} × ${columnCount} ${columnCount === 1 ? "colonna" : "colonne"} · ${bytes} byte · ${encoding}`,
         lossy: false,
       };
     }

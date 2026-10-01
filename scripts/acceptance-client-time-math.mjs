@@ -30,7 +30,7 @@ async function acceptRoute(context, route, sensitiveValues, operate) {
   });
   const response = await page.goto(`${origin}${route}/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`${route}: HTTP ${response?.status()}`);
-  await page.getByText("Runs on this device.", { exact: true }).waitFor();
+  await page.getByText("Elaborazione sul dispositivo.", { exact: true }).waitFor();
   await operate(page, () => { started = true; });
   await page.waitForTimeout(100);
   if (requests.some((request) => {
@@ -80,44 +80,44 @@ try {
 
   await acceptRoute(context, "/tools/timezone-overlap", ["Europe/Rome", "America/New_York"], async (page, start) => {
     await page.getByText(/^(?:Work Profile default|Valore predefinito dal profilo)$/u, { exact: true }).waitFor();
-    const homeTimezone = page.locator("label").filter({ hasText: /^Home timezone/u }).locator("input").first();
+    const homeTimezone = page.locator("label").filter({ hasText: /^Il tuo fuso orario/u }).locator("input").first();
     if ((await homeTimezone.inputValue()) !== "Europe/Rome") {
       throw new Error("Timezone tool did not receive saved Work Profile timezone");
     }
-    await page.getByLabel("Date in your home timezone", { exact: true }).fill("2026-09-23");
+    await page.getByLabel("Data nel tuo fuso orario", { exact: true }).fill("2026-09-23");
     start();
     await page.getByRole("button", { name: "Trova la sovrapposizione" }).press("Enter");
     await page.getByText("1 finestra condivisa", { exact: true }).waitFor();
   });
 
   await acceptRoute(context, "/tools/rate-converter", ["50.00"], async (page, start) => {
-    await page.getByText(/Work Profile default · label only/u).waitFor();
-    if ((await page.getByLabel("Currency label").inputValue()) !== "EUR") {
+    await page.getByText(/Valore predefinito dal profilo · solo etichetta/u).waitFor();
+    if ((await page.getByLabel("Valuta").inputValue()) !== "EUR") {
       throw new Error("Rate tool did not receive saved Work Profile currency");
     }
-    await page.getByLabel("Rate amount").fill("50.00");
+    await page.getByLabel("Importo della tariffa").fill("50.00");
     start();
-    await page.getByRole("button", { name: "Convert rate" }).press("Enter");
-    await page.getByText("EUR 400.00 / day", { exact: true }).waitFor();
+    await page.getByRole("button", {name:"Converti tariffa"}).press("Enter");
+    await page.getByText("EUR 400.00 / giorno", { exact: true }).waitFor();
   });
 
   await acceptRoute(context, "/tools/margin-markup", ["100.00", "80.00"], async (page, start) => {
     await page.getByText(/^(?:Work Profile default|Valore predefinito dal profilo)$/u, { exact: true }).waitFor();
-    if ((await page.getByLabel("Currency label").inputValue()) !== "EUR") {
+    if ((await page.getByLabel("Valuta").inputValue()) !== "EUR") {
       throw new Error("Margin tool did not receive saved Work Profile currency");
     }
-    await page.getByLabel("Price / revenue").fill("100.00");
-    await page.getByLabel("Cost").fill("80.00");
+    await page.getByLabel("Prezzo o ricavi").fill("100.00");
+    await page.getByLabel("Costo").fill("80.00");
     start();
-    await page.getByRole("button", { name: "Calculate margin & markup" }).press("Enter");
+    await page.getByRole("button", {name:"Calcola margine e ricarico"}).press("Enter");
     await page.getByText("EUR 20.00 di profitto", { exact: true }).waitFor();
-    await page.getByText(/20.00% · profit ÷ price/u).waitFor();
-    await page.getByText(/25.00% · profit ÷ cost/u).waitFor();
+    await page.getByText(/20.00% · profitto ÷ prezzo/u).waitFor();
+    await page.getByText(/25.00% · profitto ÷ costo/u).waitFor();
   });
 
   const lanAddress = localNetworkIpv4();
   if (lanAddress === undefined) throw new Error("No non-loopback IPv4 interface available for local-network acceptance");
-  const lanResponse = await fetch(`http://${lanAddress}:${port}/tools/timezone-overlap/`);
+  const lanResponse = await fetch(`http://${lanAddress}:${port}/tools/timezone-overlap/`); await lanResponse.arrayBuffer();
   if (lanResponse.status !== 200) throw new Error(`Local-network route returned HTTP ${lanResponse.status}`);
 
   await context.close();

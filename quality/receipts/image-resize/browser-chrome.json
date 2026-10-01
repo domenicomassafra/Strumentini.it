@@ -28,7 +28,7 @@
   "capabilities": {
     "canvasWebpEncode": true
   },
-  "memoryPreflightText": "15.3 MiB estimated decoded working set",
+  "memoryPreflightText": "15.3 MiB stimati per l'elaborazione decodificata",
   "cancellation": "PASS",
   "corruptDecode": "PASS",
   "oversizedPredecode": "PASS",

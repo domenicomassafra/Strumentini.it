@@ -15,7 +15,7 @@ export const pdfPageCountVerifierManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "structured", format: "pdf-pages" }] },
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-132", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-132", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfPageCountVerifierManifest;

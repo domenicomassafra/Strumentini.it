@@ -15,7 +15,7 @@ export const pdfSplitManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "file", format: "pdf" }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-122", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-122", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfSplitManifest;

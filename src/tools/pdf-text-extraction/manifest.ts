@@ -15,7 +15,7 @@ export const pdfTextExtractionManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "text", format: "plain" }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-128", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-128", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfTextExtractionManifest;

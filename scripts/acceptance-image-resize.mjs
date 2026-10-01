@@ -45,7 +45,7 @@ try {
 
   const response = await page.goto(`${origin}/tools/image-resize/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`image resize route returned ${response?.status()}`);
-  await page.getByText("Runs on this device.").waitFor();
+  await page.getByText("Elaborazione sul dispositivo.").waitFor();
   const webpEncodeSupported = await page.evaluate(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 1;
@@ -53,7 +53,7 @@ try {
     return canvas.toDataURL("image/webp").startsWith("data:image/webp");
   });
   if (!webpEncodeSupported) {
-    await page.getByText("WebP encoding is unavailable in this browser; JPEG remains fully local.", { exact: true }).waitFor();
+    await page.getByText("La codifica WebP non è disponibile in questo browser; JPEG resta completamente locale.", { exact: true }).waitFor();
     const webpDisabled = await page.locator('option[value="image/webp"]').evaluate((option) => option.disabled);
     if (!webpDisabled) {
       throw new Error("WebP capability probe failed to disable unsupported output option");
@@ -83,11 +83,11 @@ try {
     input.dispatchEvent(new Event("change", { bubbles: true }));
   });
 
-  await page.getByLabel("Width").fill("800");
-  await page.getByLabel("Height").fill("800");
-  await page.getByLabel("Crop to fill").check();
+  await page.getByLabel("Larghezza").fill("800");
+  await page.getByLabel("Altezza").fill("800");
+  await page.getByLabel("Ritaglia per riempire").check();
   const primaryMime = webpEncodeSupported ? "image/webp" : "image/jpeg";
-  await page.getByLabel("Output format").selectOption(primaryMime);
+  await page.getByLabel("Formato di uscita").selectOption(primaryMime);
 
   await page.route("**/*.js", async (route) => {
     if (started && !delayedLazyScript) {
@@ -98,19 +98,19 @@ try {
   });
 
   started = true;
-  await page.getByRole("button", { name: "Resize" }).click();
+  await page.getByRole("button", { name: "Ridimensiona" }).click();
   await page.getByRole("button", { name: /^(?:Cancel|Annulla)$/u }).waitFor();
   await page.getByRole("button", { name: /^(?:Cancel|Annulla)$/u }).click();
   const cancelledAlert = page.getByRole("alert");
   await cancelledAlert.waitFor();
-  if (!/Cancelled/u.test(await cancelledAlert.innerText())) {
+  if (!/annullata/u.test(await cancelledAlert.innerText())) {
     throw new Error("Cancelled operation did not surface a recoverable cancellation state");
   }
   if (!delayedLazyScript) throw new Error("Cancellation test did not exercise the lazy implementation load");
 
-  await page.getByRole("button", { name: "Resize" }).click();
+  await page.getByRole("button", { name: "Ridimensiona" }).click();
   await page.getByText("800×800", { exact: true }).waitFor();
-  await page.getByRole("link", { name: "Download" }).waitFor();
+  await page.getByRole("link", { name: "Scarica" }).waitFor();
 
   if (scriptsAfter.length === 0) {
     throw new Error("Expected lazy image implementation script after the first operation");
@@ -122,7 +122,7 @@ try {
   );
   if (contentLeaks.length > 0) throw new Error(`Image task content appeared in requests: ${JSON.stringify(contentLeaks)}`);
 
-  const href = await page.getByRole("link", { name: "Download" }).getAttribute("href");
+  const href = await page.getByRole("link", { name: "Scarica" }).getAttribute("href");
   if (!href?.startsWith("blob:")) throw new Error("Download does not use a local blob URL");
   const decoded = await page.evaluate(async (url) => {
     const blob = await fetch(url).then((res) => res.blob());
@@ -149,13 +149,13 @@ try {
   if (primaryMime === "image/jpeg" && decoded.signatureHex !== "ffd8ff") {
     throw new Error(`JPEG signature mismatch: ${JSON.stringify(decoded)}`);
   }
-  const memoryPreflightText = await page.getByText(/estimated decoded working set/u).innerText();
+  const memoryPreflightText = await page.getByText(/stimati per l'elaborazione decodificata/u).innerText();
 
-  await page.getByLabel("Fit inside").check();
-  await page.getByLabel("Output format").selectOption("image/jpeg");
-  await page.getByRole("button", { name: "Resize" }).click();
+  await page.getByLabel("Contieni nell'area").check();
+  await page.getByLabel("Formato di uscita").selectOption("image/jpeg");
+  await page.getByRole("button", { name: "Ridimensiona" }).click();
   await page.getByText("800×600", { exact: true }).waitFor();
-  const jpegHref = await page.getByRole("link", { name: "Download" }).getAttribute("href");
+  const jpegHref = await page.getByRole("link", { name: "Scarica" }).getAttribute("href");
   if (!jpegHref?.startsWith("blob:")) throw new Error("JPEG download does not use a local blob URL");
   const decodedJpeg = await page.evaluate(async (url) => {
     const blob = await fetch(url).then((res) => res.blob());
@@ -187,7 +187,7 @@ try {
   if (!(await fileInput.isVisible())) throw new Error("Mobile Files/Photos input is not visible");
 
   await page.getByRole("button", { name: /^(?:Reset|Reimposta)$/u }).click();
-  await page.getByText("Your verified local output appears here.").waitFor();
+  await page.getByText("Il risultato locale verificato apparirà qui.").waitFor();
 
   const corruptPng = await readFile(
     resolve(root, "quality/fixtures/image-metadata/corrupt-truncated.png"),
@@ -197,10 +197,10 @@ try {
     mimeType: "image/png",
     buffer: corruptPng,
   });
-  await page.getByRole("button", { name: "Resize" }).click();
+  await page.getByRole("button", { name: "Ridimensiona" }).click();
   const corruptAlert = page.getByRole("alert");
   await corruptAlert.waitFor();
-  if (!/corrupt|incomplete/u.test(await corruptAlert.innerText())) {
+  if (!/danneggiata|incompleta/u.test(await corruptAlert.innerText())) {
     throw new Error("Corrupt image did not produce the recoverable decode error");
   }
 
@@ -215,10 +215,10 @@ try {
     mimeType: "image/png",
     buffer: oversizedPngHeader,
   });
-  await page.getByRole("button", { name: "Resize" }).click();
+  await page.getByRole("button", { name: "Ridimensiona" }).click();
   const oversizedAlert = page.getByRole("alert");
   await oversizedAlert.waitFor();
-  if (!/safety limit|smaller/u.test(await oversizedAlert.innerText())) {
+  if (!/limite locale di sicurezza|dimensioni più piccole/u.test(await oversizedAlert.innerText())) {
     throw new Error("Oversized decoded dimensions were not rejected before decode");
   }
 

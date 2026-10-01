@@ -15,7 +15,7 @@ export const imagesToPdfManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "file", format: "pdf" }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-126", fixtureFamilies: ["pdf-signature", "mime-file-signatures"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-126", fixtureFamilies: ["pdf-signature", "mime-file-signatures", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default imagesToPdfManifest;

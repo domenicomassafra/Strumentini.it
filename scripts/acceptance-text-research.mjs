@@ -26,7 +26,7 @@ async function acceptPage(browser, route, sensitiveValues, operate) {
 
   const response = await page.goto(`${origin}${route}/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`${route}: route returned ${response?.status()}`);
-  await page.getByText("Runs on this device.", { exact: true }).waitFor();
+  await page.getByText("Elaborazione sul dispositivo.", { exact: true }).waitFor();
 
   await operate(page, () => { taskStarted = true; });
   await page.waitForTimeout(100);
@@ -62,15 +62,15 @@ try {
   const listLeft = " café \ncafe\u0301\ntea\n";
   const listRight = "café\nwater\n";
   const listReceipt = await acceptPage(browser, "/tools/list-compare", ["café", "water", "tea"], async (page, startTask) => {
-    await page.getByLabel("List A").fill(listLeft);
-    await page.getByLabel("List B").fill(listRight);
-    await page.getByLabel("Trim + NFC").check();
+    await page.getByLabel("Lista A").fill(listLeft);
+    await page.getByLabel("Lista B").fill(listRight);
+    await page.getByRole("radio", { name: "Spazi ai bordi + NFC" }).check();
     startTask();
-    const submit = page.getByRole("button", { name: "Compare lists" });
+    const submit = page.getByRole("button", { name: "Confronta liste" });
     await submit.focus();
     await page.keyboard.press("Enter");
-    await page.getByText("In both", { exact: false }).waitFor();
-    await page.getByText("Only in A", { exact: false }).waitFor();
+    await page.getByText("In entrambe", { exact: false }).waitFor();
+    await page.getByText("Solo in A", { exact: false }).waitFor();
     await page.getByText("water", { exact: true }).first().waitFor();
   });
 
@@ -102,14 +102,14 @@ try {
     await field.fill(doi);
     startTask();
     await field.press("Enter");
-    await page.getByText("Valid DOI shape", { exact: true }).waitFor();
+    await page.getByText("Formato DOI valido", { exact: true }).waitFor();
     await page.getByText("10.1000/182", { exact: true }).waitFor();
 
     await page.getByRole("radio", { name: "ISBN" }).check();
     const isbnField = page.getByRole("textbox", { name: "ISBN" });
     await isbnField.fill(isbn);
     await isbnField.press("Enter");
-    await page.getByText("Valid ISBN-10", { exact: true }).waitFor();
+    await page.getByText("ISBN-10 valido", { exact: true }).waitFor();
     await page.getByText("9780306406157", { exact: true }).waitFor();
   });
 

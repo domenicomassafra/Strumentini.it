@@ -15,7 +15,7 @@ export const documentHandoffManifestManifest = {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "structured", format: "document-manifest" }] },
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-140", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-140", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default documentHandoffManifestManifest;

@@ -1,0 +1,33 @@
+%PDF-1.7
+1 0 obj
+<</Type /Catalog /Pages 2 0 R /AcroForm <</Fields [7 0 R]>>/Info 8 0 R>>
+endobj
+2 0 obj
+<</Type /Pages /Kids [3 0 R] /Count 1>>
+endobj
+3 0 obj
+<</Type /Page /Parent 2 0 R /MediaBox [0 0 300 400] /Annots [5 0 R] /Contents 4 0 R>>
+endobj
+4 0 obj
+<</Length 35>>
+stream
+BT /F1 12 Tf 20 300 Td (link page) Tj ET
+endstream
+endobj
+5 0 obj
+<</Type /Annot /Subtype /Link /A <</URI (https://example.test/a)>> >>
+endobj
+6 0 obj
+<</Type /Font /Subtype /Type1 /BaseFont /Helvetica>>
+endobj
+7 0 obj
+<</FT /Tx /T (full_name) /V (Ada) /Ff 0>>
+endobj
+8 0 obj
+<</Title (Annotated fixture) /Author (StrumentiUtili.it)>>
+endobj
+trailer
+<</Size 9 /Root 1 0 R /Info 8 0 R>>
+startxref
+0
+%%EOF
