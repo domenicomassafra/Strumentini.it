@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CsvEncodingFixerTool } from "../../components/tools/csv-encoding-fixer/CsvEncodingFixerTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="CSV Encoding Fixer" description="Decode common CSV encodings to normalized UTF-8 locally.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>CSV Encoding Fixer</h1>
-      <p class="lede">Decode UTF-8, UTF-16, or Windows-1252 bytes, remove a byte-order mark, and normalize record separators.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>File bytes stay in the browser.</span></div>
-    </header>
-    <CsvEncodingFixerTool client:load />
-    <section class="method-card"><h2>Encoding contract</h2><ul><li>Auto-detection uses byte-order marks, UTF-8 validity, and UTF-16 zero-byte patterns.</li><li>An explicit encoding is shown when it differs from detection.</li><li>Replacement characters and removed marks are reported in the result.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="csv-encoding-fixer">
+  <CsvEncodingFixerTool client:load />
+</ItalianToolPage>

@@ -13,6 +13,38 @@
    The signature element: a fixed-position right column where every produced
    value lands at the same x-offset on every one of the 200 tools. */
 
+.tool-title-line {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4, 16px);
+}
+
+.tool-title-line > div { min-width: 0; }
+
+.tool-title-icon-wrap {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  margin-top: var(--space-1, 4px);
+  border: 1px solid var(--inchiostro-3, var(--border, #d6d6cf));
+  border-radius: var(--radius-sm, 2px);
+  color: var(--inchiostro-2, var(--text, #171714));
+}
+
+.tool-title-icon-wrap .tool-title-icon { width: 22px; height: 22px; }
+
+.tool-quality-status {
+  display: inline-flex;
+  margin: var(--space-2, 8px) 0 0;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.tool-quality-status.verified { color: var(--verde, var(--success, #3c5a45)); }
+.tool-quality-status.checking { color: var(--inchiostro-3, var(--text-muted, #62625c)); }
+
 .gutter {
   --gutter-width: clamp(9rem, 22vw, 15rem);
   position: sticky;

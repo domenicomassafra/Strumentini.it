@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { DecimalHoursConverterTool } from "../../components/tools/DecimalHoursConverterTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Decimal-Hours Converter" description="Convert exact clock values to decimal hours and back locally.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
-      <p class="eyebrow">Date &amp; time</p>
-      <h1>Decimal-Hours Converter</h1>
-      <p class="lede">Convert HH:MM to exact decimal hours or convert decimal hours back to a clock value.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Exact decimal arithmetic avoids binary float rounding.</span></div>
-    </header>
-    <DecimalHoursConverterTool client:load />
-    <section class="method-card" aria-labelledby="decimal-hours-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="decimal-hours-method">Exact conversion</h2><ul><li>01:30 becomes 1.5 and 1.1 becomes 01:06.</li><li>Fractional minutes are rejected rather than silently rounded.</li><li>Values are not currency or payroll calculations.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="decimal-hours-converter">
+  <DecimalHoursConverterTool client:load />
+</ItalianToolPage>

@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PerceptualDuplicateFinderTool } from "../../components/tools/image-visual/PerceptualDuplicateFinderTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Perceptual Duplicate Finder" description="Compare bounded local image pixel samples to find near-duplicate dimensions and color signatures.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Perceptual Duplicate Finder</h1>
-      <p class="lede">Compare bounded local image pixel samples to find near-duplicate dimensions and color signatures.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <PerceptualDuplicateFinderTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Similarity policy</h2><ul><li>Compares bounded local image samples for near-duplicate dimensions and color signatures.</li><li>A match is a similarity signal, not proof that files are identical.</li><li>Files are not renamed, deleted, or uploaded.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="perceptual-duplicate-finder">
+  <PerceptualDuplicateFinderTool client:load />
+</ItalianToolPage>

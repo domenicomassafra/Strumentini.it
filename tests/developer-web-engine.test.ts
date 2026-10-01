@@ -98,7 +98,7 @@ describe("developer/web structured data", () => {
     expect(parsed.value).toEqual({ owner: { name: "Ada", enabled: true } });
     expect(formatToml(parsed.value)).toContain("name = \"Ada\"");
     expect(parseToml("a = 1 # comment\n").value).toEqual({ a: 1 });
-    expect(() => parseToml("a = 1\na = 2\n")).toThrow(/Duplicate/u);
+    expect(() => parseToml("a = 1\na = 2\n")).toThrow(/INVALID_TOML/u);
   });
 
   it("keeps parser data keys from traversing object prototypes", () => {
@@ -163,7 +163,7 @@ describe("developer/web encoding and cryptography", () => {
 
 describe("developer/web references and schedule operations", () => {
   it("returns local HTTP and MIME references", () => {
-    expect(httpStatusOperation(404)).toMatchObject({ class: "client-error", reason: "Not Found" });
+    expect(httpStatusOperation(404)).toMatchObject({ class: "client-error", reason: "Non trovato" });
     expect(mimeTypeOperation("png", "extension")).toMatchObject({ mime: "image/png" });
     expect(mimeTypeOperation("89504e470d0a1a0a", "signature")).toMatchObject({ mime: "image/png", confidence: "signature-hint" });
   });
@@ -171,7 +171,7 @@ describe("developer/web references and schedule operations", () => {
   it("parses user agents descriptively without capability claims", () => {
     const result = parseUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Version/17.0 Mobile/15E148 Safari/604.1");
     expect(result).toMatchObject({ browser: "Safari", os: "iOS", device: "mobile", mobile: true });
-    expect(result.warnings[0]).toMatch(/feature detection/u);
+    expect(result.warnings[0]).toMatch(/funzionalità disponibili/u);
   });
 
   it("preserves query pair order and converts Unix time", () => {

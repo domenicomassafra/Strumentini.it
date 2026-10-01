@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { WeekNumberConverterTool } from "../../components/tools/WeekNumberConverterTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Week-Number Converter" description="Convert calendar dates and ISO or US week numbers locally.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
-      <p class="eyebrow">Date &amp; time</p>
-      <h1>Week-Number Converter</h1>
-      <p class="lede">Move between a date and its ISO or United States week number without relying on a locale guess.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No locale or live calendar service is queried.</span></div>
-    </header>
-    <WeekNumberConverterTool client:load />
-    <section class="method-card" aria-labelledby="week-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="week-method">Week definitions</h2><ul><li>ISO weeks begin on Monday and the week-year follows the Thursday rule.</li><li>US mode begins on Sunday.</li><li>Invalid week 53 dates fail explicitly.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="week-number-converter">
+  <WeekNumberConverterTool client:load />
+</ItalianToolPage>

@@ -810,7 +810,7 @@ export function buildIcsEvent(input: IcsEventInput): { text: string; uid: string
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Local Utility Workspace//Date Tools//EN",
+    "PRODID:-//StrumentiUtili.it//Strumenti data e ora//IT",
     "CALSCALE:GREGORIAN",
     "BEGIN:VEVENT",
     `UID:${escapeIcsText(uid)}`,
@@ -985,53 +985,53 @@ export function lookupPublicHolidays(country: string, year: number): { country: 
     records.push({ ...item, name });
   };
   if (normalized === "US") {
-    addFixed(1, 1, "New Year's Day", true, true);
-    records.push({ date: nthWeekday(year, 0, 1, 3), name: "Martin Luther King Jr. Day", observed: false });
-    records.push({ date: nthWeekday(year, 1, 1, 3), name: "Presidents' Day", observed: false });
-    records.push({ date: lastWeekday(year, 4, 1), name: "Memorial Day", observed: false });
+    addFixed(1, 1, "Capodanno", true, true);
+    records.push({ date: nthWeekday(year, 0, 1, 3), name: "Giorno di Martin Luther King Jr.", observed: false });
+    records.push({ date: nthWeekday(year, 1, 1, 3), name: "Giorno dei Presidenti", observed: false });
+    records.push({ date: lastWeekday(year, 4, 1), name: "Giorno della memoria dei caduti", observed: false });
     if (year >= 2021) addFixed(6, 19, "Juneteenth", true, true);
-    addFixed(7, 4, "Independence Day", true, true);
-    records.push({ date: nthWeekday(year, 8, 1, 1), name: "Labor Day", observed: false });
-    records.push({ date: nthWeekday(year, 9, 1, 2), name: "Columbus Day", observed: false });
-    addFixed(11, 11, "Veterans Day", true, true);
-    records.push({ date: nthWeekday(year, 10, 4, 4), name: "Thanksgiving Day", observed: false });
-    addFixed(12, 25, "Christmas Day", true, true);
+    addFixed(7, 4, "Giorno dell'Indipendenza", true, true);
+    records.push({ date: nthWeekday(year, 8, 1, 1), name: "Festa del Lavoro", observed: false });
+    records.push({ date: nthWeekday(year, 9, 1, 2), name: "Giorno di Colombo", observed: false });
+    addFixed(11, 11, "Giorno dei Veterani", true, true);
+    records.push({ date: nthWeekday(year, 10, 4, 4), name: "Giorno del Ringraziamento", observed: false });
+    addFixed(12, 25, "Natale", true, true);
   } else if (normalized === "CA") {
-    addFixed(1, 1, "New Year's Day", true, true);
+    addFixed(1, 1, "Capodanno", true, true);
     const easter = easterSunday(year);
-    records.push({ date: formatIsoDate(addDaysToDate(easter, -2)), name: "Good Friday", observed: false });
+    records.push({ date: formatIsoDate(addDaysToDate(easter, -2)), name: "Venerdì Santo", observed: false });
     const victoria = utcDate(year, 4, 25);
     const victoriaMonday = addDaysToDate(victoria, -((victoria.getUTCDay() + 6) % 7));
-    records.push({ date: formatIsoDate(victoriaMonday), name: "Victoria Day", observed: false });
-    addFixed(7, 1, "Canada Day", true, true);
-    records.push({ date: nthWeekday(year, 7, 1, 1), name: "Civic Holiday", observed: false });
-    records.push({ date: nthWeekday(year, 8, 1, 1), name: "Labour Day", observed: false });
-    addFixed(9, 30, "National Day for Truth and Reconciliation", true, true);
-    records.push({ date: nthWeekday(year, 9, 1, 2), name: "Thanksgiving", observed: false });
-    addFixed(12, 25, "Christmas Day", true, true);
-    addFixed(12, 26, "Boxing Day", true, true);
+    records.push({ date: formatIsoDate(victoriaMonday), name: "Giorno della Regina Vittoria", observed: false });
+    addFixed(7, 1, "Festa del Canada", true, true);
+    records.push({ date: nthWeekday(year, 7, 1, 1), name: "Festa civica", observed: false });
+    records.push({ date: nthWeekday(year, 8, 1, 1), name: "Festa del Lavoro", observed: false });
+    addFixed(9, 30, "Giornata nazionale per la verità e la riconciliazione", true, true);
+    records.push({ date: nthWeekday(year, 9, 1, 2), name: "Giorno del Ringraziamento", observed: false });
+    addFixed(12, 25, "Natale", true, true);
+    addFixed(12, 26, "Festa del 26 dicembre", true, true);
   } else if (normalized === "GB") {
-    addFixed(1, 1, "New Year's Day", true, true);
+    addFixed(1, 1, "Capodanno", true, true);
     const easter = easterSunday(year);
-    records.push({ date: formatIsoDate(addDaysToDate(easter, -2)), name: "Good Friday", observed: false });
-    records.push({ date: formatIsoDate(addDaysToDate(easter, 1)), name: "Easter Monday", observed: false });
-    records.push({ date: nthWeekday(year, 4, 1, 1), name: "Early May Bank Holiday", observed: false });
-    records.push({ date: lastWeekday(year, 7, 1), name: "Summer Bank Holiday", observed: false });
-    addFixed(12, 25, "Christmas Day", true, true);
-    addFixed(12, 26, "Boxing Day", true, true);
+    records.push({ date: formatIsoDate(addDaysToDate(easter, -2)), name: "Venerdì Santo", observed: false });
+    records.push({ date: formatIsoDate(addDaysToDate(easter, 1)), name: "Lunedì dell'Angelo", observed: false });
+    records.push({ date: nthWeekday(year, 4, 1, 1), name: "Festa bancaria di inizio maggio", observed: false });
+    records.push({ date: lastWeekday(year, 7, 1), name: "Festa bancaria estiva", observed: false });
+    addFixed(12, 25, "Natale", true, true);
+    addFixed(12, 26, "Festa del 26 dicembre", true, true);
   } else if (normalized === "IT") {
-    addFixed(1, 1, "New Year's Day");
-    addFixed(1, 6, "Epiphany");
+    addFixed(1, 1, "Capodanno");
+    addFixed(1, 6, "Epifania");
     const easter = easterSunday(year);
-    records.push({ date: formatIsoDate(addDaysToDate(easter, 1)), name: "Easter Monday", observed: false });
-    addFixed(4, 25, "Liberation Day");
-    addFixed(5, 1, "Labour Day");
-    addFixed(6, 2, "Republic Day");
-    addFixed(8, 15, "Assumption of Mary");
-    addFixed(11, 1, "All Saints' Day");
-    addFixed(12, 8, "Immaculate Conception");
-    addFixed(12, 25, "Christmas Day");
-    addFixed(12, 26, "St. Stephen's Day");
+    records.push({ date: formatIsoDate(addDaysToDate(easter, 1)), name: "Lunedì dell'Angelo", observed: false });
+    addFixed(4, 25, "Festa della Liberazione");
+    addFixed(5, 1, "Festa dei Lavoratori");
+    addFixed(6, 2, "Festa della Repubblica");
+    addFixed(8, 15, "Assunzione di Maria");
+    addFixed(11, 1, "Ognissanti");
+    addFixed(12, 8, "Immacolata Concezione");
+    addFixed(12, 25, "Natale");
+    addFixed(12, 26, "Santo Stefano");
   } else throw new Error("INVALID_COUNTRY");
   records.sort((left, right) => left.date.localeCompare(right.date));
   return { country: normalized, year, holidays: records, source: "embedded-calendar-v1" };

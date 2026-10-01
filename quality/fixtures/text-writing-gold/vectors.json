@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "tool_vectors": [
+    { "tool_id": "word-character-line-counter", "input": { "text": "Café 👩‍💻\r\nline two" }, "expected": { "words": 3, "characters": 18, "bytes": 27, "lines": 2, "paragraphs": 1 } },
+    { "tool_id": "reading-time-estimator", "input": { "text": "one two three four", "wordsPerMinute": 120 }, "expected": { "words": 4, "wordsPerMinute": 120, "minutes": 1, "seconds": 2 } },
+    { "tool_id": "case-converter", "input": { "text": "hello-world", "mode": "camel" }, "expected": { "output": "helloWorld", "mode": "camel", "changed": true } },
+    { "tool_id": "whitespace-normalizer", "input": { "text": "  alpha\t beta \r\n gamma  delta  " }, "expected": { "output": "alpha beta\ngamma delta", "lineCount": 2, "changed": true } },
+    { "tool_id": "invisible-character-detector", "input": { "text": "a​b﻿" }, "expected": { "count": 2, "cleanText": "ab" } },
+    { "tool_id": "unicode-normalizer", "input": { "text": "é", "form": "NFC" }, "expected": { "output": "é", "form": "NFC", "changed": true } },
+    { "tool_id": "smart-quote-normalizer", "input": { "text": "\"It's fine\"" }, "expected": { "output": "“It’s fine”", "direction": "straight-to-curly", "changed": true } },
+    { "tool_id": "line-sorter", "input": { "text": "b\nA\na", "caseSensitive": false }, "expected": { "lines": ["A", "a", "b"], "lineCount": 3, "descending": false, "caseSensitive": false } },
+    { "tool_id": "line-deduplicator", "input": { "text": "é\né\ntea", "equality": "nfc" }, "expected": { "lines": ["é", "tea"], "keptCount": 2, "removedCount": 1, "equality": "nfc" } },
+    { "tool_id": "list-intersection", "input": { "left": "a\nb\nb", "right": "b\nc", "equality": "exact" }, "expected": { "intersection": ["b"], "count": 1, "equality": "exact" } },
+    { "tool_id": "list-difference", "input": { "left": "a\nb", "right": "b", "equality": "exact" }, "expected": { "difference": ["a"], "count": 1, "equality": "exact" } },
+    { "tool_id": "find-replace-preview", "input": { "text": "one one", "find": "one", "replace": "two" }, "expected": { "output": "two two", "matchCount": 2, "replacementCount": 2, "changed": true } },
+    { "tool_id": "markdown-preview", "input": { "markdown": "# Safe" }, "expected": { "html": "<h1>Safe</h1>", "escapedRawHtml": false, "warnings": [] } },
+    { "tool_id": "markdown-table-formatter", "input": { "markdown": "|a|b|\n|-|-|\n|one|two|" }, "expected": { "output": "| a   | b   |\n| --- | --- |\n| one | two |" } },
+    { "tool_id": "slug-generator", "input": { "text": "  Café déjà vu / notes ", "maxLength": 12 }, "expected": { "slug": "cafe-deja-vu", "separator": "-", "truncated": true } },
+    { "tool_id": "text-to-csv-rows", "input": { "text": "one,\"two, values\"\nthree,\"say \"\"hi\"\"\"" }, "expected": { "csv": "column1,column2\none,\"two, values\"\nthree,\"say \"\"hi\"\"\"", "rowCount": 2, "columnCount": 2 } },
+    { "tool_id": "csv-column-to-list", "input": { "csv": "name,note\nAda,\"hello, world\"", "column": "note" }, "expected": { "values": ["hello, world"], "list": "hello, world", "column": "note", "rowCount": 1 } },
+    { "tool_id": "lorem-sample-data-generator", "input": { "type": "words", "count": 4, "seed": 7 }, "expected": { "data": "craft\nfield\nquiet\nmaple", "rows": ["craft", "field", "quiet", "maple"], "count": 4, "seed": 7 } },
+    { "tool_id": "language-aware-text-statistics", "input": { "text": "Hello world. Привет мир." }, "expected": { "language": "en", "dominantScript": "Latin", "words": 4, "sentences": 2, "confidence": "heuristic" } }
+  ],
+  "policy": "Hand-worked end-to-end literals supplement each tool's declared Unicode, CSV, list, or Markdown fixture family; they do not replace those corpora."
+}

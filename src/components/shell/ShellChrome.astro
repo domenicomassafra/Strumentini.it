@@ -30,18 +30,18 @@ interface NavDestination {
 }
 
 const destinations: readonly NavDestination[] = [
-  { id: "workbench", label: "Your Tools", short: "Tools", href: "/", icon: "tools", current: isWorkbench },
-  { id: "recent", label: "Recent", short: "Recent", href: "/#recent", icon: "recent", current: false },
-  { id: "library", label: "Library", short: "Library", href: "/library/", icon: "library", current: isLibrary && !isSearchDestination },
-  { id: "search", label: "Search", short: "Search", href: "/library/?focus=search", icon: "search", current: isSearchDestination },
-  { id: "onboarding", label: "Set up tools", short: "Set up", href: "/onboarding/", icon: "onboarding", current: isOnboarding },
-  { id: "profile", label: "Work Profile", short: "Profile", href: "/#work-profile", icon: "profile", current: false },
+  { id: "workbench", label: "I tuoi strumenti", short: "Strumenti", href: "/", icon: "tools", current: isWorkbench },
+  { id: "recent", label: "Recenti", short: "Recenti", href: "/#recent", icon: "recent", current: false },
+  { id: "library", label: "Libreria", short: "Libreria", href: "/library/", icon: "library", current: isLibrary && !isSearchDestination },
+  { id: "search", label: "Cerca", short: "Cerca", href: "/library/?focus=search", icon: "search", current: isSearchDestination },
+  { id: "onboarding", label: "Configura strumenti", short: "Configura", href: "/onboarding/", icon: "onboarding", current: isOnboarding },
+  { id: "profile", label: "Profilo di lavoro", short: "Profilo", href: "/#work-profile", icon: "profile", current: false },
 ];
 
 const railGroups: readonly { readonly label: string; readonly ids: readonly string[]; readonly bottom?: boolean }[] = [
-  { label: "Your work", ids: ["workbench", "recent"] },
-  { label: "Discover", ids: ["library", "search"] },
-  { label: "Workspace", ids: ["onboarding", "profile"], bottom: true },
+  { label: "Il tuo lavoro", ids: ["workbench", "recent"] },
+  { label: "Scopri", ids: ["library", "search"] },
+  { label: "Area di lavoro", ids: ["onboarding", "profile"], bottom: true },
 ];
 
 /**
@@ -73,23 +73,23 @@ const stranded = destinations.filter(
   (entry) => !primaryBarIds.includes(entry.id) && !headerDestinationIds.includes(entry.id),
 );
 if (stranded.length > 0) {
-  throw new Error(`shell: destination(s) unreachable on mobile: ${stranded.map((entry) => entry.id).join(", ")}`);
+  throw new Error(`shell: destinazioni non raggiungibili su mobile: ${stranded.map((entry) => entry.id).join(", ")}`);
 }
 ---
 
-<a class="shell-skip-link" href="#main-content">Skip to content</a>
+<a class="shell-skip-link" href="#main-content">Vai al contenuto</a>
 <div
   class="app-shell"
   data-shell-root
   data-shell-path={normalizedPath}
   style={`--shell-bar-slots: ${primaryBar.length};`}
 >
-  <aside class="shell-rail" aria-label="Application shell">
+  <aside class="shell-rail" aria-label="Navigazione dell'applicazione">
     <a class="shell-brand" href="/" aria-label="StrumentiUtili.it">
       <BrandMark />
       <span class="shell-brand-word">StrumentiUtili.it</span>
     </a>
-    <nav class="shell-rail-nav" aria-label="Primary" data-shell-nav="desktop">
+    <nav class="shell-rail-nav" aria-label="Navigazione principale" data-shell-nav="desktop">
       {railGroups.map((group) => (
         <div class:list={["shell-nav-group", group.bottom === true && "shell-nav-group-bottom"]}>
           <p class="shell-nav-label">{group.label}</p>
@@ -111,7 +111,7 @@ if (stranded.length > 0) {
         </div>
       ))}
     </nav>
-    <p class="shell-local-note">Local-first · no account required</p>
+    <p class="shell-local-note">Elaborazione locale · nessun account richiesto</p>
   </aside>
 
   <div class="shell-body">
@@ -142,7 +142,7 @@ if (stranded.length > 0) {
     </main>
   </div>
 
-  <nav class="shell-mobile-nav" aria-label="Primary" data-shell-nav="mobile" data-shell-mobile-nav>
+  <nav class="shell-mobile-nav" aria-label="Navigazione principale" data-shell-nav="mobile" data-shell-mobile-nav>
     {primaryBar.map((destination) => (
       <a
         href={destination.href}

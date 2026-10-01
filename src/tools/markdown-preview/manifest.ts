@@ -13,7 +13,7 @@ export const markdownPreviewManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-014", fixtureFamilies: ["markdown-xss"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-014", fixtureFamilies: ["markdown-xss", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 
 export default markdownPreviewManifest;

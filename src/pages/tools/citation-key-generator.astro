@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CitationKeyGeneratorTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="Citation Key Generator" description="Generate stable author-year-title citation keys with collision suffixes.">
+
+<ItalianToolPage toolId="citation-key-generator">
   <CitationKeyGeneratorTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

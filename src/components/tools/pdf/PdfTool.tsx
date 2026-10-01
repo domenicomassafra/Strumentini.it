@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import type { PdfArtifact } from "../../../engines/pdf";
+import { TOOL_COPY_IT } from "../../../i18n/it/tool-copy";
+import { friendlyToolErrorIt } from "../../../i18n/it/errors";
 import { StatusMark, statusMarkLabel } from "../shared/StatusMark";
 import { CONTROL, it } from "../shared/controlLabels";
 
@@ -43,6 +45,56 @@ interface ToolResult {
   readonly value: unknown;
 }
 
+const PDF_ACTION_IT: Readonly<Record<PdfToolId, string>> = {
+  "pdf-merge": "Unisci PDF",
+  "pdf-split": "Dividi PDF",
+  "pdf-page-reorder": "Riordina pagine",
+  "pdf-rotate": "Ruota pagine",
+  "pdf-page-delete-extract": "Applica operazione alle pagine",
+  "images-to-pdf": "Crea PDF",
+  "pdf-to-images": "Estrai immagini",
+  "pdf-text-extraction": "Estrai testo",
+  "pdf-metadata-inspector": "Analizza PDF",
+  "pdf-metadata-remover": "Rimuovi metadati",
+  "pdf-page-size-inspector": "Analizza dimensioni pagine",
+  "pdf-page-count-verifier": "Verifica numero pagine",
+  "pdf-password-check-remove": "Controlla cifratura",
+  "pdf-flatten": "Appiattisci PDF",
+  "pdf-form-inspector": "Analizza moduli",
+  "pdf-link-extractor": "Estrai collegamenti",
+  "pdf-image-extractor": "Estrai immagini",
+  "pdf-compare-lite": "Confronta PDF",
+  "pdf-compression-lite": "Crea copia alleggerita",
+  "document-handoff-manifest": "Crea manifest",
+};
+
+const RESULT_KEY_IT: Readonly<Record<string, string>> = {
+  artifacts: "file_generati",
+  inspection: "analisi",
+  capabilities: "capacità",
+  pageCount: "numero_pagine",
+  pages: "pagine",
+  width: "larghezza",
+  height: "altezza",
+  rotation: "rotazione",
+  encrypted: "cifrato",
+  metadata: "metadati",
+  links: "collegamenti",
+  fields: "campi",
+  images: "immagini",
+  text: "testo",
+  filename: "nome_file",
+  size: "dimensione",
+  sha256: "sha256",
+  structure: "struttura",
+  valid: "valido",
+  equal: "uguali",
+  differences: "differenze",
+  warnings: "avvisi",
+  warning: "avviso",
+  json: "json",
+};
+
 function parseNumbers(value: string): number[] {
   return value.split(/[\s,;]+/u).filter(Boolean).map(Number).filter((item) => Number.isInteger(item) && item > 0);
 }
@@ -62,13 +114,19 @@ function displayValue(value: unknown): string {
   if (typeof value === "string") return value;
   if (typeof value !== "object") return String(value);
   try {
-    return JSON.stringify(value, (_key, item: unknown) => {
-      if (item instanceof Blob) return `[Blob ${item.size} bytes]`;
-      if (item instanceof Uint8Array) return `[Bytes ${item.byteLength}]`;
-      return item;
-    }, 2);
+    const localize = (entry: unknown): unknown => {
+      if (entry instanceof Blob) return `[Dati binari: ${entry.size} byte]`;
+      if (entry instanceof Uint8Array) return `[Byte: ${entry.byteLength}]`;
+      if (Array.isArray(entry)) return entry.map(localize);
+      if (entry === null || typeof entry !== "object") return entry;
+      return Object.fromEntries(Object.entries(entry as Record<string, unknown>).map(([key, item]) => [
+        RESULT_KEY_IT[key] ?? key,
+        localize(item),
+      ]));
+    };
+    return JSON.stringify(localize(value), null, 2);
   } catch {
-    return "Result received.";
+    return "Risultato ricevuto.";
   }
 }
 
@@ -82,7 +140,7 @@ function isInspection(value: unknown): value is { inspection?: { capabilities?: 
   return typeof value === "object" && value !== null && "inspection" in value;
 }
 
-export function PdfTool({ toolId, title, description, actionLabel, inputMode = "single", optionMode = "none", accept = "application/pdf,.pdf" }: PdfToolProps) {
+export function PdfTool({ toolId, title: _title, description: _description, actionLabel: _actionLabel, inputMode = "single", optionMode = "none", accept = "application/pdf,.pdf" }: PdfToolProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [pages, setPages] = useState("");
   const [order, setOrder] = useState("");
@@ -150,11 +208,11 @@ export function PdfTool({ toolId, title, description, actionLabel, inputMode = "
     clearUrls();
     setResult(null);
     if (inputMode === "pair" && files.length < 2) {
-      setError("Choose two local PDF files.");
+      setError("Scegli due file PDF locali.");
       return;
     }
     if (inputMode !== "pair" && files.length === 0) {
-      setError("Choose a local file first.");
+      setError("Scegli prima un file locale.");
       return;
     }
     const abortController = new AbortController();
@@ -173,7 +231,9 @@ export function PdfTool({ toolId, title, description, actionLabel, inputMode = "
         setUrls([{ filename: "document-handoff.json", url: URL.createObjectURL(new Blob([json], { type: "application/json" })) }]);
       }
     } catch (caught) {
-      setError(caught instanceof DOMException && caught.name === "AbortError" ? "Operation cancelled. No output was produced." : caught instanceof Error ? caught.message : "The local PDF operation failed.");
+      setError(caught instanceof DOMException && caught.name === "AbortError"
+        ? "Operazione annullata. Non è stato prodotto alcun risultato."
+        : friendlyToolErrorIt(caught));
       setStatus("idle");
     } finally {
       if (controller.current === abortController) controller.current = null;
@@ -198,29 +258,33 @@ export function PdfTool({ toolId, title, description, actionLabel, inputMode = "
 
   const isWorking = status === "working";
   const gutterState = isWorking ? "running" : result === null ? "idle" : error !== "" ? "error" : "success";
+  const publicCopy = TOOL_COPY_IT[toolId];
+  const publicTitle = publicCopy?.name ?? toolId;
+  const publicDescription = publicCopy?.summary ?? "";
+  const actionLabel = PDF_ACTION_IT[toolId];
   return (
     <form class="tool-operation" onSubmit={submit} noValidate>
       <section class="tool-form-card">
-        <p class="file-note">{description}</p>
+        <p class="file-note">{publicDescription}</p>
         {inputMode === "pair" ? (
           <div class="field-grid">
-            <label class="field"><span>First PDF</span><input type="file" accept={accept} onChange={(event) => choose(event, 0)} disabled={isWorking} /></label>
-            <label class="field"><span>Second PDF</span><input type="file" accept={accept} onChange={(event) => choose(event, 1)} disabled={isWorking} /></label>
+            <label class="field"><span>Primo PDF</span><input type="file" accept={accept} onChange={(event) => choose(event, 0)} disabled={isWorking} /></label>
+            <label class="field"><span>Secondo PDF</span><input type="file" accept={accept} onChange={(event) => choose(event, 1)} disabled={isWorking} /></label>
           </div>
         ) : (
           <label class="field">
-            <span>{inputMode === "multi" ? "Files" : title}</span>
+            <span>{inputMode === "multi" ? "File" : publicTitle}</span>
             <input type="file" accept={accept} multiple={inputMode === "multi"} onChange={(event) => choose(event)} disabled={isWorking} />
-            <small>Processed on this device; no upload or remote fallback.</small>
+            <small>Elaborazione su questo dispositivo, senza caricamenti né elaborazione remota alternativa.</small>
           </label>
         )}
         {files.length > 0 && <p class="file-note" role="status">{files.map((file) => `${file.name} · ${(file.size / 1024).toFixed(1)} KiB`).join(" · ")}</p>}
-        {optionMode === "pages" && <label class="field"><span>Pages</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3, 5" disabled={isWorking} /></label>}
-        {optionMode === "groups" && <label class="field"><span>Page groups</span><input value={groups} onInput={(event) => setGroups(event.currentTarget.value)} placeholder="1-2; 3-4" disabled={isWorking} /></label>}
-        {optionMode === "order" && <label class="field"><span>New page order</span><input value={order} onInput={(event) => setOrder(event.currentTarget.value)} placeholder="3, 1, 2" disabled={isWorking} /></label>}
-        {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pages</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 2" disabled={isWorking} /></label><label class="field"><span>Rotation</span><select value={rotation} onChange={(event) => setRotation(event.currentTarget.value)} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
-        {optionMode === "delete-extract" && <div class="field-grid"><label class="field"><span>Pages</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3" disabled={isWorking} /></label><label class="field"><span>Operation</span><select value={deleteMode} onChange={(event) => setDeleteMode(event.currentTarget.value as "delete" | "extract")} disabled={isWorking}><option value="extract">Extract selected pages</option><option value="delete">Delete selected pages</option></select></label></div>}
-        {optionMode === "password" && <label class="field"><span>Mode</span><select value={passwordMode} onChange={(event) => setPasswordMode(event.currentTarget.value as "check" | "remove")} disabled={isWorking}><option value="check">Check encryption only</option><option value="remove">Create a safe copy when unencrypted</option></select></label>}
+        {optionMode === "pages" && <label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3, 5" disabled={isWorking} /></label>}
+        {optionMode === "groups" && <label class="field"><span>Gruppi di pagine</span><input value={groups} onInput={(event) => setGroups(event.currentTarget.value)} placeholder="1-2; 3-4" disabled={isWorking} /></label>}
+        {optionMode === "order" && <label class="field"><span>Nuovo ordine delle pagine</span><input value={order} onInput={(event) => setOrder(event.currentTarget.value)} placeholder="3, 1, 2" disabled={isWorking} /></label>}
+        {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 2" disabled={isWorking} /></label><label class="field"><span>Rotazione</span><select value={rotation} onChange={(event) => setRotation(event.currentTarget.value)} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
+        {optionMode === "delete-extract" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3" disabled={isWorking} /></label><label class="field"><span>Operazione</span><select value={deleteMode} onChange={(event) => setDeleteMode(event.currentTarget.value as "delete" | "extract")} disabled={isWorking}><option value="extract">Estrai le pagine selezionate</option><option value="delete">Elimina le pagine selezionate</option></select></label></div>}
+        {optionMode === "password" && <label class="field"><span>Modalità</span><select value={passwordMode} onChange={(event) => setPasswordMode(event.currentTarget.value as "check" | "remove")} disabled={isWorking}><option value="check">Controlla soltanto la cifratura</option><option value="remove">Crea una copia sicura se il PDF non è cifrato</option></select></label>}
         {error !== "" && <p class="error" role="alert">{error}</p>}
         <div class="actions"><button class="primary" type="submit" disabled={isWorking}>{isWorking ? it(CONTROL.working) : actionLabel}</button>{isWorking && <button type="button" onClick={() => controller.current?.abort()}>{it(CONTROL.cancel)}</button>}<button type="button" onClick={reset} disabled={isWorking}>{it(CONTROL.reset)}</button></div>
       </section>
@@ -232,14 +296,14 @@ export function PdfTool({ toolId, title, description, actionLabel, inputMode = "
               {inspection.capabilities.map((capability) => (
                 <li key={capability.capability}>
                   <StatusMark kind={capability.available ? "ok" : "missing"} label={statusMarkLabel(capability.available ? "ok" : "missing")} />
-                  {capability.capability}{capability.reason === undefined ? "" : ` — ${capability.reason}`}
+                  {capability.available ? "Funzionalità disponibile" : "Funzionalità non disponibile"}
                 </li>
               ))}
             </ul>
           )}
           {urls.length > 0 && <div class="actions">{urls.map((item) => <a class="button primary" href={item.url} download={item.filename} key={item.url}>{item.filename}</a>)}</div>}
-          {typeof result.value === "object" && result.value !== null && typeof (result.value as { text?: unknown }).text === "string" && <textarea class="csv-preview" readOnly rows={8} value={(result.value as { text: string }).text} aria-label="Extracted text" />}
-          <details open><summary>Machine-readable result</summary><pre class="csv-preview">{displayValue(result.value)}</pre></details>
+          {typeof result.value === "object" && result.value !== null && typeof (result.value as { text?: unknown }).text === "string" && <textarea class="csv-preview" readOnly rows={8} value={(result.value as { text: string }).text} aria-label="Testo estratto" />}
+          <details open><summary>Risultato strutturato</summary><pre class="csv-preview">{displayValue(result.value)}</pre></details>
         </>}
       </section>
     </form>

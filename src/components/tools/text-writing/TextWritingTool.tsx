@@ -42,25 +42,55 @@ type CaseMode = "lower" | "upper" | "title" | "sentence" | "camel" | "pascal" | 
 type SampleType = "lorem" | "words" | "sentences" | "paragraphs" | "names" | "emails" | "numbers" | "rows";
 
 const TOOL_LABELS: Record<TextWritingToolId, string> = {
-  "word-character-line-counter": "Count text",
-  "reading-time-estimator": "Estimate reading time",
-  "case-converter": "Convert case",
-  "whitespace-normalizer": "Normalize whitespace",
-  "invisible-character-detector": "Inspect invisible characters",
-  "unicode-normalizer": "Normalize Unicode",
-  "smart-quote-normalizer": "Normalize quotes",
-  "line-sorter": "Sort lines",
-  "line-deduplicator": "Deduplicate lines",
-  "list-intersection": "Find intersection",
-  "list-difference": "Find difference",
-  "find-replace-preview": "Preview replacement",
-  "markdown-preview": "Preview Markdown",
-  "markdown-table-formatter": "Format Markdown table",
-  "slug-generator": "Generate slug",
-  "text-to-csv-rows": "Convert to CSV",
-  "csv-column-to-list": "Extract column",
-  "lorem-sample-data-generator": "Generate sample data",
-  "language-aware-text-statistics": "Analyze language",
+  "word-character-line-counter": "Conta testo",
+  "reading-time-estimator": "Stima tempo di lettura",
+  "case-converter": "Converti stile del testo",
+  "whitespace-normalizer": "Normalizza spazi",
+  "invisible-character-detector": "Analizza caratteri invisibili",
+  "unicode-normalizer": "Normalizza Unicode",
+  "smart-quote-normalizer": "Normalizza virgolette",
+  "line-sorter": "Ordina righe",
+  "line-deduplicator": "Rimuovi righe duplicate",
+  "list-intersection": "Trova elementi comuni",
+  "list-difference": "Trova differenze",
+  "find-replace-preview": "Mostra anteprima sostituzione",
+  "markdown-preview": "Mostra anteprima Markdown",
+  "markdown-table-formatter": "Formatta tabella Markdown",
+  "slug-generator": "Genera slug",
+  "text-to-csv-rows": "Converti in CSV",
+  "csv-column-to-list": "Estrai colonna",
+  "lorem-sample-data-generator": "Genera dati di esempio",
+  "language-aware-text-statistics": "Analizza il testo",
+};
+
+const CASE_LABELS: Readonly<Record<CaseMode, string>> = {
+  lower: "minuscolo",
+  upper: "MAIUSCOLO",
+  title: "Stile titolo",
+  sentence: "Stile frase",
+  camel: "camelCase",
+  pascal: "PascalCase",
+  kebab: "kebab-case",
+  snake: "snake_case",
+  constant: "CONSTANT_CASE",
+};
+
+const EQUALITY_LABELS: Readonly<Record<Equality, string>> = {
+  exact: "Corrispondenza esatta",
+  trim: "Ignora spazi ai bordi",
+  nfc: "Normalizza Unicode NFC",
+  "trim-nfc": "Spazi ai bordi + Unicode NFC",
+};
+
+const SAMPLE_TYPE_LABELS: Readonly<Record<SampleType, string>> = {
+  lorem: "Testo Lorem ipsum",
+  words: "Parole",
+  sentences: "Frasi",
+  paragraphs: "Paragrafi",
+  names: "Nomi",
+  emails: "Indirizzi email",
+  numbers: "Numeri",
+  rows: "Righe",
 };
 
 function isTextTool(tool: TextWritingToolId): boolean {
@@ -179,8 +209,40 @@ function ResultOutput({ tool, value }: { tool: TextWritingToolId; value: unknown
     }
   }
   const text = outputValue(value);
-  if (text !== null) return <pre class="text-result">{text === "" ? "(empty output)" : text}</pre>;
-  return <pre class="text-result">{JSON.stringify(value, null, 2)}</pre>;
+  if (text !== null) return <pre class="text-result">{text === "" ? "(risultato vuoto)" : text}</pre>;
+  const keys: Readonly<Record<string, string>> = {
+    words: "parole",
+    characters: "caratteri",
+    codePoints: "punti_codice",
+    charactersNoWhitespace: "caratteri_senza_spazi",
+    lines: "righe",
+    paragraphs: "paragrafi",
+    readingMinutes: "minuti_lettura",
+    sentences: "frasi",
+    counts: "conteggi",
+    frequencies: "frequenze",
+    language: "lingua",
+    languageHeuristic: "stima_lingua",
+    scripts: "alfabeti",
+    duplicatesRemoved: "duplicati_rimossi",
+    matches: "corrispondenze",
+    warnings: "avvisi",
+    warning: "avviso",
+    form: "forma",
+    changed: "modificato",
+    delimiter: "delimitatore",
+    headers: "intestazioni",
+    rows: "righe",
+    seed: "seme",
+    count: "quantità",
+    type: "tipo",
+  };
+  const localize = (entry: unknown): unknown => {
+    if (Array.isArray(entry)) return entry.map(localize);
+    if (entry === null || typeof entry !== "object") return entry;
+    return Object.fromEntries(Object.entries(entry as Record<string, unknown>).map(([key, item]) => [keys[key] ?? key, localize(item)]));
+  };
+  return <pre class="text-result">{JSON.stringify(localize(value), null, 2)}</pre>;
 }
 
 export function TextWritingTool({ tool }: TextWritingToolProps) {
@@ -247,38 +309,39 @@ export function TextWritingTool({ tool }: TextWritingToolProps) {
   async function copyOutput() {
     const output = outputValue(operation.result);
     if (output === null || navigator.clipboard === undefined) {
-      setCopyStatus("Clipboard access is unavailable; select the output manually.");
+      setCopyStatus("Gli appunti non sono disponibili; seleziona e copia il risultato manualmente.");
       return;
     }
     try {
       await navigator.clipboard.writeText(output);
-      setCopyStatus("Output copied.");
+      setCopyStatus("Risultato copiato.");
     } catch {
-      setCopyStatus("Clipboard access was blocked; select the output manually.");
+      setCopyStatus("L'accesso agli appunti è stato bloccato; seleziona e copia il risultato manualmente.");
     }
   }
 
-  const primaryLabel = tool === "csv-column-to-list" ? "CSV input" : tool === "lorem-sample-data-generator" ? "Optional source note" : tool === "find-replace-preview" ? "Text to update" : "Text input";
+  const primaryLabel = tool === "csv-column-to-list" ? "CSV di ingresso" : tool === "lorem-sample-data-generator" ? "Nota sorgente · facoltativa" : tool === "find-replace-preview" ? "Testo da modificare" : "Testo";
+  const publicError = operation.error;
   return (
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit}>
-        {tool !== "lorem-sample-data-generator" && <label class="field"><span>{primaryLabel}</span><textarea rows={tool === "markdown-preview" ? 12 : 9} value={text} onInput={(event) => setText(event.currentTarget.value)} placeholder={isTextTool(tool) ? "Paste or type text" : "name,email\nAda,ada@example.test"} /></label>}
-        {isListPair(tool) && <label class="field"><span>List B</span><textarea rows={9} value={secondary} onInput={(event) => setSecondary(event.currentTarget.value)} placeholder="beta\ngamma" /></label>}
-        {tool === "find-replace-preview" && <div class="field-grid"><label class="field"><span>Find</span><input required value={find} onInput={(event) => setFind(event.currentTarget.value)} /></label><label class="field"><span>Replace with</span><input value={replace} onInput={(event) => setReplace(event.currentTarget.value)} /></label></div>}
-        {tool === "case-converter" && <label class="field"><span>Case</span><select value={mode} onChange={(event) => setMode(event.currentTarget.value as CaseMode)}>{["lower", "upper", "title", "sentence", "camel", "pascal", "kebab", "snake", "constant"].map((option) => <option value={option} key={option}>{option}</option>)}</select></label>}
-        {(tool === "unicode-normalizer") && <label class="field"><span>Unicode form</span><select value={form} onChange={(event) => setForm(event.currentTarget.value)}>{["NFC", "NFD", "NFKC", "NFKD"].map((option) => <option value={option} key={option}>{option}</option>)}</select></label>}
-        {tool === "smart-quote-normalizer" && <label class="field"><span>Direction</span><select value={direction} onChange={(event) => setDirection(event.currentTarget.value)}><option value="straight-to-curly">Straight to curly</option><option value="curly-to-straight">Curly to straight</option></select></label>}
-        {(tool === "line-deduplicator" || tool === "list-intersection" || tool === "list-difference") && <label class="field"><span>Equality rule</span><select value={equality} onChange={(event) => setEquality(event.currentTarget.value as Equality)}>{["exact", "trim", "nfc", "trim-nfc"].map((option) => <option value={option} key={option}>{option}</option>)}</select></label>}
-        {tool === "line-sorter" && <div class="field-grid"><label class="checkbox-field"><input type="checkbox" checked={descending} onChange={(event) => setDescending(event.currentTarget.checked)} /> Descending</label><label class="checkbox-field"><input type="checkbox" checked={caseSensitive} onChange={(event) => setCaseSensitive(event.currentTarget.checked)} /> Case sensitive</label></div>}
-        {tool === "find-replace-preview" && <div class="field-grid"><label class="checkbox-field"><input type="checkbox" checked={regex} onChange={(event) => setRegex(event.currentTarget.checked)} /> Regular expression</label><label class="checkbox-field"><input type="checkbox" checked={caseSensitive} onChange={(event) => setCaseSensitive(event.currentTarget.checked)} /> Case sensitive</label></div>}
-        {tool === "whitespace-normalizer" && <label class="checkbox-field"><input type="checkbox" checked={preserveBlankLines} onChange={(event) => setPreserveBlankLines(event.currentTarget.checked)} /> Preserve blank lines</label>}
-        {tool === "slug-generator" && <div class="field-grid"><label class="field"><span>Separator</span><select value={separator} onChange={(event) => setSeparator(event.currentTarget.value as "-" | "_")}><option value="-">Hyphen</option><option value="_">Underscore</option></select></label><label class="field"><span>Maximum length</span><input inputMode="numeric" value={maxLength} onInput={(event) => setMaxLength(event.currentTarget.value)} placeholder="No limit" /></label></div>}
-        {tool === "slug-generator" && <label class="checkbox-field"><input type="checkbox" checked={lowercase} onChange={(event) => setLowercase(event.currentTarget.checked)} /> Lowercase output</label>}
-        {tool === "text-to-csv-rows" && <label class="field"><span>Delimiter</span><input maxLength={1} value={delimiter} onInput={(event) => setDelimiter(event.currentTarget.value)} aria-label="CSV delimiter" /></label>}
-        {tool === "csv-column-to-list" && <div class="field-grid"><label class="field"><span>Column name or zero-based number</span><input value={column} onInput={(event) => setColumn(event.currentTarget.value)} placeholder="name or 0" /></label><label class="field"><span>Delimiter</span><input maxLength={1} value={delimiter} onInput={(event) => setDelimiter(event.currentTarget.value)} aria-label="CSV delimiter" /></label></div>}
-        {tool === "csv-column-to-list" && <label class="checkbox-field"><input type="checkbox" checked={hasHeader} onChange={(event) => setHasHeader(event.currentTarget.checked)} /> First row is a header</label>}
-        {tool === "lorem-sample-data-generator" && <div class="field-grid"><label class="field"><span>Data type</span><select value={sampleType} onChange={(event) => setSampleType(event.currentTarget.value as SampleType)}>{["lorem", "words", "sentences", "paragraphs", "names", "emails", "numbers", "rows"].map((option) => <option value={option} key={option}>{option}</option>)}</select></label><label class="field"><span>Count</span><input inputMode="numeric" value={count} onInput={(event) => setCount(event.currentTarget.value)} /></label><label class="field"><span>Seed</span><input inputMode="numeric" value={seed} onInput={(event) => setSeed(event.currentTarget.value)} /></label></div>}
-        <InlineError message={operation.error} />
+        {tool !== "lorem-sample-data-generator" && <label class="field"><span>{primaryLabel}</span><textarea rows={tool === "markdown-preview" ? 12 : 9} value={text} onInput={(event) => setText(event.currentTarget.value)} placeholder={isTextTool(tool) ? "Incolla o scrivi il testo" : "nome,email\nAda,ada@esempio.test"} /></label>}
+        {isListPair(tool) && <label class="field"><span>Lista B</span><textarea rows={9} value={secondary} onInput={(event) => setSecondary(event.currentTarget.value)} placeholder="beta\ngamma" /></label>}
+        {tool === "find-replace-preview" && <div class="field-grid"><label class="field"><span>Trova</span><input required value={find} onInput={(event) => setFind(event.currentTarget.value)} /></label><label class="field"><span>Sostituisci con</span><input value={replace} onInput={(event) => setReplace(event.currentTarget.value)} /></label></div>}
+        {tool === "case-converter" && <label class="field"><span>Stile</span><select value={mode} onChange={(event) => setMode(event.currentTarget.value as CaseMode)}>{(["lower", "upper", "title", "sentence", "camel", "pascal", "kebab", "snake", "constant"] as CaseMode[]).map((option) => <option value={option} key={option}>{CASE_LABELS[option]}</option>)}</select></label>}
+        {(tool === "unicode-normalizer") && <label class="field"><span>Forma Unicode</span><select value={form} onChange={(event) => setForm(event.currentTarget.value)}>{["NFC", "NFD", "NFKC", "NFKD"].map((option) => <option value={option} key={option}>{option}</option>)}</select></label>}
+        {tool === "smart-quote-normalizer" && <label class="field"><span>Direzione</span><select value={direction} onChange={(event) => setDirection(event.currentTarget.value)}><option value="straight-to-curly">Da dritte a tipografiche</option><option value="curly-to-straight">Da tipografiche a dritte</option></select></label>}
+        {(tool === "line-deduplicator" || tool === "list-intersection" || tool === "list-difference") && <label class="field"><span>Regola di confronto</span><select value={equality} onChange={(event) => setEquality(event.currentTarget.value as Equality)}>{(["exact", "trim", "nfc", "trim-nfc"] as Equality[]).map((option) => <option value={option} key={option}>{EQUALITY_LABELS[option]}</option>)}</select></label>}
+        {tool === "line-sorter" && <div class="field-grid"><label class="checkbox-field"><input type="checkbox" checked={descending} onChange={(event) => setDescending(event.currentTarget.checked)} /> Ordine decrescente</label><label class="checkbox-field"><input type="checkbox" checked={caseSensitive} onChange={(event) => setCaseSensitive(event.currentTarget.checked)} /> Distingui maiuscole e minuscole</label></div>}
+        {tool === "find-replace-preview" && <div class="field-grid"><label class="checkbox-field"><input type="checkbox" checked={regex} onChange={(event) => setRegex(event.currentTarget.checked)} /> Espressione regolare</label><label class="checkbox-field"><input type="checkbox" checked={caseSensitive} onChange={(event) => setCaseSensitive(event.currentTarget.checked)} /> Distingui maiuscole e minuscole</label></div>}
+        {tool === "whitespace-normalizer" && <label class="checkbox-field"><input type="checkbox" checked={preserveBlankLines} onChange={(event) => setPreserveBlankLines(event.currentTarget.checked)} /> Mantieni le righe vuote</label>}
+        {tool === "slug-generator" && <div class="field-grid"><label class="field"><span>Separatore</span><select value={separator} onChange={(event) => setSeparator(event.currentTarget.value as "-" | "_")}><option value="-">Trattino</option><option value="_">Trattino basso</option></select></label><label class="field"><span>Lunghezza massima</span><input inputMode="numeric" value={maxLength} onInput={(event) => setMaxLength(event.currentTarget.value)} placeholder="Nessun limite" /></label></div>}
+        {tool === "slug-generator" && <label class="checkbox-field"><input type="checkbox" checked={lowercase} onChange={(event) => setLowercase(event.currentTarget.checked)} /> Risultato in minuscolo</label>}
+        {tool === "text-to-csv-rows" && <label class="field"><span>Delimitatore</span><input maxLength={1} value={delimiter} onInput={(event) => setDelimiter(event.currentTarget.value)} aria-label="Delimitatore CSV" /></label>}
+        {tool === "csv-column-to-list" && <div class="field-grid"><label class="field"><span>Nome colonna o posizione a partire da zero</span><input value={column} onInput={(event) => setColumn(event.currentTarget.value)} placeholder="nome oppure 0" /></label><label class="field"><span>Delimitatore</span><input maxLength={1} value={delimiter} onInput={(event) => setDelimiter(event.currentTarget.value)} aria-label="Delimitatore CSV" /></label></div>}
+        {tool === "csv-column-to-list" && <label class="checkbox-field"><input type="checkbox" checked={hasHeader} onChange={(event) => setHasHeader(event.currentTarget.checked)} /> La prima riga contiene le intestazioni</label>}
+        {tool === "lorem-sample-data-generator" && <div class="field-grid"><label class="field"><span>Tipo di dati</span><select value={sampleType} onChange={(event) => setSampleType(event.currentTarget.value as SampleType)}>{(["lorem", "words", "sentences", "paragraphs", "names", "emails", "numbers", "rows"] as SampleType[]).map((option) => <option value={option} key={option}>{SAMPLE_TYPE_LABELS[option]}</option>)}</select></label><label class="field"><span>Quantità</span><input inputMode="numeric" value={count} onInput={(event) => setCount(event.currentTarget.value)} /></label><label class="field"><span>Seme</span><input inputMode="numeric" value={seed} onInput={(event) => setSeed(event.currentTarget.value)} /></label></div>}
+        <InlineError message={publicError} />
         <ToolActions><ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{TOOL_LABELS[tool]}</ToolSubmitButton><ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton></ToolActions>
       </form>
       <ToolResultPanel eyebrow="Risultato" placeholder={it(CONTROL.gutterIdle)} busy={operation.isRunning} state={gutterStateFor(operation.status)}>

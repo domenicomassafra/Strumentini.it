@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CsvPivotLiteTool } from "../../components/tools/csv-pivot-lite/CsvPivotLiteTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="CSV Pivot Lite" description="Create a bounded local pivot from a CSV table.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>CSV Pivot Lite</h1>
-      <p class="lede">Turn repeated group/value rows into a small pivot with count, sum, min, or max aggregation.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>The pivot is generated in memory and is not uploaded.</span></div>
-    </header>
-    <CsvPivotLiteTool client:load />
-    <section class="method-card"><h2>Pivot contract</h2><ul><li>Group and value columns are explicit zero-based positions.</li><li>Count works without a value column; other aggregates require finite numeric values.</li><li>Dynamic value headers are bounded by the input table size.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="csv-pivot-lite">
+  <CsvPivotLiteTool client:load />
+</ItalianToolPage>

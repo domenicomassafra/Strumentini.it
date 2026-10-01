@@ -13,7 +13,7 @@ export const lineDeduplicatorManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-009", fixtureFamilies: ["list-set-ops", "unicode-normalization"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-009", fixtureFamilies: ["list-set-ops", "unicode-normalization", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 
 export default lineDeduplicatorManifest;

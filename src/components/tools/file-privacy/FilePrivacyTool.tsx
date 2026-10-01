@@ -1,6 +1,7 @@
 import { useRef, useState } from "preact/hooks";
 import type { FilePrivacyOperation, FilePrivacyResult } from "../../../engines/file-privacy";
 import { FilePrivacyError, runFilePrivacyOperation } from "../../../engines/file-privacy";
+import { TOOL_COPY_IT } from "../../../i18n/it/tool-copy";
 import { InlineError, ToolActions, ToolCancelButton, ToolOperation, ToolResetButton, ToolResultPanel, ToolSubmitButton } from "../shared";
 import { CONTROL, it } from "../shared/controlLabels";
 
@@ -17,14 +18,14 @@ function filesFromInput(input: HTMLInputElement): File[] {
 
 function errorText(error: unknown): string {
   if (error instanceof FilePrivacyError) {
-    if (error.code === "FILE_TOO_LARGE") return "The selection exceeds this tool's local size limit.";
-    if (error.code === "TOO_MANY_FILES") return "Too many files were selected. Choose a smaller bounded selection.";
-    if (error.code === "UNSAFE_ARCHIVE_PATH") return "A path was absolute or contained a parent-directory segment.";
-    if (error.code === "CORRUPT_ARCHIVE") return "The archive directory could not be validated. Check that it is a complete ZIP file.";
-    if (error.code === "CANCELLED") return "Operation cancelled.";
-    return error.message.replace(/^[A-Z_]+:\s*/u, "");
+    if (error.code === "FILE_TOO_LARGE") return "La selezione supera il limite locale di dimensione previsto da questo strumento.";
+    if (error.code === "TOO_MANY_FILES") return "Hai selezionato troppi file. Riduci la selezione.";
+    if (error.code === "UNSAFE_ARCHIVE_PATH") return "Un percorso è assoluto oppure contiene un segmento che risale alla cartella superiore.";
+    if (error.code === "CORRUPT_ARCHIVE") return "Non è stato possibile validare la struttura dell'archivio. Verifica che il file ZIP sia completo.";
+    if (error.code === "CANCELLED") return "Operazione annullata.";
+    return `Errore nell'elaborazione locale (${error.code}). Controlla i file e riprova.`;
   }
-  return error instanceof Error ? error.message : "The local operation failed.";
+  return error instanceof Error ? "L'operazione locale non è riuscita. Controlla i dati e riprova." : "L'operazione locale non è riuscita.";
 }
 
 function operationNeedsFiles(operation: FilePrivacyOperation): boolean {
@@ -48,7 +49,42 @@ function resultText(result: FilePrivacyResult | null): string {
   const output: Record<string, unknown> = { ...result };
   delete output.operation;
   if (output.blob instanceof Blob) delete output.blob;
-  return JSON.stringify(output, null, 2);
+  const keys: Readonly<Record<string, string>> = {
+    filename: "nome_file",
+    files: "file",
+    count: "quantità",
+    total: "totale",
+    size: "dimensione",
+    totalBytes: "byte_totali",
+    hash: "hash",
+    digest: "hash",
+    sha256: "sha256",
+    manifest: "manifest",
+    warnings: "avvisi",
+    warning: "avviso",
+    findings: "risultati",
+    matches: "corrispondenze",
+    duplicates: "duplicati",
+    missing: "mancanti",
+    changed: "modificati",
+    added: "aggiunti",
+    removed: "rimossi",
+    renamed: "rinominati",
+    entries: "voci",
+    path: "percorso",
+    name: "nome",
+    original: "originale",
+    sanitized: "ripulito",
+    risk: "rischio",
+    risks: "rischi",
+    valid: "valido",
+  };
+  const localize = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(localize);
+    if (value === null || typeof value !== "object") return value;
+    return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, item]) => [keys[key] ?? key, localize(item)]));
+  };
+  return JSON.stringify(localize(output), null, 2);
 }
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -129,13 +165,16 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
   const showExpected = operation === "checksum-verifier";
   const resultFilename = typeof result?.filename === "string" ? result.filename : `${operation}.txt`;
   const gutterState = running ? "running" : error !== "" ? "error" : result === null ? "idle" : "success";
+  const publicCopy = TOOL_COPY_IT[operation];
+  const publicTitle = publicCopy?.name ?? title;
+  const publicDescription = publicCopy?.summary ?? description;
 
   return (
     <ToolOperation busy={running}>
       <form onSubmit={submit} noValidate>
         {showFilePicker && !operationUsesDiff(operation) && (
           <label class="field">
-            <span>{directory ? "Folder files" : "Files"}</span>
+            <span>{directory ? "File della cartella" : "File"}</span>
             <input
               type="file"
               multiple={!showSingleFilePicker}
@@ -143,61 +182,61 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
               onChange={(event) => setFiles(filesFromInput(event.currentTarget))}
               {...(directory ? ({ webkitdirectory: true } as Record<string, boolean>) : {})}
             />
-            <small>{files.length === 0 ? "Choose local files; contents stay on this device." : `${files.length} file${files.length === 1 ? "" : "s"} selected`}</small>
+            <small>{files.length === 0 ? "Scegli file locali: il contenuto resta su questo dispositivo." : `${files.length} ${files.length === 1 ? "file selezionato" : "file selezionati"}`}</small>
           </label>
         )}
         {operationUsesDiff(operation) && (
           <div class="field-grid">
             <label class="field">
-              <span>Before files</span>
+              <span>File prima della modifica</span>
               <input type="file" multiple required onChange={(event) => setBeforeFiles(filesFromInput(event.currentTarget))} {...(directory ? ({ webkitdirectory: true } as Record<string, boolean>) : {})} />
-              <small>{beforeFiles.length} selected</small>
+              <small>{beforeFiles.length} selezionati</small>
             </label>
             <label class="field">
-              <span>After files</span>
+              <span>File dopo la modifica</span>
               <input type="file" multiple required onChange={(event) => setAfterFiles(filesFromInput(event.currentTarget))} {...(directory ? ({ webkitdirectory: true } as Record<string, boolean>) : {})} />
-              <small>{afterFiles.length} selected</small>
+              <small>{afterFiles.length} selezionati</small>
             </label>
           </div>
         )}
         {showPastedText && (
           <label class="field">
-            <span>Text to scan <em>optional when files are selected</em></span>
-            <textarea rows={8} value={text} onInput={(event) => setText(event.currentTarget.value)} placeholder="Paste a small text sample or choose a local text file above." />
+            <span>Testo da analizzare <em>facoltativo se hai selezionato dei file</em></span>
+            <textarea rows={8} value={text} onInput={(event) => setText(event.currentTarget.value)} placeholder="Incolla un breve testo oppure scegli un file di testo locale qui sopra." />
           </label>
         )}
         {showExpected && (
           <label class="field">
-            <span>Expected checksums</span>
+            <span>Checksum attesi</span>
             <textarea rows={5} value={text} onInput={(event) => setText(event.currentTarget.value)} placeholder="sha256  path/to/file" />
-            <small>One SHA-256 digest and path per line. Hex letter case and surrounding whitespace are normalized.</small>
+            <small>Inserisci un hash SHA-256 e un percorso per riga. Maiuscole/minuscole esadecimali e spazi esterni vengono normalizzati.</small>
           </label>
         )}
         {showNames && (
           <>
             <label class="field">
-              <span>{showFilePicker ? "File names or names to transform" : "Names"}</span>
-              <textarea rows={5} value={names} onInput={(event) => setNames(event.currentTarget.value)} placeholder="One name per line" />
+              <span>{showFilePicker ? "Nomi file o nomi da trasformare" : "Nomi"}</span>
+              <textarea rows={5} value={names} onInput={(event) => setNames(event.currentTarget.value)} placeholder="Un nome per riga" />
             </label>
             {operation === "batch-rename-preview" && (
               <label class="field">
-                <span>Rename pattern</span>
+                <span>Schema di rinomina</span>
                 <input value={pattern} onInput={(event) => setPattern(event.currentTarget.value)} placeholder="{name}-{index}" />
-                <small>Placeholders: <code>{"{name}"}</code>, <code>{"{index}"}</code>, <code>{"{ext}"}</code>.</small>
+                <small>Segnaposto: <code>{"{name}"}</code>, <code>{"{index}"}</code>, <code>{"{ext}"}</code>.</small>
               </label>
             )}
           </>
         )}
         {operation === "zero-byte-orphan-finder" && (
           <label class="field">
-            <span>Referenced paths <em>optional</em></span>
-            <textarea rows={5} value={references} onInput={(event) => setReferences(event.currentTarget.value)} placeholder="One referenced path per line" />
+            <span>Percorsi referenziati <em>facoltativi</em></span>
+            <textarea rows={5} value={references} onInput={(event) => setReferences(event.currentTarget.value)} placeholder="Un percorso referenziato per riga" />
           </label>
         )}
         {(operation === "client-handoff-index-generator" || operation === "file-list-diff" || operation === "folder-compare") && (
           <label class="check-field">
             <input type="checkbox" checked={includeHashes} onChange={(event) => setIncludeHashes(event.currentTarget.checked)} />
-            <span>{operation === "client-handoff-index-generator" ? "Include SHA-256 digests in the handoff index" : "Compare same-size files by SHA-256"}</span>
+            <span>{operation === "client-handoff-index-generator" ? "Includi gli hash SHA-256 nell'indice di consegna" : "Confronta con SHA-256 i file della stessa dimensione"}</span>
           </label>
         )}
         <InlineError message={error} />
@@ -207,7 +246,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
           <ToolResetButton onClick={reset} />
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow={`${title} — risultato`} placeholder={description} busy={running} state={gutterState}>
+      <ToolResultPanel eyebrow={`${publicTitle} — risultato`} placeholder={publicDescription} busy={running} state={gutterState}>
         {result !== null && (
           <>
             {result.blob instanceof Blob && (

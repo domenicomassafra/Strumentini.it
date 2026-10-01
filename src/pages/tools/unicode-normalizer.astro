@@ -1,8 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { UnicodeNormalizerTool } from "../../components/tools/UnicodeNormalizerTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Unicode Normalizer" description="Apply explicit NFC, NFD, NFKC, or NFKD normalization to text locally.">
-  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Unicode Normalizer</h1><p class="lede">Choose a Unicode normalization form and inspect the exact resulting text.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No normalization data is uploaded.</span></div></header><UnicodeNormalizerTool client:load /><section class="method-card"><h2>Normalization forms</h2><ul><li>NFC and NFD perform canonical normalization; NFKC and NFKD also apply compatibility mappings.</li><li>The selected form is reported with the output so a result is reproducible.</li><li>No language detection or semantic repair is performed.</li></ul></section></article>
-</BaseLayout>
+
+<ItalianToolPage toolId="unicode-normalizer">
+  <UnicodeNormalizerTool client:load />
+</ItalianToolPage>

@@ -37,14 +37,14 @@ export interface RecurringJob {
 }
 
 export const RECURRING_JOBS: readonly RecurringJob[] = [
-  { id: "clean-tables", label: "Clean tables and CSVs", matchTerms: ["csv", "table", "rows", "columns", "spreadsheet"] },
-  { id: "compare-text", label: "Compare text and lists", matchTerms: ["text", "list", "diff", "dedupe", "compare"] },
-  { id: "plan-dates", label: "Plan dates and timezones", matchTerms: ["date", "business day", "timezone", "schedule", "deadline"] },
-  { id: "build-links", label: "Build or clean URLs", matchTerms: ["url", "campaign", "utm", "tracking", "link"] },
-  { id: "calculate-client-work", label: "Calculate rates and margins", matchTerms: ["rate", "margin", "markup", "currency", "invoice"] },
-  { id: "prepare-handoffs", label: "Prepare client handoffs", matchTerms: ["handoff", "client", "file", "manifest", "share"] },
-  { id: "research-citations", label: "Prepare research and citations", matchTerms: ["doi", "isbn", "citation", "bibliography", "research"] },
-  { id: "inspect-files", label: "Inspect and verify files", matchTerms: ["file", "hash", "checksum", "signature", "metadata"] },
+  { id: "clean-tables", label: "Pulire tabelle e CSV", matchTerms: ["csv", "tabella", "tabelle", "righe", "colonne", "foglio", "table", "rows", "columns", "spreadsheet"] },
+  { id: "compare-text", label: "Confrontare testi e liste", matchTerms: ["testo", "lista", "liste", "confronto", "duplicati", "text", "list", "diff", "dedupe", "compare"] },
+  { id: "plan-dates", label: "Pianificare date e fusi orari", matchTerms: ["data", "date", "giorno lavorativo", "business day", "fuso orario", "timezone", "calendario", "schedule", "scadenza", "deadline"] },
+  { id: "build-links", label: "Creare o pulire URL", matchTerms: ["url", "campagna", "campaign", "utm", "tracciamento", "tracking", "link"] },
+  { id: "calculate-client-work", label: "Calcolare tariffe e margini", matchTerms: ["tariffa", "rate", "margine", "margin", "ricarico", "markup", "valuta", "currency", "fattura", "invoice"] },
+  { id: "prepare-handoffs", label: "Preparare consegne per i clienti", matchTerms: ["consegna", "handoff", "cliente", "client", "file", "manifest", "condivisione", "share"] },
+  { id: "research-citations", label: "Preparare ricerca e citazioni", matchTerms: ["doi", "isbn", "citazione", "citation", "bibliografia", "bibliography", "ricerca", "research"] },
+  { id: "inspect-files", label: "Ispezionare e verificare file", matchTerms: ["file", "hash", "checksum", "firma", "signature", "metadati", "metadata"] },
 ] as const;
 
 const context = (
@@ -59,8 +59,8 @@ const context = (
 export const WORK_CONTEXT_PACKS: readonly WorkContextPack[] = [
   context(
     "client-services",
-    "Consulting / client services",
-    "Dates, client economics, and repeatable delivery checks.",
+    "Consulenza e servizi ai clienti",
+    "Date, sostenibilità economica del lavoro e controlli ripetibili prima della consegna.",
     ["plan-dates", "calculate-client-work", "compare-text", "prepare-handoffs"],
     [
       "business-day",
@@ -75,22 +75,22 @@ export const WORK_CONTEXT_PACKS: readonly WorkContextPack[] = [
       "csv-column-map",
     ],
     {
-      "business-day": "Part of the client-services work context.",
-      "timezone-overlap": "Part of the client-services work context.",
-      "rate-converter": "Part of the client-services work context.",
-      "margin-markup": "Part of the client-services work context.",
-      "list-compare": "Part of the client-services work context.",
-      "text-diff": "Part of the client-services work context.",
-      "file-hash": "Part of the client-services work context.",
-      "csv-cleaner": "Part of the client-services work context.",
-      "csv-dedupe": "Part of the client-services work context.",
-      "csv-column-map": "Part of the client-services work context.",
+      "business-day": "Incluso nel contesto consulenza e servizi ai clienti.",
+      "timezone-overlap": "Incluso nel contesto consulenza e servizi ai clienti.",
+      "rate-converter": "Incluso nel contesto consulenza e servizi ai clienti.",
+      "margin-markup": "Incluso nel contesto consulenza e servizi ai clienti.",
+      "list-compare": "Incluso nel contesto consulenza e servizi ai clienti.",
+      "text-diff": "Incluso nel contesto consulenza e servizi ai clienti.",
+      "file-hash": "Incluso nel contesto consulenza e servizi ai clienti.",
+      "csv-cleaner": "Incluso nel contesto consulenza e servizi ai clienti.",
+      "csv-dedupe": "Incluso nel contesto consulenza e servizi ai clienti.",
+      "csv-column-map": "Incluso nel contesto consulenza e servizi ai clienti.",
     },
   ),
   context(
     "marketing-growth",
-    "Marketing / growth",
-    "Campaign links, naming, reporting cleanup, and handoff checks.",
+    "Marketing e crescita",
+    "Link di campagna, nomenclatura, pulizia dei report e controlli prima della consegna.",
     ["build-links", "clean-tables", "compare-text", "prepare-handoffs"],
     [
       "campaign-name",
@@ -105,22 +105,22 @@ export const WORK_CONTEXT_PACKS: readonly WorkContextPack[] = [
       "business-day",
     ],
     {
-      "campaign-name": "Part of the marketing-growth work context.",
-      "tracking-cleaner": "Part of the marketing-growth work context.",
-      "utm-builder": "Part of the marketing-growth work context.",
-      "list-compare": "Part of the marketing-growth work context.",
-      "text-diff": "Part of the marketing-growth work context.",
-      "file-hash": "Part of the marketing-growth work context.",
-      "csv-cleaner": "Part of the marketing-growth work context.",
-      "csv-dedupe": "Part of the marketing-growth work context.",
-      "csv-column-map": "Part of the marketing-growth work context.",
-      "business-day": "Part of the marketing-growth work context.",
+      "campaign-name": "Incluso nel contesto marketing e crescita.",
+      "tracking-cleaner": "Incluso nel contesto marketing e crescita.",
+      "utm-builder": "Incluso nel contesto marketing e crescita.",
+      "list-compare": "Incluso nel contesto marketing e crescita.",
+      "text-diff": "Incluso nel contesto marketing e crescita.",
+      "file-hash": "Incluso nel contesto marketing e crescita.",
+      "csv-cleaner": "Incluso nel contesto marketing e crescita.",
+      "csv-dedupe": "Incluso nel contesto marketing e crescita.",
+      "csv-column-map": "Incluso nel contesto marketing e crescita.",
+      "business-day": "Incluso nel contesto marketing e crescita.",
     },
   ),
   context(
     "data-cleanup",
-    "Data cleanup",
-    "Table cleanup, comparison, and repeatable data handoffs.",
+    "Pulizia dei dati",
+    "Pulizia e confronto di tabelle e consegne dati ripetibili.",
     ["clean-tables", "compare-text", "build-links", "prepare-handoffs"],
     [
       "doi-isbn-normalizer",
@@ -135,22 +135,22 @@ export const WORK_CONTEXT_PACKS: readonly WorkContextPack[] = [
       "rate-converter",
     ],
     {
-      "doi-isbn-normalizer": "Part of the data-cleanup work context.",
-      "list-compare": "Part of the data-cleanup work context.",
-      "text-diff": "Part of the data-cleanup work context.",
-      "file-hash": "Part of the data-cleanup work context.",
-      "csv-cleaner": "Part of the data-cleanup work context.",
-      "csv-dedupe": "Part of the data-cleanup work context.",
-      "campaign-name": "Part of the data-cleanup work context.",
-      "tracking-cleaner": "Part of the data-cleanup work context.",
-      "utm-builder": "Part of the data-cleanup work context.",
-      "rate-converter": "Part of the data-cleanup work context.",
+      "doi-isbn-normalizer": "Incluso nel contesto pulizia dei dati.",
+      "list-compare": "Incluso nel contesto pulizia dei dati.",
+      "text-diff": "Incluso nel contesto pulizia dei dati.",
+      "file-hash": "Incluso nel contesto pulizia dei dati.",
+      "csv-cleaner": "Incluso nel contesto pulizia dei dati.",
+      "csv-dedupe": "Incluso nel contesto pulizia dei dati.",
+      "campaign-name": "Incluso nel contesto pulizia dei dati.",
+      "tracking-cleaner": "Incluso nel contesto pulizia dei dati.",
+      "utm-builder": "Incluso nel contesto pulizia dei dati.",
+      "rate-converter": "Incluso nel contesto pulizia dei dati.",
     },
   ),
   context(
     "research-evidence",
-    "Research / evidence",
-    "Citation hygiene, text comparison, tables, and verifiable handoffs.",
+    "Ricerca e fonti",
+    "Pulizia delle citazioni, confronto testi, tabelle e consegne verificabili.",
     ["research-citations", "compare-text", "clean-tables", "prepare-handoffs"],
     [
       "doi-isbn-normalizer",
@@ -165,22 +165,22 @@ export const WORK_CONTEXT_PACKS: readonly WorkContextPack[] = [
       "campaign-name",
     ],
     {
-      "doi-isbn-normalizer": "Part of the research-evidence work context.",
-      "list-compare": "Part of the research-evidence work context.",
-      "text-diff": "Part of the research-evidence work context.",
-      "file-hash": "Part of the research-evidence work context.",
-      "csv-cleaner": "Part of the research-evidence work context.",
-      "csv-dedupe": "Part of the research-evidence work context.",
-      "csv-column-map": "Part of the research-evidence work context.",
-      "rate-converter": "Part of the research-evidence work context.",
-      "timezone-overlap": "Part of the research-evidence work context.",
-      "campaign-name": "Part of the research-evidence work context.",
+      "doi-isbn-normalizer": "Incluso nel contesto ricerca e fonti.",
+      "list-compare": "Incluso nel contesto ricerca e fonti.",
+      "text-diff": "Incluso nel contesto ricerca e fonti.",
+      "file-hash": "Incluso nel contesto ricerca e fonti.",
+      "csv-cleaner": "Incluso nel contesto ricerca e fonti.",
+      "csv-dedupe": "Incluso nel contesto ricerca e fonti.",
+      "csv-column-map": "Incluso nel contesto ricerca e fonti.",
+      "rate-converter": "Incluso nel contesto ricerca e fonti.",
+      "timezone-overlap": "Incluso nel contesto ricerca e fonti.",
+      "campaign-name": "Incluso nel contesto ricerca e fonti.",
     },
   ),
   context(
     "file-asset-handoff",
-    "File & asset handoff",
-    "Local file checks and structured data passed between people.",
+    "Consegna di file e risorse",
+    "Controlli locali sui file e dati strutturati da passare ad altre persone.",
     ["inspect-files", "prepare-handoffs", "clean-tables", "compare-text"],
     [
       "file-hash",
@@ -195,28 +195,28 @@ export const WORK_CONTEXT_PACKS: readonly WorkContextPack[] = [
       "timezone-overlap",
     ],
     {
-      "file-hash": "Part of the file-asset-handoff work context.",
-      "csv-cleaner": "Part of the file-asset-handoff work context.",
-      "csv-dedupe": "Part of the file-asset-handoff work context.",
-      "csv-column-map": "Part of the file-asset-handoff work context.",
-      "list-compare": "Part of the file-asset-handoff work context.",
-      "text-diff": "Part of the file-asset-handoff work context.",
-      "tracking-cleaner": "Part of the file-asset-handoff work context.",
-      "utm-builder": "Part of the file-asset-handoff work context.",
-      "business-day": "Part of the file-asset-handoff work context.",
-      "timezone-overlap": "Part of the file-asset-handoff work context.",
+      "file-hash": "Incluso nel contesto consegna di file e risorse.",
+      "csv-cleaner": "Incluso nel contesto consegna di file e risorse.",
+      "csv-dedupe": "Incluso nel contesto consegna di file e risorse.",
+      "csv-column-map": "Incluso nel contesto consegna di file e risorse.",
+      "list-compare": "Incluso nel contesto consegna di file e risorse.",
+      "text-diff": "Incluso nel contesto consegna di file e risorse.",
+      "tracking-cleaner": "Incluso nel contesto consegna di file e risorse.",
+      "utm-builder": "Incluso nel contesto consegna di file e risorse.",
+      "business-day": "Incluso nel contesto consegna di file e risorse.",
+      "timezone-overlap": "Incluso nel contesto consegna di file e risorse.",
     },
   ),
 ] as const;
 
 export function getWorkContextPack(id: WorkContextId): WorkContextPack {
   const found = WORK_CONTEXT_PACKS.find((pack) => pack.id === id);
-  if (found === undefined) throw new Error(`Unknown work context: ${id}`);
+  if (found === undefined) throw new Error(`Contesto di lavoro sconosciuto: ${id}`);
   return found;
 }
 
 export function getRecurringJob(id: RecurringJobId): RecurringJob {
   const found = RECURRING_JOBS.find((job) => job.id === id);
-  if (found === undefined) throw new Error(`Unknown recurring job: ${id}`);
+  if (found === undefined) throw new Error(`Attività ricorrente sconosciuta: ${id}`);
   return found;
 }

@@ -15,7 +15,7 @@ export function TrackingCleanerTool() {
   const [url, setUrl] = useState("");
   const operation = useToolOperation<TrackingCleanerOutput>(
     (signal: AbortSignal) => toolRuntime.run("tracking-cleaner", { url }, {}, signal),
-    { formatError: () => "Enter a valid http(s) URL." },
+    { formatError: () => "Inserisci un URL HTTP(S) valido." },
   );
 
   function submit(event: Event) {
@@ -27,19 +27,19 @@ export function TrackingCleanerTool() {
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit}>
         <label class="field">
-          <span>URL to clean</span>
-          <textarea aria-label="URL to clean" rows={4} value={url} onInput={(event) => setUrl(event.currentTarget.value)} />
+          <span>URL da pulire</span>
+          <textarea aria-label="URL da pulire" rows={4} value={url} onInput={(event) => setUrl(event.currentTarget.value)} />
         </label>
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Remove tracking parameters</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Rimuovi parametri di tracciamento</ToolSubmitButton>
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow="Result" placeholder="The cleaned URL and exact removed keys appear here." busy={operation.isRunning}>
+      <ToolResultPanel eyebrow="Risultato" placeholder="Qui appariranno l'URL pulito e le chiavi rimosse." busy={operation.isRunning}>
         {operation.result !== null && (
           <>
             <code class="long-result">{operation.result.url}</code>
-            <p><strong>Removed:</strong> {operation.result.dropped.length ? operation.result.dropped.join(", ") : "Nothing — URL already clean"}</p>
+            <p><strong>Rimossi:</strong> {operation.result.dropped.length ? operation.result.dropped.join(", ") : "Nessuno — URL già pulito"}</p>
           </>
         )}
       </ToolResultPanel>

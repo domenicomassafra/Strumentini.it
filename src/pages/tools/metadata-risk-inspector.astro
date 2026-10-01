@@ -1,8 +1,8 @@
 ---
-import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { MetadataRiskInspectorTool } from "../../components/tools/file-privacy/MetadataRiskInspectorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<FilePrivacyPage title="Metadata Risk Inspector" description="Inspect local text and filename markers that may deserve attention before sharing." methodTitle="Bounded marker inspection" methodItems={["The tool checks a small set of metadata-like markers in text-like files.", "Binary formats are identified by signature and are not claimed to be fully metadata-free.", "Review the original file with an appropriate specialist tool when risk matters."]}>
+
+<ItalianToolPage toolId="metadata-risk-inspector">
   <MetadataRiskInspectorTool client:load />
-</FilePrivacyPage>
+</ItalianToolPage>

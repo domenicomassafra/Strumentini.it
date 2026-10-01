@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "342497beba30a81f60c0833982412eada75edf94",
+  "sourceFingerprint": "f914e4215a13c46bda81becf414024ebb3f0a9f800cb85ed7525707a3f2a8c3c",
+  "toolId": "slug-generator",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engineVersion": "text-writing-v1",
+  "oracleEntryId": "cand-016",
+  "fixtureFamilies": [
+    "word-character-line-count",
+    "text-writing-gold"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-quality",
+    "unicode-uax15",
+    "unicode-uax29"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "word-character-line-count",
+      "path": "quality/fixtures/word-character-line-count/vectors.json"
+    },
+    {
+      "id": "text-writing-gold",
+      "path": "quality/fixtures/text-writing-gold/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime",
+    "high-confidence oracle with no open semantic gap",
+    "tool-specific fixture remains bound",
+    "exact public-module vector",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance"
+  ],
+  "identities": {
+    "manifestSha256": "93ed22e5123b3089ce0083d8e9dbe1cd913ec1cb918415a77a4b38447f6ba0db",
+    "engineIndexSha256": "3d1aa228dc1712631ecdaba0b1308025c6553768f360a1f53d957475205012b2",
+    "fixtureIndexSha256": "a0252757480079036e4d41f92eabb84180aa102fff081f27f2f8d6686f590be6",
+    "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+    "browserAcceptanceSha256": "3dfd4e3b0b958581a7e496a33471a3bd6d792c9244f993f029a7466fadf694f7",
+    "unitTestsSha256": "92dbe156bff42ec935f87b7a3ad0b05141d513c6d2d872266fff1cb0b82035e8",
+    "fixture:word-character-line-count:sha256": "50903e6ab092eb05877f73819a48ef91519723ef8f89b8b2efcee674148de66d",
+    "fixture:text-writing-gold:sha256": "9a2f4f86a8f9e471e5b471e769cb0d85adc9c0b2a3cbade749717966ca6efae7"
+  }
+}

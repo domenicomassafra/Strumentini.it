@@ -24,11 +24,9 @@ interface Props {
   imageAlt?: string;
   type?: "website" | "article";
   noindex?: boolean;
-  /** Content language. Italian is the primary language of the register. */
-  lang?: "it" | "en";
 }
 
-const { title, description, image = "/og-image.png", imageAlt = "StrumentiUtili.it", type = "website", noindex = false, lang = "it" } = Astro.props;
+const { title, description, image = "/og-image.png", imageAlt = "StrumentiUtili.it", type = "website", noindex = false } = Astro.props;
 const pathname = normalizeDiscoveryPath(Astro.url.pathname);
 const configuredSite = Astro.site?.href ?? import.meta.env.PUBLIC_SITE_URL;
 const canonicalUrl = resolveDiscoveryUrl(pathname, configuredSite);
@@ -59,7 +57,7 @@ const darkThemeColor = tokenSheet.split("prefers-color-scheme: dark")[1] === und
   : tokenValue(tokenSheet.split("prefers-color-scheme: dark")[1]!, "--carta");
 ---
 <!doctype html>
-<html lang={lang}>
+<html lang="it">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

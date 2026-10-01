@@ -1,12 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { RobotsDirectiveHelperTool } from "../../components/tools/RobotsDirectiveHelperTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Robots Directive Helper" description="Parse robots.txt groups, rules, sitemaps, and malformed lines locally.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Web operations</nav><p class="eyebrow">Web operations</p><h1>Robots Directive Helper</h1><p class="lede">Turn a pasted robots.txt file into a structured, reviewable directive map.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>robots.txt content is not uploaded.</span></div></header>
-    <RobotsDirectiveHelperTool client:load />
-    <section class="method-card"><h2>Parser rules</h2><ul><li>User-agent groups, allow/disallow paths, and sitemap directives are separated.</li><li>Comments and blank lines are ignored; unknown lines remain visible as errors.</li><li>The tool reports structure and does not claim that a directive is legally or operationally correct.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="robots-directive-helper">
+  <RobotsDirectiveHelperTool client:load />
+</ItalianToolPage>

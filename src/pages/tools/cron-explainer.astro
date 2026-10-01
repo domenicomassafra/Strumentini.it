@@ -1,13 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CronExplainerTool } from "../../components/tools/CronExplainerTool";
-import "../../components/tools/tool-surface.css";
-const title = "Cron Explainer";
 ---
-<BaseLayout title={title} description="Explain POSIX five-field cron expressions locally.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Explain POSIX five-field cron expressions locally.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No scheduler or remote timezone is queried.</span></div></header>
-    <CronExplainerTool client:load />
-    <section class="method-card"><p class="eyebrow">Method</p><h2>Five-field POSIX schedule</h2><p>Minute, hour, day-of-month, month, and day-of-week fields support wildcards, lists, ranges, and steps. When both day fields are restricted, POSIX OR semantics are shown.</p></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="cron-explainer">
+  <CronExplainerTool client:load />
+</ItalianToolPage>

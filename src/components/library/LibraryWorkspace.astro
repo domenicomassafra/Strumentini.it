@@ -2,8 +2,13 @@
 import { catalog } from "../../generated/catalog";
 import { contextTagsForTools } from "../../onboarding/membership";
 import { getLibraryFacets } from "../../library/model";
+import { categoryLabelIt, inputTypeLabelIt, tagLabelIt } from "../../i18n/it/taxonomy";
+import { categoryIconSvg } from "../../ui/tool-icons";
+import { qualityIndex } from "../../generated/quality";
+import { goldToolIds } from "../../onboarding/quality";
 
 const contextTags = contextTagsForTools(catalog);
+const verifiedToolIds = goldToolIds(qualityIndex);
 
 const libraryMetadata = catalog.map((tool) => ({
   id: tool.id,
@@ -17,25 +22,42 @@ const libraryMetadata = catalog.map((tool) => ({
   packTags: contextTags.get(tool.id) ?? [],
   engine: tool.engine,
   runtime: tool.runtime,
+  quality: verifiedToolIds.has(tool.id) ? "verified" as const : "checking" as const,
 }));
 const facets = getLibraryFacets(libraryMetadata);
 const tagFacets = [...new Set([...facets.packTags, ...facets.roleTags])].sort((left, right) => left.localeCompare(right));
 const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u003c");
+const categoryCounts = facets.categories.map((category) => ({
+  category,
+  label: categoryLabelIt(category),
+  count: libraryMetadata.filter((tool) => tool.category === category).length,
+  icon: categoryIconSvg(category, "library-category-icon"),
+}));
 ---
 
 <section class="library-workspace" aria-labelledby="library-title">
   <header class="library-heading">
     <p class="library-eyebrow">Libreria</p>
     <h1 id="library-title">Trova lo strumento, non un muro di schede.</h1>
-    <p>Cerca fra i metadati deterministici del catalogo e restringi per ciò che lo strumento accetta o per dove viene eseguito.</p>
+    <p>Parti da ciò che vuoi fare: scegli una categoria oppure cerca direttamente un'attività.</p>
   </header>
+
+  <nav class="category-browser" aria-label="Categorie degli strumenti">
+    <a href="/library/" data-library-category=""><span class="category-all-mark" aria-hidden="true">•</span><span>Tutti</span><small>{libraryMetadata.length}</small></a>
+    {categoryCounts.map(({ category, label, count, icon }) => (
+      <a href={`/library/?category=${encodeURIComponent(category)}`} data-library-category={category}>
+        <span set:html={icon}></span><span>{label}</span><small>{count}</small>
+      </a>
+    ))}
+  </nav>
 
   <form class="library-controls" data-library-form aria-label="Filtra gli strumenti della Libreria">
     <label class="library-search" for="library-search"><span>Ricerca</span><input id="library-search" name="q" type="search" autocomplete="off" placeholder="Prova “giornata lavorativa”" /></label>
-    <label><span>Categoria</span><select name="category"><option value="">Tutte</option>{facets.categories.map((value) => <option value={value}>{value}</option>)}</select></label>
-    {tagFacets.length > 0 && <label><span>Pack / ruolo</span><select name="tag"><option value="">Tutti</option>{tagFacets.map((value) => <option value={value}>{value}</option>)}</select></label>}
-    <label><span>Ingresso</span><select name="input"><option value="">Tutti</option>{facets.inputTypes.map((value) => <option value={value}>{value}</option>)}</select></label>
+    <label><span>Categoria</span><select name="category"><option value="">Tutte</option>{facets.categories.map((value) => <option value={value}>{categoryLabelIt(value)}</option>)}</select></label>
+    {tagFacets.length > 0 && <label><span>Ambito / ruolo</span><select name="tag"><option value="">Tutti</option>{tagFacets.map((value) => <option value={value}>{tagLabelIt(value)}</option>)}</select></label>}
+    <label><span>Tipo di ingresso</span><select name="input"><option value="">Tutti</option>{facets.inputTypes.map((value) => <option value={value}>{inputTypeLabelIt(value)}</option>)}</select></label>
     <label><span>Esecuzione</span><select name="runtime"><option value="">Tutte</option><option value="LOCAL">Su questo dispositivo</option><option value="NETWORK">Usa la rete</option></select></label>
+    <label><span>Affidabilità</span><select name="quality"><option value="">Tutti</option><option value="verified">Verificati</option><option value="checking">In verifica</option></select></label>
     <label><span>Installati</span><select name="installed"><option value="">Tutti</option><option value="installed">Installati</option><option value="not-installed">Non installati</option></select></label>
   </form>
 
@@ -58,6 +80,8 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
   import { SEARCH_CONTEXT_EVENT, sanitizeSearchContext } from "../../search/browser-context";
   import { getTelemetryAdapter, rememberToolEntrySource } from "../../telemetry/browser";
   import { classifySearchCategory, classifySearchIntent, trackSearchZeroResult } from "../../telemetry/events";
+  import { categoryLabelIt } from "../../i18n/it/taxonomy";
+  import { toolIconSvg } from "../../ui/tool-icons";
   import type { LibraryState } from "../../library/library";
   import type { SearchContext, SearchToolMetadata } from "../../search/types";
 
@@ -98,8 +122,9 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     return "rete";
   };
 
+  const qualityLabel = (tool: SearchToolMetadata): string => tool.quality === "verified" ? "Verificato" : "In verifica";
+
   // A 1px hairline marker, not a coloured card: the row is ruled like the rest of the ledger.
-  const searchIcon = '<svg class="library-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="4.25"/><path d="M10.2 10.2 14 14"/></svg>';
   const openIcon = '<svg class="library-icon library-icon-open" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 3l7 5-7 5"/></svg>';
   const prevIcon = '<svg class="library-icon" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 3L5 8l5 5"/></svg>';
   const nextIcon = '<svg class="library-icon" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3l5 5-5 5"/></svg>';
@@ -115,6 +140,10 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
       const control = form.elements.namedItem(name);
       if (control instanceof HTMLInputElement || control instanceof HTMLSelectElement) control.value = String(value);
     }
+    root?.querySelectorAll<HTMLElement>("[data-library-category]").forEach((item) => {
+      if ((item.dataset.libraryCategory ?? "") === state.category) item.setAttribute("aria-current", "page");
+      else item.removeAttribute("aria-current");
+    });
   }
 
   function render(): void {
@@ -145,10 +174,12 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
         const installed = (context.installedToolIds ?? []).includes(tool.id);
         const name = escapeHtml(tool.name);
         const summary = escapeHtml(tool.summary);
-        const detail = `${summary} · ${escapeHtml(tool.category)} · ${runtimeLabel(tool)}`;
+        const category = categoryLabelIt(tool.category);
+        const detail = `${summary} · ${escapeHtml(category)} · ${runtimeLabel(tool)}`;
+        const icon = toolIconSvg(tool, "library-tool-icon");
         return `<a class="library-row" data-library-tool-id="${escapeHtml(tool.id)}" href="${escapeHtml(tool.route)}" title="${detail}">`
-          + `<span class="tool-main"><strong title="${name}">${searchIcon}${name}</strong><small title="${summary}">${summary}</small></span>`
-          + `<span class="tool-category" title="${escapeHtml(tool.category)}">${escapeHtml(tool.category)}</span>`
+          + `<span class="tool-main"><strong title="${name}">${icon}${name}</strong><small title="${summary}">${summary}</small></span>`
+          + `<span class="tool-category" title="${escapeHtml(category)}"><span>${escapeHtml(category)}</span><small class="tool-quality" data-quality="${tool.quality ?? "checking"}">${qualityLabel(tool)}</small></span>`
           + `<span class="tool-runtime"><span class="tool-runtime-full" title="${runtimeLabel(tool)}">${runtimeLabel(tool)}</span><span class="tool-runtime-code">${runtimeCode(tool)}</span></span>`
           + `<span class="tool-action">${installed ? "Aggiunto · Apri" : "Apri"}${openIcon}</span></a>`;
       }).join("");
@@ -173,7 +204,7 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     return {
       q: String(values.get("q") ?? ""), category: String(values.get("category") ?? ""), tag: String(values.get("tag") ?? ""),
       input: String(values.get("input") ?? ""), runtime: String(values.get("runtime") ?? "") as LibraryState["runtime"],
-      installed: String(values.get("installed") ?? "") as LibraryState["installed"], page: 1,
+      installed: String(values.get("installed") ?? "") as LibraryState["installed"], quality: String(values.get("quality") ?? "") as LibraryState["quality"], page: 1,
     };
   };
   form?.querySelector<HTMLInputElement>("input[name='q']")?.addEventListener("input", () => {
@@ -245,6 +276,32 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
+
+  .category-browser {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.5rem), 1fr));
+    margin-bottom: var(--space-6);
+    border-top: var(--border-width) solid var(--line);
+    border-left: var(--border-width) solid var(--line);
+  }
+  .category-browser a {
+    min-height: var(--control-height-touch);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-right: var(--border-width) solid var(--line);
+    border-bottom: var(--border-width) solid var(--line);
+    color: inherit;
+    text-decoration: none;
+  }
+  .category-browser a:hover,
+  .category-browser a[aria-current="page"] { background: var(--surface-muted); }
+  .category-browser a[aria-current="page"] { box-shadow: inset var(--state-border-width) 0 0 0 var(--action); }
+  .category-browser small { color: var(--muted); font-variant-numeric: tabular-nums lining-nums; }
+  .category-browser :global(.library-category-icon),
+  .category-all-mark { width: 16px; color: var(--muted); text-align: center; }
 
   /* Six controls, fluid tracks: the grid fits as many as the width allows instead of
      forcing six fields into four fixed columns. */
@@ -349,6 +406,9 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     font-size: var(--font-size-sm);
     overflow-wrap: anywhere;
   }
+  .library-workspace :global(.tool-category) { display: grid; gap: var(--space-1); }
+  .library-workspace :global(.tool-quality) { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
+  .library-workspace :global(.tool-quality[data-quality="verified"]) { color: var(--success); }
   .library-workspace :global(.tool-runtime) { display: flex; align-items: baseline; gap: var(--space-2); }
   .library-workspace :global(.tool-runtime-code) { display: none; font-variant-numeric: tabular-nums lining-nums; }
   .library-workspace :global(.tool-action) {
@@ -362,8 +422,9 @@ const libraryMetadataJson = JSON.stringify(libraryMetadata).replaceAll("<", "\\u
     white-space: nowrap;
   }
   .library-workspace :global(.library-row:hover .tool-action) { color: var(--action); }
-  .library-workspace :global(.library-icon) { flex: 0 0 auto; }
-  .library-workspace :global(.tool-main .library-icon) { color: var(--muted); }
+  .library-workspace :global(.library-icon),
+  .library-workspace :global(.library-tool-icon) { flex: 0 0 auto; }
+  .library-workspace :global(.tool-main .library-tool-icon) { color: var(--muted); }
   .library-workspace :global(.tool-action .library-icon-open) { opacity: 0; transition: opacity var(--motion-fast) var(--motion-ease); }
   .library-workspace :global(.library-row:hover .tool-action .library-icon-open) { opacity: 1; }
 

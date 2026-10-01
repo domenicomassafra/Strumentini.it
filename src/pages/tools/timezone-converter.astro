@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { TimezoneConverterTool } from "../../components/tools/TimezoneConverterTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Timezone Converter" description="Convert an instant or local date-time between IANA timezones locally.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
-      <p class="eyebrow">Date &amp; time</p>
-      <h1>Timezone Converter</h1>
-      <p class="lede">Show the same instant in another IANA timezone with browser-provided daylight-saving rules.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No location or calendar data leaves this page.</span></div>
-    </header>
-    <TimezoneConverterTool client:load />
-    <section class="method-card" aria-labelledby="timezone-converter-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="timezone-converter-method">DST handling</h2><ul><li>Use an IANA zone such as Europe/Rome or America/New_York.</li><li>Nonexistent local times fail explicitly.</li><li>Repeated local times require an earlier/later choice.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="timezone-converter">
+  <TimezoneConverterTool client:load />
+</ItalianToolPage>

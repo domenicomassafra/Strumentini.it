@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ContactSheetGeneratorTool } from "../../components/tools/image-visual/ContactSheetGeneratorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Contact Sheet Generator" description="Compose selected local images into one bounded contact sheet in a browser canvas.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Contact Sheet Generator</h1>
-      <p class="lede">Compose selected local images into one bounded contact sheet in a browser canvas.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <ContactSheetGeneratorTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Contact sheet contract</h2><ul><li>Combines multiple selected local images into a bounded canvas sheet.</li><li>Uses the selected column count with fixed bounded cell dimensions.</li><li>Offers a local download without contacting an image service.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="contact-sheet-generator">
+  <ContactSheetGeneratorTool client:load />
+</ItalianToolPage>

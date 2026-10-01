@@ -4,7 +4,7 @@
 // codebase.
 import "../tool-surface.css";
 
-export { CONTROL, en, it } from "./controlLabels";
+export { CONTROL, it } from "./controlLabels";
 export type { ControlLabel } from "./controlLabels";
 export { InlineError } from "./InlineError";
 export { JsonResult } from "./JsonResult";

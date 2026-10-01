@@ -1,0 +1,83 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { catalog } from "../../../generated/catalog";
+import { categoryLabelIt, inputTypeLabelIt } from "../../../i18n/it/taxonomy";
+import { toolIconSvg } from "../../../ui/tool-icons";
+import { qualityIndex } from "../../../generated/quality";
+import { goldToolIds } from "../../../onboarding/quality";
+import "../tool-surface.css";
+
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+const tool = catalog.find((entry) => entry.id === toolId);
+
+if (tool === undefined) {
+  throw new Error(`Strumento sconosciuto: ${toolId}`);
+}
+
+const category = categoryLabelIt(tool.category);
+const inputTypes = tool.inputTypes.map(inputTypeLabelIt);
+const titleIcon = toolIconSvg(tool, "tool-title-icon");
+const verified = goldToolIds(qualityIndex).has(tool.id);
+
+const executionCopy = tool.runtime.location === "LOCAL"
+  ? {
+      headline: "Elaborazione sul dispositivo.",
+      detail: tool.runtime.network === "forbidden"
+        ? "I dati inseriti restano nel browser e non vengono inviati a servizi remoti."
+        : "L'elaborazione principale avviene nel browser; eventuali accessi alla rete seguono il contratto dichiarato.",
+    }
+  : tool.runtime.location === "REFERENCE"
+    ? {
+        headline: "Elaborazione con fonti di riferimento.",
+        detail: "Gli eventuali accessi alla rete sono limitati alle fonti di riferimento dichiarate dallo strumento.",
+      }
+    : {
+        headline: "Elaborazione remota dichiarata.",
+        detail: "Questo strumento dichiara esplicitamente quando un passaggio richiede un servizio remoto.",
+      };
+
+const networkCopy = tool.runtime.network === "forbidden"
+  ? "Accesso alla rete vietato dal contratto dello strumento."
+  : tool.runtime.network === "reference-only"
+    ? "La rete può essere usata soltanto per consultare fonti di riferimento dichiarate."
+    : "La rete è necessaria per completare questa operazione.";
+---
+
+<BaseLayout title={tool.name} description={tool.summary}>
+  <article class="tool-page">
+    <header class="tool-heading">
+      <nav aria-label="Percorso"><a href="/">Strumenti</a> / {category}</nav>
+      <div class="tool-title-line">
+        <span class="tool-title-icon-wrap" set:html={titleIcon}></span>
+        <div>
+          <p class="eyebrow">{category}</p>
+          <h1>{tool.name}</h1>
+          <p class:list={["tool-quality-status", verified ? "verified" : "checking"]}>{verified ? "Verificato" : "In verifica"}</p>
+        </div>
+      </div>
+      <p class="lede">{tool.summary}</p>
+      <div class="trust-strip" role="note">
+        <strong>{executionCopy.headline}</strong>
+        <span>{executionCopy.detail}</span>
+        {!verified && <span>Questo strumento è disponibile, ma non ha ancora completato il livello di certificazione Gold.</span>}
+      </div>
+    </header>
+
+    <slot />
+
+    <section class="method-card" aria-labelledby={`metodo-${tool.id}`}>
+      <p class="eyebrow">Come funziona</p>
+      <h2 id={`metodo-${tool.id}`}>Contratto operativo</h2>
+      <ul>
+        <li>{tool.summary}</li>
+        <li>Tipi di ingresso dichiarati: {inputTypes.join(", ")}.</li>
+        <li>{networkCopy}</li>
+        <li>Gli errori di formato o le capacità non supportate vengono mostrati esplicitamente invece di produrre un risultato inventato.</li>
+      </ul>
+    </section>
+  </article>
+</BaseLayout>

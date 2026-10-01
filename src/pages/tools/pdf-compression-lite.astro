@@ -1,6 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PdfCompressionLiteTool } from "../../components/tools/PdfCompressionLiteTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="PDF Compression Lite" description="Create a bounded local PDF copy with lightweight normalization."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Compression Lite</h1><p class="lede">Normalize uncompressed stream whitespace and omit addressable metadata.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No image recompression or server optimizer is implied.</span></div></header><PdfCompressionLiteTool client:load /><section class="method-card"><h2>Compression contract</h2><ul><li>Only uncompressed stream whitespace is normalized.</li><li>Recognized metadata is omitted from the new copy.</li><li>Output is not described as universally smaller or lossless.</li></ul></section></article></BaseLayout>
+
+<ItalianToolPage toolId="pdf-compression-lite">
+  <PdfCompressionLiteTool client:load />
+</ItalianToolPage>

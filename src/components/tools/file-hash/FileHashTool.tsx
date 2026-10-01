@@ -20,14 +20,14 @@ interface CompletedHash {
 }
 
 function friendlyError(error: unknown): string {
-  if (error instanceof DOMException && error.name === "AbortError") return "Hashing cancelled.";
+  if (error instanceof DOMException && error.name === "AbortError") return "Calcolo dell'hash annullato.";
   if (error instanceof FileHashError) {
-    if (error.code === "MALFORMED_CHECKSUM") return "Expected SHA-256 must be exactly 64 hexadecimal characters.";
-    if (error.code === "UNSUPPORTED_ALGORITHM") return "This tool currently supports SHA-256 only.";
-    if (error.code === "READ_FAILURE") return "The selected file could not be read. Choose it again and retry.";
-    if (error.code === "WORKER_FAILURE") return "The local hashing worker failed. Retry the operation.";
+    if (error.code === "MALFORMED_CHECKSUM") return "Lo SHA-256 atteso deve contenere esattamente 64 caratteri esadecimali.";
+    if (error.code === "UNSUPPORTED_ALGORITHM") return "Questo strumento supporta attualmente soltanto SHA-256.";
+    if (error.code === "READ_FAILURE") return "Non è stato possibile leggere il file selezionato. Selezionalo di nuovo e riprova.";
+    if (error.code === "WORKER_FAILURE") return "Il processo locale di calcolo dell'hash non è riuscito. Riprova.";
   }
-  return error instanceof Error ? error.message : "Hashing failed.";
+  return "Il calcolo dell'hash non è riuscito.";
 }
 
 function formatBytes(value: number): string {
@@ -53,7 +53,7 @@ export function FileHashTool() {
     setResult(null);
     setProgress(0);
     if (file === null) {
-      setError("Choose a file to hash.");
+      setError("Scegli un file su cui calcolare l'hash.");
       return;
     }
 
@@ -120,11 +120,11 @@ export function FileHashTool() {
               setProgress(0);
             }}
           />
-          <small>{file === null ? "Any file type · processed locally" : `${file.name} · ${formatBytes(file.size)}`}</small>
+          <small>{file === null ? "Qualsiasi tipo di file · elaborazione locale" : `${file.name} · ${formatBytes(file.size)}`}</small>
         </label>
 
         <label class="field">
-          <span>Expected SHA-256 <em>optional</em></span>
+          <span>SHA-256 atteso <em>facoltativo</em></span>
           <input
             type="text"
             inputMode="text"
@@ -133,26 +133,26 @@ export function FileHashTool() {
             spellcheck={false}
             value={expectedChecksum}
             disabled={running}
-            placeholder="64 hexadecimal characters"
+            placeholder="64 caratteri esadecimali"
             onInput={(event) => {
               setExpectedChecksum(event.currentTarget.value);
               setResult(null);
             }}
             aria-describedby="checksum-help"
           />
-          <small id="checksum-help">Only surrounding whitespace and hexadecimal letter case are normalized.</small>
+          <small id="checksum-help">Vengono normalizzati soltanto gli spazi esterni e le maiuscole/minuscole delle cifre esadecimali.</small>
         </label>
 
         <ToolProgress
           value={progress}
-          label="Hashing progress"
-          status={running ? `${Math.floor(progress * 100)}% hashed` : result === null ? "Not started" : "100% complete"}
+          label="Avanzamento del calcolo"
+          status={running ? `${Math.floor(progress * 100)}% completato` : result === null ? "Non avviato" : "100% completato"}
         />
 
         <InlineError message={error} />
 
         <ToolActions>
-          <ToolSubmitButton busy={running} busyLabel={it(CONTROL.working)}>Calculate SHA-256</ToolSubmitButton>
+          <ToolSubmitButton busy={running} busyLabel={it(CONTROL.working)}>Calcola SHA-256</ToolSubmitButton>
           {running && <ToolCancelButton onCancel={() => controllerRef.current?.abort()} />}
           <ToolResetButton onClick={reset} />
         </ToolActions>
@@ -166,9 +166,9 @@ export function FileHashTool() {
             )}
             <code style={{ overflowWrap: "anywhere" }}>{result.digestHex}</code>
             <dl class="assumptions">
-              <div><dt>Algorithm</dt><dd>SHA-256</dd></div>
-              <div><dt>Bytes hashed</dt><dd>{formatBytes(result.bytesHashed)}</dd></div>
-              <div><dt>Processing</dt><dd>Local worker · bounded chunks</dd></div>
+              <div><dt>Algoritmo</dt><dd>SHA-256</dd></div>
+              <div><dt>Byte elaborati</dt><dd>{formatBytes(result.bytesHashed)}</dd></div>
+              <div><dt>Elaborazione</dt><dd>Processo locale · blocchi di dimensione limitata</dd></div>
             </dl>
           </>
         )}

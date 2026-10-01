@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ImageFormatConversionTool } from "../../components/tools/image-visual/ImageFormatConversionTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Image Format Conversion" description="Convert a local JPEG, PNG, or WebP image to a verified browser-supported output format.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Image Format Conversion</h1>
-      <p class="lede">Convert a local JPEG, PNG, or WebP image to a verified browser-supported output format.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <ImageFormatConversionTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Format policy</h2><ul><li>Converts a local JPEG, PNG, or WebP image to a selected browser-supported format.</li><li>Verifies the output and reports unsupported input explicitly.</li><li>No remote converter is contacted.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="image-format-conversion">
+  <ImageFormatConversionTool client:load />
+</ItalianToolPage>

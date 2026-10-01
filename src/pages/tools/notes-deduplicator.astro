@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { NotesDeduplicatorTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="Notes Deduplicator" description="Remove duplicate research notes using stable whitespace and case identity.">
+
+<ItalianToolPage toolId="notes-deduplicator">
   <NotesDeduplicatorTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

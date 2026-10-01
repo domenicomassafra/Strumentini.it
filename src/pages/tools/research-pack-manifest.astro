@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ResearchPackManifestTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="Research Pack Manifest" description="Create a sorted, checksummed local manifest for a named research tool pack.">
+
+<ItalianToolPage toolId="research-pack-manifest">
   <ResearchPackManifestTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

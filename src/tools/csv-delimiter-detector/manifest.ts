@@ -8,7 +8,7 @@ export const csvDelimiterDetectorManifest = makeTableManifest({
   keywords: ["csv", "delimiter", "separator", "semicolon", "tab"],
   jobs: ["detect a csv delimiter", "identify a separator", "inspect csv field counts"],
   inputTypes: ["text", "csv", "file"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-023", fixtureFamilies: ["csv-cleaning", "csv-rfc4180"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-023", fixtureFamilies: ["csv-cleaning", "csv-rfc4180", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "CsvDelimiterDetectorTool",
 });

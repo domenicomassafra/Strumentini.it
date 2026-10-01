@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ImageCompressionTool } from "../../components/tools/image-visual/ImageCompressionTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Image Compression" description="Compress a local image to a selected browser-supported format and verify the result.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Image Compression</h1>
-      <p class="lede">Compress a local image to a selected browser-supported format and verify the result.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <ImageCompressionTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Compression policy</h2><ul><li>Compresses a local image using the selected output format; quality is applied when the browser encoder supports it.</li><li>Verifies the result for decodability; a smaller file is not guaranteed.</li><li>No upload or server-side optimizer is used.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="image-compression">
+  <ImageCompressionTool client:load />
+</ItalianToolPage>

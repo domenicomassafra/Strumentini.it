@@ -1,12 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { QrGeneratorTool } from "../../components/tools/QrGeneratorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="QR Generator" description="Generate a deterministic QR matrix and SVG locally.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>QR Generator</h1><p class="lede">Turn UTF-8 text or a link into a real QR matrix with a local SVG representation.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>The payload is encoded locally and is never sent to a QR service.</span></div></header>
-    <QrGeneratorTool client:load />
-    <section class="method-card"><h2>Encoding rules</h2><ul><li>Byte mode, error-correction level L, and standard finder, timing, alignment, format, and mask patterns are used.</li><li>Payloads are limited to the supported local matrix versions and are measured in UTF-8 bytes.</li><li>The SVG contains a machine-readable matrix attribute for local round-trip checks.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="qr-generator">
+  <QrGeneratorTool client:load />
+</ItalianToolPage>

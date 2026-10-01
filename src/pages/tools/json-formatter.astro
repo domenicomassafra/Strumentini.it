@@ -1,19 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { JsonFormatterTool } from "../../components/tools/JsonFormatterTool";
-import "../../components/tools/tool-surface.css";
-const title = "JSON Formatter & Validator";
 ---
-<BaseLayout title={title} description="Validate and format JSON locally with explicit duplicate-key warnings.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav>
-      <p class="eyebrow">Developer</p>
-      <h1>{title}</h1>
-      <p class="lede">Validate and format JSON locally with explicit duplicate-key warnings.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your document is not uploaded.</span></div>
-    </header>
-    <JsonFormatterTool client:load />
-    <section class="method-card" aria-labelledby="method-title"><p class="eyebrow">Method</p><h2 id="method-title">Native JSON grammar</h2><p>Parsing uses the RFC 8259 grammar. Duplicate member names are reported as a warning and resolved last-value-wins for the displayed value.</p></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="json-formatter">
+  <JsonFormatterTool client:load />
+</ItalianToolPage>

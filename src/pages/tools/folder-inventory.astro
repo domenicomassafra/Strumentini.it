@@ -1,8 +1,8 @@
 ---
-import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { FolderInventoryTool } from "../../components/tools/file-privacy/FolderInventoryTool";
-import "../../components/tools/tool-surface.css";
 ---
-<FilePrivacyPage title="Folder Inventory" description="Review a bounded inventory of files selected from a local folder." methodTitle="Bounded folder view" methodItems={["The browser exposes selected files and their relative paths; directory metadata is not reconstructed.", "Names, declared types, sizes, and empty-file flags are shown without reading contents.", "The selection limit protects ordinary mobile and desktop sessions from unbounded scans."]}>
+
+<ItalianToolPage toolId="folder-inventory">
   <FolderInventoryTool client:load />
-</FilePrivacyPage>
+</ItalianToolPage>

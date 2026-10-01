@@ -1,8 +1,8 @@
 ---
-import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { FileSignatureDetectorTool } from "../../components/tools/file-privacy/FileSignatureDetectorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<FilePrivacyPage title="File Signature / Type Detector" description="Inspect a bounded file header and compare its detected type with the filename extension." methodTitle="Evidence before extension" methodItems={["The first bytes are checked for common PNG, JPEG, WebP, PDF, ZIP, and related signatures.", "An unknown signature is reported as unknown rather than guessed from the extension.", "This is not a full malware scanner or file validator."]}>
+
+<ItalianToolPage toolId="file-signature-detector">
   <FileSignatureDetectorTool client:load />
-</FilePrivacyPage>
+</ItalianToolPage>

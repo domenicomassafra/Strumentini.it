@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { DoiLinkBuilderTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="DOI Link Builder" description="Build a DOI resolver URL locally without resolving the identifier.">
+
+<ItalianToolPage toolId="doi-link-builder">
   <DoiLinkBuilderTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

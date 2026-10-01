@@ -219,8 +219,7 @@ describe("canonical design-system tokens", () => {
     }
     expect(baseLayout).toContain('rel="preload"');
     expect(baseLayout).toContain('as="font"');
-    expect(baseLayout).toMatch(/<html lang=\{lang\}>/u);
-    expect(baseLayout).toContain('lang = "it"');
+    expect(baseLayout).toContain('<html lang="it">');
   });
 
   it("takes browser chrome colour from the token sheet rather than a restated literal", () => {

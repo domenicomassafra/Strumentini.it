@@ -8,7 +8,7 @@ export const duplicateRowProfilerManifest = makeTableManifest({
   keywords: ["csv", "duplicates", "profile", "keys", "quality"],
   jobs: ["profile duplicate csv rows", "find repeated table records", "count duplicate keys"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-039", fixtureFamilies: ["csv-table-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-039", fixtureFamilies: ["csv-table-ops", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "DuplicateRowProfilerTool",
 });

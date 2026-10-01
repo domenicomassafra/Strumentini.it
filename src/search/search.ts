@@ -13,14 +13,14 @@ export interface SearchHit extends SearchToolMetadata {
 export interface SearchResult {
   query: string;
   hits: SearchHit[];
-  sections: Array<{ id: SearchSectionId; label: "Your Tools" | "Recent" | "Library"; hits: SearchHit[] }>;
+  sections: Array<{ id: SearchSectionId; label: "I tuoi strumenti" | "Recenti" | "Libreria"; hits: SearchHit[] }>;
   closeIntents: string[];
 }
 
 const bucketToSection: Record<SearchBucket, SearchSectionId> = {
-  "Your Tools": "your-tools",
-  Recent: "recent",
-  Library: "library",
+  "I tuoi strumenti": "your-tools",
+  Recenti: "recent",
+  Libreria: "library",
 };
 
 const tierToMatch: Record<SearchTier, SearchMatch> = {
@@ -32,9 +32,9 @@ const tierToMatch: Record<SearchTier, SearchMatch> = {
 };
 
 const sectionOrder = [
-  ["your-tools", "Your Tools"],
-  ["recent", "Recent"],
-  ["library", "Library"],
+  ["your-tools", "I tuoi strumenti"],
+  ["recent", "Recenti"],
+  ["library", "Libreria"],
 ] as const;
 
 export function createSearch(tools: readonly SearchToolMetadata[]) {

@@ -5,12 +5,12 @@ import { createWorkbenchRepository } from "../../../workbench/repository";
 import { createDefaultWorkbenchState } from "../../../workbench/state";
 
 function initialProfile(): WorkProfile {
-  return createDefaultWorkProfile({ locale: "en-US", timezone: "UTC" });
+  return createDefaultWorkProfile({ locale: "it-IT", timezone: "UTC" });
 }
 
 function browserProfile(): WorkProfile {
   return createDefaultWorkProfile({
-    locale: navigator.language || "en-US",
+    locale: "it-IT",
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
   });
 }

@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ReadingListDeduplicatorTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="Reading List Deduplicator" description="Deduplicate reading-list records by stable source identity.">
+
+<ItalianToolPage toolId="reading-list-deduplicator">
   <ReadingListDeduplicatorTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

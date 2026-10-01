@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CsvGroupCountTool } from "../../components/tools/csv-group-count/CsvGroupCountTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="CSV Group and Count" description="Group CSV rows and emit stable local counts or aggregates.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>CSV Group &amp; Count</h1>
-      <p class="lede">Group by one or more columns and get a deterministic count or bounded numeric aggregate.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Group keys and counts are calculated locally.</span></div>
-    </header>
-    <CsvGroupCountTool client:load />
-    <section class="method-card"><h2>Group contract</h2><ul><li>Group positions are zero-based, unique, and in range.</li><li>Count mode counts rows; sum, min, and max require a numeric value column.</li><li>First-seen group order is stable across repeated runs.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="csv-group-count">
+  <CsvGroupCountTool client:load />
+</ItalianToolPage>

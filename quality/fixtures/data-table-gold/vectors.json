@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "tool_vectors": [
+    { "tool_id": "csv-viewer", "input": { "text": "a,b\n1,\"x,y\"\n2,3\n3,4\n", "maxPreviewRows": 2 }, "expected": { "rowCount": 3, "columnCount": 2, "previewTruncated": true, "previewRows": [["1", "x,y"], ["2", "3"]] } },
+    { "tool_id": "csv-delimiter-detector", "input": { "text": "a;b\n1;2\n3;4\n" }, "expected": { "delimiter": ";", "label": "semicolon", "confidence": "high" } },
+    { "tool_id": "csv-encoding-fixer", "input": { "bytes": [97, 44, 98, 10, 49, 44, 50, 10], "encoding": "utf-8" }, "expected": { "output": "a,b\n1,2\n", "detectedEncoding": "utf-8", "bomRemoved": false } },
+    { "tool_id": "csv-column-selector", "input": { "text": "a,b\n1,2\n", "columns": [1, 0] }, "expected": { "headers": ["b", "a"], "output": "b,a\n2,1", "selectedColumns": [1, 0] } },
+    { "tool_id": "csv-filter", "input": { "text": "name,score\nAda,10\nGrace,2\nAda,10\n", "column": 0, "operator": "contains", "value": "da", "caseSensitive": false }, "expected": { "matchedRows": 2, "rejectedRows": 1 } },
+    { "tool_id": "csv-sort", "input": { "text": "name,score\nAda,10\nGrace,2\nLinus,10\n", "column": 1, "comparator": "numeric" }, "expected": { "output": "name,score\nGrace,2\nAda,10\nLinus,10", "sortedRows": 3 } },
+    { "tool_id": "csv-group-count", "input": { "text": "team,score\nA,1\nB,2\nA,3\n", "groupColumns": [0] }, "expected": { "output": "team,count\nA,2\nB,1", "groups": 2 } },
+    { "tool_id": "csv-join", "input": { "leftText": "id,name\n1,Ada\n2,Grace\n", "rightText": "id,city\n1,London\n3,Paris\n", "leftKeyColumns": [0], "rightKeyColumns": [0], "joinType": "left" }, "expected": { "matchedRows": 1, "unmatchedLeftRows": 1, "unmatchedRightRows": 1 } },
+    { "tool_id": "csv-pivot-lite", "input": { "text": "team,quarter,amount\nA,Q1,2\nA,Q2,3\nB,Q1,4\n", "groupColumns": [0], "valueHeaderColumn": 1, "aggregateColumn": 2, "aggregate": "sum" }, "expected": { "valueHeaders": ["Q1", "Q2"], "groups": 2, "output": "team,Q1,Q2\nA,2,3\nB,4," } },
+    { "tool_id": "csv-to-json", "input": { "text": "a,a\n1,2\n" }, "expected": { "records": [{ "a": "1", "a_2": "2" }], "headers": ["a", "a_2"], "rowCount": 1 } },
+    { "tool_id": "json-to-csv", "input": { "json": "[{\"a\":1},{\"a\":2,\"b\":3}]", "headerMode": "union" }, "expected": { "output": "a,b\n1,\n2,3", "headers": ["a", "b"], "rowCount": 2, "droppedKeys": [] } },
+    { "tool_id": "tsv-to-csv", "input": { "text": "a\tb\n1\t\"x\ty\"\n" }, "expected": { "output": "a,b\n1,x\ty", "inputDelimiter": "\t", "outputDelimiter": ",", "rowCount": 1, "columnCount": 2 } },
+    { "tool_id": "table-transpose", "input": { "text": "name,age\nAda,37\n" }, "expected": { "output": "field,name,age\nname,Ada\nage,37", "sourceRows": 1, "sourceColumns": 2, "outputRows": 2, "outputColumns": 3 } },
+    { "tool_id": "missing-value-profiler", "input": { "text": "a,b\n1,\n,2\n" }, "expected": { "totalRows": 2, "totalMissing": 2, "columns": [{ "name": "a", "missing": 1, "missingRate": 0.5 }, { "name": "b", "missing": 1, "missingRate": 0.5 }] } },
+    { "tool_id": "column-type-profiler", "input": { "text": "value\n1\ntrue\n2026-01-01\n" }, "expected": { "columns": [{ "name": "value", "mixed": true, "dominantType": "mixed" }] } },
+    { "tool_id": "duplicate-row-profiler", "input": { "text": "id,name\n1,Ada\n1,Ada\n2,Grace\n", "maxExamples": 10 }, "expected": { "duplicateGroups": 1, "duplicateRows": 1, "groups": [{ "values": ["1", "Ada"] }] } },
+    { "tool_id": "quick-chart", "input": { "text": "label,value\nA,2\nB & C,3\n", "labelColumn": 0, "valueColumn": 1, "aggregate": "sum", "maxBars": 10 }, "expected": { "points": [{ "label": "A", "value": 2 }, { "label": "B & C", "value": 3 }] } }
+  ],
+  "policy": "Hand-worked exact public-module literals supplement RFC 4180, CSV cleaning, table operations and JSON/CSV conversion fixtures. Existing csv-cleaner, csv-dedupe and csv-column-map Gold tools keep their established certification paths."
+}

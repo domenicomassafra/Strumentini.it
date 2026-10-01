@@ -1,8 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ListDifferenceTool } from "../../components/tools/ListDifferenceTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="List Difference" description="Subtract one line list from another with explicit equality rules.">
-  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>List Difference</h1><p class="lede">Find the items in List A that are not present in List B.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Both lists stay in this page.</span></div></header><ListDifferenceTool client:load /><section class="method-card"><h2>Difference policy</h2><ul><li>The operation is directional: it returns List A minus List B.</li><li>Exact, trim, NFC, and trim-plus-NFC equality rules are available explicitly.</li><li>Duplicates in the input are collapsed by the selected rule while keeping first-seen order.</li></ul></section></article>
-</BaseLayout>
+
+<ItalianToolPage toolId="list-difference">
+  <ListDifferenceTool client:load />
+</ItalianToolPage>

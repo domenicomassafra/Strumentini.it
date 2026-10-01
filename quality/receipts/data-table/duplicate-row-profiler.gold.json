@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "342497beba30a81f60c0833982412eada75edf94",
+  "sourceFingerprint": "f914e4215a13c46bda81becf414024ebb3f0a9f800cb85ed7525707a3f2a8c3c",
+  "toolId": "duplicate-row-profiler",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engineVersion": "table-ops-v1",
+  "oracleEntryId": "cand-039",
+  "fixtureFamilies": [
+    "csv-table-ops",
+    "data-table-gold"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "rfc4180",
+    "rfc8259",
+    "strumentiutili-quality",
+    "whatwg-encoding"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "csv-table-ops",
+      "path": "quality/fixtures/csv-table-ops/vectors.json"
+    },
+    {
+      "id": "data-table-gold",
+      "path": "quality/fixtures/data-table-gold/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime",
+    "high-confidence oracle with no open semantic gap",
+    "tool-specific CSV/table fixture remains bound",
+    "exact public-module vector",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance"
+  ],
+  "identities": {
+    "manifestSha256": "e682f56a18ac905bc9716884c452c194dc6525256297ada96d79ed5b8938e4f3",
+    "operationsSha256": "75fa300718e83d1686e773f7e406fdc69b32d32e7bfe2c9eb60dd9b4ffab07fc",
+    "csvEngineSha256": "d84f81fef62f4acec84b3c236ea88cb9cd1deaba257083513923aaaa9e3d42b7",
+    "fixtureIndexSha256": "a0252757480079036e4d41f92eabb84180aa102fff081f27f2f8d6686f590be6",
+    "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+    "browserAcceptanceSha256": "022f3381c4ef3dd181e17de58e1b7f55592780b681b799ccbb8ce5af9b53abe2",
+    "unitTestsSha256": "a0d23ffd449e77e17dad8074ca4b3fb19445d5ceba3ba60ebf5d9c51e463b66f",
+    "fixture:csv-table-ops:sha256": "d9fed155c6536ca6ee6c60c5209cf7499d9ad7cc4b8d9c5cfe9461efa1cf91f2",
+    "fixture:data-table-gold:sha256": "51a4f3c5cbdad3102da73fd138fd73ac31bb7cea41b37ca84d733d8894a04a50"
+  }
+}

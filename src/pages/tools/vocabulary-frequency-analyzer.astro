@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { VocabularyFrequencyAnalyzerTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="Vocabulary / Frequency Analyzer" description="Count normalized vocabulary terms with deterministic stop-word and length policies.">
+
+<ItalianToolPage toolId="vocabulary-frequency-analyzer">
   <VocabularyFrequencyAnalyzerTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

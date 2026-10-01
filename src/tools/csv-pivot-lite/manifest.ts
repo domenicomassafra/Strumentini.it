@@ -8,7 +8,7 @@ export const csvPivotLiteManifest = makeTableManifest({
   keywords: ["csv", "pivot", "aggregate", "group"],
   jobs: ["pivot a csv table", "aggregate values by group", "make a small pivot"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-032", fixtureFamilies: ["csv-rfc4180", "csv-table-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-032", fixtureFamilies: ["csv-rfc4180", "csv-table-ops", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "CsvPivotLiteTool",
 });

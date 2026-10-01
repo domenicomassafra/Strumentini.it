@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ContrastCheckerTool } from "../../components/tools/image-visual/ContrastCheckerTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Contrast Checker" description="Check a foreground and background color pair against WCAG relative-luminance contrast ratios.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Contrast Checker</h1>
-      <p class="lede">Check a foreground and background color pair against WCAG relative-luminance contrast ratios.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <ContrastCheckerTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Contrast scope</h2><ul><li>Calculates relative-luminance contrast for the selected foreground and background colors.</li><li>Reports the ratio and pass states for that pair, not an entire design.</li><li>Does not upload text or images.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="contrast-checker">
+  <ContrastCheckerTool client:load />
+</ItalianToolPage>

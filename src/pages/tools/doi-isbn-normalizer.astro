@@ -1,29 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { DoiIsbnNormalizerTool } from "../../components/tools/DoiIsbnNormalizerTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="DOI / ISBN Normalizer" description="Normalize DOI presentation and validate ISBN check digits locally without bibliographic lookup.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Research</nav>
-      <p class="eyebrow">Research</p>
-      <h1>DOI / ISBN Normalizer</h1>
-      <p class="lede">Clean identifier presentation and validate deterministic syntax/check digits without inventing citation metadata.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No DOI resolution or bibliographic metadata request is made.</span></div>
-    </header>
 
-    <DoiIsbnNormalizerTool client:load />
-
-    <section class="method-card" aria-labelledby="reference-method-title">
-      <p class="eyebrow">Method</p>
-      <h2 id="reference-method-title">What is and is not normalized</h2>
-      <ul>
-        <li>DOI: surrounding whitespace plus a leading <code>doi:</code> or recognized <code>doi.org</code> resolver prefix is removed. The remaining identifier must have the deterministic shape <code>10.&lt;4–9 digits&gt;/&lt;non-control suffix&gt;</code>.</li>
-        <li>A DOI result confirms only that declared syntax rule. It does not prove registration, resolve the DOI, repair a citation, or fetch title/author metadata.</li>
-        <li>ISBN: surrounding whitespace, an optional ISBN label, ASCII spaces, and hyphen-minus separators are removed. ISBN-10 and ISBN-13 check digits are validated; valid ISBN-10 values are also converted deterministically to the 978 ISBN-13 form.</li>
-        <li>ISBN-13 must use the 978 or 979 prefix. No book metadata, edition inference, punctuation repair, or remote lookup is performed.</li>
-      </ul>
-    </section>
-  </article>
-</BaseLayout>
+<ItalianToolPage toolId="doi-isbn-normalizer">
+  <DoiIsbnNormalizerTool client:load />
+</ItalianToolPage>

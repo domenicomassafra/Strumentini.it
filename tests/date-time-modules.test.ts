@@ -19,6 +19,7 @@ import timezoneConverter from "../src/tools/timezone-converter/module";
 import timezoneOverlap from "../src/tools/timezone-overlap/module";
 import weekNumberConverter from "../src/tools/week-number-converter/module";
 import workingHours from "../src/tools/working-hours/module";
+import { timesheetConfig } from "../src/components/tools/date-time/configs";
 
 const context = { defaults: { timezone: { field: "timezone", value: "UTC", provenance: "profile" as const }, locale: { field: "locale", value: "en-US", provenance: "profile" as const } } };
 
@@ -58,5 +59,14 @@ describe("date/time/planning tool modules", () => {
   it("normalizes invalid module input instead of returning a fake result", () => {
     expect(() => dateDifference.run({ start: "not-a-date", end: "2024-01-01" }, context)).toThrow("INVALID_DATE");
     expect(() => icsViewer.run({ text: "BEGIN:VCALENDAR\nEND:VCALENDAR" }, context)).toThrow("INVALID_ICS");
+  });
+
+  it("parses the documented timesheet row format used by the public form", () => {
+    expect(timesheetConfig.buildInput({ entries: "2024-01-15|09:00|17:30|30" })).toEqual({
+      entries: [{ date: "2024-01-15", start: "09:00", end: "17:30", breakMinutes: 30 }],
+    });
+    expect(timesheetConfig.buildInput({ entries: "2024-01-15|09:00-17:30|30" })).toEqual({
+      entries: [{ date: "2024-01-15", start: "09:00", end: "17:30", breakMinutes: 30 }],
+    });
   });
 });

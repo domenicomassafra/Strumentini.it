@@ -92,6 +92,11 @@ describe("search discovery seam", () => {
     expect(search.query("local").hits).toHaveLength(3);
   });
 
+  it("matches the human Italian category vocabulary shown in the UI", () => {
+    expect(search.query("date e calendario").hits.map((hit) => hit.id)).toEqual(expect.arrayContaining(["business-day", "timezone-overlap"]));
+    expect(search.query("testo e scrittura").hits.map((hit) => hit.id)).toContain("text-diff");
+  });
+
   it("keeps installed and recent context as caller-supplied data and groups hits without duplicates", () => {
     const result = search.query("working", {
       installedToolIds: ["business-day"],

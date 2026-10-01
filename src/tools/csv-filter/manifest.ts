@@ -8,7 +8,7 @@ export const csvFilterManifest = makeTableManifest({
   keywords: ["csv", "filter", "rows", "search"],
   jobs: ["filter csv rows", "find rows containing text", "filter empty csv values"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-028", fixtureFamilies: ["csv-rfc4180", "csv-table-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-028", fixtureFamilies: ["csv-rfc4180", "csv-table-ops", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "CsvFilterTool",
 });

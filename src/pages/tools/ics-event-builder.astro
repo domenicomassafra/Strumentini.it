@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { IcsEventBuilderTool } from "../../components/tools/IcsEventBuilderTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="ICS Event Builder" description="Build a deterministic RFC 5545 calendar event locally.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
-      <p class="eyebrow">Date &amp; time</p>
-      <h1>ICS Event Builder</h1>
-      <p class="lede">Build a safe, deterministic iCalendar event with escaped text, UTC instants, and RFC line folding.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>The generated .ics text is not uploaded.</span></div>
-    </header>
-    <IcsEventBuilderTool client:load />
-    <section class="method-card" aria-labelledby="ics-builder-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="ics-builder-method">RFC 5545 output</h2><ul><li>Event text is escaped and long lines are folded.</li><li>Date-times are normalized to UTC; all-day values use VALUE=DATE.</li><li>The generated UID is deterministic when one is not supplied.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="ics-event-builder">
+  <IcsEventBuilderTool client:load />
+</ItalianToolPage>

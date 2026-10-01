@@ -1,8 +1,8 @@
 ---
-import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ZipCreatorTool } from "../../components/tools/file-privacy/ZipCreatorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<FilePrivacyPage title="ZIP Creator" description="Create a bounded ZIP from selected local files using the dependency-free store method." methodTitle="Local ZIP creation" methodItems={["Files are read into a bounded in-memory archive and offered as a browser download.", "The current route uses ZIP store entries; it does not claim compression or encryption.", "The archive is never uploaded."]}>
+
+<ItalianToolPage toolId="zip-creator">
   <ZipCreatorTool client:load />
-</FilePrivacyPage>
+</ItalianToolPage>

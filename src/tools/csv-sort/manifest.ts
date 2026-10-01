@@ -8,7 +8,7 @@ export const csvSortManifest = makeTableManifest({
   keywords: ["csv", "sort", "order", "numeric", "date"],
   jobs: ["sort csv rows", "order a csv table", "sort values numerically"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-029", fixtureFamilies: ["csv-rfc4180", "csv-table-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-029", fixtureFamilies: ["csv-rfc4180", "csv-table-ops", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "CsvSortTool",
 });

@@ -8,7 +8,7 @@ export const quickChartManifest = makeTableManifest({
   keywords: ["chart", "csv", "bar", "table", "local"],
   jobs: ["chart csv values", "make a bar chart from a table", "summarize table values visually"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-040", fixtureFamilies: ["csv-table-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-040", fixtureFamilies: ["csv-table-ops", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "QuickChartTool",
 });

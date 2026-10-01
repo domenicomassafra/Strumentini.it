@@ -1,12 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ConversionRateScenarioTool } from "../../components/tools/ConversionRateScenarioTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Conversion-Rate Scenario Calculator" description="Project conversions from visits and a target conversion rate locally.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>Conversion-Rate Scenario Calculator</h1><p class="lede">Compare a baseline rate with a target scenario and see projected conversions.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Scenario inputs are not uploaded.</span></div></header>
-    <ConversionRateScenarioTool client:load />
-    <section class="method-card"><h2>Scenario policy</h2><ul><li>Baseline rate = baseline conversions ÷ visits × 100.</li><li>Projected conversions = visits × target rate ÷ 100.</li><li>Zero visits and invalid percentages are explicit errors; final values round half-up only at display time.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="conversion-rate-scenario">
+  <ConversionRateScenarioTool client:load />
+</ItalianToolPage>

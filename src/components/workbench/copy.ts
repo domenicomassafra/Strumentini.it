@@ -64,7 +64,7 @@ export const COPY = {
   recent: {
     title: "Recenti",
     clear: "Svuota i recenti",
-    empty: "Nessuna attività recente. Input, output, URL e file non vengono conservati qui.",
+    empty: "Nessuna attività recente. Dati inseriti, risultati, URL e file non vengono conservati qui.",
     runAgain: "Riusa",
     openedTimes: (count: number) => `aperto ${count}×`,
   },
@@ -88,7 +88,7 @@ export const COPY = {
     addRecommended: (count: number) => `Aggiungi ${count} consigliati`,
     complete: "Consigliati già presenti",
     remove: "Rimuovi il pacchetto",
-    manualRemoval: "Il pacchetto resta comprensibile anche se rimuovi manualmente uno dei suoi strumenti: il tool non viene reinstallato finché non scegli di aggiungere di nuovo i consigliati.",
+    manualRemoval: "Il pacchetto resta comprensibile anche se rimuovi manualmente uno dei suoi strumenti: lo strumento non viene reinstallato finché non scegli di aggiungere di nuovo i consigliati.",
   },
 
   workProfile: {

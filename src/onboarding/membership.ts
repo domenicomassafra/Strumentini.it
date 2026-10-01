@@ -25,8 +25,8 @@ function normalize(value: string): string {
   return value
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/gu, "")
-    .toLocaleLowerCase("en")
-    .replace(/[^a-z0-9]+/gu, " ")
+    .toLocaleLowerCase("it-IT")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
 }
 
@@ -38,9 +38,9 @@ function inferredReason(pack: WorkContextPack, tool: ToolSummary): { reason: str
   const job = pack.jobIds
     .map((id) => RECURRING_JOBS.find((candidate) => candidate.id === id))
     .find((candidate) => candidate !== undefined && candidate.matchTerms.some((term) => text(tool).includes(normalize(term))));
-  if (job !== undefined) return { reason: `Matches ${pack.label} through the “${job.label}” task.`, evidence: job.id };
+  if (job !== undefined) return { reason: `Coerente con “${pack.label}” tramite l'attività “${job.label}”.`, evidence: job.id };
   const category = CATEGORY_HINTS[pack.id].find((hint) => normalize(tool.category).includes(normalize(hint)));
-  if (category !== undefined) return { reason: `Matches ${pack.label} through the ${category} task family.`, evidence: `category:${category}` };
+  if (category !== undefined) return { reason: `Coerente con “${pack.label}” tramite la famiglia di strumenti ${category}.`, evidence: `category:${category}` };
   return undefined;
 }
 
@@ -56,7 +56,7 @@ export function getContextMemberships(
       return [{
         contextId: pack.id,
         toolId: tool.id,
-        reason: pack.reasons[tool.id] ?? `Part of the ${pack.label} work context.`,
+        reason: pack.reasons[tool.id] ?? `Incluso nel contesto “${pack.label}”.`,
         evidence: [pack.id],
       }];
     }

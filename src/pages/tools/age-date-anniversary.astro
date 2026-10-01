@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { AgeDateAnniversaryTool } from "../../components/tools/AgeDateAnniversaryTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Age / Date Anniversary Calculator" description="Calculate age components and the next date anniversary locally.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
-      <p class="eyebrow">Date &amp; time</p>
-      <h1>Age / Date Anniversary Calculator</h1>
-      <p class="lede">Calculate years, months, days, and the next anniversary from two calendar dates.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Dates are used only for the local calculation.</span></div>
-    </header>
-    <AgeDateAnniversaryTool client:load />
-    <section class="method-card" aria-labelledby="age-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="age-method">Calendar age</h2><ul><li>Components use complete calendar units.</li><li>A February 29 anniversary is observed on February 28 in non-leap years.</li><li>An as-of date before the start date is rejected.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="age-date-anniversary">
+  <AgeDateAnniversaryTool client:load />
+</ItalianToolPage>

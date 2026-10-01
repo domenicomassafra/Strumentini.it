@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ResearchUrlCleanerTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="Research URL Cleaner" description="Remove common tracking parameters and sort research URL query keys locally.">
+
+<ItalianToolPage toolId="research-url-cleaner">
   <ResearchUrlCleanerTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

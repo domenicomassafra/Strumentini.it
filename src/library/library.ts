@@ -3,6 +3,7 @@ import type { SearchContext, SearchToolMetadata } from "../search/types";
 
 export type LibraryRuntime = "" | "LOCAL" | "NETWORK";
 export type LibraryInstalled = "" | "installed" | "not-installed";
+export type LibraryQuality = "" | "verified" | "checking";
 
 export interface LibraryState {
   q: string;
@@ -11,6 +12,7 @@ export interface LibraryState {
   input: string;
   runtime: LibraryRuntime;
   installed: LibraryInstalled;
+  quality: LibraryQuality;
   page: number;
 }
 
@@ -21,6 +23,7 @@ export const emptyLibraryState: LibraryState = {
   input: "",
   runtime: "",
   installed: "",
+  quality: "",
   page: 1,
 };
 
@@ -31,6 +34,7 @@ export function parseLibraryState(value: string | URLSearchParams): LibraryState
   const rawPage = Number.parseInt(params.get("page") ?? "1", 10);
   const runtime = params.get("runtime");
   const installed = params.get("installed");
+  const quality = params.get("quality");
   return {
     q: params.get("q") ?? "",
     category: params.get("category") ?? "",
@@ -38,6 +42,7 @@ export function parseLibraryState(value: string | URLSearchParams): LibraryState
     input: params.get("input") ?? "",
     runtime: runtime === "LOCAL" || runtime === "NETWORK" ? runtime : "",
     installed: installed === "installed" || installed === "not-installed" ? installed : "",
+    quality: quality === "verified" || quality === "checking" ? quality : "",
     page: Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1,
   };
 }
@@ -50,6 +55,7 @@ export function serializeLibraryState(state: LibraryState): string {
   if (state.input) params.set("input", state.input);
   if (state.runtime) params.set("runtime", state.runtime);
   if (state.installed) params.set("installed", state.installed);
+  if (state.quality) params.set("quality", state.quality);
   if (state.page > 1) params.set("page", String(state.page));
   return params.toString();
 }
@@ -65,6 +71,7 @@ export function filterLibrary(
     ...(state.input ? { inputType: state.input } : {}),
     runtime: state.runtime === "LOCAL" ? "local" : state.runtime === "NETWORK" ? "network" : "any",
     installState: state.installed || "any",
+    quality: state.quality || "any",
   }, context);
   if (!state.tag) return filtered;
   return filtered.filter((tool) => (tool.packTags ?? []).includes(state.tag) || (tool.roleTags ?? []).includes(state.tag));

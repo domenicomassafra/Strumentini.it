@@ -16,6 +16,14 @@ import {
 } from "../shared";
 import type { ToolSummary } from "../../../catalog/manifest";
 import { PreviousValue } from "../shared/PreviousValue";
+import {
+  DATE_TIME_UI_IT,
+  dateTimeFieldHelpIt,
+  dateTimeFieldLabelIt,
+  dateTimeOptionLabelIt,
+  dateTimeResultHeadlineIt,
+  localizeDateTimeResultIt,
+} from "../../../i18n/it/date-time";
 
 export type DateTimeFieldType = "date" | "time" | "number" | "text" | "textarea" | "select";
 
@@ -48,7 +56,7 @@ function initialValues(config: DateTimeToolConfig): Record<string, string> {
 
 function fieldInput(field: DateTimeField, value: string, onInput: (value: string) => void) {
   if (field.type === "select") {
-    return <select required={field.required} value={value} onChange={(event) => onInput(event.currentTarget.value)}>{(field.options ?? []).map((option) => <option value={option} key={option}>{option}</option>)}</select>;
+    return <select required={field.required} value={value} onChange={(event) => onInput(event.currentTarget.value)}>{(field.options ?? []).map((option) => <option value={option} key={option}>{dateTimeOptionLabelIt(option)}</option>)}</select>;
   }
   if (field.type === "textarea") {
     return <textarea required={field.required} rows={4} value={value} placeholder={field.placeholder} onInput={(event) => onInput(event.currentTarget.value)} />;
@@ -78,9 +86,9 @@ export function DateTimeOperation({ config }: { config: DateTimeToolConfig }) {
       { profile: profileValuesForTool(config.tool, profile) },
       signal,
     ),
-    { formatError: (result) => result.message.startsWith("INVALID_") ? "Check the values and date/time rules, then try again." : result.message },
+    { formatError: () => "Controlla i valori e le regole di data, ora e fuso orario, quindi riprova." },
   );
-  const resultText = useMemo(() => operation.result === null ? "" : JSON.stringify(operation.result, null, 2), [operation.result]);
+  const resultText = useMemo(() => operation.result === null ? "" : JSON.stringify(localizeDateTimeResultIt(operation.result), null, 2), [operation.result]);
 
   function update(key: string, value: string) {
     setValues((current) => ({ ...current, [key]: value }));
@@ -100,8 +108,12 @@ export function DateTimeOperation({ config }: { config: DateTimeToolConfig }) {
   const gutterState = gutterStateFor(operation.status);
   // resultLabel reads a field off the result, so it must never see null — that
   // is the state before the tool has run, which is every page's first render.
-  const headline = operation.result === null ? undefined : config.resultLabel?.(operation.result);
-  const resultHeadline = typeof headline === "string" ? headline : "";
+  const resultHeadline = operation.result === null ? "" : dateTimeResultHeadlineIt(config.tool.id, operation.result);
+  const uiCopy = DATE_TIME_UI_IT[config.tool.id] ?? {
+    eyebrow: config.eyebrow,
+    placeholder: config.placeholder,
+    submit: config.submitLabel,
+  };
 
   return (
     <ToolOperation busy={operation.isRunning}>
@@ -109,20 +121,20 @@ export function DateTimeOperation({ config }: { config: DateTimeToolConfig }) {
         <div class="field-grid">
           {config.fields.map((field) => (
             <label class="field" key={field.key}>
-              <span>{field.label}{field.required === true ? "" : " optional"}</span>
+              <span>{dateTimeFieldLabelIt(field.key, field.label)}{field.required === true ? "" : " · facoltativo"}</span>
               {fieldInput(field, values[field.key] ?? "", (value) => update(field.key, value))}
-              {field.help !== undefined && <small>{field.help}</small>}
+              {dateTimeFieldHelpIt(field.key) !== undefined && <small>{dateTimeFieldHelpIt(field.key)}</small>}
             </label>
           ))}
         </div>
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{config.submitLabel}</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{uiCopy.submit}</ToolSubmitButton>
           <ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton>
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow={config.eyebrow} placeholder={config.placeholder} busy={operation.isRunning} state={gutterState}>
-        {config.resultLabel !== undefined && <PreviousValue value={resultHeadline} retain={operation.isRunning} />}
+      <ToolResultPanel eyebrow={uiCopy.eyebrow} placeholder={uiCopy.placeholder} busy={operation.isRunning} state={gutterState}>
+        <PreviousValue value={resultHeadline} retain={operation.isRunning} />
         {operation.result !== null && (
           <>
             <pre class="result-json">{resultText}</pre>

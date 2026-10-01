@@ -1,8 +1,8 @@
 ---
-import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { FileListDiffTool } from "../../components/tools/file-privacy/FileListDiffTool";
-import "../../components/tools/tool-surface.css";
 ---
-<FilePrivacyPage title="File-List Diff" description="Compare two local file selections by relative path, size, and optional SHA-256." methodTitle="Deterministic handoff comparison" methodItems={["Added, removed, changed, and unchanged paths are reported explicitly.", "Hash comparison is optional because it reads file content and costs more work.", "The tool does not sync, move, or overwrite either selection."]}>
+
+<ItalianToolPage toolId="file-list-diff">
   <FileListDiffTool client:load />
-</FilePrivacyPage>
+</ItalianToolPage>

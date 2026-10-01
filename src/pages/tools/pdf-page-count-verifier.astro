@@ -1,6 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PdfPageCountVerifierTool } from "../../components/tools/PdfPageCountVerifierTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="PDF Page Count Verifier" description="Verify the page count of a local PDF."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Page Count Verifier</h1><p class="lede">Verify the observed page count after signature and structure checks.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No file upload or remote parser.</span></div></header><PdfPageCountVerifierTool client:load /><section class="method-card"><h2>Verification contract</h2><ul><li>Requires a valid PDF header and EOF marker.</li><li>Walks the page tree with cycle and count limits.</li><li>Reports signature preflight separately from deeper conformance.</li></ul></section></article></BaseLayout>
+
+<ItalianToolPage toolId="pdf-page-count-verifier">
+  <PdfPageCountVerifierTool client:load />
+</ItalianToolPage>

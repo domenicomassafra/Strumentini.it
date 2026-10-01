@@ -13,7 +13,7 @@ export const whitespaceNormalizerManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-004", fixtureFamilies: ["whitespace-normalization"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-004", fixtureFamilies: ["whitespace-normalization", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 
 export default whitespaceNormalizerManifest;

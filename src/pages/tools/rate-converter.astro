@@ -1,27 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { RateConverterTool } from "../../components/tools/RateConverterTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Rate Converter" description="Convert hour, day, and project rates with explicit dimensional assumptions and exact decimal rounding.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Client-work math</nav>
-      <p class="eyebrow">Client-work math</p>
-      <h1>Rate Converter</h1>
-      <p class="lede">Translate the same rate between hour, day, and project bases. The work basis is explicit and the currency is only a display label.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No live FX, market rate, or external pricing data is fetched.</span></div>
-    </header>
-    <RateConverterTool client:load />
-    <section class="method-card" aria-labelledby="rate-method-title">
-      <p class="eyebrow">Rules &amp; assumptions</p>
-      <h2 id="rate-method-title">What gets converted</h2>
-      <ul>
-        <li>Formula: amount × target-unit-hours ÷ source-unit-hours.</li>
-        <li>Hour = 1 hour; day = your declared hours/day; project = your declared project hours.</li>
-        <li>Exact decimal arithmetic is kept through the calculation; the displayed result rounds half-up once to 2 decimals.</li>
-        <li>Currency is a label only. This tool does not convert EUR to USD or imply any exchange rate.</li>
-      </ul>
-    </section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="rate-converter">
+  <RateConverterTool client:load />
+</ItalianToolPage>

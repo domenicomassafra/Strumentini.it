@@ -1,23 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { RetainerCapacityTool } from "../../components/tools/business-math/RetainerCapacityTool";
-import { retainerCapacityConfig } from "../../components/tools/business-math/configs";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title={retainerCapacityConfig.title} description={retainerCapacityConfig.lede}>
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
-      <p class="eyebrow">Business math</p>
-      <h1>{retainerCapacityConfig.title}</h1>
-      <p class="lede">{retainerCapacityConfig.lede}</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Retainer assumptions are not sent anywhere.</span></div>
-    </header>
-    <RetainerCapacityTool client:load />
-    <section class="method-card" aria-labelledby="retainer-method">
-      <p class="eyebrow">Rules &amp; assumptions</p>
-      <h2 id="retainer-method">Capacity uses whole client slots</h2>
-      <ul><li>Client capacity is capacity hours ÷ hours per client, rounded down.</li><li>The target-margin view is a planning calculation, not a guarantee of demand or profitability.</li></ul>
-    </section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="retainer-capacity">
+  <RetainerCapacityTool client:load />
+</ItalianToolPage>

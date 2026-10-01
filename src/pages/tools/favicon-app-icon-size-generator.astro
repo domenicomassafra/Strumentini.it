@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { FaviconAppIconSizeGeneratorTool } from "../../components/tools/image-visual/FaviconAppIconSizeGeneratorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Favicon / App Icon Size Generator" description="Generate and download a bounded set of square favicon and app-icon PNG sizes from one local image.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Favicon / App Icon Size Generator</h1>
-      <p class="lede">Generate and download a bounded set of square favicon and app-icon PNG sizes from one local image.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <FaviconAppIconSizeGeneratorTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Output size policy</h2><ul><li>Generates a bounded set of square PNG sizes from one local image.</li><li>Each generated size is available as a local download link.</li><li>Does not claim a platform upload or asset publication step.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="favicon-app-icon-size-generator">
+  <FaviconAppIconSizeGeneratorTool client:load />
+</ItalianToolPage>

@@ -1,4 +1,5 @@
 import type { ToolSummary } from "../catalog/manifest";
+import { localizeToolManifestIt } from "../i18n/it/tool-copy";
 import {
   collectManifestIssues,
   ToolFactoryValidationError,
@@ -59,7 +60,7 @@ export interface FactoryCatalogOptions extends FactoryValidationContext {
 }
 
 function normalize(value: string): string {
-  return value.normalize("NFKC").trim().toLocaleLowerCase("en-US");
+  return value.normalize("NFKC").trim().toLocaleLowerCase("it-IT");
 }
 
 function summaryOf(manifest: FactoryToolManifest): FactoryCatalogSummary {
@@ -195,7 +196,9 @@ export function compileFactoryCatalog(
   issues.push(...crossManifestIssues(manifests));
   if (issues.length > 0) throw new ToolFactoryValidationError(issues);
 
-  const sorted = manifests.toSorted((left, right) => left.id.localeCompare(right.id));
+  const sorted = manifests
+    .map(localizeToolManifestIt)
+    .toSorted((left, right) => left.id.localeCompare(right.id, "it-IT"));
   const routeMap: Record<string, string> = {};
   for (const manifest of sorted) routeMap[manifest.id] = manifest.route;
   return {

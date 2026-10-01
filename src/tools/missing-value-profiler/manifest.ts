@@ -8,7 +8,7 @@ export const missingValueProfilerManifest = makeTableManifest({
   keywords: ["csv", "missing", "null", "profile", "quality"],
   jobs: ["profile missing csv values", "count empty table cells", "inspect column completeness"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-037", fixtureFamilies: ["csv-table-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-037", fixtureFamilies: ["csv-table-ops", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "MissingValueProfilerTool",
 });

@@ -8,7 +8,7 @@ export const csvGroupCountManifest = makeTableManifest({
   keywords: ["csv", "group", "count", "aggregate"],
   jobs: ["count rows by group", "aggregate csv rows", "group a table locally"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-030", fixtureFamilies: ["csv-rfc4180", "csv-table-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-030", fixtureFamilies: ["csv-rfc4180", "csv-table-ops", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "CsvGroupCountTool",
 });

@@ -8,7 +8,7 @@ export const tsvToCsvManifest = makeTableManifest({
   keywords: ["tsv", "csv", "tab", "delimiter"],
   jobs: ["convert tsv to csv", "turn tab separated data into csv", "export a tsv table"],
   inputTypes: ["file", "tsv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-035", fixtureFamilies: ["csv-rfc4180"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-035", fixtureFamilies: ["csv-rfc4180", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "TsvToCsvTool",
 });

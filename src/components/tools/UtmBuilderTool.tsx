@@ -19,7 +19,7 @@ export function UtmBuilderTool() {
   const [campaign, setCampaign] = useState("");
   const operation = useToolOperation<UtmBuilderOutput>(
     (signal: AbortSignal) => toolRuntime.run("utm-builder", { baseUrl, source, medium, campaign }, {}, signal),
-    { formatError: () => "Enter a valid http(s) URL and source, medium, and campaign values." },
+    { formatError: () => "Inserisci un URL HTTP(S) valido e i valori di sorgente, mezzo e campagna." },
   );
 
   function submit(event: Event) {
@@ -32,21 +32,21 @@ export function UtmBuilderTool() {
       <form onSubmit={submit}>
         <ToolFormCard>
           <label class="field">
-            <span>Destination URL</span>
-            <input aria-label="Destination URL" value={baseUrl} onInput={(event) => setBaseUrl(event.currentTarget.value)} placeholder="https://example.com/landing?ref=site#details" />
+            <span>URL di destinazione</span>
+            <input aria-label="URL di destinazione" value={baseUrl} onInput={(event) => setBaseUrl(event.currentTarget.value)} placeholder="https://example.com/pagina?ref=sito#dettagli" />
           </label>
           <div class="field-grid">
-            <label class="field"><span>Source</span><input aria-label="Source" value={source} onInput={(event) => setSource(event.currentTarget.value)} /></label>
-            <label class="field"><span>Medium</span><input aria-label="Medium" value={medium} onInput={(event) => setMedium(event.currentTarget.value)} /></label>
+            <label class="field"><span>Sorgente</span><input aria-label="Sorgente" value={source} onInput={(event) => setSource(event.currentTarget.value)} /></label>
+            <label class="field"><span>Mezzo</span><input aria-label="Mezzo" value={medium} onInput={(event) => setMedium(event.currentTarget.value)} /></label>
           </div>
-          <label class="field"><span>Campaign</span><input aria-label="Campaign" value={campaign} onInput={(event) => setCampaign(event.currentTarget.value)} /></label>
+          <label class="field"><span>Campagna</span><input aria-label="Campagna" value={campaign} onInput={(event) => setCampaign(event.currentTarget.value)} /></label>
           <InlineError message={operation.error} />
           <ToolActions>
-            <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Build URL</ToolSubmitButton>
+            <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Crea URL</ToolSubmitButton>
           </ToolActions>
         </ToolFormCard>
       </form>
-      <ToolResultPanel eyebrow="Result" placeholder="Your campaign URL appears here." busy={operation.isRunning}>
+      <ToolResultPanel eyebrow="Risultato" placeholder="L'URL della campagna apparirà qui." busy={operation.isRunning}>
         {operation.result !== null && <code class="long-result">{operation.result.url}</code>}
       </ToolResultPanel>
     </ToolOperation>

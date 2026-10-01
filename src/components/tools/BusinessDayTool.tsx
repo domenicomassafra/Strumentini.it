@@ -7,13 +7,13 @@ import { gutterStateFromResult } from "./shared/ToolGutter";
 
 const PROFILE_WORKWEEK: readonly DayCode[] = ["MON", "TUE", "WED", "THU", "FRI"];
 const DAY_LABELS: ReadonlyArray<{ code: DayCode; label: string }> = [
-  { code: "MON", label: "Mon" },
-  { code: "TUE", label: "Tue" },
-  { code: "WED", label: "Wed" },
-  { code: "THU", label: "Thu" },
-  { code: "FRI", label: "Fri" },
-  { code: "SAT", label: "Sat" },
-  { code: "SUN", label: "Sun" },
+  { code: "MON", label: "Lun" },
+  { code: "TUE", label: "Mar" },
+  { code: "WED", label: "Mer" },
+  { code: "THU", label: "Gio" },
+  { code: "FRI", label: "Ven" },
+  { code: "SAT", label: "Sab" },
+  { code: "SUN", label: "Dom" },
 ];
 
 function parseExcludedDates(value: string): string[] {
@@ -41,14 +41,14 @@ export function BusinessDayTool() {
   const [result, setResult] = useState<BusinessDayOutput | null>(null);
   const [error, setError] = useState("");
 
-  const locale = typeof navigator === "undefined" ? "en-US" : navigator.language;
+  const locale = "it-IT";
   const workweek = explicitWorkweek ?? PROFILE_WORKWEEK;
-  const workweekProvenance = explicitWorkweek === undefined ? "Work Profile default" : "Current task override";
+  const workweekProvenance = explicitWorkweek === undefined ? "Valore predefinito dal profilo" : "Valore specifico per questa attività";
 
   const resultText = useMemo(() => {
     if (result === null) return "";
     if (result.mode === "between") {
-      return `${result.businessDays} business day${Math.abs(result.businessDays) === 1 ? "" : "s"}`;
+      return `${result.businessDays} ${Math.abs(result.businessDays) === 1 ? "giorno lavorativo" : "giorni lavorativi"}`;
     }
     return formatResultDate(result.resultDate, locale);
   }, [result, locale]);
@@ -86,8 +86,8 @@ export function BusinessDayTool() {
     if (!run.ok) {
       setError(
         run.code === "INVALID_INPUT"
-          ? "Check the dates, workweek, and number of business days."
-          : run.message,
+          ? "Controlla le date, la settimana lavorativa e il numero di giorni lavorativi."
+          : "Impossibile completare il calcolo. Controlla i valori inseriti.",
       );
       return;
     }
@@ -110,7 +110,7 @@ export function BusinessDayTool() {
     <div class="tool-operation">
       <form onSubmit={submit} noValidate>
         <fieldset class="segmented">
-          <legend>Calculation</legend>
+          <legend>Calcolo</legend>
           <label>
             <input
               type="radio"
@@ -119,7 +119,7 @@ export function BusinessDayTool() {
               checked={mode === "add"}
               onChange={() => setMode("add")}
             />
-            Add business days
+            Aggiungi giorni lavorativi
           </label>
           <label>
             <input
@@ -129,13 +129,13 @@ export function BusinessDayTool() {
               checked={mode === "between"}
               onChange={() => setMode("between")}
             />
-            Count between dates
+            Conta tra due date
           </label>
         </fieldset>
 
         <div class="field-grid">
           <label class="field">
-            <span>Start date</span>
+            <span>Data iniziale</span>
             <input
               required
               type="date"
@@ -143,12 +143,12 @@ export function BusinessDayTool() {
               onInput={(event) => setStartDate(event.currentTarget.value)}
               aria-describedby="start-help"
             />
-            <small id="start-help">The start date itself is not counted.</small>
+            <small id="start-help">La data iniziale non viene conteggiata.</small>
           </label>
 
           {mode === "add" ? (
             <label class="field">
-              <span>Business days to add</span>
+              <span>Giorni lavorativi da aggiungere</span>
               <input
                 required
                 type="number"
@@ -159,7 +159,7 @@ export function BusinessDayTool() {
             </label>
           ) : (
             <label class="field">
-              <span>End date</span>
+              <span>Data finale</span>
               <input
                 required
                 type="date"
@@ -172,7 +172,7 @@ export function BusinessDayTool() {
 
         <fieldset class="workweek-fieldset">
           <legend>
-            Workweek <span class="provenance">{workweekProvenance}</span>
+            Settimana lavorativa <span class="provenance">{workweekProvenance}</span>
           </legend>
           <div class="weekday-row">
             {DAY_LABELS.map(({ code, label }) => (
@@ -192,12 +192,12 @@ export function BusinessDayTool() {
             disabled={explicitWorkweek === undefined}
             onClick={() => setExplicitWorkweek(undefined)}
           >
-            Use Work Profile default
+            Usa il valore predefinito del profilo
           </button>
         </fieldset>
 
         <label class="field">
-          <span>Excluded dates <em>optional</em></span>
+          <span>Date escluse <em>facoltative</em></span>
           <textarea
             rows={3}
             value={excludedDates}
@@ -205,7 +205,7 @@ export function BusinessDayTool() {
             placeholder="2026-12-25, 2026-12-31"
             aria-describedby="excluded-help"
           />
-          <small id="excluded-help">Comma or line separated. No holiday service is queried.</small>
+          <small id="excluded-help">Separa le date con virgole o nuove righe. Non viene interrogato alcun servizio esterno di festività.</small>
         </label>
 
         {error !== "" && (
@@ -215,7 +215,7 @@ export function BusinessDayTool() {
         )}
 
         <div class="actions">
-          <button class="primary" type="submit">Calculate</button>
+          <button class="primary" type="submit">Calcola</button>
           <button type="button" onClick={reset}>Reimposta</button>
         </div>
       </form>
@@ -223,15 +223,15 @@ export function BusinessDayTool() {
       <section class="result-panel gutter" data-state={gutterState} aria-live="polite" aria-atomic="true">
         <p class="gutter-label eyebrow">Risultato</p>
         {result === null ? (
-          <p class="result-placeholder">Your result appears here.</p>
+          <p class="result-placeholder">Il risultato apparirà qui.</p>
         ) : (
           <>
             <PreviousValue value={resultText} />
             {result.mode === "add" && <code>{result.resultDate}</code>}
             <dl class="assumptions">
-              <div><dt>Workweek</dt><dd>{result.assumptions.workweek.join(", ")}</dd></div>
-              <div><dt>Excluded dates</dt><dd>{result.assumptions.excludedDates.length || "None"}</dd></div>
-              <div><dt>Boundary</dt><dd>Start excluded · end included</dd></div>
+              <div><dt>Settimana lavorativa</dt><dd>{result.assumptions.workweek.map((day) => DAY_LABELS.find(({ code }) => code === day)?.label ?? day).join(", ")}</dd></div>
+              <div><dt>Date escluse</dt><dd>{result.assumptions.excludedDates.length || "Nessuna"}</dd></div>
+              <div><dt>Estremi</dt><dd>Data iniziale esclusa · data finale inclusa</dd></div>
             </dl>
           </>
         )}

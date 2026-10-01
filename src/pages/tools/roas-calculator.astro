@@ -1,12 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { RoasCalculatorTool } from "../../components/tools/RoasCalculatorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="ROAS Calculator" description="Calculate return on ad spend with exact local decimal arithmetic.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>ROAS Calculator</h1><p class="lede">Compare revenue to spend with an explicit formula and final-only rounding.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Campaign figures are not uploaded.</span></div></header>
-    <RoasCalculatorTool client:load />
-    <section class="method-card"><h2>Formula</h2><ul><li>ROAS = revenue ÷ spend.</li><li>ROAS percent = ROAS × 100.</li><li>Zero spend is an explicit undefined denominator; negative figures are rejected.</li><li>Arithmetic uses exact rational decimals and rounds only the final display value half-up.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="roas-calculator">
+  <RoasCalculatorTool client:load />
+</ItalianToolPage>

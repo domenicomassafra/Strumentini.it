@@ -1,8 +1,8 @@
 ---
-import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ZipContentsInspectorTool } from "../../components/tools/file-privacy/ZipContentsInspectorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<FilePrivacyPage title="ZIP Contents Inspector" description="Read a ZIP central directory and inspect entry names, sizes, methods, and risk flags." methodTitle="Bounded ZIP directory inspection" methodItems={["The tool reads the ZIP central directory without decompressing entry contents.", "Absolute paths, parent-directory segments, encryption, and bounds errors are surfaced.", "A valid directory is not a guarantee that every compressed entry is safe."]}>
+
+<ItalianToolPage toolId="zip-contents-inspector">
   <ZipContentsInspectorTool client:load />
-</FilePrivacyPage>
+</ItalianToolPage>

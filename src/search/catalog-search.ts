@@ -5,12 +5,13 @@ import type {
   SearchTier,
   SearchToolMetadata,
 } from "./types";
+import { categoryLabelIt, inputTypeLabelIt, tagLabelIt } from "../i18n/it/taxonomy";
 
 const normalize = (value: string): string => value
   .normalize("NFKD")
   .replace(/[\u0300-\u036f]/gu, "")
-  .toLocaleLowerCase("en")
-  .replace(/[^a-z0-9]+/gu, " ")
+  .toLocaleLowerCase("it-IT")
+  .replace(/[^\p{L}\p{N}]+/gu, " ")
   .trim();
 
 const normalizedList = (values: readonly string[] | undefined): string[] =>
@@ -24,10 +25,10 @@ export function createSearchIndex(tools: readonly SearchToolMetadata[]): readonl
       summary: normalize(tool.summary),
       aliases: normalizedList(tool.aliases),
       jobs: normalizedList(tool.jobs),
-      category: normalize(tool.category),
-      inputTypes: normalizedList(tool.inputTypes),
-      packTags: normalizedList(tool.packTags),
-      roleTags: normalizedList(tool.roleTags),
+      category: normalize(`${tool.category} ${categoryLabelIt(tool.category)}`),
+      inputTypes: tool.inputTypes.map((value) => normalize(`${value} ${inputTypeLabelIt(value)}`)),
+      packTags: [...new Set((tool.packTags ?? []).flatMap((value) => [normalize(value), normalize(tagLabelIt(value))]))],
+      roleTags: [...new Set((tool.roleTags ?? []).flatMap((value) => [normalize(value), normalize(tagLabelIt(value))]))],
       runtime: [normalize(tool.runtime.location), normalize(tool.runtime.network)],
       all: "",
     };
@@ -57,6 +58,7 @@ export function createSearchIndex(tools: readonly SearchToolMetadata[]): readonl
       runtime: { ...tool.runtime },
       ...(tool.packTags === undefined ? {} : { packTags: [...tool.packTags] }),
       ...(tool.roleTags === undefined ? {} : { roleTags: [...tool.roleTags] }),
+      ...(tool.quality === undefined ? {} : { quality: tool.quality }),
       normalized,
     } satisfies SearchIndexEntry;
   });
@@ -149,7 +151,7 @@ export function searchCatalog(
       const relevance = matchScore(entry, query, tokens);
       if (query !== "" && relevance === 0) return null;
       const tier = classifyTier(entry, query, tokens, context);
-      const bucket = installed.has(entry.id) ? "Your Tools" : recent.has(entry.id) ? "Recent" : "Library";
+      const bucket = installed.has(entry.id) ? "I tuoi strumenti" : recent.has(entry.id) ? "Recenti" : "Libreria";
       return { tool: entry, tier, bucket, score: tierWeight[tier] + relevance };
     })
     .filter((hit): hit is RankedToolHit => hit !== null)

@@ -1,12 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CpaCpcCpmCalculatorTool } from "../../components/tools/CpaCpcCpmCalculatorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="CPA / CPC / CPM Calculator" description="Calculate CPA, CPC, or CPM with explicit denominators and formulas locally.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>CPA / CPC / CPM Calculator</h1><p class="lede">Keep the denominator visible while comparing campaign cost metrics.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Figures are processed in the browser.</span></div></header>
-    <CpaCpcCpmCalculatorTool client:load />
-    <section class="method-card"><h2>Formulas</h2><ul><li>CPA = spend ÷ conversions.</li><li>CPC = spend ÷ clicks.</li><li>CPM = spend ÷ impressions × 1,000.</li><li>Zero denominators and negative values are explicit errors; no intermediate rounding is applied.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="cpa-cpc-cpm-calculator">
+  <CpaCpcCpmCalculatorTool client:load />
+</ItalianToolPage>

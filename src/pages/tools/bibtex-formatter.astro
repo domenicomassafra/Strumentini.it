@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { BibtexFormatterTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="BibTeX Formatter" description="Parse and canonically format BibTeX entries locally.">
+
+<ItalianToolPage toolId="bibtex-formatter">
   <BibtexFormatterTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

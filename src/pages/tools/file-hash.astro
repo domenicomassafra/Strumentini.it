@@ -1,36 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { FileHashTool } from "../../components/tools/file-hash/FileHashTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout
-  title="File Hash / Checksum Verifier"
-  description="Calculate and verify a SHA-256 checksum locally without uploading your file."
->
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Files</nav>
-      <p class="eyebrow">Files</p>
-      <h1>File Hash / Checksum Verifier</h1>
-      <p class="lede">Calculate a SHA-256 digest for any file, or compare it with an expected checksum.</p>
-      <div class="trust-strip" role="note">
-        <strong>Runs on this device.</strong>
-        <span>The file, filename and hash are not uploaded or sent to analytics.</span>
-      </div>
-    </header>
 
-    <FileHashTool client:load />
-
-    <section class="method-card" aria-labelledby="hash-method-title">
-      <p class="eyebrow">Method</p>
-      <h2 id="hash-method-title">Bounded local hashing</h2>
-      <ul>
-        <li>SHA-256 is the only supported algorithm in this Gold scope.</li>
-        <li>Files are read incrementally in bounded chunks; large files are not fully buffered.</li>
-        <li>The hashing implementation is lazy-loaded inside a local worker when you start.</li>
-        <li>Expected checksums must be exactly 64 hexadecimal characters; only case and surrounding whitespace are normalized.</li>
-        <li>Cancelling terminates the worker and cannot produce a successful result afterward.</li>
-      </ul>
-    </section>
-  </article>
-</BaseLayout>
+<ItalianToolPage toolId="file-hash">
+  <FileHashTool client:load />
+</ItalianToolPage>

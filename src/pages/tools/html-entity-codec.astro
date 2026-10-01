@@ -1,13 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { HtmlEntityCodecTool } from "../../components/tools/HtmlEntityCodecTool";
-import "../../components/tools/tool-surface.css";
-const title = "HTML Entity Encode & Decode";
 ---
-<BaseLayout title={title} description="Encode and decode HTML character references as text locally.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Encode and decode HTML character references as text locally.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Decoded text is not inserted as HTML.</span></div></header>
-    <HtmlEntityCodecTool client:load />
-    <section class="method-card"><p class="eyebrow">Method</p><h2>Text conversion, not sanitization</h2><p>Named and numeric references are converted to plain text. This tool does not claim to make arbitrary HTML safe for a browser sink.</p></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="html-entity-codec">
+  <HtmlEntityCodecTool client:load />
+</ItalianToolPage>

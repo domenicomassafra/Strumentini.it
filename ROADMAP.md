@@ -1,43 +1,54 @@
 # ROADMAP
 
-Current stage: product research and validation.
+Current stage: **real implementation hardening and catalog certification**.
 
-## P0 — prove the shape
+Checkpoint 2026-10-01: 200 tools exist, 99 are Gold/release-eligible, 1 is Partial, 100 are implemented but intentionally still unverified. The full automated suite is green (331/331). Public-facing copy is Italian-first. The visual redesign is deliberately deferred until the backend/content layer is stronger.
 
-- deepen direct/adjacent competitor map, especially SolveKit / ToopTools / smarterfaster / Raycast;
-- identify the 20–30 highest-value utility jobs for independent knowledge workers;
-- test whether onboarding improves discovery;
-- test whether shared profile defaults save real time;
-- decide anonymous/local mode plus optional sync model;
-- define smallest credible starter pack.
-- complete StrumentiUtili.it brand rollout across product, repository, deployment metadata, and public discovery surfaces.
-- define and validate the Tool Factory quality contract before scaling catalog implementation.
-- classify the 200-candidate catalog by demand, duplication, maintenance class and test oracle.
-- keep full-free as the default business hypothesis; test advertising only after meaningful traffic exists.
+## P0 — close the current Italian/backend tranche
 
+- keep the 200/200 Italian public-copy gate mandatory in Tool Factory generation;
+- keep shell, onboarding, Workbench, tool forms, results and error states free of accidental English UI copy;
+- keep human naming, semantic icons, visible categories and quality status centralized rather than reimplemented per component;
+- keep `Verificato` tied to actual Gold eligibility; never use the visual badge as a marketing-only label;
+- keep browser route smoke and representative operation smoke as acceptance evidence when changing shared UI/runtime layers;
+- preserve protocol/standard identifiers only where translating them would be technically incorrect (for example JSON, CSV, JWT, UUID, Open Graph);
+- keep `npm test`, `npm run check`, `npm run build`, catalog generation and certification checks green;
+- commit the current tranche only after generated catalog and certification receipts are deterministic and current;
+- keep `image-resize` Partial until genuine physical-device evidence exists; never infer physical Safari/Android evidence from desktop or emulation.
 
-## P1 — interaction prototype
+## P1 — make the 149 unverified tools genuinely trustworthy
 
-Only after P0 evidence is strong:
-- onboarding flow;
-- generated Your Tools workspace;
-- add/remove pack flow;
-- command palette;
-- profile/defaults model;
-- 8–12 deterministic sample tools.
+- work family by family rather than promoting tools in bulk;
+- add independent fixtures/oracles for each family before Gold certification;
+- exercise malformed inputs, limits, deterministic edge cases and privacy/network contracts;
+- verify that displayed result copy is Italian without altering machine-readable standards output;
+- add browser acceptance where the tool depends on browser APIs, files, images, PDF, canvas, clipboard or downloads;
+- strengthen reference-backed tools with explicit source provenance, freshness rules and fail-closed behavior;
+- prioritize broadly useful jobs instead of increasing raw catalog count beyond 200.
 
-## P2 — technical shell
+## P2 — deepen the product backend and discovery model
 
-Only after interaction model survives testing:
-- tool manifest/contract;
-- local-first runtime;
-- offline/static shell;
-- optional auth + tiny config sync;
-- performance/bundle budgets;
-- privacy model.
+- improve search ranking around tasks, accepted inputs, categories, professional contexts and handoffs;
+- improve shared Profile defaults and typed handoff contracts between compatible tools;
+- make catalog metadata and result schemas useful to both the UI and future programmatic/agent consumers;
+- expand deterministic Italian reference data where it creates real utility, with versioning and reproducible updates;
+- keep local-first execution as the default and require an explicit contract for every networked/reference-backed capability;
+- keep configuration portability, privacy boundaries, performance budgets and lazy loading covered by tests.
+
+## P3 — redesign UI/UX after the backend is stable
+
+- redesign the visual system rather than polishing the current shell incrementally;
+- validate home/Workbench information hierarchy, Library discovery and mobile interaction with the mature catalog;
+- keep the product focused on finding and completing a task quickly, not on showing a wall of 200 cards;
+- preserve the Italian-first content system during the redesign instead of reintroducing per-component copy.
+
+## P4 — release and distribution
+
+- rerun full release validation on the final committed tree;
+- verify production deployment, rollback evidence, canonical URLs, sitemap/robots and analytics/privacy behavior;
+- only claim catalog size using the distinction between implemented and Gold-certified tools;
+- evaluate optional sync/auth and monetization only when they solve a demonstrated user need rather than increasing infrastructure by default.
 
 ## Stop rules
 
-Pause or narrow if users prefer bookmarks/search over a persistent workspace, onboarding does not beat manual category browsing, shared defaults save negligible time, a direct incumbent already solves the combined problem, maintenance grows disproportionately, or server-side/LLM use becomes the normal path.
-
-Do not scale raw tool count if Gold-quality percentage falls, regressions grow, initial bundle size grows with catalog size, or new pages exist mainly as keyword variants.
+Do not mark a tool Gold because it merely renders or has a route. Do not replace missing evidence with assumptions. Do not grow catalog size if regression rate, maintenance cost, initial bundle size or evidence debt rises faster than user value. Keep server-side/LLM dependencies exceptional rather than the normal execution path.

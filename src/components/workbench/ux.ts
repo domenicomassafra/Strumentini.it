@@ -1,4 +1,5 @@
 import type { ToolSummary } from "../../catalog/manifest";
+import { categoryLabelIt, inputTypeLabelIt } from "../../i18n/it/taxonomy";
 import type { WorkbenchState } from "../../workbench/state";
 
 export interface WorkbenchSuggestion {
@@ -20,16 +21,12 @@ const RELATIVE_TIME_UNITS: ReadonlyArray<[Intl.RelativeTimeFormatUnit, number]> 
 export function formatRecentActivity(at: string, now: number | Date = new Date()): string {
   const timestamp = Date.parse(at);
   const reference = now instanceof Date ? now.getTime() : now;
-  if (!Number.isFinite(timestamp) || !Number.isFinite(reference)) return "time unavailable";
-  const formatter = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+  if (!Number.isFinite(timestamp) || !Number.isFinite(reference)) return "orario non disponibile";
+  const formatter = new Intl.RelativeTimeFormat("it", { numeric: "auto" });
   const difference = timestamp - reference;
   const absoluteDifference = Math.abs(difference);
   const unit = RELATIVE_TIME_UNITS.find(([, milliseconds]) => absoluteDifference >= milliseconds) ?? ["second", 1000];
   return formatter.format(Math.round(difference / unit[1]), unit[0]);
-}
-
-function readableLabel(value: string): string {
-  return value.replaceAll("-", " ").replace(/\b\w/gu, (character) => character.toUpperCase());
 }
 
 function sharedInputType(source: ToolSummary, tool: ToolSummary): string | undefined {
@@ -51,11 +48,11 @@ function suggestionForTool(
   installed: readonly ToolSummary[],
   recent: ReadonlySet<string>,
 ): { reason: string; score: number } | undefined {
-  if (recent.has(tool.id)) return { reason: "You used this tool recently.", score: 50 };
+  if (recent.has(tool.id)) return { reason: "Hai usato questo strumento di recente.", score: 50 };
 
   const handoffSource = handoffSourceFor(tool, installed);
   if (handoffSource !== undefined) {
-    return { reason: handoffSource.name + " can pass a result directly to this tool.", score: 40 };
+    return { reason: handoffSource.name + " può passare un risultato direttamente a questo strumento.", score: 40 };
   }
 
   const profileKeys = new Set(tool.profileFields.filter(({ sensitive }) => sensitive !== true).map(({ key }) => key));
@@ -63,18 +60,18 @@ function suggestionForTool(
     source.profileFields.some(({ key, sensitive }) => sensitive !== true && profileKeys.has(key)),
   );
   if (profileSource !== undefined) {
-    return { reason: "Uses the same Work Profile defaults as " + profileSource.name + ".", score: 30 };
+    return { reason: "Usa gli stessi valori predefiniti del Profilo di lavoro di " + profileSource.name + ".", score: 30 };
   }
 
   const categorySource = installed.find((source) => source.category === tool.category);
   if (categorySource !== undefined) {
-    return { reason: "Shares " + readableLabel(tool.category) + " tasks with " + categorySource.name + ".", score: 20 };
+    return { reason: "Condivide attività della categoria " + categoryLabelIt(tool.category) + " con " + categorySource.name + ".", score: 20 };
   }
 
   for (const source of installed) {
     const input = sharedInputType(source, tool);
     if (input !== undefined) {
-      return { reason: "Handles " + readableLabel(input) + " inputs like " + source.name + ".", score: 10 };
+      return { reason: "Gestisce ingressi di tipo " + inputTypeLabelIt(input) + " come " + source.name + ".", score: 10 };
     }
   }
   return undefined;

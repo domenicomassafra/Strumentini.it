@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ColumnTypeProfilerTool } from "../../components/tools/column-type-profiler/ColumnTypeProfilerTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Column Type Profiler" description="Infer and report local CSV column value types.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>Column Type Profiler</h1>
-      <p class="lede">Infer empty, string, number, boolean, and date cells and flag mixed columns.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Type inference is local and does not inspect remote sources.</span></div>
-    </header>
-    <ColumnTypeProfilerTool client:load />
-    <section class="method-card"><h2>Type contract</h2><ul><li>Numeric inference uses finite decimal literals; dates use explicit ISO-like forms.</li><li>Mixed columns remain visible instead of being coerced.</li><li>No values are rewritten or persisted.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="column-type-profiler">
+  <ColumnTypeProfilerTool client:load />
+</ItalianToolPage>

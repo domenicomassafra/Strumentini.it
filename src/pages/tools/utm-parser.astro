@@ -1,12 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { UtmParserTool } from "../../components/tools/UtmParserTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="UTM Parser" description="Inspect UTM fields and repeated campaign parameters locally.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>UTM Parser</h1><p class="lede">Read campaign fields while preserving repeated parameters and the original URL order.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your URL is parsed in memory and is not uploaded.</span></div></header>
-    <UtmParserTool client:load />
-    <section class="method-card"><h2>Parser rules</h2><ul><li>Recognized keys are matched case-insensitively and exposed in their original order.</li><li>Only HTTP(S) URLs are accepted; active and unknown schemes are rejected.</li><li>Credentials are reported as a warning and are removed from displayed output.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="utm-parser">
+  <UtmParserTool client:load />
+</ItalianToolPage>

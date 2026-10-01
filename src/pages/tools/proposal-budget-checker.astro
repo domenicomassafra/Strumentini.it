@@ -1,23 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ProposalBudgetCheckerTool } from "../../components/tools/business-math/ProposalBudgetCheckerTool";
-import { proposalBudgetCheckerConfig } from "../../components/tools/business-math/configs";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title={proposalBudgetCheckerConfig.title} description={proposalBudgetCheckerConfig.lede}>
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
-      <p class="eyebrow">Business math</p>
-      <h1>{proposalBudgetCheckerConfig.title}</h1>
-      <p class="lede">{proposalBudgetCheckerConfig.lede}</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Proposal figures are not uploaded.</span></div>
-    </header>
-    <ProposalBudgetCheckerTool client:load />
-    <section class="method-card" aria-labelledby="proposal-method">
-      <p class="eyebrow">Rules &amp; assumptions</p>
-      <h2 id="proposal-method">A quote needs a cost basis</h2>
-      <ul><li>Total cost = direct costs + labor cost + contingency.</li><li>Required price solves the quoted target margin and shows the price gap.</li></ul>
-    </section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="proposal-budget-checker">
+  <ProposalBudgetCheckerTool client:load />
+</ItalianToolPage>

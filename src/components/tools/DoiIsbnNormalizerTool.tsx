@@ -15,7 +15,7 @@ export function DoiIsbnNormalizerTool() {
     const run = await toolRuntime.run("doi-isbn-normalizer", { kind, value });
     if (!run.ok) {
       setResult(null);
-      setError(run.message);
+      setError("Identificatore non valido. Controlla formato e cifra di controllo.");
       return;
     }
     setResult(run.value as DoiIsbnOutput);
@@ -39,7 +39,7 @@ export function DoiIsbnNormalizerTool() {
     <div class="tool-operation">
       <form onSubmit={submit}>
         <fieldset class="segmented">
-          <legend>Identifier type</legend>
+          <legend>Tipo di identificatore</legend>
           <label><input type="radio" name="kind" checked={kind === "doi"} onChange={() => changeKind("doi")} /> DOI</label>
           <label><input type="radio" name="kind" checked={kind === "isbn"} onChange={() => changeKind("isbn")} /> ISBN</label>
         </fieldset>
@@ -56,35 +56,35 @@ export function DoiIsbnNormalizerTool() {
         </label>
         {error !== "" && <p class="error" role="alert">{error}</p>}
         <div class="actions">
-          <button class="primary" type="submit">Normalize &amp; validate</button>
+          <button class="primary" type="submit">Normalizza e valida</button>
           <button type="button" onClick={reset}>Reimposta</button>
         </div>
       </form>
 
       <section class="result-panel gutter" data-state={gutterState} aria-live="polite">
-        <p class="eyebrow">Result</p>
-        {result === null ? <p class="result-placeholder">The normalized identifier appears here.</p> : result.valid ? (
+        <p class="eyebrow">Risultato</p>
+        {result === null ? <p class="result-placeholder">L'identificatore normalizzato apparirà qui.</p> : result.valid ? (
           result.kind === "DOI" ? (
             <>
-              <strong class="gutter-value">Valid DOI shape</strong>
+              <strong class="gutter-value">Formato DOI valido</strong>
               <dl class="assumptions">
-                <div><dt>Normalized</dt><dd><code>{result.normalized}</code></dd></div>
+                <div><dt>Normalizzato</dt><dd><code>{result.normalized}</code></dd></div>
                 <div><dt>Resolver URL</dt><dd><code>{result.url}</code></dd></div>
               </dl>
             </>
           ) : (
             <>
-              <strong class="gutter-value">Valid {result.kind}</strong>
+              <strong class="gutter-value">{result.kind} valido</strong>
               <dl class="assumptions">
-                <div><dt>Digits</dt><dd><code>{result.digits}</code></dd></div>
+                <div><dt>Cifre</dt><dd><code>{result.digits}</code></dd></div>
                 {result.kind === "ISBN-10" && <div><dt>ISBN-13</dt><dd><code>{result.isbn13}</code></dd></div>}
               </dl>
             </>
           )
         ) : (
           <>
-            <strong class="gutter-value">Invalid</strong>
-            <p>{result.reason}</p>
+            <strong class="gutter-value">Non valido</strong>
+            <p>Il valore non rispetta le regole dell'identificatore selezionato.</p>
           </>
         )}
       </section>

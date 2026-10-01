@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "05a86960a6782527a089fb4847e24aaeba02c54f",
-  "sourceFingerprint": "282186e8df028409fe58d67e3c7b078165a8b333ae3b10e5ea1a7320990fcad1",
+  "revision": "342497beba30a81f60c0833982412eada75edf94",
+  "sourceFingerprint": "f914e4215a13c46bda81becf414024ebb3f0a9f800cb85ed7525707a3f2a8c3c",
   "toolId": "yaml-formatter",
   "runtime": {
     "location": "LOCAL",
@@ -39,14 +39,14 @@
   "identities": {
     "manifestSha256": "5405799b8888a5204b0f24e61b6538bb47215409c39c76bc927f5736913120c0",
     "engineIndexSha256": "617ab6a3c652ef2daae8d33f02fe62f67c1d81e27e6f66ccd2812949ecb3241f",
-    "structuredDataSha256": "43d1e615c912ff704a41b1d1a5b4f4712a19f5dd2ee61945c03d03a6cba26d6e",
-    "encodingCryptoSha256": "683856912a8f21dd0e523e15886a4c510414dbec514483989cb3364ef1cc964c",
-    "webReferenceSha256": "c60c54fdad5e6820949f9491ce146cdff4d50b1d79dd255bf11f8ce5233134b4",
-    "fixtureIndexSha256": "9b749144a7d3af2e7c27c42f3c6b1252ca3338887794e16c31e27b5248609e36",
+    "structuredDataSha256": "09d1b45697c9353cd4d8ce894c7fa4dd115373cf53d3ba668ab0a9d7864f0ed9",
+    "encodingCryptoSha256": "3abe5ddc4829df00af12141fed527102fd026e56e6a89c820f830721f035d736",
+    "webReferenceSha256": "23616903506748c5383a3a150f7ec8073b56a99ff84452187e5dc4e37a0d8bfc",
+    "fixtureIndexSha256": "a0252757480079036e4d41f92eabb84180aa102fff081f27f2f8d6686f590be6",
     "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
     "browserAcceptanceSha256": "c9b7326a5c025651c2ceca3c43083d2451b7b1d43525f81979e4f0c3d44e273f",
-    "unitTestsSha256": "7106e0ffef4580c8689e812fbf5d0a955b0e9f0b687a8c74232e35e876f10ede",
+    "unitTestsSha256": "98dc6391b3185a038bf019996e0cac4b705e4a1895f755b458d1322b6aa7d833",
     "fixture:yaml-core:sha256": "9cff2daacbdee29b4c3ca9b857a99fc50aed17f68a68c06822c4262c72e7948b",
-    "fixture:developer-web-gold:sha256": "c3e9c5dbdd301f3a726b9e11c04f42e45b2fabc5d94206f0c6c69168b9a9ae65"
+    "fixture:developer-web-gold:sha256": "5d9fdd3746a9cba8783c65a89e44e7f720e5acf6192f7cc3932e71451f314a82"
   }
 }

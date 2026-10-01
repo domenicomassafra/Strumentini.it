@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CalendarDateListGeneratorTool } from "../../components/tools/CalendarDateListGeneratorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Calendar Date-List Generator" description="Create an inclusive list of dates at a fixed interval locally.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
-      <p class="eyebrow">Date &amp; time</p>
-      <h1>Calendar Date-List Generator</h1>
-      <p class="lede">Create an inclusive, deterministic date series for a range and a fixed day step.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No calendar account is connected.</span></div>
-    </header>
-    <CalendarDateListGeneratorTool client:load />
-    <section class="method-card" aria-labelledby="calendar-list-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="calendar-list-method">Date ranges</h2><ul><li>The start and end dates are inclusive when reachable by the step.</li><li>Reversed ranges are supported with a negative direction.</li><li>Lists are bounded to 10,000 entries.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="calendar-date-list-generator">
+  <CalendarDateListGeneratorTool client:load />
+</ItalianToolPage>

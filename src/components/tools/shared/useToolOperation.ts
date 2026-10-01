@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "preact/hooks";
 import type { ToolRunResult } from "../../../runtime/types";
+import { friendlyToolErrorIt } from "../../../i18n/it/errors";
 
 export type ToolOperationStatus = "idle" | "running" | "success" | "error" | "cancelled";
 
@@ -56,7 +57,7 @@ export function settleToolOperation<T>(
   return {
     status: "error",
     result: null,
-    error: options.formatError?.(result) ?? result.message,
+    error: options.formatError?.(result) ?? friendlyToolErrorIt(`${result.code}:${result.message}`),
   };
 }
 
@@ -101,7 +102,7 @@ export function useToolOperation<T>(
       setState({
         status: "error",
         result: null,
-        error: formatThrownError?.(error) ?? (error instanceof Error ? error.message : "Operazione non riuscita."),
+        error: formatThrownError?.(error) ?? friendlyToolErrorIt(error),
       });
     } finally {
       if (controllerRef.current === controller) controllerRef.current = null;

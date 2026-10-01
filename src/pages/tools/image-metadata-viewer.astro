@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ImageMetadataViewerTool } from "../../components/tools/image-visual/ImageMetadataViewerTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Image Metadata Viewer" description="Inspect bounded local image headers, dimensions, signatures, and file size without decoding or uploading the file.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Image Metadata Viewer</h1>
-      <p class="lede">Inspect bounded local image headers, dimensions, signatures, and file size without decoding or uploading the file.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <ImageMetadataViewerTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Metadata scope</h2><ul><li>Reads bounded local image headers, dimensions, signatures, and file size.</li><li>Does not claim to reveal every metadata field or fully decode the image.</li><li>The selected file is not uploaded.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="image-metadata-viewer">
+  <ImageMetadataViewerTool client:load />
+</ItalianToolPage>

@@ -176,7 +176,7 @@ export function decodeHtmlEntities(input: string): string {
 
 export function htmlEntityOperation(input: string, mode: string, numeric = false): DeveloperWebResult {
   const value = mode === "decode" || mode === "from-entities" ? decodeHtmlEntities(input) : encodeHtmlEntities(input, numeric);
-  return { valid: true, mode, value, warning: "Entity decoding is text conversion, not HTML sanitization." } as DeveloperWebResult;
+  return { valid: true, mode, value, warning: "La decodifica delle entità converte testo: non esegue una sanificazione HTML." } as DeveloperWebResult;
 }
 
 export type DeveloperHashAlgorithm = "SHA-256" | "SHA-384" | "SHA-512";
@@ -359,8 +359,8 @@ export function inspectJwt(token: string): DeveloperWebResult {
     unsecured: algorithm.toLowerCase() === "none" && signature === "",
     claimTimestamps: timestamps,
     warnings: [
-      "Inspection does not verify a signature, issuer, audience, or trust decision.",
-      ...(algorithm.toLowerCase() === "none" ? ["Unsecured JWT: the alg=none token is not integrity protected."] : []),
+      "L'analisi non verifica firma, emittente, destinatario né attendibilità del token.",
+      ...(algorithm.toLowerCase() === "none" ? ["JWT non protetto: il token con alg=none non garantisce l'integrità."] : []),
     ],
   } as DeveloperWebResult;
 }

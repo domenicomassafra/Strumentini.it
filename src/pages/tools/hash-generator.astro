@@ -1,13 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { HashGeneratorTool } from "../../components/tools/HashGeneratorTool";
-import "../../components/tools/tool-surface.css";
-const title = "Hash Generator";
 ---
-<BaseLayout title={title} description="Generate SHA-2 digests for UTF-8 text locally with Web Crypto.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Generate SHA-2 digests for UTF-8 text locally with Web Crypto.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Only the supplied text is hashed.</span></div></header>
-    <HashGeneratorTool client:load />
-    <section class="method-card"><p class="eyebrow">Method</p><h2>Web Crypto SHA-2</h2><p>SHA-256, SHA-384, and SHA-512 are calculated over the UTF-8 bytes and returned as lowercase hexadecimal.</p></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="hash-generator">
+  <HashGeneratorTool client:load />
+</ItalianToolPage>

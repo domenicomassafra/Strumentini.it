@@ -1,12 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { UrlComparisonTool } from "../../components/tools/UrlComparisonTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="URL Comparison" description="Compare two URLs locally with exact or semantic query handling.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Web operations</nav><p class="eyebrow">Web operations</p><h1>URL Comparison</h1><p class="lede">See exactly which URL components differ without sending either link to a server.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Both URLs stay in the local runtime.</span></div></header>
-    <UrlComparisonTool client:load />
-    <section class="method-card"><h2>Comparison modes</h2><ul><li>Semantic mode sorts query entries and ignores the fragment by default.</li><li>Exact mode compares the normalized serialized query order and fragment.</li><li>Credentials are redacted from results.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="url-comparison">
+  <UrlComparisonTool client:load />
+</ItalianToolPage>

@@ -1,8 +1,8 @@
 ---
-import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { FilenameSanitizerTool } from "../../components/tools/file-privacy/FilenameSanitizerTool";
-import "../../components/tools/tool-surface.css";
 ---
-<FilePrivacyPage title="Filename Sanitizer" description="Preview portable, safe names while preserving the original files." methodTitle="Preview-only naming" methodItems={["Path separators, control characters, reserved names, and traversal segments are removed or rejected.", "Collisions are reported instead of silently overwriting a name.", "No file-system rename is performed."]}>
+
+<ItalianToolPage toolId="filename-sanitizer">
   <FilenameSanitizerTool client:load />
-</FilePrivacyPage>
+</ItalianToolPage>

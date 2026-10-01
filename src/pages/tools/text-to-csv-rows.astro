@@ -1,8 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { TextToCsvRowsTool } from "../../components/tools/TextToCsvRowsTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Text to CSV Rows" description="Convert delimited text lines into escaped CSV rows locally.">
-  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Text to CSV Rows</h1><p class="lede">Create a bounded CSV preview from already-delimited text rows.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your text is not uploaded.</span></div></header><TextToCsvRowsTool client:load /><section class="method-card"><h2>CSV policy</h2><ul><li>Fields containing delimiters, quotes, or line breaks are escaped according to CSV quoting rules.</li><li>Headers are generated from the widest input row unless explicit headers are supplied to the module.</li><li>Malformed quoted input fails instead of silently repairing it.</li></ul></section></article>
-</BaseLayout>
+
+<ItalianToolPage toolId="text-to-csv-rows">
+  <TextToCsvRowsTool client:load />
+</ItalianToolPage>

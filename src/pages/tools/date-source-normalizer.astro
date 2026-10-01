@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { DateSourceNormalizerTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="Date Source Normalizer" description="Normalize supported research date spellings to ISO precision.">
+
+<ItalianToolPage toolId="date-source-normalizer">
   <DateSourceNormalizerTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

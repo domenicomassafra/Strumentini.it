@@ -9,11 +9,11 @@ import { RangeMark } from "./shared/StatusMark";
 const DEFAULT_HOURS = { start: "09:00", end: "17:00" } as const;
 
 function errorText(message: string): string {
-  if (message === "INVALID_TIMEZONE") return "Use valid IANA timezone names, for example Europe/Rome or America/New_York.";
-  if (message === "INVALID_LOCAL_TIME_GAP") return "A working-hours boundary falls in a DST gap. Choose an existing local time.";
-  if (message === "INVALID_LOCAL_TIME_OVERLAP") return "A working-hours boundary is ambiguous during the DST fallback. Choose an unambiguous boundary.";
-  if (message === "INVALID_WORKING_HOURS") return "Working hours must have a start before the end on the same local day.";
-  return "Check the date, timezones, and working hours.";
+  if (message === "INVALID_TIMEZONE") return "Usa nomi di fuso orario IANA validi, per esempio Europe/Rome o America/New_York.";
+  if (message === "INVALID_LOCAL_TIME_GAP") return "Un limite dell'orario di lavoro cade in un salto dell'ora legale. Scegli un'ora locale esistente.";
+  if (message === "INVALID_LOCAL_TIME_OVERLAP") return "Un limite dell'orario di lavoro è ambiguo durante il ritorno all'ora solare. Scegli un orario non ambiguo.";
+  if (message === "INVALID_WORKING_HOURS") return "L'orario di lavoro deve iniziare prima di terminare nello stesso giorno locale.";
+  return "Controlla data, fusi orari e orari di lavoro.";
 }
 
 export function TimezoneOverlapTool() {
@@ -72,43 +72,43 @@ export function TimezoneOverlapTool() {
     <div class="tool-operation">
       <form onSubmit={submit} noValidate>
         <label class="field">
-          <span>Date in your home timezone</span>
+          <span>Data nel tuo fuso orario</span>
           <input required type="date" value={date} onInput={(event) => setDate(event.currentTarget.value)} />
         </label>
         <div class="field-grid">
           <label class="field">
-            <span>Home timezone</span>
+            <span>Il tuo fuso orario</span>
             <input
               required
               value={homeTimeZone}
               onInput={(event) => setHomeTimeZoneOverride(event.currentTarget.value)}
               aria-describedby="home-zone-help"
             />
-            <small id="home-zone-help">{ready && homeTimeZoneOverride === undefined ? "Work Profile default" : "Current task override"}</small>
+            <small id="home-zone-help">{ready && homeTimeZoneOverride === undefined ? "Valore predefinito dal profilo" : "Valore specifico per questa attività"}</small>
             <button class="text-button" type="button" disabled={homeTimeZoneOverride === undefined} onClick={() => setHomeTimeZoneOverride(undefined)}>
-              Use Work Profile timezone
+              Usa il fuso del profilo
             </button>
           </label>
           <label class="field">
-            <span>Other timezone</span>
+            <span>Altro fuso orario</span>
             <input required value={otherTimeZone} onInput={(event) => setOtherTimeZone(event.currentTarget.value)} />
-            <small>IANA name, such as America/New_York.</small>
+            <small>Nome IANA, per esempio America/New_York.</small>
           </label>
         </div>
         <div class="field-grid">
           <fieldset>
-            <legend>Your working hours <span class="provenance">{homeHoursOverridden ? "Current task override" : "Tool default"}</span></legend>
+            <legend>I tuoi orari di lavoro <span class="provenance">{homeHoursOverridden ? "Valore specifico per questa attività" : "Valore predefinito dello strumento"}</span></legend>
             <div class="field-grid">
-              <label class="field"><span>Your start</span><input type="time" required value={homeStart} onInput={(event) => setHomeStartOverride(event.currentTarget.value)} /></label>
-              <label class="field"><span>Your end</span><input type="time" required value={homeEnd} onInput={(event) => setHomeEndOverride(event.currentTarget.value)} /></label>
+              <label class="field"><span>Inizio</span><input type="time" required value={homeStart} onInput={(event) => setHomeStartOverride(event.currentTarget.value)} /></label>
+              <label class="field"><span>Fine</span><input type="time" required value={homeEnd} onInput={(event) => setHomeEndOverride(event.currentTarget.value)} /></label>
             </div>
-            <button class="text-button" type="button" disabled={!homeHoursOverridden} onClick={() => { setHomeStartOverride(undefined); setHomeEndOverride(undefined); }}>Use 09:00–17:00 tool default</button>
+            <button class="text-button" type="button" disabled={!homeHoursOverridden} onClick={() => { setHomeStartOverride(undefined); setHomeEndOverride(undefined); }}>Usa l'orario predefinito 09:00–17:00</button>
           </fieldset>
           <fieldset>
-            <legend>Other working hours</legend>
+            <legend>Orari di lavoro dell'altro fuso</legend>
             <div class="field-grid">
-              <label class="field"><span>Other start</span><input type="time" required value={otherStart} onInput={(event) => setOtherStart(event.currentTarget.value)} /></label>
-              <label class="field"><span>Other end</span><input type="time" required value={otherEnd} onInput={(event) => setOtherEnd(event.currentTarget.value)} /></label>
+              <label class="field"><span>Inizio</span><input type="time" required value={otherStart} onInput={(event) => setOtherStart(event.currentTarget.value)} /></label>
+              <label class="field"><span>Fine</span><input type="time" required value={otherEnd} onInput={(event) => setOtherEnd(event.currentTarget.value)} /></label>
             </div>
           </fieldset>
         </div>

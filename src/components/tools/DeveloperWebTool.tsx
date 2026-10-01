@@ -10,6 +10,7 @@ import {
   useToolOperation,
 } from "./shared";
 import type { DeveloperWebToolId } from "../../engines/developer-web";
+import { TOOL_COPY_IT } from "../../i18n/it/tool-copy";
 import { gutterStateFor } from "./shared/ToolGutter";
 import { CONTROL, it } from "./shared/controlLabels";
 
@@ -23,6 +24,7 @@ interface FieldDefinition {
   readonly placeholder?: string;
   readonly rows?: number;
   readonly options?: readonly string[];
+  readonly optionLabels?: Readonly<Record<string, string>>;
   readonly required?: boolean;
 }
 
@@ -41,7 +43,7 @@ const area = (key: string, label: string, defaultValue = "", rows = 10): FieldDe
 const number = (key: string, label: string, defaultValue: string): FieldDefinition => ({ key, label, kind: "number", defaultValue, required: true });
 const select = (key: string, label: string, options: readonly string[], defaultValue: string): FieldDefinition => ({ key, label, kind: "select", defaultValue, options, required: true });
 
-export const DEVELOPER_WEB_CONFIGS: Readonly<Record<DeveloperWebToolId, DeveloperWebToolConfig>> = {
+const DEVELOPER_WEB_CONFIGS_RAW: Readonly<Record<DeveloperWebToolId, DeveloperWebToolConfig>> = {
   "json-formatter": { id: "json-formatter", title: "JSON Formatter & Validator", eyebrow: "JSON result", submitLabel: "Format JSON", placeholder: "Enter a JSON document.", fields: [area("text", "JSON", '{"name":"Ada","items":[1,true,null]}'), select("mode", "Operation", ["format", "validate"], "format"), number("indent", "Indent spaces", "2"), select("sortKeys", "Sort object keys", ["false", "true"], "false")] },
   "yaml-formatter": { id: "yaml-formatter", title: "YAML Formatter & Validator", eyebrow: "YAML result", submitLabel: "Format YAML", placeholder: "Enter a supported YAML document.", fields: [area("text", "YAML", "name: Ada\nitems:\n  - one\n  - two\n"), number("indent", "Indent spaces", "2")] },
   "toml-formatter": { id: "toml-formatter", title: "TOML Formatter & Validator", eyebrow: "TOML result", submitLabel: "Format TOML", placeholder: "Enter a supported TOML document.", fields: [area("text", "TOML", "name = \"Ada\"\nenabled = true\n", 10)] },
@@ -64,13 +66,209 @@ export const DEVELOPER_WEB_CONFIGS: Readonly<Record<DeveloperWebToolId, Develope
   "json-path-playground": { id: "json-path-playground", title: "JSON Path Playground", eyebrow: "Path matches", submitLabel: "Query JSON", placeholder: "Enter JSON and a bounded JSONPath expression.", fields: [area("json", "JSON", '{"users":[{"name":"Ada"},{"name":"Grace"}]}', 8), text("path", "JSONPath", "$.users[*].name")] },
 };
 
+const FIELD_LABEL_IT: Readonly<Record<string, string>> = {
+  text: "Testo",
+  mode: "Operazione",
+  indent: "Spazi di rientro",
+  sortKeys: "Ordina le chiavi",
+  direction: "Direzione",
+  set: "Parte dell'URL",
+  numeric: "Usa entità numeriche",
+  urlSafe: "Alfabeto",
+  token: "JWT",
+  count: "Quantità",
+  version: "Versione UUID",
+  uppercase: "Usa lettere maiuscole",
+  algorithm: "Algoritmo",
+  message: "Messaggio",
+  key: "Chiave",
+  pattern: "Espressione",
+  flags: "Opzioni",
+  replacement: "Sostituzione",
+  expression: "Espressione cron",
+  from: "Da (ISO UTC)",
+  value: "Valore",
+  unit: "Unità",
+  status: "Stato HTTP",
+  lookup: "Estensione o nome file",
+  bytes: "Firma esadecimale",
+  userAgent: "User-Agent",
+  query: "Parametri o URL",
+  baseUrl: "URL di base (facoltativo)",
+  setKey: "Chiave da impostare (facoltativa)",
+  setValue: "Valore da impostare (facoltativo)",
+  removeKey: "Chiave da rimuovere (facoltativa)",
+  sort: "Ordina le coppie",
+  json: "JSON",
+  path: "JSONPath",
+};
+
+const OPTION_LABEL_IT: Readonly<Record<string, string>> = {
+  format: "Formatta",
+  validate: "Valida",
+  "json-to-yaml": "Da JSON a YAML",
+  "yaml-to-json": "Da YAML a JSON",
+  encode: "Codifica",
+  decode: "Decodifica",
+  component: "Componente",
+  query: "Parametri",
+  path: "Percorso",
+  userinfo: "Credenziali utente",
+  false: "No",
+  true: "Sì",
+  standard: "Standard",
+  "url-safe": "Sicuro per URL",
+  seconds: "Secondi",
+  milliseconds: "Millisecondi",
+  "to-date": "Da timestamp a data",
+  "to-timestamp": "Da data a timestamp",
+  extension: "Estensione",
+  signature: "Firma",
+};
+
+const DEVELOPER_ACTION_IT: Readonly<Record<DeveloperWebToolId, readonly [eyebrow: string, submit: string]>> = {
+  "json-formatter": ["Risultato JSON", "Formatta JSON"],
+  "yaml-formatter": ["Risultato YAML", "Formatta YAML"],
+  "toml-formatter": ["Risultato TOML", "Formatta TOML"],
+  "json-yaml-converter": ["Valore convertito", "Converti"],
+  "url-codec": ["Valore codificato", "Converti"],
+  "html-entity-codec": ["Valore delle entità", "Converti entità"],
+  "base64-codec": ["Valore Base64", "Converti Base64"],
+  "jwt-inspector": ["Analisi JWT", "Analizza JWT"],
+  "uuid-generator": ["UUID generati", "Genera UUID"],
+  "hash-generator": ["Hash", "Calcola hash"],
+  "hmac-generator": ["Tag di autenticazione", "Genera HMAC"],
+  "regex-tester": ["Corrispondenze", "Prova espressione"],
+  "cron-explainer": ["Spiegazione pianificazione", "Spiega cron"],
+  "cron-next-run": ["Prossime esecuzioni UTC", "Calcola esecuzioni"],
+  "unix-timestamp": ["Data e ora UTC", "Converti timestamp"],
+  "http-status-reference": ["Significato dello stato", "Cerca stato"],
+  "mime-type-lookup": ["Indicazioni sul tipo MIME", "Cerca tipo"],
+  "user-agent-parser": ["Indicazioni descrittive", "Analizza User-Agent"],
+  "query-string-editor": ["Parametri modificati", "Modifica parametri"],
+  "json-path-playground": ["Corrispondenze del percorso", "Interroga JSON"],
+};
+
+function localizeDeveloperConfig(config: DeveloperWebToolConfig): DeveloperWebToolConfig {
+  const [eyebrow, submitLabel] = DEVELOPER_ACTION_IT[config.id];
+  return {
+    ...config,
+    title: TOOL_COPY_IT[config.id]?.name ?? config.id,
+    eyebrow,
+    submitLabel,
+    placeholder: "Inserisci i valori richiesti.",
+    fields: config.fields.map((field) => ({
+      ...field,
+      label: FIELD_LABEL_IT[field.key] ?? field.label,
+      ...(field.placeholder === undefined ? {} : { placeholder: "Inserisci un valore." }),
+      ...(field.options === undefined
+        ? {}
+        : { optionLabels: Object.fromEntries(field.options.map((option) => [option, OPTION_LABEL_IT[option] ?? option])) }),
+    })),
+  };
+}
+
+export const DEVELOPER_WEB_CONFIGS: Readonly<Record<DeveloperWebToolId, DeveloperWebToolConfig>> =
+  Object.fromEntries(
+    Object.entries(DEVELOPER_WEB_CONFIGS_RAW).map(([id, config]) => [id, localizeDeveloperConfig(config)]),
+  ) as Record<DeveloperWebToolId, DeveloperWebToolConfig>;
+
 function initialValues(config: DeveloperWebToolConfig): Record<string, string> {
   return Object.fromEntries(config.fields.map((field) => [field.key, field.defaultValue]));
 }
 
+const RESULT_KEY_IT: Readonly<Record<string, string>> = {
+  valid: "valido",
+  mode: "modalità",
+  set: "insieme",
+  value: "valore",
+  output: "risultato",
+  formatted: "formattato",
+  warning: "avviso",
+  warnings: "avvisi",
+  error: "errore",
+  code: "codice",
+  byteLength: "byte",
+  bytes: "valori_byte",
+  roundTrip: "conversione_reversibile",
+  algorithm: "algoritmo",
+  digestHex: "hash_esadecimale",
+  digestBase64: "hash_base64",
+  version: "versione",
+  count: "quantità",
+  uuids: "uuid",
+  randomness: "origine_casualità",
+  pattern: "espressione",
+  flags: "opzioni",
+  matches: "corrispondenze",
+  matchCount: "numero_corrispondenze",
+  replaced: "testo_sostituito",
+  global: "globale",
+  unicode: "unicode",
+  direction: "direzione",
+  duplicateKeys: "chiavi_duplicate",
+  engineVersion: "versione_motore",
+  status: "stato",
+  category: "categoria",
+  meaning: "significato",
+  extension: "estensione",
+  extensions: "estensioni",
+  mime: "tipo_mime",
+  evidence: "evidenza",
+  confidence: "affidabilità",
+  source: "fonte",
+  browser: "browser",
+  os: "sistema_operativo",
+  device: "dispositivo",
+  removed: "rimossi",
+  pairCount: "numero_coppie",
+  date: "data",
+  timestamp: "timestamp",
+  numeric: "valore_numerico",
+  unit: "unità",
+  expression: "espressione",
+  from: "da",
+  runs: "esecuzioni",
+  timezone: "fuso_orario",
+  schedule: "pianificazione",
+  minute: "minuto",
+  hour: "ora",
+  dayOfMonth: "giorno_del_mese",
+  month: "mese",
+  dayOfWeek: "giorno_della_settimana",
+  command: "comando",
+};
+
+const RESULT_VALUE_IT: Readonly<Record<string, string>> = {
+  encode: "codifica",
+  decode: "decodifica",
+  format: "formattazione",
+  validate: "validazione",
+  cryptographic: "crittografica",
+  "explicit-test-input": "ingresso di prova esplicito",
+  "signature-hint": "indizio dalla firma",
+  "to-date": "da timestamp a data",
+  "to-timestamp": "da data a timestamp",
+  seconds: "secondi",
+  milliseconds: "millisecondi",
+};
+
+const RAW_RESULT_KEYS = new Set(["value", "header", "payload", "document"]);
+
+function localizeResult(value: unknown, raw = false): unknown {
+  if (raw || value === null || typeof value !== "object") {
+    return typeof value === "string" ? (RESULT_VALUE_IT[value] ?? value) : value;
+  }
+  if (Array.isArray(value)) return value.map((item) => localizeResult(item));
+  return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, item]) => [
+    RESULT_KEY_IT[key] ?? key,
+    localizeResult(item, RAW_RESULT_KEYS.has(key)),
+  ]));
+}
+
 function resultText(value: unknown): string {
   try {
-    return JSON.stringify(value, null, 2) ?? String(value);
+    return JSON.stringify(localizeResult(value), null, 2) ?? String(value);
   } catch {
     return String(value);
   }
@@ -78,19 +276,28 @@ function resultText(value: unknown): string {
 
 function errorText(message: string): string {
   const known: Readonly<Record<string, string>> = {
-    INVALID_JSON: "The JSON document is not valid under the RFC 8259 grammar.",
-    INVALID_JSON_PATH: "The JSONPath expression is outside the supported bounded subset.",
-    INVALID_CRON: "The cron expression is not a valid five-field POSIX schedule.",
-    INVALID_BASE64: "The Base64 input is malformed. Remove whitespace or correct its padding.",
-    INVALID_YAML: "The YAML document is outside the supported safe subset.",
-    UNSUPPORTED_YAML: "This YAML feature is intentionally not executed by the local formatter.",
-    INVALID_TOML: "The TOML document is outside the supported safe subset.",
-    INVALID_JWT: "The JWT must be a three-part compact serialization with JSON header and payload.",
-    INVALID_PERCENT_ENCODING: "The percent-encoded bytes are not valid UTF-8.",
-    INVALID_UTF8_BASE64: "The decoded Base64 bytes are not valid UTF-8 text.",
+    INVALID_JSON: "Il documento JSON non è valido secondo la grammatica RFC 8259.",
+    INVALID_JSON_PATH: "L'espressione JSONPath non rientra nel sottoinsieme supportato.",
+    INVALID_CRON: "L'espressione cron non è una pianificazione POSIX valida a cinque campi.",
+    INVALID_BASE64: "Il valore Base64 non è valido. Rimuovi gli spazi superflui o correggi il riempimento.",
+    INVALID_YAML: "Il documento YAML non rientra nel sottoinsieme sicuro supportato.",
+    UNSUPPORTED_YAML: "Questa funzionalità YAML non viene eseguita dal formattatore locale.",
+    INVALID_TOML: "Il documento TOML non rientra nel sottoinsieme sicuro supportato.",
+    INVALID_JWT: "Il JWT deve essere composto da tre parti compatte con intestazione e contenuto JSON.",
+    INVALID_PERCENT_ENCODING: "I byte codificati percentualmente non rappresentano testo UTF-8 valido.",
+    INVALID_UTF8_BASE64: "I byte Base64 decodificati non rappresentano testo UTF-8 valido.",
+    INVALID_MODE: "La modalità selezionata non è valida.",
+    INVALID_INPUT: "Controlla i valori inseriti.",
+    INVALID_UUID_COUNT: "La quantità di UUID deve essere un intero compreso tra 1 e 1000.",
+    INVALID_UUID_VERSION: "Sono supportati UUIDv4 e UUIDv7.",
+    INVALID_REGEX: "L'espressione regolare non è valida.",
+    INVALID_REGEX_FLAGS: "Le opzioni dell'espressione regolare non sono valide o sono duplicate.",
+    REGEX_TOO_LARGE: "L'espressione regolare supera il limite locale consentito.",
+    REGEX_COMPLEXITY: "L'espressione contiene quantificatori annidati non limitati e viene rifiutata per sicurezza.",
+    REGEX_TOO_MANY_MATCHES: "L'espressione regolare ha prodotto troppe corrispondenze.",
   };
   const code = message.split(":", 1)[0] ?? message;
-  return known[code] ?? message;
+  return known[code] ?? `Errore dello strumento (${code}). Controlla i valori inseriti.`;
 }
 
 export interface DeveloperWebToolProps {
@@ -149,7 +356,7 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
                 {field.kind === "textarea" && <textarea id={id} rows={field.rows ?? 8} value={value} placeholder={field.placeholder} onInput={(event) => update(field.key, event.currentTarget.value)} required={field.required} />}
                 {field.kind === "text" && <input id={id} type="text" value={value} placeholder={field.placeholder} onInput={(event) => update(field.key, event.currentTarget.value)} required={field.required} />}
                 {field.kind === "number" && <input id={id} type="number" value={value} onInput={(event) => update(field.key, event.currentTarget.value)} required={field.required} />}
-                {field.kind === "select" && <select id={id} value={value} onChange={(event) => update(field.key, event.currentTarget.value)} required={field.required}>{field.options?.map((option) => <option value={option} key={option}>{option}</option>)}</select>}
+                {field.kind === "select" && <select id={id} value={value} onChange={(event) => update(field.key, event.currentTarget.value)} required={field.required}>{field.options?.map((option) => <option value={option} key={option}>{field.optionLabels?.[option] ?? option}</option>)}</select>}
               </label>
             );
           })}

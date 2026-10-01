@@ -34,6 +34,8 @@ export interface LedgerRowProps {
   readonly rowId: string;
   /** Tool name, or the name Recent knows it by. */
   readonly title: string;
+  /** Small semantic tool icon shown before the title. */
+  readonly icon?: ComponentChildren | undefined;
   /** One-line task. */
   readonly task?: string | undefined;
   /** Secondary provenance line, e.g. the Work Profile fields in use. */
@@ -63,11 +65,11 @@ function valueCell({ produced, unit, state }: LedgerValue): JSX.Element {
   return <span class={styles.value + " " + styles.valueState} data-gutter-value="state">{state ?? "—"}</span>;
 }
 
-export function LedgerRow({ rowId, title, task, detail, value, actions, dataset, installed }: LedgerRowProps): JSX.Element {
+export function LedgerRow({ rowId, title, icon, task, detail, value, actions, dataset, installed }: LedgerRowProps): JSX.Element {
   return (
     <li class={styles.row} data-row-id={rowId} data-gutter {...(installed === true ? { "data-tool-id": rowId } : {})} {...dataset}>
       <div class={styles.identity}>
-        <strong>{title}</strong>
+        <div class={styles.titleLine}>{icon}<strong>{title}</strong></div>
         {task !== undefined && task !== "" && <span class={styles.task}>{task}</span>}
         {detail}
         {actions !== undefined && <div class={styles.rowActions}>{actions}</div>}

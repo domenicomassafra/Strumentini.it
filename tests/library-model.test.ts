@@ -17,6 +17,7 @@ const fixture = (index: number): SearchToolMetadata => ({
   runtime: index % 3 === 0
     ? { location: "REMOTE", network: "required" }
     : { location: "LOCAL", network: "forbidden" },
+  quality: index % 4 === 0 ? "verified" : "checking",
 });
 
 describe("library model seam", () => {
@@ -38,12 +39,14 @@ describe("library model seam", () => {
       inputType: "table",
       runtime: "local",
       installState: "installed",
+      quality: "verified",
     }, { installedToolIds: tools.filter((_, index) => index % 4 === 0).map(({ id }) => id) });
 
     expect(result.length).toBeGreaterThan(0);
     expect(result.every(({ category }) => category === "data")).toBe(true);
     expect(result.every(({ runtime }) => runtime.location === "LOCAL")).toBe(true);
     expect(result.every(({ id }) => Number(id.slice(-3)) % 4 === 0)).toBe(true);
+    expect(result.every(({ quality }) => quality === "verified")).toBe(true);
   });
 
   it("derives only present facets from metadata", () => {

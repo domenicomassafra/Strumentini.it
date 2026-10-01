@@ -13,7 +13,7 @@ export const markdownTableFormatterManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-015", fixtureFamilies: ["csv-rfc4180"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-015", fixtureFamilies: ["csv-rfc4180", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 
 export default markdownTableFormatterManifest;

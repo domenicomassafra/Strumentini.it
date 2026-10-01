@@ -29,6 +29,7 @@ describe("shared tool operation vocabulary", () => {
     expect(settleToolOperation<number>(success)).toEqual({ status: "success", result: { value: 42 }, error: "" });
     expect(settleToolOperation<number>(failure, { formatError: () => "Check the input." }))
       .toEqual({ status: "error", result: null, error: "Check the input." });
+    expect(settleToolOperation<number>(failure).error).toBe("Controlla i dati inseriti: uno o più campi non sono nel formato richiesto.");
     expect(cancelToolOperation<number>("Cancelled. No output was produced."))
       .toEqual({ status: "cancelled", result: null, error: "Cancelled. No output was produced." });
   });

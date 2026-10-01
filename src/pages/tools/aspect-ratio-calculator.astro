@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { AspectRatioCalculatorTool } from "../../components/tools/image-visual/AspectRatioCalculatorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Aspect Ratio Calculator" description="Calculate a simplified image aspect ratio and bounded fit dimensions without uploading dimensions.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Aspect Ratio Calculator</h1>
-      <p class="lede">Calculate a simplified image aspect ratio and bounded fit dimensions without uploading dimensions.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <AspectRatioCalculatorTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>What this tool calculates</h2><ul><li>Calculates a simplified ratio and fit dimensions from entered width and height values.</li><li>Does not inspect an image or infer source dimensions.</li><li>Reports the selected fit calculation and any invalid input.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="aspect-ratio-calculator">
+  <AspectRatioCalculatorTool client:load />
+</ItalianToolPage>

@@ -98,8 +98,8 @@ describe("date/time/planning engine", () => {
   it("returns a deterministic embedded holiday calendar", () => {
     const result = lookupPublicHolidays("US", 2026);
     expect(result.source).toBe("embedded-calendar-v1");
-    expect(result.holidays).toContainEqual(expect.objectContaining({ date: "2026-07-03", name: "Independence Day", observed: true, actualDate: "2026-07-04" }));
-    expect(result.holidays).toContainEqual({ date: "2026-11-26", name: "Thanksgiving Day", observed: false });
+    expect(result.holidays).toContainEqual(expect.objectContaining({ date: "2026-07-03", name: "Giorno dell'Indipendenza", observed: true, actualDate: "2026-07-04" }));
+    expect(result.holidays).toContainEqual({ date: "2026-11-26", name: "Giorno del Ringraziamento", observed: false });
     expect(() => lookupPublicHolidays("ZZ", 2026)).toThrow("INVALID_COUNTRY");
   });
 });

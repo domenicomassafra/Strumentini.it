@@ -105,7 +105,7 @@ describe("portable Workbench configuration seam", () => {
     const next = applyImportedConfig(current, preview.config);
     expect(next.installedTools).toEqual(["second-tool", "business-day"]);
     expect(next.profile.currency).toBe("EUR");
-    expect(current.profile.currency).toBe("USD");
+    expect(current.profile.currency).toBe("EUR");
   });
 
   it("rejects oversized imports before parsing", () => {

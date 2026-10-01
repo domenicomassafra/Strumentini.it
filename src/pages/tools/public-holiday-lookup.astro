@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PublicHolidayLookupTool } from "../../components/tools/PublicHolidayLookupTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Public-Holiday Lookup" description="Look up deterministic embedded public-holiday calendars for selected countries and years.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
-      <p class="eyebrow">Date &amp; time</p>
-      <h1>Public-Holiday Lookup</h1>
-      <p class="lede">Inspect a versioned local holiday calendar for the United States, Canada, Great Britain, or Italy.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>This route uses an embedded calendar and makes no live holiday request.</span></div>
-    </header>
-    <PublicHolidayLookupTool client:load />
-    <section class="method-card" aria-labelledby="holiday-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="holiday-method">Embedded data boundary</h2><ul><li>The result is deterministic for the selected country and year.</li><li>Observed weekdays are marked explicitly.</li><li>Use an authoritative current source before making legal or payroll decisions.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="public-holiday-lookup">
+  <PublicHolidayLookupTool client:load />
+</ItalianToolPage>

@@ -12,28 +12,28 @@ function formatBytes(bytes: number): string {
 
 function friendlyError(error: unknown): string {
   if (error instanceof DOMException && error.name === "AbortError") {
-    return "Cancelled. No image was uploaded or saved.";
+    return "Operazione annullata. Nessuna immagine è stata caricata o salvata.";
   }
   const message = error instanceof Error ? error.message : "Image resize failed";
   if (/^(CORRUPT_IMAGE|TRUNCATED_IMAGE):/u.test(message)) {
-    return "This image is corrupt or incomplete and could not be decoded safely.";
+    return "L'immagine è danneggiata o incompleta e non può essere decodificata in sicurezza.";
   }
   if (/^UNSUPPORTED_TYPE:/u.test(message)) {
-    return "Choose a JPEG, PNG, or WebP image.";
+    return "Scegli un'immagine JPEG, PNG o WebP.";
   }
   if (/^(IMAGE_TOO_LARGE|OUTPUT_TOO_LARGE|MEMORY_LIMIT):/u.test(message)) {
-    return "This image or requested output is above the local safety limit. Try a smaller source or dimensions.";
+    return "L'immagine o il risultato richiesto supera il limite locale di sicurezza. Usa un file o dimensioni più piccole.";
   }
   if (/^UNSUPPORTED_BROWSER:/u.test(message)) {
-    return "This browser does not provide the local image APIs required by this tool.";
+    return "Questo browser non offre le API locali necessarie per elaborare l'immagine.";
   }
   if (/^(ENCODE_FAILED|OUTPUT_VALIDATION_FAILED):/u.test(message)) {
-    return "The browser could not produce and verify a valid output. Try JPEG or smaller dimensions.";
+    return "Il browser non è riuscito a produrre e verificare un risultato valido. Prova JPEG o dimensioni più piccole.";
   }
   if (/^INVALID_INPUT:/u.test(message)) {
-    return "Check the file, dimensions, fit mode, format, and quality.";
+    return "Controlla file, dimensioni, modalità di adattamento, formato e qualità.";
   }
-  return message;
+  return "Il ridimensionamento non è riuscito. Controlla il file e i parametri inseriti.";
 }
 
 export function ImageResizeTool() {
@@ -100,14 +100,14 @@ export function ImageResizeTool() {
     setError("");
     clearOutput();
     if (file === null) {
-      setError("Choose a JPEG, PNG, or WebP image.");
+      setError("Scegli un'immagine JPEG, PNG o WebP.");
       return;
     }
 
     const abortController = new AbortController();
     controller.current = abortController;
     setStatus("working");
-    setProgress({ phase: "header", label: "Preparing local image" });
+    setProgress({ phase: "header", label: "Preparazione dell'immagine locale" });
 
     try {
       // The implementation stays out of the initial page bundle until the first operation.
@@ -163,7 +163,7 @@ export function ImageResizeTool() {
     <div class="tool-operation">
       <form onSubmit={submit} noValidate>
         <label class="field">
-          <span>Image</span>
+          <span>Immagine</span>
           <input
             id="image-resize-file"
             type="file"
@@ -173,7 +173,7 @@ export function ImageResizeTool() {
             aria-describedby="image-resize-file-help"
           />
           <small id="image-resize-file-help">
-            Choose from Files or Photos. JPEG, PNG, or WebP; processed only on this device.
+            Scegli da File o Foto. JPEG, PNG o WebP; l'elaborazione avviene solo su questo dispositivo.
           </small>
         </label>
 
@@ -185,7 +185,7 @@ export function ImageResizeTool() {
 
         <div class="field-grid">
           <label class="field">
-            <span>Width</span>
+            <span>Larghezza</span>
             <input
               type="number"
               min="1"
@@ -198,7 +198,7 @@ export function ImageResizeTool() {
             />
           </label>
           <label class="field">
-            <span>Height</span>
+            <span>Altezza</span>
             <input
               type="number"
               min="1"
@@ -213,7 +213,7 @@ export function ImageResizeTool() {
         </div>
 
         <fieldset class="segmented">
-          <legend>Fit</legend>
+          <legend>Adattamento</legend>
           <label>
             <input
               type="radio"
@@ -222,7 +222,7 @@ export function ImageResizeTool() {
               onChange={() => setFit("contain")}
               disabled={status === "working"}
             />
-            Fit inside
+            Contieni nell'area
           </label>
           <label>
             <input
@@ -232,13 +232,13 @@ export function ImageResizeTool() {
               onChange={() => setFit("cover")}
               disabled={status === "working"}
             />
-            Crop to fill
+            Ritaglia per riempire
           </label>
         </fieldset>
 
         <div class="field-grid">
           <label class="field">
-            <span>Output format</span>
+            <span>Formato di uscita</span>
             <select
               value={outputMime}
               onChange={(event) => setOutputMime(event.currentTarget.value as "image/jpeg" | "image/webp")}
@@ -248,11 +248,11 @@ export function ImageResizeTool() {
               <option value="image/webp" disabled={webpEncodeSupported === false}>WebP</option>
             </select>
             {webpEncodeSupported === false && (
-              <small>WebP encoding is unavailable in this browser; JPEG remains fully local.</small>
+              <small>La codifica WebP non è disponibile in questo browser; JPEG resta completamente locale.</small>
             )}
           </label>
           <label class="field">
-            <span>Quality</span>
+            <span>Qualità</span>
             <input
               type="number"
               min="0.4"
@@ -267,14 +267,14 @@ export function ImageResizeTool() {
 
         {progress !== null && (
           <p role="status" aria-live="polite">
-            <strong>{progress.label}</strong> · stays on this device
+            <strong>Elaborazione locale in corso</strong> · i dati restano su questo dispositivo
           </p>
         )}
         {error !== "" && <p class="error" role="alert">{error}</p>}
 
         <div class="actions">
           <button class="primary" type="submit" disabled={status === "working"}>
-            {status === "working" ? "Processing…" : "Resize"}
+            {status === "working" ? "Elaborazione…" : "Ridimensiona"}
           </button>
           {status === "working" ? (
             <button type="button" onClick={cancel}>Annulla</button>
@@ -285,35 +285,35 @@ export function ImageResizeTool() {
       </form>
 
       <section class="result-panel gutter" data-state={gutterState} aria-live="polite" aria-atomic="true">
-        <p class="gutter-label eyebrow">Output</p>
+        <p class="gutter-label eyebrow">Risultato</p>
         {/* Held outside the result branch: the tool clears its result while it
             recomputes, and the headline has to keep its state through that. */}
         <PreviousValue value={dimensions} retain={status === "working"} />
         {result === null ? (
-          <p class="result-placeholder">Your verified local output appears here.</p>
+          <p class="result-placeholder">Il risultato locale verificato apparirà qui.</p>
         ) : (
           <>
             <p>{result.filename}</p>
             <p>{formatBytes(result.blob.size)} · {result.outputMime}</p>
             <div class="actions">
-              <a class="button primary" href={downloadUrl} download={result.filename}>Download</a>
+              <a class="button primary" href={downloadUrl} download={result.filename}>Scarica</a>
             </div>
             <dl class="assumptions">
               <div>
-                <dt>Input</dt>
+                <dt>Ingresso</dt>
                 <dd>{result.sourceWidth}×{result.sourceHeight} · {result.inputMime}</dd>
               </div>
               <div>
-                <dt>Memory preflight</dt>
-                <dd>{formatBytes(result.estimatedDecodedBytes)} estimated decoded working set</dd>
+                <dt>Memoria stimata</dt>
+                <dd>{formatBytes(result.estimatedDecodedBytes)} stimati per l'elaborazione decodificata</dd>
               </div>
               <div>
-                <dt>Orientation</dt>
-                <dd>{result.orientationPolicy}</dd>
+                <dt>Orientamento</dt>
+                <dd>Gestito localmente durante la decodifica</dd>
               </div>
               <div>
-                <dt>Metadata</dt>
-                <dd>{result.metadataPolicy}</dd>
+                <dt>Metadati</dt>
+                <dd>Politica locale applicata al nuovo file</dd>
               </div>
             </dl>
           </>

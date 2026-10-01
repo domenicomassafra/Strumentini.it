@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { WorkingHoursTool } from "../../components/tools/WorkingHoursTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Working-Hours Calculator" description="Calculate elapsed work time between timestamps with an explicit timezone.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
-      <p class="eyebrow">Date &amp; time</p>
-      <h1>Working-Hours Calculator</h1>
-      <p class="lede">Measure a work interval in days, hours, minutes, seconds, and exact decimal hours.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No timesheet or clock service is contacted.</span></div>
-    </header>
-    <WorkingHoursTool client:load />
-    <section class="method-card" aria-labelledby="working-hours-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="working-hours-method">Elapsed time</h2><ul><li>Offset-aware values are compared as instants.</li><li>Local values require an IANA timezone.</li><li>Breaks and non-working hours are not inferred.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="working-hours">
+  <WorkingHoursTool client:load />
+</ItalianToolPage>

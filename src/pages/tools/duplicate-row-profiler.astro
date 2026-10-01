@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { DuplicateRowProfilerTool } from "../../components/tools/duplicate-row-profiler/DuplicateRowProfilerTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Duplicate-Row Profiler" description="Report repeated local CSV rows and key groups.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>Duplicate-Row Profiler</h1>
-      <p class="lede">Find repeated whole rows or repeated explicit keys with bounded examples and exact counts.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Duplicate analysis stays in memory.</span></div>
-    </header>
-    <DuplicateRowProfilerTool client:load />
-    <section class="method-card"><h2>Duplicate contract</h2><ul><li>Whole-row mode compares exact parsed cell sequences.</li><li>Key mode compares only the selected zero-based columns.</li><li>Examples are capped, while duplicate totals remain exact.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="duplicate-row-profiler">
+  <DuplicateRowProfilerTool client:load />
+</ItalianToolPage>

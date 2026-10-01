@@ -1,8 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ListIntersectionTool } from "../../components/tools/ListIntersectionTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="List Intersection" description="Find line items shared by two lists with explicit equality rules.">
-  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>List Intersection</h1><p class="lede">Compare two line lists and keep only the items found in both.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Both lists stay in this page.</span></div></header><ListIntersectionTool client:load /><section class="method-card"><h2>Intersection policy</h2><ul><li>CRLF and CR line endings become LF before comparison.</li><li>Exact, trim, NFC, and trim-plus-NFC equality rules are available explicitly.</li><li>Output keeps the first spelling and order from the first list.</li></ul></section></article>
-</BaseLayout>
+
+<ItalianToolPage toolId="list-intersection">
+  <ListIntersectionTool client:load />
+</ItalianToolPage>

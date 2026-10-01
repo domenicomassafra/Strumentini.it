@@ -1,8 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { UtmBuilderTool } from "../../components/tools/UtmBuilderTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="UTM Builder" description="Build campaign URLs locally with explicit UTM fields.">
-  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>UTM Builder</h1><p class="lede">Add explicit campaign parameters without changing unrelated query parameters or fragments.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your destination and campaign values are not uploaded.</span></div></header><UtmBuilderTool client:load /><section class="method-card"><h2>Rules</h2><ul><li>Source, medium and campaign are required; term and content are optional in the engine.</li><li>Existing unrelated query parameters and the fragment are preserved.</li><li>This tool builds URLs only; it does not verify analytics platforms or destinations.</li></ul></section></article>
-</BaseLayout>
+
+<ItalianToolPage toolId="utm-builder">
+  <UtmBuilderTool client:load />
+</ItalianToolPage>

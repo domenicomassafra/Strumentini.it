@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CsvFilterTool } from "../../components/tools/csv-filter/CsvFilterTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="CSV Filter" description="Filter CSV rows with explicit local comparison rules.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>CSV Filter</h1>
-      <p class="lede">Choose a column and an explicit comparison to keep matching rows and leave rejected rows behind.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Filter values never leave the browser.</span></div>
-    </header>
-    <CsvFilterTool client:load />
-    <section class="method-card"><h2>Filter contract</h2><ul><li>Text comparisons can be case-sensitive or case-insensitive.</li><li>Empty and not-empty rules trim only for the emptiness check.</li><li>Regex input is bounded and invalid expressions fail visibly.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="csv-filter">
+  <CsvFilterTool client:load />
+</ItalianToolPage>

@@ -14,6 +14,7 @@ function tool(index: number): SearchToolMetadata {
     inputTypes: [index % 2 === 0 ? "text" : "date"],
     engine: "fixture",
     runtime: { location: "LOCAL", network: "forbidden" },
+    quality: index % 3 === 0 ? "verified" : "checking",
     packTags: index % 5 === 0 ? ["research"] : [],
     roleTags: index % 7 === 0 ? ["researcher"] : [],
   };
@@ -28,6 +29,7 @@ describe("library state seam", () => {
       input: "text",
       runtime: "LOCAL" as const,
       installed: "installed" as const,
+      quality: "verified" as const,
       page: 3,
     };
 
@@ -43,10 +45,11 @@ describe("library state seam", () => {
       input: "text",
       runtime: "LOCAL",
       installed: "installed",
+      quality: "checking",
       page: 1,
     }, { installedToolIds: ["tool-0", "tool-5", "tool-10"] });
 
-    expect(filtered.map((entry) => entry.id)).toEqual(["tool-0", "tool-10"]);
+    expect(filtered.map((entry) => entry.id)).toEqual(["tool-10"]);
   });
 
   it("bounds a generated 500-tool fixture to at most 50 rendered rows per page", () => {

@@ -8,7 +8,7 @@ export const csvColumnSelectorManifest = makeTableManifest({
   keywords: ["csv", "columns", "select", "reorder"],
   jobs: ["select and keep csv columns", "keep chosen csv fields", "reorder table columns"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-026", fixtureFamilies: ["csv-table-ops", "csv-rfc4180"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-026", fixtureFamilies: ["csv-table-ops", "csv-rfc4180", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "CsvColumnSelectorTool",
 });

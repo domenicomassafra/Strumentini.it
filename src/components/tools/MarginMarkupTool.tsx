@@ -36,7 +36,7 @@ export function MarginMarkupTool() {
       },
       signal,
     ),
-    { formatError: () => "Enter valid decimal values for price/revenue and cost." },
+    { formatError: () => "Inserisci valori decimali validi per prezzo o ricavi e costo." },
   );
 
   function submit(event: Event) {
@@ -59,18 +59,18 @@ export function MarginMarkupTool() {
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit} noValidate>
         <div class="field-grid">
-          <label class="field"><span>Price / revenue</span><input required inputMode="decimal" value={price} onInput={(event) => setPrice(event.currentTarget.value)} placeholder="100.00" /></label>
-          <label class="field"><span>Cost</span><input required inputMode="decimal" value={cost} onInput={(event) => setCost(event.currentTarget.value)} placeholder="80.00" /></label>
+          <label class="field"><span>Prezzo o ricavi</span><input required inputMode="decimal" value={price} onInput={(event) => setPrice(event.currentTarget.value)} placeholder="100,00" /></label>
+          <label class="field"><span>Costo</span><input required inputMode="decimal" value={cost} onInput={(event) => setCost(event.currentTarget.value)} placeholder="80,00" /></label>
         </div>
         <label class="field">
-          <span>Currency label</span>
+          <span>Valuta</span>
           <input required value={currency} onInput={(event) => setCurrencyOverride(event.currentTarget.value.toUpperCase())} aria-describedby="margin-currency-help" />
           <ProfileOverrideHint id="margin-currency-help" ready={ready} overridden={currencyOverride !== undefined} />
-          <ProfileResetButton disabled={currencyOverride === undefined} onReset={() => setCurrencyOverride(undefined)}>Use Work Profile currency</ProfileResetButton>
+          <ProfileResetButton disabled={currencyOverride === undefined} onReset={() => setCurrencyOverride(undefined)}>Usa la valuta del profilo</ProfileResetButton>
         </label>
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Calculate margin &amp; markup</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Calcola margine e ricarico</ToolSubmitButton>
           <ToolResetButton onClick={reset} disabled={operation.isRunning} />
         </ToolActions>
       </form>
@@ -81,11 +81,11 @@ export function MarginMarkupTool() {
         {operation.result !== null && (
           <>
             <dl class="assumptions">
-              <div><dt>Margin</dt><dd>{operation.result.marginPercent === null ? "Undefined" : `${operation.result.marginPercent}%`} · profit ÷ price × 100</dd></div>
-              <div><dt>Markup</dt><dd>{operation.result.markupPercent === null ? "Undefined" : `${operation.result.markupPercent}%`} · profit ÷ cost × 100</dd></div>
-              {operation.result.denominatorErrors.map((issue) => <div key={issue.code}><dt>{issue.metric} denominator</dt><dd>{issue.message}</dd></div>)}
-              <div><dt>Rounding</dt><dd>Final values only · half-up · money 2 decimals · percentages 2 decimals</dd></div>
-              <div><dt>Currency source</dt><dd><ProvenanceBadge provenance={operation.result.currencyProvenance} /></dd></div>
+              <div><dt>Margine</dt><dd>{operation.result.marginPercent === null ? "Non definito" : `${operation.result.marginPercent}%`} · profitto ÷ prezzo × 100</dd></div>
+              <div><dt>Ricarico</dt><dd>{operation.result.markupPercent === null ? "Non definito" : `${operation.result.markupPercent}%`} · profitto ÷ costo × 100</dd></div>
+              {operation.result.denominatorErrors.map((issue) => <div key={issue.code}><dt>Denominatore non valido</dt><dd>Il calcolo non è definito con il valore inserito.</dd></div>)}
+              <div><dt>Arrotondamento</dt><dd>Solo sui valori finali · metà verso l'alto · importi a 2 decimali · percentuali a 2 decimali</dd></div>
+              <div><dt>Origine della valuta</dt><dd><ProvenanceBadge provenance={operation.result.currencyProvenance} /></dd></div>
             </dl>
           </>
         )}

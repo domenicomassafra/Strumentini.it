@@ -35,11 +35,11 @@ describe("expanded catalog certification index", () => {
   it("preserves the certified frontier and exposes unresolved evidence", async () => {
     const index = await buildCertificationIndex();
     expect(index.summary.statusCounts).toEqual({
-      GOLD: 50,
+      GOLD: 99,
       PARTIAL: 1,
-      IMPLEMENTED_UNVERIFIED: 149,
+      IMPLEMENTED_UNVERIFIED: 100,
     });
-    expect(index.summary.certificationGoldCount).toBe(50);
+    expect(index.summary.certificationGoldCount).toBe(99);
     expect(index.summary.physicalDevicePassCount).toBe(0);
     expect(index.global.physicalDevice).toMatchObject({
       status: "EXTERNAL",
@@ -65,14 +65,21 @@ describe("expanded catalog certification index", () => {
     const developerWeb = index.tools.filter((tool) => tool.engine === "developer-web");
     expect(developerWeb).toHaveLength(20);
     expect(developerWeb.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    const dataTable = index.tools.filter((tool) => tool.engine === "table-operations" || tool.engine === "table-csv");
+    expect(dataTable).toHaveLength(20);
+    expect(dataTable.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    const dateTime = index.tools.filter((tool) => tool.engine === "date-time");
+    expect(dateTime.filter((tool) => tool.status === "GOLD")).toHaveLength(18);
+    const textWriting = index.tools.filter((tool) => tool.engine === "text-writing");
+    expect(textWriting.filter((tool) => tool.status === "GOLD")).toHaveLength(15);
     expect(index.tools.some((tool) => tool.physicalDevice.status === "PASS")).toBe(false);
   }, 30_000);
 
   it("fails closed when certification claims omit required evidence", async () => {
     const index = await buildCertificationIndex();
     const forged = structuredClone(index);
-    const first = forged.tools[0] as unknown as { status: string; goldEligible: boolean; releaseGate: string } | undefined;
-    if (first === undefined) throw new Error("certification fixture is empty");
+    const first = forged.tools.find((tool) => tool.certificationReceipt === null) as unknown as { status: string; goldEligible: boolean; releaseGate: string } | undefined;
+    if (first === undefined) throw new Error("certification fixture has no unverified tool");
     first.status = "GOLD";
     first.goldEligible = true;
     first.releaseGate = "PASS";

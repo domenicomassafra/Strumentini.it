@@ -1,6 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PdfImageExtractorTool } from "../../components/tools/PdfImageExtractorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="PDF Image Extractor" description="Extract embedded JPEG image streams from a local PDF."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Image Extractor</h1><p class="lede">Extract directly embedded JPEG image streams with explicit capability checks.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Unsupported image filters are reported, not guessed.</span></div></header><PdfImageExtractorTool client:load /><section class="method-card"><h2>Extraction contract</h2><ul><li>Reads only directly extractable JPEG streams.</li><li>Applies image count and byte limits.</li><li>Offers each image as a separate local download.</li></ul></section></article></BaseLayout>
+
+<ItalianToolPage toolId="pdf-image-extractor">
+  <PdfImageExtractorTool client:load />
+</ItalianToolPage>

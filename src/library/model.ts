@@ -3,6 +3,7 @@ import type { SearchContext, SearchToolMetadata } from "../search/types";
 
 export type RuntimeFilter = "any" | "local" | "network";
 export type InstallStateFilter = "any" | "installed" | "not-installed";
+export type QualityFilter = "any" | "verified" | "checking";
 
 export interface LibraryFilters {
   query?: string;
@@ -12,6 +13,7 @@ export interface LibraryFilters {
   roleTag?: string;
   runtime?: RuntimeFilter;
   installState?: InstallStateFilter;
+  quality?: QualityFilter;
 }
 
 export interface LibraryFacets {
@@ -59,6 +61,8 @@ export function filterLibrary(
     if (filters.runtime === "network" && tool.runtime.network === "forbidden") return false;
     if (filters.installState === "installed" && !installed.has(tool.id)) return false;
     if (filters.installState === "not-installed" && installed.has(tool.id)) return false;
+    if (filters.quality === "verified" && tool.quality !== "verified") return false;
+    if (filters.quality === "checking" && tool.quality !== "checking") return false;
     return true;
   });
 }

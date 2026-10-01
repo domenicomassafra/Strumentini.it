@@ -25,8 +25,8 @@ function tool(id: string, overrides: Partial<ToolSummary> = {}): ToolSummary {
 describe("Workbench task-first UX seam", () => {
   it("formats Recent as relative tool activity and handles invalid timestamps", () => {
     const now = new Date("2026-09-24T12:00:00.000Z");
-    expect(formatRecentActivity("2026-09-24T11:00:00.000Z", now)).toBe("1 hour ago");
-    expect(formatRecentActivity("not-a-date", now)).toBe("time unavailable");
+    expect(formatRecentActivity("2026-09-24T11:00:00.000Z", now)).toBe("1 ora fa");
+    expect(formatRecentActivity("not-a-date", now)).toBe("orario non disponibile");
   });
 
   it("returns a capped deterministic set with visible reasons", () => {
@@ -45,7 +45,7 @@ describe("Workbench task-first UX seam", () => {
 
     expect(result).toHaveLength(3);
     expect(result.map(({ tool: suggestion }) => suggestion.id)).toEqual(["first", "second", "third"]);
-    expect(result.every(({ reason }) => reason.startsWith("Shares "))).toBe(true);
+    expect(result.every(({ reason }) => reason.startsWith("Condivide attività della categoria "))).toBe(true);
     expect(JSON.stringify(result)).not.toMatch(/rawTask|startDate|endDate/u);
   });
 
@@ -56,6 +56,6 @@ describe("Workbench task-first UX seam", () => {
     };
     const installed = tool("installed", { inputTypes: ["date", "number"] });
     const candidate = tool("candidate", { inputTypes: ["number"], category: "other" });
-    expect(getWorkbenchSuggestions([installed, candidate], state)[0]?.reason).toBe("Handles Number inputs like installed.");
+    expect(getWorkbenchSuggestions([installed, candidate], state)[0]?.reason).toBe("Gestisce ingressi di tipo Numero come installed.");
   });
 });

@@ -13,7 +13,7 @@ export const invisibleCharacterDetectorManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-005", fixtureFamilies: ["invisible-characters"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-005", fixtureFamilies: ["invisible-characters", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 
 export default invisibleCharacterDetectorManifest;

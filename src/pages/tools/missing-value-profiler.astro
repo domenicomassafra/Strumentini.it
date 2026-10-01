@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { MissingValueProfilerTool } from "../../components/tools/missing-value-profiler/MissingValueProfilerTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Missing-Value Profiler" description="Profile empty cells in a local CSV table.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>Missing-Value Profiler</h1>
-      <p class="lede">Count empty cells and report completeness by column without altering the source table.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Only aggregate counts are shown; cell content stays local.</span></div>
-    </header>
-    <MissingValueProfilerTool client:load />
-    <section class="method-card"><h2>Profile contract</h2><ul><li>Whitespace-only cells count as missing; non-empty cells count as present.</li><li>Each column reports count, present count, and missing rate.</li><li>The original table remains available for local download.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="missing-value-profiler">
+  <MissingValueProfilerTool client:load />
+</ItalianToolPage>

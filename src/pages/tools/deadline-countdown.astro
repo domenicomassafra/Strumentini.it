@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { DeadlineCountdownTool } from "../../components/tools/DeadlineCountdownTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Deadline Countdown" description="Measure remaining or overdue time until a deadline locally.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
-      <p class="eyebrow">Date &amp; time</p>
-      <h1>Deadline Countdown</h1>
-      <p class="lede">Compare a deadline with an explicit reference time and inspect the exact remaining or overdue duration.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No clock synchronization or notification service is used.</span></div>
-    </header>
-    <DeadlineCountdownTool client:load />
-    <section class="method-card" aria-labelledby="deadline-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="deadline-method">Reference time</h2><ul><li>The reference value is explicit so results are reproducible.</li><li>Future deadlines are remaining; past deadlines are overdue.</li><li>No automatic refresh or background tracking occurs.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="deadline-countdown">
+  <DeadlineCountdownTool client:load />
+</ItalianToolPage>

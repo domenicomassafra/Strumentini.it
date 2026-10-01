@@ -16,6 +16,7 @@ export interface SearchToolMetadata {
   };
   packTags?: readonly string[];
   roleTags?: readonly string[];
+  quality?: "verified" | "checking";
 }
 
 export interface SearchContext {
@@ -31,7 +32,7 @@ export type SearchTier =
   | "pack-relevance"
   | "catalog";
 
-export type SearchBucket = "Your Tools" | "Recent" | "Library";
+export type SearchBucket = "I tuoi strumenti" | "Recenti" | "Libreria";
 
 export interface SearchIndexEntry extends SearchToolMetadata {
   normalized: {

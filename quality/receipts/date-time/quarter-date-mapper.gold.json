@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "342497beba30a81f60c0833982412eada75edf94",
+  "sourceFingerprint": "f914e4215a13c46bda81becf414024ebb3f0a9f800cb85ed7525707a3f2a8c3c",
+  "toolId": "quarter-date-mapper",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engineVersion": "date-time-v1",
+  "oracleEntryId": "cand-092",
+  "fixtureFamilies": [
+    "date-arithmetic",
+    "date-time-gold"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "iana-tzdb",
+    "rfc3339",
+    "rfc5545",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "date-arithmetic",
+      "path": "quality/fixtures/date-arithmetic/vectors.json"
+    },
+    {
+      "id": "date-time-gold",
+      "path": "quality/fixtures/date-time-gold/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime",
+    "high-confidence oracle with no open semantic gap",
+    "specialized arithmetic/timezone/decimal/ICS fixture remains bound",
+    "exact public-module vector",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance"
+  ],
+  "identities": {
+    "manifestSha256": "48bcbe415254803055bf46bbcd2ee5c0ea291173db4a1e004541f198451ce32f",
+    "engineIndexSha256": "775b17300d66e98f1064bc566d4cd57d6a4d4f3f03e5a103030b815f40547109",
+    "fixtureIndexSha256": "a0252757480079036e4d41f92eabb84180aa102fff081f27f2f8d6686f590be6",
+    "oracleRegistrySha256": "132e41cde389b9e19f701c9323aa0bfda731e481d8c6fad62ad943e0b7d732d0",
+    "browserAcceptanceSha256": "55787bae70bf8f5427b308172e1fbc9af6659099067af7762f969a7c8511a6ad",
+    "unitTestsSha256": "66d1e46ffd246438c8e6fa2173a713d985bb93bb1116320b6d654b3d92f2bbab",
+    "fixture:date-arithmetic:sha256": "3db2f711b091093e8ffc0cdcaea3dfed9a0032858695a750f63ba8e410f81034",
+    "fixture:date-time-gold:sha256": "8ff78f44ee23a9620137004b8aa2d8c8eed21cea7e44b5552748cf9cab8c1880"
+  }
+}

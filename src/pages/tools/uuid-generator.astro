@@ -1,13 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { UuidGeneratorTool } from "../../components/tools/UuidGeneratorTool";
-import "../../components/tools/tool-surface.css";
-const title = "UUID Generator";
 ---
-<BaseLayout title={title} description="Generate RFC 9562 UUIDv4 and UUIDv7 values locally.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Generate RFC 9562 UUIDv4 and UUIDv7 values locally.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Randomness comes from Web Crypto on this device.</span></div></header>
-    <UuidGeneratorTool client:load />
-    <section class="method-card"><p class="eyebrow">Method</p><h2>RFC 9562 version and variant bits</h2><p>UUIDv4 uses cryptographically secure random bytes. UUIDv7 uses a UTC millisecond timestamp plus random bits. A seed is available only as an explicit test input.</p></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="uuid-generator">
+  <UuidGeneratorTool client:load />
+</ItalianToolPage>

@@ -25,9 +25,9 @@ export function createDefaultWorkProfile(
   environment: Pick<WorkProfile, "locale" | "timezone">,
 ): WorkProfile {
   return {
-    locale: validNonEmpty(environment.locale, "en-US"),
+    locale: validNonEmpty(environment.locale, "it-IT"),
     timezone: validNonEmpty(environment.timezone, "UTC"),
-    currency: "USD",
+    currency: "EUR",
     dateFormat: "system",
     numberFormat: "system",
     workweek: DEFAULT_WORKWEEK,

@@ -8,7 +8,7 @@ export const csvEncodingFixerManifest = makeTableManifest({
   keywords: ["csv", "encoding", "utf-8", "utf-16", "bom"],
   jobs: ["fix a csv encoding", "convert csv text to utf-8", "remove a csv bom"],
   inputTypes: ["file", "bytes", "csv"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-024", fixtureFamilies: ["csv-cleaning", "csv-rfc4180"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-024", fixtureFamilies: ["csv-cleaning", "csv-rfc4180", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "CsvEncodingFixerTool",
 });

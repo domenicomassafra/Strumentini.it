@@ -13,7 +13,7 @@ export const lineSorterManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-008", fixtureFamilies: ["line-sorting"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-008", fixtureFamilies: ["line-sorting", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 
 export default lineSorterManifest;

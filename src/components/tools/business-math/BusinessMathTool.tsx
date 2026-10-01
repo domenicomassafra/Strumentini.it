@@ -18,6 +18,7 @@ import {
 } from "../shared";
 import { CONTROL, it } from "../shared/controlLabels";
 import { PreviousValue } from "../shared/PreviousValue";
+import { TOOL_COPY_IT } from "../../../i18n/it/tool-copy";
 
 export type BusinessFieldKind = "text" | "number" | "select" | "date";
 
@@ -58,11 +59,11 @@ function displayValue(value: unknown): string {
   if (value === null || value === undefined) return "—";
   if (typeof value === "string") return value;
   if (typeof value === "number" || typeof value === "boolean") return String(value);
-  if (Array.isArray(value)) return value.length === 0 ? "None" : value.map((item) => displayValue(item)).join(", ");
+  if (Array.isArray(value)) return value.length === 0 ? "Nessuno" : value.map((item) => displayValue(item)).join(", ");
   try {
     return JSON.stringify(value);
   } catch {
-    return "Unavailable";
+    return "Non disponibile";
   }
 }
 
@@ -95,6 +96,108 @@ const HEADLINE_KEYS = [
   "rate",
 ] as const;
 
+const FIELD_LABEL_IT: Readonly<Record<string, string>> = {
+  revenue: "Ricavi",
+  hours: "Ore totali",
+  costs: "Costi",
+  targetIncome: "Reddito obiettivo",
+  billableHours: "Ore fatturabili",
+  nonBillableHours: "Ore non fatturabili",
+  expenses: "Spese aziendali",
+  hoursPerDay: "Ore al giorno",
+  availableHours: "Ore disponibili",
+  targetUtilizationPercent: "Utilizzo obiettivo",
+  reservedHours: "Ore riservate",
+  capacityHours: "Ore mensili di capacità",
+  deliveryHoursPerClient: "Ore per cliente",
+  retainerAmount: "Compenso per cliente",
+  monthlyCosts: "Costi aziendali mensili",
+  targetMarginPercent: "Margine obiettivo",
+  hourlyRate: "Tariffa oraria",
+  originalHours: "Ore originali",
+  additionalHours: "Ore aggiuntive",
+  originalBudget: "Budget originale",
+  fixedCosts: "Costi fissi",
+  unitPrice: "Prezzo unitario",
+  unitVariableCost: "Costo variabile unitario",
+  units: "Unità",
+  targetNet: "Netto obiettivo",
+  feePercent: "Commissione di pagamento",
+  principal: "Importo scaduto",
+  annualRatePercent: "Tasso di interesse annuo",
+  daysLate: "Giorni di ritardo",
+  dayCountBasis: "Base di calcolo dei giorni",
+  originalPrice: "Prezzo unitario originale",
+  discountPercent: "Sconto",
+  quotedPrice: "Prezzo proposto",
+  estimatedHours: "Ore stimate",
+  directCosts: "Costi diretti",
+  contingencyPercent: "Imprevisti",
+  hourlyCost: "Costo orario",
+  prefix: "Prefisso",
+  year: "Anno",
+  sequence: "Sequenza",
+  padding: "Cifre della sequenza",
+  separator: "Separatore",
+  subtotal: "Imponibile",
+  taxRatePercent: "Aliquota",
+  total: "Totale inserito",
+  base: "Importo base o comprensivo",
+  ratePercent: "Percentuale",
+  mode: "Calcolo",
+  amount: "Importo di origine",
+  rate: "Unità di destinazione per unità di origine",
+  fromCurrency: "Valuta di origine",
+  toCurrency: "Valuta di destinazione",
+};
+
+const RESULT_LABEL_IT: Readonly<Record<string, string>> = {
+  total: "Totale",
+  net: "Netto",
+  amount: "Importo",
+  result: "Risultato",
+  value: "Valore",
+  cost: "Costo",
+  price: "Prezzo",
+  revenue: "Ricavi",
+  rate: "Tariffa",
+  profit: "Profitto",
+  marginPercent: "Margine percentuale",
+  markupPercent: "Ricarico percentuale",
+  effectiveHourlyRate: "Tariffa oraria effettiva",
+  utilizationPercent: "Utilizzo percentuale",
+  availableHours: "Ore disponibili",
+  billableHours: "Ore fatturabili",
+  nonBillableHours: "Ore non fatturabili",
+  capacityHours: "Ore di capacità",
+  clientCapacity: "Numero di clienti",
+  contributionPerHour: "Contributo per ora",
+  additionalCost: "Costo aggiuntivo",
+  newProjectCost: "Nuovo costo del progetto",
+  breakEvenUnits: "Unità di pareggio",
+  breakEvenRevenue: "Ricavi di pareggio",
+  grossAmount: "Importo lordo",
+  feeAmount: "Commissione",
+  interest: "Interessi",
+  totalDue: "Totale dovuto",
+  discountedPrice: "Prezzo scontato",
+  revenueLost: "Ricavi persi",
+  requiredRate: "Tariffa necessaria",
+  invoiceNumber: "Numero fattura",
+  expectedTotal: "Totale atteso",
+  difference: "Differenza",
+  valid: "Valido",
+  percentageAmount: "Importo percentuale",
+  sourceAmount: "Importo di origine",
+  targetAmount: "Importo di destinazione",
+  currency: "Valuta",
+};
+
+const OPTION_LABEL_IT: Readonly<Record<string, string>> = {
+  add: "Aggiungi percentuale",
+  reverse: "Ricava il netto",
+};
+
 function formatHeadline(value: number): string {
   return new Intl.NumberFormat("it-IT", { maximumFractionDigits: 2 }).format(value);
 }
@@ -123,9 +226,8 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
       signal,
     ),
     {
-      formatError: (run: Extract<ToolRunResult, { ok: false }>) => run.code === "INVALID_INPUT"
-        ? "Check the values and try again. Percentages use plain numbers such as 3 or 3.5."
-        : run.message,
+      formatError: (_run: Extract<ToolRunResult, { ok: false }>) =>
+        "Controlla i valori e riprova. Le percentuali vanno inserite come numeri, per esempio 3 oppure 3,5.",
     },
   );
 
@@ -156,6 +258,7 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
     : typeof result.currency === "string"
       ? `${currency} ${formatHeadline(result[headline] as number)}`
       : formatHeadline(result[headline] as number);
+  const publicCopy = TOOL_COPY_IT[config.id];
 
   return (
     <ToolOperation busy={operation.isRunning}>
@@ -167,17 +270,17 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
             if (field.kind === "select") {
               return (
                 <label class="field" key={field.name} htmlFor={inputId}>
-                  <span>{field.label}</span>
+                  <span>{FIELD_LABEL_IT[field.name] ?? field.label}</span>
                   <select id={inputId} value={value} onChange={(event) => setField(field.name, (event.currentTarget as HTMLSelectElement).value)}>
-                    {(field.options ?? []).map((option) => <option value={option} key={option}>{option}</option>)}
+                    {(field.options ?? []).map((option) => <option value={option} key={option}>{OPTION_LABEL_IT[option] ?? option}</option>)}
                   </select>
-                  {field.help !== undefined && <small>{field.help}</small>}
+                  {field.help !== undefined && <small>Inserisci la percentuale come numero, per esempio 10 per indicare il 10%.</small>}
                 </label>
               );
             }
             return (
               <label class="field" key={field.name} htmlFor={inputId}>
-                <span>{field.label}</span>
+                <span>{FIELD_LABEL_IT[field.name] ?? field.label}</span>
                 <input
                   id={inputId}
                   required={field.defaultValue === ""}
@@ -188,13 +291,13 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
                   onInput={(event) => setField(field.name, (event.currentTarget as HTMLInputElement).value)}
                   aria-describedby={field.help === undefined ? undefined : `${inputId}-help`}
                 />
-                {field.help !== undefined && <small id={`${inputId}-help`}>{field.help}</small>}
+                {field.help !== undefined && <small id={`${inputId}-help`}>Inserisci la percentuale come numero, per esempio 10 per indicare il 10%.</small>}
               </label>
             );
           })}
           {config.showCurrency === true && (
             <label class="field" htmlFor={`${config.id}-currency`}>
-              <span>Currency label</span>
+              <span>Valuta</span>
               <input
                 id={`${config.id}-currency`}
                 required
@@ -213,13 +316,13 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
             </label>
           )}
         </div>
-        <InlineError message={operation.error} />
+        <InlineError message={operation.error === "" ? "" : "Impossibile completare il calcolo. Controlla i valori inseriti."} />
         <ToolActions>
           <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{it(CONTROL.submit)}</ToolSubmitButton>
           <ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton>
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow={config.resultLabel} placeholder={config.placeholder} busy={operation.isRunning} state={gutterState}>
+      <ToolResultPanel eyebrow="Risultato" placeholder={`Il risultato di ${publicCopy?.name ?? "questo calcolo"} apparirà qui.`} busy={operation.isRunning} state={gutterState}>
         {/* Held outside the result branch: a recompute clears the result for a
             tick, and the headline has to keep its state through that. */}
         <PreviousValue value={gutterHeadline} retain={operation.isRunning} />
@@ -228,11 +331,11 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
             <dl class="gutter-rows">
               {primaryEntries
                 .filter(([key]) => key !== headline)
-                .map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{displayValue(value)}</dd></div>)}
-              {typeof currencyProvenance === "string" && <div><dt>Currency source</dt><dd><ProvenanceBadge provenance={currencyProvenance as "explicit" | "profile" | "tool-default" | "system-derived"} /></dd></div>}
+                .map(([key, value]) => <div key={key}><dt>{RESULT_LABEL_IT[key] ?? key}</dt><dd>{displayValue(value)}</dd></div>)}
+              {typeof currencyProvenance === "string" && <div><dt>Origine della valuta</dt><dd><ProvenanceBadge provenance={currencyProvenance as "explicit" | "profile" | "tool-default" | "system-derived"} /></dd></div>}
             </dl>
-            {assumptions.length > 0 && <details><summary>Assumptions</summary><dl class="assumptions">{assumptions.map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{displayValue(value)}</dd></div>)}</dl></details>}
-            {formulas.length > 0 && <details><summary>Formula</summary><dl class="assumptions">{formulas.map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{displayValue(value)}</dd></div>)}</dl></details>}
+            {assumptions.length > 0 && <details><summary>Ipotesi</summary><dl class="assumptions">{assumptions.map(([key, value]) => <div key={key}><dt>{RESULT_LABEL_IT[key] ?? FIELD_LABEL_IT[key] ?? key}</dt><dd>{displayValue(value)}</dd></div>)}</dl></details>}
+            {formulas.length > 0 && <details><summary>Formula</summary><dl class="assumptions">{formulas.map(([key, value]) => <div key={key}><dt>{RESULT_LABEL_IT[key] ?? FIELD_LABEL_IT[key] ?? key}</dt><dd>{displayValue(value)}</dd></div>)}</dl></details>}
           </>
         )}
       </ToolResultPanel>

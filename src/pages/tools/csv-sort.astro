@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CsvSortTool } from "../../components/tools/csv-sort/CsvSortTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="CSV Sort" description="Sort CSV rows locally with stable lexical, numeric, or date comparators.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>CSV Sort</h1>
-      <p class="lede">Order rows by one selected column with a declared comparator, direction, and empty-value policy.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Sorting is local and preserves input rows.</span></div>
-    </header>
-    <CsvSortTool client:load />
-    <section class="method-card"><h2>Sort contract</h2><ul><li>Equal values retain their original row order.</li><li>Numeric and date comparators use finite numeric values or ISO-like dates.</li><li>Invalid columns fail before a result is presented.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="csv-sort">
+  <CsvSortTool client:load />
+</ItalianToolPage>

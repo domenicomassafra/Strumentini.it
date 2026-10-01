@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { DomainFrequencyCounterTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="Domain / Source Frequency Counter" description="Count research URLs by normalized domain with deterministic ordering.">
+
+<ItalianToolPage toolId="domain-frequency-counter">
   <DomainFrequencyCounterTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

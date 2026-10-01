@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ScreenshotBorderBackgroundHelperTool } from "../../components/tools/image-visual/ScreenshotBorderBackgroundHelperTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Screenshot Border / Background Helper" description="Add a measured border and background around a local screenshot using a bounded canvas output.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Screenshot Border / Background Helper</h1>
-      <p class="lede">Add a measured border and background around a local screenshot using a bounded canvas output.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <ScreenshotBorderBackgroundHelperTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Border policy</h2><ul><li>Adds a measured border and background around a local screenshot with bounded canvas output.</li><li>Uses explicit dimensions and color; the source screenshot is not modified.</li><li>No screenshot is uploaded.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="screenshot-border-background-helper">
+  <ScreenshotBorderBackgroundHelperTool client:load />
+</ItalianToolPage>

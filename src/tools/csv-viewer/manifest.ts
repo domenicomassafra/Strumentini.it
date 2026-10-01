@@ -8,7 +8,7 @@ export const csvViewerManifest = makeTableManifest({
   keywords: ["csv", "table", "preview", "rows"],
   jobs: ["preview a csv table", "inspect csv rows", "view a local csv file"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-021", fixtureFamilies: ["csv-rfc4180"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-021", fixtureFamilies: ["csv-rfc4180", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "CsvViewerTool",
 });

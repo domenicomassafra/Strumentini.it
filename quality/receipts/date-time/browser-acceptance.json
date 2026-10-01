@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "date-difference",
+    "add-subtract-days",
+    "working-hours",
+    "timezone-converter",
+    "meeting-time-planner",
+    "duration-calculator",
+    "decimal-hours-converter",
+    "timesheet-totaler",
+    "week-number-converter",
+    "quarter-date-mapper",
+    "deadline-countdown",
+    "recurring-date-generator",
+    "age-date-anniversary",
+    "calendar-date-list-generator",
+    "ics-event-builder",
+    "ics-viewer",
+    "epoch-batch-converter"
+  ],
+  "routesChecked": 17,
+  "keyboard": "every submit action exercised with Enter",
+  "accessibility": "all interactive controls in the tool form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObservedFor": [
+    "date-difference",
+    "add-subtract-days",
+    "working-hours",
+    "timezone-converter",
+    "meeting-time-planner",
+    "duration-calculator",
+    "decimal-hours-converter",
+    "timesheet-totaler",
+    "week-number-converter",
+    "quarter-date-mapper",
+    "deadline-countdown",
+    "recurring-date-generator",
+    "age-date-anniversary",
+    "calendar-date-list-generator",
+    "ics-event-builder",
+    "ics-viewer",
+    "epoch-batch-converter"
+  ],
+  "results": [
+    {
+      "toolId": "date-difference",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "add-subtract-days",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "working-hours",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "timezone-converter",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "meeting-time-planner",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "duration-calculator",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "decimal-hours-converter",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "timesheet-totaler",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "week-number-converter",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "quarter-date-mapper",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "deadline-countdown",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "recurring-date-generator",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "age-date-anniversary",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "calendar-date-list-generator",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "ics-event-builder",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "ics-viewer",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "epoch-batch-converter",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    }
+  ]
+}

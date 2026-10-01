@@ -27,8 +27,8 @@ export function TextDiffTool() {
     (signal: AbortSignal) => toolRuntime.run("text-diff", { before, after }, {}, signal),
     {
       formatError: (run) => run.message === "INVALID_DIFF_TOO_LARGE"
-        ? "This line-by-line diff exceeds the bounded local LCS limit. Split the text into smaller sections."
-        : run.message,
+        ? "Il confronto riga per riga supera il limite locale. Dividi il testo in sezioni più piccole."
+        : "Impossibile confrontare i testi. Controlla i valori inseriti.",
     },
   );
 

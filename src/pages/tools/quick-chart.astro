@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { QuickChartTool } from "../../components/tools/quick-chart/QuickChartTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Quick Chart From Table" description="Build a bounded local bar chart from a table.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>Quick Chart From Table</h1>
-      <p class="lede">Aggregate one label column and an optional numeric value column into a local bar chart.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Chart data is rendered in the browser and can be downloaded as SVG.</span></div>
-    </header>
-    <QuickChartTool client:load />
-    <section class="method-card"><h2>Chart contract</h2><ul><li>Count mode needs only a label column; sum, min, and max need finite numeric values.</li><li>Labels and values are capped for a readable bounded result.</li><li>The SVG is generated locally with escaped labels.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="quick-chart">
+  <QuickChartTool client:load />
+</ItalianToolPage>

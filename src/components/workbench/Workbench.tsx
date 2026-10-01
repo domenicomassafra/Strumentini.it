@@ -29,6 +29,8 @@ import {
 import { WORK_CONTEXT_PACKS, getRecurringJob } from "../../onboarding/contexts";
 import { goldToolIds } from "../../onboarding/quality";
 import { qualityIndex } from "../../generated/quality";
+import { categoryLabelIt } from "../../i18n/it/taxonomy";
+import { toolIconSvg } from "../../ui/tool-icons";
 import { formatRecentActivity, getWorkbenchSuggestions } from "./ux";
 import { COPY, WEEKDAYS } from "./copy";
 import { LedgerRow, type LedgerValue } from "./LedgerRow";
@@ -48,6 +50,11 @@ export { formatRecentActivity, getWorkbenchSuggestions } from "./ux";
 export type { WorkbenchSuggestion } from "./ux";
 
 const DAYS = WEEKDAYS;
+const PROFILE_FIELD_LABELS: Readonly<Record<string, string>> = {
+  ...COPY.workProfile.fields,
+  workweek: COPY.workProfile.workweek,
+};
+const WEEKDAY_LABELS = new Map(DAYS.map(({ code, label }) => [code, label]));
 
 type Repository = ReturnType<typeof createWorkbenchRepository>;
 const MAX_CONFIG_FILE_BYTES = 1024 * 1024;
@@ -75,6 +82,11 @@ function runtimeLabel(tool: ToolSummary): string {
   return COPY.runtime.network;
 }
 
+function toolIcon(tool: ToolSummary | undefined) {
+  if (tool === undefined) return undefined;
+  return <span class={styles.toolIcon} aria-hidden="true" dangerouslySetInnerHTML={{ __html: toolIconSvg(tool, "workbench-tool-icon") }} />;
+}
+
 function profileUsage(tool: ToolSummary | undefined, profile: WorkProfile): string {
   if (tool === undefined || tool.profileFields.length === 0) return "";
   const source = profile as unknown as Readonly<Record<string, unknown>>;
@@ -82,7 +94,12 @@ function profileUsage(tool: ToolSummary | undefined, profile: WorkProfile): stri
     .filter(({ key, sensitive }) => sensitive !== true && Object.prototype.hasOwnProperty.call(source, key))
     .map(({ key }) => {
       const value = source[key];
-      return key + ": " + (Array.isArray(value) ? value.join(", ") : String(value));
+      const renderedValue = key === "workweek" && Array.isArray(value)
+        ? value.map((day) => WEEKDAY_LABELS.get(day as DayCode) ?? String(day)).join(", ")
+        : Array.isArray(value)
+          ? value.join(", ")
+          : String(value);
+      return (PROFILE_FIELD_LABELS[key] ?? key) + ": " + renderedValue;
     })
     .join(" · ");
 }
@@ -228,7 +245,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
   async function previewImport(file: File | undefined) {
     if (file === undefined) return;
     if (file.size > MAX_CONFIG_FILE_BYTES) {
-      setImportPreview({ ok: false, error: "This configuration exceeds the local size limit." });
+      setImportPreview({ ok: false, error: "La configurazione supera il limite locale di dimensione." });
       return;
     }
     try {
@@ -245,7 +262,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
         toolCount: state.installedTools.length,
         packCount: state.packs.length,
       });
-      setImportPreview({ ok: false, error: "This configuration could not be read. Try another file." });
+      setImportPreview({ ok: false, error: "Non è stato possibile leggere la configurazione. Prova un altro file." });
     }
   }
 
@@ -325,9 +342,9 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
       </header>
 
       {warning !== "" && (
-        <section class={styles.warning} role="status" aria-label="Storage warning">
+        <section class={styles.warning} role="status" aria-label="Avviso di archiviazione">
           <strong>{COPY.storage.title}</strong>
-          <span>{COPY.storage.body} {warning}</span>
+          <span>{COPY.storage.body}</span>
           <button type="button" onClick={() => void persist(state)}>{COPY.storage.retry}</button>
         </section>
       )}
@@ -363,13 +380,14 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
                   rowId={id}
                   installed
                   title={name}
+                  icon={toolIcon(tool)}
                   task={tool === undefined ? undefined : tool.summary}
                   value={toolValue(id, tool)}
                   detail={tool === undefined
                     ? <small class={styles.rowMeta}>{COPY.yourTools.unavailable}</small>
                     : (
                       <>
-                        <small class={styles.rowMeta}>{runtimeLabel(tool)}</small>
+                        <small class={styles.rowMeta}>{categoryLabelIt(tool.category)} · {gold.has(tool.id) ? "Verificato" : "In verifica"} · {runtimeLabel(tool)}</small>
                         {usage !== "" && (
                           <small class={styles.rowMeta}>
                             {usage} <b>{COPY.provenance}</b>
@@ -460,6 +478,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
                   rowId={entry.toolId}
                   dataset={{ "data-recent-tool-id": entry.toolId }}
                   title={toolName(entry.toolId, tools)}
+                  icon={toolIcon(tool)}
                   task={COPY.recent.openedTimes(entry.useCount)}
                   // A tool with no produced value still reports its runtime
                   // state here, so the column is never blank.
@@ -497,6 +516,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
                 rowId={tool.id}
                 dataset={{ "data-suggestion-id": tool.id }}
                 title={tool.name}
+                icon={toolIcon(tool)}
                 task={tool.summary}
                 value={{ state: runtimeLabel(tool) }}
                 detail={<small class={styles.reason} data-suggestion-reason>{reason}</small>}
@@ -700,7 +720,7 @@ export function Workbench({ tools }: { tools: readonly ToolSummary[] }) {
             ) : (
               <>
                 <strong>{COPY.portability.importRejected}</strong>
-                <span>{importPreview.error}</span>
+                <span>La configurazione non è valida oppure non è compatibile con questa versione.</span>
               </>
             )}
           </div>

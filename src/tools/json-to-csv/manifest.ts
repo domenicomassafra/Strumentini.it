@@ -8,7 +8,7 @@ export const jsonToCsvManifest = makeTableManifest({
   keywords: ["json", "csv", "records", "schema"],
   jobs: ["convert json to csv", "export json records as csv", "turn json objects into a table"],
   inputTypes: ["file", "json", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-034", fixtureFamilies: ["json-csv-conversion", "csv-rfc4180"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-034", fixtureFamilies: ["json-csv-conversion", "csv-rfc4180", "data-table-gold"] },
   handoff: { accepts: [{ type: "structured" as const, format: "json" as const, maxBytes: 10 * 1024 * 1024 }], emits: [{ type: "table" as const, format: "csv" as const }] },
   component: "JsonToCsvTool",
 });

@@ -13,7 +13,7 @@ export const findReplacePreviewManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-012", fixtureFamilies: ["word-character-line-count"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-012", fixtureFamilies: ["word-character-line-count", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 
 export default findReplacePreviewManifest;

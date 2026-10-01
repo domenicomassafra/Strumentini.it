@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CsvJoinTool } from "../../components/tools/csv-join/CsvJoinTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="CSV Join" description="Join two local CSV tables on explicit key columns.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>CSV Join</h1>
-      <p class="lede">Combine two tables using explicit key positions and an inner, left, right, or full join mode.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Both source tables stay in the browser.</span></div>
-    </header>
-    <CsvJoinTool client:load />
-    <section class="method-card"><h2>Join contract</h2><ul><li>Key column counts must match and remain within each table.</li><li>Right headers receive a visible suffix to avoid collisions.</li><li>Matched and unmatched row counts are reported with the output.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="csv-join">
+  <CsvJoinTool client:load />
+</ItalianToolPage>

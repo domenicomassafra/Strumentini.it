@@ -1,23 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ScopeCreepCostTool } from "../../components/tools/business-math/ScopeCreepCostTool";
-import { scopeCreepCostConfig } from "../../components/tools/business-math/configs";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title={scopeCreepCostConfig.title} description={scopeCreepCostConfig.lede}>
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
-      <p class="eyebrow">Business math</p>
-      <h1>{scopeCreepCostConfig.title}</h1>
-      <p class="lede">{scopeCreepCostConfig.lede}</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Project figures remain local.</span></div>
-    </header>
-    <ScopeCreepCostTool client:load />
-    <section class="method-card" aria-labelledby="scope-method">
-      <p class="eyebrow">Rules &amp; assumptions</p>
-      <h2 id="scope-method">Additional work has a visible price</h2>
-      <ul><li>Additional cost = additional hours × hourly rate.</li><li>Budget variance is the original budget minus the revised cost.</li></ul>
-    </section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="scope-creep-cost">
+  <ScopeCreepCostTool client:load />
+</ItalianToolPage>

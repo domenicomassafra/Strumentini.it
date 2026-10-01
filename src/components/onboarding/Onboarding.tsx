@@ -128,7 +128,7 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
     const result = await repositoryRef.current.save(next);
     setSaving(false);
     if (!result.persisted) {
-      setWarning(result.warning ?? "Your starter set is ready, but this browser could not save it.");
+      setWarning(result.warning ?? "La configurazione iniziale è pronta, ma questo browser non è riuscito a salvarla.");
       return;
     }
     setCompleted(true);
@@ -270,7 +270,7 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
                         <input type="checkbox" checked={selected} onChange={(event) => updateReview(toggleStarterTool(review, item.tool.id, event.currentTarget.checked))} />
                         <span><strong>{item.tool.name}</strong><small>{item.tool.summary}</small><em data-starter-reason>{item.reason}</em></span>
                       </label>
-                      <span class={item.quality === "gold" ? styles.goldBadge : styles.manualBadge}>{item.quality === "gold" ? "Gold" : "Manual add"}</span>
+                      <span class={item.quality === "gold" ? styles.goldBadge : styles.manualBadge}>{item.quality === "gold" ? "Gold" : "Aggiunto manualmente"}</span>
                     </li>
                   );
                 })}

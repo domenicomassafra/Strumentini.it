@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ReferenceListSorterTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="Reference List Sorter" description="Sort reference records stably by author, year, or title.">
+
+<ItalianToolPage toolId="reference-list-sorter">
   <ReferenceListSorterTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

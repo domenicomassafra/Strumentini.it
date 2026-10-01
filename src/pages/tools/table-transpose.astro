@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { TableTransposeTool } from "../../components/tools/table-transpose/TableTransposeTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Table Transpose" description="Transpose a local table by swapping its row and column axes.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>Table Transpose</h1>
-      <p class="lede">Flip a bounded table so each source column becomes a clearly named output row.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Transposition is local and deterministic.</span></div>
-    </header>
-    <TableTransposeTool client:load />
-    <section class="method-card"><h2>Transpose contract</h2><ul><li>The first parsed row is the source header.</li><li>Blank and duplicate headers receive stable output names.</li><li>Missing source cells become empty strings.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="table-transpose">
+  <TableTransposeTool client:load />
+</ItalianToolPage>

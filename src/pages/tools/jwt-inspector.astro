@@ -1,13 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { JwtInspectorTool } from "../../components/tools/JwtInspectorTool";
-import "../../components/tools/tool-surface.css";
-const title = "JWT Inspector";
 ---
-<BaseLayout title={title} description="Inspect JWT structure and claims without verifying trust.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Inspect JWT structure and claims without verifying trust.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No signature or issuer verification is performed.</span></div></header>
-    <JwtInspectorTool client:load />
-    <section class="method-card"><p class="eyebrow">Method</p><h2>Inspection only</h2><p>The compact serialization is decoded with strict base64url and JSON parsing. A visible warning marks unsecured JWTs; the result must not be used as an authentication decision.</p></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="jwt-inspector">
+  <JwtInspectorTool client:load />
+</ItalianToolPage>

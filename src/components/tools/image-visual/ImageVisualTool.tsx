@@ -45,7 +45,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     const run = await toolRuntime.run(toolId, input, {}, signal);
     if (!run.ok) return run;
     return { ok: true, tool: run.tool, value: asResult(run.value) ?? (Array.isArray(run.value) ? { items: run.value } : { value: run.value }), defaults: run.defaults };
-  }, { formatThrownError: (error) => error instanceof Error ? error.message : "Image operation failed." });
+  }, { formatThrownError: () => "L'operazione sull'immagine non è riuscita. Controlla file e parametri." });
   const result = operation.result;
 
   function clearResult() {
@@ -85,19 +85,39 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   }
 
   const resultEntries = result === null ? [] : Object.entries(result).filter(([key]) => key !== "blob" && key !== "palette" && key !== "items" && key !== "dominant");
+  const resultLabel = (key: string): string => ({
+    width: "Larghezza",
+    height: "Altezza",
+    ratio: "Rapporto",
+    mime: "Tipo MIME",
+    filename: "Nome file",
+    byteLength: "Byte",
+    color: "Colore",
+    hex: "Esadecimale",
+    rgb: "RGB",
+    hsl: "HSL",
+    contrast: "Contrasto",
+    ratioValue: "Rapporto",
+    passAA: "Conforme AA",
+    passAAA: "Conforme AAA",
+    count: "Quantità",
+    columns: "Colonne",
+    rows: "Righe",
+    warnings: "Avvisi",
+  }[key] ?? key);
 
   return (
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit} noValidate>
         {needsFile(toolId) && (
           <label class="field">
-            <span>{needsMultipleFiles(toolId) ? "Images" : "Image"}</span>
+            <span>{needsMultipleFiles(toolId) ? "Immagini" : "Immagine"}</span>
             <input type="file" accept="image/jpeg,image/png,image/webp" multiple={needsMultipleFiles(toolId)} onChange={needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
-            <small>Local file input; no upload or remote fallback.</small>
+            <small>File elaborati in locale, senza caricamenti né elaborazione remota alternativa.</small>
           </label>
         )}
         {toolId === "image-compare-slider" && (
-          <><label class="field"><span>Second image</span><input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { const selected = event.currentTarget instanceof HTMLInputElement ? event.currentTarget.files?.[0] ?? null : null; setSecondFile(selected); operation.reset(); }} disabled={operation.isRunning} /></label></>
+          <><label class="field"><span>Seconda immagine</span><input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { const selected = event.currentTarget instanceof HTMLInputElement ? event.currentTarget.files?.[0] ?? null : null; setSecondFile(selected); operation.reset(); }} disabled={operation.isRunning} /></label></>
         )}
         {needsNumber(toolId) && (
           <div class="field-grid">
@@ -107,27 +127,27 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
         )}
         {needsColor(toolId) && (
           <div class="field-grid">
-            <label class="field"><span>{toolId === "contrast-checker" ? "Foreground" : "Color"}</span><input type="color" value={value || "#336699"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>
-            {toolId === "contrast-checker" && <label class="field"><span>Background</span><input type="color" value={secondValue || "#ffffff"} onInput={(event) => setSecondValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
+            <label class="field"><span>{toolId === "contrast-checker" ? "Primo piano" : "Colore"}</span><input type="color" value={value || "#336699"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>
+            {toolId === "contrast-checker" && <label class="field"><span>Sfondo</span><input type="color" value={secondValue || "#ffffff"} onInput={(event) => setSecondValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
           </div>
         )}
-        {needsText(toolId) && <label class="field"><span>Value</span><input value={value} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
-        {needsOutputFormat(toolId) && <label class="field"><span>Output format</span><select value={mime} onChange={(event) => setMime(event.currentTarget.value)} disabled={operation.isRunning}><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select></label>}
-        {needsQuality(toolId) && <label class="field"><span>Quality (when supported)</span><input type="number" min="0.1" max="1" step="0.01" value={quality} onInput={(event) => setQuality(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
-        <InlineError message={operation.error} />
+        {needsText(toolId) && <label class="field"><span>Valore</span><input value={value} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
+        {needsOutputFormat(toolId) && <label class="field"><span>Formato di uscita</span><select value={mime} onChange={(event) => setMime(event.currentTarget.value)} disabled={operation.isRunning}><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select></label>}
+        {needsQuality(toolId) && <label class="field"><span>Qualità, se supportata</span><input type="number" min="0.1" max="1" step="0.01" value={quality} onInput={(event) => setQuality(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
+        <InlineError message={operation.error === "" ? "" : "L'operazione non è riuscita. Controlla i file e i parametri inseriti."} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Run locally</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Esegui in locale</ToolSubmitButton>
           {operation.isRunning ? <ToolCancelButton onCancel={operation.cancel} /> : <ToolResetButton onClick={reset} />}
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow="Result" placeholder="The bounded local result appears here." busy={operation.isRunning}>
+      <ToolResultPanel eyebrow="Risultato" placeholder="Il risultato locale apparirà qui." busy={operation.isRunning}>
         {result !== null && (
           <>
-            {resultEntries.length > 0 && <dl class="assumptions">{resultEntries.map(([key, item]) => <div key={key}><dt>{key}</dt><dd>{formatValue(item)}</dd></div>)}</dl>}
+            {resultEntries.length > 0 && <dl class="assumptions">{resultEntries.map(([key, item]) => <div key={key}><dt>{resultLabel(key)}</dt><dd>{formatValue(item)}</dd></div>)}</dl>}
             {typeof result.blob === "object" && result.blob instanceof Blob && <DownloadButton result={result} />}
             {Array.isArray(result.items) && <ul>{result.items.map((item, index) => <li key={index}><ItemDownload item={item} />{!isBlobRecord(item) && formatValue(item)}</li>)}</ul>}
             {Array.isArray(result.palette) && <ul class="palette-list">{result.palette.map((item) => <li key={JSON.stringify(item)}><span class="color-swatch" style={{ background: String((item as { hex?: string }).hex ?? "") }} />{formatValue(item)}</li>)}</ul>}
-            {typeof result.dominant === "object" && result.dominant !== null && <p>Dominant: {formatValue(result.dominant)}</p>}
+            {typeof result.dominant === "object" && result.dominant !== null && <p>Colore dominante: {formatValue(result.dominant)}</p>}
           </>
         )}
       </ToolResultPanel>
@@ -145,7 +165,7 @@ function DownloadButton({ result }: { readonly result: ResultValue }) {
     return () => URL.revokeObjectURL(nextUrl);
   }, [blob]);
   if (!(blob instanceof Blob)) return null;
-  return url === "" ? <p role="status">Preparing local download…</p> : <p><a class="button primary" href={url} download={String(result.filename ?? "image-output")}>Download output</a></p>;
+  return url === "" ? <p role="status">Preparazione del file locale…</p> : <p><a class="button primary" href={url} download={String(result.filename ?? "immagine-risultato")}>Scarica risultato</a></p>;
 }
 
 function isBlobRecord(value: unknown): value is { readonly blob: Blob; readonly filename?: unknown } {
@@ -155,7 +175,7 @@ function isBlobRecord(value: unknown): value is { readonly blob: Blob; readonly 
 function ItemDownload({ item }: { readonly item: unknown }) {
   const record = isBlobRecord(item) ? item : null;
   const blob = record?.blob;
-  const filename = typeof record?.filename === "string" ? record.filename : "image-output";
+  const filename = typeof record?.filename === "string" ? record.filename : "immagine-risultato";
   const [url, setUrl] = useState("");
   useEffect(() => {
     if (!(blob instanceof Blob)) return;
@@ -164,7 +184,7 @@ function ItemDownload({ item }: { readonly item: unknown }) {
     return () => URL.revokeObjectURL(nextUrl);
   }, [blob]);
   if (blob === undefined) return null;
-  return url === "" ? <span role="status">Preparing local download…</span> : <a class="button primary" href={url} download={filename}>Download {filename}</a>;
+  return url === "" ? <span role="status">Preparazione del file locale…</span> : <a class="button primary" href={url} download={filename}>Scarica {filename}</a>;
 }
 
 function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: File | null, files: File[], value: string, secondValue: string, numberValue: string, secondNumberValue: string, mime: string, quality: string): unknown {
@@ -210,11 +230,11 @@ function needsSecondNumber(toolId: ImageVisualToolId): boolean {
 }
 
 function numberLabel(toolId: ImageVisualToolId, second: boolean): string {
-  if (toolId === "image-crop") return second ? "Height" : "Width";
-  if (toolId === "aspect-ratio-calculator" || toolId === "platform-size-presets") return second ? "Height" : "Width";
-  if (toolId === "palette-extractor") return "Colors";
-  if (toolId === "contact-sheet-generator") return "Columns";
-  return second ? "Padding" : "Border";
+  if (toolId === "image-crop") return second ? "Altezza" : "Larghezza";
+  if (toolId === "aspect-ratio-calculator" || toolId === "platform-size-presets") return second ? "Altezza" : "Larghezza";
+  if (toolId === "palette-extractor") return "Colori";
+  if (toolId === "contact-sheet-generator") return "Colonne";
+  return second ? "Spaziatura" : "Bordo";
 }
 
 function needsColor(toolId: ImageVisualToolId): boolean {

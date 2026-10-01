@@ -13,7 +13,7 @@ export const listDifferenceManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-011", fixtureFamilies: ["list-set-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-011", fixtureFamilies: ["list-set-ops", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 
 export default listDifferenceManifest;

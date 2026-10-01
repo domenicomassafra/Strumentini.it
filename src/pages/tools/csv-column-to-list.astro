@@ -1,8 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CsvColumnToListTool } from "../../components/tools/CsvColumnToListTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="CSV Column to List" description="Extract one named or numbered CSV column into a local list.">
-  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>CSV Column to List</h1><p class="lede">Extract a CSV column while preserving quoted delimiters, quotes, and line breaks.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your CSV is not uploaded.</span></div></header><CsvColumnToListTool client:load /><section class="method-card"><h2>Extraction policy</h2><ul><li>Columns can be selected by header name or zero-based index.</li><li>The header row is optional and explicit; malformed quoted fields fail visibly.</li><li>The result is a newline-separated list, not a guessed data type or semantic cleanup.</li></ul></section></article>
-</BaseLayout>
+
+<ItalianToolPage toolId="csv-column-to-list">
+  <CsvColumnToListTool client:load />
+</ItalianToolPage>

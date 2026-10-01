@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { DominantColorExtractorTool } from "../../components/tools/image-visual/DominantColorExtractorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Dominant Color Extractor" description="Find the dominant quantized color from a bounded local image sample.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Dominant Color Extractor</h1>
-      <p class="lede">Find the dominant quantized color from a bounded local image sample.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <DominantColorExtractorTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Color sampling scope</h2><ul><li>Samples a bounded local image and reports its dominant quantized color.</li><li>Sampling and quantization are deterministic for the selected image.</li><li>Does not provide a full palette or image-quality analysis.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="dominant-color-extractor">
+  <DominantColorExtractorTool client:load />
+</ItalianToolPage>

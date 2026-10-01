@@ -17,7 +17,7 @@ export function CsvCleanerTool() {
   const controller = useRef<AbortController | null>(null);
 
   async function clean() {
-    if (!file) { setError("Choose a CSV file first."); return; }
+    if (!file) { setError("Scegli prima un file CSV."); return; }
     setError(""); setResult(null); setProgress(0); setProcessing(true); setHandoffDismissed(false); setHandoffStatus("");
     controller.current = new AbortController();
     try {
@@ -26,8 +26,8 @@ export function CsvCleanerTool() {
       if (!run.ok) throw new Error(run.message);
       setResult(run.value as CsvCleanerOutput);
     } catch (caught) {
-      if (caught instanceof CsvCleanerError && caught.code === "CANCELLED") setError("Cleaning cancelled. No output was produced.");
-      else setError(caught instanceof Error ? caught.message : "CSV cleaning failed.");
+      if (caught instanceof CsvCleanerError && caught.code === "CANCELLED") setError("Pulizia annullata. Non è stato prodotto alcun risultato.");
+      else setError("La pulizia del CSV non è riuscita. Controlla il file e riprova.");
     } finally { setProcessing(false); controller.current = null; }
   }
 
@@ -42,16 +42,16 @@ export function CsvCleanerTool() {
   const gutterState = gutterStateFromResult(result, error, processing);
   return <div class="tool-operation">
     <section class="tool-form-card">
-      <label class="field"><span>CSV file</span><input aria-label="CSV file" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => { setFile(event.currentTarget.files?.[0] ?? null); setResult(null); setError(""); setHandoffDismissed(false); setHandoffStatus(""); }} /></label>
-      {file && <p class="file-note">{file.name} · {(file.size / 1024).toFixed(1)} KiB{file.size > CSV_SOFT_FILE_BYTES ? " · large file" : ""}</p>}
-      <p class="file-note">Soft guidance: 10 MiB · hard limit: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB.</p>
+      <label class="field"><span>File CSV</span><input aria-label="File CSV" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => { setFile(event.currentTarget.files?.[0] ?? null); setResult(null); setError(""); setHandoffDismissed(false); setHandoffStatus(""); }} /></label>
+      {file && <p class="file-note">{file.name} · {(file.size / 1024).toFixed(1)} KiB{file.size > CSV_SOFT_FILE_BYTES ? " · file grande" : ""}</p>}
+      <p class="file-note">Dimensione consigliata: 10 MiB · limite massimo: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB.</p>
       {processing && <><progress max={1} value={progress} aria-label="Lettura del CSV in corso" /><button type="button" onClick={() => controller.current?.abort()}>{it(CONTROL.cancel)}</button></>}
       {error && <p role="alert" class="error">{error}</p>}
-      <button class="primary tool-submit" type="button" disabled={processing} onClick={clean}>Clean CSV</button>
+      <button class="primary tool-submit" type="button" disabled={processing} onClick={clean}>Pulisci CSV</button>
     </section>
-    <section class="result-panel gutter" data-state={gutterState} aria-live="polite"><p class="gutter-label eyebrow">Anteprima e modifiche</p>{result ? <><strong class="gutter-value">{result.rows} {result.rows === 1 ? "riga" : "righe"}</strong><dl class="gutter-rows"><div><dt>Colonne</dt><dd>{result.columns}</dd></div><div><dt>Delimitatore</dt><dd>{result.delimiter === "\t" ? "TAB" : result.delimiter}</dd></div></dl><ul><li>BOM removed: {result.changes.strippedBom ? "yes" : "no"}</li><li>Record line endings normalized: {result.changes.normalizedRecordBreaks}</li><li>Warnings: {result.warnings.length}</li></ul>{result.warnings.map((warning) => <p class="csv-warning" key={`${warning.code}-${warning.row ?? 0}`}>{warning.code}: {warning.message}</p>)}<pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Scarica CSV pulito</button>
-      {!handoffDismissed && handoffTargets.length > 0 && <aside class="handoff-card" aria-label="Compatible next tools"><p class="eyebrow">Next tool</p><strong>Pass this cleaned table without downloading and re-uploading.</strong><p>{handoffTargets[0]?.preview}</p><pre class="handoff-preview">{result.output.split("\n").slice(0, 4).join("\n")}</pre><p class="file-note">The payload is transferred one time in memory to a same-origin tool window. It is not placed in the URL, Recent, or local storage.</p><div class="actions">{handoffTargets.map((proposal) => <button type="button" key={proposal.target.id} onClick={() => { const opened = openHandoffTarget(proposal, result.handoff, { sourceToolId: "csv-cleaner" }); setHandoffStatus(opened ? `Opened ${proposal.target.name}; waiting for the target to receive this payload.` : "The browser blocked the new tool window. Allow pop-ups for this explicit handoff and try again."); }}>{`Pass to ${proposal.target.name}`}</button>)}<button type="button" onClick={() => { setHandoffDismissed(true); setHandoffStatus("Handoff dismissed. The cleaned result remains on this page only."); }}>Dismiss handoff</button></div></aside>}
-      {handoffStatus && <p role="status">{handoffStatus}</p>}</> : <p class="result-placeholder">A bounded preview and exact change summary appear here.</p>}</section>
+    <section class="result-panel gutter" data-state={gutterState} aria-live="polite"><p class="gutter-label eyebrow">Anteprima e modifiche</p>{result ? <><strong class="gutter-value">{result.rows} {result.rows === 1 ? "riga" : "righe"}</strong><dl class="gutter-rows"><div><dt>Colonne</dt><dd>{result.columns}</dd></div><div><dt>Delimitatore</dt><dd>{result.delimiter === "\t" ? "TAB" : result.delimiter}</dd></div></dl><ul><li>BOM rimosso: {result.changes.strippedBom ? "sì" : "no"}</li><li>Interruzioni di riga normalizzate: {result.changes.normalizedRecordBreaks}</li><li>Avvisi: {result.warnings.length}</li></ul>{result.warnings.map((warning) => <p class="csv-warning" key={`${warning.code}-${warning.row ?? 0}`}>{warning.code}: avviso sulla riga {warning.row ?? "?"}</p>)}<pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Scarica CSV pulito</button>
+      {!handoffDismissed && handoffTargets.length > 0 && <aside class="handoff-card" aria-label="Strumenti successivi compatibili"><p class="eyebrow">Strumento successivo</p><strong>Passa questa tabella pulita direttamente a un altro strumento, senza scaricarla e ricaricarla.</strong><p>{handoffTargets[0]?.preview}</p><pre class="handoff-preview">{result.output.split("\n").slice(0, 4).join("\n")}</pre><p class="file-note">I dati vengono trasferiti una sola volta in memoria a una finestra dello stesso sito. Non vengono inseriti nell'URL, nei Recenti o nell'archiviazione locale.</p><div class="actions">{handoffTargets.map((proposal) => <button type="button" key={proposal.target.id} onClick={() => { const opened = openHandoffTarget(proposal, result.handoff, { sourceToolId: "csv-cleaner" }); setHandoffStatus(opened ? `Aperto ${proposal.target.name}; attendo che lo strumento riceva i dati.` : "Il browser ha bloccato la nuova finestra. Consenti i popup per questo passaggio esplicito e riprova."); }}>{`Passa a ${proposal.target.name}`}</button>)}<button type="button" onClick={() => { setHandoffDismissed(true); setHandoffStatus("Passaggio annullato. Il risultato pulito resta soltanto in questa pagina."); }}>Chiudi passaggio</button></div></aside>}
+      {handoffStatus && <p role="status">{handoffStatus}</p>}</> : <p class="result-placeholder">Qui appariranno un'anteprima limitata e il riepilogo esatto delle modifiche.</p>}</section>
   </div>;
 }
 

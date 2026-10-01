@@ -215,7 +215,7 @@ export function jsonFormatterOperation(input: string, indent = 2, sortKeys = fal
     formatted: result.formatted,
     value: result.value,
     duplicateKeys: result.duplicateKeys,
-    warnings: result.duplicateKeys.length === 0 ? [] : ["Duplicate member names are preserved by the last-value-wins JSON parser."],
+    warnings: result.duplicateKeys.length === 0 ? [] : ["In presenza di chiavi duplicate, il parser JSON mantiene l'ultimo valore incontrato."],
   } as DeveloperWebResult;
 }
 
@@ -228,7 +228,7 @@ export function jsonValidatorOperation(input: string): DeveloperWebResult {
     valid: true,
     value: result.value,
     duplicateKeys: result.duplicateKeys,
-    warnings: result.duplicateKeys.length === 0 ? [] : ["Duplicate member names are not rejected by JSON grammar."],
+    warnings: result.duplicateKeys.length === 0 ? [] : ["La grammatica JSON non rifiuta automaticamente i nomi di membro duplicati."],
   } as DeveloperWebResult;
 }
 
@@ -857,6 +857,6 @@ export function jsonPathOperation(input: string, path: string): DeveloperWebResu
     matches: result.matches,
     matchCount: result.matches.length,
     matchTypes: result.matches.map((match) => pathValueLabel(match.value)),
-    warnings: parsed.duplicateKeys.length === 0 ? [] : ["Duplicate JSON member names were resolved last-value-wins before querying."],
+    warnings: parsed.duplicateKeys.length === 0 ? [] : ["Prima dell'interrogazione, le chiavi JSON duplicate sono state risolte mantenendo l'ultimo valore."],
   } as DeveloperWebResult;
 }

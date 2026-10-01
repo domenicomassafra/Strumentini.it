@@ -1,6 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PdfMetadataRemoverTool } from "../../components/tools/PdfMetadataRemoverTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="PDF Metadata Remover" description="Create a local PDF copy without addressable metadata."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF Metadata Remover</h1><p class="lede">Create a new local copy without the metadata carriers this engine addresses.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>The source file is never changed in place.</span></div></header><PdfMetadataRemoverTool client:load /><section class="method-card"><h2>Removal contract</h2><ul><li>Omits the Info dictionary and recognized metadata streams.</li><li>Does not claim to remove every possible PDF carrier.</li><li>Verifies the resulting page count before download.</li></ul></section></article></BaseLayout>
+
+<ItalianToolPage toolId="pdf-metadata-remover">
+  <PdfMetadataRemoverTool client:load />
+</ItalianToolPage>

@@ -1,13 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { HttpStatusReferenceTool } from "../../components/tools/HttpStatusReferenceTool";
-import "../../components/tools/tool-surface.css";
-const title = "HTTP Status Reference";
 ---
-<BaseLayout title={title} description="Look up common HTTP status classes and descriptions locally.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Developer</nav><p class="eyebrow">Developer</p><h1>{title}</h1><p class="lede">Look up common HTTP status classes and descriptions locally.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>No request is sent to any server.</span></div></header>
-    <HttpStatusReferenceTool client:load />
-    <section class="method-card"><p class="eyebrow">Method</p><h2>RFC 9110-aligned local reference</h2><p>Status classes and common codes are stored locally. Reason phrases are display hints; HTTP semantics do not require a particular phrase.</p></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="http-status-reference">
+  <HttpStatusReferenceTool client:load />
+</ItalianToolPage>

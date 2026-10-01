@@ -255,6 +255,24 @@ const developerWebEvidence = {
   lazyLoad: ["quality/receipts/developer-web/browser-acceptance.json"],
 } as const;
 
+const textWritingEvidence = {
+  locality: ["quality/receipts/text-writing/browser-acceptance.json"],
+  mobileA11y: ["quality/receipts/text-writing/browser-acceptance.json"],
+  lazyLoad: ["quality/receipts/text-writing/browser-acceptance.json"],
+} as const;
+
+const dateTimeEvidence = {
+  locality: ["quality/receipts/date-time/browser-acceptance.json"],
+  mobileA11y: ["quality/receipts/date-time/browser-acceptance.json"],
+  lazyLoad: ["quality/receipts/date-time/browser-acceptance.json"],
+} as const;
+
+const dataTableEvidence = {
+  locality: ["quality/receipts/data-table/browser-acceptance.json"],
+  mobileA11y: ["quality/receipts/data-table/browser-acceptance.json"],
+  lazyLoad: ["quality/receipts/data-table/browser-acceptance.json"],
+} as const;
+
 const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimension, readonly string[]>>>> = {
   "business-day": {
     locality: ["quality/receipts/browser-performance/fresh-browser-matrix.json"],
@@ -376,6 +394,55 @@ const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimensio
   "user-agent-parser": developerWebEvidence,
   "query-string-editor": developerWebEvidence,
   "json-path-playground": developerWebEvidence,
+  "word-character-line-counter": textWritingEvidence,
+  "case-converter": textWritingEvidence,
+  "whitespace-normalizer": textWritingEvidence,
+  "invisible-character-detector": textWritingEvidence,
+  "unicode-normalizer": textWritingEvidence,
+  "line-sorter": textWritingEvidence,
+  "line-deduplicator": textWritingEvidence,
+  "list-intersection": textWritingEvidence,
+  "list-difference": textWritingEvidence,
+  "find-replace-preview": textWritingEvidence,
+  "markdown-preview": textWritingEvidence,
+  "markdown-table-formatter": textWritingEvidence,
+  "slug-generator": textWritingEvidence,
+  "text-to-csv-rows": textWritingEvidence,
+  "csv-column-to-list": textWritingEvidence,
+  "date-difference": dateTimeEvidence,
+  "add-subtract-days": dateTimeEvidence,
+  "working-hours": dateTimeEvidence,
+  "timezone-converter": dateTimeEvidence,
+  "meeting-time-planner": dateTimeEvidence,
+  "duration-calculator": dateTimeEvidence,
+  "decimal-hours-converter": dateTimeEvidence,
+  "timesheet-totaler": dateTimeEvidence,
+  "week-number-converter": dateTimeEvidence,
+  "quarter-date-mapper": dateTimeEvidence,
+  "deadline-countdown": dateTimeEvidence,
+  "recurring-date-generator": dateTimeEvidence,
+  "age-date-anniversary": dateTimeEvidence,
+  "calendar-date-list-generator": dateTimeEvidence,
+  "ics-event-builder": dateTimeEvidence,
+  "ics-viewer": dateTimeEvidence,
+  "epoch-batch-converter": dateTimeEvidence,
+  "csv-viewer": dataTableEvidence,
+  "csv-delimiter-detector": dataTableEvidence,
+  "csv-encoding-fixer": dataTableEvidence,
+  "csv-column-selector": dataTableEvidence,
+  "csv-filter": dataTableEvidence,
+  "csv-sort": dataTableEvidence,
+  "csv-group-count": dataTableEvidence,
+  "csv-join": dataTableEvidence,
+  "csv-pivot-lite": dataTableEvidence,
+  "csv-to-json": dataTableEvidence,
+  "json-to-csv": dataTableEvidence,
+  "tsv-to-csv": dataTableEvidence,
+  "table-transpose": dataTableEvidence,
+  "missing-value-profiler": dataTableEvidence,
+  "column-type-profiler": dataTableEvidence,
+  "duplicate-row-profiler": dataTableEvidence,
+  "quick-chart": dataTableEvidence,
 };
 
 const globalEvidencePaths = {

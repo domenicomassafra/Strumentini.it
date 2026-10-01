@@ -22,6 +22,11 @@ import { gutterStateFor } from "./shared/ToolGutter";
 import { PreviousValue } from "./shared/PreviousValue";
 
 const UNITS: readonly RateUnit[] = ["hour", "day", "project"];
+const UNIT_LABELS: Readonly<Record<RateUnit, string>> = {
+  hour: "ora",
+  day: "giorno",
+  project: "progetto",
+};
 
 export function RateConverterTool() {
   const { profile, ready } = useWorkProfile();
@@ -49,8 +54,8 @@ export function RateConverterTool() {
     ),
     {
       formatError: (run) => run.message === "INVALID_PROJECT_HOURS_REQUIRED"
-        ? "Project hours are required when either side is a project rate."
-        : "Check the amount and work-basis assumptions.",
+        ? "Le ore di progetto sono obbligatorie quando una delle due tariffe è a progetto."
+        : "Controlla l'importo e le ipotesi sulla base di lavoro.",
     },
   );
 
@@ -70,39 +75,39 @@ export function RateConverterTool() {
   }
 
   const rateResult = operation.result;
-  const rateHeadline = rateResult === null ? "" : `${rateResult.currency} ${rateResult.amount} / ${to}`;
+  const rateHeadline = rateResult === null ? "" : `${rateResult.currency} ${rateResult.amount} / ${UNIT_LABELS[to]}`;
   return (
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit} noValidate>
         <div class="field-grid">
-          <label class="field"><span>Rate amount</span><input required inputMode="decimal" value={amount} onInput={(event) => setAmount(event.currentTarget.value)} placeholder="50.00" /></label>
+          <label class="field"><span>Importo della tariffa</span><input required inputMode="decimal" value={amount} onInput={(event) => setAmount(event.currentTarget.value)} placeholder="50,00" /></label>
           <label class="field">
-            <span>Currency label</span>
+            <span>Valuta</span>
             <input required value={currency} onInput={(event) => setCurrencyOverride(event.currentTarget.value.toUpperCase())} aria-describedby="currency-help" />
             <ProfileOverrideHint
               id="currency-help"
               ready={ready}
               overridden={currencyOverride !== undefined}
-              profileLabel="Work Profile default · label only, no FX conversion"
-              overrideLabel="Current task override · label only, no FX conversion"
+              profileLabel="Valore predefinito dal profilo · solo etichetta, nessuna conversione valutaria"
+              overrideLabel="Valore specifico per questa attività · solo etichetta, nessuna conversione valutaria"
             />
-            <ProfileResetButton disabled={currencyOverride === undefined} onReset={() => setCurrencyOverride(undefined)}>Use Work Profile currency</ProfileResetButton>
+            <ProfileResetButton disabled={currencyOverride === undefined} onReset={() => setCurrencyOverride(undefined)}>Usa la valuta del profilo</ProfileResetButton>
           </label>
         </div>
         <div class="field-grid">
-          <label class="field"><span>From</span><select value={from} onChange={(event) => setFrom(event.currentTarget.value as RateUnit)}>{UNITS.map((unit) => <option value={unit} key={unit}>{unit}</option>)}</select></label>
-          <label class="field"><span>To</span><select value={to} onChange={(event) => setTo(event.currentTarget.value as RateUnit)}>{UNITS.map((unit) => <option value={unit} key={unit}>{unit}</option>)}</select></label>
+          <label class="field"><span>Da</span><select value={from} onChange={(event) => setFrom(event.currentTarget.value as RateUnit)}>{UNITS.map((unit) => <option value={unit} key={unit}>{UNIT_LABELS[unit]}</option>)}</select></label>
+          <label class="field"><span>A</span><select value={to} onChange={(event) => setTo(event.currentTarget.value as RateUnit)}>{UNITS.map((unit) => <option value={unit} key={unit}>{UNIT_LABELS[unit]}</option>)}</select></label>
         </div>
         <label class="field">
-          <span>Hours per day</span>
+          <span>Ore al giorno</span>
           <input required inputMode="decimal" value={hoursPerDay} onInput={(event) => setHoursPerDayOverride(event.currentTarget.value)} />
-          <small>{hoursPerDayOverride === undefined ? "Tool default: 8 hours/day" : "Current task override"}</small>
-          <ProfileResetButton disabled={hoursPerDayOverride === undefined} onReset={() => setHoursPerDayOverride(undefined)}>Use 8-hour tool default</ProfileResetButton>
+          <small>{hoursPerDayOverride === undefined ? "Valore predefinito: 8 ore al giorno" : "Valore specifico per questa attività"}</small>
+          <ProfileResetButton disabled={hoursPerDayOverride === undefined} onReset={() => setHoursPerDayOverride(undefined)}>Usa il valore predefinito di 8 ore</ProfileResetButton>
         </label>
-        {usesProject && <label class="field"><span>Project hours</span><input required inputMode="decimal" value={projectHours} onInput={(event) => setProjectHours(event.currentTarget.value)} /><small>Required dimensional basis for a project rate.</small></label>}
+        {usesProject && <label class="field"><span>Ore del progetto</span><input required inputMode="decimal" value={projectHours} onInput={(event) => setProjectHours(event.currentTarget.value)} /><small>Base temporale necessaria per convertire una tariffa a progetto.</small></label>}
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Convert rate</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Converti tariffa</ToolSubmitButton>
           <ToolResetButton onClick={reset} disabled={operation.isRunning} />
         </ToolActions>
       </form>
@@ -114,10 +119,10 @@ export function RateConverterTool() {
           <>
             <dl class="assumptions">
               <div><dt>Formula</dt><dd>{operation.result.formula}</dd></div>
-              <div><dt>Hours/day</dt><dd>{operation.result.assumptions.hoursPerDay} · <ProvenanceBadge provenance={operation.result.provenance.hoursPerDay} /></dd></div>
-              {operation.result.assumptions.projectHours !== undefined && <div><dt>Project hours</dt><dd>{operation.result.assumptions.projectHours}</dd></div>}
-              <div><dt>Rounding</dt><dd>Final result only · half-up · 2 decimal places</dd></div>
-              <div><dt>Currency</dt><dd>{operation.result.currency} is a label only. No live or implied FX conversion.</dd></div>
+              <div><dt>Ore al giorno</dt><dd>{operation.result.assumptions.hoursPerDay} · <ProvenanceBadge provenance={operation.result.provenance.hoursPerDay} /></dd></div>
+              {operation.result.assumptions.projectHours !== undefined && <div><dt>Ore del progetto</dt><dd>{operation.result.assumptions.projectHours}</dd></div>}
+              <div><dt>Arrotondamento</dt><dd>Solo sul risultato finale · metà verso l'alto · 2 decimali</dd></div>
+              <div><dt>Valuta</dt><dd>{operation.result.currency} è soltanto un'etichetta. Nessuna conversione valutaria reale o implicita.</dd></div>
             </dl>
           </>
         )}

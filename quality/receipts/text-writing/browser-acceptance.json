@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "word-character-line-counter",
+    "case-converter",
+    "whitespace-normalizer",
+    "invisible-character-detector",
+    "unicode-normalizer",
+    "line-sorter",
+    "line-deduplicator",
+    "list-intersection",
+    "list-difference",
+    "find-replace-preview",
+    "markdown-preview",
+    "markdown-table-formatter",
+    "slug-generator",
+    "text-to-csv-rows",
+    "csv-column-to-list"
+  ],
+  "routesChecked": 15,
+  "keyboard": "every submit action exercised with Enter",
+  "accessibility": "all interactive controls in the tool form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObservedFor": [
+    "word-character-line-counter",
+    "case-converter",
+    "whitespace-normalizer",
+    "invisible-character-detector",
+    "unicode-normalizer",
+    "line-sorter",
+    "line-deduplicator",
+    "list-intersection",
+    "list-difference",
+    "find-replace-preview",
+    "markdown-preview",
+    "markdown-table-formatter",
+    "slug-generator",
+    "text-to-csv-rows",
+    "csv-column-to-list"
+  ],
+  "results": [
+    {
+      "toolId": "word-character-line-counter",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "case-converter",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "whitespace-normalizer",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "invisible-character-detector",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "unicode-normalizer",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "line-sorter",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "line-deduplicator",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "list-intersection",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "list-difference",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "find-replace-preview",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "markdown-preview",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "markdown-table-formatter",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "slug-generator",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "text-to-csv-rows",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "csv-column-to-list",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    }
+  ]
+}

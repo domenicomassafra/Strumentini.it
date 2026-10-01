@@ -1,8 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { FindReplacePreviewTool } from "../../components/tools/FindReplacePreviewTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Find & Replace Preview" description="Preview literal or regular-expression replacements before copying the result.">
-  <article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav><p class="eyebrow">Text</p><h1>Find &amp; Replace Preview</h1><p class="lede">See every match and the resulting text before you copy it.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your text is not uploaded.</span></div></header><FindReplacePreviewTool client:load /><section class="method-card"><h2>Replacement policy</h2><ul><li>Literal replacement is the default; regular expressions are opt-in and invalid patterns fail explicitly.</li><li>All matches are replaced in the preview, with match offsets and values available in the result.</li><li>Replacement is a local text operation; it does not rewrite files.</li></ul></section></article>
-</BaseLayout>
+
+<ItalianToolPage toolId="find-replace-preview">
+  <FindReplacePreviewTool client:load />
+</ItalianToolPage>

@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ImageRenameBatchPreviewTool } from "../../components/tools/image-visual/ImageRenameBatchPreviewTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Image Rename Batch Preview" description="Preview deterministic filename changes for local images without writing or uploading anything.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Image Rename Batch Preview</h1>
-      <p class="lede">Preview deterministic filename changes for local images without writing or uploading anything.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <ImageRenameBatchPreviewTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Preview-only naming</h2><ul><li>Previews deterministic filename changes for selected local images.</li><li>Reports each proposed name and whether it differs from the original.</li><li>No file-system rename or upload is performed.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="image-rename-batch-preview">
+  <ImageRenameBatchPreviewTool client:load />
+</ItalianToolPage>

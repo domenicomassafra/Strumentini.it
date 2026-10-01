@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "family_count": 46,
+  "family_count": 49,
   "families": [
     {
       "id": "unicode-normalization",
@@ -1049,6 +1049,77 @@
         "one deterministic end-to-end literal per developer/web tool",
         "shared runtime contract",
         "supplements tool-specific RFC and standards fixtures"
+      ]
+    },
+    {
+      "id": "text-writing-gold",
+      "candidate_families": [
+        "Text and writing local tools"
+      ],
+      "path": "quality/fixtures/text-writing-gold/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "one deterministic public-module vector per text-writing tool",
+        "Unicode and local-processing contract",
+        "supplements specialized Unicode, CSV, list and Markdown fixtures"
+      ]
+    },
+    {
+      "id": "date-time-gold",
+      "candidate_families": [
+        "Date and time local tools"
+      ],
+      "path": "quality/fixtures/date-time-gold/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "rfc3339",
+        "iana-tzdb",
+        "rfc5545"
+      ],
+      "coverage": [
+        "one deterministic public-module vector per promoted date/time tool",
+        "calendar arithmetic, exact decimal time, timezone and DST behavior",
+        "RFC 5545 event build/inspection",
+        "supplements specialized date-arithmetic, timezone-dst, decimal-hours and ics fixtures",
+        "public-holiday lookup excluded until the drifting calendar source is explicitly pinned"
+      ]
+    },
+    {
+      "id": "data-table-gold",
+      "candidate_families": [
+        "CSV and table local tools"
+      ],
+      "path": "quality/fixtures/data-table-gold/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "rfc4180",
+        "rfc8259"
+      ],
+      "coverage": [
+        "one deterministic public-module vector per promoted data/table tool",
+        "quoted CSV, delimiter detection, encoding, selection, filtering, sorting, grouping, joins and pivots",
+        "CSV/JSON/TSV conversion, transposition, profiling and chart data",
+        "supplements specialized csv-rfc4180, csv-cleaning, csv-table-ops and json-csv-conversion fixtures"
       ]
     }
   ]

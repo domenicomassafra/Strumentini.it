@@ -13,7 +13,7 @@ export const textToCsvRowsManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-017", fixtureFamilies: ["csv-rfc4180"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-017", fixtureFamilies: ["csv-rfc4180", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 
 export default textToCsvRowsManifest;

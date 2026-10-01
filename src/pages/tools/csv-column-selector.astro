@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CsvColumnSelectorTool } from "../../components/tools/csv-column-selector/CsvColumnSelectorTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="CSV Column Selector" description="Select and reorder CSV columns locally by position.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>CSV Column Selector</h1>
-      <p class="lede">Keep only the columns you name, in the order you name them, with missing cells made explicit.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Column selection is local and deterministic.</span></div>
-    </header>
-    <CsvColumnSelectorTool client:load />
-    <section class="method-card"><h2>Selection contract</h2><ul><li>Positions are zero-based and must be unique and in range.</li><li>Missing selected cells become empty strings and are counted.</li><li>Dropped columns and output headers are shown in the result.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="csv-column-selector">
+  <CsvColumnSelectorTool client:load />
+</ItalianToolPage>

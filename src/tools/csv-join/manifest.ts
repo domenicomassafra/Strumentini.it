@@ -8,7 +8,7 @@ export const csvJoinManifest = makeTableManifest({
   keywords: ["csv", "join", "merge", "keys", "lookup"],
   jobs: ["join two csv tables", "lookup rows across csv files", "merge tables by key"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-031", fixtureFamilies: ["csv-rfc4180", "csv-table-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-031", fixtureFamilies: ["csv-rfc4180", "csv-table-ops", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "CsvJoinTool",
 });

@@ -20,7 +20,7 @@ export function CsvColumnMapTool() {
   }
 
   useEffect(() => receiveHandoffFromOpener(csvColumnMapManifest, (envelope, proposal) => {
-    initialize(envelope.payload, envelope.descriptor.columns, `Received from handoff · ${proposal.preview}`);
+    initialize(envelope.payload, envelope.descriptor.columns, `Ricevuto da un altro strumento · ${proposal.preview}`);
   }), []);
 
   async function loadFile(file: File | undefined) {
@@ -29,7 +29,7 @@ export function CsvColumnMapTool() {
       const value = await readBlobText(file);
       const { parseCsvTable } = await import("../../../engines/table/csv");
       initialize(value, parseCsvTable(value).header, `${file.name} · ${(file.size / 1024).toFixed(1)} KiB`);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not read CSV file."); }
+    } catch { setError("Impossibile leggere il file CSV."); }
   }
 
   function move(index: number, direction: -1 | 1) {
@@ -42,9 +42,9 @@ export function CsvColumnMapTool() {
 
   async function apply(event: Event) {
     event.preventDefault(); setError(""); setResult(null);
-    if (text === "") { setError("Choose a CSV file or receive a handoff first."); return; }
+    if (text === "") { setError("Scegli un file CSV oppure ricevi prima una tabella da un altro strumento."); return; }
     const run = await toolRuntime.run(csvColumnMapManifest.id, { text, mapping });
-    if (!run.ok) { setError(run.message); return; }
+    if (!run.ok) { setError("Impossibile applicare la mappatura. Controlla colonne e nomi di uscita."); return; }
     setResult(run.value as CsvColumnMapOutput);
   }
 
@@ -61,11 +61,11 @@ export function CsvColumnMapTool() {
 
   return <form class="tool-operation" onSubmit={apply}>
     <section class="tool-form-card">
-      <label class="field"><span>CSV file</span><input aria-label="CSV file" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => void loadFile(event.currentTarget.files?.[0])} /></label>
+      <label class="field"><span>File CSV</span><input aria-label="File CSV" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => void loadFile(event.currentTarget.files?.[0])} /></label>
       {sourceName && <p class="file-note" role="status">{sourceName}</p>}
-      <p class="file-note">Direct file limit: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB. Duplicate input names are disambiguated by source position.</p>
-      {mapping.length > 0 && <div class="column-map-list" aria-label="Output column schema">{mapping.map((entry, index) => <div class="column-map-row" key={entry.sourceIndex}><span class="column-source">Source {entry.sourceIndex + 1}: {headers[entry.sourceIndex] || "(blank header)"}</span><label class="field compact-field"><span>Output name</span><input aria-label={`Output name for source column ${entry.sourceIndex + 1}`} value={entry.outputName} onInput={(event) => setMapping(mapping.map((item, itemIndex) => itemIndex === index ? { ...item, outputName: event.currentTarget.value } : item))} /></label><div class="column-actions"><button type="button" aria-label={`Sposta in su la colonna di origine ${entry.sourceIndex + 1}`} disabled={index === 0} onClick={() => move(index, -1)}><CaretMark direction="up" label="Sposta in su" /></button><button type="button" aria-label={`Sposta in giù la colonna di origine ${entry.sourceIndex + 1}`} disabled={index === mapping.length - 1} onClick={() => move(index, 1)}><CaretMark direction="down" label="Sposta in giù" /></button><button type="button" aria-label={`Drop source column ${entry.sourceIndex + 1}`} onClick={() => setMapping(mapping.filter((_, itemIndex) => itemIndex !== index))}>Drop</button></div></div>)}</div>}
-      {dropped.length > 0 && <div><strong>Dropped before output</strong>{dropped.map((entry) => <p class="file-note" key={entry.index}>Column {entry.index + 1}: {entry.name || "(blank header)"} <button type="button" aria-label={`Add back source column ${entry.index + 1}`} onClick={() => setMapping([...mapping, { sourceIndex: entry.index, outputName: entry.name || `column_${entry.index + 1}` }])}>Add back</button></p>)}</div>}
+      <p class="file-note">Limite file diretto: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB. I nomi di ingresso duplicati vengono distinti in base alla posizione della colonna.</p>
+      {mapping.length > 0 && <div class="column-map-list" aria-label="Schema delle colonne di uscita">{mapping.map((entry, index) => <div class="column-map-row" key={entry.sourceIndex}><span class="column-source">Origine {entry.sourceIndex + 1}: {headers[entry.sourceIndex] || "(intestazione vuota)"}</span><label class="field compact-field"><span>Nome di uscita</span><input aria-label={`Nome di uscita per la colonna di origine ${entry.sourceIndex + 1}`} value={entry.outputName} onInput={(event) => setMapping(mapping.map((item, itemIndex) => itemIndex === index ? { ...item, outputName: event.currentTarget.value } : item))} /></label><div class="column-actions"><button type="button" aria-label={`Sposta in su la colonna di origine ${entry.sourceIndex + 1}`} disabled={index === 0} onClick={() => move(index, -1)}><CaretMark direction="up" label="Sposta in su" /></button><button type="button" aria-label={`Sposta in giù la colonna di origine ${entry.sourceIndex + 1}`} disabled={index === mapping.length - 1} onClick={() => move(index, 1)}><CaretMark direction="down" label="Sposta in giù" /></button><button type="button" aria-label={`Rimuovi la colonna di origine ${entry.sourceIndex + 1}`} onClick={() => setMapping(mapping.filter((_, itemIndex) => itemIndex !== index))}>Rimuovi</button></div></div>)}</div>}
+      {dropped.length > 0 && <div><strong>Colonne rimosse dal risultato</strong>{dropped.map((entry) => <p class="file-note" key={entry.index}>Colonna {entry.index + 1}: {entry.name || "(intestazione vuota)"} <button type="button" aria-label={`Ripristina la colonna di origine ${entry.index + 1}`} onClick={() => setMapping([...mapping, { sourceIndex: entry.index, outputName: entry.name || `column_${entry.index + 1}` }])}>Ripristina</button></p>)}</div>}
       {mapping.length > 0 && <p class="schema-preview"><strong>Schema di output:</strong> {mapping.map((entry) => entry.outputName || "(vuoto)").join(" · ")}</p>}
       {error && <p class="error" role="alert">{error}</p>}
       <button class="primary tool-submit" type="submit">Applica la mappatura</button>

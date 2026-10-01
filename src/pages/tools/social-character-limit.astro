@@ -1,12 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { SocialCharacterLimitTool } from "../../components/tools/SocialCharacterLimitTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Social Character-Limit Checker" description="Count Unicode characters against a declared social platform limit locally.">
-  <article class="tool-page">
-    <header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Marketing</nav><p class="eyebrow">Marketing</p><h1>Social Character-Limit Checker</h1><p class="lede">Check post length using explicit limits and Unicode code-point counts.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Draft text is not uploaded.</span></div></header>
-    <SocialCharacterLimitTool client:load />
-    <section class="method-card"><h2>Counting policy</h2><ul><li>Limits are visible constants in the local policy table and can be overridden for a scenario.</li><li>Counts use Unicode code points, not UTF-16 code units.</li><li>Line breaks are counted separately from the character total.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="social-character-limit">
+  <SocialCharacterLimitTool client:load />
+</ItalianToolPage>

@@ -123,7 +123,7 @@ function renderModule(manifest: FactoryToolManifest): string {
   return `import type { ToolModule } from "../../runtime/types";\n\n` +
     `const module: ToolModule = {\n` +
     `  run(_input, _context, signal): unknown {\n` +
-    `    if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");\n` +
+    `    if (signal?.aborted) throw new DOMException("Operazione annullata", "AbortError");\n` +
     `    throw new Error("TOOL_IMPLEMENTATION_REQUIRED: ${manifest.id}");\n` +
     `  },\n` +
     `};\n\n` +
@@ -133,7 +133,7 @@ function renderModule(manifest: FactoryToolManifest): string {
 function renderComponent(manifest: FactoryToolManifest): string {
   const component = manifest.page?.component ?? `${pascalCase(manifest.id)}Tool`;
   return `export function ${component}() {\n` +
-    `  return <div class="tool-operation" aria-busy="true"><p role="status">${html(manifest.name)} implementation is pending.</p></div>;\n` +
+    `  return <div class="tool-operation" aria-busy="true"><p role="status">Implementazione di ${html(manifest.name)} non ancora disponibile.</p></div>;\n` +
     `}\n`;
 }
 
@@ -141,21 +141,12 @@ function renderPage(manifest: FactoryToolManifest): string {
   const component = manifest.page?.component ?? `${pascalCase(manifest.id)}Tool`;
   const directive = manifest.page?.clientDirective ?? "load";
   return `---\n` +
-    `import BaseLayout from "../../layouts/BaseLayout.astro";\n` +
+    `import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";\n` +
     `import { ${component} } from "../../components/tools/${component}";\n` +
     `---\n` +
-    `<BaseLayout title={${expression(manifest.name)}} description={${expression(manifest.summary)}}>\n` +
-    `  <article class="tool-page">\n` +
-    `    <header class="tool-heading">\n` +
-    `      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / ${html(manifest.category)}</nav>\n` +
-    `      <p class="eyebrow">${html(manifest.category)}</p>\n` +
-    `      <h1>${html(manifest.name)}</h1>\n` +
-    `      <p class="lede">${html(manifest.summary)}</p>\n` +
-    `      <div class="trust-strip" role="note"><strong>${manifest.privacyClass === "LOCAL" ? "Runs on this device." : "Privacy disclosure required."}</strong><span>${manifest.privacyClass === "LOCAL" ? "Your input is not uploaded." : html(manifest.privacyDisclosure ?? "Review the privacy disclosure before use.")}</span></div>\n` +
-    `    </header>\n` +
-    `    <${component} client:${directive} />\n` +
-    `  </article>\n` +
-    `</BaseLayout>\n`;
+    `<ItalianToolPage toolId="${manifest.id}">\n` +
+    `  <${component} client:${directive} />\n` +
+    `</ItalianToolPage>\n`;
 }
 
 function renderContractTest(manifest: FactoryToolManifest): string {

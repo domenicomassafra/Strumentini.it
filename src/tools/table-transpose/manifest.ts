@@ -8,7 +8,7 @@ export const tableTransposeManifest = makeTableManifest({
   keywords: ["table", "transpose", "csv", "flip"],
   jobs: ["transpose a csv table", "flip table rows and columns", "rotate a table"],
   inputTypes: ["file", "csv", "table"],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-036", fixtureFamilies: ["csv-table-ops", "csv-rfc4180"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-036", fixtureFamilies: ["csv-table-ops", "csv-rfc4180", "data-table-gold"] },
   handoff: tableHandoff(),
   component: "TableTransposeTool",
 });

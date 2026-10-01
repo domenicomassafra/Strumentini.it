@@ -1,8 +1,8 @@
 ---
-import FilePrivacyPage from "../../components/tools/file-privacy/FilePrivacyPage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { FolderSizeTypeSummaryTool } from "../../components/tools/file-privacy/FolderSizeTypeSummaryTool";
-import "../../components/tools/tool-surface.css";
 ---
-<FilePrivacyPage title="Folder Size / Type Summary" description="Summarize a selected local folder by extension, declared type, and total size." methodTitle="Bounded aggregate" methodItems={["Only file metadata is aggregated; file contents are not sent or stored.", "The summary reports total bytes and the largest selected file.", "Declared types are shown as metadata and are not treated as content verification."]}>
+
+<ItalianToolPage toolId="folder-size-type-summary">
   <FolderSizeTypeSummaryTool client:load />
-</FilePrivacyPage>
+</ItalianToolPage>

@@ -1,29 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ListCompareTool } from "../../components/tools/ListCompareTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="List Compare & Dedupe" description="Compare and deduplicate line lists locally with explicit equality rules.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Text</nav>
-      <p class="eyebrow">Text</p>
-      <h1>List Compare &amp; Dedupe</h1>
-      <p class="lede">Find shared and unique lines, or deduplicate a list, without sending the content anywhere.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your list content is not uploaded.</span></div>
-    </header>
 
-    <ListCompareTool client:load />
-
-    <section class="method-card" aria-labelledby="list-method-title">
-      <p class="eyebrow">Method</p>
-      <h2 id="list-method-title">Exactly what is normalized</h2>
-      <ul>
-        <li>CRLF and CR line endings become LF before text is split into list items; one final line terminator does not create an extra item.</li>
-        <li><strong>Exact</strong> compares line text unchanged. <strong>Trim edges</strong> ignores leading/trailing whitespace. <strong>Unicode NFC</strong> compares canonical NFC forms. <strong>Trim + NFC</strong> applies both.</li>
-        <li>Deduplication and set results keep the first original spelling and stable first-seen order.</li>
-        <li>No case folding, locale collation, fuzzy matching, semantic repair, or remote lookup is performed.</li>
-      </ul>
-    </section>
-  </article>
-</BaseLayout>
+<ItalianToolPage toolId="list-compare">
+  <ListCompareTool client:load />
+</ItalianToolPage>

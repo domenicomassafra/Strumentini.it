@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { JsonToCsvTool } from "../../components/tools/json-to-csv/JsonToCsvTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="JSON to CSV" description="Convert a local JSON object array to bounded CSV.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Data</nav>
-      <p class="eyebrow">Data tables</p>
-      <h1>JSON to CSV</h1>
-      <p class="lede">Turn a JSON array of objects into a rectangular CSV with an explicit header schema mode.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>JSON content is not uploaded.</span></div>
-    </header>
-    <JsonToCsvTool client:load />
-    <section class="method-card"><h2>Conversion contract</h2><ul><li>Only arrays of non-array objects are accepted.</li><li>First-record mode preserves the initial schema; union mode expands it explicitly.</li><li>Nested values are serialized as JSON text instead of being guessed.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="json-to-csv">
+  <JsonToCsvTool client:load />
+</ItalianToolPage>

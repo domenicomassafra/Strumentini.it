@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { IcsViewerTool } from "../../components/tools/IcsViewerTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="ICS Viewer" description="Inspect and validate local iCalendar text without changing it.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Date &amp; time</nav>
-      <p class="eyebrow">Date &amp; time</p>
-      <h1>ICS Viewer</h1>
-      <p class="lede">Inspect the structure of local iCalendar text, including event dates, summaries, and malformed input.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>ICS text is parsed locally and never modified.</span></div>
-    </header>
-    <IcsViewerTool client:load />
-    <section class="method-card" aria-labelledby="ics-viewer-method"><p class="eyebrow">Rules &amp; assumptions</p><h2 id="ics-viewer-method">Inspection boundary</h2><ul><li>Folded RFC lines are unfolded only in memory.</li><li>Unsupported or malformed date forms fail explicitly.</li><li>Unknown properties are reported, not executed.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="ics-viewer">
+  <IcsViewerTool client:load />
+</ItalianToolPage>

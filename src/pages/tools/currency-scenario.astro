@@ -1,23 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { CurrencyScenarioTool } from "../../components/tools/business-math/CurrencyScenarioTool";
-import { currencyScenarioConfig } from "../../components/tools/business-math/configs";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title={currencyScenarioConfig.title} description={currencyScenarioConfig.lede}>
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
-      <p class="eyebrow">Business math</p>
-      <h1>{currencyScenarioConfig.title}</h1>
-      <p class="lede">{currencyScenarioConfig.lede}</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Rates are entered by you; no live FX request is made.</span></div>
-    </header>
-    <CurrencyScenarioTool client:load />
-    <section class="method-card" aria-labelledby="currency-method">
-      <p class="eyebrow">Rules &amp; assumptions</p>
-      <h2 id="currency-method">The rate direction is explicit</h2>
-      <ul><li>Converted amount = source amount × target-units-per-source-unit.</li><li>The inverse rate is shown as a planning reference, not a market quote.</li></ul>
-    </section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="currency-scenario">
+  <CurrencyScenarioTool client:load />
+</ItalianToolPage>

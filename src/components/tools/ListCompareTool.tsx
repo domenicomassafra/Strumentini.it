@@ -5,18 +5,18 @@ import type { ListCompareOutput } from "../../tools/list-compare/types";
 import { gutterStateFromResult } from "./shared/ToolGutter";
 
 const MODES: ReadonlyArray<{ value: EqualityMode; label: string }> = [
-  { value: "exact", label: "Exact" },
-  { value: "trim", label: "Trim edges" },
+  { value: "exact", label: "Corrispondenza esatta" },
+  { value: "trim", label: "Ignora spazi ai bordi" },
   { value: "nfc", label: "Unicode NFC" },
-  { value: "trim-nfc", label: "Trim + NFC" },
+  { value: "trim-nfc", label: "Spazi ai bordi + NFC" },
 ];
 
 function ResultList({ title, values }: { title: string; values: readonly string[] }) {
   return (
     <section class="list-result-block">
       <h3>{title} <span class="count-chip">{values.length}</span></h3>
-      {values.length === 0 ? <p class="result-placeholder">None</p> : (
-        <ol>{values.map((value, index) => <li key={`${index}-${value}`}><code>{value === "" ? "(blank line)" : value}</code></li>)}</ol>
+      {values.length === 0 ? <p class="result-placeholder">Nessuno</p> : (
+        <ol>{values.map((value, index) => <li key={`${index}-${value}`}><code>{value === "" ? "(riga vuota)" : value}</code></li>)}</ol>
       )}
     </section>
   );
@@ -35,7 +35,7 @@ export function ListCompareTool() {
     const run = await toolRuntime.run("list-compare", { left, right, equality });
     if (!run.ok) {
       setResult(null);
-      setError(run.message);
+      setError("Impossibile confrontare le liste. Controlla i valori inseriti.");
       return;
     }
     setResult(run.value as ListCompareOutput);
@@ -54,7 +54,7 @@ export function ListCompareTool() {
     <div class="tool-operation">
       <form onSubmit={submit}>
         <fieldset class="segmented">
-          <legend>Equality rule</legend>
+          <legend>Regola di confronto</legend>
           {MODES.map((mode) => (
             <label key={mode.value}>
               <input
@@ -71,31 +71,31 @@ export function ListCompareTool() {
 
         <div class="field-grid">
           <label class="field">
-            <span>List A</span>
+            <span>Lista A</span>
             <textarea rows={11} value={left} onInput={(event) => setLeft(event.currentTarget.value)} placeholder={"alpha\nbeta\nbeta"} />
           </label>
           <label class="field">
-            <span>List B</span>
+            <span>Lista B</span>
             <textarea rows={11} value={right} onInput={(event) => setRight(event.currentTarget.value)} placeholder={"beta\ngamma"} />
           </label>
         </div>
 
         {error !== "" && <p class="error" role="alert">{error}</p>}
         <div class="actions">
-          <button class="primary" type="submit">Compare lists</button>
+          <button class="primary" type="submit">Confronta liste</button>
           <button type="button" onClick={reset}>Reimposta</button>
         </div>
       </form>
 
       <section class="result-panel gutter" data-state={gutterState} aria-live="polite">
-        <p class="eyebrow">Result</p>
-        {result === null ? <p class="result-placeholder">Comparison results appear here.</p> : (
+        <p class="eyebrow">Risultato</p>
+        {result === null ? <p class="result-placeholder">I risultati del confronto appariranno qui.</p> : (
           <div class="stacked-results">
-            <ResultList title="In both" values={result.intersection} />
-            <ResultList title="Only in A" values={result.onlyLeft} />
-            <ResultList title="Only in B" values={result.onlyRight} />
-            <ResultList title="A deduplicated" values={result.leftDeduped} />
-            <ResultList title="B deduplicated" values={result.rightDeduped} />
+            <ResultList title="In entrambe" values={result.intersection} />
+            <ResultList title="Solo in A" values={result.onlyLeft} />
+            <ResultList title="Solo in B" values={result.onlyRight} />
+            <ResultList title="A senza duplicati" values={result.leftDeduped} />
+            <ResultList title="B senza duplicati" values={result.rightDeduped} />
           </div>
         )}
       </section>

@@ -1,18 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PlatformSizePresetsTool } from "../../components/tools/image-visual/PlatformSizePresetsTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="Platform Size Presets" description="Preview common social and app image dimensions with contain and cover calculations.">
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Image &amp; visual</nav>
-      <p class="eyebrow">Image &amp; visual</p>
-      <h1>Platform Size Presets</h1>
-      <p class="lede">Preview common social and app image dimensions with contain and cover calculations.</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Your input stays in this browser tab.</span></div>
-    </header>
-    <PlatformSizePresetsTool client:load />
-    <section class="method-card"><p class="eyebrow">Bounded contract</p><h2>Preset policy</h2><ul><li>Previews common social and app image dimensions with contain and cover calculations.</li><li>Provides planning calculations, not a platform upload or publishing action.</li><li>No image bytes leave the page.</li></ul></section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="platform-size-presets">
+  <PlatformSizePresetsTool client:load />
+</ItalianToolPage>

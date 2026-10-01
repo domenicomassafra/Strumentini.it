@@ -49,8 +49,8 @@ function normalize(value: string): string {
   return value
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/gu, "")
-    .toLocaleLowerCase("en")
-    .replace(/[^a-z0-9]+/gu, " ")
+    .toLocaleLowerCase("it-IT")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
 }
 
@@ -123,7 +123,7 @@ export function resolveStarter(
   for (const selectedContext of selectedContexts) {
     const pack = getWorkContextPack(selectedContext);
     for (const toolId of pack.toolIds) {
-      add(gold.get(toolId), { code: "context-pack", label: pack.reasons[toolId] ?? `Part of the ${pack.label} work context.`, evidence: [pack.id] });
+      add(gold.get(toolId), { code: "context-pack", label: pack.reasons[toolId] ?? `Incluso nel contesto “${pack.label}”.`, evidence: [pack.id] });
     }
     for (const membership of getContextMemberships(pack, tools)) {
       add(gold.get(membership.toolId), { code: "context-pack", label: membership.reason, evidence: membership.evidence });
@@ -136,9 +136,9 @@ export function resolveStarter(
       if (gold.has(tool.id) && matchesJob(tool, jobId)) {
         const existing = selected.get(tool.id);
         if (existing === undefined) {
-          add(tool, { code: "recurring-job", label: `Because you chose “${job.label}”.`, evidence: [job.id] });
+          add(tool, { code: "recurring-job", label: `Perché hai scelto “${job.label}”.`, evidence: [job.id] });
         } else if (existing.reasonCode === "context-pack" || existing.reasonCode === "universal") {
-          selected.set(tool.id, recommendation(tool, { code: "recurring-job", label: `Because you chose “${job.label}”.`, evidence: [job.id, ...existing.evidence] }));
+          selected.set(tool.id, recommendation(tool, { code: "recurring-job", label: `Perché hai scelto “${job.label}”.`, evidence: [job.id, ...existing.evidence] }));
         }
       }
     }
@@ -147,7 +147,7 @@ export function resolveStarter(
   if (selected.size < limit) {
     for (const tool of tools) {
       if (gold.has(tool.id)) {
-        add(tool, { code: "universal", label: `Gold-certified tool available for the ${getWorkContextPack(contextId).label} work context.`, evidence: ["quality:GOLD"] });
+        add(tool, { code: "universal", label: `Strumento certificato Gold disponibile per il contesto “${getWorkContextPack(contextId).label}”.`, evidence: ["quality:GOLD"] });
       }
     }
   }
@@ -236,8 +236,8 @@ export function addStarterAlternative(
   const alternative = recommendation(
     tool,
     isGold
-      ? { code: "manual-add", label: "Gold-certified tool added from your Library search.", evidence: ["quality:GOLD", "source:library"] }
-      : { code: "manual-add", label: "Not Gold-certified; added manually from Library.", evidence: ["source:library", "quality:unverified"] },
+      ? { code: "manual-add", label: "Strumento certificato Gold aggiunto dalla ricerca nella Libreria.", evidence: ["quality:GOLD", "source:library"] }
+      : { code: "manual-add", label: "Strumento non certificato Gold, aggiunto manualmente dalla Libreria.", evidence: ["source:library", "quality:unverified"] },
     isGold ? "gold" : "not-certified",
   );
   return {
@@ -285,8 +285,8 @@ export function findStarterAlternatives(
       return [recommendation(
         original,
         isGold
-          ? { code: "manual-add", label: "Gold-certified result from your Library search.", evidence: ["quality:GOLD", "source:library"] }
-          : { code: "manual-add", label: "Not Gold-certified; add only if you choose it manually.", evidence: ["source:library", "quality:unverified"] },
+          ? { code: "manual-add", label: "Risultato certificato Gold dalla ricerca nella Libreria.", evidence: ["quality:GOLD", "source:library"] }
+          : { code: "manual-add", label: "Non certificato Gold: aggiungilo solo se lo scegli manualmente.", evidence: ["source:library", "quality:unverified"] },
         isGold ? "gold" : "not-certified",
       )];
     });

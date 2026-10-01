@@ -1,6 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PdfToImagesTool } from "../../components/tools/PdfToImagesTool";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="PDF to Images" description="Extract directly embedded JPEG streams from a local PDF."><article class="tool-page"><header class="tool-heading"><nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Documents</nav><p class="eyebrow">Documents</p><h1>PDF to Images</h1><p class="lede">Extract embedded JPEG image streams without claiming to render unsupported pages.</p><div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Unsupported rendering is reported explicitly.</span></div></header><PdfToImagesTool client:load /><section class="method-card"><h2>Bounded contract</h2><ul><li>Only directly extractable JPEG streams are offered.</li><li>Vector pages and unsupported filters are not silently rasterized.</li><li>Every output is a local Blob download.</li></ul></section></article></BaseLayout>
+
+<ItalianToolPage toolId="pdf-to-images">
+  <PdfToImagesTool client:load />
+</ItalianToolPage>

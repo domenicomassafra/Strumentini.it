@@ -1,23 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ProjectProfitabilityTool } from "../../components/tools/business-math/ProjectProfitabilityTool";
-import { projectProfitabilityConfig } from "../../components/tools/business-math/configs";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title={projectProfitabilityConfig.title} description={projectProfitabilityConfig.lede}>
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
-      <p class="eyebrow">Business math</p>
-      <h1>{projectProfitabilityConfig.title}</h1>
-      <p class="lede">{projectProfitabilityConfig.lede}</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Project economics stay in this browser.</span></div>
-    </header>
-    <ProjectProfitabilityTool client:load />
-    <section class="method-card" aria-labelledby="profit-method">
-      <p class="eyebrow">Rules &amp; assumptions</p>
-      <h2 id="profit-method">Profit follows explicit labor cost</h2>
-      <ul><li>Total cost = fixed costs + hours × hourly cost.</li><li>Effective hourly rate is revenue ÷ hours; margin is profit ÷ revenue.</li></ul>
-    </section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="project-profitability">
+  <ProjectProfitabilityTool client:load />
+</ItalianToolPage>

@@ -120,10 +120,21 @@ export const decimalHoursConfig: DateTimeToolConfig = {
 
 function timesheetEntries(value: string): { date: string; start: string; end: string; breakMinutes?: number }[] {
   return value.split(/\r?\n/u).map((line) => line.trim()).filter(Boolean).map((line) => {
-    const [date, range, breaks] = line.split("|");
-    if (date === undefined || range === undefined) throw new Error("INVALID_INPUT");
+    const parts = line.split("|").map((part) => part.trim());
+    const date = parts[0];
+    if (date === undefined || date === "") throw new Error("INVALID_INPUT");
+    if (parts.length >= 4) {
+      const start = parts[1];
+      const end = parts[2];
+      const breaks = parts[3];
+      if (start === undefined || start === "" || end === undefined || end === "") throw new Error("INVALID_INPUT");
+      return { date, start, end, ...(breaks === undefined || breaks === "" ? {} : { breakMinutes: Number(breaks) }) };
+    }
+    const range = parts[1];
+    const breaks = parts[2];
+    if (range === undefined) throw new Error("INVALID_INPUT");
     const [start, end] = range.split("-");
-    if (start === undefined || end === undefined) throw new Error("INVALID_INPUT");
+    if (start === undefined || start === "" || end === undefined || end === "") throw new Error("INVALID_INPUT");
     return { date, start, end, ...(breaks === undefined || breaks === "" ? {} : { breakMinutes: Number(breaks) }) };
   });
 }
@@ -233,7 +244,7 @@ export const calendarListConfig: DateTimeToolConfig = {
 export const icsBuilderConfig: DateTimeToolConfig = {
   tool: icsEventBuilderManifest,
   fields: [
-    textField("summary", "Event title", "text", { defaultValue: "Project review" }),
+    textField("summary", "Event title", "text", { defaultValue: "Revisione progetto" }),
     textField("start", "Start", "text", { defaultValue: "2024-01-15T12:00:00Z" }),
     textField("end", "End", "text", { defaultValue: "2024-01-15T13:00:00Z" }),
     textField("allDay", "All-day", "select", { defaultValue: "false", options: ["false", "true"] }),
@@ -251,7 +262,7 @@ export const icsBuilderConfig: DateTimeToolConfig = {
 
 export const icsViewerConfig: DateTimeToolConfig = {
   tool: icsViewerManifest,
-  fields: [textField("text", "ICS text", "textarea", { defaultValue: "BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nUID:example\nDTSTART:20240115T120000Z\nSUMMARY:Review\nEND:VEVENT\nEND:VCALENDAR" })],
+  fields: [textField("text", "ICS text", "textarea", { defaultValue: "BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nUID:esempio\nDTSTART:20240115T120000Z\nSUMMARY:Revisione\nEND:VEVENT\nEND:VCALENDAR" })],
   buildInput: (values) => ({ text: values.text }),
   eyebrow: "ICS inspection",
   placeholder: "The parsed event structure appears here.",

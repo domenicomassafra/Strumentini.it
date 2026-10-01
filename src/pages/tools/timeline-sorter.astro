@@ -1,8 +1,8 @@
 ---
-import ResearchKnowledgePage from "../../components/tools/research-knowledge/ResearchKnowledgePage.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { TimelineSorterTool } from "../../components/tools/research-knowledge";
-import "../../components/tools/tool-surface.css";
 ---
-<ResearchKnowledgePage title="Timeline Sorter" description="Sort dated research events chronologically and report invalid dates.">
+
+<ItalianToolPage toolId="timeline-sorter">
   <TimelineSorterTool client:load />
-</ResearchKnowledgePage>
+</ItalianToolPage>

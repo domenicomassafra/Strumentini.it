@@ -1,23 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { DiscountImpactTool } from "../../components/tools/business-math/DiscountImpactTool";
-import { discountImpactConfig } from "../../components/tools/business-math/configs";
-import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title={discountImpactConfig.title} description={discountImpactConfig.lede}>
-  <article class="tool-page">
-    <header class="tool-heading">
-      <nav aria-label="Breadcrumb"><a href="/">Workbench</a> / Business math</nav>
-      <p class="eyebrow">Business math</p>
-      <h1>{discountImpactConfig.title}</h1>
-      <p class="lede">{discountImpactConfig.lede}</p>
-      <div class="trust-strip" role="note"><strong>Runs on this device.</strong><span>Discount scenarios are calculated locally.</span></div>
-    </header>
-    <DiscountImpactTool client:load />
-    <section class="method-card" aria-labelledby="discount-method">
-      <p class="eyebrow">Rules &amp; assumptions</p>
-      <h2 id="discount-method">A discount changes both price and volume math</h2>
-      <ul><li>Discounted unit price = original price × (1 − discount rate).</li><li>Lost revenue compares the same unit count at both prices.</li></ul>
-    </section>
-  </article>
-</BaseLayout>
+
+<ItalianToolPage toolId="discount-impact">
+  <DiscountImpactTool client:load />
+</ItalianToolPage>

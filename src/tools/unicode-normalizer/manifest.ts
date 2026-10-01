@@ -13,7 +13,7 @@ export const unicodeNormalizerManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-006", fixtureFamilies: ["unicode-normalization"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-006", fixtureFamilies: ["unicode-normalization", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 
 export default unicodeNormalizerManifest;

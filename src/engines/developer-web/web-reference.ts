@@ -8,35 +8,35 @@ import {
 } from "./types";
 
 const HTTP_STATUSES: Readonly<Record<number, { reason: string; description: string }>> = {
-  100: { reason: "Continue", description: "The request headers have been received." },
-  101: { reason: "Switching Protocols", description: "The server is switching protocols." },
-  200: { reason: "OK", description: "The request succeeded." },
-  201: { reason: "Created", description: "The request created a resource." },
-  202: { reason: "Accepted", description: "The request was accepted for processing." },
-  204: { reason: "No Content", description: "The response intentionally has no body." },
-  206: { reason: "Partial Content", description: "The response contains a requested range." },
-  301: { reason: "Moved Permanently", description: "The resource has a permanent new URL." },
-  302: { reason: "Found", description: "The resource is temporarily at another URL." },
-  304: { reason: "Not Modified", description: "The cached representation is still current." },
-  307: { reason: "Temporary Redirect", description: "The request must be repeated at another URL." },
-  308: { reason: "Permanent Redirect", description: "The request must be repeated at another URL permanently." },
-  400: { reason: "Bad Request", description: "The server cannot process the request as sent." },
-  401: { reason: "Unauthorized", description: "Authentication is required for this resource." },
-  403: { reason: "Forbidden", description: "The server understood the request but refuses it." },
-  404: { reason: "Not Found", description: "The server did not find a matching resource." },
-  405: { reason: "Method Not Allowed", description: "The request method is not supported for the resource." },
-  408: { reason: "Request Timeout", description: "The server timed out waiting for the request." },
-  409: { reason: "Conflict", description: "The request conflicts with the current resource state." },
-  410: { reason: "Gone", description: "The resource is no longer available." },
-  413: { reason: "Content Too Large", description: "The request payload is too large." },
-  415: { reason: "Unsupported Media Type", description: "The request payload format is not supported." },
-  422: { reason: "Unprocessable Content", description: "The server cannot process the request semantics." },
-  429: { reason: "Too Many Requests", description: "The client has sent too many requests." },
-  500: { reason: "Internal Server Error", description: "The server encountered an unexpected condition." },
-  501: { reason: "Not Implemented", description: "The server does not support the requested functionality." },
-  502: { reason: "Bad Gateway", description: "An upstream server returned an invalid response." },
-  503: { reason: "Service Unavailable", description: "The service is temporarily unavailable." },
-  504: { reason: "Gateway Timeout", description: "An upstream server did not respond in time." },
+  100: { reason: "Continua", description: "Le intestazioni della richiesta sono state ricevute." },
+  101: { reason: "Cambio protocollo", description: "Il server sta cambiando protocollo." },
+  200: { reason: "OK", description: "La richiesta è stata completata con successo." },
+  201: { reason: "Creato", description: "La richiesta ha creato una risorsa." },
+  202: { reason: "Accettato", description: "La richiesta è stata accettata per l'elaborazione." },
+  204: { reason: "Nessun contenuto", description: "La risposta non contiene intenzionalmente un corpo." },
+  206: { reason: "Contenuto parziale", description: "La risposta contiene l'intervallo richiesto." },
+  301: { reason: "Spostato definitivamente", description: "La risorsa ha un nuovo URL permanente." },
+  302: { reason: "Trovato", description: "La risorsa si trova temporaneamente a un altro URL." },
+  304: { reason: "Non modificato", description: "La rappresentazione nella cache è ancora valida." },
+  307: { reason: "Reindirizzamento temporaneo", description: "La richiesta deve essere ripetuta su un altro URL." },
+  308: { reason: "Reindirizzamento permanente", description: "La richiesta deve essere ripetuta definitivamente su un altro URL." },
+  400: { reason: "Richiesta non valida", description: "Il server non può elaborare la richiesta così come è stata inviata." },
+  401: { reason: "Autenticazione richiesta", description: "Per questa risorsa è richiesta l'autenticazione." },
+  403: { reason: "Accesso vietato", description: "Il server ha compreso la richiesta ma la rifiuta." },
+  404: { reason: "Non trovato", description: "Il server non ha trovato una risorsa corrispondente." },
+  405: { reason: "Metodo non consentito", description: "Il metodo della richiesta non è supportato per questa risorsa." },
+  408: { reason: "Tempo di richiesta scaduto", description: "Il server ha superato il tempo di attesa della richiesta." },
+  409: { reason: "Conflitto", description: "La richiesta è in conflitto con lo stato attuale della risorsa." },
+  410: { reason: "Non più disponibile", description: "La risorsa non è più disponibile." },
+  413: { reason: "Contenuto troppo grande", description: "Il contenuto della richiesta è troppo grande." },
+  415: { reason: "Tipo multimediale non supportato", description: "Il formato del contenuto della richiesta non è supportato." },
+  422: { reason: "Contenuto non elaborabile", description: "Il server non può elaborare la semantica della richiesta." },
+  429: { reason: "Troppe richieste", description: "Il client ha inviato troppe richieste." },
+  500: { reason: "Errore interno del server", description: "Il server ha incontrato una condizione imprevista." },
+  501: { reason: "Non implementato", description: "Il server non supporta la funzionalità richiesta." },
+  502: { reason: "Gateway non valido", description: "Un server a monte ha restituito una risposta non valida." },
+  503: { reason: "Servizio non disponibile", description: "Il servizio è temporaneamente non disponibile." },
+  504: { reason: "Tempo del gateway scaduto", description: "Un server a monte non ha risposto in tempo." },
 };
 
 function statusClass(status: number): string {
@@ -56,10 +56,10 @@ export function httpStatusOperation(input: unknown): DeveloperWebResult {
     valid: true,
     status: value,
     class: statusClass(value),
-    reason: entry?.reason ?? "Unregistered or uncommon status",
-    description: entry?.description ?? "This code is in a valid HTTP status range but is not in the local reference set.",
+    reason: entry?.reason ?? "Stato non registrato o poco comune",
+    description: entry?.description ?? "Il codice rientra nell'intervallo HTTP valido ma non è presente nel riferimento locale.",
     reasonPhraseIsDisplayHint: true,
-    source: "RFC 9110 status semantics; phrase is a local display hint.",
+    source: "Semantica degli stati da RFC 9110; la frase è un'indicazione locale per la visualizzazione.",
   } as DeveloperWebResult;
 }
 
@@ -100,13 +100,13 @@ function ascii(bytes: Uint8Array, offset: number, expected: string): boolean {
 }
 
 function inspectMimeSignature(bytes: Uint8Array): { mime: string; evidence: string; confidence: "signature-hint" } | null {
-  if (bytes.length >= 8 && [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a].every((value, index) => bytes[index] === value)) return { mime: "image/png", evidence: "PNG signature", confidence: "signature-hint" };
-  if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return { mime: "image/jpeg", evidence: "JPEG SOI prefix", confidence: "signature-hint" };
-  if (bytes.length >= 12 && ascii(bytes, 0, "RIFF") && ascii(bytes, 8, "WEBP")) return { mime: "image/webp", evidence: "RIFF/WEBP signature", confidence: "signature-hint" };
-  if (bytes.length >= 5 && ascii(bytes, 0, "%PDF-")) return { mime: "application/pdf", evidence: "PDF header", confidence: "signature-hint" };
-  if (bytes.length >= 6 && ascii(bytes, 0, "GIF87a")) return { mime: "image/gif", evidence: "GIF87a signature", confidence: "signature-hint" };
-  if (bytes.length >= 6 && ascii(bytes, 0, "GIF89a")) return { mime: "image/gif", evidence: "GIF89a signature", confidence: "signature-hint" };
-  if (bytes.length >= 4 && [[0x50, 0x4b, 0x03, 0x04], [0x50, 0x4b, 0x05, 0x06], [0x50, 0x4b, 0x07, 0x08]].some((signature) => signature.every((value, index) => bytes[index] === value))) return { mime: "application/zip", evidence: "ZIP signature", confidence: "signature-hint" };
+  if (bytes.length >= 8 && [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a].every((value, index) => bytes[index] === value)) return { mime: "image/png", evidence: "Firma PNG", confidence: "signature-hint" };
+  if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return { mime: "image/jpeg", evidence: "Prefisso SOI JPEG", confidence: "signature-hint" };
+  if (bytes.length >= 12 && ascii(bytes, 0, "RIFF") && ascii(bytes, 8, "WEBP")) return { mime: "image/webp", evidence: "Firma RIFF/WEBP", confidence: "signature-hint" };
+  if (bytes.length >= 5 && ascii(bytes, 0, "%PDF-")) return { mime: "application/pdf", evidence: "Intestazione PDF", confidence: "signature-hint" };
+  if (bytes.length >= 6 && ascii(bytes, 0, "GIF87a")) return { mime: "image/gif", evidence: "Firma GIF87a", confidence: "signature-hint" };
+  if (bytes.length >= 6 && ascii(bytes, 0, "GIF89a")) return { mime: "image/gif", evidence: "Firma GIF89a", confidence: "signature-hint" };
+  if (bytes.length >= 4 && [[0x50, 0x4b, 0x03, 0x04], [0x50, 0x4b, 0x05, 0x06], [0x50, 0x4b, 0x07, 0x08]].some((signature) => signature.every((value, index) => bytes[index] === value))) return { mime: "application/zip", evidence: "Firma ZIP", confidence: "signature-hint" };
   return null;
 }
 
@@ -116,14 +116,14 @@ export function mimeTypeOperation(lookup: string, mode: string, byteInput?: stri
   if (mode === "signature" || hasByteInput) {
     const bytes = parseHexBytes(byteInput ?? lookup);
     const signature = inspectMimeSignature(bytes);
-    if (signature === null) return { valid: false, mime: null, evidence: "No supported signature matched", warning: "Unknown signatures are not proof of a safe or unsafe file." } as DeveloperWebResult;
-    return { valid: true, ...signature, byteLength: bytes.length, warning: "Magic bytes are evidence, not full content validation." } as DeveloperWebResult;
+    if (signature === null) return { valid: false, mime: null, evidence: "Nessuna firma supportata corrisponde", warning: "Una firma sconosciuta non dimostra che un file sia sicuro o pericoloso." } as DeveloperWebResult;
+    return { valid: true, ...signature, byteLength: bytes.length, warning: "I byte iniziali sono un indizio, non una validazione completa del contenuto." } as DeveloperWebResult;
   }
   const normalized = lookup.trim().toLowerCase();
   const extension = normalized.startsWith(".") ? normalized : `.${normalized.replace(/^.*\./u, "")}`;
   const entry = MIME_BY_EXTENSION[extension];
-  if (entry === undefined) return { valid: false, mime: null, extension, warning: "The extension is not in the local IANA-inspired lookup set." } as DeveloperWebResult;
-  return { valid: true, extension, mime: entry.mime, extensions: entry.extensions, source: "IANA media type reference; extension is a label, not a safety check." } as DeveloperWebResult;
+  if (entry === undefined) return { valid: false, mime: null, extension, warning: "L'estensione non è presente nel riferimento locale ispirato al registro IANA." } as DeveloperWebResult;
+  return { valid: true, extension, mime: entry.mime, extensions: entry.extensions, source: "Riferimento dei tipi multimediali IANA; l'estensione è un'etichetta, non una verifica di sicurezza." } as DeveloperWebResult;
 }
 
 export interface UserAgentInfo {
@@ -143,7 +143,7 @@ export function parseUserAgent(raw: string): UserAgentInfo {
   const bot = /bot|crawler|spider|slurp|bingpreview|facebookexternalhit|curl|wget|headlesschrome/iu.test(raw);
   const mobile = /Mobile|Android|iPhone|iPod|Windows Phone/iu.test(raw);
   const tablet = /iPad|Tablet|PlayBook|Silk/iu.test(raw) || (/Android/iu.test(raw) && !/Mobile/iu.test(raw));
-  let browser = "Unknown";
+  let browser = "Sconosciuto";
   let version: string | null = null;
   const browserPatterns: Array<[string, RegExp]> = [
     ["Edge", /Edg(?:e|A|iOS)?\/([\d.]+)/iu],
@@ -161,7 +161,7 @@ export function parseUserAgent(raw: string): UserAgentInfo {
       break;
     }
   }
-  let os = "Unknown";
+  let os = "Sconosciuto";
   if (/Windows NT/iu.test(raw)) os = "Windows";
   else if (/iPhone|iPod|iPad/iu.test(raw)) os = "iOS";
   else if (/Android/iu.test(raw)) os = "Android";
@@ -179,7 +179,7 @@ export function parseUserAgent(raw: string): UserAgentInfo {
     engine,
     mobile,
     bot,
-    warnings: ["User-agent parsing is descriptive only; capability decisions must use feature detection."],
+    warnings: ["L'analisi dello User-Agent è soltanto descrittiva; le capacità vanno determinate verificando direttamente le funzionalità disponibili."],
   };
 }
 
@@ -355,14 +355,14 @@ export function explainCronOperation(input: string): DeveloperWebResult {
     expression: schedule.expression,
     command: schedule.command,
     fields: {
-      minute: { values: schedule.minute.values, expression: cronFieldText(schedule.minute), meaning: "Minute of the hour (0-59)." },
-      hour: { values: schedule.hour.values, expression: cronFieldText(schedule.hour), meaning: "Hour of the day (0-23)." },
-      dayOfMonth: { values: schedule.dayOfMonth.values, expression: cronFieldText(schedule.dayOfMonth), meaning: "Day of the month (1-31)." },
-      month: { values: schedule.month.values, expression: cronFieldText(schedule.month), meaning: "Month of the year (1-12)." },
-      dayOfWeek: { values: schedule.dayOfWeek.values, expression: cronFieldText(schedule.dayOfWeek), meaning: "Day of the week (0 or 7 Sunday, 0-6)." },
+      minute: { values: schedule.minute.values, expression: cronFieldText(schedule.minute), meaning: "Minuto dell'ora (0-59)." },
+      hour: { values: schedule.hour.values, expression: cronFieldText(schedule.hour), meaning: "Ora del giorno (0-23)." },
+      dayOfMonth: { values: schedule.dayOfMonth.values, expression: cronFieldText(schedule.dayOfMonth), meaning: "Giorno del mese (1-31)." },
+      month: { values: schedule.month.values, expression: cronFieldText(schedule.month), meaning: "Mese dell'anno (1-12)." },
+      dayOfWeek: { values: schedule.dayOfWeek.values, expression: cronFieldText(schedule.dayOfWeek), meaning: "Giorno della settimana (0 o 7 domenica, 0-6)." },
     },
-    semantics: "POSIX five-field syntax; when both day fields are restricted, either matching field runs.",
-    warnings: ["This explains the expression only; it does not inspect a system timezone or scheduler implementation."],
+    semantics: "Sintassi POSIX a cinque campi; quando entrambi i campi del giorno sono limitati, basta che ne corrisponda uno.",
+    warnings: ["La spiegazione riguarda soltanto l'espressione: non ispeziona il fuso orario del sistema né l'implementazione del pianificatore."],
   } as DeveloperWebResult;
 }
 

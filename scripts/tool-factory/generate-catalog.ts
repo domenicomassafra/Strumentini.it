@@ -9,6 +9,7 @@ import {
 } from "../../src/tool-factory/catalog";
 import type { FixtureIndex, OracleRegistry } from "../../src/tool-factory/manifest";
 import { buildGoldQualityIndex, renderGoldQualitySource } from "../../src/onboarding/quality";
+import { missingItalianToolCopy } from "../../src/i18n/it/tool-copy";
 
 const root = resolve(import.meta.dirname, "../..");
 const toolsRoot = resolve(root, "src/tools");
@@ -59,6 +60,10 @@ const artifacts = compileFactoryCatalog(await discoverManifests(), {
   requireOracleBindings: true,
   requireAcceptance: true,
 });
+const missingItalianCopy = missingItalianToolCopy(artifacts.summaries.map(({ id }) => id));
+if (missingItalianCopy.length > 0) {
+  throw new Error(`catalogo pubblico senza copia italiana: ${missingItalianCopy.join(", ")}`);
+}
 const quality = buildGoldQualityIndex(
   await discoverReceipts(resolve(root, "quality/receipts")),
   artifacts.summaries.map(({ id }) => id),
