@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "342497beba30a81f60c0833982412eada75edf94",
-  "sourceFingerprint": "f914e4215a13c46bda81becf414024ebb3f0a9f800cb85ed7525707a3f2a8c3c",
+  "revision": "cd3b2f23754339853553504afea87a5242e66ebc",
+  "sourceFingerprint": "0aa8b75ca6ddf020c96628ca655632d93417cebe6a6efec5bf1b498659b4de42",
   "toolId": "deadline-countdown",
   "runtime": {
     "location": "LOCAL",

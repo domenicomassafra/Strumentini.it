@@ -9,105 +9,105 @@
   "tools": [
     {
       "toolId": "business-day",
-      "name": "Business Day Calculator",
+      "name": "Conta giorni lavorativi",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/business-day.gold.json"
     },
     {
       "toolId": "campaign-name",
-      "name": "Campaign Name Builder",
+      "name": "Crea nome campagna",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/campaign-url/campaign-name.gold.json"
     },
     {
       "toolId": "csv-cleaner",
-      "name": "CSV Cleaner",
+      "name": "Pulisci un CSV",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/csv-cleaner/gold.json"
     },
     {
       "toolId": "csv-column-map",
-      "name": "CSV Column Map / Reorder",
+      "name": "Mappa e riordina colonne CSV",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/table-ops/csv-column-map.gold.json"
     },
     {
       "toolId": "csv-dedupe",
-      "name": "CSV Dedupe",
+      "name": "Rimuovi righe duplicate dal CSV",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/table-ops/csv-dedupe.gold.json"
     },
     {
       "toolId": "doi-isbn-normalizer",
-      "name": "DOI / ISBN Normalizer",
+      "name": "Pulisci e verifica DOI e ISBN",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/text-research/doi-isbn-normalizer.gold.json"
     },
     {
       "toolId": "file-hash",
-      "name": "File Hash / Checksum Verifier",
+      "name": "Hash file e verifica checksum",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/file-hash/gold.json"
     },
     {
       "toolId": "image-resize",
-      "name": "Image Resize",
+      "name": "Ridimensiona immagine",
       "status": "PARTIAL",
       "gold": false,
       "receipt": "quality/receipts/image-resize/certification.json"
     },
     {
       "toolId": "list-compare",
-      "name": "List Compare & Dedupe",
+      "name": "Confronta e deduplica liste",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/text-research/list-compare.gold.json"
     },
     {
       "toolId": "margin-markup",
-      "name": "Margin / Markup Calculator",
+      "name": "Calcola margine e ricarico",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/client-time-math/margin-markup.gold.json"
     },
     {
       "toolId": "rate-converter",
-      "name": "Rate Converter",
+      "name": "Converti tariffa oraria, giornaliera e a progetto",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/client-time-math/rate-converter.gold.json"
     },
     {
       "toolId": "text-diff",
-      "name": "Text Diff",
+      "name": "Confronto testi",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/text-research/text-diff.gold.json"
     },
     {
       "toolId": "timezone-overlap",
-      "name": "Timezone Overlap",
+      "name": "Trova ore comuni tra due fusi orari",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/client-time-math/timezone-overlap.gold.json"
     },
     {
       "toolId": "tracking-cleaner",
-      "name": "Tracking Parameter Cleaner",
+      "name": "Rimuovi parametri di tracciamento",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/campaign-url/tracking-cleaner.gold.json"
     },
     {
       "toolId": "utm-builder",
-      "name": "UTM Builder",
+      "name": "Crea URL con UTM",
       "status": "GOLD",
       "gold": true,
       "receipt": "quality/receipts/campaign-url/utm-builder.gold.json"

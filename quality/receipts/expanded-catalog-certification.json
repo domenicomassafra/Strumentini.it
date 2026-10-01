@@ -38,7 +38,7 @@
         {
           "dimension": "privacy",
           "path": "quality/receipts/v1-gold-frontier.json",
-          "sha256": "b01badab175db249eab8b7fc3a8d124218b6d688340c38aa31c5b365ab9d26ab",
+          "sha256": "1d5ba4f03f0c5404e2cf577f42b99c3d9718203fee9d06eda5b558c35cfe76d4",
           "status": "DECLARED"
         }
       ]
@@ -103,7 +103,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "5f528de8305408ac5f1ccaf865827e5cbbc4d0246b4c19469b9b96c8836bbd13",
+          "sha256": "0d5bfbf560ae819575bcef5535fdf7b6ebb6b2295df0137da3626bf7b7c36f61",
           "status": "PARTIAL"
         }
       ],
@@ -255,7 +255,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/add-subtract-days.gold.json",
-          "sha256": "bf85fa85493923bbcdd68aa71bce11beee02c562ab878afa9608c19c86c11dc2",
+          "sha256": "0b70c7bd79669d25a9ff3f0222079f88fba965fca7791bf9825b70efc7029972",
           "status": "PASS"
         },
         {
@@ -393,7 +393,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/age-date-anniversary.gold.json",
-          "sha256": "2b7f87489fd029c641a1ed07324bdc2300d1bef2f85ea91d09eb5bacf66706be",
+          "sha256": "cf499ea73dc38e3e5133915a6e92ceccafea017c29aa54829f0e6c017768faa5",
           "status": "PASS"
         },
         {
@@ -731,7 +731,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/base64-codec.gold.json",
-          "sha256": "9ce2c574b743906eaedc409c1c8120d0dd76413f259df731f5db5e6ab541b952",
+          "sha256": "b3e21685a03f944f8e75d5e1efb24b5657d0dcb1f2d1e5a486689334081c9518",
           "status": "PASS"
         },
         {
@@ -1236,7 +1236,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/break-even.gold.json",
-          "sha256": "e52754c8ce541d490029f0cdc5c9b808889cac5b63204e8d0c59ceaa77260daf",
+          "sha256": "5858b040d938ae273e33d3d76c03e9ad4054eb9f486aeaaddd39212cdf23d4dd",
           "status": "PASS"
         },
         {
@@ -1479,7 +1479,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-day.gold.json",
-          "sha256": "2992074780ef15cab8f0665ee0f3a8a35cf1cadb3e3b7dd6a5c194b7a083ab81",
+          "sha256": "85fd2c690acf29bd150bf1d846beb04c3f3097a3522d701b7150b170a5c63ab5",
           "status": "PASS"
         },
         {
@@ -1623,7 +1623,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/calendar-date-list-generator.gold.json",
-          "sha256": "e0be904aa90359c8e917a58d827513b55497b3603141b6f87378eff2587f9e57",
+          "sha256": "94eb77d545c74204fce74d1ac403f10d6171f0adb9a131460043ad554933ae60",
           "status": "PASS"
         },
         {
@@ -1744,7 +1744,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/campaign-name.gold.json",
-          "sha256": "5d2c4fabdf2d0808ce2e64e12b0254c46fa9a23fd4492a9a07f08b3660352238",
+          "sha256": "daf73a12206b7a6d3f90b505e93dfed4657d4c53482340a468533acbcebfd848",
           "status": "PASS"
         },
         {
@@ -1977,7 +1977,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/capacity-planner.gold.json",
-          "sha256": "a3114682a7c158b1012b960f818ca5c0a07639e602e922f121abd37e04a123a0",
+          "sha256": "51073965325e6bb2509e1e1490b68bb3cae1322deb2a3db65c64f9e635805844",
           "status": "PASS"
         },
         {
@@ -2111,7 +2111,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/case-converter.gold.json",
-          "sha256": "b8cbde24234770be4ed3fc3f99dfba30bd6452f9b497653fd52da0f9db197e17",
+          "sha256": "2f452434e2d59bcba33dbf211d1ce1265d12eeff8b7964d6aa2717a36c7c1ec6",
           "status": "PASS"
         },
         {
@@ -2952,7 +2952,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/column-type-profiler.gold.json",
-          "sha256": "f2a08ae638b0070f6d786cc30b5b8e5caeb266ef15084deb22f5ac8cdeb14d4b",
+          "sha256": "b1a1c157f3d5258f00f71efd9f65cdf0536443aa85e8623bbe0574a6e9f7086c",
           "status": "PASS"
         },
         {
@@ -3491,7 +3491,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/cron-explainer.gold.json",
-          "sha256": "32fd70cff4b449f189d68b67503933b46b0d13cf473f4aea861faad2a106e25f",
+          "sha256": "cb57c7abdbf3ed609ccb75585123f07064677c38bb7e2a64c9dc75d875841aba",
           "status": "PASS"
         },
         {
@@ -3624,7 +3624,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/cron-next-run.gold.json",
-          "sha256": "1c0f05d6a131ffcf953f0a97ca13a1b686e60dfdeeea1d202f0cac9542781c34",
+          "sha256": "f5faecd2fb75adb03d66263cb967467b84fc071b6c29e4203267ccccecd38ae6",
           "status": "PASS"
         },
         {
@@ -3758,7 +3758,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/csv-cleaner/gold.json",
-          "sha256": "6c2558c1576d87b3e10a5e99786981b2dda379ce7e148df00804fb405b57669c",
+          "sha256": "96fe2d5a7e8ecb652db77ed39a1519a5009da5c23a15b6759c82eff3162e02d4",
           "status": "PASS"
         },
         {
@@ -3898,7 +3898,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-column-map.gold.json",
-          "sha256": "adc1749dedb97d9bee0d82da5a1e0a0df6f5e3c608c56b2bbe8aaac389a7f5ff",
+          "sha256": "429c658e7b51ce545876b03c348a734b2cd5d073824d0a4bad4a04187cbb8017",
           "status": "PASS"
         },
         {
@@ -4052,7 +4052,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-column-selector.gold.json",
-          "sha256": "59f3d3ba13a53c3ca3c0b0d0cb30fbeacc1b0e8e579e5105f4c929d36b419c63",
+          "sha256": "9dbf3148d8e50a5814f3dd352e1943c7e0355b5d6887ac838fdfe33a9d902c67",
           "status": "PASS"
         },
         {
@@ -4186,7 +4186,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/csv-column-to-list.gold.json",
-          "sha256": "85e01cf50ced0427a7720be7fe92bac8ad5851daa44b69bc705cd99352e43f96",
+          "sha256": "a884156784c71b510f98099b4ef2b32bc173b07188f0478734d513436245ec7e",
           "status": "PASS"
         },
         {
@@ -4320,7 +4320,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-dedupe.gold.json",
-          "sha256": "e1446cc26b64fee778027d6ffe8d4dbb8d1129d68bbe2d90dcf868c0c04df8b3",
+          "sha256": "1de07e16bbb24443991a355b65c26322ebbea049193539796ccaf6cac40058b1",
           "status": "PASS"
         },
         {
@@ -4475,7 +4475,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-delimiter-detector.gold.json",
-          "sha256": "ef774051fee419c4facff7d0214c3a6f1f331e679924333f0ec6045c8ce3bd85",
+          "sha256": "f527c772f898409942f263f61281bb4d4f1981f209a198b0d196369cbfa26001",
           "status": "PASS"
         },
         {
@@ -4624,7 +4624,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-encoding-fixer.gold.json",
-          "sha256": "6a67970125d58a35d8638764b95aaf52b9b7782e1e8538ca9212b6c3cd0eba13",
+          "sha256": "a465d3e1c2824dc0013852663f07216fc0e2c06a113e82748791ed42d70c8d9b",
           "status": "PASS"
         },
         {
@@ -4772,7 +4772,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-filter.gold.json",
-          "sha256": "d3d1bc0620a79518fa961bc014f4ea97c9af702d9590e24fa198e22fdf4dc93c",
+          "sha256": "47f55c69aa02928342916009f59a63629df75b4e481fa9be43d59bf9db7ce081",
           "status": "PASS"
         },
         {
@@ -4920,7 +4920,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-group-count.gold.json",
-          "sha256": "dceaf0f56d8c2dec773a73d5a311e2005f34c9922060960d700d61eda68dcae5",
+          "sha256": "b53d3ce6b30e7c1f4accb4dff47d56fc138a622251a079ce9b08fcaa3771b5b8",
           "status": "PASS"
         },
         {
@@ -5068,7 +5068,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-join.gold.json",
-          "sha256": "5f34d7daebc382dc53ff8829bbdcb2a57009bb5bcbcf86b25ebdef7aaa9c6a92",
+          "sha256": "d8c2a44260f8ab9ce553e0a94091d47d02558dfc30ef8c388c91758ab8b8b8ac",
           "status": "PASS"
         },
         {
@@ -5216,7 +5216,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-pivot-lite.gold.json",
-          "sha256": "8913577a7b93eb790a1297982913cf3435d4fd7a67f6105f99d02f1fdac13ba9",
+          "sha256": "c15276705eb8e0d1e6dc6be248049a29191db858102a75b5abd6d47598eeb664",
           "status": "PASS"
         },
         {
@@ -5364,7 +5364,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-sort.gold.json",
-          "sha256": "274b84386e6a34f9d10c2fe4c69e6d4afa958f7972dc330d3a8374f3a81f7bde",
+          "sha256": "167265dc62e1d3ea85123021e5ea6faee7e242f719a4c8f15824ffec8a092fd7",
           "status": "PASS"
         },
         {
@@ -5514,7 +5514,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-to-json.gold.json",
-          "sha256": "b823a4c4802b4d0c2e5c48aac6a88207850c73d969d16646f2aedb70ceb45c47",
+          "sha256": "797d5dd8879f2f43850200bc4e55ed2f49dfaecb52ec6682d809ae02e01243ce",
           "status": "PASS"
         },
         {
@@ -5652,7 +5652,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-viewer.gold.json",
-          "sha256": "2c02dd566bd8bc6e3409db507f7aa7f9600f1bd4ed041d37557aaf104a748c76",
+          "sha256": "028294f18a79509206d01c2fbad605ab97c04c26a5498b6586f7df43c164d921",
           "status": "PASS"
         },
         {
@@ -5775,7 +5775,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/currency-scenario.gold.json",
-          "sha256": "18ac4998f8df4cc00bba357e7e6d87ff441eb6128429164be9cc28c45cee1b00",
+          "sha256": "c0b8c70c6821d84ca7bd9de7fe122ccee335bdc4ee2ef67748178cd09db44353",
           "status": "PASS"
         },
         {
@@ -5913,7 +5913,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/date-difference.gold.json",
-          "sha256": "b9563e825a442477dc89d13dd620c1895f37b7af7422599a67436ea18f938d5d",
+          "sha256": "939944e9a1deffeb68c47f7ea8758ab5e3b3dbd7b1d52045e02b4e39b2180f81",
           "status": "PASS"
         },
         {
@@ -6147,7 +6147,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/deadline-countdown.gold.json",
-          "sha256": "dede3ffffe4b7e222c96a81ca1de8ad0f3bf5f07e3ef0be64cae999015a30e2c",
+          "sha256": "070733192eded818b28018102a94a8645ac6e7b465b4e108f0a66db2c07c262d",
           "status": "PASS"
         },
         {
@@ -6284,7 +6284,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/decimal-hours-converter.gold.json",
-          "sha256": "1b32660134215fd8c0afdea0b70762d18fc242f7171f8ae994bbbdfb89ef7ca8",
+          "sha256": "312f1e7ef2edf2e3c8b661a08daf7e3c97fbc836e14ec99ac169aa9eedf6c6a6",
           "status": "PASS"
         },
         {
@@ -6406,7 +6406,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/discount-impact.gold.json",
-          "sha256": "dff5d32f4cceff17c5c78f00c0e8c0bf9e5531ee4e621a8c479096339e98d700",
+          "sha256": "393db16bf5c1fd9a6af2d00ccabbe4f685964a11ba0ffa8dd5568e0d79c88dbe",
           "status": "PASS"
         },
         {
@@ -6637,7 +6637,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/doi-isbn-normalizer.gold.json",
-          "sha256": "0e53f210094e3a1a2eb5c1d78caca71a3c1fc239a4d2d65d7ce6fdca7843fb3c",
+          "sha256": "d9450f44095ff1f9358e9faf551bf55c9fe21d7321185b2fe3dd0ad688850376",
           "status": "PASS"
         },
         {
@@ -7376,7 +7376,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/duplicate-row-profiler.gold.json",
-          "sha256": "438ba73f762fef70b4297f3b8f9bfac9019bc46ea6ed32a739c644bdd03b13de",
+          "sha256": "95a52df88c3e74289c761e603acb5f470b71800beeeb95c5b8b38afcdec5df3d",
           "status": "PASS"
         },
         {
@@ -7514,7 +7514,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/duration-calculator.gold.json",
-          "sha256": "7fbe03a4b946a2364811e4da4aacffb3110e4056bf16cf7456c69878fad92678",
+          "sha256": "43f2057220fdfefeba93ef01ec52c241c9e8f8cc6ddb73bf67c5ca93f74214fc",
           "status": "PASS"
         },
         {
@@ -7637,7 +7637,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/effective-hourly-rate.gold.json",
-          "sha256": "c5fb17bc2d17fa181a7f8a9b98b60d55eaf33ec249fc514a27611e4e17527c88",
+          "sha256": "1a65962cbb0bf397746613087ef15c9474928021aa46a155ea2c5fb8411ce2d9",
           "status": "PASS"
         },
         {
@@ -7880,7 +7880,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/epoch-batch-converter.gold.json",
-          "sha256": "4ead654ec4a7e7beb87c83b26ea347f3a6419d0460a2be9763e9d24b509cb4c0",
+          "sha256": "d2c33b54c83581bfea1037167b0819d58c962430ea22ce55f7fde203453bc8e1",
           "status": "PASS"
         },
         {
@@ -8328,7 +8328,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/file-hash/gold.json",
-          "sha256": "6fe360542dafbff7e4f1f13a987cf88ab79f3f9e81993b26330004439a7b9414",
+          "sha256": "da8dcd1ea5a7b00a438a8f08e06ca68f29f3c1bfd3d201f813aa6982708962b1",
           "status": "PASS"
         },
         {
@@ -8764,7 +8764,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/find-replace-preview.gold.json",
-          "sha256": "435368be847a64d290efd965bfb67a6659c1ae1088f4fa49f37e03a0f19a9cf6",
+          "sha256": "38d6de1b43103bb1863bc17edf2aa908d5db28b1566ecdb7da197d98519aca90",
           "status": "PASS"
         },
         {
@@ -9196,7 +9196,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/hash-generator.gold.json",
-          "sha256": "91ceb1363902b70824ae28011813be0faf93f9a3f2b95c7088b3135fc9749201",
+          "sha256": "a3126abeaee884996b88dbaeedd4188a40b38cfd3a78a754c5dac3820ef6c085",
           "status": "PASS"
         },
         {
@@ -9331,7 +9331,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/hmac-generator.gold.json",
-          "sha256": "2e43ae159fd334e3917924e414fe6d6d2053ad656c81545571aa005275b2bdee",
+          "sha256": "eabd7c1f3d3258a30f17f4b5b27870de19e2b78dfdbcf64a939e2e7226829e0a",
           "status": "PASS"
         },
         {
@@ -9465,7 +9465,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/html-entity-codec.gold.json",
-          "sha256": "1d3ebd208e078789add7e466179ffe64a10b13692b94aa3da351bddb63535874",
+          "sha256": "48c6125542b45cf0461c11c8860d6ec26bb0716d61e43b4993f6c83c9fc890d7",
           "status": "PASS"
         },
         {
@@ -9597,7 +9597,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/http-status-reference.gold.json",
-          "sha256": "7357e3d1d12a2d85060ef5a248bc402df6f358cdbcab9c5cff7a8ce228eb3bdc",
+          "sha256": "0da4bd21770c920c8df2f7b60dad0aed2d0023c82bef048e1cdf458445f5884d",
           "status": "PASS"
         },
         {
@@ -9735,7 +9735,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/ics-event-builder.gold.json",
-          "sha256": "f1b497ac29806263c034189a3123045804013178bf469bb3fe8f6348b9985338",
+          "sha256": "8566f9cadf812afda156620063e4b12fcfc85682f365427c3054c1b55f425fe1",
           "status": "PASS"
         },
         {
@@ -9873,7 +9873,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/ics-viewer.gold.json",
-          "sha256": "3004c93b2b2c079d672a5cb27a25aa2e8e4182495511e8655c9a60fefe687e41",
+          "sha256": "8fddbbcb5084716449ff72dbb73ccd2d23886678c0af18abec31464a0045fc89",
           "status": "PASS"
         },
         {
@@ -10797,7 +10797,7 @@
           {
             "dimension": "physicalDevice",
             "path": "quality/receipts/image-resize/certification.json",
-            "sha256": "5f528de8305408ac5f1ccaf865827e5cbbc4d0246b4c19469b9b96c8836bbd13",
+            "sha256": "0d5bfbf560ae819575bcef5535fdf7b6ebb6b2295df0137da3626bf7b7c36f61",
             "status": "PARTIAL"
           }
         ]
@@ -10806,7 +10806,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "5f528de8305408ac5f1ccaf865827e5cbbc4d0246b4c19469b9b96c8836bbd13",
+          "sha256": "0d5bfbf560ae819575bcef5535fdf7b6ebb6b2295df0137da3626bf7b7c36f61",
           "status": "PARTIAL"
         },
         {
@@ -10836,8 +10836,7 @@
       ],
       "blockers": [
         "CERTIFICATION_RECEIPT_NOT_GOLD",
-        "PHYSICAL_DEVICE_EVIDENCE_MISSING",
-        "RECEIPT_FIXTURE_IDENTITY_STALE"
+        "PHYSICAL_DEVICE_EVIDENCE_MISSING"
       ],
       "coverageGaps": []
     },
@@ -11074,7 +11073,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/invisible-character-detector.gold.json",
-          "sha256": "3ad2495efd5b9a3fcda9c745f7ff81c9436fc5c02259563aaab89ed45b0ec14d",
+          "sha256": "e71fe242b3e174090c2b3f222112a17570fb1ca97e7bd94070962dff0bffe9be",
           "status": "PASS"
         },
         {
@@ -11197,7 +11196,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-math-validator.gold.json",
-          "sha256": "90c66aa1ee30016d5e8268cb90c062924d0d77b0ffcaa7a16ddebfd56f9ccae6",
+          "sha256": "7ab2502f26581282fef4129d8508b9aa8ff37995dc33372ce21d3515720913b8",
           "status": "PASS"
         },
         {
@@ -11320,7 +11319,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-number-generator.gold.json",
-          "sha256": "594724ac2b74cc0676c5ffa2f647cf99e30b0f79cdc2aac0d4756ca2de4e9b45",
+          "sha256": "a8178024e589e32b13f76eb253df739560fbd744d98deeaebb2b56c0a1492639",
           "status": "PASS"
         },
         {
@@ -11546,7 +11545,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/json-formatter.gold.json",
-          "sha256": "a93c0c595ebc8eaab9929ca184e59fe0a61c401421a4f014288d06cc9ceda0ee",
+          "sha256": "85c745b59e816e168004ed4e790afb900ba41061710c2bffff049ac4bccb8137",
           "status": "PASS"
         },
         {
@@ -11679,7 +11678,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/json-path-playground.gold.json",
-          "sha256": "52a901f422975966be897dbc64d7e565fe6edd5c907e05d060ddc60a48d02d8f",
+          "sha256": "1a747b39430b2c742030c88e8eb6631e11985e61df73773dfd0f94d8181ded72",
           "status": "PASS"
         },
         {
@@ -11829,7 +11828,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/json-to-csv.gold.json",
-          "sha256": "2996d80a55852abae2e79af9694c8b5a9a0cd4eb07aca2cbae9bcf475dc20f09",
+          "sha256": "5a630d84a2c62f96e0e049373fdaf466f76d4eb4b2332998f9fe15aa2ba6c143",
           "status": "PASS"
         },
         {
@@ -11972,7 +11971,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/json-yaml-converter.gold.json",
-          "sha256": "06c6922a16141e151d392716bce852be5618bcecabc815d5c8ac6e635bbba6bb",
+          "sha256": "4f6b9b216a02f61731a0d43d9e915081e77ecb92d59bac1bf5b0612a650d5aca",
           "status": "PASS"
         },
         {
@@ -12105,7 +12104,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/jwt-inspector.gold.json",
-          "sha256": "00fd450db6c142f0771e49300c9367e9b88ae4caa68329b1ecc2441279df9464",
+          "sha256": "aa34fa320a0d7d8c4bb6d832dc8f129b25c94f8b36be3fe1924eadeccb8146c0",
           "status": "PASS"
         },
         {
@@ -12323,7 +12322,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/late-payment-interest.gold.json",
-          "sha256": "ab650dbac107eff0abc76068dc3507dc3cf3c00d7872873032a6af3cf9a03d1b",
+          "sha256": "9e2c360ee048cc9bd2a0bb87e53155932e58579057610e3aea145c7f3accc3ef",
           "status": "PASS"
         },
         {
@@ -12466,7 +12465,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/line-deduplicator.gold.json",
-          "sha256": "7a97915543e9cb1513ebd312ad76b8520eafd03dd02499562c4f0efb5ada768b",
+          "sha256": "b49d202087a9960fc1300c9f8f9208be08fdfb07980648622b0a80e98f2c8bca",
           "status": "PASS"
         },
         {
@@ -12600,7 +12599,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/line-sorter.gold.json",
-          "sha256": "33787f2f5036b055b336220791e57611e65273387b151f706529b5015dddd335",
+          "sha256": "ec1757b68b586eccd7ef30f146f31d7c300f4a3d295d26588f2596fc1086bfa7",
           "status": "PASS"
         },
         {
@@ -12743,7 +12742,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/list-compare.gold.json",
-          "sha256": "705605d1555dcd5308555e08dd1479f44788ff73bfb47ea0dcfbe88d1a767bda",
+          "sha256": "b69097a9a3c10b605047b32e91057a78b97d34c0bb564fb9b4e9e2e159521607",
           "status": "PASS"
         },
         {
@@ -12883,7 +12882,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/list-difference.gold.json",
-          "sha256": "7ca4cadf84b78b8219f761869669e743c125b3406fe07454e269583d6d230cac",
+          "sha256": "23ff363bd841fc8ff2ddf432b10d3dd85f07be6f13cdd7e5c45e580ee4f42f13",
           "status": "PASS"
         },
         {
@@ -13017,7 +13016,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/list-intersection.gold.json",
-          "sha256": "e3c49d4ee95a12d0d31445b6d5e54955f32467a5fc1c3a21dc3d2cb674cd8d6f",
+          "sha256": "29d53fa8fa53aea6abf6ab3573fe5f7ce0efcda1264181af3424607ee8e13eee",
           "status": "PASS"
         },
         {
@@ -13239,7 +13238,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/margin-markup.gold.json",
-          "sha256": "d0021507895ffcd6cb1dcfed4ce5f78bf7e7a1f0a528a4d035bc4156820ef12e",
+          "sha256": "a962530a06e926cd1ce535b486721083231ce5c372bdf84e70369b0c84922133",
           "status": "PASS"
         },
         {
@@ -13382,7 +13381,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/markdown-preview.gold.json",
-          "sha256": "958f8524c0a743348cd3e1017453ea8d7b8ad43ed6833ec1d1f8dc7ee1bdd639",
+          "sha256": "b74a5cb56cf8a72166e60b196823ec65e403284565ac9797961bdd120f166652",
           "status": "PASS"
         },
         {
@@ -13517,7 +13516,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/markdown-table-formatter.gold.json",
-          "sha256": "8afc40467cbc0e16455420996e239ecd9bb873149d5a2de329c29fb572e07002",
+          "sha256": "47ee0d5d01d1a480789de9666d9138af95356dccd1b728821abce44a12147128",
           "status": "PASS"
         },
         {
@@ -13655,7 +13654,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/meeting-time-planner.gold.json",
-          "sha256": "3eb58dafca4e2f55b53fd65bde8bf5ec0394b66d7fa841e0766137d2a7684e26",
+          "sha256": "279d541004697bc5aa06cd886238b5e68259d5a357897b7832491b30b96121bf",
           "status": "PASS"
         },
         {
@@ -13991,7 +13990,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/mime-type-lookup.gold.json",
-          "sha256": "7bd399df7fbd1f87701921643c548b48b6e6b089ac63c56e3dda016cb7bcc5ec",
+          "sha256": "90b2c51108a21e678c6e4e711957084cb2d8a9d1d4e35e8bf7f14bc61951cc88",
           "status": "PASS"
         },
         {
@@ -14130,7 +14129,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/missing-value-profiler.gold.json",
-          "sha256": "dab971815d26bff3c2e3b309f83afccc0453c69b51693bffad324cb182b00de6",
+          "sha256": "8c1a6b90e5d8919c656817b0c3ee2e5a4d1a0fe87754c5f7864206670a627523",
           "status": "PASS"
         },
         {
@@ -14562,7 +14561,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/payment-fee-gross-up.gold.json",
-          "sha256": "012e690dbab24f84de28bb4445fbd009af69ffe9fa9721b9d9487bf438fc476f",
+          "sha256": "8cf194ff24343ba3d9b626997f0830bdcb7f12323b4a95bfe98e3600117ebb9d",
           "status": "PASS"
         },
         {
@@ -16545,7 +16544,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/percentage-helper.gold.json",
-          "sha256": "e2b25750cc4ca2ea627d474db1b47a49144acf332ed02ecd31d1a17c4ea87fd8",
+          "sha256": "4bb5f39bbc4526d75de2f8fd2300c91f18be442dc40342d0f914d1664e7cc928",
           "status": "PASS"
         },
         {
@@ -16886,7 +16885,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/project-profitability.gold.json",
-          "sha256": "843e47afbf41413eb54c527e3e478fd651be11fc56b8f6e8290739ea7ad73e00",
+          "sha256": "a6746f92ae7342d1c512c480af015bc12267995e4f07f25a781400dea9b3b6c8",
           "status": "PASS"
         },
         {
@@ -17009,7 +17008,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/proposal-budget-checker.gold.json",
-          "sha256": "3a5bcf2a4825bf6afc121731abe3c216474dd43c2f0a3fc6a26200f966368ceb",
+          "sha256": "7d0b52ff4aca6b636af9fa131bea86ccc5b164dbbbbfdd92f94b5d233bc1041c",
           "status": "PASS"
         },
         {
@@ -17436,7 +17435,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/quarter-date-mapper.gold.json",
-          "sha256": "64a7cfc3baa075784b3ac977d1e3af42c534ef4deddf3fa3881c367f196ea96e",
+          "sha256": "ef785eb008fa66730bb020d64555e4e0e29febc27b8a1cb22cee8cc5734f38bb",
           "status": "PASS"
         },
         {
@@ -17568,7 +17567,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/query-string-editor.gold.json",
-          "sha256": "9651df5b324a05dad904cf3ebf2b47f847ef2ff29eb0dec9b4ed548ab4229643",
+          "sha256": "68c6dc7bf7e7e162091b61fd621f1e87abb1a60495658c675cf655a493f37792",
           "status": "PASS"
         },
         {
@@ -17707,7 +17706,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/quick-chart.gold.json",
-          "sha256": "88995e5ae349a035d98d7ffefb3899d41a2ea6627176bf739409aef87e65f141",
+          "sha256": "ad4f2fd26372f2e3fbe8b0f0f99efc74d55d88985ad0388111295303b2f484fc",
           "status": "PASS"
         },
         {
@@ -17927,7 +17926,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/rate-converter.gold.json",
-          "sha256": "5abaef022f4c5b908201e566e2122c17d6616be1f14ce2ebf9f8a6d6b36b5f34",
+          "sha256": "923cade93e8c901ca86e2b0bd5f65becddd833135cd7dfc60e650c1f8e9470cd",
           "status": "PASS"
         },
         {
@@ -18262,7 +18261,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/recurring-date-generator.gold.json",
-          "sha256": "ad74ee249735812ad82cd8b1778ddf33e55f36843af3c7b4685c11d503fb5538",
+          "sha256": "130a9b385f7d11a4f82370df85a6aa955db8d8558b3417c472352e03d36bd4bd",
           "status": "PASS"
         },
         {
@@ -18594,7 +18593,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/regex-tester.gold.json",
-          "sha256": "8b426bd5aafd6b01a03830c35c0c7f543dca450f62870d9e6ac7d6e26e63b9d9",
+          "sha256": "c1cc319fe24525bb8e77bdad96d3e540edc22c630b80663f1a77a89b493053cc",
           "status": "PASS"
         },
         {
@@ -18914,7 +18913,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/retainer-capacity.gold.json",
-          "sha256": "37192cdea4956f3f475271c29d19b6a52e2756bb3e2681e1f67e2a4ddc7b70e9",
+          "sha256": "48bce24a425ea5f31a132f96937148d6c2b047767a71518ec366e3266646110f",
           "status": "PASS"
         },
         {
@@ -19449,7 +19448,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/scope-creep-cost.gold.json",
-          "sha256": "d3f09002eff1985f355d70be8b3d3b3095be44459faa4d60fa5638be13496a72",
+          "sha256": "9f19724537b6fade63546ad046920c4b87465dc43206172dac95bc1bc1b75c37",
           "status": "PASS"
         },
         {
@@ -19798,7 +19797,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/slug-generator.gold.json",
-          "sha256": "064240131cc8a2f97abb61acf64002381fffa2c0756322cdc1959652e6a5dffe",
+          "sha256": "429f08af58660313a2f10dd65f2c48121119c4e25e270e1442aae4a79df94842",
           "status": "PASS"
         },
         {
@@ -20137,7 +20136,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/table-transpose.gold.json",
-          "sha256": "9d4d63af8135e49d4156b1f440f10001295ec1c8c696a31871f336c3a2420c86",
+          "sha256": "e44bb1b6232aab00d6274a886f5520ca959ebbd1a2c161be51eabb8fef63ad42",
           "status": "PASS"
         },
         {
@@ -20260,7 +20259,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/target-income-rate.gold.json",
-          "sha256": "9bd9fdcb20846681d5c911368bad2313d60baac1fdb999a6f3eff77d148f5013",
+          "sha256": "9f853555945aa6f971d5aea16cf540c2424e30dd063eeeb440ec3446c29064a5",
           "status": "PASS"
         },
         {
@@ -20397,7 +20396,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/text-diff.gold.json",
-          "sha256": "957e74352c41dd556db3ccc18a77ea4d930d502602bb74f129c4d73b659af72c",
+          "sha256": "6220cde01d71f49e93d5334d05f337e0a902b65f72632fd53d47cfabecc0f880",
           "status": "PASS"
         },
         {
@@ -20537,7 +20536,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/text-to-csv-rows.gold.json",
-          "sha256": "6253f3eb8a943b1105162c44f05e05ca6bc66c2338de6f028a2c1b3239a58008",
+          "sha256": "19ede7000dfeff18f5ecbf8e1053007ba21d9de1ab14d023258cbd37d4938ed4",
           "status": "PASS"
         },
         {
@@ -20769,7 +20768,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/timesheet-totaler.gold.json",
-          "sha256": "8599f437fb21255978800e1d53e304064b1ea26e53a99ce5d11de9c5791d88dc",
+          "sha256": "34207d6b070a24aede4ccec2705657b3ca61946cb63e3d720ae7e10478b4c7de",
           "status": "PASS"
         },
         {
@@ -20907,7 +20906,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/timezone-converter.gold.json",
-          "sha256": "1e99c61b17ca4a2b3582391a0daf2056d139d81d310373e1b8c9dd3425033fb4",
+          "sha256": "07f67e69986bb2b6122eee31d762abf84afc036dde62ec3f74b59f5da7abd8d8",
           "status": "PASS"
         },
         {
@@ -21036,7 +21035,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/timezone-overlap.gold.json",
-          "sha256": "82b5bfef13c04b1f20a9d1f0e7743d5de3cd04ede7826f40092c8174335a1c19",
+          "sha256": "f660698e120d4ad59fae5fa98151b04328e3152b59b38857a01f0701dc9e1d9f",
           "status": "PASS"
         },
         {
@@ -21174,7 +21173,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/toml-formatter.gold.json",
-          "sha256": "cd921337e124970791ffbb26f728ed152c0c012af6f6d24cc392c5d468afe35c",
+          "sha256": "099569af06aea0dee02058b4220a71c063cc998ebfd8c751d50d8daa3f7a9193",
           "status": "PASS"
         },
         {
@@ -21304,7 +21303,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/tracking-cleaner.gold.json",
-          "sha256": "2797a72b2cbb4cfd5ecf85429b9501081c380c021c169a351cd059241c92260f",
+          "sha256": "6d3c8802cfcfbdaf96b9d12d7599add453a4007e5b1e8fcfd36988511078b3c6",
           "status": "PASS"
         },
         {
@@ -21448,7 +21447,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/tsv-to-csv.gold.json",
-          "sha256": "92a1ee20f463b4fa7a6d4e95e661fc059085f2f9c7eeb1d2cf2c1b97e95d1c71",
+          "sha256": "1b1d0fff1efb6c86645bab027ece6e400a7eae2026b009a652c3e6ee5d365f7f",
           "status": "PASS"
         },
         {
@@ -21582,7 +21581,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/unicode-normalizer.gold.json",
-          "sha256": "b8112363fb3e25eb94ccf3055b4c511067ba6f6a4f821407286412d7383f54d8",
+          "sha256": "91e388ef84aba9e6d349bdcefb306f494b4c97166c2f0ea03f5494e0b3050cbf",
           "status": "PASS"
         },
         {
@@ -21715,7 +21714,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/unix-timestamp.gold.json",
-          "sha256": "702026d099e7adda027c782b12e0468afff509e00fc19eb7fe33760d18207d50",
+          "sha256": "55329211c38f709c194fbe339cb4b291bf5c36811cb46f68e08b8e18544e6015",
           "status": "PASS"
         },
         {
@@ -21951,7 +21950,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/url-codec.gold.json",
-          "sha256": "ebe86a331667146e3501402340f95f88fef3572b9e044b4a820451c90047e489",
+          "sha256": "1a2126a56230dce33930c8241170740dfcc748367d353ecaf27297d532479f39",
           "status": "PASS"
         },
         {
@@ -22187,7 +22186,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/user-agent-parser.gold.json",
-          "sha256": "248101527db8e2a37041697bd4fd03051162f96728f7bcec7c9a60c2b1405bd5",
+          "sha256": "573e59fa9f53a71be2e74a83360914b871251cd26e41e5d9542b29dfe6c7e8b8",
           "status": "PASS"
         },
         {
@@ -22310,7 +22309,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/utilization-calculator.gold.json",
-          "sha256": "040ce8d3102f69e7caf6f8892871ca5f9e4aa4edb4d36078c6de31c4c02e969f",
+          "sha256": "ac5c982863872a68b09f7c668ca56a9360dfffa53bd28f29486f7b03bc135a67",
           "status": "PASS"
         },
         {
@@ -22440,7 +22439,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/utm-builder.gold.json",
-          "sha256": "a6971f6398895298eb80e74a114ad34f81781e9832004f0dac6712ee5ddb1f0a",
+          "sha256": "334302ca6c453977bedf75db5fdf5b1509425a611f12083f48a04b81347c7ef1",
           "status": "PASS"
         },
         {
@@ -22682,7 +22681,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/uuid-generator.gold.json",
-          "sha256": "ba4fe113924142073ca7ea7b347b8e39506ec05cb7a147eaa3da93c0bb03406e",
+          "sha256": "ddd0c75ab0610e2ef7cb9a2529733b42c84890571ae265790106ceb09e2f8513",
           "status": "PASS"
         },
         {
@@ -22915,7 +22914,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/week-number-converter.gold.json",
-          "sha256": "f826e75129af1b25276f2188ae456552be788abf0ae2a08c1432c15764dfe58e",
+          "sha256": "e7c64cf9d28524bcb5ff5f235786f6afef0c7d0282e1c47f8a970b66840e2c31",
           "status": "PASS"
         },
         {
@@ -23050,7 +23049,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/whitespace-normalizer.gold.json",
-          "sha256": "af7a57746553d3974ec6e6190cbdae8c3732e200c5159401fbeefda454f3d5a1",
+          "sha256": "fc4d598101a3012bf96c787536fff3c323d9ab307253dff532260cb68bb2baec",
           "status": "PASS"
         },
         {
@@ -23184,7 +23183,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/word-character-line-counter.gold.json",
-          "sha256": "8378d8b1463ad97526ef96a58dab6f5afa698dcd470edfbdc9636aacb5f60576",
+          "sha256": "e31eae4eabc7f8f17cd7a66197518762f4e8795a801852e643640ba51145e17d",
           "status": "PASS"
         },
         {
@@ -23322,7 +23321,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/working-hours.gold.json",
-          "sha256": "d91347922268bf04d3492f024bfd41078eca6a96601309e83bb4f290eea8e995",
+          "sha256": "2deafe128d0fefd024ace6d2a4c176044fe542aa57664764a6bbf00d116bd593",
           "status": "PASS"
         },
         {
@@ -23455,7 +23454,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/yaml-formatter.gold.json",
-          "sha256": "6e2d6ed2416470140eb4b7c8e7f90b617dcd4824576650fd63c1f1f449fa95b8",
+          "sha256": "db88c8ade6bc2e266aca72c836c3c721377ae47169eba14c6efa478d1e19dca4",
           "status": "PASS"
         },
         {
