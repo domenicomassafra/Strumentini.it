@@ -73,7 +73,9 @@ The aspirational target is domain-level or similarly small annual infrastructure
 
 ## Repository status
 
-The checkout contains a static Astro/Preact implementation with 200 generated tool entries, public static routes, shared local execution seams, and release-validation tooling. Release certification remains blocked until the current Gold receipts, fresh browser matrix, physical-device receipts, and an externally verified rollback receipt exist; local validation never substitutes those external proofs.
+The checkout contains a static Astro/Preact implementation with 200 generated tool entries, public static routes, shared local execution seams, and release-validation tooling. At the 2026-10-03 checkpoint the global certification index reports **119 Gold / 1 Partial / 80 implemented-unverified**. The live machine-readable authority is `quality/receipts/expanded-catalog-certification.json`; do not copy old frontier counts from historical planning files. Release certification remains blocked until the remaining Gold receipts, fresh browser matrix, physical-device receipts, and an externally verified rollback receipt exist; local validation never substitutes those external proofs.
+
+For the current project state, active priorities, Git/WIP closure and UI/UX audit, start with `PROJECT-STATUS.md`, `HANDOFF.md` and `ROADMAP.md`.
 
 The consolidated validator writes ignored evidence under `quality/receipts/release/` and does not deploy externally:
 

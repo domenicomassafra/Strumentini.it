@@ -2,7 +2,7 @@
 
 Current stage: **real implementation hardening and catalog certification**.
 
-Checkpoint 2026-10-01: 200 tools exist, 99 are Gold/release-eligible, 1 is Partial, 100 are implemented but intentionally still unverified. The full automated suite is green (331/331). Public-facing copy is Italian-first. The visual redesign is deliberately deferred until the backend/content layer is stronger.
+Checkpoint 2026-10-03: 200 tools exist, 119 are Gold/release-eligible, 1 is Partial, 80 are implemented but intentionally still unverified. The full automated suite is green (334/334 across 48 test files), `astro check` is clean, and the static build produces 204 pages. Public-facing copy is Italian-primary, with a small number of source-level UI strings still identified for cleanup. The next visual tranche should be a deliberate UI/UX redesign rather than incremental polish.
 
 ## P0 — close the current Italian/backend tranche
 
@@ -16,7 +16,7 @@ Checkpoint 2026-10-01: 200 tools exist, 99 are Gold/release-eligible, 1 is Parti
 - commit the current tranche only after generated catalog and certification receipts are deterministic and current;
 - keep `image-resize` Partial until genuine physical-device evidence exists; never infer physical Safari/Android evidence from desktop or emulation.
 
-## P1 — make the 149 unverified tools genuinely trustworthy
+## P1 — make the remaining 80 unverified tools genuinely trustworthy
 
 - work family by family rather than promoting tools in bulk;
 - add independent fixtures/oracles for each family before Gold certification;
@@ -25,6 +25,8 @@ Checkpoint 2026-10-01: 200 tools exist, 99 are Gold/release-eligible, 1 is Parti
 - add browser acceptance where the tool depends on browser APIs, files, images, PDF, canvas, clipboard or downloads;
 - strengthen reference-backed tools with explicit source provenance, freshness rules and fail-closed behavior;
 - prioritize broadly useful jobs instead of increasing raw catalog count beyond 200.
+
+Current remaining frontier by engine: `research-knowledge` 20, `file-privacy` 19, `image` 14, `url-marketing` 12, `image-visual` 5, `text-writing` 4, `marketing-math` 3, `qr-local` 2, `date-time` 1. The PDF/document family is already Gold and is not part of the remaining frontier.
 
 ## P2 — deepen the product backend and discovery model
 

@@ -64,22 +64,22 @@ Migrated evidence:
 
 These contain earlier rejected/narrowed candidates too. Read the latest scope corrections before treating older sections as current direction.
 
-## Current state — 2026-09-30
+## Current state — 2026-10-03
 
 The implementation is well beyond the research-only phase. The repository now contains a real Astro application with a deterministic Tool Factory and a 200-tool catalog.
 
 Verified local checkpoint:
 
 - 200 public tool routes in the generated catalog;
-- 99 tools with Gold certification and 99/99 release-eligible Gold receipts;
+- 119 tools with Gold certification and 119/119 release-eligible Gold receipts;
 - 1 Partial tool (`image-resize`), blocked only on the still-missing physical iOS Safari and Android Chrome evidence;
-- 100 implemented tools still classified `IMPLEMENTED_UNVERIFIED` rather than falsely promoted to Gold;
+- 80 implemented tools still classified `IMPLEMENTED_UNVERIFIED` rather than falsely promoted to Gold;
 - 200/200 tools bound to oracle and fixture authorities;
-- 331/331 automated tests passing across 47 test files;
+- 334/334 automated tests passing across 48 test files;
 - `astro check`: 0 errors, 0 warnings, 0 hints;
 - static build: 204 pages, with the build inspection and historical bundle baseline passing;
-- public catalog copy, shell, onboarding, Workbench, shared tool pages and the currently rendered tool surfaces are Italian-first;
-- rendered-page audit across the static build found no obvious English UI copy; standards/protocol names such as JSON, CSV, Open Graph, WebP and similar established technical terms remain unchanged intentionally.
+- public catalog copy, shell, onboarding, Workbench and shared tool surfaces are Italian-primary; a focused UI/UX audit on 2026-10-03 found a small number of source-level English/shared-chrome strings and internal quality jargon that remain redesign cleanup work;
+- `aaa0c7f` added the 20-tool PDF/document Gold batch, moving the global frontier from 99/1/100 to 119/1/80.
 
 Discovery/clarity checkpoint added on 2026-09-30:
 
@@ -94,11 +94,11 @@ Discovery/clarity checkpoint added on 2026-09-30:
 - representative end-to-end operations pass for Business Day, UTM Builder, JSON Formatter, text counter, CSV viewer and date difference;
 - Library browser checks confirm 50 tools under `Verificati` and 20 under `PDF e documenti`.
 
-The Italianization/backend tranche (data-table, date-time, text-writing Gold batches plus shared Italian UI/runtime layers) was verified green on 2026-10-01 (`npm test` 331/331, `astro check` clean, static build 204 pages) with the certification-frontier tests repaired to the 99-Gold frontier. Commit it on `main` before any further product work.
+The Italianization/backend tranche plus the later PDF/document certification batch are committed on `main` and pushed. The current operational truth is the generated certification index, not older checkpoint prose.
 
 The current product direction is **backend/content/correctness first, UI redesign second**. Do not spend the next tranche polishing the present visual design. The immediate work is to improve the actual utilities, data/reference quality, deterministic behavior, catalog/search semantics and Gold coverage while preserving the Italian-only public experience.
 
-`HANDOFF.md` and `ROADMAP.md` were stale before this checkpoint and must not be used to infer that the product is still a research prototype.
+`HANDOFF.md`, `ROADMAP.md` and `PROJECT-STATUS.md` are the live operational entry points. `.scratch/`, `tasks/prompt2prompt/`, the archived mega-handoff and the original first-validation implementation plan are historical evidence, not active queues.
 
 ## Brand / GTM update
 

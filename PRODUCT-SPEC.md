@@ -94,7 +94,7 @@ These constraints inherit into every implementation ticket.
 
 ## 5. First Gold vertical set
 
-The first validation build targets **15 Gold tools**. This is deliberately smaller than the historical Wave A 40.
+Historical validation baseline: the first validation build targeted **15 Gold tools**. This section remains the acceptance baseline for that initial vertical set; it is not the current catalog or certification frontier. Current global status is published by `quality/receipts/expanded-catalog-certification.json` and summarized in `PROJECT-STATUS.md` / `HANDOFF.md`.
 
 | ID | Tool | Primary engine | Why it is in the validation set |
 |---|---|---|---|

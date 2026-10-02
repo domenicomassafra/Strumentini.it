@@ -1,6 +1,8 @@
 # StrumentiUtili.it — Canonical Implementation Plan
 
-Status: backlog-ready implementation authority; **this file does not contain production implementation**
+> **Historical first-validation plan.** This document records the original 15-Gold validation architecture and ticket model from 2026-09-23. It is no longer the live execution authority. For current work use `PROJECT-STATUS.md`, `HANDOFF.md`, `ROADMAP.md` and `quality/receipts/expanded-catalog-certification.json`.
+
+Status: historical implementation authority for the first validation build; **this file does not describe the current execution frontier**
 Date: 2026-09-23
 Inputs: PRODUCT-SPEC.md, DESIGN.md, PRODUCT-MARKETING-CONTEXT.md, lane-05 architecture/test seams, platform decision spike, Tool Factory quality standard.
 
@@ -537,7 +539,7 @@ Do not create in this wave:
 
 ## 17. Ticket execution model
 
-The local tracker is `.scratch/strumentiutili-v1/issues/`.
+The historical local tracker was `.scratch/strumentiutili-v1/issues/`. It is retained as provenance, not as the current queue.
 
 Each ticket:
 
@@ -550,9 +552,9 @@ Each ticket:
 - includes runnable verification;
 - reaches the required Gold level for any tool it makes default/public.
 
-The canonical dependency graph is `.scratch/strumentiutili-v1/TICKET-DAG.md`.
+The historical dependency graph is `.scratch/strumentiutili-v1/TICKET-DAG.md`.
 
-First implementation frontier: **Ticket 01 — Gold tracer: Business Day Calculator**. The separate 20260923-181500 technical-enabler wave may continue in parallel on disjoint paths.
+The first implementation frontier was **Ticket 01 — Gold tracer: Business Day Calculator**. That frontier has long since been integrated; the old prompt/worker waves must not be restarted as active work.
 
 ## 18. Closure review gates
 

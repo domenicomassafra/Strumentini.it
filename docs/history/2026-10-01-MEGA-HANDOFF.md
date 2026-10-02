@@ -1,5 +1,7 @@
 # MEGA-HANDOFF — StrumentiUtili.it (per continuare con un altro LLM)
 
+> **ARCHIVIATO IL 2026-10-03.** Questo handoff fotografa lo stato del 2026-10-01 (99 Gold / 1 Partial / 100 unverified) ed è conservato solo come cronologia. Non usarlo come fonte operativa. La fonte corrente è `/PROJECT-STATUS.md`, poi `/HANDOFF.md`, `/ROADMAP.md` e `quality/receipts/expanded-catalog-certification.json`.
+
 Data: 2026-10-01. Lingua pubblica del prodotto: **solo italiano**. Lingua di questo documento: italiano.
 
 ## 1. Stato in una riga

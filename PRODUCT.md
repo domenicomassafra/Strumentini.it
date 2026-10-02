@@ -72,13 +72,13 @@ Standing category-standard alternative, held open permanently: the owner may at 
 
 ## Evidence on Hand
 
-Real and must not be fabricated away:
+Real and must not be fabricated away. Operational counts belong in `PROJECT-STATUS.md`, `HANDOFF.md` and the generated certification index rather than being frozen in this product contract:
 
-- `src/` — working Astro application, 200 tool routes, 44 test files / 307 tests passing at time of writing.
+- `src/` — working Astro application with 200 tool routes and a generated/lazy runtime architecture.
 - `DESIGN.md` — accepted structural system: Workbench (what I use) versus Library (what exists), two deliberately distinct layers.
 - `PRODUCT-SPEC.md` — the full acceptance-criterion contract, US-01 through US-17.
 - `design/lane-04/UX-BLUEPRINT.md`, `design/lane-04/DESIGN-SYSTEM-CANDIDATE.md` — the incumbent "Quiet Workbench" direction, now superseded as visual authority by this redesign.
-- `.scratch/strumentiutili-v1/TICKET-DAG.md` — 13 tickets, 9 complete, Ticket 09 blocked on physical-device receipts only.
+- `.scratch/strumentiutili-v1/` — historical first-validation ticket/provenance material only; it is no longer an active execution queue.
 - `quality/receipts/**` — per-tool certification.
 
 Absences future work must not invent: no user testimonials, no customer logos, no performance benchmarks beyond the measured receipts, no pricing, no unapproved logo, no paid-traffic or conversion data, no market-share claims. The public name is StrumentiUtili.it; the 200-tool figure is a build fact, not a popularity claim.

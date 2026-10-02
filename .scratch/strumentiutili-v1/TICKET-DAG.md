@@ -1,6 +1,8 @@
 # StrumentiUtili.it v1 — Ticket DAG and traceability
 
-Status: canonical local implementation queue
+> **HISTORICAL / SUPERSEDED — NOT THE CURRENT QUEUE.** This DAG documents the original v1 validation dependency graph. Do not dispatch or resume work from it without reconciling against `/PROJECT-STATUS.md`, `/HANDOFF.md`, `/ROADMAP.md` and the current certification index.
+
+Status: historical local implementation queue
 Date: 2026-09-23
 Source authorities: PRODUCT-SPEC.md, DESIGN.md, PRODUCT-MARKETING-CONTEXT.md, IMPLEMENTATION-PLAN.md
 

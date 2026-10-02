@@ -1,7 +1,9 @@
 # StrumentiUtili.it master ledger
 
+> **HISTORICAL / SUPERSEDED — DO NOT RESUME AS AN ACTIVE RUN.** This ledger records a 2026-09-23 coordination checkpoint. Its HEAD, Gold counts, worker states, "current ticket" and authority labels are historical. Current execution truth lives in `/PROJECT-STATUS.md`, `/HANDOFF.md`, `/ROADMAP.md` and `/quality/receipts/expanded-catalog-certification.json`.
+
 Timestamp: 2026-09-23T21:39:07Z
-Authority: branch `main`
+Historical authority at the time: branch `main`
 Project: StrumentiUtili.it; Personal Workbench validation build
 
 ## Repository checkpoint
