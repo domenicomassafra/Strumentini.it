@@ -15,6 +15,7 @@ const origin = `http://127.0.0.1:${String(port)}`;
 const persistTo = ".wrangler/auth-acceptance-state";
 const READY_TIMEOUT_MS = 90_000;
 const RATE_LIMIT_MAX_FAILURES = 10;
+const GOOGLE_CLIENT_ID = "acceptance-client.apps.googleusercontent.com";
 
 const ALICE = { email: "acceptance-alice@example.com", name: "Alice Rossi", password: "password-alfa-1" };
 const BOB = { email: "acceptance-bob@example.com", name: "Bob Bianchi", password: "password-beta-2" };
@@ -70,7 +71,14 @@ function wranglerEnv() {
 async function startDevServer() {
   devServer = spawn(
     "npx",
-    ["wrangler", "dev", "--ip", "127.0.0.1", "--port", String(port), "--local", "--persist-to", persistTo],
+    [
+      "wrangler", "dev",
+      "--ip", "127.0.0.1",
+      "--port", String(port),
+      "--local",
+      "--persist-to", persistTo,
+      "--var", `GOOGLE_CLIENT_ID:${GOOGLE_CLIENT_ID}`,
+    ],
     { cwd: root, detached: true, stdio: ["ignore", "pipe", "pipe"], env: wranglerEnv() },
   );
   captureDevLog(devServer.stdout);
@@ -171,6 +179,13 @@ function sessionToken(response) {
   return null;
 }
 
+function responseCookie(response, name) {
+  for (const setCookie of response.setCookies) {
+    if (setCookie.startsWith(`${name}=`)) return setCookie.split(";")[0] ?? "";
+  }
+  return null;
+}
+
 function expectJsonError(label, response, status) {
   expectEqual(`${label}: status`, response.status, status);
   check(`${label}: json content-type`, (response.headers.get("content-type") ?? "").startsWith("application/json"), response.headers.get("content-type") ?? "");
@@ -221,12 +236,37 @@ async function checkApiJsonErrors() {
   expectEqual("405 advertises Allow", wrongMethod.headers.get("allow"), "GET");
 }
 
+async function checkGoogleAuthBoundary() {
+  console.log("\nGoogle auth boundary");
+  const config = await api("/api/auth/google/config");
+  expectEqual("Google config: status", config.status, 200);
+  expectEqual("Google config: client id", config.json?.clientId, GOOGLE_CLIENT_ID);
+  check(
+    "Google config: nonce",
+    typeof config.json?.nonce === "string" && config.json.nonce.length >= 20,
+    JSON.stringify(config.json),
+  );
+  const nonceCookie = responseCookie(config, "su_google_nonce");
+  check("Google config: HttpOnly nonce cookie", nonceCookie !== null, JSON.stringify(config.setCookies));
+  if (nonceCookie !== null) {
+    const rejected = await api("/api/auth/google", {
+      method: "POST",
+      rawCookie: nonceCookie,
+      body: { credential: "not-a-google-id-token" },
+    });
+    failedAttempts += 1;
+    expectJsonError("Google malformed credential", rejected, 401);
+  }
+}
+
 async function checkRegisterAndSession() {
   console.log("\nregister + session");
   const registered = await register(ALICE);
   expectEqual("register: status", registered.status, 201);
   expectEqual("register: email", registered.json?.user?.email, ALICE.email);
   expectEqual("register: name", registered.json?.user?.name, ALICE.name);
+  expectEqual("register: password login enabled", registered.json?.user?.passwordEnabled, true);
+  expectEqual("register: Google not linked", registered.json?.user?.googleConnected, false);
   const alice = sessionToken(registered);
   check("register: session cookie", alice !== null, JSON.stringify(registered.setCookies));
   if (alice === null) return null;
@@ -430,6 +470,7 @@ async function main() {
   try {
     await checkStaticDelegation();
     await checkApiJsonErrors();
+    await checkGoogleAuthBoundary();
     const aliceCookie = await checkRegisterAndSession();
     if (aliceCookie === null) throw new Error("registration did not return a session cookie");
     await checkLogout(aliceCookie);

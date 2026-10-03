@@ -13,6 +13,8 @@ export interface UserRow {
   readonly password_hash: string;
   readonly password_salt: string;
   readonly password_iterations: number;
+  readonly password_login_enabled: number;
+  readonly google_sub: string | null;
   readonly created_at: string;
   readonly updated_at: string;
 }
@@ -39,6 +41,8 @@ export interface NewUser {
   readonly passwordHash: string;
   readonly passwordSalt: string;
   readonly passwordIterations: number;
+  readonly passwordLoginEnabled?: boolean;
+  readonly googleSub?: string | null;
   readonly createdAt: string;
 }
 
@@ -51,7 +55,7 @@ export interface NewSession {
   readonly userAgent: string;
 }
 
-const USER_COLUMNS = "id, email, name, password_hash, password_salt, password_iterations, created_at, updated_at";
+const USER_COLUMNS = "id, email, name, password_hash, password_salt, password_iterations, password_login_enabled, google_sub, created_at, updated_at";
 const SESSION_COLUMNS = "id, token_hash, user_id, created_at, expires_at, last_seen_at, user_agent";
 
 interface SessionUserRow {
@@ -68,6 +72,8 @@ interface SessionUserRow {
   readonly password_hash: string;
   readonly password_salt: string;
   readonly password_iterations: number;
+  readonly password_login_enabled: number;
+  readonly google_sub: string | null;
   readonly user_created_at: string;
   readonly updated_at: string;
 }
@@ -80,8 +86,11 @@ interface SessionUserRow {
 export async function createUser(db: D1Database, user: NewUser): Promise<UserRow | null> {
   const result = await db
     .prepare(
-      `INSERT INTO users (id, email, name, password_hash, password_salt, password_iterations, created_at, updated_at)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?7)
+      `INSERT INTO users (
+         id, email, name, password_hash, password_salt, password_iterations,
+         password_login_enabled, google_sub, created_at, updated_at
+       )
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?9)
        ON CONFLICT(email) DO NOTHING`,
     )
     .bind(
@@ -91,6 +100,8 @@ export async function createUser(db: D1Database, user: NewUser): Promise<UserRow
       user.passwordHash,
       user.passwordSalt,
       user.passwordIterations,
+      user.passwordLoginEnabled === false ? 0 : 1,
+      user.googleSub ?? null,
       user.createdAt,
     )
     .run();
@@ -102,6 +113,8 @@ export async function createUser(db: D1Database, user: NewUser): Promise<UserRow
     password_hash: user.passwordHash,
     password_salt: user.passwordSalt,
     password_iterations: user.passwordIterations,
+    password_login_enabled: user.passwordLoginEnabled === false ? 0 : 1,
+    google_sub: user.googleSub ?? null,
     created_at: user.createdAt,
     updated_at: user.createdAt,
   };
@@ -109,6 +122,22 @@ export async function createUser(db: D1Database, user: NewUser): Promise<UserRow
 
 export async function findUserByEmail(db: D1Database, email: string): Promise<UserRow | null> {
   return await db.prepare(`SELECT ${USER_COLUMNS} FROM users WHERE email = ?1 LIMIT 1`).bind(email).first<UserRow>();
+}
+
+export async function findUserByGoogleSubject(db: D1Database, subject: string): Promise<UserRow | null> {
+  return await db.prepare(`SELECT ${USER_COLUMNS} FROM users WHERE google_sub = ?1 LIMIT 1`).bind(subject).first<UserRow>();
+}
+
+export async function linkGoogleSubject(
+  db: D1Database,
+  userId: string,
+  subject: string,
+  updatedAt: string,
+): Promise<void> {
+  await db
+    .prepare("UPDATE users SET google_sub = ?1, updated_at = ?2 WHERE id = ?3")
+    .bind(subject, updatedAt, userId)
+    .run();
 }
 
 export async function createSession(db: D1Database, session: NewSession): Promise<void> {
@@ -128,6 +157,7 @@ export async function findSessionByToken(db: D1Database, tokenHash: string): Pro
       `SELECT s.id AS session_id, s.token_hash, s.user_id AS session_user_id,
               s.created_at AS session_created_at, s.expires_at, s.last_seen_at, s.user_agent,
               u.id AS user_id, u.email, u.name, u.password_hash, u.password_salt, u.password_iterations,
+              u.password_login_enabled, u.google_sub,
               u.created_at AS user_created_at, u.updated_at
        FROM sessions s
        JOIN users u ON u.id = s.user_id
@@ -154,6 +184,8 @@ export async function findSessionByToken(db: D1Database, tokenHash: string): Pro
       password_hash: row.password_hash,
       password_salt: row.password_salt,
       password_iterations: row.password_iterations,
+      password_login_enabled: row.password_login_enabled,
+      google_sub: row.google_sub,
       created_at: row.user_created_at,
       updated_at: row.updated_at,
     },
@@ -207,7 +239,7 @@ export async function updateUserPassword(
 ): Promise<void> {
   await db
     .prepare(
-      "UPDATE users SET password_hash = ?1, password_salt = ?2, password_iterations = ?3, updated_at = ?4 WHERE id = ?5",
+      "UPDATE users SET password_hash = ?1, password_salt = ?2, password_iterations = ?3, password_login_enabled = 1, updated_at = ?4 WHERE id = ?5",
     )
     .bind(password.hash, password.salt, password.iterations, updatedAt, userId)
     .run();

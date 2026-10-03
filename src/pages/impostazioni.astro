@@ -121,11 +121,26 @@ const unitSystems = [
 
         <div class="ac-stack" data-session-signedin hidden>
           <div class="ac-block">
+            <h2 class="ac-block-title">Accesso con Google</h2>
+            <p class="ac-block-sub">
+              Collega lo stesso indirizzo email per poter entrare con Google senza rinunciare all'accesso con password.
+            </p>
+            <div class="ac-block-body" data-google-link-disconnected hidden>
+              <div class="ac-google-button" data-google-link-button aria-label="Collega Google"></div>
+            </div>
+            <div class="ac-block-body" data-google-link-connected hidden>
+              <span class="pill pill-success"><UiIcon name="check-circle" size={14} /> Google collegato</span>
+            </div>
+            <p class="error" data-google-link-message hidden></p>
+          </div>
+
+          <div class="ac-block">
             <div class="ac-identity">
               <span class="ac-avatar" data-profile-initial aria-hidden="true"></span>
               <div>
                 <strong class="ac-identity-name" data-profile-name></strong>
                 <span class="ac-identity-mail" data-profile-email></span>
+                <span class="pill pill-brand" data-profile-google hidden>Google collegato</span>
               </div>
             </div>
           </div>
@@ -377,8 +392,8 @@ const unitSystems = [
 
         <div class="ac-stack" data-session-signedin hidden>
           <div class="ac-block">
-            <h2 class="ac-block-title">Password</h2>
-            <p class="ac-block-sub">
+            <h2 class="ac-block-title" data-password-title>Password</h2>
+            <p class="ac-block-sub" data-password-copy>
               Almeno {PASSWORD_MIN_LENGTH} caratteri. Cambiandola, le altre sessioni collegate vengono chiuse.
             </p>
             <div class="ac-block-body">
@@ -387,7 +402,7 @@ const unitSystems = [
               </div>
 
               <form data-password-form novalidate hidden>
-                <div class="field">
+                <div class="field" data-password-current-field>
                   <label for="password-current">Password attuale</label>
                   <div class="ac-control">
                     <span class="ac-control-icon" aria-hidden="true"><UiIcon name="lock" size={18} /></span>
@@ -471,7 +486,7 @@ const unitSystems = [
               L'account e i preferiti salvati sul server vengono eliminati. L'operazione non si può annullare.
             </p>
             <form class="ac-block-body" data-delete-form novalidate>
-              <div class="field">
+              <div class="field" data-delete-password-field>
                 <label for="delete-password">Password</label>
                 <div class="ac-control">
                   <span class="ac-control-icon" aria-hidden="true"><UiIcon name="lock" size={18} /></span>
@@ -580,6 +595,8 @@ const unitSystems = [
     describeUserAgent,
     displayName,
     initialOf,
+    linkGoogleIdentity,
+    readGoogleAuthConfig,
     readSession,
     readSessions,
     updatePassword,
@@ -587,6 +604,7 @@ const unitSystems = [
     type ActiveSession,
     type SessionUser,
   } from "../components/account/auth-client";
+  import { renderGoogleIdentityButton } from "../components/account/google-identity";
   import {
     bindPasswordReveal,
     clearFieldErrors,
@@ -604,7 +622,7 @@ const unitSystems = [
   import { subscribeMembership, type Membership } from "../workbench/membership";
   import type { DayCode, WorkProfile } from "../profile/work-profile";
   import type { WorkbenchState } from "../workbench/state";
-  import { MESSAGES, validateName, validatePassword } from "../../worker/validation";
+  import { MESSAGES, PASSWORD_MIN_LENGTH, validateName, validatePassword } from "../../worker/validation";
 
   interface IndexedTool {
     id: string;
@@ -706,6 +724,7 @@ const unitSystems = [
     const signedOut = Array.from(root.querySelectorAll<HTMLElement>("[data-session-signedout]"));
     const pending = Array.from(root.querySelectorAll<HTMLElement>("[data-session-pending]"));
     const localNotices = Array.from(root.querySelectorAll<HTMLElement>("[data-session-local]"));
+    let currentAccount: SessionUser | null = null;
 
     function showSessionState(state: "pending" | "signedin" | "signedout"): void {
       for (const block of pending) block.hidden = state !== "pending";
@@ -714,18 +733,75 @@ const unitSystems = [
     }
 
     function paintIdentity(account: SessionUser): void {
+      currentAccount = account;
       const label = displayName(account);
       const name = query<HTMLElement>("[data-profile-name]");
       const mail = query<HTMLElement>("[data-profile-email]");
       const avatar = query<HTMLElement>("[data-profile-initial]");
       const emailInput = query<HTMLInputElement>("[data-account-email]");
       const nameInput = query<HTMLInputElement>("#account-name");
+      const googleBadge = query<HTMLElement>("[data-profile-google]");
       if (name !== null) name.textContent = label;
       if (mail !== null) mail.textContent = account.email;
       if (avatar !== null) avatar.textContent = initialOf(label);
       if (emailInput !== null) emailInput.value = account.email;
       if (nameInput !== null) nameInput.value = account.name;
+      if (googleBadge !== null) googleBadge.hidden = !account.googleConnected;
+      const passwordTitle = query<HTMLElement>("[data-password-title]");
+      const passwordCopy = query<HTMLElement>("[data-password-copy]");
+      const passwordOpen = query<HTMLButtonElement>("[data-password-open]");
+      const currentField = query<HTMLElement>("[data-password-current-field]");
+      const deletePasswordField = query<HTMLElement>("[data-delete-password-field]");
+      if (passwordTitle !== null) passwordTitle.textContent = account.passwordEnabled ? "Password" : "Aggiungi una password";
+      if (passwordCopy !== null) {
+        passwordCopy.textContent = account.passwordEnabled
+          ? `Almeno ${String(PASSWORD_MIN_LENGTH)} caratteri. Cambiandola, le altre sessioni collegate vengono chiuse.`
+          : "Hai effettuato l'accesso con Google. Puoi aggiungere una password per usare anche l'accesso con email.";
+      }
+      if (passwordOpen !== null) {
+        passwordOpen.textContent = account.passwordEnabled ? "Modifica la password" : "Aggiungi una password";
+      }
+      if (currentField !== null) currentField.hidden = !account.passwordEnabled;
+      if (deletePasswordField !== null) deletePasswordField.hidden = !account.passwordEnabled;
       for (const notice of localNotices) notice.hidden = false;
+      void paintGoogleLink(account);
+    }
+
+    async function paintGoogleLink(account: SessionUser): Promise<void> {
+      const disconnected = query<HTMLElement>("[data-google-link-disconnected]");
+      const connected = query<HTMLElement>("[data-google-link-connected]");
+      const button = query<HTMLElement>("[data-google-link-button]");
+      const message = query<HTMLElement>("[data-google-link-message]");
+      if (connected !== null) connected.hidden = !account.googleConnected;
+      if (account.googleConnected) {
+        if (disconnected !== null) disconnected.hidden = true;
+        setMessage(message, null);
+        return;
+      }
+      if (button === null || disconnected === null || button.dataset.ready === "true") return;
+      const config = await readGoogleAuthConfig();
+      if (!config.ok) return;
+      const rendered = await renderGoogleIdentityButton(button, config.data, (credential) => {
+        if (credential === "") {
+          setMessage(message, MESSAGES.googleInvalid);
+          return;
+        }
+        button.setAttribute("aria-busy", "true");
+        setMessage(message, null);
+        void linkGoogleIdentity(credential).then((result) => {
+          button.removeAttribute("aria-busy");
+          if (!result.ok) {
+            setMessage(message, result.message);
+            return;
+          }
+          currentAccount = result.data;
+          paintIdentity(result.data);
+          setMessage(message, "Google collegato al tuo account.", "success");
+        });
+      });
+      if (!rendered) return;
+      button.dataset.ready = "true";
+      disconnected.hidden = false;
     }
 
     /* --- Nome ------------------------------------------------------------- */
@@ -988,9 +1064,10 @@ const unitSystems = [
       setMessage(passwordMessage, null);
       const current = form.querySelector<HTMLInputElement>("#password-current")?.value ?? "";
       const next = validatePassword(form.querySelector<HTMLInputElement>("#password-new")?.value ?? "");
-      if (current === "") setFieldError(form, "password-current", MESSAGES.currentPasswordRequired);
+      const currentRequired = currentAccount?.passwordEnabled !== false;
+      if (currentRequired && current === "") setFieldError(form, "password-current", MESSAGES.currentPasswordRequired);
       if (!next.ok) setFieldError(form, "password-new", next.message);
-      if (current === "" || !next.ok) return;
+      if ((currentRequired && current === "") || !next.ok) return;
 
       const button = form.querySelector<HTMLButtonElement>("[data-password-submit]");
       if (button !== null) setBusy(button, true);
@@ -1001,7 +1078,17 @@ const unitSystems = [
           return;
         }
         togglePasswordForm(false);
-        setMessage(passwordDone, "Password aggiornata. Le altre sessioni collegate sono state chiuse.", "success");
+        if (currentAccount !== null) {
+          currentAccount = { ...currentAccount, passwordEnabled: true };
+          paintIdentity(currentAccount);
+        }
+        setMessage(
+          passwordDone,
+          currentRequired
+            ? "Password aggiornata. Le altre sessioni collegate sono state chiuse."
+            : "Password aggiunta. Ora puoi accedere anche con email e password.",
+          "success",
+        );
         void refreshSessions();
       });
     });
@@ -1127,11 +1214,12 @@ const unitSystems = [
       setMessage(message, null);
       const password = form.querySelector<HTMLInputElement>("#delete-password")?.value ?? "";
       const confirmation = form.querySelector<HTMLInputElement>("#delete-confirm")?.value.trim() ?? "";
-      if (password === "") setFieldError(form, "delete-password", MESSAGES.currentPasswordRequired);
+      const passwordRequired = currentAccount?.passwordEnabled !== false;
+      if (passwordRequired && password === "") setFieldError(form, "delete-password", MESSAGES.currentPasswordRequired);
       if (confirmation !== DELETE_CONFIRMATION) {
         setFieldError(form, "delete-confirm", `Scrivi ${DELETE_CONFIRMATION} per confermare.`);
       }
-      if (password === "" || confirmation !== DELETE_CONFIRMATION) return;
+      if ((passwordRequired && password === "") || confirmation !== DELETE_CONFIRMATION) return;
 
       const button = form.querySelector<HTMLButtonElement>("[data-delete-submit]");
       if (button !== null) setBusy(button, true);

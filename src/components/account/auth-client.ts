@@ -14,6 +14,8 @@
 export interface SessionUser {
   readonly email: string;
   readonly name: string;
+  readonly passwordEnabled: boolean;
+  readonly googleConnected: boolean;
 }
 
 export interface ActiveSession {
@@ -44,9 +46,21 @@ function errorMessage(payload: unknown): string | undefined {
 
 function asUser(value: unknown): SessionUser | null {
   if (typeof value !== "object" || value === null) return null;
-  const user = value as { readonly email?: unknown; readonly name?: unknown };
+  const user = value as {
+    readonly email?: unknown;
+    readonly name?: unknown;
+    readonly passwordEnabled?: unknown;
+    readonly googleConnected?: unknown;
+  };
   if (typeof user.email !== "string" || user.email === "") return null;
-  return { email: user.email, name: typeof user.name === "string" ? user.name : "" };
+  return {
+    email: user.email,
+    name: typeof user.name === "string" ? user.name : "",
+    // Older/static test fixtures omit these fields. Password login was the only
+    // auth method before Google support, so missing means enabled.
+    passwordEnabled: user.passwordEnabled !== false,
+    googleConnected: user.googleConnected === true,
+  };
 }
 
 function asSession(value: unknown): ActiveSession | null {
@@ -124,6 +138,36 @@ export function createAccount(
   turnstileToken = "",
 ): Promise<ApiResult<SessionUser>> {
   return userRequest("/api/auth/register", "POST", { name, email, password, turnstileToken });
+}
+
+export interface GoogleAuthConfig {
+  readonly clientId: string;
+  readonly nonce: string;
+}
+
+export async function readGoogleAuthConfig(): Promise<ApiResult<GoogleAuthConfig>> {
+  const result = await request<{ readonly clientId?: unknown; readonly nonce?: unknown }>(
+    "/api/auth/google/config",
+    "GET",
+  );
+  if (!result.ok) return result;
+  if (typeof result.data.clientId !== "string" || result.data.clientId === "" ||
+      typeof result.data.nonce !== "string" || result.data.nonce === "") {
+    return { ok: false, status: result.status, message: UNEXPECTED_RESPONSE };
+  }
+  return {
+    ok: true,
+    status: result.status,
+    data: { clientId: result.data.clientId, nonce: result.data.nonce },
+  };
+}
+
+export function signInWithGoogle(credential: string): Promise<ApiResult<SessionUser>> {
+  return userRequest("/api/auth/google", "POST", { credential });
+}
+
+export function linkGoogleIdentity(credential: string): Promise<ApiResult<SessionUser>> {
+  return userRequest("/api/auth/google/link", "POST", { credential });
 }
 
 export function signOut(): Promise<ApiResult<undefined>> {

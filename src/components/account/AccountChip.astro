@@ -101,8 +101,10 @@ import UiIcon from "../icons/UiIcon.astro";
   /* At the narrowest widths the label collapses to the glyph so the header
      keeps one row instead of overflowing. */
   @media (max-width: 560px) {
-    .account-login { padding: var(--space-1); min-width: 36px; }
+    .account-login { min-width: var(--control-height-touch); min-height: var(--control-height-touch); padding: var(--space-1); }
     .account-login span { display: none; }
+    .account-trigger { min-height: var(--control-height-touch); padding-right: var(--space-2); }
+    .account-name { display: none; }
   }
 
   .account-menu { position: relative; }

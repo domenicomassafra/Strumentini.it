@@ -31,8 +31,10 @@ import {
   deleteAllSessionsForUser,
   deleteSession,
   deleteUser,
+  findUserByGoogleSubject,
   findSessionByToken,
   findUserByEmail,
+  linkGoogleSubject,
   listFavorites,
   listSessions,
   recordLoginAttempt,
@@ -42,6 +44,13 @@ import {
   updateUserPassword,
 } from "./db";
 import type { SessionRow, UserRow } from "./db";
+import {
+  clearGoogleNonceCookie,
+  createGoogleNonce,
+  googleNonceCookie,
+  readGoogleNonce,
+  verifyGoogleCredential,
+} from "./google";
 import { isLocalTurnstileHost, verifyTurnstileToken } from "./turnstile";
 import { MESSAGES, normalizeEmail, validateEmail, validateName, validatePassword, validateToolId } from "./validation";
 
@@ -49,6 +58,7 @@ export interface Env {
   readonly ASSETS: Fetcher;
   readonly AUTH_DB: D1Database;
   readonly TURNSTILE_SECRET?: string;
+  readonly GOOGLE_CLIENT_ID?: string;
 }
 
 type HttpMethod = "DELETE" | "GET" | "PATCH" | "POST" | "PUT";
@@ -71,6 +81,13 @@ const DUMMY_PASSWORD: StoredPassword = {
   hash: `pbkdf2-sha256$${"A".repeat(43)}`,
   salt: "A".repeat(22),
   iterations: PASSWORD_ITERATIONS,
+};
+
+/** A Google-only account has no password login until the user explicitly sets one. */
+const DISABLED_PASSWORD: StoredPassword = {
+  hash: "disabled$google",
+  salt: "disabled",
+  iterations: 1,
 };
 
 interface RouteContext {
@@ -114,6 +131,11 @@ function noContent(headers: Record<string, string> = {}): Response {
 
 function setCookieHeader(cookie: string): Record<string, string> {
   return { "set-cookie": cookie };
+}
+
+function appendCookies(response: Response, cookies: readonly string[]): Response {
+  for (const cookie of cookies) response.headers.append("set-cookie", cookie);
+  return response;
 }
 
 /** Collapses trailing slashes and keeps at least the root slash. */
@@ -241,8 +263,18 @@ async function resolveSession(context: RouteContext): Promise<AuthSession | null
   return { session: found.session, user: found.user };
 }
 
-function sessionUser(user: UserRow): { readonly email: string; readonly name: string } {
-  return { email: user.email, name: user.name };
+function sessionUser(user: UserRow): {
+  readonly email: string;
+  readonly name: string;
+  readonly passwordEnabled: boolean;
+  readonly googleConnected: boolean;
+} {
+  return {
+    email: user.email,
+    name: user.name,
+    passwordEnabled: user.password_login_enabled === 1,
+    googleConnected: user.google_sub !== null,
+  };
 }
 
 function sanitizeUserAgent(request: Request): string {
@@ -331,11 +363,11 @@ async function handleLogin(context: RouteContext): Promise<Response> {
   const user = email === null || email === "" ? null : await findUserByEmail(context.env.AUTH_DB, email);
   const valid = await verifyPassword(
     password,
-    user === null
+    user === null || user.password_login_enabled !== 1
       ? DUMMY_PASSWORD
       : { hash: user.password_hash, salt: user.password_salt, iterations: user.password_iterations },
   );
-  if (user === null || !valid) {
+  if (user === null || user.password_login_enabled !== 1 || !valid) {
     await recordFailure(context.env, context.request, context.now);
     return errorResponse(401, MESSAGES.invalidCredentials);
   }
@@ -360,6 +392,126 @@ async function handleLogin(context: RouteContext): Promise<Response> {
 
   const token = await startSession(context, user.id);
   return jsonResponse({ user: sessionUser(user) }, 200, setCookieHeader(sessionCookie(token)));
+}
+
+async function handleGoogleConfig(context: RouteContext): Promise<Response> {
+  const clientId = context.env.GOOGLE_CLIENT_ID?.trim() ?? "";
+  if (clientId === "") return errorResponse(503, MESSAGES.googleUnavailable);
+  const nonce = createGoogleNonce();
+  return jsonResponse(
+    { clientId, nonce },
+    200,
+    setCookieHeader(googleNonceCookie(nonce)),
+  );
+}
+
+function googleName(name: string, email: string): string {
+  const valid = validateName(name);
+  if (valid.ok) return valid.value;
+  const localPart = email.split("@", 1)[0]?.slice(0, 80) ?? "";
+  const fallback = validateName(localPart);
+  return fallback.ok ? fallback.value : "Utente Google";
+}
+
+async function handleGoogleLogin(context: RouteContext): Promise<Response> {
+  const clientId = context.env.GOOGLE_CLIENT_ID?.trim() ?? "";
+  if (clientId === "") return errorResponse(503, MESSAGES.googleUnavailable);
+  const rate = await checkRateLimit(context.env, context.request, context.now);
+  if (rate !== null) return rate;
+
+  const parsed = await readJsonObject(context.request);
+  if (!parsed.ok) {
+    await recordFailure(context.env, context.request, context.now);
+    return parsed.response;
+  }
+  const credential = readString(parsed.body, "credential");
+  const nonce = readGoogleNonce(context.request);
+  if (credential === "" || nonce === null) {
+    await recordFailure(context.env, context.request, context.now);
+    return errorResponse(401, MESSAGES.googleInvalid);
+  }
+
+  const verification = await verifyGoogleCredential(credential, clientId, nonce, { now: context.now });
+  if (!verification.ok) {
+    if (verification.reason === "invalid") {
+      await recordFailure(context.env, context.request, context.now);
+      return errorResponse(401, MESSAGES.googleInvalid);
+    }
+    return errorResponse(503, MESSAGES.googleUnavailable);
+  }
+
+  const email = validateEmail(verification.profile.email);
+  if (!email.ok) {
+    await recordFailure(context.env, context.request, context.now);
+    return errorResponse(401, MESSAGES.googleInvalid);
+  }
+  const subject = verification.profile.subject;
+  let user = await findUserByGoogleSubject(context.env.AUTH_DB, subject);
+  if (user === null) {
+    const existing = await findUserByEmail(context.env.AUTH_DB, email.value);
+    if (existing !== null) {
+      return errorResponse(409, MESSAGES.googleExistingEmail);
+    } else {
+      const createdAt = nowIso(context.now);
+      user = await createUser(context.env.AUTH_DB, {
+        id: newId(),
+        email: email.value,
+        name: googleName(verification.profile.name, email.value),
+        passwordHash: DISABLED_PASSWORD.hash,
+        passwordSalt: DISABLED_PASSWORD.salt,
+        passwordIterations: DISABLED_PASSWORD.iterations,
+        passwordLoginEnabled: false,
+        googleSub: subject,
+        createdAt,
+      });
+      // The email uniqueness constraint can win a race between two callbacks.
+      if (user === null) {
+        return errorResponse(409, MESSAGES.googleExistingEmail);
+      }
+    }
+  }
+
+  const token = await startSession(context, user.id);
+  return appendCookies(
+    jsonResponse({ user: sessionUser(user) }, 200),
+    [sessionCookie(token), clearGoogleNonceCookie()],
+  );
+}
+
+async function handleGoogleLink(context: RouteContext): Promise<Response> {
+  const auth = await resolveSession(context);
+  if (auth === null) return errorResponse(401, MESSAGES.unauthenticated);
+  const clientId = context.env.GOOGLE_CLIENT_ID?.trim() ?? "";
+  if (clientId === "") return errorResponse(503, MESSAGES.googleUnavailable);
+
+  const parsed = await readJsonObject(context.request);
+  if (!parsed.ok) return parsed.response;
+  const credential = readString(parsed.body, "credential");
+  const nonce = readGoogleNonce(context.request);
+  if (credential === "" || nonce === null) return errorResponse(401, MESSAGES.googleInvalid);
+
+  const verification = await verifyGoogleCredential(credential, clientId, nonce, { now: context.now });
+  if (!verification.ok) {
+    return errorResponse(
+      verification.reason === "invalid" ? 401 : 503,
+      verification.reason === "invalid" ? MESSAGES.googleInvalid : MESSAGES.googleUnavailable,
+    );
+  }
+  const email = normalizeEmail(verification.profile.email);
+  if (email === null || email !== auth.user.email) return errorResponse(409, MESSAGES.googleEmailMismatch);
+
+  const owner = await findUserByGoogleSubject(context.env.AUTH_DB, verification.profile.subject);
+  if (owner !== null && owner.id !== auth.user.id) return errorResponse(409, MESSAGES.googleLinkConflict);
+  if (auth.user.google_sub !== null && auth.user.google_sub !== verification.profile.subject) {
+    return errorResponse(409, MESSAGES.googleLinkConflict);
+  }
+  if (auth.user.google_sub === null) {
+    await linkGoogleSubject(context.env.AUTH_DB, auth.user.id, verification.profile.subject, nowIso(context.now));
+  }
+  return appendCookies(
+    jsonResponse({ user: sessionUser({ ...auth.user, google_sub: verification.profile.subject }) }, 200),
+    [clearGoogleNonceCookie()],
+  );
 }
 
 async function handleLogout(context: RouteContext): Promise<Response> {
@@ -396,7 +548,7 @@ async function handleProfile(context: RouteContext): Promise<Response> {
   if (!name.ok) return errorResponse(400, name.message);
 
   await updateUserName(context.env.AUTH_DB, auth.user.id, name.value, nowIso(context.now));
-  return jsonResponse({ user: { email: auth.user.email, name: name.value } }, 200);
+  return jsonResponse({ user: sessionUser({ ...auth.user, name: name.value }) }, 200);
 }
 
 async function handlePasswordChange(context: RouteContext): Promise<Response> {
@@ -406,16 +558,18 @@ async function handlePasswordChange(context: RouteContext): Promise<Response> {
   const parsed = await readJsonObject(context.request);
   if (!parsed.ok) return parsed.response;
   const currentPassword = readString(parsed.body, "currentPassword");
-  if (currentPassword === "") return errorResponse(400, MESSAGES.currentPasswordRequired);
   const newPassword = validatePassword(parsed.body.newPassword);
   if (!newPassword.ok) return errorResponse(400, newPassword.message);
 
-  const currentValid = await verifyPassword(currentPassword, {
-    hash: auth.user.password_hash,
-    salt: auth.user.password_salt,
-    iterations: auth.user.password_iterations,
-  });
-  if (!currentValid) return errorResponse(401, MESSAGES.currentPasswordWrong);
+  if (auth.user.password_login_enabled === 1) {
+    if (currentPassword === "") return errorResponse(400, MESSAGES.currentPasswordRequired);
+    const currentValid = await verifyPassword(currentPassword, {
+      hash: auth.user.password_hash,
+      salt: auth.user.password_salt,
+      iterations: auth.user.password_iterations,
+    });
+    if (!currentValid) return errorResponse(401, MESSAGES.currentPasswordWrong);
+  }
 
   const stored = await hashPassword(newPassword.value);
   await updateUserPassword(
@@ -466,14 +620,15 @@ async function handleAccountDelete(context: RouteContext): Promise<Response> {
   const parsed = await readJsonObject(context.request);
   if (!parsed.ok) return parsed.response;
   const password = readString(parsed.body, "password");
-  if (password === "") return errorResponse(400, MESSAGES.currentPasswordRequired);
-
-  const valid = await verifyPassword(password, {
-    hash: auth.user.password_hash,
-    salt: auth.user.password_salt,
-    iterations: auth.user.password_iterations,
-  });
-  if (!valid) return errorResponse(401, MESSAGES.currentPasswordWrong);
+  if (auth.user.password_login_enabled === 1) {
+    if (password === "") return errorResponse(400, MESSAGES.currentPasswordRequired);
+    const valid = await verifyPassword(password, {
+      hash: auth.user.password_hash,
+      salt: auth.user.password_salt,
+      iterations: auth.user.password_iterations,
+    });
+    if (!valid) return errorResponse(401, MESSAGES.currentPasswordWrong);
+  }
 
   await deleteUser(context.env.AUTH_DB, auth.user.id);
   return noContent(setCookieHeader(clearSessionCookie()));
@@ -522,6 +677,9 @@ async function handleFavoritesClear(context: RouteContext): Promise<Response> {
 const ROUTES: readonly Route[] = [
   { pattern: "/api/auth/register", method: "POST", handle: handleRegister },
   { pattern: "/api/auth/login", method: "POST", handle: handleLogin },
+  { pattern: "/api/auth/google/config", method: "GET", handle: handleGoogleConfig },
+  { pattern: "/api/auth/google", method: "POST", handle: handleGoogleLogin },
+  { pattern: "/api/auth/google/link", method: "POST", handle: handleGoogleLink },
   { pattern: "/api/auth/logout", method: "POST", handle: handleLogout },
   { pattern: "/api/auth/session", method: "GET", handle: handleSession },
   { pattern: "/api/auth/profile", method: "PATCH", handle: handleProfile },

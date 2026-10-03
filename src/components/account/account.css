@@ -56,6 +56,31 @@
 .ac-art { display: flex; gap: var(--space-4); align-items: center; justify-content: center; }
 .ac-art-tile { color: var(--brand); background: var(--brand-soft); }
 
+.ac-google { display: grid; gap: var(--space-2); }
+.ac-google-button {
+  display: grid;
+  min-height: var(--control-height-touch);
+  width: 100%;
+  place-items: center;
+}
+.ac-google-button[aria-busy="true"] { opacity: 0.6; pointer-events: none; }
+.ac-google-note { text-align: center; }
+
+.ac-divider {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--space-3);
+  align-items: center;
+  color: var(--text-faint);
+  font-size: var(--font-size-xs);
+}
+.ac-divider::before,
+.ac-divider::after {
+  height: var(--border-width);
+  background: var(--border);
+  content: "";
+}
+
 /* --- Tabs ----------------------------------------------------------------- */
 
 .ac-tabs {
@@ -244,6 +269,69 @@
 .ac-device-list { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
 .ac-device-list li { display: grid; gap: var(--space-1); }
 .ac-device-key { font-family: var(--font-family-mono); font-size: var(--font-size-xs); color: var(--text-muted); overflow-wrap: anywhere; }
+
+/* --- Narrow screens ------------------------------------------------------- */
+
+@media (max-width: 899px) {
+  .ac-access,
+  .ac-shell {
+    gap: var(--space-5);
+    padding: var(--space-6) 0 var(--space-10);
+  }
+
+  .ac-pitch { gap: var(--space-3); }
+  .ac-pitch h1 { font-size: var(--font-size-h2); }
+  .ac-pitch > p { font-size: var(--font-size-sm); }
+  .ac-benefits,
+  .ac-art { display: none; }
+
+  .ac-card,
+  .ac-block { padding: var(--space-5); }
+
+  .ac-tab,
+  .ac-nav button,
+  .ac-access .btn,
+  .ac-shell .btn {
+    min-height: var(--control-height-touch);
+  }
+
+  .ac-control input { min-height: var(--control-height-touch); }
+
+  .ac-reveal {
+    right: 0;
+    width: var(--control-height-touch);
+    height: var(--control-height-touch);
+  }
+
+  .ac-control:has(.ac-reveal) input { padding-right: calc(var(--control-height-touch) + var(--space-2)); }
+
+  .ac-trust { align-items: flex-start; text-align: left; }
+
+  .ac-side {
+    position: sticky;
+    top: var(--nav-height);
+    z-index: 20;
+    margin-inline: calc(var(--container-gutter) * -1);
+    padding: var(--space-2) var(--container-gutter);
+    border-block: var(--border-width) solid var(--border);
+    background: color-mix(in srgb, var(--canvas) 94%, transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .ac-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+  .ac-nav::-webkit-scrollbar { display: none; }
+  .ac-nav button { flex: 0 0 auto; white-space: nowrap; }
+
+  .ac-session { align-items: stretch; }
+  .ac-session-action { width: 100%; margin-left: 0; }
+
+  .ac-shell .actions > * { flex: 1 1 100%; }
+}
 
 /* --- Breakpoint 1: the desk ------------------------------------------------ */
 

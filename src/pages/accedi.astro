@@ -13,8 +13,8 @@ import "../components/account/account.css";
  * forms are server-rendered, and when `/api/auth/*` cannot be reached the page
  * says so instead of pretending a session exists. Nothing here renders a
  * control the account API cannot honour — there is no "remember me" checkbox
- * because `worker/auth.ts` always issues a 30-day cookie, and no social login,
- * because there is no endpoint for one.
+ * because `worker/auth.ts` always issues a 30-day cookie. Google sign-in is
+ * progressively revealed only when the Worker exposes a configured client ID.
  */
 const benefits = [
   {
@@ -64,6 +64,15 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
     </div>
 
     <div class="card ac-card" data-access data-turnstile-site-key={turnstileSiteKey}>
+      <div class="ac-google" data-google-auth hidden>
+        <div class="ac-google-button" data-google-button aria-label="Accedi con Google"></div>
+        <p class="ac-support ac-google-note">Google condivide con noi solo i dati necessari per identificare il tuo account.</p>
+      </div>
+
+      <div class="ac-divider" data-google-divider hidden aria-hidden="true">
+        <span>oppure con email</span>
+      </div>
+
       <div class="ac-tabs" role="tablist" aria-label="Accedi o crea un account" data-access-tabs>
         <button
           class="ac-tab"
@@ -275,10 +284,13 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
 <script>
   import {
     createAccount,
+    readGoogleAuthConfig,
     readSession,
     signIn,
+    signInWithGoogle,
     type SessionUser,
   } from "../components/account/auth-client";
+  import { renderGoogleIdentityButton } from "../components/account/google-identity";
   import {
     bindPasswordReveal,
     clearFieldErrors,
@@ -321,11 +333,41 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
     const connected = root.querySelector<HTMLElement>("[data-access-connected]");
     const emailSlot = root.querySelector<HTMLElement>("[data-access-email]");
     const message = root.querySelector<HTMLElement>("[data-access-error]");
+    const googleAuth = root.querySelector<HTMLElement>("[data-google-auth]");
+    const googleButton = root.querySelector<HTMLElement>("[data-google-button]");
+    const googleDivider = root.querySelector<HTMLElement>("[data-google-divider]");
     const loginForm = root.querySelector<HTMLFormElement>('[data-access-panel="login"]');
     const registerForm = root.querySelector<HTMLFormElement>('[data-access-panel="register"]');
     const turnstileSiteKey = root.dataset.turnstileSiteKey ?? "";
     const turnstileTokens: Record<PanelName, string> = { login: "", register: "" };
     const turnstileWidgets: Partial<Record<PanelName, string>> = {};
+    async function initializeGoogle(): Promise<void> {
+      const config = await readGoogleAuthConfig();
+      if (!config.ok || googleButton === null || googleAuth === null || googleDivider === null) return;
+      const rendered = await renderGoogleIdentityButton(
+        googleButton,
+        config.data,
+        (credential) => {
+          if (credential === "") {
+            setMessage(message, "Non siamo riusciti a completare l'accesso con Google.");
+            return;
+          }
+          setMessage(message, null);
+          googleButton.setAttribute("aria-busy", "true");
+          void signInWithGoogle(credential).then((result) => {
+            googleButton.removeAttribute("aria-busy");
+            if (!result.ok) {
+              setMessage(message, result.message);
+              return;
+            }
+            window.location.assign("/preferiti/");
+          });
+        },
+      );
+      if (!rendered) return;
+      googleAuth.hidden = false;
+      googleDivider.hidden = false;
+    }
 
     function resetTurnstile(panel: PanelName): void {
       turnstileTokens[panel] = "";
@@ -489,12 +531,15 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
     function showConnected(user: SessionUser): void {
       if (emailSlot !== null) emailSlot.textContent = user.email;
       if (tabBar !== null) tabBar.hidden = true;
+      if (googleAuth !== null) googleAuth.hidden = true;
+      if (googleDivider !== null) googleDivider.hidden = true;
       for (const panel of panels) panel.hidden = true;
       if (connected !== null) connected.hidden = false;
     }
 
     bindPasswordReveal(root);
     initializeTurnstile();
+    void initializeGoogle();
     window.addEventListener("load", initializeTurnstile, { once: true });
 
     window.addEventListener("hashchange", () => {

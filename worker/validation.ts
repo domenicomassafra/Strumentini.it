@@ -38,6 +38,11 @@ export const MESSAGES = {
   turnstileRequired: "Completa la verifica anti-bot e riprova.",
   turnstileInvalid: "La verifica anti-bot non è valida o è scaduta. Riprova.",
   turnstileUnavailable: "La verifica anti-bot non è disponibile in questo momento. Riprova tra poco.",
+  googleUnavailable: "L'accesso con Google non è disponibile in questo momento.",
+  googleInvalid: "Non siamo riusciti a verificare l'accesso con Google. Riprova.",
+  googleExistingEmail: "Esiste già un account con questa email. Accedi con email e password e collega Google dalle impostazioni.",
+  googleEmailMismatch: "L'account Google deve usare la stessa email del tuo account.",
+  googleLinkConflict: "Questa email è già collegata a un altro accesso Google.",
   internal: "Errore interno del server.",
 } as const;
 
