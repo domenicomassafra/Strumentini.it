@@ -66,29 +66,23 @@ The account API is **optional at deploy time**: publish the static `dist/` alone
 
 Also out of scope, permanently: ads, generic AI features, runtime plugins, offline/PWA marketing claims, popularity claims (there is no usage data to rank by), and the retired ledger-era shell.
 
-### Before the account API is exposed publicly
+### Public account API state
 
-The API is implemented and its acceptance suite passes (`npm run acceptance:auth`, 121 checks against a real local Worker + D1). Four things are deliberately left to the owner, because each one needs a credential or a dashboard action that code cannot supply:
+The API is exposed on `https://strumentiutili-it.massafradomenico4.workers.dev`. The real D1 database exists and is migrated; server-side Turnstile is active for login and registration; a live request without a challenge token is rejected by the Worker; and `npm run acceptance:auth` passes 121/121 against a real local Worker + D1. `dist/` alone remains a complete product.
 
-1. **A real D1 `database_id`.** `wrangler.jsonc` declares the binding and the migrations directory but no `database_id`; create the database (`npx wrangler d1 create strumentiutili-auth`), paste the id into the binding, then `npx wrangler d1 migrations apply AUTH_DB --remote`.
-2. **Bot protection server-side.** Registration and sign-in currently accept any well-formed request from any client. Add a challenge (Cloudflare Turnstile) verified **inside the Worker** — a browser-only check protects nothing — or accept the risk knowingly.
-3. **Rate limiting in front of `/api/auth/*`.** The Worker has its own sliding window (10 failed attempts per IP per 15 minutes), but it runs *after* the request has already cost a Worker invocation. Add a Cloudflare rate-limiting rule on that path as the outer layer.
-4. **The plan that matches the hashing cost.** PBKDF2-HMAC-SHA256 at 600,000 iterations measured **~81 ms** per hash here. The Free plan's per-request CPU budget is 10 ms, so the account API needs Workers **Paid**. The static site does not: it can be served on any plan, or on any host.
+Two deployment-owner checks remain outside the repo:
 
-Deploying the static site and the API are separable. `dist/` alone is a complete product.
+1. **Outer rate limiting.** The Worker has its own sliding window (10 failed attempts per IP per 15 minutes). A WAF rule *in front* of `/api/auth/*` needs a custom domain in a user-controlled Cloudflare zone, so it is not available on the current `workers.dev` hostname. Add it when the custom domain is connected.
+2. **Billing plan.** PBKDF2-HMAC-SHA256 at 600,000 iterations measured ~81 ms per hash on the owner's machine. The repo cannot attest the Cloudflare account's billing plan; confirm Workers Paid before treating password flows as production capacity.
 
 ## 5. Known gaps
 
-1. **Two orphaned page wrappers.** `src/components/tools/file-privacy/FilePrivacyPage.astro` and `src/components/tools/research-knowledge/ResearchKnowledgePage.astro` are imported by nothing — all 200 pages render through `src/components/tools/shared/ItalianToolPage.astro`. Their sibling *tool* components and the `research-knowledge/index.tsx` barrel are real and in use; only these two page shells are dead. Delete them, or move them onto the shared contract deliberately.
-2. **Receipts: which are fresh and which are not.** The per-tool certification receipts bind to a source fingerprint, so any edit — including this redesign — invalidates them by construction. Recompute the working-tree fingerprint with `currentEvidenceSourceFingerprint()` from `scripts/lib/current-revision.ts` and it matches none of the fingerprints recorded under `quality/receipts/`. Concretely:
-   - `quality/receipts/discovery/acceptance.json` — **regenerated** (`npm run acceptance:discovery`); current.
-   - `quality/receipts/browser-performance/fresh-browser-matrix.json` — **regenerated** (`npm run acceptance:browser-performance`); five engines PASS. Its `freshAcceptance` sibling entries are only as good as the scripts they run.
-   - `quality/receipts/cross-family/browser-acceptance.json` and `quality/receipts/onboarding/browser-acceptance.json` — **regenerated**; both PASS.
-   - every per-tool Gold receipt — **stale**: they target pre-redesign source content. Regenerate family by family with the `gold:*` scripts after committing. This is the single largest reason `npx tsx scripts/validate-release.ts` still reports blockers, and it must not be worked around by loosening the validator.
-   - `quality/receipts/release/validation.json` and `quality/receipts/release/rollback.json` — still the `cd3b2f2` generation. Rollback stays `UNPROVEN` until a real Cloudflare deploy + rollback is exercised; do not invent it. `WORKTREE_DIRTY` is expected while the redesign is uncommitted.
-3. **Uncommitted tranche hygiene.** The redesign is one dirty tree: staged deletions, untracked new paths and unstaged modifications. The throwaway working aids (`scripts/_dbg{,2,3,4}.mjs`, `scripts/account-pages-check.mjs`, `.screenshots/`) have been removed. `design/references/redesign-20261003/` **stays**: it is the ten reference screens this design was built from, and the authority for the next fidelity pass.
-4. **`ROADMAP.md` is stale**: it still quotes the pre-redesign 119/1/80 frontier and a retired UI tranche. `PROJECT-STATUS.md` and `HANDOFF.md` are current.
-5. **Two certification-sensitive leftovers in the generated catalog path**: `toLegacyCatalogSummary` / `renderLegacyCatalogSource` keep a second, lossier summary schema alive. Consolidate before adding any non-local runtime variant.
+1. **Certification frontier.** All 168 existing Gold receipts and the fresh browser matrix are rebound to the committed source fingerprint. The remaining frontier is 31 implemented-unverified tools plus Partial `image-resize`; do not loosen the validator to hide it.
+2. **Physical devices.** `image-resize` still needs genuine iOS Safari and Android Chrome evidence. No desktop/browser emulation may be recorded as physical proof.
+3. **Deployment-owner infrastructure.** Add the custom domain, add it to the Turnstile widget, create the outer WAF rate-limit rule, and confirm Workers Paid before relying on password flows at production load.
+4. **Design provenance.** `design/references/redesign-20261003/` intentionally stays as the ten reference screens for future fidelity work.
+
+Closed during this tranche: the two orphan page wrappers were deleted; the lossy legacy catalog-summary bridge was removed; D1 and Turnstile were provisioned; debug debris was removed; the roadmap was refreshed; and rollback was verified by a real Cloudflare rollback/restore exercise.
 
 ## Thesis
 

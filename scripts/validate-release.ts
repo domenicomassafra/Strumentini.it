@@ -212,7 +212,7 @@ async function main(): Promise<void> {
   const metadata = distExists ? await loadMetadata(catalog, site) : { surfaces: [] };
   const rollbackPath = resolve(receiptDirectory, "rollback.json");
   const existingRollback = await readJson(rollbackPath);
-  const rollbackReceipt = isVerifiedRollback(existingRollback) ? existingRollback : createUnprovenRollbackReceipt(revision);
+  const rollbackReceipt = isVerifiedRollback(existingRollback) ? existingRollback : createUnprovenRollbackReceipt(revision, sourceFingerprint);
   const browser = await readJson(resolve(root, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
   const input: ReleaseValidationInput = {
     catalog,

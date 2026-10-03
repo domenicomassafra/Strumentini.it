@@ -55,6 +55,7 @@ export interface RollbackReceipt {
   readonly status: "UNPROVEN" | "VERIFIED";
   readonly externalDeploymentPerformed: boolean;
   readonly currentRevision: string | null;
+  readonly sourceFingerprint: string | null;
   readonly currentDeploymentId: string | null;
   readonly previousKnownGoodDeploymentId: string | null;
   readonly rollbackCommand: string;
@@ -431,13 +432,14 @@ function asFiniteNumber(value: unknown): number | undefined {
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
 
-export function createUnprovenRollbackReceipt(revision: string): RollbackReceipt {
+export function createUnprovenRollbackReceipt(revision: string, sourceFingerprint?: string): RollbackReceipt {
   return {
     schemaVersion: 1,
     kind: "cloudflare-static-assets-rollback",
     status: "UNPROVEN",
     externalDeploymentPerformed: false,
     currentRevision: revision,
+    sourceFingerprint: sourceFingerprint ?? null,
     currentDeploymentId: null,
     previousKnownGoodDeploymentId: null,
     rollbackCommand: "wrangler rollback <previous-known-good-version-id>",
@@ -447,7 +449,7 @@ export function createUnprovenRollbackReceipt(revision: string): RollbackReceipt
   };
 }
 
-export function validateRollbackReceipt(value: unknown, path = "quality/receipts/release/rollback.json", revision?: string): ReleaseFinding[] {
+export function validateRollbackReceipt(value: unknown, path = "quality/receipts/release/rollback.json", sourceFingerprint?: string): ReleaseFinding[] {
   const record = asRecord(value);
   if (record === undefined) return [finding("ROLLBACK_RECEIPT_MISSING", "blocker", "rollback receipt is missing or malformed", path)];
   const findings: ReleaseFinding[] = [];
@@ -464,7 +466,12 @@ export function validateRollbackReceipt(value: unknown, path = "quality/receipts
       if (value === undefined || value.length === 0) findings.push(finding("ROLLBACK_VERIFIED_FIELD", "error", `verified rollback receipt requires ${field}`, path));
     }
     if (record.externalDeploymentPerformed !== true) findings.push(finding("ROLLBACK_VERIFIED_DEPLOYMENT_FLAG", "error", "verified rollback receipt must record an external deployment", path));
-    if (revision !== undefined && asString(record.currentRevision) !== revision) findings.push(finding("ROLLBACK_VERIFIED_REVISION", "blocker", "verified rollback receipt targets another revision", path));
+    const receiptSourceFingerprint = asString(record.sourceFingerprint);
+    if (receiptSourceFingerprint === undefined || !/^[a-f0-9]{64}$/u.test(receiptSourceFingerprint)) {
+      findings.push(finding("ROLLBACK_SOURCE_FINGERPRINT", "error", "verified rollback receipt requires a valid sourceFingerprint", path));
+    } else if (sourceFingerprint !== undefined && receiptSourceFingerprint !== sourceFingerprint) {
+      findings.push(finding("ROLLBACK_SOURCE_STALE", "blocker", "verified rollback receipt targets different source content", path));
+    }
     if (record.rollbackVerified !== true) findings.push(finding("ROLLBACK_VERIFIED_FLAG", "error", "verified rollback receipt requires rollbackVerified=true", path));
   } else {
     findings.push(finding("ROLLBACK_STATUS", "error", "rollback receipt status must be UNPROVEN or VERIFIED", path));
@@ -644,7 +651,7 @@ export function validateExternalEvidence(evidence: ReleaseEvidence, revision: st
 export function validateRelease(input: ReleaseValidationInput): ReleaseValidationResult {
   const rollbackFindings = input.rollbackReceipt === undefined
     ? [finding("ROLLBACK_RECEIPT_MISSING", "blocker", "rollback receipt is missing", "quality/receipts/release/rollback.json")]
-    : validateRollbackReceipt(input.rollbackReceipt, "quality/receipts/release/rollback.json", input.revision);
+    : validateRollbackReceipt(input.rollbackReceipt, "quality/receipts/release/rollback.json", input.sourceFingerprint);
   const rollbackRecord = asRecord(input.rollbackReceipt);
   if (rollbackRecord?.status === "UNPROVEN") rollbackFindings.push(finding("ROLLBACK_UNPROVEN", "blocker", "rollback is explicitly unproven; release is not deployable", "quality/receipts/release/rollback.json"));
   const findings: ReleaseFinding[] = [

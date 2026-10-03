@@ -7,11 +7,10 @@ This is the short, live map of the repository. It exists so old worker waves, ti
 ## Canonical repository state
 
 - Checkout: `/Users/domenico/Code/StrumentiUtili.it`
-- Branch: `main`, tracking `origin/main`; `HEAD` and `origin/main` are both `8b50066` (`chore: close legacy WIP state and refresh project truth`).
-- **The end-to-end 2026-10-03 redesign is uncommitted working-tree work and none of it is pushed.** `git status --porcelain` reports roughly 110 entries in one tranche: staged deletions, untracked new paths, and further unstaged modifications of the same redesign.
-  - Deleted in this tree, so that the two redirects below are all that remain of the previous catalogue route: its page, model and components (`src/pages/library.astro`, `src/library/**`, `src/components/library/**`), plus the three retired homepage widgets under `src/components/workbench/`, `src/components/a11y/**`, `scripts/build-catalog.ts`, `scripts/lib/catalog-compiler.ts`, and their tests.
-  - Untracked and new: `src/catalog/{groups,projections}.ts`, `src/components/{home,catalog,account,icons}/**`, `src/components/shell/{SiteHeader,SiteFooter,ThemeToggle,navigation,theme}.*`, `src/pages/{strumenti,categorie,cerca,risorse,preferiti,impostazioni,accedi}.astro`, `src/workbench/membership.ts`, `worker/**`, `public/fonts/inter-*.woff2`, `quality/receipts/expanded-local/**`, `scripts/acceptance-directory.mjs`, `scripts/acceptance-auth.mjs`, and the matching tests.
-  - Working-tree debris, not a deliverable: `scripts/_dbg{,2,3,4}.mjs`, `scripts/account-pages-check.mjs`, `.screenshots/`, `design/references/`.
+- Branch: `main`, tracking `origin/main`. The redesign/backend source tranche is committed as `3722032` (`feat: ship redesigned utility workspace and account backend`); regenerated evidence and closure documentation are committed separately so source fingerprints stay meaningful.
+- The retired catalogue/workbench/a11y implementation is deleted: `src/pages/library.astro`, `src/library/**`, `src/components/library/**`, the retired Workbench UI, the old accessibility wrapper layer, `scripts/build-catalog.ts`, `scripts/lib/catalog-compiler.ts`, and their obsolete tests.
+- The replacement shell/catalog/account implementation is tracked: `src/catalog/{groups,projections}.ts`, `src/components/{home,catalog,account,icons}/**`, the new shell, public routes, `worker/**`, self-hosted Inter fonts, expanded-local evidence and matching acceptance tests.
+- Throwaway debug scripts and screenshots are gone. `design/references/redesign-20261003/` is intentional retained design provenance, not working-tree debris.
 - Remote branches: only `main`. Worktrees: one primary worktree. Stashes: none.
 - Archive tags: three, all prefixed `archive/2026-09-24-` and explicitly not active work (`performance-wip`, `a11y-wip`, `browser-acceptance-wip`).
 - One module from the previous homepage keeps its name and is still live: `src/components/workbench/last-value.ts`, the Workbench gutter seam that stores one short rendered scalar per tool in `localStorage` and is read by the homepage recent list, `/preferiti/` and `/risorse/`. The widget that rendered the gutter is gone; the seam is not.
@@ -30,7 +29,7 @@ This is the short, live map of the repository. It exists so old worker waves, ti
   - `/risorse/`, `/preferiti/`, `/impostazioni/`, `/accedi/`, `/onboarding/`, `404`, `robots.txt`, `sitemap.xml`.
 - `/library` and `/library/` are **redirects** to `/strumenti` and `/strumenti/` (`astro.config.mjs`), emitted as ordinary static redirect pages. The old page, its model and its components are deleted; nothing in the product is called a library any more.
 - Every tool page is skinned by exactly two stylesheets: `src/styles/global.css` (tokens + base element vocabulary, imported by `src/layouts/BaseLayout.astro`) and `src/components/tools/tool-surface.css` (imported by `ItalianToolPage.astro`). `src/components/account/account.css` and `src/components/onboarding/Onboarding.module.css` are the only other stylesheets in `src/`.
-- Optional account, served by `worker/index.ts` (Cloudflare Worker + D1, `wrangler.jsonc`): PBKDF2-SHA256 at **600,000 iterations** (measured at ~81 ms per hash on the owner's machine, so this component needs the Workers **Paid** plan: the Free plan's per-request CPU budget is 10 ms), an opaque 30-day session cookie (`HttpOnly; Secure; SameSite=Lax`), only the SHA-256 token digest in D1, sliding-window login throttling. A credential hashed with a lower work factor is re-hashed on the next successful sign-in (`needsRehash`), so raising the constant migrates accounts instead of locking them out. `worker/migrations/0001_init.sql` creates `users`, `sessions`, `login_attempts`, `favorites`. The worker serves `/api/**` and hands every other path to the static assets binding, so the site is complete and fully working with no worker deployed (`/accedi/` and `/impostazioni/` say so instead of pretending a session exists).
+- Optional account, served by `worker/index.ts` (Cloudflare Worker + D1, `wrangler.jsonc`): PBKDF2-SHA256 at **600,000 iterations** (measured at ~81 ms per hash on the owner's machine), an opaque 30-day session cookie (`HttpOnly; Secure; SameSite=Lax`), only the SHA-256 token digest in D1, sliding-window login throttling, and Cloudflare Turnstile verified server-side for registration and sign-in. A credential hashed with a lower work factor is re-hashed on the next successful sign-in (`needsRehash`). The real `strumentiutili-auth` D1 database exists in EEUR, migration `0001_init.sql` is applied, and the four expected tables (`users`, `sessions`, `login_attempts`, `favorites`) were queried successfully. The current stable deployment is `https://strumentiutili-it.massafradomenico4.workers.dev`; the Turnstile secret exists only in Cloudflare while the public site key is tracked in `src/config/security.ts`. The static product still remains deployable without the account worker.
 - Local-first workspace: onboarding starter set, installed/recent tool set, work profile and last values persist in IndexedDB/`localStorage` (`src/workbench/**`, `src/profile/**`, `src/persistence/**`). No file content or job result is ever sent anywhere.
 - 35 tools declare work-profile fields; 71 declare typed handoff metadata; 200/200 are bound to an oracle entry and a fixture family.
 
@@ -61,25 +60,18 @@ Remaining unverified, by engine (the 32 tools with no Gold receipt):
 
 The PDF/document family is 20/20 Gold and is not part of the remaining frontier.
 
-Test, `astro check` and build figures are deliberately not frozen in this document: `tests/` held 49 test files at the time of writing (recount with `find tests -type f | wc -l`), and the pass counts, checker diagnostics and produced page count are whatever the gates below print today.
+Closure gate snapshot: **50 test files / 344 tests PASS**, `astro check` reports **0 errors / 0 warnings / 0 hints** over 1192 files, and the static build produces **220 pages**. Re-run the commands below rather than treating these numbers as permanent.
 
 ## Release status
 
-The last release receipt, `quality/receipts/release/validation.json`, was generated at revision `cd3b2f2` from a dirty tree and is now stale (it still reports 100 tools with no certification receipt, against today's 32). Regenerate deliberately with `npm run release:validate`; never hand-edit it.
+The post-commit release validation has **0 errors**. Browser evidence is current and PASS; the rollback gate is now PASS after a real Cloudflare deploy → 100% rollback → live smoke → restore exercise. The remaining release blockers are intentionally evidence-bound:
 
-Its shape — **BLOCKED, not failed**: 0 errors — stands, and these blockers are real and unresolved:
+1. 31 implemented tools still have no Gold receipt;
+2. `image-resize` remains Partial rather than Gold;
+3. physical Android Chrome evidence for `image-resize` is missing;
+4. physical iOS Safari evidence for `image-resize` is missing.
 
-1. browser evidence targets different source content than the current tree;
-2. tools missing a Gold receipt (32 today);
-3. `image-resize` is not Gold;
-4. physical Android Chrome evidence for `image-resize` is missing;
-5. physical iOS Safari evidence for `image-resize` is missing;
-6. rollback remains explicitly unproven (`quality/receipts/release/rollback.json`, status `UNPROVEN`);
-7. the release receipt was produced from a dirty working tree.
-
-Every receipt records a `sourceFingerprint` over the evidence sources (`src/`, `scripts/`, `tests/`, `public/`, `quality/{fixtures,oracles}/` and the root config files). While the redesign is uncommitted, every receipt is stale by construction: recomputing the working-tree fingerprint with `currentEvidenceSourceFingerprint()` from `scripts/lib/current-revision.ts` yields a value that matches none of the four fingerprints recorded under `quality/receipts/`, and it changes with every uncommitted edit. Recertify after the tranche is committed, not before.
-
-Do not synthesize external browser/device/rollback evidence.
+All 168 existing Gold receipts were regenerated against source fingerprint `9d532b7bf863338382f3a254373f6e9b31bd95ee8f6e763ac613f4ad0786cf71`. The fresh browser matrix targets the same fingerprint. Do not synthesize the remaining device/certification evidence.
 
 ## Design system and brand
 
@@ -107,17 +99,17 @@ Run in this order; each one is unconditional (no env vars, no secrets, no networ
 
 ## Real technical debt still worth addressing
 
-- Two page wrappers are orphaned: `src/components/tools/file-privacy/FilePrivacyPage.astro` and `src/components/tools/research-knowledge/ResearchKnowledgePage.astro`. No route imports them — all 200 pages go through `ItalianToolPage.astro`. Delete them or give them the contract the others have; do not leave a second page shell that silently drifts.
-- `toLegacyCatalogSummary` / `renderLegacyCatalogSource` keep a second, lossier summary schema alive inside the generated catalog path (`src/tool-factory/catalog.ts`, `src/catalog/projections.ts`). Consolidate once nothing needs the older summary shape, and before any non-local runtime variant is added.
-- The uncommitted tranche itself: the staged deletions, the untracked new paths and the unstaged modifications have to be committed as one deliberate change, with the throwaway `scripts/_dbg*.mjs`, `scripts/account-pages-check.mjs`, `.screenshots/` and `design/references/` either removed or confirmed as intentional.
-- `quality/receipts/browser-performance/fresh-browser-matrix.json` was generated at revision `05a8696` with a source fingerprint that no longer matches anything; it must be regenerated, not cited.
-- `ROADMAP.md` has not been refreshed with this state: it still quotes the pre-redesign 119/1/80 frontier and a retired UI tranche. `PROJECT-STATUS.md` and `HANDOFF.md` are current; the roadmap is not.
+- The remaining 31 unverified tools need independent family evidence before promotion; this is the certification roadmap, not hidden WIP.
+- `image-resize` needs genuine physical iOS Safari and Android Chrome runs. Desktop emulation does not count.
+- The Worker already has an internal login-attempt limiter, but an **outer Cloudflare WAF rate-limit rule** requires a user-controlled custom domain/zone; it cannot be attached in front of the account API while the only public hostname is `workers.dev`. Add it when the custom domain is connected.
+- The repository cannot prove the Cloudflare billing plan. Because the measured PBKDF2 cost is well above a Free Worker CPU budget, confirm Workers Paid before relying on production password flows.
+- When a custom domain is attached, add that hostname to the existing Turnstile widget as well.
 
 ## Authority map
 
 - `PROJECT-STATUS.md` — current repository/product snapshot (this file).
 - `HANDOFF.md` — what a next engineer reads first and which gates to run.
-- `ROADMAP.md` — priorities; stale on the certification frontier until refreshed.
+- `ROADMAP.md` — current priorities and certification frontier.
 - `PRODUCT.md` — product contract and the optional-account scope; `PRODUCT-SPEC.md` — acceptance criteria US-01…US-17.
 - `design/WORLD.md` — canonical visual authority; `DESIGN.md` — the structural system (catalogue, tool surface, account area as three layers); `tests/design-system.test.ts` — the visual contract.
 - `src/generated/catalog.ts`, `src/generated/quality.ts`, `quality/receipts/expanded-catalog-certification.json` — generated catalog and certification truth.
@@ -127,10 +119,4 @@ Run in this order; each one is unconditional (no env vars, no secrets, no networ
 
 ## Next source-changing tranche
 
-Commit the redesign first, then recertify. The evidence fingerprint covers `src/`, `scripts/`, `tests/`, `public/`, `quality/{fixtures,oracles}/` and the root config files, so any further source edit invalidates every receipt again. A sane order:
-
-1. remove the throwaway scripts and screenshots, review the diff, commit the redesign;
-2. run `npm run test`, `npm run check`, `npm run build`, `npm run deploy:check:portable`, `npm run acceptance:discovery`, `npm run acceptance:auth`, `npm run acceptance:expanded-local` on the committed tree;
-3. delete the two orphaned page wrappers and consolidate the legacy summary path (a source change, so do it before recertifying);
-4. regenerate the browser-performance matrix and every receipt against the committed tree, then `npm run release:validate`;
-5. only then resume family-by-family certification of the remaining 32 tools, in the engine order in the table above.
+The redesign/backend/refactor tranche is closed, committed, deployed and recertified. Any new source edit changes the evidence fingerprint, so treat the next work as a new tranche. The next source work is family-by-family certification of the 31 unverified tools; `image-resize` stays separate until physical-device evidence is available. Infrastructure work that depends on ownership/billing (custom domain + outer WAF rule + plan confirmation) should not be mixed into a source fingerprint unless it changes repository code.

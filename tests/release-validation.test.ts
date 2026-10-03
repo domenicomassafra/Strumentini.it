@@ -162,6 +162,26 @@ describe("truthful claims and evidence boundaries", () => {
     expect(validateRollbackReceiptForTest({ ...receipt, status: "VERIFIED" }).map((item) => item.code)).toEqual(expect.arrayContaining(["ROLLBACK_VERIFIED_FIELD", "ROLLBACK_VERIFIED_DEPLOYMENT_FLAG"]));
   });
 
+  it("binds verified rollback evidence to source content instead of a self-referential containing commit", () => {
+    const sourceFingerprint = "a".repeat(64);
+    const receipt = {
+      schemaVersion: 1,
+      kind: "cloudflare-static-assets-rollback",
+      status: "VERIFIED",
+      externalDeploymentPerformed: true,
+      currentRevision: "provenance-commit",
+      sourceFingerprint,
+      currentDeploymentId: "current-deployment",
+      previousKnownGoodDeploymentId: "previous-deployment",
+      rollbackCommand: "wrangler rollback previous-deployment",
+      dryRunCommand: "wrangler deploy --dry-run --outdir .wrangler-dry-run",
+      rollbackVerified: true,
+      reason: "real rollback exercised",
+    };
+    expect(validateRollbackReceipt(receipt, "rollback.json", sourceFingerprint)).toEqual([]);
+    expect(validateRollbackReceipt(receipt, "rollback.json", "b".repeat(64)).map((item) => item.code)).toContain("ROLLBACK_SOURCE_STALE");
+  });
+
   it("reports missing Gold, browser, and physical evidence as blockers", () => {
     const surface = toolSurface();
     expect(validateGoldReceipts(surface.catalog, [], "abc123").map((item) => item.code)).toContain("GOLD_RECEIPT_MISSING");
