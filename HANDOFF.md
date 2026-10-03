@@ -43,7 +43,7 @@ Run from the repository root; none of them needs a secret, an account or the net
 | `npm run build` | The real static build plus `scripts/inspect-build.ts`. Nothing downstream is meaningful if this fails. |
 | `npm run acceptance:discovery` | A real browser against the built site: `/strumenti/` query/paging/group views, `/cerca/` results and honest zero-result continuation, the command palette, focus restoration, URL/reload/back preservation, and no eager tool chunk. Writes `quality/receipts/discovery/acceptance.json`. |
 | `npm run deploy:check:portable` | `dist/` is genuinely portable: required pages present, no server-runtime artifacts (`_worker.js`, `functions/`), no provider-only origin, no absolute developer paths, canonical origin present. |
-| `npm run acceptance:auth` | The account API end to end against `wrangler dev` and a throwaway local D1: register, login, session, profile, password change, session list/delete, account delete and favourites, plus the cookie attributes, generic login message and login throttling. |
+| `npm run acceptance:auth` | The account API end to end against `wrangler dev` and a throwaway local D1, including the Google config/nonce boundary, password auth, sessions, account deletion, favourites and throttling. |
 | `npm run acceptance:expanded-local` | The 49-tool expanded-local batch driven through the built static site. |
 
 Heavier, receipt-producing variants: `npm run acceptance:family-matrix` and `npm run acceptance:browser-performance` regenerate the browser matrices; `npm run release:validate` chains catalog + build + `scripts/validate-release.ts`. Treat all three as evidence generators, never as a substitute for the gates above.
@@ -68,12 +68,13 @@ Also out of scope, permanently: ads, generic AI features, runtime plugins, offli
 
 ### Public account API state
 
-The API is exposed on `https://strumentiutili-it.massafradomenico4.workers.dev`. The real D1 database exists and is migrated; server-side Turnstile is active for login and registration; a live request without a challenge token is rejected by the Worker; and `npm run acceptance:auth` passes 121/121 against a real local Worker + D1. `dist/` alone remains a complete product.
+The API is exposed on `https://strumentiutili-it.massafradomenico4.workers.dev`. The real D1 database has both migrations, server-side Turnstile remains active for password login/registration, and `npm run acceptance:auth` passes 130/130. Google Identity Services is implemented auth-only: nonce cookie + ID-token verification against Google JWKs, no Google access/refresh token storage. Production intentionally returns 503 from `/api/auth/google/config` until the owner creates a Google Web OAuth client and supplies `GOOGLE_CLIENT_ID`; the UI hides Google while that configuration is absent.
 
 Two deployment-owner checks remain outside the repo:
 
 1. **Outer rate limiting.** The Worker has its own sliding window (10 failed attempts per IP per 15 minutes). A WAF rule *in front* of `/api/auth/*` needs a custom domain in a user-controlled Cloudflare zone, so it is not available on the current `workers.dev` hostname. Add it when the custom domain is connected.
 2. **Billing plan.** PBKDF2-HMAC-SHA256 at 600,000 iterations measured ~81 ms per hash on the owner's machine. The repo cannot attest the Cloudflare account's billing plan; confirm Workers Paid before treating password flows as production capacity.
+3. **Google client ID.** In Google Auth Platform create a **Web application** OAuth client, authorize `https://strumentiutili-it.massafradomenico4.workers.dev` as a JavaScript origin (and later the custom domain), then configure that client ID on the Worker as `GOOGLE_CLIENT_ID`. The implementation does not require a client secret.
 
 ## 5. Known gaps
 

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "9bef4dd63336471737d6a55aca7c7b50d22bb49f",
-  "sourceFingerprint": "b90dd8f2fbf449addc7f3e113a14cd51aa60a56e54ef684dfb9b5e8b838ba4fa",
+  "revision": "59147dfced80ae249f82c1e1773ada507ecbe971",
+  "sourceFingerprint": "b535a0f124f46b72bf2ab31949808bd0f2f6dc42401b802db6569319b03c3f99",
   "toolId": "pdf-compare-lite",
   "runtime": {
     "location": "LOCAL",

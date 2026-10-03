@@ -2,7 +2,7 @@
 
 Current stage: **real implementation hardening and catalog certification**.
 
-Checkpoint 2026-10-03: 200 tools exist, 168 are verified against a recorded oracle, 1 is Partial (`image-resize`) and 31 are implemented but intentionally still unverified. The visual redesign, account Worker, D1 binding, server-side Turnstile, catalog-schema refactor and dead-wrapper cleanup are committed and deployed. `npm test` is green (345 tests / 50 files), `astro check` reports 0 errors / 0 warnings / 0 hints across 1192 files, and the static build produces 220 pages. All 168 existing Gold receipts plus the fresh browser matrix were regenerated against the committed source fingerprint; rollback has real Cloudflare evidence. The remaining release frontier is certification/physical evidence, not hidden redesign WIP.
+Checkpoint 2026-10-03: 200 tools exist, 168 are verified against a recorded oracle, 1 is Partial (`image-resize`) and 31 are implemented but intentionally still unverified. Google sign-in/linking and the mobile auth/catalog/settings pass are implemented and deployed fail-closed pending the real Google Web Client ID. `npm test` is green (349 tests / 51 files), `astro check` is 0/0/0 across 1195 files, auth acceptance is 130/130, and the static build remains 220 pages. All 168 existing Gold receipts plus the browser matrix are rebound to the current source fingerprint.
 
 ## P0 — close the current Italian/backend tranche
 

@@ -7,7 +7,7 @@ This is the short, live map of the repository. It exists so old worker waves, ti
 ## Canonical repository state
 
 - Checkout: `/Users/domenico/Code/StrumentiUtili.it`
-- Branch: `main`, tracking `origin/main`. The redesign/backend source tranche is committed as `3722032` (`feat: ship redesigned utility workspace and account backend`); the release-evidence self-reference fix is committed as `9bef4dd` (`fix: bind rollback evidence to source fingerprint`). Regenerated evidence is committed separately so source fingerprints stay meaningful.
+- Branch: `main`, tracking `origin/main`. The current auth/mobile source tranche is committed as `59147df` (`feat: add Google sign-in and mobile auth UX`). Regenerated evidence is committed separately so source fingerprints stay meaningful.
 - The retired catalogue/workbench/a11y implementation is deleted: `src/pages/library.astro`, `src/library/**`, `src/components/library/**`, the retired Workbench UI, the old accessibility wrapper layer, `scripts/build-catalog.ts`, `scripts/lib/catalog-compiler.ts`, and their obsolete tests.
 - The replacement shell/catalog/account implementation is tracked: `src/catalog/{groups,projections}.ts`, `src/components/{home,catalog,account,icons}/**`, the new shell, public routes, `worker/**`, self-hosted Inter fonts, expanded-local evidence and matching acceptance tests.
 - Throwaway debug scripts and screenshots are gone. `design/references/redesign-20261003/` is intentional retained design provenance, not working-tree debris.
@@ -29,7 +29,7 @@ This is the short, live map of the repository. It exists so old worker waves, ti
   - `/risorse/`, `/preferiti/`, `/impostazioni/`, `/accedi/`, `/onboarding/`, `404`, `robots.txt`, `sitemap.xml`.
 - `/library` and `/library/` are **redirects** to `/strumenti` and `/strumenti/` (`astro.config.mjs`), emitted as ordinary static redirect pages. The old page, its model and its components are deleted; nothing in the product is called a library any more.
 - Every tool page is skinned by exactly two stylesheets: `src/styles/global.css` (tokens + base element vocabulary, imported by `src/layouts/BaseLayout.astro`) and `src/components/tools/tool-surface.css` (imported by `ItalianToolPage.astro`). `src/components/account/account.css` and `src/components/onboarding/Onboarding.module.css` are the only other stylesheets in `src/`.
-- Optional account, served by `worker/index.ts` (Cloudflare Worker + D1, `wrangler.jsonc`): PBKDF2-SHA256 at **600,000 iterations** (measured at ~81 ms per hash on the owner's machine), an opaque 30-day session cookie (`HttpOnly; Secure; SameSite=Lax`), only the SHA-256 token digest in D1, sliding-window login throttling, and Cloudflare Turnstile verified server-side for registration and sign-in. A credential hashed with a lower work factor is re-hashed on the next successful sign-in (`needsRehash`). The real `strumentiutili-auth` D1 database exists in EEUR, migration `0001_init.sql` is applied, and the four expected tables (`users`, `sessions`, `login_attempts`, `favorites`) were queried successfully. The current stable deployment is `https://strumentiutili-it.massafradomenico4.workers.dev`; the Turnstile secret exists only in Cloudflare while the public site key is tracked in `src/config/security.ts`. The static product still remains deployable without the account worker.
+- Optional account, served by `worker/index.ts` (Cloudflare Worker + D1, `wrangler.jsonc`): PBKDF2-SHA256 at **600,000 iterations**, an opaque 30-day session cookie, sliding-window throttling and server-side Turnstile for email/password. Google Identity Services support is implemented with a server-issued nonce and Worker-side RS256/JWK verification; new Google users can create a password later, while an existing password account must explicitly link Google from settings. D1 migrations `0001_init.sql` and `0002_google_auth.sql` are applied remotely. Production currently fails closed for Google because no `GOOGLE_CLIENT_ID` is configured yet; the Google controls stay hidden rather than exposing a broken login. The static product still remains deployable without the account worker.
 - Local-first workspace: onboarding starter set, installed/recent tool set, work profile and last values persist in IndexedDB/`localStorage` (`src/workbench/**`, `src/profile/**`, `src/persistence/**`). No file content or job result is ever sent anywhere.
 - 35 tools declare work-profile fields; 71 declare typed handoff metadata; 200/200 are bound to an oracle entry and a fixture family.
 
@@ -60,7 +60,7 @@ Remaining unverified, by engine (the 32 tools with no Gold receipt):
 
 The PDF/document family is 20/20 Gold and is not part of the remaining frontier.
 
-Closure gate snapshot: **50 test files / 345 tests PASS**, `astro check` reports **0 errors / 0 warnings / 0 hints** over 1192 files, and the static build produces **220 pages**. Re-run the commands below rather than treating these numbers as permanent.
+Closure gate snapshot: **51 test files / 349 tests PASS**, `astro check` reports **0 errors / 0 warnings / 0 hints** over 1195 files, auth acceptance is **130/130 PASS**, and the static build produces **220 pages**. Mobile smoke at 320px and 390px shows zero horizontal overflow on `/accedi/`, `/strumenti/` and `/impostazioni/`; primary header/auth controls are 44px touch targets and directory filters start collapsed on narrow screens.
 
 ## Release status
 
@@ -71,7 +71,7 @@ The post-commit release validation has **0 errors**. Browser evidence is current
 3. physical Android Chrome evidence for `image-resize` is missing;
 4. physical iOS Safari evidence for `image-resize` is missing.
 
-All 168 existing Gold receipts were regenerated against source fingerprint `b90dd8f2fbf449addc7f3e113a14cd51aa60a56e54ef684dfb9b5e8b838ba4fa`. The fresh browser matrix and verified rollback receipt target the same fingerprint. Do not synthesize the remaining device/certification evidence.
+All 168 existing Gold receipts were regenerated against source fingerprint `b535a0f124f46b72bf2ab31949808bd0f2f6dc42401b802db6569319b03c3f99`. The fresh browser matrix and verified rollback receipt target the same fingerprint. Do not synthesize the remaining device/certification evidence.
 
 ## Design system and brand
 
@@ -92,7 +92,7 @@ Run in this order; each one is unconditional (no env vars, no secrets, no networ
 | `npm run build` | full static build plus `scripts/inspect-build.ts` |
 | `npm run acceptance:discovery` | the `/strumenti/` directory, the `/cerca/` results page and the command palette, in a real browser: URL state, paging, group view, no eager tool chunk. Writes `quality/receipts/discovery/acceptance.json` |
 | `npm run deploy:check:portable` | `dist/` is provider-portable: required pages present, no server-runtime artifacts, no provider-only origin, no absolute developer paths |
-| `npm run acceptance:auth` | the account API end to end against `wrangler dev` + a throwaway local D1: register/login/session/profile/password/sessions/delete + favourites, cookie attributes and throttling |
+| `npm run acceptance:auth` | the account API end to end against `wrangler dev` + a throwaway local D1: Google config/nonce boundary, register/login/session/profile/password/sessions/delete + favourites, cookie attributes and throttling |
 | `npm run acceptance:expanded-local` | the 49-tool expanded-local batch against the built static site |
 
 `npm run release:validate` combines the catalog, the build and `scripts/validate-release.ts`; `npm run acceptance:family-matrix` and `npm run acceptance:browser-performance` regenerate the heavier browser matrices. Neither is a substitute for the gates above.
@@ -102,6 +102,7 @@ Run in this order; each one is unconditional (no env vars, no secrets, no networ
 - The remaining 31 unverified tools need independent family evidence before promotion; this is the certification roadmap, not hidden WIP.
 - `image-resize` needs genuine physical iOS Safari and Android Chrome runs. Desktop emulation does not count.
 - The Worker already has an internal login-attempt limiter, but an **outer Cloudflare WAF rate-limit rule** requires a user-controlled custom domain/zone; it cannot be attached in front of the account API while the only public hostname is `workers.dev`. Add it when the custom domain is connected.
+- **Google OAuth client setup:** create a Web application client in Google Auth Platform, authorize the production JavaScript origin, then configure its public client ID as `GOOGLE_CLIENT_ID` on the Worker. No Google client secret or refresh token is used by this authentication-only flow.
 - The repository cannot prove the Cloudflare billing plan. Because the measured PBKDF2 cost is well above a Free Worker CPU budget, confirm Workers Paid before relying on production password flows.
 - When a custom domain is attached, add that hostname to the existing Turnstile widget as well.
 
@@ -113,7 +114,7 @@ Run in this order; each one is unconditional (no env vars, no secrets, no networ
 - `PRODUCT.md` — product contract and the optional-account scope; `PRODUCT-SPEC.md` — acceptance criteria US-01…US-17.
 - `design/WORLD.md` — canonical visual authority; `DESIGN.md` — the structural system (catalogue, tool surface, account area as three layers); `tests/design-system.test.ts` — the visual contract.
 - `src/generated/catalog.ts`, `src/generated/quality.ts`, `quality/receipts/expanded-catalog-certification.json` — generated catalog and certification truth.
-- `worker/index.ts`, `worker/migrations/0001_init.sql` — the account API contract and schema.
+- `worker/index.ts`, `worker/google.ts`, `worker/migrations/*.sql` — the account API, Google ID-token verifier and schema.
 - `src/catalog/groups.ts` — the public grouping over the internal taxonomy.
 - `.scratch/`, `tasks/prompt2prompt/`, `research/`, `docs/history/` — historical provenance only.
 
