@@ -1,0 +1,574 @@
+---
+/**
+ * Risorse — the single hub behind the header's "Risorse" link.
+ *
+ * Four references point here by anchor (`#come-funziona`, `#privacy`,
+ * `#domande-frequenti`, `#qualita`) from `navigation.ts` plus `#account`.
+ * Every identifier below is the one the code actually uses; every count is
+ * read from the generated authorities at build time, never written by hand.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import UiIcon from "../components/icons/UiIcon.astro";
+import { catalog } from "../generated/catalog";
+import { qualityIndex } from "../generated/quality";
+import { goldToolIds } from "../onboarding/quality";
+import { LAST_VALUE_STORAGE_KEY } from "../components/workbench/last-value";
+import { THEME_STORAGE_KEY } from "../components/shell/theme";
+
+const totalTools = catalog.length;
+const certifiedTools = qualityIndex.tools.length;
+const unverifiedTools = totalTools - certifiedTools;
+const certifiedPercent = Math.round((certifiedTools / totalTools) * 100);
+
+// The certification index (`quality/receipts/expanded-catalog-certification.json`)
+// is the machine authority behind these two counts. The page reads the array
+// length it can import and asserts the remainder against the catalog, so a
+// drift in the generated files shows up as a wrong number rather than a stale
+// hand-written one.
+if (!Number.isInteger(certifiedTools) || certifiedTools < 0 || unverifiedTools < 0) {
+  throw new Error("Il conteggio di certificazione non corrisponde al catalogo generato.");
+}
+
+const certifiedIds = goldToolIds(qualityIndex);
+
+interface SectionLink {
+  readonly id: string;
+  readonly label: string;
+}
+
+const sections: readonly SectionLink[] = [
+  { id: "come-funziona", label: "Come funziona" },
+  { id: "privacy", label: "Privacy" },
+  { id: "domande-frequenti", label: "Domande frequenti" },
+  { id: "qualita", label: "Qualità dei risultati" },
+  { id: "account", label: "Account" },
+];
+
+const faqs: readonly { readonly question: string; readonly answer: string }[] = [
+  {
+    question: "Serve un account?",
+    answer: "No. Tutti gli strumenti funzionano senza registrazione. L'account è opzionale e non sblocca nessuna funzione.",
+  },
+  {
+    question: "Gli strumenti sono davvero gratuiti?",
+    answer: "Sì: non c'è un piano a pagamento, un limite di utilizzo o una funzione riservata. Non esiste nemmeno un pulsante per acquistare qualcosa.",
+  },
+  {
+    question: "Conservate i miei file?",
+    answer: "No. Non esiste un server che riceve i tuoi file: il lavoro avviene nel browser e il contenuto di un'attività non viene mai trasmesso, nemmeno quando la telemetria di validazione è attiva.",
+  },
+  {
+    question: "Funziona senza rete?",
+    answer: "Sì, una volta che la pagina è caricata: il calcolo continua anche se la connessione cade, perché avviene nel browser. Non c'è un service worker, quindi senza connessione non puoi aprire una pagina nuova o ricaricarla.",
+  },
+  {
+    question: "Posso usare i risultati per scopi commerciali?",
+    answer: "Sì. Quello che produci con gli strumenti è tuo: non rivendichiamo nessun diritto sul risultato e non chiediamo nessuna attribuzione.",
+  },
+  {
+    question: "Cosa succede ai miei dati se svuoto il browser?",
+    answer: "Spariscono con la memoria locale: preferiti, strumenti installati, valori recenti e tema vivono solo nel tuo browser. Nessuna copia esiste altrove, quindi non possiamo recuperarli.",
+  },
+  {
+    question: "Esiste un'API?",
+    answer: "No. L'unico modo per usare uno strumento è aprirne la pagina: non ci sono endpoint pubblici da chiamare da un tuo script. Puoi però installare l'area di lavoro come app dal browser, perché il manifest è già pubblicato.",
+  },
+  {
+    question: "Perché alcuni strumenti risultano in verifica?",
+    answer: "Ogni strumento è implementato e utilizzabile; solo una parte è già stata certificata contro un oracolo e delle fixture registrate. Gli altri sono dichiarati apertamente «In verifica» finché non superano lo stesso controllo.",
+  },
+];
+---
+
+<BaseLayout
+  title="Risorse"
+  description="Come funzionano gli strumenti, cosa resta sul tuo dispositivo, le domande frequenti e cosa significa la certificazione dei risultati."
+>
+  <article class="resources-page">
+    <header class="resources-heading">
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li aria-current="page">Risorse</li>
+      </ol>
+      <h1>Risorse</h1>
+      <p class="resources-lede">
+        Come funziona uno strumento, cosa resta sul tuo dispositivo e cosa significa
+        che un risultato è certificato: qui trovi le risposte, senza giri di parole.
+      </p>
+    </header>
+
+    <div class="resources-layout">
+      <nav class="resources-toc" aria-labelledby="resources-toc-title">
+        <h2 class="resources-toc-title" id="resources-toc-title">In questa pagina</h2>
+        <ul>
+          {sections.map((section) => (
+            <li><a href={`#${section.id}`}>{section.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="resources-body">
+        <section class="resources-section" aria-labelledby="come-funziona">
+          <h2 id="come-funziona">Come funziona</h2>
+          <p>
+            Questa è una pagina statica: non c'è un'applicazione sempre accesa dietro di te.
+            Quando apri uno strumento, il browser scarica solo il codice di quello strumento,
+            così il resto del sito resta leggero. Il calcolo avviene nel tuo browser e il
+            risultato appare nella pagina: non c'è nessun passaggio intermedio su un server.
+          </p>
+          <ul class="resources-steps">
+            <li>
+              <span class="resources-step-icon" aria-hidden="true"><UiIcon name="search" size={20} /></span>
+              <strong>Trova lo strumento</strong>
+              <p>Con ⌘K (Ctrl+K su Windows e Linux) apri la ricerca da qualsiasi punto del sito, oppure sfoglia tutti gli strumenti con i filtri in <a href="/strumenti/">/strumenti/</a>.</p>
+            </li>
+            <li>
+              <span class="resources-step-icon" aria-hidden="true"><UiIcon name="upload" size={20} /></span>
+              <strong>Inserisci dati o file</strong>
+              <p>Scrivi nel campo, incolla il testo o scegli un file dal dispositivo: il file viene letto in locale, senza caricamenti.</p>
+            </li>
+            <li>
+              <span class="resources-step-icon" aria-hidden="true"><UiIcon name="check-circle" size={20} /></span>
+              <strong>Leggi il risultato</strong>
+              <p>Regola solo le opzioni che servono e preleva il risultato dalla colonna dedicata, pronto da copiare o scaricare.</p>
+            </li>
+          </ul>
+          <p class="resources-note">
+            Se qualcosa resta fermo, ricarica la pagina: il calcolo vive solo nella scheda aperta.
+          </p>
+        </section>
+
+        <section class="resources-section" aria-labelledby="privacy">
+          <h2 id="privacy">Privacy</h2>
+          <p>
+            Non serve un account e nessun file lascia il dispositivo. Quando apri uno strumento
+            il codice viene scaricato, ma i dati che inserisci no: il contenuto di un'attività
+            non viene mai trasmesso da nessuna parte.
+          </p>
+
+          <div class="resources-card">
+            <h3>Cosa viene salvato, e dove</h3>
+            <ul class="resources-storage">
+              <li>
+                <span class="pill pill-brand"><UiIcon name="devices" size={14} /> IndexedDB</span>
+                <p>Il database <code>utility-workbench</code> custodisce l'area di lavoro: preferiti, strumenti installati e il profilo di lavoro.</p>
+              </li>
+              <li>
+                <span class="pill pill-brand"><UiIcon name="clock" size={14} /> localStorage</span>
+                <p>La chiave <code>{LAST_VALUE_STORAGE_KEY}</code> conserva l'ultimo valore prodotto da uno strumento, in tutto al massimo 40 voci brevi: un numero o una riga, mai gli ingressi.</p>
+              </li>
+              <li>
+                <span class="pill pill-brand"><UiIcon name="sliders" size={14} /> sessionStorage</span>
+                <p>La chiave <code>strumentiutili:workbench-context:v1</code> tiene il contesto di ricerca — gli identificativi degli strumenti installati e recenti — solo per la durata della scheda.</p>
+              </li>
+              <li>
+                <span class="pill pill-brand"><UiIcon name="sun" size={14} /> localStorage</span>
+                <p>La chiave <code>{THEME_STORAGE_KEY}</code> ricorda la tua scelta fra tema chiaro e scuro.</p>
+              </li>
+            </ul>
+          </div>
+
+          <div class="resources-card">
+            <h3>Telemetria di validazione</h3>
+            <p>
+              È <strong>disattivata per impostazione predefinita</strong>. Si accende solo se la
+              build imposta <code>PUBLIC_VALIDATION_COHORT=true</code> e
+              <code>PUBLIC_TELEMETRY_ENDPOINT</code>; in quel caso invia esclusivamente eventi
+              consentiti e non porta mai con sé il contenuto di un'attività.
+            </p>
+          </div>
+
+          <p class="resources-note">
+            Puoi cancellare tutto in qualsiasi momento dai dati del sito nelle impostazioni del
+            browser.
+          </p>
+        </section>
+
+        <section class="resources-section" aria-labelledby="domande-frequenti">
+          <h2 id="domande-frequenti">Domande frequenti</h2>
+          <div class="resources-faq">
+            {faqs.map((faq) => (
+              <details class="resources-faq-item">
+                <summary>{faq.question}<UiIcon name="chevron-down" size={18} /></summary>
+                <p>{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section class="resources-section" aria-labelledby="qualita">
+          <h2 id="qualita">Qualità dei risultati</h2>
+          <p>
+            Ogni strumento è implementato e utilizzabile. La differenza è nel controllo:
+            uno strumento certificato è stato provato contro un oracolo indipendente e delle
+            fixture registrate, quindi sappiamo che cosa produce a parità di ingresso.
+          </p>
+
+          <dl class="resources-counts">
+            <div>
+              <dt>Strumenti nel catalogo</dt>
+              <dd>{totalTools}</dd>
+            </div>
+            <div>
+              <dt>Certificati contro un oracolo e delle fixture</dt>
+              <dd>{certifiedTools}</dd>
+            </div>
+            <div>
+              <dt>Implementati e in verifica</dt>
+              <dd>{unverifiedTools}</dd>
+            </div>
+          </dl>
+
+          <p class="resources-note">
+            In breve: {certifiedTools} strumenti su {totalTools} sono certificati ({certifiedPercent}%)
+            e i restanti {unverifiedTools} sono implementati ma non ancora certificati.
+          </p>
+
+          <p>
+            Nella pagina di uno strumento lo stato è dichiarato apertamente: <span class="pill pill-success"><UiIcon name="check-circle" size={14} /> Verificato</span>
+            per i {certifiedTools} certificati, <span class="pill pill-warning"><UiIcon name="alert" size={14} /> In verifica</span> per gli altri.
+            Non è un giudizio sulla qualità del risultato, ma sullo stato della verifica: si sa
+            cosa ci si deve aspettare, e lo si dice.
+          </p>
+
+          <p class="resources-note">
+            I conteggi sono letti a ogni build dall'indice di certificazione generato in
+            <code>src/generated/quality.ts</code> ({certifiedIds.size} identificativi) e dal catalogo in
+            <code>src/generated/catalog.ts</code>, quindi non restano indietro rispetto al codice.
+          </p>
+        </section>
+
+        <section class="resources-section" aria-labelledby="account">
+          <h2 id="account">Account</h2>
+          <p>
+            L'account è <strong>opzionale</strong>: senza, tutto continua a funzionare in locale e
+            nessuno strumento resta bloccato. Serve solo a riconoscerti fra un dispositivo e
+            l'altro; la pagina di accesso è <a href="/accedi/">/accedi/</a>.
+          </p>
+        </section>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  /* One measure for the whole page, so the header, the sticky rail, and the
+     prose share the same x-offset on every breakpoint. */
+  .resources-page {
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-20);
+  }
+
+  .resources-heading {
+    max-width: var(--measure-copy);
+    margin-bottom: var(--space-10);
+  }
+
+  .resources-heading h1 {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-display);
+    line-height: var(--line-height-display);
+    letter-spacing: var(--tracking-display);
+  }
+
+  .resources-lede {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-body-lg);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .resources-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  /* The rail. No framework: the anchor is already the only state a browser
+     keeps for a same-page link, so a small script mirrors it onto aria. */
+  .resources-toc {
+    padding: var(--space-4) var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .resources-toc-title {
+    margin: 0 0 var(--space-3);
+    color: var(--text-faint);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .resources-toc ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .resources-toc li { display: flex; }
+
+  .resources-toc a {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .resources-toc a:hover { color: var(--brand); }
+
+  .resources-toc a[aria-current="true"] {
+    color: var(--brand);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .resources-body { min-width: 0; }
+
+  .resources-section {
+    padding-bottom: var(--space-10);
+    border-bottom: var(--border-width) solid var(--border);
+    margin-bottom: var(--space-10);
+    scroll-margin-top: calc(var(--nav-height) + var(--space-4));
+  }
+
+  .resources-section:last-of-type {
+    padding-bottom: 0;
+    border-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .resources-section > h2 {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-h2);
+    letter-spacing: var(--tracking-heading);
+  }
+
+  .resources-section > p {
+    max-width: var(--reading-max);
+    margin: 0 0 var(--space-5);
+    color: var(--text-muted);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .resources-section > p:last-child { margin-bottom: 0; }
+
+  .resources-note {
+    color: var(--text-faint) !important;
+    font-size: var(--font-size-sm);
+  }
+
+  .resources-step-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+
+  .resources-steps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    margin: 0 0 var(--space-5);
+    padding: 0;
+    list-style: none;
+  }
+
+  .resources-steps li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-2) var(--space-4);
+    align-items: center;
+    padding: var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .resources-steps li > strong { font-size: var(--font-size-h3); }
+
+  .resources-steps li > p {
+    grid-column: 2;
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-body);
+  }
+
+  .resources-card {
+    padding: var(--space-6);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    margin-bottom: var(--space-5);
+  }
+
+  .resources-card:last-child { margin-bottom: 0; }
+
+  .resources-card h3 {
+    margin: 0 0 var(--space-4);
+    font-size: var(--font-size-h3);
+  }
+
+  .resources-card p {
+    max-width: var(--reading-max);
+    margin: 0;
+    color: var(--text-muted);
+    line-height: var(--line-height-body);
+  }
+
+  .resources-storage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .resources-storage li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: start;
+  }
+
+  .resources-storage p {
+    margin: 0;
+    padding-top: var(--space-1);
+    font-size: var(--font-size-sm);
+  }
+
+  .resources-faq {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .resources-faq-item {
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .resources-faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .resources-faq-item summary::-webkit-details-marker { display: none; }
+
+  .resources-faq-item summary :global(.icon) {
+    color: var(--text-faint);
+    transition: transform var(--motion-fast) var(--motion-ease);
+  }
+
+  .resources-faq-item[open] summary :global(.icon) { transform: rotate(180deg); }
+
+  .resources-faq-item p {
+    max-width: var(--reading-max);
+    margin: 0;
+    padding: 0 var(--space-5) var(--space-5);
+    color: var(--text-muted);
+    line-height: var(--line-height-body);
+  }
+
+  .resources-counts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    margin: 0 0 var(--space-5);
+  }
+
+  .resources-counts > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .resources-counts dt {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .resources-counts dd {
+    margin: 0;
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-semibold);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  code {
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-xs);
+    background: var(--surface-subtle);
+    color: var(--text);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-mono);
+    overflow-wrap: anywhere;
+  }
+
+  /* The rail becomes a sticky column only where there is width for one. */
+  @media (min-width: 900px) {
+    .resources-layout { grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); }
+
+    .resources-toc {
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-4));
+    }
+
+    .resources-toc ul {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .resources-counts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .resources-counts > div {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+  }
+</style>
+
+<script>
+  /**
+   * `:target` already reaches the anchored section; the rail marks the same
+   * section for assistive technology by mirroring the hash onto `aria-current`.
+   * No framework, no observer, no stored state.
+   */
+  const railLinks = [...document.querySelectorAll<HTMLAnchorElement>(".resources-toc a")];
+
+  function markCurrentSection(): void {
+    const hash = window.location.hash;
+    for (const link of railLinks) {
+      link.setAttribute("aria-current", link.hash === hash && hash !== "" ? "true" : "false");
+    }
+  }
+
+  window.addEventListener("hashchange", markCurrentSection);
+  markCurrentSection();
+</script>

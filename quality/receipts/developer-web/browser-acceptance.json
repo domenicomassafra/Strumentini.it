@@ -60,122 +60,122 @@
   "results": [
     {
       "toolId": "json-formatter",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "yaml-formatter",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "toml-formatter",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "json-yaml-converter",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "url-codec",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "html-entity-codec",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "base64-codec",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "jwt-inspector",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "uuid-generator",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "hash-generator",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "hmac-generator",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "regex-tester",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "cron-explainer",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "cron-next-run",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "unix-timestamp",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "http-status-reference",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "mime-type-lookup",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "user-agent-parser",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "query-string-editor",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     },
     {
       "toolId": "json-path-playground",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false
     }
   ]

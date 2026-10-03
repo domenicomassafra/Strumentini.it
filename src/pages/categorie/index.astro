@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import GroupCard from "../../components/catalog/GroupCard.astro";
+import { groups, toolsInGroup } from "../../catalog/groups";
+import { catalog } from "../../generated/catalog";
+
+const description = `Le ${groups.length} categorie di StrumentiUtili.it: ${catalog.length} strumenti gratuiti per immagini, PDF, file, testo, dati, date, sviluppo web, marketing, ricerca e business.`;
+---
+
+<BaseLayout title="Categorie" description={description}>
+  <div class="tool-page group-index">
+    <ol class="breadcrumb">
+      <li><a href="/">Home</a></li>
+      <li aria-current="page">Categorie</li>
+    </ol>
+
+    <header class="group-index-head">
+      <h1>Categorie</h1>
+      <p class="lede">
+        {groups.length} categorie, {catalog.length} strumenti gratuiti. Scegli il gruppo che ti serve — immagini, PDF,
+        file, testo, dati, date, sviluppo, marketing, ricerca o business — e apri lo strumento giusto in un clic.
+      </p>
+    </header>
+
+    <ul class="group-index-grid">
+      {groups.map((group) => <GroupCard group={group} count={toolsInGroup(group).length} />)}
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .group-index-head { margin-bottom: var(--space-10); }
+
+  .group-index-head h1 { margin: 0 0 var(--space-3); }
+
+  .group-index-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 600px) {
+    .group-index-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 900px) {
+    .group-index-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+  }
+
+  @media (min-width: 1200px) {
+    .group-index-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  }
+</style>

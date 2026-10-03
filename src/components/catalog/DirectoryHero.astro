@@ -1,0 +1,178 @@
+---
+import UiIcon from "../icons/UiIcon.astro";
+import { iconSvgMarkup } from "../../ui/tool-icons";
+
+/**
+ * The opening of the directory: where you are, what is here, and one field to
+ * jump straight to a tool. The decorative cluster is built from the shared
+ * `.icon-tile` vocabulary so the tones can never drift from the rest of the
+ * site.
+ */
+interface Props {
+  total: number;
+  verified: number;
+}
+
+const { total, verified } = Astro.props;
+
+const tiles = [
+  { icon: "document" as const, tone: 3, rotate: -8 },
+  { icon: "image" as const, tone: 1, rotate: 6 },
+  { icon: "table" as const, tone: 6, rotate: -4 },
+  { icon: "code" as const, tone: 8, rotate: 9 },
+];
+---
+
+<section class="directory-hero">
+  <div class="directory-hero-inner">
+    <nav aria-label="Percorso di navigazione">
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li aria-current="page">Tutti gli strumenti</li>
+      </ol>
+    </nav>
+
+    <div class="directory-hero-grid">
+      <div class="directory-hero-copy">
+        <h1 class="directory-hero-title">Tutti gli strumenti</h1>
+        <p class="directory-hero-lede">
+          Il catalogo completo: {total} strumenti gratuiti per PDF, immagini, CSV, testo, date e
+          lavoro d'ufficio. Si aprono nel browser, senza registrazione e senza caricare i tuoi file
+          su nessun server.
+        </p>
+      </div>
+
+      <div class="directory-hero-art" aria-hidden="true">
+        <span class="directory-hero-blob" />
+        {tiles.map((tile) => (
+          <span
+            class="icon-tile icon-tile-lg directory-hero-tile"
+            style={`--tile-tone: var(--tone-${tile.tone}); --tile-rotate: ${tile.rotate}deg`}
+            set:html={iconSvgMarkup(tile.icon, "directory-hero-glyph")}
+          />
+        ))}
+      </div>
+    </div>
+
+    <button class="directory-hero-search" type="button" data-search-open aria-haspopup="dialog">
+      <UiIcon name="search" size={20} />
+      <span>Cerca tra i {total} strumenti…</span>
+      <span class="directory-hero-search-go" aria-hidden="true">
+        <UiIcon name="arrow-right" size={20} />
+      </span>
+    </button>
+
+    <p class="directory-hero-hint">
+      La ricerca apre la palette con <kbd>⌘</kbd><kbd>K</kbd>: {verified} strumenti sono già
+      verificati contro oracoli e fixture registrate, gli altri sono dichiarati «In verifica».
+    </p>
+  </div>
+</section>
+
+<style>
+  .directory-hero {
+    padding: var(--space-8) 0 var(--space-6);
+    background:
+      radial-gradient(120% 90% at 8% -20%, color-mix(in srgb, var(--brand) 10%, transparent) 0%, transparent 58%),
+      var(--canvas);
+  }
+
+  .directory-hero-inner {
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: 0 auto;
+  }
+
+  .directory-hero-grid { display: grid; gap: var(--space-6); align-items: center; }
+
+  .directory-hero-title {
+    margin: 0;
+    font-size: var(--font-size-display);
+    font-weight: 800;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--line-height-display);
+  }
+
+  .directory-hero-lede {
+    max-width: 46ch;
+    margin: var(--space-4) 0 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-body-lg);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .directory-hero-art { position: relative; display: none; }
+
+  .directory-hero-blob {
+    position: absolute;
+    inset: 12% 8% 12% 12%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--brand) 14%, transparent), transparent 76%);
+  }
+
+  .directory-hero-tile {
+    display: grid;
+    place-items: center;
+    transform: rotate(var(--tile-rotate, 0deg));
+    box-shadow: var(--shadow-card);
+  }
+
+  .directory-hero-tile :global(.directory-hero-glyph) { width: 32px; height: 32px; }
+
+  .directory-hero-search {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: min(100%, 46rem);
+    min-height: 60px;
+    margin: var(--space-6) 0 0;
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: var(--font-size-body);
+    text-align: start;
+    box-shadow: var(--shadow-raised);
+    transition: border-color var(--motion-fast) var(--motion-ease);
+  }
+
+  .directory-hero-search:hover { border-color: var(--brand-soft-strong); }
+  .directory-hero-search > span:first-of-type { flex: 1; }
+
+  .directory-hero-search-go {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-pill);
+    background: var(--brand);
+    color: var(--brand-ink);
+  }
+
+  .directory-hero-hint {
+    margin: var(--space-3) 0 0;
+    color: var(--text-faint);
+    font-size: var(--font-size-sm);
+  }
+
+  .directory-hero-hint kbd {
+    padding: 0 var(--space-1);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-xs);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: var(--font-family-ui);
+    font-size: var(--font-size-2xs);
+  }
+
+  @media (min-width: 900px) {
+    .directory-hero-grid { grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-10); }
+    .directory-hero-art {
+      display: grid;
+      grid-template-columns: repeat(2, 64px);
+      gap: var(--space-4);
+      justify-content: end;
+    }
+    .directory-hero-title { font-size: clamp(2rem, 4vw, 2.75rem); }
+  }
+</style>

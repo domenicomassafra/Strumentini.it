@@ -73,32 +73,33 @@ try {
 
   const direct = await context.newPage();
   await direct.goto(`${origin}/tools/business-day/`, { waitUntil: "networkidle" });
-  await direct.getByText("Elaborazione sul dispositivo.", { exact: true }).waitFor();
+  // The tool page declares its own execution contract as data, so this asserts
+  // the fact instead of pinning a sentence that is free to change.
+  await direct.locator('[data-tool-page="business-day"][data-runtime="LOCAL"][data-network="forbidden"]').waitFor();
   assert(await direct.locator("dialog[open], [role='dialog']").count() === 0, "An onboarding dialog appeared over an unrelated tool task");
   await direct.getByRole("button").first().waitFor();
   record("first-task-uninterrupted", "A tool job stays fully usable without ever completing onboarding", "tool route hydrated with no onboarding interstitial");
 
+  // Stage 1 is the welcome: it asks for nothing, so it must be a single action.
+  assert(await page.locator("[data-onboarding-action='start']").isVisible(), "The welcome stage offers no way forward");
+  await page.locator("[data-onboarding-action='start']").click();
+
   // AC-02.1: the flow gates on a real answer rather than pre-selecting for the user.
   const continueButton = page.locator("[data-onboarding-action='continue-context']");
-  assert(await continueButton.isDisabled(), "Stage 1 Continue was enabled with no work context selected");
+  await continueButton.waitFor();
+  assert(await continueButton.isDisabled(), "The work-context stage was continuable with nothing selected");
   await page.locator("[data-context-id]").first().click();
   await continueButton.click();
-  record("context-required", "Stage 1 cannot advance until a work context is chosen", "Continue stayed disabled until a context was selected");
+  record("context-required", "The work-context stage cannot advance until a context is chosen", "Continue stayed disabled until a context was selected");
 
   await page.locator("#jobs-title").waitFor();
   await page.locator("[data-onboarding-action='continue-jobs']").click();
-  await page.locator("#defaults-title").waitFor();
-  record("jobs-stage-traversed", "The recurring-jobs stage is reachable and does not trap the user", "advanced to safe defaults without selecting a job");
+  record("jobs-stage-traversed", "The recurring-jobs stage is reachable and does not trap the user", "advanced to the review without selecting a job");
 
-  // AC-03: safe defaults are captured once here rather than re-asked per tool.
-  await page.locator("[name='locale']").fill("it-IT");
-  await page.locator("[name='currency']").fill("EUR");
-  await page.locator("[name='dateFormat']").selectOption("day-first");
-  await page.locator("[data-onboarding-action='review']").click();
   await page.locator("#review-title").waitFor();
 
   // AC-05: a small, distinct, reviewable set — never the 200-tool catalogue.
-  const review = page.locator("section[aria-labelledby='review-title']");
+  const review = page.locator("[aria-labelledby='review-title']");
   const offeredIds = await review.locator("[data-starter-tool-id]").evaluateAll(
     (nodes) => nodes.map((node) => node.getAttribute("data-starter-tool-id")).filter(Boolean),
   );
@@ -117,18 +118,23 @@ try {
   assert(await save.isEnabled(), "Save starter set stayed disabled for a valid review");
   await save.click();
 
-  // AC-02.4: the saved starter set lands in the local workbench, with no account.
+  // AC-02.4: the saved set lands in this device's own store, with no account.
   await page.waitForURL(`${origin}/`, { timeout: 15000 });
-  await page.locator("#your-tools").waitFor();
-  const workbenchRows = await page.locator("[data-tool-id]").count();
-  assert(workbenchRows > 0, "Workbench shows no tools after onboarding saved a starter set");
-  record("starter-persisted-locally", "The saved starter set is installed in the local Workbench", `${workbenchRows} installed tool row(s) after save`);
-
-  // AC-03 / PRODUCT.md principle 2: the profile captured once in onboarding is reused by
-  // the installed tools, so the user is never asked the same question twice.
-  const localeRow = page.locator("#your-tools").getByText("it-IT", { exact: false });
-  await localeRow.first().waitFor();
-  record("profile-default-reused", "Onboarding defaults are reused by installed tools instead of being re-asked", "an installed tool displays the persisted it-IT profile value");
+  const installed = await page.evaluate(async () => {
+    const db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open("utility-workbench", 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const stored = await new Promise((resolve, reject) => {
+      const request = db.transaction("state").objectStore("state").get("workbench/state:v1");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    return Array.isArray(stored?.installedTools) ? stored.installedTools : [];
+  });
+  assert(installed.length > 0, "No tool was stored locally after onboarding saved a starter set");
+  record("starter-persisted-locally", "The saved starter set is stored on this device, with no account", `${installed.length} tool(s) in the local workbench state after save`);
 
   // DEC-21 / principle 4: onboarding answers never leave the device.
   const offOrigin = requests.filter((request) => !request.url.startsWith(origin));

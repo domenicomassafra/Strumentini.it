@@ -1,10 +1,13 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import UiIcon from "../../icons/UiIcon.astro";
+import ToolCard from "../ToolCard.astro";
 import { catalog } from "../../../generated/catalog";
 import { categoryLabelIt, inputTypeLabelIt } from "../../../i18n/it/taxonomy";
 import { toolIconSvg } from "../../../ui/tool-icons";
 import { qualityIndex } from "../../../generated/quality";
 import { goldToolIds } from "../../../onboarding/quality";
+import { groupForCategory, toolsInGroup, toneForCategory } from "../../../catalog/groups";
 import "../tool-surface.css";
 
 interface Props {
@@ -18,66 +21,382 @@ if (tool === undefined) {
   throw new Error(`Strumento sconosciuto: ${toolId}`);
 }
 
+const group = groupForCategory(tool.category);
 const category = categoryLabelIt(tool.category);
 const inputTypes = tool.inputTypes.map(inputTypeLabelIt);
-const titleIcon = toolIconSvg(tool, "tool-title-icon");
+const titleIcon = toolIconSvg(tool, "tool-heading-glyph");
+const tone = toneForCategory(tool.category);
 const verified = goldToolIds(qualityIndex).has(tool.id);
 
-const executionCopy = tool.runtime.location === "LOCAL"
-  ? {
-      headline: "Elaborazione sul dispositivo.",
-      detail: tool.runtime.network === "forbidden"
-        ? "I dati inseriti restano nel browser e non vengono inviati a servizi remoti."
-        : "L'elaborazione principale avviene nel browser; eventuali accessi alla rete seguono il contratto dichiarato.",
-    }
-  : tool.runtime.location === "REFERENCE"
-    ? {
-        headline: "Elaborazione con fonti di riferimento.",
-        detail: "Gli eventuali accessi alla rete sono limitati alle fonti di riferimento dichiarate dallo strumento.",
-      }
-    : {
-        headline: "Elaborazione remota dichiarata.",
-        detail: "Questo strumento dichiara esplicitamente quando un passaggio richiede un servizio remoto.",
-      };
+const related = toolsInGroup(group)
+  .filter((entry) => entry.id !== tool.id)
+  .slice(0, 4);
 
 const networkCopy = tool.runtime.network === "forbidden"
   ? "Accesso alla rete vietato dal contratto dello strumento."
   : tool.runtime.network === "reference-only"
     ? "La rete può essere usata soltanto per consultare fonti di riferimento dichiarate."
     : "La rete è necessaria per completare questa operazione.";
+
+const localOnly = tool.runtime.location === "LOCAL" && tool.runtime.network === "forbidden";
+
+const features = [
+  {
+    icon: "zap" as const,
+    title: "Veloce",
+    body: "Il risultato si calcola nel tuo browser, senza attese di caricamento.",
+  },
+  {
+    icon: "shield" as const,
+    title: localOnly ? "Riservato" : "Contratto dichiarato",
+    body: localOnly
+      ? "Nessun file e nessun dato inserito viene inviato a un server."
+      : networkCopy,
+  },
+  {
+    icon: "devices" as const,
+    title: "Funziona ovunque",
+    body: "Desktop, tablet e smartphone: basta il browser, senza installare nulla.",
+  },
+  {
+    icon: "infinity" as const,
+    title: "100% gratuito",
+    body: "Nessun limite di utilizzo e nessuna registrazione obbligatoria.",
+  },
+];
+
+const steps = [
+  { icon: "upload" as const, title: "Prepara l'ingresso", body: `Inserisci i dati o apri i file: ${inputTypes.join(", ")}.` },
+  { icon: "sliders" as const, title: "Regola le opzioni", body: "Scegli solo ciò che serve; i valori predefiniti sono già sensati." },
+  { icon: "check-circle" as const, title: "Leggi il risultato", body: "Il valore prodotto resta nella colonna del risultato, pronto da copiare o scaricare." },
+];
+
+const faqs = [
+  {
+    question: "Serve un account per usare questo strumento?",
+    answer: "No. Tutti gli strumenti funzionano senza registrazione; l'account è opzionale e serve solo a ritrovare le tue preferenze.",
+  },
+  {
+    question: "I miei file vengono caricati su un server?",
+    answer: localOnly
+      ? "No. Questo strumento è dichiarato locale e non ha accesso alla rete: i file restano sul tuo dispositivo."
+      : networkCopy,
+  },
+  {
+    question: "Il risultato è sempre lo stesso a parità di ingresso?",
+    answer: "Sì. Lo strumento è deterministico: a parità di ingresso e di opzioni il risultato non cambia.",
+  },
+  {
+    question: "Cosa succede se l'ingresso non è valido?",
+    answer: "Lo strumento mostra un errore esplicito invece di produrre un risultato inventato, così sai sempre cosa correggere.",
+  },
+];
+
+const headerArtGlyph = toolIconSvg(tool, "tool-heading-art-glyph");
 ---
 
 <BaseLayout title={tool.name} description={tool.summary}>
-  <article class="tool-page">
+  <article
+    class:list={["tool-page", "tool-sheet"]}
+    style={`--tile-tone: var(--tone-${tone})`}
+    data-tool-page={tool.id}
+    data-runtime={tool.runtime.location}
+    data-network={tool.runtime.network}
+  >
     <header class="tool-heading">
-      <nav aria-label="Percorso"><a href="/">Strumenti</a> / {category}</nav>
-      <div class="tool-title-line">
-        <span class="tool-title-icon-wrap" set:html={titleIcon}></span>
-        <div>
-          <p class="eyebrow">{category}</p>
-          <h1>{tool.name}</h1>
-          <p class:list={["tool-quality-status", verified ? "verified" : "checking"]}>{verified ? "Verificato" : "In verifica"}</p>
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href={`/categorie/${group.slug}/`}>{group.label}</a></li>
+        <li aria-current="page">{tool.name}</li>
+      </ol>
+
+      <div class="tool-heading-grid">
+        <div class="tool-heading-copy">
+          <div class="tool-title-line">
+            <span class="tool-title-icon-wrap" set:html={titleIcon}></span>
+            <h1>{tool.name}</h1>
+          </div>
+          <p class="lede">{tool.summary}</p>
+          <ul class="tool-heading-pills">
+            <li class="pill pill-brand"><UiIcon name="sparkle" size={14} /> Gratis, senza limiti</li>
+            <li class="pill"><UiIcon name="user" size={14} /> Senza registrazione</li>
+            <li class:list={["pill", verified ? "pill-success" : "pill-warning"]}>
+              <UiIcon name={verified ? "check-circle" : "alert"} size={14} />
+              {verified ? "Verificato" : "In verifica"}
+            </li>
+          </ul>
         </div>
-      </div>
-      <p class="lede">{tool.summary}</p>
-      <div class="trust-strip" role="note">
-        <strong>{executionCopy.headline}</strong>
-        <span>{executionCopy.detail}</span>
-        {!verified && <span>Questo strumento è disponibile, ma non ha ancora completato il livello di certificazione Gold.</span>}
+
+        <div class="tool-heading-art" aria-hidden="true">
+          <span class="tool-heading-art-tile" set:html={headerArtGlyph} />
+        </div>
       </div>
     </header>
 
     <slot />
 
-    <section class="method-card" aria-labelledby={`metodo-${tool.id}`}>
-      <p class="eyebrow">Come funziona</p>
-      <h2 id={`metodo-${tool.id}`}>Contratto operativo</h2>
-      <ul>
-        <li>{tool.summary}</li>
-        <li>Tipi di ingresso dichiarati: {inputTypes.join(", ")}.</li>
-        <li>{networkCopy}</li>
-        <li>Gli errori di formato o le capacità non supportate vengono mostrati esplicitamente invece di produrre un risultato inventato.</li>
+    <ul class="tool-features">
+      {features.map((feature) => (
+        <li>
+          <span class="tool-features-icon" aria-hidden="true"><UiIcon name={feature.icon} size={20} /></span>
+          <strong>{feature.title}</strong>
+          <p>{feature.body}</p>
+        </li>
+      ))}
+    </ul>
+
+    <section class="section" aria-labelledby={`come-funziona-${tool.id}`}>
+      <div class="section-head">
+        <div>
+          <h2 class="section-title" id={`come-funziona-${tool.id}`}>Come funziona</h2>
+          <p class="section-sub">Tre passaggi, nessuna configurazione obbligatoria.</p>
+        </div>
+      </div>
+      <ol class="tool-steps">
+        {steps.map((step, index) => (
+          <li>
+            <span class="tool-steps-number">{String(index + 1).padStart(2, "0")}</span>
+            <span class="tool-steps-icon" aria-hidden="true"><UiIcon name={step.icon} size={20} /></span>
+            <strong>{step.title}</strong>
+            <p>{step.body}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="section tool-faq-section" aria-labelledby={`faq-${tool.id}`}>
+      <div class="section-head">
+        <div>
+          <h2 class="section-title" id={`faq-${tool.id}`}>Perché usare {tool.name}</h2>
+          <p class="section-sub">
+            {tool.summary} Il risultato è deterministico e il contratto di esecuzione è dichiarato: {networkCopy.toLowerCase()}
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-faq">
+        {faqs.map((faq) => (
+          <details class="tool-faq-item">
+            <summary>{faq.question}<UiIcon name="chevron-down" size={18} /></summary>
+            <p>{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+
+      <ul class="tool-contract">
+        <li><UiIcon name="check" size={16} /> Categoria: {category}</li>
+        <li><UiIcon name="check" size={16} /> Ingressi dichiarati: {inputTypes.join(", ")}</li>
+        <li><UiIcon name="check" size={16} /> {networkCopy}</li>
+        <li>
+          <UiIcon name="check" size={16} />
+          {verified
+            ? "Certificato: il risultato è verificato contro un oracolo e delle fixture registrate."
+            : "Disponibile e utilizzabile, ma non ancora verificato contro un oracolo registrato."}
+        </li>
       </ul>
+    </section>
+
+    {related.length > 0 && (
+      <section class="section" aria-labelledby={`correlati-${tool.id}`}>
+        <div class="section-head">
+          <div>
+            <h2 class="section-title" id={`correlati-${tool.id}`}>Strumenti correlati</h2>
+            <p class="section-sub">Altri strumenti della categoria {group.label}.</p>
+          </div>
+          <a class="section-link" href={`/categorie/${group.slug}/`}>Vedi tutta la categoria</a>
+        </div>
+        <ul class="tool-grid">
+          {related.map((entry) => <ToolCard tool={entry} variant="card" />)}
+        </ul>
+      </section>
+    )}
+
+    <section class="tool-cta">
+      <div>
+        <h2>Serve un altro strumento?</h2>
+        <p>Tutti i {catalog.length} strumenti sono gratuiti, senza registrazione e funzionano nel browser.</p>
+      </div>
+      <a class="btn btn-primary btn-lg" href="/strumenti/">Esplora tutti gli strumenti <span aria-hidden="true">→</span></a>
     </section>
   </article>
 </BaseLayout>
+
+<style>
+  .tool-heading-grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .tool-heading-copy { min-width: 0; }
+
+  .tool-title-line h1 {
+    margin: 0;
+    font-size: clamp(1.625rem, 3vw, 2.25rem);
+    line-height: var(--line-height-display);
+  }
+
+  .tool-heading-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tool-heading-art {
+    display: none;
+    place-items: center;
+    border-radius: var(--radius-xl);
+    background:
+      radial-gradient(120% 120% at 20% 0%, color-mix(in srgb, var(--tile-tone) 18%, transparent), transparent 70%),
+      var(--surface-subtle);
+    border: var(--border-width) solid var(--border);
+  }
+
+  .tool-heading-art-tile {
+    display: grid;
+    place-items: center;
+    width: 108px;
+    height: 108px;
+    border-radius: 30px;
+    background: linear-gradient(150deg, color-mix(in srgb, var(--tile-tone) 76%, white), var(--tile-tone));
+    color: var(--on-tone);
+    box-shadow: 0 22px 40px -20px color-mix(in srgb, var(--tile-tone) 70%, transparent);
+  }
+
+  .tool-heading-art-tile :global(.tool-heading-art-glyph) { width: 52px; height: 52px; }
+  .tool-title-icon-wrap :global(.tool-heading-glyph) { width: 32px; height: 32px; }
+
+  .tool-features {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+    margin: 0 0 var(--space-12);
+    padding: var(--space-6);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    list-style: none;
+  }
+
+  .tool-features li { display: grid; gap: var(--space-2); }
+
+  .tool-features-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+
+  .tool-features strong { font-family: var(--font-family-display); font-size: var(--font-size-h3); }
+  .tool-features p { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+
+  .tool-steps {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .tool-steps li {
+    position: relative;
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .tool-steps-number {
+    color: var(--brand);
+    font-family: var(--font-family-display);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-label);
+  }
+
+  .tool-steps-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+
+  .tool-steps strong { font-family: var(--font-family-display); font-size: var(--font-size-h3); }
+  .tool-steps p { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+
+  .tool-faq { display: grid; gap: var(--space-2); }
+
+  .tool-faq-item {
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .tool-faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    font-family: var(--font-family-display);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .tool-faq-item summary::-webkit-details-marker { display: none; }
+  .tool-faq-item[open] summary :global(svg) { transform: rotate(180deg); }
+  .tool-faq-item p { margin: 0; padding: 0 var(--space-5) var(--space-5); color: var(--text-muted); }
+
+  .tool-contract {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .tool-contract li { display: flex; align-items: flex-start; gap: var(--space-2); }
+  .tool-contract :global(svg) { margin-top: 3px; color: var(--success); }
+
+  .tool-cta {
+    display: grid;
+    gap: var(--space-5);
+    align-items: center;
+    margin-top: var(--space-12);
+    padding: var(--space-8);
+    border-radius: var(--radius-xl);
+    background:
+      radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--brand) 14%, transparent), transparent 60%),
+      var(--surface-subtle);
+    border: var(--border-width) solid var(--border);
+  }
+
+  .tool-cta h2 { margin: 0; font-size: var(--font-size-h2); }
+  .tool-cta p { margin: var(--space-2) 0 0; color: var(--text-muted); }
+  .tool-cta .btn { justify-self: start; }
+
+  @media (min-width: 900px) {
+    .tool-heading-grid { grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.5fr); align-items: start; }
+    .tool-heading-art { display: grid; min-height: 200px; }
+    .tool-features { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .tool-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .tool-cta { grid-template-columns: minmax(0, 1fr) auto; padding: var(--space-10) var(--space-12); }
+    .tool-cta .btn { justify-self: end; }
+  }
+</style>

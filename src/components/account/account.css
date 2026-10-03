@@ -1,0 +1,264 @@
+/* ============================================================================
+   The account surfaces — /accedi/ and /impostazioni/.
+
+   Only tokens from the global sheet are read here; nothing in this file
+   defines a colour, a space or a type step of its own. It exists because the
+   two pages share a control vocabulary (a field with a leading icon, a reveal
+   button, a panel block, an account sidebar) that no other surface uses.
+   ========================================================================== */
+
+/* --- Page measures -------------------------------------------------------- */
+
+.ac-access,
+.ac-shell {
+  display: grid;
+  gap: var(--space-8);
+  width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+  margin: 0 auto;
+  padding: var(--space-8) 0 var(--space-16);
+}
+
+.ac-shell-main { min-width: 0; }
+
+.ac-page-head { display: grid; gap: var(--space-2); }
+.ac-page-head h1 {
+  margin: 0;
+  font-size: var(--font-size-h1);
+  letter-spacing: var(--tracking-heading);
+}
+.ac-page-head p { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+
+/* Stack a set of blocks that share one parent outside the panel grid. */
+.ac-stack { display: grid; gap: var(--space-5); }
+
+/* Inside these two roots every element belongs to this file, so the `hidden`
+   attribute is allowed to win over any component class that sets a display. */
+.ac-shell [hidden],
+.ac-access [hidden] { display: none !important; }
+
+/* --- The access page: benefits, card, decorative cluster ------------------ */
+
+.ac-pitch { display: grid; gap: var(--space-5); align-content: start; }
+.ac-pitch h1 {
+  margin: 0;
+  font-size: var(--font-size-h1);
+  letter-spacing: var(--tracking-heading);
+}
+.ac-pitch > p { color: var(--text-muted); font-size: var(--font-size-sm); }
+
+.ac-benefits { display: grid; gap: var(--space-5); margin: 0; padding: 0; list-style: none; }
+.ac-benefit { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-3); align-items: start; }
+.ac-benefit h2 { margin: 0; font-size: var(--font-size-h3); }
+.ac-benefit p { margin: var(--space-1) 0 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+
+.ac-card { display: grid; gap: var(--space-5); align-content: start; }
+
+.ac-art { display: flex; gap: var(--space-4); align-items: center; justify-content: center; }
+.ac-art-tile { color: var(--brand); background: var(--brand-soft); }
+
+/* --- Tabs ----------------------------------------------------------------- */
+
+.ac-tabs {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+  background: var(--surface-subtle);
+}
+
+.ac-tab {
+  flex: 1 1 0;
+  min-height: 38px;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ac-tab:hover { color: var(--brand); }
+.ac-tab[aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow-card); }
+
+.ac-panel { display: grid; gap: var(--space-5); }
+
+/* --- Fields with a leading icon and an optional reveal button -------------- */
+
+.ac-control { position: relative; display: block; }
+
+.ac-control-icon {
+  position: absolute;
+  top: 50%;
+  left: var(--space-3);
+  transform: translateY(-50%);
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.ac-control input { padding-left: calc(var(--space-6) + var(--space-1)); }
+.ac-control:has(.ac-reveal) input { padding-right: calc(var(--space-6) + var(--space-1)); }
+.field input[readonly] { background: var(--surface-subtle); color: var(--text-muted); }
+
+.ac-reveal {
+  position: absolute;
+  top: 50%;
+  right: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.ac-reveal:hover { color: var(--brand); }
+
+.ac-field-error { margin: var(--space-2) 0 0; color: var(--danger); font-size: var(--font-size-xs); }
+
+.ac-submit-arrow { font-weight: var(--font-weight-semibold); }
+[data-busy="true"] .ac-submit-arrow { display: none; }
+
+.ac-support { margin: 0; color: var(--text-faint); font-size: var(--font-size-xs); }
+.ac-trust { display: flex; align-items: center; justify-content: center; gap: var(--space-2); color: var(--text-muted); font-size: var(--font-size-xs); }
+.ac-trust a { color: var(--brand); font-weight: var(--font-weight-medium); }
+
+.ac-connected { display: grid; gap: var(--space-3); }
+
+.ac-art-glyph { stroke-width: 1.1; }
+
+/* --- The settings sidebar -------------------------------------------------- */
+
+.ac-side { display: grid; gap: var(--space-5); align-content: start; }
+
+.ac-nav { display: flex; flex-wrap: wrap; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
+
+.ac-nav button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+}
+
+.ac-nav button:hover { background: var(--brand-soft); color: var(--brand); }
+.ac-nav button[aria-selected="true"] { background: var(--brand-soft); color: var(--brand); font-weight: var(--font-weight-semibold); }
+
+/* --- Panel blocks ---------------------------------------------------------- */
+
+.ac-block {
+  padding: var(--space-6);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.ac-block-title { margin: 0; font-size: var(--font-size-h3); }
+.ac-block-sub { margin: var(--space-2) 0 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+.ac-block-body { margin-top: var(--space-5); }
+
+.ac-note { margin: var(--space-3) 0 0; color: var(--text-faint); font-size: var(--font-size-xs); }
+
+.ac-danger { border-color: color-mix(in srgb, var(--danger) 45%, var(--border)); background: var(--danger-soft); }
+.ac-danger .ac-block-title { color: var(--danger); }
+.ac-danger .ac-block-sub { color: var(--text); }
+
+.ac-danger-action { border-color: var(--danger); background: var(--surface); color: var(--danger); }
+.ac-danger-action:hover { border-color: var(--danger); background: var(--surface); color: var(--danger); }
+
+/* --- Identity and numbers -------------------------------------------------- */
+
+.ac-identity { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+
+.ac-avatar {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill);
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+}
+
+.ac-identity-name { display: block; font-family: var(--font-family-display); font-size: var(--font-size-h3); }
+.ac-identity-mail { color: var(--text-muted); font-size: var(--font-size-sm); }
+
+.ac-stats { display: grid; gap: var(--space-3); margin: 0; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+
+.ac-stat {
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-subtle);
+}
+
+.ac-stat dt { color: var(--text-muted); font-size: var(--font-size-xs); }
+.ac-stat dd {
+  margin: var(--space-1) 0 0;
+  color: var(--brand);
+  font-family: var(--font-family-display);
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.ac-pills { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+
+/* --- Sessions -------------------------------------------------------------- */
+
+.ac-sessions { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+
+.ac-session {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.ac-session-main { min-width: 0; flex: 1 1 auto; }
+.ac-session-device { display: block; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
+.ac-session-meta { color: var(--text-faint); font-size: var(--font-size-xs); }
+.ac-session-action { margin-left: auto; }
+
+/* --- Local data list ------------------------------------------------------- */
+
+.ac-device-list { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+.ac-device-list li { display: grid; gap: var(--space-1); }
+.ac-device-key { font-family: var(--font-family-mono); font-size: var(--font-size-xs); color: var(--text-muted); overflow-wrap: anywhere; }
+
+/* --- Breakpoint 1: the desk ------------------------------------------------ */
+
+@media (min-width: 900px) {
+  .ac-access {
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 420px) minmax(0, 0.75fr);
+    align-items: center;
+    gap: var(--space-10);
+  }
+
+  .ac-shell { grid-template-columns: 250px minmax(0, 1fr); gap: var(--space-10); }
+  .ac-page-head { grid-column: 1 / -1; }
+  .ac-nav { display: grid; }
+  .ac-nav button { width: 100%; }
+  .ac-art { flex-direction: column; align-items: flex-end; gap: var(--space-6); padding-right: var(--space-4); }
+  .ac-art-tile:nth-child(2) { margin-right: var(--space-8); }
+  .ac-art-tile:nth-child(3) { margin-right: var(--space-2); }
+}

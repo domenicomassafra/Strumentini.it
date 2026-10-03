@@ -3,7 +3,7 @@
   "kind": "browser-acceptance",
   "subject": "onboarding",
   "generatedBy": "scripts/acceptance-onboarding.mjs",
-  "revision": "8dc099fd42f74166bd25c51c4cb9d560cb3d100e",
+  "revision": "8b50066c2fc9cb7d79f6e52e48acc08b760cab49",
   "status": "PASS",
   "browser": "chrome",
   "viewport": {
@@ -26,7 +26,7 @@
     },
     {
       "id": "context-required",
-      "description": "Stage 1 cannot advance until a work context is chosen",
+      "description": "The work-context stage cannot advance until a context is chosen",
       "status": "PASS",
       "observed": "Continue stayed disabled until a context was selected"
     },
@@ -34,7 +34,7 @@
       "id": "jobs-stage-traversed",
       "description": "The recurring-jobs stage is reachable and does not trap the user",
       "status": "PASS",
-      "observed": "advanced to safe defaults without selecting a job"
+      "observed": "advanced to the review without selecting a job"
     },
     {
       "id": "starter-set-bounded",
@@ -50,15 +50,9 @@
     },
     {
       "id": "starter-persisted-locally",
-      "description": "The saved starter set is installed in the local Workbench",
+      "description": "The saved starter set is stored on this device, with no account",
       "status": "PASS",
-      "observed": "10 installed tool row(s) after save"
-    },
-    {
-      "id": "profile-default-reused",
-      "description": "Onboarding defaults are reused by installed tools instead of being re-asked",
-      "status": "PASS",
-      "observed": "an installed tool displays the persisted it-IT profile value"
+      "observed": "10 tool(s) in the local workbench state after save"
     },
     {
       "id": "no-off-origin-traffic",

@@ -53,8 +53,17 @@ function escapeXml(value: string): string {
   })[character] ?? character);
 }
 
-export function buildSitemapXml(tools: readonly DiscoveryTool[], siteUrl?: string | URL): string {
-  const paths = [...new Set(["/", "/library", "/onboarding", ...tools.map((tool) => tool.route)])];
+/** The indexable routes that are not a tool page. Pages that opt out of
+ *  indexing (search results, the account area) are absent on purpose, and so
+ *  are the redirects. */
+export const publicIndexPaths: readonly string[] = ["/", "/strumenti", "/categorie", "/risorse", "/onboarding"];
+
+export function buildSitemapXml(
+  tools: readonly DiscoveryTool[],
+  siteUrl?: string | URL,
+  extraPaths: readonly string[] = [],
+): string {
+  const paths = [...new Set([...publicIndexPaths, ...extraPaths, ...tools.map((tool) => tool.route)])];
   const entries = paths.map((path) => `  <url><loc>${escapeXml(resolveDiscoveryUrl(path, siteUrl))}</loc></url>`).join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
 }
@@ -75,26 +84,19 @@ export function buildToolStructuredData(tool: DiscoveryTool, canonicalUrl: strin
   };
 }
 
-export function buildLibraryStructuredData(
+export function buildDirectoryStructuredData(
   tools: readonly DiscoveryTool[],
   canonicalUrl: string,
-  siteUrl?: string | URL,
 ): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "StrumentiUtili.it Tool Library",
-    description: "Search deterministic local tools by task, input, category, and runtime.",
+    name: "Tutti gli strumenti — StrumentiUtili.it",
+    description: "Il catalogo completo degli strumenti online gratuiti: cercabili per attività, ingresso, categoria e dove girano.",
     url: canonicalUrl,
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: tools.length,
-      itemListElement: tools.map((tool, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        name: tool.name,
-        url: resolveDiscoveryUrl(tool.route, siteUrl),
-      })),
     },
   };
 }

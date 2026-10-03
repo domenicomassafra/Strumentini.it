@@ -15,7 +15,7 @@ function hasOwn(
 }
 
 export function resolveToolDefaults(
-  manifest: ToolSummary,
+  manifest: Pick<ToolSummary, "profileFields">,
   input: ProfileResolutionInput,
 ): ResolvedDefault[] {
   const resolved: ResolvedDefault[] = [];

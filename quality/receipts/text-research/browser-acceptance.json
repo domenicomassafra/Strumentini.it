@@ -12,24 +12,24 @@
   "tools": [
     {
       "route": "/tools/list-compare",
-      "lazyScripts": 2,
-      "taskRequests": 2,
+      "lazyScripts": 3,
+      "taskRequests": 4,
       "externalRequests": 0,
       "contentLeaks": 0,
       "mobileOverflow": false
     },
     {
       "route": "/tools/text-diff",
-      "lazyScripts": 2,
-      "taskRequests": 2,
+      "lazyScripts": 3,
+      "taskRequests": 4,
       "externalRequests": 0,
       "contentLeaks": 0,
       "mobileOverflow": false
     },
     {
       "route": "/tools/doi-isbn-normalizer",
-      "lazyScripts": 2,
-      "taskRequests": 2,
+      "lazyScripts": 3,
+      "taskRequests": 4,
       "externalRequests": 0,
       "contentLeaks": 0,
       "mobileOverflow": false

@@ -14,6 +14,7 @@ export function createRegistry(
   loaders: Readonly<Record<string, () => Promise<{ default: ToolModule }>>> = toolLoaders,
 ): ToolRegistry {
   const byId = new Map(summaries.map((summary) => [summary.id, summary]));
+  const moduleCache = new Map<string, Promise<ToolModule>>();
 
   return {
     list: () => summaries,
@@ -23,9 +24,20 @@ export function createRegistry(
       if (!byId.has(toolId)) throw new Error("NOT_FOUND");
       const loader = loaders[toolId];
       if (loader === undefined) throw new Error("LOAD_FAILED");
-      const loaded = await loader();
+      let loading = moduleCache.get(toolId);
+      if (loading === undefined) {
+        loading = loader().then((loaded) => loaded.default);
+        moduleCache.set(toolId, loading);
+      }
+      let module: ToolModule;
+      try {
+        module = await loading;
+      } catch (error) {
+        if (moduleCache.get(toolId) === loading) moduleCache.delete(toolId);
+        throw error;
+      }
       if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
-      return loaded.default;
+      return module;
     },
   };
 }

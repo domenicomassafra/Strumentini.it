@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "8b50066c2fc9cb7d79f6e52e48acc08b760cab49",
+  "sourceFingerprint": "554f167b248f16d38a006098c200a61bb83498463235ae487fa3f5d3dd37b6aa",
+  "toolId": "canonical-url-helper",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "url-marketing",
+  "oracleEntryId": "cand-073",
+  "fixtureFamilies": [
+    "url-security",
+    "query-params"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "owasp-xss",
+    "strumentiutili-quality",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "url-security",
+      "path": "quality/fixtures/url-security/vectors.json"
+    },
+    {
+      "id": "query-params",
+      "path": "quality/fixtures/query-params/vectors.json"
+    }
+  ],
+  "browserContract": {
+    "assertion": "https:\\/\\/example\\.com\\/canonical",
+    "outputSha256": "14a2dc609c8e8bbb3343b577172c69c63ba408c9d4a9e82ba89f9476999db7f4",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls"
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance"
+  ],
+  "identities": {
+    "manifestSha256": "ab6248f8d28ed3fb2c7c22b5a5db59719e4e999f6c254af3175b6b1752a8bd64",
+    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "e2a70e874c71c53fa4e04c7516329644260cae7631e6d09ecfe9c7bd4535a314",
+    "acceptanceScriptSha256": "35b1fa348fa5c6db793049cda565b9831c4bcd7c1e1cc3db3f83ba630b03e670",
+    "unitTestsSha256": "0504426ff767766a169b3d561b7383878b3f60437797fdee3024069ffb063622",
+    "fixture:url-security:sha256": "498535dca23ff3fe69902dde2024e33f1f5900cd34ccc39b6079e06fb06c0a0e",
+    "fixture:query-params:sha256": "45165ac3bf038861444d91b026cedf121b0ba4341c4e02e18b4061c5b9707677"
+  }
+}

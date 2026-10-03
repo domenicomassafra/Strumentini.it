@@ -1,0 +1,161 @@
+---
+import UiIcon from "../icons/UiIcon.astro";
+import { iconSvgMarkup } from "../../ui/tool-icons";
+
+/**
+ * The opening viewport: what the product is, one field to start, and the
+ * floating file tiles that say "documents, images, media" without a word.
+ */
+---
+
+<section class="home-hero">
+  <div class="home-hero-inner">
+    <div class="home-hero-copy">
+      <h1 class="home-hero-title">
+        Strumenti semplici,
+        <span>utili davvero.</span>
+      </h1>
+      <p class="home-hero-lede">
+        Una collezione di strumenti online gratuiti per semplificare il tuo lavoro,
+        risolvere problemi quotidiani e ottenere risultati in pochi clic.
+      </p>
+      <button class="home-hero-search" type="button" data-search-open aria-haspopup="dialog">
+        <UiIcon name="search" size={20} />
+        <span>Cerca uno strumento…</span>
+        <span class="home-hero-search-go" aria-hidden="true">
+          <UiIcon name="arrow-right" size={20} />
+        </span>
+      </button>
+      <p class="home-hero-hint">Ad esempio: unisci PDF, comprimi immagini, conta parole…</p>
+    </div>
+
+    <div class="home-hero-art" aria-hidden="true">
+      <span class="home-hero-blob" />
+      <span class="home-hero-tile home-hero-tile-pdf" style="--tile-tone: var(--tone-3)" set:html={iconSvgMarkup("document", "home-hero-glyph")} />
+      <span class="home-hero-tile home-hero-tile-image" style="--tile-tone: var(--tone-1)" set:html={iconSvgMarkup("image", "home-hero-glyph")} />
+      <span class="home-hero-tile home-hero-tile-media" style="--tile-tone: var(--tone-2)" set:html={iconSvgMarkup("list", "home-hero-glyph")} />
+      <span class="home-hero-tile home-hero-tile-sheet" style="--tile-tone: var(--tone-5)" set:html={iconSvgMarkup("table", "home-hero-glyph")} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-hero {
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-16) 0 var(--space-12);
+    background:
+      radial-gradient(120% 90% at 12% -10%, color-mix(in srgb, var(--brand) 12%, transparent) 0%, transparent 58%),
+      radial-gradient(90% 80% at 88% 4%, color-mix(in srgb, var(--tone-6) 14%, transparent) 0%, transparent 62%),
+      var(--canvas);
+  }
+
+  .home-hero-inner {
+    display: grid;
+    gap: var(--space-8);
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: 0 auto;
+  }
+
+  .home-hero-copy { max-width: 44rem; }
+
+  .home-hero-title {
+    margin: 0;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    text-align: center;
+  }
+
+  .home-hero-title span { display: block; color: var(--brand); }
+
+  .home-hero-lede {
+    margin: var(--space-5) auto var(--space-8);
+    max-width: 38rem;
+    color: var(--text-muted);
+    font-size: var(--font-size-body-lg);
+    line-height: var(--line-height-relaxed);
+    text-align: center;
+  }
+
+  .home-hero-search {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: min(100%, 40rem);
+    min-height: 60px;
+    margin: 0 auto;
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: var(--font-size-body);
+    text-align: start;
+    box-shadow: var(--shadow-raised);
+    transition: border-color var(--motion-fast) var(--motion-ease);
+  }
+
+  .home-hero-search:hover { border-color: var(--brand-soft-strong); }
+  .home-hero-search > span:first-of-type { flex: 1; }
+
+  .home-hero-search-go {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-pill);
+    background: var(--brand);
+    color: var(--brand-ink);
+  }
+
+  .home-hero-hint {
+    margin: var(--space-4) 0 0;
+    color: var(--text-faint);
+    font-size: var(--font-size-sm);
+    text-align: center;
+  }
+
+  .home-hero-art {
+    position: relative;
+    display: none;
+    min-height: 340px;
+  }
+
+  .home-hero-blob {
+    position: absolute;
+    inset: 6% 4% 6% 10%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--brand) 16%, transparent), transparent 78%);
+    filter: blur(6px);
+  }
+
+  .home-hero-tile {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+    border-radius: 26px;
+    background: linear-gradient(150deg, color-mix(in srgb, var(--tile-tone) 78%, white), var(--tile-tone));
+    color: var(--on-tone);
+    box-shadow: 0 22px 40px -18px color-mix(in srgb, var(--tile-tone) 70%, transparent);
+  }
+
+  .home-hero-tile :global(.home-hero-glyph) { width: 44px; height: 44px; }
+
+  .home-hero-tile-pdf { top: 8%; left: 16%; transform: rotate(-13deg); }
+  .home-hero-tile-image { top: 34%; left: 52%; transform: rotate(9deg); width: 110px; height: 110px; }
+  .home-hero-tile-media { bottom: 6%; left: 24%; transform: rotate(-6deg); }
+  .home-hero-tile-sheet { bottom: 2%; left: 62%; transform: rotate(14deg); width: 84px; height: 84px; }
+
+  @media (min-width: 1060px) {
+    .home-hero-inner { grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); }
+    .home-hero-art { display: block; }
+    .home-hero-title,
+    .home-hero-lede { text-align: left; }
+    .home-hero-search { margin: 0; }
+    .home-hero-hint { text-align: left; }
+  }
+</style>

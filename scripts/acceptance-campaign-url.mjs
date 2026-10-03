@@ -2,15 +2,45 @@ import { chromium } from "@playwright/test";
 import { spawn } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-const root=resolve(import.meta.dirname,"..");
-const port=18135; const origin=`http://127.0.0.1:${port}`; const server=spawn("python3",["-m","http.server",String(port),"--bind","127.0.0.1","--directory","dist"],{stdio:"ignore"});
-const sleep=(ms)=>new Promise((r)=>setTimeout(r,ms));
-async function accept(browser,route,sensitive,operate){const page=await browser.newPage({viewport:{width:1280,height:900}});let started=false;const requests=[];const scripts=[];page.on("request",r=>{if(started){requests.push({url:r.url(),method:r.method(),postData:r.postData()});if(r.resourceType()==="script")scripts.push(r.url());}});await page.goto(`${origin}${route}/`,{waitUntil:"networkidle"});await page.getByText("Elaborazione sul dispositivo.",{exact:true}).waitFor();await operate(page,()=>{started=true});await page.waitForTimeout(100);if(!scripts.length)throw new Error(`${route}: no lazy implementation script`);if(requests.some(r=>!r.url.startsWith(origin)||r.method!=="GET"||sensitive.some(v=>v&&`${r.url}\n${r.postData??""}`.includes(v))))throw new Error(`${route}: locality/content assertion failed`);await page.setViewportSize({width:390,height:844});if(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth))throw new Error(`${route}: mobile overflow`);await page.close();}
-try{await sleep(500);const browser=await chromium.launch({executablePath:"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",headless:true});
-await accept(browser,"/tools/utm-builder",["newsletter","fall sale"],async(page,start)=>{await page.getByLabel("URL di destinazione").fill("https://example.com/landing?ref=site#frag");await page.getByLabel("Sorgente").fill("newsletter");await page.getByLabel("Mezzo").fill("email");await page.getByLabel("Campagna").fill("fall sale");start();await page.getByRole("button",{name:"Crea URL"}).press("Enter");await page.getByText("https://example.com/landing?ref=site&utm_source=newsletter&utm_medium=email&utm_campaign=fall+sale#frag",{exact:true}).waitFor();});
-await accept(browser,"/tools/tracking-cleaner",["secret-token"],async(page,start)=>{await page.getByLabel("URL da pulire").fill("https://example.com/?a=1&a=2&utm_source=x&gclid=secret-token#frag");start();await page.getByRole("button",{name:"Rimuovi parametri di tracciamento"}).press("Enter");await page.getByText("https://example.com/?a=1&a=2#frag",{exact:true}).waitFor();await page.getByText(/utm_source, gclid/u).waitFor();});
-await accept(browser,"/tools/campaign-name",["Acme","Spring Launch"],async(page,start)=>{await page.getByText(/Dall'impostazione salvata|Caricamento dell'impostazione/u).waitFor();await page.getByLabel("client").fill("Acme");await page.getByLabel("channel").fill("Paid Social");await page.getByLabel("campaign").fill("Spring Launch");start();await page.getByRole("button",{name:"Mostra anteprima"}).press("Enter");await page.getByText("acme-paid-social-spring-launch",{exact:true}).waitFor();await page.getByLabel("Ordine dei campi").fill("client,campaign");await page.getByText("Valore specifico per questa attivit\u00e0 — impostazione salvata invariata",{exact:true}).waitFor();await page.getByRole("button",{name:"Salva impostazione"}).click();await page.getByText("Impostazione salvata. I valori di questa attivit\u00e0 non sono stati memorizzati.",{exact:true}).waitFor();await page.reload({waitUntil:"networkidle"});await page.getByLabel("Ordine dei campi").waitFor();if(await page.getByLabel("Ordine dei campi").inputValue()!=="client,campaign")throw new Error("campaign preset did not persist");if(await page.getByLabel("client").inputValue()!=="")throw new Error("task values leaked into preset persistence");});
-await browser.close();
-await mkdir(resolve(root,"quality/receipts/campaign-url"),{recursive:true});
-await writeFile(resolve(root,"quality/receipts/campaign-url/browser-acceptance.json"),`${JSON.stringify({schemaVersion:1,status:"PASS",tools:["utm-builder","tracking-cleaner","campaign-name"],keyboard:"submit via Enter",mobileViewport:{width:390,height:844,horizontalOverflow:false},network:"zero external/task-content requests after task start",presetPersistence:"saved schema persists; current task values do not"},null,2)}\n`);
-console.log("campaign URL acceptance PASS: 3 tools, preset persistence, keyboard/mobile, zero task-content network");}finally{server.kill("SIGTERM");}
+
+const root = resolve(import.meta.dirname, "..");
+const port = 18135;
+const origin = `http://127.0.0.1:${port}`;
+const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { stdio: "ignore" });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function accept(browser, route, sensitive, operate) {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  let started = false;
+  const requests = [];
+  const scripts = [];
+  page.on("request", (r) => {
+    if (started) {
+      requests.push({ url: r.url(), method: r.method(), postData: r.postData() });
+      if (r.resourceType() === "script") scripts.push(r.url());
+    }
+  });
+  await page.goto(`${origin}${route}/`, { waitUntil: "networkidle" });
+  await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
+  await operate(page, () => { started = true; });
+  await page.waitForTimeout(100);
+  if (!scripts.length) throw new Error(`${route}: no lazy implementation script`);
+  if (requests.some((r) => !r.url.startsWith(origin) || r.method !== "GET" || sensitive.some((v) => v && `${r.url}\n${r.postData ?? ""}`.includes(v)))) throw new Error(`${route}: locality/content assertion failed`);
+  await page.setViewportSize({ width: 390, height: 844 });
+  if (await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)) throw new Error(`${route}: mobile overflow`);
+  await page.close();
+}
+
+try {
+  await sleep(500);
+  const browser = await chromium.launch({ executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", headless: true });
+  await accept(browser, "/tools/utm-builder", ["newsletter", "fall sale"], async (page, start) => { await page.getByLabel("URL di destinazione").fill("https://example.com/landing?ref=site#frag"); await page.getByLabel("Sorgente").fill("newsletter"); await page.getByLabel("Mezzo").fill("email"); await page.getByLabel("Campagna").fill("fall sale"); start(); await page.getByRole("button", { name: "Crea URL" }).press("Enter"); await page.getByText("https://example.com/landing?ref=site&utm_source=newsletter&utm_medium=email&utm_campaign=fall+sale#frag", { exact: true }).waitFor(); });
+  await accept(browser, "/tools/tracking-cleaner", ["secret-token"], async (page, start) => { await page.getByLabel("URL da pulire").fill("https://example.com/?a=1&a=2&utm_source=x&gclid=secret-token#frag"); start(); await page.getByRole("button", { name: "Rimuovi parametri di tracciamento" }).press("Enter"); await page.getByText("https://example.com/?a=1&a=2#frag", { exact: true }).waitFor(); await page.getByText(/utm_source, gclid/u).waitFor(); });
+  await accept(browser, "/tools/campaign-name", ["Acme", "Spring Launch"], async (page, start) => { await page.getByText(/Dall'impostazione salvata|Caricamento dell'impostazione/u).waitFor(); await page.getByLabel("client").fill("Acme"); await page.getByLabel("channel").fill("Paid Social"); await page.getByLabel("campaign").fill("Spring Launch"); start(); await page.getByRole("button", { name: "Mostra anteprima" }).press("Enter"); await page.getByText("acme-paid-social-spring-launch", { exact: true }).waitFor(); await page.getByLabel("Ordine dei campi").fill("client,campaign"); await page.getByText("Valore specifico per questa attivit\u00e0 — impostazione salvata invariata", { exact: true }).waitFor(); await page.getByRole("button", { name: "Salva impostazione" }).click(); await page.getByText("Impostazione salvata. I valori di questa attivit\u00e0 non sono stati memorizzati.", { exact: true }).waitFor(); await page.reload({ waitUntil: "networkidle" }); await page.getByLabel("Ordine dei campi").waitFor(); if (await page.getByLabel("Ordine dei campi").inputValue() !== "client,campaign") throw new Error("campaign preset did not persist"); if (await page.getByLabel("client").inputValue() !== "") throw new Error("task values leaked into preset persistence"); });
+  await browser.close();
+  await mkdir(resolve(root, "quality/receipts/campaign-url"), { recursive: true });
+  await writeFile(resolve(root, "quality/receipts/campaign-url/browser-acceptance.json"), `${JSON.stringify({ schemaVersion: 1, status: "PASS", tools: ["utm-builder", "tracking-cleaner", "campaign-name"], keyboard: "submit via Enter", mobileViewport: { width: 390, height: 844, horizontalOverflow: false }, network: "zero external/task-content requests after task start", presetPersistence: "saved schema persists; current task values do not" }, null, 2)}\n`);
+  console.log("campaign URL acceptance PASS: 3 tools, preset persistence, keyboard/mobile, zero task-content network");
+} finally {
+  server.kill("SIGTERM");
+}

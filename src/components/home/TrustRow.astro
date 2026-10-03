@@ -1,0 +1,80 @@
+---
+import UiIcon from "../icons/UiIcon.astro";
+
+const items = [
+  {
+    icon: "sparkle" as const,
+    title: "100% gratuito",
+    body: "Tutti gli strumenti sono gratuiti, sempre, senza registrazione obbligatoria.",
+  },
+  {
+    icon: "shield" as const,
+    title: "I file restano tuoi",
+    body: "Ogni strumento gira nel tuo browser: nessun file viene caricato su un server.",
+  },
+  {
+    icon: "devices" as const,
+    title: "Disponibile ovunque",
+    body: "Funziona da desktop, tablet e smartphone, senza installare nulla.",
+  },
+];
+---
+
+<ul class="trust-row">
+  {items.map((item) => (
+    <li class="trust-row-item">
+      <span class="trust-row-icon" aria-hidden="true"><UiIcon name={item.icon} size={26} /></span>
+      <div>
+        <strong>{item.title}</strong>
+        <p>{item.body}</p>
+      </div>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .trust-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    margin: calc(var(--space-12) * -1) 0 var(--space-16);
+    padding: var(--space-7) var(--space-8);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    list-style: none;
+    position: relative;
+    z-index: 1;
+  }
+
+  .trust-row-item { display: flex; align-items: center; gap: var(--space-4); }
+
+  .trust-row-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 54px;
+    height: 54px;
+    border-radius: var(--radius-pill);
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+
+  .trust-row-item strong {
+    display: block;
+    font-family: var(--font-family-display);
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .trust-row-item p { margin: var(--space-1) 0 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+
+  @media (min-width: 900px) {
+    .trust-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8); }
+    .trust-row-item + .trust-row-item {
+      padding-left: var(--space-8);
+      border-left: var(--border-width) solid var(--border);
+    }
+  }
+</style>

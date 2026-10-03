@@ -1,0 +1,81 @@
+---
+/**
+ * "Riprendi da dove eri": the tools this browser actually produced a value with,
+ * newest first, each with the value it last produced. Real local data only —
+ * the section removes itself when this device has no history.
+ */
+---
+
+<section class="section home-recent" data-recent-section hidden>
+  <div class="section-head">
+    <div>
+      <h2 class="section-title">Riprendi da dove eri</h2>
+      <p class="section-sub">Gli strumenti che hai usato su questo dispositivo, con l'ultimo valore prodotto.</p>
+    </div>
+    <a class="section-link" href="/preferiti/">Tutti i preferiti</a>
+  </div>
+  <ul class="tool-grid home-recent-grid" data-recent-list></ul>
+</section>
+
+<script>
+  import { readLastValues } from "../workbench/last-value";
+  import type { ToolLastValue } from "../workbench/last-value";
+
+  interface CatalogTool { id: string; name: string; summary: string; route: string; category: string }
+
+  const section = document.querySelector<HTMLElement>("[data-recent-section]");
+  const list = document.querySelector<HTMLElement>("[data-recent-list]");
+
+  const escapeHtml = (value: string): string => value.replace(/[&<>"']/gu, (character) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;",
+  })[character] ?? character);
+
+  function byNewest(values: Readonly<Record<string, ToolLastValue>>): Array<[string, ToolLastValue]> {
+    return Object.entries(values)
+      .filter(([, record]) => typeof record.at === "string")
+      .sort((a, b) => (a[1].at < b[1].at ? 1 : a[1].at > b[1].at ? -1 : 0))
+      .slice(0, 4);
+  }
+
+  if (section !== null && list !== null) {
+    const recent = byNewest(readLastValues());
+    if (recent.length > 0) {
+      void import("../../generated/workbench-catalog").then(({ workbenchCatalog }) => {
+        const tools = new Map<string, CatalogTool>(
+          (workbenchCatalog as readonly CatalogTool[]).map((tool) => [tool.id, tool]),
+        );
+        const cards = recent.flatMap(([toolId, record]) => {
+          const tool = tools.get(toolId);
+          if (tool === undefined) return [];
+          const unit = record.unit === undefined ? "" : ` ${escapeHtml(record.unit)}`;
+          return `<li class="tool-card tool-card-row">`
+            + `<div class="tool-card-body"><h3 class="tool-card-name"><a href="${escapeHtml(tool.route)}">${escapeHtml(tool.name)}</a></h3>`
+            + `<p class="tool-card-summary">${escapeHtml(tool.summary)}</p></div>`
+            + `<div class="tool-card-foot"><span class="tool-card-category">Ultimo valore</span>`
+            + `<span class="tool-card-value">${escapeHtml(record.value)}${unit}</span></div></li>`;
+        });
+        if (cards.length === 0) return;
+        list.innerHTML = cards.join("");
+        section.hidden = false;
+      });
+    }
+  }
+</script>
+
+<style>
+  .home-recent-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  :global(.tool-card-value) {
+    color: var(--brand);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    font-variant-numeric: tabular-nums lining-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 1060px) {
+    .home-recent-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+</style>

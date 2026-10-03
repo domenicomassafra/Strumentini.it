@@ -1,0 +1,69 @@
+---
+import type { CatalogGroup } from "../../catalog/groups";
+import { iconSvgMarkup } from "../../ui/tool-icons";
+import UiIcon from "../icons/UiIcon.astro";
+
+/**
+ * The category hero: the group glyph on a large tone-tinted tile, the group
+ * headline, the group intro, and the three properties every tool in the
+ * catalogue actually has.
+ */
+interface Props {
+  group: CatalogGroup;
+  count: number;
+}
+
+const { group, count } = Astro.props;
+---
+
+<header class="group-hero" style={`--tile-tone: var(--tone-${group.tone})`}>
+  <span class="icon-tile group-hero-tile" set:html={iconSvgMarkup(group.icon, "group-hero-glyph")}></span>
+
+  <div class="group-hero-copy">
+    <h1>Strumenti per {group.label}</h1>
+    <p class="lede">{group.intro}</p>
+    <ul class="group-hero-pills">
+      <li class="pill pill-brand"><UiIcon name="sparkle" size={14} />{count} strumenti gratuiti</li>
+      <li class="pill"><UiIcon name="zap" size={14} />Facili da usare</li>
+      <li class="pill"><UiIcon name="user" size={14} />Senza registrazione</li>
+    </ul>
+  </div>
+</header>
+
+<style>
+  .group-hero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    margin-bottom: var(--space-10);
+  }
+
+  .group-hero .group-hero-tile {
+    width: 104px;
+    height: 104px;
+    border-radius: var(--radius-xl);
+  }
+
+  .group-hero :global(.group-hero-glyph) { width: 48px; height: 48px; }
+
+  .group-hero-copy { min-width: 0; }
+
+  .group-hero h1 { margin: 0 0 var(--space-3); }
+
+  .group-hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 700px) {
+    .group-hero {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-8);
+    }
+  }
+</style>

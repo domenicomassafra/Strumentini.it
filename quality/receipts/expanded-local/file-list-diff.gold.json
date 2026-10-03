@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "8b50066c2fc9cb7d79f6e52e48acc08b760cab49",
+  "sourceFingerprint": "554f167b248f16d38a006098c200a61bb83498463235ae487fa3f5d3dd37b6aa",
+  "toolId": "file-list-diff",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "file-privacy",
+  "oracleEntryId": "cand-178",
+  "fixtureFamilies": [
+    "list-set-ops",
+    "filename-sanitization"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-lane05",
+    "strumentiutili-quality",
+    "unicode-uax15"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "list-set-ops",
+      "path": "quality/fixtures/list-set-ops/vectors.json"
+    },
+    {
+      "id": "filename-sanitization",
+      "path": "quality/fixtures/filename-sanitization/vectors.json"
+    }
+  ],
+  "browserContract": {
+    "assertion": "changedCount|modificati|changed",
+    "outputSha256": "d8b94d8036c43f24998f60eddd5a6721925ccb5efc4071affeb57e1b6858bd51",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls"
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance"
+  ],
+  "identities": {
+    "manifestSha256": "ee21da5e42eae3ac3eaf8ce9e37879d6ae2a05c867ac6f855ccbc734407f7a7d",
+    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "e2a70e874c71c53fa4e04c7516329644260cae7631e6d09ecfe9c7bd4535a314",
+    "acceptanceScriptSha256": "35b1fa348fa5c6db793049cda565b9831c4bcd7c1e1cc3db3f83ba630b03e670",
+    "unitTestsSha256": "744ba8b7980e7ea6e56aeca85378f1f3cbf0d234d6527854d60f6c702d7038ce",
+    "fixture:list-set-ops:sha256": "fb7ace5df99f085ecba1db80248f52b53955f07c0f81016e8109b07d6a96674e",
+    "fixture:filename-sanitization:sha256": "8374dacc37f211289e8dd85ddfd0f82321fb65155e5f0a02a96331ef367cc27e"
+  }
+}

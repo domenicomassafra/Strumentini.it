@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "8b50066c2fc9cb7d79f6e52e48acc08b760cab49",
+  "sourceFingerprint": "554f167b248f16d38a006098c200a61bb83498463235ae487fa3f5d3dd37b6aa",
+  "toolId": "doi-normalizer",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "research-knowledge",
+  "oracleEntryId": "cand-181",
+  "fixtureFamilies": [
+    "doi"
+  ],
+  "truthSources": [
+    "doi-handbook",
+    "fixture-policy",
+    "strumentiutili-quality",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "doi",
+      "path": "quality/fixtures/doi/vectors.json"
+    }
+  ],
+  "browserContract": {
+    "assertion": "10\\.1000\\/182",
+    "outputSha256": "b02f7f9a2807e25be488c23a51a829b76e9fb5a2626b9fba208dc42ebd06aef2",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls"
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance"
+  ],
+  "identities": {
+    "manifestSha256": "e2d55ba3ddde1644dab698a89f15559b49ce05935170d47c75be5ba3656cbe27",
+    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "e2a70e874c71c53fa4e04c7516329644260cae7631e6d09ecfe9c7bd4535a314",
+    "acceptanceScriptSha256": "35b1fa348fa5c6db793049cda565b9831c4bcd7c1e1cc3db3f83ba630b03e670",
+    "unitTestsSha256": "59dfaeb6ec2edc378bb386f229b8c48fc8abb3b3b95aabb53b94ba294939001d",
+    "fixture:doi:sha256": "91108aaced0034ecfec037de85756f8f06b956dad106e4a361588e6c1ecd6e97"
+  }
+}

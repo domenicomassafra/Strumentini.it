@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "8b50066c2fc9cb7d79f6e52e48acc08b760cab49",
+  "sourceFingerprint": "554f167b248f16d38a006098c200a61bb83498463235ae487fa3f5d3dd37b6aa",
+  "toolId": "timeline-sorter",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "research-knowledge",
+  "oracleEntryId": "cand-192",
+  "fixtureFamilies": [
+    "date-arithmetic"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "rfc3339",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "date-arithmetic",
+      "path": "quality/fixtures/date-arithmetic/vectors.json"
+    }
+  ],
+  "browserContract": {
+    "assertion": "Earlier[\\s\\S]*Later",
+    "outputSha256": "62d0f6fb61a618b1cf75e34c45d7460b2bdedcb42c214b03e6dff9fbeebf8cb1",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls"
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance"
+  ],
+  "identities": {
+    "manifestSha256": "7e2909386f31124aefe5680e2af95ec12f8e507829f853ee3bfd09297a57936e",
+    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "e2a70e874c71c53fa4e04c7516329644260cae7631e6d09ecfe9c7bd4535a314",
+    "acceptanceScriptSha256": "35b1fa348fa5c6db793049cda565b9831c4bcd7c1e1cc3db3f83ba630b03e670",
+    "unitTestsSha256": "59dfaeb6ec2edc378bb386f229b8c48fc8abb3b3b95aabb53b94ba294939001d",
+    "fixture:date-arithmetic:sha256": "3db2f711b091093e8ffc0cdcaea3dfed9a0032858695a750f63ba8e410f81034"
+  }
+}

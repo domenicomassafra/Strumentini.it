@@ -1,0 +1,104 @@
+---
+import UiIcon from "../icons/UiIcon.astro";
+
+/**
+ * The band that closes the directory. The four statements are properties of the
+ * site, not statistics: every tool is free, none asks for an account, all of
+ * them run in the browser on desktop and mobile, and results are computed
+ * locally in a moment.
+ */
+const facts = [
+  "100% gratuiti",
+  "Nessuna registrazione",
+  "Funzionano su desktop e mobile",
+  "Risultati in pochi secondi",
+];
+---
+
+<section class="directory-band" aria-labelledby="directory-band-title">
+  <div class="directory-band-copy">
+    <h2 class="directory-band-title" id="directory-band-title">
+      Tutte le funzioni di cui hai bisogno, in un unico posto.
+    </h2>
+    <p class="directory-band-lede">
+      Nessun account, nessun file caricato: apri lo strumento, incolla o trascina i tuoi dati e
+      leggi il risultato.
+    </p>
+  </div>
+
+  <ul class="directory-band-list">
+    {facts.map((fact) => (
+      <li>
+        <span class="directory-band-check" aria-hidden="true"><UiIcon name="check" size={14} /></span>
+        {fact}
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .directory-band {
+    display: grid;
+    gap: var(--space-6);
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: var(--space-8) auto var(--space-16);
+    padding: var(--space-8);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-xl);
+    background:
+      radial-gradient(120% 130% at 0% 0%, color-mix(in srgb, var(--brand) 12%, transparent), transparent 60%),
+      var(--surface-subtle);
+  }
+
+  .directory-band-title {
+    margin: 0;
+    max-width: 26ch;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.026em;
+    line-height: 1.15;
+  }
+
+  .directory-band-lede {
+    max-width: 46ch;
+    margin: var(--space-4) 0 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-body);
+  }
+
+  .directory-band-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .directory-band-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .directory-band-check {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-pill);
+    background: var(--success-soft);
+    color: var(--success);
+  }
+
+  @media (min-width: 900px) {
+    .directory-band {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      align-items: center;
+      gap: var(--space-10);
+      padding: var(--space-10) var(--space-12);
+    }
+  }
+</style>

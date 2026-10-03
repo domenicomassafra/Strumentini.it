@@ -1,0 +1,61 @@
+---
+import type { CatalogGroup } from "../../catalog/groups";
+import type { ToolSummary } from "../../catalog/manifest";
+import ToolCard from "../tools/ToolCard.astro";
+
+/**
+ * The editorial trio at the top of a category page: the certified tools of the
+ * group with the lowest catalogue index. When a group has fewer than three
+ * certified tools the remaining places are filled from the catalogue order and
+ * the sub-line says so — the page never claims a certification that is not in
+ * the quality index.
+ */
+interface Props {
+  group: CatalogGroup;
+  tools: readonly ToolSummary[];
+  certified: number;
+}
+
+const { group, tools, certified } = Astro.props;
+
+const subline = certified === 3
+  ? `Tre strumenti certificati della categoria ${group.label}.`
+  : certified === 2
+    ? `Due strumenti certificati della categoria ${group.label} e uno scelto dalla redazione.`
+    : certified === 1
+      ? `Uno strumento certificato della categoria ${group.label} e due scelti dalla redazione.`
+      : `Tre strumenti scelti dalla redazione nella categoria ${group.label}.`;
+---
+
+<section class="group-featured" aria-labelledby="in-evidenza">
+  <div class="section-head">
+    <div>
+      <h2 class="section-title" id="in-evidenza">Strumenti in evidenza</h2>
+      <p class="section-sub">{subline}</p>
+    </div>
+    <a class="section-link" href={`/strumenti/?gruppo=${group.slug}`}>Vedi tutti gli strumenti</a>
+  </div>
+
+  <ul class="group-featured-grid">
+    {tools.map((tool) => <ToolCard tool={tool} variant="card" />)}
+  </ul>
+</section>
+
+<style>
+  .group-featured {
+    margin-bottom: var(--space-12);
+  }
+
+  .group-featured-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 900px) {
+    .group-featured-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+</style>

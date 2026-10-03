@@ -1,0 +1,165 @@
+---
+import UiIcon from "../icons/UiIcon.astro";
+/**
+ * The account chip.
+ *
+ * The pages are static and the session lives in a cookie the build cannot see,
+ * so the header renders the signed-out state and asks the auth endpoint once
+ * on the client. Without a deployed worker the request fails and "Accedi"
+ * simply stays — the chip never claims a session it cannot prove.
+ */
+---
+
+<div class="account-chip" data-account-chip>
+  <a class="btn btn-primary account-login" href="/accedi/" data-account-login>
+    <UiIcon name="user" size={16} />
+    <span>Accedi</span>
+  </a>
+  <div class="account-menu" data-account-menu hidden>
+    <button
+      class="account-trigger"
+      type="button"
+      data-account-toggle
+      aria-expanded="false"
+      aria-haspopup="menu"
+    >
+      <span class="account-avatar" data-account-initial aria-hidden="true"></span>
+      <span class="account-name" data-account-name></span>
+      <UiIcon name="chevron-down" size={15} />
+    </button>
+    <div class="account-dropdown" data-account-dropdown role="menu" hidden>
+      <a href="/impostazioni/" role="menuitem">Il tuo account</a>
+      <a href="/preferiti/" role="menuitem">Preferiti e recenti</a>
+      <button type="button" role="menuitem" data-account-logout>Esci</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  interface SessionUser { readonly name?: string; readonly email: string }
+
+  const chip = document.querySelector<HTMLElement>("[data-account-chip]");
+  const login = chip?.querySelector<HTMLElement>("[data-account-login]");
+  const menu = chip?.querySelector<HTMLElement>("[data-account-menu]");
+  const trigger = chip?.querySelector<HTMLButtonElement>("[data-account-toggle]");
+  const dropdown = chip?.querySelector<HTMLElement>("[data-account-dropdown]");
+
+  function showUser(user: SessionUser): void {
+    if (login === null || login === undefined || menu === null || menu === undefined) return;
+    const name = chip?.querySelector<HTMLElement>("[data-account-name]");
+    const initial = chip?.querySelector<HTMLElement>("[data-account-initial]");
+    const label = user.name?.trim() !== undefined && user.name.trim() !== "" ? user.name : user.email;
+    if (name !== null && name !== undefined) name.textContent = label;
+    if (initial !== null && initial !== undefined) initial.textContent = label.slice(0, 1).toLocaleUpperCase("it");
+    login.hidden = true;
+    menu.hidden = false;
+  }
+
+  async function refresh(): Promise<void> {
+    try {
+      const response = await fetch("/api/auth/session", { credentials: "same-origin", headers: { accept: "application/json" } });
+      if (!response.ok) return;
+      const body = await response.json() as { user?: SessionUser | null };
+      if (body.user) showUser(body.user);
+    } catch {
+      /* No auth backend reachable: remain signed out. */
+    }
+  }
+
+  trigger?.addEventListener("click", () => {
+    if (dropdown === null || dropdown === undefined) return;
+    const open = dropdown.hidden;
+    dropdown.hidden = !open;
+    trigger.setAttribute("aria-expanded", String(open));
+  });
+
+  document.addEventListener("click", (event) => {
+    if (dropdown === null || dropdown === undefined || trigger === null || trigger === undefined) return;
+    if (!(event.target instanceof Node)) return;
+    if (!chip?.contains(event.target)) {
+      dropdown.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  chip?.querySelector<HTMLButtonElement>("[data-account-logout]")?.addEventListener("click", async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+    } finally {
+      window.location.assign("/");
+    }
+  });
+
+  void refresh();
+</script>
+
+<style>
+  .account-chip { display: flex; align-items: center; }
+
+  .account-login { min-height: 36px; padding: var(--space-1) var(--space-4); border-radius: var(--radius-pill); }
+
+  /* At the narrowest widths the label collapses to the glyph so the header
+     keeps one row instead of overflowing. */
+  @media (max-width: 560px) {
+    .account-login { padding: var(--space-1); min-width: 36px; }
+    .account-login span { display: none; }
+  }
+
+  .account-menu { position: relative; }
+
+  .account-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 36px;
+    padding: var(--space-1) var(--space-3) var(--space-1) var(--space-1);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .account-avatar {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-pill);
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .account-name { max-width: 12ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .account-dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    right: 0;
+    z-index: 50;
+    display: grid;
+    min-width: 200px;
+    padding: var(--space-2);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-raised);
+  }
+
+  .account-dropdown a,
+  .account-dropdown button {
+    padding: var(--space-2) var(--space-3);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text);
+    font-size: var(--font-size-sm);
+    text-align: left;
+  }
+
+  .account-dropdown a:hover,
+  .account-dropdown button:hover { background: var(--brand-soft); color: var(--brand); }
+</style>

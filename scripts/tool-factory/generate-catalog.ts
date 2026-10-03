@@ -4,11 +4,11 @@ import { pathToFileURL } from "node:url";
 import {
   assertGeneratedCatalogCurrent,
   compileFactoryCatalog,
-  renderCatalogSource,
-  renderLoaderSource,
 } from "../../src/tool-factory/catalog";
+import { renderCatalogSources, type SearchProjectionDecoration } from "../../src/catalog/projections";
 import type { FixtureIndex, OracleRegistry } from "../../src/tool-factory/manifest";
 import { buildGoldQualityIndex, renderGoldQualitySource } from "../../src/onboarding/quality";
+import { contextTagsForTools } from "../../src/onboarding/membership";
 import { missingItalianToolCopy } from "../../src/i18n/it/tool-copy";
 
 const root = resolve(import.meta.dirname, "../..");
@@ -68,25 +68,44 @@ const quality = buildGoldQualityIndex(
   await discoverReceipts(resolve(root, "quality/receipts")),
   artifacts.summaries.map(({ id }) => id),
 );
-const catalogPath = resolve(root, "src/generated/catalog.ts");
-const loadersPath = resolve(root, "src/generated/tool-loaders.ts");
+const contextTags = contextTagsForTools(artifacts.summaries);
+const verifiedToolIds = new Set(quality.index.tools.map(({ toolId }) => toolId));
+const searchDecorations = new Map<string, SearchProjectionDecoration>(
+  artifacts.summaries.map((tool) => [tool.id, {
+    packTags: contextTags.get(tool.id) ?? [],
+    roleTags: [],
+    quality: verifiedToolIds.has(tool.id) ? "verified" : "checking",
+  }]),
+);
+const sources = renderCatalogSources(artifacts.summaries, artifacts.loaders, searchDecorations);
+const generatedPaths = {
+  catalog: resolve(root, "src/generated/catalog.ts"),
+  loaders: resolve(root, "src/generated/tool-loaders.ts"),
+  searchCatalog: resolve(root, "src/generated/search-catalog.ts"),
+  workbenchCatalog: resolve(root, "src/generated/workbench-catalog.ts"),
+  runtimeToolIndex: resolve(root, "src/generated/runtime-tool-index.ts"),
+  handoffCatalog: resolve(root, "src/generated/handoff-catalog.ts"),
+};
 const qualityPath = resolve(root, "src/generated/quality.ts");
-const catalogOutput = renderCatalogSource(artifacts);
-const loadersOutput = renderLoaderSource(artifacts);
 const qualityOutput = renderGoldQualitySource(quality.index);
 const outputs = [
-  [catalogPath, catalogOutput],
-  [loadersPath, loadersOutput],
-  [qualityPath, qualityOutput],
-] as const;
+  ...Object.entries(sources).map(([key, content]) => [generatedPaths[key as keyof typeof generatedPaths], content] as const),
+  [qualityPath, qualityOutput] as const,
+];
 
 if (checkOnly) {
   const files = {
-    catalog: await readFile(catalogPath, "utf8").catch(() => ""),
-    loaders: await readFile(loadersPath, "utf8").catch(() => ""),
+    catalog: await readFile(generatedPaths.catalog, "utf8").catch(() => ""),
+    loaders: await readFile(generatedPaths.loaders, "utf8").catch(() => ""),
     quality: await readFile(qualityPath, "utf8").catch(() => ""),
   };
   assertGeneratedCatalogCurrent(artifacts, files);
+  for (const [key, path] of Object.entries(generatedPaths)) {
+    if (key === "catalog" || key === "loaders") continue;
+    if (await readFile(path, "utf8").catch(() => "") !== sources[key as keyof typeof sources]) {
+      throw new Error(`tool-factory catalog output is stale: ${relative(root, path)}`);
+    }
+  }
   if (files.quality !== qualityOutput) throw new Error(`factory catalog output is stale: src/generated/quality.ts`);
   console.log(`tool-factory catalog: ${artifacts.summaries.length} tool(s), Gold receipts ${quality.index.tools.length}, outputs current`);
 } else {

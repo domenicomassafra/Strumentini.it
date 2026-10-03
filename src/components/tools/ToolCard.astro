@@ -1,0 +1,99 @@
+---
+import type { ToolSummary } from "../../catalog/manifest";
+import { categoryLabelIt } from "../../i18n/it/taxonomy";
+import { toneForCategory } from "../../catalog/groups";
+import { toolIconSvg } from "../../ui/tool-icons";
+import UiIcon from "../icons/UiIcon.astro";
+
+/**
+ * One tool card, used by the homepage, the directory, the category pages, the
+ * search results, and the "related tools" rail — so a tool looks the same
+ * wherever it is offered.
+ *
+ * `row` puts the glyph beside the text (dense grids); `card` stacks it on top.
+ * `membership` adds the "add to my tools" control, which the membership island
+ * binds; without it the card stays a plain link.
+ */
+interface Props {
+  tool: ToolSummary;
+  variant?: "row" | "card";
+  tone?: number;
+  membership?: boolean;
+}
+
+const { tool, variant = "row", tone = toneForCategory(tool.category), membership = false } = Astro.props;
+---
+
+<li class:list={["tool-card", `tool-card-${variant}`]} style={`--tile-tone: var(--tone-${tone})`}>
+  <span class="icon-tile" set:html={toolIconSvg(tool, "icon-tile-glyph")} />
+  <div class="tool-card-body">
+    <h3 class="tool-card-name"><a href={tool.route}>{tool.name}</a></h3>
+    <p class="tool-card-summary">{tool.summary}</p>
+  </div>
+  <div class="tool-card-foot">
+    <span class="tool-card-category">{categoryLabelIt(tool.category)}</span>
+    {membership ? (
+      <button
+        class="tool-card-favorite"
+        type="button"
+        data-membership-toggle={tool.id}
+        data-installed="false"
+        aria-pressed="false"
+        aria-label="Aggiungi ai tuoi strumenti"
+        title="Aggiungi ai tuoi strumenti"
+      >
+        <UiIcon name="heart" size={16} />
+      </button>
+    ) : (
+      <span class="tool-card-arrow" aria-hidden="true">→</span>
+    )}
+  </div>
+</li>
+
+<style>
+  .tool-card-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: start;
+  }
+
+  .tool-card-row .tool-card-body { grid-column: 2; }
+  .tool-card-row .tool-card-foot { grid-column: 2; }
+
+  .tool-card-body { min-width: 0; }
+
+  .tool-card-category {
+    color: var(--text-faint);
+    font-size: var(--font-size-xs);
+  }
+
+  .tool-card-favorite {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--text-faint);
+    transition: color var(--motion-fast) var(--motion-ease),
+                border-color var(--motion-fast) var(--motion-ease),
+                background-color var(--motion-fast) var(--motion-ease);
+  }
+
+  .tool-card-favorite:hover { border-color: var(--brand); color: var(--brand); }
+
+  .tool-card-favorite[data-installed="true"] {
+    border-color: transparent;
+    background: var(--brand-soft);
+    color: var(--danger);
+  }
+
+  .tool-card-favorite[data-installed="true"] :global(svg) { fill: currentColor; }
+
+  :global(.icon-tile-glyph) { width: 22px; height: 22px; }
+</style>

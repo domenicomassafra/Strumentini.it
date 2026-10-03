@@ -170,8 +170,8 @@ function asImageData(result: ImageDataResult): ImageData {
 }
 
 export async function extractImagePaletteLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<PaletteResult> {
-  const file = asFile(input);
-  const value = typeof input === "object" && input !== null ? input as { count?: unknown } : {};
+  const value = validateObject(input);
+  const file = asFile(value.file);
   const count = value.count === undefined ? 6 : Number(value.count);
   const data = await imageDataFromFile(file, signal, progress);
   return { mime: (await readHeader(file, signal)).mime, width: data.width, height: data.height, palette: extractPalette(asImageData(data), count) };
@@ -348,7 +348,7 @@ export async function compareImagesLocal(input: unknown, signal?: AbortSignal, p
       sampled += 1;
     }
   }
-  return { first: await inspectImageMetadataLocal(first, signal), second: await inspectImageMetadataLocal(second, signal), sameDimensions: firstDecoded.width === secondDecoded.width && firstDecoded.height === secondDecoded.height, sampledPixels: sampled, differentChannels: different, differenceRatio: sampled === 0 ? 0 : different / sampled };
+  return { first: await inspectImageMetadataLocal(first.blob, signal), second: await inspectImageMetadataLocal(second.blob, signal), sameDimensions: firstDecoded.width === secondDecoded.width && firstDecoded.height === secondDecoded.height, sampledPixels: sampled, differentChannels: different, differenceRatio: sampled === 0 ? 0 : different / sampled };
 }
 
 function colorSignature(data: ImageDataResult): string {

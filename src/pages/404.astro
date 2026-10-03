@@ -1,5 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import UiIcon from "../components/icons/UiIcon.astro";
+import { catalog } from "../generated/catalog";
+import { groups, toolsInGroup } from "../catalog/groups";
+
+const popularGroups = [...groups]
+  .sort((a, b) => toolsInGroup(b).length - toolsInGroup(a).length)
+  .slice(0, 4);
 ---
 
 <BaseLayout
@@ -7,12 +14,100 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   description="La pagina richiesta non esiste."
   noindex
 >
-  <article class="tool-page">
-    <header class="tool-heading">
-      <p class="eyebrow">Pagina non trovata</p>
+  <article class="tool-page not-found">
+    <ol class="breadcrumb">
+      <li><a href="/">Home</a></li>
+      <li aria-current="page">Pagina non trovata</li>
+    </ol>
+
+    <header class="not-found-head">
+      <p class="eyebrow">Errore 404</p>
       <h1>Questa pagina non è disponibile</h1>
-      <p class="lede">Torna ai tuoi strumenti oppure cerca nella Libreria quello che ti serve.</p>
+      <p class="lede">
+        Il collegamento potrebbe essere vecchio o scritto male. Da qui puoi
+        ripartire dal catalogo: {catalog.length} strumenti, tutti gratuiti.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/strumenti/">Tutti gli strumenti</a>
+        <a class="btn" href="/categorie/">Sfoglia per categoria</a>
+      </div>
     </header>
-    <p><a href="/">Apri i tuoi strumenti</a> · <a href="/library/">Cerca nella Libreria</a></p>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Categorie da cui ripartire</h2>
+          <p class="section-sub">Le quattro categorie più ampie del catalogo.</p>
+        </div>
+      </div>
+      <ul class="not-found-groups">
+        {popularGroups.map((group) => (
+          <li>
+            <a href={`/categorie/${group.slug}/`}>
+              <span class="not-found-group-count">{toolsInGroup(group).length} strumenti</span>
+              <span class="not-found-group-label">{group.label} <UiIcon name="arrow-right" size={16} /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <p class="not-found-foot">
+      Cerchi qualcosa di specifico? Premi <kbd>⌘K</kbd> (o <kbd>Ctrl+K</kbd>) e scrivi cosa devi fare.
+    </p>
   </article>
 </BaseLayout>
+
+<style>
+  .not-found-head { max-width: var(--measure-tool); margin-bottom: var(--space-8); }
+  .not-found-head .actions { margin-top: var(--space-5); }
+
+  .not-found-groups {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .not-found-groups a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .not-found-groups a:hover { border-color: var(--brand); color: var(--text); }
+
+  .not-found-group-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text);
+    font-family: var(--font-family-display);
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .not-found-foot { margin-top: var(--space-10); color: var(--text-muted); font-size: var(--font-size-sm); }
+
+  .not-found-foot kbd {
+    padding: 1px var(--space-2);
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-xs);
+    background: var(--surface);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+  }
+
+  @media (min-width: 700px) {
+    .not-found-groups { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+</style>

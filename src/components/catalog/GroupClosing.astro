@@ -1,0 +1,102 @@
+---
+import UiIcon from "../icons/UiIcon.astro";
+
+/**
+ * The closing band of a category page. Every item is a property of the site
+ * itself: all tools are free, none require an account, all run on desktop and
+ * mobile, and all compute their result in the browser.
+ */
+const items = [
+  { title: "100% gratuiti", icon: "heart" as const },
+  { title: "Nessuna registrazione", icon: "user" as const },
+  { title: "Funzionano su desktop e mobile", icon: "devices" as const },
+  { title: "Risultati in pochi secondi", icon: "zap" as const },
+];
+---
+
+<section class="group-closing" aria-labelledby="perche-strumentiutili">
+  <div class="group-closing-copy">
+    <h2 class="group-closing-title" id="perche-strumentiutili">Tutte le funzioni di cui hai bisogno, in un unico posto.</h2>
+    <p class="group-closing-body">
+      Ogni strumento di questa categoria gira nel tuo browser: apri la pagina, inserisci i dati e ottieni il
+      risultato. Niente account, niente file caricati su un server, niente passaggi inutili.
+    </p>
+  </div>
+
+  <ul class="group-closing-list">
+    {items.map((item) => (
+      <li>
+        <span class="group-closing-icon" aria-hidden="true"><UiIcon name={item.icon} size={18} /></span>
+        <span>{item.title}</span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .group-closing {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+    margin-bottom: var(--space-12);
+    padding: var(--space-8) var(--space-6);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .group-closing-title {
+    margin: 0;
+    font-size: var(--font-size-h2);
+    letter-spacing: var(--tracking-heading);
+    line-height: var(--line-height-heading);
+  }
+
+  .group-closing-body {
+    max-width: 40rem;
+    margin: var(--space-4) 0 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .group-closing-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    align-content: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .group-closing-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .group-closing-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-pill);
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+
+  @media (min-width: 900px) {
+    .group-closing {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: var(--space-12);
+      padding: var(--space-10) var(--space-12);
+    }
+
+    .group-closing-list { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  }
+</style>

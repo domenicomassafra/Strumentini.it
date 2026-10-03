@@ -8,6 +8,19 @@ const port = 18148;
 const origin = `http://127.0.0.1:${port}`;
 const fixtureDir = resolve(root, "quality/fixtures/pdf-gold");
 
+// The site shell asks the Worker for the current account session on every route.
+// This acceptance server is a plain static file server, so that single endpoint is
+// expected to answer 404 here. Every other failed response — and every console error
+// that is not a resource-load failure already attributed by URL — stays fatal.
+const staticOnlyFailurePaths = new Set(["/api/auth/session"]);
+const isExpectedStaticFailure = (url) => {
+  try {
+    return staticOnlyFailurePaths.has(new URL(url).pathname);
+  } catch {
+    return false;
+  }
+};
+
 const simple3 = await readFile(resolve(fixtureDir, "simple-3page.pdf"));
 const simple2 = await readFile(resolve(fixtureDir, "simple-2page.pdf"));
 const simple2changed = await readFile(resolve(fixtureDir, "simple-2page-changed.pdf"));
@@ -66,21 +79,26 @@ async function acceptTool(context, testCase) {
   const page = await context.newPage();
   const requests = [];
   const scripts = [];
-  const runtimeErrors = [];
+  const pageErrors = [];
+  const consoleErrors = [];
+  const failedResponses = [];
   let started = false;
   page.on("request", (request) => {
     if (!started) return;
     requests.push({ url: request.url(), method: request.method(), postData: request.postData() });
     if (request.resourceType() === "script") scripts.push(request.url());
   });
-  page.on("pageerror", (error) => runtimeErrors.push(String(error)));
+  page.on("pageerror", (error) => pageErrors.push(String(error)));
   page.on("console", (message) => {
-    if (message.type() === "error") runtimeErrors.push(message.text());
+    if (message.type() === "error") consoleErrors.push(message.text());
+  });
+  page.on("response", (response) => {
+    if (response.status() >= 400) failedResponses.push(response.url());
   });
   try {
     const response = await page.goto(`${origin}/tools/${testCase.id}/`, { waitUntil: "networkidle" });
     if (response?.status() !== 200) throw new Error(`${testCase.id}: route returned ${response?.status()}`);
-    await page.getByText("Elaborazione sul dispositivo.", { exact: true }).waitFor();
+    await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
     const form = page.locator("form.tool-operation");
     await testCase.setup(page, form);
     const submit = form.locator('button[type="submit"]');
@@ -92,7 +110,12 @@ async function acceptTool(context, testCase) {
     await result.waitFor({ timeout: 15000 });
     const output = await result.innerText();
     if (!testCase.expect.test(output)) throw new Error(`${testCase.id}: unexpected output ${JSON.stringify(output.slice(0, 900))}`);
-    if (runtimeErrors.length > 0) throw new Error(`${testCase.id}: runtime/console error: ${runtimeErrors.join(" | ")}`);
+    const staticEnvironmentFailures = [...new Set(failedResponses)].filter((url) => isExpectedStaticFailure(url));
+    const unexpectedStaticFailures = [...new Set(failedResponses)].filter((url) => !isExpectedStaticFailure(url));
+    const unexpectedConsoleErrors = consoleErrors.filter((text) => !/Failed to load resource/u.test(text));
+    if (pageErrors.length > 0 || unexpectedConsoleErrors.length > 0 || unexpectedStaticFailures.length > 0) {
+      throw new Error(`${testCase.id}: runtime/console error: ${[...pageErrors, ...unexpectedConsoleErrors, ...unexpectedStaticFailures].join(" | ")}`);
+    }
     if (scripts.length === 0) throw new Error(`${testCase.id}: no lazy implementation script observed after submit`);
     const bad = requests.filter((request) => !request.url.startsWith(origin) || request.method !== "GET" || (request.postData ?? "") !== "");
     if (bad.length > 0) throw new Error(`${testCase.id}: external, non-GET, or task-body request observed`);
@@ -111,7 +134,7 @@ async function acceptTool(context, testCase) {
     }).map((control) => control.outerHTML.slice(0, 120)));
     if (unlabeled.length > 0) throw new Error(`${testCase.id}: unlabeled controls: ${unlabeled.join(" | ")}`);
     await page.close();
-    return { toolId: testCase.id, lazyScriptCount: scripts.length, taskRequestCount: requests.length, horizontalOverflow: false, unlabeledControls: 0 };
+    return { toolId: testCase.id, lazyScriptCount: scripts.length, taskRequestCount: requests.length, horizontalOverflow: false, unlabeledControls: 0, staticEnvironmentFailures };
   } catch (error) {
     await page.close();
     throw error;
@@ -138,6 +161,7 @@ try {
     nonGetTaskRequests: 0,
     taskContentLeaks: 0,
     runtimeConsoleErrors: 0,
+    staticEnvironmentFailures: [...new Set(results.flatMap((result) => result.staticEnvironmentFailures))],
     network: "zero external, non-GET, or task-body requests after task start",
     implementationEager: false,
     lazyImplementationObservedFor: results.map((result) => result.toolId),

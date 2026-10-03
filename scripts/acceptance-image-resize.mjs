@@ -45,7 +45,7 @@ try {
 
   const response = await page.goto(`${origin}/tools/image-resize/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`image resize route returned ${response?.status()}`);
-  await page.getByText("Elaborazione sul dispositivo.").waitFor();
+  await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
   const webpEncodeSupported = await page.evaluate(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 1;

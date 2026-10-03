@@ -1,18 +1,32 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { catalog } from "../generated/catalog";
-import { Workbench } from "../components/workbench/Workbench";
+import HomeHero from "../components/home/HomeHero.astro";
+import TrustRow from "../components/home/TrustRow.astro";
+import CategoryGrid from "../components/home/CategoryGrid.astro";
+import StarterTools from "../components/home/StarterTools.astro";
+import RecentTools from "../components/home/RecentTools.astro";
+import ClosingBanner from "../components/home/ClosingBanner.astro";
 ---
 
-{/*
-  L'apertura del libro. The home page is the day-book opened to today: the
-  Workbench component is the whole first viewport, with no hero, no banner,
-  and no big number in front of it. Italian-first, per PRODUCT.md.
-*/}
 <BaseLayout
-  title="La tua area di lavoro"
-  description="Gli strumenti che usi ogni giorno, in un libro delle scritture che ricorda i tuoi valori locali."
-  imageAlt="Un libro delle scritture aperto sul lavoro di oggi"
+  title="Strumenti online gratuiti, nel tuo browser"
+  description="Oltre 200 strumenti online gratuiti per PDF, immagini, CSV, testo e business: senza registrazione, senza caricare i tuoi file su nessun server."
+  imageAlt="Strumenti Utili: strumenti online semplici e gratuiti"
 >
-  <Workbench tools={catalog} client:load />
+  <HomeHero />
+  <div class="home-body">
+    <TrustRow />
+    <CategoryGrid />
+    <RecentTools />
+    <StarterTools />
+    <ClosingBanner />
+  </div>
 </BaseLayout>
+
+<style>
+  .home-body {
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: 0 auto;
+    padding-bottom: var(--space-16);
+  }
+</style>

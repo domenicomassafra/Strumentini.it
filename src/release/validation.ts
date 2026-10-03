@@ -260,8 +260,16 @@ export function validateCloudflareStaticAssets(config: string): ReleaseFinding[]
   if (notFoundHandling !== "404-page") {
     findings.push(finding("CLOUDFLARE_NOT_FOUND_HANDLING", "error", "static deployment must use 404-page handling", "wrangler.jsonc"));
   }
-  if (/"main"\s*:/u.test(normalized)) {
-    findings.push(finding("CLOUDFLARE_WORKER_MAIN", "error", "release validation is static-assets-only; remove a Worker main entry", "wrangler.jsonc"));
+  // The account API is an optional Worker in front of the static assets. When it
+  // is declared it must be this repository's own entry point and must have an
+  // assets binding to delegate to — the proof that `dist/` stays ordinary
+  // static output lives in scripts/check-portable-static.mjs, not here.
+  const workerMain = normalized.match(/"main"\s*:\s*"([^"]+)"/u)?.[1];
+  if (workerMain !== undefined && !/^\.?\/?worker\/index\.ts$/u.test(workerMain)) {
+    findings.push(finding("CLOUDFLARE_WORKER_MAIN", "error", "a Worker main entry must be the repository's own ./worker/index.ts", "wrangler.jsonc"));
+  }
+  if (workerMain !== undefined && !/"binding"\s*:\s*"ASSETS"/u.test(normalized)) {
+    findings.push(finding("CLOUDFLARE_ASSETS_BINDING", "error", "a Worker in front of the assets must declare the ASSETS binding it delegates to", "wrangler.jsonc"));
   }
   if (/"run_worker_first"\s*:/u.test(normalized)) {
     findings.push(finding("CLOUDFLARE_WORKER_FIRST", "error", "static routes must not be routed through a Worker first", "wrangler.jsonc"));
@@ -370,7 +378,7 @@ export function validateStaticAssetSurface(surface: StaticAssetSurface, catalog:
     return findings;
   }
   const files = new Set(surface.files.map(normalizePath));
-  for (const required of ["index.html", "library/index.html", "404.html", "sitemap.xml", "robots.txt", "og-image.png"]) {
+  for (const required of ["index.html", "strumenti/index.html", "404.html", "sitemap.xml", "robots.txt", "og-image.png"]) {
     if (!files.has(required)) findings.push(finding("STATIC_REQUIRED_FILE_MISSING", "error", `required static file is missing: ${required}`, `dist/${required}`));
   }
   const expectedToolPages = new Set(catalog.map((entry) => `${entry.route.replace(/^\/+/u, "").replace(/\/+$/u, "")}/index.html`));
@@ -548,11 +556,11 @@ function browserFindings(value: unknown, sourceFingerprint: string | undefined):
         findings.push(finding("BROWSER_ENGINE_UNPROVEN", "blocker", `browser engine evidence is ${asString(item.status) ?? "missing"}`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
         continue;
       }
-      for (const route of ["coreRoute", "homeRoute", "libraryRoute"]) {
+      for (const route of ["coreRoute", "homeRoute", "directoryRoute"]) {
         if (asString(item[route]) !== "PASS") findings.push(finding("BROWSER_ROUTE_UNPROVEN", "blocker", `${name ?? "browser engine"} has no ${route} pass`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
       }
       const mobile = asRecord(item.mobile);
-      if (mobile === undefined || mobile.toolOverflow !== false || mobile.homeOverflow !== false || mobile.libraryOverflow !== false) findings.push(finding("BROWSER_MOBILE_UNPROVEN", "blocker", `${name ?? "browser engine"} has no clean 390px result`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
+      if (mobile === undefined || mobile.toolOverflow !== false || mobile.homeOverflow !== false || mobile.directoryOverflow !== false) findings.push(finding("BROWSER_MOBILE_UNPROVEN", "blocker", `${name ?? "browser engine"} has no clean 390px result`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
       const lazy = asRecord(item.lazy);
       if (lazy === undefined || !Array.isArray(lazy.observedEngineChunk) || lazy.observedEngineChunk.length === 0) findings.push(finding("BROWSER_LAZY_UNPROVEN", "blocker", `${name ?? "browser engine"} has no observed lazy engine chunk`, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
       const longTasks = asRecord(item.longTasks);

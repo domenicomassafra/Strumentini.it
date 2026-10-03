@@ -31,7 +31,7 @@ if (!await exists(dist)) {
 const required = [
   "index.html",
   "404.html",
-  "library/index.html",
+  "strumenti/index.html",
   "onboarding/index.html",
   "robots.txt",
   "sitemap.xml",

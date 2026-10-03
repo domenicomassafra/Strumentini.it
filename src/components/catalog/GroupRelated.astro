@@ -1,0 +1,73 @@
+---
+import type { CatalogGroup } from "../../catalog/groups";
+import { groups } from "../../catalog/groups";
+import { iconSvgMarkup } from "../../ui/tool-icons";
+
+/**
+ * The other nine public groups, as a wrapping row of chips — the way out of a
+ * category that was not the one the visitor needed.
+ */
+interface Props {
+  group: CatalogGroup;
+}
+
+const { group } = Astro.props;
+const others = groups.filter((entry) => entry.slug !== group.slug);
+---
+
+<section class="group-related" aria-labelledby="categorie-correlate">
+  <h2 class="section-title" id="categorie-correlate">Categorie correlate</h2>
+
+  <ul class="group-related-row">
+    {others.map((other) => (
+      <li style={`--tile-tone: var(--tone-${other.tone})`}>
+        <a class="group-related-link" href={`/categorie/${other.slug}/`}>
+          <span class="icon-tile group-related-tile" set:html={iconSvgMarkup(other.icon, "group-related-glyph")}></span>
+          <span>{other.label}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .group-related { margin-bottom: var(--space-8); }
+
+  .group-related-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .group-related-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    transition: border-color var(--motion-fast) var(--motion-ease),
+                background var(--motion-fast) var(--motion-ease);
+  }
+
+  .group-related-link:hover {
+    border-color: var(--brand-soft-strong);
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+
+  .group-related .group-related-tile {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+  }
+
+  .group-related :global(.group-related-glyph) { width: 18px; height: 18px; }
+</style>

@@ -20,6 +20,8 @@ const KEY_IT: Readonly<Record<string, string>> = {
   spend: "spesa",
   revenue: "ricavi",
   roas: "roas",
+  roasExact: "roas_esatto",
+  roasPercent: "roas_percentuale",
   cpa: "cpa",
   cpc: "cpc",
   cpm: "cpm",
@@ -107,19 +109,49 @@ const KEY_IT: Readonly<Record<string, string>> = {
   fields: "campi",
   type: "tipo",
   mode: "modalità",
+  metric: "metrica",
+  denominator: "denominatore",
+  absoluteLift: "incremento_assoluto",
+  rounding: "arrotondamento",
+  decimalPlaces: "cifre_decimali",
+  stage: "fase",
+  engineVersion: "versione_motore",
+  unmatched: "non_riconosciuti",
+  normalizedUrl: "url_normalizzato",
+  canonicalUrl: "url_canonico",
 };
 
-function localizeKeys(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(localizeKeys);
+const VALUE_IT: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  formula: {
+    "revenue ÷ spend": "ricavi ÷ spesa",
+    "spend ÷ conversions": "spesa ÷ conversioni",
+    "spend ÷ clicks": "spesa ÷ clic",
+    "spend ÷ impressions × 1,000": "spesa ÷ impressioni × 1.000",
+    "conversions ÷ visits × 100": "conversioni ÷ visite × 100",
+    "projected conversions = visits × target rate ÷ 100": "conversioni previste = visite × tasso obiettivo ÷ 100",
+  },
+  mode: {
+    "half-up": "metà verso l'alto",
+  },
+  stage: {
+    "final-only": "solo sul risultato finale",
+  },
+  liftPercent: {
+    undefined: "non definito",
+  },
+};
+
+export function localizeJsonResult(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map((item) => localizeJsonResult(item));
   if (value === null || typeof value !== "object") return value;
   return Object.fromEntries(
     Object.entries(value as Record<string, unknown>).map(([key, item]) => [
       KEY_IT[key] ?? key,
-      localizeKeys(item),
+      typeof item === "string" ? VALUE_IT[key]?.[item] ?? item : localizeJsonResult(item),
     ]),
   );
 }
 
 export function JsonResult({ value }: { readonly value: unknown }) {
-  return <pre class="json-result">{JSON.stringify(localizeKeys(value), null, 2)}</pre>;
+  return <pre class="json-result">{JSON.stringify(localizeJsonResult(value), null, 2)}</pre>;
 }

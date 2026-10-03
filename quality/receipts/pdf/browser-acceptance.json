@@ -35,6 +35,9 @@
   "nonGetTaskRequests": 0,
   "taskContentLeaks": 0,
   "runtimeConsoleErrors": 0,
+  "staticEnvironmentFailures": [
+    "http://127.0.0.1:18148/api/auth/session"
+  ],
   "network": "zero external, non-GET, or task-body requests after task start",
   "implementationEager": false,
   "lazyImplementationObservedFor": [
@@ -62,143 +65,203 @@
   "results": [
     {
       "toolId": "pdf-merge",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-split",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-page-reorder",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-rotate",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-page-delete-extract",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "images-to-pdf",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-to-images",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-text-extraction",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-metadata-inspector",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-metadata-remover",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-page-size-inspector",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-page-count-verifier",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-password-check-remove",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-flatten",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-form-inspector",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-link-extractor",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-image-extractor",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-compare-lite",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "pdf-compression-lite",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     },
     {
       "toolId": "document-handoff-manifest",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
-      "unlabeledControls": 0
+      "unlabeledControls": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18148/api/auth/session"
+      ]
     }
   ]
 }

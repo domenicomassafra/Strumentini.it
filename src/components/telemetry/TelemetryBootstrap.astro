@@ -31,18 +31,15 @@ const active = cohortEnabled && endpointConfigured;
 
 <style>
   .telemetry-disclosure {
-    width: min(100% - (var(--container-gutter) * 2), var(--container-max));
-    margin: 0 auto var(--space-6);
-    padding-top: var(--space-3);
-    border-top: var(--border-width) solid var(--line);
-    color: var(--muted);
+    margin: var(--space-3) 0 0;
+    color: var(--text-faint);
     font-size: var(--font-size-xs);
   }
 
   .telemetry-disclosure summary {
     width: fit-content;
     cursor: pointer;
-    color: var(--text-muted);
+    color: var(--text-faint);
   }
 
   .telemetry-disclosure p {

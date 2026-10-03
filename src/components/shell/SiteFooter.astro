@@ -1,0 +1,123 @@
+---
+import BrandMark from "./BrandMark.astro";
+import { footerColumns } from "./navigation";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="site-footer-brand">
+      <a class="site-footer-logo" href="/" aria-label="StrumentiUtili.it — home">
+        <BrandMark size={34} />
+        <span>
+          <strong>Strumenti Utili</strong>
+          <small>Piccoli strumenti per grandi risultati</small>
+        </span>
+      </a>
+      <p class="site-footer-note">
+        Gli strumenti girano nel tuo browser. I file che apri non vengono caricati
+        su nessun server e non lasciano il tuo dispositivo.
+      </p>
+    </div>
+
+    <nav class="site-footer-columns" aria-label="Collegamenti del sito">
+      {footerColumns.map((column) => (
+        <div class="site-footer-column">
+          <h2>{column.title}</h2>
+          <ul>
+            {column.items.map((item) => (
+              <li><a href={item.href}>{item.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  </div>
+
+  <div class="site-footer-legal">
+    <p>© {year} StrumentiUtili.it — tutti gli strumenti sono gratuiti, senza registrazione obbligatoria.</p>
+    <slot name="legal" />
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-20);
+    border-top: var(--border-width) solid var(--border);
+    background: var(--surface);
+  }
+
+  .site-footer-inner {
+    display: grid;
+    gap: var(--space-8);
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: 0 auto;
+    padding: var(--space-12) 0 var(--space-8);
+  }
+
+  .site-footer-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text);
+  }
+
+  .site-footer-logo span { display: grid; }
+  .site-footer-logo strong {
+    font-family: var(--font-family-display);
+    font-size: 1.0625rem;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.02em;
+  }
+  .site-footer-logo small {
+    color: var(--text-faint);
+    font-size: 0.6875rem;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .site-footer-note {
+    max-width: 42ch;
+    margin: var(--space-4) 0 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .site-footer-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  .site-footer-column h2 {
+    margin: 0 0 var(--space-3);
+    color: var(--text);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .site-footer-column ul { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+  .site-footer-column a { color: var(--text-muted); font-size: var(--font-size-sm); }
+  .site-footer-column a:hover { color: var(--brand); }
+
+  .site-footer-legal {
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: 0 auto;
+    padding: var(--space-5) 0 var(--space-8);
+    border-top: var(--border-width) solid var(--border);
+    color: var(--text-faint);
+    font-size: var(--font-size-xs);
+  }
+
+  .site-footer-legal p { margin: 0; }
+
+  @media (min-width: 760px) {
+    .site-footer-columns { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 1060px) {
+    .site-footer-inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); }
+  }
+</style>

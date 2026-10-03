@@ -46,4 +46,23 @@ describe("registry and runtime seams", () => {
     const invalid = await runtime.run("business-day", { mode: "add" }, { profile: { workweek: ["MON"] } });
     expect(invalid).toMatchObject({ ok: false, code: "INVALID_INPUT" });
   });
+
+  it("reuses a loaded tool module and retries after a failed load", async () => {
+    let loads = 0;
+    let fail = true;
+    const registry = createRegistry([summary], {
+      "business-day": async () => {
+        loads += 1;
+        if (fail) throw new Error("temporary load failure");
+        return { default: businessDayModule };
+      },
+    });
+
+    await expect(registry.load("business-day")).rejects.toThrow("temporary load failure");
+    fail = false;
+    const first = await registry.load("business-day");
+    const second = await registry.load("business-day");
+    expect(first).toBe(second);
+    expect(loads).toBe(2);
+  });
 });

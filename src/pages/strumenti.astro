@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import DirectoryHero from "../components/catalog/DirectoryHero.astro";
+import CatalogDirectory from "../components/catalog/CatalogDirectory.astro";
+import DirectoryBand from "../components/catalog/DirectoryBand.astro";
+import { catalog } from "../generated/catalog";
+import { qualityIndex } from "../generated/quality";
+import { goldToolIds } from "../onboarding/quality";
+
+/**
+ * The whole catalogue at one address: every tool on the page, three views, the
+ * facet sidebar, sorting and pagination — all driven from the URL, with no
+ * runtime fetch.
+ */
+const verifiedIds = goldToolIds(qualityIndex);
+const verifiedCount = catalog.filter((tool) => verifiedIds.has(tool.id)).length;
+---
+
+<BaseLayout
+  title="Tutti gli strumenti"
+  description={`Il catalogo completo: ${catalog.length} strumenti online gratuiti per PDF, immagini, CSV, testo, date e lavoro d'ufficio, con filtri per categoria, tipo di ingresso e stato della verifica.`}
+>
+  <DirectoryHero total={catalog.length} verified={verifiedCount} />
+  <CatalogDirectory tools={catalog} verifiedIds={verifiedIds} />
+  <DirectoryBand />
+</BaseLayout>

@@ -18,6 +18,8 @@ import {
   validateRelease,
 } from "../src/release/validation";
 import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
+import { publicIndexPaths } from "../src/seo/public-discovery";
+import { groups } from "../src/catalog/groups";
 
 const execFileAsync = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
@@ -135,7 +137,7 @@ async function loadMetadata(catalog: readonly ReleaseCatalogEntry[], site: URL):
 }> {
   const paths = [
     "index.html",
-    "library/index.html",
+    "strumenti/index.html",
     "404.html",
     ...catalog.map((entry) => `${entry.route.replace(/^\/+/u, "").replace(/\/+$/u, "")}/index.html`),
   ];
@@ -152,7 +154,9 @@ async function loadMetadata(catalog: readonly ReleaseCatalogEntry[], site: URL):
   }
   const sitemapPath = resolve(distRoot, "sitemap.xml");
   const robotsPath = resolve(distRoot, "robots.txt");
-  const routes = ["/", "/library/", "/onboarding/", ...catalog.map((entry) => entry.route)];
+  // Same inventory the sitemap page advertises: the static public routes, the ten
+  // category destinations and every tool page.
+  const routes = [...publicIndexPaths, ...groups.map((group) => `/categorie/${group.slug}`), ...catalog.map((entry) => entry.route)];
   const expectedUrls = routes.map((route) => new URL(route === "/" ? "/" : `${route.replace(/\/+$/u, "")}/`, site).href);
   const sitemap = await pathExists(sitemapPath) ? {
     xml: await readFile(sitemapPath, "utf8"),

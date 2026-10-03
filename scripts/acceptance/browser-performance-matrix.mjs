@@ -14,6 +14,19 @@ const port = 18220;
 const origin = `http://127.0.0.1:${port}`;
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
 
+// The site shell asks the Worker for the current account session on every route.
+// This acceptance server is a plain static file server, so that single endpoint is
+// expected to answer 404 here. Every other failed response — and every console error
+// that is not a resource-load failure already attributed by URL — stays fatal.
+const staticOnlyFailurePaths = new Set(["/api/auth/session"]);
+const isExpectedStaticFailure = (url) => {
+  try {
+    return staticOnlyFailurePaths.has(new URL(url).pathname);
+  } catch {
+    return false;
+  }
+};
+
 const evidenceRootFiles = new Set(["astro.config.mjs", "package-lock.json", "package.json", "tsconfig.json", "wrangler.jsonc"]);
 const evidencePrefixes = ["public/", "quality/fixtures/", "quality/oracles/", "scripts/", "src/", "tests/"];
 
@@ -27,7 +40,12 @@ async function currentEvidenceSourceFingerprint() {
   for (const path of paths) {
     hash.update(path);
     hash.update("\0");
-    hash.update(await readFile(resolve(root, path)));
+    try {
+      hash.update(await readFile(resolve(root, path)));
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+      hash.update("<deleted>");
+    }
     hash.update("\0");
   }
   return hash.digest("hex");
@@ -183,6 +201,7 @@ async function runEngine(definition, engineChunkNames) {
   }
   const browser = launched.browser;
   const consoleErrors = [];
+  const failedResponses = [];
   const pageErrors = [];
   const externalAttempts = [];
   let taskStarted = false;
@@ -194,6 +213,9 @@ async function runEngine(definition, engineChunkNames) {
     page = await context.newPage();
     page.on("console", (message) => {
       if (message.type() === "error") consoleErrors.push(message.text());
+    });
+    page.on("response", (response) => {
+      if (response.status() >= 400) failedResponses.push(response.url());
     });
     page.on("pageerror", (error) => pageErrors.push(String(error)));
     page.on("request", (request) => {
@@ -225,7 +247,7 @@ async function runEngine(definition, engineChunkNames) {
     });
     const response = await page.goto(`${origin}/tools/business-day/`, { waitUntil: "networkidle" });
     if (response?.status() !== 200) throw new Error(`route HTTP ${response?.status()}`);
-    await page.getByText("Runs on this device.", { exact: true }).waitFor();
+    await page.getByText("Il risultato si calcola nel tuo browser, senza attese di caricamento.", { exact: true }).waitFor();
     const userAgent = await page.evaluate(() => navigator.userAgent);
     const browserVersion = browser.version();
     const beforeScripts = [...scripts];
@@ -247,13 +269,13 @@ async function runEngine(definition, engineChunkNames) {
         resources,
       };
     });
-    await page.getByLabel("Start date").fill("2026-09-18");
-    await page.getByLabel("Business days to add").fill("1");
+    await page.getByLabel(/^Data iniziale/u).fill("2026-09-18");
+    await page.getByLabel(/^Giorni lavorativi da aggiungere/u).fill("1");
     await page.evaluate(() => {
       if (window.__utilityLongTasks?.supported) window.__utilityLongTasks.entries.length = 0;
     });
     taskStarted = true;
-    await page.getByRole("button", { name: "Calculate" }).click();
+    await page.getByRole("button", { name: "Calcola", exact: true }).click();
     await page.getByText("2026-09-21", { exact: true }).waitFor();
     await page.waitForTimeout(150);
     const afterScripts = [...scripts];
@@ -269,18 +291,21 @@ async function runEngine(definition, engineChunkNames) {
     await page.setViewportSize({ width: 390, height: 844 });
     const mobileToolOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
     const homeResponse = await page.goto(`${origin}/`, { waitUntil: "networkidle" });
-    await page.locator('[data-ready="true"]').waitFor();
+    await page.locator("[data-search-trigger]").waitFor();
     const homeMobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
-    const libraryResponse = await page.goto(`${origin}/library/?q=working&runtime=LOCAL`, { waitUntil: "networkidle" });
-    const libraryRows = await page.locator(".library-row").count();
-    const libraryMobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+    const directoryResponse = await page.goto(`${origin}/strumenti/?q=lavorativi`, { waitUntil: "networkidle" });
+    await page.waitForFunction(() => document.querySelectorAll("[data-directory-grid] .tool-card:not([hidden])").length > 0);
+    const directoryRows = await page.locator("[data-directory-grid] .tool-card:not([hidden])").count();
+    const directoryMobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+    const unexpectedStaticFailures = [...new Set(failedResponses)].filter((url) => !isExpectedStaticFailure(url));
+    const unexpectedConsoleErrors = consoleErrors.filter((text) => !/Failed to load resource/u.test(text));
     const failures = [];
     if (mobileToolOverflow) failures.push("tool-mobile-overflow");
     if (homeResponse?.status() !== 200 || homeMobileOverflow) failures.push("home-route-or-mobile");
-    if (libraryResponse?.status() !== 200 || libraryRows < 1 || libraryMobileOverflow) failures.push("library-route-or-mobile");
+    if (directoryResponse?.status() !== 200 || directoryRows < 1 || directoryMobileOverflow) failures.push("directory-route-or-mobile");
     if (lazyScripts.length === 0 || !lazyScripts.some((url) => engineChunkNames.includes(basename(new URL(url).pathname)))) failures.push("lazy-engine-chunk-not-observed");
     if (externalTaskRequests.length > 0 || contentLeaks.length > 0) failures.push("network-privacy");
-    if (consoleErrors.length > 0 || pageErrors.length > 0) failures.push("runtime-console-or-page-error");
+    if (unexpectedConsoleErrors.length > 0 || unexpectedStaticFailures.length > 0 || pageErrors.length > 0) failures.push("runtime-console-or-page-error");
     if (longTaskState.supported && maxLongTaskMs > 50) failures.push("long-task-over-50ms");
     return {
       ...base,
@@ -290,14 +315,16 @@ async function runEngine(definition, engineChunkNames) {
       userAgent,
       coreRoute: "PASS",
       homeRoute: homeResponse?.status() === 200 && !homeMobileOverflow ? "PASS" : "FAIL",
-      libraryRoute: libraryResponse?.status() === 200 && libraryRows > 0 && !libraryMobileOverflow ? "PASS" : "FAIL",
-      mobile: { width: 390, height: 844, toolOverflow: mobileToolOverflow, homeOverflow: homeMobileOverflow, libraryOverflow: libraryMobileOverflow },
+      directoryRoute: directoryResponse?.status() === 200 && directoryRows > 0 && !directoryMobileOverflow ? "PASS" : "FAIL",
+      mobile: { width: 390, height: 844, toolOverflow: mobileToolOverflow, homeOverflow: homeMobileOverflow, directoryOverflow: directoryMobileOverflow },
       lazy: { initialScripts: beforeScripts.length, afterActionScripts: lazyScripts.length, engineChunkNames, observedEngineChunk: lazyScripts.filter((url) => engineChunkNames.includes(basename(new URL(url).pathname))).map((url) => basename(new URL(url).pathname)) },
       longTasks: { observerSupported: longTaskState.supported, entries: longTasks, maxDurationMs: maxLongTaskMs, thresholdMs: 50, gate: longTaskState.supported ? (maxLongTaskMs <= 50 ? "PASS" : "FAIL") : "UNSUPPORTED" },
       networkPrivacy: { taskRequestCount: taskRequests.length, externalTaskRequests: externalTaskRequests.length, externalAttempts: externalAttempts.length, taskContentLeaks: contentLeaks.length, nonGetTaskRequests: taskRequests.filter((request) => request.method !== "GET").length },
       performance: navigation,
-      consoleErrors,
+      consoleErrors: unexpectedConsoleErrors,
       pageErrors,
+      staticEnvironmentFailures: [...new Set(failedResponses)].filter((url) => isExpectedStaticFailure(url)),
+      unexpectedStaticFailures,
       failures,
     };
   } catch (error) {
@@ -322,9 +349,8 @@ const SIBLING_ACCEPTANCE = [
   { command: "node scripts/acceptance-client-time-math.mjs", script: "scripts/acceptance-client-time-math.mjs" },
   { command: "npm run acceptance:business-math", script: "scripts/acceptance-business-math.mjs" },
   { command: "npm run acceptance:developer-web", script: "scripts/acceptance-developer-web.mjs" },
-  { command: "node scripts/acceptance-search-library.mjs", script: "scripts/acceptance-search-library.mjs" },
+  { command: "node scripts/acceptance-directory.mjs", script: "scripts/acceptance-directory.mjs" },
   { command: "node scripts/acceptance-table-handoff.mjs", script: "scripts/acceptance-table-handoff.mjs" },
-  { command: "node scripts/acceptance-workbench.mjs", script: "scripts/acceptance-workbench.mjs" },
   { command: "node scripts/acceptance-file-hash.mjs", script: "scripts/acceptance-file-hash.mjs" },
 ];
 
@@ -384,7 +410,7 @@ try {
       ...engineDefinitions.map((definition) => ({
         command: `node scripts/acceptance/browser-performance-matrix.mjs (${definition.name})`,
         status: results.find((result) => result.engine === definition.name)?.status ?? "NOT_RUN",
-        evidence: `core/home/library routes, lazy engine chunk, network privacy, long-task gate observed in this run`,
+        evidence: `core/home/directory routes, lazy engine chunk, network privacy, long-task gate observed in this run`,
       })),
       ...freshScriptResults,
     ],

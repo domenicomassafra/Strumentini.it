@@ -1,0 +1,838 @@
+---
+import type { ToolSummary } from "../../catalog/manifest";
+import { groups, groupForCategory } from "../../catalog/groups";
+import { inputTypeLabelIt } from "../../i18n/it/taxonomy";
+import { iconSvgMarkup } from "../../ui/tool-icons";
+import UiIcon from "../icons/UiIcon.astro";
+import ToolCard from "../tools/ToolCard.astro";
+
+/**
+ * The whole catalog: three views, a facet sidebar, a sort control and real
+ * pagination.
+ *
+ * Every tool is rendered on the server — the full grid in one
+ * `<ul class="tool-grid">` — so the catalogue is complete with JavaScript
+ * switched off. The inline script then reads and writes the URL query (`q`,
+ * `gruppo`, `tipo`, `qualita`, `ordine`, `pagina`, `vista`), moves the cards
+ * that are already on the page, and never fetches anything.
+ *
+ * `ToolCard` owns its own `<li>` and takes no extra attributes, so the per-tool
+ * metadata (category, group, input types, quality) ships as one server-rendered
+ * JSON map keyed by route and is projected onto each card as `data-*` attributes
+ * before the first filter runs. The markup stays a valid list.
+ */
+interface Props {
+  tools: readonly ToolSummary[];
+  verifiedIds: ReadonlySet<string>;
+}
+
+const { tools, verifiedIds } = Astro.props;
+
+const PAGE_SIZE = 24;
+
+const groupFacets = groups.map((group) => ({
+  slug: group.slug,
+  label: group.label,
+  icon: group.icon,
+  tone: group.tone,
+  count: tools.filter((tool) => group.memberCategories.includes(tool.category)).length,
+}));
+
+const inputCounts = new Map<string, number>();
+for (const tool of tools) {
+  for (const type of tool.inputTypes) inputCounts.set(type, (inputCounts.get(type) ?? 0) + 1);
+}
+const inputFacets = [...inputCounts.entries()]
+  .map(([value, count]) => ({ value, label: inputTypeLabelIt(value), count }))
+  .sort((left, right) => right.count - left.count || left.label.localeCompare(right.label, "it"));
+const primaryInputs = inputFacets.slice(0, 10);
+const remainingInputs = inputFacets.slice(10);
+
+const verifiedCount = tools.filter((tool) => verifiedIds.has(tool.id)).length;
+const qualityFacets = [
+  { value: "verificato", label: "Verificato", count: verifiedCount },
+  { value: "verifica", label: "In verifica", count: tools.length - verifiedCount },
+];
+
+// route → [category, group slug, "input types", quality]
+const meta: Record<string, [string, string, string, string]> = {};
+for (const tool of tools) {
+  meta[tool.route] = [
+    tool.category,
+    groupForCategory(tool.category).slug,
+    tool.inputTypes.join(" "),
+    verifiedIds.has(tool.id) ? "verificato" : "verifica",
+  ];
+}
+const metaJson = JSON.stringify(meta).replace(/</gu, "\\u003c");
+
+const totalPages = Math.max(1, Math.ceil(tools.length / PAGE_SIZE));
+const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+const groupedTools = groups.map((group) => ({
+  group,
+  tools: tools.filter((tool) => group.memberCategories.includes(tool.category)),
+}));
+---
+
+<div class="directory" data-directory>
+  <nav class="directory-tabs" aria-label="Viste del catalogo">
+    <a class="pill directory-tab pill-brand" href="/strumenti/" data-tab="tutti" aria-current="page">
+      Tutti ({tools.length})
+    </a>
+    <a class="pill directory-tab" href="/strumenti/?qualita=verificato" data-tab="verificati">
+      Verificati ({verifiedCount})
+    </a>
+    <a class="pill directory-tab" href="/strumenti/?vista=gruppi" data-tab="gruppi">
+      Per categoria
+    </a>
+  </nav>
+
+  <div class="directory-layout">
+    <aside class="filtri" data-directory-filters data-collapsed="false" aria-labelledby="filtri-titolo">
+      <div class="filtri-head">
+        <h2 class="filtri-title" id="filtri-titolo">Filtri</h2>
+        <a class="filtri-reset" href="/strumenti/" data-directory-reset>Cancella tutti</a>
+        <button class="filtri-toggle" type="button" data-filters-toggle aria-expanded="true" aria-controls="filtri-body">
+          <UiIcon name="sliders" size={18} />
+          <span class="visually-hidden">Mostra o nascondi i filtri</span>
+        </button>
+      </div>
+
+      <div class="filtri-body" id="filtri-body">
+        <label class="field filtri-query" for="filtri-q">
+          <span>Cerca per nome o categoria</span>
+          <input
+            id="filtri-q"
+            name="q"
+            type="search"
+            autocomplete="off"
+            placeholder="Es. PDF, immagine, hash"
+            data-directory-query
+          />
+        </label>
+
+        <fieldset class="filtri-block">
+          <legend>Gruppi</legend>
+          <ul class="filtri-list">
+            {groupFacets.map((group) => (
+              <li data-group-row={group.slug}>
+                <label class="choice-line">
+                  <input type="checkbox" value={group.slug} data-facet="group" />
+                  <span class="filtri-label">{group.label}</span>
+                  <span class="filtri-count">{group.count}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+
+        <fieldset class="filtri-block">
+          <legend>Tipo di ingresso</legend>
+          <ul class="filtri-list">
+            {primaryInputs.map((type) => (
+              <li>
+                <label class="choice-line">
+                  <input type="checkbox" value={type.value} data-facet="input" />
+                  <span class="filtri-label">{type.label}</span>
+                  <span class="filtri-count">{type.count}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+          {remainingInputs.length > 0 && (
+            <details class="filtri-more" data-inputs-more>
+              <summary>Altri {remainingInputs.length} tipi di ingresso</summary>
+              <ul class="filtri-list">
+                {remainingInputs.map((type) => (
+                  <li>
+                    <label class="choice-line">
+                      <input type="checkbox" value={type.value} data-facet="input" />
+                      <span class="filtri-label">{type.label}</span>
+                      <span class="filtri-count">{type.count}</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </fieldset>
+
+        <fieldset class="filtri-block">
+          <legend>Stato della verifica</legend>
+          <ul class="filtri-list">
+            {qualityFacets.map((quality) => (
+              <li>
+                <label class="choice-line">
+                  <input type="checkbox" value={quality.value} data-facet="quality" />
+                  <span class="filtri-label">{quality.label}</span>
+                  <span class="filtri-count">{quality.count}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+      </div>
+    </aside>
+
+    <div class="directory-main">
+      <div class="directory-head" data-directory-head tabindex="-1">
+        <p class="directory-count" role="status" aria-live="polite" aria-atomic="true">
+          <strong data-directory-count>{tools.length}</strong> strumenti trovati
+        </p>
+        <label class="directory-sort">
+          <span class="directory-sort-label">Ordina per</span>
+          <select data-directory-sort>
+            <option value="az" selected>Nome (A–Z)</option>
+            <option value="za">Nome (Z–A)</option>
+            <option value="categoria">Categoria</option>
+            <option value="verificati">Verificati prima</option>
+          </select>
+        </label>
+      </div>
+
+      <p class="directory-empty" data-directory-empty hidden>
+        Nessuno strumento corrisponde a questi filtri. <a href="/strumenti/" data-directory-reset>Cancella tutti i filtri</a>
+      </p>
+
+      <ul class="tool-grid directory-grid" data-directory-grid>
+        {groupedTools.map(({ group, tools: groupTools }) => (
+          <>
+            <li class="directory-group" data-group-head={group.slug} style={`--tile-tone: var(--tone-${group.tone})`} hidden>
+              <span class="icon-tile" set:html={iconSvgMarkup(group.icon, "directory-group-glyph")} />
+              <span class="directory-group-text">
+                <strong>{group.label}</strong>
+                <small>{groupTools.length} strumenti</small>
+              </span>
+              <a class="section-link" href={`/categorie/${group.slug}/`}>Apri la categoria</a>
+            </li>
+            {groupTools.map((tool) => <ToolCard tool={tool} variant="card" />)}
+          </>
+        ))}
+      </ul>
+
+      <nav class="directory-pagination" aria-label="Pagine del catalogo" data-directory-pagination>
+        {pageNumbers.map((page) =>
+          page === 1 ? (
+            <span class="directory-page directory-page-current" aria-current="page">1</span>
+          ) : (
+            <a class="directory-page" href={`/strumenti/?pagina=${page}`} data-page={page}>{page}</a>
+          ),
+        )}
+      </nav>
+    </div>
+  </div>
+
+  <script type="application/json" data-tool-meta set:html={metaJson}></script>
+
+  <script is:inline>
+    (() => {
+      const root = document.querySelector("[data-directory]");
+      if (!root) return;
+
+      const grid = root.querySelector("[data-directory-grid]");
+      const metaSource = root.querySelector("[data-tool-meta]");
+      const countOut = root.querySelector("[data-directory-count]");
+      const empty = root.querySelector("[data-directory-empty]");
+      const sortSelect = root.querySelector("[data-directory-sort]");
+      const queryInput = root.querySelector("[data-directory-query]");
+      const pagination = root.querySelector("[data-directory-pagination]");
+      const inputsMore = root.querySelector("[data-inputs-more]");
+      const head = root.querySelector("[data-directory-head]");
+      const filters = root.querySelector("[data-directory-filters]");
+      const toggle = root.querySelector("[data-filters-toggle]");
+      const tabs = Array.prototype.slice.call(root.querySelectorAll("[data-tab]"));
+      const groupRows = Array.prototype.slice.call(root.querySelectorAll("[data-group-row]"));
+      const facets = Array.prototype.slice.call(root.querySelectorAll("[data-facet]"));
+      if (!grid || !metaSource || !(sortSelect instanceof HTMLSelectElement)) return;
+
+      const PAGE_SIZE = 24;
+      const ORDERS = ["az", "za", "categoria", "verificati"];
+      const FACET_KEY = { group: "groups", input: "inputs", quality: "quality" };
+
+      let meta = {};
+      try {
+        meta = JSON.parse(metaSource.textContent || "{}");
+      } catch (error) {
+        meta = {};
+      }
+
+      const cards = Array.prototype.slice.call(grid.querySelectorAll(".tool-card"));
+      const heads = Array.prototype.slice.call(grid.querySelectorAll("[data-group-head]"));
+      const headBySlug = new Map();
+      const groupOrder = [];
+      for (const item of heads) {
+        headBySlug.set(item.dataset.groupHead, item);
+        groupOrder.push(item.dataset.groupHead);
+      }
+      const groupRank = new Map(groupOrder.map((slug, index) => [slug, index]));
+      const collator = new Intl.Collator("it", { sensitivity: "base" });
+
+      // The server map, projected onto each card as data-* attributes before the
+      // first filter runs: category, group, input types, quality and name.
+      for (const card of cards) {
+        const link = card.querySelector(".tool-card-name a");
+        const route = link ? link.getAttribute("href") : "";
+        const data = route && meta[route] ? meta[route] : null;
+        card.dataset.name = link ? link.textContent.replace(/\s+/gu, " ").trim() : "";
+        if (!data) continue;
+        card.dataset.category = data[0];
+        card.dataset.group = data[1];
+        card.dataset.inputs = data[2];
+        card.dataset.quality = data[3];
+      }
+
+      const split = (value) =>
+        value === null || value === ""
+          ? []
+          : value.split(",").map((item) => item.trim()).filter((item) => item !== "");
+
+      const readState = () => {
+        const params = new URLSearchParams(window.location.search);
+        const order = params.get("ordine") || "az";
+        const page = Number.parseInt(params.get("pagina") || "1", 10);
+        return {
+          q: (params.get("q") || "").trim(),
+          groups: split(params.get("gruppo")),
+          inputs: split(params.get("tipo")),
+          quality: split(params.get("qualita")),
+          order: ORDERS.indexOf(order) >= 0 ? order : "az",
+          view: params.get("vista") === "gruppi" ? "gruppi" : "lista",
+          page: Number.isFinite(page) && page > 0 ? page : 1,
+        };
+      };
+
+      const buildQuery = (state, page, view) => {
+        const params = new URLSearchParams();
+        if (state.q) params.set("q", state.q);
+        if (state.groups.length > 0) params.set("gruppo", state.groups.join(","));
+        if (state.inputs.length > 0) params.set("tipo", state.inputs.join(","));
+        if (state.quality.length > 0) params.set("qualita", state.quality.join(","));
+        if (state.order !== "az") params.set("ordine", state.order);
+        if (view === "gruppi") params.set("vista", "gruppi");
+        if (page > 1) params.set("pagina", String(page));
+        const value = params.toString();
+        return value === "" ? "" : "?" + value;
+      };
+
+      const matches = (card, state) => {
+        const data = card.dataset;
+        if (state.groups.length > 0 && state.groups.indexOf(data.group) < 0) return false;
+        if (state.quality.length > 0 && state.quality.indexOf(data.quality) < 0) return false;
+        if (state.inputs.length > 0) {
+          const mine = (data.inputs || "").split(" ");
+          let found = false;
+          for (const type of state.inputs) if (mine.indexOf(type) >= 0) found = true;
+          if (!found) return false;
+        }
+        if (state.q && (card.textContent || "").toLocaleLowerCase("it").indexOf(state.q.toLocaleLowerCase("it")) < 0) {
+          return false;
+        }
+        return true;
+      };
+
+      const sortCards = (list, order) =>
+        list.slice().sort((left, right) => {
+          if (order === "verificati") {
+            const leftRank = left.dataset.quality === "verificato" ? 0 : 1;
+            const rightRank = right.dataset.quality === "verificato" ? 0 : 1;
+            if (leftRank !== rightRank) return leftRank - rightRank;
+          }
+          if (order === "categoria") {
+            const byGroup = (groupRank.get(left.dataset.group) || 0) - (groupRank.get(right.dataset.group) || 0);
+            if (byGroup !== 0) return byGroup;
+          }
+          const byName = collator.compare(left.dataset.name || "", right.dataset.name || "");
+          return order === "za" ? -byName : byName;
+        });
+
+      const activeTab = (state) =>
+        state.view === "gruppi"
+          ? "gruppi"
+          : state.quality.length === 1 && state.quality[0] === "verificato"
+            ? "verificati"
+            : "tutti";
+
+      const pageItems = (current, total) => {
+        const items = [];
+        for (let page = 1; page <= total; page += 1) {
+          if (page === 1 || page === total || Math.abs(page - current) <= 1) items.push(page);
+          else if (items[items.length - 1] !== "gap") items.push("gap");
+        }
+        return items;
+      };
+
+      const syncControls = (state, counts) => {
+        if (queryInput instanceof HTMLInputElement && queryInput.value !== state.q) queryInput.value = state.q;
+        sortSelect.value = state.order;
+        for (const box of facets) {
+          const list = state[FACET_KEY[box.dataset.facet]] || [];
+          box.checked = list.indexOf(box.value) >= 0;
+        }
+        if (inputsMore instanceof HTMLDetailsElement && !inputsMore.open && state.inputs.length > 0) {
+          inputsMore.open = true;
+        }
+        const current = activeTab(state);
+        for (const tab of tabs) {
+          const on = tab.dataset.tab === current;
+          if (on) tab.setAttribute("aria-current", "page");
+          else tab.removeAttribute("aria-current");
+          tab.classList.toggle("pill-brand", on);
+        }
+        for (const row of groupRows) {
+          const box = row.querySelector("input[data-facet='group']");
+          const checked = box instanceof HTMLInputElement && box.checked;
+          row.hidden = (counts.get(row.dataset.groupRow) || 0) === 0 && !checked;
+        }
+      };
+
+      const renderPages = (state, current, total) => {
+        if (!pagination) return;
+        if (total <= 1) {
+          pagination.hidden = true;
+          pagination.replaceChildren();
+          return;
+        }
+        pagination.hidden = false;
+        const nodes = [];
+        const pageLink = (page, label, className) => {
+          const link = document.createElement("a");
+          link.className = className;
+          link.href = window.location.pathname + buildQuery(state, page, state.view);
+          link.dataset.page = String(page);
+          link.textContent = label;
+          return link;
+        };
+        if (current > 1) {
+          const prev = pageLink(current - 1, "Precedente", "directory-page directory-page-nav");
+          prev.setAttribute("rel", "prev");
+          nodes.push(prev);
+        }
+        for (const item of pageItems(current, total)) {
+          if (item === "gap") {
+            const gap = document.createElement("span");
+            gap.className = "directory-page-gap";
+            gap.textContent = "…";
+            nodes.push(gap);
+          } else if (item === current) {
+            const here = document.createElement("span");
+            here.className = "directory-page directory-page-current";
+            here.setAttribute("aria-current", "page");
+            here.textContent = String(item);
+            nodes.push(here);
+          } else {
+            nodes.push(pageLink(item, String(item), "directory-page"));
+          }
+        }
+        if (current < total) {
+          const next = pageLink(current + 1, "Successiva", "directory-page directory-page-nav");
+          next.setAttribute("rel", "next");
+          nodes.push(next);
+        }
+        pagination.replaceChildren(...nodes);
+      };
+
+      const render = () => {
+        const state = readState();
+        const matched = cards.filter((card) => matches(card, state));
+        const ordered = [];
+        if (state.view === "gruppi") {
+          const within = state.order === "categoria" ? "az" : state.order;
+          for (const slug of groupOrder) {
+            const bucket = sortCards(matched.filter((card) => card.dataset.group === slug), within);
+            if (bucket.length > 0) ordered.push({ head: slug, items: bucket });
+          }
+        } else {
+          ordered.push({ head: null, items: sortCards(matched, state.order) });
+        }
+
+        const totalPages = Math.max(1, Math.ceil(matched.length / PAGE_SIZE));
+        const current = Math.min(state.page, totalPages);
+        const start = (current - 1) * PAGE_SIZE;
+        const onPage = new Set();
+        let index = 0;
+        for (const entry of ordered) {
+          for (const card of entry.items) {
+            if (index >= start && index < start + PAGE_SIZE) onPage.add(card);
+            index += 1;
+          }
+        }
+
+        for (const card of cards) card.hidden = !onPage.has(card);
+        for (const item of heads) item.hidden = true;
+
+        const batch = document.createDocumentFragment();
+        for (const entry of ordered) {
+          if (entry.head !== null) {
+            const element = headBySlug.get(entry.head);
+            if (element) {
+              element.hidden = !entry.items.some((card) => onPage.has(card));
+              batch.appendChild(element);
+            }
+          }
+          for (const card of entry.items) batch.appendChild(card);
+        }
+        grid.appendChild(batch);
+
+        if (countOut) countOut.textContent = String(matched.length);
+        if (empty) empty.hidden = matched.length !== 0;
+        grid.hidden = matched.length === 0;
+        renderPages(state, current, totalPages);
+
+        // A group is offered while it still has a tool under the other filters.
+        const probe = Object.assign({}, state, { groups: [] });
+        const counts = new Map();
+        for (const card of cards) {
+          if (!matches(card, probe)) continue;
+          counts.set(card.dataset.group, (counts.get(card.dataset.group) || 0) + 1);
+        }
+        syncControls(state, counts);
+      };
+
+      const write = (next, page) => {
+        window.history.replaceState(null, "", window.location.pathname + buildQuery(next, page, next.view) + window.location.hash);
+        render();
+      };
+
+      let typing = 0;
+      if (queryInput instanceof HTMLInputElement) {
+        queryInput.addEventListener("input", () => {
+          window.clearTimeout(typing);
+          typing = window.setTimeout(() => write(Object.assign(readState(), { q: queryInput.value.trim() }), 1), 120);
+        });
+      }
+
+      for (const box of facets) {
+        box.addEventListener("change", () => {
+          const key = FACET_KEY[box.dataset.facet];
+          if (!key) return;
+          const state = readState();
+          const list = state[key].slice();
+          const at = list.indexOf(box.value);
+          if (box.checked && at < 0) list.push(box.value);
+          if (!box.checked && at >= 0) list.splice(at, 1);
+          const next = Object.assign({}, state);
+          next[key] = list;
+          write(next, 1);
+        });
+      }
+
+      sortSelect.addEventListener("change", () => write(Object.assign(readState(), { order: sortSelect.value }), 1));
+
+      for (const tab of tabs) {
+        tab.addEventListener("click", (event) => {
+          event.preventDefault();
+          const state = readState();
+          const kind = tab.dataset.tab;
+          if (kind === "gruppi") write(Object.assign({}, state, { view: "gruppi" }), 1);
+          else if (kind === "verificati") write(Object.assign({}, state, { view: "lista", quality: ["verificato"] }), 1);
+          else write(Object.assign({}, state, { view: "lista", quality: [] }), 1);
+        });
+      }
+
+      pagination?.addEventListener("click", (event) => {
+        const link = event.target instanceof Element ? event.target.closest("[data-page]") : null;
+        if (!(link instanceof HTMLAnchorElement)) return;
+        event.preventDefault();
+        const page = Number.parseInt(link.dataset.page || "1", 10);
+        write(Object.assign(readState(), { page }), page);
+        if (head instanceof HTMLElement) {
+          head.focus({ preventScroll: true });
+          head.scrollIntoView({ block: "start" });
+        }
+      });
+
+      for (const reset of root.querySelectorAll("[data-directory-reset]")) {
+        reset.addEventListener("click", (event) => {
+          event.preventDefault();
+          write(Object.assign(readState(), { q: "", groups: [], inputs: [], quality: [] }), 1);
+          if (queryInput instanceof HTMLInputElement) queryInput.focus();
+        });
+      }
+
+      if (toggle instanceof HTMLElement && filters instanceof HTMLElement) {
+        toggle.addEventListener("click", () => {
+          const collapsed = filters.dataset.collapsed === "true";
+          filters.dataset.collapsed = collapsed ? "open" : "true";
+          toggle.setAttribute("aria-expanded", collapsed ? "true" : "false");
+        });
+      }
+
+      const wide = window.matchMedia("(min-width: 900px)");
+      const applyViewport = () => {
+        if (!(filters instanceof HTMLElement) || !(toggle instanceof HTMLElement)) return;
+        if (wide.matches) {
+          filters.dataset.collapsed = "open";
+          toggle.setAttribute("aria-expanded", "true");
+        } else if (filters.dataset.collapsed === "open") {
+          filters.dataset.collapsed = "true";
+          toggle.setAttribute("aria-expanded", "false");
+        }
+      };
+      applyViewport();
+      if (typeof wide.addEventListener === "function") wide.addEventListener("change", applyViewport);
+
+      render();
+    })();
+  </script>
+</div>
+
+<style>
+  .directory {
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: 0 auto;
+    padding-bottom: var(--space-16);
+  }
+
+  /* --- Views -------------------------------------------------------------- */
+
+  .directory-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-6);
+  }
+
+  .directory-tab { font-size: var(--font-size-sm); }
+  .directory-tab[aria-current="page"] { border-color: transparent; }
+
+  /* --- Layout ------------------------------------------------------------- */
+
+  .directory-layout { display: grid; gap: var(--space-6); }
+  .directory-main { min-width: 0; }
+
+  /* --- Filters ------------------------------------------------------------ */
+
+  .filtri {
+    display: grid;
+    gap: var(--space-5);
+    align-content: start;
+    padding: var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .filtri-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .filtri-title {
+    margin: 0;
+    font-size: var(--font-size-h3);
+    letter-spacing: var(--tracking-heading);
+  }
+
+  .filtri-reset {
+    margin-left: auto;
+    color: var(--brand);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .filtri-reset:hover { text-decoration: underline; }
+
+  .filtri-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--control-height);
+    height: var(--control-height);
+    padding: 0;
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text-muted);
+  }
+
+  .filtri-toggle:hover { border-color: var(--brand); color: var(--brand); }
+  .filtri-toggle[aria-expanded="true"] { background: var(--brand-soft); color: var(--brand); border-color: transparent; }
+
+  .filtri[data-collapsed="true"] .filtri-body { display: none; }
+
+  .filtri-body { display: grid; gap: var(--space-5); }
+  .filtri-query { margin-bottom: 0; }
+  .filtri-block { margin: 0; }
+
+  .filtri-list {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .filtri-list .choice-line {
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .filtri-list .choice-line:hover { background: var(--surface-subtle); }
+  .filtri-list input[type="checkbox"] { flex: 0 0 auto; accent-color: var(--brand); }
+
+  .filtri-label {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .filtri-count {
+    margin-left: auto;
+    color: var(--text-faint);
+    font-size: var(--font-size-xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .filtri-more { margin-top: var(--space-2); }
+
+  .filtri-more summary {
+    color: var(--brand);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .filtri-more summary:hover { text-decoration: underline; }
+  .filtri-more .filtri-list { margin-top: var(--space-2); }
+
+  /* --- Results header ----------------------------------------------------- */
+
+  .directory-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-4);
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-5);
+  }
+
+  .directory-head:focus-visible { outline: none; }
+
+  .directory-count {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .directory-count strong { color: var(--text); font-weight: var(--font-weight-semibold); }
+
+  .directory-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .directory-sort select {
+    min-height: var(--control-height);
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--font-size-sm);
+  }
+
+  .directory-sort select:hover { border-color: var(--brand); }
+
+  /* --- Grid and groups ---------------------------------------------------- */
+
+  .directory-grid[hidden] { display: none; }
+  .directory-grid :global(.tool-card[hidden]) { display: none; }
+
+  .directory-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+    grid-column: 1 / -1;
+    margin-top: var(--space-4);
+    padding: var(--space-4) 0 var(--space-2);
+    border-top: var(--border-width) solid var(--border);
+  }
+
+  .directory-group:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
+  .directory-group[hidden] { display: none; }
+  .directory-group :global(.directory-group-glyph) { width: 22px; height: 22px; }
+
+  .directory-group-text {
+    display: grid;
+    gap: var(--space-half);
+    min-width: 0;
+  }
+
+  .directory-group-text strong { font-size: var(--font-size-h3); letter-spacing: var(--tracking-heading); }
+  .directory-group-text small { color: var(--text-faint); font-size: var(--font-size-xs); }
+  .directory-group .section-link { margin-left: auto; }
+
+  /* --- Empty state -------------------------------------------------------- */
+
+  .directory-empty {
+    margin: 0 0 var(--space-6);
+    padding: var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-subtle);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .directory-empty[hidden] { display: none; }
+  .directory-empty a { color: var(--brand); font-weight: var(--font-weight-semibold); }
+  .directory-empty a:hover { text-decoration: underline; }
+
+  /* --- Pagination --------------------------------------------------------- */
+
+  .directory-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    margin-top: var(--space-8);
+  }
+
+  .directory-pagination[hidden] { display: none; }
+
+  .directory-page,
+  .directory-page-gap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--control-height);
+    min-height: var(--control-height);
+    padding: 0 var(--space-3);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .directory-page:hover { border-color: var(--brand); color: var(--brand); }
+
+  .directory-page-current,
+  .directory-page-current:hover {
+    border-color: transparent;
+    background: var(--brand);
+    color: var(--brand-ink);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .directory-page-nav { padding: 0 var(--space-4); }
+  .directory-page-gap { border-color: transparent; background: transparent; }
+
+  @media (min-width: 900px) {
+    .directory-layout { grid-template-columns: 264px minmax(0, 1fr); gap: var(--space-8); }
+    .filtri-toggle { display: none; }
+    .filtri[data-collapsed="true"] .filtri-body { display: grid; }
+    .directory-tabs { margin-bottom: var(--space-8); }
+  }
+</style>

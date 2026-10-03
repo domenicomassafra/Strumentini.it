@@ -1,4 +1,4 @@
-export type RuntimeLocation = "LOCAL" | "REFERENCE" | "REMOTE";
+export type RuntimeLocation = "LOCAL" | "REFERENCE" | "REMOTE" | "AI";
 export type MaintenanceClass = "E" | "D" | "R" | "H" | "S";
 export type ToolCapability =
   | "clipboard"
@@ -78,3 +78,15 @@ export function isLocalToolRoute(value: unknown): value is string {
 }
 
 export type ToolSummary = Omit<ToolManifest, "implementation">;
+
+export type WorkbenchToolSummary = Pick<
+  ToolSummary,
+  "id" | "route" | "name" | "summary" | "category" | "inputTypes" | "runtime" | "profileFields" | "handoff"
+>;
+
+export type HandoffToolSummary = Pick<ToolSummary, "id" | "route" | "name" | "handoff">;
+
+export type RuntimeToolIndexEntry = Pick<
+  ToolSummary,
+  "id" | "route" | "name" | "category" | "profileFields"
+>;

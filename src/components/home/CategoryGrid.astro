@@ -1,0 +1,88 @@
+---
+import { groups, toolsInGroup } from "../../catalog/groups";
+import { iconSvgMarkup } from "../../ui/tool-icons";
+---
+
+<section class="section home-categories">
+  <div class="section-head">
+    <div>
+      <h2 class="section-title">Categorie</h2>
+      <p class="section-sub">Esplora le categorie e trova subito lo strumento che ti serve.</p>
+    </div>
+    <a class="section-link" href="/categorie/">Vedi tutte le categorie</a>
+  </div>
+
+  <ul class="home-category-grid">
+    {groups.map((group) => (
+      <li class="home-category-card" style={`--tile-tone: var(--tone-${group.tone})`}>
+        <span class="icon-tile icon-tile-lg" set:html={iconSvgMarkup(group.icon, "home-category-glyph")} />
+        <h3>
+          <a href={`/categorie/${group.slug}/`}>{group.label}</a>
+        </h3>
+        <p>{group.summary}</p>
+        <span class="home-category-count">
+          {toolsInGroup(group).length} strumenti
+          <span aria-hidden="true">→</span>
+        </span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .home-category-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-category-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    transition: border-color var(--motion-fast) var(--motion-ease),
+                box-shadow var(--motion-fast) var(--motion-ease),
+                transform var(--motion-fast) var(--motion-ease);
+  }
+
+  .home-category-card:hover {
+    border-color: var(--brand-soft-strong);
+    box-shadow: var(--shadow-raised);
+    transform: translateY(-2px);
+  }
+
+  .home-category-card :global(.home-category-glyph) { width: 30px; height: 30px; }
+
+  .home-category-card h3 { margin: 0; font-size: var(--font-size-h3); }
+  .home-category-card h3 a::after { content: ""; position: absolute; inset: 0; }
+
+  .home-category-card p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-body);
+  }
+
+  .home-category-count {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: auto;
+    padding-top: var(--space-2);
+    color: var(--brand);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  @media (min-width: 700px) { .home-category-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 1060px) { .home-category-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+</style>

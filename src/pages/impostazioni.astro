@@ -1,0 +1,1169 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import UiIcon from "../components/icons/UiIcon.astro";
+import { catalog } from "../generated/catalog";
+import { groupForCategory } from "../catalog/groups";
+import { COPY, WEEKDAYS } from "../components/workbench/copy";
+import { PASSWORD_MIN_LENGTH } from "../../worker/validation";
+import { createDefaultWorkProfile } from "../profile/work-profile";
+import { SEARCH_CONTEXT_STORAGE_KEY, LAST_VALUE_KEY, THEME_KEY } from "../components/account/workbench-store";
+import "../components/account/account.css";
+
+/**
+ * Le impostazioni dell'account.
+ *
+ * Quattro pannelli e una barra laterale. Tutto ciò che mostrano è reale: le
+ * informazioni personali arrivano da `GET /api/auth/session`, i numeri dalle
+ * preferenze salvate su questo dispositivo, il profilo di lavoro è lo stesso
+ * record che leggono gli strumenti. Dove l'API non dice nulla — non esiste una
+ * data di creazione dell'account né un endpoint per cambiare l'email — il
+ * controllo non viene disegnato invece di essere inventato.
+ */
+const panelNav = [
+  { id: "profilo", label: "Profilo", icon: "user" as const },
+  { id: "preferenze", label: "Preferenze", icon: "sliders" as const },
+  { id: "tema", label: "Tema", icon: "sun" as const },
+  { id: "privacy", label: "Privacy e sicurezza", icon: "shield" as const },
+];
+
+const profileCopy = COPY.workProfile;
+const firstRunProfile = createDefaultWorkProfile({ locale: "it-IT", timezone: "UTC" });
+
+/**
+ * Al client serve solo il modo per passare da uno strumento salvato alla sua
+ * categoria pubblica: il conteggio e le pillole sono calcolati nel browser
+ * partendo dai preferiti veri, mai pre-renderizzati.
+ */
+const toolIndex = catalog.map((tool) => {
+  const group = groupForCategory(tool.category);
+  return { id: tool.id, group: group.slug, groupLabel: group.label };
+});
+
+const dateFormats = [
+  { value: "system", label: profileCopy.options.system },
+  { value: "day-first", label: profileCopy.options.dayFirst },
+  { value: "month-first", label: profileCopy.options.monthFirst },
+] as const;
+
+const numberFormats = [
+  { value: "system", label: profileCopy.options.system },
+  { value: "decimal-comma", label: profileCopy.options.decimalComma },
+  { value: "decimal-point", label: profileCopy.options.decimalPoint },
+] as const;
+
+const unitSystems = [
+  { value: "metric", label: profileCopy.options.metric },
+  { value: "imperial", label: profileCopy.options.imperial },
+  { value: "mixed", label: profileCopy.options.mixed },
+] as const;
+---
+
+<BaseLayout
+  title="Impostazioni"
+  description="Il tuo account, il profilo di lavoro, il tema e i dati salvati su questo dispositivo."
+  noindex
+>
+  <div class="ac-shell" data-settings>
+    <header class="ac-page-head">
+      <h1>Impostazioni</h1>
+      <p>Il tuo account, il profilo di lavoro, il tema e i dati su questo dispositivo.</p>
+    </header>
+
+    <aside class="ac-side">
+      <div
+        class="ac-nav"
+        role="tablist"
+        aria-orientation="vertical"
+        aria-label="Sezioni delle impostazioni"
+        data-settings-nav
+      >
+        {panelNav.map((panel) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${panel.id}`}
+            aria-controls={`panel-${panel.id}`}
+            aria-selected={panel.id === "profilo" ? "true" : "false"}
+            tabindex={panel.id === "profilo" ? 0 : -1}
+            data-settings-tab={panel.id}
+          >
+            <UiIcon name={panel.icon} size={18} />
+            {panel.label}
+          </button>
+        ))}
+      </div>
+    </aside>
+
+    <div class="ac-shell-main">
+      <!-- Profilo ------------------------------------------------------------ -->
+      <section
+        class="ac-panel"
+        role="tabpanel"
+        id="panel-profilo"
+        aria-labelledby="tab-profilo"
+        data-settings-panel="profilo"
+      >
+        <div data-session-pending>
+          <p class="ac-block-sub">Verifico la sessione…</p>
+        </div>
+
+        <div data-session-signedout hidden>
+          <div class="ac-block">
+            <h2 class="ac-block-title">Non hai ancora effettuato l'accesso</h2>
+            <p class="ac-block-sub">
+              Le informazioni del profilo arrivano dal tuo account: senza accesso non c'è nulla da mostrare qui.
+            </p>
+            <div class="actions ac-block-body">
+              <a class="btn btn-primary" href="/accedi/">Accedi o crea un account</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="ac-stack" data-session-signedin hidden>
+          <div class="ac-block">
+            <div class="ac-identity">
+              <span class="ac-avatar" data-profile-initial aria-hidden="true"></span>
+              <div>
+                <strong class="ac-identity-name" data-profile-name></strong>
+                <span class="ac-identity-mail" data-profile-email></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ac-block">
+            <h2 class="ac-block-title">Informazioni personali</h2>
+            <p class="ac-block-sub">
+              Il nome appare nel menu dell'account. L'email identifica l'accesso e non si può cambiare.
+            </p>
+            <form class="ac-block-body" data-account-form novalidate>
+              <div class="field">
+                <label for="account-name">Nome</label>
+                <div class="ac-control">
+                  <span class="ac-control-icon" aria-hidden="true"><UiIcon name="user" size={18} /></span>
+                  <input
+                    id="account-name"
+                    name="name"
+                    type="text"
+                    autocomplete="name"
+                    maxlength="80"
+                    data-field-input="account-name"
+                  />
+                </div>
+                <p class="ac-field-error" id="account-name-error" data-field-error="account-name" hidden></p>
+              </div>
+
+              <div class="field">
+                <label for="account-email">Email</label>
+                <input id="account-email" name="email" type="email" readonly data-account-email />
+                <p class="ac-note">L'email non si può modificare: non esiste un endpoint per cambiarla.</p>
+              </div>
+
+              <p class="error" data-account-message hidden></p>
+              <div class="actions">
+                <button class="btn btn-primary" type="submit" data-account-submit>
+                  <span data-busy-label>Salva modifiche</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="ac-block">
+          <h2 class="ac-block-title">Statistiche account</h2>
+          <p class="ac-block-sub">Calcolate dai dati salvati su questo dispositivo, non dal server.</p>
+          <dl class="ac-stats ac-block-body">
+            <div class="ac-stat">
+              <dt>Strumenti preferiti</dt>
+              <dd class="stat-value" data-stat-favourites>0</dd>
+            </div>
+            <div class="ac-stat">
+              <dt>Strumenti usati</dt>
+              <dd class="stat-value" data-stat-used>0</dd>
+            </div>
+            <div class="ac-stat">
+              <dt>Categorie coperte</dt>
+              <dd class="stat-value" data-stat-categories>0</dd>
+            </div>
+          </dl>
+          <p class="ac-note">I recenti ricordano le ultime attività, non i valori inseriti negli strumenti.</p>
+        </div>
+
+        <div class="ac-block">
+          <h2 class="ac-block-title">Strumenti e categorie preferite</h2>
+          <p class="ac-block-sub">Le categorie pubbliche coperte dagli strumenti che hai scelto.</p>
+          <ul class="ac-pills ac-block-body" data-category-pills></ul>
+          <p class="ac-block-sub" data-category-empty hidden>
+            Non hai ancora scelto nessuno strumento. <a href="/strumenti/">Scegline uno dal catalogo</a>.
+          </p>
+        </div>
+      </section>
+
+      <!-- Preferenze --------------------------------------------------------- -->
+      <section
+        class="ac-panel"
+        role="tabpanel"
+        id="panel-preferenze"
+        aria-labelledby="tab-preferenze"
+        data-settings-panel="preferenze"
+        hidden
+      >
+        <div class="ac-block">
+          <h2 class="ac-block-title">{profileCopy.title}</h2>
+          <p class="ac-block-sub">{profileCopy.lede}</p>
+          <p class="ac-block-sub">
+            Salvato solo su questo dispositivo.
+            <span data-session-local hidden>Il tuo profilo di lavoro resta locale.</span>
+          </p>
+
+          <form class="ac-block-body" data-preferences-form novalidate>
+            <div class="field-grid">
+              <div class="field">
+                <label for="profile-locale">{profileCopy.fields.locale}</label>
+                <input
+                  id="profile-locale"
+                  name="locale"
+                  type="text"
+                  maxlength="64"
+                  value={firstRunProfile.locale}
+                  data-profile-field="locale"
+                />
+              </div>
+              <div class="field">
+                <label for="profile-timezone">{profileCopy.fields.timezone}</label>
+                <input
+                  id="profile-timezone"
+                  name="timezone"
+                  type="text"
+                  maxlength="64"
+                  value={firstRunProfile.timezone}
+                  data-profile-field="timezone"
+                />
+              </div>
+              <div class="field">
+                <label for="profile-currency">{profileCopy.fields.currency}</label>
+                <input
+                  id="profile-currency"
+                  name="currency"
+                  type="text"
+                  maxlength="8"
+                  value={firstRunProfile.currency}
+                  data-profile-field="currency"
+                />
+              </div>
+              <div class="field">
+                <label for="profile-date-format">{profileCopy.fields.dateFormat}</label>
+                <select id="profile-date-format" name="dateFormat" data-profile-field="dateFormat">
+                  {dateFormats.map((option) => (
+                    <option value={option.value} selected={option.value === firstRunProfile.dateFormat}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div class="field">
+                <label for="profile-number-format">{profileCopy.fields.numberFormat}</label>
+                <select id="profile-number-format" name="numberFormat" data-profile-field="numberFormat">
+                  {numberFormats.map((option) => (
+                    <option value={option.value} selected={option.value === firstRunProfile.numberFormat}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div class="field">
+                <label for="profile-units">{profileCopy.fields.preferredUnits}</label>
+                <select id="profile-units" name="preferredUnits" data-profile-field="preferredUnits">
+                  {unitSystems.map((option) => (
+                    <option value={option.value} selected={option.value === firstRunProfile.preferredUnits}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <fieldset class="workweek-fieldset">
+              <legend>{profileCopy.workweek}</legend>
+              <div class="weekday-row">
+                {WEEKDAYS.map((day) => (
+                  <label>
+                    <input
+                      type="checkbox"
+                      value={day.code}
+                      checked={firstRunProfile.workweek.includes(day.code)}
+                      data-workweek-day={day.code}
+                    />
+                    <span>{day.label}</span>
+                  </label>
+                ))}
+              </div>
+              <p class="ac-field-error" id="profile-workweek-error" data-field-error="workweek" hidden></p>
+            </fieldset>
+
+            <label class="checkbox-field">
+              <input type="checkbox" data-compact-rows />
+              <span>{profileCopy.compactRows}</span>
+            </label>
+
+            <p class="error" data-preferences-message hidden></p>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit" data-preferences-submit>
+                <span data-busy-label>Salva le preferenze</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Tema --------------------------------------------------------------- -->
+      <section
+        class="ac-panel"
+        role="tabpanel"
+        id="panel-tema"
+        aria-labelledby="tab-tema"
+        data-settings-panel="tema"
+        hidden
+      >
+        <div class="ac-block">
+          <h2 class="ac-block-title">Tema</h2>
+          <p class="ac-block-sub">Il tema è salvato solo su questo dispositivo e vale per tutto il sito.</p>
+
+          <fieldset class="segmented ac-block-body" data-theme-choice>
+            <legend>Scegli il tema</legend>
+            <label>
+              <input type="radio" name="theme" value="system" data-theme-option="system" />
+              <span>Sistema</span>
+            </label>
+            <label>
+              <input type="radio" name="theme" value="light" data-theme-option="light" />
+              <span>Chiaro</span>
+            </label>
+            <label>
+              <input type="radio" name="theme" value="dark" data-theme-option="dark" />
+              <span>Scuro</span>
+            </label>
+          </fieldset>
+
+          <p class="ac-block-sub" data-theme-active>In uso: Sistema</p>
+          <p class="ac-note">Sistema segue l'impostazione del dispositivo; Chiaro e Scuro la sostituiscono.</p>
+        </div>
+      </section>
+
+      <!-- Privacy e sicurezza -------------------------------------------------- -->
+      <section
+        class="ac-panel"
+        role="tabpanel"
+        id="panel-privacy"
+        aria-labelledby="tab-privacy"
+        data-settings-panel="privacy"
+        hidden
+      >
+        <div data-session-pending>
+          <p class="ac-block-sub">Verifico la sessione…</p>
+        </div>
+
+        <div data-session-signedout hidden>
+          <div class="ac-block">
+            <h2 class="ac-block-title">Non hai ancora effettuato l'accesso</h2>
+            <p class="ac-block-sub">
+              Password, sessioni attive ed eliminazione riguardano un account: senza accesso non c'è nulla da
+              gestire qui.
+            </p>
+            <div class="actions ac-block-body">
+              <a class="btn btn-primary" href="/accedi/">Accedi o crea un account</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="ac-stack" data-session-signedin hidden>
+          <div class="ac-block">
+            <h2 class="ac-block-title">Password</h2>
+            <p class="ac-block-sub">
+              Almeno {PASSWORD_MIN_LENGTH} caratteri. Cambiandola, le altre sessioni collegate vengono chiuse.
+            </p>
+            <div class="ac-block-body">
+              <div class="actions">
+                <button class="btn" type="button" data-password-open>Modifica la password</button>
+              </div>
+
+              <form data-password-form novalidate hidden>
+                <div class="field">
+                  <label for="password-current">Password attuale</label>
+                  <div class="ac-control">
+                    <span class="ac-control-icon" aria-hidden="true"><UiIcon name="lock" size={18} /></span>
+                    <input
+                      id="password-current"
+                      name="currentPassword"
+                      type="password"
+                      autocomplete="current-password"
+                      data-field-input="password-current"
+                    />
+                    <button
+                      class="ac-reveal"
+                      type="button"
+                      aria-controls="password-current"
+                      aria-pressed="false"
+                      aria-label="Mostra la password"
+                      data-password-reveal
+                    >
+                      <span data-reveal-secret><UiIcon name="eye" size={18} /></span>
+                      <span data-reveal-visible hidden><UiIcon name="eye-off" size={18} /></span>
+                    </button>
+                  </div>
+                  <p class="ac-field-error" id="password-current-error" data-field-error="password-current" hidden></p>
+                </div>
+
+                <div class="field">
+                  <label for="password-new">Nuova password</label>
+                  <div class="ac-control">
+                    <span class="ac-control-icon" aria-hidden="true"><UiIcon name="lock" size={18} /></span>
+                    <input
+                      id="password-new"
+                      name="newPassword"
+                      type="password"
+                      autocomplete="new-password"
+                      aria-describedby="password-new-rule"
+                      data-field-input="password-new"
+                    />
+                    <button
+                      class="ac-reveal"
+                      type="button"
+                      aria-controls="password-new"
+                      aria-pressed="false"
+                      aria-label="Mostra la password"
+                      data-password-reveal
+                    >
+                      <span data-reveal-secret><UiIcon name="eye" size={18} /></span>
+                      <span data-reveal-visible hidden><UiIcon name="eye-off" size={18} /></span>
+                    </button>
+                  </div>
+                  <p class="ac-field-error" id="password-new-error" data-field-error="password-new" hidden></p>
+                  <p class="ac-support" id="password-new-rule">Almeno {PASSWORD_MIN_LENGTH} caratteri.</p>
+                </div>
+
+                <p class="error" data-password-message hidden></p>
+                <div class="actions">
+                  <button class="btn btn-primary" type="submit" data-password-submit>
+                    <span data-busy-label>Aggiorna la password</span>
+                  </button>
+                  <button class="btn" type="button" data-password-cancel>Annulla</button>
+                </div>
+              </form>
+
+              <p class="success" data-password-done hidden></p>
+            </div>
+          </div>
+
+          <div class="ac-block">
+            <h2 class="ac-block-title">Sessioni attive</h2>
+            <p class="ac-block-sub">Ogni sessione è un browser in cui hai effettuato l'accesso.</p>
+            <ul class="ac-sessions ac-block-body" data-sessions></ul>
+            <p class="ac-block-sub" data-sessions-empty hidden>Nessuna sessione da mostrare.</p>
+            <p class="error" data-sessions-message hidden></p>
+            <div class="actions ac-block-body">
+              <button class="btn" type="button" data-sessions-refresh>Aggiorna l'elenco</button>
+            </div>
+          </div>
+
+          <div class="ac-block ac-danger">
+            <h2 class="ac-block-title">Eliminare l'account</h2>
+            <p class="ac-block-sub">
+              L'account e i preferiti salvati sul server vengono eliminati. L'operazione non si può annullare.
+            </p>
+            <form class="ac-block-body" data-delete-form novalidate>
+              <div class="field">
+                <label for="delete-password">Password</label>
+                <div class="ac-control">
+                  <span class="ac-control-icon" aria-hidden="true"><UiIcon name="lock" size={18} /></span>
+                  <input
+                    id="delete-password"
+                    name="password"
+                    type="password"
+                    autocomplete="current-password"
+                    data-field-input="delete-password"
+                  />
+                  <button
+                    class="ac-reveal"
+                    type="button"
+                    aria-controls="delete-password"
+                    aria-pressed="false"
+                    aria-label="Mostra la password"
+                    data-password-reveal
+                  >
+                    <span data-reveal-secret><UiIcon name="eye" size={18} /></span>
+                    <span data-reveal-visible hidden><UiIcon name="eye-off" size={18} /></span>
+                  </button>
+                </div>
+                <p class="ac-field-error" id="delete-password-error" data-field-error="delete-password" hidden></p>
+              </div>
+
+              <div class="field">
+                <label for="delete-confirm">Conferma</label>
+                <input id="delete-confirm" name="confirm" type="text" autocomplete="off" data-field-input="delete-confirm" />
+                <p class="ac-note">Scrivi ELIMINA per confermare.</p>
+                <p class="ac-field-error" id="delete-confirm-error" data-field-error="delete-confirm" hidden></p>
+              </div>
+
+              <div class="actions">
+                <button class="btn ac-danger-action" type="submit" data-delete-submit>
+                  <span data-busy-label>Elimina l'account</span>
+                </button>
+              </div>
+            </form>
+            <p class="error" data-delete-message hidden></p>
+          </div>
+        </div>
+
+        <div class="ac-block">
+          <h2 class="ac-block-title">Dati su questo dispositivo</h2>
+          <p class="ac-block-sub">
+            Questi dati restano nel tuo browser: l'unica cosa che il sito salva sul server sono il tuo account e
+            i preferiti.
+          </p>
+          <ul class="ac-device-list ac-block-body">
+            <li>
+              <span class="pill pill-brand"><UiIcon name="devices" size={14} /> IndexedDB</span>
+              <span class="ac-device-key">utility-workbench</span>
+              <span class="ac-block-sub">
+                Strumenti preferiti e installati, profilo di lavoro, righe compatte.
+              </span>
+            </li>
+            <li>
+              <span class="pill pill-brand"><UiIcon name="clock" size={14} /> localStorage</span>
+              <span class="ac-device-key">{LAST_VALUE_KEY}</span>
+              <span class="ac-block-sub">
+                L'ultimo valore prodotto da uno strumento: un numero o una riga breve, mai gli ingressi.
+              </span>
+            </li>
+            <li>
+              <span class="pill pill-brand"><UiIcon name="sun" size={14} /> localStorage</span>
+              <span class="ac-device-key">{THEME_KEY}</span>
+              <span class="ac-block-sub">La scelta fra tema chiaro, scuro e sistema.</span>
+            </li>
+            <li>
+              <span class="pill pill-brand"><UiIcon name="search" size={14} /> sessionStorage</span>
+              <span class="ac-device-key">{SEARCH_CONTEXT_STORAGE_KEY}</span>
+              <span class="ac-block-sub">Il contesto di ricerca della scheda aperta; sparisce quando la chiudi.</span>
+            </li>
+            <li>
+              <span class="pill pill-brand"><UiIcon name="zap" size={14} /> sessionStorage</span>
+              <span class="ac-device-key">
+                strumentiutili:tool-entry-source:v1 · strumentiutili:tool-opened:v1
+              </span>
+              <span class="ac-block-sub">
+                Due marcatori della telemetria di validazione della scheda; spariscono con la scheda.
+              </span>
+            </li>
+          </ul>
+          <div class="actions ac-block-body">
+            <button class="btn" type="button" data-local-export>Esporta la configurazione</button>
+            <button class="btn" type="button" data-local-clear data-idle-label="Cancella i dati locali">
+              Cancella i dati locali
+            </button>
+          </div>
+          <p class="ac-note">
+            La cancellazione riguarda solo questo browser: l'account e i preferiti salvati sul server restano.
+          </p>
+          <p class="warning" data-local-message hidden></p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script type="application/json" data-settings-index set:html={JSON.stringify(toolIndex)} />
+</BaseLayout>
+
+<script>
+  import {
+    closeSession,
+    deleteAccount,
+    describeUserAgent,
+    displayName,
+    initialOf,
+    readSession,
+    readSessions,
+    updatePassword,
+    updateProfile,
+    type ActiveSession,
+    type SessionUser,
+  } from "../components/account/auth-client";
+  import {
+    bindPasswordReveal,
+    clearFieldErrors,
+    setBusy,
+    setFieldError,
+    setMessage,
+  } from "../components/account/forms";
+  import {
+    clearDeviceData,
+    downloadWorkbenchConfig,
+    loadWorkbenchState,
+    savePreferences,
+    THEME_KEY,
+  } from "../components/account/workbench-store";
+  import { subscribeMembership, type Membership } from "../workbench/membership";
+  import type { DayCode, WorkProfile } from "../profile/work-profile";
+  import type { WorkbenchState } from "../workbench/state";
+  import { MESSAGES, validateName, validatePassword } from "../../worker/validation";
+
+  interface IndexedTool {
+    id: string;
+    group: string;
+    groupLabel: string;
+  }
+
+  const PANELS = ["profilo", "preferenze", "tema", "privacy"] as const;
+  type PanelName = (typeof PANELS)[number];
+  type ThemeChoice = "system" | "light" | "dark";
+
+  const THEME_LABELS: Readonly<Record<ThemeChoice, string>> = { system: "Sistema", light: "Chiaro", dark: "Scuro" };
+  const TOGGLE_LABEL = { dark: "Passa al tema chiaro", light: "Passa al tema scuro" } as const;
+  const DELETE_CONFIRMATION = "ELIMINA";
+
+  const root = document.querySelector<HTMLElement>("[data-settings]");
+  const index: IndexedTool[] = JSON.parse(
+    document.querySelector<HTMLScriptElement>("[data-settings-index]")?.textContent ?? "[]",
+  );
+  const toolsById = new Map(index.map((tool) => [tool.id, tool]));
+
+  function element(tag: string, className: string, text?: string): HTMLElement {
+    const node = document.createElement(tag);
+    node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function italianDateTime(value: string): string {
+    const moment = new Date(value);
+    if (Number.isNaN(moment.getTime())) return "data non disponibile";
+    return moment.toLocaleString("it-IT", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  if (root !== null) {
+    const scope: HTMLElement = root;
+    const query = <T extends Element>(selector: string): T | null => scope.querySelector<T>(selector);
+
+    /* --- Pannelli --------------------------------------------------------- */
+
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-settings-tab]"));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-settings-panel]"));
+
+    function panelNameOf(value: string | undefined): PanelName {
+      return PANELS.find((name) => name === value) ?? "profilo";
+    }
+
+    function selectPanel(name: PanelName, syncHash = true): void {
+      for (const tab of tabs) {
+        const active = tab.dataset.settingsTab === name;
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+      }
+      for (const panel of panels) panel.hidden = panel.dataset.settingsPanel !== name;
+      if (!syncHash) return;
+      const url = new URL(window.location.href);
+      url.hash = `#${name}`;
+      history.replaceState(null, "", url);
+    }
+
+    for (const tab of tabs) {
+      tab.addEventListener("click", () => selectPanel(panelNameOf(tab.dataset.settingsTab)));
+    }
+
+    query<HTMLElement>("[data-settings-nav]")?.addEventListener("keydown", (event) => {
+      if (!(event instanceof KeyboardEvent)) return;
+      if (!["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      const active = tabs.findIndex((tab) => tab.getAttribute("aria-selected") === "true");
+      const step = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : -1;
+      const next = tabs[(Math.max(active, 0) + step + tabs.length) % tabs.length];
+      if (next === undefined) return;
+      selectPanel(panelNameOf(next.dataset.settingsTab));
+      next.focus();
+    });
+
+    function hashPanel(): PanelName | undefined {
+      const name = window.location.hash.slice(1);
+      return PANELS.find((panel) => panel === name);
+    }
+
+    window.addEventListener("hashchange", () => {
+      const name = hashPanel();
+      if (name !== undefined) selectPanel(name, false);
+    });
+
+    const initialPanel = hashPanel();
+    if (initialPanel !== undefined) selectPanel(initialPanel, false);
+
+    /* --- Sessione --------------------------------------------------------- */
+
+    const signedIn = Array.from(root.querySelectorAll<HTMLElement>("[data-session-signedin]"));
+    const signedOut = Array.from(root.querySelectorAll<HTMLElement>("[data-session-signedout]"));
+    const pending = Array.from(root.querySelectorAll<HTMLElement>("[data-session-pending]"));
+    const localNotices = Array.from(root.querySelectorAll<HTMLElement>("[data-session-local]"));
+
+    function showSessionState(state: "pending" | "signedin" | "signedout"): void {
+      for (const block of pending) block.hidden = state !== "pending";
+      for (const block of signedIn) block.hidden = state !== "signedin";
+      for (const block of signedOut) block.hidden = state !== "signedout";
+    }
+
+    function paintIdentity(account: SessionUser): void {
+      const label = displayName(account);
+      const name = query<HTMLElement>("[data-profile-name]");
+      const mail = query<HTMLElement>("[data-profile-email]");
+      const avatar = query<HTMLElement>("[data-profile-initial]");
+      const emailInput = query<HTMLInputElement>("[data-account-email]");
+      const nameInput = query<HTMLInputElement>("#account-name");
+      if (name !== null) name.textContent = label;
+      if (mail !== null) mail.textContent = account.email;
+      if (avatar !== null) avatar.textContent = initialOf(label);
+      if (emailInput !== null) emailInput.value = account.email;
+      if (nameInput !== null) nameInput.value = account.name;
+      for (const notice of localNotices) notice.hidden = false;
+    }
+
+    /* --- Nome ------------------------------------------------------------- */
+
+    const accountForm = query<HTMLFormElement>("[data-account-form]");
+
+    accountForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const form = accountForm;
+      clearFieldErrors(form);
+      const message = form.querySelector<HTMLElement>("[data-account-message]");
+      setMessage(message, null);
+      const input = form.querySelector<HTMLInputElement>("#account-name");
+      const name = validateName(input?.value ?? "");
+      if (!name.ok) {
+        setFieldError(form, "account-name", name.message);
+        input?.focus();
+        return;
+      }
+      const button = form.querySelector<HTMLButtonElement>("[data-account-submit]");
+      if (button !== null) setBusy(button, true);
+      void updateProfile(name.value).then((result) => {
+        if (button !== null) setBusy(button, false);
+        if (!result.ok) {
+          setMessage(message, result.message);
+          return;
+        }
+        paintIdentity(result.data);
+        setMessage(message, "Nome aggiornato.", "success");
+      });
+    });
+
+    /* --- Numeri veri, dal dispositivo ------------------------------------- */
+
+    function paintMembership(membership: Membership): void {
+      const groups = new Map<string, string>();
+      for (const id of membership.installed) {
+        const tool = toolsById.get(id);
+        if (tool !== undefined) groups.set(tool.group, tool.groupLabel);
+      }
+
+      const favourites = query<HTMLElement>("[data-stat-favourites]");
+      const used = query<HTMLElement>("[data-stat-used]");
+      const categories = query<HTMLElement>("[data-stat-categories]");
+      if (favourites !== null) favourites.textContent = String(membership.installed.length);
+      if (used !== null) used.textContent = String(membership.recent.length);
+      if (categories !== null) categories.textContent = String(groups.size);
+
+      const pills = query<HTMLElement>("[data-category-pills]");
+      if (pills !== null) {
+        pills.replaceChildren();
+        for (const [slug, label] of groups) {
+          const item = document.createElement("li");
+          const link = element("a", "pill pill-brand", label) as HTMLAnchorElement;
+          link.href = `/categorie/${slug}/`;
+          item.append(link);
+          pills.append(item);
+        }
+      }
+      const empty = query<HTMLElement>("[data-category-empty]");
+      if (empty !== null) empty.hidden = groups.size > 0;
+    }
+
+    /* --- Preferenze ------------------------------------------------------- */
+
+    const preferencesForm = query<HTMLFormElement>("[data-preferences-form]");
+    const preferencesMessage = preferencesForm?.querySelector<HTMLElement>("[data-preferences-message]") ?? null;
+    let state: WorkbenchState | null = null;
+
+    function paintPreferences(current: WorkbenchState): void {
+      state = current;
+      if (preferencesForm === null) return;
+      for (const field of preferencesForm.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
+        "[data-profile-field]",
+      )) {
+        const key = field.dataset.profileField as keyof WorkProfile | undefined;
+        if (key === undefined) continue;
+        const value = current.profile[key];
+        if (typeof value === "string") field.value = value;
+      }
+      for (const day of preferencesForm.querySelectorAll<HTMLInputElement>("[data-workweek-day]")) {
+        day.checked = current.profile.workweek.includes(day.value as DayCode);
+      }
+      const compactRows = preferencesForm.querySelector<HTMLInputElement>("[data-compact-rows]");
+      if (compactRows !== null) compactRows.checked = current.preferences.compactRows;
+    }
+
+    function readPreferences(form: HTMLFormElement): WorkProfile {
+      const value = (name: string): string =>
+        form.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-profile-field="${name}"]`)?.value ?? "";
+      return {
+        locale: value("locale").trim(),
+        timezone: value("timezone").trim(),
+        currency: value("currency").trim().toUpperCase(),
+        dateFormat: value("dateFormat") as WorkProfile["dateFormat"],
+        numberFormat: value("numberFormat") as WorkProfile["numberFormat"],
+        preferredUnits: value("preferredUnits") as WorkProfile["preferredUnits"],
+        workweek: Array.from(form.querySelectorAll<HTMLInputElement>("[data-workweek-day]"))
+          .filter((day) => day.checked)
+          .map((day) => day.value as DayCode),
+      };
+    }
+
+    preferencesForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const form = preferencesForm;
+      clearFieldErrors(form);
+      setMessage(preferencesMessage, null);
+      const profile = readPreferences(form);
+      if (profile.workweek.length === 0) {
+        setFieldError(form, "workweek", "Scegli almeno un giorno.");
+        return;
+      }
+      if (state === null) {
+        setMessage(preferencesMessage, "Non siamo riusciti a leggere le preferenze salvate. Ricarica la pagina.");
+        return;
+      }
+
+      const button = form.querySelector<HTMLButtonElement>("[data-preferences-submit]");
+      const compactRows = form.querySelector<HTMLInputElement>("[data-compact-rows]")?.checked ?? false;
+      if (button !== null) setBusy(button, true);
+      void savePreferences(state, { profile, compactRows })
+        .then((result) => {
+          paintPreferences(result.state);
+          if (!result.persisted) {
+            setMessage(
+              preferencesMessage,
+              "Questo browser non ha potuto salvare: le modifiche valgono solo per questa scheda.",
+              "warning",
+            );
+            return;
+          }
+          setMessage(preferencesMessage, "Preferenze salvate su questo dispositivo.", "success");
+        })
+        .catch(() => {
+          setMessage(preferencesMessage, "Non siamo riusciti a salvare le preferenze. Riprova.");
+        })
+        .finally(() => {
+          if (button !== null) setBusy(button, false);
+        });
+    });
+
+    void (async () => {
+      try {
+        const loaded = await loadWorkbenchState();
+        paintPreferences(loaded.state);
+        paintMembership({ installed: loaded.state.installedTools, recent: loaded.state.recent });
+        if (!loaded.persisted) {
+          setMessage(
+            preferencesMessage,
+            "Questo browser non ha potuto leggere i dati salvati: le preferenze valgono solo per questa scheda.",
+            "warning",
+          );
+        }
+      } catch {
+        setMessage(
+          preferencesMessage,
+          "Non siamo riusciti a leggere le preferenze salvate su questo dispositivo.",
+          "warning",
+        );
+      }
+    })();
+
+    /* --- Tema ------------------------------------------------------------- */
+
+    function storedTheme(): ThemeChoice {
+      try {
+        const value = window.localStorage.getItem(THEME_KEY);
+        // Nessuna chiave significa il tema chiaro, che è il default del sito;
+        // "Sistema" è una scelta esplicita e viene salvata come tale.
+        return value === "light" || value === "dark" || value === "system" ? value : "light";
+      } catch {
+        return "light";
+      }
+    }
+
+    function systemTheme(): "light" | "dark" {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+
+    const themeOptions = Array.from(root.querySelectorAll<HTMLInputElement>("[data-theme-option]"));
+    const themeActive = query<HTMLElement>("[data-theme-active]");
+
+    function paintThemeChoice(choice: ThemeChoice): void {
+      for (const option of themeOptions) option.checked = option.value === choice;
+      if (themeActive !== null) themeActive.textContent = `In uso: ${THEME_LABELS[choice]}`;
+    }
+
+    /** Scrive la stessa chiave e lo stesso attributo del comando nell'header. */
+    function applyTheme(choice: ThemeChoice): void {
+      const resolved = choice === "system" ? systemTheme() : choice;
+      document.documentElement.dataset.theme = resolved;
+      try {
+        window.localStorage.setItem(THEME_KEY, choice);
+      } catch {
+        /* Lo storage ha rifiutato: la scelta vale per questa pagina. */
+      }
+      const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]:not([media])');
+      const colour = document.documentElement.dataset.themeColorDark;
+      const lightColour = document.documentElement.dataset.themeColorLight;
+      if (meta !== null) {
+        if (resolved === "dark" && colour !== undefined) meta.content = colour;
+        else if (resolved === "light" && lightColour !== undefined) meta.content = lightColour;
+      }
+      for (const button of document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]")) {
+        button.setAttribute("aria-label", TOGGLE_LABEL[resolved]);
+      }
+      paintThemeChoice(choice);
+    }
+
+    for (const option of themeOptions) {
+      option.addEventListener("change", () => {
+        if (!option.checked) return;
+        const value = option.value;
+        applyTheme(value === "light" || value === "dark" ? value : "system");
+      });
+    }
+
+    applyTheme(storedTheme());
+
+    // Il comando nell'header scrive la stessa chiave: qui lo si segue invece di
+    // mostrare una scelta diversa da quella in uso.
+    new MutationObserver(() => paintThemeChoice(storedTheme())).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+      if (storedTheme() === "system") applyTheme("system");
+    });
+
+    /* --- Password --------------------------------------------------------- */
+
+    const passwordForm = query<HTMLFormElement>("[data-password-form]");
+    const passwordOpen = query<HTMLButtonElement>("[data-password-open]");
+    const passwordMessage = passwordForm?.querySelector<HTMLElement>("[data-password-message]") ?? null;
+    const passwordDone = query<HTMLElement>("[data-password-done]");
+
+    function togglePasswordForm(open: boolean): void {
+      if (passwordForm === null || passwordOpen === null) return;
+      passwordForm.hidden = !open;
+      passwordOpen.hidden = open;
+      setMessage(passwordMessage, null);
+      if (!open) {
+        passwordForm.reset();
+        clearFieldErrors(passwordForm);
+        return;
+      }
+      setMessage(passwordDone, null);
+      passwordForm.querySelector<HTMLInputElement>("#password-current")?.focus();
+    }
+
+    passwordOpen?.addEventListener("click", () => togglePasswordForm(true));
+    query<HTMLButtonElement>("[data-password-cancel]")?.addEventListener("click", () => togglePasswordForm(false));
+
+    passwordForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const form = passwordForm;
+      clearFieldErrors(form);
+      setMessage(passwordMessage, null);
+      const current = form.querySelector<HTMLInputElement>("#password-current")?.value ?? "";
+      const next = validatePassword(form.querySelector<HTMLInputElement>("#password-new")?.value ?? "");
+      if (current === "") setFieldError(form, "password-current", MESSAGES.currentPasswordRequired);
+      if (!next.ok) setFieldError(form, "password-new", next.message);
+      if (current === "" || !next.ok) return;
+
+      const button = form.querySelector<HTMLButtonElement>("[data-password-submit]");
+      if (button !== null) setBusy(button, true);
+      void updatePassword(current, next.value).then((result) => {
+        if (button !== null) setBusy(button, false);
+        if (!result.ok) {
+          setMessage(passwordMessage, result.message);
+          return;
+        }
+        togglePasswordForm(false);
+        setMessage(passwordDone, "Password aggiornata. Le altre sessioni collegate sono state chiuse.", "success");
+        void refreshSessions();
+      });
+    });
+
+    /* --- Sessioni --------------------------------------------------------- */
+
+    const sessionList = query<HTMLElement>("[data-sessions]");
+    const sessionsEmpty = query<HTMLElement>("[data-sessions-empty]");
+    const sessionsMessage = query<HTMLElement>("[data-sessions-message]");
+
+    function renderSessions(sessions: readonly ActiveSession[]): void {
+      if (sessionList === null) return;
+      sessionList.replaceChildren();
+      for (const session of sessions) {
+        const item = element("li", "ac-session");
+        const main = element("div", "ac-session-main");
+        main.append(element("span", "ac-session-device", describeUserAgent(session.userAgent)));
+        if (session.current) {
+          const marker = element("span", "pill pill-success", "Questa sessione");
+          main.append(" ", marker);
+        }
+        main.append(
+          element(
+            "span",
+            "ac-session-meta",
+            `Creata il ${italianDateTime(session.createdAt)} · ultimo accesso ${italianDateTime(session.lastSeenAt)}`,
+          ),
+        );
+        item.append(main);
+
+        const close = element("button", "btn ac-session-action", "Chiudi") as HTMLButtonElement;
+        close.type = "button";
+        close.dataset.sessionClose = session.id;
+        if (session.current) {
+          close.disabled = true;
+          close.title = "Non puoi chiudere la sessione che stai usando.";
+        }
+        item.append(close);
+        sessionList.append(item);
+      }
+      if (sessionsEmpty !== null) sessionsEmpty.hidden = sessions.length > 0;
+    }
+
+    async function refreshSessions(): Promise<void> {
+      setMessage(sessionsMessage, null);
+      const result = await readSessions();
+      if (!result.ok) {
+        setMessage(sessionsMessage, result.message);
+        sessionList?.replaceChildren();
+        if (sessionsEmpty !== null) sessionsEmpty.hidden = true;
+        return;
+      }
+      renderSessions(result.data);
+    }
+
+    query<HTMLButtonElement>("[data-sessions-refresh]")?.addEventListener("click", () => {
+      void refreshSessions();
+    });
+
+    sessionList?.addEventListener("click", (event) => {
+      const button =
+        event.target instanceof Element ? event.target.closest<HTMLButtonElement>("[data-session-close]") : null;
+      if (button === null || button.disabled) return;
+      const id = button.dataset.sessionClose ?? "";
+      if (id === "") return;
+      setBusy(button, true);
+      void closeSession(id).then((result) => {
+        if (!result.ok) {
+          setBusy(button, false);
+          setMessage(sessionsMessage, result.message);
+          return;
+        }
+        void refreshSessions();
+      });
+    });
+
+    /* --- Dati locali ------------------------------------------------------ */
+
+    const localMessage = query<HTMLElement>("[data-local-message]");
+    const clearButton = query<HTMLButtonElement>("[data-local-clear]");
+
+    function disarmClear(): void {
+      if (clearButton === null) return;
+      delete clearButton.dataset.armed;
+      clearButton.textContent = clearButton.dataset.idleLabel ?? "Cancella i dati locali";
+    }
+
+    query<HTMLButtonElement>("[data-local-export]")?.addEventListener("click", () => {
+      if (state === null) {
+        setMessage(localMessage, "Non siamo riusciti a leggere i dati di questo dispositivo.", "warning");
+        return;
+      }
+      downloadWorkbenchConfig(state);
+      setMessage(localMessage, "Configurazione esportata in un file JSON.", "info");
+    });
+
+    clearButton?.addEventListener("click", () => {
+      if (clearButton.dataset.armed !== "true") {
+        // Prima pressione: si arma. La seconda cancella davvero.
+        clearButton.dataset.armed = "true";
+        clearButton.textContent = "Conferma: cancella i dati locali";
+        setMessage(localMessage, "Premi di nuovo per cancellare i dati di questo dispositivo.", "warning");
+        return;
+      }
+      disarmClear();
+      setBusy(clearButton, true, "Cancello…");
+      void clearDeviceData().then(() => {
+        window.location.reload();
+      });
+    });
+
+    clearButton?.addEventListener("blur", disarmClear);
+
+    /* --- Eliminazione dell'account ---------------------------------------- */
+
+    const deleteForm = query<HTMLFormElement>("[data-delete-form]");
+
+    deleteForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const form = deleteForm;
+      clearFieldErrors(form);
+      const message = form.querySelector<HTMLElement>("[data-delete-message]");
+      setMessage(message, null);
+      const password = form.querySelector<HTMLInputElement>("#delete-password")?.value ?? "";
+      const confirmation = form.querySelector<HTMLInputElement>("#delete-confirm")?.value.trim() ?? "";
+      if (password === "") setFieldError(form, "delete-password", MESSAGES.currentPasswordRequired);
+      if (confirmation !== DELETE_CONFIRMATION) {
+        setFieldError(form, "delete-confirm", `Scrivi ${DELETE_CONFIRMATION} per confermare.`);
+      }
+      if (password === "" || confirmation !== DELETE_CONFIRMATION) return;
+
+      const button = form.querySelector<HTMLButtonElement>("[data-delete-submit]");
+      if (button !== null) setBusy(button, true);
+      void deleteAccount(password).then((result) => {
+        if (button !== null) setBusy(button, false);
+        if (!result.ok) {
+          setMessage(message, result.message);
+          return;
+        }
+        form.hidden = true;
+        setMessage(
+          message,
+          "Account eliminato. I dati su questo dispositivo restano: puoi cancellarli dal blocco qui sopra.",
+          "success",
+        );
+      });
+    });
+
+    /* --- Avvio ------------------------------------------------------------ */
+
+    bindPasswordReveal(root);
+    subscribeMembership(paintMembership);
+
+    void (async () => {
+      const result = await readSession();
+      if (!result.ok || result.data.user === null) {
+        showSessionState("signedout");
+        return;
+      }
+      paintIdentity(result.data.user);
+      showSessionState("signedin");
+      void refreshSessions();
+    })();
+  }
+</script>

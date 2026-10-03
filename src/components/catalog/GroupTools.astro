@@ -1,0 +1,202 @@
+---
+import type { CatalogGroup } from "../../catalog/groups";
+import type { ToolSummary } from "../../catalog/manifest";
+import { categoryLabelIt } from "../../i18n/it/taxonomy";
+import { catalog } from "../../generated/catalog";
+import { qualityIndex } from "../../generated/quality";
+import { goldToolIds } from "../../onboarding/quality";
+import ToolCard from "../tools/ToolCard.astro";
+
+/**
+ * The filterable, sortable full list of a group's tools.
+ *
+ * Sub-category pills and the sort control are plain DOM state: the inline
+ * script reads one metadata map (route → category + certification) and moves
+ * the `ToolCard` items that are already on the page. No results are fetched and
+ * no URL changes.
+ */
+interface Props {
+  group: CatalogGroup;
+  tools: readonly ToolSummary[];
+}
+
+const { group, tools } = Astro.props;
+
+const verifiedIds = goldToolIds(qualityIndex);
+
+const subCategories = group.memberCategories.map((category) => ({
+  value: category,
+  label: categoryLabelIt(category),
+  count: catalog.filter((tool) => tool.category === category).length,
+}));
+
+const meta: Record<string, { category: string; verified: boolean }> = {};
+for (const tool of tools) meta[tool.route] = { category: tool.category, verified: verifiedIds.has(tool.id) };
+const metaJson = JSON.stringify(meta).replace(/</gu, "\\u003c");
+
+const total = tools.length;
+---
+
+<section class="group-tools" data-group-tools aria-labelledby="tutti-gli-strumenti">
+  <div class="section-head">
+    <div>
+      <h2 class="section-title" id="tutti-gli-strumenti">Tutti gli strumenti ({total})</h2>
+      <p class="section-sub" data-tool-status aria-live="polite">{total} strumenti in questa categoria.</p>
+    </div>
+
+    <label class="group-sort">
+      <span>Ordina per</span>
+      <select data-tool-sort>
+        <option value="az" selected>Nome (A–Z)</option>
+        <option value="za">Nome (Z–A)</option>
+        <option value="verified">Verificati prima</option>
+      </select>
+    </label>
+  </div>
+
+  <ul class="group-filters" aria-label="Filtra per sottocategoria">
+    <li>
+      <button type="button" class="pill pill-brand" data-filter="all" aria-pressed="true">Tutti ({total})</button>
+    </li>
+    {subCategories.map((sub) => (
+      <li>
+        <button type="button" class="pill" data-filter={sub.value} aria-pressed="false">
+          {sub.label} ({sub.count})
+        </button>
+      </li>
+    ))}
+  </ul>
+
+  <ul class="tool-grid" data-tool-grid>
+    {tools.map((tool) => <ToolCard tool={tool} variant="card" />)}
+  </ul>
+
+  <p class="group-tools-empty" data-tool-empty hidden>Nessuno strumento in questa sottocategoria.</p>
+
+  <script type="application/json" data-tool-meta set:html={metaJson}></script>
+  <script is:inline>
+    (() => {
+      const root = document.querySelector("[data-group-tools]");
+      if (!root) return;
+
+      const grid = root.querySelector("[data-tool-grid]");
+      const metaSource = root.querySelector("[data-tool-meta]");
+      const sortSelect = root.querySelector("[data-tool-sort]");
+      const status = root.querySelector("[data-tool-status]");
+      const empty = root.querySelector("[data-tool-empty]");
+      const pills = Array.prototype.slice.call(root.querySelectorAll("[data-filter]"));
+      if (!grid || !sortSelect || pills.length === 0) return;
+
+      let meta = {};
+      try {
+        meta = JSON.parse(metaSource && metaSource.textContent ? metaSource.textContent : "{}");
+      } catch (error) {
+        meta = {};
+      }
+
+      const cards = Array.prototype.slice.call(grid.children);
+      cards.forEach((card) => {
+        const link = card.querySelector(".tool-card-name a");
+        const route = link ? link.getAttribute("href") : "";
+        const info = (route && meta[route]) || {};
+        card.dataset.category = info.category || "";
+        card.dataset.verified = info.verified ? "true" : "false";
+        card.dataset.name = link ? link.textContent.trim() : "";
+      });
+
+      const collator = new Intl.Collator("it", { sensitivity: "base" });
+      const total = cards.length;
+      let active = "all";
+
+      const apply = () => {
+        const mode = sortSelect.value;
+        const sorted = cards.slice().sort((a, b) => {
+          if (mode === "verified") {
+            const aRank = a.dataset.verified === "true" ? 0 : 1;
+            const bRank = b.dataset.verified === "true" ? 0 : 1;
+            if (aRank !== bRank) return aRank - bRank;
+          }
+          const byName = collator.compare(a.dataset.name, b.dataset.name);
+          return mode === "za" ? -byName : byName;
+        });
+
+        let shown = 0;
+        sorted.forEach((card) => {
+          const visible = active === "all" || card.dataset.category === active;
+          card.hidden = !visible;
+          if (visible) shown += 1;
+          grid.appendChild(card);
+        });
+
+        if (status) {
+          status.textContent = active === "all"
+            ? total + " strumenti in questa categoria."
+            : "Mostrati " + shown + " di " + total + " strumenti.";
+        }
+        if (empty) empty.hidden = shown !== 0;
+      };
+
+      pills.forEach((pill) => {
+        pill.addEventListener("click", () => {
+          active = pill.dataset.filter || "all";
+          pills.forEach((other) => {
+            const on = other === pill;
+            other.setAttribute("aria-pressed", on ? "true" : "false");
+            other.classList.toggle("pill-brand", on);
+          });
+          apply();
+        });
+      });
+
+      sortSelect.addEventListener("change", apply);
+      apply();
+    })();
+  </script>
+</section>
+
+<style>
+  .group-tools { margin-bottom: var(--space-12); }
+
+  .group-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .group-sort select {
+    min-height: var(--control-height);
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--font-size-body);
+  }
+
+  .group-sort select:hover { border-color: var(--brand); }
+
+  .group-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-6);
+    padding: 0;
+    list-style: none;
+  }
+
+  .group-filters button { font-size: var(--font-size-xs); }
+
+  .group-tools :global(.tool-card[hidden]) { display: none; }
+
+  .group-tools-empty {
+    margin: var(--space-6) 0 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  @media (min-width: 900px) {
+    .group-filters { margin-bottom: var(--space-8); }
+  }
+</style>

@@ -1,6 +1,5 @@
 import { useRef, useState } from "preact/hooks";
 import type { FilePrivacyOperation, FilePrivacyResult } from "../../../engines/file-privacy";
-import { FilePrivacyError, runFilePrivacyOperation } from "../../../engines/file-privacy";
 import { TOOL_COPY_IT } from "../../../i18n/it/tool-copy";
 import { InlineError, ToolActions, ToolCancelButton, ToolOperation, ToolResetButton, ToolResultPanel, ToolSubmitButton } from "../shared";
 import { CONTROL, it } from "../shared/controlLabels";
@@ -17,13 +16,14 @@ function filesFromInput(input: HTMLInputElement): File[] {
 }
 
 function errorText(error: unknown): string {
-  if (error instanceof FilePrivacyError) {
-    if (error.code === "FILE_TOO_LARGE") return "La selezione supera il limite locale di dimensione previsto da questo strumento.";
-    if (error.code === "TOO_MANY_FILES") return "Hai selezionato troppi file. Riduci la selezione.";
-    if (error.code === "UNSAFE_ARCHIVE_PATH") return "Un percorso è assoluto oppure contiene un segmento che risale alla cartella superiore.";
-    if (error.code === "CORRUPT_ARCHIVE") return "Non è stato possibile validare la struttura dell'archivio. Verifica che il file ZIP sia completo.";
-    if (error.code === "CANCELLED") return "Operazione annullata.";
-    return `Errore nell'elaborazione locale (${error.code}). Controlla i file e riprova.`;
+  const code = typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" ? error.code : null;
+  if (code !== null) {
+    if (code === "FILE_TOO_LARGE") return "La selezione supera il limite locale di dimensione previsto da questo strumento.";
+    if (code === "TOO_MANY_FILES") return "Hai selezionato troppi file. Riduci la selezione.";
+    if (code === "UNSAFE_ARCHIVE_PATH") return "Un percorso è assoluto oppure contiene un segmento che risale alla cartella superiore.";
+    if (code === "CORRUPT_ARCHIVE") return "Non è stato possibile validare la struttura dell'archivio. Verifica che il file ZIP sia completo.";
+    if (code === "CANCELLED") return "Operazione annullata.";
+    return `Errore nell'elaborazione locale (${code}). Controlla i file e riprova.`;
   }
   return error instanceof Error ? "L'operazione locale non è riuscita. Controlla i dati e riprova." : "L'operazione locale non è riuscita.";
 }
@@ -148,6 +148,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
         ...(operation === "client-handoff-index-generator" ? { includeHashes } : {}),
         ...((operation === "file-list-diff" || operation === "folder-compare") ? { compareHashes: includeHashes } : {}),
       };
+      const { runFilePrivacyOperation } = await import("../../../engines/file-privacy");
       const next = await runFilePrivacyOperation(operation, input, controller.signal);
       if (!controller.signal.aborted) setResult(next);
     } catch (caught) {

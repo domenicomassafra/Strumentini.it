@@ -1,4 +1,6 @@
-import { registry, type ToolRegistry } from "./registry";
+import { runtimeToolIndex } from "../generated/runtime-tool-index";
+import type { RuntimeToolIndexEntry, ToolSummary } from "../catalog/manifest";
+import type { ToolRegistry } from "./registry";
 import { resolveToolDefaults, type ProfileResolutionInput } from "./profile";
 import type { PreflightResult, RuntimeTelemetryContext, ToolRunResult } from "./types";
 import { getTelemetryAdapter, consumeToolEntrySource, consumeToolOpenedMarker } from "../telemetry/browser";
@@ -7,6 +9,30 @@ import type { TelemetryAdapter } from "../telemetry/adapter";
 import { normalizeProfileFieldKey, type ToolFamily } from "../telemetry/schema";
 
 export interface RuntimeContext extends ProfileResolutionInput, RuntimeTelemetryContext {}
+
+const runtimeToolsById = new Map<string, RuntimeToolIndexEntry>(
+  runtimeToolIndex.map((tool) => [tool.id, tool]),
+);
+let defaultRegistryPromise: Promise<ToolRegistry> | undefined;
+
+function loadDefaultRegistry(): Promise<ToolRegistry> {
+  defaultRegistryPromise ??= import("./registry").then((module) => module.registry);
+  return defaultRegistryPromise;
+}
+
+function preflightWithRegistry(toolRegistry: ToolRegistry, toolId: string): PreflightResult {
+  const tool = toolRegistry.get(toolId);
+  return tool === undefined
+    ? { ok: false, code: "NOT_FOUND", message: `Unknown tool: ${toolId}` }
+    : { ok: true, tool };
+}
+
+function preflightFromIndex(toolId: string): PreflightResult {
+  const tool = runtimeToolsById.get(toolId);
+  return tool === undefined
+    ? { ok: false, code: "NOT_FOUND", message: `Unknown tool: ${toolId}` }
+    : { ok: true, tool };
+}
 
 function normalizeMessage(error: unknown): string {
   return error instanceof Error ? error.message : "Unknown runtime failure";
@@ -32,7 +58,7 @@ function failureCode(code: "INVALID_INPUT" | "CANCELLED" | "RUNTIME_ERROR"): "in
 }
 
 export function createToolRuntime(
-  toolRegistry: ToolRegistry = registry,
+  toolRegistry?: ToolRegistry,
   telemetry?: TelemetryAdapter,
   now: () => number = Date.now,
 ) {
@@ -41,10 +67,7 @@ export function createToolRuntime(
   };
   return {
     preflight(toolId: string): PreflightResult {
-      const tool = toolRegistry.get(toolId);
-      return tool === undefined
-        ? { ok: false, code: "NOT_FOUND", message: `Unknown tool: ${toolId}` }
-        : { ok: true, tool };
+      return toolRegistry === undefined ? preflightFromIndex(toolId) : preflightWithRegistry(toolRegistry, toolId);
     },
 
     async run(
@@ -81,10 +104,20 @@ export function createToolRuntime(
       }
 
       try {
-        const module = await toolRegistry.load(toolId, signal);
+        const activeRegistry = toolRegistry ?? await loadDefaultRegistry();
+        if (signal?.aborted) {
+          trackToolFailed(adapter, toolId, "cancelled", family, subject);
+          return { ok: false, code: "CANCELLED", message: "Operation cancelled" };
+        }
+        const fullTool = activeRegistry.get(toolId) as ToolSummary | undefined;
+        if (fullTool === undefined) {
+          trackToolFailed(adapter, toolId, "not-found", family, subject);
+          return { ok: false, code: "NOT_FOUND", message: `Unknown tool: ${toolId}` };
+        }
+        const module = await activeRegistry.load(toolId, signal);
         const value = await module.run(input, { defaults: defaultMap }, signal);
         trackToolCompleted(adapter, toolId, now() - startedAt, family, subject);
-        return { ok: true, tool: preflight.tool, value, defaults };
+        return { ok: true, tool: fullTool, value, defaults };
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
           trackToolFailed(adapter, toolId, "cancelled", family, subject);

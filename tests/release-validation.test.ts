@@ -57,6 +57,24 @@ describe("Cloudflare static asset validation", () => {
     expect(validatePublicSiteUrl("https://example.invalid").map((item) => item.code)).toEqual(["PUBLIC_SITE_URL_PLACEHOLDER"]);
   });
 
+  it("accepts the optional account worker when it delegates to the static assets", () => {
+    expect(validateCloudflareStaticAssets(`{
+      "compatibility_date": "2026-09-24",
+      "main": "worker/index.ts",
+      "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "404-page" },
+      "d1_databases": [{ "binding": "AUTH_DB", "database_name": "strumentiutili-auth" }]
+    }`)).toEqual([]);
+  });
+
+  it("rejects a worker that has no assets binding to delegate to", () => {
+    const findings = validateCloudflareStaticAssets(`{
+      "compatibility_date": "2026-09-24",
+      "main": "./worker/index.ts",
+      "assets": { "directory": "./dist", "not_found_handling": "404-page" }
+    }`);
+    expect(findings.map((item) => item.code)).toEqual(["CLOUDFLARE_ASSETS_BINDING"]);
+  });
+
   it("rejects a non-static or worker-first configuration", () => {
     const findings = validateCloudflareStaticAssets(`{
       "compatibility_date": "2026-09-24",
@@ -95,8 +113,8 @@ describe("public metadata and discovery", () => {
 
   it("keeps sitemap URLs and robots discovery in sync", () => {
     const site = new URL("https://example.invalid");
-    const sitemap = buildSitemapXml(site, ["/", "/library/", "/tools/example"]);
-    const urls = ["/", "/library/", "/tools/example"].map((path) => new URL(path === "/" ? path : `${path.replace(/\/+$/u, "")}/`, site).href);
+    const sitemap = buildSitemapXml(site, ["/", "/strumenti/", "/tools/example"]);
+    const urls = ["/", "/strumenti/", "/tools/example"].map((path) => new URL(path === "/" ? path : `${path.replace(/\/+$/u, "")}/`, site).href);
     expect(validateSitemapXml(sitemap, urls)).toEqual([]);
     const robots = buildRobotsTxt(site);
     expect(validateRobotsTxt(robots, new URL("sitemap.xml", site).href)).toEqual([]);
@@ -106,7 +124,7 @@ describe("public metadata and discovery", () => {
     const surface = toolSurface();
     const files = [
       "index.html",
-      "library/index.html",
+      "strumenti/index.html",
       "404.html",
       "sitemap.xml",
       "robots.txt",
@@ -208,8 +226,8 @@ describe("truthful claims and evidence boundaries", () => {
       classification: longTaskSupport ? "observed" : "longtask-observer-unsupported",
       coreRoute: "PASS",
       homeRoute: "PASS",
-      libraryRoute: "PASS",
-      mobile: { toolOverflow: false, homeOverflow: false, libraryOverflow: false },
+      directoryRoute: "PASS",
+      mobile: { toolOverflow: false, homeOverflow: false, directoryOverflow: false },
       lazy: { observedEngineChunk: ["module.test.js"] },
       longTasks: {
         observerSupported: longTaskSupport,

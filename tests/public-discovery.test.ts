@@ -2,11 +2,12 @@ import { readdir, readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import { catalog } from "../src/generated/catalog";
 import {
-  buildLibraryStructuredData,
+  buildDirectoryStructuredData,
   buildRobotsTxt,
   buildSitemapXml,
   buildToolStructuredData,
   formatPageTitle,
+  publicIndexPaths,
   resolveDiscoveryUrl,
   selectPageDescription,
   serializeJsonLd,
@@ -31,12 +32,15 @@ describe("public discovery surfaces", () => {
   });
 
   it("builds one canonical sitemap entry for every public route", () => {
-    const xml = buildSitemapXml(catalog, "https://example.test");
+    const xml = buildSitemapXml(catalog, "https://example.test", ["/categorie/immagini"]);
     const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((match) => match[1]);
-    expect(locations).toHaveLength(catalog.length + 3);
-    expect(new Set(locations).size).toBe(catalog.length + 3);
-    expect(locations).toContain("https://example.test/");
-    expect(locations).toContain("https://example.test/library/");
+    const expected = publicIndexPaths.length + 1 + catalog.length;
+    expect(locations).toHaveLength(expected);
+    expect(new Set(locations).size).toBe(expected);
+    for (const path of publicIndexPaths) expect(locations).toContain(resolveDiscoveryUrl(path, "https://example.test"));
+    expect(locations).toContain("https://example.test/categorie/immagini/");
+    // A redirect is not a destination: it must never be advertised.
+    expect(locations).not.toContain("https://example.test/library/");
     for (const tool of catalog) expect(locations).toContain(`https://example.test${tool.route}/`);
   });
 
@@ -52,7 +56,7 @@ describe("public discovery surfaces", () => {
     expect(buildRobotsTxt()).toContain("Sitemap: /sitemap.xml");
   });
 
-  it("uses catalog facts for tool and library structured data", () => {
+  it("uses catalog facts for tool and directory structured data", () => {
     const tool = catalog[0];
     expect(tool).toBeDefined();
     if (tool === undefined) return;
@@ -64,8 +68,9 @@ describe("public discovery surfaces", () => {
       applicationCategory: tool.category,
       url: `https://example.test${tool.route}`,
     });
-    const libraryData = buildLibraryStructuredData(catalog, "https://example.test/library", "https://example.test");
-    expect(libraryData).toMatchObject({ "@type": "CollectionPage", mainEntity: { numberOfItems: 200 } });
+    const directoryData = buildDirectoryStructuredData(catalog, "https://example.test/strumenti");
+    expect(directoryData).toMatchObject({ "@type": "CollectionPage", mainEntity: { numberOfItems: catalog.length } });
+    expect(JSON.stringify(directoryData)).not.toContain("itemListElement");
   });
 
   it("escapes structured data before it reaches an HTML script", () => {

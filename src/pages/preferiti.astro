@@ -1,0 +1,443 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import UiIcon from "../components/icons/UiIcon.astro";
+import MembershipBootstrap from "../components/account/MembershipBootstrap.astro";
+import { catalog } from "../generated/catalog";
+import { toneForCategory } from "../catalog/groups";
+import { categoryLabelIt } from "../i18n/it/taxonomy";
+
+const accountNav = [
+  { href: "/preferiti/", label: "La mia area", icon: "user" as const, current: true },
+  { href: "/preferiti/#preferiti", label: "Preferiti", icon: "heart" as const, current: false },
+  { href: "/preferiti/#recenti", label: "Recenti", icon: "clock" as const, current: false },
+  { href: "/impostazioni/", label: "Impostazioni", icon: "sliders" as const, current: false },
+];
+
+/** The 13 category labels and tones are small enough to inline; the 200 tool
+ *  records are not, so the island imports the workbench projection lazily. */
+const categories = [...new Set(catalog.map((tool) => tool.category))].map((category) => ({
+  category,
+  label: categoryLabelIt(category),
+  tone: toneForCategory(category),
+}));
+---
+
+<BaseLayout
+  title="La mia area"
+  description="I tuoi strumenti preferiti, le ultime attività e i suggerimenti, tutti in un unico posto."
+  noindex
+>
+  <div class="area" data-area>
+    <aside class="area-side">
+      <div class="area-greeting">
+        <span class="area-avatar" data-area-initial aria-hidden="true"><UiIcon name="user" size={22} /></span>
+        <div>
+          <strong data-area-greeting>Ciao!</strong>
+          <small>Bentornato su Strumenti Utili.</small>
+        </div>
+      </div>
+      <nav aria-label="La mia area">
+        <ul class="area-nav">
+          {accountNav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={item.current ? "page" : undefined}>
+                <UiIcon name={item.icon} size={18} />
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="area-main">
+      <section class="area-hero">
+        <div>
+          <h1>Riprendi da dove <span>avevi lasciato.</span></h1>
+          <p>
+            Gli strumenti che hai scelto, le ultime attività e i file su cui stavi
+            lavorando, tutto in un unico posto e sempre con te.
+          </p>
+        </div>
+        <span class="area-hero-art" aria-hidden="true">
+          <span class="area-hero-chip" style="--tile-tone: var(--tone-3)"><UiIcon name="heart" size={26} /></span>
+          <span class="area-hero-chip" style="--tile-tone: var(--tone-1)"><UiIcon name="clock" size={26} /></span>
+          <span class="area-hero-chip" style="--tile-tone: var(--tone-2)"><UiIcon name="star" size={26} /></span>
+        </span>
+      </section>
+
+      <section class="section" aria-labelledby="continua">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title" id="continua">Continua da dove hai lasciato</h2>
+            <p class="section-sub">Gli ultimi strumenti che hai aperto su questo dispositivo.</p>
+          </div>
+          <a class="section-link" href="#recenti">Vedi tutti</a>
+        </div>
+        <ul class="area-continue" data-area-continue></ul>
+        <p class="area-empty" data-area-continue-empty hidden>
+          Non hai ancora usato nessuno strumento da qui. <a href="/strumenti/">Scegline uno dal catalogo</a>.
+        </p>
+      </section>
+
+      <section class="section" id="preferiti" aria-labelledby="preferiti-title">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title" id="preferiti-title">I tuoi strumenti preferiti</h2>
+            <p class="section-sub">
+              <span data-membership-label>Nessuno strumento scelto</span>. La lista resta su questo
+              dispositivo e, con un account, anche sul tuo profilo.
+            </p>
+          </div>
+          <a class="section-link" href="/strumenti/">Aggiungine altri</a>
+        </div>
+        <ul class="area-favorites" data-area-favorites></ul>
+        <p class="area-empty" data-membership-empty>
+          Nessuno strumento scelto: tocca il cuore su una scheda, o apri uno strumento e scegli
+          “Aggiungi ai tuoi strumenti”.
+        </p>
+      </section>
+
+      <div class="area-columns">
+        <section class="section" id="recenti" aria-labelledby="recenti-title">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title" id="recenti-title">Attività recenti</h2>
+              <p class="section-sub">Solo i nomi degli strumenti: nessun file e nessun contenuto.</p>
+            </div>
+          </div>
+          <ul class="area-activity" data-area-activity></ul>
+          <p class="area-empty" data-area-activity-empty hidden>Nessuna attività registrata su questo dispositivo.</p>
+        </section>
+
+        <section class="section" aria-labelledby="consigliati">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title" id="consigliati">Strumenti consigliati per te</h2>
+              <p class="section-sub">Dalle categorie che usi di più, fra gli strumenti verificati.</p>
+            </div>
+          </div>
+          <ul class="area-suggest" data-area-suggest></ul>
+        </section>
+      </div>
+
+      <section class="area-band">
+        <span class="area-band-icon" aria-hidden="true"><UiIcon name="star" size={26} /></span>
+        <div>
+          <h2>Organizza i tuoi strumenti preferiti.</h2>
+          <p>Metti in cima quelli che usi ogni giorno: li ritrovi qui e nella ricerca.</p>
+        </div>
+        <a class="btn btn-primary btn-lg" href="/strumenti/">Scegli gli strumenti</a>
+      </section>
+    </div>
+  </div>
+  <MembershipBootstrap />
+</BaseLayout>
+
+<script>
+  import { loadMembership, type Membership } from "../workbench/membership";
+  import { readLastValues } from "../components/workbench/last-value";
+  import type { ToolLastValue } from "../components/workbench/last-value";
+
+  interface IndexedTool {
+    id: string;
+    name: string;
+    summary: string;
+    route: string;
+    category: string;
+    categoryLabel: string;
+    tone: number;
+  }
+
+  interface CategoryMeta { readonly category: string; readonly label: string; readonly tone: number }
+  interface CatalogTool { readonly id: string; readonly name: string; readonly summary: string; readonly route: string; readonly category: string }
+
+  const categoryMeta = new Map(
+    (JSON.parse(document.querySelector<HTMLScriptElement>("[data-category-index]")?.textContent ?? "[]") as CategoryMeta[])
+      .map((entry) => [entry.category, entry]),
+  );
+
+  let index: IndexedTool[] = [];
+  const byId = new Map<string, IndexedTool>();
+
+  /** The 200 records are imported only when this page actually runs. */
+  async function loadIndex(): Promise<void> {
+    const { workbenchCatalog } = await import("../generated/workbench-catalog");
+    index = (workbenchCatalog as readonly CatalogTool[]).map((tool) => ({
+      ...tool,
+      categoryLabel: categoryMeta.get(tool.category)?.label ?? tool.category,
+      tone: categoryMeta.get(tool.category)?.tone ?? 1,
+    }));
+    for (const tool of index) byId.set(tool.id, tool);
+  }
+
+  const escapeHtml = (value: string): string => value.replace(/[&<>"']/gu, (character) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;",
+  })[character] ?? character);
+
+  function relative(at: string): string {
+    const then = new Date(at).getTime();
+    if (!Number.isFinite(then)) return "";
+    const minutes = Math.round((Date.now() - then) / 60000);
+    if (minutes < 1) return "adesso";
+    if (minutes < 60) return `${minutes} ${minutes === 1 ? "minuto" : "minuti"} fa`;
+    const hours = Math.round(minutes / 60);
+    if (hours < 24) {
+      const day = new Date(then);
+      return `ieri alle ${day.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}`;
+    }
+    const days = Math.round(hours / 24);
+    if (days < 7) return `${days} ${days === 1 ? "giorno" : "giorni"} fa`;
+    const weeks = Math.round(days / 7);
+    if (weeks < 5) return `${weeks} ${weeks === 1 ? "settimana" : "settimane"} fa`;
+    return new Date(then).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+  }
+
+  function card(tool: IndexedTool, action: string, extra = ""): string {
+    return `<li class="tool-card" style="--tile-tone: var(--tone-${tool.tone})">`
+      + `<div class="tool-card-top"><h3 class="tool-card-name"><a href="${escapeHtml(tool.route)}">${escapeHtml(tool.name)}</a></h3>${extra}</div>`
+      + `<p class="tool-card-summary">${escapeHtml(tool.summary)}</p>`
+      + `<div class="tool-card-foot"><span class="tool-card-category">${escapeHtml(tool.categoryLabel)}</span>`
+      + `<a class="area-action" href="${escapeHtml(tool.route)}">${escapeHtml(action)} <span aria-hidden="true">→</span></a></div></li>`;
+  }
+
+  function render(membership: Membership): void {
+    const favorites = document.querySelector<HTMLElement>("[data-area-favorites]");
+    if (favorites !== null) {
+      favorites.innerHTML = membership.installed
+        .map((id) => byId.get(id))
+        .filter((tool): tool is IndexedTool => tool !== undefined)
+        .map((tool) => card(tool, "Apri"))
+        .join("");
+    }
+
+    const continueList = document.querySelector<HTMLElement>("[data-area-continue]");
+    const continueEmpty = document.querySelector<HTMLElement>("[data-area-continue-empty]");
+    const lastValues = readLastValues();
+    const recent = [...membership.recent].sort((a, b) => (a.lastUsedAt < b.lastUsedAt ? 1 : -1));
+
+    if (continueList !== null) {
+      const top = recent.slice(0, 3).map((entry) => byId.get(entry.toolId)).filter((tool): tool is IndexedTool => tool !== undefined);
+      continueList.innerHTML = top
+        .map((tool) => card(tool, "Apri di nuovo", `<span class="area-when">${escapeHtml(relative(recent.find((entry) => entry.toolId === tool.id)?.lastUsedAt ?? ""))}</span>`))
+        .join("");
+      if (continueEmpty !== null) continueEmpty.hidden = top.length > 0;
+    }
+
+    const activity = document.querySelector<HTMLElement>("[data-area-activity]");
+    const activityEmpty = document.querySelector<HTMLElement>("[data-area-activity-empty]");
+    if (activity !== null) {
+      const rows = recent.map((entry) => {
+        const tool = byId.get(entry.toolId);
+        if (tool === undefined) return "";
+        const produced: ToolLastValue | undefined = lastValues[tool.id];
+        const detail = produced === undefined ? "" : ` · ultimo valore ${escapeHtml(produced.value)}`;
+        return `<li><span class="icon-tile" style="--tile-tone: var(--tone-${tool.tone})"><span class="area-activity-dot"></span></span>`
+          + `<div><a href="${escapeHtml(tool.route)}"><strong>${escapeHtml(tool.name)}</strong></a>`
+          + `<small>${escapeHtml(tool.categoryLabel)} · ${entry.useCount} utilizzi${detail}</small></div>`
+          + `<span class="area-when">${escapeHtml(relative(entry.lastUsedAt))}</span></li>`;
+      }).join("");
+      activity.innerHTML = rows;
+      if (activityEmpty !== null) activityEmpty.hidden = recent.length > 0;
+    }
+
+    const suggest = document.querySelector<HTMLElement>("[data-area-suggest]");
+    if (suggest !== null) {
+      const installed = new Set(membership.installed);
+      const usedCategories = new Set(recent.map((entry) => byId.get(entry.toolId)?.category).filter((value): value is string => value !== undefined));
+      const pool = index.filter((tool) => !installed.has(tool.id) && (usedCategories.size === 0 || usedCategories.has(tool.category)));
+      suggest.innerHTML = pool.slice(0, 4).map((tool) => card(tool, "Provalo")).join("");
+    }
+  }
+
+  const greeting = document.querySelector<HTMLElement>("[data-area-greeting]");
+  const initial = document.querySelector<HTMLElement>("[data-area-initial]");
+
+  void (async () => {
+    try {
+      const response = await fetch("/api/auth/session", { credentials: "same-origin", headers: { accept: "application/json" } });
+      if (response.ok) {
+        const body = await response.json() as { user?: { name?: string; email: string } | null };
+        const name = body.user?.name?.trim() !== undefined && body.user?.name?.trim() !== "" ? body.user!.name! : body.user?.email;
+        if (name !== undefined && greeting !== null) {
+          greeting.textContent = `Ciao ${name.split("@")[0]}!`;
+          if (initial !== null) initial.textContent = name.slice(0, 1).toLocaleUpperCase("it");
+        }
+      }
+    } catch {
+      /* Signed out: the greeting stays generic. */
+    }
+    await loadIndex();
+    render(await loadMembership());
+  })();
+</script>
+
+<script type="application/json" data-category-index set:html={JSON.stringify(categories)}></script>
+
+<style>
+  .area {
+    display: grid;
+    gap: var(--space-8);
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .area-side { display: grid; gap: var(--space-5); align-content: start; }
+
+  .area-greeting {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .area-avatar {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-pill);
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .area-greeting strong { display: block; font-family: var(--font-family-display); }
+  .area-greeting small { color: var(--text-muted); font-size: var(--font-size-xs); }
+
+  .area-nav { display: grid; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
+
+  .area-nav a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .area-nav a:hover { background: var(--brand-soft); color: var(--brand); }
+  .area-nav a[aria-current="page"] { background: var(--brand-soft); color: var(--brand); font-weight: var(--font-weight-semibold); }
+
+  .area-main { min-width: 0; }
+
+  .area-hero {
+    display: grid;
+    gap: var(--space-6);
+    padding: var(--space-8);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-xl);
+    background:
+      radial-gradient(120% 130% at 0% 0%, color-mix(in srgb, var(--brand) 16%, transparent), transparent 62%),
+      var(--surface-subtle);
+    margin-bottom: var(--space-12);
+  }
+
+  .area-hero h1 {
+    margin: 0;
+    font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.028em;
+    line-height: 1.1;
+  }
+
+  .area-hero h1 span { color: var(--brand); }
+  .area-hero p { max-width: 42ch; margin: var(--space-4) 0 0; color: var(--text-muted); }
+
+  .area-hero-art { display: none; gap: var(--space-3); align-items: center; justify-content: flex-end; }
+
+  .area-hero-chip {
+    display: grid;
+    place-items: center;
+    width: 66px;
+    height: 66px;
+    border-radius: 20px;
+    background: linear-gradient(150deg, color-mix(in srgb, var(--tile-tone) 74%, white), var(--tile-tone));
+    color: var(--on-tone);
+    box-shadow: 0 18px 32px -18px color-mix(in srgb, var(--tile-tone) 70%, transparent);
+  }
+
+  .area-continue,
+  .area-favorites,
+  .area-activity,
+  .area-suggest { margin: 0; padding: 0; list-style: none; }
+
+  .area-continue,
+  .area-favorites,
+  .area-suggest { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+  .area-activity { display: grid; gap: var(--space-2); }
+
+  .area-activity li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .area-activity strong { display: block; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
+  .area-activity small { color: var(--text-faint); font-size: var(--font-size-xs); }
+  .area-activity .icon-tile { width: 34px; height: 34px; }
+  .area-activity-dot { width: 10px; height: 10px; border-radius: var(--radius-pill); background: var(--tile-tone); }
+
+  .area-when { margin-left: auto; color: var(--text-faint); font-size: var(--font-size-xs); white-space: nowrap; }
+
+  .area-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .area-empty { color: var(--text-muted); font-size: var(--font-size-sm); }
+
+  .area-columns { display: grid; gap: var(--space-8); }
+
+  .area-band {
+    display: grid;
+    gap: var(--space-5);
+    align-items: center;
+    margin-top: var(--space-12);
+    padding: var(--space-8);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .area-band-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-pill);
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+
+  .area-band h2 { margin: 0; font-size: var(--font-size-h2); }
+  .area-band p { margin: var(--space-1) 0 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+
+  @media (min-width: 900px) {
+    .area { grid-template-columns: 240px minmax(0, 1fr); gap: var(--space-10); }
+    .area-hero { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+    .area-hero-art { display: flex; }
+    .area-columns { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .area-band { grid-template-columns: auto minmax(0, 1fr) auto; padding: var(--space-8) var(--space-10); }
+  }
+</style>

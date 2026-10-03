@@ -1,6 +1,8 @@
 import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
-import { basename, join, resolve } from "node:path";
+import { basename, join, relative, resolve } from "node:path";
 import { catalog } from "../src/generated/catalog";
+import { groups } from "../src/catalog/groups";
+import { publicIndexPaths } from "../src/seo/public-discovery";
 
 const root = resolve(import.meta.dirname, "..");
 const updateBaseline = process.argv.includes("--update-baseline");
@@ -21,7 +23,33 @@ async function collectHtmlFiles(directory: string): Promise<string[]> {
 
 const htmlFiles = await collectHtmlFiles(dist);
 const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html: await readFile(path, "utf8") })));
-const pageMetadata = htmlPages.map(({ path, html }) => ({
+// The catalogue, the indexable routes the sitemap advertises, the content pages
+// that are deliberately left out of the sitemap (the per-group category islands
+// and the account/utility pages) and the legacy /library redirects that keep
+// inbound links alive. Anything else is a stray page and must fail the gate.
+const expectedPaths = new Set([
+  ...catalog.map((tool) => `${tool.route.replace(/^\/+/u, "").replace(/\/+$/u, "")}/index.html`),
+  ...publicIndexPaths.map((route) => route === "/" ? "index.html" : `${route.replace(/^\/+/u, "").replace(/\/+$/u, "")}/index.html`),
+  "accedi/index.html",
+  "cerca/index.html",
+  "impostazioni/index.html",
+  "preferiti/index.html",
+  ...groups.map((group) => `categorie/${group.slug}/index.html`),
+  "library/index.html",
+]);
+const actualPaths = new Set(htmlFiles.map((path) => relative(dist, path).replaceAll("\\", "/")));
+const unexpectedPages = [...actualPaths].filter((path) => !expectedPaths.has(path)).sort();
+const missingPages = [...expectedPaths].filter((path) => !actualPaths.has(path)).sort();
+if (unexpectedPages.length > 0 || missingPages.length > 0) {
+  throw new Error(`Unexpected HTML page set (missing: ${missingPages.join(", ") || "none"}; unexpected: ${unexpectedPages.join(", ") || "none"})`);
+}
+// Redirect stubs intentionally carry a meta refresh and no discovery metadata.
+const isRedirectStub = (html: string) => /http-equiv="refresh"/u.test(html);
+for (const { path, html } of htmlPages) {
+  const isExpectedRedirect = relative(dist, path).replaceAll("\\", "/") === "library/index.html";
+  if (isRedirectStub(html) !== isExpectedRedirect) throw new Error(`Unexpected redirect page: ${path}`);
+}
+const pageMetadata = htmlPages.filter(({ html }) => !isRedirectStub(html)).map(({ path, html }) => ({
   path,
   title: html.match(/<title>([^<]*)<\/title>/u)?.[1] ?? "",
   description: html.match(/<meta name="description" content="([^"]*)"/u)?.[1] ?? "",
@@ -30,8 +58,6 @@ const pageMetadata = htmlPages.map(({ path, html }) => ({
   jsonLd: html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/u)?.[1] ?? "",
   h1: html.match(/<h1\b[^>]*>/u)?.[0] ?? "",
 }));
-const expectedPageCount = catalog.length + 3;
-if (htmlPages.length !== expectedPageCount) throw new Error(`Expected ${expectedPageCount} HTML pages, found ${htmlPages.length}`);
 for (const metadata of pageMetadata) {
   if (metadata.title === "" || metadata.description === "" || metadata.canonical === "" || metadata.ogTitle === "" || metadata.jsonLd === "" || metadata.h1 === "") {
     throw new Error(`Incomplete discovery metadata: ${metadata.path}`);
@@ -49,7 +75,15 @@ if (new Set(titles).size !== titles.length) throw new Error("Rendered page title
 if (new Set(descriptions).size !== descriptions.length) throw new Error("Rendered page descriptions are not unique");
 const sitemap = await readFile(resolve(dist, "sitemap.xml"), "utf8");
 const sitemapLocations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((match) => match[1] ?? "");
-if (sitemapLocations.length !== expectedPageCount || new Set(sitemapLocations).size !== expectedPageCount) throw new Error("Sitemap does not contain one unique entry per public page");
+// `/categorie/<slug>` is an indexable destination, exactly as `sitemap.xml.ts` declares it.
+const indexablePaths = [...publicIndexPaths, ...groups.map((group) => `/categorie/${group.slug}`), ...catalog.map((tool) => tool.route)]
+  .map((route) => route === "/" ? "/" : `${route.replace(/\/+$/u, "")}/`)
+  .sort();
+const sitemapPaths = sitemapLocations.map((location) => decodeURIComponent(new URL(location, "https://build.invalid").pathname)).sort();
+if (indexablePaths.length !== new Set(indexablePaths).size) throw new Error("Indexable routes are not unique");
+if (sitemapPaths.length !== indexablePaths.length || sitemapPaths.some((path, index) => path !== indexablePaths[index])) {
+  throw new Error("Sitemap does not contain one unique entry per indexable page");
+}
 if (sitemapLocations.some((location) => location.includes("localhost"))) throw new Error("Localhost URL leaked into sitemap");
 for (const tool of catalog) if (!sitemap.includes(tool.route)) throw new Error(`Sitemap is missing ${tool.route}`);
 const robots = await readFile(resolve(dist, "robots.txt"), "utf8");
@@ -107,7 +141,7 @@ if (updateBaseline) {
 console.log(
   `build inspection PASS: ${engineChunks.length} lazy Business Day chunk(s); ` +
     `${baseline.jsAssetCount} JS asset(s), ${baseline.totalJsBytes} B total, ${baseline.initialJsBytes} B initial route JS; ` +
-    `${htmlPages.length} unique metadata page(s); ` +
+    `${pageMetadata.length} unique metadata page(s), ${sitemapLocations.length} sitemap entry(ies); ` +
     `${discoveryUrlMode}; ` +
     `historical baseline ${updateBaseline ? "updated" : "preserved"}`,
 );

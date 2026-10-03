@@ -1,128 +1,156 @@
-# RESTRETTO — the visual world for the StrumentiUtili.it redesign
+# WORLD — the visual world of StrumentiUtili.it
 
-Status: **canonical design authority for the redesign wave.** Every worker reads this before writing code.
-Supersedes `DESIGN.md` §2–§6 (structure and content survive; the visual world is replaced). `DESIGN.md` is rewritten at finish from the built result.
-Product truth: `PRODUCT.md`. This file owns visual decisions only.
+Status: **canonical design authority.** Every worker reads this before writing code.
+It is kept in sync with `src/styles/global.css` by `tests/design-system.test.ts`: the
+palette table below is parsed out of this file, so a token that drifts from this page
+fails the suite. Product truth: `PRODUCT.md`. This file owns visual decisions only.
 
 ---
 
 ## THESIS
 
-An independent worker's week is a **libro delle scritture** — the ruled ledger they keep their jobs in.
+The owner has selected the **familiar, expected version** of this product and it is
+executed at full fidelity, without irony and without smuggled quirks: a clean Italian
+utility site that looks like the category it belongs to, because that is what a person
+arriving with a two-minute job is looking for.
 
-The obvious way to build a 200-tool utility site is a card wall, a bento grid, a hero metric, a purple gradient, a search bar, a "trusted by" row. We refuse that arrangement entirely.
+The one idea this surface owns: **one blue, one white card, one obvious action.** Every
+screen answers the same three questions in the same order — what is this, what does it
+cost me, and where do I click. The catalogue is large and that fact is present but never
+the subject; the subject is the job in front of you.
 
-We build the product as a **registro**: a bound, ruled, hand-annotated working ledger where every value the product produces lands in the same fixed gutter position, so the eye learns one place to look and never has to search again. The tool count is invisible. What is visible is a page that already knows your numbers.
-
-The one idea this surface owns: **the running gutter.** A persistent right-hand column where results arrive in a fixed position, always aligned, always the same width, with the previous value still legible while you change the input. A product with 200 tools should feel like a book with one number column you already know how to read.
+What is refused: a hero that makes a claim we cannot prove, a badge that means nothing,
+a control for a feature that does not exist, decoration that costs a millisecond and
+buys nothing.
 
 ---
 
-## OWN-WORLD
+## PALETTE
 
-**Palette — ink on paper, one red pen.**
+Light values. `--brand` is the only accent that carries action; the tone wheel carries
+category identity so a card can be recognised before it is read.
 
-| Role | Value | Notes |
+| Token | Value | Role |
 |---|---|---|
-| `--carta` | `#F4F1EA` warm laid paper | the ground. Never pure white. |
-| `--carta-alta` | `#FBF9F4` | the leaf that sits on the desk — raised surfaces |
-| `--carta-fonda` | `#E8E3D7` | the desk beneath, rails, gutters |
-| `--inchiostro` | `#1A1714` iron-gall black | body ink |
-| `--inchiostro-2` | `#4A443C` | second ink, for rules and borders |
-| `--inchiostro-3` | `#6B6459` | faded ink — corrected to clear the 4.5:1 secondary-text floor on `--carta` |
-| `--rossa` | `#9E2B1F` | **the accountant's red pen. The only accent.** |
-| `--rossa-tenue` | `#F2E3E0` | red at 12% — fills, never text |
-| `--verde` | `#3C5A45` | semantic: success/local |
-| `--ambra` | `#8A5A12` | semantic: warning |
-| `--blu-nota` | `#2F4A6B` | semantic: info/reference |
+| `--brand` | `#0b6cfd` | the one accent: primary action, link, active state, computed value |
+| `--brand-hover` | `#0a5ce0` | the accent under the pointer |
+| `--brand-soft` | `#ebf3ff` | accent at tint strength: selected rows, icon grounds |
+| `--canvas` | `#f6faff` | the page ground |
+| `--surface` | `#ffffff` | every card, the header, the footer |
+| `--surface-subtle` | `#eff6ff` | recessed panels, table output, inputs at rest |
+| `--surface-muted` | `#e4effd` | the third step, progress tracks, hairlines on blue |
+| `--text` | `#0b1220` | headings and body ink |
+| `--text-muted` | `#55637a` | secondary prose, labels, metadata |
+| `--text-faint` | `#7c8a9e` | the quietest legible step: hints, counts, breadcrumbs |
+| `--border` | `#e4edf9` | the hairline that makes a card a card |
+| `--border-strong` | `#cfe0f4` | input edges and controls that must read as interactive |
+| `--success` | `#0d7a3c` | verified, success, "done" |
+| `--warning` | `#9a5b00` | in verifica, cautions that are not failures |
+| `--danger` | `#c1292e` | errors and destructive actions |
 
-Red is **committed, not scattered**: it carries the running total, the active row marker, the primary action, and nothing else. Budget: 4–8% of any viewport. If red appears twice in one component, one of them is wrong.
+Dark mode is not an inversion of the light palette: it redefines the same roles against
+a deep navy ground (`--canvas` `#080e1a`, `--surface` `#0f1828`, `--text` `#e9f1fb`) and
+lifts the accent to `#4d90ff` so it keeps its contrast on ink. Light and dark declare the
+same vocabulary.
 
-Dark mode is **not** an inversion. It is the same ledger under a desk lamp at night: `--carta` becomes `#15130F`, ink becomes `#EDE7DA`, red becomes `#D9634F`. Warm throughout, never neutral grey, never blue-black.
+**Light is the default, on every machine.** Dark is an explicit choice — the header
+switch, or `Tema` in `/impostazioni/`, which also offers `Sistema` for anyone who wants
+the operating system to decide. The sheet contains no `prefers-color-scheme` rule at all:
+a device setting the visitor did not make must never restyle the product, and a browser
+without JavaScript gets the light world rather than an approximation of it.
 
-**Type — two faces, no third.**
-
-- **Display/label:** a grotesque with real ink on paper, tight but not crushed, tracking between −0.02em and −0.03em. Never Fraunces, Playfair, Space Grotesk, IBM Plex, Inter-as-display, or the platform sans.
-- **Body/UI:** a workhorse humanist sans with good numerals at 12–14px.
-- **Numeric gutter:** a **tabular-lining** mono or the body face with `font-variant-numeric: tabular-nums lining-nums`. This is mandatory in the gutter. Digits must not shift width as they change — that is the whole point of the column.
-- Self-host, subset latin + latin-ext, `font-display: swap`, preload the two above-the-fold files. No CDN. No font that fails to load and silently falls back — the current `--font-family-ui: Inter, …` with nothing loading Inter is exactly the failure we are deleting.
-
-**Material.**
-
-- 1px `--inchiostro-3` hairlines at 30–40% for interior rules; `--inchiostro-2` at 1px for the gutter and page edges.
-- **No shadows on content.** A ledger is flat. Depth is a single 1px edge plus a background step, never a soft glow. One exception: the command palette and any true overlay gets one shadow with offset *and* blur, per the craft floor.
-- Ruled lines run the full content width. Where a line separates, it is a *ruled* line, not a card gap.
-- **Banned:** glass, gradient text, neon, glow edges, `border-left`/`border-right` > 1px as a colour device, zero-blur block shadows, pill-shaped everything, sparklines, progress rings, generic icon tiles.
-
-**The gutter — the signature element.**
-
-- Fixed-width right column, `clamp(9rem, 22vw, 15rem)`, on every tool surface and every result.
-- Every produced value lands there, top-aligned, tabular numerals, no wrapping.
-- The previous value stays visible, dimmed, directly above the new one, for ~4s. You always see what changed.
-- On mobile the gutter drops below the input as a full-width ruled block. It never disappears and never becomes a modal.
-- Semantic state is a 3px left rule *inside* the gutter's own left border, in ink, never a coloured card.
+The tone wheel is fixed: `--tone-1` `#0b6cfd`, `--tone-2` `#7c5cff`, `--tone-3` `#f2505f`,
+`--tone-4` `#f59e0b`, `--tone-5` `#12a150`, `--tone-6` `#06a8c4`, `--tone-7` `#e0447f`,
+`--tone-8` `#5566f0`. A category owns one tone for the whole site; a tinted ground is
+derived with `color-mix(in srgb, var(--tile-tone) 12%, var(--surface))`, never written as
+a second literal.
 
 ---
 
-## FIRST VIEWPORT
+## TYPE
 
-The home page is the **apertura del libro** — the day-book opened to today.
+One face: **Inter**, self-hosted as a variable woff2, latin and latin-ext, `font-display:
+swap`, both files preloaded. There is no display face and no second UI face — the
+hierarchy is weight, size, and colour, which is what makes a 200-tool site feel calm.
 
-1. **No hero, no banner, no big number.** The largest type on the page is a heading that names a state, not the product.
-2. **Your Tools** leads, in ledger rows, at reading density. Each row: name · one-line task · the *value* it last produced, in the gutter position, right-aligned tabular. The gutter column on the Workbench is not empty — it holds each tool's last result or its runtime state.
-3. The gutter column is visible from the first pixel of the content area, on every page, at the same x-offset. One place to look.
-4. **Recent** sits directly beneath, same row grammar, same gutter.
-5. **Suggestions** at most 2–4, each with one visible deterministic reason, set in the same rows.
-6. **Work Profile** is a ruled block, not a card. Six fields on a baseline grid, workweek as seven small toggles in a single ruled strip.
-7. **Library is never the first thing you see.** It is one link, and the search palette is one keystroke (`Cmd+K` / `Ctrl+K`).
+**Roboto Mono** survives for one job only: code and machine output (`.json-result`,
+`.result-code`, `.csv-preview`, `kbd`). Everything a person reads — including every
+computed value — is Inter with `font-variant-numeric: tabular-nums lining-nums`, so digits
+never shift width as they change.
 
-The page must survive: if someone left after one viewport, what would they describe an hour later? Answer: *a ledger with my tools in it, and the numbers in the same place every time.* If the answer is "a nice green website", the concept has not committed.
-
----
-
-## SIGNATURE INTERACTION
-
-**Il total corrente.**
-
-Type in any input → the gutter value re-renders in place, tabular numerals, no reflow, no layout shift, the delta from the previous value visible for 4s. Nothing animates into the gutter; the gutter is a physical column and values settle into it.
-
-This is the only "showy" moment in the product and it appears in exactly two places: the tool gutter, and the Workbench's per-tool last-value column. Everything else moves at 120ms or not at all.
+No CDN, no font that fails to load and silently falls back.
 
 ---
 
-## CROSS-SURFACE REACH
+## MATERIAL
 
-The world must survive: home · 200 tool pages · Library · command palette · onboarding (4 stages) · 404 · empty · error · loading · dark. It is built as **one token sheet plus one component vocabulary**, consumed by every surface. A second spacing system is a defect.
-
-Concretely that means: one `:root` token sheet; the shell, palette, and Library stop being hardcoded-pixel documents; CSS Modules consume the same tokens as globals; a single `.field`, `.field-grid`, `.actions`, `.gutter`, `.rule-row` vocabulary shared by all 13 tool renderers and the 28 bespoke tools.
+- **Cards.** `1px solid var(--border)`, `--radius-lg` (16px), `--surface` ground,
+  `--shadow-card` (a 1px edge plus one wide, very low shadow). A card is the only
+  container; there is no second "panel" treatment.
+- **Radius scale.** `6 / 8 / 12 / 16 / 22 / 999`. Pills are for tags, filters and the two
+  round controls (search go, avatar); nothing else is a pill.
+- **Depth.** Two shadows only: `--shadow-card` for resting cards, `--shadow-raised` for a
+  card under the pointer or an overlay. Never a glow, never a bevel.
+- **Icon tiles.** `--icon-tile` is a tinted square (12% tone over the surface) holding a
+  `currentColor` glyph — 44px in a card, 64px in a page heading, 96–108px in a hero.
+- **Buttons.** Primary is solid `--brand` with `--brand-ink` text and `--radius-md`;
+  secondary is a white card with `--border-strong`; ghost is text with a tinted hover.
+  Nothing is red except a destructive action.
+- **Motion.** 120ms for colour and border, 200ms for a card lift. Reduced motion removes
+  all of it.
 
 ---
 
-## HONEST RISK
+## SURFACES
 
-The ledger is a *quiet* world. It will not look like a 2026 SaaS launch page, and it will be judged against the "innovative site never seen before" brief. The defence is that the innovation is structural, not decorative: a fixed-position result gutter that makes a 200-tool product legible at 10 tools, executed with real typographic craft and real paper-and-ink material. Risk accepted deliberately.
+One shell: `SiteHeader` (brand, three destinations, search, theme, account chip) over
+every page, `SiteFooter` under it. The palette (`⌘K` / `Ctrl+K`) is the only overlay and
+the only element with the deep shadow.
 
-Second risk: ruled ledger grammar can read as "retro" or "accounting software". Prevented by execution — a ledger drawn with a contemporary grotesque at contemporary density is not nostalgia. Do not add distressed textures, sepia, torn edges, or typewriter effects.
+1. **Homepage** — hero with the one-line promise, a search field, three trust items, the
+   ten public categories, the device's own recent tools, an editorial starter set, and a
+   closing band with four real numbers.
+2. **Directory** (`/strumenti/`) — filters, tabs, sort, and all 200 tools, driven from the
+   URL so a filtered view is linkable.
+3. **Search** (`/cerca/`) — the query, the honest count, related searches, the device's own
+   recent searches, and the ranked results.
+4. **Category** (`/categorie/[slug]/`) — the ten public groups over the internal taxonomy.
+5. **Tool** (`/tools/[slug]/`) — breadcrumb, tinted tile, title, summary, three trust pills,
+   the tool's own surface, four properties, the three steps, the FAQ, related tools.
+6. **Workspace** — the tool's own input and the result column, on `.tool-operation`.
+7. **Area** (`/preferiti/`) — the tools kept, the tools used, and what the account knows.
+8. **Settings** (`/impostazioni/`) — profile, preferences, theme, privacy and security.
+9. **Access** (`/accedi/`) — sign in or create an account; the benefits column states only
+   what an account really adds.
+10. **Onboarding** (`/onboarding/`) — four steps: welcome, what you do, what you use, and
+    the tools the answers produce.
+
+Every surface owns the same promise about data: **the file never leaves the device.** A
+page that cannot prove a claim does not make it.
 
 ---
+
+## HONESTY RULES (binding on every surface)
+
+- No invented number. Counts come from the generated catalog and quality index at build
+  time; usage counts come from this device only, and are labelled as such.
+- No invented feature. If a control cannot do what its label says, it is not rendered —
+  not disabled, not "coming soon".
+- No popularity claim: there is no popularity data, so no "più popolari" tab, no badge, no
+  ranking. The substitutes are certification, category, alphabetical order, and an
+  explicitly editorial selection.
+- Nothing about a person's files is stored or displayed beyond the tool's name, the time,
+  and — if the tool produced one — the last value it produced.
 
 ## ITALIAN-FIRST
 
-Every user-facing string ships Italian-first. English exists as a secondary, not as the source. `lang` is set per content, not a hardcoded `<html lang="en">`.
+Every user-facing string ships Italian-first and is authored in Italian. `lang="it"` is on
+the document.
 
----
+## ITS OWN TEST
 
-## WORKER OWNERSHIP MAP
-
-Disjoint. Do not edit another lane's files.
-
-| Lane | Owns |
-|---|---|
-| **W1 — Foundation** | `src/styles/**` (new token sheet + base elements), `src/layouts/BaseLayout.astro`, font assets, `design/WORLD.md` is read-only for everyone |
-| **W2 — Shell & navigation** | `src/components/shell/**`, mobile nav, icon set, route-swap safety |
-| **W3 — Tool surface** | `src/components/tools/**` — the gutter, the 13 renderers, the 28 bespoke tools |
-| **W4 — Library & search** | `src/components/library/**`, `src/components/search/**` |
-| **W5 — Workbench & onboarding** | `src/components/workbench/**`, `src/components/onboarding/**`, home page composition |
-| **W6 — Tickets & proof** | `quality/**`, `scripts/**`, `.scratch/**` — no visual files; owns ticket completion + acceptance |
-
-Shared boundary rule: W1 owns `src/styles/**` and nothing else touches it. If a lane needs a token that does not exist, it adds a *consumer* rule in its own file and reports the missing token; it does not edit the token sheet.
+`tests/design-system.test.ts` parses the palette table above, checks that the token sheet
+declares exactly the same values, that no component stylesheet introduces a local colour
+literal or a second spacing scale, that the contrast floors hold in both themes, and that
+no declared token is dead. Change a token here and in `src/styles/global.css` together, or
+the suite fails.

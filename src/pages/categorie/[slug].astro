@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import GroupHero from "../../components/catalog/GroupHero.astro";
+import GroupFeatured from "../../components/catalog/GroupFeatured.astro";
+import GroupTools from "../../components/catalog/GroupTools.astro";
+import GroupClosing from "../../components/catalog/GroupClosing.astro";
+import GroupRelated from "../../components/catalog/GroupRelated.astro";
+import { groups, toolsInGroup, type CatalogGroup } from "../../catalog/groups";
+import { qualityIndex } from "../../generated/quality";
+import { goldToolIds } from "../../onboarding/quality";
+
+interface Props {
+  group: CatalogGroup;
+}
+
+export function getStaticPaths() {
+  return groups.map((group) => ({ params: { slug: group.slug }, props: { group } }));
+}
+
+const { group } = Astro.props;
+
+const tools = toolsInGroup(group);
+const verifiedIds = goldToolIds(qualityIndex);
+
+// The editorial trio: certified tools first, in catalogue order, then the
+// catalogue order itself when a group has fewer than three certifications.
+const certified = tools.filter((tool) => verifiedIds.has(tool.id));
+const uncertified = tools.filter((tool) => !verifiedIds.has(tool.id));
+const featured = [...certified, ...uncertified].slice(0, 3);
+const certifiedInFeatured = featured.filter((tool) => verifiedIds.has(tool.id)).length;
+---
+
+<BaseLayout title={`Strumenti per ${group.label}`} description={group.intro}>
+  <div class="tool-page group-page" style={`--tile-tone: var(--tone-${group.tone})`}>
+    <ol class="breadcrumb">
+      <li><a href="/">Home</a></li>
+      <li><a href="/categorie/">Categorie</a></li>
+      <li aria-current="page">{group.label}</li>
+    </ol>
+
+    <GroupHero group={group} count={tools.length} />
+
+    <GroupFeatured group={group} tools={featured} certified={certifiedInFeatured} />
+
+    <GroupTools group={group} tools={tools} />
+
+    <GroupClosing />
+
+    <GroupRelated group={group} />
+  </div>
+</BaseLayout>

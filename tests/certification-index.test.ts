@@ -35,11 +35,11 @@ describe("expanded catalog certification index", () => {
   it("preserves the certified frontier and exposes unresolved evidence", async () => {
     const index = await buildCertificationIndex();
     expect(index.summary.statusCounts).toEqual({
-      GOLD: 119,
+      GOLD: 168,
       PARTIAL: 1,
-      IMPLEMENTED_UNVERIFIED: 80,
+      IMPLEMENTED_UNVERIFIED: 31,
     });
-    expect(index.summary.certificationGoldCount).toBe(119);
+    expect(index.summary.certificationGoldCount).toBe(168);
     expect(index.summary.physicalDevicePassCount).toBe(0);
     expect(index.global.physicalDevice).toMatchObject({
       status: "EXTERNAL",

@@ -1,0 +1,517 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import UiIcon from "../components/icons/UiIcon.astro";
+import { iconSvgMarkup } from "../ui/tool-icons";
+import { TURNSTILE_SITE_KEY } from "../config/security";
+import { PASSWORD_MIN_LENGTH } from "../../worker/validation";
+import "../components/account/account.css";
+
+/**
+ * Access and registration.
+ *
+ * The page is complete without JavaScript and honest without a backend: the
+ * forms are server-rendered, and when `/api/auth/*` cannot be reached the page
+ * says so instead of pretending a session exists. Nothing here renders a
+ * control the account API cannot honour — there is no "remember me" checkbox
+ * because `worker/auth.ts` always issues a 30-day cookie, and no social login,
+ * because there is no endpoint for one.
+ */
+const benefits = [
+  {
+    icon: "heart" as const,
+    title: "I tuoi strumenti preferiti",
+    body: "I preferiti che scegli qui vengono uniti a quelli del tuo account: li ritrovi quando accedi da un altro dispositivo.",
+  },
+  {
+    icon: "devices" as const,
+    title: "Sempre con te",
+    body: "Accedi da un altro browser e riparti dalla stessa lista di strumenti, senza ricostruirla da capo.",
+  },
+  {
+    icon: "sliders" as const,
+    title: "Un'esperienza personalizzata",
+    body: "Suggerimenti e ricerca partono dagli strumenti che usi di più; quello che scrivi nelle attività resta sul dispositivo.",
+  },
+];
+
+const sessionTtlDays = 30;
+const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
+---
+
+<BaseLayout
+  title="Accedi"
+  description="Accedi o crea un account per ritrovare i tuoi strumenti preferiti su ogni dispositivo."
+  noindex
+>
+  <div class="ac-access">
+    <div class="ac-pitch">
+      <h1>Il tuo spazio di lavoro, sempre con te.</h1>
+      <p>
+        Un account è facoltativo: il sito funziona anche senza. Serve solo a ritrovare
+        i tuoi strumenti preferiti su un altro dispositivo.
+      </p>
+      <ul class="ac-benefits">
+        {benefits.map((benefit) => (
+          <li class="ac-benefit">
+            <span class="icon-tile ac-art-tile" aria-hidden="true"><UiIcon name={benefit.icon} size={22} /></span>
+            <div>
+              <h2>{benefit.title}</h2>
+              <p>{benefit.body}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="card ac-card" data-access data-turnstile-site-key={turnstileSiteKey}>
+      <div class="ac-tabs" role="tablist" aria-label="Accedi o crea un account" data-access-tabs>
+        <button
+          class="ac-tab"
+          type="button"
+          role="tab"
+          id="tab-login"
+          aria-controls="panel-login"
+          aria-selected="true"
+          data-access-tab="login"
+        >Accedi</button>
+        <button
+          class="ac-tab"
+          type="button"
+          role="tab"
+          id="tab-register"
+          aria-controls="panel-register"
+          aria-selected="false"
+          tabindex="-1"
+          data-access-tab="register"
+        >Crea un account</button>
+      </div>
+
+      <p class="error" data-access-error hidden></p>
+
+      <div class="ac-connected" data-access-connected hidden>
+        <span class="pill pill-success"><UiIcon name="check-circle" size={14} /> Sessione attiva</span>
+        <p>Sei già connesso come <strong data-access-email></strong>.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/preferiti/">Vai ai tuoi strumenti</a>
+          <a class="btn" href="/impostazioni/">Apri le impostazioni</a>
+        </div>
+      </div>
+
+      <form
+        class="ac-panel"
+        id="panel-login"
+        role="tabpanel"
+        aria-labelledby="tab-login"
+        data-access-panel="login"
+        novalidate
+      >
+        <div class="field">
+          <label for="login-email">Email</label>
+          <div class="ac-control">
+            <span class="ac-control-icon" aria-hidden="true"><UiIcon name="user" size={18} /></span>
+            <input
+              id="login-email"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              spellcheck="false"
+              required
+              data-field-input="login-email"
+            />
+          </div>
+          <p class="ac-field-error" id="login-email-error" data-field-error="login-email" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="login-password">Password</label>
+          <div class="ac-control">
+            <span class="ac-control-icon" aria-hidden="true"><UiIcon name="lock" size={18} /></span>
+            <input
+              id="login-password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+              data-field-input="login-password"
+            />
+            <button
+              class="ac-reveal"
+              type="button"
+              aria-controls="login-password"
+              aria-pressed="false"
+              aria-label="Mostra la password"
+              data-password-reveal
+            >
+              <span data-reveal-secret><UiIcon name="eye" size={18} /></span>
+              <span data-reveal-visible hidden><UiIcon name="eye-off" size={18} /></span>
+            </button>
+          </div>
+          <p class="ac-field-error" id="login-password-error" data-field-error="login-password" hidden></p>
+        </div>
+
+        {turnstileSiteKey !== "" && (
+          <div id="turnstile-login" class="ac-turnstile" aria-label="Verifica anti-bot"></div>
+        )}
+
+        <button class="btn btn-primary btn-block" type="submit" data-access-submit>
+          <span data-busy-label>Accedi</span>
+          <span class="ac-submit-arrow" aria-hidden="true">→</span>
+        </button>
+
+        <p class="ac-support">
+          La sessione resta attiva per {sessionTtlDays} giorni su questo browser.
+        </p>
+
+        <p class="ac-support">
+          Non hai un account? <a class="text-button" href="#registrati" data-access-tab-link="register">Crea un account</a>
+        </p>
+      </form>
+
+      <form
+        class="ac-panel"
+        id="panel-register"
+        role="tabpanel"
+        aria-labelledby="tab-register"
+        data-access-panel="register"
+        novalidate
+        hidden
+      >
+        <div class="field">
+          <label for="register-name">Nome</label>
+          <div class="ac-control">
+            <span class="ac-control-icon" aria-hidden="true"><UiIcon name="user" size={18} /></span>
+            <input
+              id="register-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+              data-field-input="register-name"
+            />
+          </div>
+          <p class="ac-field-error" id="register-name-error" data-field-error="register-name" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="register-email">Email</label>
+          <div class="ac-control">
+            <span class="ac-control-icon" aria-hidden="true"><UiIcon name="user" size={18} /></span>
+            <input
+              id="register-email"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              spellcheck="false"
+              required
+              data-field-input="register-email"
+            />
+          </div>
+          <p class="ac-field-error" id="register-email-error" data-field-error="register-email" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="register-password">Password</label>
+          <div class="ac-control">
+            <span class="ac-control-icon" aria-hidden="true"><UiIcon name="lock" size={18} /></span>
+            <input
+              id="register-password"
+              name="password"
+              type="password"
+              autocomplete="new-password"
+              required
+              data-field-input="register-password"
+              aria-describedby="register-password-rule"
+            />
+            <button
+              class="ac-reveal"
+              type="button"
+              aria-controls="register-password"
+              aria-pressed="false"
+              aria-label="Mostra la password"
+              data-password-reveal
+            >
+              <span data-reveal-secret><UiIcon name="eye" size={18} /></span>
+              <span data-reveal-visible hidden><UiIcon name="eye-off" size={18} /></span>
+            </button>
+          </div>
+          <p class="ac-field-error" id="register-password-error" data-field-error="register-password" hidden></p>
+          <p class="ac-support" id="register-password-rule">Almeno {PASSWORD_MIN_LENGTH} caratteri.</p>
+        </div>
+
+        {turnstileSiteKey !== "" && (
+          <div id="turnstile-register" class="ac-turnstile" aria-label="Verifica anti-bot"></div>
+        )}
+
+        <button class="btn btn-primary btn-block" type="submit" data-access-submit>
+          <span data-busy-label>Crea un account</span>
+          <span class="ac-submit-arrow" aria-hidden="true">→</span>
+        </button>
+      </form>
+
+      <p class="ac-trust">
+        <UiIcon name="lock" size={16} />
+        <a href="/risorse/#privacy">I tuoi dati sono sempre al sicuro.</a>
+      </p>
+    </div>
+
+    <div class="ac-art" aria-hidden="true">
+      <span class="icon-tile icon-tile-lg ac-art-tile"><UiIcon name="user" size={30} /></span>
+      <span class="icon-tile icon-tile-lg ac-art-tile" set:html={iconSvgMarkup("shield", "ac-art-glyph")}></span>
+      <span class="icon-tile icon-tile-lg ac-art-tile">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M7.4 18.5a4.2 4.2 0 0 1-.3-8.4 5.2 5.2 0 0 1 10-1.2 3.9 3.9 0 0 1 .6 7.7z" />
+        </svg>
+      </span>
+    </div>
+  </div>
+</BaseLayout>
+
+{turnstileSiteKey !== "" && (
+  <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+)}
+
+<script>
+  import {
+    createAccount,
+    readSession,
+    signIn,
+    type SessionUser,
+  } from "../components/account/auth-client";
+  import {
+    bindPasswordReveal,
+    clearFieldErrors,
+    setBusy,
+    setFieldError,
+    setMessage,
+  } from "../components/account/forms";
+  import { MESSAGES, validateEmail, validateName, validatePassword } from "../../worker/validation";
+
+  type PanelName = "login" | "register";
+  interface TurnstileApi {
+    ready(callback: () => void): void;
+    render(
+      target: string | HTMLElement,
+      options: {
+        sitekey: string;
+        action: string;
+        theme: "auto";
+        size: "flexible";
+        language: "it";
+        callback(token: string): void;
+        "expired-callback"(): void;
+        "error-callback"(): void;
+      },
+    ): string;
+    reset(widgetId: string): void;
+  }
+  declare global {
+    interface Window {
+      turnstile?: TurnstileApi;
+    }
+  }
+
+  const root = document.querySelector<HTMLElement>("[data-access]");
+
+  if (root !== null) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-access-tab]"));
+    const panels = Array.from(root.querySelectorAll<HTMLFormElement>("[data-access-panel]"));
+    const tabBar = root.querySelector<HTMLElement>("[data-access-tabs]");
+    const connected = root.querySelector<HTMLElement>("[data-access-connected]");
+    const emailSlot = root.querySelector<HTMLElement>("[data-access-email]");
+    const message = root.querySelector<HTMLElement>("[data-access-error]");
+    const loginForm = root.querySelector<HTMLFormElement>('[data-access-panel="login"]');
+    const registerForm = root.querySelector<HTMLFormElement>('[data-access-panel="register"]');
+    const turnstileSiteKey = root.dataset.turnstileSiteKey ?? "";
+    const turnstileTokens: Record<PanelName, string> = { login: "", register: "" };
+    const turnstileWidgets: Partial<Record<PanelName, string>> = {};
+
+    function resetTurnstile(panel: PanelName): void {
+      turnstileTokens[panel] = "";
+      const id = turnstileWidgets[panel];
+      if (id !== undefined) window.turnstile?.reset(id);
+    }
+
+    function initializeTurnstile(): void {
+      if (turnstileSiteKey === "") return;
+      const api = window.turnstile;
+      if (api === undefined) return;
+      api.ready(() => {
+        for (const panel of ["login", "register"] as const) {
+          const target = document.querySelector<HTMLElement>(`#turnstile-${panel}`);
+          if (target === null || turnstileWidgets[panel] !== undefined) continue;
+          turnstileWidgets[panel] = api.render(target, {
+            sitekey: turnstileSiteKey,
+            action: panel,
+            theme: "auto",
+            size: "flexible",
+            language: "it",
+            callback: (token) => {
+              turnstileTokens[panel] = token;
+            },
+            "expired-callback": () => {
+              turnstileTokens[panel] = "";
+            },
+            "error-callback": () => {
+              turnstileTokens[panel] = "";
+            },
+          });
+        }
+      });
+    }
+
+    function selectPanel(name: PanelName, syncHash = true): void {
+      for (const tab of tabs) {
+        const active = tab.dataset.accessTab === name;
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+      }
+      for (const panel of panels) panel.hidden = panel.dataset.accessPanel !== name;
+      clearFieldErrors(root);
+      setMessage(message, null);
+      if (syncHash) {
+        const url = new URL(window.location.href);
+        url.hash = name === "register" ? "#registrati" : "";
+        history.replaceState(null, "", url);
+      }
+    }
+
+    function activePanel(): PanelName {
+      return tabs.find((tab) => tab.getAttribute("aria-selected") === "true")?.dataset.accessTab === "register"
+        ? "register"
+        : "login";
+    }
+
+    for (const tab of tabs) {
+      tab.addEventListener("click", () => selectPanel(tab.dataset.accessTab === "register" ? "register" : "login"));
+    }
+
+    root.addEventListener("click", (event) => {
+      const link = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-access-tab-link]") : null;
+      if (link === null) return;
+      event.preventDefault();
+      selectPanel(link.dataset.accessTabLink === "register" ? "register" : "login");
+    });
+
+    tabBar?.addEventListener("keydown", (event) => {
+      if (!(event instanceof KeyboardEvent)) return;
+      if (!["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      const next: PanelName = activePanel() === "login" ? "register" : "login";
+      selectPanel(next);
+      tabs.find((tab) => tab.dataset.accessTab === next)?.focus();
+    });
+
+    function invalid(form: HTMLFormElement): boolean {
+      const first = form.querySelector<HTMLInputElement>('[aria-invalid="true"]');
+      first?.focus();
+      return first !== null;
+    }
+
+    async function submitLogin(): Promise<void> {
+      const form = loginForm;
+      if (form === null) return;
+      clearFieldErrors(form);
+      setMessage(message, null);
+
+      const emailInput = form.querySelector<HTMLInputElement>('input[name="email"]');
+      const passwordInput = form.querySelector<HTMLInputElement>('input[name="password"]');
+      const email = validateEmail(emailInput?.value ?? "");
+      const password = passwordInput?.value ?? "";
+
+      if (!email.ok) setFieldError(form, "login-email", email.message);
+      if (password === "") setFieldError(form, "login-password", MESSAGES.passwordInvalid);
+      if (turnstileSiteKey !== "" && turnstileTokens.login === "") {
+        setMessage(message, MESSAGES.turnstileRequired);
+        return;
+      }
+      if (invalid(form)) return;
+
+      const button = form.querySelector<HTMLButtonElement>("[data-access-submit]");
+      if (button !== null) setBusy(button, true);
+      const result = await signIn(email.ok ? email.value : "", password, turnstileTokens.login);
+      if (!result.ok) {
+        resetTurnstile("login");
+        setMessage(message, result.message);
+        if (button !== null) setBusy(button, false);
+        return;
+      }
+      window.location.assign("/preferiti/");
+    }
+
+    async function submitRegister(): Promise<void> {
+      const form = registerForm;
+      if (form === null) return;
+      clearFieldErrors(form);
+      setMessage(message, null);
+
+      const name = validateName(form.querySelector<HTMLInputElement>('input[name="name"]')?.value ?? "");
+      const email = validateEmail(form.querySelector<HTMLInputElement>('input[name="email"]')?.value ?? "");
+      const password = validatePassword(form.querySelector<HTMLInputElement>('input[name="password"]')?.value ?? "");
+
+      if (!name.ok) setFieldError(form, "register-name", name.message);
+      if (!email.ok) setFieldError(form, "register-email", email.message);
+      if (!password.ok) setFieldError(form, "register-password", password.message);
+      if (turnstileSiteKey !== "" && turnstileTokens.register === "") {
+        setMessage(message, MESSAGES.turnstileRequired);
+        return;
+      }
+      if (invalid(form)) return;
+
+      const button = form.querySelector<HTMLButtonElement>("[data-access-submit]");
+      if (button !== null) setBusy(button, true);
+      const result = await createAccount(
+        name.ok ? name.value : "",
+        email.ok ? email.value : "",
+        password.ok ? password.value : "",
+        turnstileTokens.register,
+      );
+      if (!result.ok) {
+        resetTurnstile("register");
+        setMessage(message, result.message);
+        if (button !== null) setBusy(button, false);
+        return;
+      }
+      window.location.assign("/preferiti/");
+    }
+
+    loginForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void submitLogin();
+    });
+
+    registerForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void submitRegister();
+    });
+
+    function showConnected(user: SessionUser): void {
+      if (emailSlot !== null) emailSlot.textContent = user.email;
+      if (tabBar !== null) tabBar.hidden = true;
+      for (const panel of panels) panel.hidden = true;
+      if (connected !== null) connected.hidden = false;
+    }
+
+    bindPasswordReveal(root);
+    initializeTurnstile();
+    window.addEventListener("load", initializeTurnstile, { once: true });
+
+    window.addEventListener("hashchange", () => {
+      selectPanel(window.location.hash === "#registrati" ? "register" : "login", false);
+    });
+
+    if (window.location.hash === "#registrati") {
+      selectPanel("register", false);
+      tabs[1]?.focus();
+    }
+
+    void (async () => {
+      // The probe only asks whether a session already exists. A deployment with
+      // no account API must look like "not signed in", not like a broken page,
+      // so a failed probe stays silent; only the user's own actions report.
+      const result = await readSession();
+      if (result.ok && result.data.user !== null) showConnected(result.data.user);
+    })();
+  }
+</script>

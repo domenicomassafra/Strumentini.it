@@ -1,0 +1,82 @@
+---
+/**
+ * Binds every favourite control on the page to the membership store.
+ *
+ * The buttons are server-rendered (so the page is complete without JavaScript);
+ * this island only reflects the stored state and writes changes back. When a
+ * session exists it also reconciles the device list with the account.
+ */
+---
+
+<script>
+  import {
+    loadMembership,
+    pushMembershipChange,
+    subscribeMembership,
+    syncMembershipWithAccount,
+    toggleInstalled,
+    type Membership,
+  } from "../../workbench/membership";
+
+  const toggles = (): HTMLButtonElement[] =>
+    Array.from(document.querySelectorAll<HTMLButtonElement>("[data-membership-toggle]"));
+
+  function paint(membership: Membership): void {
+    const installed = new Set(membership.installed);
+    for (const toggle of toggles()) {
+      const toolId = toggle.dataset.membershipToggle;
+      if (toolId === undefined) continue;
+      const on = installed.has(toolId);
+      toggle.dataset.installed = String(on);
+      toggle.setAttribute("aria-pressed", String(on));
+      const label = on ? "Rimuovi dai tuoi strumenti" : "Aggiungi ai tuoi strumenti";
+      toggle.setAttribute("aria-label", label);
+      toggle.setAttribute("title", label);
+    }
+    for (const counter of document.querySelectorAll<HTMLElement>("[data-membership-count]")) {
+      counter.textContent = String(membership.installed.length);
+    }
+    for (const label of document.querySelectorAll<HTMLElement>("[data-membership-label]")) {
+      const count = membership.installed.length;
+      label.textContent = count === 0
+        ? "Nessuno strumento scelto"
+        : count === 1 ? "1 strumento scelto" : `${count} strumenti scelti`;
+    }
+    for (const empty of document.querySelectorAll<HTMLElement>("[data-membership-empty]")) {
+      empty.hidden = membership.installed.length > 0;
+    }
+  }
+
+  let signedIn = false;
+
+  document.addEventListener("click", (event) => {
+    const toggle = event.target instanceof Element
+      ? event.target.closest<HTMLButtonElement>("[data-membership-toggle]")
+      : null;
+    if (toggle === null) return;
+    event.preventDefault();
+    const toolId = toggle.dataset.membershipToggle;
+    if (toolId === undefined) return;
+    const wasInstalled = toggle.dataset.installed === "true";
+    void toggleInstalled(toolId).then((membership) => {
+      paint(membership);
+      void pushMembershipChange(toolId, !wasInstalled, signedIn);
+    });
+  });
+
+  subscribeMembership(paint);
+
+  void (async () => {
+    try {
+      const response = await fetch("/api/auth/session", { credentials: "same-origin", headers: { accept: "application/json" } });
+      if (response.ok) {
+        const body = await response.json() as { user?: unknown };
+        signedIn = Boolean(body.user);
+      }
+    } catch {
+      signedIn = false;
+    }
+    const membership = signedIn ? await syncMembershipWithAccount() : undefined;
+    paint(membership ?? await loadMembership());
+  })();
+</script>

@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Existing, not delegated: Astro 7 + Preact + TypeScript, static build, custom-property CSS (no utility framework), 200 generated tool routes through an in-repo Tool Factory, with Cloudflare Workers Static Assets as the default deployment target. The built `dist/` artifact remains ordinary static output and must stay provider-portable. Ownership question already answered by the repository itself; do not re-offer it.
+Existing, not delegated: Astro 7 + Preact + TypeScript, static build, custom-property CSS (no utility framework), 200 generated tool routes through an in-repo Tool Factory, with Cloudflare Workers Static Assets as the default deployment target. The built `dist/` artifact remains ordinary static output and must stay provider-portable; the only server code is the optional account API in `worker/**`, which serves `/api/**` and delegates every other request to the static assets. A host without that Worker serves the whole site with every tool working and the account controls reporting themselves as unavailable.
 
 ## Users
 
@@ -42,7 +42,7 @@ Work happens in fragments: a message arrives, a file needs cleaning before it ca
 
 Most of these jobs are small, repeated, and boring. The user is not seeking novelty; they are trying to stop repeating themselves.
 
-The product is anonymous-first and account-free in this build. There is no sign-in, no sync, and no server that holds user data. Reference design shows a "signed-in shell" in older artifacts; the current truth is a local personalized shell.
+The product is anonymous-first and account-optional. Every tool, every preference and the whole workspace work with no account at all, stored in the browser. An account exists for exactly one reason: so the tools a person keeps follow them to another device. The server holds the account record (email, name, a PBKDF2 hash, sessions) and the list of kept tool ids — never a file, never the content or the result of a job.
 
 ## Capabilities and Constraints
 
@@ -50,13 +50,13 @@ Confirmed and binding:
 
 - 200 tools, every one with a real route, real implementation, tests, and a quality receipt. Generated placeholders are prohibited.
 - Deterministic and local for normal work. No per-use LLM requirement. No remote user-file database.
-- Optional auth exists only as a future sync path and is absent from the interface rather than disabled.
+- An account is optional and additive: registering, signing in, and the account settings live under `/accedi/` and `/impostazioni/`, and nothing in the tool flow ever requires them. A control for a feature the running deployment cannot serve is not rendered, and the account chip falls back to "Accedi".
 - Search and command palette available everywhere; `Cmd+K` on macOS, `Ctrl+K` elsewhere.
 - Onboarding generates a small starter set and never interrupts a first task. No onboarding modal may block job completion.
 - Anonymity is a functional requirement, not a setting: a shared link must let a visitor finish a job and only then optionally install the tool.
-- Public catalog-size claims count Gold-certified tools only.
+- A public catalog-size claim may count every tool with a real route and implementation (placeholders are prohibited, so the two sets are the same). Certification is a separate, visible fact — "Verificato" against a recorded oracle, "In verifica" otherwise — and the two numbers are never conflated.
 
-Explicitly out of scope, never to reintroduce: account/sync, ads, generic AI features, runtime plugins, PWA/offline marketing claims, the historical 40-tool wave, and the legacy "signed-in" shell.
+Explicitly out of scope, never to reintroduce: ads, generic AI features, runtime plugins, PWA/offline marketing claims, the historical 40-tool wave, and the legacy "signed-in" shell. **Account and cross-device sync are in scope**, at the scope stated above and no wider: no social login, no magic link, no second factor, no email delivery, no server-side storage of anything a tool produces.
 
 Resolved: the public brand name is StrumentiUtili.it. The logo, type licence/source, and accent colour remain design decisions recorded in DESIGN.md rather than product facts.
 
@@ -75,13 +75,15 @@ Standing category-standard alternative, held open permanently: the owner may at 
 Real and must not be fabricated away. Operational counts belong in `PROJECT-STATUS.md`, `HANDOFF.md` and the generated certification index rather than being frozen in this product contract:
 
 - `src/` — working Astro application with 200 tool routes and a generated/lazy runtime architecture.
-- `DESIGN.md` — accepted structural system: Workbench (what I use) versus Library (what exists), two deliberately distinct layers.
+- `design/WORLD.md` — the canonical visual authority: palette, type, material, surfaces, and the honesty rules. `src/styles/global.css` implements it and `tests/design-system.test.ts` refuses to let the two drift.
+- `DESIGN.md` — the structural system: the catalogue (what exists), the tool surface, and the account area as three deliberately distinct layers.
+- `worker/**` — the optional account API (Cloudflare Worker + D1): registration, sessions, profile, password, and the synced list of kept tool ids.
 - `PRODUCT-SPEC.md` — the full acceptance-criterion contract, US-01 through US-17.
-- `design/lane-04/UX-BLUEPRINT.md`, `design/lane-04/DESIGN-SYSTEM-CANDIDATE.md` — the incumbent "Quiet Workbench" direction, now superseded as visual authority by this redesign.
+- `design/lane-04/UX-BLUEPRINT.md`, `design/lane-04/DESIGN-SYSTEM-CANDIDATE.md` — the historical "Quiet Workbench" direction, superseded as visual authority by `design/WORLD.md`.
 - `.scratch/strumentiutili-v1/` — historical first-validation ticket/provenance material only; it is no longer an active execution queue.
 - `quality/receipts/**` — per-tool certification.
 
-Absences future work must not invent: no user testimonials, no customer logos, no performance benchmarks beyond the measured receipts, no pricing, no unapproved logo, no paid-traffic or conversion data, no market-share claims. The public name is StrumentiUtili.it; the 200-tool figure is a build fact, not a popularity claim.
+Absences future work must not invent: no user testimonials, no customer logos, no performance benchmarks beyond the measured receipts, no pricing, no unapproved logo, no paid-traffic or conversion data, no market-share claims, **no user counts, no popularity ranking, and no "most used" badge** — there is no usage data to rank by, so popularity is never claimed and the substitutes are certification, category, alphabetical order, and an explicitly editorial selection. The public name is StrumentiUtili.it; the 200-tool figure is a build fact, not a popularity claim.
 
 ## Product Principles
 
@@ -93,6 +95,6 @@ Absences future work must not invent: no user testimonials, no customer logos, n
 
 ## Accessibility & Inclusion
 
-WCAG 2.2 AA is the floor. Full keyboard operation including the command palette; visible focus at every interactive element; `prefers-reduced-motion` honoured; `prefers-color-scheme` supported; body text at 4.5:1 or better and large text at 3:1 or better; touch targets adequate at 390px.
+WCAG 2.2 AA is the floor. Full keyboard operation including the command palette; visible focus at every interactive element; `prefers-reduced-motion` honoured; body text at 4.5:1 or better and large text at 3:1 or better; touch targets adequate at 390px. The light ground is what ships and what a first-time visitor gets on any machine; dark is an explicit choice in `/impostazioni/` (with a "Sistema" option for anyone who wants the operating system to decide), so the product is never restyled by a device setting the visitor did not make.
 
 Italian is the primary language: `lang` attributes, and any user-facing string authored in Italian first.

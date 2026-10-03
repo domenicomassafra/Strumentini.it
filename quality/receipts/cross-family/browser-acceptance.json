@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T16:11:01.229Z",
+  "generatedAt": "2026-10-03T10:43:20.123Z",
   "status": "PASS",
   "browser": "Google Chrome",
   "viewport": {
@@ -24,35 +24,6 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 3
-      },
-      "accessibility": {
-        "main": true,
-        "heading": true,
-        "controls": 3,
-        "unlabeled": []
-      },
-      "keyboard": "submit pressed with Enter",
-      "invalidInput": "recoverable alert observed",
-      "network": {
-        "sameOriginGetOnly": true,
-        "taskContentLeaks": 0,
-        "externalRequests": 0
-      },
-      "runtimeConsoleErrors": 0,
-      "lazyScriptsAfterAction": 2,
-      "mobile": {
-        "width": 390,
-        "height": 844,
-        "overflow": false
-      }
-    },
-    {
-      "id": "business-math",
-      "route": "/tools/margin-markup/",
-      "status": 200,
-      "hydration": {
-        "form": 1,
         "buttons": 4
       },
       "accessibility": {
@@ -69,7 +40,42 @@
         "externalRequests": 0
       },
       "runtimeConsoleErrors": 0,
-      "lazyScriptsAfterAction": 2,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18350/api/auth/session"
+      ],
+      "lazyScriptsAfterAction": 3,
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    {
+      "id": "business-math",
+      "route": "/tools/margin-markup/",
+      "status": 200,
+      "hydration": {
+        "form": 1,
+        "buttons": 5
+      },
+      "accessibility": {
+        "main": true,
+        "heading": true,
+        "controls": 3,
+        "unlabeled": []
+      },
+      "keyboard": "submit pressed with Enter",
+      "invalidInput": "recoverable alert observed",
+      "network": {
+        "sameOriginGetOnly": true,
+        "taskContentLeaks": 0,
+        "externalRequests": 0
+      },
+      "runtimeConsoleErrors": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18350/api/auth/session"
+      ],
+      "lazyScriptsAfterAction": 3,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -82,7 +88,7 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 2
+        "buttons": 3
       },
       "accessibility": {
         "main": true,
@@ -98,7 +104,10 @@
         "externalRequests": 0
       },
       "runtimeConsoleErrors": 0,
-      "lazyScriptsAfterAction": 3,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18350/api/auth/session"
+      ],
+      "lazyScriptsAfterAction": 4,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -111,7 +120,7 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 4
+        "buttons": 5
       },
       "accessibility": {
         "main": true,
@@ -127,7 +136,10 @@
         "externalRequests": 0
       },
       "runtimeConsoleErrors": 0,
-      "lazyScriptsAfterAction": 2,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18350/api/auth/session"
+      ],
+      "lazyScriptsAfterAction": 3,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -140,7 +152,7 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 3
+        "buttons": 4
       },
       "accessibility": {
         "main": true,
@@ -156,7 +168,10 @@
         "externalRequests": 0
       },
       "runtimeConsoleErrors": 0,
-      "lazyScriptsAfterAction": 3,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18350/api/auth/session"
+      ],
+      "lazyScriptsAfterAction": 4,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -169,7 +184,7 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 3
+        "buttons": 4
       },
       "accessibility": {
         "main": true,
@@ -185,7 +200,10 @@
         "externalRequests": 0
       },
       "runtimeConsoleErrors": 0,
-      "lazyScriptsAfterAction": 2,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18350/api/auth/session"
+      ],
+      "lazyScriptsAfterAction": 3,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -198,7 +216,7 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 3
+        "buttons": 4
       },
       "accessibility": {
         "main": true,
@@ -214,7 +232,10 @@
         "externalRequests": 0
       },
       "runtimeConsoleErrors": 0,
-      "lazyScriptsAfterAction": 2,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18350/api/auth/session"
+      ],
+      "lazyScriptsAfterAction": 3,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -227,7 +248,7 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 4
+        "buttons": 5
       },
       "accessibility": {
         "main": true,
@@ -243,7 +264,10 @@
         "externalRequests": 0
       },
       "runtimeConsoleErrors": 0,
-      "lazyScriptsAfterAction": 3,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18350/api/auth/session"
+      ],
+      "lazyScriptsAfterAction": 4,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -256,7 +280,7 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 4
+        "buttons": 5
       },
       "accessibility": {
         "main": true,
@@ -272,6 +296,9 @@
         "externalRequests": 0
       },
       "runtimeConsoleErrors": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18350/api/auth/session"
+      ],
       "lazyScriptsAfterAction": 1,
       "mobile": {
         "width": 390,
@@ -285,7 +312,7 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 4
+        "buttons": 5
       },
       "accessibility": {
         "main": true,
@@ -301,6 +328,9 @@
         "externalRequests": 0
       },
       "runtimeConsoleErrors": 0,
+      "staticEnvironmentFailures": [
+        "http://127.0.0.1:18350/api/auth/session"
+      ],
       "lazyScriptsAfterAction": 2,
       "mobile": {
         "width": 390,
@@ -309,7 +339,7 @@
       }
     }
   ],
-  "searchLibrary": {
+  "searchDiscovery": {
     "commandPalette": {
       "keyboardShortcuts": [
         "Meta+K",
@@ -322,13 +352,13 @@
     },
     "zeroResult": {
       "queryPreserved": true,
-      "requestAction": true
+      "directoryContinuation": true
     },
-    "library": {
+    "directory": {
       "urlAddressable": true,
       "backNavigationPreserved": true,
       "mobileOverflow": false,
-      "explicitMobileSearchFocus": true
+      "headerSearchFocus": true
     }
   },
   "fixedDefects": [

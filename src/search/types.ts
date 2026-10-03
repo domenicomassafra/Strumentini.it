@@ -1,4 +1,4 @@
-export type SearchRuntimeLocation = "LOCAL" | "REFERENCE" | "REMOTE";
+export type SearchRuntimeLocation = "LOCAL" | "REFERENCE" | "REMOTE" | "AI";
 
 export interface SearchToolMetadata {
   id: string;

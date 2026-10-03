@@ -1,0 +1,562 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import UiIcon from "../components/icons/UiIcon.astro";
+import { catalog } from "../generated/catalog";
+import { groups, groupForCategory } from "../catalog/groups";
+import { categoryLabelIt } from "../i18n/it/taxonomy";
+import { categoryIconKey } from "../ui/tool-icons";
+
+/**
+ * Everything the result rows need, precomputed on the server so the client
+ * bundle never has to import the 200-record catalog: a tone and a label per
+ * internal category, and an icon key per tool.
+ */
+const tones: Record<string, number> = {};
+const labels: Record<string, string> = {};
+const icons: Record<string, string> = {};
+const groupOf: Record<string, string> = {};
+
+for (const tool of catalog) {
+  tones[tool.category] = groupForCategory(tool.category).tone;
+  labels[tool.category] = categoryLabelIt(tool.category);
+  icons[tool.id] = categoryIconKey(tool.category);
+  groupOf[tool.category] = groupForCategory(tool.category).slug;
+}
+
+const indexPayload = {
+  tones,
+  labels,
+  icons,
+  groupOf,
+  categories: groups.map((group) => ({
+    slug: group.slug,
+    label: group.label,
+    tone: group.tone,
+    categories: group.memberCategories,
+  })),
+};
+---
+
+<BaseLayout
+  title="Cerca uno strumento"
+  description="Cerca fra tutti gli strumenti per attività, nome, categoria o tipo di file."
+  noindex
+>
+  <div class="search-page" data-search-page>
+    <ol class="breadcrumb">
+      <li><a href="/">Home</a></li>
+      <li aria-current="page">Ricerca</li>
+    </ol>
+
+    <div class="search-head">
+      <div>
+        <h1>Risultati per <span data-search-query-label>“…”</span></h1>
+        <p class="search-count" data-search-count>Scrivi cosa devi fare: ti diciamo quale strumento usare.</p>
+      </div>
+      <div class="search-head-art" aria-hidden="true">
+        <span class="search-head-tile" style="--tile-tone: var(--tone-1)"><UiIcon name="search" size={30} /></span>
+        <span class="search-head-tile search-head-tile-sm" style="--tile-tone: var(--tone-3)"><UiIcon name="check" size={20} /></span>
+      </div>
+    </div>
+
+    <form class="search-field" data-search-form role="search">
+      <UiIcon name="search" size={20} />
+      <label class="visually-hidden" for="cerca-input">Cerca fra tutti gli strumenti</label>
+      <input
+        id="cerca-input"
+        type="search"
+        name="q"
+        autocomplete="off"
+        placeholder="Cerca per attività, strumento, ingresso o categoria"
+        data-search-input
+      />
+      <button class="search-field-clear" type="button" data-search-clear aria-label="Cancella la ricerca">
+        <UiIcon name="close" size={18} />
+      </button>
+      <button class="search-field-go" type="submit" aria-label="Cerca">
+        <UiIcon name="arrow-right" size={20} />
+      </button>
+    </form>
+
+    <div class="search-panels">
+      <section class="card search-panel" aria-labelledby="suggerite">
+        <h2 class="search-panel-title" id="suggerite"><UiIcon name="sparkle" size={18} /> Ricerche suggerite</h2>
+        <div class="search-chips" data-search-suggestions></div>
+      </section>
+
+      <section class="card search-panel" aria-labelledby="recenti">
+        <div class="search-panel-head">
+          <h2 class="search-panel-title" id="recenti"><UiIcon name="clock" size={18} /> Ricerche recenti</h2>
+          <button class="text-button" type="button" data-search-clear-recent>Pulisci</button>
+        </div>
+        <ul class="search-recent" data-search-recent></ul>
+        <p class="search-empty" data-search-recent-empty>Nessuna ricerca recente su questo dispositivo.</p>
+      </section>
+
+      <section class="card search-panel" aria-labelledby="categorie">
+        <h2 class="search-panel-title" id="categorie"><UiIcon name="grid" size={18} /> Categorie</h2>
+        <div class="search-chips" data-search-categories></div>
+      </section>
+    </div>
+
+    <div class="search-toolbar" data-search-toolbar hidden>
+      <div class="search-filters" data-search-filters role="group" aria-label="Filtra per categoria"></div>
+      <div class="search-sort">
+        <label for="cerca-ordine">Ordina per</label>
+        <select id="cerca-ordine" data-search-sort>
+          <option value="rilevanza">Più rilevanti</option>
+          <option value="nome">Nome (A–Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <ul class="tool-grid search-results" data-search-results></ul>
+
+    <p class="search-nothing" data-search-nothing hidden>
+      Nessuno strumento corrisponde a questa ricerca. Prova con una parola più semplice,
+      oppure <a href="/strumenti/">sfoglia tutti gli strumenti</a>.
+    </p>
+  </div>
+
+  <script type="application/json" data-search-index set:html={JSON.stringify(indexPayload)}></script>
+
+  <script>
+    import { createSearch } from "../search/search";
+    import { iconSvgMarkup, type ToolIconKey } from "../ui/tool-icons";
+    import type { SearchHit } from "../search/search";
+    import type { SearchToolMetadata } from "../search/types";
+
+    const RECENT_KEY = "strumentiutili:recent-searches:v1";
+    const MAX_RECENT = 6;
+
+    interface IndexPayload {
+      tones: Record<string, number>;
+      labels: Record<string, string>;
+      icons: Record<string, string>;
+      groupOf: Record<string, string>;
+      categories: Array<{ slug: string; label: string; tone: number; categories: string[] }>;
+    }
+
+    // The command palette uses some of the same hook names inside its dialog, and
+    // it is earlier in the document. Every lookup here is scoped to this page's
+    // own root so the two surfaces can never write into each other.
+    const page = document.querySelector<HTMLElement>("[data-search-page]");
+
+    const payload = JSON.parse(
+      document.querySelector<HTMLScriptElement>("[data-search-index]")?.textContent ?? "{}",
+    ) as IndexPayload;
+
+    const form = page?.querySelector<HTMLFormElement>("[data-search-form]") ?? null;
+    const input = page?.querySelector<HTMLInputElement>("[data-search-input]") ?? null;
+    const queryLabel = page?.querySelector<HTMLElement>("[data-search-query-label]") ?? null;
+    const countLabel = page?.querySelector<HTMLElement>("[data-search-count]") ?? null;
+    const results = page?.querySelector<HTMLElement>("[data-search-results]") ?? null;
+    const toolbar = page?.querySelector<HTMLElement>("[data-search-toolbar]") ?? null;
+    const filters = page?.querySelector<HTMLElement>("[data-search-filters]") ?? null;
+    const sortSelect = page?.querySelector<HTMLSelectElement>("[data-search-sort]") ?? null;
+    const suggestions = page?.querySelector<HTMLElement>("[data-search-suggestions]") ?? null;
+    const categories = page?.querySelector<HTMLElement>("[data-search-categories]") ?? null;
+    const recentList = page?.querySelector<HTMLElement>("[data-search-recent]") ?? null;
+    const recentEmpty = page?.querySelector<HTMLElement>("[data-search-recent-empty]") ?? null;
+    const nothing = page?.querySelector<HTMLElement>("[data-search-nothing]") ?? null;
+
+    const escapeHtml = (value: string): string => value.replace(/[&<>"']/gu, (character) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;",
+    })[character] ?? character);
+
+    let hits: SearchHit[] = [];
+    let activeCategory: string | null = null;
+    let engine: ReturnType<typeof createSearch> | undefined;
+    let engineLoad: Promise<ReturnType<typeof createSearch>> | undefined;
+
+    function loadEngine(): Promise<ReturnType<typeof createSearch>> {
+      if (engine !== undefined) return Promise.resolve(engine);
+      engineLoad ??= import("../generated/search-catalog").then(({ searchCatalog }) => {
+        engine = createSearch(searchCatalog as readonly SearchToolMetadata[]);
+        return engine;
+      });
+      return engineLoad;
+    }
+
+    function readRecent(): string[] {
+      try {
+        const raw = JSON.parse(localStorage.getItem(RECENT_KEY) ?? "[]") as unknown;
+        return Array.isArray(raw) ? raw.filter((value): value is string => typeof value === "string").slice(0, MAX_RECENT) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function writeRecent(query: string): void {
+      const next = [query, ...readRecent().filter((value) => value !== query)].slice(0, MAX_RECENT);
+      try {
+        localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+      } catch {
+        /* Storage unavailable: the list simply does not persist. */
+      }
+      paintRecent();
+    }
+
+    function paintRecent(): void {
+      if (recentList === null) return;
+      const recent = readRecent();
+      recentList.innerHTML = recent.map((query) =>
+        `<li><button type="button" data-search-reuse="${escapeHtml(query)}">`
+        + `<span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m15.8 15.8 4.2 4.2"/></svg>${escapeHtml(query)}</span>`
+        + `<span aria-hidden="true">→</span></button></li>`).join("");
+      if (recentEmpty !== null) recentEmpty.hidden = recent.length > 0;
+    }
+
+    function visibleHits(): SearchHit[] {
+      const filtered = activeCategory === null
+        ? hits
+        : hits.filter((hit) => payload.groupOf[hit.category] === activeCategory);
+      const sorted = [...filtered];
+      if (sortSelect?.value === "nome") sorted.sort((a, b) => a.name.localeCompare(b.name, "it"));
+      return sorted;
+    }
+
+    function row(hit: SearchHit): string {
+      const tone = payload.tones[hit.category] ?? 1;
+      const label = payload.labels[hit.category] ?? hit.category;
+      const glyph = iconSvgMarkup((payload.icons[hit.id] ?? "list") as ToolIconKey, "search-row-glyph");
+      return `<li class="tool-card" style="--tile-tone: var(--tone-${tone})">`
+        + `<span class="icon-tile">${glyph}</span>`
+        + `<div class="tool-card-body"><h3 class="tool-card-name"><a href="${escapeHtml(hit.route)}">${escapeHtml(hit.name)}</a></h3>`
+        + `<p class="tool-card-summary">${escapeHtml(hit.summary)}</p></div>`
+        + `<div class="tool-card-foot"><span class="tool-card-category">${escapeHtml(label)}</span>`
+        + `<span class="tool-card-arrow" aria-hidden="true">→</span></div></li>`;
+    }
+
+    function paintFilters(): void {
+      if (filters === null) return;
+      const counts = new Map<string, number>();
+      for (const hit of hits) {
+        const slug = payload.groupOf[hit.category];
+        if (slug === undefined) continue;
+        counts.set(slug, (counts.get(slug) ?? 0) + 1);
+      }
+      const items = [`<button type="button" class="search-filter${activeCategory === null ? " is-active" : ""}" data-search-filter="">Tutti (${hits.length})</button>`];
+      for (const group of payload.categories) {
+        const count = counts.get(group.slug);
+        if (count === undefined) continue;
+        items.push(`<button type="button" class="search-filter${activeCategory === group.slug ? " is-active" : ""}" data-search-filter="${group.slug}">${escapeHtml(group.label)} (${count})</button>`);
+      }
+      filters.innerHTML = items.join("");
+    }
+
+    function paintSuggestions(): void {
+      if (suggestions === null) return;
+      const base = input?.value.trim() ?? "";
+      const pills = new Set<string>();
+      const related = base === ""
+        ? ["unisci PDF", "comprimi immagine", "pulisci CSV", "conta parole", "converti data", "genera QR code"]
+        : [base, `comprimi ${base}`, `converti ${base}`, `estrai ${base}`, `pulisci ${base}`];
+      for (const pill of related) pills.add(pill);
+      suggestions.innerHTML = [...pills].slice(0, 6)
+        .map((pill) => `<button type="button" class="search-chip" data-search-reuse="${escapeHtml(pill)}">${escapeHtml(pill)}</button>`)
+        .join("");
+    }
+
+    function paintCategories(): void {
+      if (categories === null) return;
+      const counts = new Map<string, number>();
+      for (const hit of hits) {
+        const slug = payload.groupOf[hit.category];
+        if (slug === undefined) continue;
+        counts.set(slug, (counts.get(slug) ?? 0) + 1);
+      }
+      const ranked = payload.categories
+        .map((group) => ({ group, count: counts.get(group.slug) ?? 0 }))
+        .sort((a, b) => b.count - a.count);
+      categories.innerHTML = ranked
+        .map(({ group, count }) => `<button type="button" class="search-chip" data-search-category="${group.slug}">${escapeHtml(group.label)} <span>${count}</span></button>`)
+        .join("");
+    }
+
+    function paint(): void {
+      const query = input?.value.trim() ?? "";
+      const rows = visibleHits();
+      if (queryLabel !== null) queryLabel.textContent = query === "" ? "“…”" : `“${query}”`;
+      if (countLabel !== null) {
+        countLabel.textContent = query === ""
+          ? "Scrivi cosa devi fare: ti diciamo quale strumento usare."
+          : rows.length === 0
+            ? "Nessuno strumento trovato."
+            : rows.length === 1
+              ? "Abbiamo trovato 1 strumento che può aiutarti."
+              : `Abbiamo trovato ${rows.length} strumenti che possono aiutarti.`;
+      }
+      if (results !== null) results.innerHTML = rows.map(row).join("");
+      if (nothing !== null) nothing.hidden = !(query !== "" && rows.length === 0);
+      if (toolbar !== null) toolbar.hidden = hits.length === 0;
+      paintFilters();
+      paintCategories();
+    }
+
+    async function run(query: string, remember: boolean): Promise<void> {
+      if (input !== null && input.value !== query) input.value = query;
+      if (query === "") {
+        hits = [];
+        activeCategory = null;
+        paintSuggestions();
+        paint();
+        return;
+      }
+      const search = await loadEngine();
+      hits = search.query(query, undefined, 60).hits;
+      if (remember) writeRecent(query);
+      paintSuggestions();
+      paint();
+    }
+
+    document.addEventListener("click", (event) => {
+      if (!(event.target instanceof Element)) return;
+      const reuse = event.target.closest<HTMLElement>("[data-search-reuse]");
+      if (reuse !== null) {
+        const query = reuse.dataset.searchReuse ?? "";
+        void run(query, true);
+        history.replaceState(null, "", `?q=${encodeURIComponent(query)}`);
+        return;
+      }
+      const category = event.target.closest<HTMLElement>("[data-search-category]");
+      if (category !== null) {
+        activeCategory = category.dataset.searchCategory ?? null;
+        paint();
+        return;
+      }
+      const filter = event.target.closest<HTMLElement>("[data-search-filter]");
+      if (filter !== null) {
+        activeCategory = (filter.dataset.searchFilter ?? "") === "" ? null : filter.dataset.searchFilter ?? null;
+        paint();
+      }
+    });
+
+    form?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const query = input?.value.trim() ?? "";
+      void run(query, query !== "");
+      history.replaceState(null, "", query === "" ? location.pathname : `?q=${encodeURIComponent(query)}`);
+    });
+
+    page?.querySelector("[data-search-clear]")?.addEventListener("click", () => {
+      if (input !== null) input.value = "";
+      hits = [];
+      activeCategory = null;
+      history.replaceState(null, "", location.pathname);
+      paintSuggestions();
+      paint();
+      input?.focus();
+    });
+
+    page?.querySelector("[data-search-clear-recent]")?.addEventListener("click", () => {
+      try {
+        localStorage.removeItem(RECENT_KEY);
+      } catch {
+        /* Nothing to clear. */
+      }
+      paintRecent();
+    });
+
+    sortSelect?.addEventListener("change", paint);
+
+    paintRecent();
+    paintSuggestions();
+    const initial = new URLSearchParams(location.search).get("q") ?? "";
+    if (input !== null) input.value = initial;
+    void run(initial, false);
+  </script>
+</BaseLayout>
+
+<style>
+  .search-page {
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .search-head {
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+    margin-bottom: var(--space-7);
+  }
+
+  .search-head h1 {
+    margin: 0;
+    font-size: clamp(1.875rem, 4vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.028em;
+    line-height: 1.08;
+  }
+
+  .search-head h1 span { color: var(--brand); }
+  .search-count { margin: var(--space-4) 0 0; color: var(--text-muted); font-size: var(--font-size-body-lg); }
+
+  .search-head-art { display: none; gap: var(--space-3); justify-content: flex-end; }
+
+  .search-head-tile {
+    display: grid;
+    place-items: center;
+    width: 92px;
+    height: 92px;
+    border-radius: 26px;
+    background: linear-gradient(150deg, color-mix(in srgb, var(--tile-tone) 74%, white), var(--tile-tone));
+    color: var(--on-tone);
+    box-shadow: 0 20px 36px -20px color-mix(in srgb, var(--tile-tone) 70%, transparent);
+  }
+
+  .search-head-tile-sm { width: 62px; height: 62px; border-radius: 18px; align-self: flex-end; }
+
+  .search-field {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: min(100%, 46rem);
+    min-height: 64px;
+    margin: 0 0 var(--space-8);
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--text-muted);
+    box-shadow: var(--shadow-card);
+  }
+
+  .search-field:focus-within { border-color: var(--brand); }
+  .search-field input { flex: 1; min-width: 0; border: 0; background: transparent; font-size: var(--font-size-body); }
+  .search-field input:focus { outline: none; }
+
+  .search-field-clear {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--text-faint);
+  }
+
+  .search-field-clear:hover { background: var(--surface-muted); color: var(--text); }
+
+  .search-field-go {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: var(--brand);
+    color: var(--brand-ink);
+  }
+
+  .search-panels {
+    display: grid;
+    gap: var(--space-5);
+    margin-bottom: var(--space-8);
+  }
+
+  .search-panel { padding: var(--space-5); }
+  .search-panel-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+
+  .search-panel-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-4);
+    font-size: var(--font-size-h3);
+    color: var(--text);
+  }
+
+  .search-panel-title :global(svg) { color: var(--brand); }
+
+  :global(.search-chips) { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+  :global(.search-chip) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface-subtle);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  :global(.search-chip:hover) { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); }
+  :global(.search-chip span) { color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+  :global(.search-recent) { display: grid; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
+
+  :global(.search-recent button) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-2) var(--space-2);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    text-align: start;
+  }
+
+  :global(.search-recent button:hover) { background: var(--brand-soft); color: var(--brand); }
+  :global(.search-recent button span:first-child) { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+  .search-empty { margin: var(--space-2) 0 0; color: var(--text-faint); font-size: var(--font-size-sm); }
+
+  .search-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+  }
+
+  .search-filters { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+  :global(.search-filter) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  :global(.search-filter:hover) { border-color: var(--brand); color: var(--brand); }
+  :global(.search-filter.is-active) { border-color: var(--brand); background: var(--brand); color: var(--brand-ink); }
+
+  .search-sort { display: flex; align-items: center; gap: var(--space-2); color: var(--text-muted); font-size: var(--font-size-sm); }
+
+  .search-sort select {
+    min-height: var(--control-height);
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .search-results { margin: 0; }
+  :global(.search-row-glyph) { width: 22px; height: 22px; }
+
+  .search-nothing { margin: var(--space-8) 0 0; color: var(--text-muted); }
+
+  @media (min-width: 900px) {
+    .search-head { grid-template-columns: minmax(0, 1fr) auto; }
+    .search-head-art { display: flex; }
+    .search-panels { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+</style>

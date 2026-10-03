@@ -30,7 +30,7 @@ async function acceptRoute(context, route, sensitiveValues, operate) {
   });
   const response = await page.goto(`${origin}${route}/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`${route}: HTTP ${response?.status()}`);
-  await page.getByText("Elaborazione sul dispositivo.", { exact: true }).waitFor();
+  await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
   await operate(page, () => { started = true; });
   await page.waitForTimeout(100);
   if (requests.some((request) => {
@@ -54,13 +54,16 @@ try {
   });
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
 
+  // The work profile editor no longer lives on the home route: it is the settings
+  // page's Preferenze panel, and that panel is only un-hidden once the settings
+  // script has run — so this wait still proves the editor is live, not just served.
   const setup = await context.newPage();
-  await setup.goto(`${origin}/`, { waitUntil: "networkidle" });
-  await setup.locator('[data-ready="true"]').waitFor();
-  await setup.locator("#profile-title").waitFor();
+  await setup.goto(`${origin}/impostazioni/#preferenze`, { waitUntil: "networkidle" });
+  await setup.locator('[data-settings-panel="preferenze"]').waitFor();
   await setup.getByLabel("Fuso orario").fill("Europe/Rome");
   await setup.getByLabel("Valuta").fill("EUR");
-  await setup.getByRole("button", { name: "Salva il Profilo di lavoro" }).click();
+  await setup.getByRole("button", { name: "Salva le preferenze" }).click();
+  await setup.getByText("Preferenze salvate su questo dispositivo.", { exact: true }).waitFor();
   await setup.waitForFunction(async () => {
     const db = await new Promise((resolve, reject) => {
       const request = indexedDB.open("utility-workbench", 1);

@@ -26,7 +26,7 @@ async function acceptPage(browser, route, sensitiveValues, operate) {
 
   const response = await page.goto(`${origin}${route}/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`${route}: route returned ${response?.status()}`);
-  await page.getByText("Elaborazione sul dispositivo.", { exact: true }).waitFor();
+  await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
 
   await operate(page, () => { taskStarted = true; });
   await page.waitForTimeout(100);

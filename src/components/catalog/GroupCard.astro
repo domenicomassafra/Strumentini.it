@@ -1,0 +1,78 @@
+---
+import type { CatalogGroup } from "../../catalog/groups";
+import { iconSvgMarkup } from "../../ui/tool-icons";
+
+/**
+ * One public category, on the `/categorie/` index. The whole card is the link,
+ * the glyph carries the group tone, and the count is the real number of tools
+ * the group maps to.
+ */
+interface Props {
+  group: CatalogGroup;
+  count: number;
+}
+
+const { group, count } = Astro.props;
+---
+
+<li class="group-card" style={`--tile-tone: var(--tone-${group.tone})`}>
+  <span class="icon-tile icon-tile-lg group-card-tile" set:html={iconSvgMarkup(group.icon, "group-card-glyph")} />
+  <h2 class="group-card-name"><a href={`/categorie/${group.slug}/`}>{group.label}</a></h2>
+  <p class="group-card-summary">{group.summary}</p>
+  <span class="group-card-count">
+    {count} strumenti
+    <span aria-hidden="true">→</span>
+  </span>
+</li>
+
+<style>
+  .group-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    height: 100%;
+    padding: var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    transition: border-color var(--motion-fast) var(--motion-ease),
+                box-shadow var(--motion-fast) var(--motion-ease),
+                transform var(--motion-fast) var(--motion-ease);
+  }
+
+  .group-card:hover {
+    border-color: var(--brand-soft-strong);
+    box-shadow: var(--shadow-raised);
+    transform: translateY(-2px);
+  }
+
+  .group-card :global(.group-card-glyph) { width: 30px; height: 30px; }
+
+  .group-card-name {
+    margin: 0;
+    font-size: var(--font-size-h3);
+    letter-spacing: var(--tracking-heading);
+  }
+
+  .group-card-name a::after { content: ""; position: absolute; inset: 0; }
+
+  .group-card-summary {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-body);
+  }
+
+  .group-card-count {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: auto;
+    padding-top: var(--space-2);
+    color: var(--brand);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+</style>

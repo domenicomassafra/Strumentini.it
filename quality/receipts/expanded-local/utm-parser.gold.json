@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "8b50066c2fc9cb7d79f6e52e48acc08b760cab49",
+  "sourceFingerprint": "554f167b248f16d38a006098c200a61bb83498463235ae487fa3f5d3dd37b6aa",
+  "toolId": "utm-parser",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "url-marketing",
+  "oracleEntryId": "cand-062",
+  "fixtureFamilies": [
+    "utm-roundtrip",
+    "query-params"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-quality",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "utm-roundtrip",
+      "path": "quality/fixtures/utm-roundtrip/vectors.json"
+    },
+    {
+      "id": "query-params",
+      "path": "quality/fixtures/query-params/vectors.json"
+    }
+  ],
+  "browserContract": {
+    "assertion": "utm_source|x y|campaign",
+    "outputSha256": "f4120ee46f56cd197c0e99381ddc8ab6d96a816d37e0825c4b4817ecb3444615",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls"
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance"
+  ],
+  "identities": {
+    "manifestSha256": "3051f9bee329013a310edc20c251243c0c85dc87399df91b583e2dd2bb54e2ab",
+    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "e2a70e874c71c53fa4e04c7516329644260cae7631e6d09ecfe9c7bd4535a314",
+    "acceptanceScriptSha256": "35b1fa348fa5c6db793049cda565b9831c4bcd7c1e1cc3db3f83ba630b03e670",
+    "unitTestsSha256": "0504426ff767766a169b3d561b7383878b3f60437797fdee3024069ffb063622",
+    "fixture:utm-roundtrip:sha256": "8a5cc1ae8ecd9dcb10415a19223a7c76e90e82aa7da836915bbfbcc926656f79",
+    "fixture:query-params:sha256": "45165ac3bf038861444d91b026cedf121b0ba4341c4e02e18b4061c5b9707677"
+  }
+}

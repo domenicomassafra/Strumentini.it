@@ -13,6 +13,11 @@ export default defineConfig({
   site,
   output: "static",
   trailingSlash: "always",
+  // The old Library is now the catalogue directory; the redirect keeps every
+  // inbound link and bookmark working.
+  redirects: {
+    "/library": "/strumenti",
+  },
   integrations: [preact()],
   vite: {
     build: {

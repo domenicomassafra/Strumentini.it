@@ -34,7 +34,7 @@ try {
 
   const response = await page.goto(`${origin}/tools/business-day/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`tool route returned ${response?.status()}`);
-  await page.getByText("Elaborazione sul dispositivo.").waitFor();
+  await page.locator('[data-tool-page="business-day"][data-runtime="LOCAL"][data-network="forbidden"]').waitFor();
 
   taskStarted = true;
   await page.getByRole("button", { name: "Calcola" }).click();

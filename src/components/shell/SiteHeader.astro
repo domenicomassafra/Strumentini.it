@@ -1,0 +1,360 @@
+---
+import BrandMark from "./BrandMark.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import UiIcon from "../icons/UiIcon.astro";
+import GlobalSearch from "../search/GlobalSearch.astro";
+import AccountChip from "../account/AccountChip.astro";
+import { primaryNav } from "./navigation";
+import { iconSvgMarkup } from "../../ui/tool-icons";
+
+interface Props {
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+const isCurrent = (href: string): boolean =>
+  pathname === href || pathname.startsWith(`${href.replace(/\/+$/u, "")}/`);
+---
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-brand" href="/" aria-label="StrumentiUtili.it — home">
+      <BrandMark size={30} />
+      <span class="site-brand-name">Strumenti Utili</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Navigazione principale">
+      <ul class="site-nav-list">
+        {primaryNav.map((entry) => (
+          <li>
+            {entry.panel === undefined ? (
+              <a class="site-nav-link" href={entry.href} aria-current={isCurrent(entry.href!) ? "page" : undefined}>{entry.label}</a>
+            ) : (
+              <details class="site-nav-menu" data-nav-menu>
+                <summary class="site-nav-link">
+                  {entry.label}
+                  <UiIcon name="chevron-down" size={15} />
+                </summary>
+                <div class="site-nav-panel">
+                  <ul>
+                    {entry.panel.map((item) => (
+                      <li>
+                        <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                          {item.icon !== undefined && (
+                            <span
+                              class="site-nav-panel-icon"
+                              style={`--tile-tone: var(--tone-${item.tone ?? 1})`}
+                              set:html={iconSvgMarkup(item.icon, "site-nav-panel-glyph")}
+                            />
+                          )}
+                          <span class="site-nav-panel-text">
+                            <strong>{item.label}</strong>
+                            {item.description !== undefined && <small>{item.description}</small>}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </details>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="site-actions">
+      <GlobalSearch />
+      <ThemeToggle />
+      <AccountChip />
+      <button
+        class="site-menu-button"
+        type="button"
+        data-mobile-toggle
+        aria-expanded="false"
+        aria-controls="site-mobile-panel"
+        aria-label="Apri il menu"
+      >
+        <UiIcon name="menu" size={22} class="site-menu-open" />
+        <UiIcon name="close" size={22} class="site-menu-close" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="site-mobile-panel" id="site-mobile-panel" data-mobile-panel hidden>
+  <nav aria-label="Navigazione mobile">
+    <ul class="site-mobile-list">
+      {primaryNav.map((entry) => (
+        <li>
+          {entry.panel === undefined ? (
+            <a class="site-mobile-link" href={entry.href}>{entry.label}</a>
+          ) : (
+            <details class="site-mobile-menu">
+              <summary class="site-mobile-link">
+                {entry.label}
+                <UiIcon name="chevron-down" size={16} />
+              </summary>
+              <ul class="site-mobile-sub">
+                {entry.panel.map((item) => (
+                  <li><a href={item.href}>{item.label}</a></li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </li>
+      ))}
+    </ul>
+    <div class="site-mobile-extra">
+      <a class="site-mobile-link" href="/preferiti/">Preferiti e recenti</a>
+      <a class="site-mobile-link" href="/impostazioni/">Impostazioni</a>
+      <div class="site-mobile-theme">
+        <span>Tema</span>
+        <ThemeToggle />
+      </div>
+    </div>
+    <a class="btn btn-primary btn-block" href="/accedi/">Accedi o registrati</a>
+  </nav>
+</div>
+
+<script>
+  // One open dropdown at a time, and Escape closes the one that is open.
+  const menus = document.querySelectorAll<HTMLDetailsElement>("[data-nav-menu]");
+  for (const menu of menus) {
+    menu.addEventListener("toggle", () => {
+      if (!menu.open) return;
+      for (const other of menus) if (other !== menu) other.open = false;
+    });
+  }
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Node)) return;
+    for (const menu of menus) if (menu.open && !menu.contains(event.target)) menu.open = false;
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    for (const menu of menus) menu.open = false;
+  });
+
+  const toggle = document.querySelector<HTMLButtonElement>("[data-mobile-toggle]");
+  const panel = document.querySelector<HTMLElement>("[data-mobile-panel]");
+  if (toggle !== null && panel !== null) {
+    const setOpen = (open: boolean): void => {
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Chiudi il menu" : "Apri il menu");
+      document.body.classList.toggle("site-mobile-open", open);
+    };
+    // `panel.hidden` is `boolean | "until-found"` in the DOM types; the
+    // attribute is what actually says whether the panel is closed.
+    toggle.addEventListener("click", () => setOpen(panel.hasAttribute("hidden")));
+    panel.addEventListener("click", (event) => {
+      if (event.target instanceof Element && event.target.closest("a") !== null) setOpen(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !panel.hidden) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    border-bottom: var(--border-width) solid var(--border);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px);
+  }
+
+  .site-header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    min-height: var(--nav-height);
+    margin: 0 auto;
+  }
+
+  .site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .site-brand:hover { color: var(--text); }
+
+  .site-brand-name {
+    font-family: var(--font-family-display);
+    font-size: 1.0625rem;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.02em;
+  }
+
+  .site-nav { display: none; }
+
+  .site-nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .site-nav-link::-webkit-details-marker { display: none; }
+  .site-nav-link:hover,
+  .site-nav-menu[open] > .site-nav-link { color: var(--brand); background: var(--brand-soft); }
+
+  .site-nav-menu { position: relative; }
+
+  .site-nav-menu[open] .site-nav-link :global(svg) { transform: rotate(180deg); }
+
+  .site-nav-panel {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    z-index: 50;
+    min-width: 320px;
+    padding: var(--space-2);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-raised);
+  }
+
+  .site-nav-panel ul { margin: 0; padding: 0; list-style: none; }
+
+  .site-nav-panel a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    color: var(--text);
+  }
+
+  .site-nav-panel a:hover { background: var(--brand-soft); color: var(--brand); }
+
+  .site-nav-panel-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--tile-tone, var(--tone-1)) 12%, var(--surface));
+    color: var(--tile-tone, var(--tone-1));
+  }
+
+  .site-nav-panel-icon :global(svg) { width: 18px; height: 18px; }
+  .site-nav-panel-text { display: grid; gap: 1px; min-width: 0; }
+  .site-nav-panel-text strong { font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
+  .site-nav-panel-text small { color: var(--text-muted); font-size: var(--font-size-xs); }
+
+  .site-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-left: auto;
+  }
+
+  .site-menu-button {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .site-menu-button :global(.site-menu-close) { display: none; }
+  .site-menu-button[aria-expanded="true"] :global(.site-menu-open) { display: none; }
+  .site-menu-button[aria-expanded="true"] :global(.site-menu-close) { display: block; }
+
+  .site-mobile-panel {
+    position: fixed;
+    inset: var(--nav-height) 0 0;
+    z-index: 39;
+    padding: var(--space-5) var(--container-gutter) var(--space-8);
+    overflow-y: auto;
+    background: var(--canvas);
+  }
+
+  .site-mobile-list,
+  .site-mobile-extra {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0 0 var(--space-5);
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-mobile-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-2);
+    border-bottom: var(--border-width) solid var(--border);
+    color: var(--text);
+    font-family: var(--font-family-display);
+    font-size: var(--font-size-body-lg);
+    font-weight: var(--font-weight-semibold);
+    list-style: none;
+  }
+
+  .site-mobile-link::-webkit-details-marker { display: none; }
+
+  .site-mobile-sub { margin: 0 0 var(--space-3); padding: 0 0 0 var(--space-2); list-style: none; }
+  .site-mobile-sub a {
+    display: block;
+    padding: var(--space-2) 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .site-mobile-sub a:hover { color: var(--brand); }
+
+  .site-mobile-theme {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-2);
+    border-bottom: var(--border-width) solid var(--border);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  @media (min-width: 1060px) {
+    .site-nav { display: block; }
+    .site-menu-button { display: none; }
+    .site-mobile-panel { display: none; }
+  }
+
+  /* Below the rail breakpoint the theme switch lives in the mobile panel, so
+     the header keeps a single row at 320px. */
+  @media (max-width: 1059px) {
+    .site-actions :global(.theme-toggle) { display: none; }
+  }
+</style>

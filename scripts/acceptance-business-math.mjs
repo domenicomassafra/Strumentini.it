@@ -57,7 +57,7 @@ async function acceptTool(context, toolId) {
   });
   const response = await page.goto(`${origin}${route}/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`${toolId}: HTTP ${response?.status()}`);
-  await page.getByText("Elaborazione sul dispositivo.", { exact: true }).waitFor();
+  await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
   const submit = page.locator("form button[type='submit']");
   await submit.waitFor();
   started = true;

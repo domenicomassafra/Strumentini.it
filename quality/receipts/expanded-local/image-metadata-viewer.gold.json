@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "8b50066c2fc9cb7d79f6e52e48acc08b760cab49",
+  "sourceFingerprint": "554f167b248f16d38a006098c200a61bb83498463235ae487fa3f5d3dd37b6aa",
+  "toolId": "image-metadata-viewer",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "image",
+  "oracleEntryId": "cand-147",
+  "fixtureFamilies": [
+    "image-metadata",
+    "mime-file-signatures"
+  ],
+  "truthSources": [
+    "cipa-exif",
+    "fixture-policy",
+    "google-webp",
+    "iana-media-types",
+    "iso-pdf2",
+    "pkware-appnote",
+    "strumentiutili-quality",
+    "w3c-png3"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "image-metadata",
+      "path": "quality/fixtures/image-metadata/vectors.json"
+    },
+    {
+      "id": "mime-file-signatures",
+      "path": "quality/fixtures/mime-file-signatures/vectors.json"
+    }
+  ],
+  "browserContract": {
+    "assertion": "image\\/png",
+    "outputSha256": "8e36264c44284e6289f7ba29349714198a3396400a491e1dbdfc04025e8a11f9",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls"
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance"
+  ],
+  "identities": {
+    "manifestSha256": "939b5697fd676e681435262cc09cbd9ede7601e8586ec6297fe70a4b79df560a",
+    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "e2a70e874c71c53fa4e04c7516329644260cae7631e6d09ecfe9c7bd4535a314",
+    "acceptanceScriptSha256": "35b1fa348fa5c6db793049cda565b9831c4bcd7c1e1cc3db3f83ba630b03e670",
+    "unitTestsSha256": "a3314530c29759c41167e9c2be44b552723c2f39589a57ff7013a6d770c786e8",
+    "fixture:image-metadata:sha256": "636a2a09fef7acc95fc32184357a28883b61f1d27a1e8d7dd76c6cc73be8398d",
+    "fixture:mime-file-signatures:sha256": "34738fae795924ef3099e181d756509633c77ad82160905e824632ea3018d5fa"
+  }
+}

@@ -34,6 +34,19 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+// The site shell asks the Worker for the current account session on every route.
+// This acceptance server is a plain static file server, so that single endpoint is
+// expected to answer 404 here. Every other failed response — and every console error
+// that is not a resource-load failure already attributed by URL — stays fatal.
+const staticOnlyFailurePaths = new Set(["/api/auth/session"]);
+const isExpectedStaticFailure = (url) => {
+  try {
+    return staticOnlyFailurePaths.has(new URL(url).pathname);
+  } catch {
+    return false;
+  }
+};
+
 async function accessibilityAudit(page) {
   const audit = await page.evaluate(() => {
     const visible = (element) => element.getClientRects().length > 0 && getComputedStyle(element).visibility !== "hidden";
@@ -63,6 +76,7 @@ async function runFamily(browser, family) {
   const scripts = [];
   const pageErrors = [];
   const consoleErrors = [];
+  const failedResponses = [];
   page.on("request", (request) => {
     if (!taskStarted) return;
     const item = { url: request.url(), method: request.method(), postData: request.postData() };
@@ -70,6 +84,9 @@ async function runFamily(browser, family) {
     if (request.resourceType() === "script") scripts.push(request.url());
   });
   page.on("pageerror", (error) => pageErrors.push(String(error)));
+  page.on("response", (response) => {
+    if (response.status() >= 400) failedResponses.push(response.url());
+  });
   page.on("console", (message) => {
     if (message.type() === "error") consoleErrors.push(message.text());
   });
@@ -77,7 +94,7 @@ async function runFamily(browser, family) {
   try {
     const response = await page.goto(`${origin}${family.route}`, { waitUntil: "networkidle" });
     assert(response?.status() === 200, `${family.id}: route returned ${response?.status()}`);
-    await page.getByText("Elaborazione sul dispositivo.", { exact: true }).waitFor();
+    await page.getByText("Il risultato si calcola nel tuo browser, senza attese di caricamento.", { exact: true }).waitFor();
     const hydration = { form: await page.locator("form").count(), buttons: await page.getByRole("button").count() };
     assert(hydration.form === 1 && hydration.buttons > 1, `${family.id}: hydrated controls did not appear`);
     const accessibility = await accessibilityAudit(page);
@@ -100,7 +117,10 @@ async function runFamily(browser, family) {
     assert(contentLeaks.length === 0, `${family.id}: task content leaked: ${JSON.stringify(contentLeaks)}`);
     assert(scripts.length > 0, `${family.id}: operation did not load a lazy implementation script`);
     assert(pageErrors.length === 0, `${family.id}: page errors: ${JSON.stringify(pageErrors)}`);
-    assert(consoleErrors.length === 0, `${family.id}: console errors: ${JSON.stringify(consoleErrors)}`);
+    const unexpectedStaticFailures = [...new Set(failedResponses)].filter((url) => !isExpectedStaticFailure(url));
+    const unexpectedConsoleErrors = consoleErrors.filter((text) => !/Failed to load resource/u.test(text));
+    assert(unexpectedConsoleErrors.length === 0, `${family.id}: console errors: ${JSON.stringify(unexpectedConsoleErrors)}`);
+    assert(unexpectedStaticFailures.length === 0, `${family.id}: failed responses: ${JSON.stringify(unexpectedStaticFailures)}`);
     const mobile = { width: 390, height: 844, overflow: false };
     await page.setViewportSize({ width: mobile.width, height: mobile.height });
     mobile.overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
@@ -114,7 +134,8 @@ async function runFamily(browser, family) {
       keyboard: "submit pressed with Enter",
       invalidInput: family.invalid !== undefined ? "recoverable alert observed" : "covered by shared tool operation",
       network: { sameOriginGetOnly: true, taskContentLeaks: 0, externalRequests: 0 },
-      runtimeConsoleErrors: 0,
+      runtimeConsoleErrors: unexpectedConsoleErrors.length,
+      staticEnvironmentFailures: [...new Set(failedResponses)].filter((url) => isExpectedStaticFailure(url)),
       lazyScriptsAfterAction: scripts.length,
       mobile,
     };
@@ -128,7 +149,7 @@ async function runDiscovery(browser) {
   const page = await context.newPage();
   try {
     await page.goto(`${origin}/`, { waitUntil: "networkidle" });
-    await page.locator('[data-ready="true"]').waitFor();
+    await page.locator("[data-search-trigger]").waitFor();
     const trigger = page.locator("[data-search-trigger]");
     await trigger.focus();
     await page.keyboard.press("Meta+K");
@@ -143,34 +164,38 @@ async function runDiscovery(browser) {
     assert(focusRestored, "command palette did not restore focus");
     await page.keyboard.press("Control+K");
     await dialog.waitFor();
-    await input.fill("gorni lavoratvi");
-    await page.locator("[data-request-tool]").waitFor();
+    await input.fill("zzqqxx inesistente");
+    await page.getByRole("link", { name: "Apri tutti gli strumenti", exact: true }).waitFor();
     await page.keyboard.press("Escape");
     await page.keyboard.press("Meta+K");
     await input.fill("giorni lavorativi");
     await page.keyboard.press("Enter");
     await page.waitForURL(/\/tools\/business-day\/?$/u);
-    await page.goto(`${origin}/library/?q=lavoro&runtime=LOCAL`, { waitUntil: "networkidle" });
-    assert((await page.locator("#library-search").inputValue()) === "lavoro", "Library query was not restored");
-    assert((await page.locator("select[name='runtime']").inputValue()) === "LOCAL", "Library runtime filter was not restored");
-    assert((await page.locator(".library-row").count()) > 0, "Library returned no filtered rows");
-    const firstRow = page.locator(".library-row").first();
+    await page.goto(`${origin}/strumenti/?q=lavorativi&ordine=za`, { waitUntil: "networkidle" });
+    await page.waitForFunction(() => document.querySelector("[data-directory-query]")?.value === "lavorativi");
+    assert((await page.locator("[data-directory-query]").inputValue()) === "lavorativi", "Directory query was not restored");
+    assert((await page.locator("[data-directory-sort]").inputValue()) === "za", "Directory sort was not restored");
+    const directoryCards = page.locator("[data-directory-grid] .tool-card:not([hidden])");
+    assert((await directoryCards.count()) > 0, "Directory returned no filtered cards");
+    const firstRow = directoryCards.first();
     await firstRow.click();
     await page.waitForLoadState("networkidle");
     await page.goBack({ waitUntil: "networkidle" });
-    assert((await page.locator("#library-search").inputValue()) === "lavoro", "back navigation lost Library query");
-    assert((await page.locator("select[name='runtime']").inputValue()) === "LOCAL", "back navigation lost Library filter");
+    await page.waitForFunction(() => document.querySelector("[data-directory-query]")?.value === "lavorativi");
+    assert((await page.locator("[data-directory-query]").inputValue()) === "lavorativi", "back navigation lost the directory query");
+    assert((await page.locator("[data-directory-sort]").inputValue()) === "za", "back navigation lost the directory sort");
     await page.setViewportSize({ width: 390, height: 844 });
-    const libraryOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
-    assert(!libraryOverflow, "Library overflowed at 390px");
-    await page.getByRole("link", { name: "Cerca", exact: true }).click();
-    await page.waitForURL(/\/library\/?\?focus=search/u);
-    await page.waitForFunction(() => document.activeElement?.id === "library-search");
-    const mobileFocus = await page.evaluate(() => document.activeElement?.id === "library-search");
+    const directoryOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+    assert(!directoryOverflow, "Directory overflowed at 390px");
+    await page.locator("[data-search-trigger]").click();
+    await page.locator("[data-search-dialog][open]").waitFor();
+    await page.waitForFunction(() => document.activeElement?.id === "global-search-input");
+    const mobileFocus = await page.evaluate(() => document.activeElement?.id === "global-search-input");
+    assert(mobileFocus, "Mobile header search control did not focus the palette input");
     return {
       commandPalette: { keyboardShortcuts: ["Meta+K", "Control+K"], arrowNavigation: true, enterOpen: true, escapeClose: true, focusRestored },
-      zeroResult: { queryPreserved: true, requestAction: true },
-      library: { urlAddressable: true, backNavigationPreserved: true, mobileOverflow: false, explicitMobileSearchFocus: mobileFocus },
+      zeroResult: { queryPreserved: true, directoryContinuation: true },
+      directory: { urlAddressable: true, backNavigationPreserved: true, mobileOverflow: false, headerSearchFocus: mobileFocus },
     };
   } finally {
     await context.close();
@@ -199,13 +224,13 @@ const families = [
     route: "/tools/margin-markup/",
     sensitive: ["100.00", "80.00"],
     invalid: async (page) => {
-      await page.getByLabel("Prezzo o ricavi").fill("");
-      await page.getByLabel("Costo").fill("");
+      await page.getByLabel(/^Prezzo o ricavi/u).fill("");
+      await page.getByLabel(/^Costo/u).fill("");
       await page.getByRole("button", { name: "Calcola margine e ricarico" }).press("Enter");
     },
     run: async (page) => {
-      await page.getByLabel("Prezzo o ricavi").fill("100");
-      await page.getByLabel("Costo").fill("80");
+      await page.getByLabel(/^Prezzo o ricavi/u).fill("100");
+      await page.getByLabel(/^Costo/u).fill("80");
       await page.getByRole("button", { name: "Calcola margine e ricarico" }).press("Enter");
       await page.getByText(/20\.00 (?:profit|di profit)/u).waitFor();
     },
@@ -218,10 +243,10 @@ const families = [
       await page.getByRole("button", { name: "Crea URL" }).press("Enter");
     },
     run: async (page) => {
-      await page.getByLabel("URL di destinazione").fill("https://example.com/landing#frag");
-      await page.getByLabel("Sorgente").fill("newsletter");
-      await page.getByLabel("Mezzo").fill("email");
-      await page.getByLabel("Campagna").fill("fall sale");
+      await page.getByLabel(/^URL di destinazione/u).fill("https://example.com/landing#frag");
+      await page.getByLabel(/^Sorgente/u).fill("newsletter");
+      await page.getByLabel(/^Mezzo/u).fill("email");
+      await page.getByLabel(/^Campagna/u).fill("fall sale");
       await page.getByRole("button", { name: "Crea URL" }).press("Enter");
       await page.locator("code.long-result").filter({ hasText: "https://example.com/landing" }).waitFor();
     },
@@ -231,7 +256,7 @@ const families = [
     route: "/tools/csv-viewer/",
     sensitive: ["a,b", "1,2"],
     run: async (page) => {
-      await page.getByLabel("CSV o testo tabellare").fill(`a,b${newline}1,2${newline}`);
+      await page.getByLabel(/^CSV o testo tabellare/u).fill(`a,b${newline}1,2${newline}`);
       await page.getByRole("button", { name: "Apri e controlla un CSV" }).press("Enter");
       await page.locator(".table-preview").waitFor();
     },
@@ -241,7 +266,7 @@ const families = [
     route: "/tools/line-sorter/",
     sensitive: ["zeta-line-input", "alpha-line-input"],
     run: async (page) => {
-      await page.getByLabel("Testo").fill(`zeta-line-input${newline}alpha-line-input${newline}`);
+      await page.getByLabel(/^Testo/u).fill(`zeta-line-input${newline}alpha-line-input${newline}`);
       await page.getByRole("button", { name: "Ordina righe" }).press("Enter");
       const output = await page.locator("pre.text-result").innerText();
       assert(output.includes(`alpha-line-input${newline}zeta-line-input`), `line sorter output was unexpected: ${output}`);
@@ -252,7 +277,7 @@ const families = [
     route: "/tools/doi-isbn-normalizer/",
     sensitive: ["doi:10.1000/182", "10.1000/182"],
     run: async (page) => {
-      const field = page.getByRole("textbox", { name: "DOI" });
+      const field = page.getByRole("textbox", { name: /^DOI/u });
       await field.fill("doi:10.1000/182");
       await field.press("Enter");
       await page.getByText("Formato DOI valido", { exact: true }).waitFor();
@@ -282,7 +307,7 @@ const families = [
       await page.getByRole("button", { name: "Verifica numero pagine" }).press("Enter");
     },
     run: async (page) => {
-      await page.getByLabel("Conta e verifica pagine PDF").setInputFiles({ name: "sample.pdf", mimeType: "application/pdf", buffer: pdfFixture });
+      await page.getByLabel(/^Conta e verifica pagine PDF/u).setInputFiles({ name: "sample.pdf", mimeType: "application/pdf", buffer: pdfFixture });
       await page.getByRole("button", { name: "Verifica numero pagine" }).press("Enter");
       await page.getByRole("button", { name: "Verifica numero pagine" }).waitFor();
       await page.locator("pre.csv-preview").filter({ hasText: '"numero_pagine": 1' }).waitFor();
@@ -296,8 +321,8 @@ const families = [
       await page.getByRole("button", { name: "Calcola SHA-256" }).press("Enter");
     },
     run: async (page) => {
-      await page.getByLabel("File").setInputFiles({ name: "owner-private-name.txt", mimeType: "text/plain", buffer: fileFixture });
-      await page.getByLabel("SHA-256 atteso").fill(fileDigest);
+      await page.getByLabel(/^File/u).setInputFiles({ name: "owner-private-name.txt", mimeType: "text/plain", buffer: fileFixture });
+      await page.getByLabel(/^SHA-256 atteso/u).fill(fileDigest);
       await page.getByRole("button", { name: "Calcola SHA-256" }).press("Enter");
       await page.getByText(/checksum (?:matches|corrisponde)/u).waitFor();
       await page.getByText(fileDigest, { exact: true }).waitFor();
@@ -312,8 +337,8 @@ const families = [
     },
     run: async (page) => {
       await page.locator("#image-resize-file").setInputFiles({ name: "cross-family.png", mimeType: "image/png", buffer: imageFixture });
-      await page.getByLabel("Larghezza").fill("1");
-      await page.getByLabel("Altezza").fill("1");
+      await page.getByLabel(/^Larghezza/u).fill("1");
+      await page.getByLabel(/^Altezza/u).fill("1");
       await page.getByRole("button", { name: "Ridimensiona" }).press("Enter");
       await page.locator(".gutter-value").filter({ hasText: "1×1" }).waitFor();
     },
@@ -344,7 +369,7 @@ try {
       mobile390: results.every((result) => !result.mobile.overflow),
     },
     families: results,
-    searchLibrary: discovery,
+    searchDiscovery: discovery,
     fixedDefects: [
       "PDF URL cleanup no longer aborts an active operation when a result is reset.",
       "The shell declares a local favicon so route loads do not emit a missing-resource console error.",
@@ -354,7 +379,7 @@ try {
   };
   await mkdir(resolve(root, "quality/receipts/cross-family"), { recursive: true });
   await writeFile(resolve(root, "quality/receipts/cross-family/browser-acceptance.json"), `${JSON.stringify(receipt, null, 2)}\n`, "utf8");
-  console.log(`cross-family browser acceptance PASS: ${results.length} families, hydration/errors/keyboard/accessibility/390px/privacy, search/library`);
+  console.log(`cross-family browser acceptance PASS: ${results.length} families, hydration/errors/keyboard/accessibility/390px/privacy, search/directory`);
 } finally {
   server.kill("SIGTERM");
 }

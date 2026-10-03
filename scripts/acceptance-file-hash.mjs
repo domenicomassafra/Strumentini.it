@@ -30,7 +30,7 @@ try {
 
   const response = await page.goto(`${origin}/tools/file-hash/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`file-hash route returned ${response?.status()}`);
-  await page.getByText("Elaborazione sul dispositivo.").waitFor();
+  await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
   if (await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)) {
     throw new Error("mobile file-hash layout has horizontal overflow");
   }
@@ -38,7 +38,10 @@ try {
   const payload = Buffer.from("private-file-payload-strumentiutili-ticket-10", "utf8");
   const expected = createHash("sha256").update(payload).digest("hex");
   selected = true;
-  await page.getByLabel("File").setInputFiles({ name: "owner-private-name.txt", mimeType: "text/plain", buffer: payload });
+  // The page's own FAQ section is labelled "Perché usare Hash file…", so an
+  // unscoped getByLabel("File") now matches page furniture too. Scoping to the
+  // tool's own form keeps the assertion — the picker is reachable by its label.
+  await page.locator("form").getByLabel("File").setInputFiles({ name: "owner-private-name.txt", mimeType: "text/plain", buffer: payload });
   await page.getByLabel("SHA-256 atteso").fill(`  ${expected.toUpperCase()}  `);
   await page.getByRole("button", { name: "Calcola SHA-256" }).click();
   await page.getByText("Il checksum corrisponde", { exact: true }).waitFor();
@@ -58,7 +61,7 @@ try {
 
   await page.getByRole("button", { name: "Reimposta" }).click();
   const large = Buffer.alloc(48 * 1024 * 1024, 0x5a);
-  await page.getByLabel("File").setInputFiles({ name: "cancel-me.bin", mimeType: "application/octet-stream", buffer: large });
+  await page.locator("form").getByLabel("File").setInputFiles({ name: "cancel-me.bin", mimeType: "application/octet-stream", buffer: large });
   await page.getByRole("button", { name: "Calcola SHA-256" }).click();
   await page.getByRole("button", { name: "Annulla", exact: true }).click();
   await page.getByRole("alert").filter({ hasText: "Calcolo dell'hash annullato." }).waitFor();

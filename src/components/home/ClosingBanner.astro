@@ -1,0 +1,122 @@
+---
+import UiIcon from "../icons/UiIcon.astro";
+import { catalog } from "../../generated/catalog";
+
+/**
+ * The closing band: what the product is in one paragraph, one primary action,
+ * and four facts. Every number is a real count or a real property of the site.
+ */
+const toolCount = catalog.length;
+
+const stats = [
+  { icon: "sparkle" as const, value: String(toolCount), label: "Strumenti online, tutti gratuiti" },
+  { icon: "shield" as const, value: "0", label: "File caricati sui nostri server" },
+  { icon: "heart" as const, value: "100%", label: "Gratuito, senza registrazione" },
+  { icon: "zap" as const, value: "Istantaneo", label: "Risultati calcolati nel browser" },
+];
+---
+
+<section class="section home-closing">
+  <div class="home-closing-copy">
+    <h2 class="home-closing-title">
+      Trova lo strumento giusto,
+      <span>fai di più ogni giorno.</span>
+    </h2>
+    <p>
+      Strumenti Utili è la raccolta italiana di strumenti online gratuiti pensata per
+      semplificare la tua giornata: veloci, riservati e facili da usare, sempre a
+      portata di clic.
+    </p>
+    <div class="home-closing-actions">
+      <a class="btn btn-primary btn-lg" href="/strumenti/">Inizia ora <span aria-hidden="true">→</span></a>
+      <a class="btn btn-lg" href="/strumenti/">Scopri tutti gli strumenti</a>
+    </div>
+  </div>
+
+  <ul class="home-stats">
+    {stats.map((stat) => (
+      <li>
+        <span class="home-stats-icon" aria-hidden="true"><UiIcon name={stat.icon} size={24} /></span>
+        <div>
+          <strong>{stat.value}</strong>
+          <small>{stat.label}</small>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .home-closing {
+    padding: var(--space-12) 0 0;
+  }
+
+  .home-closing-copy { max-width: 44rem; }
+
+  .home-closing-title {
+    margin: 0;
+    font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.028em;
+  }
+
+  .home-closing-title span { display: block; color: var(--brand); }
+
+  .home-closing-copy p {
+    max-width: 36rem;
+    margin: var(--space-5) 0 var(--space-7);
+    color: var(--text-muted);
+    font-size: var(--font-size-body-lg);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .home-closing-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+  .home-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+    margin: var(--space-12) 0 0;
+    padding: var(--space-7) var(--space-8);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    list-style: none;
+  }
+
+  .home-stats li { display: flex; align-items: center; gap: var(--space-4); }
+
+  .home-stats-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-pill);
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+
+  .home-stats strong {
+    display: block;
+    font-family: var(--font-family-display);
+    font-size: clamp(1.375rem, 4.4vw, 1.75rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .home-stats small { display: block; margin-top: var(--space-1); color: var(--text-muted); font-size: var(--font-size-xs); }
+
+  /* One column until the four facts can sit side by side without a word
+     outgrowing its cell. */
+  @media (max-width: 640px) {
+    .home-stats { grid-template-columns: minmax(0, 1fr); padding: var(--space-6); }
+  }
+
+  @media (min-width: 900px) {
+    .home-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+</style>

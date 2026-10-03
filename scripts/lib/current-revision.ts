@@ -49,7 +49,15 @@ export async function currentEvidenceSourceFingerprint(root: string): Promise<st
   for (const path of paths) {
     hash.update(path);
     hash.update("\0");
-    hash.update(await readFile(resolve(root, path)));
+    try {
+      hash.update(await readFile(resolve(root, path)));
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      // `git ls-files` also reports tracked paths deleted in the working tree.
+      // Keep the deletion in the fingerprint instead of failing or silently
+      // hashing the previous committed contents.
+      hash.update("<deleted>");
+    }
     hash.update("\0");
   }
   return hash.digest("hex");
