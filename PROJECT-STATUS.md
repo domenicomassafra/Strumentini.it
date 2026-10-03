@@ -7,7 +7,7 @@ This is the short, live map of the repository. It exists so old worker waves, ti
 ## Canonical repository state
 
 - Checkout: `/Users/domenico/Code/StrumentiUtili.it`
-- Branch: `main`, tracking `origin/main`. The redesign/backend source tranche is committed as `3722032` (`feat: ship redesigned utility workspace and account backend`); regenerated evidence and closure documentation are committed separately so source fingerprints stay meaningful.
+- Branch: `main`, tracking `origin/main`. The redesign/backend source tranche is committed as `3722032` (`feat: ship redesigned utility workspace and account backend`); the release-evidence self-reference fix is committed as `9bef4dd` (`fix: bind rollback evidence to source fingerprint`). Regenerated evidence is committed separately so source fingerprints stay meaningful.
 - The retired catalogue/workbench/a11y implementation is deleted: `src/pages/library.astro`, `src/library/**`, `src/components/library/**`, the retired Workbench UI, the old accessibility wrapper layer, `scripts/build-catalog.ts`, `scripts/lib/catalog-compiler.ts`, and their obsolete tests.
 - The replacement shell/catalog/account implementation is tracked: `src/catalog/{groups,projections}.ts`, `src/components/{home,catalog,account,icons}/**`, the new shell, public routes, `worker/**`, self-hosted Inter fonts, expanded-local evidence and matching acceptance tests.
 - Throwaway debug scripts and screenshots are gone. `design/references/redesign-20261003/` is intentional retained design provenance, not working-tree debris.
@@ -60,7 +60,7 @@ Remaining unverified, by engine (the 32 tools with no Gold receipt):
 
 The PDF/document family is 20/20 Gold and is not part of the remaining frontier.
 
-Closure gate snapshot: **50 test files / 344 tests PASS**, `astro check` reports **0 errors / 0 warnings / 0 hints** over 1192 files, and the static build produces **220 pages**. Re-run the commands below rather than treating these numbers as permanent.
+Closure gate snapshot: **50 test files / 345 tests PASS**, `astro check` reports **0 errors / 0 warnings / 0 hints** over 1192 files, and the static build produces **220 pages**. Re-run the commands below rather than treating these numbers as permanent.
 
 ## Release status
 
@@ -71,7 +71,7 @@ The post-commit release validation has **0 errors**. Browser evidence is current
 3. physical Android Chrome evidence for `image-resize` is missing;
 4. physical iOS Safari evidence for `image-resize` is missing.
 
-All 168 existing Gold receipts were regenerated against source fingerprint `9d532b7bf863338382f3a254373f6e9b31bd95ee8f6e763ac613f4ad0786cf71`. The fresh browser matrix targets the same fingerprint. Do not synthesize the remaining device/certification evidence.
+All 168 existing Gold receipts were regenerated against source fingerprint `b90dd8f2fbf449addc7f3e113a14cd51aa60a56e54ef684dfb9b5e8b838ba4fa`. The fresh browser matrix and verified rollback receipt target the same fingerprint. Do not synthesize the remaining device/certification evidence.
 
 ## Design system and brand
 

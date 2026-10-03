@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "8b50066c2fc9cb7d79f6e52e48acc08b760cab49",
-  "sourceFingerprint": "554f167b248f16d38a006098c200a61bb83498463235ae487fa3f5d3dd37b6aa",
+  "revision": "9bef4dd63336471737d6a55aca7c7b50d22bb49f",
+  "sourceFingerprint": "b90dd8f2fbf449addc7f3e113a14cd51aa60a56e54ef684dfb9b5e8b838ba4fa",
   "toolId": "dominant-color-extractor",
   "runtime": {
     "location": "LOCAL",

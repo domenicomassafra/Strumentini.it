@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "8dc099fd42f74166bd25c51c4cb9d560cb3d100e",
-  "sourceFingerprint": "3392267d0c36b13a2f9c5902df04022e03477fb0b7dd5241dd3d8c56b077cbfc",
+  "revision": "9bef4dd63336471737d6a55aca7c7b50d22bb49f",
+  "sourceFingerprint": "b90dd8f2fbf449addc7f3e113a14cd51aa60a56e54ef684dfb9b5e8b838ba4fa",
   "toolId": "utilization-calculator",
   "runtime": {
     "location": "LOCAL",
@@ -36,7 +36,7 @@
     "engineSha256": "05c077073c50bc085c0e213339a5c83fca12f3084fc71e15515e50fab3f1e163",
     "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
     "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
-    "browserAcceptanceSha256": "04eea8cadce8cc30f9a1adc7fbd20c93b2c84f1832f250f8e2fb7acb4138568d",
+    "browserAcceptanceSha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
     "unitTestsSha256": "ef539ff3626658c91b4c3127f9bf947c06faa1eb8b725fdadc9e30f386d559bd",
     "fixture:business-math:sha256": "e0b9a70e8b267644b7b72bfef0612e10d4d56bb7b49012cb45a5db3224afe588"
   }
