@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "9e52b76be27890a30dfe80a627ae67acf0a97e40532f97d68668ffc2aa21c90d",
+  "toolId": "archive-checksum-manifest",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "H",
+  "engine": "file-privacy",
+  "engineVersion": "file-privacy-v2",
+  "oracleEntryId": "cand-173",
+  "fixtureFamilies": [
+    "file-hash",
+    "archive-checksum-manifest"
+  ],
+  "replayedFixtureVectors": 3,
+  "truthSources": [
+    "fixture-policy",
+    "nist-fips180-4",
+    "openssl-cli",
+    "pkware-appnote",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "file-hash",
+      "path": "quality/fixtures/file-hash/vectors.json"
+    },
+    {
+      "id": "archive-checksum-manifest",
+      "path": "quality/fixtures/archive-checksum-manifest/vectors.json"
+    }
+  ],
+  "browserContract": {
+    "assertion": "digest of the fixture archive must appear in the rendered result",
+    "outputSha256": "822e0b8801f3575990642790350cf7011b1c5bdbb2427b032c10938e9755722c",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls",
+    "italianErrorState": {
+      "verified": true,
+      "sample": "Controlla i dati selezionati: almeno un file o un nome valido è necessario."
+    },
+    "toleratedFailure": "exactly one /api/auth/session probe, which the optional account Worker owns on a real deployment"
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap, bound to the fixture family that pins its policy",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "committed fixture vectors replayed through the public tool module, including declared error codes",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance",
+    "Italian error state verified in the browser or explicitly unreachable"
+  ],
+  "identities": {
+    "manifestSha256": "0d2d61347b3d863f2e4b5eb508ce022dfc651b5c0b4df8514b2483c7750f57f0",
+    "fixtureIndexSha256": "b46c111dc70c7a31b1c566b83689ebda3c68b3d3f8c0e76ad43647da317db30f",
+    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
+    "browserAcceptanceSha256": "3ed39f236b17b25e409a5be110b4bba09d544c2fb171b315a551c5deb5359a07",
+    "acceptanceScriptSha256": "989e5e76605c99951548b64573a96f184100ca54f6dde2d055f6f0a658e70af7",
+    "unitTestsSha256": "070727d7e33ca17a5ac438a4cd00525a9ec936aedc398d8d9e9700162f87bdfc",
+    "italianErrorCatalogSha256": "058f1732d3def14155154402903e9964047fc5ec413924593ce1073c8c0aa94b",
+    "fixture:file-hash:sha256": "dcfff44b5e335c6c11c095783579641f8f4be62b481c7cd84adb9b5ef3300b5f",
+    "fixture:archive-checksum-manifest:sha256": "2d6fd65c006ae4e763c49d883b605136831481643966878141d5c51d97a0ea4f"
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "archive-checksum-manifest",
+    "batch-rename-preview",
+    "folder-compare",
+    "metadata-risk-inspector",
+    "language-aware-text-statistics",
+    "lorem-sample-data-generator",
+    "reading-time-estimator",
+    "smart-quote-normalizer",
+    "public-holiday-lookup"
+  ],
+  "routesChecked": 9,
+  "keyboard": "every submit action exercised with Enter",
+  "accessibility": "all interactive controls in each tool form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObservedFor": [
+    "archive-checksum-manifest",
+    "batch-rename-preview",
+    "folder-compare",
+    "metadata-risk-inspector",
+    "language-aware-text-statistics",
+    "lorem-sample-data-generator",
+    "reading-time-estimator",
+    "smart-quote-normalizer",
+    "public-holiday-lookup"
+  ],
+  "italianErrorStates": {
+    "archive-checksum-manifest": {
+      "verified": true,
+      "sample": "Controlla i dati selezionati: almeno un file o un nome valido è necessario."
+    },
+    "batch-rename-preview": {
+      "verified": true,
+      "sample": "Controlla i dati selezionati: almeno un file o un nome valido è necessario."
+    },
+    "folder-compare": {
+      "verified": true,
+      "sample": "Controlla i dati selezionati: almeno un file o un nome valido è necessario."
+    },
+    "metadata-risk-inspector": {
+      "verified": true,
+      "sample": "Controlla i dati selezionati: almeno un file o un nome valido è necessario."
+    },
+    "language-aware-text-statistics": {
+      "verified": false,
+      "reason": "the only inputs are free text and the form never rejects them: empty text is a valid zero-count result"
+    },
+    "lorem-sample-data-generator": {
+      "verified": true,
+      "sample": "Controlla i valori numerici inseriti e riprova."
+    },
+    "reading-time-estimator": {
+      "verified": true,
+      "sample": "Scegli una velocità di lettura compresa tra 1 e 2000 parole al minuto."
+    },
+    "smart-quote-normalizer": {
+      "verified": false,
+      "reason": "the direction selector only offers the two valid conversions, so the form cannot submit an invalid direction"
+    },
+    "public-holiday-lookup": {
+      "verified": true,
+      "sample": "Inserisci un anno valido: questo strumento copre dal 1900 al 2100."
+    }
+  },
+  "scriptSha256": "989e5e76605c99951548b64573a96f184100ca54f6dde2d055f6f0a658e70af7",
+  "results": [
+    {
+      "toolId": "archive-checksum-manifest",
+      "status": "PASS",
+      "assertion": "digest of the fixture archive must appear in the rendered result",
+      "outputSha256": "822e0b8801f3575990642790350cf7011b1c5bdbb2427b032c10938e9755722c",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0,
+      "optionalAccountProbeFailures": 1
+    },
+    {
+      "toolId": "batch-rename-preview",
+      "status": "PASS",
+      "assertion": "1-Foto IMG_1\\.jpg[\\s\\S]*2-Foto IMG_1-2\\.jpg|collisionCount|collision",
+      "outputSha256": "66bbb1d650bfb9672dead4bcc66c5b480c0ec863963be57d5c1edec1f3da99aa",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0,
+      "optionalAccountProbeFailures": 1
+    },
+    {
+      "toolId": "folder-compare",
+      "status": "PASS",
+      "assertion": "modificati|changedCount|addedCount|aggiunti",
+      "outputSha256": "00eb297e2c5199656ac83568e9d197449f5c6c5babdd0afd7d9fab9f8eaae008",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0,
+      "optionalAccountProbeFailures": 1
+    },
+    {
+      "toolId": "metadata-risk-inspector",
+      "status": "PASS",
+      "assertion": "GPSInfoIFD|Model|metadataFields|contenitori|rischi",
+      "outputSha256": "842af6f06e305f29091ba5f5533f5c89d0a62704ead30d10a615f0c01b8908d9",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0,
+      "optionalAccountProbeFailures": 1
+    },
+    {
+      "toolId": "language-aware-text-statistics",
+      "status": "PASS",
+      "assertion": "Latin|alfabete_dominante|dominantScript|alfabeti",
+      "outputSha256": "dd95909a3dab81550cf29c329ed20095949f523dc91fd4878fe30bf80214a783",
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0,
+      "optionalAccountProbeFailures": 1
+    },
+    {
+      "toolId": "lorem-sample-data-generator",
+      "status": "PASS",
+      "assertion": "the deterministic seed-7 word vector must appear verbatim",
+      "outputSha256": "c0d8035725369acb34df18671b763948249d4e978fae66ecc749083a07b182e5",
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0,
+      "optionalAccountProbeFailures": 1
+    },
+    {
+      "toolId": "reading-time-estimator",
+      "status": "PASS",
+      "assertion": "250[\\s\\S]*(?:1 minuto|minuti)|\\b250\\b[\\s\\S]*60",
+      "outputSha256": "07417a42753b6372655acc6f3ef6bd33b5530ad8f69c6cba8d5a268f74e235a5",
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0,
+      "optionalAccountProbeFailures": 1
+    },
+    {
+      "toolId": "smart-quote-normalizer",
+      "status": "PASS",
+      "assertion": "“l’[aà]cqua”|convertedCount|virgolette_convertite",
+      "outputSha256": "22e4fe3808525cd604af4f222a8c8929bc191491f8ba50c476dc5e2420a235ca",
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0,
+      "optionalAccountProbeFailures": 1
+    },
+    {
+      "toolId": "public-holiday-lookup",
+      "status": "PASS",
+      "assertion": "the 2021 UK weekend Christmas substitutes must both appear",
+      "outputSha256": "ed110ff5719ee88ea45d23246485ba70d6c8fe4fbf20495c54b9b0d981966227",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0,
+      "optionalAccountProbeFailures": 1
+    }
+  ]
+}

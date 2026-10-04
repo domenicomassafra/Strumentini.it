@@ -14,5 +14,5 @@ export default {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "structured", format: "metadata-risk-report", maxBytes: 2_097_152 }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-174", fixtureFamilies: ["image-metadata"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-174", fixtureFamilies: ["image-metadata", "metadata-risk-scan"] },
 } as const satisfies ToolManifest;

@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "output": "one file name per line, never a directory tree",
+    "path_separators": "folded to '-' before the name policy applies",
+    "reserved_windows_names": "prefixed with '_'",
+    "collision": "the later entry receives -2, -3, ... and the count is the number of collided entries",
+    "placeholders": "{name} stem, {ext} lowercased extension, {index} 1-based position",
+    "trailing_dots_and_spaces": "removed",
+    "max_length": 180
+  },
+  "vectors": [
+    {
+      "id": "pattern-index-and-ext",
+      "input": {
+        "names": [
+          "Foto IMG_1.JPG",
+          "Foto IMG_2.JPG"
+        ],
+        "pattern": "{index}-{name}{ext}"
+      },
+      "expected": {
+        "operation": "batch-rename-preview",
+        "renamed": [
+          "1-Foto IMG_1.jpg",
+          "2-Foto IMG_2.jpg"
+        ],
+        "changedCount": 2,
+        "collisionCount": 0
+      }
+    },
+    {
+      "id": "collision-suffixes-counted-once-per-entry",
+      "input": {
+        "names": [
+          "a.txt",
+          "a.txt",
+          "a.txt"
+        ]
+      },
+      "expected": {
+        "operation": "batch-rename-preview",
+        "renamed": [
+          "a.txt",
+          "a-2.txt",
+          "a-3.txt"
+        ],
+        "changedCount": 2,
+        "collisionCount": 2
+      }
+    },
+    {
+      "id": "collision-is-case-insensitive",
+      "input": {
+        "names": [
+          "Relazione.txt",
+          "relazione.TXT"
+        ]
+      },
+      "expected": {
+        "operation": "batch-rename-preview",
+        "renamed": [
+          "Relazione.txt",
+          "relazione-2.txt"
+        ],
+        "changedCount": 1,
+        "collisionCount": 1
+      }
+    },
+    {
+      "id": "path-separators-are-folded",
+      "input": {
+        "names": [
+          "docs/fattura 2026.pdf",
+          "docs\\nota.txt"
+        ],
+        "pattern": "{name}{ext}"
+      },
+      "expected": {
+        "operation": "batch-rename-preview",
+        "renamed": [
+          "docs-fattura 2026.pdf",
+          "docs-nota.txt"
+        ],
+        "changedCount": 2,
+        "collisionCount": 0
+      }
+    },
+    {
+      "id": "windows-reserved-name-is-prefixed",
+      "input": {
+        "names": [
+          "CON",
+          "lpt1.txt"
+        ],
+        "pattern": "{name}{ext}"
+      },
+      "expected": {
+        "operation": "batch-rename-preview",
+        "renamed": [
+          "_CON",
+          "_lpt1.txt"
+        ],
+        "changedCount": 2,
+        "collisionCount": 0
+      }
+    },
+    {
+      "id": "illegal-characters-become-dashes",
+      "input": {
+        "names": [
+          "a<b>c:d.txt"
+        ],
+        "pattern": "{name}{ext}"
+      },
+      "expected": {
+        "operation": "batch-rename-preview",
+        "renamed": [
+          "a-b-c-d.txt"
+        ],
+        "changedCount": 1,
+        "collisionCount": 0
+      }
+    },
+    {
+      "id": "already-unique-names-are-unchanged",
+      "input": {
+        "names": [
+          "uno.txt",
+          "due.txt",
+          "tre.txt"
+        ],
+        "pattern": "{name}{ext}"
+      },
+      "expected": {
+        "operation": "batch-rename-preview",
+        "renamed": [
+          "uno.txt",
+          "due.txt",
+          "tre.txt"
+        ],
+        "changedCount": 0,
+        "collisionCount": 0
+      }
+    },
+    {
+      "id": "hidden-file-keeps-its-name",
+      "input": {
+        "names": [
+          ".gitignore"
+        ],
+        "pattern": "{name}{ext}"
+      },
+      "expected": {
+        "operation": "batch-rename-preview",
+        "renamed": [
+          ".gitignore"
+        ],
+        "changedCount": 0,
+        "collisionCount": 0
+      }
+    }
+  ],
+  "errors": [
+    {
+      "id": "empty-name-list",
+      "input": {
+        "names": []
+      },
+      "code": "INVALID_INPUT"
+    },
+    {
+      "id": "empty-pattern",
+      "input": {
+        "names": [
+          "a.txt"
+        ],
+        "pattern": ""
+      },
+      "code": "INVALID_INPUT"
+    },
+    {
+      "id": "non-text-name",
+      "input": {
+        "names": [
+          42
+        ]
+      },
+      "code": "INVALID_INPUT"
+    },
+    {
+      "id": "pattern-past-the-limit",
+      "input": {
+        "names": [
+          "a.txt"
+        ],
+        "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "code": "INVALID_INPUT"
+    }
+  ]
+}

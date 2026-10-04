@@ -15,16 +15,27 @@ function filesFromInput(input: HTMLInputElement): File[] {
   return input.files === null ? [] : [...input.files];
 }
 
-function errorText(error: unknown): string {
+// Every code the local file engine can raise must read as an instruction in
+// Italian: a machine code is never shown to a visitor, and an unmapped code
+// never leaks the internal vocabulary into the page.
+const FILE_PRIVACY_ERROR_IT: Readonly<Record<string, string>> = {
+  INVALID_INPUT: "Controlla i dati selezionati: almeno un file o un nome valido è necessario.",
+  UNSUPPORTED_INPUT: "Questo tipo di file non è supportato da questo strumento.",
+  FILE_TOO_LARGE: "La selezione supera il limite locale di dimensione previsto da questo strumento.",
+  TOO_MANY_FILES: "Hai selezionato troppi file. Riduci la selezione.",
+  TEXT_TOO_LARGE: "Il file di testo supera il limite locale previsto da questo strumento.",
+  CORRUPT_ARCHIVE: "Non è stato possibile validare la struttura dell'archivio. Verifica che il file ZIP sia completo.",
+  UNSUPPORTED_ARCHIVE: "Questo archivio usa una funzione che lo strumento non supporta.",
+  ARCHIVE_TOO_LARGE: "L'archivio supera il limite locale previsto da questo strumento.",
+  UNSAFE_ARCHIVE_PATH: "Un percorso è assoluto oppure contiene un segmento che risale alla cartella superiore.",
+  HASH_FAILED: "Non è stato possibile calcolare l'hash SHA-256 su questo dispositivo.",
+  IO_FAILED: "Non è stato possibile leggere i file selezionati. Riprova.",
+  CANCELLED: "Operazione annullata.",
+};
+
+export function filePrivacyErrorIt(error: unknown): string {
   const code = typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" ? error.code : null;
-  if (code !== null) {
-    if (code === "FILE_TOO_LARGE") return "La selezione supera il limite locale di dimensione previsto da questo strumento.";
-    if (code === "TOO_MANY_FILES") return "Hai selezionato troppi file. Riduci la selezione.";
-    if (code === "UNSAFE_ARCHIVE_PATH") return "Un percorso è assoluto oppure contiene un segmento che risale alla cartella superiore.";
-    if (code === "CORRUPT_ARCHIVE") return "Non è stato possibile validare la struttura dell'archivio. Verifica che il file ZIP sia completo.";
-    if (code === "CANCELLED") return "Operazione annullata.";
-    return `Errore nell'elaborazione locale (${code}). Controlla i file e riprova.`;
-  }
+  if (code !== null) return FILE_PRIVACY_ERROR_IT[code] ?? "L'elaborazione locale non è riuscita. Controlla i file selezionati e riprova.";
   return error instanceof Error ? "L'operazione locale non è riuscita. Controlla i dati e riprova." : "L'operazione locale non è riuscita.";
 }
 
@@ -105,7 +116,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
   const [afterFiles, setAfterFiles] = useState<File[]>([]);
   const [text, setText] = useState("");
   const [names, setNames] = useState("");
-  const [pattern, setPattern] = useState("{name}");
+  const [pattern, setPattern] = useState("{name}{ext}");
   const [references, setReferences] = useState("");
   const [includeHashes, setIncludeHashes] = useState(true);
   const [result, setResult] = useState<FilePrivacyResult | null>(null);
@@ -121,7 +132,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
     setAfterFiles([]);
     setText("");
     setNames("");
-    setPattern("{name}");
+    setPattern("{name}{ext}");
     setReferences("");
     setResult(null);
     setError("");
@@ -152,7 +163,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
       const next = await runFilePrivacyOperation(operation, input, controller.signal);
       if (!controller.signal.aborted) setResult(next);
     } catch (caught) {
-      if (!controller.signal.aborted) setError(errorText(caught));
+      if (!controller.signal.aborted) setError(filePrivacyErrorIt(caught));
     } finally {
       if (controllerRef.current === controller) controllerRef.current = null;
       setRunning(false);
@@ -222,7 +233,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
             {operation === "batch-rename-preview" && (
               <label class="field">
                 <span>Schema di rinomina</span>
-                <input value={pattern} onInput={(event) => setPattern(event.currentTarget.value)} placeholder="{name}-{index}" />
+                <input value={pattern} onInput={(event) => setPattern(event.currentTarget.value)} placeholder="{name}-{index}{ext}" />
                 <small>Segnaposto: <code>{"{name}"}</code>, <code>{"{index}"}</code>, <code>{"{ext}"}</code>.</small>
               </label>
             )}

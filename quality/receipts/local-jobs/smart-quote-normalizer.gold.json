@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "9e52b76be27890a30dfe80a627ae67acf0a97e40532f97d68668ffc2aa21c90d",
+  "toolId": "smart-quote-normalizer",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "text-writing",
+  "engineVersion": "text-writing-v1",
+  "oracleEntryId": "cand-007",
+  "fixtureFamilies": [
+    "unicode-normalization",
+    "text-writing-local-jobs"
+  ],
+  "replayedFixtureVectors": 11,
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-local-jobs-fixtures",
+    "strumentiutili-quality",
+    "unicode-uax15",
+    "unicode-uax29"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "unicode-normalization",
+      "path": "quality/fixtures/unicode-normalization/vectors.json"
+    },
+    {
+      "id": "text-writing-local-jobs",
+      "path": "quality/fixtures/text-writing-local-jobs/vectors.json"
+    }
+  ],
+  "browserContract": {
+    "assertion": "“l’[aà]cqua”|convertedCount|virgolette_convertite",
+    "outputSha256": "22e4fe3808525cd604af4f222a8c8929bc191491f8ba50c476dc5e2420a235ca",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls",
+    "italianErrorState": {
+      "verified": false,
+      "reason": "the direction selector only offers the two valid conversions, so the form cannot submit an invalid direction"
+    },
+    "toleratedFailure": "exactly one /api/auth/session probe, which the optional account Worker owns on a real deployment"
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap, bound to the fixture family that pins its policy",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "committed fixture vectors replayed through the public tool module, including declared error codes",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance",
+    "Italian error state verified in the browser or explicitly unreachable"
+  ],
+  "identities": {
+    "manifestSha256": "7322a59af9e380071d0eb1e6b5021b55453309f5c26b2f8c07ad78c7729add87",
+    "fixtureIndexSha256": "b46c111dc70c7a31b1c566b83689ebda3c68b3d3f8c0e76ad43647da317db30f",
+    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
+    "browserAcceptanceSha256": "3ed39f236b17b25e409a5be110b4bba09d544c2fb171b315a551c5deb5359a07",
+    "acceptanceScriptSha256": "989e5e76605c99951548b64573a96f184100ca54f6dde2d055f6f0a658e70af7",
+    "unitTestsSha256": "d178094229daa4745b88cecfee0120467fb502cfcd60fce8e6c2bb70d45e8b7e",
+    "italianErrorCatalogSha256": "058f1732d3def14155154402903e9964047fc5ec413924593ce1073c8c0aa94b",
+    "fixture:unicode-normalization:sha256": "be1445efa4f06603369fab44b61300eedfb95cab6786f534f9be85adb593733e",
+    "fixture:text-writing-local-jobs:sha256": "e5fd3a17512a2fe42fd86dd04be6594f9459e44c519a92268b903d8dc08a7875"
+  }
+}

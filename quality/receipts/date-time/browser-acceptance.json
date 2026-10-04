@@ -56,120 +56,120 @@
   "results": [
     {
       "toolId": "date-difference",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "add-subtract-days",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "working-hours",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "timezone-converter",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "meeting-time-planner",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "duration-calculator",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "decimal-hours-converter",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "timesheet-totaler",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "week-number-converter",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "quarter-date-mapper",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "deadline-countdown",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "recurring-date-generator",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "age-date-anniversary",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "calendar-date-list-generator",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "ics-event-builder",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "ics-viewer",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "epoch-batch-converter",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     }

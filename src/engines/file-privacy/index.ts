@@ -1,3 +1,5 @@
+export const FILE_PRIVACY_ENGINE_VERSION = "file-privacy-v2";
+
 export const FILE_PRIVACY_LIMITS = {
   maxFiles: 2_000,
   maxFileBytes: 50 * 1024 * 1024,
@@ -9,7 +11,12 @@ export const FILE_PRIVACY_LIMITS = {
   maxZipEntryNameBytes: 64 * 1024,
   maxFilenameLength: 180,
   maxManifestBytes: 2 * 1024 * 1024,
+  maxMetadataScanBytes: 512 * 1024,
+  maxPdfMetadataScanBytes: 4 * 1024 * 1024,
 } as const;
+
+/** A rename pattern is a bounded template, never a payload. */
+const MAX_RENAME_PATTERN_LENGTH = 512;
 
 export type FilePrivacyOperation =
   | "file-hash"
@@ -284,8 +291,8 @@ async function sha256Hex(bytes: Uint8Array): Promise<string> {
   }
 }
 
-async function digestFile(file: File, signal?: AbortSignal): Promise<string> {
-  const bytes = await readBytes(file, signal);
+async function digestFile(file: File, signal?: AbortSignal, maxBytes = FILE_PRIVACY_LIMITS.maxFileBytes): Promise<string> {
+  const bytes = await readBytes(file, signal, maxBytes);
   return sha256Hex(bytes);
 }
 
@@ -421,6 +428,16 @@ export function filenameSanitizer(input: unknown): FilePrivacyResult {
   return { operation: "filename-sanitizer", entries, changedCount: entries.filter((entry) => entry.changed).length, collisionCount: entries.filter((entry) => entry.collision).length };
 }
 
+/**
+ * A rename preview produces file *names*, never directory trees: a pasted or
+ * selected `docs/fattura.pdf` must be previewed as one name, so path separators
+ * are folded into `-` before the reserved-name and length policy applies.
+ */
+function safeFileName(value: string): string {
+  const flattened = value.replace(/[\\/]+/gu, "-");
+  return safeSegment(flattened);
+}
+
 function renderRenamePattern(pattern: string, index: number, name: string): string {
   const extension = extensionOf(name);
   const stem = name.slice(0, name.length - extension.length);
@@ -431,22 +448,35 @@ export function batchRenamePreview(input: unknown): FilePrivacyResult {
   const source = recordOf(input);
   const rawNames = Array.isArray(source.names) ? source.names : source.files === undefined ? undefined : recordsFor(fileList(source.files)).map((record) => record.name);
   if (!Array.isArray(rawNames) || rawNames.length === 0) fail("INVALID_INPUT", "names must be a non-empty array");
-  const pattern = source.pattern === undefined ? "{name}" : source.pattern;
+  // The default keeps the extension: a preview that silently renames
+  // `a.txt` to `a` is not a rename.
+  const pattern = source.pattern === undefined ? "{name}{ext}" : source.pattern;
   if (typeof pattern !== "string" || pattern.length === 0) fail("INVALID_INPUT", "pattern must be non-empty text");
+  if (pattern.length > MAX_RENAME_PATTERN_LENGTH) fail("INVALID_INPUT", `pattern must be at most ${MAX_RENAME_PATTERN_LENGTH} characters`);
   const used = new Set<string>();
   let collisionCount = 0;
   const entries = rawNames.map((rawName, index) => {
     if (typeof rawName !== "string") fail("INVALID_INPUT", "Every name must be text");
-    const candidate = sanitizeRelativePath(renderRenamePattern(pattern, index, rawName));
+    const candidate = safeFileName(renderRenamePattern(pattern, index, rawName));
+    if (candidate === "") fail("INVALID_INPUT", `The pattern produced an empty name for entry ${index + 1}`);
     let sanitized = candidate;
-    let suffix = 2;
-    while (used.has(sanitized.toLocaleLowerCase("en-US"))) {
-      collisionCount += 1;
-      const extension = extensionOf(sanitized);
-      const stem = sanitized.slice(0, sanitized.length - extension.length);
-      sanitized = `${stem}-${suffix}${extension}`;
-      suffix += 1;
+    let collided = false;
+    if (used.has(candidate.toLocaleLowerCase("en-US"))) {
+      collided = true;
+      // The stem is taken from the candidate once: recomputing it from the
+      // partially suffixed name would compound the suffix (-2 then -2-3).
+      const extension = extensionOf(candidate);
+      const stem = candidate.slice(0, candidate.length - extension.length);
+      let suffix = 2;
+      let next = `${stem}-${suffix}${extension}`;
+      while (used.has(next.toLocaleLowerCase("en-US"))) {
+        suffix += 1;
+        if (suffix > rawNames.length + 1) fail("INVALID_INPUT", "The rename pattern cannot produce a unique name for every entry");
+        next = `${stem}-${suffix}${extension}`;
+      }
+      sanitized = next;
     }
+    if (collided) collisionCount += 1;
     used.add(sanitized.toLocaleLowerCase("en-US"));
     return { original: rawName, renamed: sanitized, changed: sanitized !== rawName };
   });
@@ -626,14 +656,27 @@ export function createCleanZip(input: unknown, signal?: AbortSignal): Promise<Fi
 export async function archiveChecksumManifest(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
   const source = recordOf(input);
   const files = fileList(source.files);
-  if (files.length === 1 && extensionOf(files[0]?.name ?? "") === ".zip") {
-    const archive = files[0];
-    if (archive === undefined) fail("INVALID_INPUT", "Archive is required");
-    const digest = await digestFile(archive, signal);
-    const inspected = await inspectZip({ files: [archive] }, signal);
-    return { operation: "archive-checksum-manifest", algorithm: "SHA-256", archive: pathOf(archive), sha256: digest, entries: inspected.entries, manifest: `${digest}  ${sanitizeRelativePath(pathOf(archive))}\n`, entryCount: inspected.entryCount };
+  const archive = files.length === 1 && extensionOf(files[0]?.name ?? "") === ".zip" ? files[0] : undefined;
+  if (archive === undefined) {
+    // A single non-ZIP file (or several) is still this tool's job: the result is
+    // re-tagged so `operation` never depends on how the files arrived.
+    const { operation: _operation, ...rest } = await batchChecksumManifest(input, signal);
+    return { operation: "archive-checksum-manifest", ...rest };
   }
-  return batchChecksumManifest(input, signal);
+  // The archive is both hashed and inspected, so it must respect the (larger)
+  // archive limit rather than the single-file limit.
+  const digest = await digestFile(archive, signal, FILE_PRIVACY_LIMITS.maxZipBytes);
+  const inspected = await inspectZip({ files: [archive] }, signal);
+  return {
+    operation: "archive-checksum-manifest",
+    algorithm: "SHA-256",
+    archive: pathOf(archive),
+    sha256: digest,
+    entries: inspected.entries,
+    manifest: `${digest}  ${sanitizeRelativePath(pathOf(archive))}\n`,
+    entryCount: inspected.entryCount,
+    scope: "The manifest covers the archive bytes themselves; entries are listed from the ZIP central directory and are not decompressed or hashed individually.",
+  };
 }
 
 function isTextPath(file: File): boolean {
@@ -644,6 +687,186 @@ async function readableText(file: File, signal?: AbortSignal): Promise<string | 
   if (!isTextPath(file) || file.size > FILE_PRIVACY_LIMITS.maxTextBytes) return null;
   const bytes = await readBytes(file, signal, FILE_PRIVACY_LIMITS.maxTextBytes);
   return textDecoder.decode(bytes);
+}
+
+/**
+ * Bounded, structure-aware metadata inspection.
+ *
+ * The tool exists to warn before a file is shared, so the checks that matter
+ * are the ones a byte-level text scan cannot make: the JPEG/PNG/TIFF metadata
+ * containers and the PDF document information dictionary. Everything is read
+ * from a bounded prefix; nothing is decompressed, nothing is rewritten, and a
+ * container the tool cannot parse is reported as unknown rather than as clean.
+ */
+const EXIF_TAGS: ReadonlyMap<number, string> = new Map([
+  [0x010e, "ImageDescription"],
+  [0x010f, "Make"],
+  [0x0110, "Model"],
+  [0x0131, "Software"],
+  [0x0132, "DateTime"],
+  [0x013b, "Artist"],
+  [0x8298, "Copyright"],
+  [0x8769, "ExifIFD"],
+  [0x8825, "GPSInfoIFD"],
+]);
+
+/** PNG text-chunk keywords that usually carry authoring or location detail. */
+const PNG_SENSITIVE_KEYWORDS = new Set(["author", "comment", "description", "copyright", "creation time", "source", "disclaimer", "warning"]);
+const PNG_METADATA_CHUNKS = new Set(["tEXt", "iTXt", "zTXt", "eXIf", "tIME"]);
+
+function latin1(bytes: Uint8Array, start: number, end: number): string {
+  let result = "";
+  for (let index = start; index < end; index += 1) result += String.fromCharCode(bytes[index] ?? 0);
+  return result;
+}
+
+function findAscii(bytes: Uint8Array, needle: string, from = 0): number {
+  const limit = bytes.length - needle.length;
+  for (let index = from; index <= limit; index += 1) {
+    let matched = true;
+    for (let offset = 0; offset < needle.length; offset += 1) {
+      if (bytes[index + offset] !== needle.charCodeAt(offset)) {
+        matched = false;
+        break;
+      }
+    }
+    if (matched) return index;
+  }
+  return -1;
+}
+
+/** Reads the IFD0 tag names of a TIFF/Exif header, honouring its byte order marker. */
+function readExifTagNames(bytes: Uint8Array, tiffStart: number): string[] {
+  if (tiffStart + 8 > bytes.length) return [];
+  const order = latin1(bytes, tiffStart, tiffStart + 2);
+  if (order !== "II" && order !== "MM") return [];
+  const littleEndian = order === "II";
+  try {
+    const view = new DataView(bytes.buffer, bytes.byteOffset + tiffStart, bytes.byteLength - tiffStart);
+    const firstIfd = view.getUint32(4, littleEndian);
+    if (firstIfd <= 0 || firstIfd + 2 > view.byteLength) return [];
+    const entries = view.getUint16(firstIfd, littleEndian);
+    const names: string[] = [];
+    for (let index = 0; index < entries && firstIfd + 2 + (index + 1) * 12 <= view.byteLength; index += 1) {
+      const name = EXIF_TAGS.get(view.getUint16(firstIfd + 2 + index * 12, littleEndian));
+      if (name !== undefined) names.push(name);
+    }
+    return [...new Set(names)].toSorted();
+  } catch {
+    return [];
+  }
+}
+
+interface BinaryMetadataScan {
+  readonly containers: readonly string[];
+  readonly fields: readonly string[];
+}
+
+function scanJpegMetadata(bytes: Uint8Array): BinaryMetadataScan {
+  const fields = new Set<string>();
+  if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) return { containers: [], fields: [] };
+  const containers: string[] = [];
+  let offset = 2;
+  while (offset + 4 <= bytes.length) {
+    if (bytes[offset] !== 0xff) break;
+    const marker = bytes[offset + 1] ?? 0;
+    if (marker === 0xd8 || marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) {
+      offset += 2;
+      continue;
+    }
+    if (marker === 0xda || marker === 0xd9) break;
+    const length = (bytes[offset + 2] ?? 0) * 256 + (bytes[offset + 3] ?? 0);
+    if (length < 2) break;
+    const segmentStart = offset + 4;
+    const segmentEnd = Math.min(offset + 2 + length, bytes.length);
+    const payload = bytes.slice(segmentStart, segmentEnd);
+    if (marker === 0xe1 && payload.length >= 6 && latin1(payload, 0, 6) === "Exif\0\0") {
+      containers.push("Exif");
+      // "Exif\0\0" is six bytes, so the TIFF header starts right after it.
+      for (const name of readExifTagNames(payload, 6)) fields.add(name);
+    } else if (marker === 0xe1 && findAscii(payload, "http://ns.adobe.com/xap/1.0/") >= 0) {
+      containers.push("XMP");
+      fields.add("XMP");
+    } else if (marker === 0xed && findAscii(payload, "Photoshop 3.0") >= 0) {
+      containers.push("IPTC");
+      fields.add("IPTC");
+    } else if (marker === 0xe2 && findAscii(payload, "ICC_PROFILE") >= 0) {
+      containers.push("ICC profile");
+    } else if (marker === 0xeb) {
+      containers.push("APP13");
+      fields.add("APP13");
+    }
+    offset += 2 + length;
+  }
+  return { containers: [...new Set(containers)].toSorted(), fields: [...fields].toSorted() };
+}
+
+const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a] as const;
+
+function scanPngMetadata(bytes: Uint8Array): BinaryMetadataScan {
+  if (bytes.length < 8 || PNG_SIGNATURE.some((byte, index) => bytes[index] !== byte)) return { containers: [], fields: [] };
+  const fields = new Set<string>();
+  const containers = new Set<string>();
+  let offset = 8;
+  while (offset + 8 <= bytes.length) {
+    const length = ((bytes[offset] ?? 0) * 0x1000000) + ((bytes[offset + 1] ?? 0) * 0x10000) + ((bytes[offset + 2] ?? 0) * 0x100) + (bytes[offset + 3] ?? 0);
+    const type = latin1(bytes, offset + 4, offset + 8);
+    const dataStart = offset + 8;
+    const dataEnd = dataStart + length;
+    if (length < 0 || dataEnd > bytes.length) break;
+    if (type === "IEND") break;
+    if (PNG_METADATA_CHUNKS.has(type)) {
+      containers.add(type);
+      if (type !== "eXIf" && type !== "tIME") {
+        const separator = bytes.indexOf(0, dataStart);
+        if (separator >= dataStart && separator < dataEnd) {
+          const keyword = latin1(bytes, dataStart, separator).toLocaleLowerCase("en-US").trim() || "senza-etichetta";
+          fields.add(`${type}:${keyword}${PNG_SENSITIVE_KEYWORDS.has(keyword) ? ":sensibile" : ""}`);
+        }
+      } else fields.add(type);
+    }
+    offset = dataEnd + 4;
+  }
+  return { containers: [...containers].toSorted(), fields: [...fields].toSorted() };
+}
+
+const PDF_INFO_KEYS = ["/Author", "/Creator", "/Producer", "/Title", "/Subject", "/Keywords", "/CreationDate", "/ModDate"] as const;
+
+function scanPdfMetadata(bytes: Uint8Array): BinaryMetadataScan {
+  if (latin1(bytes, 0, 5) !== "%PDF-") return { containers: [], fields: [] };
+  const fields = new Set<string>();
+  for (const key of PDF_INFO_KEYS) {
+    if (findAscii(bytes, key) >= 0) fields.add(key.slice(1));
+  }
+  const hasMetadata = findAscii(bytes, "/Metadata") >= 0;
+  const encrypted = findAscii(bytes, "/Encrypt") >= 0;
+  return {
+    containers: [...(hasMetadata ? ["XMP"] : []), ...(encrypted ? ["encrypted"] : [])].toSorted(),
+    fields: [...fields].toSorted(),
+  };
+}
+
+function scanTiffMetadata(bytes: Uint8Array): BinaryMetadataScan {
+  const order = latin1(bytes, 0, 2);
+  if (order !== "II" && order !== "MM") return { containers: [], fields: [] };
+  return { containers: ["TIFF"], fields: readExifTagNames(bytes, 0) };
+}
+
+async function binaryMetadata(file: File, detectedMime: string, signal?: AbortSignal): Promise<BinaryMetadataScan | null> {
+  const limit = detectedMime === "application/pdf" ? FILE_PRIVACY_LIMITS.maxPdfMetadataScanBytes : FILE_PRIVACY_LIMITS.maxMetadataScanBytes;
+  if (file.size > limit) return null;
+  let bytes: Uint8Array;
+  try {
+    bytes = await readPrefix(file, limit);
+  } catch {
+    return null;
+  }
+  throwIfAborted(signal);
+  if (detectedMime === "image/jpeg") return scanJpegMetadata(bytes);
+  if (detectedMime === "image/png") return scanPngMetadata(bytes);
+  if (detectedMime === "application/pdf") return scanPdfMetadata(bytes);
+  if (detectedMime === "image/tiff") return scanTiffMetadata(bytes);
+  return null;
 }
 
 const secretPatterns: ReadonlyArray<{ kind: string; pattern: RegExp }> = [
@@ -682,12 +905,16 @@ export async function scanSecretPatterns(input: unknown, signal?: AbortSignal): 
   return { operation: "secret-token-pattern-scanner", findings, findingCount: findings.length, inspectedFiles: files.length, note: "Findings are heuristic pattern matches; review and rotate any real secret before sharing." };
 }
 
+const LOCATION_METADATA_FIELDS = new Set(["GPSInfoIFD"]);
+
 export async function inspectMetadataRisk(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
   const files = fileList(recordOf(input).files);
   const results: Array<Record<string, unknown>> = [];
   for (const file of files) {
     const signature = await detectFileSignature(file, signal);
     const content = await readableText(file, signal);
+    const detectedMime = String(signature.detectedMime);
+    const container = await binaryMetadata(file, detectedMime, signal);
     const risks: string[] = [];
     if (/(?:exif|xmp|iptc|gps| latitude|longitude)/iu.test(content ?? "")) risks.push("text contains a metadata-like marker");
     if (/(?:[A-Z]:\\|\/(?:home|Users|private|var)\/)/u.test(content ?? "")) risks.push("text contains an absolute path-like value");
@@ -695,10 +922,33 @@ export async function inspectMetadataRisk(input: unknown, signal?: AbortSignal):
     if (/(?:token|secret|password|api[_-]?key)/iu.test(content ?? "")) risks.push("text contains a secret-like keyword");
     if (/\.(?:tmp|log|bak|old|swp)$/iu.test(file.name)) risks.push("temporary or backup extension");
     if (file.size === 0) risks.push("file is zero bytes");
-    if (signature.detectedMime === "application/octet-stream" && content === null) risks.push("content signature is not verified as a supported text format");
-    results.push({ file: pathOf(file), size: file.size, detectedMime: signature.detectedMime, risks, riskCount: risks.length, inspectedText: content !== null });
+    if (detectedMime === "application/octet-stream" && content === null) risks.push("content signature is not verified as a supported text format");
+    const containers = container?.containers ?? [];
+    const fields = container?.fields ?? [];
+    if (containers.includes("encrypted")) risks.push("the file is encrypted, so its metadata cannot be inspected here");
+    if (fields.some((field) => LOCATION_METADATA_FIELDS.has(field))) risks.push("the file carries a GPS tag");
+    if (fields.length > 0) risks.push("the file carries embedded metadata fields");
+    const scanCoverage = container === null
+      ? detectedMime === "application/octet-stream" || content !== null ? "text-markers" : "not-inspectable"
+      : container.containers.length === 0 ? "container-parsed-no-metadata" : "container-parsed";
+    results.push({
+      file: pathOf(file),
+      size: file.size,
+      detectedMime,
+      risks,
+      riskCount: risks.length,
+      inspectedText: content !== null,
+      metadataContainers: containers,
+      metadataFields: fields,
+      scanCoverage,
+    });
   }
-  return { operation: "metadata-risk-inspector", files: results, riskFileCount: results.filter((result) => Number(result.riskCount ?? 0) > 0).length, note: "This is a bounded marker inspection, not a complete EXIF/XMP/IPTC metadata parser." };
+  return {
+    operation: "metadata-risk-inspector",
+    files: results,
+    riskFileCount: results.filter((result) => Number(result.riskCount ?? 0) > 0).length,
+    note: "Bounded local inspection: a text marker pass plus a structural pass over the JPEG, PNG, TIFF and PDF metadata containers read from a bounded prefix. Compressed or object-stream PDF metadata is not decompressed, so a clean report is not a guarantee.",
+  };
 }
 
 export async function safeShareChecklist(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
@@ -734,9 +984,26 @@ export async function clientHandoffIndex(input: unknown, signal?: AbortSignal): 
   return { operation: "client-handoff-index-generator", title, includeHashes, files: entries, json, markdown, count: entries.length };
 }
 
-function diffLists(beforeFiles: readonly File[], afterFiles: readonly File[]): Array<{ path: string; before: FileRecord | null; after: FileRecord | null; status: string }> {
-  const before = new Map(recordsFor(beforeFiles).map((record, index) => [record.path, { record, file: beforeFiles[index] }]));
-  const after = new Map(recordsFor(afterFiles).map((record, index) => [record.path, { record, file: afterFiles[index] }]));
+/**
+ * Paths are compared after sanitisation, so the maps must be keyed the same way.
+ * Two selections whose names sanitise to the same path would otherwise silently
+ * overwrite one another and produce a wrong diff, so the tool fails closed.
+ */
+function indexByPath(files: readonly File[], side: string): Map<string, { record: FileRecord; file: File }> {
+  const result = new Map<string, { record: FileRecord; file: File }>();
+  recordsFor(files).forEach((record, index) => {
+    const file = files[index];
+    if (file === undefined) fail("IO_FAILED", "File record could not be prepared");
+    if (result.has(record.path)) fail("INVALID_INPUT", `${side} contains two files that resolve to the same relative path: ${record.path}`);
+    result.set(record.path, { record, file });
+  });
+  return result;
+}
+
+function diffLists(
+  before: ReadonlyMap<string, { record: FileRecord }>,
+  after: ReadonlyMap<string, { record: FileRecord }>,
+): Array<{ path: string; before: FileRecord | null; after: FileRecord | null; status: string }> {
   const paths = [...new Set([...before.keys(), ...after.keys()])].toSorted((left, right) => left.localeCompare(right));
   return paths.map((path) => {
     const oldValue = before.get(path);
@@ -751,15 +1018,17 @@ export async function fileListDiff(input: unknown, signal?: AbortSignal): Promis
   const before = fileList(source.before, "before");
   const after = fileList(source.after, "after");
   const compareHashes = source.compareHashes === true;
-  const differences = await Promise.all(diffLists(before, after).map(async (difference) => {
+  const beforeByPath = indexByPath(before, "before");
+  const afterByPath = indexByPath(after, "after");
+  const differences = await Promise.all(diffLists(beforeByPath, afterByPath).map(async (difference) => {
     if (!compareHashes || difference.status === "added" || difference.status === "removed") return difference;
-    const oldFile = before.find((file) => pathOf(file) === difference.path);
-    const newFile = after.find((file) => pathOf(file) === difference.path);
+    const oldFile = beforeByPath.get(difference.path)?.file;
+    const newFile = afterByPath.get(difference.path)?.file;
     if (oldFile === undefined || newFile === undefined) return difference;
     const [oldHash, newHash] = await Promise.all([digestFile(oldFile, signal), digestFile(newFile, signal)]);
     return { ...difference, status: oldHash === newHash ? "unchanged" : "changed" };
   }));
-  return { operation: "file-list-diff", differences, addedCount: differences.filter((difference) => difference.status === "added").length, removedCount: differences.filter((difference) => difference.status === "removed").length, changedCount: differences.filter((difference) => difference.status === "changed").length, unchangedCount: differences.filter((difference) => difference.status === "unchanged").length, comparedBytes: before.reduce((sum, file) => sum + file.size, 0) + after.reduce((sum, file) => sum + file.size, 0) };
+  return { operation: "file-list-diff", differences, addedCount: differences.filter((difference) => difference.status === "added").length, removedCount: differences.filter((difference) => difference.status === "removed").length, changedCount: differences.filter((difference) => difference.status === "changed").length, unchangedCount: differences.filter((difference) => difference.status === "unchanged").length, comparedBytes: before.reduce((sum, file) => sum + file.size, 0) + after.reduce((sum, file) => sum + file.size, 0), compareHashes };
 }
 
 export async function folderCompare(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {

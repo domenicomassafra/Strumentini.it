@@ -543,6 +543,51 @@
       "supports": [
         "WHATWG URL cross-check"
       ]
+    },
+    {
+      "id": "unicode-uax24",
+      "source_class": "official-primary",
+      "authority": "Unicode Standard Annex #24, Unicode Script property of characters",
+      "locator": "Script property of characters, revision for Unicode 16.0/17.0",
+      "url": "https://www.unicode.org/reports/tr24/",
+      "supports": [
+        "script classification used by the text statistics tool",
+        "the declared script ranges cross-check"
+      ]
+    },
+    {
+      "id": "strumentiutili-holiday-calendar",
+      "source_class": "project-policy",
+      "authority": "StrumentiUtili.it",
+      "locator": "quality/fixtures/holiday-calendar/vectors.json",
+      "supports": [
+        "embedded holiday table and substitute-day policy",
+        "per-country statutory flag",
+        "hand-worked published calendars"
+      ]
+    },
+    {
+      "id": "strumentiutili-local-jobs-fixtures",
+      "source_class": "project-policy",
+      "authority": "StrumentiUtili.it",
+      "locator": "quality/fixtures/text-writing-local-jobs/vectors.json",
+      "supports": [
+        "reading-rate bounds and rounding policy",
+        "typographic quote policy",
+        "sample-data determinism policy",
+        "script counting policy"
+      ]
+    },
+    {
+      "id": "strumentiutili-file-privacy-fixtures",
+      "source_class": "project-policy",
+      "authority": "StrumentiUtili.it",
+      "locator": "quality/fixtures/metadata-risk-scan/vectors.json",
+      "supports": [
+        "bounded metadata-scan policy",
+        "JPEG/PNG/PDF container coverage",
+        "risk marker taxonomy"
+      ]
     }
   ]
 }

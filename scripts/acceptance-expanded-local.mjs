@@ -108,6 +108,19 @@ async function a11yAudit(form) {
   }).map((control) => control.outerHTML.slice(0, 160)));
 }
 
+// The site shell asks the Worker for the current account session on every route.
+// This acceptance server is a plain static file server, so that single endpoint
+// answers 404 here by design. Every other failed response, and every console
+// error, stays fatal. See scripts/acceptance-family-matrix.mjs for the same rule.
+const staticOnlyFailurePaths = new Set(["/api/auth/session"]);
+const isExpectedStaticFailure = (url) => {
+  try {
+    return staticOnlyFailurePaths.has(new URL(url).pathname);
+  } catch {
+    return false;
+  }
+};
+
 async function acceptTool(context, testCase) {
   const page = await context.newPage();
   const requests = [];
@@ -120,7 +133,7 @@ async function acceptTool(context, testCase) {
     if (request.resourceType() === "script") scripts.push(request.url());
   });
   page.on("pageerror", (error) => runtimeErrors.push(String(error)));
-  page.on("console", (message) => { if (message.type() === "error") runtimeErrors.push(message.text()); });
+  page.on("console", (message) => { if (message.type() === "error") runtimeErrors.push({ text: message.text(), url: message.location()?.url ?? "" }); });
   try {
     const response = await page.goto(`${origin}/tools/${testCase.id}/`, { waitUntil: "networkidle" });
     if (response?.status() !== 200) throw new Error(`${testCase.id}: HTTP ${response?.status()}`);
@@ -145,7 +158,10 @@ async function acceptTool(context, testCase) {
     }
     const output = await panel.innerText();
     if (!testCase.expect.test(output)) throw new Error(`${testCase.id}: contract assertion ${testCase.expect} failed for ${JSON.stringify(output.slice(0, 1200))}`);
-    if (runtimeErrors.length > 0) throw new Error(`${testCase.id}: runtime/console error: ${runtimeErrors.join(" | ")}`);
+    // A console error is tolerated only when its own source URL is the optional
+  // account probe; anything else is fatal.
+  const consoleErrors = runtimeErrors.filter((entry) => !isExpectedStaticFailure(entry.url));
+  if (consoleErrors.length > 0) throw new Error(`${testCase.id}: runtime/console error: ${consoleErrors.map((entry) => `${entry.text} (${entry.url})`).join(" | ")}`);
     if (scripts.length === 0) throw new Error(`${testCase.id}: no lazy implementation script observed after submit`);
     const bad = requests.filter((request) => !request.url.startsWith(origin) || request.method !== "GET" || (request.postData ?? "") !== "");
     if (bad.length > 0) throw new Error(`${testCase.id}: external, non-GET, or task-body request observed: ${JSON.stringify(bad)}`);

@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "digest": "SHA-256 over the archive bytes exactly as selected",
+    "manifest_line": "<sha256><two spaces><relative path>",
+    "entry_listing": "read from the ZIP central directory, never decompressed",
+    "non_archive_selection": "the same tool emits the per-file manifest and keeps its own operation name"
+  },
+  "cross_check": "python3 hashlib/zlib/struct; digests and CRC-32 computed outside the tool implementation",
+  "vectors": [
+    {
+      "id": "zip-two-entries",
+      "input": {
+        "files": [
+          {
+            "name": "consegna.zip",
+            "base64": "UEsDBBQAAAgAAAAAAAAxtINXEQAAABEAAAANAAAAcmVsYXppb25lLnR4dFJpZXBpbG9nbyBsb2NhbGUKUEsDBBQAAAgAAAAAAADpLf7cEwAAABMAAAAUAAAAYWxsZWdhdGkvZmF0dHVyYS5wZGYlUERGLTEuNAolIHNpbnRlc2kKUEsBAhQAFAAACAAAAAAAADG0g1cRAAAAEQAAAA0AAAAAAAAAAAAAAAAAAAAAAHJlbGF6aW9uZS50eHRQSwECFAAUAAAIAAAAAAAA6S3+3BMAAAATAAAAFAAAAAAAAAAAAAAAAAA8AAAAYWxsZWdhdGkvZmF0dHVyYS5wZGZQSwUGAAAAAAIAAgB9AAAAgQAAAAAA"
+          }
+        ]
+      },
+      "expected": {
+        "operation": "archive-checksum-manifest",
+        "sha256": "83f9b22880df83d5713a7c60950be1a93fd34cac056d8e62568d987672132c4a",
+        "entryCount": 2,
+        "entryPaths": [
+          "relazione.txt",
+          "allegati/fattura.pdf"
+        ],
+        "manifest": "83f9b22880df83d5713a7c60950be1a93fd34cac056d8e62568d987672132c4a  consegna.zip\n"
+      }
+    },
+    {
+      "id": "zip-one-entry",
+      "input": {
+        "files": [
+          {
+            "name": "vuoto.zip",
+            "base64": "UEsDBBQAAAgAAAAAAAAxtINXEQAAABEAAAANAAAAcmVsYXppb25lLnR4dFJpZXBpbG9nbyBsb2NhbGUKUEsBAhQAFAAACAAAAAAAADG0g1cRAAAAEQAAAA0AAAAAAAAAAAAAAAAAAAAAAHJlbGF6aW9uZS50eHRQSwUGAAAAAAEAAQA7AAAAPAAAAAAA"
+          }
+        ]
+      },
+      "expected": {
+        "operation": "archive-checksum-manifest",
+        "sha256": "4c269525c042e8f154652273f291a997080bc8b8984a52b08fa664d4cf6af916",
+        "entryCount": 1,
+        "entryPaths": [
+          "relazione.txt"
+        ],
+        "manifest": "4c269525c042e8f154652273f291a997080bc8b8984a52b08fa664d4cf6af916  vuoto.zip\n"
+      }
+    },
+    {
+      "id": "plain-files-keep-this-tool-tag",
+      "input": {
+        "files": [
+          {
+            "name": "nota.txt",
+            "base64": "cHJpbWEgcmlnYQpzZWNvbmRhIHJpZ2EK"
+          },
+          {
+            "name": "altro.txt",
+            "base64": "dW5vCg=="
+          }
+        ]
+      },
+      "expected": {
+        "operation": "archive-checksum-manifest",
+        "count": 2,
+        "totalBytes": 28,
+        "paths": [
+          "nota.txt",
+          "altro.txt"
+        ],
+        "sha256": {
+          "nota.txt": "d2c798cbaa050e97453c60bc961906647d649797b5afb9c84a23ebd3eed558c9",
+          "altro.txt": "d9f86d34b0b0e31f595fb0932c06c77b3f18ea32b9f870f5328b6748a844e210"
+        },
+        "manifest": "d2c798cbaa050e97453c60bc961906647d649797b5afb9c84a23ebd3eed558c9  nota.txt\nd9f86d34b0b0e31f595fb0932c06c77b3f18ea32b9f870f5328b6748a844e210  altro.txt\n"
+      }
+    }
+  ]
+}

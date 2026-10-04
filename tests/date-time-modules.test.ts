@@ -53,7 +53,7 @@ describe("date/time/planning tool modules", () => {
     const built = icsEventBuilder.run({ uid: "module-event", summary: "Review", start: "2024-01-15T12:00:00Z", end: "2024-01-15T13:00:00Z" }, context) as { text: string };
     expect(icsViewer.run({ text: built.text }, context)).toMatchObject({ events: [{ uid: "module-event" }] });
     expect(epochBatchConverter.run({ values: ["0"], unit: "seconds", timeZone: "UTC" }, context)).toMatchObject({ rows: [{ iso: "1970-01-01T00:00:00.000Z" }] });
-    expect(publicHolidayLookup.run({ country: "US", year: 2026 }, context)).toMatchObject({ source: "embedded-calendar-v1" });
+    expect(publicHolidayLookup.run({ country: "US", year: 2026 }, context)).toMatchObject({ source: "embedded-calendar-v2" });
   });
 
   it("normalizes invalid module input instead of returning a fake result", () => {

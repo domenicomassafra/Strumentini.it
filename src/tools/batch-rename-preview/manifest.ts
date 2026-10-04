@@ -14,5 +14,5 @@ export default {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "structured", format: "rename-plan", maxBytes: 2_097_152 }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-169", fixtureFamilies: ["filename-sanitization"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-169", fixtureFamilies: ["filename-sanitization", "batch-rename-plan"] },
 } as const satisfies ToolManifest;

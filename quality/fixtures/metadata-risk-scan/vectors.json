@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "scope": "a bounded prefix of each file: 512 KiB, 4 MiB for PDF",
+    "text_pass": "metadata-like markers, absolute paths, e-mail markers, secret-like keywords, temporary extensions, zero bytes, unknown signature",
+    "container_pass": "JPEG APP1/APP2/APP13 markers and the Exif IFD0 tag names, PNG text/time/Exif chunks, the PDF document information dictionary",
+    "not_decompressed": "compressed or object-stream PDF metadata is never expanded, so a clean report is not a guarantee",
+    "risk_markers": "the fixture lists the markers that must be present in the risk list, not the exact sentences"
+  },
+  "vectors": [
+    {
+      "id": "jpeg-exif-with-gps",
+      "input": {
+        "files": [
+          {
+            "name": "foto.jpg",
+            "base64": "/9j/4QA2RXhpZgAASUkqAAgAAAACABABAgAGAAAAIAAAACWIBAABAAAAJAAAAAAAAABDYW0AGgAAAP/aAAgBAQAAPwAAAAAAAAAAAP/Z"
+          }
+        ]
+      },
+      "expected": {
+        "detectedMime": "image/jpeg",
+        "metadataContainers": [
+          "Exif"
+        ],
+        "metadataFields": [
+          "GPSInfoIFD",
+          "Model"
+        ],
+        "scanCoverage": "container-parsed",
+        "riskMarkers": [
+          "gps tag",
+          "embedded metadata"
+        ],
+        "riskCount": 2
+      }
+    },
+    {
+      "id": "png-text-chunks",
+      "input": {
+        "files": [
+          {
+            "name": "grafico.png",
+            "base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAEXRFWHRBdXRob3IAQWRhIFJpdmVyYQx7mQMAAAAGdElNRX4BAgMEBXqzd3IAAAAMSURBVHicY/jPwAAAAwEBAMn+ku8AAAAASUVORK5CYII="
+          }
+        ]
+      },
+      "expected": {
+        "detectedMime": "image/png",
+        "metadataContainers": [
+          "tEXt",
+          "tIME"
+        ],
+        "metadataFields": [
+          "tEXt:author:sensibile",
+          "tIME"
+        ],
+        "scanCoverage": "container-parsed",
+        "riskMarkers": [
+          "embedded metadata"
+        ],
+        "riskCount": 1
+      }
+    },
+    {
+      "id": "png-without-text-chunks",
+      "input": {
+        "files": [
+          {
+            "name": "pulito.png",
+            "base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC"
+          }
+        ]
+      },
+      "expected": {
+        "detectedMime": "image/png",
+        "metadataContainers": [],
+        "metadataFields": [],
+        "scanCoverage": "container-parsed-no-metadata",
+        "riskMarkers": [],
+        "riskCount": 0
+      }
+    },
+    {
+      "id": "pdf-info-dictionary",
+      "input": {
+        "files": [
+          {
+            "name": "relazione.pdf",
+            "base64": "JVBERi0xLjcKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqCjQgMCBvYmo8PC9UaXRsZShSZWxhemlvbmUpL0F1dGhvcihBZGEgUml2ZXJhKS9DcmVhdG9yKFN0cnVtZW50aVV0aWxpKS9DcmVhdGlvbkRhdGUoRDoyMDI2MDEwMjAzMDQwNSswMScwMCcpPj5lbmRvYmoKdHJhaWxlcjw8L0luZm8gNCAwIFIvUm9vdCAxIDAgUj4+CiUlRU9GCg=="
+          }
+        ]
+      },
+      "expected": {
+        "detectedMime": "application/pdf",
+        "metadataContainers": [],
+        "metadataFields": [
+          "Author",
+          "CreationDate",
+          "Creator",
+          "Title"
+        ],
+        "scanCoverage": "container-parsed-no-metadata",
+        "riskMarkers": [
+          "embedded metadata"
+        ],
+        "riskCount": 1
+      }
+    },
+    {
+      "id": "pdf-without-info",
+      "input": {
+        "files": [
+          {
+            "name": "vuoto.pdf",
+            "base64": "JVBERi0xLjcKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZz4+ZW5kb2JqCnRyYWlsZXI8PC9Sb290IDEgMCBSPj4KJSVFT0YK"
+          }
+        ]
+      },
+      "expected": {
+        "detectedMime": "application/pdf",
+        "metadataContainers": [],
+        "metadataFields": [],
+        "scanCoverage": "container-parsed-no-metadata",
+        "riskMarkers": [],
+        "riskCount": 0
+      }
+    },
+    {
+      "id": "plain-text-markers-only",
+      "input": {
+        "files": [
+          {
+            "name": "note.txt",
+            "base64": "R1BTIDQ1LjQ2NDIgOS4xOTAwCkF1dGhvcjogYWRhQGV4YW1wbGUuY29tCi9Vc2Vycy9hZGEvcHJvZ2V0dG8udHh0CnBhc3N3b3JkID0gc3VwZXJzZWdyZXRvMQo=",
+            "type": "text/plain"
+          }
+        ]
+      },
+      "expected": {
+        "detectedMime": "application/octet-stream",
+        "metadataContainers": [],
+        "metadataFields": [],
+        "scanCoverage": "text-markers",
+        "riskMarkers": [
+          "metadata-like marker",
+          "absolute path-like",
+          "email-like marker",
+          "secret-like keyword"
+        ],
+        "riskCount": 4
+      }
+    },
+    {
+      "id": "zero-bytes",
+      "input": {
+        "files": [
+          {
+            "name": "vuoto.txt",
+            "base64": ""
+          }
+        ]
+      },
+      "expected": {
+        "detectedMime": "application/octet-stream",
+        "metadataContainers": [],
+        "metadataFields": [],
+        "scanCoverage": "text-markers",
+        "riskMarkers": [
+          "zero bytes"
+        ],
+        "riskCount": 1
+      }
+    }
+  ],
+  "errors": [
+    {
+      "id": "no-files",
+      "input": {
+        "files": []
+      },
+      "code": "INVALID_INPUT"
+    }
+  ]
+}

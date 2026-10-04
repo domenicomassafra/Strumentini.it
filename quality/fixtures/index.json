@@ -1,56 +1,104 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-23",
-  "family_count": 57,
+  "generated_at": "2026-10-04",
+  "family_count": 63,
   "families": [
     {
-      "id": "unicode-normalization",
+      "id": "archive-checksum-manifest",
       "candidate_families": [
-        "Unicode normalizer"
+        "Archive checksum manifest"
       ],
-      "path": "quality/fixtures/unicode-normalization/vectors.json",
+      "path": "quality/fixtures/archive-checksum-manifest/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Store-method ZIP archives assembled byte by byte for StrumentiUtili.it; no third-party content."
+      },
+      "truth_sources": [
+        "nist-fips180-4",
+        "pkware-appnote",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "digest over the exact archive bytes",
+        "central-directory entry listing",
+        "operation identity for non-archive selections",
+        "one-entry and multi-entry archives"
+      ]
+    },
+    {
+      "id": "base64-rfc4648",
+      "candidate_families": [
+        "Base64 encode/decode"
+      ],
+      "path": "quality/fixtures/base64-rfc4648/vectors.json",
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
         "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
-        "unicode-uax15"
+        "rfc4648"
       ],
       "coverage": [
-        "NFC/NFD/NFKC",
-        "combining-mark order",
-        "idempotence"
+        "empty",
+        "padding variants",
+        "invalid alphabet"
       ]
     },
     {
-      "id": "invisible-characters",
+      "id": "batch-rename-plan",
       "candidate_families": [
-        "Invisible-character detector"
+        "Batch rename preview"
       ],
-      "path": "quality/fixtures/invisible-characters/vectors.json",
+      "path": "quality/fixtures/batch-rename-plan/vectors.json",
       "format": "json",
       "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked StrumentiUtili.it literals; no external corpus copied."
       },
       "truth_sources": [
-        "unicode-uts39",
-        "unicode-uax15"
+        "fixture-policy",
+        "strumentiutili-quality"
       ],
       "coverage": [
-        "format controls",
-        "joiner",
-        "BOM-like character",
-        "non-mutating detection"
+        "index/name/ext placeholders",
+        "collision suffixing and counting",
+        "case-insensitive collisions",
+        "path-separator folding",
+        "Windows reserved names",
+        "hidden files",
+        "error codes"
       ]
     },
     {
-      "id": "whitespace-normalization",
+      "id": "bibtex",
       "candidate_families": [
-        "Whitespace normalizer"
+        "BibTeX formatter",
+        "BibTeX deduplicator",
+        "Citation key generator"
       ],
-      "path": "quality/fixtures/whitespace-normalization/vectors.json",
+      "path": "quality/fixtures/bibtex/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Synthetic bibliographic records; no xampl.bib or external citation corpus copied."
+      },
+      "truth_sources": [
+        "bibtex-ctan"
+      ],
+      "coverage": [
+        "brace/quoted values",
+        "entry type/key",
+        "lossless default"
+      ]
+    },
+    {
+      "id": "business-days",
+      "candidate_families": [
+        "Business-day calculator"
+      ],
+      "path": "quality/fixtures/business-days/vectors.json",
       "format": "json",
       "provenance": {
         "kind": "project-policy",
@@ -58,45 +106,27 @@
       },
       "truth_sources": [
         "fixture-policy",
-        "unicode-uax15"
+        "strumentiutili-lane05"
       ],
       "coverage": [
-        "CRLF/LF",
-        "tabs/spaces",
-        "empty",
-        "idempotence"
+        "weekend crossing",
+        "inclusivity",
+        "no hidden holiday source",
+        "custom workweek",
+        "explicit excluded dates"
       ]
     },
     {
-      "id": "word-character-line-count",
+      "id": "business-math",
       "candidate_families": [
-        "Word/character/line counter"
+        "Margin calculator",
+        "Markup calculator",
+        "Project profitability calculator",
+        "Hour/day/project rate converter",
+        "Effective hourly rate",
+        "Break-even calculator"
       ],
-      "path": "quality/fixtures/word-character-line-count/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "unicode-uax29",
-        "fixture-policy"
-      ],
-      "coverage": [
-        "empty",
-        "CRLF",
-        "word count",
-        "code-point/grapheme distinction"
-      ]
-    },
-    {
-      "id": "list-set-ops",
-      "candidate_families": [
-        "Line deduplicator",
-        "List intersection",
-        "List difference"
-      ],
-      "path": "quality/fixtures/list-set-ops/vectors.json",
+      "path": "quality/fixtures/business-math/vectors.json",
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
@@ -107,77 +137,35 @@
         "strumentiutili-lane05"
       ],
       "coverage": [
-        "duplicates",
-        "empty",
-        "algebraic properties",
-        "stable order"
+        "margin/markup distinction",
+        "zero denominator",
+        "rates",
+        "profitability",
+        "break-even"
       ]
     },
     {
-      "id": "line-sorting",
+      "id": "csv-cleaning",
       "candidate_families": [
-        "Line sorter"
+        "CSV cleaner",
+        "CSV delimiter/encoding detector"
       ],
-      "path": "quality/fixtures/line-sorting/vectors.json",
+      "path": "quality/fixtures/csv-cleaning/vectors.json",
       "format": "json",
       "provenance": {
         "kind": "project-policy",
         "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
-        "fixture-policy",
-        "unicode-uax15"
-      ],
-      "coverage": [
-        "explicit comparator",
-        "normalization distinction",
-        "empty"
-      ]
-    },
-    {
-      "id": "text-diff",
-      "candidate_families": [
-        "Text diff",
-        "File-list diff"
-      ],
-      "path": "quality/fixtures/text-diff/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "strumentiutili-lane05",
+        "rfc4180",
+        "whatwg-encoding",
         "fixture-policy"
       ],
       "coverage": [
-        "replacement",
-        "empty-to-content",
-        "reconstruction invariant"
-      ]
-    },
-    {
-      "id": "markdown-xss",
-      "candidate_families": [
-        "Markdown preview"
-      ],
-      "path": "quality/fixtures/markdown-xss/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "commonmark",
-        "owasp-xss",
-        "fixture-policy"
-      ],
-      "coverage": [
-        "normal Markdown",
-        "raw HTML",
-        "event handler",
-        "javascript URL",
-        "SVG active content"
+        "BOM",
+        "semicolon/tab",
+        "ragged row",
+        "cleaning policy distinction"
       ]
     },
     {
@@ -212,30 +200,6 @@
       ]
     },
     {
-      "id": "csv-cleaning",
-      "candidate_families": [
-        "CSV cleaner",
-        "CSV delimiter/encoding detector"
-      ],
-      "path": "quality/fixtures/csv-cleaning/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "rfc4180",
-        "whatwg-encoding",
-        "fixture-policy"
-      ],
-      "coverage": [
-        "BOM",
-        "semicolon/tab",
-        "ragged row",
-        "cleaning policy distinction"
-      ]
-    },
-    {
       "id": "csv-table-ops",
       "candidate_families": [
         "CSV deduplicator",
@@ -262,180 +226,27 @@
       ]
     },
     {
-      "id": "json-grammar",
+      "id": "data-table-gold",
       "candidate_families": [
-        "JSON formatter/validator"
+        "CSV and table local tools"
       ],
-      "path": "quality/fixtures/json-grammar/vectors.json",
+      "path": "quality/fixtures/data-table-gold/vectors.json",
       "format": "json",
       "provenance": {
-        "kind": "spec-vector",
+        "kind": "hand-worked",
         "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "rfc4180",
         "rfc8259"
       ],
       "coverage": [
-        "valid scalars",
-        "invalid literal",
-        "leading zero",
-        "trailing comma",
-        "duplicate member interoperability"
-      ]
-    },
-    {
-      "id": "yaml-core",
-      "candidate_families": [
-        "YAML formatter/validator",
-        "JSON/YAML converter"
-      ],
-      "path": "quality/fixtures/yaml-core/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "yaml12",
-        "fixture-policy"
-      ],
-      "coverage": [
-        "scalars",
-        "sequence",
-        "anchor/alias",
-        "tab indentation",
-        "resource bounds"
-      ]
-    },
-    {
-      "id": "base64-rfc4648",
-      "candidate_families": [
-        "Base64 encode/decode"
-      ],
-      "path": "quality/fixtures/base64-rfc4648/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "rfc4648"
-      ],
-      "coverage": [
-        "empty",
-        "padding variants",
-        "invalid alphabet"
-      ]
-    },
-    {
-      "id": "sha2-known-answers",
-      "candidate_families": [
-        "Hash generator",
-        "File hash",
-        "Checksum verifier"
-      ],
-      "path": "quality/fixtures/sha2-known-answers/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "nist-fips180-4",
-        "openssl-cli"
-      ],
-      "coverage": [
-        "empty",
-        "abc known answer",
-        "SHA-256",
-        "SHA-512",
-        "chunk independence"
-      ]
-    },
-    {
-      "id": "uuid-rfc9562",
-      "candidate_families": [
-        "UUID generator"
-      ],
-      "path": "quality/fixtures/uuid-rfc9562/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "rfc9562"
-      ],
-      "coverage": [
-        "version bits",
-        "variant bits",
-        "nil UUID"
-      ]
-    },
-    {
-      "id": "url-percent-encoding",
-      "candidate_families": [
-        "URL encode/decode"
-      ],
-      "path": "quality/fixtures/url-percent-encoding/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "whatwg-url"
-      ],
-      "coverage": [
-        "UTF-8 encoding",
-        "uppercase hex",
-        "space",
-        "malformed percent sequence"
-      ]
-    },
-    {
-      "id": "query-params",
-      "candidate_families": [
-        "Query-string editor"
-      ],
-      "path": "quality/fixtures/query-params/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "whatwg-url"
-      ],
-      "coverage": [
-        "repeated keys",
-        "blank value",
-        "space plus",
-        "literal plus"
-      ]
-    },
-    {
-      "id": "utm-roundtrip",
-      "candidate_families": [
-        "UTM builder",
-        "UTM parser",
-        "Tracking-parameter cleaner"
-      ],
-      "path": "quality/fixtures/utm-roundtrip/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "whatwg-url",
-        "fixture-policy"
-      ],
-      "coverage": [
-        "builder/parser round-trip",
-        "duplicates",
-        "tracking removal",
-        "fragment"
+        "one deterministic public-module vector per promoted data/table tool",
+        "quoted CSV, delimiter detection, encoding, selection, filtering, sorting, grouping, joins and pivots",
+        "CSV/JSON/TSV conversion, transposition, profiling and chart data",
+        "supplements specialized csv-rfc4180, csv-cleaning, csv-table-ops and json-csv-conversion fixtures"
       ]
     },
     {
@@ -465,50 +276,29 @@
       ]
     },
     {
-      "id": "timezone-dst",
+      "id": "date-time-gold",
       "candidate_families": [
-        "Timezone converter",
-        "Multi-timezone overlap",
-        "Meeting-time planner"
+        "Date and time local tools"
       ],
-      "path": "quality/fixtures/timezone-dst/vectors.json",
+      "path": "quality/fixtures/date-time-gold/vectors.json",
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
         "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
-        "iana-tzdb",
-        "rfc3339"
-      ],
-      "coverage": [
-        "winter/summer",
-        "DST gap",
-        "DST overlap",
-        "instant preservation"
-      ]
-    },
-    {
-      "id": "business-days",
-      "candidate_families": [
-        "Business-day calculator"
-      ],
-      "path": "quality/fixtures/business-days/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
+        "strumentiutili-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "rfc3339",
+        "iana-tzdb",
+        "rfc5545"
       ],
       "coverage": [
-        "weekend crossing",
-        "inclusivity",
-        "no hidden holiday source",
-        "custom workweek",
-        "explicit excluded dates"
+        "one deterministic public-module vector per promoted date/time tool",
+        "calendar arithmetic, exact decimal time, timezone and DST behavior",
+        "RFC 5545 event build/inspection",
+        "supplements specialized date-arithmetic, timezone-dst, decimal-hours and ics fixtures",
+        "public-holiday lookup excluded until the drifting calendar source is explicitly pinned"
       ]
     },
     {
@@ -533,56 +323,70 @@
       ]
     },
     {
-      "id": "business-math",
+      "id": "developer-web-gold",
       "candidate_families": [
-        "Margin calculator",
-        "Markup calculator",
-        "Project profitability calculator",
-        "Hour/day/project rate converter",
-        "Effective hourly rate",
-        "Break-even calculator"
+        "Developer/web local tools"
       ],
-      "path": "quality/fixtures/business-math/vectors.json",
+      "path": "quality/fixtures/developer-web-gold/vectors.json",
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
         "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
-        "fixture-policy",
-        "strumentiutili-lane05"
-      ],
-      "coverage": [
-        "margin/markup distinction",
-        "zero denominator",
-        "rates",
-        "profitability",
-        "break-even"
-      ]
-    },
-    {
-      "id": "marketing-math",
-      "candidate_families": [
-        "ROAS calculator",
-        "CPA/CPC/CPM calculator",
-        "Conversion-rate scenario calculator"
-      ],
-      "path": "quality/fixtures/marketing-math/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
+        "strumentiutili-quality",
         "fixture-policy"
       ],
       "coverage": [
-        "ROAS",
-        "CPA",
-        "CPC",
-        "CPM",
-        "conversion rate",
-        "zero denominator"
+        "one deterministic end-to-end literal per developer/web tool",
+        "shared runtime contract",
+        "supplements tool-specific RFC and standards fixtures"
+      ]
+    },
+    {
+      "id": "doi",
+      "candidate_families": [
+        "DOI normalizer",
+        "DOI link builder"
+      ],
+      "path": "quality/fixtures/doi/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "doi-handbook",
+        "whatwg-url"
+      ],
+      "coverage": [
+        "plain",
+        "doi prefix",
+        "resolver URL",
+        "percent encoding"
+      ]
+    },
+    {
+      "id": "file-hash",
+      "candidate_families": [
+        "File hash",
+        "Batch checksum manifest",
+        "Checksum verifier"
+      ],
+      "path": "quality/fixtures/file-hash/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "nist-fips180-4",
+        "openssl-cli"
+      ],
+      "coverage": [
+        "known bytes",
+        "known digest",
+        "chunk independence"
       ]
     },
     {
@@ -610,27 +414,138 @@
       ]
     },
     {
-      "id": "mime-file-signatures",
+      "id": "folder-compare-diff",
       "candidate_families": [
-        "MIME type lookup",
-        "File signature/type detector"
+        "Folder compare",
+        "File list diff"
       ],
-      "path": "quality/fixtures/mime-file-signatures/vectors.json",
+      "path": "quality/fixtures/folder-compare-diff/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Synthetic local file trees for StrumentiUtili.it; no third-party content."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "strumentiutili-quality",
+        "nist-fips180-4"
+      ],
+      "coverage": [
+        "added/removed/changed/unchanged",
+        "SHA-256 detection when sizes match",
+        "digest cross-check",
+        "empty-selection errors"
+      ]
+    },
+    {
+      "id": "hmac-rfc2104",
+      "candidate_families": [
+        "HMAC generator"
+      ],
+      "path": "quality/fixtures/hmac-rfc2104/vectors.json",
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
         "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
-        "iana-media-types",
-        "w3c-png3",
-        "google-webp",
-        "iso-pdf2",
-        "pkware-appnote"
+        "rfc2104",
+        "nist-fips180-4",
+        "openssl-cli"
       ],
       "coverage": [
-        "PNG/JPEG/WebP/PDF/ZIP/GIF signatures",
-        "signature safety boundary"
+        "known answer",
+        "key/message separation"
+      ]
+    },
+    {
+      "id": "holiday-calendar",
+      "candidate_families": [
+        "Public-holiday lookup"
+      ],
+      "path": "quality/fixtures/holiday-calendar/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked published calendars for 2020-2026 with an independently implemented Gregorian Easter; no third-party corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "strumentiutili-quality",
+        "rfc3339"
+      ],
+      "coverage": [
+        "Italian calendar",
+        "UK and Canadian substitute days on a weekend Christmas",
+        "UK Sunday New Year",
+        "US in-lieu-of rule",
+        "non-statutory civic holiday",
+        "pre-2021 Canada",
+        "country and year errors"
+      ]
+    },
+    {
+      "id": "html-entities",
+      "candidate_families": [
+        "HTML entity encode/decode"
+      ],
+      "path": "quality/fixtures/html-entities/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "whatwg-html",
+        "owasp-xss"
+      ],
+      "coverage": [
+        "named reference",
+        "numeric reference",
+        "encoding ampersand",
+        "sanitization boundary"
+      ]
+    },
+    {
+      "id": "http-status",
+      "candidate_families": [
+        "HTTP status reference"
+      ],
+      "path": "quality/fixtures/http-status/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc9110"
+      ],
+      "coverage": [
+        "status classes",
+        "common codes",
+        "display-vs-protocol distinction"
+      ]
+    },
+    {
+      "id": "ics",
+      "candidate_families": [
+        "ICS event builder",
+        "ICS viewer"
+      ],
+      "path": "quality/fixtures/ics/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc5545"
+      ],
+      "coverage": [
+        "DATE",
+        "UTC DATE-TIME",
+        "folding",
+        "invalid offset form"
       ]
     },
     {
@@ -660,6 +575,28 @@
       ]
     },
     {
+      "id": "invisible-characters",
+      "candidate_families": [
+        "Invisible-character detector"
+      ],
+      "path": "quality/fixtures/invisible-characters/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "unicode-uts39",
+        "unicode-uax15"
+      ],
+      "coverage": [
+        "format controls",
+        "joiner",
+        "BOM-like character",
+        "non-mutating detection"
+      ]
+    },
+    {
       "id": "isbn",
       "candidate_families": [
         "ISBN validator/converter"
@@ -678,185 +615,6 @@
         "ISBN-13",
         "bad check digit",
         "10-to-13 conversion"
-      ]
-    },
-    {
-      "id": "doi",
-      "candidate_families": [
-        "DOI normalizer",
-        "DOI link builder"
-      ],
-      "path": "quality/fixtures/doi/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "doi-handbook",
-        "whatwg-url"
-      ],
-      "coverage": [
-        "plain",
-        "doi prefix",
-        "resolver URL",
-        "percent encoding"
-      ]
-    },
-    {
-      "id": "bibtex",
-      "candidate_families": [
-        "BibTeX formatter",
-        "BibTeX deduplicator",
-        "Citation key generator"
-      ],
-      "path": "quality/fixtures/bibtex/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "synthetic-local",
-        "license_or_rights": "Synthetic bibliographic records; no xampl.bib or external citation corpus copied."
-      },
-      "truth_sources": [
-        "bibtex-ctan"
-      ],
-      "coverage": [
-        "brace/quoted values",
-        "entry type/key",
-        "lossless default"
-      ]
-    },
-    {
-      "id": "ris",
-      "candidate_families": [
-        "RIS/BibTeX converter"
-      ],
-      "path": "quality/fixtures/ris/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "synthetic-local",
-        "license_or_rights": "Synthetic tagged records; no external RIS sample corpus copied."
-      },
-      "truth_sources": [
-        "ris-policy"
-      ],
-      "coverage": [
-        "repeated tags",
-        "CRLF/LF",
-        "unknown-tag preservation"
-      ]
-    },
-    {
-      "id": "ics",
-      "candidate_families": [
-        "ICS event builder",
-        "ICS viewer"
-      ],
-      "path": "quality/fixtures/ics/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "rfc5545"
-      ],
-      "coverage": [
-        "DATE",
-        "UTC DATE-TIME",
-        "folding",
-        "invalid offset form"
-      ]
-    },
-    {
-      "id": "html-entities",
-      "candidate_families": [
-        "HTML entity encode/decode"
-      ],
-      "path": "quality/fixtures/html-entities/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "whatwg-html",
-        "owasp-xss"
-      ],
-      "coverage": [
-        "named reference",
-        "numeric reference",
-        "encoding ampersand",
-        "sanitization boundary"
-      ]
-    },
-    {
-      "id": "url-security",
-      "candidate_families": [
-        "Open Graph preview",
-        "Redirect-chain inspector",
-        "Canonical URL helper"
-      ],
-      "path": "quality/fixtures/url-security/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "whatwg-url",
-        "owasp-xss"
-      ],
-      "coverage": [
-        "dangerous schemes",
-        "credentials",
-        "invalid host percent encoding",
-        "non-execution"
-      ]
-    },
-    {
-      "id": "qr-contract",
-      "candidate_families": [
-        "QR generator",
-        "QR reader"
-      ],
-      "path": "quality/fixtures/qr-contract/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "iso-qr-18004",
-        "strumentiutili-lane05"
-      ],
-      "coverage": [
-        "ASCII",
-        "URL",
-        "Unicode",
-        "independent decoder"
-      ]
-    },
-    {
-      "id": "file-hash",
-      "candidate_families": [
-        "File hash",
-        "Batch checksum manifest",
-        "Checksum verifier"
-      ],
-      "path": "quality/fixtures/file-hash/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "nist-fips180-4",
-        "openssl-cli"
-      ],
-      "coverage": [
-        "known bytes",
-        "known digest",
-        "chunk independence"
       ]
     },
     {
@@ -883,47 +641,190 @@
       ]
     },
     {
-      "id": "zip-signatures",
+      "id": "json-grammar",
       "candidate_families": [
-        "ZIP contents inspector",
-        "ZIP creator",
-        "Clean ZIP creator"
+        "JSON formatter/validator"
       ],
-      "path": "quality/fixtures/zip-signatures/vectors.json",
+      "path": "quality/fixtures/json-grammar/vectors.json",
       "format": "json",
       "provenance": {
-        "kind": "hand-worked",
+        "kind": "spec-vector",
         "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
-        "pkware-appnote",
-        "fixture-policy"
+        "rfc8259"
       ],
       "coverage": [
-        "signatures",
-        "zip-slip boundary",
-        "resource limits"
+        "valid scalars",
+        "invalid literal",
+        "leading zero",
+        "trailing comma",
+        "duplicate member interoperability"
       ]
     },
     {
-      "id": "pdf-signature",
+      "id": "jwt-structure",
       "candidate_families": [
-        "PDF page-count verifier",
-        "PDF metadata inspector",
-        "PDF merge/split family"
+        "JWT inspector"
       ],
-      "path": "quality/fixtures/pdf-signature/vectors.json",
+      "path": "quality/fixtures/jwt-structure/vectors.json",
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
         "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
-        "iso-pdf2"
+        "rfc7519",
+        "rfc4648"
       ],
       "coverage": [
-        "signature positive/negative",
-        "preflight/conformance distinction"
+        "three-part parsing",
+        "unsecured token warning",
+        "malformed token"
+      ]
+    },
+    {
+      "id": "line-sorting",
+      "candidate_families": [
+        "Line sorter"
+      ],
+      "path": "quality/fixtures/line-sorting/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "unicode-uax15"
+      ],
+      "coverage": [
+        "explicit comparator",
+        "normalization distinction",
+        "empty"
+      ]
+    },
+    {
+      "id": "list-set-ops",
+      "candidate_families": [
+        "Line deduplicator",
+        "List intersection",
+        "List difference"
+      ],
+      "path": "quality/fixtures/list-set-ops/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "strumentiutili-lane05"
+      ],
+      "coverage": [
+        "duplicates",
+        "empty",
+        "algebraic properties",
+        "stable order"
+      ]
+    },
+    {
+      "id": "markdown-xss",
+      "candidate_families": [
+        "Markdown preview"
+      ],
+      "path": "quality/fixtures/markdown-xss/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "commonmark",
+        "owasp-xss",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "normal Markdown",
+        "raw HTML",
+        "event handler",
+        "javascript URL",
+        "SVG active content"
+      ]
+    },
+    {
+      "id": "marketing-math",
+      "candidate_families": [
+        "ROAS calculator",
+        "CPA/CPC/CPM calculator",
+        "Conversion-rate scenario calculator"
+      ],
+      "path": "quality/fixtures/marketing-math/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy"
+      ],
+      "coverage": [
+        "ROAS",
+        "CPA",
+        "CPC",
+        "CPM",
+        "conversion rate",
+        "zero denominator"
+      ]
+    },
+    {
+      "id": "metadata-risk-scan",
+      "candidate_families": [
+        "Metadata risk inspector"
+      ],
+      "path": "quality/fixtures/metadata-risk-scan/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Hand-assembled JPEG/PNG/PDF byte fixtures containing no third-party content and no real personal data."
+      },
+      "truth_sources": [
+        "cipa-exif",
+        "iso-pdf2",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "JPEG Exif IFD0 tags and GPS presence",
+        "PNG text and time chunks",
+        "PDF document information dictionary",
+        "clean containers",
+        "text marker pass",
+        "zero bytes",
+        "scan coverage"
+      ]
+    },
+    {
+      "id": "mime-file-signatures",
+      "candidate_families": [
+        "MIME type lookup",
+        "File signature/type detector"
+      ],
+      "path": "quality/fixtures/mime-file-signatures/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "iana-media-types",
+        "w3c-png3",
+        "google-webp",
+        "iso-pdf2",
+        "pkware-appnote"
+      ],
+      "coverage": [
+        "PNG/JPEG/WebP/PDF/ZIP/GIF signatures",
+        "signature safety boundary"
       ]
     },
     {
@@ -951,6 +852,27 @@
       ]
     },
     {
+      "id": "pdf-signature",
+      "candidate_families": [
+        "PDF page-count verifier",
+        "PDF metadata inspector",
+        "PDF merge/split family"
+      ],
+      "path": "quality/fixtures/pdf-signature/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "iso-pdf2"
+      ],
+      "coverage": [
+        "signature positive/negative",
+        "preflight/conformance distinction"
+      ]
+    },
+    {
       "id": "percentage-math",
       "candidate_families": [
         "VAT/general percentage helper",
@@ -973,177 +895,76 @@
       ]
     },
     {
-      "id": "hmac-rfc2104",
+      "id": "qr-contract",
       "candidate_families": [
-        "HMAC generator"
+        "QR generator",
+        "QR reader"
       ],
-      "path": "quality/fixtures/hmac-rfc2104/vectors.json",
+      "path": "quality/fixtures/qr-contract/vectors.json",
       "format": "json",
       "provenance": {
-        "kind": "hand-worked",
+        "kind": "project-policy",
         "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
-        "rfc2104",
-        "nist-fips180-4",
-        "openssl-cli"
+        "iso-qr-18004",
+        "strumentiutili-lane05"
       ],
       "coverage": [
-        "known answer",
-        "key/message separation"
+        "ASCII",
+        "URL",
+        "Unicode",
+        "independent decoder"
       ]
     },
     {
-      "id": "jwt-structure",
+      "id": "query-params",
       "candidate_families": [
-        "JWT inspector"
+        "Query-string editor"
       ],
-      "path": "quality/fixtures/jwt-structure/vectors.json",
+      "path": "quality/fixtures/query-params/vectors.json",
       "format": "json",
       "provenance": {
-        "kind": "hand-worked",
+        "kind": "spec-vector",
         "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
-        "rfc7519",
-        "rfc4648"
+        "whatwg-url"
       ],
       "coverage": [
-        "three-part parsing",
-        "unsecured token warning",
-        "malformed token"
+        "repeated keys",
+        "blank value",
+        "space plus",
+        "literal plus"
       ]
     },
     {
-      "id": "http-status",
+      "id": "research-bibtex-syntax",
       "candidate_families": [
-        "HTTP status reference"
+        "BibTeX formatter",
+        "BibTeX deduplicator",
+        "Citation key generator"
       ],
-      "path": "quality/fixtures/http-status/vectors.json",
+      "path": "quality/fixtures/research-bibtex-syntax/vectors.json",
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "rfc9110"
-      ],
-      "coverage": [
-        "status classes",
-        "common codes",
-        "display-vs-protocol distinction"
-      ]
-    },
-    {
-      "id": "robots",
-      "candidate_families": [
-        "Robots directive helper"
-      ],
-      "path": "quality/fixtures/robots/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "rfc9309"
-      ],
-      "coverage": [
-        "user-agent group",
-        "allow/disallow",
-        "non-enforcement caveat"
-      ]
-    },
-    {
-      "id": "developer-web-gold",
-      "candidate_families": [
-        "Developer/web local tools"
-      ],
-      "path": "quality/fixtures/developer-web-gold/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "strumentiutili-quality",
-        "fixture-policy"
-      ],
-      "coverage": [
-        "one deterministic end-to-end literal per developer/web tool",
-        "shared runtime contract",
-        "supplements tool-specific RFC and standards fixtures"
-      ]
-    },
-    {
-      "id": "text-writing-gold",
-      "candidate_families": [
-        "Text and writing local tools"
-      ],
-      "path": "quality/fixtures/text-writing-gold/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "strumentiutili-quality",
-        "fixture-policy"
-      ],
-      "coverage": [
-        "one deterministic public-module vector per text-writing tool",
-        "Unicode and local-processing contract",
-        "supplements specialized Unicode, CSV, list and Markdown fixtures"
-      ]
-    },
-    {
-      "id": "date-time-gold",
-      "candidate_families": [
-        "Date and time local tools"
-      ],
-      "path": "quality/fixtures/date-time-gold/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked BibTeX snippets authored for StrumentiUtili.it; no xampl.bib or third-party bibliography copied."
       },
       "truth_sources": [
         "strumentiutili-quality",
         "fixture-policy",
-        "rfc3339",
-        "iana-tzdb",
-        "rfc5545"
+        "bibtex-ctan",
+        "whatwg-url"
       ],
       "coverage": [
-        "one deterministic public-module vector per promoted date/time tool",
-        "calendar arithmetic, exact decimal time, timezone and DST behavior",
-        "RFC 5545 event build/inspection",
-        "supplements specialized date-arithmetic, timezone-dst, decimal-hours and ics fixtures",
-        "public-holiday lookup excluded until the drifting calendar source is explicitly pinned"
-      ]
-    },
-    {
-      "id": "data-table-gold",
-      "candidate_families": [
-        "CSV and table local tools"
-      ],
-      "path": "quality/fixtures/data-table-gold/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "strumentiutili-quality",
-        "fixture-policy",
-        "rfc4180",
-        "rfc8259"
-      ],
-      "coverage": [
-        "one deterministic public-module vector per promoted data/table tool",
-        "quoted CSV, delimiter detection, encoding, selection, filtering, sorting, grouping, joins and pivots",
-        "CSV/JSON/TSV conversion, transposition, profiling and chart data",
-        "supplements specialized csv-rfc4180, csv-cleaning, csv-table-ops and json-csv-conversion fixtures"
+        "directives are not entries",
+        "value concatenation without macro expansion",
+        "canonical field order",
+        "unbalanced values quoted with a warning",
+        "truncation disclosure",
+        "credential redaction",
+        "dedupe by DOI/ISBN/title"
       ]
     },
     {
@@ -1201,32 +1022,28 @@
       ]
     },
     {
-      "id": "research-bibtex-syntax",
+      "id": "research-date-normalization",
       "candidate_families": [
-        "BibTeX formatter",
-        "BibTeX deduplicator",
-        "Citation key generator"
+        "Date-source normalizer"
       ],
-      "path": "quality/fixtures/research-bibtex-syntax/vectors.json",
+      "path": "quality/fixtures/research-date-normalization/vectors.json",
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked BibTeX snippets authored for StrumentiUtili.it; no xampl.bib or third-party bibliography copied."
+        "license_or_rights": "Hand-worked date literals authored for StrumentiUtili.it; no external corpus copied."
       },
       "truth_sources": [
         "strumentiutili-quality",
         "fixture-policy",
-        "bibtex-ctan",
-        "whatwg-url"
+        "rfc3339"
       ],
       "coverage": [
-        "directives are not entries",
-        "value concatenation without macro expansion",
-        "canonical field order",
-        "unbalanced values quoted with a warning",
-        "truncation disclosure",
-        "credential redaction",
-        "dedupe by DOI/ISBN/title"
+        "Italian and English month names",
+        "abbreviations",
+        "numeric ambiguity disclosure",
+        "calendar validity",
+        "leap rules",
+        "Italian rejection reasons"
       ]
     },
     {
@@ -1254,31 +1071,6 @@
         "orphan tag lines",
         "truncated record",
         "semantic round trip"
-      ]
-    },
-    {
-      "id": "research-date-normalization",
-      "candidate_families": [
-        "Date-source normalizer"
-      ],
-      "path": "quality/fixtures/research-date-normalization/vectors.json",
-      "format": "json",
-      "provenance": {
-        "kind": "hand-worked",
-        "license_or_rights": "Hand-worked date literals authored for StrumentiUtili.it; no external corpus copied."
-      },
-      "truth_sources": [
-        "strumentiutili-quality",
-        "fixture-policy",
-        "rfc3339"
-      ],
-      "coverage": [
-        "Italian and English month names",
-        "abbreviations",
-        "numeric ambiguity disclosure",
-        "calendar validity",
-        "leap rules",
-        "Italian rejection reasons"
       ]
     },
     {
@@ -1334,6 +1126,366 @@
         "code-point length",
         "Italian and English stopwords",
         "clamped settings disclosure"
+      ]
+    },
+    {
+      "id": "ris",
+      "candidate_families": [
+        "RIS/BibTeX converter"
+      ],
+      "path": "quality/fixtures/ris/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Synthetic tagged records; no external RIS sample corpus copied."
+      },
+      "truth_sources": [
+        "ris-policy"
+      ],
+      "coverage": [
+        "repeated tags",
+        "CRLF/LF",
+        "unknown-tag preservation"
+      ]
+    },
+    {
+      "id": "robots",
+      "candidate_families": [
+        "Robots directive helper"
+      ],
+      "path": "quality/fixtures/robots/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc9309"
+      ],
+      "coverage": [
+        "user-agent group",
+        "allow/disallow",
+        "non-enforcement caveat"
+      ]
+    },
+    {
+      "id": "sha2-known-answers",
+      "candidate_families": [
+        "Hash generator",
+        "File hash",
+        "Checksum verifier"
+      ],
+      "path": "quality/fixtures/sha2-known-answers/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "nist-fips180-4",
+        "openssl-cli"
+      ],
+      "coverage": [
+        "empty",
+        "abc known answer",
+        "SHA-256",
+        "SHA-512",
+        "chunk independence"
+      ]
+    },
+    {
+      "id": "text-diff",
+      "candidate_families": [
+        "Text diff",
+        "File-list diff"
+      ],
+      "path": "quality/fixtures/text-diff/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-lane05",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "replacement",
+        "empty-to-content",
+        "reconstruction invariant"
+      ]
+    },
+    {
+      "id": "text-writing-gold",
+      "candidate_families": [
+        "Text and writing local tools"
+      ],
+      "path": "quality/fixtures/text-writing-gold/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "one deterministic public-module vector per text-writing tool",
+        "Unicode and local-processing contract",
+        "supplements specialized Unicode, CSV, list and Markdown fixtures"
+      ]
+    },
+    {
+      "id": "text-writing-local-jobs",
+      "candidate_families": [
+        "Reading-time estimator",
+        "Smart-quote normalizer",
+        "Lorem/sample-data generator",
+        "Language-aware text statistics"
+      ],
+      "path": "quality/fixtures/text-writing-local-jobs/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked literals plus an independent re-implementation of the declared sample-data and script policy; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "strumentiutili-quality",
+        "unicode-uax29"
+      ],
+      "coverage": [
+        "reading-rate bounds and rounding",
+        "quote opening context and idempotence",
+        "sample-data determinism and layouts",
+        "seed and count bounds",
+        "script counting and NFC/NFD invariance",
+        "error codes"
+      ]
+    },
+    {
+      "id": "timezone-dst",
+      "candidate_families": [
+        "Timezone converter",
+        "Multi-timezone overlap",
+        "Meeting-time planner"
+      ],
+      "path": "quality/fixtures/timezone-dst/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "iana-tzdb",
+        "rfc3339"
+      ],
+      "coverage": [
+        "winter/summer",
+        "DST gap",
+        "DST overlap",
+        "instant preservation"
+      ]
+    },
+    {
+      "id": "unicode-normalization",
+      "candidate_families": [
+        "Unicode normalizer"
+      ],
+      "path": "quality/fixtures/unicode-normalization/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "unicode-uax15"
+      ],
+      "coverage": [
+        "NFC/NFD/NFKC",
+        "combining-mark order",
+        "idempotence"
+      ]
+    },
+    {
+      "id": "url-percent-encoding",
+      "candidate_families": [
+        "URL encode/decode"
+      ],
+      "path": "quality/fixtures/url-percent-encoding/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "whatwg-url"
+      ],
+      "coverage": [
+        "UTF-8 encoding",
+        "uppercase hex",
+        "space",
+        "malformed percent sequence"
+      ]
+    },
+    {
+      "id": "url-security",
+      "candidate_families": [
+        "Open Graph preview",
+        "Redirect-chain inspector",
+        "Canonical URL helper"
+      ],
+      "path": "quality/fixtures/url-security/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "whatwg-url",
+        "owasp-xss"
+      ],
+      "coverage": [
+        "dangerous schemes",
+        "credentials",
+        "invalid host percent encoding",
+        "non-execution"
+      ]
+    },
+    {
+      "id": "utm-roundtrip",
+      "candidate_families": [
+        "UTM builder",
+        "UTM parser",
+        "Tracking-parameter cleaner"
+      ],
+      "path": "quality/fixtures/utm-roundtrip/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "whatwg-url",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "builder/parser round-trip",
+        "duplicates",
+        "tracking removal",
+        "fragment"
+      ]
+    },
+    {
+      "id": "uuid-rfc9562",
+      "candidate_families": [
+        "UUID generator"
+      ],
+      "path": "quality/fixtures/uuid-rfc9562/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "rfc9562"
+      ],
+      "coverage": [
+        "version bits",
+        "variant bits",
+        "nil UUID"
+      ]
+    },
+    {
+      "id": "whitespace-normalization",
+      "candidate_families": [
+        "Whitespace normalizer"
+      ],
+      "path": "quality/fixtures/whitespace-normalization/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "unicode-uax15"
+      ],
+      "coverage": [
+        "CRLF/LF",
+        "tabs/spaces",
+        "empty",
+        "idempotence"
+      ]
+    },
+    {
+      "id": "word-character-line-count",
+      "candidate_families": [
+        "Word/character/line counter"
+      ],
+      "path": "quality/fixtures/word-character-line-count/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "unicode-uax29",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "empty",
+        "CRLF",
+        "word count",
+        "code-point/grapheme distinction"
+      ]
+    },
+    {
+      "id": "yaml-core",
+      "candidate_families": [
+        "YAML formatter/validator",
+        "JSON/YAML converter"
+      ],
+      "path": "quality/fixtures/yaml-core/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "yaml12",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "scalars",
+        "sequence",
+        "anchor/alias",
+        "tab indentation",
+        "resource bounds"
+      ]
+    },
+    {
+      "id": "zip-signatures",
+      "candidate_families": [
+        "ZIP contents inspector",
+        "ZIP creator",
+        "Clean ZIP creator"
+      ],
+      "path": "quality/fixtures/zip-signatures/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "pkware-appnote",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "signatures",
+        "zip-slip boundary",
+        "resource limits"
       ]
     }
   ]

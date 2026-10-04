@@ -1,0 +1,779 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "reading_time": "seconds = ceil(words / wordsPerMinute * 60), minutes = ceil(seconds / 60), displayed in Italian",
+    "reading_rate": "default 200 words per minute, accepted range 1..2000",
+    "quotes": "opening context is start of text or one of space, tab, '(', '[', '{', '<', em dash, en dash, hyphen",
+    "quote_forms": "“ ” „ ‟ ‘ ’ ‚ ‛ are the curly forms; everything else is untouched",
+    "sample_data": "one deterministic 32-bit LCG (a = 1664525, c = 1013904223, state = seed XOR 0x9e3779b9)",
+    "sample_layouts": {
+      "words": "one word per line",
+      "names": "one name per line",
+      "emails": "<word>.<n>@example.test",
+      "numbers": "one integer per line",
+      "rows": "CSV header plus index-derived rows",
+      "sentences": "one sentence per line",
+      "paragraphs": "one paragraph of three sentences per line",
+      "lorem": "paragraphs separated by a blank line"
+    },
+    "scripts": "punctuation, symbols, separators, controls and combining marks are ignored, so NFC and NFD forms report identical counts; Other means letters this tool does not name"
+  },
+  "cross_check": "python3 unicodedata plus an independent re-implementation of the declared script ranges and LCG policy",
+  "reading_time": {
+    "vectors": [
+      {
+        "id": "empty-text",
+        "input": {
+          "text": ""
+        },
+        "expected": {
+          "words": 0,
+          "wordsPerMinute": 200,
+          "minutes": 0,
+          "seconds": 0,
+          "display": "meno di 1 minuto"
+        }
+      },
+      {
+        "id": "four-words-at-120",
+        "input": {
+          "text": "uno due tre quattro",
+          "wordsPerMinute": 120
+        },
+        "expected": {
+          "words": 4,
+          "wordsPerMinute": 120,
+          "minutes": 1,
+          "seconds": 2,
+          "display": "1 minuto"
+        }
+      },
+      {
+        "id": "default-rate",
+        "input": {
+          "text": "uno due tre"
+        },
+        "expected": {
+          "words": 3,
+          "wordsPerMinute": 200,
+          "minutes": 1,
+          "seconds": 1,
+          "display": "1 minuto"
+        }
+      },
+      {
+        "id": "whole-minute-boundary",
+        "input": {
+          "text": "parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola",
+          "wordsPerMinute": 250
+        },
+        "expected": {
+          "words": 250,
+          "wordsPerMinute": 250,
+          "minutes": 1,
+          "seconds": 60,
+          "display": "1 minuto"
+        }
+      },
+      {
+        "id": "six-whole-minutes",
+        "input": {
+          "text": "parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola parola",
+          "wordsPerMinute": 200
+        },
+        "expected": {
+          "words": 1200,
+          "wordsPerMinute": 200,
+          "minutes": 6,
+          "seconds": 360,
+          "display": "6 minuti"
+        }
+      },
+      {
+        "id": "fractional-minute",
+        "input": {
+          "text": "uno due tre quattro",
+          "wordsPerMinute": 400
+        },
+        "expected": {
+          "words": 4,
+          "wordsPerMinute": 400,
+          "minutes": 1,
+          "seconds": 1,
+          "display": "1 minuto"
+        }
+      }
+    ],
+    "errors": [
+      {
+        "id": "zero-rate",
+        "input": {
+          "text": "uno",
+          "wordsPerMinute": 0
+        },
+        "code": "INVALID_WORDS_PER_MINUTE"
+      },
+      {
+        "id": "rate-above-the-limit",
+        "input": {
+          "text": "uno",
+          "wordsPerMinute": 2001
+        },
+        "code": "INVALID_WORDS_PER_MINUTE"
+      },
+      {
+        "id": "rate-not-a-number",
+        "input": {
+          "text": "uno",
+          "wordsPerMinute": "veloce"
+        },
+        "code": "INVALID_WORDS_PER_MINUTE"
+      },
+      {
+        "id": "negative-rate",
+        "input": {
+          "text": "uno",
+          "wordsPerMinute": -5
+        },
+        "code": "INVALID_WORDS_PER_MINUTE"
+      }
+    ]
+  },
+  "smart_quotes": {
+    "vectors": [
+      {
+        "id": "straight-pair",
+        "input": {
+          "text": "\"ciao\"",
+          "direction": "straight-to-curly"
+        },
+        "expected": {
+          "output": "“ciao”",
+          "convertedCount": 2,
+          "changed": true,
+          "direction": "straight-to-curly"
+        }
+      },
+      {
+        "id": "apostrophe-inside-a-word",
+        "input": {
+          "text": "l'acqua",
+          "direction": "straight-to-curly"
+        },
+        "expected": {
+          "output": "l’acqua",
+          "convertedCount": 1,
+          "changed": true,
+          "direction": "straight-to-curly"
+        }
+      },
+      {
+        "id": "apostrophe-after-a-bracket",
+        "input": {
+          "text": "('a')",
+          "direction": "straight-to-curly"
+        },
+        "expected": {
+          "output": "(‘a’)",
+          "convertedCount": 2,
+          "changed": true,
+          "direction": "straight-to-curly"
+        }
+      },
+      {
+        "id": "nested-quote-after-a-dash",
+        "input": {
+          "text": "\"a-\"b\"",
+          "direction": "straight-to-curly"
+        },
+        "expected": {
+          "output": "“a-“b”",
+          "convertedCount": 3,
+          "changed": true,
+          "direction": "straight-to-curly"
+        }
+      },
+      {
+        "id": "already-typographic",
+        "input": {
+          "text": "“ciao”",
+          "direction": "straight-to-curly"
+        },
+        "expected": {
+          "output": "“ciao”",
+          "convertedCount": 0,
+          "changed": false,
+          "direction": "straight-to-curly"
+        }
+      },
+      {
+        "id": "no-quotes-at-all",
+        "input": {
+          "text": "«solo virgolette»",
+          "direction": "straight-to-curly"
+        },
+        "expected": {
+          "output": "«solo virgolette»",
+          "convertedCount": 0,
+          "changed": false,
+          "direction": "straight-to-curly"
+        }
+      },
+      {
+        "id": "curly-to-straight-pair",
+        "input": {
+          "text": "“ciao”",
+          "direction": "curly-to-straight"
+        },
+        "expected": {
+          "output": "\"ciao\"",
+          "convertedCount": 2,
+          "changed": true,
+          "direction": "curly-to-straight"
+        }
+      },
+      {
+        "id": "curly-to-straight-apostrophe",
+        "input": {
+          "text": "l’acqua",
+          "direction": "curly-to-straight"
+        },
+        "expected": {
+          "output": "l'acqua",
+          "convertedCount": 1,
+          "changed": true,
+          "direction": "curly-to-straight"
+        }
+      },
+      {
+        "id": "curly-to-straight-low-quotes",
+        "input": {
+          "text": "„hallo“ e ‘ciao’",
+          "direction": "curly-to-straight"
+        },
+        "expected": {
+          "output": "\"hallo\" e 'ciao'",
+          "convertedCount": 4,
+          "changed": true,
+          "direction": "curly-to-straight"
+        }
+      },
+      {
+        "id": "curly-to-straight-empty",
+        "input": {
+          "text": "",
+          "direction": "curly-to-straight"
+        },
+        "expected": {
+          "output": "",
+          "convertedCount": 0,
+          "changed": false,
+          "direction": "curly-to-straight"
+        }
+      }
+    ],
+    "properties": [
+      {
+        "id": "straight-to-curly-is-idempotent",
+        "apply": "straight-to-curly twice"
+      },
+      {
+        "id": "curly-to-straight-is-idempotent",
+        "apply": "curly-to-straight twice"
+      },
+      {
+        "id": "round-trip-is-stable-after-one-pass",
+        "apply": "straight-to-curly then curly-to-straight"
+      }
+    ],
+    "errors": [
+      {
+        "id": "unknown-direction",
+        "input": {
+          "text": "a",
+          "direction": "verso"
+        },
+        "code": "INVALID_QUOTE_DIRECTION"
+      }
+    ]
+  },
+  "sample_data": {
+    "vectors": [
+      {
+        "type": "words",
+        "count": 4,
+        "seed": 7,
+        "rows": [
+          "craft",
+          "field",
+          "quiet",
+          "maple"
+        ],
+        "data": "craft\nfield\nquiet\nmaple",
+        "id": "words-4-7"
+      },
+      {
+        "type": "words",
+        "count": 6,
+        "seed": 1,
+        "rows": [
+          "craft",
+          "summer",
+          "maple",
+          "field",
+          "clear",
+          "field"
+        ],
+        "data": "craft\nsummer\nmaple\nfield\nclear\nfield",
+        "id": "words-6-1"
+      },
+      {
+        "type": "sentences",
+        "count": 2,
+        "seed": 1,
+        "rows": [
+          "craft summer maple field clear field cedar field.",
+          "focus quiet orbit kind maple atlas river bright."
+        ],
+        "data": "craft summer maple field clear field cedar field.\nfocus quiet orbit kind maple atlas river bright.",
+        "id": "sentences-2-1"
+      },
+      {
+        "type": "paragraphs",
+        "count": 1,
+        "seed": 1,
+        "rows": [
+          "craft summer maple field clear field cedar field. focus quiet orbit kind maple atlas river bright. summer winter maple canvas vector craft amber signal."
+        ],
+        "data": "craft summer maple field clear field cedar field. focus quiet orbit kind maple atlas river bright. summer winter maple canvas vector craft amber signal.",
+        "id": "paragraphs-1-1"
+      },
+      {
+        "type": "lorem",
+        "count": 2,
+        "seed": 1,
+        "rows": [
+          "craft summer maple field clear field cedar field. focus quiet orbit kind maple atlas river bright. summer winter maple canvas vector craft amber signal.",
+          "cedar tide focus maple clear kind quiet light. maple field quiet harbor quiet maple garden cedar. focus garden harbor quiet signal orbit paper quiet."
+        ],
+        "data": "craft summer maple field clear field cedar field. focus quiet orbit kind maple atlas river bright. summer winter maple canvas vector craft amber signal.\n\ncedar tide focus maple clear kind quiet light. maple field quiet harbor quiet maple garden cedar. focus garden harbor quiet signal orbit paper quiet.",
+        "id": "lorem-2-1"
+      },
+      {
+        "type": "names",
+        "count": 3,
+        "seed": 5,
+        "rows": [
+          "Cleo Martin",
+          "Bea Chen",
+          "Drew Patel"
+        ],
+        "data": "Cleo Martin\nBea Chen\nDrew Patel",
+        "id": "names-3-5"
+      },
+      {
+        "type": "emails",
+        "count": 3,
+        "seed": 2,
+        "rows": [
+          "craft.1@example.test",
+          "bright.2@example.test",
+          "orbit.3@example.test"
+        ],
+        "data": "craft.1@example.test\nbright.2@example.test\norbit.3@example.test",
+        "id": "emails-3-2"
+      },
+      {
+        "type": "numbers",
+        "count": 5,
+        "seed": 9,
+        "rows": [
+          "2575",
+          "944",
+          "860",
+          "444",
+          "8361"
+        ],
+        "data": "2575\n944\n860\n444\n8361",
+        "id": "numbers-5-9"
+      },
+      {
+        "type": "rows",
+        "count": 3,
+        "seed": 1,
+        "rows": [
+          "name,email,amount",
+          "Ada Rivera,ada.rivera@example.test,10",
+          "Bea Chen,bea.chen@example.test,11",
+          "Cleo Martin,cleo.martin@example.test,12"
+        ],
+        "data": "name,email,amount\nAda Rivera,ada.rivera@example.test,10\nBea Chen,bea.chen@example.test,11\nCleo Martin,cleo.martin@example.test,12",
+        "id": "rows-3-1"
+      },
+      {
+        "type": "lorem",
+        "count": 1,
+        "seed": 42,
+        "rows": [
+          "craft harbor comet winter light quiet comet harbor. maple maple table cedar garden summer craft summer. cedar garden light ember field garden comet bright."
+        ],
+        "data": "craft harbor comet winter light quiet comet harbor. maple maple table cedar garden summer craft summer. cedar garden light ember field garden comet bright.",
+        "id": "lorem-1-42"
+      },
+      {
+        "type": "words",
+        "count": 1,
+        "seed": 0,
+        "rows": [
+          "craft"
+        ],
+        "data": "craft",
+        "id": "words-1-0"
+      }
+    ],
+    "properties": [
+      "same type/count/seed always produces identical bytes",
+      "lorem, paragraphs and sentences produce three different layouts",
+      "rows do not depend on the seed"
+    ],
+    "errors": [
+      {
+        "id": "unknown-type",
+        "input": {
+          "type": "frammenti"
+        },
+        "code": "INVALID_SAMPLE_TYPE"
+      },
+      {
+        "id": "count-zero",
+        "input": {
+          "type": "words",
+          "count": 0
+        },
+        "code": "INVALID_COUNT"
+      },
+      {
+        "id": "count-above-the-limit",
+        "input": {
+          "type": "words",
+          "count": 1001
+        },
+        "code": "INVALID_COUNT"
+      },
+      {
+        "id": "count-not-an-integer",
+        "input": {
+          "type": "words",
+          "count": "molti"
+        },
+        "code": "INVALID_COUNT"
+      },
+      {
+        "id": "seed-negative",
+        "input": {
+          "type": "words",
+          "count": 2,
+          "seed": -1
+        },
+        "code": "INVALID_SEED"
+      },
+      {
+        "id": "seed-above-the-limit",
+        "input": {
+          "type": "words",
+          "count": 2,
+          "seed": 2147483648
+        },
+        "code": "INVALID_SEED"
+      },
+      {
+        "id": "seed-fractional",
+        "input": {
+          "type": "words",
+          "count": 2,
+          "seed": 1.5
+        },
+        "code": "INVALID_SEED"
+      }
+    ]
+  },
+  "language_statistics": {
+    "vectors": [
+      {
+        "id": "italian-with-punctuation",
+        "input": {
+          "text": "Ciao, mondo!"
+        },
+        "expected": {
+          "dominantScript": "Latin",
+          "language": "en",
+          "scripts": [
+            {
+              "script": "Latin",
+              "codePoints": 9
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "mixed-latin-cyrillic",
+        "input": {
+          "text": "Hello world. Привет мир."
+        },
+        "expected": {
+          "dominantScript": "Latin",
+          "language": "en",
+          "scripts": [
+            {
+              "script": "Latin",
+              "codePoints": 10
+            },
+            {
+              "script": "Cyrillic",
+              "codePoints": 9
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "greek",
+        "input": {
+          "text": "Γειά σου Κόσμε"
+        },
+        "expected": {
+          "dominantScript": "Greek",
+          "language": "el",
+          "scripts": [
+            {
+              "script": "Greek",
+              "codePoints": 12
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "hebrew",
+        "input": {
+          "text": "שלום עולם"
+        },
+        "expected": {
+          "dominantScript": "Hebrew",
+          "language": "he",
+          "scripts": [
+            {
+              "script": "Hebrew",
+              "codePoints": 8
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "arabic",
+        "input": {
+          "text": "مرحبا بالعالم"
+        },
+        "expected": {
+          "dominantScript": "Arabic",
+          "language": "ar",
+          "scripts": [
+            {
+              "script": "Arabic",
+              "codePoints": 12
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "devanagari",
+        "input": {
+          "text": "नमस्ते दुनिया"
+        },
+        "expected": {
+          "dominantScript": "Devanagari",
+          "language": "hi",
+          "scripts": [
+            {
+              "script": "Devanagari",
+              "codePoints": 7
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "japanese",
+        "input": {
+          "text": "こんにちは世界"
+        },
+        "expected": {
+          "dominantScript": "Japanese",
+          "language": "ja",
+          "scripts": [
+            {
+              "script": "Japanese",
+              "codePoints": 5
+            },
+            {
+              "script": "Han",
+              "codePoints": 2
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "korean",
+        "input": {
+          "text": "안녕하세요 세계"
+        },
+        "expected": {
+          "dominantScript": "Korean",
+          "language": "ko",
+          "scripts": [
+            {
+              "script": "Korean",
+              "codePoints": 7
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "han",
+        "input": {
+          "text": "你好世界"
+        },
+        "expected": {
+          "dominantScript": "Han",
+          "language": "zh",
+          "scripts": [
+            {
+              "script": "Han",
+              "codePoints": 4
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "thai",
+        "input": {
+          "text": "สวัสดีชาวโลก"
+        },
+        "expected": {
+          "dominantScript": "Thai",
+          "language": "th",
+          "scripts": [
+            {
+              "script": "Thai",
+              "codePoints": 10
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "symbols-are-not-a-script",
+        "input": {
+          "text": "100% ✓ ok"
+        },
+        "expected": {
+          "dominantScript": "Other",
+          "language": "und",
+          "scripts": [
+            {
+              "script": "Other",
+              "codePoints": 3
+            },
+            {
+              "script": "Latin",
+              "codePoints": 2
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "digits-only",
+        "input": {
+          "text": "2026"
+        },
+        "expected": {
+          "dominantScript": "Other",
+          "language": "und",
+          "scripts": [
+            {
+              "script": "Other",
+              "codePoints": 4
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "decomposed-combining-marks",
+        "input": {
+          "text": "Perché è così"
+        },
+        "expected": {
+          "dominantScript": "Latin",
+          "language": "en",
+          "scripts": [
+            {
+              "script": "Latin",
+              "codePoints": 11
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      },
+      {
+        "id": "composed-counterpart",
+        "input": {
+          "text": "Perché è così"
+        },
+        "expected": {
+          "dominantScript": "Latin",
+          "language": "en",
+          "scripts": [
+            {
+              "script": "Latin",
+              "codePoints": 11
+            }
+          ],
+          "confidence": "heuristic"
+        }
+      }
+    ],
+    "properties": [
+      {
+        "id": "nfc-and-nfd-report-the-same-scripts",
+        "text": "Perché è così"
+      },
+      {
+        "id": "punctuation-does-not-change-the-count",
+        "a": "Ciao, mondo!",
+        "b": "Ciao mondo"
+      }
+    ],
+    "errors": [
+      {
+        "id": "missing-text",
+        "input": {},
+        "code": "INVALID_INPUT"
+      },
+      {
+        "id": "text-not-a-string",
+        "input": {
+          "text": 42
+        },
+        "code": "INVALID_INPUT"
+      }
+    ]
+  }
+}

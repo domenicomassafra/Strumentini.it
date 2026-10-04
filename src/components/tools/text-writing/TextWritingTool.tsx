@@ -123,7 +123,13 @@ function inputFor(tool: TextWritingToolId, values: {
   separator: "-" | "_";
   lowercase: boolean;
   maxLength: string;
+  wordsPerMinute: string;
 }): Record<string, unknown> {
+  if (tool === "reading-time-estimator") {
+    const input: Record<string, unknown> = { text: values.text };
+    if (values.wordsPerMinute.trim() !== "") input.wordsPerMinute = values.wordsPerMinute;
+    return input;
+  }
   if (tool === "csv-column-to-list") {
     const input: Record<string, unknown> = { csv: values.text, hasHeader: values.hasHeader };
     if (values.delimiter !== "") input.delimiter = values.delimiter;
@@ -236,6 +242,15 @@ function ResultOutput({ tool, value }: { tool: TextWritingToolId; value: unknown
     seed: "seme",
     count: "quantità",
     type: "tipo",
+    direction: "direzione",
+    wordsPerMinute: "parole_al_minuto",
+    exactMinutes: "minuti_esatti",
+    minutes: "minuti",
+    seconds: "secondi",
+    convertedCount: "virgolette_convertite",
+    dominantScript: "alfabete_dominante",
+    detectedLanguage: "lingua_stimata",
+    confidence: "affidabilità",
   };
   const localize = (entry: unknown): unknown => {
     if (Array.isArray(entry)) return entry.map(localize);
@@ -267,10 +282,11 @@ export function TextWritingTool({ tool }: TextWritingToolProps) {
   const [separator, setSeparator] = useState<"-" | "_">("-");
   const [lowercase, setLowercase] = useState(true);
   const [maxLength, setMaxLength] = useState("");
+  const [wordsPerMinute, setWordsPerMinute] = useState("200");
   const [copyStatus, setCopyStatus] = useState("");
   const operation = useToolOperation<unknown>(
     (signal) => toolRuntime.run(tool, inputFor(tool, {
-      text, secondary, find, replace, mode, equality, form, direction, descending, caseSensitive, regex, delimiter, column, count, seed, sampleType, preserveBlankLines, hasHeader, separator, lowercase, maxLength,
+      text, secondary, find, replace, mode, equality, form, direction, descending, caseSensitive, regex, delimiter, column, count, seed, sampleType, preserveBlankLines, hasHeader, separator, lowercase, maxLength, wordsPerMinute,
     }), {}, signal),
   );
 
@@ -302,6 +318,7 @@ export function TextWritingTool({ tool }: TextWritingToolProps) {
     setSeparator("-");
     setLowercase(true);
     setMaxLength("");
+    setWordsPerMinute("200");
     setCopyStatus("");
     operation.reset();
   }
@@ -331,6 +348,7 @@ export function TextWritingTool({ tool }: TextWritingToolProps) {
         {tool === "case-converter" && <label class="field"><span>Stile</span><select value={mode} onChange={(event) => setMode(event.currentTarget.value as CaseMode)}>{(["lower", "upper", "title", "sentence", "camel", "pascal", "kebab", "snake", "constant"] as CaseMode[]).map((option) => <option value={option} key={option}>{CASE_LABELS[option]}</option>)}</select></label>}
         {(tool === "unicode-normalizer") && <label class="field"><span>Forma Unicode</span><select value={form} onChange={(event) => setForm(event.currentTarget.value)}>{["NFC", "NFD", "NFKC", "NFKD"].map((option) => <option value={option} key={option}>{option}</option>)}</select></label>}
         {tool === "smart-quote-normalizer" && <label class="field"><span>Direzione</span><select value={direction} onChange={(event) => setDirection(event.currentTarget.value)}><option value="straight-to-curly">Da dritte a tipografiche</option><option value="curly-to-straight">Da tipografiche a dritte</option></select></label>}
+        {tool === "reading-time-estimator" && <label class="field"><span>Parole al minuto</span><input inputMode="numeric" value={wordsPerMinute} onInput={(event) => setWordsPerMinute(event.currentTarget.value)} placeholder="200" /><small>Lascia vuoto per usare 200 parole al minuto. Valori ammessi: da 1 a 2000.</small></label>}
         {(tool === "line-deduplicator" || tool === "list-intersection" || tool === "list-difference") && <label class="field"><span>Regola di confronto</span><select value={equality} onChange={(event) => setEquality(event.currentTarget.value as Equality)}>{(["exact", "trim", "nfc", "trim-nfc"] as Equality[]).map((option) => <option value={option} key={option}>{EQUALITY_LABELS[option]}</option>)}</select></label>}
         {tool === "line-sorter" && <div class="field-grid"><label class="checkbox-field"><input type="checkbox" checked={descending} onChange={(event) => setDescending(event.currentTarget.checked)} /> Ordine decrescente</label><label class="checkbox-field"><input type="checkbox" checked={caseSensitive} onChange={(event) => setCaseSensitive(event.currentTarget.checked)} /> Distingui maiuscole e minuscole</label></div>}
         {tool === "find-replace-preview" && <div class="field-grid"><label class="checkbox-field"><input type="checkbox" checked={regex} onChange={(event) => setRegex(event.currentTarget.checked)} /> Espressione regolare</label><label class="checkbox-field"><input type="checkbox" checked={caseSensitive} onChange={(event) => setCaseSensitive(event.currentTarget.checked)} /> Distingui maiuscole e minuscole</label></div>}

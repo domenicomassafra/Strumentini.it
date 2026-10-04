@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "key": "relative path after the same sanitisation used everywhere else",
+    "statuses": "added | removed | changed | unchanged",
+    "changed": "size differs, or SHA-256 differs when compareHashes is on",
+    "duplicate_paths": "rejected rather than silently merged"
+  },
+  "cross_check": "python3 hashlib for every digest",
+  "vectors": [
+    {
+      "id": "size-only-comparison",
+      "input": {
+        "before": [
+          {
+            "name": "relazione.txt",
+            "base64": "c3Rlc3VyYSB1bm8K"
+          },
+          {
+            "name": "allegati/fattura.pdf",
+            "base64": "JVBERi0xLjQKJSB1bm8K"
+          },
+          {
+            "name": "notes/vecchio.txt",
+            "base64": "ZGEgYXJjaGl2aWFyZQo="
+          },
+          {
+            "name": "uguale.txt",
+            "base64": "aWRlbnRpY28K"
+          }
+        ],
+        "after": [
+          {
+            "name": "relazione.txt",
+            "base64": "c3Rlc3VyYSB1bm8K"
+          },
+          {
+            "name": "allegati/fattura.pdf",
+            "base64": "JVBERi0xLjQKJSBkdWUK"
+          },
+          {
+            "name": "allegati/nuevo.txt",
+            "base64": "YWdnaXVudG8K"
+          },
+          {
+            "name": "uguale.txt",
+            "base64": "aWRlbnRpY28K"
+          }
+        ],
+        "compareHashes": false
+      },
+      "expected": {
+        "operation": "folder-compare",
+        "differences": [
+          {
+            "path": "allegati/fattura.pdf",
+            "status": "unchanged",
+            "sha256": [
+              "30cffe66dc9aca51cc64d0bf0ad6974e0b0577d25184bbd72729b65a4cfffc36",
+              "1472c7ac42d3d54693df5638e6a35cdaa771b837591551b3f2a91baf30908a61"
+            ]
+          },
+          {
+            "path": "allegati/nuevo.txt",
+            "status": "added",
+            "sha256": [
+              null,
+              "6b26d92577be56a021314297400280c0cec6be3057bb09836c1b2f37f7c8f191"
+            ]
+          },
+          {
+            "path": "notes/vecchio.txt",
+            "status": "removed",
+            "sha256": [
+              "394a3dfc260213f279615cc4252db11f3733774f2ae3a16d2d4bff81659081f4",
+              null
+            ]
+          },
+          {
+            "path": "relazione.txt",
+            "status": "unchanged",
+            "sha256": [
+              "21ff705b07d7007572fbef1ff2c40bed421d6d427c77a0803d8c5a5f03aaac50",
+              "21ff705b07d7007572fbef1ff2c40bed421d6d427c77a0803d8c5a5f03aaac50"
+            ]
+          },
+          {
+            "path": "uguale.txt",
+            "status": "unchanged",
+            "sha256": [
+              "38d42aea328741e4b368cc28c6cd851f3537a6169e469ba9573212ff88ef8eb6",
+              "38d42aea328741e4b368cc28c6cd851f3537a6169e469ba9573212ff88ef8eb6"
+            ]
+          }
+        ],
+        "addedCount": 1,
+        "removedCount": 1,
+        "changedCount": 0,
+        "unchangedCount": 3,
+        "comparedBytes": 95
+      }
+    },
+    {
+      "id": "hash-comparison-same-size-different-content",
+      "input": {
+        "before": [
+          {
+            "name": "relazione.txt",
+            "base64": "c3Rlc3VyYSB1bm8K"
+          },
+          {
+            "name": "allegati/fattura.pdf",
+            "base64": "JVBERi0xLjQKJSB1bm8K"
+          },
+          {
+            "name": "notes/vecchio.txt",
+            "base64": "ZGEgYXJjaGl2aWFyZQo="
+          },
+          {
+            "name": "uguale.txt",
+            "base64": "aWRlbnRpY28K"
+          }
+        ],
+        "after": [
+          {
+            "name": "relazione.txt",
+            "base64": "c3Rlc3VyYSB1bm8K"
+          },
+          {
+            "name": "allegati/fattura.pdf",
+            "base64": "JVBERi0xLjQKJSBkdWUK"
+          },
+          {
+            "name": "allegati/nuevo.txt",
+            "base64": "YWdnaXVudG8K"
+          },
+          {
+            "name": "uguale.txt",
+            "base64": "aWRlbnRpY28K"
+          }
+        ],
+        "compareHashes": true
+      },
+      "expected": {
+        "operation": "folder-compare",
+        "changedCount": 1,
+        "unchangedCount": 2
+      }
+    },
+    {
+      "id": "hash-detection-when-size-matches",
+      "input": {
+        "before": [
+          {
+            "name": "nota.txt",
+            "base64": "QUFBQQo="
+          }
+        ],
+        "after": [
+          {
+            "name": "nota.txt",
+            "base64": "QkJCQgo="
+          }
+        ],
+        "compareHashes": true
+      },
+      "expected": {
+        "operation": "folder-compare",
+        "changedCount": 1,
+        "unchangedCount": 0,
+        "differences": [
+          {
+            "path": "nota.txt",
+            "status": "changed",
+            "sha256": [
+              "4677942dfa3e74b5dea7484661a2485bb73ba422eb72d311fdb39372c019c615",
+              "0bc4ed515ae40a64321fceadbbecceee6ea5baf3b6cf3f566f058cfce518aecc"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "id": "empty-before",
+      "input": {
+        "before": [],
+        "after": [
+          {
+            "name": "a.txt",
+            "base64": "YQ=="
+          }
+        ]
+      },
+      "code": "INVALID_INPUT"
+    },
+    {
+      "id": "empty-after",
+      "input": {
+        "before": [
+          {
+            "name": "a.txt",
+            "base64": "YQ=="
+          }
+        ],
+        "after": []
+      },
+      "code": "INVALID_INPUT"
+    }
+  ]
+}

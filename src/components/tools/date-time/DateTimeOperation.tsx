@@ -48,6 +48,12 @@ export interface DateTimeToolConfig {
   submitLabel: string;
   resultLabel?: (result: unknown) => ComponentChildren;
   download?: { name: string; mimeType: string; value: (result: unknown) => string };
+  /**
+   * Per-tool Italian error copy for a machine code the shared date/time
+   * sentence cannot explain (for example an unsupported country). Returning
+   * `undefined` keeps the shared sentence.
+   */
+  errorMessage?: (message: string) => string | undefined;
 }
 
 function initialValues(config: DateTimeToolConfig): Record<string, string> {
@@ -86,7 +92,7 @@ export function DateTimeOperation({ config }: { config: DateTimeToolConfig }) {
       { profile: profileValuesForTool(config.tool, profile) },
       signal,
     ),
-    { formatError: () => "Controlla i valori e le regole di data, ora e fuso orario, quindi riprova." },
+    { formatError: (result) => config.errorMessage?.(result.message) ?? "Controlla i valori e le regole di data, ora e fuso orario, quindi riprova." },
   );
   const resultText = useMemo(() => operation.result === null ? "" : JSON.stringify(localizeDateTimeResultIt(operation.result), null, 2), [operation.result]);
 

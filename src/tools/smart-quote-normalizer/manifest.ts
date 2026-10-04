@@ -13,7 +13,7 @@ export const smartQuoteNormalizerManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-007", fixtureFamilies: ["unicode-normalization"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-007", fixtureFamilies: ["unicode-normalization", "text-writing-local-jobs"] },
 } as const satisfies ToolManifest;
 
 export default smartQuoteNormalizerManifest;

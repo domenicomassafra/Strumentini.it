@@ -288,4 +288,9 @@ export const holidayConfig: DateTimeToolConfig = {
   placeholder: "The embedded calendar appears here.",
   submitLabel: "Look up holidays",
   resultLabel: (result) => `${(result as { holidays?: unknown[] }).holidays?.length ?? 0} holiday(s)`,
+  errorMessage: (message) => {
+    if (/INVALID_COUNTRY/u.test(message)) return "Scegli un Paese supportato: Italia, Stati Uniti, Canada o Regno Unito.";
+    if (/INVALID_YEAR/u.test(message)) return "Inserisci un anno valido: questo strumento copre dal 1900 al 2100.";
+    return undefined;
+  },
 };

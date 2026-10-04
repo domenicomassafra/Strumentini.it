@@ -2,7 +2,7 @@
 
 Current stage: **real implementation hardening and catalog certification**.
 
-Checkpoint 2026-10-03: 200 tools exist, 168 are verified against a recorded oracle, 1 is Partial (`image-resize`) and 31 are implemented but intentionally still unverified. Google sign-in/linking and the mobile auth/catalog/settings pass are implemented and deployed fail-closed pending the real Google Web Client ID. `npm test` is green (349 tests / 51 files), `astro check` is 0/0/0 across 1195 files, auth acceptance is 130/130, and the static build remains 220 pages. All 168 existing Gold receipts plus the browser matrix are rebound to the current source fingerprint.
+Checkpoint 2026-10-04: 200 tools exist, 177 are verified against a recorded oracle, 1 is Partial (`image-resize`) and 22 are implemented but intentionally still unverified. Google sign-in/linking and the mobile auth/catalog/settings pass are implemented and deployed fail-closed pending the real Google Web Client ID. `npm test` is green (371 tests / 52 files), `astro check` is 0/0/0 across 1197 files, auth acceptance is 130/130, and the static build remains 220 pages. All 177 Gold receipts are rebound to the current source fingerprint; the browser matrix and the rollback receipt are whole-tree artifacts that the merge must regenerate.
 
 ## P0 — close the current Italian/backend tranche
 
@@ -16,7 +16,7 @@ Checkpoint 2026-10-03: 200 tools exist, 168 are verified against a recorded orac
 - keep the closed redesign/backend tranche immutable while certification evidence is current; any new source edit starts a new fingerprinted tranche;
 - keep `image-resize` Partial until genuine physical-device evidence exists; never infer physical Safari/Android evidence from desktop or emulation.
 
-## P1 — make the remaining 32 non-Gold tools genuinely trustworthy
+## P1 — make the remaining 23 non-Gold tools genuinely trustworthy
 
 - work family by family rather than promoting tools in bulk;
 - add independent fixtures/oracles for each family before Gold certification;
@@ -26,7 +26,7 @@ Checkpoint 2026-10-03: 200 tools exist, 168 are verified against a recorded orac
 - strengthen reference-backed tools with explicit source provenance, freshness rules and fail-closed behavior;
 - prioritize broadly useful jobs instead of increasing raw catalog count beyond 200.
 
-Current remaining frontier by engine: `research-knowledge` 14, `file-privacy` 4, `text-writing` 4, `url-marketing` 4, `image` 2, `qr-local` 2, `date-time` 1, `image-visual` 1. The 32-tool non-Gold frontier is 31 implemented-unverified tools plus the one Partial `image-resize`; the PDF/document family is already Gold.
+Current remaining frontier by engine: `research-knowledge` 14, `url-marketing` 4, `image` 2, `qr-local` 2, `image-visual` 1. The 23-tool non-Gold frontier is 22 implemented-unverified tools plus the one Partial `image-resize`. `file-privacy`, `text-writing`, `date-time` and the PDF/document family are already Gold; the nine-tool `local-jobs` tranche that closed the first three ships six new independent fixture families and a certifier that replays them through the public tool modules.
 
 ## P2 — deepen the product backend and discovery model
 

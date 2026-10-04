@@ -134,6 +134,12 @@ export interface HolidayRecord {
   date: string;
   name: string;
   observed: boolean;
+  /**
+   * `statutory: false` marks a widely observed day that is not a nationwide
+   * public holiday (for example the Canadian civic holiday): it is reported so
+   * the plan is complete, but it must not be counted as a day off everywhere.
+   */
+  statutory: boolean;
   actualDate?: string;
 }
 
@@ -937,12 +943,35 @@ export function convertEpochBatch(values: readonly string[], unit: "seconds" | "
   return { rows, timeZone };
 }
 
+/**
+ * Substitute-day rules, kept explicit per country so the result can be audited:
+ * - `none`: the calendar date stands, weekend or not (Italy, and every rule that
+ *   never substitutes).
+ * - `observed`: the fixed in-lieu-of rule used by US federal holidays, Saturday
+ *   moves to the preceding Friday and Sunday to the following Monday.
+ * - `next-working-day`: the UK/Canada rule, where each affected holiday in date
+ *   order claims the next Monday-Friday that no other holiday already holds.
+ *   Without it, Christmas on a Saturday would land on 24 December and Boxing
+ *   Day on the Monday, which is wrong whenever the two fall on the same weekend.
+ */
+type SubstituteRule = "none" | "observed" | "next-working-day";
+
 function observedDate(date: string, saturdayToFriday: boolean, sundayToMonday: boolean): { date: string; observed: boolean; actualDate?: string } {
   const parsed = parseIsoDate(date);
   const actual = parsed.getUTCDay();
   if (actual === 6 && saturdayToFriday) return { date: formatIsoDate(addDaysToDate(parsed, -1)), observed: true, actualDate: date };
   if (actual === 0 && sundayToMonday) return { date: formatIsoDate(addDaysToDate(parsed, 1)), observed: true, actualDate: date };
   return { date, observed: false };
+}
+
+function nextWorkingDay(date: string, taken: ReadonlySet<string>): string {
+  const parsed = parseIsoDate(date);
+  for (let step = 0; step <= 7; step += 1) {
+    const candidate = formatIsoDate(addDaysToDate(parsed, step));
+    const weekday = parseIsoDate(candidate).getUTCDay();
+    if (weekday !== 0 && weekday !== 6 && !taken.has(candidate)) return candidate;
+  }
+  return date;
 }
 
 function nthWeekday(year: number, month: number, weekday: number, nth: number): string {
@@ -975,55 +1004,83 @@ function easterSunday(year: number): Date {
   return utcDate(year, month - 1, day);
 }
 
+export const HOLIDAY_COUNTRY_CODES = ["CA", "GB", "IT", "US"] as const;
+export type HolidayCountryCode = (typeof HOLIDAY_COUNTRY_CODES)[number];
+
 export function lookupPublicHolidays(country: string, year: number): { country: string; year: number; holidays: readonly HolidayRecord[]; source: string } {
   const normalized = country.trim().toUpperCase();
   requireInteger(year, "INVALID_YEAR");
   if (year < 1900 || year > 2100) throw new Error("INVALID_YEAR");
-  const records: { date: string; name: string; observed: boolean }[] = [];
-  const addFixed = (month: number, day: number, name: string, saturdayToFriday = false, sundayToMonday = false) => {
-    const item = observedDate(formatIsoDate(utcDate(year, month - 1, day)), saturdayToFriday, sundayToMonday);
-    records.push({ ...item, name });
+  if (!(HOLIDAY_COUNTRY_CODES as readonly string[]).includes(normalized)) throw new Error("INVALID_COUNTRY");
+  const records: HolidayRecord[] = [];
+  const claimed = new Set<string>();
+  const addWeekday = (date: string, name: string, statutory = true) => {
+    claimed.add(date);
+    records.push({ date, name, observed: false, statutory });
+  };
+  const addFixed = (month: number, day: number, name: string, rule: SubstituteRule = "none", statutory = true) => {
+    const actualDate = formatIsoDate(utcDate(year, month - 1, day));
+    // One explicit key order for every record so the rendered JSON and the
+    // certification fixture read identically.
+    let item: HolidayRecord;
+    if (rule === "observed") {
+      const observed = observedDate(actualDate, true, true);
+      item = observed.observed
+        ? { date: observed.date, name, observed: true, statutory, actualDate }
+        : { date: actualDate, name, observed: false, statutory };
+    } else if (rule === "next-working-day") {
+      const parsed = parseIsoDate(actualDate);
+      const weekend = parsed.getUTCDay() === 0 || parsed.getUTCDay() === 6 || claimed.has(actualDate);
+      const substitute = weekend ? nextWorkingDay(actualDate, claimed) : actualDate;
+      item = substitute === actualDate
+        ? { date: actualDate, name, observed: false, statutory }
+        : { date: substitute, name, observed: true, statutory, actualDate };
+    } else {
+      item = { date: actualDate, name, observed: false, statutory };
+    }
+    claimed.add(item.date);
+    if (item.actualDate !== undefined) claimed.add(item.actualDate);
+    records.push(item);
   };
   if (normalized === "US") {
-    addFixed(1, 1, "Capodanno", true, true);
-    records.push({ date: nthWeekday(year, 0, 1, 3), name: "Giorno di Martin Luther King Jr.", observed: false });
-    records.push({ date: nthWeekday(year, 1, 1, 3), name: "Giorno dei Presidenti", observed: false });
-    records.push({ date: lastWeekday(year, 4, 1), name: "Giorno della memoria dei caduti", observed: false });
-    if (year >= 2021) addFixed(6, 19, "Juneteenth", true, true);
-    addFixed(7, 4, "Giorno dell'Indipendenza", true, true);
-    records.push({ date: nthWeekday(year, 8, 1, 1), name: "Festa del Lavoro", observed: false });
-    records.push({ date: nthWeekday(year, 9, 1, 2), name: "Giorno di Colombo", observed: false });
-    addFixed(11, 11, "Giorno dei Veterani", true, true);
-    records.push({ date: nthWeekday(year, 10, 4, 4), name: "Giorno del Ringraziamento", observed: false });
-    addFixed(12, 25, "Natale", true, true);
+    addFixed(1, 1, "Capodanno", "observed");
+    addWeekday(nthWeekday(year, 0, 1, 3), "Giorno di Martin Luther King Jr.");
+    addWeekday(nthWeekday(year, 1, 1, 3), "Giorno dei Presidenti");
+    addWeekday(lastWeekday(year, 4, 1), "Giorno della memoria dei caduti");
+    if (year >= 2021) addFixed(6, 19, "Juneteenth", "observed");
+    addFixed(7, 4, "Giorno dell'Indipendenza", "observed");
+    addWeekday(nthWeekday(year, 8, 1, 1), "Festa del Lavoro");
+    addWeekday(nthWeekday(year, 9, 1, 2), "Giorno di Colombo");
+    addFixed(11, 11, "Giorno dei Veterani", "observed");
+    addWeekday(nthWeekday(year, 10, 4, 4), "Giorno del Ringraziamento");
+    addFixed(12, 25, "Natale", "observed");
   } else if (normalized === "CA") {
-    addFixed(1, 1, "Capodanno", true, true);
+    addFixed(1, 1, "Capodanno", "next-working-day");
     const easter = easterSunday(year);
-    records.push({ date: formatIsoDate(addDaysToDate(easter, -2)), name: "Venerdì Santo", observed: false });
+    addWeekday(formatIsoDate(addDaysToDate(easter, -2)), "Venerdì Santo");
     const victoria = utcDate(year, 4, 25);
-    const victoriaMonday = addDaysToDate(victoria, -((victoria.getUTCDay() + 6) % 7));
-    records.push({ date: formatIsoDate(victoriaMonday), name: "Giorno della Regina Vittoria", observed: false });
-    addFixed(7, 1, "Festa del Canada", true, true);
-    records.push({ date: nthWeekday(year, 7, 1, 1), name: "Festa civica", observed: false });
-    records.push({ date: nthWeekday(year, 8, 1, 1), name: "Festa del Lavoro", observed: false });
-    addFixed(9, 30, "Giornata nazionale per la verità e la riconciliazione", true, true);
-    records.push({ date: nthWeekday(year, 9, 1, 2), name: "Giorno del Ringraziamento", observed: false });
-    addFixed(12, 25, "Natale", true, true);
-    addFixed(12, 26, "Festa del 26 dicembre", true, true);
+    addWeekday(formatIsoDate(addDaysToDate(victoria, -((victoria.getUTCDay() + 6) % 7))), "Giorno della Regina Vittoria");
+    addFixed(7, 1, "Festa del Canada", "next-working-day");
+    addWeekday(nthWeekday(year, 7, 1, 1), "Festa civica", false);
+    addWeekday(nthWeekday(year, 8, 1, 1), "Festa del Lavoro");
+    if (year >= 2021) addFixed(9, 30, "Giornata nazionale per la verità e la riconciliazione", "next-working-day");
+    addWeekday(nthWeekday(year, 9, 1, 2), "Giorno del Ringraziamento");
+    addFixed(12, 25, "Natale", "next-working-day");
+    addFixed(12, 26, "Festa del 26 dicembre", "next-working-day");
   } else if (normalized === "GB") {
-    addFixed(1, 1, "Capodanno", true, true);
+    addFixed(1, 1, "Capodanno", "next-working-day");
     const easter = easterSunday(year);
-    records.push({ date: formatIsoDate(addDaysToDate(easter, -2)), name: "Venerdì Santo", observed: false });
-    records.push({ date: formatIsoDate(addDaysToDate(easter, 1)), name: "Lunedì dell'Angelo", observed: false });
-    records.push({ date: nthWeekday(year, 4, 1, 1), name: "Festa bancaria di inizio maggio", observed: false });
-    records.push({ date: lastWeekday(year, 7, 1), name: "Festa bancaria estiva", observed: false });
-    addFixed(12, 25, "Natale", true, true);
-    addFixed(12, 26, "Festa del 26 dicembre", true, true);
-  } else if (normalized === "IT") {
+    addWeekday(formatIsoDate(addDaysToDate(easter, -2)), "Venerdì Santo");
+    addWeekday(formatIsoDate(addDaysToDate(easter, 1)), "Lunedì dell'Angelo");
+    addWeekday(nthWeekday(year, 4, 1, 1), "Festa bancaria di inizio maggio");
+    addWeekday(lastWeekday(year, 7, 1), "Festa bancaria estiva");
+    addFixed(12, 25, "Natale", "next-working-day");
+    addFixed(12, 26, "Festa del 26 dicembre", "next-working-day");
+  } else {
     addFixed(1, 1, "Capodanno");
     addFixed(1, 6, "Epifania");
     const easter = easterSunday(year);
-    records.push({ date: formatIsoDate(addDaysToDate(easter, 1)), name: "Lunedì dell'Angelo", observed: false });
+    addWeekday(formatIsoDate(addDaysToDate(easter, 1)), "Lunedì dell'Angelo");
     addFixed(4, 25, "Festa della Liberazione");
     addFixed(5, 1, "Festa dei Lavoratori");
     addFixed(6, 2, "Festa della Repubblica");
@@ -1032,9 +1089,9 @@ export function lookupPublicHolidays(country: string, year: number): { country: 
     addFixed(12, 8, "Immacolata Concezione");
     addFixed(12, 25, "Natale");
     addFixed(12, 26, "Santo Stefano");
-  } else throw new Error("INVALID_COUNTRY");
-  records.sort((left, right) => left.date.localeCompare(right.date));
-  return { country: normalized, year, holidays: records, source: "embedded-calendar-v1" };
+  }
+  records.sort((left, right) => left.date.localeCompare(right.date) || left.name.localeCompare(right.name));
+  return { country: normalized, year, holidays: records, source: "embedded-calendar-v2" };
 }
 
 export { formatIsoDate, parseIsoDate };

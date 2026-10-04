@@ -5,7 +5,19 @@ const MAX_TEXT_INPUT = 2 * 1024 * 1024;
 const MAX_TEXT_ROWS = 100_000;
 const MAX_TEXT_CELLS = 2_000_000;
 const MAX_TEXT_REGEX_LENGTH = 1_000;
+/** Reading-rate policy: a documented Italian reading speed with a bounded, explicit range. */
+export const DEFAULT_WORDS_PER_MINUTE = 200;
+export const MAX_WORDS_PER_MINUTE = 2_000;
 export { diffText };
+
+function readingTimeIt(minutes: number): string {
+  if (minutes <= 0) return "meno di 1 minuto";
+  if (minutes === 1) return "1 minuto";
+  if (minutes < 60) return `${minutes} minuti`;
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return rest === 0 ? `${hours} ${hours === 1 ? "ora" : "ore"}` : `${hours} ${hours === 1 ? "ora" : "ore"} e ${rest} ${rest === 1 ? "minuto" : "minuti"}`;
+}
 
 export type CaseMode =
   | "lower"
@@ -413,12 +425,15 @@ export function inspectText(value: unknown): TextInspectionResult {
 export function estimateReadingTime(value: unknown): ReadingTimeResult {
   const input = requireObject(value, "text");
   const text = requireText(value);
-  const wordsPerMinute = optionalNumber(input.wordsPerMinute ?? input.wpm, 200, "words per minute");
+  const requested = input.wordsPerMinute ?? input.wpm;
+  const wordsPerMinute = requested === undefined ? DEFAULT_WORDS_PER_MINUTE : optionalNumber(requested, DEFAULT_WORDS_PER_MINUTE, "words per minute");
+  if (!Number.isFinite(wordsPerMinute) || wordsPerMinute < 1 || wordsPerMinute > MAX_WORDS_PER_MINUTE) throw new Error("INVALID_WORDS_PER_MINUTE");
   const words = countWords(text);
   const exactMinutes = words / wordsPerMinute;
-  const minutes = Math.ceil(exactMinutes);
+  // Deriving minutes from the rounded seconds keeps "1 minute / 60 seconds"
+  // internally consistent instead of emitting 1 minute next to 60 seconds.
   const seconds = Math.ceil(exactMinutes * 60);
-  const display = minutes === 1 ? "1 minute" : `${minutes} minutes`;
+  const minutes = Math.ceil(seconds / 60);
   return {
     words,
     wordCount: words,
@@ -428,7 +443,7 @@ export function estimateReadingTime(value: unknown): ReadingTimeResult {
     estimatedMinutes: minutes,
     roundedMinutes: minutes,
     seconds,
-    display,
+    display: readingTimeIt(minutes),
     engineVersion: TEXT_WRITING_ENGINE_VERSION,
   };
 }
@@ -491,6 +506,16 @@ function isOpeningContext(previous: string | undefined): boolean {
   return previous === undefined || /[\s([{<—–-]/u.test(previous);
 }
 
+/**
+ * Typographic quote policy, declared once so both directions are auditable:
+ * the curly forms recognised are the English ones (U+201C/201D, U+2018/2019)
+ * and the low German ones (U+201E, U+201A), which Italian copy also uses for
+ * quotes nested inside speech. Anything else is left untouched, so the
+ * straight-to-curly direction is idempotent by construction.
+ */
+const CURLY_DOUBLE_QUOTES = new Set(["“", "”", "„", "‟"]);
+const CURLY_SINGLE_QUOTES = new Set(["‘", "’", "‚", "‛"]);
+
 export function normalizeQuotes(value: unknown): QuoteNormalizationResult {
   const input = requireObject(value, "text");
   const text = requireText(value);
@@ -498,13 +523,17 @@ export function normalizeQuotes(value: unknown): QuoteNormalizationResult {
   if (direction !== "straight-to-curly" && direction !== "curly-to-straight") throw new Error("INVALID_QUOTE_DIRECTION");
   if (direction === "curly-to-straight") {
     let convertedCount = 0;
-    const output = text.replace(/[“”„‟]/gu, (character) => {
-      convertedCount += 1;
-      return character === "„" || character === "‟" ? "\"" : "\"";
-    }).replace(/[‘’‚‛]/gu, () => {
-      convertedCount += 1;
-      return "'";
-    });
+    const output = Array.from(text, (character) => {
+      if (CURLY_DOUBLE_QUOTES.has(character)) {
+        convertedCount += 1;
+        return "\"";
+      }
+      if (CURLY_SINGLE_QUOTES.has(character)) {
+        convertedCount += 1;
+        return "'";
+      }
+      return character;
+    }).join("");
     return { text: output, output, direction, convertedCount, changed: output !== text, engineVersion: TEXT_WRITING_ENGINE_VERSION };
   }
   let convertedCount = 0;
@@ -984,6 +1013,23 @@ function sampleWords(count: number, state: { value: number }): string[] {
   return Array.from({ length: count }, () => SAMPLE_WORDS[Math.floor(nextRandom(state) * SAMPLE_WORDS.length)] ?? "sample");
 }
 
+/**
+ * Every sample-data type is seeded from one deterministic 32-bit LCG, so the
+ * same seed always yields the same bytes on every platform. `lorem` is the
+ * classic lorem-ipsum layout (paragraphs separated by a blank line) and is
+ * therefore distinct from `sentences` (one sentence per line) and from
+ * `paragraphs` (one paragraph per line).
+ */
+const MAX_SAMPLE_COUNT = 1_000;
+const MAX_SAMPLE_SEED = 2_147_483_647;
+
+function sampleSeed(value: unknown): number {
+  if (value === undefined) return 1;
+  const parsed = typeof value === "number" ? value : typeof value === "string" && value.trim() !== "" ? Number(value) : Number.NaN;
+  if (!Number.isFinite(parsed) || !Number.isInteger(parsed) || parsed < 0 || parsed > MAX_SAMPLE_SEED) throw new Error("INVALID_SEED");
+  return parsed;
+}
+
 export function generateSampleData(value: unknown): SampleDataResult {
   const input = value === undefined ? {} : value;
   if (typeof input !== "object" || input === null) throw new Error("INVALID_INPUT");
@@ -991,12 +1037,10 @@ export function generateSampleData(value: unknown): SampleDataResult {
   if (requestedType !== "lorem" && requestedType !== "words" && requestedType !== "sentences" && requestedType !== "paragraphs" && requestedType !== "names" && requestedType !== "emails" && requestedType !== "numbers" && requestedType !== "rows") throw new Error("INVALID_SAMPLE_TYPE");
   const type = requestedType;
   const countValue = (input as Record<string, unknown>).count;
-  const count = countValue === undefined ? 3 : typeof countValue === "number" ? countValue : typeof countValue === "string" ? Number(countValue) : Number.NaN;
-  if (!Number.isInteger(count) || count < 1 || count > 1000) throw new Error("INVALID_COUNT");
-  const seedValue = (input as Record<string, unknown>).seed;
-  const seed = seedValue === undefined ? 1 : typeof seedValue === "number" ? seedValue : typeof seedValue === "string" ? Number(seedValue) : Number.NaN;
-  if (!Number.isFinite(seed)) throw new Error("INVALID_SEED");
-  const state = { value: (Math.trunc(seed) ^ 0x9e3779b9) >>> 0 };
+  const count = countValue === undefined ? 3 : typeof countValue === "number" ? countValue : typeof countValue === "string" && countValue.trim() !== "" ? Number(countValue) : Number.NaN;
+  if (!Number.isInteger(count) || count < 1 || count > MAX_SAMPLE_COUNT) throw new Error("INVALID_COUNT");
+  const seed = sampleSeed((input as Record<string, unknown>).seed);
+  const state = { value: (seed ^ 0x9e3779b9) >>> 0 };
   let rows: string[];
   if (type === "words") rows = sampleWords(count, state);
   else if (type === "names") rows = Array.from({ length: count }, () => SAMPLE_NAMES[Math.floor(nextRandom(state) * SAMPLE_NAMES.length)] ?? "Sample Person");
@@ -1009,11 +1053,12 @@ export function generateSampleData(value: unknown): SampleDataResult {
     })];
   } else if (type === "paragraphs") {
     rows = Array.from({ length: count }, () => Array.from({ length: 3 }, () => `${sampleWords(8, state).join(" ")}.`).join(" "));
+  } else if (type === "lorem") {
+    rows = Array.from({ length: count }, () => Array.from({ length: 3 }, () => `${sampleWords(8, state).join(" ")}.`).join(" "));
   } else {
-    const sentenceCount = type === "sentences" || type === "lorem" ? count : 1;
-    rows = Array.from({ length: sentenceCount }, () => `${sampleWords(8, state).join(" ")}.`);
+    rows = Array.from({ length: count }, () => `${sampleWords(8, state).join(" ")}.`);
   }
-  const data = rows.join("\n");
+  const data = type === "lorem" ? rows.join("\n\n") : rows.join("\n");
   return { type, data, output: data, rows, count, seed, engineVersion: TEXT_WRITING_ENGINE_VERSION };
 }
 
@@ -1024,7 +1069,7 @@ function inRange(codePoint: number, start: number, end: number): boolean {
 function scriptFor(codePoint: number): string {
   if (inRange(codePoint, 0x41, 0x5a) || inRange(codePoint, 0x61, 0x7a) || inRange(codePoint, 0xc0, 0x2af) || inRange(codePoint, 0x1e00, 0x1eff)) return "Latin";
   if (inRange(codePoint, 0x400, 0x52f)) return "Cyrillic";
-  if (inRange(codePoint, 0x370, 0x3ff)) return "Greek";
+  if (inRange(codePoint, 0x370, 0x3ff) || inRange(codePoint, 0x1f00, 0x1fff)) return "Greek";
   if (inRange(codePoint, 0x590, 0x5ff)) return "Hebrew";
   if (inRange(codePoint, 0x600, 0x6ff) || inRange(codePoint, 0x750, 0x77f)) return "Arabic";
   if (inRange(codePoint, 0x900, 0x97f)) return "Devanagari";
@@ -1034,6 +1079,17 @@ function scriptFor(codePoint: number): string {
   if (inRange(codePoint, 0x0e00, 0x0e7f)) return "Thai";
   return "Other";
 }
+
+/**
+ * Script counting policy, stated so the numbers mean something:
+ * - punctuation, symbols, separators and control characters are ignored, so
+ *   "Ciao, mondo!" and "Ciao mondo" report the same Latin count;
+ * - a combining mark belongs to the letter it follows and is never counted
+ *   again, so an NFC text and its NFD form report identical counts;
+ * - `Other` therefore means "letters and digits of scripts this tool does not
+ *   name separately", never "punctuation".
+ */
+const IGNORED_FOR_SCRIPTS = /^[\p{P}\p{S}\p{Z}\p{C}\p{M}]$/u;
 
 const LANGUAGE_BY_SCRIPT: Readonly<Record<string, string>> = {
   Latin: "en",
@@ -1054,6 +1110,7 @@ export function languageStatistics(value: unknown): LanguageStatisticsResult {
   for (const character of text) {
     const codePoint = character.codePointAt(0);
     if (codePoint === undefined || /\s/u.test(character)) continue;
+    if (IGNORED_FOR_SCRIPTS.test(character)) continue;
     const script = scriptFor(codePoint);
     scriptCounts.set(script, (scriptCounts.get(script) ?? 0) + 1);
   }

@@ -13,7 +13,7 @@ export const readingTimeEstimatorManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-002", fixtureFamilies: ["word-character-line-count"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-002", fixtureFamilies: ["word-character-line-count", "text-writing-local-jobs"] },
 } as const satisfies ToolManifest;
 
 export default readingTimeEstimatorManifest;

@@ -13,7 +13,7 @@ export const loremSampleDataGeneratorManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-019", fixtureFamilies: ["word-character-line-count"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-019", fixtureFamilies: ["word-character-line-count", "text-writing-local-jobs"] },
 } as const satisfies ToolManifest;
 
 export default loremSampleDataGeneratorManifest;

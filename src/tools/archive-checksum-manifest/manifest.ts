@@ -14,5 +14,5 @@ export default {
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
   handoff: { emits: [{ type: "structured", format: "sha256-manifest", maxBytes: 2_097_152 }] },
-  gold: { maintenanceClass: "E", oracleEntryId: "cand-173", fixtureFamilies: ["file-hash"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-173", fixtureFamilies: ["file-hash", "archive-checksum-manifest"] },
 } as const satisfies ToolManifest;

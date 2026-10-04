@@ -52,106 +52,106 @@
   "results": [
     {
       "toolId": "word-character-line-counter",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "case-converter",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "whitespace-normalizer",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "invisible-character-detector",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "unicode-normalizer",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "line-sorter",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "line-deduplicator",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "list-intersection",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "list-difference",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "find-replace-preview",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "markdown-preview",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "markdown-table-formatter",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "slug-generator",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "text-to-csv-rows",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-column-to-list",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 3,
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     }

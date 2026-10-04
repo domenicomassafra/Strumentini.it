@@ -53,9 +53,10 @@
       "truth_sources": [
         "strumentiutili-quality",
         "fixture-policy",
-        "unicode-uax29"
+        "unicode-uax29",
+        "strumentiutili-local-jobs-fixtures"
       ],
-      "standard_or_official_example": "unicode-uax29",
+      "standard_or_official_example": "unicode-uax29 with the pinned reading-rate policy in quality/fixtures/text-writing-local-jobs/vectors.json",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -79,12 +80,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent standard-library/tooling implementation where available",
-        "role": "secondary; literal/spec oracle remains primary"
+        "implementation": "python3 arithmetic and hand-worked minute/second vectors",
+        "role": "secondary independent implementation cross-checked against the pinned fixture policy"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Product/data/platform policy can drift; bind an exact source/version before Gold."
+        "No unresolved gap for the currently declared deterministic semantics: the exact source and version are bound (unicode-uax29/unicode-uax15 for segmentation and normalization, unicode-uax24 for the script property) and every policy choice is pinned in quality/fixtures/text-writing-local-jobs/vectors.json with an independent cross-check. Re-open if the tool manifest expands its claims."
       ]
     },
     {
@@ -268,9 +269,10 @@
         "strumentiutili-quality",
         "fixture-policy",
         "unicode-uax29",
-        "unicode-uax15"
+        "unicode-uax15",
+        "strumentiutili-local-jobs-fixtures"
       ],
-      "standard_or_official_example": "unicode-uax29, unicode-uax15",
+      "standard_or_official_example": "unicode-uax29, unicode-uax15 with the pinned quote policy in quality/fixtures/text-writing-local-jobs/vectors.json",
       "invariants": [
         "idempotent where the declared semantics allow",
         "does not mutate caller input",
@@ -294,12 +296,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent standard-library/tooling implementation where available",
-        "role": "secondary; literal/spec oracle remains primary"
+        "implementation": "an independent hand-written quote-pair state machine plus idempotence properties",
+        "role": "secondary independent implementation cross-checked against the pinned fixture policy"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Product/data/platform policy can drift; bind an exact source/version before Gold."
+        "No unresolved gap for the currently declared deterministic semantics: the exact source and version are bound (unicode-uax29/unicode-uax15 for segmentation and normalization, unicode-uax24 for the script property) and every policy choice is pinned in quality/fixtures/text-writing-local-jobs/vectors.json with an independent cross-check. Re-open if the tool manifest expands its claims."
       ]
     },
     {
@@ -797,9 +799,10 @@
       "truth_sources": [
         "strumentiutili-quality",
         "fixture-policy",
-        "unicode-uax29"
+        "unicode-uax29",
+        "strumentiutili-local-jobs-fixtures"
       ],
-      "standard_or_official_example": "unicode-uax29",
+      "standard_or_official_example": "unicode-uax29 with the pinned sample-data policy in quality/fixtures/text-writing-local-jobs/vectors.json",
       "invariants": [
         "output validates under the target format",
         "deterministic fields are stable",
@@ -823,12 +826,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent standard-library/tooling implementation where available",
-        "role": "secondary; literal/spec oracle remains primary"
+        "implementation": "python3 re-implementation of the declared 32-bit LCG and corpus, cross-checked against the hand-worked text-writing-gold vectors",
+        "role": "secondary independent implementation cross-checked against the pinned fixture policy"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Product/data/platform policy can drift; bind an exact source/version before Gold."
+        "No unresolved gap for the currently declared deterministic semantics: the exact source and version are bound (unicode-uax29/unicode-uax15 for segmentation and normalization, unicode-uax24 for the script property) and every policy choice is pinned in quality/fixtures/text-writing-local-jobs/vectors.json with an independent cross-check. Re-open if the tool manifest expands its claims."
       ]
     },
     {
@@ -839,9 +842,11 @@
       "truth_sources": [
         "strumentiutili-quality",
         "fixture-policy",
-        "unicode-uax29"
+        "unicode-uax29",
+        "unicode-uax24",
+        "strumentiutili-local-jobs-fixtures"
       ],
-      "standard_or_official_example": "unicode-uax29",
+      "standard_or_official_example": "unicode-uax29, unicode-uax24 with the pinned script policy in quality/fixtures/text-writing-local-jobs/vectors.json",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -870,12 +875,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent standard-library/tooling implementation where available",
-        "role": "secondary; literal/spec oracle remains primary"
+        "implementation": "python3 unicodedata plus an independent re-implementation of the declared script ranges, and Node ICU \\p{Script=...} property escapes",
+        "role": "secondary independent implementation cross-checked against the pinned fixture policy"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Product/data/platform policy can drift; bind an exact source/version before Gold."
+        "No unresolved gap for the currently declared deterministic semantics: the exact source and version are bound (unicode-uax29/unicode-uax15 for segmentation and normalization, unicode-uax24 for the script property) and every policy choice is pinned in quality/fixtures/text-writing-local-jobs/vectors.json with an independent cross-check. Re-open if the tool manifest expands its claims."
       ]
     },
     {
@@ -4467,9 +4472,10 @@
         "strumentiutili-quality",
         "fixture-policy",
         "rfc3339",
-        "iana-tzdb"
+        "iana-tzdb",
+        "strumentiutili-holiday-calendar"
       ],
-      "standard_or_official_example": "rfc3339, iana-tzdb",
+      "standard_or_official_example": "rfc3339 date form plus the Gregorian computus (anonymous Gregorian algorithm); the per-country table, substitute-day rules and statutory flags are a declared embedded project policy in quality/fixtures/holiday-calendar/vectors.json",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -4496,12 +4502,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "Python datetime/zoneinfo with recorded tzdb",
-        "role": "secondary conversion"
+        "implementation": "python3 datetime with an independently implemented anonymous Gregorian Easter and hand-worked published calendars for 2020-2026",
+        "role": "secondary independent implementation cross-checked against the pinned fixture policy"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "Product/data/platform policy can drift; bind an exact source/version before Gold."
+        "No unresolved gap for the currently declared deterministic semantics: the country table, the substitute-day rule per country and the statutory flag are pinned in quality/fixtures/holiday-calendar/vectors.json and checked against hand-worked published calendars. Re-open if a new country is added or the table is extended beyond 2100."
       ]
     },
     {
@@ -8021,9 +8027,12 @@
       "maintenance_class": "E",
       "truth_sources": [
         "strumentiutili-quality",
-        "fixture-policy"
+        "fixture-policy",
+        "cipa-exif",
+        "iso-pdf2",
+        "strumentiutili-file-privacy-fixtures"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "cipa-exif (Exif 3.0) for the JPEG/TIFF metadata containers and iso-pdf2 (PDF 2.0) for the document information dictionary; the bounded scan policy and risk taxonomy are pinned in quality/fixtures/metadata-risk-scan/vectors.json",
       "invariants": [
         "inspection does not mutate payload",
         "reported structure agrees with an independent parser/signature",
@@ -8054,12 +8063,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent bibliography parser in test tooling",
-        "role": "recommended"
+        "implementation": "hand-assembled JPEG, PNG and PDF byte fixtures whose container structure is verifiable by hand, read with independent Python struct/zlib parsing",
+        "role": "secondary independent implementation cross-checked against the pinned fixture policy"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "No single freely accessible normative RIS authority is treated as canonical; preserve unknown tags and require parser cross-check."
+        "No unresolved gap for the currently declared deterministic semantics: the tool reports a bounded, named subset of metadata (Exif IFD0 tag names, PNG text/time chunks, the PDF information dictionary) and says so when a container cannot be inspected, so it never claims a complete EXIF/XMP/IPTC parse. Re-open if the tool claims to remove or rewrite metadata."
       ]
     },
     {

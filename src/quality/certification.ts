@@ -290,6 +290,12 @@ const researchKnowledgeEvidence = {
   lazyLoad: ["quality/receipts/research-knowledge/browser-acceptance.json"],
 } as const;
 
+const localJobsEvidence = {
+  locality: ["quality/receipts/local-jobs/browser-acceptance.json"],
+  mobileA11y: ["quality/receipts/local-jobs/browser-acceptance.json"],
+  lazyLoad: ["quality/receipts/local-jobs/browser-acceptance.json"],
+} as const;
+
 const expandedLocalEvidence = {
   locality: ["quality/receipts/expanded-local/browser-acceptance.json"],
   mobileA11y: ["quality/receipts/expanded-local/browser-acceptance.json"],
@@ -364,6 +370,15 @@ const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimensio
   "research-pack-manifest": researchKnowledgeEvidence,
   "ris-bibtex-converter": researchKnowledgeEvidence,
   "vocabulary-frequency-analyzer": researchKnowledgeEvidence,
+  "archive-checksum-manifest": localJobsEvidence,
+  "batch-rename-preview": localJobsEvidence,
+  "folder-compare": localJobsEvidence,
+  "metadata-risk-inspector": localJobsEvidence,
+  "language-aware-text-statistics": localJobsEvidence,
+  "lorem-sample-data-generator": localJobsEvidence,
+  "reading-time-estimator": localJobsEvidence,
+  "smart-quote-normalizer": localJobsEvidence,
+  "public-holiday-lookup": localJobsEvidence,
   "business-day": {
     locality: ["quality/receipts/browser-performance/fresh-browser-matrix.json"],
     mobileA11y: ["quality/receipts/browser-performance/fresh-browser-matrix.json"],
