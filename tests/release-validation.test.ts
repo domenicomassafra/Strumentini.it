@@ -139,7 +139,7 @@ describe("public metadata and discovery", () => {
 });
 
 describe("truthful claims and evidence boundaries", () => {
-  it("allows concrete local mechanics and rejects unsupported public claims", () => {
+  it("allows concrete local mechanics and rejects unsupported public assertions", () => {
     expect(validateTruthfulClaims([{ path: "src/pages/tools/example.astro", text: "Runs on this device. The file is not uploaded." }])).toEqual([]);
     expect(validateTruthfulClaims([{ path: "src/pages/index.astro", text: "StrumentiUtili.it" }])).toEqual([]);
     const findings = validateTruthfulClaims([

@@ -13,10 +13,10 @@ topics: [hosting, costi, cloudflare, minipc, autenticazione, capacity]
 
 ---
 
-ma se io compro dominio come strumentiutili.it e agliatti.it e faccio tipo 300 perosne al gg o 1000 o 10k per dire quanto devo pagare server e dominiod omnio dtipo 14 anno ma tipo invcece server' non puo su mio minipc credo vero?
+ma se io compro dominio come strumentiutili.it e dichiarazionipubbliche.it e faccio tipo 300 perosne al gg o 1000 o 10k per dire quanto devo pagare server e dominiod omnio dtipo 14 anno ma tipo invcece server' non puo su mio minipc credo vero?
 
 Elaborato per 31s
-Sì, assolutamente: un MiniPC può tecnicamente hostare strumentiutili.it e agliatti.it, anche con migliaia di visite al giorno. Il punto è che probabilmente non ti conviene usarlo come server pubblico principale, perché oggi per siti di queste dimensioni il cloud può costarti praticamente zero.
+Sì, assolutamente: un MiniPC può tecnicamente hostare strumentiutili.it e dichiarazionipubbliche.it, anche con migliaia di visite al giorno. Il punto è che probabilmente non ti conviene usarlo come server pubblico principale, perché oggi per siti di queste dimensioni il cloud può costarti praticamente zero.
 
 La cosa importante è distinguere utenti al giorno da carico computazionale. 10.000 persone che leggono pagine e usano tool leggeri sono niente rispetto a 300 persone che fanno conversione video, AI, OCR o elaborazioni pesanti.
 
@@ -25,7 +25,7 @@ Traffico indicativo   Sito statico / frontend   App con API leggere   VPS classi
 1.000 utenti/giorno   €0/mese   €0–5/mese   ~€6–10/mese
 10.000 utenti/giorno   €0/mese   ~€5–20/mese spesso   ~€10–30/mese
 100.000+/giorno   può ancora essere €0 per statico   cresce col consumo   da dimensionare
-Con Cloudflare Pages, le richieste agli asset statici sono gratuite e illimitate. Le funzioni dinamiche usano Workers: il piano Free arriva a 100.000 richieste Worker al giorno; il piano Paid parte da $5/mese e include 10 milioni di richieste al mese, dopodiché sono $0,30 per milione aggiuntivo. 
+Con Cloudflare Pages, le richieste agli asset statici sono gratuite e illimitate. Le funzioni dinamiche usano Workers: il piano Free arriva a 100.000 richieste Worker al giorno; il piano Paid parte da $5/mese e include 10 milioni di richieste al mese, dopodiché sono $0,30 per milione aggiuntivo.
 
 Quindi potresti tranquillamente avere:
 
@@ -35,7 +35,7 @@ e magari:
 
 API / database → Cloudflare Workers + D1 → €0 all'inizio, poi eventualmente ~$5/mese.
 
-Anche lo storage è economico: Cloudflare R2 include un free tier di 10 GB, poi lo storage standard costa $0,015/GB/mese, senza costo di traffico in uscita verso Internet. 
+Anche lo storage è economico: Cloudflare R2 include un free tier di 10 GB, poi lo storage standard costa $0,015/GB/mese, senza costo di traffico in uscita verso Internet.
 
 E il MiniPC?
 Puoi farlo. Potresti mettere Docker + Nginx/Caddy sul MiniPC e pubblicarlo tramite Cloudflare Tunnel, quindi neppure necessariamente aprire porte sul router.
@@ -52,14 +52,14 @@ upload/download dipendono dalla tua connessione domestica;
 il MiniPC magari ti serve contemporaneamente per altri tuoi servizi.
 E soprattutto c'è una cosa buffa: potrebbe costarti più di elettricità tenere il MiniPC acceso 24/7 che mettere il sito su Cloudflare gratis.
 
-Se invece vuoi proprio un Linux server tradizionale, oggi un piccolo Hetzner EU parte circa da €6,53/mese IVA inclusa per CX23, con 2 vCPU, 4 GB RAM e 40 GB NVMe; i server europei includono molto traffico. 
+Se invece vuoi proprio un Linux server tradizionale, oggi un piccolo Hetzner EU parte circa da €6,53/mese IVA inclusa per CX23, con 2 vCPU, 4 GB RAM e 40 GB NVMe; i server europei includono molto traffico.
 
 Quello che farei per i tuoi due siti
 Io farei una struttura del genere:
 
 Dominio
 strumentiutili.it → ~€10–15/anno
-agliatti.it → ~€10–15/anno
+dichiarazionipubbliche.it → ~€10–15/anno
 
 Hosting
 Cloudflare Pages → €0
@@ -90,7 +90,7 @@ Sì: hai centrato il punto. “Statico” non significa “non fa nulla”. Sign
 Ho controllato il codice reale dei due progetti e anche il tuo MiniPC reale.
 
 Come sono messi adesso
-Operazione   StrumentiUtili.it   AgliAtti.it   Chi paga CPU/RAM
+Operazione   StrumentiUtili.it   DichiarazioniPubbliche.it   Chi paga CPU/RAM
 Aprire pagina   statico   statico   CDN + browser
 Ricerca nel sito   browser   browser attualmente   PC/telefono utente
 Calcoli   browser   quasi nessuno lato pubblico   utente
@@ -156,10 +156,10 @@ Questi numeri sono importanti perché impediscono che uno apra StrumentiUtili co
 
 La GPU praticamente non conta. Canvas/browser può sfruttare accelerazione grafica per rendering e immagini, ma non stai facendo AI locale, Stable Diffusion ecc. Non ti serve una GPU server.
 
-Agli Atti è più interessante
+Dichiarazioni Pubbliche è più interessante
 Qui ci sono due sistemi completamente diversi che non vanno confusi.
 
-1. AgliAtti.it pubblico
+1. DichiarazioniPubbliche.it pubblico
 È molto più statico di quanto pensavi.
 
 La pagina /esplora/, ad esempio, riceve i dossier e poi React fa:
@@ -193,7 +193,7 @@ Il bundle pubblico attuale sul MiniPC è minuscolo:
 
 ovviamente perché siamo ancora all'inizio.
 
-2. Il backend editoriale di Agli Atti
+2. Il backend editoriale di Dichiarazioni Pubbliche
 Questo invece non può stare nel Chrome dell'utente, e non deve.
 
 Fa cose come:
@@ -217,7 +217,7 @@ review
 PUBLIC PROJECTION
 Ma la cosa fondamentale è:
 
-questo lavoro non avviene quando Mario Rossi visita AgliAtti.it.
+questo lavoro non avviene quando Mario Rossi visita DichiarazioniPubbliche.it.
 
 Mario Rossi vede soltanto il prodotto finale.
 
@@ -239,7 +239,7 @@ Quindi puoi avere:
           ▼             ▼             ▼
        utente 1      utente 2      utente 10.000
        Chrome        iPhone         Chrome
-Questa per me è l'architettura giusta per Agli Atti.
+Questa per me è l'architettura giusta per Dichiarazioni Pubbliche.
 
 E il tuo MiniPC?
 Qui c'è la sorpresa.
@@ -254,13 +254,13 @@ AMD Radeon integrata.
 
 Non è affatto un giocattolino.
 
-Il servizio web Agli Atti che sta girando adesso consuma circa:
+Il servizio web Dichiarazioni Pubbliche che sta girando adesso consuma circa:
 
 9 MB di RAM.
 
 PostgreSQL sta tranquillamente girando insieme al resto.
 
-Il sistema ha attualmente circa 15 GiB di RAM ancora disponibili su 30 GiB. Il worker Agli Atti nel momento della misurazione non era attivo, quindi questo non è un benchmark del workload massimo, ma rende l'ordine di grandezza chiaro.
+Il sistema ha attualmente circa 15 GiB di RAM ancora disponibili su 30 GiB. Il worker Dichiarazioni Pubbliche nel momento della misurazione non era attivo, quindi questo non è un benchmark del workload massimo, ma rende l'ordine di grandezza chiaro.
 
 Per il backend che abbiamo costruito non hai bisogno di GPU.
 
@@ -276,7 +276,7 @@ StrumentiUtili.it
 
 Perché il lavoro lo fanno i 10.000 dispositivi degli utenti.
 
-Cloudflare serve soltanto file statici. E Cloudflare conferma che le richieste agli static assets sono gratuite e illimitate. 
+Cloudflare serve soltanto file statici. E Cloudflare conferma che le richieste agli static assets sono gratuite e illimitate.
 
 Quindi potresti avere persino:
 
@@ -286,7 +286,7 @@ senza avere un server con 64 GB RAM dietro.
 
 Il problema diventerebbe principalmente banda/CDN, che in questo modello Cloudflare assorbe.
 
-AgliAtti.it
+DichiarazioniPubbliche.it
 Anche qui 10.000 lettori/giorno non sono il problema.
 
 Perché:
@@ -310,7 +310,7 @@ Il MiniPC può continuare a fare magari:
 300 query DB
 indipendentemente da quanti lettori arrivano.
 
-C'è però UNA cosa che cambierei in futuro su Agli Atti
+C'è però UNA cosa che cambierei in futuro su Dichiarazioni Pubbliche
 Oggi /esplora/ manda l'array dei dossier al browser.
 
 Con:
@@ -339,7 +339,7 @@ Cloudflare Worker
   └── restituisce solo 20 risultati
 E comunque non toccherei il MiniPC per la query pubblica.
 
-Cloudflare Workers Free oggi permette fino a 100.000 richieste Worker/giorno, con 128 MB di memoria per invocation; il Paid parte da $5/mese. 
+Cloudflare Workers Free oggi permette fino a 100.000 richieste Worker/giorno, con 128 MB di memoria per invocation; il Paid parte da $5/mese.
 
 Quindi possiamo scalare gradualmente:
 
@@ -350,7 +350,7 @@ tutto static/client side
 ≈ €0 hosting
 
 FASE 2
-dataset Agli Atti diventa grosso
+dataset Dichiarazioni Pubbliche diventa grosso
 ↓
 search/API su Cloudflare Worker
 ≈ €0–5/mese
@@ -371,9 +371,9 @@ Astro static
 Chrome dell'utente
       ↓
 CPU + RAM + Canvas + WASM + Web Workers
-Agli Atti
+Dichiarazioni Pubbliche
 
-agliatti.it
+dichiarazionipubbliche.it
       ↓
 Cloudflare CDN
       ↓
@@ -396,7 +396,7 @@ MiniPC
          Cloudflare
 Quindi sì, la tua intuizione è giusta: ogni volta che è tecnicamente sensato, vogliamo spostare il consumo su CPU/RAM del browser dell'utente, soprattutto per StrumentiUtili.
 
-E la cosa migliore è che il codice attuale è già sorprendentemente vicino a questa architettura. Non comprerei oggi nessun server per questi due siti. Terrei il MiniPC per il backend privato di Agli Atti e metterei entrambi i front-end pubblici su Cloudflare.
+E la cosa migliore è che il codice attuale è già sorprendentemente vicino a questa architettura. Non comprerei oggi nessun server per questi due siti. Terrei il MiniPC per il backend privato di Dichiarazioni Pubbliche e metterei entrambi i front-end pubblici su Cloudflare.
 
 vabbè magari inizio free ma anche se una vps o che so server costa tipo 3-5 europ al mese lo compro dai eh. per dire. o su minipc. mgari vedi quanot peserebbe e se reggerebbe quel sito con 100 utenti non so se si possa simulare tipo
 
@@ -407,7 +407,7 @@ Sì, e l’ho simulato davvero sul tuo MiniPC. La conclusione è abbastanza nett
 Ho fatto il test prima col server Python di preview e poi con Caddy, cioè qualcosa di molto più vicino a come lo serviremmo davvero in produzione. Sul MiniPC ho messo temporaneamente anche la build attuale di StrumentiUtili e poi ho ripulito tutto.
 
 Test, 100 concorrenti   Risultato   Throughput   p95   p99   RAM server
-Agli Atti /esplora/   3000/3000 OK   3129 req/s   46 ms   58 ms   ~40 MB
+Dichiarazioni Pubbliche /esplora/   3000/3000 OK   3129 req/s   46 ms   58 ms   ~40 MB
 StrumentiUtili home   3000/3000 OK   3283 req/s   43 ms   53 ms   ~40 MB
 StrumentiUtili image-resize   3000/3000 OK   3015 req/s   47 ms   59 ms   ~40 MB
 Zero errori.
@@ -461,11 +461,11 @@ Oggi OVH ha un VPS-1 a €4,65/mese IVA inclusa con:
 40 GB NVMe
 500 Mbps
 traffico illimitato
-backup giornaliero incluso. 
+backup giornaliero incluso.
 
 Ed è già enormemente sufficiente per servire questi siti.
 
-Hetzner, dopo l'adeguamento prezzi del giugno 2026, ha per esempio il CX23 a €5,49/mese IVA esclusa e senza IPv4; quindi oggi non è più propriamente nella fascia €3–5 finale per un cliente italiano. 
+Hetzner, dopo l'adeguamento prezzi del giugno 2026, ha per esempio il CX23 a €5,49/mese IVA esclusa e senza IPv4; quindi oggi non è più propriamente nella fascia €3–5 finale per un cliente italiano.
 
 Io farei così
 Per StrumentiUtili non comprerei nemmeno una VPS all'inizio:
@@ -474,11 +474,11 @@ Cloudflare statico → gratis.
 
 Non perché dobbiamo risparmiare €5, ma perché è proprio tecnicamente migliore. Hai CDN globale, niente server da amministrare e il lavoro pesante lo fanno i browser.
 
-Per Agli Atti, invece:
+Per Dichiarazioni Pubbliche, invece:
 
 PUBBLICO
 
-agliatti.it
+dichiarazionipubbliche.it
     ↓
 Cloudflare
     ↓
@@ -506,7 +506,7 @@ Questa secondo me è la combinazione più bella.
 
 Il tuo MiniPC fa le cose pesanti e private, dove i suoi 8 core/16 thread e 30 GB servono davvero.
 
-La VPS da €4,65 fa la cosa stupida ma importante: essere online 24/7 con datacenter, rete 500 Mbps, IP pubblico e backup, indipendentemente da corrente/router/Internet di casa. 
+La VPS da €4,65 fa la cosa stupida ma importante: essere online 24/7 con datacenter, rete 500 Mbps, IP pubblico e backup, indipendentemente da corrente/router/Internet di casa.
 
 E Cloudflare sta davanti a entrambi.
 
@@ -524,24 +524,24 @@ si esatto. e claudlfare sicuro? devo implmentare anche login degli uternti
 
 Elaborato per 1m 42s
 Ran npm run acceptance:auth
-Sì: Cloudflare è una base sensata e abbastanza robusta, ma va configurato bene. Non è “metto Cloudflare e sono invulnerabile”. Sul piano pratico ti dà HTTPS/TLS, CDN, mitigazione del traffico malevolo, WAF e rate limiting; anche il piano Free ha il Free Managed Ruleset e una regola di rate limiting. 
+Sì: Cloudflare è una base sensata e abbastanza robusta, ma va configurato bene. Non è “metto Cloudflare e sono invulnerabile”. Sul piano pratico ti dà HTTPS/TLS, CDN, mitigazione del traffico malevolo, WAF e rate limiting; anche il piano Free ha il Free Managed Ruleset e una regola di rate limiting.
 
 E sul login c’è una cosa importante: su StrumentiUtili lo abbiamo già quasi completamente implementato. Ho appena verificato il codice e lanciato i test: 12/12 unit test auth PASS e 121/121 controlli acceptance PASS. Ci sono già registrazione, login/logout, sessioni multiple, cambio password, revoca delle altre sessioni, cancellazione account, preferiti sincronizzati e cookie HttpOnly; Secure; SameSite=Lax.
 
 Quindi io imposterei così:
 
 StrumentiUtili.it: nessun login obbligatorio. I 200 strumenti continuano a funzionare gratis e localmente; login opzionale per preferiti, configurazione e futura sincronizzazione tra dispositivi.
-AgliAtti.it pubblico: nessun login per leggere/cercare fact-check e record.
-Agli Atti Studio/admin: login obbligatorio e separato; qui userei Cloudflare Access davanti a /studio/* o admin.agliatti.it. Access fa da identity-aware proxy e può essere deny-by-default. 
+DichiarazioniPubbliche.it pubblico: nessun login per leggere/cercare fact-check e record.
+Dichiarazioni Pubbliche Studio/admin: login obbligatorio e separato; qui userei Cloudflare Access davanti a /studio/* o admin.dichiarazionipubbliche.it. Access fa da identity-aware proxy e può essere deny-by-default.
 Però non metterei online il login StrumentiUtili esattamente com’è adesso. Prima del deploy sistemerei quattro cose importanti.
 
-La prima è il database production: il Worker è già configurato per D1, ma nel wrangler.jsonc manca ancora il database_id reale. Cloudflare lo richiede per il binding production. 
+La prima è il database production: il Worker è già configurato per D1, ma nel wrangler.jsonc manca ancora il database_id reale. Cloudflare lo richiede per il binding production.
 
-La seconda è Turnstile su registrazione/login e soprattutto su eventuale recupero password. Il token va validato nel Worker server-side; Cloudflare specifica che il controllo solo nel browser non è sufficiente. 
+La seconda è Turnstile su registrazione/login e soprattutto su eventuale recupero password. Il token va validato nel Worker server-side; Cloudflare specifica che il controllo solo nel browser non è sufficiente.
 
-La terza è il rate limit. Noi abbiamo già 10 login falliti / 15 minuti / IP nel Worker; aggiungerei anche il rate limit Cloudflare davanti a /api/auth/*, esattamente il tipo di utilizzo per cui Cloudflare documenta la funzione. 
+La terza è il rate limit. Noi abbiamo già 10 login falliti / 15 minuti / IP nel Worker; aggiungerei anche il rate limit Cloudflare davanti a /api/auth/*, esattamente il tipo di utilizzo per cui Cloudflare documenta la funzione.
 
-La quarta è l'hashing password. Attualmente il nostro codice usa PBKDF2-SHA256 a 210.000 iterazioni. È molto meglio di salvare password normalmente e usa salt casuale, ma l'attuale raccomandazione OWASP per PBKDF2-HMAC-SHA256 è 600.000+ iterazioni; per un'app nuova OWASP preferisce Argon2id quando disponibile. Cloudflare Workers supporta PBKDF2 nativamente, mentre node:crypto su Workers non supporta Argon2. 
+La quarta è l'hashing password. Attualmente il nostro codice usa PBKDF2-SHA256 a 210.000 iterazioni. È molto meglio di salvare password normalmente e usa salt casuale, ma l'attuale raccomandazione OWASP per PBKDF2-HMAC-SHA256 è 600.000+ iterazioni; per un'app nuova OWASP preferisce Argon2id quando disponibile. Cloudflare Workers supporta PBKDF2 nativamente, mentre node:crypto su Workers non supporta Argon2.
  Quindi qui semplicemente porterei PBKDF2 almeno a 600k e manterrei il formato versionato che abbiamo già previsto.
 
 La struttura finale sarebbe quindi:
@@ -565,7 +565,7 @@ Cloudflare
    favorites
 e:
 
-AGLIATTI.IT
+DICHIARAZIONIPUBBLICHE.IT
 
 pubblico
 Cloudflare CDN
@@ -575,7 +575,7 @@ static/public projection
 nessun login
 
 
-studio.agliatti.it
+studio.dichiarazionipubbliche.it
      ↓
 Cloudflare Access
      ↓
@@ -584,7 +584,7 @@ solo noi/operatori autorizzati
 backend MiniPC/PostgreSQL
 Questa è una struttura che mi piace molto perché anche se introduciamo account, non trasformiamo StrumentiUtili in un SaaS pesante: i file continuano a non essere caricati sul server, la CPU continua a essere quella del cliente e nel database teniamo soltanto cose piccole tipo user, session, favorite, preferenze.
 
-Quindi sì: login utenti sì, ma opzionale per StrumentiUtili; nessun login per i lettori di Agli Atti; login molto più protetto per lo Studio privato. E la parte StrumentiUtili non è da costruire da zero: è già funzionante localmente, va principalmente hardennata e collegata al D1 production prima del deploy.
+Quindi sì: login utenti sì, ma opzionale per StrumentiUtili; nessun login per i lettori di Dichiarazioni Pubbliche; login molto più protetto per lo Studio privato. E la parte StrumentiUtili non è da costruire da zero: è già funzionante localmente, va principalmente hardennata e collegata al D1 production prima del deploy.
 
 
 
