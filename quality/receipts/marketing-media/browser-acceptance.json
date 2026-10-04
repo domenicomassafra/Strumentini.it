@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "url-comparison",
+    "social-character-limit",
+    "meta-preview",
+    "open-graph-preview",
+    "qr-generator",
+    "qr-reader",
+    "exif-remover",
+    "platform-size-presets"
+  ],
+  "routesChecked": 10,
+  "keyboard": "every submit action exercised with Enter",
+  "accessibility": "all interactive controls in each tool form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObservedFor": [
+    "url-comparison",
+    "social-character-limit",
+    "meta-preview",
+    "open-graph-preview",
+    "qr-generator",
+    "qr-reader",
+    "exif-remover",
+    "platform-size-presets",
+    "qr-reader",
+    "exif-remover"
+  ],
+  "browserOnlyClaims": [
+    "qr-reader image path: the symbol is produced by qr-generator, rasterised from its own SVG in the browser, and read back by qr-reader with the Reed-Solomon syndromes verified",
+    "exif-remover: the input inventory names the real eXIf chunk found in a decodable synthetic PNG, and the produced file is verified metadata-free before it is offered"
+  ],
+  "scriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
+  "results": [
+    {
+      "toolId": "url-comparison",
+      "status": "PASS",
+      "assertion": "both normalised forms shown and reported equal",
+      "outputSha256": "be724770ec687d9fb3503e87cb677238fb746b3a2665b7884fbe1ca125bf4cad",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "social-character-limit",
+      "status": "PASS",
+      "assertion": "code-point count and the platform's weighted count both reported with provenance",
+      "outputSha256": "ff0f8fc2abc8c2d19b0d6ee8a23b0ed459a61e70b1666d451860c7b70db26b94",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "meta-preview",
+      "status": "PASS",
+      "assertion": "length counted against the reference and its source named",
+      "outputSha256": "05021f882f9dd8855e15d84913201203f4b38bf2f5324d2b3fc0bad2742c06ef",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "open-graph-preview",
+      "status": "PASS",
+      "assertion": "greater-than inside an attribute survives and the relative URL is named",
+      "outputSha256": "8e253b4f5381abf2127387b38fc5d433ef15d475a44bd1e81a791c7e8f144c16",
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "qr-generator",
+      "status": "PASS",
+      "assertion": "symbol rendered with version, mask and byte budget, and SVG/PNG downloads offered",
+      "outputSha256": "24119c6c538464fea1de03c1904503683e9fa4fcd63e20f6dcdf01da464cb94d",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "qr-reader",
+      "status": "PASS",
+      "assertion": "an unreadable matrix is refused with an Italian message rather than decoded into invented text",
+      "outputSha256": "ce7b80c029aafa76b20391599a8a90c011ac15b6fc89ae1e7dc34513bb01a064",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 2,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "exif-remover",
+      "status": "PASS",
+      "assertion": "input inventory reported and the produced file proven free of identifying segments",
+      "outputSha256": "b3a1c3c9f0c8ef72d58d979429e4b963053eeaa8056cf21d62dd8dd631c1e6ab",
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "platform-size-presets",
+      "status": "PASS",
+      "assertion": "crop box, letterbox need and source of the canvas all reported",
+      "outputSha256": "36a3d331274eae61891bf91c2f6997d20cc0416afe0e09faeea2e71b1025ed5e",
+      "lazyScriptCount": 5,
+      "taskRequestCount": 5,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "qr-reader",
+      "status": "PASS",
+      "assertion": "symbol generated in the browser, rasterised from that SVG, and decoded back to the exact payload with syndromes verified",
+      "outputSha256": "6d83ce307fae2a4c2aefcaff1d98f2fb7104c0a5487d044f64b605eebf9903aa"
+    },
+    {
+      "toolId": "exif-remover",
+      "status": "PASS",
+      "assertion": "input Exif segment inventoried, output proven metadata-free, local download offered",
+      "outputSha256": "b3a1c3c9f0c8ef72d58d979429e4b963053eeaa8056cf21d62dd8dd631c1e6ab"
+    }
+  ]
+}

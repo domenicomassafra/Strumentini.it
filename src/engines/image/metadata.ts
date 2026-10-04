@@ -1,0 +1,205 @@
+/*
+ * Byte-level inventory of what an image file carries besides pixels.
+ *
+ * "Removing metadata" is a claim, so this module is the part that makes the
+ * claim checkable: it walks the real container structure — JPEG marker
+ * segments, PNG chunks, WebP RIFF chunks — and reports exactly which
+ * privacy-bearing segments are present and how many bytes they occupy. It
+ * reads bytes only: it never decodes pixels and never needs a browser.
+ *
+ * Reference: CIPA DC-007 (Exif), W3C PNG (chunk types), Google WebP container
+ * specification (RIFF chunk types).
+ */
+
+export type MetadataCarrier = "exif" | "xmp" | "iptc" | "comment" | "text" | "timestamp" | "icc-profile";
+
+export interface MetadataSegment {
+  readonly carrier: MetadataCarrier;
+  /** Container-level name, e.g. `JPEG APP1`, `PNG tEXt`, `WebP EXIF`. */
+  readonly segment: string;
+  readonly labelIt: string;
+  /** Bytes the segment occupies on disk, header and trailer included. */
+  readonly bytes: number;
+}
+
+export const METADATA_CARRIER_IT: Readonly<Record<MetadataCarrier, string>> = {
+  exif: "dati Exif (posizione, modello, data di scatto)",
+  xmp: "metadati XMP",
+  iptc: "dati IPTC",
+  comment: "commento del file",
+  text: "testo incorporato",
+  timestamp: "data e ora registrate",
+  "icc-profile": "profilo colore ICC",
+};
+
+/** Carriers that can carry identifying information and are therefore the target. */
+export const PRIVACY_BEARING_CARRIERS: readonly MetadataCarrier[] = ["exif", "xmp", "iptc", "comment"];
+
+export interface MetadataInventory {
+  readonly format: "jpeg" | "png" | "webp" | "unknown";
+  readonly segments: readonly MetadataSegment[];
+  readonly bytesTotal: number;
+  readonly privacySegmentCount: number;
+  readonly privacyBytes: number;
+  /** True when the walk completed; a truncated file is reported, not guessed. */
+  readonly complete: boolean;
+}
+
+const JPEG_SEGMENTS: Readonly<Record<number, { readonly carrier: MetadataCarrier; readonly segment: string }>> = {
+  0xe1: { carrier: "exif", segment: "JPEG APP1" },
+  0xed: { carrier: "iptc", segment: "JPEG APP13" },
+  0xfe: { carrier: "comment", segment: "JPEG COM" },
+};
+
+const PNG_CHUNKS: Readonly<Record<string, { readonly carrier: MetadataCarrier; readonly segment: string }>> = {
+  tEXt: { carrier: "text", segment: "PNG tEXt" },
+  zTXt: { carrier: "text", segment: "PNG zTXt" },
+  iTXt: { carrier: "text", segment: "PNG iTXt" },
+  eXIf: { carrier: "exif", segment: "PNG eXIf" },
+  tIME: { carrier: "timestamp", segment: "PNG tIME" },
+  iCCP: { carrier: "icc-profile", segment: "PNG iCCP" },
+};
+
+const WEBP_CHUNKS: Readonly<Record<string, { readonly carrier: MetadataCarrier; readonly segment: string }>> = {
+  EXIF: { carrier: "exif", segment: "WebP EXIF" },
+  XMP: { carrier: "xmp", segment: "WebP XMP" },
+  ICCP: { carrier: "icc-profile", segment: "WebP ICCP" },
+};
+
+function isJpeg(bytes: Uint8Array): boolean {
+  return bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+}
+
+function isPng(bytes: Uint8Array): boolean {
+  const signature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+  return bytes.length >= 8 && signature.every((value, index) => bytes[index] === value);
+}
+
+function isWebp(bytes: Uint8Array): boolean {
+  return bytes.length >= 12 && ascii(bytes, 0, "RIFF") && ascii(bytes, 8, "WEBP");
+}
+
+function ascii(bytes: Uint8Array, offset: number, text: string): boolean {
+  return offset + text.length <= bytes.length && [...text].every((character, index) => bytes[offset + index] === character.charCodeAt(0));
+}
+
+function segment(carrier: MetadataCarrier, segmentName: string, size: number): MetadataSegment {
+  return { carrier, segment: segmentName, labelIt: METADATA_CARRIER_IT[carrier], bytes: size };
+}
+
+function scanJpeg(bytes: Uint8Array): MetadataInventory {
+  const segments: MetadataSegment[] = [];
+  let offset = 2;
+  let complete = true;
+  for (;;) {
+    while (offset < bytes.length && bytes[offset] === 0xff) offset += 1;
+    if (offset >= bytes.length) break;
+    const marker = bytes[offset]!;
+    if (marker === 0xd9) break;
+    if (marker === 0xda) break;
+    if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) {
+      offset += 1;
+      continue;
+    }
+    if (offset + 3 > bytes.length) {
+      complete = false;
+      break;
+    }
+    // `offset` is on the marker byte, so the two-byte length field that
+    // follows the 0xFF marker prefix starts one byte later.
+    const length = (bytes[offset + 1]! << 8) | bytes[offset + 2]!;
+    if (length < 2 || offset + 1 + length > bytes.length) {
+      complete = false;
+      break;
+    }
+    const known = JPEG_SEGMENTS[marker];
+    if (known !== undefined) {
+      // APP1 is shared by Exif and XMP; the payload identifies which.
+      const payload = bytes.subarray(offset + 3, offset + 1 + length);
+      const carrier = marker === 0xe1 && (ascii(payload, 0, "http://ns.adobe.com/xap/1.0/") || ascii(payload, 0, "http://ns.adobe.com/xmp/extension/"))
+        ? "xmp"
+        : known.carrier;
+      segments.push(segment(carrier, carrier === "xmp" ? "JPEG APP1 XMP" : known.segment, length + 2));
+    }
+    // `offset` sits on the marker byte itself (the leading 0xFF was consumed
+    // above), so the next marker starts one byte plus the declared length later.
+    offset += 1 + length;
+  }
+  return summarize("jpeg", segments, complete);
+}
+
+function scanPng(bytes: Uint8Array): MetadataInventory {
+  const segments: MetadataSegment[] = [];
+  let offset = 8;
+  let complete = true;
+  let sawEnd = false;
+  while (offset + 8 <= bytes.length) {
+    const length =
+      (bytes[offset]! * 0x1000000 + (bytes[offset + 1]! << 16) + (bytes[offset + 2]! << 8) + bytes[offset + 3]!) >>> 0;
+    const type = String.fromCharCode(bytes[offset + 4]!, bytes[offset + 5]!, bytes[offset + 6]!, bytes[offset + 7]!);
+    if (offset + 12 + length > bytes.length) {
+      complete = false;
+      break;
+    }
+    if (type === "IEND") {
+      sawEnd = true;
+      break;
+    }
+    const known = PNG_CHUNKS[type];
+    if (known !== undefined) segments.push(segment(known.carrier, known.segment, length + 12));
+    offset += 12 + length;
+  }
+  if (!sawEnd) complete = false;
+  return summarize("png", segments, complete);
+}
+
+function scanWebp(bytes: Uint8Array): MetadataInventory {
+  const segments: MetadataSegment[] = [];
+  const riffSize = (bytes[4]! + (bytes[5]! << 8) + (bytes[6]! << 16) + (bytes[7]! << 24)) >>> 0;
+  const limit = Math.min(bytes.length, 8 + riffSize);
+  let offset = 12;
+  let complete = true;
+  while (offset + 8 <= limit) {
+    const type = String.fromCharCode(bytes[offset]!, bytes[offset + 1]!, bytes[offset + 2]!, bytes[offset + 3]!);
+    const size = (bytes[offset + 4]! + (bytes[offset + 5]! << 8) + (bytes[offset + 6]! << 16) + (bytes[offset + 7]! << 24)) >>> 0;
+    if (offset + 8 + size > limit) {
+      complete = false;
+      break;
+    }
+    const known = WEBP_CHUNKS[type];
+    if (known !== undefined) segments.push(segment(known.carrier, known.segment, size + 8 + (size % 2)));
+    offset += 8 + size + (size % 2);
+  }
+  return summarize("webp", segments, complete);
+}
+
+function summarize(format: "jpeg" | "png" | "webp", segments: readonly MetadataSegment[], complete: boolean): MetadataInventory {
+  const bytesTotal = segments.reduce((sum, entry) => sum + entry.bytes, 0);
+  const privacy = segments.filter((entry) => PRIVACY_BEARING_CARRIERS.includes(entry.carrier));
+  return {
+    format,
+    segments,
+    bytesTotal,
+    privacySegmentCount: privacy.length,
+    privacyBytes: privacy.reduce((sum, entry) => sum + entry.bytes, 0),
+    complete,
+  };
+}
+
+export function scanImageMetadata(bytes: Uint8Array): MetadataInventory {
+  if (isPng(bytes)) return scanPng(bytes);
+  if (isJpeg(bytes)) return scanJpeg(bytes);
+  if (isWebp(bytes)) return scanWebp(bytes);
+  return { format: "unknown", segments: [], bytesTotal: 0, privacySegmentCount: 0, privacyBytes: 0, complete: false };
+}
+
+export function describeMetadataIt(inventory: MetadataInventory): string {
+  if (inventory.format === "unknown") return "Formato non riconosciuto: nessun inventario possibile.";
+  if (inventory.segments.length === 0) {
+    return inventory.complete
+      ? "Nessun segmento di metadati trovato nel file."
+      : "Il file sembra troncato: l'inventario è parziale e non può essere considerato completo.";
+  }
+  const carriers = [...new Set(inventory.segments.map((entry) => entry.carrier))];
+  return `Trovati ${inventory.segments.length} segmenti di metadati (${carriers.join(", ")}), per ${inventory.bytesTotal} byte.`;
+}

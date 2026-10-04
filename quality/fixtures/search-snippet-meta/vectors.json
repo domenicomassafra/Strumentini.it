@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "provenance": "Hand-worked vectors. Titles and descriptions are invented strings chosen to exercise empty input, ASCII, accented Italian, CJK, emoji, composed and decomposed Unicode, HTML-significant characters and both sides of the 60/160 reference lengths. No third-party copy is used.",
+  "reference_limits": {
+    "title": 60,
+    "description": 160,
+    "source": "Google Search Central — guida ai title link e alle meta description, lunghezze indicative"
+  },
+  "vectors": [
+    {
+      "name": "vuoto",
+      "title": "",
+      "description": "",
+      "titleCharacters": 0,
+      "descriptionCharacters": 0
+    },
+    {
+      "name": "solo spazi",
+      "title": "   ",
+      "description": "\t\n",
+      "titleCharacters": 0,
+      "descriptionCharacters": 0
+    },
+    {
+      "name": "titolo breve in italiano",
+      "title": "Preventivo per sito web",
+      "description": "Ricevi il preventivo entro due giorni lavorativi.",
+      "titleCharacters": 23,
+      "descriptionCharacters": 49
+    },
+    {
+      "name": "accenti e apostrofo",
+      "title": "Città di Bergamo — perché conviene",
+      "description": "L'offerta di consulenza per le PMI del territorio, con listino completo.",
+      "titleCharacters": 34,
+      "descriptionCharacters": 72
+    },
+    {
+      "name": "caratteri speciali HTML",
+      "title": "A & B <script>alert(\"x\")</script>",
+      "description": "Prezzo < 100 & \"offerta\" > 50",
+      "titleCharacters": 33,
+      "descriptionCharacters": 29
+    },
+    {
+      "name": "una emoji vale un punto di codice",
+      "title": "Preventivo 😀",
+      "description": "Emoji: 😀🚀",
+      "titleCharacters": 12,
+      "descriptionCharacters": 9
+    },
+    {
+      "name": "CJK",
+      "title": "タイトル",
+      "description": " ingeniouso ",
+      "titleCharacters": 4,
+      "descriptionCharacters": 10
+    },
+    {
+      "name": "composed e decomposed",
+      "title": "Café déjà vu",
+      "description": "Café déjà vu",
+      "titleCharacters": 12,
+      "descriptionCharacters": 12
+    }
+  ],
+  "over_limit": [
+    {
+      "name": "titolo al limite esatto",
+      "title_repeat": "a",
+      "title_repeat_count": 60,
+      "description_repeat": "b",
+      "description_repeat_count": 160
+    },
+    {
+      "name": "titolo una unita oltre",
+      "title_repeat": "a",
+      "title_repeat_count": 61,
+      "description_repeat": "b",
+      "description_repeat_count": 161
+    },
+    {
+      "name": "titolo CJK oltre il limite con meta codepoint",
+      "title_repeat": "世",
+      "title_repeat_count": 60,
+      "description_repeat": "b",
+      "description_repeat_count": 160
+    }
+  ],
+  "escaping": [
+    {
+      "name": "ampersand e minori",
+      "title": "A & B < C",
+      "description": "x > y",
+      "escapedTitle": "A &amp; B &lt; C",
+      "escapedDescription": "x &gt; y"
+    },
+    {
+      "name": "virgolette doppie e apostrofi",
+      "title": "prezzo \"aperto\"",
+      "description": "l'offerta 'base'",
+      "escapedTitle": "prezzo &quot;aperto&quot;",
+      "escapedDescription": "l&#39;offerta &#39;base&#39;"
+    },
+    {
+      "name": "script completo",
+      "title": "<script>alert(\"x\")</script>",
+      "description": "</p><img src=x onerror=y>",
+      "escapedTitle": "&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;",
+      "escapedDescription": "&lt;/p&gt;&lt;img src=x onerror=y&gt;"
+    }
+  ]
+}

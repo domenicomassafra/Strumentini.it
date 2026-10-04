@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
+  "toolId": "exif-remover",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "image",
+  "oracleEntryId": "cand-148",
+  "fixtureFamilies": [
+    "image-metadata",
+    "image-metadata-segments",
+    "mime-file-signatures"
+  ],
+  "truthSources": [
+    "cipa-exif",
+    "fixture-policy",
+    "google-webp",
+    "iana-media-types",
+    "iso-pdf2",
+    "pkware-appnote",
+    "strumentiutili-quality",
+    "w3c-png3"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "image-metadata",
+      "path": "quality/fixtures/image-metadata/vectors.json"
+    },
+    {
+      "id": "image-metadata-segments",
+      "path": "quality/fixtures/image-metadata-segments/vectors.json"
+    },
+    {
+      "id": "mime-file-signatures",
+      "path": "quality/fixtures/mime-file-signatures/vectors.json"
+    }
+  ],
+  "oracleCondition": {
+    "confidence": "high",
+    "unresolvedGap": "No unresolved gap for the currently declared deterministic semantics; re-open if the tool manifest expands its claims.",
+    "resolution": "the oracle records no open gap for the declared semantics",
+    "boundSources": [
+      {
+        "source": "CIPA DC-007 (Exif)",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "W3C PNG specification (chunk types)",
+        "verifiedOn": "2026-09-23"
+      }
+    ]
+  },
+  "browserContract": {
+    "assertions": [
+      "input inventory reported and the produced file proven free of identifying segments",
+      "input Exif segment inventoried, output proven metadata-free, local download offered"
+    ],
+    "outputSha256": [
+      "b3a1c3c9f0c8ef72d58d979429e4b963053eeaa8056cf21d62dd8dd631c1e6ab",
+      "b3a1c3c9f0c8ef72d58d979429e4b963053eeaa8056cf21d62dd8dd631c1e6ab"
+    ],
+    "locality": "zero external, non-GET or task-body requests after task start",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabelled interactive form control"
+  },
+  "toolInvariants": {
+    "invariants": [
+      "the produced file is scanned byte by byte before it is reported clean",
+      "the report fails closed rather than claiming a clean file it cannot prove",
+      "the input inventory names the segments actually present in the source file"
+    ],
+    "observed": {
+      "privacyCarriersTracked": 4,
+      "outputFormat": "png"
+    }
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "every published number the tool states names its source and verification date",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance",
+    "the produced file is scanned byte by byte before it is reported clean",
+    "the report fails closed rather than claiming a clean file it cannot prove",
+    "the input inventory names the segments actually present in the source file"
+  ],
+  "identities": {
+    "manifestSha256": "1d74802d5623f9401f2c8621f7f203a8cfdc6ffd3309fd8a3b568d32c62dede7",
+    "moduleSha256": "e2dc495c503f614cfedd16c23588da939f0f9f456fb161cf64455f0be4439f1f",
+    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "4aa9763fff934f0bd6d9058378c49c1ccb2b3f1bad7116a1dd78b7bea18f8092",
+    "acceptanceScriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
+    "unitTestsSha256": "c7c95a388ab7368340e175d004ca3a6d505a7737a77109c0f9bd2d7fb2eb4844",
+    "fixture:image-metadata:sha256": "636a2a09fef7acc95fc32184357a28883b61f1d27a1e8d7dd76c6cc73be8398d",
+    "fixture:image-metadata-segments:sha256": "859c9faacd611a08d809fffcb5b095a925a1df3674925246fd7d270ab66df64d",
+    "fixture:mime-file-signatures:sha256": "34738fae795924ef3099e181d756509633c77ad82160905e824632ea3018d5fa"
+  }
+}

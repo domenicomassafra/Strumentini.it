@@ -3,7 +3,7 @@
   "toolId": "text-diff",
   "status": "GOLD",
   "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
-  "sourceFingerprint": "9e52b76be27890a30dfe80a627ae67acf0a97e40532f97d68668ffc2aa21c90d",
+  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
   "runtime": {
     "location": "LOCAL",
     "network": "forbidden"
@@ -52,7 +52,7 @@
   "identities": {
     "manifestSha256": "b5bd90afa39fc97985d03e8b76dde2c45d853960d5d8303d902a58aa08f7efd8",
     "engineSha256": "6401bf42affc8fcc020bb2450cf87dab678c4940f3c9c27b5336b0167ce8de40",
-    "fixtureIndexSha256": "b46c111dc70c7a31b1c566b83689ebda3c68b3d3f8c0e76ad43647da317db30f",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6"
+    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3"
   }
 }

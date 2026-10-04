@@ -22,6 +22,7 @@ import {
   type ImageVisualFile,
   type ImageVisualProgress,
 } from "./visual";
+import { calculatePlatformSizes, PLATFORM_PRESETS, type PlatformSizeResult } from "./presets";
 import {
   assertOutputMime,
   bitmapCanvas,
@@ -206,21 +207,20 @@ export function previewImageRenamesLocal(input: unknown, _signal?: AbortSignal):
   return { items };
 }
 
-export const PLATFORM_SIZE_PRESETS = [
-  { id: "instagram-square", name: "Instagram square", width: 1080, height: 1080 },
-  { id: "instagram-story", name: "Instagram story", width: 1080, height: 1920 },
-  { id: "open-graph", name: "Open Graph", width: 1200, height: 630 },
-  { id: "youtube-thumbnail", name: "YouTube thumbnail", width: 1280, height: 720 },
-  { id: "app-icon", name: "App icon", width: 1024, height: 1024 },
-] as const;
+/**
+ * Preset selection now lives in `./presets`, which carries the published source
+ * and verification date for each size. This keeps the runtime entry point and
+ * the value list in one place so the two cannot drift.
+ */
+export { PLATFORM_PRESETS, calculatePlatformSizes, containBox, coverCropFor, ratioLabel, type PixelBox, type CropBox, type PlatformFit, type PlatformPreset, type PlatformSizeResult } from "./presets";
 
-export function calculatePlatformSizesLocal(input: unknown, _signal?: AbortSignal): { readonly preset: (typeof PLATFORM_SIZE_PRESETS)[number]; readonly contain: { width: number; height: number }; readonly cover: { width: number; height: number } } {
+export function calculatePlatformSizesLocal(input: unknown, _signal?: AbortSignal): PlatformSizeResult {
   const value = validateObject(input);
-  const preset = PLATFORM_SIZE_PRESETS.find((item) => item.id === value.presetId);
+  const preset = PLATFORM_PRESETS.find((item) => item.id === value.presetId);
   if (preset === undefined) throw new ImageVisualError("INVALID_INPUT", "Choose a supported platform preset");
   const width = assertDimension(value.width, "Source width");
   const height = assertDimension(value.height, "Source height");
-  return { preset, contain: fitDimensions(width, height, preset.width, preset.height), cover: { width: preset.width, height: preset.height } };
+  return calculatePlatformSizes(preset, width, height);
 }
 
 export interface ContactSheetOutput extends ImageOutput {

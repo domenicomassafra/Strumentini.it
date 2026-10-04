@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "status": "GOLD",
   "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
-  "sourceFingerprint": "9e52b76be27890a30dfe80a627ae67acf0a97e40532f97d68668ffc2aa21c90d",
+  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
   "toolId": "cpa-cpc-cpm-calculator",
   "runtime": {
     "location": "LOCAL",
@@ -43,11 +43,11 @@
   ],
   "identities": {
     "manifestSha256": "1aa9b4490b19841b10dae0633595a664a6a8b10e044b48534503c728229ba9b1",
-    "fixtureIndexSha256": "b46c111dc70c7a31b1c566b83689ebda3c68b3d3f8c0e76ad43647da317db30f",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "cfc46c38986031b3817fa823c76ae6eaa7e31b3d6ce383c16c7f51b6ff614431",
-    "acceptanceScriptSha256": "07cedaf3a275471dd3570ec318862c4716722876adf598f7651423c6b75ab5ac",
-    "unitTestsSha256": "0504426ff767766a169b3d561b7383878b3f60437797fdee3024069ffb063622",
+    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "e2a70e874c71c53fa4e04c7516329644260cae7631e6d09ecfe9c7bd4535a314",
+    "acceptanceScriptSha256": "35b1fa348fa5c6db793049cda565b9831c4bcd7c1e1cc3db3f83ba630b03e670",
+    "unitTestsSha256": "8ffb71f5c9d87e24a0e82abcf77530008b2cd16ff420c2af40a4cff611677d93",
     "fixture:marketing-math:sha256": "67537d08e40712a70e08e20a77417e36c95e083aa6af24317883d6a0fecf9648"
   }
 }

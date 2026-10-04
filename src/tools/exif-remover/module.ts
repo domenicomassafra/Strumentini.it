@@ -1,6 +1,6 @@
 import type { ToolModule } from "../../runtime/types";
-import { reencodeImageLocal } from "../../engines/image/visual-tools";
+import { stripImageMetadataLocal } from "../../engines/image/strip-metadata";
 
-const module: ToolModule = { run(input, _context, signal) { return reencodeImageLocal(input, signal); } };
+const module: ToolModule = { run(input, _context, signal) { return stripImageMetadataLocal(input, signal); } };
 
 export default module;

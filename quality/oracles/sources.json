@@ -3,118 +3,161 @@
   "generated_at": "2026-09-23",
   "sources": [
     {
-      "id": "strumentiutili-quality",
-      "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
-      "locator": "docs/07-tool-factory-quality-standard.md",
-      "supports": [
-        "Gold quality gate",
-        "independent oracle rule",
-        "maintenance classes"
-      ]
-    },
-    {
-      "id": "strumentiutili-lane05",
-      "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
-      "locator": "docs/architecture/lane-05-test-seams-and-acceptance.md",
-      "supports": [
-        "public behavior seams",
-        "Wave A oracle mapping",
-        "fixture dimensions"
-      ]
-    },
-    {
-      "id": "unicode-uax15",
+      "id": "apple-hig-app-icons",
       "source_class": "official-primary",
-      "authority": "Unicode Consortium",
-      "url": "https://www.unicode.org/reports/tr15/",
-      "locator": "UAX #15 Unicode Normalization Forms, revision 58 / Unicode 18.0.0",
+      "authority": "Apple",
+      "url": "https://developer.apple.com/design/human-interface-guidelines/app-icons",
+      "locator": "Apple Human Interface Guidelines — App icons",
       "supports": [
-        "NFC",
-        "NFD",
-        "NFKC",
-        "NFKD",
-        "normalization idempotence"
+        "1024×1024 master icon canvas from which the other icon sizes are derived"
+      ],
+      "checked_at": "2026-10-04"
+    },
+    {
+      "id": "bibtex-ctan",
+      "source_class": "official-primary",
+      "authority": "BibTeX / CTAN distribution",
+      "url": "https://www.ctan.org/tex-archive/biblio/bibtex/base/",
+      "locator": "BibTeX base distribution, btxdoc and xampl.bib",
+      "supports": [
+        "BibTeX syntax",
+        "standard entry types"
+      ],
+      "checked_at": "2026-09-23",
+      "notes": "StrumentiUtili.it fixtures are synthetic rather than copied from xampl.bib."
+    },
+    {
+      "id": "cipa-exif",
+      "source_class": "official-primary",
+      "authority": "CIPA",
+      "url": "https://www.cipa.jp/std/documents/e/DC-008-Translation-2023-E.pdf",
+      "locator": "Exif 3.0 / CIPA DC-008-Translation-2023",
+      "supports": [
+        "Exif metadata structure"
       ],
       "checked_at": "2026-09-23"
     },
     {
-      "id": "unicode-uax29",
+      "id": "commonmark",
       "source_class": "official-primary",
-      "authority": "Unicode Consortium",
-      "url": "https://www.unicode.org/reports/tr29/",
-      "locator": "UAX #29 Unicode Text Segmentation",
+      "authority": "CommonMark",
+      "url": "https://spec.commonmark.org/0.31.2/",
+      "locator": "CommonMark 0.31.2",
       "supports": [
-        "grapheme",
-        "word and sentence boundaries"
+        "Markdown parsing",
+        "raw HTML behavior"
       ],
       "checked_at": "2026-09-23"
     },
     {
-      "id": "unicode-uts39",
+      "id": "doi-handbook",
       "source_class": "official-primary",
-      "authority": "Unicode Consortium",
-      "url": "https://www.unicode.org/reports/tr39/",
-      "locator": "UTS #39 Unicode Security Mechanisms",
+      "authority": "DOI Foundation",
+      "url": "https://www.doi.org/doi-handbook/html/",
+      "locator": "DOI Handbook",
       "supports": [
-        "confusables",
-        "identifier security"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "whatwg-encoding",
-      "source_class": "official-primary",
-      "authority": "WHATWG",
-      "url": "https://encoding.spec.whatwg.org/",
-      "locator": "Encoding Standard",
-      "supports": [
-        "UTF-8",
-        "BOM",
-        "decoder behavior"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "whatwg-url",
-      "source_class": "official-primary",
-      "authority": "WHATWG",
-      "url": "https://url.spec.whatwg.org/",
-      "locator": "URL Living Standard, last updated 2026-09-10",
-      "supports": [
-        "URL parsing",
-        "serialization",
+        "DOI syntax",
+        "representation",
         "percent encoding",
-        "URLSearchParams",
-        "idempotence"
+        "case handling"
       ],
       "checked_at": "2026-09-23"
     },
     {
-      "id": "whatwg-html",
+      "id": "ecma262",
       "source_class": "official-primary",
-      "authority": "WHATWG",
-      "url": "https://html.spec.whatwg.org/",
-      "locator": "HTML Living Standard",
+      "authority": "Ecma TC39",
+      "url": "https://tc39.es/ecma262/",
+      "locator": "ECMAScript Language Specification",
       "supports": [
-        "named character references",
-        "HTML parsing"
+        "RegExp grammar and browser JavaScript semantics"
       ],
       "checked_at": "2026-09-23"
     },
     {
-      "id": "rfc4648",
-      "source_class": "official-primary",
-      "authority": "IETF / RFC Editor",
-      "url": "https://www.rfc-editor.org/rfc/rfc4648.html",
-      "locator": "RFC 4648, section 10 test vectors",
+      "id": "fixture-policy",
+      "source_class": "project-policy",
+      "authority": "StrumentiUtili.it",
+      "locator": "quality/fixtures/README.md",
       "supports": [
-        "Base64",
-        "Base32",
-        "Base16"
+        "hand-worked literal oracle policy",
+        "synthetic fixture provenance",
+        "no self-generated expected values"
+      ]
+    },
+    {
+      "id": "google-webp",
+      "source_class": "official-primary",
+      "authority": "Google",
+      "url": "https://developers.google.com/speed/webp/docs/riff_container",
+      "locator": "WebP Container Specification",
+      "supports": [
+        "RIFF/WEBP signature",
+        "chunks",
+        "dimensions",
+        "metadata"
       ],
       "checked_at": "2026-09-23"
+    },
+    {
+      "id": "iana-media-types",
+      "source_class": "official-primary",
+      "authority": "IANA",
+      "url": "https://www.iana.org/assignments/media-types/media-types.xhtml",
+      "locator": "Media Types registry",
+      "supports": [
+        "MIME types"
+      ],
+      "checked_at": "2026-09-23"
+    },
+    {
+      "id": "iana-tzdb",
+      "source_class": "official-primary",
+      "authority": "IANA",
+      "url": "https://www.iana.org/time-zones",
+      "locator": "IANA Time Zone Database",
+      "supports": [
+        "timezone identifiers",
+        "transitions"
+      ],
+      "checked_at": "2026-09-23"
+    },
+    {
+      "id": "isbn-manual",
+      "source_class": "official-primary",
+      "authority": "International ISBN Agency",
+      "url": "https://www.isbn-international.org/content/isbn-users-manual/29",
+      "locator": "ISBN Users Manual, 7th edition",
+      "supports": [
+        "ISBN-13",
+        "ISBN-10 legacy conversion",
+        "check digit"
+      ],
+      "checked_at": "2026-09-23"
+    },
+    {
+      "id": "iso-pdf2",
+      "source_class": "official-primary",
+      "authority": "ISO",
+      "url": "https://www.iso.org/standard/75839.html",
+      "locator": "ISO 32000-2:2020 PDF 2.0 metadata page, confirmed current in 2026",
+      "supports": [
+        "PDF format authority"
+      ],
+      "checked_at": "2026-09-23",
+      "notes": "Full normative standard is paid. Fixture claims are limited to observable signatures/structure unless a licensed parser/conformance source is added."
+    },
+    {
+      "id": "iso-qr-18004",
+      "source_class": "official-primary",
+      "authority": "ISO",
+      "url": "https://www.iso.org/standard/83389.html",
+      "locator": "ISO/IEC 18004:2024 metadata page",
+      "supports": [
+        "QR Code symbology authority"
+      ],
+      "checked_at": "2026-09-23",
+      "notes": "Full normative text is paywalled. StrumentiUtili.it does not fabricate unavailable vectors; Gold requires an independent decoder cross-check."
     },
     {
       "id": "nist-fips180-4",
@@ -143,88 +186,37 @@
       "checked_at": "2026-09-23"
     },
     {
-      "id": "rfc2104",
-      "source_class": "official-primary",
-      "authority": "IETF / RFC Editor",
-      "url": "https://www.rfc-editor.org/rfc/rfc2104.html",
-      "locator": "RFC 2104 HMAC",
+      "id": "openssl-cli",
+      "source_class": "independent-implementation",
+      "authority": "OpenSSL Project",
+      "url": "https://docs.openssl.org/master/man1/openssl-dgst/",
+      "locator": "openssl dgst CLI",
       "supports": [
-        "HMAC construction"
+        "hash and HMAC cross-check"
+      ]
+    },
+    {
+      "id": "owasp-xss",
+      "source_class": "official-primary",
+      "authority": "OWASP",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+      "locator": "XSS Prevention Cheat Sheet",
+      "supports": [
+        "untrusted HTML",
+        "sanitization",
+        "safe sinks"
       ],
       "checked_at": "2026-09-23"
     },
     {
-      "id": "rfc8259",
+      "id": "pkware-appnote",
       "source_class": "official-primary",
-      "authority": "IETF / RFC Editor",
-      "url": "https://www.rfc-editor.org/rfc/rfc8259.html",
-      "locator": "RFC 8259 JSON",
+      "authority": "PKWARE",
+      "url": "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
+      "locator": "APPNOTE.TXT ZIP File Format Specification",
       "supports": [
-        "JSON grammar",
-        "UTF-8 interoperability",
-        "duplicate-name caveat"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "yaml12",
-      "source_class": "official-primary",
-      "authority": "YAML Language Development Team",
-      "url": "https://yaml.org/spec/1.2.2/",
-      "locator": "YAML 1.2.2 specification",
-      "supports": [
-        "YAML grammar",
-        "scalars",
-        "anchors"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "toml10",
-      "source_class": "official-primary",
-      "authority": "TOML",
-      "url": "https://toml.io/en/v1.0.0",
-      "locator": "TOML v1.0.0 specification",
-      "supports": [
-        "TOML grammar",
-        "dates",
-        "tables"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "rfc7519",
-      "source_class": "official-primary",
-      "authority": "IETF / RFC Editor",
-      "url": "https://www.rfc-editor.org/rfc/rfc7519.html",
-      "locator": "RFC 7519 JSON Web Token",
-      "supports": [
-        "JWT structure",
-        "registered claims"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "rfc9562",
-      "source_class": "official-primary",
-      "authority": "IETF / RFC Editor",
-      "url": "https://www.rfc-editor.org/rfc/rfc9562.html",
-      "locator": "RFC 9562 UUIDs",
-      "supports": [
-        "UUID versions",
-        "variant bits",
-        "canonical textual form"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "ecma262",
-      "source_class": "official-primary",
-      "authority": "Ecma TC39",
-      "url": "https://tc39.es/ecma262/",
-      "locator": "ECMAScript Language Specification",
-      "supports": [
-        "RegExp grammar and browser JavaScript semantics"
+        "ZIP signatures",
+        "central directory"
       ],
       "checked_at": "2026-09-23"
     },
@@ -240,6 +232,33 @@
       "checked_at": "2026-09-23"
     },
     {
+      "id": "python-stdlib",
+      "source_class": "independent-implementation",
+      "authority": "CPython",
+      "url": "https://docs.python.org/3/library/",
+      "locator": "Python standard library used only as a secondary test implementation",
+      "supports": [
+        "csv",
+        "json",
+        "base64",
+        "hashlib",
+        "urllib",
+        "datetime",
+        "zoneinfo"
+      ]
+    },
+    {
+      "id": "rfc2104",
+      "source_class": "official-primary",
+      "authority": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc2104.html",
+      "locator": "RFC 2104 HMAC",
+      "supports": [
+        "HMAC construction"
+      ],
+      "checked_at": "2026-09-23"
+    },
+    {
       "id": "rfc3339",
       "source_class": "official-primary",
       "authority": "IETF / RFC Editor",
@@ -248,31 +267,6 @@
       "supports": [
         "date-time grammar",
         "UTC offsets"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "iana-tzdb",
-      "source_class": "official-primary",
-      "authority": "IANA",
-      "url": "https://www.iana.org/time-zones",
-      "locator": "IANA Time Zone Database",
-      "supports": [
-        "timezone identifiers",
-        "transitions"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "rfc5545",
-      "source_class": "official-primary",
-      "authority": "IETF / RFC Editor",
-      "url": "https://www.rfc-editor.org/rfc/rfc5545.html",
-      "locator": "RFC 5545 iCalendar",
-      "supports": [
-        "ICS content lines",
-        "folding",
-        "DATE-TIME"
       ],
       "checked_at": "2026-09-23"
     },
@@ -290,13 +284,64 @@
       "checked_at": "2026-09-23"
     },
     {
-      "id": "iana-media-types",
+      "id": "rfc4648",
       "source_class": "official-primary",
-      "authority": "IANA",
-      "url": "https://www.iana.org/assignments/media-types/media-types.xhtml",
-      "locator": "Media Types registry",
+      "authority": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc4648.html",
+      "locator": "RFC 4648, section 10 test vectors",
       "supports": [
-        "MIME types"
+        "Base64",
+        "Base32",
+        "Base16"
+      ],
+      "checked_at": "2026-09-23"
+    },
+    {
+      "id": "rfc5322",
+      "source_class": "official-primary",
+      "authority": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc5322.html",
+      "locator": "RFC 5322 Internet Message Format",
+      "supports": [
+        "addr-spec syntax"
+      ],
+      "checked_at": "2026-09-23"
+    },
+    {
+      "id": "rfc5545",
+      "source_class": "official-primary",
+      "authority": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc5545.html",
+      "locator": "RFC 5545 iCalendar",
+      "supports": [
+        "ICS content lines",
+        "folding",
+        "DATE-TIME"
+      ],
+      "checked_at": "2026-09-23"
+    },
+    {
+      "id": "rfc7519",
+      "source_class": "official-primary",
+      "authority": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc7519.html",
+      "locator": "RFC 7519 JSON Web Token",
+      "supports": [
+        "JWT structure",
+        "registered claims"
+      ],
+      "checked_at": "2026-09-23"
+    },
+    {
+      "id": "rfc8259",
+      "source_class": "official-primary",
+      "authority": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+      "locator": "RFC 8259 JSON",
+      "supports": [
+        "JSON grammar",
+        "UTF-8 interoperability",
+        "duplicate-name caveat"
       ],
       "checked_at": "2026-09-23"
     },
@@ -324,52 +369,174 @@
       "checked_at": "2026-09-23"
     },
     {
-      "id": "rfc5322",
+      "id": "rfc9562",
       "source_class": "official-primary",
       "authority": "IETF / RFC Editor",
-      "url": "https://www.rfc-editor.org/rfc/rfc5322.html",
-      "locator": "RFC 5322 Internet Message Format",
+      "url": "https://www.rfc-editor.org/rfc/rfc9562.html",
+      "locator": "RFC 9562 UUIDs",
       "supports": [
-        "addr-spec syntax"
+        "UUID versions",
+        "variant bits",
+        "canonical textual form"
       ],
       "checked_at": "2026-09-23"
     },
     {
-      "id": "commonmark",
-      "source_class": "official-primary",
-      "authority": "CommonMark",
-      "url": "https://spec.commonmark.org/0.31.2/",
-      "locator": "CommonMark 0.31.2",
+      "id": "ris-policy",
+      "source_class": "project-policy",
+      "authority": "StrumentiUtili.it",
+      "locator": "research/lanes/08-gold-oracle-factory.md",
       "supports": [
-        "Markdown parsing",
-        "raw HTML behavior"
+        "RIS minimal tagged-record policy"
+      ],
+      "notes": "RIS vendor lineage has uneven freely accessible normative documentation. Use synthetic records plus independent parser cross-check."
+    },
+    {
+      "id": "search-engine-listing-guidance",
+      "source_class": "official-primary",
+      "authority": "Google Search Central",
+      "url": "https://developers.google.com/search/docs/appearance/title-link",
+      "locator": "Google Search Central — title link documentation, including the guidance on title and meta description length",
+      "supports": [
+        "reference length for a search listing title",
+        "reference length for a search listing description",
+        "truncation behaviour rather than rejection when a field is too long"
+      ],
+      "checked_at": "2026-10-04",
+      "notes": "The published lengths are guidance for editors, not a normative limit; the tool therefore states them as a reference and lets a reader override both numbers."
+    },
+    {
+      "id": "strumentiutili-file-privacy-fixtures",
+      "source_class": "project-policy",
+      "authority": "StrumentiUtili.it",
+      "locator": "quality/fixtures/metadata-risk-scan/vectors.json",
+      "supports": [
+        "bounded metadata-scan policy",
+        "JPEG/PNG/PDF container coverage",
+        "risk marker taxonomy"
+      ]
+    },
+    {
+      "id": "strumentiutili-holiday-calendar",
+      "source_class": "project-policy",
+      "authority": "StrumentiUtili.it",
+      "locator": "quality/fixtures/holiday-calendar/vectors.json",
+      "supports": [
+        "embedded holiday table and substitute-day policy",
+        "per-country statutory flag",
+        "hand-worked published calendars"
+      ]
+    },
+    {
+      "id": "strumentiutili-lane05",
+      "source_class": "project-policy",
+      "authority": "StrumentiUtili.it",
+      "locator": "docs/architecture/lane-05-test-seams-and-acceptance.md",
+      "supports": [
+        "public behavior seams",
+        "Wave A oracle mapping",
+        "fixture dimensions"
+      ]
+    },
+    {
+      "id": "strumentiutili-local-jobs-fixtures",
+      "source_class": "project-policy",
+      "authority": "StrumentiUtili.it",
+      "locator": "quality/fixtures/text-writing-local-jobs/vectors.json",
+      "supports": [
+        "reading-rate bounds and rounding policy",
+        "typographic quote policy",
+        "sample-data determinism policy",
+        "script counting policy"
+      ]
+    },
+    {
+      "id": "strumentiutili-quality",
+      "source_class": "project-policy",
+      "authority": "StrumentiUtili.it",
+      "locator": "docs/07-tool-factory-quality-standard.md",
+      "supports": [
+        "Gold quality gate",
+        "independent oracle rule",
+        "maintenance classes"
+      ]
+    },
+    {
+      "id": "the-open-graph-protocol",
+      "source_class": "official-primary",
+      "authority": "Open Graph protocol",
+      "url": "https://ogp.me/",
+      "locator": "The Open Graph protocol — ogp.me, basic metadata",
+      "supports": [
+        "required and optional Open Graph properties",
+        "relative URL resolution against a page URL",
+        "image structured properties (og:image, og:image:secure_url, og:image:width, og:image:height)"
+      ],
+      "checked_at": "2026-10-04",
+      "notes": "The declared image sizes in the protocol are advisory, not binding, so a malformed declared width or height is reported as a warning rather than treated as a failure."
+    },
+    {
+      "id": "toml10",
+      "source_class": "official-primary",
+      "authority": "TOML",
+      "url": "https://toml.io/en/v1.0.0",
+      "locator": "TOML v1.0.0 specification",
+      "supports": [
+        "TOML grammar",
+        "dates",
+        "tables"
       ],
       "checked_at": "2026-09-23"
     },
     {
-      "id": "owasp-xss",
+      "id": "unicode-uax15",
       "source_class": "official-primary",
-      "authority": "OWASP",
-      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
-      "locator": "XSS Prevention Cheat Sheet",
+      "authority": "Unicode Consortium",
+      "url": "https://www.unicode.org/reports/tr15/",
+      "locator": "UAX #15 Unicode Normalization Forms, revision 58 / Unicode 18.0.0",
       "supports": [
-        "untrusted HTML",
-        "sanitization",
-        "safe sinks"
+        "NFC",
+        "NFD",
+        "NFKC",
+        "NFKD",
+        "normalization idempotence"
       ],
       "checked_at": "2026-09-23"
     },
     {
-      "id": "iso-qr-18004",
+      "id": "unicode-uax24",
       "source_class": "official-primary",
-      "authority": "ISO",
-      "url": "https://www.iso.org/standard/83389.html",
-      "locator": "ISO/IEC 18004:2024 metadata page",
+      "authority": "Unicode Standard Annex #24, Unicode Script property of characters",
+      "locator": "Script property of characters, revision for Unicode 16.0/17.0",
+      "url": "https://www.unicode.org/reports/tr24/",
       "supports": [
-        "QR Code symbology authority"
+        "script classification used by the text statistics tool",
+        "the declared script ranges cross-check"
+      ]
+    },
+    {
+      "id": "unicode-uax29",
+      "source_class": "official-primary",
+      "authority": "Unicode Consortium",
+      "url": "https://www.unicode.org/reports/tr29/",
+      "locator": "UAX #29 Unicode Text Segmentation",
+      "supports": [
+        "grapheme",
+        "word and sentence boundaries"
       ],
-      "checked_at": "2026-09-23",
-      "notes": "Full normative text is paywalled. StrumentiUtili.it does not fabricate unavailable vectors; Gold requires an independent decoder cross-check."
+      "checked_at": "2026-09-23"
+    },
+    {
+      "id": "unicode-uts39",
+      "source_class": "official-primary",
+      "authority": "Unicode Consortium",
+      "url": "https://www.unicode.org/reports/tr39/",
+      "locator": "UTS #39 Unicode Security Mechanisms",
+      "supports": [
+        "confusables",
+        "identifier security"
+      ],
+      "checked_at": "2026-09-23"
     },
     {
       "id": "w3c-png3",
@@ -387,31 +554,6 @@
       "checked_at": "2026-09-23"
     },
     {
-      "id": "google-webp",
-      "source_class": "official-primary",
-      "authority": "Google",
-      "url": "https://developers.google.com/speed/webp/docs/riff_container",
-      "locator": "WebP Container Specification",
-      "supports": [
-        "RIFF/WEBP signature",
-        "chunks",
-        "dimensions",
-        "metadata"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "cipa-exif",
-      "source_class": "official-primary",
-      "authority": "CIPA",
-      "url": "https://www.cipa.jp/std/documents/e/DC-008-Translation-2023-E.pdf",
-      "locator": "Exif 3.0 / CIPA DC-008-Translation-2023",
-      "supports": [
-        "Exif metadata structure"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
       "id": "w3c-wcag22",
       "source_class": "official-primary",
       "authority": "W3C",
@@ -424,115 +566,44 @@
       "checked_at": "2026-09-23"
     },
     {
-      "id": "iso-pdf2",
+      "id": "whatwg-encoding",
       "source_class": "official-primary",
-      "authority": "ISO",
-      "url": "https://www.iso.org/standard/75839.html",
-      "locator": "ISO 32000-2:2020 PDF 2.0 metadata page, confirmed current in 2026",
+      "authority": "WHATWG",
+      "url": "https://encoding.spec.whatwg.org/",
+      "locator": "Encoding Standard",
       "supports": [
-        "PDF format authority"
-      ],
-      "checked_at": "2026-09-23",
-      "notes": "Full normative standard is paid. Fixture claims are limited to observable signatures/structure unless a licensed parser/conformance source is added."
-    },
-    {
-      "id": "pkware-appnote",
-      "source_class": "official-primary",
-      "authority": "PKWARE",
-      "url": "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
-      "locator": "APPNOTE.TXT ZIP File Format Specification",
-      "supports": [
-        "ZIP signatures",
-        "central directory"
+        "UTF-8",
+        "BOM",
+        "decoder behavior"
       ],
       "checked_at": "2026-09-23"
     },
     {
-      "id": "doi-handbook",
+      "id": "whatwg-html",
       "source_class": "official-primary",
-      "authority": "DOI Foundation",
-      "url": "https://www.doi.org/doi-handbook/html/",
-      "locator": "DOI Handbook",
+      "authority": "WHATWG",
+      "url": "https://html.spec.whatwg.org/",
+      "locator": "HTML Living Standard",
       "supports": [
-        "DOI syntax",
-        "representation",
+        "named character references",
+        "HTML parsing"
+      ],
+      "checked_at": "2026-09-23"
+    },
+    {
+      "id": "whatwg-url",
+      "source_class": "official-primary",
+      "authority": "WHATWG",
+      "url": "https://url.spec.whatwg.org/",
+      "locator": "URL Living Standard, last updated 2026-09-10",
+      "supports": [
+        "URL parsing",
+        "serialization",
         "percent encoding",
-        "case handling"
+        "URLSearchParams",
+        "idempotence"
       ],
       "checked_at": "2026-09-23"
-    },
-    {
-      "id": "isbn-manual",
-      "source_class": "official-primary",
-      "authority": "International ISBN Agency",
-      "url": "https://www.isbn-international.org/content/isbn-users-manual/29",
-      "locator": "ISBN Users Manual, 7th edition",
-      "supports": [
-        "ISBN-13",
-        "ISBN-10 legacy conversion",
-        "check digit"
-      ],
-      "checked_at": "2026-09-23"
-    },
-    {
-      "id": "bibtex-ctan",
-      "source_class": "official-primary",
-      "authority": "BibTeX / CTAN distribution",
-      "url": "https://www.ctan.org/tex-archive/biblio/bibtex/base/",
-      "locator": "BibTeX base distribution, btxdoc and xampl.bib",
-      "supports": [
-        "BibTeX syntax",
-        "standard entry types"
-      ],
-      "checked_at": "2026-09-23",
-      "notes": "StrumentiUtili.it fixtures are synthetic rather than copied from xampl.bib."
-    },
-    {
-      "id": "fixture-policy",
-      "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
-      "locator": "quality/fixtures/README.md",
-      "supports": [
-        "hand-worked literal oracle policy",
-        "synthetic fixture provenance",
-        "no self-generated expected values"
-      ]
-    },
-    {
-      "id": "ris-policy",
-      "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
-      "locator": "research/lanes/08-gold-oracle-factory.md",
-      "supports": [
-        "RIS minimal tagged-record policy"
-      ],
-      "notes": "RIS vendor lineage has uneven freely accessible normative documentation. Use synthetic records plus independent parser cross-check."
-    },
-    {
-      "id": "python-stdlib",
-      "source_class": "independent-implementation",
-      "authority": "CPython",
-      "url": "https://docs.python.org/3/library/",
-      "locator": "Python standard library used only as a secondary test implementation",
-      "supports": [
-        "csv",
-        "json",
-        "base64",
-        "hashlib",
-        "urllib",
-        "datetime",
-        "zoneinfo"
-      ]
-    },
-    {
-      "id": "openssl-cli",
-      "source_class": "independent-implementation",
-      "authority": "OpenSSL Project",
-      "url": "https://docs.openssl.org/master/man1/openssl-dgst/",
-      "locator": "openssl dgst CLI",
-      "supports": [
-        "hash and HMAC cross-check"
-      ]
     },
     {
       "id": "wpt-url",
@@ -545,49 +616,31 @@
       ]
     },
     {
-      "id": "unicode-uax24",
+      "id": "x-counting-characters",
       "source_class": "official-primary",
-      "authority": "Unicode Standard Annex #24, Unicode Script property of characters",
-      "locator": "Script property of characters, revision for Unicode 16.0/17.0",
-      "url": "https://www.unicode.org/reports/tr24/",
+      "authority": "X",
+      "url": "https://help.x.com/en/using-x/counting-characters",
+      "locator": "X Help Center — Counting characters",
       "supports": [
-        "script classification used by the text statistics tool",
-        "the declared script ranges cross-check"
-      ]
+        "post length limit for standard accounts",
+        "weighted character count: CJK ranges count double",
+        "fixed weight of 23 characters for a detected link"
+      ],
+      "checked_at": "2026-10-04",
+      "notes": "The only platform in this catalogue that publishes a counting rule other than plain code points, so it is implemented separately and reported as a second number rather than replacing the code-point count."
     },
     {
-      "id": "strumentiutili-holiday-calendar",
-      "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
-      "locator": "quality/fixtures/holiday-calendar/vectors.json",
+      "id": "yaml12",
+      "source_class": "official-primary",
+      "authority": "YAML Language Development Team",
+      "url": "https://yaml.org/spec/1.2.2/",
+      "locator": "YAML 1.2.2 specification",
       "supports": [
-        "embedded holiday table and substitute-day policy",
-        "per-country statutory flag",
-        "hand-worked published calendars"
-      ]
-    },
-    {
-      "id": "strumentiutili-local-jobs-fixtures",
-      "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
-      "locator": "quality/fixtures/text-writing-local-jobs/vectors.json",
-      "supports": [
-        "reading-rate bounds and rounding policy",
-        "typographic quote policy",
-        "sample-data determinism policy",
-        "script counting policy"
-      ]
-    },
-    {
-      "id": "strumentiutili-file-privacy-fixtures",
-      "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
-      "locator": "quality/fixtures/metadata-risk-scan/vectors.json",
-      "supports": [
-        "bounded metadata-scan policy",
-        "JPEG/PNG/PDF container coverage",
-        "risk marker taxonomy"
-      ]
+        "YAML grammar",
+        "scalars",
+        "anchors"
+      ],
+      "checked_at": "2026-09-23"
     }
   ]
 }

@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "provenance": "Synthetic PNG and JPEG files assembled from the container rules of their own specifications. The PNG files carry pixel data copied from the existing synthetic 1x1 RGB fixture so a browser can actually decode them; the ancillary chunks, which are what the fixture is about, are authored here. The EXIF payload is a minimal IFD0 with a synthetic Make tag and no real device, author or location data.",
+  "oracle": "Segment presence and absence are decided by walking the container structure byte by byte (JPEG marker segments, PNG chunk types, WebP RIFF chunk types). Nothing is inferred from the file extension. The expected segment list and byte counts were confirmed by a second, independently written container walker (a separate program, not a call into the engine). The expected segment list and byte counts were confirmed by a second, independently written container walker (a separate program, not a call into the engine).",
+  "artifacts": [
+    {
+      "path": "quality/fixtures/image-metadata-segments/with-text.png",
+      "format": "png",
+      "width": 1,
+      "height": 1,
+      "segments": [
+        {
+          "segment": "PNG tEXt",
+          "carrier": "text",
+          "bytes": 35
+        },
+        {
+          "segment": "PNG tIME",
+          "carrier": "timestamp",
+          "bytes": 19
+        }
+      ],
+      "privacy_segment_count": 0
+    },
+    {
+      "path": "quality/fixtures/image-metadata-segments/with-exif.png",
+      "format": "png",
+      "width": 1,
+      "height": 1,
+      "segments": [
+        {
+          "segment": "PNG eXIf",
+          "carrier": "exif",
+          "bytes": 52
+        },
+        {
+          "segment": "PNG tEXt",
+          "carrier": "text",
+          "bytes": 37
+        }
+      ],
+      "privacy_segment_count": 1
+    },
+    {
+      "path": "quality/fixtures/image-metadata-segments/clean.png",
+      "format": "png",
+      "width": 1,
+      "height": 1,
+      "segments": [],
+      "privacy_segment_count": 0
+    },
+    {
+      "path": "quality/fixtures/image-metadata-segments/exif-app1.jpg",
+      "format": "jpeg",
+      "width": 1,
+      "height": 1,
+      "segments": [
+        {
+          "segment": "JPEG APP1",
+          "carrier": "exif",
+          "bytes": 50
+        },
+        {
+          "segment": "JPEG COM",
+          "carrier": "comment",
+          "bytes": 21
+        }
+      ],
+      "privacy_segment_count": 2
+    },
+    {
+      "path": "quality/fixtures/image-metadata-segments/xmp-app1.jpg",
+      "format": "jpeg",
+      "width": 1,
+      "height": 1,
+      "segments": [
+        {
+          "segment": "JPEG APP1 XMP",
+          "carrier": "xmp",
+          "bytes": 45
+        }
+      ],
+      "privacy_segment_count": 1
+    },
+    {
+      "path": "quality/fixtures/image-metadata-segments/iptc-app13.jpg",
+      "format": "jpeg",
+      "width": 1,
+      "height": 1,
+      "segments": [
+        {
+          "segment": "JPEG APP13",
+          "carrier": "iptc",
+          "bytes": 30
+        }
+      ],
+      "privacy_segment_count": 1
+    },
+    {
+      "path": "quality/fixtures/image-metadata-segments/truncated.png",
+      "format": "png",
+      "segments": null,
+      "complete": false,
+      "reason": "chunk length runs past the end of the file",
+      "width": 1,
+      "height": 1
+    },
+    {
+      "path": "quality/fixtures/image-metadata-segments/not-an-image.bin",
+      "format": "unknown",
+      "segments": [],
+      "complete": false,
+      "reason": "no PNG signature, no JPEG SOI, no RIFF/WEBP header",
+      "width": 1,
+      "height": 1
+    }
+  ],
+  "rejected_inputs": [
+    {
+      "name": "file vuoto",
+      "bytes_hex": "",
+      "expected_format": "unknown",
+      "expected_complete": false
+    },
+    {
+      "name": "solo la firma PNG",
+      "bytes_hex": "89504e470d0a1a0a",
+      "expected_format": "png",
+      "expected_complete": false
+    },
+    {
+      "name": "firma PNG con IHDR troncato",
+      "bytes_hex": "89504e470d0a1a0a0000000b49484452",
+      "expected_format": "png",
+      "expected_complete": false
+    },
+    {
+      "name": "JPEG senza SOI",
+      "bytes_hex": "0102030405",
+      "expected_format": "unknown",
+      "expected_complete": false
+    }
+  ],
+  "decodeable": {
+    "png": [
+      "with-text.png",
+      "with-exif.png",
+      "clean.png"
+    ],
+    "jpeg": [],
+    "jpeg_note": "The JPEG artifacts exist for the byte-level segment walk: their entropy-coded scan data is a placeholder, so a browser cannot decode them. The metadata-removal claim is exercised on the PNG artifacts, which are real images."
+  }
+}

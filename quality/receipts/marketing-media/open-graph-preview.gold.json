@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
+  "toolId": "open-graph-preview",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "url-marketing",
+  "oracleEntryId": "cand-071",
+  "fixtureFamilies": [
+    "url-security",
+    "html-entities"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "owasp-xss",
+    "strumentiutili-quality",
+    "whatwg-html",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "url-security",
+      "path": "quality/fixtures/url-security/vectors.json"
+    },
+    {
+      "id": "html-entities",
+      "path": "quality/fixtures/html-entities/vectors.json"
+    }
+  ],
+  "oracleCondition": {
+    "confidence": "medium",
+    "unresolvedGap": "Product/data/platform policy can drift; bind an exact source/version before Gold.",
+    "resolution": "bound in the tool itself and asserted against the value the engine returns: the protocol followed is named with its verification date",
+    "boundSources": [
+      {
+        "source": "The Open Graph protocol (ogp.me) — basic metadata",
+        "verifiedOn": "2026-09-23"
+      }
+    ]
+  },
+  "browserContract": {
+    "assertions": [
+      "greater-than inside an attribute survives and the relative URL is named"
+    ],
+    "outputSha256": [
+      "8e253b4f5381abf2127387b38fc5d433ef15d475a44bd1e81a791c7e8f144c16"
+    ],
+    "locality": "zero external, non-GET or task-body requests after task start",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabelled interactive form control"
+  },
+  "toolInvariants": {
+    "invariants": [
+      "the tag scanner is attribute-aware, so a > inside a quoted value cannot truncate a tag",
+      "a non-HTTP URL is refused and never resolved",
+      "a relative URL is only made absolute against a named placeholder host"
+    ],
+    "observed": {
+      "titleFromAngleBracket": "a > b",
+      "relativeBase": "https://relative.invalid/",
+      "unsafeImage": null
+    }
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "every published number the tool states names its source and verification date",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance",
+    "the tag scanner is attribute-aware, so a > inside a quoted value cannot truncate a tag",
+    "a non-HTTP URL is refused and never resolved",
+    "a relative URL is only made absolute against a named placeholder host"
+  ],
+  "identities": {
+    "manifestSha256": "bac1c69b2f1ad6d76bd729cf5df643e51d4ef55d40ca474a36442cd961ace20e",
+    "moduleSha256": "1f3d9c994f2cb9ff3a8842655bd7ca193a6d22fa98d2076f9fc223f38ee06373",
+    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "4aa9763fff934f0bd6d9058378c49c1ccb2b3f1bad7116a1dd78b7bea18f8092",
+    "acceptanceScriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
+    "unitTestsSha256": "8ffb71f5c9d87e24a0e82abcf77530008b2cd16ff420c2af40a4cff611677d93",
+    "fixture:url-security:sha256": "498535dca23ff3fe69902dde2024e33f1f5900cd34ccc39b6079e06fb06c0a0e",
+    "fixture:html-entities:sha256": "962bb9d74fe17e1a053bcddd1b84ca44552cadb9681ca130c12efb5ad9f81851"
+  }
+}

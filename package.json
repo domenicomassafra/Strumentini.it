@@ -48,7 +48,10 @@
     "release:validate:require-ready": "npm test && npm run check && npm run build && npm run catalog:check && npm run deploy:check && tsx scripts/validate-release.ts --require-ready",
     "verify:ticket-01": "npm test && npm run check && npm run build && npm run catalog:check && npm run gold:business-day && npm run gold:sabotage && npm run acceptance:browser && npm run deploy:check",
     "acceptance:local-jobs": "node scripts/acceptance-local-jobs.mjs",
-    "gold:local-jobs": "tsx scripts/gold/local-jobs-certify.ts"
+    "gold:local-jobs": "tsx scripts/gold/local-jobs-certify.ts",
+    "fixtures:metadata-segments": "tsx scripts/generate-metadata-segment-fixtures.ts",
+    "acceptance:marketing-media": "npm run build && node scripts/acceptance-marketing-media.mjs",
+    "gold:marketing-media": "npm run catalog:build && tsx scripts/gold/marketing-media-certify.ts"
   },
   "dependencies": {
     "@astrojs/preact": "6.0.5",

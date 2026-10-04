@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "status": "GOLD",
   "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
-  "sourceFingerprint": "9e52b76be27890a30dfe80a627ae67acf0a97e40532f97d68668ffc2aa21c90d",
+  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
   "toolId": "csv-cleaner",
   "runtime": {
     "location": "LOCAL",

@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "provenance": "Hand-worked arithmetic over the published canvas sizes named in each preset's `source`. The crop, contain and scale results are computed from the two ratios with integer rounding, so every expectation below can be checked with a calculator rather than read back from the implementation. Offsets are rounded half up, the rule JavaScript's Math.round applies, so an odd leftover pixel lands on the right-hand or bottom edge.",
+  "source_binding": "Each preset names the platform guidance page that publishes the canvas, and the date it was last checked against it. The values are published recommendations, not contractual requirements, and they change.",
+  "rules": {
+    "contain": "the largest box with the source ratio that fits inside the canvas: scale = min(canvasWidth/sourceWidth, canvasHeight/sourceHeight)",
+    "cover_crop": "the largest box with the canvas ratio that fits inside the source, centred: scale = min(sourceWidth/canvasWidth, sourceHeight/canvasHeight)",
+    "cropped_fraction": "1 − (cropWidth × cropHeight) / (sourceWidth × sourceHeight)",
+    "fit": "same-ratio when the two ratios differ by less than 0.5%; crop-needed when the source is wider; pad-needed when the source is taller",
+    "upscale_factor": "max(1, canvasWidth / min(sourceWidth, cropWidth)), rounded to two decimals"
+  },
+  "vectors": [
+    {
+      "name": "stesso rapporto 16:9",
+      "preset_id": "open-graph",
+      "source_width": 1920,
+      "source_height": 1080,
+      "contain": {
+        "width": 1120,
+        "height": 630
+      },
+      "cover_crop": {
+        "width": 1920,
+        "height": 1008,
+        "x": 0,
+        "y": 36
+      },
+      "cropped_fraction": 0.0667,
+      "cover_scale": 1.6,
+      "fit": "pad-needed",
+      "meets_resolution": true,
+      "upscale_factor": 1,
+      "source_ratio": "16:9",
+      "preset_ratio": "40:21"
+    },
+    {
+      "name": "esattamente il riquadro",
+      "preset_id": "instagram-square",
+      "source_width": 1080,
+      "source_height": 1080,
+      "contain": {
+        "width": 1080,
+        "height": 1080
+      },
+      "cover_crop": {
+        "width": 1080,
+        "height": 1080,
+        "x": 0,
+        "y": 0
+      },
+      "cropped_fraction": 0.0,
+      "cover_scale": 1.0,
+      "fit": "same-ratio",
+      "meets_resolution": true,
+      "upscale_factor": 1,
+      "source_ratio": "1:1",
+      "preset_ratio": "1:1"
+    },
+    {
+      "name": "verticale in un quadrato: serve il ritaglio",
+      "preset_id": "instagram-square",
+      "source_width": 1080,
+      "source_height": 1350,
+      "contain": {
+        "width": 864,
+        "height": 1080
+      },
+      "cover_crop": {
+        "width": 1080,
+        "height": 1080,
+        "x": 0,
+        "y": 135
+      },
+      "cropped_fraction": 0.2,
+      "cover_scale": 1.0,
+      "fit": "pad-needed",
+      "meets_resolution": true,
+      "upscale_factor": 1,
+      "source_ratio": "4:5",
+      "preset_ratio": "1:1"
+    },
+    {
+      "name": "orizzontale in una storia: servono bande",
+      "preset_id": "instagram-story",
+      "source_width": 1920,
+      "source_height": 1080,
+      "contain": {
+        "width": 1080,
+        "height": 608
+      },
+      "cover_crop": {
+        "width": 608,
+        "height": 1080,
+        "x": 656,
+        "y": 0
+      },
+      "cropped_fraction": 0.6833,
+      "cover_scale": 0.563,
+      "fit": "crop-needed",
+      "meets_resolution": false,
+      "upscale_factor": 1.78,
+      "source_ratio": "16:9",
+      "preset_ratio": "9:16"
+    },
+    {
+      "name": "sotto risoluzione: serve ingrandimento",
+      "preset_id": "youtube-thumbnail",
+      "source_width": 640,
+      "source_height": 360,
+      "contain": {
+        "width": 1280,
+        "height": 720
+      },
+      "cover_crop": {
+        "width": 640,
+        "height": 360,
+        "x": 0,
+        "y": 0
+      },
+      "cropped_fraction": 0.0,
+      "cover_scale": 0.5,
+      "fit": "same-ratio",
+      "meets_resolution": false,
+      "upscale_factor": 2.0,
+      "source_ratio": "16:9",
+      "preset_ratio": "16:9"
+    },
+    {
+      "name": "ritaglio con ingrandimento combinato",
+      "preset_id": "x-landscape",
+      "source_width": 900,
+      "source_height": 900,
+      "contain": {
+        "width": 900,
+        "height": 900
+      },
+      "cover_crop": {
+        "width": 900,
+        "height": 506,
+        "x": 0,
+        "y": 197
+      },
+      "cropped_fraction": 0.4378,
+      "cover_scale": 0.5625,
+      "fit": "pad-needed",
+      "meets_resolution": false,
+      "upscale_factor": 1.78,
+      "source_ratio": "1:1",
+      "preset_ratio": "16:9"
+    },
+    {
+      "name": "un pixel oltre il lato largo",
+      "preset_id": "linkedin-landscape",
+      "source_width": 1201,
+      "source_height": 627,
+      "contain": {
+        "width": 1200,
+        "height": 626
+      },
+      "cover_crop": {
+        "width": 1200,
+        "height": 627,
+        "x": 1,
+        "y": 0
+      },
+      "cropped_fraction": 0.0008,
+      "cover_scale": 1.0,
+      "fit": "same-ratio",
+      "meets_resolution": true,
+      "upscale_factor": 1,
+      "source_ratio": "1,915:1",
+      "preset_ratio": "1,914:1"
+    },
+    {
+      "name": "molto più stretto del riquadro",
+      "preset_id": "mastodon-header",
+      "source_width": 400,
+      "source_height": 400,
+      "contain": {
+        "width": 500,
+        "height": 500
+      },
+      "cover_crop": {
+        "width": 400,
+        "height": 133,
+        "x": 0,
+        "y": 134
+      },
+      "cropped_fraction": 0.6675,
+      "cover_scale": 0.2667,
+      "fit": "pad-needed",
+      "meets_resolution": false,
+      "upscale_factor": 3.75,
+      "source_ratio": "1:1",
+      "preset_ratio": "3:1"
+    }
+  ],
+  "rejections": [
+    {
+      "name": "larghezza zero",
+      "preset_id": "instagram-square",
+      "width": 0,
+      "height": 100
+    },
+    {
+      "name": "altezza negativa",
+      "preset_id": "instagram-square",
+      "width": 100,
+      "height": -1
+    },
+    {
+      "name": "larghezza decimale",
+      "preset_id": "instagram-square",
+      "width": 100.5,
+      "height": 100
+    },
+    {
+      "name": "piattaforma sconosciuta",
+      "preset_id": "my-space",
+      "width": 100,
+      "height": 100
+    },
+    {
+      "name": "piattaforma assente",
+      "width": 100,
+      "height": 100
+    }
+  ]
+}

@@ -230,7 +230,7 @@ const familyTestFiles: Readonly<Record<string, readonly string[]>> = {
   "developer-web": ["tests/developer-web-engine.test.ts"],
   "url-marketing": ["tests/url-marketing-tools.test.ts"],
   "marketing-math": ["tests/url-marketing-tools.test.ts"],
-  "qr-local": ["tests/url-marketing-tools.test.ts"],
+  "qr-local": ["tests/qr-local-engine.test.ts"],
   "date-time": ["tests/date-time-engine.test.ts", "tests/date-time-modules.test.ts"],
   "business-math": ["tests/business-tools.test.ts"],
   "client-time-math": ["tests/business-tools.test.ts", "tests/client-time-math-engine.test.ts"],
@@ -296,6 +296,23 @@ const localJobsEvidence = {
   lazyLoad: ["quality/receipts/local-jobs/browser-acceptance.json"],
 } as const;
 
+const marketingMediaEvidence = {
+  locality: ["quality/receipts/marketing-media/browser-acceptance.json"],
+  mobileA11y: ["quality/receipts/marketing-media/browser-acceptance.json"],
+  lazyLoad: ["quality/receipts/marketing-media/browser-acceptance.json"],
+} as const;
+
+const marketingMediaToolIds = [
+  "exif-remover",
+  "meta-preview",
+  "open-graph-preview",
+  "platform-size-presets",
+  "qr-generator",
+  "qr-reader",
+  "social-character-limit",
+  "url-comparison",
+] as const;
+
 const expandedLocalEvidence = {
   locality: ["quality/receipts/expanded-local/browser-acceptance.json"],
   mobileA11y: ["quality/receipts/expanded-local/browser-acceptance.json"],
@@ -356,6 +373,7 @@ const expandedLocalToolIds = [
 
 const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimension, readonly string[]>>>> = {
   ...Object.fromEntries(expandedLocalToolIds.map((toolId) => [toolId, expandedLocalEvidence])),
+  ...Object.fromEntries(marketingMediaToolIds.map((toolId) => [toolId, marketingMediaEvidence])),
   "bibtex-deduplicator": researchKnowledgeEvidence,
   "bibtex-formatter": researchKnowledgeEvidence,
   "citation-deduplicator": researchKnowledgeEvidence,

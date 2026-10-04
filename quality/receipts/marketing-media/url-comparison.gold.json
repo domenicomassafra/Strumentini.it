@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
+  "toolId": "url-comparison",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "url-marketing",
+  "oracleEntryId": "cand-064",
+  "fixtureFamilies": [
+    "query-params",
+    "url-security"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "owasp-xss",
+    "strumentiutili-quality",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "query-params",
+      "path": "quality/fixtures/query-params/vectors.json"
+    },
+    {
+      "id": "url-security",
+      "path": "quality/fixtures/url-security/vectors.json"
+    }
+  ],
+  "oracleCondition": {
+    "confidence": "medium",
+    "unresolvedGap": "No single freely accessible normative RIS authority is treated as canonical; preserve unknown tags and require parser cross-check.",
+    "resolution": "cross-checked against an independently written oracle and attributed in the result: the URL standard's own normalisation rules are the cross-check, every unknown encoding is preserved verbatim, and the result says which standard it follows",
+    "boundSources": [
+      {
+        "source": "WHATWG URL Standard — parsing and serialisation",
+        "verifiedOn": "2026-09-23"
+      }
+    ]
+  },
+  "browserContract": {
+    "assertions": [
+      "both normalised forms shown and reported equal"
+    ],
+    "outputSha256": [
+      "be724770ec687d9fb3503e87cb677238fb746b3a2665b7884fbe1ca125bf4cad"
+    ],
+    "locality": "zero external, non-GET or task-body requests after task start",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabelled interactive form control"
+  },
+  "toolInvariants": {
+    "invariants": [
+      "percent-encoding in a query is preserved verbatim, so %20 and + are not conflated",
+      "parameter order is normalised without rewriting the encoded text",
+      "the standard the normalisation follows is named in the result"
+    ],
+    "observed": {
+      "percentEncodingTreatedAsEqual": false,
+      "parameterOrderNormalised": true
+    }
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "every published number the tool states names its source and verification date",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance",
+    "percent-encoding in a query is preserved verbatim, so %20 and + are not conflated",
+    "parameter order is normalised without rewriting the encoded text",
+    "the standard the normalisation follows is named in the result"
+  ],
+  "identities": {
+    "manifestSha256": "26d1b1d3b988fbcc88681f918d460f145c8ed543e8edfe1f734e20f29573d08e",
+    "moduleSha256": "2f3f42f601f07ed7b5539167df4529a3f179d0dc4f194f4186dd42a89b434d59",
+    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "4aa9763fff934f0bd6d9058378c49c1ccb2b3f1bad7116a1dd78b7bea18f8092",
+    "acceptanceScriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
+    "unitTestsSha256": "8ffb71f5c9d87e24a0e82abcf77530008b2cd16ff420c2af40a4cff611677d93",
+    "fixture:query-params:sha256": "45165ac3bf038861444d91b026cedf121b0ba4341c4e02e18b4061c5b9707677",
+    "fixture:url-security:sha256": "498535dca23ff3fe69902dde2024e33f1f5900cd34ccc39b6079e06fb06c0a0e"
+  }
+}

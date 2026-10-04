@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "provenance": "Hand-worked URL pairs built from RFC 3986 syntax rules and the WHATWG URL standard's own normalisation (lowercased scheme and host, default port removed, dot segments resolved, percent-encoding left untouched). No third-party URL list is copied.",
+  "vectors": [
+    {
+      "name": "identici",
+      "left": "https://esempio.it/articoli/uno",
+      "right": "https://esempio.it/articoli/uno",
+      "mode": "semantic",
+      "equal": true,
+      "differences": [],
+      "ignoredFragment": false
+    },
+    {
+      "name": "ordine dei parametri diverso",
+      "left": "https://esempio.it/a?b=2&a=1",
+      "right": "https://esempio.it/a?a=1&b=2",
+      "mode": "semantic",
+      "equal": true,
+      "differences": [],
+      "ignoredFragment": false
+    },
+    {
+      "name": "stesso ordine dei parametri ma modalita esatta",
+      "left": "https://esempio.it/a?b=2&a=1",
+      "right": "https://esempio.it/a?a=1&b=2",
+      "mode": "exact",
+      "equal": false,
+      "differences": [
+        "query"
+      ],
+      "ignoredFragment": false
+    },
+    {
+      "name": "solo il frammento cambia, modalita semantica",
+      "left": "https://esempio.it/a#uno",
+      "right": "https://esempio.it/a#due",
+      "mode": "semantic",
+      "equal": true,
+      "differences": [],
+      "ignoredFragment": true
+    },
+    {
+      "name": "solo il frammento cambia, modalita esatta",
+      "left": "https://esempio.it/a#uno",
+      "right": "https://esempio.it/a#due",
+      "mode": "exact",
+      "equal": false,
+      "differences": [
+        "hash"
+      ],
+      "ignoredFragment": false
+    },
+    {
+      "name": "host e porta predefiniti",
+      "left": "https://ESEMPIO.IT:443/a",
+      "right": "https://esempio.it/a",
+      "mode": "semantic",
+      "equal": true,
+      "differences": [],
+      "ignoredFragment": false
+    },
+    {
+      "name": "porta non predefinita",
+      "left": "https://esempio.it:8443/a",
+      "right": "https://esempio.it/a",
+      "mode": "semantic",
+      "equal": false,
+      "differences": [
+        "origin"
+      ],
+      "ignoredFragment": false
+    },
+    {
+      "name": "http contro https",
+      "left": "http://esempio.it/a",
+      "right": "https://esempio.it/a",
+      "mode": "semantic",
+      "equal": false,
+      "differences": [
+        "origin"
+      ],
+      "ignoredFragment": false
+    },
+    {
+      "name": "segmenti punto risolti dallo standard",
+      "left": "https://esempio.it/a/b/../c",
+      "right": "https://esempio.it/a/c",
+      "mode": "semantic",
+      "equal": true,
+      "differences": [],
+      "ignoredFragment": false
+    },
+    {
+      "name": "percorso diverso",
+      "left": "https://esempio.it/a",
+      "right": "https://esempio.it/b",
+      "mode": "semantic",
+      "equal": false,
+      "differences": [
+        "path"
+      ],
+      "ignoredFragment": false
+    },
+    {
+      "name": "host diverso",
+      "left": "https://uno.esempio.it/a",
+      "right": "https://due.esempio.it/a",
+      "mode": "semantic",
+      "equal": false,
+      "differences": [
+        "origin"
+      ],
+      "ignoredFragment": false
+    },
+    {
+      "name": "percent encoding diverso",
+      "left": "https://esempio.it/a%20b",
+      "right": "https://esempio.it/a b",
+      "mode": "semantic",
+      "equal": true,
+      "differences": [],
+      "ignoredFragment": false
+    },
+    {
+      "name": "stesso testo con encoding diverso",
+      "left": "https://esempio.it/?q=a%20b",
+      "right": "https://esempio.it/?q=a+b",
+      "mode": "semantic",
+      "equal": false,
+      "differences": [
+        "query"
+      ],
+      "ignoredFragment": false
+    },
+    {
+      "name": "parametro ripetuto con ordine inverso",
+      "left": "https://esempio.it/?t=1&t=2",
+      "right": "https://esempio.it/?t=2&t=1",
+      "mode": "semantic",
+      "equal": false,
+      "differences": [
+        "query"
+      ],
+      "ignoredFragment": false
+    },
+    {
+      "name": "punto e virgola come separatore",
+      "left": "https://esempio.it/?a=1;b=2",
+      "right": "https://esempio.it/?a=1&b=2",
+      "mode": "semantic",
+      "equal": false,
+      "differences": [
+        "query"
+      ],
+      "ignoredFragment": false
+    },
+    {
+      "name": "query vuota contro assente",
+      "left": "https://esempio.it/a?",
+      "right": "https://esempio.it/a",
+      "mode": "semantic",
+      "equal": true,
+      "differences": [],
+      "ignoredFragment": false
+    },
+    {
+      "name": "frammento vuoto",
+      "left": "https://esempio.it/a#",
+      "right": "https://esempio.it/a",
+      "mode": "exact",
+      "equal": true,
+      "differences": [],
+      "ignoredFragment": false
+    },
+    {
+      "name": "path radice",
+      "left": "https://esempio.it/",
+      "right": "https://esempio.it",
+      "mode": "semantic",
+      "equal": true,
+      "differences": [],
+      "ignoredFragment": false
+    },
+    {
+      "name": "spazi attorno agli URL",
+      "left": "  https://esempio.it/a  ",
+      "right": "https://esempio.it/a",
+      "mode": "semantic",
+      "equal": true,
+      "differences": [],
+      "ignoredFragment": false
+    },
+    {
+      "name": "credenziali solo a sinistra",
+      "left": "https://utente:segreto@esempio.it/a",
+      "right": "https://esempio.it/a",
+      "mode": "semantic",
+      "equal": false,
+      "differences": [
+        "credentials"
+      ],
+      "ignoredFragment": false
+    }
+  ],
+  "rejections": [
+    {
+      "name": "schema non http",
+      "left": "javascript:alert(1)",
+      "right": "https://esempio.it",
+      "code": "UNSAFE_URL_SCHEME"
+    },
+    {
+      "name": "schema file",
+      "left": "file:///etc/passwd",
+      "right": "https://esempio.it",
+      "code": "UNSAFE_URL_SCHEME"
+    },
+    {
+      "name": "vuoto",
+      "left": "   ",
+      "right": "https://esempio.it",
+      "code": "INVALID_URL"
+    },
+    {
+      "name": "percent escape non valido",
+      "left": "https://esempio.it/%zz",
+      "right": "https://esempio.it",
+      "code": "INVALID_URL"
+    },
+    {
+      "name": "percent escape troncato",
+      "left": "https://esempio.it/%a",
+      "right": "https://esempio.it",
+      "code": "INVALID_URL"
+    },
+    {
+      "name": "solo testo",
+      "left": "non e un url",
+      "right": "https://esempio.it",
+      "code": "INVALID_URL"
+    }
+  ]
+}

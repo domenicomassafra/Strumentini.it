@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-10-04",
-  "family_count": 63,
+  "family_count": 69,
   "families": [
     {
       "id": "archive-checksum-manifest",
@@ -575,6 +575,37 @@
       ]
     },
     {
+      "id": "image-metadata-segments",
+      "candidate_families": [
+        "EXIF remover"
+      ],
+      "path": "quality/fixtures/image-metadata-segments/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Synthetic PNG and JPEG files assembled from the container rules of their own specifications; the EXIF payload is a minimal IFD0 with a synthetic Make tag and no real device, author or location data."
+      },
+      "truth_sources": [
+        "cipa-exif",
+        "w3c-png3",
+        "google-webp",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "PNG tEXt",
+        "PNG tIME",
+        "PNG eXIf",
+        "JPEG APP1 Exif",
+        "JPEG APP1 XMP",
+        "JPEG APP13 IPTC",
+        "JPEG COM",
+        "clean file",
+        "truncated file",
+        "unrecognised format",
+        "second independent container walker"
+      ]
+    },
+    {
       "id": "invisible-characters",
       "candidate_families": [
         "Invisible-character detector"
@@ -828,6 +859,35 @@
       ]
     },
     {
+      "id": "open-graph-tags",
+      "candidate_families": [
+        "Open Graph preview"
+      ],
+      "path": "quality/fixtures/open-graph-tags/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Invented markup written for this repository. No third-party page source is copied."
+      },
+      "truth_sources": [
+        "the-open-graph-protocol",
+        "whatwg-html",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "complete page",
+        "uppercase attributes",
+        "single quotes",
+        "greater-than inside an attribute",
+        "self-closing tags",
+        "Twitter card fallback",
+        "relative URL",
+        "unsafe scheme",
+        "credentials redaction",
+        "numeric entities"
+      ]
+    },
+    {
       "id": "pdf-gold",
       "candidate_families": [
         "PDF and document local tools"
@@ -892,6 +952,31 @@
         "percent change",
         "part/whole",
         "zero denominator"
+      ]
+    },
+    {
+      "id": "platform-image-presets",
+      "candidate_families": [
+        "Platform-size presets"
+      ],
+      "path": "quality/fixtures/platform-image-presets/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Arithmetic over published canvas sizes named per preset with a verification date. Every expectation can be checked with a calculator."
+      },
+      "truth_sources": [
+        "the-open-graph-protocol",
+        "apple-hig-app-icons",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "same ratio",
+        "crop",
+        "letterbox",
+        "upscale",
+        "odd leftover pixel",
+        "rejections"
       ]
     },
     {
@@ -1169,6 +1254,31 @@
       ]
     },
     {
+      "id": "search-snippet-meta",
+      "candidate_families": [
+        "Meta title/description preview"
+      ],
+      "path": "quality/fixtures/search-snippet-meta/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Invented titles and descriptions chosen to exercise empty input, ASCII, accented Italian, CJK, emoji and HTML-significant characters. No third-party copy."
+      },
+      "truth_sources": [
+        "search-engine-listing-guidance",
+        "unicode-uax15",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "code-point counting",
+        "both sides of the reference lengths",
+        "truncation preview",
+        "HTML escaping",
+        "reference provenance",
+        "limit override"
+      ]
+    },
+    {
       "id": "sha2-known-answers",
       "candidate_families": [
         "Hash generator",
@@ -1191,6 +1301,29 @@
         "SHA-256",
         "SHA-512",
         "chunk independence"
+      ]
+    },
+    {
+      "id": "social-platform-limits",
+      "candidate_families": [
+        "Social character-limit checker"
+      ],
+      "path": "quality/fixtures/social-platform-limits/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Public numeric limits named after the platform guidance that publishes them, plus vectors worked by hand from the published X counting rule. No platform markup or corpus content is copied."
+      },
+      "truth_sources": [
+        "x-counting-characters",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "every supported platform",
+        "provenance and verification date",
+        "weighted counting",
+        "fail-closed on an unknown platform",
+        "reader-supplied override"
       ]
     },
     {
@@ -1306,6 +1439,33 @@
         "NFC/NFD/NFKC",
         "combining-mark order",
         "idempotence"
+      ]
+    },
+    {
+      "id": "url-comparison",
+      "candidate_families": [
+        "URL comparison"
+      ],
+      "path": "quality/fixtures/url-comparison/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Hand-built URL pairs over the WHATWG URL standard's own normalisation rules. No third-party URL list is copied."
+      },
+      "truth_sources": [
+        "whatwg-url",
+        "rfc9110",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "semantic vs exact",
+        "query order",
+        "fragment",
+        "default port",
+        "dot segments",
+        "percent encoding preserved",
+        "repeated parameters",
+        "rejections"
       ]
     },
     {

@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
+  "toolId": "platform-size-presets",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "D",
+  "engine": "image-visual",
+  "oracleEntryId": "cand-146",
+  "fixtureFamilies": [
+    "platform-image-presets"
+  ],
+  "truthSources": [
+    "apple-hig-app-icons",
+    "fixture-policy",
+    "google-webp",
+    "strumentiutili-quality",
+    "the-open-graph-protocol",
+    "w3c-png3"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "platform-image-presets",
+      "path": "quality/fixtures/platform-image-presets/vectors.json"
+    }
+  ],
+  "oracleCondition": {
+    "confidence": "medium",
+    "unresolvedGap": "Product/data/platform policy can drift; bind an exact source/version before Gold.",
+    "resolution": "bound in the tool itself and asserted against the value the engine returns: every canvas size names the platform guidance that publishes it and the date it was last checked against it",
+    "boundSources": [
+      {
+        "source": "Instagram Help Centre — image and video specifications",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "Instagram Help Centre — image and video specifications",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "Instagram Help Centre — image and video specifications",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "The Open Graph protocol — og:image basic metadata",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "YouTube Help — custom thumbnail size",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "X Help Center — media best practices",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "LinkedIn Help — image specifications",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "Apple Human Interface Guidelines — app icons",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "TikTok Support — video specifications",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "Mastodon documentation — profile header requirements",
+        "verifiedOn": "2026-09-23"
+      }
+    ]
+  },
+  "browserContract": {
+    "assertions": [
+      "crop box, letterbox need and source of the canvas all reported"
+    ],
+    "outputSha256": [
+      "36a3d331274eae61891bf91c2f6997d20cc0416afe0e09faeea2e71b1025ed5e"
+    ],
+    "locality": "zero external, non-GET or task-body requests after task start",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabelled interactive form control"
+  },
+  "toolInvariants": {
+    "invariants": [
+      "every canvas size names the guidance that publishes it and the date it was checked",
+      "the crop box stays inside the source and is centred",
+      "the contain box stays inside the canvas"
+    ],
+    "observed": {
+      "presetCount": 10,
+      "presetsWithoutSource": 0
+    }
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "every published number the tool states names its source and verification date",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance",
+    "every canvas size names the guidance that publishes it and the date it was checked",
+    "the crop box stays inside the source and is centred",
+    "the contain box stays inside the canvas"
+  ],
+  "identities": {
+    "manifestSha256": "1205d653c3dc86a14b7b42a743255ad33f4e211e4b652ca4bc5b7928d3c2bc8f",
+    "moduleSha256": "ec4c5490f2fa39fe4ef59efa19ee6ae2f08e04a6088a9e67cfd41e41ce987bd5",
+    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "4aa9763fff934f0bd6d9058378c49c1ccb2b3f1bad7116a1dd78b7bea18f8092",
+    "acceptanceScriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
+    "unitTestsSha256": "c7c95a388ab7368340e175d004ca3a6d505a7737a77109c0f9bd2d7fb2eb4844",
+    "fixture:platform-image-presets:sha256": "33fad935987f435e0a65f7723f5e4eb4f148a62baed4525c72de0627ca4ec73d"
+  }
+}

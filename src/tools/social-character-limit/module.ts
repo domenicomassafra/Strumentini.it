@@ -8,7 +8,7 @@ const module: ToolModule = {
     const record = value as Record<string, unknown>;
     if (typeof record.text !== "string" || typeof record.platform !== "string") throw new Error("INVALID_INPUT");
     if (record.limit !== undefined && (typeof record.limit !== "number" || !Number.isInteger(record.limit) || record.limit < 1)) throw new Error("INVALID_SOCIAL_LIMIT");
-    return checkSocialLimit(record.platform, record.text, record.limit);
+    return checkSocialLimit(record.platform, record.text, record.limit as number | undefined);
   },
 };
 

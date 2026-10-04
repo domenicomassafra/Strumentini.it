@@ -1,5 +1,12 @@
-export const URL_MARKETING_ENGINE_VERSION = "url-marketing-v1";
+import {
+  SOCIAL_PLATFORM_RULES,
+  xWeightedLength,
+  type SocialPlatformRule,
+} from "./social-limits";
+
+export const URL_MARKETING_ENGINE_VERSION = "url-marketing-v2";
 const MAX_URL_MARKETING_TEXT = 2 * 1024 * 1024;
+const MAX_SCANNED_TAGS = 20_000;
 
 const TRACKING_KEYS = new Set([
   "dclid",
@@ -79,8 +86,19 @@ export interface UrlComparison {
     readonly right: string;
   }[];
   readonly credentialWarning: boolean;
+  /** The URL standard the normalisation follows, and when it was last checked. */
+  readonly comparisonSource: string;
+  readonly comparisonVerifiedOn: string;
   readonly engineVersion: string;
 }
+
+/**
+ * Comparison semantics are the WHATWG URL standard's, not this repository's:
+ * host and scheme lowercased, default port dropped, dot segments resolved, and
+ * percent-encoding left exactly as written.
+ */
+export const URL_COMPARISON_SOURCE = "WHATWG URL Standard — parsing and serialisation";
+export const URL_COMPARISON_VERIFIED_ON = "2026-09-23";
 
 export interface CanonicalUrlResult {
   readonly pageUrl: string;
@@ -133,13 +151,31 @@ export interface RobotsResult {
 
 export interface OpenGraphResult {
   readonly tags: Readonly<Record<string, string>>;
+  /** Number of social tags actually found, so an empty paste is visible. */
+  readonly tagCount: number;
   readonly title: string | null;
   readonly description: string | null;
   readonly image: string | null;
   readonly url: string | null;
+  readonly type: string | null;
+  /** Which key supplied the image, e.g. `og:image` or `og:image:secure_url`. */
+  readonly imageSourceKey: string | null;
+  /** Set when a relative URL was made absolute, naming the placeholder host. */
+  readonly relativeBase: string | null;
+  readonly titleCharacters: number;
+  readonly descriptionCharacters: number;
+  /** Core Open Graph properties still absent, without the `og:` prefix. */
+  readonly missingCore: readonly string[];
+  /** The specification this extractor follows, and when it was last checked. */
+  readonly protocolSource: string;
+  readonly protocolVerifiedOn: string;
   readonly warnings: readonly string[];
   readonly engineVersion: string;
 }
+
+export type SocialCountingMethod = "codePoints" | "xWeighted";
+export { SOCIAL_PLATFORM_RULES };
+export type { SocialPlatformRule };
 
 export type SocialPlatform =
   | "x"
@@ -154,12 +190,24 @@ export type SocialPlatform =
 
 export interface SocialLimitResult {
   readonly platform: SocialPlatform;
+  readonly platformLabelIt: string;
+  /** The limit actually applied, which may be a reader-supplied override. */
   readonly limit: number;
+  readonly declaredLimit: number;
+  readonly limitOverridden: boolean;
+  readonly limitScopeIt: string;
+  readonly limitSource: string;
+  readonly limitVerifiedOn: string;
+  /** Unicode code points, counted the same way for every platform. */
   readonly characters: number;
-  readonly codePoints: number;
+  /** Only filled for platforms that publish a weighted rule (today: X). */
+  readonly weightedCharacters: number | null;
+  readonly countingMethod: SocialCountingMethod;
   readonly remaining: number;
+  readonly remainingWeighted: number | null;
   readonly overBy: number;
   readonly withinLimit: boolean;
+  readonly withinLimitWeighted: boolean | null;
   readonly lineBreaks: number;
   readonly engineVersion: string;
 }
@@ -171,12 +219,31 @@ export interface MetaPreviewResult {
   readonly descriptionCharacters: number;
   readonly titleLimit: number;
   readonly descriptionLimit: number;
+  readonly titleLimitOverridden: boolean;
+  readonly descriptionLimitOverridden: boolean;
+  readonly titleLimitSource: string;
+  readonly descriptionLimitSource: string;
+  readonly titleOverBy: number;
+  readonly descriptionOverBy: number;
   readonly titleWithinLimit: boolean;
   readonly descriptionWithinLimit: boolean;
+  /**
+   * A search listing does not fail when a field is too long; it truncates.
+   * These are what a reader would actually see, so the tool shows them rather
+   * than only a number.
+   */
+  readonly truncatedTitle: string;
+  readonly truncatedDescription: string;
   readonly escapedTitle: string;
   readonly escapedDescription: string;
   readonly engineVersion: string;
 }
+
+/** The reference lengths a SERP preview is measured against. */
+export const META_TITLE_DEFAULT_LIMIT = 60;
+export const META_DESCRIPTION_DEFAULT_LIMIT = 160;
+export const META_TITLE_LIMIT_SOURCE = "Google Search Central — guida ai title link, lunghezza indicativa";
+export const META_DESCRIPTION_LIMIT_SOURCE = "Google Search Central — guida alle meta description, lunghezza indicativa";
 
 export interface RedirectHop {
   readonly url: string;
@@ -268,14 +335,38 @@ export function queryEntries(url: URL): readonly UrlEntry[] {
   return [...url.searchParams.entries()].map(([key, value]) => ({ key, value }));
 }
 
-function serializeEntries(entries: readonly UrlEntry[]): string {
-  const params = new URLSearchParams();
-  for (const entry of entries) params.append(entry.key, entry.value);
-  return params.toString();
+function decodeQueryComponent(value: string): string {
+  try {
+    return decodeURIComponent(value.replaceAll("+", " "));
+  } catch {
+    return value;
+  }
 }
 
-function sortedEntries(entries: readonly UrlEntry[]): readonly UrlEntry[] {
-  return entries.toSorted((left, right) => left.key < right.key ? -1 : left.key > right.key ? 1 : 0);
+/**
+ * Query parameters as raw `key=value` text.
+ *
+ * Re-serialising through `URLSearchParams` would be shorter to write and wrong:
+ * it rewrites `%20` as `+`, so `?q=a%20b` and `?q=a+b` would compare equal even
+ * though RFC 3986 does not define them as equivalent. Reordering is therefore
+ * done on the original text, sorted by decoded key so the order a reader expects
+ * is unchanged.
+ */
+function rawQuerySegments(url: URL): readonly string[] {
+  const body = url.search.startsWith("?") ? url.search.slice(1) : url.search;
+  if (body === "") return [];
+  return body.split("&").filter((segment) => segment !== "");
+}
+
+function segmentKey(segment: string): string {
+  return decodeQueryComponent(segment.split("=")[0] ?? "");
+}
+
+function sortedSegments(segments: readonly string[]): readonly string[] {
+  return segments
+    .map((segment, index) => ({ segment, index, key: segmentKey(segment) }))
+    .sort((left, right) => (left.key < right.key ? -1 : left.key > right.key ? 1 : left.index - right.index))
+    .map(({ segment }) => segment);
 }
 
 export function normalizeUrlDetails(input: string, options: NormalizeUrlOptions = {}): NormalizedUrlDetails {
@@ -284,8 +375,9 @@ export function normalizeUrlDetails(input: string, options: NormalizeUrlOptions 
   const url = new URL(source.href);
   const entries = queryEntries(url);
   const dropped = options.dropTracking === true ? [...new Set(entries.filter(({ key }) => isTrackingKey(key)).map(({ key }) => key))] : [];
-  const kept = options.dropTracking === true ? entries.filter(({ key }) => !isTrackingKey(key)) : entries;
-  url.search = serializeEntries((options.sortQuery ?? true) ? sortedEntries(kept) : kept);
+  const raw = rawQuerySegments(url);
+  const keptRaw = options.dropTracking === true ? raw.filter((segment) => !isTrackingKey(segmentKey(segment))) : raw;
+  url.search = ((options.sortQuery ?? true) ? sortedSegments(keptRaw) : keptRaw).join("&");
   if (options.removeFragment === true) url.hash = "";
   if (options.removeTrailingSlash === true && url.pathname.length > 1 && url.pathname.endsWith("/")) {
     url.pathname = url.pathname.slice(0, -1);
@@ -382,6 +474,8 @@ export function compareUrls(
     right: rightNormalized.url,
     differences,
     credentialWarning: leftNormalized.credentialWarning || rightNormalized.credentialWarning,
+    comparisonSource: URL_COMPARISON_SOURCE,
+    comparisonVerifiedOn: URL_COMPARISON_VERIFIED_ON,
     engineVersion: URL_MARKETING_ENGINE_VERSION,
   };
 }
@@ -523,17 +617,6 @@ function decodeEntities(value: string): string {
   });
 }
 
-function parseAttributes(tag: string): Readonly<Record<string, string>> {
-  const attributes: Record<string, string> = {};
-  const pattern = /([a-z_:][a-z0-9_.:-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/giu;
-  for (const match of tag.matchAll(pattern)) {
-    const key = match[1];
-    const value = match[2] ?? match[3] ?? match[4] ?? "";
-    if (key !== undefined) attributes[key.toLowerCase()] = decodeEntities(value);
-  }
-  return attributes;
-}
-
 function metadataValues(value: unknown): Readonly<Record<string, unknown>> {
   if (typeof value !== "object" || value === null) return {};
   const record = value as Record<string, unknown>;
@@ -541,45 +624,194 @@ function metadataValues(value: unknown): Readonly<Record<string, unknown>> {
   return record;
 }
 
+export interface ScannedTag {
+  readonly name: string;
+  readonly attributes: Readonly<Record<string, string>>;
+}
+
+/**
+ * A real HTML tag scanner rather than a regular expression over `<meta ...>`.
+ * A regex stops at the first `>`, which silently truncates
+ * `<meta content="a > b" property="og:title">`; quoted attribute values are
+ * therefore tracked explicitly, and self-closing tags are handled. Nothing is
+ * executed or fetched: the input is only read.
+ */
+export function scanHtmlTags(html: string): readonly ScannedTag[] {
+  if (typeof html !== "string") invalid("INVALID_INPUT");
+  assertMarketingText(html);
+  const tags: ScannedTag[] = [];
+  let index = 0;
+  while (index < html.length) {
+    const start = html.indexOf("<", index);
+    if (start === -1) break;
+    const opening = /^<\s*([a-z][a-z0-9-]*)/iu.exec(html.slice(start, start + 40));
+    const closing = /^<\s*\/\s*[a-z]/iu.test(html.slice(start, start + 4));
+    if (closing) {
+      index = start + 1;
+      continue;
+    }
+    if (opening === null) {
+      index = start + 1;
+      continue;
+    }
+    const attributes: Record<string, string> = {};
+    let cursor = start + opening[0].length;
+    let quote: string | null = null;
+    while (cursor < html.length) {
+      const character = html[cursor]!;
+      if (quote !== null) {
+        if (character === quote) quote = null;
+        cursor += 1;
+        continue;
+      }
+      if (character === "\"" || character === "'") {
+        quote = character;
+        cursor += 1;
+        continue;
+      }
+      if (character === ">") break;
+      if (character === "/" || /\s/u.test(character)) {
+        cursor += 1;
+        continue;
+      }
+      const key = /^([^\s=/>]+)/u.exec(html.slice(cursor));
+      if (key === null) {
+        cursor += 1;
+        continue;
+      }
+      cursor += key[0].length;
+      let value = "";
+      const equals = /^\s*=\s*/u.exec(html.slice(cursor));
+      if (equals !== null) {
+        cursor += equals[0].length;
+        const quoteStart = html[cursor];
+        if (quoteStart === "\"" || quoteStart === "'") {
+          cursor += 1;
+          const end = html.indexOf(quoteStart, cursor);
+          if (end === -1) {
+            value = html.slice(cursor);
+            cursor = html.length;
+          } else {
+            value = html.slice(cursor, end);
+            cursor = end + 1;
+          }
+        } else {
+          const bare = /^[^\s>]*/u.exec(html.slice(cursor));
+          value = bare?.[0] ?? "";
+          cursor += value.length;
+        }
+      }
+      attributes[key[0]!.toLowerCase()] = decodeEntities(value);
+    }
+    tags.push({ name: opening[1]!.toLowerCase(), attributes });
+    if (tags.length >= MAX_SCANNED_TAGS) break;
+    index = cursor + 1;
+  }
+  return tags;
+}
+
+/** Host used to make a relative social URL absolute, so nothing is fetched. */
+export const RELATIVE_RESOLUTION_BASE = "https://relative.invalid/";
+
+const OG_CORE_KEYS = ["og:title", "og:description", "og:image", "og:url", "og:type"] as const;
+
+/**
+ * The specification this extractor follows. The published sizes of the OGP
+ * image properties are advisory rather than binding, so the declared width and
+ * height are reported as warnings only when present and malformed, never as a
+ * failure.
+ */
+export const OPEN_GRAPH_PROTOCOL_SOURCE = "The Open Graph protocol (ogp.me) — basic metadata";
+export const OPEN_GRAPH_PROTOCOL_VERIFIED_ON = "2026-09-23";
+
 export function parseOpenGraph(value: string | Readonly<Record<string, unknown>>): OpenGraphResult {
   const tags: Record<string, string> = {};
+  let tagCount = 0;
   if (typeof value === "string") {
-    assertMarketingText(value);
     if (value.trim() === "") invalid("INVALID_INPUT");
-    for (const match of value.matchAll(/<meta\b[^>]*>/giu)) {
-      const attributes = parseAttributes(match[0]);
-      const key = attributes.property ?? attributes.name;
-      if (key !== undefined && (key.toLowerCase().startsWith("og:") || key.toLowerCase().startsWith("twitter:"))) tags[key.toLowerCase()] = redactUrlCredentials(attributes.content ?? "");
+    for (const tag of scanHtmlTags(value)) {
+      if (tag.name !== "meta") continue;
+      tagCount += 1;
+      const key = tag.attributes.property ?? tag.attributes.name;
+      if (key === undefined) continue;
+      const normalized = key.toLowerCase();
+      if (!normalized.startsWith("og:") && !normalized.startsWith("twitter:")) continue;
+      tags[normalized] = redactUrlCredentials(tag.attributes.content ?? "");
     }
   } else {
     for (const [key, raw] of Object.entries(metadataValues(value))) {
-      if (typeof raw === "string" && (key.toLowerCase().startsWith("og:") || key.toLowerCase().startsWith("twitter:"))) tags[key.toLowerCase()] = redactUrlCredentials(decodeEntities(raw));
+      if (typeof raw !== "string") continue;
+      const normalized = key.toLowerCase();
+      if (!normalized.startsWith("og:") && !normalized.startsWith("twitter:")) continue;
+      tags[normalized] = redactUrlCredentials(decodeEntities(raw));
+      tagCount += 1;
     }
   }
   const warnings: string[] = [];
-  const resolve = (key: string): string | null => {
-    const candidate = tags[key];
-    if (candidate === undefined || candidate.trim() === "") return null;
-    try {
-      const resolved = new URL(candidate, "https://preview.invalid/");
-      if (resolved.protocol !== "http:" && resolved.protocol !== "https:") {
-        warnings.push(`UNSAFE_${key.toUpperCase().replaceAll(":", "_")}`);
-        return null;
+  let resolvedImageKey: string | null = null;
+  let relativeResolved = false;
+  const resolve = (...keys: readonly string[]): string | null => {
+    for (const key of keys) {
+      const candidate = tags[key];
+      if (candidate === undefined || candidate.trim() === "") continue;
+      try {
+        const parsed = new URL(candidate, RELATIVE_RESOLUTION_BASE);
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+          warnings.push(`UNSAFE_${key.toUpperCase().replaceAll(":", "_")}`);
+          continue;
+        }
+        if (!/^[a-z]+:/u.test(candidate)) relativeResolved = true;
+        if (resolvedImageKey === null && (key.startsWith("og:image") || key.startsWith("twitter:image"))) resolvedImageKey = key;
+        return redactUrl(parsed);
+      } catch {
+        warnings.push(`INVALID_${key.toUpperCase().replaceAll(":", "_")}`);
       }
-      return redactUrl(resolved);
-    } catch {
-      warnings.push(`INVALID_${key.toUpperCase().replaceAll(":", "_")}`);
-      return null;
     }
+    return null;
   };
-  const title = tags["og:title"] ?? tags["twitter:title"] ?? null;
-  const description = tags["og:description"] ?? tags["twitter:description"] ?? null;
-  const image = resolve("og:image") ?? resolve("twitter:image");
-  const url = resolve("og:url") ?? resolve("twitter:url");
-  for (const [name, value] of [["title", title], ["description", description], ["image", image], ["url", url]] as const) {
+  const first = (...keys: readonly string[]): string | null => {
+    for (const key of keys) {
+      const value = tags[key];
+      if (value !== undefined && value.trim() !== "") return value;
+    }
+    return null;
+  };
+  const title = first("og:title", "twitter:title");
+  const description = first("og:description", "twitter:description");
+  const type = first("og:type");
+  const image = resolve("og:image", "og:image:secure_url", "og:image:url", "twitter:image", "twitter:image:src");
+  const url = resolve("og:url", "twitter:url");
+  for (const [name, value] of [["title", title], ["description", description], ["image", image], ["url", url], ["type", type]] as const) {
     if (value === null) warnings.push(`MISSING_${name.toUpperCase()}`);
   }
-  return { tags, title, description, image, url, warnings: [...new Set(warnings)], engineVersion: URL_MARKETING_ENGINE_VERSION };
+  if (relativeResolved) warnings.push("RELATIVE_URL_RESOLVED");
+  if (image !== null) {
+    for (const key of ["og:image:width", "og:image:height"]) {
+      const raw = tags[key];
+      if (raw === undefined) continue;
+      if (!/^[1-9][0-9]{0,5}$/u.test(raw.trim())) warnings.push(`INVALID_${key.toUpperCase().replaceAll(":", "_")}`);
+    }
+  }
+  const present = new Set(Object.keys(tags));
+  const missingCore = OG_CORE_KEYS.filter((key) => !present.has(key) && !(key === "og:image" && resolvedImageKey !== null));
+  return {
+    tags,
+    tagCount,
+    title,
+    description,
+    image,
+    url,
+    type,
+    imageSourceKey: resolvedImageKey,
+    relativeBase: relativeResolved ? RELATIVE_RESOLUTION_BASE : null,
+    titleCharacters: title === null ? 0 : [...title].length,
+    descriptionCharacters: description === null ? 0 : [...description].length,
+    missingCore: missingCore.map((key) => key.replaceAll("og:", "")),
+    protocolSource: OPEN_GRAPH_PROTOCOL_SOURCE,
+    protocolVerifiedOn: OPEN_GRAPH_PROTOCOL_VERIFIED_ON,
+    warnings: [...new Set(warnings)],
+    engineVersion: URL_MARKETING_ENGINE_VERSION,
+  };
 }
 
 function parseRobotsLine(line: string): { readonly directive: string; readonly value: string } | null {
@@ -625,57 +857,91 @@ export function parseRobots(text: string): RobotsResult {
   return { groups, sitemaps, errors, engineVersion: URL_MARKETING_ENGINE_VERSION };
 }
 
-const SOCIAL_LIMITS: Readonly<Record<SocialPlatform, number>> = {
-  x: 280,
-  twitter: 280,
-  linkedin: 3000,
-  instagram: 2200,
-  facebook: 63206,
-  youtube: 100,
-  tiktok: 2200,
-  mastodon: 500,
-  bluesky: 300,
-};
-
-function socialPlatform(value: string): SocialPlatform {
+/**
+ * Resolves a platform name, including the names people actually type ("X.com",
+ * "x / twitter"), and returns its published rule. An unknown platform fails
+ * closed: the tool never falls back to a guessed limit.
+ */
+function socialRule(value: string): SocialPlatformRule {
   if (typeof value !== "string") invalid("INVALID_SOCIAL_PLATFORM");
-  const normalized = value.trim().toLowerCase().replace(/^\s*x\s*(?:\/\s*)?twitter\s*$/u, "x").replace(/^\s*x\.com\s*$/u, "x");
-  if (normalized in SOCIAL_LIMITS) return normalized as SocialPlatform;
-  invalid("INVALID_SOCIAL_PLATFORM");
+  const normalized = value
+    .trim()
+    .toLowerCase()
+    .replace(/\s*\/\s*/gu, " ")
+    .replace(/^x\s*\.\s*com$/u, "x")
+    .replace(/^x\s+ex\s+twitter$/u, "x")
+    .replace(/^x\s+twitter$/u, "x")
+    .replace(/^(?:ex\s+)?twitter$/u, "x");
+  const rule = SOCIAL_PLATFORM_RULES.find((candidate) => candidate.id === normalized || candidate.labelIt.toLowerCase() === normalized);
+  if (rule === undefined) invalid("INVALID_SOCIAL_PLATFORM");
+  return rule;
+}
+
+export function listSocialPlatformRules(): readonly SocialPlatformRule[] {
+  return SOCIAL_PLATFORM_RULES;
 }
 
 export function checkSocialLimit(platformInput: string, text: string, customLimit?: number): SocialLimitResult {
   if (typeof text !== "string") invalid("INVALID_INPUT");
-  const platform = socialPlatform(platformInput);
-  const limit = customLimit ?? SOCIAL_LIMITS[platform];
+  assertMarketingText(text);
+  const rule = socialRule(platformInput);
+  const limit = customLimit ?? rule.limit;
   if (!Number.isInteger(limit) || limit < 1) invalid("INVALID_SOCIAL_LIMIT");
   const characters = [...text].length;
+  const weighted = rule.counting === "xWeighted" ? xWeightedLength(text) : null;
+  const effective = weighted ?? characters;
   return {
-    platform,
+    platform: rule.id as SocialPlatform,
+    platformLabelIt: rule.labelIt,
     limit,
+    declaredLimit: rule.limit,
+    limitOverridden: customLimit !== undefined && customLimit !== rule.limit,
+    limitScopeIt: rule.scopeIt,
+    limitSource: rule.source,
+    limitVerifiedOn: rule.verifiedOn,
     characters,
-    codePoints: characters,
+    weightedCharacters: weighted,
+    countingMethod: rule.counting,
     remaining: limit - characters,
-    overBy: Math.max(0, characters - limit),
-    withinLimit: characters <= limit,
+    remainingWeighted: weighted === null ? null : limit - weighted,
+    overBy: Math.max(0, effective - limit),
+    withinLimit: effective <= limit,
+    withinLimitWeighted: weighted === null ? null : weighted <= limit,
     lineBreaks: (text.match(/\r\n|\r|\n/gu) ?? []).length,
     engineVersion: URL_MARKETING_ENGINE_VERSION,
   };
 }
 
+/**
+ * HTML text escaping. The apostrophe is included because the escaped value is
+ * meant to be pasted into a meta tag, where it can land inside an attribute.
+ */
 function escapeText(value: string): string {
-  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
-export function previewMeta(titleInput: string, descriptionInput: string, limits: { readonly title?: number; readonly description?: number } = {}): MetaPreviewResult {
+export function previewMeta(
+  titleInput: string,
+  descriptionInput: string,
+  limits: { readonly title?: number; readonly description?: number } = {},
+): MetaPreviewResult {
   if (typeof titleInput !== "string" || typeof descriptionInput !== "string") invalid("INVALID_INPUT");
+  assertMarketingText(titleInput);
+  assertMarketingText(descriptionInput);
   const title = titleInput.trim();
   const description = descriptionInput.trim();
-  const titleLimit = limits.title ?? 60;
-  const descriptionLimit = limits.description ?? 160;
+  const titleLimit = limits.title ?? META_TITLE_DEFAULT_LIMIT;
+  const descriptionLimit = limits.description ?? META_DESCRIPTION_DEFAULT_LIMIT;
   if (!Number.isInteger(titleLimit) || titleLimit < 1 || !Number.isInteger(descriptionLimit) || descriptionLimit < 1) invalid("INVALID_META_LIMIT");
   const titleCharacters = [...title].length;
   const descriptionCharacters = [...description].length;
+  const titleCodePoints = [...title];
+  const descriptionCodePoints = [...description];
   return {
     title,
     description,
@@ -683,8 +949,16 @@ export function previewMeta(titleInput: string, descriptionInput: string, limits
     descriptionCharacters,
     titleLimit,
     descriptionLimit,
+    titleLimitOverridden: limits.title !== undefined && limits.title !== META_TITLE_DEFAULT_LIMIT,
+    descriptionLimitOverridden: limits.description !== undefined && limits.description !== META_DESCRIPTION_DEFAULT_LIMIT,
+    titleLimitSource: META_TITLE_LIMIT_SOURCE,
+    descriptionLimitSource: META_DESCRIPTION_LIMIT_SOURCE,
+    titleOverBy: Math.max(0, titleCharacters - titleLimit),
+    descriptionOverBy: Math.max(0, descriptionCharacters - descriptionLimit),
     titleWithinLimit: titleCharacters <= titleLimit,
     descriptionWithinLimit: descriptionCharacters <= descriptionLimit,
+    truncatedTitle: titleCodePoints.slice(0, titleLimit).join(""),
+    truncatedDescription: descriptionCodePoints.slice(0, descriptionLimit).join(""),
     escapedTitle: escapeText(title),
     escapedDescription: escapeText(description),
     engineVersion: URL_MARKETING_ENGINE_VERSION,

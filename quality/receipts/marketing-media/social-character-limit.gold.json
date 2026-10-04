@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
+  "toolId": "social-character-limit",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "D",
+  "engine": "url-marketing",
+  "oracleEntryId": "cand-069",
+  "fixtureFamilies": [
+    "word-character-line-count"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-quality",
+    "unicode-uax29",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "word-character-line-count",
+      "path": "quality/fixtures/word-character-line-count/vectors.json"
+    }
+  ],
+  "oracleCondition": {
+    "confidence": "medium",
+    "unresolvedGap": "Product/data/platform policy can drift; bind an exact source/version before Gold.",
+    "resolution": "bound in the tool itself and asserted against the value the engine returns: every platform limit names the guidance page that publishes it and the date it was last checked against it",
+    "boundSources": [
+      {
+        "source": "X Help Center — Counting characters",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "LinkedIn Help — post character limits",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "Instagram Help Centre — caption length",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "Facebook Help — post length",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "YouTube Help — video title and description limits",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "TikTok Support — caption length",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "Mastodon documentation — status character limit",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "Bluesky — post character limit",
+        "verifiedOn": "2026-09-23"
+      }
+    ]
+  },
+  "browserContract": {
+    "assertions": [
+      "code-point count and the platform's weighted count both reported with provenance"
+    ],
+    "outputSha256": [
+      "ff0f8fc2abc8c2d19b0d6ee8a23b0ed459a61e70b1666d451860c7b70db26b94"
+    ],
+    "locality": "zero external, non-GET or task-body requests after task start",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabelled interactive form control"
+  },
+  "toolInvariants": {
+    "invariants": [
+      "every platform limit carries its publishing source and verification date",
+      "an unknown platform fails closed instead of guessing a limit",
+      "the platform's published weighted count is reported separately from the code-point count"
+    ],
+    "observed": {
+      "platformCount": 8,
+      "unknownPlatformError": "INVALID_SOCIAL_PLATFORM",
+      "weightedForTwoCjk": 4
+    }
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "every published number the tool states names its source and verification date",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance",
+    "every platform limit carries its publishing source and verification date",
+    "an unknown platform fails closed instead of guessing a limit",
+    "the platform's published weighted count is reported separately from the code-point count"
+  ],
+  "identities": {
+    "manifestSha256": "b3eee7a5d6238998107e4f3b706635e626e51cf24122bbfc9888e121b3cb06ce",
+    "moduleSha256": "510b50de525a4b6df3c6c0db7f9473e5163ae3127722ccabbf611728681f0dc6",
+    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "4aa9763fff934f0bd6d9058378c49c1ccb2b3f1bad7116a1dd78b7bea18f8092",
+    "acceptanceScriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
+    "unitTestsSha256": "8ffb71f5c9d87e24a0e82abcf77530008b2cd16ff420c2af40a4cff611677d93",
+    "fixture:word-character-line-count:sha256": "50903e6ab092eb05877f73819a48ef91519723ef8f89b8b2efcee674148de66d"
+  }
+}

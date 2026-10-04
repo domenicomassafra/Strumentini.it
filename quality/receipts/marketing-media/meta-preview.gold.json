@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
+  "toolId": "meta-preview",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "url-marketing",
+  "oracleEntryId": "cand-070",
+  "fixtureFamilies": [
+    "html-entities",
+    "url-security"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "owasp-xss",
+    "strumentiutili-quality",
+    "whatwg-html",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "html-entities",
+      "path": "quality/fixtures/html-entities/vectors.json"
+    },
+    {
+      "id": "url-security",
+      "path": "quality/fixtures/url-security/vectors.json"
+    }
+  ],
+  "oracleCondition": {
+    "confidence": "medium",
+    "unresolvedGap": "Product/data/platform policy can drift; bind an exact source/version before Gold.",
+    "resolution": "bound in the tool itself and asserted against the value the engine returns: the two reference lengths are stated as guidance, are reader-overridable, and the page says so",
+    "boundSources": [
+      {
+        "source": "Google Search Central — guida ai title link, lunghezza indicativa",
+        "verifiedOn": "2026-09-23"
+      },
+      {
+        "source": "Google Search Central — guida alle meta description, lunghezza indicativa",
+        "verifiedOn": "2026-09-23"
+      }
+    ]
+  },
+  "browserContract": {
+    "assertions": [
+      "length counted against the reference and its source named"
+    ],
+    "outputSha256": [
+      "05021f882f9dd8855e15d84913201203f4b38bf2f5324d2b3fc0bad2742c06ef"
+    ],
+    "locality": "zero external, non-GET or task-body requests after task start",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabelled interactive form control"
+  },
+  "toolInvariants": {
+    "invariants": [
+      "both reference lengths are named as guidance and are reader-overridable",
+      "an over-length field is reported as truncated, not rejected",
+      "the escaped preview never contains markup"
+    ],
+    "observed": {
+      "titleOverBy": 1,
+      "descriptionOverBy": 1,
+      "truncatedTitleLength": 60
+    }
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "every published number the tool states names its source and verification date",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance",
+    "both reference lengths are named as guidance and are reader-overridable",
+    "an over-length field is reported as truncated, not rejected",
+    "the escaped preview never contains markup"
+  ],
+  "identities": {
+    "manifestSha256": "5a1d7435a5cd1a0bdeb533dc7d786075d1506b0ab44c11186d8615124af1f2bd",
+    "moduleSha256": "562f7ce6a4bdfcd2f7150517cd9ec9306025b9e147e3cd19e47a1ac8bd6e6e74",
+    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "4aa9763fff934f0bd6d9058378c49c1ccb2b3f1bad7116a1dd78b7bea18f8092",
+    "acceptanceScriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
+    "unitTestsSha256": "8ffb71f5c9d87e24a0e82abcf77530008b2cd16ff420c2af40a4cff611677d93",
+    "fixture:html-entities:sha256": "962bb9d74fe17e1a053bcddd1b84ca44552cadb9681ca130c12efb5ad9f81851",
+    "fixture:url-security:sha256": "498535dca23ff3fe69902dde2024e33f1f5900cd34ccc39b6079e06fb06c0a0e"
+  }
+}

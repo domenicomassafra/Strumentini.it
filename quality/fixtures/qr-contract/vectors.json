@@ -1,19 +1,143 @@
 {
   "schema_version": 1,
+  "provenance": "Generated symbols only. ISO/IEC 18004 is paywalled, so no sample symbol from the standard is reproduced here. Every expected value below is a structural or arithmetic property of the format itself — symbol size from clause 6.3.1, the 4-module quiet zone, the three finder patterns, the alternating timing pattern, the single always-dark module, the 15-bit BCH(15,5) format word, the mask penalty rules of clause 8.8.2, and Reed-Solomon syndromes being zero over GF(256) with primitive polynomial 0x11D.",
+  "oracle": "Byte equality is authoritative for the payload. The decoder under test is a separate path from the encoder: it locates finder patterns in rendered pixels, solves a perspective transform, samples the grid, reads the symbol's own format field, and verifies the syndromes before returning a byte. Agreement between the two is therefore independent of any shared helper.",
+  "rights": "No ISO sample symbol bytes are copied.",
   "vectors": [
     {
+      "name": "ascii breve",
       "payload": "hello",
-      "expected_decode": "hello"
+      "expected_version": 1,
+      "expected_size": 21,
+      "expected_mode": "byte",
+      "expected_error_correction": "L",
+      "expected_byte_length": 5
     },
     {
+      "name": "URL con parametri",
       "payload": "https://example.com/?a=1&b=2",
-      "expected_decode": "https://example.com/?a=1&b=2"
+      "expected_version": 2,
+      "expected_size": 25,
+      "expected_mode": "byte",
+      "expected_error_correction": "L",
+      "expected_byte_length": 28
     },
     {
+      "name": "giapponese",
       "payload": "こんにちは",
-      "expected_decode": "こんにちは"
+      "expected_version": 1,
+      "expected_size": 21,
+      "expected_mode": "byte",
+      "expected_error_correction": "L",
+      "expected_byte_length": 15
+    },
+    {
+      "name": "accenti italiani",
+      "payload": "Città, perché, così",
+      "expected_version": 2,
+      "expected_size": 25,
+      "expected_mode": "byte",
+      "expected_error_correction": "L",
+      "expected_byte_length": 22
+    },
+    {
+      "name": "carattere di controllo",
+      "payload": "riga 1\nriga 2\ttab",
+      "expected_version": 1,
+      "expected_size": 21,
+      "expected_mode": "byte",
+      "expected_error_correction": "L",
+      "expected_byte_length": 17
+    },
+    {
+      "name": "esattamente al limite della versione 4",
+      "payload": "78 byte esatti per la versione 4 con livello L di correzione errori: xxxxxxxxx",
+      "expected_version": 4,
+      "expected_size": 33,
+      "expected_mode": "byte",
+      "expected_error_correction": "L",
+      "expected_byte_length": 78
+    },
+    {
+      "name": "sopra il limite dichiarato",
+      "payload": "questo contenuto supera volutamente il limite di 78 byte dichiarato dallo strumento per poterlo rifiutare",
+      "expected_version": null,
+      "expected_size": null,
+      "expected_mode": null,
+      "expected_error_correction": null,
+      "expected_byte_length": null,
+      "expected_rejection": "QR_PAYLOAD_TOO_LARGE"
     }
   ],
-  "oracle": "Generated symbols must be decoded by an independent decoder; byte equality is authoritative for this fixture.",
-  "rights": "No ISO sample symbol bytes are copied."
+  "capacity": [
+    {
+      "version": 1,
+      "size": 21,
+      "total_codewords": 26,
+      "ec_codewords": 7,
+      "byte_capacity": 17,
+      "remainder_bits": 0
+    },
+    {
+      "version": 2,
+      "size": 25,
+      "total_codewords": 44,
+      "ec_codewords": 10,
+      "byte_capacity": 32,
+      "remainder_bits": 7
+    },
+    {
+      "version": 3,
+      "size": 29,
+      "total_codewords": 70,
+      "ec_codewords": 15,
+      "byte_capacity": 53,
+      "remainder_bits": 7
+    },
+    {
+      "version": 4,
+      "size": 33,
+      "total_codewords": 100,
+      "ec_codewords": 20,
+      "byte_capacity": 78,
+      "remainder_bits": 7
+    }
+  ],
+  "raster": {
+    "provenance": "Rendered locally from the generator's own module matrix at four pixel scales, with the quiet zone kept at four modules. No screenshot or sample photograph is used.",
+    "scales": [
+      3,
+      4,
+      6,
+      10
+    ],
+    "quiet_zone_modules": 4,
+    "rotations_readable": [
+      0,
+      90,
+      180,
+      270
+    ],
+    "mirrored_readable": true,
+    "negative_cases": [
+      {
+        "name": "telaio vuoto",
+        "expected": null
+      },
+      {
+        "name": "rumore casuale",
+        "expected": null
+      },
+      {
+        "name": "colori invertiti",
+        "expected": null
+      }
+    ]
+  },
+  "format_information": {
+    "provenance": "The 32 legal format words are derived from the BCH(15,5) construction and the 0x5412 mask, not transcribed.",
+    "legal_word_count": 32,
+    "minimum_distance": 7,
+    "correctable_bit_errors_per_copy": 3
+  }
 }

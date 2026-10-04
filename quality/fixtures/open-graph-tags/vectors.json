@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "provenance": "Hand-worked markup written for this repository. Every tag is invented; no third-party page source is copied. Relative URLs are made absolute against the documented placeholder host https://relative.invalid/ so the result is deterministic and nothing is fetched.",
+  "complete_html": "<!doctype html><html lang=\"it\"><head><meta charset=\"utf-8\"><title>Non usato</title><meta name=\"description\" content=\"meta non sociale\"><meta property=\"og:site_name\" content=\"Studio\"><meta property=\"og:type\" content=\"article\"><meta property=\"og:title\" content=\"Guida &quot;A&quot; &gt; B\"><meta property=\"og:description\" content=\"Una <descrizione> con &amp; e 'apostrofi'\"><meta property=\"og:url\" content=\"https://esempio.it/articoli/uno\"><meta property=\"og:image\" content=\"https://cdn.esempio.it/hero.png\"><meta property=\"og:image:width\" content=\"1200\"><meta property=\"og:image:height\" content=\"630\"><meta name=\"twitter:card\" content=\"summary_large_image\"></head><body><h1>Guida</h1></body></html>",
+  "vectors": [
+    {
+      "name": "pagina completa",
+      "html": "<!doctype html><html lang=\"it\"><head><meta charset=\"utf-8\"><title>Non usato</title><meta name=\"description\" content=\"meta non sociale\"><meta property=\"og:site_name\" content=\"Studio\"><meta property=\"og:type\" content=\"article\"><meta property=\"og:title\" content=\"Guida &quot;A&quot; &gt; B\"><meta property=\"og:description\" content=\"Una <descrizione> con &amp; e 'apostrofi'\"><meta property=\"og:url\" content=\"https://esempio.it/articoli/uno\"><meta property=\"og:image\" content=\"https://cdn.esempio.it/hero.png\"><meta property=\"og:image:width\" content=\"1200\"><meta property=\"og:image:height\" content=\"630\"><meta name=\"twitter:card\" content=\"summary_large_image\"></head><body><h1>Guida</h1></body></html>",
+      "expectedTitle": "Guida \"A\" > B",
+      "expectedDescription": "Una <descrizione> con & e 'apostrofi'",
+      "expectedImage": "https://cdn.esempio.it/hero.png",
+      "expectedUrl": "https://esempio.it/articoli/uno",
+      "expectedType": "article",
+      "expectedWarnings": []
+    },
+    {
+      "name": "maiuscole e spazi negli attributi",
+      "html": "<META PROPERTY = \"OG:TITLE\" CONTENT = \"Maiuscolo\" >",
+      "expectedTitle": "Maiuscolo",
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_DESCRIPTION", "MISSING_IMAGE", "MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "virgilletta singola",
+      "html": "<meta property='og:title' content='Apostrofo'>",
+      "expectedTitle": "Apostrofo",
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_DESCRIPTION", "MISSING_IMAGE", "MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "maggiore dentro il valore dell'attributo",
+      "html": "<meta property=\"og:title\" content=\"a > b\">",
+      "expectedTitle": "a > b",
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_DESCRIPTION", "MISSING_IMAGE", "MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "tag auto-chiuso",
+      "html": "<meta property=\"og:title\" content=\"Auto-chiuso\" />",
+      "expectedTitle": "Auto-chiuso",
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_DESCRIPTION", "MISSING_IMAGE", "MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "attributo senza valori",
+      "html": "<meta property=\"og:title\" content=\"Senza closing\">",
+      "expectedTitle": "Senza closing",
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_DESCRIPTION", "MISSING_IMAGE", "MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "twitter al posto di open graph",
+      "html": "<meta name=\"twitter:title\" content=\"Da Twitter\"><meta name=\"twitter:description\" content=\"Descrizione\"><meta name=\"twitter:image\" content=\"https://cdn.esempio.it/t.png\">",
+      "expectedTitle": "Da Twitter",
+      "expectedDescription": "Descrizione",
+      "expectedImage": "https://cdn.esempio.it/t.png",
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "open graph vince su twitter",
+      "html": "<meta property=\"og:title\" content=\"Da OG\"><meta name=\"twitter:title\" content=\"Da Twitter\">",
+      "expectedTitle": "Da OG",
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_DESCRIPTION", "MISSING_IMAGE", "MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "secure_url come immagine",
+      "html": "<meta property=\"og:image:secure_url\" content=\"https://cdn.esempio.it/s.png\">",
+      "expectedTitle": null,
+      "expectedDescription": null,
+      "expectedImage": "https://cdn.esempio.it/s.png",
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_TITLE", "MISSING_DESCRIPTION", "MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "url relativo",
+      "html": "<meta property=\"og:url\" content=\"/articoli/uno\">",
+      "expectedTitle": null,
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": "https://relative.invalid/articoli/uno",
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_TITLE", "MISSING_DESCRIPTION", "MISSING_IMAGE", "MISSING_TYPE", "RELATIVE_URL_RESOLVED"]
+    },
+    {
+      "name": "schema non sicuro",
+      "html": "<meta property=\"og:image\" content=\"javascript:alert(1)\">",
+      "expectedTitle": null,
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["UNSAFE_OG_IMAGE", "MISSING_TITLE", "MISSING_DESCRIPTION", "MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "nessun tag sociale",
+      "html": "<html><head><title>Pagina</title><meta name=\"description\" content=\"solo meta\"></head><body>niente</body></html>",
+      "expectedTitle": null,
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_TITLE", "MISSING_DESCRIPTION", "MISSING_IMAGE", "MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "credenziali da redigere",
+      "html": "<meta property=\"og:url\" content=\"https://utente:segreto@esempio.it/a\">",
+      "expectedTitle": null,
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": "https://esempio.it/a",
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_TITLE", "MISSING_DESCRIPTION", "MISSING_IMAGE", "MISSING_TYPE"]
+    },
+    {
+      "name": "larghezza immagine non numerica",
+      "html": "<meta property=\"og:image\" content=\"https://cdn.esempio.it/i.png\"><meta property=\"og:image:width\" content=\"auto\">",
+      "expectedTitle": null,
+      "expectedDescription": null,
+      "expectedImage": "https://cdn.esempio.it/i.png",
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["INVALID_OG_IMAGE_WIDTH", "MISSING_TITLE", "MISSING_DESCRIPTION", "MISSING_URL", "MISSING_TYPE"]
+    },
+    {
+      "name": "entita numeriche",
+      "html": "<meta property=\"og:title\" content=\"Ciao &#39;mondo&#39; &amp; &#x2764;\">",
+      "expectedTitle": "Ciao 'mondo' & ❤",
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null,
+      "expectedWarnings": ["MISSING_DESCRIPTION", "MISSING_IMAGE", "MISSING_URL", "MISSING_TYPE"]
+    }
+  ],
+  "record_inputs": [
+    {
+      "name": "record piano",
+      "record": { "og:title": "T", "og:description": "D", "og:image": "https://a.example/i.png", "og:url": "https://a.example/p", "og:type": "website" },
+      "expectedTitle": "T",
+      "expectedDescription": "D",
+      "expectedImage": "https://a.example/i.png",
+      "expectedUrl": "https://a.example/p",
+      "expectedType": "website"
+    },
+    {
+      "name": "record annidato sotto tags",
+      "record": { "tags": { "og:title": "Annidato" } },
+      "expectedTitle": "Annidato",
+      "expectedDescription": null,
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null
+    },
+    {
+      "name": "chiavi non stringa ignorate",
+      "record": { "og:title": 42, "og:description": "D", "description": "meta non sociale" },
+      "expectedTitle": null,
+      "expectedDescription": "D",
+      "expectedImage": null,
+      "expectedUrl": null,
+      "expectedType": null
+    }
+  ]
+}

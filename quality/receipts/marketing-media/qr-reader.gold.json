@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
+  "toolId": "qr-reader",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "qr-local",
+  "oracleEntryId": "cand-067",
+  "fixtureFamilies": [
+    "qr-contract"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "iso-qr-18004",
+    "strumentiutili-lane05",
+    "strumentiutili-quality",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "qr-contract",
+      "path": "quality/fixtures/qr-contract/vectors.json"
+    }
+  ],
+  "oracleCondition": {
+    "confidence": "high",
+    "unresolvedGap": "ISO normative text is paywalled; do not fabricate unavailable vectors. Independent decode remains mandatory.",
+    "resolution": "no unavailable vector is reproduced and an independent decode is enforced: the reader locates finder patterns, solves a perspective transform, reads the symbol's own format field and verifies the syndromes before returning a byte",
+    "boundSources": [
+      {
+        "source": "ISO/IEC 18004:2024",
+        "verifiedOn": "2026-09-23"
+      }
+    ]
+  },
+  "browserContract": {
+    "assertions": [
+      "an unreadable matrix is refused with an Italian message rather than decoded into invented text",
+      "symbol generated in the browser, rasterised from that SVG, and decoded back to the exact payload with syndromes verified"
+    ],
+    "outputSha256": [
+      "ce7b80c029aafa76b20391599a8a90c011ac15b6fc89ae1e7dc34513bb01a064",
+      "6d83ce307fae2a4c2aefcaff1d98f2fb7104c0a5487d044f64b605eebf9903aa"
+    ],
+    "locality": "zero external, non-GET or task-body requests after task start",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabelled interactive form control"
+  },
+  "toolInvariants": {
+    "invariants": [
+      "the mask is read from the symbol's own format field",
+      "a corrupted symbol is refused instead of decoded",
+      "no platform barcode API is used anywhere in the read path"
+    ],
+    "observed": {
+      "version": 2,
+      "maskFromFormatInformation": true,
+      "damagedSymbolError": "QR_ERROR_CORRECTION_FAILED"
+    }
+  },
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "oracle/manifest maintenance class alignment",
+    "all declared fixture families resolve from the canonical fixture index",
+    "every published number the tool states names its source and verification date",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance",
+    "the mask is read from the symbol's own format field",
+    "a corrupted symbol is refused instead of decoded",
+    "no platform barcode API is used anywhere in the read path"
+  ],
+  "identities": {
+    "manifestSha256": "4cf847d676ce59e5b5ddec2567f55898c8695324f350709000439dd585b9c2fa",
+    "moduleSha256": "ebca927091e620c7d4c0a7850f3820aa68f0d9833bd50b2c01e475762aad6bad",
+    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "4aa9763fff934f0bd6d9058378c49c1ccb2b3f1bad7116a1dd78b7bea18f8092",
+    "acceptanceScriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
+    "unitTestsSha256": "54d90b1a9abc18bd31e33b9a0ea6ad35818552b1825a354689bc5141e8e3969a",
+    "fixture:qr-contract:sha256": "3e2f322fa486002aa247a2b9f374233f82bcbf4e1ce42951e9bd63950e92c8d5"
+  }
+}

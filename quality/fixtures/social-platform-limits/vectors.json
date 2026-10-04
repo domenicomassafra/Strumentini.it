@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "provenance": "Hand-transcribed public limits plus the platform's own published counting rule. No platform markup, artwork or corpus content is copied: the values are numeric facts named after the guidance page that publishes them, and the X weighted-length vectors are worked by hand from the documented ranges.",
+  "as_of": "2026-09-23",
+  "platforms": [
+    {
+      "id": "x",
+      "limit": 280,
+      "source": "X Help Center — Counting characters",
+      "verifiedOn": "2026-09-23",
+      "counting": "xWeighted",
+      "scopeIt": "lunghezza del post",
+      "note": "Conto ponderato: i caratteri CJK valgono 2 e ogni link vale 23."
+    },
+    {
+      "id": "linkedin",
+      "limit": 3000,
+      "source": "LinkedIn Help — post character limits",
+      "verifiedOn": "2026-09-23",
+      "counting": "codePoints",
+      "scopeIt": "lunghezza del post"
+    },
+    {
+      "id": "instagram",
+      "limit": 2200,
+      "source": "Instagram Help Centre — caption length",
+      "verifiedOn": "2026-09-23",
+      "counting": "codePoints",
+      "scopeIt": "didascalia"
+    },
+    {
+      "id": "facebook",
+      "limit": 63206,
+      "source": "Facebook Help — post length",
+      "verifiedOn": "2026-09-23",
+      "counting": "codePoints",
+      "scopeIt": "lunghezza del post"
+    },
+    {
+      "id": "youtube",
+      "limit": 100,
+      "source": "YouTube Help — video title and description limits",
+      "verifiedOn": "2026-09-23",
+      "counting": "codePoints",
+      "scopeIt": "titolo del video"
+    },
+    {
+      "id": "tiktok",
+      "limit": 2200,
+      "source": "TikTok Support — caption length",
+      "verifiedOn": "2026-09-23",
+      "counting": "codePoints",
+      "scopeIt": "didascalia"
+    },
+    {
+      "id": "mastodon",
+      "limit": 500,
+      "source": "Mastodon documentation — status character limit",
+      "verifiedOn": "2026-09-23",
+      "counting": "codePoints",
+      "scopeIt": "lunghezza del post, secondo il limite dell'istanza",
+      "note": "Il limite è impostato dall'istanza, non dalla piattaforma: 500 è il valore più comune."
+    },
+    {
+      "id": "bluesky",
+      "limit": 300,
+      "source": "Bluesky — post character limit",
+      "verifiedOn": "2026-09-23",
+      "counting": "codePoints",
+      "scopeIt": "lunghezza del post"
+    }
+  ],
+  "x_weighted": [
+    {
+      "name": "ascii",
+      "text": "Hello world",
+      "codePoints": 11,
+      "weighted": 11
+    },
+    {
+      "name": "un singolo carattere CJK vale due",
+      "text": "世",
+      "codePoints": 1,
+      "weighted": 2
+    },
+    {
+      "name": "due caratteri CJK",
+      "text": "世界",
+      "codePoints": 2,
+      "weighted": 4
+    },
+    {
+      "name": "hangul vale due",
+      "text": "한글",
+      "codePoints": 2,
+      "weighted": 4
+    },
+    {
+      "name": "katakana vale due",
+      "text": "ひらがな",
+      "codePoints": 4,
+      "weighted": 8
+    },
+    {
+      "name": "accenti latini valgono uno",
+      "text": "Ciao, àèìòù",
+      "codePoints": 11,
+      "weighted": 11
+    },
+    {
+      "name": "emoji fuori dagli intervalli CJK vale uno",
+      "text": "a😀b",
+      "codePoints": 3,
+      "weighted": 3
+    },
+    {
+      "name": "supplementary-plane-emoji-counts-as-one",
+      "text": "😀",
+      "codePoints": 1,
+      "weighted": 1
+    },
+    {
+      "name": "un link vale ventitré",
+      "text": "https://example.com/a",
+      "codePoints": 21,
+      "weighted": 23
+    },
+    {
+      "name": "due link",
+      "text": "https://a.example/ https://b.example/",
+      "codePoints": 37,
+      "weighted": 47
+    },
+    {
+      "name": "testo misto con link",
+      "text": "Vedi 世界 https://a.example/x poi ここ",
+      "codePoints": 34,
+      "weighted": 42
+    },
+    {
+      "name": "vuoto",
+      "text": "",
+      "codePoints": 0,
+      "weighted": 0
+    },
+    {
+      "name": "solo spazi",
+      "text": "   ",
+      "codePoints": 3,
+      "weighted": 3
+    },
+    {
+      "name": "sotto il limite",
+      "text": "ciao",
+      "codePoints": 4,
+      "weighted": 4
+    }
+  ],
+  "boundaries": [
+    {
+      "name": "esattamente al limite",
+      "platform": "x",
+      "text_repeat": "a",
+      "repeat": 280,
+      "within_limit": true
+    },
+    {
+      "name": "una unità oltre il limite",
+      "platform": "x",
+      "text_repeat": "a",
+      "repeat": 281,
+      "within_limit": false
+    },
+    {
+      "name": "sopra il limite per il conteggio ponderato",
+      "platform": "x",
+      "text_repeat": "世",
+      "repeat": 141,
+      "within_limit": false
+    }
+  ]
+}
