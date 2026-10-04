@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "domain_identity": "solo hostname di URL HTTP o HTTPS, minuscolo; le credenziali non fanno parte dell'identita e non sono conservate",
+    "frequency": "count conta le occorrenze, uniqueUrls conta gli URL distinti per dominio",
+    "invalid_inputs": "un valore che non e un URL HTTP o HTTPS e elencato in invalid, non scartato in silenzio",
+    "evidence_columns": "title, url, date, source, doi, notes",
+    "evidence_source_fallback": "senza source esplicito la fonte e l'hostname dell'URL",
+    "csv_injection_guard": "una cella che inizia con = + - @ preceduta da spazi di controllo viene prefissata con un apice",
+    "csv_quoting": "RFC 4180: virgolette doppie attorno alle celle con virgola, apici o a capo, apici interni raddoppiati",
+    "empty_rows": "una riga senza nessun campo riconosciuto e contata e il suo indice (in base 1) e elencato",
+    "pack_canonical_payload": "nome del pacchetto, newline, ID strumenti unici in ordine alfabetico, newline finale",
+    "pack_ids": "solo ID strumenti in minuscolo con trattini; un pacchetto vuoto e rifiutato"
+  },
+  "domain_vectors": [
+    {
+      "name": "occurrences and distinct URLs are counted separately and invalid values are reported",
+      "input": [
+        "https://example.org/a",
+        "https://EXAMPLE.org/b",
+        "https://example.org/a?utm_source=nota",
+        "not a url",
+        "javascript:alert(1)"
+      ],
+      "total": 3,
+      "unique": 1,
+      "invalidCount": 2,
+      "invalid": [
+        "not a url",
+        "javascript:alert(1)"
+      ],
+      "domains": [
+        {
+          "domain": "example.org",
+          "count": 3,
+          "uniqueUrls": 3,
+          "urls": [
+            "https://example.org/a",
+            "https://example.org/a?utm_source=nota",
+            "https://example.org/b"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "domains are ordered by frequency then alphabetically",
+      "input": [
+        "https://b.example/a",
+        "https://a.example/a",
+        "https://b.example/b"
+      ],
+      "total": 3,
+      "unique": 2,
+      "invalidCount": 0,
+      "domain_order": [
+        "b.example",
+        "a.example"
+      ]
+    },
+    {
+      "name": "credentials are redacted and never reach the output",
+      "input": [
+        "https://user:pass@example.org/x"
+      ],
+      "total": 1,
+      "unique": 1,
+      "output_must_not_contain": "pass",
+      "domains": [
+        {
+          "domain": "example.org",
+          "count": 1,
+          "uniqueUrls": 1,
+          "urls": [
+            "https://example.org/x"
+          ]
+        }
+      ],
+      "invalidCount": 0
+    },
+    {
+      "name": "a subdomain is a different source from its registrable domain",
+      "input": [
+        "https://www.example.org/a",
+        "https://example.org/b"
+      ],
+      "total": 2,
+      "unique": 2,
+      "domain_order": [
+        "example.org",
+        "www.example.org"
+      ],
+      "invalidCount": 0
+    },
+    {
+      "name": "a host that only parses because the engine percent-encodes it is not a source",
+      "input": [
+        "not a url",
+        "https://ok.example/a"
+      ],
+      "total": 1,
+      "unique": 1,
+      "invalidCount": 1,
+      "invalid": [
+        "not a url"
+      ],
+      "domain_order": [
+        "ok.example"
+      ]
+    },
+    {
+      "name": "an empty input is an empty result, not an error",
+      "input": [],
+      "total": 0,
+      "unique": 0,
+      "invalidCount": 0,
+      "domains": []
+    }
+  ],
+  "evidence_vectors": [
+    {
+      "name": "the CSV header is fixed and a formula-like cell is neutralised",
+      "input": [
+        {
+          "title": "A",
+          "url": "https://example.org/a",
+          "date": "2026",
+          "doi": "10.1000/182"
+        },
+        {
+          "foo": 1
+        },
+        {
+          "title": "=SUM(A1)",
+          "notes": "with, comma"
+        }
+      ],
+      "csv": "title,url,date,source,doi,notes\nA,https://example.org/a,2026,example.org,10.1000/182,\n,,,,,\n'=SUM(A1),,,,,\"with, comma\"",
+      "rowCount": 3,
+      "emptyRowCount": 1,
+      "emptyRowIndexes": [
+        2
+      ]
+    },
+    {
+      "name": "an explicit source wins over the URL hostname",
+      "input": [
+        {
+          "title": "A",
+          "url": "https://example.org/a",
+          "source": "Rivista"
+        }
+      ],
+      "csv": "title,url,date,source,doi,notes\nA,https://example.org/a,,Rivista,,",
+      "rowCount": 1,
+      "emptyRowCount": 0,
+      "emptyRowIndexes": []
+    },
+    {
+      "name": "a note containing a double quote is escaped",
+      "input": [
+        {
+          "title": "A",
+          "notes": "he said \"hi\""
+        }
+      ],
+      "csv": "title,url,date,source,doi,notes\nA,,,,,\"he said \"\"hi\"\"\"",
+      "rowCount": 1,
+      "emptyRowCount": 0,
+      "emptyRowIndexes": []
+    },
+    {
+      "name": "no records means a header-only CSV",
+      "input": [],
+      "csv": "title,url,date,source,doi,notes",
+      "rowCount": 0,
+      "emptyRowCount": 0,
+      "emptyRowIndexes": []
+    }
+  ],
+  "pack_vectors": [
+    {
+      "name": "ids are deduplicated, sorted and hashed over the canonical payload",
+      "name_input": "Ricerca di base",
+      "tools_input": [
+        "quote-counter",
+        "doi-normalizer",
+        "quote-counter"
+      ],
+      "tools": [
+        "doi-normalizer",
+        "quote-counter"
+      ],
+      "count": 2,
+      "canonicalPayload": "Ricerca di base\ndoi-normalizer\nquote-counter\n",
+      "checksum_algorithm": "SHA-256",
+      "checksum_length": 64,
+      "checksum_hex": true
+    },
+    {
+      "name": "the id order in the input does not change the payload",
+      "name_input": "Ricerca di base",
+      "tools_input": [
+        "doi-normalizer",
+        "quote-counter"
+      ],
+      "tools": [
+        "doi-normalizer",
+        "quote-counter"
+      ],
+      "count": 2,
+      "canonicalPayload": "Ricerca di base\ndoi-normalizer\nquote-counter\n",
+      "checksum_algorithm": "SHA-256",
+      "checksum_length": 64,
+      "checksum_hex": true
+    },
+    {
+      "name": "an empty pack is rejected",
+      "name_input": "Ricerca di base",
+      "tools_input": [],
+      "throws": "INVALID_INPUT:tools",
+      "checksum_algorithm": "SHA-256",
+      "checksum_length": 64,
+      "checksum_hex": true
+    },
+    {
+      "name": "an id that is not a tool slug is rejected",
+      "name_input": "Ricerca di base",
+      "tools_input": [
+        "Quote Counter"
+      ],
+      "throws": "INVALID_INPUT:tool",
+      "checksum_algorithm": "SHA-256",
+      "checksum_length": 64,
+      "checksum_hex": true
+    }
+  ],
+  "properties": [
+    "the checksum is a function of the canonical payload only, so it can be recomputed outside the tool",
+    "two different pack names with the same tools produce different payloads"
+  ]
+}

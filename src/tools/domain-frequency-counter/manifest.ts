@@ -13,7 +13,7 @@ export const domainFrequencyCounterManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-195", fixtureFamilies: ["query-params"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-195", fixtureFamilies: ["research-source-inventory"] },
 } as const satisfies ToolManifest;
 
 export default domainFrequencyCounterManifest;

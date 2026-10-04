@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "25c6a45e56c5db403c56299bc08ea54e351329ad75345b5cb61f2e71b42dd39a",
+  "toolId": "date-source-normalizer",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "research-knowledge",
+  "engineVersion": "research-knowledge-v2",
+  "oracleEntryId": "cand-193",
+  "oracleConfidence": "high",
+  "fixtureFamilies": [
+    "research-date-normalization"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "rfc3339",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "research-date-normalization",
+      "path": "quality/fixtures/research-date-normalization/vectors.json",
+      "sha256": "fbbddf53bc0950f6e892784da16b5f74f45341970481722478b0fceb4dd79f2f",
+      "provenance": "hand-worked",
+      "license_or_rights": "Hand-worked date literals authored for StrumentiUtili.it; no external corpus copied.",
+      "schemaVersion": 1
+    }
+  ],
+  "checksumAlgorithm": "SHA-256",
+  "browserContract": {
+    "assertion": "2026-09-24",
+    "outputSha256": "aafbcfb3ec755ba6e4965d56bbf26da7cec983cb7e8ce44badbbf389b8f234db",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls",
+    "publicErrorState": "typed-italian-error"
+  },
+  "determinism": "two identical runs produced byte-identical output and an aborted run produced nothing",
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap",
+    "oracle/manifest maintenance class alignment",
+    "every declared fixture family resolves from the canonical fixture index with recorded provenance",
+    "family unit tests cover the hand-worked vectors, the adversarial cases and the Italian public copy",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance plus the declared boundary state",
+    "repeat-run determinism and abort propagation re-proved on the committed source"
+  ],
+  "identities": {
+    "manifestSha256": "4e60c45af9a766374337e0acf6f2cf69f149dca71da9b9f18f1ce9bcd3408021",
+    "engineSha256": "ba102e9d78d6bc9c9cdb6a6deab5ca78d474d0a286d14f1e0666c4dd19929f78",
+    "fixtureIndexSha256": "98f71d801f8d4bda7c191e98d89582b4e08ef99ea6ffb355b44c17de653c94c8",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+    "acceptanceScriptSha256": "8dbb68f779a4cabd67c3ac1b94e626074c3ebdcaf6f465126cf7c8b8101845fd",
+    "unitTestsSha256": "46dcd92ee24212e7d895aa2c8c872eddd36b43ddd26b519b026edbdd861dbb00",
+    "fixture:research-date-normalization:sha256": "fbbddf53bc0950f6e892784da16b5f74f45341970481722478b0fceb4dd79f2f"
+  }
+}

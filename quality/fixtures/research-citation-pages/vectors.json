@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "styles": "preset StrumentiUtili.it per citazioni di pagina; nessuna conformita a guide di stile e dichiarata",
+    "page_separator": "en dash U+2013 nell'output",
+    "accepted_range_forms": ["12-15", "12--15", "12–15", "12—15"],
+    "page_prefix": "p. per una sola pagina, pp. per piu pagine; il preset Chicago omette il prefisso",
+    "page_bounds": "numeri di pagina positivi; un intervallo oltre 10000 pagine non e accettato",
+    "year_format": "quattro cifre"
+  },
+  "vectors": [
+    {
+      "name": "apa range uses the plural page prefix",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": "2026", "pages": "12-15", "style": "apa" },
+      "citation": "A. Rossi (2026). Uno studio. pp. 12–15.",
+      "pages": "12–15",
+      "pageCount": 4,
+      "pageLabel": "pp. 12–15"
+    },
+    {
+      "name": "apa single page uses the singular page prefix",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": "2026", "pages": "12", "style": "apa" },
+      "citation": "A. Rossi (2026). Uno studio. p. 12.",
+      "pages": "12",
+      "pageCount": 1,
+      "pageLabel": "p. 12"
+    },
+    {
+      "name": "mla single page keeps the singular page prefix",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": "2026", "pages": "12", "style": "mla" },
+      "citation": "A. Rossi. \"Uno studio.\" 2026, p. 12.",
+      "pages": "12",
+      "pageCount": 1,
+      "pageLabel": "p. 12"
+    },
+    {
+      "name": "mla range uses the plural page prefix",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": "2026", "pages": "12--15", "style": "mla" },
+      "citation": "A. Rossi. \"Uno studio.\" 2026, pp. 12–15.",
+      "pages": "12–15",
+      "pageCount": 4,
+      "pageLabel": "pp. 12–15"
+    },
+    {
+      "name": "chicago omits the page prefix",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": "2026", "pages": "12—15", "style": "chicago" },
+      "citation": "A. Rossi. \"Uno studio.\" 2026, 12–15.",
+      "pages": "12–15",
+      "pageCount": 4,
+      "pageLabel": "12–15"
+    },
+    {
+      "name": "discontiguous pages collapse to canonical ranges",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": "2026", "pages": "3, 5, 7-9", "style": "apa" },
+      "citation": "A. Rossi (2026). Uno studio. pp. 3, 5, 7–9.",
+      "pages": "3, 5, 7–9",
+      "pageCount": 5,
+      "pageLabel": "pp. 3, 5, 7–9"
+    },
+    {
+      "name": "repeated pages are counted once",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": "2026", "pages": "5, 5, 5", "style": "apa" },
+      "citation": "A. Rossi (2026). Uno studio. p. 5.",
+      "pages": "5",
+      "pageCount": 1,
+      "pageLabel": "p. 5"
+    },
+    {
+      "name": "numeric year is accepted as a number",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": 2026, "pages": "12-15" },
+      "citation": "A. Rossi (2026). Uno studio. pp. 12–15.",
+      "pages": "12–15",
+      "pageCount": 4,
+      "pageLabel": "pp. 12–15"
+    },
+    {
+      "name": "a reversed range is rejected instead of being silently emptied",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": "2026", "pages": "15-12" },
+      "throws": "INVALID_INPUT:pages"
+    },
+    {
+      "name": "a page number of zero is rejected",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": "2026", "pages": "0" },
+      "throws": "INVALID_INPUT:pages"
+    },
+    {
+      "name": "a two digit year is rejected",
+      "input": { "author": "A. Rossi", "title": "Uno studio", "year": "26", "pages": "12" },
+      "throws": "INVALID_INPUT"
+    },
+    {
+      "name": "a missing author is rejected",
+      "input": { "author": "  ", "title": "Uno studio", "year": "2026", "pages": "12" },
+      "throws": "INVALID_INPUT"
+    }
+  ],
+  "properties": [
+    "the canonical page list is identical for every accepted range spelling",
+    "pageCount equals the number of distinct page numbers, never the number of separators"
+  ]
+}

@@ -530,7 +530,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "pdf-page-citation-helper": {
     name: "Crea citazione di una pagina PDF",
-    summary: "Formatta una citazione di pagina o intervallo usando i dati bibliografici che inserisci.",
+    summary: "Formatta una citazione di pagina o intervallo dai dati che inserisci. APA, MLA e Chicago sono preset locali, non guide di stile ufficiali.",
   },
   "pdf-page-count-verifier": {
     name: "Conta e verifica pagine PDF",

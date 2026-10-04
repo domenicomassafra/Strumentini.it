@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "59147dfced80ae249f82c1e1773ada507ecbe971",
-  "sourceFingerprint": "b535a0f124f46b72bf2ab31949808bd0f2f6dc42401b802db6569319b03c3f99",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "25c6a45e56c5db403c56299bc08ea54e351329ad75345b5cb61f2e71b42dd39a",
   "toolId": "contact-sheet-generator",
   "runtime": {
     "location": "LOCAL",
@@ -52,7 +52,7 @@
   ],
   "identities": {
     "manifestSha256": "7f12027e689b60238d03a9a199b7f3f27dc841fc159bd10410881b368847775a",
-    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
+    "fixtureIndexSha256": "98f71d801f8d4bda7c191e98d89582b4e08ef99ea6ffb355b44c17de653c94c8",
     "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
     "browserAcceptanceSha256": "e2a70e874c71c53fa4e04c7516329644260cae7631e6d09ecfe9c7bd4535a314",
     "acceptanceScriptSha256": "35b1fa348fa5c6db793049cda565b9831c4bcd7c1e1cc3db3f83ba630b03e670",

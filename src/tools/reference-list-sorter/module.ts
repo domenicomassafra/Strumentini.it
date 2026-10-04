@@ -1,10 +1,11 @@
 import { parseCitationRecords, RESEARCH_KNOWLEDGE_ENGINE_VERSION, sortReferenceList } from "../../engines/research-knowledge";
 import type { CitationRecord } from "../../engines/research-knowledge";
 import type { ToolModule } from "../../runtime/types";
+import type { ReferenceListSorterOutput } from "./types";
 import { modeInput, recordInput } from "../research-knowledge";
 
 const module: ToolModule = {
-  run(rawInput, _context, signal) {
+  run(rawInput, _context, signal): ReferenceListSorterOutput {
     if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
     const input = recordInput(rawInput);
     const source = input.records ?? input.citations ?? input.items;

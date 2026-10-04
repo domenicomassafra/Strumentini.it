@@ -13,7 +13,7 @@ export const pdfPageCitationHelperManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-190", fixtureFamilies: ["pdf-signature"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-190", fixtureFamilies: ["research-citation-pages"] },
 } as const satisfies ToolManifest;
 
 export default pdfPageCitationHelperManifest;

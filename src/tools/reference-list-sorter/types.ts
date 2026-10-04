@@ -1,3 +1,5 @@
+import type { SortedReferenceList } from "../../engines/research-knowledge";
+
 export type ReferenceSortOrder = "author" | "year" | "title";
 
 export interface ReferenceListSorterInput {
@@ -5,11 +7,6 @@ export interface ReferenceListSorterInput {
   order?: ReferenceSortOrder;
 }
 
-export interface ReferenceListSorterOutput {
-  records: unknown[];
-  unique: unknown[];
-  order: ReferenceSortOrder;
-  inputCount: number;
-  outputCount: number;
+export type ReferenceListSorterOutput = SortedReferenceList & {
   engineVersion: string;
-}
+};

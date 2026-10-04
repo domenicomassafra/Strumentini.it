@@ -13,7 +13,7 @@ export const readingListDeduplicatorManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-199", fixtureFamilies: ["list-set-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-199", fixtureFamilies: ["research-citation-identity"] },
 } as const satisfies ToolManifest;
 
 export default readingListDeduplicatorManifest;

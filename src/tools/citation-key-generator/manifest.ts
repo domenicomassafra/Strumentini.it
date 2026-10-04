@@ -13,7 +13,7 @@ export const citationKeyGeneratorManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-188", fixtureFamilies: ["bibtex"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-188", fixtureFamilies: ["research-citation-identity", "research-bibtex-syntax", "sha2-known-answers"] },
 } as const satisfies ToolManifest;
 
 export default citationKeyGeneratorManifest;

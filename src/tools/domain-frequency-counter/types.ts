@@ -1,10 +1,9 @@
+import type { DomainFrequencyResult } from "../../engines/research-knowledge";
+
 export interface DomainFrequencyCounterInput {
   urls: string[] | string;
 }
 
-export interface DomainFrequencyCounterOutput {
-  domains: Array<{ domain: string; count: number; urls: string[] }>;
-  total: number;
-  unique: number;
+export interface DomainFrequencyCounterOutput extends DomainFrequencyResult {
   engineVersion: string;
 }

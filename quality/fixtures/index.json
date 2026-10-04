@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "family_count": 50,
+  "family_count": 57,
   "families": [
     {
       "id": "unicode-normalization",
@@ -1144,6 +1144,196 @@
         "quoted CSV, delimiter detection, encoding, selection, filtering, sorting, grouping, joins and pivots",
         "CSV/JSON/TSV conversion, transposition, profiling and chart data",
         "supplements specialized csv-rfc4180, csv-cleaning, csv-table-ops and json-csv-conversion fixtures"
+      ]
+    },
+    {
+      "id": "research-citation-identity",
+      "candidate_families": [
+        "Citation deduplicator",
+        "Reading-list deduplicator",
+        "Reference-list sorter",
+        "Citation key generator"
+      ],
+      "path": "quality/fixtures/research-citation-identity/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked bibliographic literals and ordering rules authored for StrumentiUtili.it; no external citation corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "doi-handbook",
+        "isbn-manual",
+        "whatwg-url"
+      ],
+      "coverage": [
+        "DOI/ISBN/URL identity",
+        "empty-key non-collapse",
+        "reported identity rule",
+        "stable order",
+        "surname and title-word ordering",
+        "citation key collisions"
+      ]
+    },
+    {
+      "id": "research-citation-pages",
+      "candidate_families": [
+        "PDF page citation helper"
+      ],
+      "path": "quality/fixtures/research-citation-pages/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked page-range literals and StrumentiUtili.it style presets; no style-guide text copied and no conformance claimed."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "bibtex-ctan"
+      ],
+      "coverage": [
+        "range spellings",
+        "single versus plural page prefix",
+        "discontiguous pages",
+        "rejected ranges",
+        "rejected year"
+      ]
+    },
+    {
+      "id": "research-bibtex-syntax",
+      "candidate_families": [
+        "BibTeX formatter",
+        "BibTeX deduplicator",
+        "Citation key generator"
+      ],
+      "path": "quality/fixtures/research-bibtex-syntax/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked BibTeX snippets authored for StrumentiUtili.it; no xampl.bib or third-party bibliography copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "bibtex-ctan",
+        "whatwg-url"
+      ],
+      "coverage": [
+        "directives are not entries",
+        "value concatenation without macro expansion",
+        "canonical field order",
+        "unbalanced values quoted with a warning",
+        "truncation disclosure",
+        "credential redaction",
+        "dedupe by DOI/ISBN/title"
+      ]
+    },
+    {
+      "id": "research-ris-bibtex-conversion",
+      "candidate_families": [
+        "RIS/BibTeX converter"
+      ],
+      "path": "quality/fixtures/research-ris-bibtex-conversion/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked RIS and BibTeX records authored for StrumentiUtili.it; no vendor RIS corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "ris-policy",
+        "bibtex-ctan"
+      ],
+      "coverage": [
+        "tag mapping",
+        "repeated author tags",
+        "SP/EP pages",
+        "unmapped tag disclosure",
+        "orphan tag lines",
+        "truncated record",
+        "semantic round trip"
+      ]
+    },
+    {
+      "id": "research-date-normalization",
+      "candidate_families": [
+        "Date-source normalizer"
+      ],
+      "path": "quality/fixtures/research-date-normalization/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked date literals authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "rfc3339"
+      ],
+      "coverage": [
+        "Italian and English month names",
+        "abbreviations",
+        "numeric ambiguity disclosure",
+        "calendar validity",
+        "leap rules",
+        "Italian rejection reasons"
+      ]
+    },
+    {
+      "id": "research-source-inventory",
+      "candidate_families": [
+        "Domain/source frequency counter",
+        "Evidence-table builder",
+        "Research-pack manifest"
+      ],
+      "path": "quality/fixtures/research-source-inventory/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked URL lists, CSV rows and pack manifests authored for StrumentiUtili.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "rfc4180",
+        "whatwg-url"
+      ],
+      "coverage": [
+        "occurrences versus distinct URLs",
+        "invalid input disclosure",
+        "credential redaction",
+        "CSV quoting and injection guard",
+        "empty row disclosure",
+        "canonical pack payload"
+      ]
+    },
+    {
+      "id": "research-text-frequency",
+      "candidate_families": [
+        "Notes deduplicator",
+        "Vocabulary/frequency analyzer"
+      ],
+      "path": "quality/fixtures/research-text-frequency/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "project-policy",
+        "license_or_rights": "Hand-worked Italian and English literals plus the declared StrumentiUtili.it stopword policy; no external corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "unicode-uax15",
+        "unicode-uax29"
+      ],
+      "coverage": [
+        "case and whitespace folding",
+        "NFC equality",
+        "scalar input preserved",
+        "code-point length",
+        "Italian and English stopwords",
+        "clamped settings disclosure"
       ]
     }
   ]

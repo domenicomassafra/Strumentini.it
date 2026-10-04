@@ -10,7 +10,7 @@
     },
     "fixtureIndex": {
       "path": "quality/fixtures/index.json",
-      "sha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d"
+      "sha256": "98f71d801f8d4bda7c191e98d89582b4e08ef99ea6ffb355b44c17de653c94c8"
     },
     "sourceRegistry": {
       "path": "quality/oracles/sources.json",
@@ -27,8 +27,8 @@
     "fixtures": {
       "status": "PASS",
       "path": "quality/fixtures/index.json",
-      "familyCount": 50,
-      "sha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d"
+      "familyCount": 57,
+      "sha256": "98f71d801f8d4bda7c191e98d89582b4e08ef99ea6ffb355b44c17de653c94c8"
     },
     "privacy": {
       "status": "DECLARED",
@@ -103,7 +103,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "4d85eaf95e1fc317738e192d4c2f088a13b10d632a6d2295af730e5954edcc8c",
+          "sha256": "28c680cb97350bee3bbe01d1571c3fc4a33814bb364f74e32635fc479e03f197",
           "status": "PARTIAL"
         }
       ],
@@ -117,13 +117,13 @@
   },
   "summary": {
     "statusCounts": {
-      "GOLD": 168,
+      "GOLD": 181,
       "PARTIAL": 1,
-      "IMPLEMENTED_UNVERIFIED": 31
+      "IMPLEMENTED_UNVERIFIED": 18
     },
-    "certificationGoldCount": 168,
-    "releaseEligibleGoldCount": 168,
-    "releaseBlockedCount": 32,
+    "certificationGoldCount": 181,
+    "releaseEligibleGoldCount": 181,
+    "releaseBlockedCount": 19,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 200,
     "fixtureBoundCount": 200,
@@ -255,7 +255,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/add-subtract-days.gold.json",
-          "sha256": "b924337077105c60659d3f11f507c34d0ae6d1fded6149b3e407f2bbaa166f14",
+          "sha256": "2a09e523c6c95421de4218cfc52d45b63375e03b1965414d2113d2636e8c403f",
           "status": "PASS"
         },
         {
@@ -393,7 +393,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/age-date-anniversary.gold.json",
-          "sha256": "b06c4f0938f20aefaf09c2fa9cea6f20b0f164e7e6d7086d914d6f03ed23fda1",
+          "sha256": "22182ca0418c2ebb17b80b7844a987d14a08792422eff5900ac9787139861f49",
           "status": "PASS"
         },
         {
@@ -627,7 +627,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/aspect-ratio-calculator.gold.json",
-          "sha256": "dd8a4d723d5120f3580e48a493e04a8511500a22947f1cfab17136a9f6fea1ff",
+          "sha256": "3cd9de60052f36b2c63ad49a004994ed61e59df0bdd8b6ee26930139a930bbb1",
           "status": "PASS"
         },
         {
@@ -759,7 +759,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/base64-codec.gold.json",
-          "sha256": "b1975450c1cb5cfb6e9790a4567bb77ce92ecf719375f88915b7036ecba6ff0f",
+          "sha256": "55aaa478f2474de737a92216654350a097ae3bf7abb39821e3f1422573f06d09",
           "status": "PASS"
         },
         {
@@ -883,7 +883,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/batch-checksum-manifest.gold.json",
-          "sha256": "904b107f708de8032f6aa92c5c3353972d1ba97755d043d29e3c0836c6ab4654",
+          "sha256": "1ac58e46a8264213a7d707ac83e6428dcaa3c0b4f7d218c2c6b2765cb861da81",
           "status": "PASS"
         },
         {
@@ -998,25 +998,26 @@
       "name": "BibTeX Deduplicator",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/bibtex-deduplicator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/bibtex-deduplicator/manifest.ts",
-          "sha256": "603121581752c732a6bd96223cdcd0a19c7b02560444ce6f68641fb40eac9e90"
+          "sha256": "8a6aefc58c6e99712f3073c8023b1f2b7cb8681977d666fe74f5b9279e88e132"
         },
         "module": {
           "path": "src/tools/bibtex-deduplicator/module.ts",
-          "sha256": "04d1bd0ba018666faa01b322690f8efedeb423eb63fe5a45a7dd3bb4c97c7a15"
+          "sha256": "70a993a65638482dd37239061843294ae7cd68f5814d31118b1fb39d8d762697"
         },
         "page": {
           "path": "src/pages/tools/bibtex-deduplicator.astro",
           "sha256": "c7c616c587cd4559be8f52fdc5f5a3a1b411b374a7f8fa6c3fc91777aeb262d7"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -1029,7 +1030,7 @@
           "fixture-policy",
           "bibtex-ctan"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -1041,13 +1042,16 @@
       },
       "fixtures": [
         {
-          "id": "bibtex",
-          "path": "quality/fixtures/bibtex/vectors.json",
-          "provenance": "synthetic-local",
+          "id": "research-bibtex-syntax",
+          "path": "quality/fixtures/research-bibtex-syntax/vectors.json",
+          "provenance": "hand-worked",
           "truthSources": [
-            "bibtex-ctan"
+            "strumentiutili-quality",
+            "fixture-policy",
+            "bibtex-ctan",
+            "whatwg-url"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -1058,16 +1062,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -1076,16 +1101,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/bibtex-deduplicator.gold.json",
+          "sha256": "3a97f0b599cf78c61c010769b999052e7c3f52bc1979b1000046f62a72a37423",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "bibtex-formatter",
@@ -1093,25 +1124,26 @@
       "name": "BibTeX Formatter",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/bibtex-formatter.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/bibtex-formatter/manifest.ts",
-          "sha256": "d1e7d487fc010baa52154754f97dec86c3c6767d6e6ea2946aeb8e668f133ed8"
+          "sha256": "e17c8df417068d96dcf0477c7bc1a4906fe6bbd220d4416dcd5c2b8d038cb0e3"
         },
         "module": {
           "path": "src/tools/bibtex-formatter/module.ts",
-          "sha256": "cb80ba43d52f2afb735968edb5076c45bb4249b5195f1be45c5293f80894fda0"
+          "sha256": "22b000ae7a03dcce3775e63387123726e6540a03f8e4a627ed10cda9998d59bf"
         },
         "page": {
           "path": "src/pages/tools/bibtex-formatter.astro",
           "sha256": "6029a52a223c0aa34c7a65c89da367aca533dcc68c87e3675c037356be48833e"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -1124,7 +1156,7 @@
           "fixture-policy",
           "bibtex-ctan"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -1136,13 +1168,16 @@
       },
       "fixtures": [
         {
-          "id": "bibtex",
-          "path": "quality/fixtures/bibtex/vectors.json",
-          "provenance": "synthetic-local",
+          "id": "research-bibtex-syntax",
+          "path": "quality/fixtures/research-bibtex-syntax/vectors.json",
+          "provenance": "hand-worked",
           "truthSources": [
-            "bibtex-ctan"
+            "strumentiutili-quality",
+            "fixture-policy",
+            "bibtex-ctan",
+            "whatwg-url"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -1153,16 +1188,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -1171,16 +1227,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/bibtex-formatter.gold.json",
+          "sha256": "8c9a45cd1b144154277e69b4f37046ba2df1671e2e3ec3028bd28b0f79a11cbe",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "break-even",
@@ -1292,7 +1354,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/break-even.gold.json",
-          "sha256": "5edb4b318588ace119f51ad890a033383352a15c264a7d60999edca8c060e572",
+          "sha256": "578b0efeccb8c71c6567cceec05c3fa4acf9d1d2382874045f364cc6f4d1636f",
           "status": "PASS"
         },
         {
@@ -1424,7 +1486,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/bulk-domain-extractor.gold.json",
-          "sha256": "0b5f5af5c666cbad2ecf22e9d1f0d908a037968ee3ed66bfe149849dec0a11b9",
+          "sha256": "3635cc6b9ecf037d773aa07525b4179dd1bed0f8387a16a409ca8edbea525a55",
           "status": "PASS"
         },
         {
@@ -1563,7 +1625,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-day.gold.json",
-          "sha256": "184d3652894d51e2ddcb436038f2d2a1542006163798b21fe8ced9326744f39b",
+          "sha256": "8048c11e4c11051cc6672c2f9073d8b3f20bd3ace4a7edddaf78caf2f14ddef8",
           "status": "PASS"
         },
         {
@@ -1707,7 +1769,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/calendar-date-list-generator.gold.json",
-          "sha256": "bb0817185f0e939cd07b6c7e698bac0a71f23a1613090d9a79d3ba9be32509e0",
+          "sha256": "6a638a1592d18d19d9a0823cec48458c61e2d0808d116ca4eb92fdb7ef309702",
           "status": "PASS"
         },
         {
@@ -1828,7 +1890,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/campaign-name.gold.json",
-          "sha256": "1ee7c5acccc63ed0c368ab58e9814b553fee97df86359aee2d7288a1395a8461",
+          "sha256": "a6086b763ffbb3b01985cf1139dd3526155ebbe628e27cda72ed4d41b6aafb40",
           "status": "PASS"
         },
         {
@@ -1966,7 +2028,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/canonical-url-helper.gold.json",
-          "sha256": "5b1eee7e3e29a8c616ac2e82d4f5c02ede9370242cc27d1e5194c1369232ee1d",
+          "sha256": "4003f6b8b02f0221a1f660d3a43c9938f9ed304b6f1623f852c4edab28af742b",
           "status": "PASS"
         },
         {
@@ -2089,7 +2151,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/capacity-planner.gold.json",
-          "sha256": "f1bb4b31826f61671377d18e53fbd3473ea27be4793848065f182c35ca316808",
+          "sha256": "b702924fe33b6628d0fcc3b4c4cb373cdf64ccc7960534acf7d0f766f3510c41",
           "status": "PASS"
         },
         {
@@ -2223,7 +2285,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/case-converter.gold.json",
-          "sha256": "f23ada51390999beaef07837ef7405fe7f286332049b72faf0d0d97153ed8196",
+          "sha256": "5bb47a8188072b34e6f6724255f1b5100c3cce123c0cbb3b39231f065cfe4571",
           "status": "PASS"
         },
         {
@@ -2347,7 +2409,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/checksum-verifier.gold.json",
-          "sha256": "606f1e1aad2675d2659757b00f655e03dfcf960396df8a7ec8a9de0ccc56f40c",
+          "sha256": "023cff6025b78a32deb155bd30f2d941147b600f48096b7f11acb9b375b0ae36",
           "status": "PASS"
         },
         {
@@ -2366,25 +2428,26 @@
       "name": "Citation Deduplicator",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/citation-deduplicator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/citation-deduplicator/manifest.ts",
-          "sha256": "9c0a4669e1c352326088f98eda8a601ea1d3d7d662620d06584a3b4f233f2179"
+          "sha256": "226ebf39d96eba494186cc6098ddef14eac22e69dcd44a1e18f8d2c6e3dd1c55"
         },
         "module": {
           "path": "src/tools/citation-deduplicator/module.ts",
-          "sha256": "2caccc974c37d072cfb4bb041e2778cfa8aa5f53b72a6b23cc907a160ce587bc"
+          "sha256": "860f9a53a033b4fd24131a273eaae2e6af1352fb515ea912dfe67ce1134fa3e5"
         },
         "page": {
           "path": "src/pages/tools/citation-deduplicator.astro",
           "sha256": "218d065c083df41810d675ac3d1e6c0ccbbc74ba4bbb36d9cd301c9a9ef6470d"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -2396,7 +2459,7 @@
           "strumentiutili-quality",
           "fixture-policy"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -2408,14 +2471,17 @@
       },
       "fixtures": [
         {
-          "id": "list-set-ops",
-          "path": "quality/fixtures/list-set-ops/vectors.json",
+          "id": "research-citation-identity",
+          "path": "quality/fixtures/research-citation-identity/vectors.json",
           "provenance": "hand-worked",
           "truthSources": [
+            "strumentiutili-quality",
             "fixture-policy",
-            "strumentiutili-lane05"
+            "doi-handbook",
+            "isbn-manual",
+            "whatwg-url"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -2426,16 +2492,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -2444,16 +2531,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/citation-deduplicator.gold.json",
+          "sha256": "9c7501c98a9a6fe2f71a734bb5dfb967fe5484121c842a54d7a0c302275b71ca",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "citation-key-generator",
@@ -2461,25 +2554,26 @@
       "name": "Citation Key Generator",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/citation-key-generator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/citation-key-generator/manifest.ts",
-          "sha256": "9f2f678a7a99cda071b92e60b8ac15e2e5a1a70eb52ed09399432fcebb568a70"
+          "sha256": "bc7355a4a37bc19040adef227a285e11a37c06a68ab0ad2722acac815bf5ec98"
         },
         "module": {
           "path": "src/tools/citation-key-generator/module.ts",
-          "sha256": "d032afdc07c668e81653f1de801c6fc646380269cad2f284df1c051d9876bce3"
+          "sha256": "4bd6fcf9dcab1ccfae4761e90ef15e48268020a90f5100dfaa60488799c39010"
         },
         "page": {
           "path": "src/pages/tools/citation-key-generator.astro",
           "sha256": "f0dc98b3b2f2d48aaa88b7a3faf74379ba450e50e03ef0aa99835207052beb4b"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -2491,7 +2585,7 @@
           "strumentiutili-quality",
           "fixture-policy"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -2503,13 +2597,39 @@
       },
       "fixtures": [
         {
-          "id": "bibtex",
-          "path": "quality/fixtures/bibtex/vectors.json",
-          "provenance": "synthetic-local",
+          "id": "research-citation-identity",
+          "path": "quality/fixtures/research-citation-identity/vectors.json",
+          "provenance": "hand-worked",
           "truthSources": [
-            "bibtex-ctan"
+            "strumentiutili-quality",
+            "fixture-policy",
+            "doi-handbook",
+            "isbn-manual",
+            "whatwg-url"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
+        },
+        {
+          "id": "research-bibtex-syntax",
+          "path": "quality/fixtures/research-bibtex-syntax/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "bibtex-ctan",
+            "whatwg-url"
+          ],
+          "status": "VERIFIED"
+        },
+        {
+          "id": "sha2-known-answers",
+          "path": "quality/fixtures/sha2-known-answers/vectors.json",
+          "provenance": "spec-vector",
+          "truthSources": [
+            "nist-fips180-4",
+            "openssl-cli"
+          ],
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -2520,16 +2640,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -2538,16 +2679,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/citation-key-generator.gold.json",
+          "sha256": "8abfea5b33a8fcf50d47d113af1fcd6d7557d71d160a31e4aa3299dba01e7472",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "clean-zip-creator",
@@ -2660,7 +2807,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/clean-zip-creator.gold.json",
-          "sha256": "948a10bcbd6db113487c3dfb6dd9f641b59107fe89b4ab4acae592f4a3c54ebf",
+          "sha256": "bf0d708c6f08ffdeec372dc6e59c82b4552dbcc667678a66e903025c27db4df0",
           "status": "PASS"
         },
         {
@@ -2793,7 +2940,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/client-handoff-index-generator.gold.json",
-          "sha256": "78d98f9dd19251b5910877cd19dd39c762b4a6c6dbfdce5ea16dacec3b2fa465",
+          "sha256": "42f3b0e1f66a7ba34e5765b871c4ff3eec685c0aa1efb52feff4de5a63ab4704",
           "status": "PASS"
         },
         {
@@ -2929,7 +3076,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/color-converter.gold.json",
-          "sha256": "955c670e1d7cc8dc3619ff9a8409e88b2761305efa5be1c8dae6c9f40226a46a",
+          "sha256": "6b83f9af2dfefe0e4e9b12f39dbd199d4b726574424ea8a1ef2407af4f731b4d",
           "status": "PASS"
         },
         {
@@ -3065,7 +3212,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/color-picker.gold.json",
-          "sha256": "930a40446f71e06fb5c92fa6b19a1d67f447dc6d6d52678e5ce0bba6db20f722",
+          "sha256": "64ff81cc2b166749f904335c5f7a3d4cc28dd2c8b9dacae4d3e7a8b073398caf",
           "status": "PASS"
         },
         {
@@ -3204,7 +3351,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/column-type-profiler.gold.json",
-          "sha256": "e5c93018992bdf5df778dd4e6c88b0deb91856e9410f0fe90c3b8d64d4e67965",
+          "sha256": "809471b0900a1cf8c2800e74519f4f9d29812125154ba3d3f7a59587eaaf90ba",
           "status": "PASS"
         },
         {
@@ -3341,7 +3488,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/contact-sheet-generator.gold.json",
-          "sha256": "f0d33595f28daebd1d207b061fb3a14c3cd5f0eef0a57109b8e429edc3e293c4",
+          "sha256": "2066239200e3bfb83562ace33904f06b38e6ec08094b62ba72dcc6f924efbdea",
           "status": "PASS"
         },
         {
@@ -3478,7 +3625,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/contrast-checker.gold.json",
-          "sha256": "1e5e5280128d2ac63653b4310aba63fa4e5aff50d11e7915021910ce98b0990a",
+          "sha256": "f62805baa56f8ef8f962ce88f8ed4b5b63c339c38f9773c50e51fe3fb2ceb960",
           "status": "PASS"
         },
         {
@@ -3600,7 +3747,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/conversion-rate-scenario.gold.json",
-          "sha256": "11f48ef8fd270c578efd6402dbcc4a859218acbc899bf849070a49b9d7090454",
+          "sha256": "7e73353cf0af8c7847d12a49d532012551870f8989d93dcd78f6b5b26715e1fb",
           "status": "PASS"
         },
         {
@@ -3722,7 +3869,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/cpa-cpc-cpm-calculator.gold.json",
-          "sha256": "33070a6b113ac7f67441cda7a2a6be9625057e9a64badb329a7eff2bf2511e26",
+          "sha256": "5ff2d516aaaa4be97283b37815672d95c2b3f2cf2a9d6a7068f4955f915f21da",
           "status": "PASS"
         },
         {
@@ -3855,7 +4002,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/cron-explainer.gold.json",
-          "sha256": "109e3053412a6f91c232548111f9f8fa84eb1a48a0a8e0720c5a423c708fc4bc",
+          "sha256": "7ef20d27331fb9398b415e1196f2f0c05886b4756d760243f8e5e2a2b5562fd6",
           "status": "PASS"
         },
         {
@@ -3988,7 +4135,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/cron-next-run.gold.json",
-          "sha256": "de4a8fcd62ce20efdead7b5706bc3c1922795a00d2c6a3067a1c5160ac9f358b",
+          "sha256": "f6979ce72e25180b3b9a103879990d8fd175cae28182d304aec2b8ce031b8bd7",
           "status": "PASS"
         },
         {
@@ -4123,7 +4270,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/csv-cleaner/gold.json",
-          "sha256": "3bb6e8f3461e0b1aece5093b6b331a374ecc43edd649ccb4827c87d66e193fba",
+          "sha256": "b85f285bebbeb164d42d609ef78baa816709aa595cde34c036376118becaf655",
           "status": "PASS"
         },
         {
@@ -4263,7 +4410,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-column-map.gold.json",
-          "sha256": "db94308678c2d4a68a4ddce96f22e092a4caaf4066f6b8a750b49522580af9b2",
+          "sha256": "bb02bb9d769db7c6beafdab3acb8a3f47e4f6d64cbf4a2d1bcf1fcad49d9185a",
           "status": "PASS"
         },
         {
@@ -4417,7 +4564,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-column-selector.gold.json",
-          "sha256": "084276ca296ff4581fa24674c7d3ab423d0e202a6ed1dd8efd4640f53b51afab",
+          "sha256": "c03a47629880289dff1b08fae3fc04061bcd1bba1be2f34d448747b32b82e36a",
           "status": "PASS"
         },
         {
@@ -4551,7 +4698,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/csv-column-to-list.gold.json",
-          "sha256": "6eacc65ee5593c80315f7092d827b46d3295edfa8ccdf8b1f0bb666a63b05641",
+          "sha256": "b39daae9f5ece296864c0649008d959e29c400a5ced2df897608df1839713183",
           "status": "PASS"
         },
         {
@@ -4685,7 +4832,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/table-ops/csv-dedupe.gold.json",
-          "sha256": "00f1e66173ecd16e49e94b472f3c1891a228605a08ac6ac458e9de87a82b1778",
+          "sha256": "98daa12db44561ceb2a21054570bb1a24bf18a3f7afaf340e344d72fea881bce",
           "status": "PASS"
         },
         {
@@ -4840,7 +4987,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-delimiter-detector.gold.json",
-          "sha256": "368967ecec064fc23c8f8815f1be51c2231efd652def7a1f380782822a92ab61",
+          "sha256": "4f7be30b3a229a571db0359703c0086de401ae8b36e3486a9eae418611ec2eca",
           "status": "PASS"
         },
         {
@@ -4989,7 +5136,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-encoding-fixer.gold.json",
-          "sha256": "c4bb5eef690fafc5016e419c0aac9d5f2b497aac5ffd01e3190d8613347fd737",
+          "sha256": "b967c68e0354cd0d7ca85514e75fce39939db42fcf128beebdabc2f39a6d75c0",
           "status": "PASS"
         },
         {
@@ -5137,7 +5284,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-filter.gold.json",
-          "sha256": "8815cb22c294dd874e578b490913c9587fe8a1dc9c8bad1695a1e3363eebe56f",
+          "sha256": "09212c7a29bc7de96449c33ae757e538727e75a184af7e622ef53ebda58db035",
           "status": "PASS"
         },
         {
@@ -5285,7 +5432,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-group-count.gold.json",
-          "sha256": "56606953adc7b50d1736b8501ec9bdaa6533f1773a50a2d0b87a4d3d41f1508b",
+          "sha256": "8e1caffa01beda21fb078d6f15ba5e5334228e60b074d3b39b194e022883f868",
           "status": "PASS"
         },
         {
@@ -5433,7 +5580,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-join.gold.json",
-          "sha256": "d37cd85fe972ca133c7b103d3e34b1cf4cead65e97167d90237ef8a50c016b5f",
+          "sha256": "c3fc392340fe551584f160ce168b2f97f0a2bdd50795c0bc0ae05bf913f32e67",
           "status": "PASS"
         },
         {
@@ -5581,7 +5728,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-pivot-lite.gold.json",
-          "sha256": "920ff96cecaca5c4d5e50c8c566d3bf6ffb8f189a54f973ad33c4545003d4765",
+          "sha256": "a0c603ff529de12f4a18315aa134899ab4cb0350c9539f43f01451be9d5b8f55",
           "status": "PASS"
         },
         {
@@ -5729,7 +5876,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-sort.gold.json",
-          "sha256": "78bf100fcbc55975d66b94e0a37f4c9141b605fdebfe5e67cc858bb374912c47",
+          "sha256": "951274fee64692f61c80e062462e7d284195eeb514fa21735a45b146faefe04c",
           "status": "PASS"
         },
         {
@@ -5879,7 +6026,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-to-json.gold.json",
-          "sha256": "d293eb61039bbed927fbf81ea5e5a8d7e5d871bb8bc5a4d46750bef7291ec93c",
+          "sha256": "0a7ff8b8e6d2bbc81911731cedcde1f8d3109fd53f1999f50ef7e791edaddbac",
           "status": "PASS"
         },
         {
@@ -6017,7 +6164,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/csv-viewer.gold.json",
-          "sha256": "9cf00bb93531851db927b27da0dbc791ddf272e833d448080c68bfcbbc1419df",
+          "sha256": "8a795611fac157456210d45f4f3da3c806a43be38bfd56d86857400861d69998",
           "status": "PASS"
         },
         {
@@ -6140,7 +6287,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/currency-scenario.gold.json",
-          "sha256": "d04ebc7b8166fc91697c8a8d20ff22d3a12b6991270aa3867b35660c64dfd307",
+          "sha256": "5409329d4eed768245d554541d1e247d8a4d5c69c59f7e2b2278d19fc9fcaa82",
           "status": "PASS"
         },
         {
@@ -6278,7 +6425,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/date-difference.gold.json",
-          "sha256": "74ce727cae258cc9800122794748fe37c771191064e09a69e861ba2850fb018b",
+          "sha256": "0b65fcd4143a96714ae65baa00e56dda08f1633144e8a4a67dfe78715a198ee9",
           "status": "PASS"
         },
         {
@@ -6297,25 +6444,26 @@
       "name": "Date Source Normalizer",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/date-source-normalizer.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/date-source-normalizer/manifest.ts",
-          "sha256": "872208117b132eff87ebe027b2c6d05ccafd3528564db01677455772739bffa4"
+          "sha256": "4e60c45af9a766374337e0acf6f2cf69f149dca71da9b9f18f1ce9bcd3408021"
         },
         "module": {
           "path": "src/tools/date-source-normalizer/module.ts",
-          "sha256": "88a1920c762b80ab4a18a8766cf99bd00fcda54f33324a6e90d04964b9e66b3c"
+          "sha256": "55157add83547effe4ba592549ed091fd8e454b61a3d432a7e4a1419777be029"
         },
         "page": {
           "path": "src/pages/tools/date-source-normalizer.astro",
           "sha256": "86b3cf3d0c05203ea36bde32faa8333983ef86c21bd33b0088af8a7022a22cd0"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -6328,7 +6476,7 @@
           "fixture-policy",
           "rfc3339"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -6340,14 +6488,15 @@
       },
       "fixtures": [
         {
-          "id": "date-arithmetic",
-          "path": "quality/fixtures/date-arithmetic/vectors.json",
+          "id": "research-date-normalization",
+          "path": "quality/fixtures/research-date-normalization/vectors.json",
           "provenance": "hand-worked",
           "truthSources": [
-            "rfc3339",
-            "fixture-policy"
+            "strumentiutili-quality",
+            "fixture-policy",
+            "rfc3339"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -6358,16 +6507,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -6376,16 +6546,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/date-source-normalizer.gold.json",
+          "sha256": "bc9e8d4b40ae7b8d826eeb4d0a0f79ed4783422df876a788fa32d164745c9d4d",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "deadline-countdown",
@@ -6512,7 +6688,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/deadline-countdown.gold.json",
-          "sha256": "38b7bec82f0981d55afd372fa7d77ab8f3fd1a4308b3ee1ea7de47931aa295aa",
+          "sha256": "c9b34be01debc5e0b176e5980bfebc18890ab30f05feddeeebebcd4d70b2074d",
           "status": "PASS"
         },
         {
@@ -6649,7 +6825,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/decimal-hours-converter.gold.json",
-          "sha256": "ed308b38d294522d4c1f459c7f1960dd38ad3d689ea67571afb9b3daea69038c",
+          "sha256": "6f0d6ae82ce74acaa057906f39a3b55fe379f44b82ed956715d664ac449847a0",
           "status": "PASS"
         },
         {
@@ -6771,7 +6947,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/discount-impact.gold.json",
-          "sha256": "8e7e3fe6207c6c2a219ec57e304ec5df024d2cb5b3e50c39a11933b3661afa5c",
+          "sha256": "50a8c4069c3fe100fc4326756668736cf648cc80493cdc9824e22f304eae30c0",
           "status": "PASS"
         },
         {
@@ -6908,7 +7084,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/document-handoff-manifest.gold.json",
-          "sha256": "c13bb997f608bb59fa4c02ed9e613e5bca357a214a9a8a3571e4622b74c8eeb7",
+          "sha256": "ebfb2f043a95532d498030702a0b9e6d0632fda718ec8dd9a494ae653ce14195",
           "status": "PASS"
         },
         {
@@ -6946,6 +7122,7 @@
           "sha256": "64104f97147ca3ff391d41aba1e83dbf36bc8176cb8b5a3994fbbe033e046e86"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts",
           "tests/text-list-catalog.test.ts"
         ]
@@ -7042,7 +7219,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/doi-isbn-normalizer.gold.json",
-          "sha256": "23d2ad0b62c1929d456c0ab521f63affb14e2a3f078c15c55f6b788a2f320e49",
+          "sha256": "7940f4b3adcdbbf78dc2c11026b37d0448cdf13c125b32aa63acfafb0a9070d6",
           "status": "PASS"
         },
         {
@@ -7086,6 +7263,7 @@
           "sha256": "bd214404f1a457ebcc9816131f8086d575b2212764b8ab3399da96fae331d3c6"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -7172,7 +7350,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/doi-link-builder.gold.json",
-          "sha256": "6171a6c4a7330a066653be3b3796a8398dafff68058c4cb2347178e88f2d2f69",
+          "sha256": "c05507cfeb70cf06abe621e6eae8825ec04ef8a05129559a3d51f64f257293d2",
           "status": "PASS"
         },
         {
@@ -7210,6 +7388,7 @@
           "sha256": "9541ab0e7879e3e895caa178b79791145181ac246e30f7ba8e067e7818fb6742"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -7296,7 +7475,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/doi-normalizer.gold.json",
-          "sha256": "00936edcfdd048791577609b4b3c6beec9c5bf370b018297e704908b42d6cfec",
+          "sha256": "d59ad8ce97587e9369b3a5f955445cde6b57335556a6b193cf74e558149c82c1",
           "status": "PASS"
         },
         {
@@ -7315,25 +7494,26 @@
       "name": "Domain / Source Frequency Counter",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/domain-frequency-counter.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/domain-frequency-counter/manifest.ts",
-          "sha256": "59606b75a98d7cc2d91dc80b570e8dc1e3166bc8b7a0fe7ca71e4a219cb58d5c"
+          "sha256": "ceb03ac60c4e66ecc673bf0ac604dcda2d9d519c031e0ec8a66950a03d14af64"
         },
         "module": {
           "path": "src/tools/domain-frequency-counter/module.ts",
-          "sha256": "51bbac2f33425f3e57585970caac056d9b8bd308128c1e8e90c6245fd5cad96f"
+          "sha256": "002a52aca8b83466f6fcc0130a8799028daaab9980c601ff5adfd92755a9352b"
         },
         "page": {
           "path": "src/pages/tools/domain-frequency-counter.astro",
           "sha256": "d3ae6aea6a1fe29bbb9c69d89cd2ff9c86ada0d82610ee3efc281dde5ac9e641"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -7345,7 +7525,7 @@
           "strumentiutili-quality",
           "fixture-policy"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -7357,13 +7537,16 @@
       },
       "fixtures": [
         {
-          "id": "query-params",
-          "path": "quality/fixtures/query-params/vectors.json",
-          "provenance": "spec-vector",
+          "id": "research-source-inventory",
+          "path": "quality/fixtures/research-source-inventory/vectors.json",
+          "provenance": "hand-worked",
           "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "rfc4180",
             "whatwg-url"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -7374,16 +7557,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -7392,16 +7596,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/domain-frequency-counter.gold.json",
+          "sha256": "e8b133601d0b08b353b0122098c8e5779aa4c0311ed48f82707a953a035b34d7",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "domain-subdomain-grouper",
@@ -7522,7 +7732,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/domain-subdomain-grouper.gold.json",
-          "sha256": "8fcec17e04397d2744827adfb8d130ebce2cbfb72a9a3c888c18b4cb1050e22c",
+          "sha256": "b6992ec44da4375a9c12443fe7045fee63e9e6f50dffe5733df71daab9ccf527",
           "status": "PASS"
         },
         {
@@ -7659,7 +7869,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/dominant-color-extractor.gold.json",
-          "sha256": "013ccc3ff0447e51b8c2a33ebf90342fef3e399f4eb7b2142dcad9120afadf3e",
+          "sha256": "e89ca7b06449dc817ecd9afdea5aa59eced4bec38d8968370397936ac866d97d",
           "status": "PASS"
         },
         {
@@ -7782,7 +7992,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/duplicate-file-finder.gold.json",
-          "sha256": "7da982c6dac4371de9251ac6af5737727e2e955e44bb473e69aef77c158aa4c0",
+          "sha256": "3b48deacd431eafc302b0e5421a565acdc424021b32ef96f314f6423975e2afa",
           "status": "PASS"
         },
         {
@@ -7921,7 +8131,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/duplicate-row-profiler.gold.json",
-          "sha256": "29031393ee42bf44001fdf2273dc88f25b7882e371305ba6802da3d2c2b6a9ee",
+          "sha256": "fbfe7e945ec43dcc507941770a29f29e84c13c5624f56b98f1c3ccdf31b001d8",
           "status": "PASS"
         },
         {
@@ -8059,7 +8269,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/duration-calculator.gold.json",
-          "sha256": "167d8034059c96512b9d2d909de7dde17b05cba7bf24b525c1b3bb95eba1d48c",
+          "sha256": "236bb4a34e04ceadebb17f881eaa4f42e5fd306324d1c692e20a15065a3d8bbb",
           "status": "PASS"
         },
         {
@@ -8182,7 +8392,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/effective-hourly-rate.gold.json",
-          "sha256": "8040bfcc426224120a01b904e896137b501788dc553e9e693c0373b8547356a7",
+          "sha256": "b7747c4323b381608f16467fd23eed6912ce2d5d5c7d8bec7a9d4f164702a706",
           "status": "PASS"
         },
         {
@@ -8315,7 +8525,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/email-domain-extractor.gold.json",
-          "sha256": "abdb355ae16f8f8a9997e400d4c76e2b6430e1dee5095b98212f9f8019c8cbd4",
+          "sha256": "9031c2aca9b16a307661206db9278ebcd63a8dfa1b8eeef8e22154acc7ee6093",
           "status": "PASS"
         },
         {
@@ -8453,7 +8663,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/epoch-batch-converter.gold.json",
-          "sha256": "c7490f5817307bcbf3adedd97c9bc2c17e0daba7087c3789982e65268b600d10",
+          "sha256": "d791a4a67cc324cdc626b0fb06db809a893419a73e0a5adaa29da8e9c0896af3",
           "status": "PASS"
         },
         {
@@ -8472,25 +8682,26 @@
       "name": "Evidence Table Builder",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/evidence-table-builder.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/evidence-table-builder/manifest.ts",
-          "sha256": "8b2f3a143e5d96c00a8e4c775e54139c57ff64ab7a1938764b3ad160d6b841fa"
+          "sha256": "75ade3929bbc847051a81107368d991fcf4c2545c5f22be7ef8300ef3d1ba5f5"
         },
         "module": {
           "path": "src/tools/evidence-table-builder/module.ts",
-          "sha256": "babf6543a5907e5ee832a4d44a6724d14c01a48731a9c6c25f9772656b791383"
+          "sha256": "e8192bb496ea471c0b222ad2ee83e04ce7ff4d782e06883e2088176e8c376940"
         },
         "page": {
           "path": "src/pages/tools/evidence-table-builder.astro",
           "sha256": "7351fd67b7d2aea8d85408fde57ac0f9b9d8f6df80b8bfa44f7f20492480078e"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -8502,7 +8713,7 @@
           "strumentiutili-quality",
           "fixture-policy"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -8514,14 +8725,16 @@
       },
       "fixtures": [
         {
-          "id": "csv-table-ops",
-          "path": "quality/fixtures/csv-table-ops/vectors.json",
+          "id": "research-source-inventory",
+          "path": "quality/fixtures/research-source-inventory/vectors.json",
           "provenance": "hand-worked",
           "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
             "rfc4180",
-            "fixture-policy"
+            "whatwg-url"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -8532,16 +8745,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -8550,16 +8784,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/evidence-table-builder.gold.json",
+          "sha256": "e173aa9ff6f5c58354d1cd6b76cdbd6fdec8831e3110df6f91c3da77efea80f5",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "exif-remover",
@@ -8796,7 +9036,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/favicon-app-icon-size-generator.gold.json",
-          "sha256": "5ddfec8760f5bd4fd8ee901a23a9b5201a95a081d98493b32f24e9e771e62cf7",
+          "sha256": "176b4a3c5ff3440e92f07f73166af66488888de08b271d25a3489385f080000c",
           "status": "PASS"
         },
         {
@@ -8929,7 +9169,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/file-hash/gold.json",
-          "sha256": "7fa76589e5df9b5c04c9be53ff1bdf2832c97bab3d491ce64cd40d4e116fca84",
+          "sha256": "6ae3725d0aa9c89ca4044cff14c0f73e61d63e8ebddf6cdc6cd8ad6273fd82b2",
           "status": "PASS"
         },
         {
@@ -9062,7 +9302,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/file-list-diff.gold.json",
-          "sha256": "c776f3e25af460fa2300d4fc8943f41b7026efe42d380673478a3466e4d6529d",
+          "sha256": "354651604795fca7d86a092736ccc632d28afb8f9663af356402e071bccd81d1",
           "status": "PASS"
         },
         {
@@ -9192,7 +9432,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/file-signature-detector.gold.json",
-          "sha256": "f475419371f8b6b18203669a6cda425b3cb8d75299cfda52fbbe7788b22fdf7c",
+          "sha256": "7b221a8e232e65efd9e44345f67e388bee9b9b0981c42a4324a4f16ab88b08b3",
           "status": "PASS"
         },
         {
@@ -9315,7 +9555,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/filename-sanitizer.gold.json",
-          "sha256": "96e7a5321ddb55519f879d3e7d0cce664b6ca5b8fe0c6860d665a5fd60b14d2a",
+          "sha256": "5ffb3e38d6b91d0aca250f6e42fce627bdd5bf53d20eb79af3cebb92bef6c8cc",
           "status": "PASS"
         },
         {
@@ -9449,7 +9689,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/find-replace-preview.gold.json",
-          "sha256": "33a709a58d635bc30b202b77d401001e8122bec4ab3add9ca37f4e78dad6f462",
+          "sha256": "45e3c777bdd9f0f6e8f660cf7ce69f643f1ff9ba7ef84da33bced7b644cdd090",
           "status": "PASS"
         },
         {
@@ -9678,7 +9918,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/folder-inventory.gold.json",
-          "sha256": "b19768910141735da463aee5a37003721bfc51e2802585e1382e955c47d964b2",
+          "sha256": "3582191818b2d0f3798151791966def360fb92c5d4e1d3eb70fd300cb1484fca",
           "status": "PASS"
         },
         {
@@ -9804,7 +10044,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/folder-size-type-summary.gold.json",
-          "sha256": "15c3e74438ddc06aad8ceeb9df05f4bb59b67e11837d399b1fd2b12cbf6d1c64",
+          "sha256": "1dc44151c3738d8a5999be78a0abba878cecbf72511f6dab0e493a948dce8ead",
           "status": "PASS"
         },
         {
@@ -9937,7 +10177,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/hash-generator.gold.json",
-          "sha256": "89fe6da57f8239669e28b79b9343ca29666c2094df61e3131a852f8b38948a25",
+          "sha256": "6d2564d55824e6d789c018a66bd53f9dad37772217c3aee5795132d1e29ab1c4",
           "status": "PASS"
         },
         {
@@ -10072,7 +10312,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/hmac-generator.gold.json",
-          "sha256": "56b6db85714ed756244ebb59a0fe68febb35197bb19039aa9c6b96af07fc109b",
+          "sha256": "db52ed60a392b84f1d9720945663ae47da266f2303ce021839249477f7cd8be2",
           "status": "PASS"
         },
         {
@@ -10206,7 +10446,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/html-entity-codec.gold.json",
-          "sha256": "6522527f7b2de55dbc97a1e25d6397954cb491005d560468960d477d0b8dcf4b",
+          "sha256": "bccf036c92666cb1fd41d01e9d3688a6a85a7d1dc35f8ad9ce73c1d121675516",
           "status": "PASS"
         },
         {
@@ -10338,7 +10578,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/http-status-reference.gold.json",
-          "sha256": "9f56847c460ab60f6804b1782a9321839975798225597ef327d0ead2732f4c08",
+          "sha256": "39ea1405eb653c2753bb470266e21b216c333e39c630a2530771dcfa25e0f605",
           "status": "PASS"
         },
         {
@@ -10476,7 +10716,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/ics-event-builder.gold.json",
-          "sha256": "b6ea80b3ced69548713d5835702c3bbcaf38da9b1c0185dd9b2014aacc103e61",
+          "sha256": "084d9345d6c18e839336b2a109d62ee0a15ba1bdfa494a5920e58bd1de2a9307",
           "status": "PASS"
         },
         {
@@ -10614,7 +10854,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/ics-viewer.gold.json",
-          "sha256": "fa6f0f75ad7c07322cb688215d920a3faf680e58fe1f633151778ac4e9f9640a",
+          "sha256": "c8f1e4ff96ed235e6d54d8a69ef4608069f9ef1bf07ac17b9a32c66ee8bdce79",
           "status": "PASS"
         },
         {
@@ -10751,7 +10991,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-compare-slider.gold.json",
-          "sha256": "0a9199031480051b17cb40650814836b87f596d8d93ebcd25c5d0c2d85c50811",
+          "sha256": "b42db2153a49b577fe40e5af10f6939748484a812903d53b7562ccb6c11f0608",
           "status": "PASS"
         },
         {
@@ -10888,7 +11128,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-compression.gold.json",
-          "sha256": "4bc03e8f3625140fa61cce203348421dcb72c180dbcc82a60e9eed67d39dde4d",
+          "sha256": "69a5cdc7213064704a230035271222832c97cbe17a43fe1613e94b5c33a77ea1",
           "status": "PASS"
         },
         {
@@ -11025,7 +11265,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-crop.gold.json",
-          "sha256": "cd5eeeb2db948434343e697699499c78416cac37de7e7653fbde68cec9fc3114",
+          "sha256": "e62a2c50081ded8c62635d895d2fba58a86bd61df48b760b938773077948469d",
           "status": "PASS"
         },
         {
@@ -11162,7 +11402,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-dimensions-batch-inspector.gold.json",
-          "sha256": "067db508e661e76d2e9ebe5925bee58073a22142bddc72f658677b8c8bfbcd5a",
+          "sha256": "e0ad80b3e79d9a2cc002f371aaf31e1e647028c21ba46123089b32379370774f",
           "status": "PASS"
         },
         {
@@ -11299,7 +11539,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-format-conversion.gold.json",
-          "sha256": "4c52392d28572c109344df58018e956b22177d73b4d498322a77a64b2c61e9fb",
+          "sha256": "875f94bc94662cc5a78e4c79dc4092f698dd046073b78c291e573fa5c50af246",
           "status": "PASS"
         },
         {
@@ -11437,7 +11677,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-metadata-viewer.gold.json",
-          "sha256": "8eba40fff5f2180391c683803234b3e07c593621ca107a5f6f708dc36093f656",
+          "sha256": "65a49bf55fdccc514e4ce816abad93dc81d4e5e73eae87ae57b154bbb6f94614",
           "status": "PASS"
         },
         {
@@ -11574,7 +11814,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-rename-batch-preview.gold.json",
-          "sha256": "a8f763143011bd0aaf79174091cc9f26e00a45e2bb8948c4b8351233854eaee0",
+          "sha256": "8f2f38af33db84dbda980ab9044cdc4a56a9adb7b747a616d76b044d3a2b9d73",
           "status": "PASS"
         },
         {
@@ -11734,7 +11974,7 @@
           {
             "dimension": "physicalDevice",
             "path": "quality/receipts/image-resize/certification.json",
-            "sha256": "4d85eaf95e1fc317738e192d4c2f088a13b10d632a6d2295af730e5954edcc8c",
+            "sha256": "28c680cb97350bee3bbe01d1571c3fc4a33814bb364f74e32635fc479e03f197",
             "status": "PARTIAL"
           }
         ]
@@ -11743,7 +11983,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "4d85eaf95e1fc317738e192d4c2f088a13b10d632a6d2295af730e5954edcc8c",
+          "sha256": "28c680cb97350bee3bbe01d1571c3fc4a33814bb364f74e32635fc479e03f197",
           "status": "PARTIAL"
         },
         {
@@ -11915,7 +12155,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/images-to-pdf.gold.json",
-          "sha256": "0cdcc44fda08392ed53d15aae80a6b20f113352fa1a4ed6151b41b73010a244c",
+          "sha256": "7d243e781a74f5f57e709ff54c292b0ce2a4ea2bffe434262ba31f0975aacc82",
           "status": "PASS"
         },
         {
@@ -12050,7 +12290,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/invisible-character-detector.gold.json",
-          "sha256": "51854a7e1157eca7f3d09075ad0401c88f3a0d0cf91f6dad79f301cc794b225c",
+          "sha256": "6b88545f4e6424fc2e7408ea848272de55b374383a5ebc1809ec6b21ddeb4d7c",
           "status": "PASS"
         },
         {
@@ -12173,7 +12413,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-math-validator.gold.json",
-          "sha256": "e30e76f7afdc7a531f8f9473f226b194654eaee29ce8a38bd1c830da29255c19",
+          "sha256": "e2fdb509ef682fdc80cfa18f371d69a1ec86d20f06e93f27e879222574d84569",
           "status": "PASS"
         },
         {
@@ -12296,7 +12536,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-number-generator.gold.json",
-          "sha256": "e1088ae29ef94f4dac6b8af5215dc120822004c38b202bbfd3c4db29ded7b977",
+          "sha256": "795bc11fc5e89bd997f3160a884a1e6c7c3f0b2a3abc1c5db17e131a746ca65e",
           "status": "PASS"
         },
         {
@@ -12334,6 +12574,7 @@
           "sha256": "79302c164f572ff82cb9679813d93600c5b101a046b6521fe0319ae902b9b77d"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -12418,7 +12659,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/isbn-validator-converter.gold.json",
-          "sha256": "8f14aaacafc060589e689070e150170c8e352800ee8b483fd1ac342f02968036",
+          "sha256": "e3e3ad24b6f8d22001cafbf7f3ddc3947e3ff652466ed30b12d4933cd39acd5f",
           "status": "PASS"
         },
         {
@@ -12550,7 +12791,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/json-formatter.gold.json",
-          "sha256": "16211cfe59becf7e8f9c10071b8a2bf303dfe5bbe9f22efe36cf66d54016ee3c",
+          "sha256": "2fca74255a67c20e6b8ab30592a1802e875daf03a3951051ea99eca99a82275b",
           "status": "PASS"
         },
         {
@@ -12683,7 +12924,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/json-path-playground.gold.json",
-          "sha256": "e365cac43636b901f881cd228e2022ad14339ac59b9d5b2380496862f490d581",
+          "sha256": "c803ccd85d9b55afac5002d5bed65acdc4a0a2e5d98ac7f8a6d8fa6f4150f9ff",
           "status": "PASS"
         },
         {
@@ -12833,7 +13074,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/json-to-csv.gold.json",
-          "sha256": "341d89c5b1a4e043c949a6fb0019665ec0676e927b1a89b23d380326791826f1",
+          "sha256": "8d317b72e287bf27808c008a48c15dcb56d345d51ada3ffc3e83786ffee99d5a",
           "status": "PASS"
         },
         {
@@ -12976,7 +13217,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/json-yaml-converter.gold.json",
-          "sha256": "8c1b14db61c2482d4813f4874d5996478b55df0e50e3ebb0c65bba250e16df63",
+          "sha256": "83a5ec77f6d11068cd2b3b90eccd4073923d5bc0b13760c21239ee40ff718c2c",
           "status": "PASS"
         },
         {
@@ -13109,7 +13350,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/jwt-inspector.gold.json",
-          "sha256": "f5ad92d8a4858086127fa89154398a4129ce97a0584089855f1a8d87f5f32c88",
+          "sha256": "996b1bbd953904968c140fe2786f7fe794ef7b3b9b53fe3616ff35ed28e9cd6a",
           "status": "PASS"
         },
         {
@@ -13327,7 +13568,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/late-payment-interest.gold.json",
-          "sha256": "cc8139fac0f7fcbff5cbb01f4924edece4ee59c8c8a5ff798c6b0ff381bc0d46",
+          "sha256": "5e2827c22c05bf3ba594ba9b9d97de4749d5c92f05e7098404cbec64dd0adce8",
           "status": "PASS"
         },
         {
@@ -13470,7 +13711,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/line-deduplicator.gold.json",
-          "sha256": "95a127439ab62afe29d017560ed2d1c63335226ee7f33917933acadacfe8f51a",
+          "sha256": "386a53bd630d4bc4627d1dceb2e2b7c730cc3c04ace72a4594545136eb3402bb",
           "status": "PASS"
         },
         {
@@ -13604,7 +13845,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/line-sorter.gold.json",
-          "sha256": "37b8a04497c6c1567f5688bf7bb525539e3bd326640e4f36359b231f4f7866bc",
+          "sha256": "e0d980497692cd2a6ad391938c86b987ee5be8cb05713d7f0fba755cac62fd0f",
           "status": "PASS"
         },
         {
@@ -13747,7 +13988,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/list-compare.gold.json",
-          "sha256": "a02dd490c88a1697df558d184ef8945c5506a77b79f3ec9ecac83a94a28adc8c",
+          "sha256": "9f95797cf32a503225dc62cb1359356b7989f98c317dc0d0050042f95de29a3b",
           "status": "PASS"
         },
         {
@@ -13887,7 +14128,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/list-difference.gold.json",
-          "sha256": "b80478ba7564c9944f4a4448d4b6baa4d2ca4c39b2a1f93b4cf92e69c8114098",
+          "sha256": "e12fbe6eac4986a1f89adf52cf977e2ecaeb23e7420fdd90312e6a19c260ca8e",
           "status": "PASS"
         },
         {
@@ -14021,7 +14262,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/list-intersection.gold.json",
-          "sha256": "5fd18715f35c189949241dce5b6ad54ae966eb43c33a2560cf2df8940a55ebe6",
+          "sha256": "7e47f0542d9e8ec08f14e72b6f63e8281492f17f2297ad248910194628dec13e",
           "status": "PASS"
         },
         {
@@ -14243,7 +14484,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/margin-markup.gold.json",
-          "sha256": "97bc6b19f189e6a62c48e1795bc9765e9c9f1488e18033563b3ef43e37fbd7f4",
+          "sha256": "5761d48bf1efc3ad5a26e91b8eac6d500bfe83d6bc58de9d7acd398f6effa9d1",
           "status": "PASS"
         },
         {
@@ -14386,7 +14627,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/markdown-preview.gold.json",
-          "sha256": "135f64f50c29a53ec1d0e3a67631879a739139201fecec721df6747680d301d8",
+          "sha256": "3cd9b8c558e84657859b4ed8a45ad2af956ef30de40beec9cea734384bc129cf",
           "status": "PASS"
         },
         {
@@ -14521,7 +14762,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/markdown-table-formatter.gold.json",
-          "sha256": "6b9e504b8a4c445cc2a8ad9df804cb109a76223fd1fcb0ffef168bf58545f37b",
+          "sha256": "fee3876fd0e137bb44c2769e40db778d63a842d1ae1b25db42c5b6c6aa0409f1",
           "status": "PASS"
         },
         {
@@ -14659,7 +14900,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/meeting-time-planner.gold.json",
-          "sha256": "895f455ae71f1b3f88c6351f44b399118cd14ba9f2fe1be24099002f6a3a740f",
+          "sha256": "1a783ba5583d3e3d6ca903bb3bfdf05f14fb05bd646c53185f4e67b5dd357e84",
           "status": "PASS"
         },
         {
@@ -14995,7 +15236,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/mime-type-lookup.gold.json",
-          "sha256": "27ec19e5dfac3ed24c2ae0035cc041a1b1be75573d7e6f7fd3cfb71e9403dc7e",
+          "sha256": "e673832327c3baa1dc88678e1315153402e750e3d5be88a9843627577ababa95",
           "status": "PASS"
         },
         {
@@ -15134,7 +15375,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/missing-value-profiler.gold.json",
-          "sha256": "a2203a106585e7efe2447b9723fa6b9da960132aad617a65926f380e098cc1a3",
+          "sha256": "5ccc308b83c850eba09b274eacf2779e2453fcec8864a415a34aa7aebb7ea508",
           "status": "PASS"
         },
         {
@@ -15153,25 +15394,26 @@
       "name": "Notes Deduplicator",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/notes-deduplicator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/notes-deduplicator/manifest.ts",
-          "sha256": "cc72bef7a7535dfbc3db043b5d6be997f1a0d31611102277092b3c91580d9e2a"
+          "sha256": "a18fb2519349458057cbacedb21f2ef7ae3c637fa4f086e44d8e9306732912d2"
         },
         "module": {
           "path": "src/tools/notes-deduplicator/module.ts",
-          "sha256": "c2f9beceed2026675740f706e29a86cc26dddd60ad4bc326cddc33328e837176"
+          "sha256": "26aa6cf85bfd958d98331073d95b6bd72e398a7baf817e00a958ff7a924add57"
         },
         "page": {
           "path": "src/pages/tools/notes-deduplicator.astro",
           "sha256": "9a29bfefe2ec7d7a12bd5c56ff00c96b47eb4b6b8e040ed3bfc0a075a56d0df3"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -15183,7 +15425,7 @@
           "strumentiutili-quality",
           "fixture-policy"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -15195,14 +15437,16 @@
       },
       "fixtures": [
         {
-          "id": "list-set-ops",
-          "path": "quality/fixtures/list-set-ops/vectors.json",
-          "provenance": "hand-worked",
+          "id": "research-text-frequency",
+          "path": "quality/fixtures/research-text-frequency/vectors.json",
+          "provenance": "project-policy",
           "truthSources": [
+            "strumentiutili-quality",
             "fixture-policy",
-            "strumentiutili-lane05"
+            "unicode-uax15",
+            "unicode-uax29"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -15213,16 +15457,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -15231,16 +15496,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/notes-deduplicator.gold.json",
+          "sha256": "7f79c04552dcb727f1f9aa20aa257d8f50f8724aa93d3657d835b46a088d301b",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "open-graph-preview",
@@ -15471,7 +15742,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/palette-extractor.gold.json",
-          "sha256": "b8e8d1ffa8ffe59bd91a2ddaad6370385b89d063f8a26d20dacb7dae9f160d4a",
+          "sha256": "0d8a891d807079a4d3f42c66f07373e6acbaec9be3cd181b9f8c1b9abbf3f409",
           "status": "PASS"
         },
         {
@@ -15594,7 +15865,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/payment-fee-gross-up.gold.json",
-          "sha256": "2475d93213fa7d137c3898c746d3522260bed541a025d2c166bd66ab39a0044e",
+          "sha256": "e1ac55d9e39874242323b484155bcb5010cb9dee71125210a650f77d8a8dab61",
           "status": "PASS"
         },
         {
@@ -15730,7 +16001,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-compare-lite.gold.json",
-          "sha256": "191215d22577c55ef97967a50fe77bfe067457810410a159b1b8ea0ad979e8bc",
+          "sha256": "527b482ce1d1e733d2a627806874e4fec16a4cd944cf98f628a055c9e7b1e21b",
           "status": "PASS"
         },
         {
@@ -15867,7 +16138,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-compression-lite.gold.json",
-          "sha256": "3c9bee972433b2745389b0ed215db38a24d890e0bd09ec4de298f445134f0a57",
+          "sha256": "c91eb891ba65bb2364d963a716091723c7b0044d95085851e708f11913b41429",
           "status": "PASS"
         },
         {
@@ -16004,7 +16275,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-flatten.gold.json",
-          "sha256": "7a0d5b0760d797bc7cec98f3410f2c9b0ea7e0e873fe4f5b810cff4378592930",
+          "sha256": "46b9acc04ee47e154a44e7028fa05d0a53e78f8052f7318c9309fea843e929d9",
           "status": "PASS"
         },
         {
@@ -16140,7 +16411,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-form-inspector.gold.json",
-          "sha256": "55d5acb1b8d8e119174e4975c9d8524ef5708304be325ff4859228bf0545259a",
+          "sha256": "bfc61bf4d194cbca3a572e85d7e4de2389a8553bf90d646d425851a3ced1b562",
           "status": "PASS"
         },
         {
@@ -16291,7 +16562,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-image-extractor.gold.json",
-          "sha256": "c59d83d9be9969dc16e264b9d921ce16f25dd6c2ca254490f5e97dbc770479c6",
+          "sha256": "5f99824e5ef6b0d70db73f8e1565f12b90bd989b135d0518c7a76ec867257c85",
           "status": "PASS"
         },
         {
@@ -16427,7 +16698,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-link-extractor.gold.json",
-          "sha256": "6c5065a21b73f3a6b45dd982381d1d06363dee8660df62e151682d2094f2f2f6",
+          "sha256": "1aeca6dfc6e667d896bc574e6ba74940b38d2bca1d90b1a8d46f61a7f7b9c99b",
           "status": "PASS"
         },
         {
@@ -16564,7 +16835,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-merge.gold.json",
-          "sha256": "46c9c134f0d70f42d045038f640659e371411af1e3fb135f8743d9db840bc78b",
+          "sha256": "77a5d26b476d17cffdfe3918c502d1033e6dfded6816586e1b3255c223d799b0",
           "status": "PASS"
         },
         {
@@ -16700,7 +16971,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-metadata-inspector.gold.json",
-          "sha256": "04ca16392d82d6f87f337aedc566a6c64c0d12bf3490120e7ba4319278a4862e",
+          "sha256": "9446d0b74668e6bbf1a65df387b73b40f20746fbefc9c449c2c89d5e839d5ea9",
           "status": "PASS"
         },
         {
@@ -16837,7 +17108,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-metadata-remover.gold.json",
-          "sha256": "a4b24ea202a7574222ef0b9d499446cf6b0d72a09f471cbf1eed205c0ad1d68f",
+          "sha256": "60e4e2bdfe487927f6b6054ab4b6e7a74e171b7a6e81f71bce2706abaa6475d0",
           "status": "PASS"
         },
         {
@@ -16856,25 +17127,26 @@
       "name": "PDF Page Citation Helper",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/pdf-page-citation-helper.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-page-citation-helper/manifest.ts",
-          "sha256": "67f23dafaa69393c2d4fec494290622b45f7606896a90b93b76df850d55e4766"
+          "sha256": "04433aadee491d383328af09fefbc8ff0c6270475d36a71104ba9c69e7499a76"
         },
         "module": {
           "path": "src/tools/pdf-page-citation-helper/module.ts",
-          "sha256": "0a919a9ac850743600cabb610b8182bb8b787c5fafb13d5b7c69788401294714"
+          "sha256": "19c9f5596bf56c9df1633ecdf7fa3c98a1451985b226a9e1d65e2d1d1d241a18"
         },
         "page": {
           "path": "src/pages/tools/pdf-page-citation-helper.astro",
           "sha256": "0945b61ff42b921c2a61f9cd348137889400cfec0ab1a25441551aece4fcc56b"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -16886,7 +17158,7 @@
           "strumentiutili-quality",
           "fixture-policy"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -16898,13 +17170,15 @@
       },
       "fixtures": [
         {
-          "id": "pdf-signature",
-          "path": "quality/fixtures/pdf-signature/vectors.json",
-          "provenance": "hand-worked",
+          "id": "research-citation-pages",
+          "path": "quality/fixtures/research-citation-pages/vectors.json",
+          "provenance": "project-policy",
           "truthSources": [
-            "iso-pdf2"
+            "strumentiutili-quality",
+            "fixture-policy",
+            "bibtex-ctan"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -16915,16 +17189,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -16933,16 +17228,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/pdf-page-citation-helper.gold.json",
+          "sha256": "c86baaca9e1677829d239aebdfe1be2364b126afd18b2bafd4c91a0d495e5c76",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "pdf-page-count-verifier",
@@ -17067,7 +17368,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-page-count-verifier.gold.json",
-          "sha256": "7f3b362bb938d5176dba4b49a9804c4e7eb08b38b4d6abce5a2ba953e41bb354",
+          "sha256": "94beb5d10fe23a542f1326b4933d2b6db483570e76035ddeada45b10c80ec80e",
           "status": "PASS"
         },
         {
@@ -17204,7 +17505,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-page-delete-extract.gold.json",
-          "sha256": "d6715febc8cc7454de7f8164e314bad3f9957272a79e297ba07240c1fc60d3fd",
+          "sha256": "5caabe0b8380f1fe13769497f65173982dffaa5f02d7e0ea9d8449ce59341c6a",
           "status": "PASS"
         },
         {
@@ -17341,7 +17642,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-page-reorder.gold.json",
-          "sha256": "b7b62395e94ec3e97f72526490cc9a1ef9f670ce8cd1435a22e08f5534fb18fb",
+          "sha256": "36e9b776fa373fb7e018a342338685c9c76071dd3097d3a6d81211ff46096442",
           "status": "PASS"
         },
         {
@@ -17477,7 +17778,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-page-size-inspector.gold.json",
-          "sha256": "a72e4f15ac8c427f2304409be05af9356010d548fb61fa4d80eab54271869947",
+          "sha256": "4d66b452c5ed9ee47a539e83a61c1590dfeaf0480868b30254fbd728c345b7bf",
           "status": "PASS"
         },
         {
@@ -17614,7 +17915,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-password-check-remove.gold.json",
-          "sha256": "55ae394b776a8e0ab78384b1f4cd586690cb257a3b810a31c6271d365fc1e433",
+          "sha256": "c71a77bbab121415f1e4b9061a089c9c59c14de75be2cdae65b81223e6813307",
           "status": "PASS"
         },
         {
@@ -17751,7 +18052,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-rotate.gold.json",
-          "sha256": "ca19f01beb9991e4171c514c6388d424a717e6c08c9b532199760ccb1ba46856",
+          "sha256": "25e587cfbf4401483645eeffb4164b9f20697342ff5e8ad319a9dfa462b46fa5",
           "status": "PASS"
         },
         {
@@ -17888,7 +18189,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-split.gold.json",
-          "sha256": "7f691976d628bb1471dfeab4bff9a84a4ee9e1b11e7615556b2a27a543c9fbff",
+          "sha256": "229c6d49e1255f8a4d4eb81aceabeed51f01dc15f145abd9d237673120a75dfd",
           "status": "PASS"
         },
         {
@@ -18024,7 +18325,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-text-extraction.gold.json",
-          "sha256": "ad8123ddd3230abe1f3654f68b9860e7ff1c99762f9e87461b481715d8fe0902",
+          "sha256": "7477bf9c6af2cfb6d0e6f777ef755b6cb1db61af94c733ac866d043df16e02d1",
           "status": "PASS"
         },
         {
@@ -18175,7 +18476,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/pdf/pdf-to-images.gold.json",
-          "sha256": "a0dbf58f3a0e1b941469962b2348d8ace7d726ec93e9fbe07a73d7b0f20e5f98",
+          "sha256": "e8b927230916e551cf63f00bb024d86a47511cddbdd23ddb5fe6253f6906f397",
           "status": "PASS"
         },
         {
@@ -18297,7 +18598,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/percentage-helper.gold.json",
-          "sha256": "e6c5c39a1b4db0a3f5cf46ebcca0d84cdf61a96eae838c1c12914a09f5eba3b7",
+          "sha256": "74581a791722abdbf374fbecfa71ca622167471f9246c0e58db2b750e12341e2",
           "status": "PASS"
         },
         {
@@ -18434,7 +18735,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/perceptual-duplicate-finder.gold.json",
-          "sha256": "06958a41c51154ee7e5ac3f4a710872c640cbaeab8abf431953f7a125816d8f8",
+          "sha256": "501fa122e4ba60a8beca9b000430999db36ebaf71f7fd9a7e3c25185707ed9d5",
           "status": "PASS"
         },
         {
@@ -18666,7 +18967,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/project-profitability.gold.json",
-          "sha256": "968959ee524266295feef24923c8e469196d2bffa72eb6171e21fbd5aaa511de",
+          "sha256": "8812b86d234a4dea4dd487e46bca0fd5e352f27f6dcfd10e356fd056d385b566",
           "status": "PASS"
         },
         {
@@ -18789,7 +19090,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/proposal-budget-checker.gold.json",
-          "sha256": "01af0afc9a917abec51870279cbf3705788ed671e10e55523475c6cb4b9352d8",
+          "sha256": "c260563fb0a53e1073a59bdb4946f61335e5604d8ad8f1bfad2fe31bf2229527",
           "status": "PASS"
         },
         {
@@ -19216,7 +19517,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/quarter-date-mapper.gold.json",
-          "sha256": "1658d7a91b6039e139eb2088f80f7d2fe23d034dfddf55d063f85629e21b3e4d",
+          "sha256": "b8c2ce81420d52980340009e4010cbe28834c5fe5f4572a36be07327308b1464",
           "status": "PASS"
         },
         {
@@ -19348,7 +19649,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/query-string-editor.gold.json",
-          "sha256": "f9bda98a47c7e4a1667127fff8d1747069aabe59359da72c4bbb1a2be6ef497d",
+          "sha256": "e420cca64e4673ddff7c8892ddf20d88d3f0e4b283e1d24ca7722bd9ddee8971",
           "status": "PASS"
         },
         {
@@ -19487,7 +19788,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/quick-chart.gold.json",
-          "sha256": "863e098defd1dd22388049121bb2e16453e54a928ee9ba5b090b9e06f752c45f",
+          "sha256": "c2de3e1a88c8a31fda6438727cc50391a91550603a8ae96fee0937a780f63d9e",
           "status": "PASS"
         },
         {
@@ -19525,6 +19826,7 @@
           "sha256": "e68d448ff0dc261f99caec40710b068b28643e50fa51364d8e44acf67c9078a3"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -19609,7 +19911,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/quote-counter.gold.json",
-          "sha256": "75269c6a3049fd76a8daddea0f6b43d95e30a0bbbb0d296c5ee06d816982b39a",
+          "sha256": "b8e7fd687f80174160f172896d6ad5ecdd051f3ede83fc444745d4d1069f669b",
           "status": "PASS"
         },
         {
@@ -19735,7 +20037,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/rate-converter.gold.json",
-          "sha256": "fa63827f3fd80a0ea215fa2001e720dd93f288645905a58d70890a9816d22a90",
+          "sha256": "041fed9f61152737186d0f8502d9ce5e752fce79d83d09b09466c5767d9b7601",
           "status": "PASS"
         },
         {
@@ -19760,25 +20062,26 @@
       "name": "Reading List Deduplicator",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/reading-list-deduplicator.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/reading-list-deduplicator/manifest.ts",
-          "sha256": "d17199fe9d9f97afdb4fb01529c197ded8223d8763b31b6fec617e0d645e118d"
+          "sha256": "2463863406930f6d66e1c32156fce1ce864593e5ca1dec0dbbff66ca7eea6172"
         },
         "module": {
           "path": "src/tools/reading-list-deduplicator/module.ts",
-          "sha256": "0650e966822ca583207dd0cada01f36dcc8210c9c40e8b526f8b9ce592951521"
+          "sha256": "b6f74378300dd5c32f33a8c5d51270f886ae3a4cfb08d4b2b4f415d8325320d2"
         },
         "page": {
           "path": "src/pages/tools/reading-list-deduplicator.astro",
           "sha256": "ddf4c8a94c6a5256457d5b6e52f0444309169a11212db3d1b693097747e8b775"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -19790,7 +20093,7 @@
           "strumentiutili-quality",
           "fixture-policy"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -19802,14 +20105,17 @@
       },
       "fixtures": [
         {
-          "id": "list-set-ops",
-          "path": "quality/fixtures/list-set-ops/vectors.json",
+          "id": "research-citation-identity",
+          "path": "quality/fixtures/research-citation-identity/vectors.json",
           "provenance": "hand-worked",
           "truthSources": [
+            "strumentiutili-quality",
             "fixture-policy",
-            "strumentiutili-lane05"
+            "doi-handbook",
+            "isbn-manual",
+            "whatwg-url"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -19820,16 +20126,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -19838,16 +20165,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/reading-list-deduplicator.gold.json",
+          "sha256": "0872b2fc89931e7ec9bd26db3778c479c746a3a51213f39312cac3cc75f57557",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "reading-time-estimator",
@@ -20070,7 +20403,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/recurring-date-generator.gold.json",
-          "sha256": "9f2ee9f4ea93e8ffcb1fe1fa305ca9e3d9bf9d31777393bc132b17deabd098e8",
+          "sha256": "6658a1af0443c3123d051ea067ab26256a449edd15a8b4a2b59fc0c744f47ae7",
           "status": "PASS"
         },
         {
@@ -20203,7 +20536,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/redirect-chain-inspector.gold.json",
-          "sha256": "6ac28a9cc6c1e190bc510d7555a90804b9e51dcc8d214aac92f2706929a9cafa",
+          "sha256": "39752ea7fa95850d7f40cb202d0fee46181e5b8b1f143f7c67d9730357d7911b",
           "status": "PASS"
         },
         {
@@ -20222,25 +20555,26 @@
       "name": "Reference List Sorter",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/reference-list-sorter.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/reference-list-sorter/manifest.ts",
-          "sha256": "7d8eda0eb942fe754f2c55046bfcd81276dc739aed694e0601dca1ff2520504d"
+          "sha256": "bf3c18156f14bfc88f25e0b322248fc0fc921e4ee40b97b038fa63d3156948e2"
         },
         "module": {
           "path": "src/tools/reference-list-sorter/module.ts",
-          "sha256": "241013abb4f83ffe05481ff405d6e50b80aab270bf6f89f5a253f38d3d91f5b3"
+          "sha256": "48df3faa1c5a8a22cac605ebf6377d7f32f856fb11d7ee52e3fdbaba1b8ed8ae"
         },
         "page": {
           "path": "src/pages/tools/reference-list-sorter.astro",
           "sha256": "57b7506944e5b62fc553f503feb2ffef5e1633f95abf387b25db01df9c40e79a"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -20252,7 +20586,7 @@
           "strumentiutili-quality",
           "fixture-policy"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -20264,14 +20598,17 @@
       },
       "fixtures": [
         {
-          "id": "line-sorting",
-          "path": "quality/fixtures/line-sorting/vectors.json",
-          "provenance": "project-policy",
+          "id": "research-citation-identity",
+          "path": "quality/fixtures/research-citation-identity/vectors.json",
+          "provenance": "hand-worked",
           "truthSources": [
+            "strumentiutili-quality",
             "fixture-policy",
-            "unicode-uax15"
+            "doi-handbook",
+            "isbn-manual",
+            "whatwg-url"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -20282,16 +20619,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -20300,16 +20658,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/reference-list-sorter.gold.json",
+          "sha256": "6ff8e6faf0109cd1f246e49c619fc650f0591e083a491a4f5d1d924a73c9ecb1",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "regex-tester",
@@ -20430,7 +20794,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/regex-tester.gold.json",
-          "sha256": "69a5374b6d6863de2511067c19fc592d147518dfaae6645db7bf42844e2e3822",
+          "sha256": "31a42e2bdd90912dc0f033fd2f40a2ae53ebe528b8fdb98529cffd489a47f9bd",
           "status": "PASS"
         },
         {
@@ -20449,25 +20813,26 @@
       "name": "Research Pack Manifest",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/research-pack-manifest.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/research-pack-manifest/manifest.ts",
-          "sha256": "dddb2036b2e97bc16f3588e89bb61afb5176d7ef63f0e4cabf7294a1e628fc7d"
+          "sha256": "2b35ae070ccfe59e4dc98a3a5aa8db66b2e52c66d6bda9f1b8caf7bedd87246a"
         },
         "module": {
           "path": "src/tools/research-pack-manifest/module.ts",
-          "sha256": "7cfbe3d757f784ca9acd394be6feeeb2a55b82082c72ea6b579dbe9758d03c0f"
+          "sha256": "a1e7a69f03e8310f2f3c44e95ac00c0d566d8acafa22624e0be011e8064a539a"
         },
         "page": {
           "path": "src/pages/tools/research-pack-manifest.astro",
           "sha256": "25467d8aaebc8963fbbd3eefc32136386d10dc41467e479bf97e058011760e18"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -20479,7 +20844,7 @@
           "strumentiutili-quality",
           "fixture-policy"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -20491,13 +20856,26 @@
       },
       "fixtures": [
         {
-          "id": "json-grammar",
-          "path": "quality/fixtures/json-grammar/vectors.json",
+          "id": "research-source-inventory",
+          "path": "quality/fixtures/research-source-inventory/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "rfc4180",
+            "whatwg-url"
+          ],
+          "status": "VERIFIED"
+        },
+        {
+          "id": "sha2-known-answers",
+          "path": "quality/fixtures/sha2-known-answers/vectors.json",
           "provenance": "spec-vector",
           "truthSources": [
-            "rfc8259"
+            "nist-fips180-4",
+            "openssl-cli"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -20508,16 +20886,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -20526,16 +20925,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/research-pack-manifest.gold.json",
+          "sha256": "df7be8a8d4f8500627fd67a53365654d6b94b138ccc1fa8ee7eef97b90d57bab",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "research-url-cleaner",
@@ -20562,6 +20967,7 @@
           "sha256": "a8ac3e6d7f825a714ac437a4b4503f7374e0d9e76d5c14189b25a113de085310"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -20655,7 +21061,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/research-url-cleaner.gold.json",
-          "sha256": "eaf150b1bdde39be7b8351d26d13599a83cf1bc2c656f7b1d84b29062d6e6af9",
+          "sha256": "796d1d7b0a23659d4c74258343a65f446998a7a403b80555d88a11f144b781fc",
           "status": "PASS"
         },
         {
@@ -20778,7 +21184,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/retainer-capacity.gold.json",
-          "sha256": "aa1050644d9682cead37bd4e54ba19fb7c90a96229826697ed6a00b2c19d87a9",
+          "sha256": "6546242709324262d02f0cd705c2685f4894c4207014d6560decbc4c87e247f8",
           "status": "PASS"
         },
         {
@@ -20797,7 +21203,7 @@
       "name": "RIS / BibTeX Converter",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
+      "maintenanceClass": "E",
       "status": "IMPLEMENTED_UNVERIFIED",
       "certificationReceipt": null,
       "releaseGate": "BLOCKED",
@@ -20805,17 +21211,18 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/ris-bibtex-converter/manifest.ts",
-          "sha256": "0633a0de41321532576a0ae8561b5db92e84d6ea331cc15e3ad51fb49ce98de6"
+          "sha256": "37e0965fedc0e49455e911bd67255d0e9ab8926344442e94d62714008d09a86c"
         },
         "module": {
           "path": "src/tools/ris-bibtex-converter/module.ts",
-          "sha256": "39bcfd4e12fa343137e99ec5532e164184fb6cc62aee388440128033392a4fde"
+          "sha256": "ef7b68b88ed60a046bfa739d58aa2ad356c05740a8b4ee72c046b31b11dc2e86"
         },
         "page": {
           "path": "src/pages/tools/ris-bibtex-converter.astro",
           "sha256": "e6778de7d77165f74182576aeeb3bc98b83030208f4d2026b3ac3f15d5a44885"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -20841,20 +21248,26 @@
       },
       "fixtures": [
         {
-          "id": "bibtex",
-          "path": "quality/fixtures/bibtex/vectors.json",
-          "provenance": "synthetic-local",
+          "id": "research-ris-bibtex-conversion",
+          "path": "quality/fixtures/research-ris-bibtex-conversion/vectors.json",
+          "provenance": "hand-worked",
           "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "ris-policy",
             "bibtex-ctan"
           ],
           "status": "BOUND"
         },
         {
-          "id": "ris",
-          "path": "quality/fixtures/ris/vectors.json",
-          "provenance": "synthetic-local",
+          "id": "research-bibtex-syntax",
+          "path": "quality/fixtures/research-bibtex-syntax/vectors.json",
+          "provenance": "hand-worked",
           "truthSources": [
-            "ris-policy"
+            "strumentiutili-quality",
+            "fixture-policy",
+            "bibtex-ctan",
+            "whatwg-url"
           ],
           "status": "BOUND"
         }
@@ -20867,16 +21280,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -20885,16 +21319,18 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
+      "evidence": [
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
+      ],
       "blockers": [
         "CERTIFICATION_RECEIPT_MISSING"
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "coverageGaps": []
     },
     {
       "id": "roas-calculator",
@@ -21005,7 +21441,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/roas-calculator.gold.json",
-          "sha256": "534b897e13514e2f1b4e612d9c099a068cc2e956754d5f39fe0caa1ea03cdf62",
+          "sha256": "10adbf489d0ce017291a0842134b1e6d3e153c0e7fe6447c9915314e7e7afa6d",
           "status": "PASS"
         },
         {
@@ -21138,7 +21574,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/robots-directive-helper.gold.json",
-          "sha256": "a0f9fea13941e4b58cf243199a0c4299f8a87479adfd15acb0c76fb77f3f8bbc",
+          "sha256": "31836f0e158b836b43407c4a077cbc9782bf6fa732ffb23d3c6081ac076b8c89",
           "status": "PASS"
         },
         {
@@ -21274,7 +21710,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/safe-share-checklist.gold.json",
-          "sha256": "1e5688f52e647899b6b31548d5c4231dbc2c527b72adac19f8279f0e484edbc3",
+          "sha256": "d2ffcbe0af08160590a129d61f5b6aabb4a3eb4e1decb2d31fbabe116c5c91b3",
           "status": "PASS"
         },
         {
@@ -21397,7 +21833,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/scope-creep-cost.gold.json",
-          "sha256": "4cfd4492339902ede13bf28ff502cf34c541e8aba7868ef2f2adee486383083b",
+          "sha256": "e24ea699522b627ee679e0a40a49f40dd3ae848f77b25ef17365528dea9a94a9",
           "status": "PASS"
         },
         {
@@ -21534,7 +21970,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/screenshot-border-background-helper.gold.json",
-          "sha256": "c7cd61d88dfc066a43b0c485bf6ce100ab74dd5e7e3159495fb500f634f99c2d",
+          "sha256": "2939df85d0c633bd9a08da58bbb3b1cb5cbefb6dc71349815716330733617b88",
           "status": "PASS"
         },
         {
@@ -21667,7 +22103,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/secret-token-pattern-scanner.gold.json",
-          "sha256": "b120bfe8092d629991691a08a54f5c7eafa11297d2e0d62a493907be9aa530ed",
+          "sha256": "f7c4247b6546931ae71d4bc88be8945b34417c32c9f0e325fa97e201526d3553",
           "status": "PASS"
         },
         {
@@ -21802,7 +22238,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/slug-generator.gold.json",
-          "sha256": "4dff3caa74308cf08f2622cc7ba16b1b28929ed9ff4950cf9d3f88eb2421514d",
+          "sha256": "e87dd3d57e080cad6812889b8c105e829123e8d6fd17f87696b1fefad42a23a2",
           "status": "PASS"
         },
         {
@@ -22141,7 +22577,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/table-transpose.gold.json",
-          "sha256": "46c125f114b771ab887402528bd992c3788b50e5264b7006fa2bbcd3d0f7cd0e",
+          "sha256": "ef189cf1ec0cfdb13342f62980f4f63e50479e77ddd96388a5eb92c84d33c2d2",
           "status": "PASS"
         },
         {
@@ -22264,7 +22700,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/target-income-rate.gold.json",
-          "sha256": "4076da8e5106a29451ce639f535ecb6a45de64fa9e1b5176ad6cdf107f64879f",
+          "sha256": "f7d424576ec8d29959abf0864cb24fb78b71ef5fb8bf9a0050d202e8d7161934",
           "status": "PASS"
         },
         {
@@ -22401,7 +22837,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-research/text-diff.gold.json",
-          "sha256": "1f03d37e048bb09e30be7a1faa442a37bce2a273c328a384e2ad33ccd79dcb22",
+          "sha256": "836a85b01d14fb6ee0f856a32bd2642e80b08fcb9db5c7a912a760f6f1beab16",
           "status": "PASS"
         },
         {
@@ -22541,7 +22977,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/text-to-csv-rows.gold.json",
-          "sha256": "e087195f8da93e5d2555481935869017aab1aa10520fdb528987ec5c13a36623",
+          "sha256": "0fb1a5158df0a7eb550b0d1f9753072cdfc344e1cae4b19bcb6ddc09f573758a",
           "status": "PASS"
         },
         {
@@ -22579,6 +23015,7 @@
           "sha256": "5a65b16093b68a9b422b3745e1047a733082c00cde9c0d97423895d59323fa90"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -22664,7 +23101,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/timeline-sorter.gold.json",
-          "sha256": "0589b8175f46d72048953978873cfa91ca07f2d8b75371024e36a9fea9107832",
+          "sha256": "4315fe87af69fdd2e779e8077e439985e6e5fa6dd433545e96f117ce96f3e982",
           "status": "PASS"
         },
         {
@@ -22801,7 +23238,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/timesheet-totaler.gold.json",
-          "sha256": "891936c91c3bf33f588edf1d9a02d84cd3d6845377899c87905a619f0abf70ce",
+          "sha256": "1443883a5b8ce4e1b6b89a71e87421210071298f7ad946a8d963fe6bd8c26186",
           "status": "PASS"
         },
         {
@@ -22939,7 +23376,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/timezone-converter.gold.json",
-          "sha256": "8cf67309f387cfc92b722f5d4558447c8db12480fe54ed91d8262e56f62b51d5",
+          "sha256": "778d4f480132b544aad646c7590b7fecbf9c6f307e521450635bad59a3cab5ca",
           "status": "PASS"
         },
         {
@@ -23068,7 +23505,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/client-time-math/timezone-overlap.gold.json",
-          "sha256": "5383bd5af2219e926964a5f87b3d0bdc455af29c627ee930a3890f0e7e3e2bb9",
+          "sha256": "bf8954930e9479bc61297628d99df028e61b68454e87c2f77a719814aa1b1ee7",
           "status": "PASS"
         },
         {
@@ -23206,7 +23643,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/toml-formatter.gold.json",
-          "sha256": "ee9373a07012b5e59bb6088e285781b2de29136d54195b7d02ccd360de2319e4",
+          "sha256": "a2e2faf9b798c2fe62e63c314a23cf383c59542ab5216ecb719c40ef2dfefbf0",
           "status": "PASS"
         },
         {
@@ -23336,7 +23773,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/tracking-cleaner.gold.json",
-          "sha256": "814ef9aa8ba7c28fab483235147b312fe3e0dc894e43dafe2555a9ef2485b504",
+          "sha256": "b26d9b41f7fdc9c69eeb9d9a51c7b8b59a020a3caf8dabf68232c1dcc56708c6",
           "status": "PASS"
         },
         {
@@ -23480,7 +23917,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/data-table/tsv-to-csv.gold.json",
-          "sha256": "464d296b3331a9e9750abbf2ac5e58d745fc8e6c5918b4cd31ce5a2d89929c10",
+          "sha256": "daf990810d9e67d3c6a7acea0a4989490df3fe3111dc99fbf51e94bd1309d3bf",
           "status": "PASS"
         },
         {
@@ -23614,7 +24051,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/unicode-normalizer.gold.json",
-          "sha256": "dc69b21a7b82c96b4d4a13bb2813d96cc7e43072fa788b4a63a058228e205ca2",
+          "sha256": "529c94e0ff9d70fc0ee8e244b5bdac2dc64f7ead70455b49e7f2c18b4cb251d0",
           "status": "PASS"
         },
         {
@@ -23747,7 +24184,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/unix-timestamp.gold.json",
-          "sha256": "3409079ca1d339a6ad84f365eb233df256d0b17af33c32893397e25128596604",
+          "sha256": "a18553e73d0967a791ab1e6eaf13ee857310beb0f7618109b942f3cae5732005",
           "status": "PASS"
         },
         {
@@ -23879,7 +24316,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/url-bulk-normalizer.gold.json",
-          "sha256": "c2ba9f589bdda046de80d252f1a2b7a046d4b149a44f104f77adb3671c0f96e6",
+          "sha256": "211ad468edfbda4ac9bab0cf868b568b3f985d29fb4119b6942bc523805875ee",
           "status": "PASS"
         },
         {
@@ -24011,7 +24448,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/url-codec.gold.json",
-          "sha256": "d7d18ebe841fd95ffd972ae59adbd6144ca86cac74fed3aa7091f782e11a1d17",
+          "sha256": "b0ce1f10a30c85378958ae2a2aee958ffc60669449aa4951c1d2982d2edc85ec",
           "status": "PASS"
         },
         {
@@ -24247,7 +24684,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/user-agent-parser.gold.json",
-          "sha256": "fe79b4769e3b22e46deb35a728fc9e1e80253d825c812ca57e556eaa2ad98628",
+          "sha256": "5cebc298222db0d7767c6ce3d4ce68fd19c6101e3107e801f3fdccce48070f8d",
           "status": "PASS"
         },
         {
@@ -24370,7 +24807,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/utilization-calculator.gold.json",
-          "sha256": "bd39fce46756eadc35bad56fb97badbdfc43338d2bdf2068007cb597aef4310c",
+          "sha256": "8f0c80602fe9f1de2b3ba490c0f7b45dfc9affc0e8602e1f38371f12d1d007b1",
           "status": "PASS"
         },
         {
@@ -24500,7 +24937,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/campaign-url/utm-builder.gold.json",
-          "sha256": "9bb8ddfdee1dfd80196c484616e992e97b8e0798b6eca3607d14f9628059f6a0",
+          "sha256": "3053523af79acc170ce3e4f7f94d9b1dddf70d17db8c765f8084aad84596c95a",
           "status": "PASS"
         },
         {
@@ -24638,7 +25075,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/utm-parser.gold.json",
-          "sha256": "e921c569ee410d159059dc87f2b67634ff7605a16bcbdc013b70586579bd443d",
+          "sha256": "936a362c75315115184206ad8ad399ea9b5fcbf6ea79d3941050f42d2fa639c8",
           "status": "PASS"
         },
         {
@@ -24770,7 +25207,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/uuid-generator.gold.json",
-          "sha256": "70b25723b0b536e849c6c6b93ea4e243270d5416e142a1fec281653c3a919c48",
+          "sha256": "eeaa1bc691548ab45b555cb12568a96e5b1f30fe2e5edf01962bfa1b4d04729b",
           "status": "PASS"
         },
         {
@@ -24789,25 +25226,26 @@
       "name": "Vocabulary / Frequency Analyzer",
       "category": "research",
       "engine": "research-knowledge",
-      "maintenanceClass": "D",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "certificationReceipt": null,
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "maintenanceClass": "E",
+      "status": "GOLD",
+      "certificationReceipt": "quality/receipts/research-knowledge/vocabulary-frequency-analyzer.gold.json",
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/vocabulary-frequency-analyzer/manifest.ts",
-          "sha256": "e6f93884bd80d72da385f755ed1ffeb72a566a554083bec1f7445a4bbb5db8b4"
+          "sha256": "049b9358d1bb55127c36ad08ffa005727ff832cc4ffab3f412f7c780ae12afcc"
         },
         "module": {
           "path": "src/tools/vocabulary-frequency-analyzer/module.ts",
-          "sha256": "527fe353874f36b8ca8610c61e11c9e18b25631eb2d22954ee4ed760007da778"
+          "sha256": "23724fbcf99b414ac39330eb9183b006b0416c8200c333f0320f7220a4a26e4c"
         },
         "page": {
           "path": "src/pages/tools/vocabulary-frequency-analyzer.astro",
           "sha256": "8d24566fd7808890ceddbd5482546f0b952dd14d3c14ac12d46f05dcfda3a71b"
         },
         "testFiles": [
+          "tests/research-knowledge-engine.test.ts",
           "tests/research-reference-engine.test.ts"
         ]
       },
@@ -24819,7 +25257,7 @@
           "strumentiutili-quality",
           "fixture-policy"
         ],
-        "status": "BOUND",
+        "status": "VERIFIED",
         "evidence": [
           {
             "dimension": "oracle",
@@ -24831,6 +25269,18 @@
       },
       "fixtures": [
         {
+          "id": "research-text-frequency",
+          "path": "quality/fixtures/research-text-frequency/vectors.json",
+          "provenance": "project-policy",
+          "truthSources": [
+            "strumentiutili-quality",
+            "fixture-policy",
+            "unicode-uax15",
+            "unicode-uax29"
+          ],
+          "status": "VERIFIED"
+        },
+        {
           "id": "word-character-line-count",
           "path": "quality/fixtures/word-character-line-count/vectors.json",
           "provenance": "project-policy",
@@ -24838,7 +25288,7 @@
             "unicode-uax29",
             "fixture-policy"
           ],
-          "status": "BOUND"
+          "status": "VERIFIED"
         }
       ],
       "privacy": {
@@ -24849,16 +25299,37 @@
         "capabilities": []
       },
       "locality": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "locality",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "mobileA11y": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "mobileA11y",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "lazyLoad": {
-        "status": "UNVERIFIED",
-        "evidence": []
+        "status": "PASS",
+        "evidence": [
+          {
+            "dimension": "lazyLoad",
+            "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+            "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+            "status": "PASS"
+          }
+        ]
       },
       "physicalDevice": {
         "status": "NOT_OBSERVED",
@@ -24867,16 +25338,22 @@
         "androidChrome": "NOT_OBSERVED",
         "evidence": []
       },
-      "evidence": [],
-      "blockers": [
-        "CERTIFICATION_RECEIPT_MISSING"
+      "evidence": [
+        {
+          "dimension": "oracle",
+          "path": "quality/receipts/research-knowledge/vocabulary-frequency-analyzer.gold.json",
+          "sha256": "6ae9fe7df12348f93b27c4741389c82d6f20679635a6eb1cd26ab8d07dc7c676",
+          "status": "PASS"
+        },
+        {
+          "dimension": "locality",
+          "path": "quality/receipts/research-knowledge/browser-acceptance.json",
+          "sha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+          "status": "PASS"
+        }
       ],
-      "coverageGaps": [
-        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
-        "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
-      ]
+      "blockers": [],
+      "coverageGaps": []
     },
     {
       "id": "week-number-converter",
@@ -25003,7 +25480,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/week-number-converter.gold.json",
-          "sha256": "141dc2761144e9dd46cc8bf0d0f0ce8ba6b27aff3c2c2d8140827ffb2caf4cec",
+          "sha256": "52778b23dd5a5595045b80bb7dd3fbd18f80c4c0bc244d1b7897622e8d42749c",
           "status": "PASS"
         },
         {
@@ -25138,7 +25615,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/whitespace-normalizer.gold.json",
-          "sha256": "a7021f36378b56d79215611f22c6f53e5c0a5fb72358b7e4a4e18161494b8f0c",
+          "sha256": "d5f9735128ee3d3d4772ea679f3ae85ea7e5b40470180c678722dddc9cc89a62",
           "status": "PASS"
         },
         {
@@ -25272,7 +25749,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/text-writing/word-character-line-counter.gold.json",
-          "sha256": "d7063d8c235e1fc47952e9d7e54c58b05b9aa46ffdd12738d54b7469241d8124",
+          "sha256": "d989223cb13d1c628a8b1da4f9b93afc683fd668bdc8cb40e25ab304427e97bc",
           "status": "PASS"
         },
         {
@@ -25410,7 +25887,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/date-time/working-hours.gold.json",
-          "sha256": "c631df441d989ecfdbd512ee6165e23da329d4030d1961ea1432296c738d7fff",
+          "sha256": "a3eda066d0968df52870c172d608435adf2c3747b27a66ed1e5fa4c710a34201",
           "status": "PASS"
         },
         {
@@ -25543,7 +26020,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/developer-web/yaml-formatter.gold.json",
-          "sha256": "95175b938d411cd60b8d13cf5778ded30d9e3f4d991b9f7ace04751be89b8e2d",
+          "sha256": "3ce90dda32168f46e9a5c5649d9074b440283f2a820cd691cfe101d30ee4dfc3",
           "status": "PASS"
         },
         {
@@ -25679,7 +26156,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/zero-byte-orphan-finder.gold.json",
-          "sha256": "28d0652856f6bddc50797711d207992da4a50437a565c5880c3aa6c59a00acfb",
+          "sha256": "4957c673151e2ad28b91f89a0faddb3dd7a203903bfee6f53e43b1aed75ada7d",
           "status": "PASS"
         },
         {
@@ -25803,7 +26280,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/zip-contents-inspector.gold.json",
-          "sha256": "857ee7144eded84c8c12c2dc80af5a6e23f3cc23b42abb5f6de73ddd78dc969c",
+          "sha256": "94ef5e6c4d92117ff6c5851e34e31d7e216b8bb08f26c517507b0a67bd635b92",
           "status": "PASS"
         },
         {
@@ -25927,7 +26404,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/zip-creator.gold.json",
-          "sha256": "a3439fdc0e1eff5f7aa4465246452bf48e0ccf1145efb7f3e8d7bd7731b254c7",
+          "sha256": "9179b05a127260ae2092e6d8d5b8ce8a4577696cb178bcda0ba53f093c4d923a",
           "status": "PASS"
         },
         {

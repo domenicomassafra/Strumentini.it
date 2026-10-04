@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "note_identity": "NFC, senza distinzione maiuscole/minuscole, spazi ridotti a uno e spazi iniziali e finali rimossi",
+    "note_inputs": "un valore semplice, un array, un array JSON o un testo con una nota per riga; uno scalare diventa una nota e non viene perso",
+    "empty_note_identity": "due note vuote non sono la stessa nota",
+    "term_tokenizer": "lettere e cifre con apostrofi e trattini interni; il testo e normalizzato in NFC",
+    "term_length": "la lunghezza minima e misurata in punti di codice, non in unita UTF-16",
+    "stopwords": "parole funzionali italiane e inglesi; un elenco fornito dall'utente viene aggiunto",
+    "effective_settings": "il risultato dichiara la lunghezza minima, il limite e il profilo di parole chiave effettivamente applicati",
+    "term_order": "per frequenza decrescente e poi alfabeticamente"
+  },
+  "note_vectors": [
+    {
+      "name": "case and repeated whitespace do not create a second note",
+      "input": [
+        "Nota  uno",
+        "nota uno",
+        "Nota tre"
+      ],
+      "removed": 1,
+      "outputCount": 2,
+      "records": [
+        "Nota  uno",
+        "Nota tre"
+      ]
+    },
+    {
+      "name": "precomposed and decomposed accents are the same note",
+      "input": [
+        "perché",
+        "perché"
+      ],
+      "removed": 1,
+      "outputCount": 1
+    },
+    {
+      "name": "a scalar input becomes a note instead of disappearing",
+      "input": "42",
+      "removed": 0,
+      "outputCount": 1,
+      "records": [
+        "42"
+      ]
+    },
+    {
+      "name": "one note per line is accepted",
+      "input": "prima\nseconda\nprima",
+      "removed": 1,
+      "outputCount": 2,
+      "records": [
+        "prima",
+        "seconda"
+      ]
+    },
+    {
+      "name": "object notes are compared on their note text",
+      "input": [
+        {
+          "note": "Ada"
+        },
+        {
+          "note": "ada"
+        },
+        {
+          "note": "Bob"
+        }
+      ],
+      "removed": 1,
+      "outputCount": 2
+    },
+    {
+      "name": "an empty note is never merged with another empty note",
+      "input": [
+        "",
+        "  "
+      ],
+      "removed": 0,
+      "outputCount": 2
+    },
+    {
+      "name": "an empty input is an empty result",
+      "input": [],
+      "removed": 0,
+      "outputCount": 0,
+      "inputCount": 0
+    }
+  ],
+  "vocabulary_vectors": [
+    {
+      "name": "italian function words are not reported as frequent terms",
+      "input": "il gatto e il cane con una casa per la città",
+      "terms": [
+        {
+          "term": "cane",
+          "count": 1
+        },
+        {
+          "term": "casa",
+          "count": 1
+        },
+        {
+          "term": "città",
+          "count": 1
+        },
+        {
+          "term": "gatto",
+          "count": 1
+        }
+      ],
+      "total": 11,
+      "unique": 4,
+      "ignoredStopwords": 7,
+      "ignoredShortTerms": 0,
+      "stopwordProfile": "it+en"
+    },
+    {
+      "name": "the minimum term length is measured in code points",
+      "input": "città però città",
+      "minLength": 5,
+      "terms": [
+        {
+          "term": "città",
+          "count": 2
+        }
+      ],
+      "total": 3,
+      "unique": 1,
+      "ignoredStopwords": 0,
+      "ignoredShortTerms": 1
+    },
+    {
+      "name": "a user stopword list is added to the built-in one",
+      "input": "alpha beta alpha gamma",
+      "stopwords": [
+        "beta"
+      ],
+      "terms": [
+        {
+          "term": "alpha",
+          "count": 2
+        },
+        {
+          "term": "gamma",
+          "count": 1
+        }
+      ],
+      "total": 4,
+      "unique": 2,
+      "ignoredStopwords": 1,
+      "stopwordProfile": "it+en+utente"
+    },
+    {
+      "name": "the limit keeps the most frequent terms in order",
+      "input": "uno due tre quattro",
+      "limit": 2,
+      "terms": [
+        {
+          "term": "due",
+          "count": 1
+        },
+        {
+          "term": "quattro",
+          "count": 1
+        }
+      ],
+      "unique": 3,
+      "ignoredStopwords": 1
+    },
+    {
+      "name": "the effective limit is reported when it is clamped",
+      "input": "uno due tre",
+      "limit": 0,
+      "effectiveLimit": 1,
+      "effectiveMinLength": 1,
+      "terms": [
+        {
+          "term": "due",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "frequent terms come first",
+      "input": "beta beta beta alpha",
+      "terms": [
+        {
+          "term": "beta",
+          "count": 3
+        },
+        {
+          "term": "alpha",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "properties": [
+    "deduplicating an already deduplicated note list removes nothing",
+    "the reported terms never contain a stopword from the declared profile",
+    "the same text and settings always produce the same terms in the same order"
+  ]
+}

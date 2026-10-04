@@ -234,8 +234,8 @@ const familyTestFiles: Readonly<Record<string, readonly string[]>> = {
   "date-time": ["tests/date-time-engine.test.ts", "tests/date-time-modules.test.ts"],
   "business-math": ["tests/business-tools.test.ts"],
   "client-time-math": ["tests/business-tools.test.ts", "tests/client-time-math-engine.test.ts"],
-  "research-knowledge": ["tests/research-reference-engine.test.ts"],
-  "research-reference": ["tests/research-reference-engine.test.ts"],
+  "research-knowledge": ["tests/research-knowledge-engine.test.ts", "tests/research-reference-engine.test.ts"],
+  "research-reference": ["tests/research-knowledge-engine.test.ts", "tests/research-reference-engine.test.ts"],
   pdf: ["tests/pdf-document-tools.test.ts", "tests/pdf-catalog.test.ts"],
   "file-privacy": ["tests/file-privacy-engine.test.ts", "tests/file-privacy-modules.test.ts"],
   image: ["tests/image-resize-engine.test.ts", "tests/image-visual-tools.test.ts"],
@@ -277,6 +277,17 @@ const pdfEvidence = {
   locality: ["quality/receipts/pdf/browser-acceptance.json"],
   mobileA11y: ["quality/receipts/pdf/browser-acceptance.json"],
   lazyLoad: ["quality/receipts/pdf/browser-acceptance.json"],
+} as const;
+
+/**
+ * Browser acceptance for the research-knowledge family covers the whole family,
+ * including ris-bibtex-converter, whose route is accepted here even though it
+ * stays IMPLEMENTED_UNVERIFIED on its open oracle gap.
+ */
+const researchKnowledgeEvidence = {
+  locality: ["quality/receipts/research-knowledge/browser-acceptance.json"],
+  mobileA11y: ["quality/receipts/research-knowledge/browser-acceptance.json"],
+  lazyLoad: ["quality/receipts/research-knowledge/browser-acceptance.json"],
 } as const;
 
 const expandedLocalEvidence = {
@@ -339,6 +350,20 @@ const expandedLocalToolIds = [
 
 const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimension, readonly string[]>>>> = {
   ...Object.fromEntries(expandedLocalToolIds.map((toolId) => [toolId, expandedLocalEvidence])),
+  "bibtex-deduplicator": researchKnowledgeEvidence,
+  "bibtex-formatter": researchKnowledgeEvidence,
+  "citation-deduplicator": researchKnowledgeEvidence,
+  "citation-key-generator": researchKnowledgeEvidence,
+  "date-source-normalizer": researchKnowledgeEvidence,
+  "domain-frequency-counter": researchKnowledgeEvidence,
+  "evidence-table-builder": researchKnowledgeEvidence,
+  "notes-deduplicator": researchKnowledgeEvidence,
+  "pdf-page-citation-helper": researchKnowledgeEvidence,
+  "reading-list-deduplicator": researchKnowledgeEvidence,
+  "reference-list-sorter": researchKnowledgeEvidence,
+  "research-pack-manifest": researchKnowledgeEvidence,
+  "ris-bibtex-converter": researchKnowledgeEvidence,
+  "vocabulary-frequency-analyzer": researchKnowledgeEvidence,
   "business-day": {
     locality: ["quality/receipts/browser-performance/fresh-browser-matrix.json"],
     mobileA11y: ["quality/receipts/browser-performance/fresh-browser-matrix.json"],

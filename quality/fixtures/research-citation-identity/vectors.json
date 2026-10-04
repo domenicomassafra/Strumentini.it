@@ -1,0 +1,424 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "identity_chain": "DOI, ISBN, URL, titolo+autore+anno, contenuto stabile del record",
+    "isbn_equivalence": "ISBN-10 e ISBN-13 dello stesso titolo producono la stessa identita (prefisso 978)",
+    "url_equivalence": "gli utenti nella parte credenziali dell'URL non fanno parte dell'identita",
+    "empty_key": "un record privo di DOI, ISBN, URL, titolo, autore e anno non viene mai unito a un altro record",
+    "rule_is_reported": "ogni gruppo dichiara la regola di identita usata",
+    "ordering": "a parita di chiave l'ordine di ingresso e preservato",
+    "sorting": "il cognome del primo autore e la prima parola di contenuto del titolo sono le chiavi di ordinamento"
+  },
+  "vectors": [
+    {
+      "name": "same DOI written in two accepted forms is one reference",
+      "mode": "identifier",
+      "records": [
+        {
+          "title": "A",
+          "doi": "10.1000/182"
+        },
+        {
+          "title": "B",
+          "doi": "doi:10.1000/182"
+        }
+      ],
+      "removed": 1,
+      "outputCount": 1,
+      "rules": [
+        "doi"
+      ]
+    },
+    {
+      "name": "ISBN-10 and its 978 ISBN-13 are one reference",
+      "mode": "identifier",
+      "records": [
+        {
+          "title": "Libro",
+          "isbn": "0-306-40615-2"
+        },
+        {
+          "title": "Libro (edizione)",
+          "isbn": "978-0-306-40615-7"
+        }
+      ],
+      "removed": 1,
+      "outputCount": 1,
+      "rules": [
+        "isbn"
+      ]
+    },
+    {
+      "name": "credentials in the URL are not part of the identity",
+      "mode": "identifier",
+      "records": [
+        {
+          "url": "https://user:pass@example.org/paper"
+        },
+        {
+          "url": "https://example.org/paper"
+        }
+      ],
+      "removed": 1,
+      "outputCount": 1,
+      "rules": [
+        "url"
+      ],
+      "output_must_not_contain": "pass"
+    },
+    {
+      "name": "records without any identifying field are never merged",
+      "mode": "identifier",
+      "records": [
+        {
+          "note": "a"
+        },
+        {
+          "note": "b"
+        }
+      ],
+      "removed": 0,
+      "outputCount": 2,
+      "rules": [
+        "field-content"
+      ]
+    },
+    {
+      "name": "two identical records without identifying fields are still one reference",
+      "mode": "identifier",
+      "records": [
+        {
+          "note": "a"
+        },
+        {
+          "note": "a"
+        }
+      ],
+      "removed": 1,
+      "outputCount": 1,
+      "rules": [
+        "field-content"
+      ]
+    },
+    {
+      "name": "title-author-year mode merges records that differ only in a note",
+      "mode": "title-author-year",
+      "records": [
+        {
+          "title": "Uno studio",
+          "author": "Ada Smith",
+          "year": "2026",
+          "note": "letto"
+        },
+        {
+          "title": "Uno studio",
+          "author": "Ada Smith",
+          "year": "2026",
+          "note": "da rileggere"
+        }
+      ],
+      "removed": 1,
+      "outputCount": 1,
+      "rules": [
+        "title-author-year"
+      ]
+    },
+    {
+      "name": "exact mode ignores key order but nothing else",
+      "mode": "exact",
+      "records": [
+        {
+          "title": "Uno studio",
+          "year": "2026"
+        },
+        {
+          "year": "2026",
+          "title": "Uno studio"
+        }
+      ],
+      "removed": 1,
+      "outputCount": 1,
+      "rules": [
+        "exact"
+      ]
+    },
+    {
+      "name": "a partial year still identifies a reference when title and author match",
+      "mode": "title-author-year",
+      "records": [
+        {
+          "title": "Uno studio",
+          "author": "Ada Smith",
+          "date": "2026-05"
+        },
+        {
+          "title": "Uno studio",
+          "author": "Ada Smith",
+          "date": "maggio 2026"
+        }
+      ],
+      "removed": 1,
+      "outputCount": 1,
+      "rules": [
+        "title-author-year"
+      ]
+    },
+    {
+      "name": "different titles are different references",
+      "mode": "title-author-year",
+      "records": [
+        {
+          "title": "Uno studio",
+          "author": "Ada Smith",
+          "year": "2026"
+        },
+        {
+          "title": "Due studi",
+          "author": "Ada Smith",
+          "year": "2026"
+        }
+      ],
+      "removed": 0,
+      "outputCount": 2,
+      "rules": [
+        "title-author-year"
+      ]
+    },
+    {
+      "name": "three groups collapse in input order",
+      "mode": "identifier",
+      "records": [
+        {
+          "title": "B",
+          "doi": "10.1000/2"
+        },
+        {
+          "title": "A",
+          "doi": "10.1000/1"
+        },
+        {
+          "title": "Bbis",
+          "doi": "10.1000/2"
+        },
+        {
+          "title": "C",
+          "doi": "10.1000/3"
+        }
+      ],
+      "removed": 1,
+      "outputCount": 3,
+      "output_titles": [
+        "B",
+        "A",
+        "C"
+      ],
+      "rules": [
+        "doi"
+      ]
+    }
+  ],
+  "sort_vectors": [
+    {
+      "name": "author order uses the surname of the first author",
+      "order": "author",
+      "records": [
+        {
+          "title": "Zeta",
+          "authors": [
+            "Ada Rossi"
+          ],
+          "year": "2020"
+        },
+        {
+          "title": "Alfa",
+          "authors": [
+            "Ada Smith"
+          ],
+          "year": "2019"
+        },
+        {
+          "title": "Beta",
+          "authors": [
+            "Bob Neri"
+          ],
+          "year": "2021"
+        }
+      ],
+      "output_titles": [
+        "Beta",
+        "Zeta",
+        "Alfa"
+      ]
+    },
+    {
+      "name": "year order compares four-digit years numerically and keeps missing years last",
+      "order": "year",
+      "records": [
+        {
+          "title": "Zeta",
+          "authors": [
+            "Ada Rossi"
+          ],
+          "year": "2020"
+        },
+        {
+          "title": "Alfa",
+          "authors": [
+            "Ada Smith"
+          ],
+          "year": "2019"
+        },
+        {
+          "title": "Beta",
+          "authors": [
+            "Bob Neri"
+          ],
+          "year": "2021"
+        },
+        {
+          "title": "Gamma",
+          "authors": [
+            "Al Zed"
+          ]
+        }
+      ],
+      "output_titles": [
+        "Alfa",
+        "Zeta",
+        "Beta",
+        "Gamma"
+      ]
+    },
+    {
+      "name": "title order skips the leading article",
+      "order": "title",
+      "records": [
+        {
+          "title": "Zeta",
+          "authors": [
+            "Ada Rossi"
+          ],
+          "year": "2020"
+        },
+        {
+          "title": "The Alfa Report",
+          "authors": [
+            "Ada Smith"
+          ],
+          "year": "2019"
+        },
+        {
+          "title": "Beta",
+          "authors": [
+            "Bob Neri"
+          ],
+          "year": "2021"
+        }
+      ],
+      "output_titles": [
+        "The Alfa Report",
+        "Beta",
+        "Zeta"
+      ]
+    },
+    {
+      "name": "an already ordered list is reported as unchanged",
+      "order": "author",
+      "records": [
+        {
+          "title": "Alfa",
+          "authors": [
+            "Bob Neri"
+          ],
+          "year": "2021"
+        },
+        {
+          "title": "Beta",
+          "authors": [
+            "Ada Smith"
+          ],
+          "year": "2019"
+        }
+      ],
+      "output_titles": [
+        "Alfa",
+        "Beta"
+      ],
+      "unchanged": true,
+      "movedCount": 0
+    }
+  ],
+  "key_vectors": [
+    {
+      "name": "surname-first and given-first authors agree",
+      "record": {
+        "author": "Smith, Ada",
+        "title": "Deep Learning",
+        "year": "2026"
+      },
+      "key": "smith_2026_deep"
+    },
+    {
+      "name": "given-first author resolves to the same surname",
+      "record": {
+        "authors": [
+          "Ada Smith"
+        ],
+        "title": "Deep Learning",
+        "year": "2026"
+      },
+      "key": "smith_2026_deep"
+    },
+    {
+      "name": "accents and punctuation are folded to ASCII",
+      "record": {
+        "author": "José Müller",
+        "title": "Perché così",
+        "year": "2020"
+      },
+      "key": "muller_2020_perche"
+    },
+    {
+      "name": "a missing year becomes nd",
+      "record": {
+        "author": "Ada Smith",
+        "title": "Deep Learning"
+      },
+      "key": "smith_nd_deep"
+    },
+    {
+      "name": "an all-numeric title keeps a readable key part",
+      "record": {
+        "author": "Ada Smith",
+        "title": "2026 in review",
+        "year": "2026"
+      },
+      "key": "smith_2026_2026"
+    }
+  ],
+  "key_collision_vector": {
+    "name": "the same record twice gets a numeric suffix instead of a duplicate key",
+    "records": [
+      {
+        "author": "Ada Smith",
+        "title": "Deep Learning",
+        "year": "2026"
+      },
+      {
+        "author": "Ada Smith",
+        "title": "Deep Learning",
+        "year": "2026"
+      }
+    ],
+    "keys": [
+      "smith_2026_deep",
+      "smith_2026_deep_2"
+    ],
+    "collisions": 1
+  },
+  "properties": [
+    "dedupe is idempotent: deduplicating an already deduplicated list removes nothing",
+    "two records with different content are never merged by the content fallback",
+    "the reported multiset of input records always equals unique plus duplicates"
+  ]
+}

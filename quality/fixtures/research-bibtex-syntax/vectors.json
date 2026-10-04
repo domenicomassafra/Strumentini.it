@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "directives": "@comment, @preamble e @string non sono voci bibliografiche e non vengono mai emesse come tali",
+    "field_order": "author, editor, title, booktitle, journal, publisher, year, date, volume, number, pages, doi, url, keywords, note, abstract, poi i campi sconosciuti in ordine alfabetico",
+    "indent": "due spazi, una coppia chiave = {valore} per riga",
+    "macro_expansion": "false: un riferimento @string viene conservato testualmente dopo #",
+    "value_delimiters": "chiavi {...} e virgolette \"...\" sono equivalenti in fase di lettura",
+    "unbalanced_values": "un valore con graffe non bilanciate viene emesso tra virgolette e segnalato come avviso",
+    "truncation": "una voce non chiusa non viene emessa e il documento e marcato come troncato",
+    "url_redaction": "il campo url non conserva le credenziali"
+  },
+  "parse_vectors": [
+    {
+      "name": "a comment directive is not an entry and fields are re-ordered canonically",
+      "input": "@comment{nota per i manutentori, da non mostrare}\n@article{smith2026,\n  year = {2026},\n  title = {A Synthetic Fixture},\n  author = {Ada Smith}\n}\n",
+      "entry_count": 1,
+      "directives": [
+        "comment"
+      ],
+      "truncated": false,
+      "entries": [
+        {
+          "type": "article",
+          "key": "smith2026",
+          "fields": {
+            "author": "Ada Smith",
+            "title": "A Synthetic Fixture",
+            "year": "2026"
+          }
+        }
+      ]
+    },
+    {
+      "name": "quoted values and string concatenation are read without expanding macros",
+      "input": "@article{k1, title = {A Study} # acm, year = 2020}",
+      "entry_count": 1,
+      "directives": [],
+      "truncated": false,
+      "entries": [
+        {
+          "type": "article",
+          "key": "k1",
+          "fields": {
+            "title": "A Study # acm",
+            "year": "2020"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a string directive is recorded and skipped",
+      "input": "@string{acm = \"ACM Press\"}\n@article{k2, journal = acm, title = {T}}",
+      "entry_count": 1,
+      "directives": [
+        "string"
+      ],
+      "truncated": false,
+      "entries": [
+        {
+          "type": "article",
+          "key": "k2",
+          "fields": {
+            "title": "T",
+            "journal": "acm"
+          }
+        }
+      ]
+    },
+    {
+      "name": "an unclosed entry yields no entry and marks the document truncated",
+      "input": "@article{k3, title = {T}",
+      "entry_count": 0,
+      "directives": [],
+      "truncated": true,
+      "entries": []
+    },
+    {
+      "name": "a preamble directive is skipped",
+      "input": "@preamble{\"\\newcommand{\\x}{y}\"}\n@book{k4, title = {T}}",
+      "entry_count": 1,
+      "directives": [
+        "preamble"
+      ],
+      "truncated": false,
+      "entries": [
+        {
+          "type": "book",
+          "key": "k4",
+          "fields": {
+            "title": "T"
+          }
+        }
+      ]
+    },
+    {
+      "name": "the parenthesised entry form is accepted",
+      "input": "@article(k5, title = {T}, year = {2021})",
+      "entry_count": 1,
+      "directives": [],
+      "truncated": false,
+      "entries": [
+        {
+          "type": "article",
+          "key": "k5",
+          "fields": {
+            "title": "T",
+            "year": "2021"
+          }
+        }
+      ]
+    },
+    {
+      "name": "braced values keep their inner braces and collapse whitespace",
+      "input": "@inproceedings{k6,\n  title = {The {EU}   Directive},\n  booktitle = {Proc. of Things},\n  pages = {12--15}\n}",
+      "entry_count": 1,
+      "directives": [],
+      "truncated": false,
+      "entries": [
+        {
+          "type": "inproceedings",
+          "key": "k6",
+          "fields": {
+            "title": "The {EU} Directive",
+            "booktitle": "Proc. of Things",
+            "pages": "12--15"
+          }
+        }
+      ]
+    },
+    {
+      "name": "url credentials never survive parsing",
+      "input": "@article{k7, title = {T}, url = {https://user:pass@example.org/paper}}",
+      "entry_count": 1,
+      "directives": [],
+      "truncated": false,
+      "output_must_not_contain": "pass",
+      "entries": [
+        {
+          "type": "article",
+          "key": "k7",
+          "fields": {
+            "title": "T",
+            "url": "https://example.org/paper"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a byte order mark and CRLF terminators are accepted",
+      "input": "﻿@article{k8,\r\n  title = {T},\r\n  year = {2022}\r\n}\r\n",
+      "entry_count": 1,
+      "directives": [],
+      "truncated": false,
+      "entries": [
+        {
+          "type": "article",
+          "key": "k8",
+          "fields": {
+            "title": "T",
+            "year": "2022"
+          }
+        }
+      ]
+    }
+  ],
+  "format_vectors": [
+    {
+      "name": "canonical field order, two space indent and one trailing newline",
+      "input": "@article{smith2026,\n  year = {2026},\n  title = {A Synthetic Fixture},\n  author = {Ada Smith}\n}\n",
+      "bibtex": "@article{smith2026,\n  author = {Ada Smith},\n  title = {A Synthetic Fixture},\n  year = {2026}\n}\n",
+      "warning_codes": []
+    },
+    {
+      "name": "unknown fields follow the known ones in alphabetical order",
+      "input": "@article{k9, zzz = {1}, aaa = {2}, title = {T}, author = {Ada Smith}}",
+      "bibtex": "@article{k9,\n  author = {Ada Smith},\n  title = {T},\n  aaa = {2},\n  zzz = {1}\n}\n",
+      "warning_codes": []
+    },
+    {
+      "name": "an entry without fields still produces a valid entry",
+      "input": "@misc{k10,}",
+      "bibtex": "@misc{k10,\n}\n",
+      "warning_codes": []
+    },
+    {
+      "name": "an unbalanced value is quoted and reported",
+      "bibtex": "@misc{k11,\n  note = \"a } b\"\n}\n",
+      "warning_codes": [
+        "BIBTEX_VALUE_QUOTED"
+      ],
+      "entry": {
+        "type": "misc",
+        "key": "k11",
+        "fields": {
+          "note": "a } b"
+        }
+      }
+    },
+    {
+      "name": "an empty entry list formats to an empty string",
+      "input": "@comment{only a directive, nothing else}",
+      "bibtex": "",
+      "warning_codes": [],
+      "directives": [
+        "comment"
+      ]
+    },
+    {
+      "name": "keys with spaces are normalised to underscores",
+      "input": "@article{ada smith 2026, title = {T}}",
+      "bibtex": "@article{ada_smith_2026,\n  title = {T}\n}\n",
+      "warning_codes": []
+    }
+  ],
+  "dedupe_vectors": [
+    {
+      "name": "two entries with the same DOI collapse on the DOI rule",
+      "input": "@article{a, title = {A}, doi = {10.1000/182}}\n@article{b, title = {B}, doi = {doi:10.1000/182}}",
+      "removed": 1,
+      "outputCount": 1,
+      "rules": [
+        "doi"
+      ],
+      "bibtex": "@article{a,\n  title = {A},\n  doi = {10.1000/182}\n}\n"
+    },
+    {
+      "name": "entries without title, author or year are never merged",
+      "input": "@misc{a, note = {x}}\n@misc{b, note = {y}}",
+      "removed": 0,
+      "outputCount": 2,
+      "rules": [
+        "entry-content"
+      ]
+    },
+    {
+      "name": "an ISBN identifies a book entry",
+      "input": "@book{a, title = {A}, isbn = {0-306-40615-2}}\n@book{b, title = {B}, isbn = {978-0-306-40615-7}}",
+      "removed": 1,
+      "outputCount": 1,
+      "rules": [
+        "isbn"
+      ]
+    },
+    {
+      "name": "the deduplicated document is the canonical formatting of the surviving entries",
+      "input": "@comment{nota, da ignorare}\n@article{a, year = {2026}, title = {T}, author = {Ada Smith}}",
+      "removed": 0,
+      "outputCount": 1,
+      "rules": [
+        "title-author-year"
+      ],
+      "bibtex": "@article{a,\n  author = {Ada Smith},\n  title = {T},\n  year = {2026}\n}\n",
+      "directive_count": 1
+    }
+  ],
+  "properties": [
+    "parsing then formatting an already canonical document is a fixed point",
+    "formatting never introduces an entry that parsing would not read back"
+  ]
+}

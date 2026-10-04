@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "grammars": "iso-like (YYYY-MM[-DD]), numerico (DD/MM/YYYY o MM/DD/YYYY con lo stesso separatore), solo anno, mese e anno in italiano o inglese, giorno e mese e anno in italiano o inglese",
+    "month_names": "italiano e inglese, forme abbreviate incluse; il month name e cercato anche fra le chiavi del dizionario solo per corrispondenza esatta",
+    "ambiguity": "una data numerica in cui entrambe le letture sono valide e diverse e dichiarata ambigua e riporta la lettura alternativa",
+    "unambiguous_fallback": "se una sola lettura e valida nel calendario, quella lettura e usata e la data non e ambigua",
+    "calendar": "il calendario gregoriano, anni 1-9999, con regole dei giorni bisestili",
+    "precision": "anno, mese o giorno secondo i dati presenti",
+    "reasons": "i motivi di rifiuto sono in italiano e il risultato dichiara sempre il formato riconosciuto",
+    "public_copy": "i motivi di rifiuto mostrati all'utente sono in italiano"
+  },
+  "vectors": [
+    {
+      "name": "iso day precision",
+      "input": "2026-09-24",
+      "valid": true,
+      "iso": "2026-09-24",
+      "precision": "day",
+      "source": "iso-like"
+    },
+    {
+      "name": "iso month precision",
+      "input": "2026-09",
+      "valid": true,
+      "iso": "2026-09",
+      "precision": "month",
+      "source": "iso-like"
+    },
+    {
+      "name": "iso with a time part keeps only the date",
+      "input": "2026-09-24T10:30:00",
+      "valid": true,
+      "iso": "2026-09-24",
+      "precision": "day",
+      "source": "iso-like"
+    },
+    {
+      "name": "year only",
+      "input": "2026",
+      "valid": true,
+      "iso": "2026",
+      "precision": "year",
+      "source": "year"
+    },
+    {
+      "name": "italian day month year",
+      "input": "24 settembre 2026",
+      "valid": true,
+      "iso": "2026-09-24",
+      "precision": "day",
+      "source": "month-name"
+    },
+    {
+      "name": "italian abbreviated month",
+      "input": "1 mag 2020",
+      "valid": true,
+      "iso": "2020-05-01",
+      "precision": "day",
+      "source": "month-name"
+    },
+    {
+      "name": "italian month year",
+      "input": "settembre 2026",
+      "valid": true,
+      "iso": "2026-09",
+      "precision": "month",
+      "source": "month-name"
+    },
+    {
+      "name": "english month day year",
+      "input": "March 3, 2021",
+      "valid": true,
+      "iso": "2021-03-03",
+      "precision": "day",
+      "source": "month-name"
+    },
+    {
+      "name": "english day first with ordinal suffix",
+      "input": "3rd March 2021",
+      "valid": true,
+      "iso": "2021-03-03",
+      "precision": "day",
+      "source": "month-name"
+    },
+    {
+      "name": "ambiguous numeric date reads month first by default and reports the alternative",
+      "input": "01/02/2026",
+      "dayFirst": false,
+      "valid": true,
+      "iso": "2026-01-02",
+      "precision": "day",
+      "source": "numeric",
+      "ambiguous": true,
+      "alternativeIso": "2026-02-01"
+    },
+    {
+      "name": "ambiguous numeric date reads day first when asked",
+      "input": "01/02/2026",
+      "dayFirst": true,
+      "valid": true,
+      "iso": "2026-02-01",
+      "precision": "day",
+      "source": "numeric",
+      "ambiguous": true,
+      "alternativeIso": "2026-01-02"
+    },
+    {
+      "name": "a numeric date with only one valid reading is not ambiguous",
+      "input": "25/12/2026",
+      "dayFirst": false,
+      "valid": true,
+      "iso": "2026-12-25",
+      "precision": "day",
+      "source": "numeric",
+      "dayFirst_effective": true,
+      "ambiguous": false
+    },
+    {
+      "name": "dotted separators are accepted with the same reading rules",
+      "input": "24.09.2026",
+      "dayFirst": false,
+      "valid": true,
+      "iso": "2026-09-24",
+      "precision": "day",
+      "source": "numeric",
+      "ambiguous": false
+    },
+    {
+      "name": "mixed separators are rejected rather than guessed",
+      "input": "24/09-2026",
+      "valid": false,
+      "source": "unknown",
+      "reason": "formato data non supportato"
+    },
+    {
+      "name": "a day that does not exist in the calendar is rejected",
+      "input": "31/02/2026",
+      "valid": false,
+      "source": "numeric",
+      "reason": "questa data non esiste nel calendario"
+    },
+    {
+      "name": "a leap day exists in a leap year",
+      "input": "29/02/2024",
+      "dayFirst": false,
+      "valid": true,
+      "iso": "2024-02-29",
+      "precision": "day",
+      "source": "numeric",
+      "ambiguous": false
+    },
+    {
+      "name": "a leap day does not exist in a common year",
+      "input": "29/02/2023",
+      "valid": false,
+      "source": "numeric",
+      "reason": "questa data non esiste nel calendario"
+    },
+    {
+      "name": "a century year is not a leap year",
+      "input": "1900-02-29",
+      "valid": false,
+      "source": "iso-like",
+      "reason": "questa data non esiste nel calendario"
+    },
+    {
+      "name": "a four hundred year cycle is a leap year",
+      "input": "2000-02-29",
+      "valid": true,
+      "iso": "2000-02-29",
+      "precision": "day",
+      "source": "iso-like"
+    },
+    {
+      "name": "an unknown word is rejected with an italian reason",
+      "input": "non e una data",
+      "valid": false,
+      "source": "unknown",
+      "reason": "formato data non supportato"
+    },
+    {
+      "name": "an inherited object property is never a month name",
+      "input": "constructor 5 2026",
+      "valid": false,
+      "source": "unknown",
+      "reason": "formato data non supportato"
+    },
+    {
+      "name": "a two digit year is not a date",
+      "input": "24-09-26",
+      "valid": false,
+      "source": "unknown",
+      "reason": "formato data non supportato"
+    }
+  ],
+  "properties": [
+    "normalising an already iso value returns the same iso value",
+    "an invalid date never carries an iso field",
+    "the alternative reading, when present, is always different from the chosen one"
+  ]
+}

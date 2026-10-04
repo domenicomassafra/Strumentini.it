@@ -13,7 +13,7 @@ export const evidenceTableBuilderManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-196", fixtureFamilies: ["csv-table-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-196", fixtureFamilies: ["research-source-inventory"] },
 } as const satisfies ToolManifest;
 
 export default evidenceTableBuilderManifest;

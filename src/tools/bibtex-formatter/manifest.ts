@@ -13,7 +13,7 @@ export const bibtexFormatterManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-185", fixtureFamilies: ["bibtex"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-185", fixtureFamilies: ["research-bibtex-syntax"] },
 } as const satisfies ToolManifest;
 
 export default bibtexFormatterManifest;

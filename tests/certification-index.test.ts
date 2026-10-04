@@ -35,11 +35,11 @@ describe("expanded catalog certification index", () => {
   it("preserves the certified frontier and exposes unresolved evidence", async () => {
     const index = await buildCertificationIndex();
     expect(index.summary.statusCounts).toEqual({
-      GOLD: 168,
+      GOLD: 181,
       PARTIAL: 1,
-      IMPLEMENTED_UNVERIFIED: 31,
+      IMPLEMENTED_UNVERIFIED: 18,
     });
-    expect(index.summary.certificationGoldCount).toBe(168);
+    expect(index.summary.certificationGoldCount).toBe(181);
     expect(index.summary.physicalDevicePassCount).toBe(0);
     expect(index.global.physicalDevice).toMatchObject({
       status: "EXTERNAL",
@@ -75,6 +75,22 @@ describe("expanded catalog certification index", () => {
     const pdf = index.tools.filter((tool) => tool.engine === "pdf");
     expect(pdf).toHaveLength(20);
     expect(pdf.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    const researchKnowledge = index.tools.filter((tool) => tool.engine === "research-knowledge");
+    expect(researchKnowledge).toHaveLength(20);
+    const researchGold = researchKnowledge.filter((tool) => tool.status === "GOLD");
+    expect(researchGold).toHaveLength(19);
+    expect(researchGold.every((tool) => tool.locality.status === "PASS" && tool.mobileA11y.status === "PASS" && tool.lazyLoad.status === "PASS")).toBe(true);
+    expect(researchGold.every((tool) => tool.oracle.status === "VERIFIED" && tool.fixtures.every((fixture) => fixture.status === "VERIFIED"))).toBe(true);
+    // ris-bibtex-converter keeps its real browser acceptance but stays unverified:
+    // its oracle is medium confidence with an explicitly unresolved gap.
+    const risConverter = index.tools.find((tool) => tool.id === "ris-bibtex-converter");
+    expect(risConverter).toMatchObject({
+      status: "IMPLEMENTED_UNVERIFIED",
+      certificationReceipt: null,
+      locality: { status: "PASS" },
+      mobileA11y: { status: "PASS" },
+      lazyLoad: { status: "PASS" },
+    });
     expect(index.tools.some((tool) => tool.physicalDevice.status === "PASS")).toBe(false);
   }, 30_000);
 

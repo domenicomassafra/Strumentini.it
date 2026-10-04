@@ -13,7 +13,7 @@ export const researchPackManifestToolManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-200", fixtureFamilies: ["json-grammar"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-200", fixtureFamilies: ["research-source-inventory", "sha2-known-answers"] },
 } as const satisfies ToolManifest;
 
 export default researchPackManifestToolManifest;

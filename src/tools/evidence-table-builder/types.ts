@@ -1,11 +1,9 @@
+import type { EvidenceTable } from "../../engines/research-knowledge";
+
 export interface EvidenceTableBuilderInput {
   records: unknown;
 }
 
-export interface EvidenceTableBuilderOutput {
-  csv: string;
-  headers: string[];
-  rows: unknown[];
-  rowCount: number;
+export interface EvidenceTableBuilderOutput extends EvidenceTable {
   engineVersion: string;
 }

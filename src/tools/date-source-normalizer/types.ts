@@ -1,13 +1,10 @@
+import type { DateResult } from "../../engines/research-knowledge";
+
 export interface DateSourceNormalizerInput {
   value: string;
   dayFirst?: boolean | string;
 }
 
-export interface DateSourceNormalizerOutput {
-  valid: boolean;
-  input: string;
-  iso?: string;
-  precision?: "year" | "month" | "day";
-  reason?: string;
+export type DateSourceNormalizerOutput = DateResult & {
   engineVersion: string;
-}
+};

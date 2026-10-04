@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "59147dfced80ae249f82c1e1773ada507ecbe971",
-  "sourceFingerprint": "b535a0f124f46b72bf2ab31949808bd0f2f6dc42401b802db6569319b03c3f99",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "25c6a45e56c5db403c56299bc08ea54e351329ad75345b5cb61f2e71b42dd39a",
   "toolId": "pdf-page-count-verifier",
   "runtime": {
     "location": "LOCAL",
@@ -43,7 +43,7 @@
     "pdfEngineIndexSha256": "48f1f3568e453f683cefebc179444358bd458b8776cb01758fc7920607a78017",
     "pdfEngineParserSha256": "c012706639797d68bfd0adbad941fd8b5db05f9376dfa05d4c921a2b900c9d46",
     "pdfEngineWriterSha256": "dbb1f374a8c7f64a8962a41733d4c700102c1277fd8452ded0f8b89fcf09cc3a",
-    "fixtureIndexSha256": "fae5d847ab341d66c69770184a06d50051120aacb168bcd705424b62982cb55d",
+    "fixtureIndexSha256": "98f71d801f8d4bda7c191e98d89582b4e08ef99ea6ffb355b44c17de653c94c8",
     "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
     "browserAcceptanceSha256": "1c180d17984d64f2cd89bb0a7a816cabe930c738412b0fb7bcf91cdd55f65fd5",
     "unitTestsSha256": "9ee50a4490ce9b258be22f58e059b07e493df0de25408b8d58d928ec32ae74fb",

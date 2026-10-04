@@ -13,7 +13,7 @@ export const referenceListSorterManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-189", fixtureFamilies: ["line-sorting"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-189", fixtureFamilies: ["research-citation-identity"] },
 } as const satisfies ToolManifest;
 
 export default referenceListSorterManifest;

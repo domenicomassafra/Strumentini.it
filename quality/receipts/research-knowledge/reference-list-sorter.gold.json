@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "25c6a45e56c5db403c56299bc08ea54e351329ad75345b5cb61f2e71b42dd39a",
+  "toolId": "reference-list-sorter",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "research-knowledge",
+  "engineVersion": "research-knowledge-v2",
+  "oracleEntryId": "cand-189",
+  "oracleConfidence": "high",
+  "fixtureFamilies": [
+    "research-citation-identity"
+  ],
+  "truthSources": [
+    "doi-handbook",
+    "fixture-policy",
+    "isbn-manual",
+    "strumentiutili-quality",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "research-citation-identity",
+      "path": "quality/fixtures/research-citation-identity/vectors.json",
+      "sha256": "df42aaefaf0354bce20851fd767dbce92658b0f95104b53de2d7df2b7f479cdd",
+      "provenance": "hand-worked",
+      "license_or_rights": "Hand-worked bibliographic literals and ordering rules authored for StrumentiUtili.it; no external citation corpus copied.",
+      "schemaVersion": 1
+    }
+  ],
+  "checksumAlgorithm": "SHA-256",
+  "browserContract": {
+    "assertion": "\"confronto\":\\s*\"cognome del primo autore",
+    "outputSha256": "d8b7184fa8c3cca88947beee3b6e05648fc7ab74b4e0e31efea13d02024b862d",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls",
+    "publicErrorState": "empty-input-result"
+  },
+  "determinism": "two identical runs produced byte-identical output and an aborted run produced nothing",
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap",
+    "oracle/manifest maintenance class alignment",
+    "every declared fixture family resolves from the canonical fixture index with recorded provenance",
+    "family unit tests cover the hand-worked vectors, the adversarial cases and the Italian public copy",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance plus the declared boundary state",
+    "repeat-run determinism and abort propagation re-proved on the committed source"
+  ],
+  "identities": {
+    "manifestSha256": "bf3c18156f14bfc88f25e0b322248fc0fc921e4ee40b97b038fa63d3156948e2",
+    "engineSha256": "ba102e9d78d6bc9c9cdb6a6deab5ca78d474d0a286d14f1e0666c4dd19929f78",
+    "fixtureIndexSha256": "98f71d801f8d4bda7c191e98d89582b4e08ef99ea6ffb355b44c17de653c94c8",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+    "acceptanceScriptSha256": "8dbb68f779a4cabd67c3ac1b94e626074c3ebdcaf6f465126cf7c8b8101845fd",
+    "unitTestsSha256": "46dcd92ee24212e7d895aa2c8c872eddd36b43ddd26b519b026edbdd861dbb00",
+    "fixture:research-citation-identity:sha256": "df42aaefaf0354bce20851fd767dbce92658b0f95104b53de2d7df2b7f479cdd"
+  }
+}

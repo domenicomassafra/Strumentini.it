@@ -13,7 +13,7 @@ export const notesDeduplicatorManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-197", fixtureFamilies: ["list-set-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-197", fixtureFamilies: ["research-text-frequency"] },
 } as const satisfies ToolManifest;
 
 export default notesDeduplicatorManifest;

@@ -13,7 +13,7 @@ export const citationDeduplicatorManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-184", fixtureFamilies: ["list-set-ops"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-184", fixtureFamilies: ["research-citation-identity"] },
 } as const satisfies ToolManifest;
 
 export default citationDeduplicatorManifest;

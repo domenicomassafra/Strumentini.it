@@ -37,6 +37,8 @@
     "gold:data-table": "tsx scripts/gold/data-table-certify.ts",
     "gold:pdf": "tsx scripts/gold/pdf-certify.ts",
     "gold:expanded-local": "tsx scripts/gold/expanded-local-certify.ts",
+    "acceptance:research-knowledge": "node scripts/acceptance-research-knowledge.mjs",
+    "gold:research-knowledge": "tsx scripts/gold/research-knowledge-certify.ts",
     "frontier:v1": "tsx scripts/check-v1-gold-frontier.ts",
     "frontier:v1:require-gold": "tsx scripts/check-v1-gold-frontier.ts --require-all-gold",
     "deploy:check:portable": "node scripts/check-portable-static.mjs",

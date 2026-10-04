@@ -1,3 +1,5 @@
+import type { CitationRecord, DedupeGroup } from "../../engines/research-knowledge";
+
 export type CitationDeduplicatorMode = "exact" | "identifier" | "title-author-year";
 
 export interface CitationDeduplicatorInput {
@@ -6,9 +8,10 @@ export interface CitationDeduplicatorInput {
 }
 
 export interface CitationDeduplicatorOutput {
-  records: unknown[];
-  unique: unknown[];
-  duplicates: unknown[];
+  records: CitationRecord[];
+  unique: CitationRecord[];
+  duplicates: CitationRecord[];
+  groups: DedupeGroup[];
   removed: number;
   inputCount: number;
   outputCount: number;

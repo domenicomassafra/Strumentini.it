@@ -13,7 +13,7 @@ export const risBibtexConverterManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-187", fixtureFamilies: ["bibtex", "ris"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-187", fixtureFamilies: ["research-ris-bibtex-conversion", "research-bibtex-syntax"] },
 } as const satisfies ToolManifest;
 
 export default risBibtexConverterManifest;

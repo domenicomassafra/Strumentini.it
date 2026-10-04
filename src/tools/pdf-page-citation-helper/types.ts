@@ -1,3 +1,5 @@
+import type { PdfPageCitation } from "../../engines/research-knowledge";
+
 export type PdfCitationStyle = "apa" | "mla" | "chicago";
 
 export interface PdfPageCitationHelperInput {
@@ -8,10 +10,6 @@ export interface PdfPageCitationHelperInput {
   style?: PdfCitationStyle;
 }
 
-export interface PdfPageCitationHelperOutput {
-  citation: string;
-  pages: string;
-  pageCount: number;
-  style: PdfCitationStyle;
+export interface PdfPageCitationHelperOutput extends PdfPageCitation {
   engineVersion: string;
 }

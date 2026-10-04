@@ -13,7 +13,7 @@ export const dateSourceNormalizerManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-193", fixtureFamilies: ["date-arithmetic"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-193", fixtureFamilies: ["research-date-normalization"] },
 } as const satisfies ToolManifest;
 
 export default dateSourceNormalizerManifest;

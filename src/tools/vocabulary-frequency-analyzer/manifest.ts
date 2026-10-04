@@ -13,7 +13,7 @@ export const vocabularyFrequencyAnalyzerManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
-  gold: { maintenanceClass: "D", oracleEntryId: "cand-198", fixtureFamilies: ["word-character-line-count"] },
+  gold: { maintenanceClass: "E", oracleEntryId: "cand-198", fixtureFamilies: ["research-text-frequency", "word-character-line-count"] },
 } as const satisfies ToolManifest;
 
 export default vocabularyFrequencyAnalyzerManifest;

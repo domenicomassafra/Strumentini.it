@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
+  "sourceFingerprint": "25c6a45e56c5db403c56299bc08ea54e351329ad75345b5cb61f2e71b42dd39a",
+  "toolId": "vocabulary-frequency-analyzer",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "research-knowledge",
+  "engineVersion": "research-knowledge-v2",
+  "oracleEntryId": "cand-198",
+  "oracleConfidence": "high",
+  "fixtureFamilies": [
+    "research-text-frequency",
+    "word-character-line-count"
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-quality",
+    "unicode-uax15",
+    "unicode-uax29"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "research-text-frequency",
+      "path": "quality/fixtures/research-text-frequency/vectors.json",
+      "sha256": "221b24dac5d760fcae8d0f5518834287b4e5fba920b28e49b56aafa0b7f87b02",
+      "provenance": "project-policy",
+      "license_or_rights": "Hand-worked Italian and English literals plus the declared StrumentiUtili.it stopword policy; no external corpus copied.",
+      "schemaVersion": 1
+    },
+    {
+      "id": "word-character-line-count",
+      "path": "quality/fixtures/word-character-line-count/vectors.json",
+      "sha256": "50903e6ab092eb05877f73819a48ef91519723ef8f89b8b2efcee674148de66d",
+      "provenance": "project-policy",
+      "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied.",
+      "schemaVersion": 1
+    }
+  ],
+  "checksumAlgorithm": "SHA-256",
+  "browserContract": {
+    "assertion": "\"percorso_parole_chiave\":\\s*\"it\\+en\"",
+    "outputSha256": "0ec394a088009e3f92826731cf1391db63fbcfd655a33a415beffcb1cdee47ea",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls",
+    "publicErrorState": "typed-italian-error"
+  },
+  "determinism": "two identical runs produced byte-identical output and an aborted run produced nothing",
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap",
+    "oracle/manifest maintenance class alignment",
+    "every declared fixture family resolves from the canonical fixture index with recorded provenance",
+    "family unit tests cover the hand-worked vectors, the adversarial cases and the Italian public copy",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance plus the declared boundary state",
+    "repeat-run determinism and abort propagation re-proved on the committed source"
+  ],
+  "identities": {
+    "manifestSha256": "049b9358d1bb55127c36ad08ffa005727ff832cc4ffab3f412f7c780ae12afcc",
+    "engineSha256": "ba102e9d78d6bc9c9cdb6a6deab5ca78d474d0a286d14f1e0666c4dd19929f78",
+    "fixtureIndexSha256": "98f71d801f8d4bda7c191e98d89582b4e08ef99ea6ffb355b44c17de653c94c8",
+    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "browserAcceptanceSha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
+    "acceptanceScriptSha256": "8dbb68f779a4cabd67c3ac1b94e626074c3ebdcaf6f465126cf7c8b8101845fd",
+    "unitTestsSha256": "46dcd92ee24212e7d895aa2c8c872eddd36b43ddd26b519b026edbdd861dbb00",
+    "fixture:research-text-frequency:sha256": "221b24dac5d760fcae8d0f5518834287b4e5fba920b28e49b56aafa0b7f87b02",
+    "fixture:word-character-line-count:sha256": "50903e6ab092eb05877f73819a48ef91519723ef8f89b8b2efcee674148de66d"
+  }
+}

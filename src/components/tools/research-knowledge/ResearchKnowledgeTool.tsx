@@ -23,45 +23,154 @@ export interface ResearchKnowledgeToolConfig {
   fields: readonly ResearchToolField[];
 }
 
-function outputText(value: unknown): string {
-  if (typeof value !== "object" || value === null) return String(value ?? "");
-  const record = value as Record<string, unknown>;
-  for (const key of ["output", "bibtex", "ris", "csv", "citation"]) {
-    if (typeof record[key] === "string") return record[key];
+function recordOf(value: unknown): Record<string, unknown> | null {
+  return typeof value === "object" && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+}
+
+const OUTPUT_KEYS = ["output", "bibtex", "ris", "csv", "citation"] as const;
+
+function primaryText(value: unknown): string | null {
+  const record = recordOf(value);
+  if (record === null) return typeof value === "string" ? value : null;
+  for (const key of OUTPUT_KEYS) {
+    const candidate = record[key];
+    if (typeof candidate === "string") return candidate;
   }
+  return null;
+}
+
+/** Conversion and formatting losses are surfaced, never silently dropped. */
+function warningLines(value: unknown): string[] {
+  const record = recordOf(value);
+  const warnings = record?.warnings;
+  if (!Array.isArray(warnings)) return [];
+  return warnings.flatMap((entry) => {
+    if (typeof entry === "string") return entry === "" ? [] : [entry];
+    const message = recordOf(entry)?.message;
+    return typeof message === "string" && message !== "" ? [message] : [];
+  });
+}
+
+function countField(record: Record<string, unknown>, key: string): number | undefined {
+  const value = record[key];
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
+/**
+ * A compact Italian summary of what the run did. A deduplicator that only shows
+ * the surviving BibTeX would otherwise hide how many references it removed.
+ */
+function summaryText(value: unknown): string | null {
+  const record = recordOf(value);
+  if (record === null) return null;
+  const parts: string[] = [];
+  const input = countField(record, "inputCount");
+  const output = countField(record, "outputCount");
+  const removed = countField(record, "removed");
+  const rows = countField(record, "rowCount");
+  const emptyRows = countField(record, "emptyRowCount");
+  const keys = countField(record, "keyCount");
+  const collisions = countField(record, "collisions");
+  const total = countField(record, "total");
+  const unique = countField(record, "unique");
+  const invalid = countField(record, "invalidCount");
+  const rules = record.rules;
+  const count = (value: number, one: string, many: string): string => `${value} ${value === 1 ? one : many}`;
+  if (input !== undefined && output !== undefined) parts.push(`${count(input, "voce in ingresso", "voci in ingresso")}, ${count(output, "unico", "univoci")}`);
+  if (rows !== undefined) parts.push(count(rows, "riga", "righe"));
+  if (keys !== undefined) parts.push(count(keys, "chiave generata", "chiavi generate"));
+  if (total !== undefined && unique !== undefined) parts.push(`${count(total, "occorrenza", "occorrenze")}, ${count(unique, "dominio", "domini")}`);
+  if (removed !== undefined && removed > 0) parts.push(count(removed, "duplicato rimosso", "duplicati rimossi"));
+  if (collisions !== undefined && collisions > 0) parts.push(count(collisions, "chiave con suffisso", "chiavi con suffisso"));
+  if (emptyRows !== undefined && emptyRows > 0) parts.push(count(emptyRows, "riga vuota", "righe vuote"));
+  if (invalid !== undefined && invalid > 0) parts.push(count(invalid, "valore non valido", "valori non validi"));
+  if (Array.isArray(rules) && rules.length > 0) parts.push(`regole: ${rules.filter((rule): rule is string => typeof rule === "string").join(", ")}`);
+  const truncated = record.truncated;
+  if (truncated === true) parts.push("documento troncato");
+  const directives = countField(record, "directiveCount");
+  if (directives !== undefined && directives > 0) parts.push(count(directives, "direttiva", "direttive"));
+  return parts.length === 0 ? null : parts.join(" · ");
+}
+
+function outputText(value: unknown): string {
+  const primary = primaryText(value);
+  if (primary !== null) return primary;
+  const record = recordOf(value);
   const keys: Readonly<Record<string, string>> = {
     valid: "valido",
     normalized: "normalizzato",
     kind: "tipo",
     input: "ingresso",
     records: "record",
+    original: "ordine_originale",
     duplicates: "duplicati",
+    groups: "gruppi",
+    rule: "regola",
+    rules: "regole",
+    indexes: "indici",
     removed: "rimossi",
     kept: "mantenuti",
+    movedCount: "spostati",
+    unchanged: "invariato",
+    comparator: "confronto",
+    comparison: "confronto",
     warnings: "avvisi",
     warning: "avviso",
+    message: "messaggio",
     count: "quantità",
+    keyCount: "chiavi_generate",
+    collisions: "collisioni",
     total: "totale",
     domain: "dominio",
     domains: "domini",
+    unique: "unici",
+    uniqueUrls: "url_univoci",
+    invalid: "non_validi",
+    invalidCount: "non_validi_count",
     frequency: "frequenza",
     frequencies: "frequenze",
     terms: "termini",
+    term: "termine",
     dates: "date",
-    invalid: "non_validi",
     precision: "precisione",
+    source: "formato",
+    dayFirst: "giorno_primo",
+    ambiguous: "ambigua",
+    alternativeIso: "data_alternativa",
     checksum: "checksum",
+    checksumAlgorithm: "algoritmo_checksum",
+    canonicalPayload: "payload_canonico",
+    version: "versione",
     tools: "strumenti",
     name: "nome",
     key: "chiave",
     keys: "chiavi",
+    entries: "voci",
+    entryCount: "voci_count",
+    directiveCount: "direttive",
+    truncated: "troncato",
+    emptyRowCount: "righe_vuote",
+    emptyRowIndexes: "righe_vuote_indici",
+    headers: "intestazioni",
+    pageLabel: "etichetta_pagine",
+    pageCount: "pagine",
+    stopwordProfile: "percorso_parole_chiave",
+    ignoredStopwords: "parole_chiave_ignorate",
+    ignoredShortTerms: "termini_corti_ignorati",
+    minLength: "lunghezza_minima",
+    limit: "limite",
+    unknownTags: "tag_sconosciuti",
+    unknownFields: "campi_sconosciuti",
+    fields: "campi",
+    tags: "tag",
   };
   const localize = (entry: unknown): unknown => {
     if (Array.isArray(entry)) return entry.map(localize);
     if (entry === null || typeof entry !== "object") return entry;
     return Object.fromEntries(Object.entries(entry as Record<string, unknown>).map(([key, item]) => [keys[key] ?? key, localize(item)]));
   };
-  return JSON.stringify(localize(value), null, 2) ?? "";
+  if (record === null) return String(value ?? "");
+  return JSON.stringify(localize(record), null, 2) ?? "";
 }
 
 const OPTION_LABEL_IT: Readonly<Record<string, string>> = {
@@ -150,7 +259,13 @@ export function ResearchKnowledgeTool({ config }: { config: ResearchKnowledgeToo
         </ToolActions>
       </form>
       <ToolResultPanel eyebrow={config.resultLabel} placeholder="Il risultato deterministico apparirà qui." className="research-result" busy={busy}>
-        {result !== null && <pre class="research-output">{outputText(result)}</pre>}
+        {result !== null && (
+          <>
+            {warningLines(result).map((message) => <p class="warning" role="status" key={message}>{message}</p>)}
+            {summaryText(result) !== null && <p class="research-method">{summaryText(result)}</p>}
+            <pre class="research-output">{outputText(result)}</pre>
+          </>
+        )}
       </ToolResultPanel>
       <p class="research-method">{config.description}</p>
     </div>

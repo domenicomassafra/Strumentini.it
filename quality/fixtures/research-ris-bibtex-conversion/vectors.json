@@ -1,0 +1,174 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "record_grammar": "ogni record inizia con TY e termina con ER; i tag sono due lettere maiuscole, due spazi, un trattino e il valore",
+    "repeated_tags": "AU e ED ripetuti diventano piu autori/editori; KW ripetuti diventano un unico campo keywords separato da virgole",
+    "pages": "SP ed EP diventano un unico campo pages con il separatore BibTeX --",
+    "type_map": "JOUR=article, BOOK=book, CHAP=incollection, CONF=inproceedings, THES=phdthesis, RPRT=techreport, tutto il resto=misc",
+    "unknown_tags": "un tag non mappato non viene convertito ma e elencato nell'output e segnalato come avviso",
+    "orphan_tag_lines": "una riga con tag che precede il primo TY non appartiene a nessun record: viene contata, non agganciata",
+    "truncation": "un record non chiuso da ER viene convertito fino all'ultimo tag letto e il documento e marcato come troncato",
+    "reverse_map": "autore/editor ripetuti su piu righe AU/ED, title TI, journal JO, publisher PB, year PY, volume VL, number IS, doi DO, url UR, keywords KW, note N1, abstract AB"
+  },
+  "ris_to_bibtex_vectors": [
+    {
+      "name": "a complete article record maps every supported tag",
+      "input": "TY  - JOUR\nAU  - Ada Smith\nAU  - Bob Jones\nTI  - A Synthetic Fixture\nJO  - Journal of Fixtures\nPY  - 2026\nVL  - 12\nIS  - 3\nSP  - 10\nEP  - 18\nDO  - 10.1000/182\nKW  - alpha\nKW  - beta\nER  - \n",
+      "entry_count": 1,
+      "key": "smith_2026_synthetic",
+      "fields": {
+        "author": "Ada Smith and Bob Jones",
+        "title": "A Synthetic Fixture",
+        "journal": "Journal of Fixtures",
+        "year": "2026",
+        "volume": "12",
+        "number": "3",
+        "pages": "10--18",
+        "doi": "10.1000/182",
+        "keywords": "alpha, beta"
+      },
+      "unknown_tags": [],
+      "truncated": false,
+      "warning_codes": []
+    },
+    {
+      "name": "unmapped tags are listed and warned about instead of vanishing",
+      "input": "TY  - JOUR\nTI  - A Synthetic Fixture\nDB  - some-database\nSN  - 0001\nER  - \n",
+      "entry_count": 1,
+      "fields": {
+        "title": "A Synthetic Fixture"
+      },
+      "unknown_tags": [
+        {
+          "record": 1,
+          "tags": [
+            "DB",
+            "SN"
+          ]
+        }
+      ],
+      "truncated": false,
+      "warning_codes": [
+        "RIS_TAG_UNMAPPED"
+      ]
+    },
+    {
+      "name": "a record without ER is converted and reported as truncated",
+      "input": "TY  - JOUR\nTI  - A Synthetic Fixture\nPY  - 2026\n",
+      "entry_count": 1,
+      "fields": {
+        "title": "A Synthetic Fixture",
+        "year": "2026"
+      },
+      "truncated": true,
+      "warning_codes": [
+        "RIS_TRUNCATED"
+      ]
+    },
+    {
+      "name": "tag lines before the first TY are counted and not attached to the record",
+      "input": "TI  - orfana\nTY  - JOUR\nTI  - A Synthetic Fixture\nER  - \n",
+      "entry_count": 1,
+      "fields": {
+        "title": "A Synthetic Fixture"
+      },
+      "skipped_tag_lines": 1,
+      "truncated": false,
+      "warning_codes": [
+        "RIS_TAG_LINES_SKIPPED"
+      ]
+    },
+    {
+      "name": "a record with no convertible field is reported",
+      "input": "TY  - JOUR\nDB  - some-database\nER  - \n",
+      "entry_count": 1,
+      "fields": {},
+      "warning_codes": [
+        "RIS_RECORD_EMPTY",
+        "RIS_TAG_UNMAPPED"
+      ]
+    },
+    {
+      "name": "CRLF terminators and unknown reference types are accepted",
+      "input": "TY  - MGZN\r\nTI  - A Synthetic Fixture\r\nPY  - 2026\r\nER  - \r\n",
+      "entry_count": 1,
+      "fields": {
+        "title": "A Synthetic Fixture",
+        "year": "2026"
+      },
+      "truncated": false,
+      "warning_codes": []
+    },
+    {
+      "name": "url credentials do not survive the conversion",
+      "input": "TY  - JOUR\nTI  - A Synthetic Fixture\nUR  - https://user:pass@example.org/paper\nER  - \n",
+      "entry_count": 1,
+      "output_must_not_contain": "pass",
+      "truncated": false,
+      "warning_codes": []
+    }
+  ],
+  "bibtex_to_ris_vectors": [
+    {
+      "name": "pages become an explicit start and end page",
+      "input": "@article{a, title = {T}, pages = {12--15}}",
+      "ris": "TY  - JOUR\nTI  - T\nSP  - 12\nEP  - 15\nER  -\n",
+      "unknown_fields": [],
+      "warning_codes": []
+    },
+    {
+      "name": "a single page emits only the start page",
+      "input": "@article{a, title = {T}, pages = {12}}",
+      "ris": "TY  - JOUR\nTI  - T\nSP  - 12\nER  -\n",
+      "unknown_fields": [],
+      "warning_codes": []
+    },
+    {
+      "name": "several authors become several AU lines",
+      "input": "@article{a, title = {T}, author = {Ada Smith and Bob Jones}}",
+      "ris": "TY  - JOUR\nTI  - T\nAU  - Ada Smith\nAU  - Bob Jones\nER  -\n",
+      "unknown_fields": [],
+      "warning_codes": []
+    },
+    {
+      "name": "a field with no RIS counterpart is listed and warned about",
+      "input": "@article{a, title = {T}, institution = {X}}",
+      "unknown_fields": [
+        {
+          "entry": 1,
+          "fields": [
+            "institution"
+          ]
+        }
+      ],
+      "warning_codes": [
+        "BIBTEX_FIELD_UNMAPPED"
+      ]
+    },
+    {
+      "name": "a BibTeX directive is skipped and reported",
+      "input": "@comment{nota, da ignorare}\n@article{a, title = {T}}",
+      "ris": "TY  - JOUR\nTI  - T\nER  -\n",
+      "unknown_fields": [],
+      "warning_codes": [
+        "BIBTEX_DIRECTIVE_SKIPPED"
+      ]
+    },
+    {
+      "name": "an unclosed entry is reported as truncated",
+      "input": "@article{a, title = {T}",
+      "warning_codes": [
+        "BIBTEX_TRUNCATED"
+      ]
+    }
+  ],
+  "round_trip_vector": {
+    "name": "RIS to BibTeX and back preserves every mapped tag",
+    "input": "TY  - JOUR\nAU  - Ada Smith\nTI  - A Synthetic Fixture\nJO  - Journal of Fixtures\nPY  - 2026\nVL  - 12\nIS  - 3\nSP  - 10\nEP  - 18\nDO  - 10.1000/182\nER  - \n",
+    "ris": "TY  - JOUR\nAU  - Ada Smith\nTI  - A Synthetic Fixture\nJO  - Journal of Fixtures\nPY  - 2026\nVL  - 12\nIS  - 3\nSP  - 10\nEP  - 18\nDO  - 10.1000/182\nER  -\n"
+  },
+  "properties": [
+    "every converted record keeps a stable author order",
+    "an unmapped tag or field is always reported, never dropped without a trace"
+  ]
+}

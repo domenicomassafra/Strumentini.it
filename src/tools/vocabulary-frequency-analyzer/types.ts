@@ -1,14 +1,12 @@
+import type { VocabularyAnalysis } from "../../engines/research-knowledge";
+
 export interface VocabularyFrequencyAnalyzerInput {
   text: string;
-  minLength?: number | string;
-  limit?: number | string;
+  minLength?: number;
+  limit?: number;
   stopwords?: string[];
 }
 
-export interface VocabularyFrequencyAnalyzerOutput {
-  terms: Array<{ term: string; count: number }>;
-  total: number;
-  unique: number;
-  ignoredStopwords: number;
+export interface VocabularyFrequencyAnalyzerOutput extends VocabularyAnalysis {
   engineVersion: string;
 }
