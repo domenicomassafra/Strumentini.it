@@ -1,6 +1,6 @@
 # StrumentiUtili.it — Current Project Status
 
-Date: **2026-10-03**
+Date: **2026-10-04**
 
 This is the short, live map of the repository. It exists so old worker waves, ticket ledgers and handoffs cannot be mistaken for the current project state.
 
@@ -11,8 +11,8 @@ This is the short, live map of the repository. It exists so old worker waves, ti
 - The retired catalogue/workbench/a11y implementation is deleted: `src/pages/library.astro`, `src/library/**`, `src/components/library/**`, the retired Workbench UI, the old accessibility wrapper layer, `scripts/build-catalog.ts`, `scripts/lib/catalog-compiler.ts`, and their obsolete tests.
 - The replacement shell/catalog/account implementation is tracked: `src/catalog/{groups,projections}.ts`, `src/components/{home,catalog,account,icons}/**`, the new shell, public routes, `worker/**`, self-hosted Inter fonts, expanded-local evidence and matching acceptance tests.
 - Throwaway debug scripts and screenshots are gone. `design/references/redesign-20261003/` is intentional retained design provenance, not working-tree debris.
-- Remote branches: only `main`. Worktrees: one primary worktree. Stashes: none.
-- Archive tags: three, all prefixed `archive/2026-09-24-` and explicitly not active work (`performance-wip`, `a11y-wip`, `browser-acceptance-wip`).
+- Git hygiene rechecked on 2026-10-04: remote branches: only `main`; worktrees: one primary worktree; stashes: none.
+- Archive tags: three, all prefixed `archive/2026-09-24-` and explicitly closed historical references, not active work (`performance-wip`, `a11y-wip`, `browser-acceptance-wip`). Their relevant performance/search/browser behavior is already represented by the current projection, lazy-loading and acceptance architecture; retired Library/Workbench deltas are not a queue.
 - One module from the previous homepage keeps its name and is still live: `src/components/workbench/last-value.ts`, the Workbench gutter seam that stores one short rendered scalar per tool in `localStorage` and is read by the homepage recent list, `/preferiti/` and `/risorse/`. The widget that rendered the gutter is gone; the seam is not.
 - `docs/history/WIP-CLOSURE-2026-10-03.md` and `docs/history/2026-09-24-catalog-performance-wip-receipt.json` are provenance, not queues.
 

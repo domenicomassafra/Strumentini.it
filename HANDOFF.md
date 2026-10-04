@@ -1,7 +1,7 @@
 # HANDOFF — StrumentiUtili.it
 
 Repository: /Users/domenico/Code/StrumentiUtili.it
-Branch: main (tracking `origin/main`; both at `8b50066` — **the 2026-10-03 redesign is uncommitted working-tree work**)
+Branch: main (tracking `origin/main`; the redesign/backend tranche, Google auth/mobile tranche and refreshed evidence are committed; see `PROJECT-STATUS.md` for the authoritative state and source fingerprint)
 Public brand: StrumentiUtili.it
 Live map of the numbers and routes: `PROJECT-STATUS.md`.
 

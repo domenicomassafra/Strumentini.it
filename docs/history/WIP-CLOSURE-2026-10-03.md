@@ -75,3 +75,9 @@ No forced history rewrite, force-push or immediate `git gc --prune=now` is requi
 ## Closure rule going forward
 
 There is one active development line: `main`. New experimental work must either land on `main`, be explicitly closed, or be archived with a clearly named `archive/` tag plus a note here. Do not leave unnamed WIP commits as pseudo-backups.
+
+## 2026-10-04 reconciliation addendum
+
+The archive refs were re-audited after the full redesign/backend/auth tranche landed. They remain historical references only, not work to resume. The current `main` already contains the useful catalog projections, lazy search/runtime loading, registry caching, performance checks, command-palette focus restoration, mobile overflow checks and current cross-family/browser acceptance equivalents. Library/Workbench-specific deltas target surfaces that were deliberately retired by the redesign. Remaining source differences are not accepted WIP and must not be cherry-picked merely to make the archive commits disappear.
+
+The active Git state was rechecked again: one `main` worktree, no local WIP branch and no stash. Product work still listed in `ROADMAP.md` (the certification frontier and physical-device evidence) is roadmap/release work, not abandoned Git WIP.

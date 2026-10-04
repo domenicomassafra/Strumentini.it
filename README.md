@@ -73,7 +73,7 @@ The aspirational target is domain-level or similarly small annual infrastructure
 
 ## Repository status
 
-The checkout contains a static Astro/Preact implementation with 200 generated tool entries, public static routes, shared local execution seams, and release-validation tooling. At the 2026-10-03 checkpoint the global certification index reports **119 Gold / 1 Partial / 80 implemented-unverified**. The live machine-readable authority is `quality/receipts/expanded-catalog-certification.json`; do not copy old frontier counts from historical planning files. Release certification remains blocked until the remaining Gold receipts, fresh browser matrix, physical-device receipts, and an externally verified rollback receipt exist; local validation never substitutes those external proofs.
+The checkout contains a static Astro/Preact implementation with 200 generated tool entries, public static routes, shared local execution seams, and release-validation tooling. At the current 2026-10-03 checkpoint the global certification index reports **168 Gold / 1 Partial (`image-resize`) / 31 implemented-unverified**. The live machine-readable authority is `quality/receipts/expanded-catalog-certification.json`; do not copy old frontier counts from historical planning files. The browser matrix and real rollback/restore exercise are current; release certification is still blocked only by the remaining 31 Gold receipts plus genuine physical Android Chrome and iOS Safari evidence for `image-resize`. Local or emulated validation never substitutes those physical-device proofs.
 
 For the current project state, active priorities, Git/WIP closure and UI/UX audit, start with `PROJECT-STATUS.md`, `HANDOFF.md` and `ROADMAP.md`.
 
