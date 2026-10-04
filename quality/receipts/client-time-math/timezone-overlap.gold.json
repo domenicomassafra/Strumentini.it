@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
-  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
+  "revision": "ce7832937c86c599d6aaec02d742beabcba0ae0e",
+  "sourceFingerprint": "af36506d34b3cfe26d9b1c8247d8dbcba3788cb23ea17688479133b9b5edbc54",
   "toolId": "timezone-overlap",
   "runtime": {
     "location": "LOCAL",
@@ -43,15 +43,15 @@
   "fixtureIndexSchemaVersion": 1,
   "oracleRegistrySchemaVersion": 1,
   "icuVersion": "78.3",
-  "tzVersion": "2026b",
+  "tzVersion": "2026a",
   "acceptance": {
     "browserMobileKeyboardLocalNetwork": "PASS",
     "lazySharedEngineBundle": "PASS"
   },
   "identities": {
     "engineSha256": "cea30253741c1a5cf26e3da9119f9d73d5660477be458f88ac7588f018a382db",
-    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
-    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
+    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
     "browserAcceptanceSha256": "1014aae9b07d4c511533f60e05d6ee260f8498ee2cbb97f164dae8e9654f5ad7",
     "bundleSha256": "3452468325c7167e0c4885b7deea2bb12871409544146a5827b76ec08e52dab7"
   }

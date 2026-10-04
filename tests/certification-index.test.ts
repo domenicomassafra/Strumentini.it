@@ -35,11 +35,11 @@ describe("expanded catalog certification index", () => {
   it("preserves the certified frontier and exposes unresolved evidence", async () => {
     const index = await buildCertificationIndex();
     expect(index.summary.statusCounts).toEqual({
-      GOLD: 181,
+      GOLD: 198,
       PARTIAL: 1,
-      IMPLEMENTED_UNVERIFIED: 18,
+      IMPLEMENTED_UNVERIFIED: 1,
     });
-    expect(index.summary.certificationGoldCount).toBe(181);
+    expect(index.summary.certificationGoldCount).toBe(198);
     expect(index.summary.physicalDevicePassCount).toBe(0);
     expect(index.global.physicalDevice).toMatchObject({
       status: "EXTERNAL",
@@ -69,9 +69,9 @@ describe("expanded catalog certification index", () => {
     expect(dataTable).toHaveLength(20);
     expect(dataTable.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
     const dateTime = index.tools.filter((tool) => tool.engine === "date-time");
-    expect(dateTime.filter((tool) => tool.status === "GOLD")).toHaveLength(18);
+    expect(dateTime.filter((tool) => tool.status === "GOLD")).toHaveLength(19);
     const textWriting = index.tools.filter((tool) => tool.engine === "text-writing");
-    expect(textWriting.filter((tool) => tool.status === "GOLD")).toHaveLength(15);
+    expect(textWriting.filter((tool) => tool.status === "GOLD")).toHaveLength(19);
     const pdf = index.tools.filter((tool) => tool.engine === "pdf");
     expect(pdf).toHaveLength(20);
     expect(pdf.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
@@ -81,6 +81,10 @@ describe("expanded catalog certification index", () => {
     expect(researchGold).toHaveLength(19);
     expect(researchGold.every((tool) => tool.locality.status === "PASS" && tool.mobileA11y.status === "PASS" && tool.lazyLoad.status === "PASS")).toBe(true);
     expect(researchGold.every((tool) => tool.oracle.status === "VERIFIED" && tool.fixtures.every((fixture) => fixture.status === "VERIFIED"))).toBe(true);
+    const marketingMediaIds = new Set(["exif-remover", "meta-preview", "open-graph-preview", "platform-size-presets", "qr-generator", "qr-reader", "social-character-limit", "url-comparison"]);
+    const marketingMedia = index.tools.filter((tool) => marketingMediaIds.has(tool.id));
+    expect(marketingMedia).toHaveLength(8);
+    expect(marketingMedia.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
     // ris-bibtex-converter keeps its real browser acceptance but stays unverified:
     // its oracle is medium confidence with an explicitly unresolved gap.
     const risConverter = index.tools.find((tool) => tool.id === "ris-bibtex-converter");

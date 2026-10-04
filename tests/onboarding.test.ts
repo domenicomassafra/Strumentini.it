@@ -68,11 +68,11 @@ describe("deterministic onboarding", () => {
     const removed = toggleStarterTool(review, review.selectedToolIds[0]!, false);
     expect(removed.selectedToolIds).toHaveLength(9);
     // A tool that still has no Gold receipt: the manual-add reason must say so.
-    const candidate = catalog.find(({ id }) => id === "vocabulary-frequency-analyzer");
+    const candidate = catalog.find(({ id }) => id === "ris-bibtex-converter");
     expect(candidate).toBeDefined();
     const added = addStarterAlternative(removed, candidate!, qualityIndex);
-    expect(added.selectedToolIds).toContain("vocabulary-frequency-analyzer");
-    expect(added.recommendations.find(({ tool }) => tool.id === "vocabulary-frequency-analyzer")?.reason).toContain("non certificato Gold");
+    expect(added.selectedToolIds).toContain("ris-bibtex-converter");
+    expect(added.recommendations.find(({ tool }) => tool.id === "ris-bibtex-converter")?.reason).toContain("non certificato Gold");
     const alternative = findStarterAlternatives("Checksum", catalog, qualityIndex, added.selectedToolIds, 4);
     expect(alternative.length).toBeGreaterThan(0);
   });

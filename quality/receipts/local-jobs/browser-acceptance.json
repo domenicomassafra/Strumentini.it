@@ -111,7 +111,7 @@
       "toolId": "folder-compare",
       "status": "PASS",
       "assertion": "modificati|changedCount|addedCount|aggiunti",
-      "outputSha256": "00eb297e2c5199656ac83568e9d197449f5c6c5babdd0afd7d9fab9f8eaae008",
+      "outputSha256": "2b3335261b7adea571fa1e35dd4d99079081c876f4ed152689010470629d96b1",
       "lazyScriptCount": 2,
       "taskRequestCount": 3,
       "externalTaskRequests": 0,

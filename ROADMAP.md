@@ -1,56 +1,51 @@
 # ROADMAP
 
-Current stage: **real implementation hardening and catalog certification**.
+Current stage: **198/200 certified + frontend-system consolidation**.
 
-Checkpoint 2026-10-04: 200 tools exist, 177 are verified against a recorded oracle, 1 is Partial (`image-resize`) and 22 are implemented but intentionally still unverified. Google sign-in/linking and the mobile auth/catalog/settings pass are implemented and deployed fail-closed pending the real Google Web Client ID. `npm test` is green (371 tests / 52 files), `astro check` is 0/0/0 across 1197 files, auth acceptance is 130/130, and the static build remains 220 pages. All 177 Gold receipts are rebound to the current source fingerprint; the browser matrix and the rollback receipt are whole-tree artifacts that the merge must regenerate.
+Checkpoint 2026-10-05: 200 tools exist; **198 are Gold**, `image-resize` is **Partial**, and `ris-bibtex-converter` is the **only Implemented Unverified** tool. `npm test` is green at **592 tests / 55 files**; `astro check` is **0/0/0 across 1216 files**; the static build remains **220 pages**. Research, local-jobs and marketing/media browser acceptance all pass on the combined tree.
 
-## P0 — close the current Italian/backend tranche
+## P0 — preserve the quality contract
 
-- keep the 200/200 Italian public-copy gate mandatory in Tool Factory generation;
-- keep the shell, onboarding, catalogue, tool forms, results and error states free of accidental English UI copy;
-- keep human naming, semantic icons, visible categories and quality status centralized rather than reimplemented per component;
-- keep `Verificato` tied to real certification eligibility; never use the badge as a marketing-only label, and keep the internal "Gold" label out of public copy;
-- keep browser route smoke and representative operation smoke as acceptance evidence when changing shared UI/runtime layers;
-- preserve protocol/standard identifiers only where translating them would be technically incorrect (for example JSON, CSV, JWT, UUID, Open Graph);
+- keep all 200 normal tools `LOCAL` with network forbidden unless a future tool explicitly declares a different contract;
+- keep public quality vocabulary `Verificato` / `In verifica` tied to the machine certification index;
+- do not weaken validators, invent external evidence or call emulation a physical-device pass;
 - keep `npm test`, `npm run check`, `npm run build`, catalog generation and certification checks green;
-- keep the closed redesign/backend tranche immutable while certification evidence is current; any new source edit starts a new fingerprinted tranche;
-- keep `image-resize` Partial until genuine physical-device evidence exists; never infer physical Safari/Android evidence from desktop or emulation.
+- prioritize fixing real defects over adding catalog count.
 
-## P1 — make the remaining 23 non-Gold tools genuinely trustworthy
+## P1 — close the final two non-Gold boundaries
 
-- work family by family rather than promoting tools in bulk;
-- add independent fixtures/oracles for each family before Gold certification;
-- exercise malformed inputs, limits, deterministic edge cases and privacy/network contracts;
-- verify that displayed result copy is Italian without altering machine-readable standards output;
-- add browser acceptance where the tool depends on browser APIs, files, images, PDF, canvas, clipboard or downloads;
-- strengthen reference-backed tools with explicit source provenance, freshness rules and fail-closed behavior;
-- prioritize broadly useful jobs instead of increasing raw catalog count beyond 200.
+- **`ris-bibtex-converter`**: browser acceptance already passes; promote only after an acceptable RIS authority / independent parser cross-check closes oracle `cand-187` honestly;
+- **`image-resize`**: automated certification passes; collect genuine iOS Safari and Android Chrome receipts before Gold;
+- no synthetic receipts, no desktop emulation as physical proof.
 
-Current remaining frontier by engine: `research-knowledge` 14, `url-marketing` 4, `image` 2, `qr-local` 2, `image-visual` 1. The 23-tool non-Gold frontier is 22 implemented-unverified tools plus the one Partial `image-resize`. `file-privacy`, `text-writing`, `date-time` and the PDF/document family are already Gold; the nine-tool `local-jobs` tranche that closed the first three ships six new independent fixture families and a certifier that replays them through the public tool modules.
+## P2 — standardize the frontend without flattening it
 
-## P2 — deepen the product backend and discovery model
+Use `design/FRONTEND-SYSTEM-STANDARDIZATION.md` as the implementation plan. The Impeccable audit found extensive duplication and drift (including repeated field/control/state/card patterns), but the right solution is **one existing design system consolidated**, not a second component library.
 
-- improve search ranking around tasks, accepted inputs, categories, professional contexts and handoffs;
-- improve shared Profile defaults and typed handoff contracts between compatible tools;
-- make catalog metadata and result schemas useful to both the UI and future programmatic/agent consumers;
-- expand deterministic Italian reference data where it creates real utility, with versioning and reproducible updates;
-- keep local-first execution as the default and require an explicit contract for every networked/reference-backed capability;
+Migration principles:
+
+- standardize primitives first: fields, actions, result/state treatment, cards, pagination and common accessibility semantics;
+- centralize tokens and recurring interaction states rather than copying CSS per surface;
+- migrate family renderers progressively and verify each wave against the approved reference screens;
+- keep homepage, catalog/discovery, tool workspace and account/onboarding compositions distinct where their jobs differ;
+- leave higher-risk shell/file-drop refactors until low-risk primitives are stable;
+- every wave gets unit/design-system tests plus browser/mobile screenshot/interaction gates.
+
+## P3 — deepen discovery and workspace usefulness
+
+- improve search ranking around jobs, inputs, categories, professional contexts and handoffs;
+- improve shared profile defaults and typed handoff contracts;
+- expand deterministic Italian reference data only where it creates real utility and can be versioned/reproduced;
 - keep configuration portability, privacy boundaries, performance budgets and lazy loading covered by tests.
-
-## P3 — redesign UI/UX after the backend is stable — **shipped**
-
-- ~~redesign the visual system rather than polishing the current shell incrementally~~ — done: `design/WORLD.md` plus `src/styles/global.css`;
-- ~~validate home information hierarchy, catalogue discovery and mobile interaction with the mature catalog~~ — done: `/`, `/strumenti/`, `/cerca/`, `/categorie/` and the 390px pass;
-- keep the product focused on finding and completing a task quickly, not on showing a wall of 200 cards;
-- preserve the Italian-first content system during the redesign instead of reintroducing per-component copy.
 
 ## P4 — release and distribution
 
-- rerun full release validation on the final committed tree;
-- verify production deployment, rollback evidence, canonical URLs, sitemap/robots and analytics/privacy behavior;
-- only claim catalog size using the distinction between implemented and Gold-certified tools;
-- evaluate optional sync/auth and monetization only when they solve a demonstrated user need rather than increasing infrastructure by default.
+- refresh whole-tree browser-performance evidence on the final tree;
+- refresh rollback evidence only through a real deploy → rollback → smoke → restore exercise;
+- connect the custom domain before adding outer Cloudflare WAF rate limiting;
+- configure the real Google Web Client ID and confirm Workers Paid before relying on password auth at production load;
+- keep catalog-size claims separate from certification claims.
 
 ## Stop rules
 
-Do not mark a tool Gold because it merely renders or has a route. Do not replace missing evidence with assumptions. Do not grow catalog size if regression rate, maintenance cost, initial bundle size or evidence debt rises faster than user value. Keep server-side/LLM dependencies exceptional rather than the normal execution path.
+Do not mark a tool Gold because it renders. Do not replace missing evidence with assumptions. Do not grow catalog size if regression rate, maintenance cost or evidence debt rises faster than user value. Do not standardize visually different product surfaces merely to reduce component count.

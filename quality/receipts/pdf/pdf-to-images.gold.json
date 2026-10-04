@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
-  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
+  "revision": "ce7832937c86c599d6aaec02d742beabcba0ae0e",
+  "sourceFingerprint": "af36506d34b3cfe26d9b1c8247d8dbcba3788cb23ea17688479133b9b5edbc54",
   "toolId": "pdf-to-images",
   "runtime": {
     "location": "LOCAL",
@@ -52,8 +52,8 @@
     "pdfEngineIndexSha256": "48f1f3568e453f683cefebc179444358bd458b8776cb01758fc7920607a78017",
     "pdfEngineParserSha256": "c012706639797d68bfd0adbad941fd8b5db05f9376dfa05d4c921a2b900c9d46",
     "pdfEngineWriterSha256": "dbb1f374a8c7f64a8962a41733d4c700102c1277fd8452ded0f8b89fcf09cc3a",
-    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
-    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
+    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
     "browserAcceptanceSha256": "1c180d17984d64f2cd89bb0a7a816cabe930c738412b0fb7bcf91cdd55f65fd5",
     "unitTestsSha256": "9ee50a4490ce9b258be22f58e059b07e493df0de25408b8d58d928ec32ae74fb",
     "fixture:pdf-signature:sha256": "7b927a96c3106a97a4c4022f175529e7b7a01f79b0dd05f77f71306eb5b1747f",

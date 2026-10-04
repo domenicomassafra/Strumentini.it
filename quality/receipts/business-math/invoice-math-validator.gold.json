@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "5f1b429b23ee5b83c09a4f27d00935c5c3f0182d",
-  "sourceFingerprint": "f757435b6736d98aeb9534a179dfd20e20925f54c6a304ccb7b640f21d3822f5",
+  "revision": "ce7832937c86c599d6aaec02d742beabcba0ae0e",
+  "sourceFingerprint": "af36506d34b3cfe26d9b1c8247d8dbcba3788cb23ea17688479133b9b5edbc54",
   "toolId": "invoice-math-validator",
   "runtime": {
     "location": "LOCAL",
@@ -34,8 +34,8 @@
   "identities": {
     "manifestSha256": "f2f7ac810d18dbd76f72afdd9226b8e007217ad82c1988ddd41d2a44f22d7bb3",
     "engineSha256": "05c077073c50bc085c0e213339a5c83fca12f3084fc71e15515e50fab3f1e163",
-    "fixtureIndexSha256": "1fbe3418f0467c504af56b56c1e0a0367d8cde1ef6fde8aad9ad8e6a47d0008c",
-    "oracleRegistrySha256": "ef0fcb2eca365608f996a94c31e9c886cb0bd24d167637c76906bd0c330114f3",
+    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
+    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
     "browserAcceptanceSha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
     "unitTestsSha256": "ef539ff3626658c91b4c3127f9bf947c06faa1eb8b725fdadc9e30f386d559bd",
     "fixture:business-math:sha256": "e0b9a70e8b267644b7b72bfef0612e10d4d56bb7b49012cb45a5db3224afe588"
