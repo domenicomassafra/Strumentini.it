@@ -6,7 +6,7 @@
 
 **Constraints:** No route is promoted merely because it renders; existing non-Gold boundaries and historical receipts remain truthful; physical-device requirements cannot be replaced by emulation.
 
-**Blocked by:** 06, 18, 45.
+**Blocked by:** 06, 18, 45, 65, 66.
 
 **Status:** blocked
 
@@ -17,4 +17,3 @@
 - [ ] Full test/check/build/catalog/certification/release validation remains green except only explicitly documented external blockers that pre-existed or are honestly newly discovered.
 
 **Verification:** Run the full repository validation suite plus generated expansion coverage/parity/privacy/performance reports; manually inspect a representative result from every semantic result class on desktop and 390px mobile.
-

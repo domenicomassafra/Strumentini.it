@@ -4,6 +4,8 @@ Status: **future implementation plan**
 Research snapshot: **2026-10-05**  
 Scope: improve every existing tool and create a grounded expansion backlog without weakening the current Gold/certification contract.
 
+Detailed format/operation authority: `docs/11-format-operation-matrix.md`.
+
 ## 1. Why this plan exists
 
 StrumentiUtili.it already has 200 implemented tools and a strong local-first quality system. The next phase is not a vanity catalog-count exercise. It has two user-facing goals:
@@ -230,4 +232,3 @@ For VIES, a local Partita IVA checksum and a remote EU existence check are two d
 - discovery works by concrete job and aliases, without duplicate low-value pages;
 - no personal file or identifier silently leaves the device;
 - no fiscal result silently uses stale or source-less annual constants.
-

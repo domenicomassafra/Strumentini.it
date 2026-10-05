@@ -6,7 +6,7 @@
 
 **Constraints:** Category/count claims derive from the generated catalog; job routes need unique intent/copy/default/result behavior; no fabricated popularity ranking.
 
-**Blocked by:** 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44.
+**Blocked by:** 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 65, 66.
 
 **Status:** blocked
 
@@ -16,4 +16,3 @@
 - [ ] Mobile directory/search remains usable without dumping the full catalog onto one surface.
 
 **Verification:** Search ranking fixtures for representative Italian queries, category-count generation, duplicate-intent assertions, and desktop/mobile directory acceptance.
-
