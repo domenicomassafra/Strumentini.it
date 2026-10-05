@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "ce7832937c86c599d6aaec02d742beabcba0ae0e",
-  "sourceFingerprint": "af36506d34b3cfe26d9b1c8247d8dbcba3788cb23ea17688479133b9b5edbc54",
+  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
+  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
   "toolId": "margin-markup",
   "runtime": {
     "location": "LOCAL",
