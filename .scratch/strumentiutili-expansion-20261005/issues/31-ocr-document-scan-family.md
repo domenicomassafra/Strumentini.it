@@ -1,0 +1,18 @@
+# 31 — OCR and document-scan family
+
+**What to build:** Add local OCR for images/scanned PDFs, text extraction with confidence/page references where the engine exposes them, and a searchable-PDF path that keeps the visual page while adding a selectable text layer when technically reliable.
+
+**Traces to:** US-EXP-04, US-EXP-06, US-EXP-09; AC-04.1, AC-06.1; DEC-EXP-02, DEC-EXP-05, DEC-EXP-06; C-EXP-05, C-EXP-08
+
+**Constraints:** OCR accuracy is never presented as exact transcription; language packs are lazy; large scans are cancellable and memory-bounded.
+
+**Blocked by:** 01, 29, 34.
+
+**Status:** blocked
+
+- [ ] Italian OCR path works locally with explicit language/quality state.
+- [ ] Page/image text is copyable/downloadable with page provenance.
+- [ ] Searchable PDF output is verified to contain selectable/searchable text without destroying page appearance beyond accepted tolerance.
+
+**Verification:** Real scan/photo corpus, OCR accuracy/error fixtures, PDF text-layer inspection, bundle/lazy-load receipt, and physical mobile acceptance.
+

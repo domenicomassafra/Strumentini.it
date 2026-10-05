@@ -48,7 +48,7 @@ Migration principles:
 
 ## P5 — future catalog expansion + Result System v2
 
-After the current release/certification frontier and frontend-system consolidation are protected, use the approved future plan in `docs/10-tool-expansion-result-system-v2.md` as the source for a tracked implementation ticket DAG. Do not treat an ignored `.scratch/` path as project authority; create and review the tracked tickets before implementation starts.
+After the current release/certification frontier and frontend-system consolidation are protected, execute the approved future plan in `docs/10-tool-expansion-result-system-v2.md` through the tracked 46-ticket DAG in `.scratch/strumentiutili-expansion-20261005/`. Only the dependency-free start frontier (01, 07, 34) is ready until its blockers are actually closed.
 
 - migrate all 200 current tools to the answer-first Result System v2 with explicit 200/200 coverage proof;
 - cover all 13 current CalcolaTutto jobs via add/upgrade/covered mappings;
