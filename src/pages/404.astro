@@ -21,7 +21,6 @@ const popularGroups = [...groups]
     </ol>
 
     <header class="not-found-head">
-      <p class="eyebrow">Errore 404</p>
       <h1>Questa pagina non è disponibile</h1>
       <p class="lede">
         Il collegamento potrebbe essere vecchio o scritto male. Da qui puoi
@@ -97,15 +96,6 @@ const popularGroups = [...groups]
   }
 
   .not-found-foot { margin-top: var(--space-10); color: var(--text-muted); font-size: var(--font-size-sm); }
-
-  .not-found-foot kbd {
-    padding: 1px var(--space-2);
-    border: var(--border-width) solid var(--border-strong);
-    border-radius: var(--radius-xs);
-    background: var(--surface);
-    font-family: var(--font-family-mono);
-    font-size: var(--font-size-xs);
-  }
 
   @media (min-width: 700px) {
     .not-found-groups { grid-template-columns: repeat(4, minmax(0, 1fr)); }

@@ -87,8 +87,7 @@ export function ListCompareTool() {
         </div>
       </form>
 
-      <section class="result-panel gutter" data-state={gutterState} aria-live="polite">
-        <p class="eyebrow">Risultato</p>
+      <section class="result-panel gutter" data-state={gutterState} aria-live="polite" aria-label="Risultato">
         {result === null ? <p class="result-placeholder">I risultati del confronto appariranno qui.</p> : (
           <div class="stacked-results">
             <ResultList title="In entrambe" values={result.intersection} />
