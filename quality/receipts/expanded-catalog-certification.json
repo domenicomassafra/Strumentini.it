@@ -103,7 +103,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "09a3b7f7b82985e600743edd49a2e16ec1a4359bf789893746b900b4fe0e45a5",
+          "sha256": "d7e289b7bd21ab5eac375d57e1fafeb55fb347853e3521d51b3054b59ea1d335",
           "status": "PARTIAL"
         }
       ],
@@ -12127,7 +12127,7 @@
           {
             "dimension": "physicalDevice",
             "path": "quality/receipts/image-resize/certification.json",
-            "sha256": "09a3b7f7b82985e600743edd49a2e16ec1a4359bf789893746b900b4fe0e45a5",
+            "sha256": "d7e289b7bd21ab5eac375d57e1fafeb55fb347853e3521d51b3054b59ea1d335",
             "status": "PARTIAL"
           }
         ]
@@ -12136,7 +12136,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/image-resize/certification.json",
-          "sha256": "09a3b7f7b82985e600743edd49a2e16ec1a4359bf789893746b900b4fe0e45a5",
+          "sha256": "d7e289b7bd21ab5eac375d57e1fafeb55fb347853e3521d51b3054b59ea1d335",
           "status": "PARTIAL"
         },
         {
