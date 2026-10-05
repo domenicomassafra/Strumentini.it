@@ -46,6 +46,16 @@ Migration principles:
 - configure the real Google Web Client ID and confirm Workers Paid before relying on password auth at production load;
 - keep catalog-size claims separate from certification claims.
 
+## P5 — future catalog expansion + Result System v2
+
+After the current release/certification frontier and frontend-system consolidation are protected, use the approved future plan in `docs/10-tool-expansion-result-system-v2.md` as the source for a tracked implementation ticket DAG. Do not treat an ignored `.scratch/` path as project authority; create and review the tracked tickets before implementation starts.
+
+- migrate all 200 current tools to the answer-first Result System v2 with explicit 200/200 coverage proof;
+- cover all 13 current CalcolaTutto jobs via add/upgrade/covered mappings;
+- expand into high-value conversions, Italy utilities, Office/spreadsheet interchange, PDF/privacy workflows, developer/security, AI-era deterministic helpers, and capability-gated audio/video;
+- treat annual fiscal rules as versioned sourced data and remote authoritative checks as explicit network operations;
+- keep the no-vanity-count rule: a route exists for a real user job, not to inflate the catalog.
+
 ## Stop rules
 
 Do not mark a tool Gold because it renders. Do not replace missing evidence with assumptions. Do not grow catalog size if regression rate, maintenance cost or evidence debt rises faster than user value. Do not standardize visually different product surfaces merely to reduce component count.
