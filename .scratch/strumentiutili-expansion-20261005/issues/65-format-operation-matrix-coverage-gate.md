@@ -6,7 +6,7 @@
 
 **Constraints:** “Refused” is valid when fidelity/local feasibility is poor; silent omission is not. Coverage must not reward adding combinatorial low-value routes.
 
-**Blocked by:** 47, 48, 49, 51, 52, 53, 54, 55, 56, 57, 58, 59, 67.
+**Blocked by:** 47, 48, 49, 51, 52, 53, 54, 55, 56, 57, 58, 59, 67, 68.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] Every compressor reports actual before→after bytes and target-size truthfulness.
 
 **Verification:** CI coverage generator fails on unclassified high-priority rows, missing route evidence, or unsupported claims.
-

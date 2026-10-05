@@ -85,12 +85,14 @@ These three can run independently.
 | 65 | Format-operation matrix coverage gate | 47,48,49,51,52,53,54,55,56,57,58,59,67 |
 | 66 | Existing 200 functional-upgrade coverage gate | 50,53,60,61,62,63,64 |
 | 67 | ZIP/GZIP/archive compression + safe extraction | 01,34 |
+| 68 | DOCX/PPTX/XLSX OOXML compressor | 34,47,67 |
+| 69 | Cross-format file-size analyzer | 01,47,51,67,68 |
 
 ## Coverage notes
 
 - Tickets 02–05 partition the **current 200 tools exactly** by existing engine family: 44 + 62 + 20 + 74 = 200.
 - Ticket 18 is a hard **13/13 CalcolaTutto parity gate**; existing equivalents such as Base64 and color conversion are covered through the Result v2 migrations plus targeted parity assertions rather than duplicate engines.
-- Tickets 19–44 capture the first high-value expansion jobs found in the competitor research. Tickets 47–67 deepen the format/operation matrix and add explicit functional-upgrade coverage for the existing catalog.
+- Tickets 19–44 capture the first high-value expansion jobs found in the competitor research. Tickets 47–69 deepen the format/operation matrix and add explicit functional-upgrade coverage for the existing catalog.
 - Games/entertainment clones remain intentionally outside implementation scope; the source spec records that boundary so their omission is not accidental.
 
 ## Parallel waves

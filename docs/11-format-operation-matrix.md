@@ -53,6 +53,9 @@ Legend: **E** existing foundation, **U** upgrade existing route/engine, **A** ad
 | ZIP compressor | U/A | current ZIP creator uses `store`; add DEFLATE compression levels, before→after aggregate size, per-entry method/result |
 | GZIP compressor/decompressor | A | single-file gzip/gunzip with verified round-trip and CRC/integrity reporting |
 | 7z/RAR | S | inspect/extract only if a maintained local WASM/library path passes licensing, memory and mobile checks; creation is lower priority |
+| DOCX compressor | A | inspect OOXML package, recompress/resize embedded images, max-DEFLATE package rewrite, preserve document XML/styles/relationships, before→after component report |
+| PPTX compressor | A | recompress/resize embedded slide images/media where safe, package rewrite, report dominant media, preserve editable slide structure |
+| XLSX compressor | A | max-DEFLATE package rewrite plus embedded-image optimization where present; report when workbook XML/styles rather than media dominate size |
 | Audio compressor | S | codec/bitrate/sample-rate/channel strategy; target size where mathematically estimable |
 | Video compressor | S | codec/CRF/bitrate/resolution strategy; target MB with duration-based bitrate budgeting |
 
@@ -190,6 +193,20 @@ All file converters/compressors use the same baseline interaction:
 10. “continue with…” handoffs such as `HEIC→JPG → comprimi JPG → ridimensiona`, or `DOCX→PDF → comprimi PDF → firma`.
 
 Archive extraction additionally rejects path traversal, absolute paths and unsafe overwrite behavior before writing any output.
+
+For OOXML (`.docx`, `.pptx`, `.xlsx`), the tool must show which package components consumed space before and after compression and must preserve a valid reopenable Office package.
+
+## 8.1 Cross-format “why is this file large?” analyzer
+
+Add a local diagnostic tool that does not modify the file. For supported formats it reports the dominant byte contributors and routes the user to the right next action:
+
+- images: pixel dimensions, encoding, metadata, likely savings from resize/re-encode;
+- PDF: embedded images, page count, metadata/stream contribution where measurable, scan-heavy vs text/vector-heavy classification;
+- DOCX/PPTX/XLSX: OOXML ZIP entries grouped into media, XML, fonts/embeddings and other package parts;
+- ZIP/archive: compressed vs uncompressed totals and largest entries;
+- audio/video: duration, codec, bitrate, resolution/sample rate where inspectable.
+
+The analyzer reports opportunities; it does not promise savings before the corresponding compressor actually runs.
 
 ## 9. Routes vs engines
 
