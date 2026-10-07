@@ -35,7 +35,7 @@ const groupFacets = groups.map((group) => ({
   label: group.label,
   icon: group.icon,
   tone: group.tone,
-  count: tools.filter((tool) => group.memberCategories.includes(tool.category)).length,
+  count: tools.filter((tool) => groupForCategory(tool.category).slug === group.slug).length,
 }));
 
 const inputCounts = new Map<string, number>();
@@ -70,7 +70,7 @@ const totalPages = Math.max(1, Math.ceil(tools.length / PAGE_SIZE));
 const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 const groupedTools = groups.map((group) => ({
   group,
-  tools: tools.filter((tool) => group.memberCategories.includes(tool.category)),
+  tools: tools.filter((tool) => groupForCategory(tool.category).slug === group.slug),
 }));
 ---
 

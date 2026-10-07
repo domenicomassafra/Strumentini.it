@@ -1,6 +1,6 @@
 # StrumentiUtili.it future expansion — ticket DAG
 
-Status: **future implementation queue; ticket planning only**
+Status: **active expansion dependency/scheduling authority; partially implemented**
 Origin: `docs/10-tool-expansion-result-system-v2.md` + `docs/11-format-operation-matrix.md`
 Generated: 2026-10-05
 Coverage: **327 tickets, IDs 01–327, continuous, acyclic**

@@ -52,7 +52,7 @@ try{
   if(await storageContains(dedupe,"1,Ada"))throw new Error("handoff payload persisted in browser storage");
   await dedupe.getByRole("button",{name:"Rimuovi duplicati"}).press("Enter");
   await dedupe.getByText("1 riga duplicata rimossa",{exact:true}).waitFor();
-  await dedupe.locator(".gutter-rows").getByText("2",{exact:true}).first().waitFor();
+  await dedupe.locator(".table-output table tbody tr").nth(1).waitFor();
   const dedupePreview=await dedupe.locator(".table-output table").evaluate(table=>({
     headers:[...table.querySelectorAll("thead th")].map(node=>node.textContent?.trim()??""),
     rows:[...table.querySelectorAll("tbody tr")].map(row=>[...row.querySelectorAll("td")].map(node=>node.textContent?.trim()??"")),

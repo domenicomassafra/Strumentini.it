@@ -1,6 +1,7 @@
 import { chromium } from "@playwright/test";
 import { spawn } from "node:child_process";
 import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { basename, resolve } from "node:path";
 
@@ -22,10 +23,8 @@ const root = resolve(import.meta.dirname, "..");
 const dist = resolve(root, process.env.DIRECTORY_ACCEPTANCE_DIST ?? "dist");
 const assetDir = resolve(dist, "_astro");
 const receiptDir = resolve(root, "quality/receipts/discovery");
-const port = 18000 + (process.pid % 1000);
-const origin = `http://127.0.0.1:${port}`;
-const expandedPort = port + 1000;
-const expandedOrigin = `http://127.0.0.1:${expandedPort}`;
+let origin = "";
+let expandedOrigin = "";
 const expandedFixtureConfig = "scripts/fixtures/expanded-directory/astro.config.mjs";
 const expandedPayloadBudget = Object.freeze({
   htmlBytes: 512 * 1024,
@@ -34,6 +33,23 @@ const expandedPayloadBudget = Object.freeze({
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
 
 const visibleCards = "[data-directory-grid] .tool-card:not([hidden])";
+
+async function freeLoopbackPort() {
+  return await new Promise((resolvePort, rejectPort) => {
+    const probe = createServer();
+    probe.once("error", rejectPort);
+    probe.listen(0, "127.0.0.1", () => {
+      const address = probe.address();
+      if (address === null || typeof address === "string") {
+        probe.close();
+        rejectPort(new Error("Could not reserve a loopback acceptance port"));
+        return;
+      }
+      const port = address.port;
+      probe.close((error) => error ? rejectPort(error) : resolvePort(port));
+    });
+  });
+}
 
 async function waitForServer(targetOrigin, pathname = "/") {
   for (let attempt = 0; attempt < 30; attempt += 1) {
@@ -142,6 +158,11 @@ try {
     throw new Error(`Expanded category initial script payload is ${expandedCategoryPayload.initialScriptBytes} bytes; budget is ${expandedPayloadBudget.initialScriptBytes}`);
   }
 
+  const port = await freeLoopbackPort();
+  let expandedPort = await freeLoopbackPort();
+  while (expandedPort === port) expandedPort = await freeLoopbackPort();
+  origin = `http://127.0.0.1:${port}`;
+  expandedOrigin = `http://127.0.0.1:${expandedPort}`;
   server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], { stdio: "ignore" });
   expandedServer = spawn("python3", ["-m", "http.server", String(expandedPort), "--bind", "127.0.0.1", "--directory", expandedDist], { stdio: "ignore" });
   await Promise.all([waitForServer(origin), waitForServer(expandedOrigin, "/strumenti/")]);

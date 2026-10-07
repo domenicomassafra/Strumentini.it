@@ -1,11 +1,9 @@
 /**
  * Public categories.
  *
- * The 13 internal `ToolManifest.category` values are a facet of the tool
- * factory: they are bound into 200 manifests, the oracles, and the certification
- * index, and they stay exactly as they are. This module is the *public* layer
- * over them — the ten groups a visitor can actually hold in their head, each
- * one between 18 and 21 tools.
+ * Internal `ToolManifest.category` values are a facet of the tool factory and
+ * stay exactly as they are. This module is the *public* layer over them — a
+ * smaller set of groups a visitor can actually hold in their head.
  *
  * Nothing here renames a tool or changes a manifest. `memberCategories` is the
  * entire mapping, and `toolsInGroup` is the only reader a page needs.
@@ -51,12 +49,12 @@ export const groups: readonly CatalogGroup[] = [
   },
   {
     slug: "file",
-    label: "File e archivi",
-    summary: "Checksum, duplicati, rinomina e archivi ZIP.",
-    intro: "Verifica l'integrità dei file, trova i duplicati, rinomina in blocco e prepara archivi puliti.",
+    label: "File e media",
+    summary: "Checksum, archivi, audio e file multimediali.",
+    intro: "Verifica l'integrità dei file, gestisci archivi e usa gli strumenti locali per audio, voce e sottotitoli.",
     icon: "archive",
     tone: 4,
-    memberCategories: ["files"],
+    memberCategories: ["files", "media"],
   },
   {
     slug: "testo",
@@ -134,7 +132,7 @@ export function groupForCategory(category: string): CatalogGroup {
 }
 
 export function toolsInGroup(group: CatalogGroup): readonly ToolSummary[] {
-  return catalog.filter((tool) => group.memberCategories.includes(tool.category));
+  return catalog.filter((tool) => groupForCategory(tool.category).slug === group.slug);
 }
 
 /** Deterministic tone for a tone-less surface (search rows, related tools). */

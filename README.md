@@ -4,7 +4,7 @@ Public brand and repository identity.
 
 Strumentini.it is a personal utility workspace for knowledge work.
 
-The thesis is not another website with 200 tools. The product should understand enough about what a person does for work to assemble a small relevant toolbox, reuse safe profile defaults across utilities, and let the user add or remove professional tool packs over time.
+The thesis is not another website that wins by tool count. The product should understand enough about what a person does for work to assemble a small relevant toolbox, reuse safe profile defaults across utilities, and let the user add or remove professional tool packs over time.
 
 ## Current product thesis
 
@@ -73,7 +73,7 @@ The aspirational target is domain-level or similarly small annual infrastructure
 
 ## Repository status
 
-The checkout contains a static Astro/Preact implementation with 200 generated tool entries, public static routes, shared local execution seams, and release-validation tooling. At the current 2026-10-05 checkpoint the global certification index reports **198 Gold / 1 Partial (`image-resize`) / 1 implemented-unverified (`ris-bibtex-converter`)**. The live machine-readable authority is `quality/receipts/expanded-catalog-certification.json`. The RIS converter remains unverified for an oracle/provenance reason, while `image-resize` still requires genuine Android Chrome and iOS Safari device evidence; local or emulated validation never substitutes those physical-device proofs.
+The checkout contains a static Astro/Preact implementation with **259 generated tool entries**, public static routes, shared local execution seams, and release-validation tooling. At the 2026-10-07 integrated checkpoint the global certification index reports **255 Gold / 2 Partial (`image-resize`, `microphone-recorder`) / 2 Implemented Unverified (`password-strength-estimator`, `xml-formatter-validator`)**. The live machine-readable authority is `quality/receipts/expanded-catalog-certification.json`. The two Partial tools still require genuine physical-device evidence; the two unverified developer tools remain blocked because their current oracles are only medium-confidence. Local or emulated validation never substitutes those missing proofs.
 
 For the current project state, active priorities, Git/WIP closure and UI/UX audit, start with `PROJECT-STATUS.md`, `HANDOFF.md` and `ROADMAP.md`.
 
@@ -86,7 +86,7 @@ npm run deploy:check
 npm run deploy:check:portable
 ```
 
-`release:validate` checks the 200-tool surface, static asset inventory, public metadata and discovery files, Cloudflare configuration, truthful copy, certification receipts, and evidence boundaries. The canonical production origin defaults to `https://strumentini.it`; `PUBLIC_SITE_URL` can override it for an explicitly configured preview or alternate environment. `release:validate:require-ready` runs the unit suite, Astro check, portable static-host validation, and Wrangler dry run before exiting nonzero until every blocker is resolved. `deploy:check` runs both deployment gates; `deploy:check:portable` proves that the built `dist/` artifact does not require Cloudflare or any other application runtime. See `docs/09-deployment-costs-and-portability.md`.
+`release:validate` checks the current 259-tool surface, static asset inventory, public metadata and discovery files, Cloudflare configuration, truthful copy, certification receipts, and evidence boundaries. The canonical production origin defaults to `https://strumentini.it`; `PUBLIC_SITE_URL` can override it for an explicitly configured preview or alternate environment. `release:validate:require-ready` runs the unit suite, Astro check, portable static-host validation, and Wrangler dry run before exiting nonzero until every blocker is resolved. `deploy:check` runs both deployment gates; `deploy:check:portable` proves that the built `dist/` artifact does not require Cloudflare or any other application runtime. See `docs/09-deployment-costs-and-portability.md`.
 
 ## Brand
 

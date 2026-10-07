@@ -107,7 +107,7 @@ const cases = [
     id: "evidence-table-builder",
     boundary: { kind: "empty-result" },
     fill: { "Evidenze (array JSON oppure un oggetto per riga)": JSON.stringify(EVIDENCE) },
-    expect: /title\s+url\s+date\s+source\s+doi\s+notes/iu,
+    expect: /title\s+url\s+date\s+source\s+doi\s+isbn\s+notes/iu,
   },
   {
     id: "notes-deduplicator",

@@ -1,9 +1,19 @@
 import { describe, expect, it } from "vitest";
 import { businessDayManifest } from "../src/tools/business-day/manifest";
+import { catalog } from "../src/generated/catalog";
+import { groupForCategory, groups, toolsInGroup } from "../src/catalog/groups";
 import { compileFactoryCatalog, renderCatalogSource } from "../src/tool-factory/catalog";
 import { ToolFactoryValidationError } from "../src/tool-factory/manifest";
 
 describe("catalog compilation seam", () => {
+  it("keeps every generated tool reachable through exactly one public catalog group", () => {
+    const groupedIds = groups.flatMap((group) => toolsInGroup(group).map((tool) => tool.id));
+    expect(groupedIds).toHaveLength(catalog.length);
+    expect(new Set(groupedIds).size).toBe(catalog.length);
+    expect(new Set(groupedIds)).toEqual(new Set(catalog.map((tool) => tool.id)));
+    expect(groupForCategory("media").slug).toBe("file");
+  });
+
   it("compiles one canonical manifest into metadata and lazy loader metadata", () => {
     const compiled = compileFactoryCatalog([businessDayManifest]);
     expect(compiled.summaries).toHaveLength(1);

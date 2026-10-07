@@ -1,21 +1,22 @@
 # ROADMAP
 
-Current stage: **198/200 certified + frontend-system consolidation**.
+Current stage: **255/259 Gold + final evidence/infrastructure closure**.
 
-Checkpoint 2026-10-05: 200 tools exist; **198 are Gold**, `image-resize` is **Partial**, and `ris-bibtex-converter` is the **only Implemented Unverified** tool. `npm test` is green at **592 tests / 55 files**; `astro check` is **0/0/0 across 1216 files**; the static build remains **220 pages**. Research, local-jobs and marketing/media browser acceptance all pass on the combined tree.
+Checkpoint 2026-10-07: 259 tools exist; **255 are Gold**, `image-resize` and `microphone-recorder` are **Partial**, while `password-strength-estimator` and `xml-formatter-validator` are **Implemented Unverified** because their current oracles remain medium-confidence. The integrated suite is green at **1,088 tests / 133 files**; `astro check` reports **0 errors / 0 warnings** (16 deprecation hints in tests), and the static build emits **279 pages** with build inspection PASS.
 
 ## P0 — preserve the quality contract
 
-- keep all 200 normal tools `LOCAL` with network forbidden unless a future tool explicitly declares a different contract;
+- keep normal local tools `LOCAL` with network forbidden unless a tool explicitly declares a different contract;
 - keep public quality vocabulary `Verificato` / `In verifica` tied to the machine certification index;
 - do not weaken validators, invent external evidence or call emulation a physical-device pass;
 - keep `npm test`, `npm run check`, `npm run build`, catalog generation and certification checks green;
 - prioritize fixing real defects over adding catalog count.
 
-## P1 — close the final two non-Gold boundaries
+## P1 — close the final four non-Gold boundaries
 
-- **`ris-bibtex-converter`**: browser acceptance already passes; promote only after an acceptable RIS authority / independent parser cross-check closes oracle `cand-187` honestly;
 - **`image-resize`**: automated certification passes; collect genuine iOS Safari and Android Chrome receipts before Gold;
+- **`microphone-recorder`**: desktop/browser automation passes; collect genuine physical capture/permission evidence before Gold;
+- **`password-strength-estimator`** and **`xml-formatter-validator`**: keep unverified until their medium-confidence oracle gaps are closed by stronger independent authority/evidence;
 - no synthetic receipts, no desktop emulation as physical proof.
 
 ## P2 — standardize the frontend without flattening it
@@ -42,15 +43,16 @@ Migration principles:
 
 - refresh whole-tree browser-performance evidence on the final tree;
 - refresh rollback evidence only through a real deploy → rollback → smoke → restore exercise;
-- connect the custom domain before adding outer Cloudflare WAF rate limiting;
+- deploy the final Strumentini build to the already-active custom domain, then run live smoke + real rollback/restore evidence;
+- add and verify outer Cloudflare WAF rate limiting on the active zone;
 - configure the real Google Web Client ID and confirm Workers Paid before relying on password auth at production load;
 - keep catalog-size claims separate from certification claims.
 
-## P5 — future catalog expansion + Result System v2
+## P5 — continue the expansion backlog selectively
 
-After the current release/certification frontier and frontend-system consolidation are protected, execute the approved future plan in `docs/10-tool-expansion-result-system-v2.md` through the tracked 46-ticket DAG in `.scratch/strumentiutili-expansion-20261005/`. Only the dependency-free start frontier (01, 07, 34) is ready until its blockers are actually closed.
+The expansion plan in `docs/10-tool-expansion-result-system-v2.md` has already been materialized into the 327-ticket DAG in `.scratch/strumentiutili-expansion-20261005/`. At the current checkpoint 235 tickets are completed and 92 remain blocked by explicit dependencies, source evidence, unsupported fidelity paths or physical-device requirements. Treat the validator's current frontier as the queue; do not restart the old seed wave.
 
-- migrate all 200 current tools to the answer-first Result System v2 with explicit 200/200 coverage proof;
+- keep Result System v2 and functional-audit coverage complete as the catalog evolves;
 - cover all 13 current CalcolaTutto jobs via add/upgrade/covered mappings;
 - expand into high-value conversions, Italy utilities, Office/spreadsheet interchange, PDF/privacy workflows, developer/security, AI-era deterministic helpers, and capability-gated audio/video;
 - treat annual fiscal rules as versioned sourced data and remote authoritative checks as explicit network operations;

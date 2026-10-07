@@ -52,7 +52,7 @@ const cases = [
   { id: "contact-sheet-generator", setup: uploadFirst([pngFile("one.png"), pngFile("two.png")]), expect: /Colonne|columns|Righe|rows/iu },
   { id: "dominant-color-extractor", setup: uploadFirst(pngFile()), expect: /Colore dominante|dominant/iu },
   { id: "favicon-app-icon-size-generator", setup: uploadFirst(pngFile()), expect: /Scarica|16|512/iu },
-  { id: "image-compare-slider", setup: async (_page, form) => { const inputs = form.locator("input[type='file']"); await inputs.nth(0).setInputFiles(pngFile("first.png")); await inputs.nth(1).setInputFiles(pngFile("second.png")); }, expect: /sameDimensions|differenceRatio|differentChannels/iu },
+  { id: "image-compare-slider", setup: async (_page, form) => { const inputs = form.locator("input[type='file']"); await inputs.nth(0).setInputFiles(pngFile("first.png")); await inputs.nth(1).setInputFiles(pngFile("second.png")); }, expect: /Le due immagini hanno le stesse dimensioni[\s\S]*Pixel fuori sovrapposizione[\s\S]*Differenza media assoluta/iu },
   { id: "image-compression", setup: uploadFirst(pngFile()), expect: /Nome file|filename|Scarica risultato/iu },
   { id: "image-crop", setup: uploadFirst(pngFile()), expect: /Larghezza[\s\S]*1|width[\s\S]*1/iu },
   { id: "image-dimensions-batch-inspector", setup: uploadFirst(pngFile()), expect: /fixture\.png|width|height/iu },
