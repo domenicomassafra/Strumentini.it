@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "status": "GOLD",
   "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "batch-rename-preview",
   "runtime": {
     "location": "LOCAL",
@@ -57,9 +57,9 @@
   ],
   "identities": {
     "manifestSha256": "c3b3cc71db646f320b6b48f0aeb16550171824af3aa77185c92385e0b620cf3f",
-    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
-    "browserAcceptanceSha256": "e543386910c7b66cb9eb150873d13518b6da164a7b643af4fe356cce7554c627",
+    "browserAcceptanceSha256": "af387f322a7e5065c616260dd418af15fefeacee5cf2c8c1d941147b665ca69c",
     "acceptanceScriptSha256": "8a1820aa3ad8cc284999d6235b81d15fae4b665284bf157980d187dcbb0fcdaa",
     "unitTestsSha256": "d2cfa67ee598aba089d11b7d945b85f3114cadbc7c31c5fc1cf6041a15f720b3",
     "italianErrorCatalogSha256": "058f1732d3def14155154402903e9964047fc5ec413924593ce1073c8c0aa94b",

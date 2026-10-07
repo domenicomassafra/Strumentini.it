@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "status": "GOLD",
   "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "notes-deduplicator",
   "runtime": {
     "location": "LOCAL",
@@ -56,7 +56,7 @@
   "identities": {
     "manifestSha256": "eec84f7805c5a1a03cd2186f8b922919d5860ea8d46b8276006261fb759f5204",
     "engineSha256": "d7417088bf48c40ccf610aa6d32d5e57c427033d5b5d61f35ffac800595cdbf6",
-    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "browserAcceptanceSha256": "dce2a96b35d4633bb55cd8c9a14f9a018a5c13bb3f251516f04566512086ce3f",
     "acceptanceScriptSha256": "2c1afde893dfcfb283d9511908e03ab10cf8d6c2bfa2a73861891d9088aade9f",
