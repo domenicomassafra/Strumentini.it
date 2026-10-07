@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/text-data-certification/text-markup-converter.gold.json",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "text-markup-converter",
   "runtime": {
     "location": "LOCAL",
@@ -52,8 +52,8 @@
     "moduleSha256": "d9bcc5217f5d50e5dd9b8cd1f1e9842185121d0d755db4425ff49c1ccd95c693",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "5da2b0f76de27c882953ce233b57670ec7eb2b3cfc414050541784ff78fa3c3e",
-    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "browserAcceptanceSha256": "94b30af898e61c4f7c9ee181fcd1fe3ec69f64bac01a87abc14cd289f8e9876a",
+    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
     "focusedTestsSha256": "307f66b3c4a244a608caee23882a25b9c85c698e608b774b9e014fe7e4cc7ba6",
     "fixture:text-markup-conversion:sha256": "a9165bc7d633bbc487950ed92c21e285f4fe83891c58b483ede24f03d33fe483"
   }

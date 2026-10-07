@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "PASS",
-  "checkedAt": "2026-10-07T14:42:02.473Z",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "checkedAt": "2026-10-07T16:33:59.965Z",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "tools": [
     "base-converter",
     "chmod-permission-helper",
@@ -217,7 +217,7 @@
       "oracleEntryId": "cand-220",
       "status": "PASS",
       "semanticAssertion": "focus-scoped keydown/keyup captures code, location, modifiers and bounded in-memory history",
-      "outputSha256": "4d0e22535d95b602416071edab74c469db9962dd6699f590fc0fc91f70c1f4b8",
+      "outputSha256": "b52b654c046dd3571da2bb07fd1f179cbecd8a89d83e0865cc71119d481b24f5",
       "componentUrl": "/_astro/KeyboardEventDiagnosticTool.CnliFjH1.js",
       "componentAbsentFromHome": true,
       "externalTaskRequests": 0,
@@ -234,7 +234,7 @@
       "oracleEntryId": "cand-224",
       "status": "PASS",
       "semanticAssertion": "browser WebCrypto path produces requested length/classes and discloses rejection sampling/local-only contract",
-      "outputSha256": "265ae4f2e826601cdb8264ad92f9edd7ee711d6628d5aaeeec87599a5d8bbe3c",
+      "outputSha256": "34bdb8106dc728f34f4115f79fe579b87d427ff4e498b807d50926bda0452842",
       "componentUrl": "/_astro/PasswordPinPassphraseGeneratorTool.DvT-Raj3.js",
       "componentAbsentFromHome": true,
       "externalTaskRequests": 0,

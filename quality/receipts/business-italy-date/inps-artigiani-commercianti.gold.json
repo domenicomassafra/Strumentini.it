@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/business-italy-date/inps-artigiani-commercianti.gold.json",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "inps-artigiani-commercianti",
   "runtime": {
     "location": "LOCAL",
@@ -42,8 +42,8 @@
     "moduleSha256": "188057be3c51b10f178a6a80ef188e422e3a0284caaf09424f64c8e66b849e91",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "6629bcbc351291745841fa56b0606dd8a35f0732fc05f6ffce50232308c7cf3a",
-    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "browserAcceptanceSha256": "a2f30273ca2b88742066cb5cc83af3d946bd98acf7a63f8ecca92c540ca560bf",
+    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
     "focusedTestsSha256": "c55fdf1a01fba334a99c08b1bc0075678e54a3f2ed3ff5747f456a555760d6f3",
     "fixture:italy-2026-consumers:sha256": "be3213387e7f246567ca6177063807dd51dd01269ea99c262bb8c19fb8a3bb78"
   }

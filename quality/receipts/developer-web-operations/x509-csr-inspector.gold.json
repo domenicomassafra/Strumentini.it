@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/developer-web-operations/x509-csr-inspector.gold.json",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "x509-csr-inspector",
   "runtime": {
     "location": "LOCAL",
@@ -45,8 +45,8 @@
     "moduleSha256": "81f6353188cdc4e9288ee9ddd35a15e5ace3c844f41d5a7aa77e8c3d8994beb3",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "95ec130bfdb0cdbed0833ae1dfeb61f1d2e4195f322b987ae2a66fccf43dc1e3",
-    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "browserAcceptanceSha256": "347e8fd09b4975361b0938d1b28453b6afff1ce5cdfaa4013a9110a67efcf4ef",
+    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
     "focusedTestsSha256": "3b1bc88e1f4fc6ff4f5bb8dfb5ccffcd1785bf297b6a7db5c7dbf1601e20d8a7",
     "fixture:x509-csr-rfc:sha256": "80042583c68af239d5d1c8ec80bb46f9e85108ddab9c72780b1692c1d4806838"
   }

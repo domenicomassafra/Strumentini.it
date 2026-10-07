@@ -17,7 +17,7 @@
   "implementationEager": false,
   "check": "each tool route has at least one JS script absent from home initial scripts; home initial JS contains no tool-id marker",
   "homeInitialScripts": [
-    "/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.CwhHDSPy.js",
+    "/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.C_vEnTQy.js",
     "/_astro/ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
     "/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js",
     "/_astro/RecentTools.astro_astro_type_script_index_0_lang.Jt4BDF5J.js",
@@ -44,7 +44,7 @@
       "toolId": "fatturapa-reader",
       "routeOnlyScriptCount": 2,
       "routeOnlyScripts": [
-        "/_astro/FatturaPaTools.zjrKCI_5.js",
+        "/_astro/FatturaPaTools.Bpq98qUV.js",
         "/_astro/client.BQJ46GI4.js"
       ]
     },
@@ -52,7 +52,7 @@
       "toolId": "pdf-multi-text-search",
       "routeOnlyScriptCount": 2,
       "routeOnlyScripts": [
-        "/_astro/PdfMultiTextSearchTool.B9T3doSG.js",
+        "/_astro/PdfMultiTextSearchTool.BWN0SnwU.js",
         "/_astro/client.BQJ46GI4.js"
       ]
     },
@@ -60,7 +60,7 @@
       "toolId": "pdf-to-markdown",
       "routeOnlyScriptCount": 2,
       "routeOnlyScripts": [
-        "/_astro/PdfToMarkdownTool.BLyJtgz2.js",
+        "/_astro/PdfToMarkdownTool.Ds4fbLWs.js",
         "/_astro/client.BQJ46GI4.js"
       ]
     },
@@ -68,7 +68,7 @@
       "toolId": "color-blindness-image-simulation",
       "routeOnlyScriptCount": 2,
       "routeOnlyScripts": [
-        "/_astro/ColorBlindnessImageSimulationTool.ChyzYeUu.js",
+        "/_astro/ColorBlindnessImageSimulationTool.UT7AHbtC.js",
         "/_astro/client.BQJ46GI4.js"
       ]
     },
@@ -76,7 +76,7 @@
       "toolId": "barcode-generator",
       "routeOnlyScriptCount": 2,
       "routeOnlyScripts": [
-        "/_astro/BarcodeGeneratorTool.BZEQP4o2.js",
+        "/_astro/BarcodeGeneratorTool.Lm8KH6Jm.js",
         "/_astro/client.BQJ46GI4.js"
       ]
     },
@@ -100,7 +100,7 @@
       "toolId": "subtitle-srt-vtt-transform",
       "routeOnlyScriptCount": 2,
       "routeOnlyScripts": [
-        "/_astro/SubtitleSrtVttTransformTool.BcE5_KZK.js",
+        "/_astro/SubtitleSrtVttTransformTool.QFLCC2tJ.js",
         "/_astro/client.BQJ46GI4.js"
       ]
     },

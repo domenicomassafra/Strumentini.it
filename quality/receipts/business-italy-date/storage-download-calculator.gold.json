@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/business-italy-date/storage-download-calculator.gold.json",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "storage-download-calculator",
   "runtime": {
     "location": "LOCAL",
@@ -40,8 +40,8 @@
     "moduleSha256": "4ab8025f44a8fe58a65ad3c86ed5897abd5f0c0a947a691aefaa02e4a6ad545d",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "d38d0097a09bb0b9ec171ef1809f3bfe004a74478318c08d9bb9aade87dba66b",
-    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "browserAcceptanceSha256": "120daba1d46d0e8f07c43172069e0987cbcf94004052de03010f578490749288",
+    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
     "focusedTestsSha256": "5cd79b904ce8cca6aad543ee6ba23797b3765a92ec478d84c6d2c5aba10ccd05",
     "fixture:unit-conversion-core:sha256": "826793277d4d707117f50436876267285aa7d71be892b07f881819dd0d7268d1"
   }

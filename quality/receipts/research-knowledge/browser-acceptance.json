@@ -64,7 +64,7 @@
       "userSourceAbsentFromProvenance": true
     }
   },
-  "scriptSha256": "2c1afde893dfcfb283d9511908e03ab10cf8d6c2bfa2a73861891d9088aade9f",
+  "scriptSha256": "db5c4c076983c213752dc4bab33945c73015836b0f167c146cb1ae697c47136e",
   "results": [
     {
       "toolId": "bibtex-formatter",
@@ -102,7 +102,7 @@
       "toolId": "citation-deduplicator",
       "status": "PASS",
       "assertion": "Rimossi\\s*1",
-      "outputSha256": "4f9f28509afc07e317fbcbadee0d3594d5edce0960c739eef34a4bb604b18a9e",
+      "outputSha256": "d33380f64467cb961481810eee13e4ae226d2dcc85379e881c7931c627cd9c56",
       "lazyScriptCount": 6,
       "taskRequestCount": 7,
       "externalTaskRequests": 0,
@@ -118,7 +118,7 @@
       "toolId": "citation-key-generator",
       "status": "PASS",
       "assertion": "smith_2026_deep_2",
-      "outputSha256": "c8bf6cc044f8850e3f3bd4f3ba72b3ce96b7aac38f7a72cd2ff6826931ae8a23",
+      "outputSha256": "127fe1e83cc087fdf9b3f0a9caa1d70dc713b1bc0cae190b88008b0fde2f5a4a",
       "lazyScriptCount": 6,
       "taskRequestCount": 7,
       "externalTaskRequests": 0,
@@ -165,8 +165,8 @@
     {
       "toolId": "evidence-table-builder",
       "status": "PASS",
-      "assertion": "title\\s+url\\s+date\\s+source\\s+doi\\s+notes",
-      "outputSha256": "e00768fbe0e1dbf7a132bca75b7c35600ae8f8ef628f3b00ab3bfe50b1a759ea",
+      "assertion": "title\\s+url\\s+date\\s+source\\s+doi\\s+isbn\\s+notes",
+      "outputSha256": "c3b3888904a1ec7963d1cb1526a7935358700108f4d061747c102a14ab60c2f5",
       "lazyScriptCount": 6,
       "taskRequestCount": 7,
       "externalTaskRequests": 0,
@@ -214,7 +214,7 @@
       "toolId": "reading-list-deduplicator",
       "status": "PASS",
       "assertion": "Rimossi\\s*1",
-      "outputSha256": "5ec105363d410883af6a94be22a54b9c8390d22026ed813aa9c66049f05677a6",
+      "outputSha256": "1af3693ad293d025afd8222ac6ee288f851a8963dc435cb4c3d1fb755508ff7c",
       "lazyScriptCount": 6,
       "taskRequestCount": 7,
       "externalTaskRequests": 0,
@@ -230,7 +230,7 @@
       "toolId": "reference-list-sorter",
       "status": "PASS",
       "assertion": "Confronto[\\s\\S]*cognome del primo autore",
-      "outputSha256": "a36737a03fc2e14303513b0224153fe1d9c6233278dc952d945b48e8788313b1",
+      "outputSha256": "c96b11ee8e6a7ef1ca7126f0bd938639cb617a32d4dc9d1461479d03d45df74f",
       "lazyScriptCount": 6,
       "taskRequestCount": 7,
       "externalTaskRequests": 0,

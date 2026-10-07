@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/business-italy-date/geometry-equation-motion-helper.gold.json",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "geometry-equation-motion-helper",
   "runtime": {
     "location": "LOCAL",
@@ -40,8 +40,8 @@
     "moduleSha256": "7b26bb6c0b77655c29a7855e25621f345225630bc1cbb7f1975249a848a00d32",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "d85443bb68efec7e6fff735ff51479cce7505863f393a6252720ae7a8baf18b8",
-    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "browserAcceptanceSha256": "d2e13f000622df2aeefd10cb8d469d1330c08238b43a02a3fabfa21c0df2bfcb",
+    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
     "focusedTestsSha256": "902a1e01cd3cc5b561293e95e7c3420d90e1592f66ac8905d674a8b0ad8f90f4",
     "fixture:business-math-expansion:sha256": "1d67b528c407b58ba59538c78f9226be9cb250fef43e9a20f6cd37a30211dac8"
   }

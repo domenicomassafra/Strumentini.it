@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/text-data-certification/pdf-copy-text-reflow.gold.json",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "pdf-copy-text-reflow",
   "runtime": {
     "location": "LOCAL",
@@ -49,8 +49,8 @@
     "moduleSha256": "e8fb6c4729cc579f8fa1e94eb8f9001710e5fb4d6353d725792e7e5707d480cf",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "20fa904fb7e7ee0a673c1a4e68604e833ecf3063d2be209a8f76499fe76c6535",
-    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "browserAcceptanceSha256": "f5da2ce65d631032c86ac102cb6ff7b45c3f38e3a861714f471c8b93e2e6ec11",
+    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
     "focusedTestsSha256": "7d03995f3e3a6ebd56a9f2ba33dd2b910169cdcf3f6b056833f99b8c1abab92c",
     "fixture:text-expansion:sha256": "0c5599cbcee93afe9ae1f5116dde6ecbc01895b6c878e3236ac9d22538ee5ce0"
   }

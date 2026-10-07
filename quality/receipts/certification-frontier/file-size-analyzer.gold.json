@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "status": "GOLD",
   "goldEligible": true,
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "9418f6d684412c1fc8346a54637d766a06c7f2cdcea37ddf6ba6cd24639a17b6",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "file-size-analyzer",
   "runtime": {
     "location": "LOCAL",
@@ -42,9 +42,9 @@
   "identities": {
     "manifestSha256": "418c45a3ced26c8dae26b69900b5c3adfea04d5e5aec5ce5aaf18ffef6634d7d",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
-    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
     "browserAcceptanceSha256": "84c6e1d5e9edfe6d275dcf5912d9687b1787055d7708fe3c4b874c9cecd2fa42",
-    "bundleIsolationSha256": "f8cc75d37de5f47d79a94a350710156bbf079972838dfdf080685192016e91c2",
+    "bundleIsolationSha256": "348cedff81e8b012ba0b7e21e849e67ee1a11c2d868d95fb5cf83ba175fa6c78",
     "unitTestsSha256": "c21910be49153151556fece047f2f106a5a2f10c977f3fcbcb633ba1f4844c4f",
     "fixture:image-metadata:sha256": "636a2a09fef7acc95fc32184357a28883b61f1d27a1e8d7dd76c6cc73be8398d",
     "fixture:zip-signatures:sha256": "ad53dba9734c958be11d7cc31d88028ae0ccf2f14d353a507eafdc34370c22c3"

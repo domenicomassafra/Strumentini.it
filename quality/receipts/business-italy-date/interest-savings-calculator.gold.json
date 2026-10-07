@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/business-italy-date/interest-savings-calculator.gold.json",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "interest-savings-calculator",
   "runtime": {
     "location": "LOCAL",
@@ -40,8 +40,8 @@
     "moduleSha256": "75292dab583c330f9566de6778d6ba55a8bbe260ae93194bd7017d399665b904",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "1fb7df4558c6ecebc187fce7a3700816852c8acc48e8e2c2378c2d524db4a629",
-    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "browserAcceptanceSha256": "62cea1b3c5875fc6889480f951add36ecfbae11b12c04438615effdcec1c1806",
+    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
     "focusedTestsSha256": "3906506956e6f2b38118a2d26f4b497286e004d7465c740d30dc0862b3c42fc1",
     "fixture:calculator-math-core:sha256": "e9f53d8825ea53f273dd0aa6e9567fd5b58f715da32c523ace07ce2ab8030e86"
   }

@@ -1,33 +1,45 @@
 {
   "schemaVersion": 1,
   "page": "tools/image-resize/index.html",
-  "htmlBytes": 57317,
+  "htmlBytes": 57503,
   "initialAssets": [
-    "GlobalSearch.astro_astro_type_script_index_0_lang.CNarKz99.js",
+    "GlobalSearch.astro_astro_type_script_index_0_lang.C_vEnTQy.js",
     "TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
     "ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
     "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js"
   ],
   "implementationChunks": [
     {
-      "file": "ExifRemoverTool.CXs3bZoi.js",
+      "file": "ExifRemoverTool.WBrc8oK2.js",
       "bytes": 2796
     },
     {
-      "file": "ImageResizeTool.CMcaYPj2.js",
+      "file": "ImageResizeTool.DbtDQgDD.js",
       "bytes": 9640
+    },
+    {
+      "file": "advanced-workspace.l5nSercK.js",
+      "bytes": 13206
+    },
+    {
+      "file": "module.0KVrEb4e.js",
+      "bytes": 5472
     },
     {
       "file": "module.DVFo3_Yx.js",
       "bytes": 4348
     },
     {
-      "file": "module.DjbW-RFL.js",
-      "bytes": 4113
+      "file": "operations.Dr4vvbxl.js",
+      "bytes": 3009
     },
     {
-      "file": "operations.2jy4frMQ.js",
-      "bytes": 8298
+      "file": "transform-workspace.BYZZ27sf.js",
+      "bytes": 11196
+    },
+    {
+      "file": "visual-tools.Bmn44T0a.js",
+      "bytes": 18817
     }
   ],
   "implementationEager": false

@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/text-data-certification/csv-splitter.gold.json",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "csv-splitter",
   "runtime": {
     "location": "LOCAL",
@@ -53,8 +53,8 @@
     "moduleSha256": "cb852ca09bc92ae28d4fec2a312e900259354eec39cdc60cd03f09dfa22affa1",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "85b5b4cf5fc2269e9524285771fe1c5244c199d2a7d4f4108615ddc288bbff4c",
-    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "browserAcceptanceSha256": "6cdfc22e84d6d4a61d7a4cf72844f48ee27c620a2866ef98311e8c9b81baff84",
+    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
     "focusedTestsSha256": "4996b84abfa1a8d72e4601605646b28dcebd10e8a9d3e08a36b191e722465aa4",
     "fixture:csv-rfc4180:sha256": "6f6f74846f47fd99866d6c8b024cf1a8af33f4d92a015ae0af2e09a539111765",
     "fixture:csv-advanced-ops:sha256": "a26a13e0ea7ca282b0d37d22fd5547ac39860bb1703a2e480c4b292c154801da"

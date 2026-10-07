@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "clean-zip-creator",
   "runtime": {
     "location": "LOCAL",
@@ -45,8 +45,8 @@
     "manifestSha256": "687fd82ab2cd05553c73ec8d28e8218b7eba2bf6f2d490a1c6966cb5a5c584f4",
     "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
-    "browserAcceptanceSha256": "0013bb17ddc8213c484a55674ce2f36eca1acffdfb4dc5dfdaa0053166c8dc6f",
-    "acceptanceScriptSha256": "d383d4babd80b070e8357622cb3753903254ab7afd5c355e346108c11437d851",
+    "browserAcceptanceSha256": "0d29219938938e75936b799697adc94c8e9d25d0436182625e1d9b36139bb0ca",
+    "acceptanceScriptSha256": "f080d5e4bf7389e7d394bd85ead21e9cb42db02e3017dd458f8f3ecb3182c42f",
     "unitTestsSha256": "c21910be49153151556fece047f2f106a5a2f10c977f3fcbcb633ba1f4844c4f",
     "fixture:zip-signatures:sha256": "ad53dba9734c958be11d7cc31d88028ae0ccf2f14d353a507eafdc34370c22c3"
   }

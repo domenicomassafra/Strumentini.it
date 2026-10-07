@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "toolId": "image-resize",
   "status": "PARTIAL",
-  "revision": "e5eb69a512adfbfd4e38aa67aac8852e4bd50ab7",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "goldEligible": false,
   "runtime": {
     "location": "LOCAL",

@@ -131,7 +131,7 @@
       "toolId": "exif-remover",
       "status": "PASS",
       "assertion": "input inventory reported and the produced file proven free of identifying segments",
-      "outputSha256": "c74bd56c87213ea7c1218e6d9ee82a5f1d083eb6881fd91956afb92e1fae009d",
+      "outputSha256": "0f82ee8001aec575e86daf5e65f9ee90df6c60ae44cd76f8915a6b925b77141c",
       "lazyScriptCount": 5,
       "taskRequestCount": 6,
       "externalTaskRequests": 0,

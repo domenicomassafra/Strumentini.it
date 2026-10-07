@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/business-italy-date/italian-document-expiry.gold.json",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
+  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
   "toolId": "italian-document-expiry",
   "runtime": {
     "location": "LOCAL",
@@ -41,8 +41,8 @@
     "moduleSha256": "e37311dae7af6a627a9b514585b1b2242aab941a5672b68fa60b96c36cc3029d",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "2db5cc75c7fe39ada49559b966c93687be4ae2fa2895c790f1dfc983d0d301a4",
-    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "browserAcceptanceSha256": "5352d433e83454e21a7b02c8735d7b9119aabc1f6a6430a9159ca2f3b1c60177",
+    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
     "focusedTestsSha256": "c90e4a1bbf5c1fee0d123961f45c09fc9e53963b0730cce3ba948301fd7ee6b1",
     "fixture:italian-document-expiry:sha256": "841de504fe63eaecae7d0b2ee2cf624e2ecd85b1dd253173af68a5269c454a50"
   }
