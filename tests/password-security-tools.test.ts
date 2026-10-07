@@ -9,7 +9,7 @@ import {
   unbiasedRandomIndex,
   type RandomFill,
 } from "../src/tools/password-pin-passphrase-generator/module";
-import { estimatePasswordStrength } from "../src/tools/password-strength-estimator/module";
+import { estimatePasswordStrength, PASSWORD_STRENGTH_MAX_LENGTH } from "../src/tools/password-strength-estimator/module";
 
 function sequenceFill(values: readonly number[]): RandomFill {
   let index = 0;
@@ -74,10 +74,29 @@ describe("explainable password strength estimator", () => {
     expect(long.score).toBeGreaterThanOrEqual(medium.score);
   });
 
+  it("does not reward password composition classes by themselves", () => {
+    const lowercase = estimatePasswordStrength("mzrptkvnqwhsldy");
+    const mixed = estimatePasswordStrength("Mz7!tK9@nQ2#sLd");
+    expect(lowercase.length).toBe(mixed.length);
+    expect(lowercase.score).toBe(mixed.score);
+    expect(mixed.factors.find(({ code }) => code === "classes")?.detail).toMatch(/non aggiunge né sottrae punti/iu);
+  });
+
+  it("counts Unicode code points rather than UTF-16 code units at the local bound", () => {
+    const emoji = "🙂".repeat(PASSWORD_STRENGTH_MAX_LENGTH);
+    expect(emoji.length).toBe(PASSWORD_STRENGTH_MAX_LENGTH * 2);
+    expect(estimatePasswordStrength(emoji).length).toBe(PASSWORD_STRENGTH_MAX_LENGTH);
+    expect(() => estimatePasswordStrength(`${emoji}a`)).toThrow("PASSWORD_TOO_LONG");
+    expect(estimatePasswordStrength("a".repeat(PASSWORD_STRENGTH_MAX_LENGTH)).length).toBe(PASSWORD_STRENGTH_MAX_LENGTH);
+    expect(() => estimatePasswordStrength("a".repeat(PASSWORD_STRENGTH_MAX_LENGTH + 1))).toThrow("PASSWORD_TOO_LONG");
+  });
+
   it("states the offline limits without breach-presence claims", () => {
     const result = estimatePasswordStrength("Q7!mR2@zV4#tN6$pK9&x");
     const copy = [...result.limitations, ...result.factors.map(({ detail }) => detail)].join(" ");
     expect(copy).toContain("Non consulta database di password violate");
     expect(copy).toContain("non afferma che la password sia presente o assente");
+    expect(copy).toContain("non sostituisce una blocklist");
+    expect(copy).toContain("Non normalizza Unicode");
   });
 });

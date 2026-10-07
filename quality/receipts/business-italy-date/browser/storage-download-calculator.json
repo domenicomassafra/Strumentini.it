@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "PASS",
-  "checkedAt": "2026-10-07T16:33:32.973Z",
-  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+  "checkedAt": "2026-10-07T22:05:51.626Z",
+  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
   "subjectToolId": "storage-download-calculator",
   "oracleEntryId": "cand-216",
   "keyboard": "submit exercised with Enter",

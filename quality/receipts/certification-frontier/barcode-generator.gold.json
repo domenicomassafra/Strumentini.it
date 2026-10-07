@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "status": "GOLD",
   "goldEligible": true,
-  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
-  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
+  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
   "toolId": "barcode-generator",
   "runtime": {
     "location": "LOCAL",
@@ -41,10 +41,10 @@
   ],
   "identities": {
     "manifestSha256": "34ab480b91e097925f5f9b1082f1d291a2163730670d67c491a80b219fbc934e",
-    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
-    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
+    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
     "browserAcceptanceSha256": "21ee7236238be4022f8bbcbca13d133f64eb5e32475562b981c0e8aa0bd0b917",
-    "bundleIsolationSha256": "348cedff81e8b012ba0b7e21e849e67ee1a11c2d868d95fb5cf83ba175fa6c78",
+    "bundleIsolationSha256": "7201aba99ddca690d4413277ef45a94f6ad39d10b4549e58ff1c0b833545885b",
     "unitTestsSha256": "52921cdd64b26fb9668fb6f851ebf13d11b466cb18984cc44836256766ce9a1a",
     "fixture:barcode-linear:sha256": "3f57b35ada1ae2594cd890b9d185155093eb47d7d382c7e96d6b857d0381007a"
   }

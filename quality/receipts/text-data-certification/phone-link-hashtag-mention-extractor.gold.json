@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/text-data-certification/phone-link-hashtag-mention-extractor.gold.json",
-  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
-  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
+  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
   "toolId": "phone-link-hashtag-mention-extractor",
   "runtime": {
     "location": "LOCAL",
@@ -48,10 +48,10 @@
   "identities": {
     "manifestSha256": "b5024a461031757b6c4fa9c524ffc271f30e256f75fe3ca8cdd20da0459f885f",
     "moduleSha256": "fd14f6ab17de2ee49fb4d9aae5183c23754ccfc2fd828cd94e0d355171fc35c6",
-    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
-    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "d7ec55ea1684d26995d9d9ba7ac0badca390c1586d813b8fa28ce1d5bdd692a0",
-    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
+    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
+    "browserAcceptanceSha256": "a57ae0f875d9d52ad22a9487fafe4a74c7e9d4857ce4781890b12a4203d5f199",
+    "browserAcceptanceSourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
     "focusedTestsSha256": "7d03995f3e3a6ebd56a9f2ba33dd2b910169cdcf3f6b056833f99b8c1abab92c",
     "fixture:text-expansion:sha256": "0c5599cbcee93afe9ae1f5116dde6ecbc01895b6c878e3236ac9d22538ee5ce0"
   }

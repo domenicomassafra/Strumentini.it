@@ -48,7 +48,7 @@ describe("expanded catalog certification index", () => {
       PARTIAL: index.tools.filter((tool) => tool.status === "PARTIAL").length,
       IMPLEMENTED_UNVERIFIED: index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").length,
     });
-    expect(index.summary.certificationGoldCount).toBe(index.catalogToolCount - 4);
+    expect(index.summary.certificationGoldCount).toBe(index.catalogToolCount - 2);
     expect(index.summary.releaseEligibleGoldCount).toBe(index.summary.certificationGoldCount);
     expect(index.summary.physicalDevicePassCount).toBe(0);
     expect(index.global.physicalDevice).toMatchObject({
@@ -86,11 +86,8 @@ describe("expanded catalog certification index", () => {
       "random-picker-team-coupon-generator", "vcf-viewer-csv-export", "x509-csr-inspector", "xml-formatter-validator",
     ]);
     expect(developerWeb.filter((tool) => newDeveloperIds.has(tool.id))).toHaveLength(14);
-    const blockedDeveloperIds = new Set(["password-strength-estimator", "xml-formatter-validator"]);
-    expect(developerWeb.filter((tool) => newDeveloperIds.has(tool.id)).every((tool) => blockedDeveloperIds.has(tool.id)
-      ? tool.status === "IMPLEMENTED_UNVERIFIED" && !tool.goldEligible && tool.releaseGate === "BLOCKED"
-      : tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
-    expect(developerWeb.filter((tool) => !blockedDeveloperIds.has(tool.id)).every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(developerWeb.filter((tool) => newDeveloperIds.has(tool.id)).every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(developerWeb.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
     const dataTable = index.tools.filter((tool) => tool.engine === "table-operations" || tool.engine === "table-csv");
     expect(dataTable.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
     const newTableIds = new Set(["csv-splitter", "csv-to-sql", "table-compare", "fatturapa-reader", "fatturapa-batch-csv"]);
@@ -130,10 +127,7 @@ describe("expanded catalog certification index", () => {
       oracle: { status: "VERIFIED" },
     });
     expect(risConverter?.certificationReceipt).toBe("quality/receipts/research-knowledge/ris-bibtex-converter.gold.json");
-    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").map((tool) => tool.id)).toEqual([
-      "password-strength-estimator",
-      "xml-formatter-validator",
-    ]);
+    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED")).toEqual([]);
     expect(index.tools.filter((tool) => tool.status === "PARTIAL").map((tool) => tool.id)).toEqual(["image-resize", "microphone-recorder"]);
     expect(index.tools.some((tool) => tool.physicalDevice.status === "PASS")).toBe(false);
   }, 30_000);
@@ -141,11 +135,9 @@ describe("expanded catalog certification index", () => {
   it("fails closed when certification claims omit required evidence", async () => {
     const index = await buildCertificationIndex();
     const forged = structuredClone(index);
-    const first = forged.tools.find((tool) => tool.certificationReceipt === null) as unknown as { status: string; goldEligible: boolean; releaseGate: string } | undefined;
-    if (first === undefined) throw new Error("certification fixture has no unverified tool");
-    first.status = "GOLD";
-    first.goldEligible = true;
-    first.releaseGate = "PASS";
+    const first = forged.tools.find((tool) => tool.status === "GOLD") as unknown as { certificationReceipt: string | null } | undefined;
+    if (first === undefined) throw new Error("certification fixture has no Gold tool");
+    first.certificationReceipt = null;
     expect(() => assertCertificationIndex(forged)).toThrow(/Gold status has no certification receipt/u);
 
     const countForgery = structuredClone(index) as unknown as { expectedCatalogToolCount: number };

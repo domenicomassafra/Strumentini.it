@@ -10,6 +10,8 @@ It deliberately separates:
 - **tool/family oracle plans** in `registry.json`;
 - **validation** in `validate.py`.
 
+The version-controlled `sources.json`, `registry.json`, fixture `index.json`, and fixture payloads are the current authority. `build_gold_data.py` is a retired historical bootstrap for the original 200-candidate registry; direct execution fails before any filesystem mutation and it must not be used as a current regeneration source.
+
 Expected values must come from published vectors, hand-worked literals, a second independent implementation, or explicit project policy. A future tool implementation must not generate its own expected values.
 
 Run:

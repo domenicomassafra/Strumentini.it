@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/business-italy-date/partita-iva-validator.gold.json",
-  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
-  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
+  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
   "toolId": "partita-iva-validator",
   "runtime": {
     "location": "LOCAL",
@@ -39,10 +39,10 @@
   "identities": {
     "manifestSha256": "a8ae021a7ccec4da84df91fc88e9ded876aaa0c325d3d6b3cfd03164dc586832",
     "moduleSha256": "4b3c3f23f9406586bf895731905a733a46d4616a01ba7c6c3f6d8773ff7c72d0",
-    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
-    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "d5573d8cfb6f669f9b21d3fb9fe55f8186bc1f6acfc5738683b03c604ac2fdb1",
-    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
+    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
+    "browserAcceptanceSha256": "9dc0b063f3367a39fd62d6ccb6282336a40f2f9839e08451a09e73f0b8409b16",
+    "browserAcceptanceSourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
     "focusedTestsSha256": "382a3342649d3191ecb72a4cec5c126e8aff1973e87ef9fc33d8975db383440d",
     "fixture:italian-vat-number:sha256": "e6c6d6e5d75a157a8186f80f8d382004ebd277282f2a9d36fee4d9b0b6cc5693"
   }

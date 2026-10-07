@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
-  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
+  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
   "toolId": "public-holiday-lookup",
   "runtime": {
     "location": "LOCAL",
@@ -59,8 +59,8 @@
   ],
   "identities": {
     "manifestSha256": "2d8cd9aaf0d76cc8ad0e92ec48b914daad1ffb976ebc58a1856080c47723b27c",
-    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
+    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
     "browserAcceptanceSha256": "af387f322a7e5065c616260dd418af15fefeacee5cf2c8c1d941147b665ca69c",
     "acceptanceScriptSha256": "8a1820aa3ad8cc284999d6235b81d15fae4b665284bf157980d187dcbb0fcdaa",
     "unitTestsSha256": "5f76830f030acf2e9f9456538f5d54085b9e2b54d907f816f716d265aff6da03",

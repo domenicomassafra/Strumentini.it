@@ -35,7 +35,7 @@ const candidates: readonly Candidate[] = [
 
 if (candidates.length !== 17 || new Set(candidates.map(({ id }) => id)).size !== 17) throw new Error("developer/web operations certification target must contain exactly 17 unique tools");
 
-const expectedBlocked = new Set(["password-strength-estimator", "xml-formatter-validator"]);
+const expectedBlocked = new Set<string>();
 const root = resolve(import.meta.dirname, "../..");
 const writeReceipts = process.argv.includes("--write");
 const acceptancePath = "quality/receipts/developer-web-operations/browser-acceptance.json";
@@ -199,10 +199,25 @@ async function replay(toolId: string, fixtureById: ReadonlyMap<string, JsonRecor
   }
   if (toolId === "xml-formatter-validator") {
     const data = await fixture("developer-structured-data");
-    const vector = (data.xml as JsonRecord[])[0]!;
-    const actual = await run({ text: vector.input, mode: "prettify", indent: 2 });
-    assertSubset(actual, { output: vector.pretty, externalEntities: "disabled" });
-    return 1;
+    let checked = 0;
+    for (const vector of data.xml as JsonRecord[]) {
+      const validated = await run({ text: vector.input, mode: "validate", indent: 2 });
+      assertSubset(validated, { valid: true, externalEntities: "disabled" });
+      if (typeof vector.pretty === "string") assertSubset(await run({ text: vector.input, mode: "prettify", indent: 2 }), { output: vector.pretty, externalEntities: "disabled" });
+      if (typeof vector.minified === "string") assertSubset(await run({ text: vector.input, mode: "minify", indent: 2 }), { output: vector.minified, externalEntities: "disabled" });
+      checked += 1;
+    }
+    for (const malformed of ['<root a="1" a="2"/>', "<root>&#0;</root>", "<root>&#x110000;</root>", "<root>bad]]>text</root>", `<root>${String.fromCharCode(1)}</root>`]) {
+      let refused = false;
+      try {
+        await run({ text: malformed, mode: "validate", indent: 2 });
+      } catch {
+        refused = true;
+      }
+      assert(refused, `xml formatter accepted malformed W3C boundary: ${malformed}`);
+      checked += 1;
+    }
+    return checked;
   }
   if (toolId === "password-pin-passphrase-generator") {
     const actual = await run({ mode: "password", length: 32, lowercase: true, uppercase: true, digits: true, symbols: true });
@@ -213,12 +228,19 @@ async function replay(toolId: string, fixtureById: ReadonlyMap<string, JsonRecor
   }
   if (toolId === "password-strength-estimator") {
     const data = await fixture("password-security");
-    const vector = (data.vectors as JsonRecord[])[0]!;
-    const actual = await run({ password: vector.password });
-    assert(isRecord(actual) && Array.isArray(actual.factors), "password estimator factors missing");
-    const codes = actual.factors.map((entry) => isRecord(entry) ? entry.code : undefined);
-    for (const code of stringArray(vector.expected_factor_codes)) assert(codes.includes(code), `password estimator factor missing: ${code}`);
-    return 1;
+    let checked = 0;
+    for (const vector of data.vectors as JsonRecord[]) {
+      const actual = await run({ password: vector.password });
+      const repeated = await run({ password: vector.password });
+      assert(JSON.stringify(actual) === JSON.stringify(repeated), "password estimator is not deterministic");
+      assert(isRecord(actual) && Array.isArray(actual.factors), "password estimator factors missing");
+      const codes = actual.factors.map((entry) => isRecord(entry) ? entry.code : undefined);
+      for (const code of stringArray(vector.expected_factor_codes)) assert(codes.includes(code), `password estimator factor missing: ${code}`);
+      if (typeof vector.expected_min_score === "number") assert(typeof actual.score === "number" && actual.score >= vector.expected_min_score, "password estimator minimum score fixture failed");
+      if (typeof vector.expected_max_score === "number") assert(typeof actual.score === "number" && actual.score <= vector.expected_max_score, "password estimator maximum score fixture failed");
+      checked += 1;
+    }
+    return checked;
   }
   if (toolId === "random-picker-team-coupon-generator") {
     const data = await fixture("random-utilities");
@@ -370,7 +392,7 @@ console.log(`promotable: ${promotable.join(", ")}`);
 console.log(`blocked: ${blocked.map(({ id, reasons }) => `${id} [${reasons.join("; ")}]`).join(", ")}`);
 if (unexpectedBlocked.length > 0 || unexpectedlyPromoted.length > 0 || missingExpectedBlocked.length > 0) {
   if (unexpectedBlocked.length > 0) console.error(`unexpected blocked tools: ${unexpectedBlocked.map(({ id }) => id).join(", ")}`);
-  if (unexpectedlyPromoted.length > 0) console.error(`medium-confidence tools unexpectedly promoted: ${unexpectedlyPromoted.join(", ")}`);
+  if (unexpectedlyPromoted.length > 0) console.error(`expected-blocked tools unexpectedly promoted: ${unexpectedlyPromoted.join(", ")}`);
   if (missingExpectedBlocked.length > 0) console.error(`expected blocked tools missing from blocked list: ${missingExpectedBlocked.join(", ")}`);
   process.exitCode = 1;
 }

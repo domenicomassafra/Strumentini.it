@@ -1,8 +1,8 @@
 # ROADMAP
 
-Current stage: **255/259 Gold + final evidence/infrastructure closure**.
+Current stage: **257/259 Gold + final physical/infrastructure closure**.
 
-Checkpoint 2026-10-07: 259 tools exist; **255 are Gold**, `image-resize` and `microphone-recorder` are **Partial**, while `password-strength-estimator` and `xml-formatter-validator` are **Implemented Unverified** because their current oracles remain medium-confidence. The integrated suite is green at **1,089 tests / 133 files**; `astro check` reports **0 errors / 0 warnings** (16 deprecation hints in tests), and the static build emits **279 pages** with build inspection PASS.
+Checkpoint 2026-10-07: 259 tools exist; **257 are Gold** and only `image-resize` plus `microphone-recorder` remain **Partial** for genuine physical-device evidence. `password-strength-estimator` and `xml-formatter-validator` now have bounded high-confidence oracle evidence and Gold receipts. The integrated suite is green at **1,091 tests / 133 files**; `astro check` reports **0 errors / 0 warnings** (16 deprecation hints in tests), and the static build emits **279 pages** with build inspection PASS.
 
 ## P0 — preserve the quality contract
 
@@ -12,11 +12,11 @@ Checkpoint 2026-10-07: 259 tools exist; **255 are Gold**, `image-resize` and `mi
 - keep `npm test`, `npm run check`, `npm run build`, catalog generation and certification checks green;
 - prioritize fixing real defects over adding catalog count.
 
-## P1 — close the final four non-Gold boundaries
+## P1 — close the final two non-Gold boundaries
 
 - **`image-resize`**: automated certification passes; collect genuine iOS Safari and Android Chrome receipts before Gold;
 - **`microphone-recorder`**: desktop/browser automation passes; collect genuine physical capture/permission evidence before Gold;
-- **`password-strength-estimator`** and **`xml-formatter-validator`**: keep unverified until their medium-confidence oracle gaps are closed by stronger independent authority/evidence;
+- **`password-strength-estimator`** and **`xml-formatter-validator`**: closed as Gold on bounded independent/NIST/W3C-backed contracts; reopen oracle review if their public claims expand;
 - no synthetic receipts, no desktop emulation as physical proof.
 
 ## P2 — standardize the frontend without flattening it

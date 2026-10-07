@@ -9813,10 +9813,11 @@
       "tool_family": "developer-web",
       "maintenance_class": "E",
       "truth_sources": [
+        "w3c-xml10",
         "strumentiutili-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked XML documents cover elements, attributes, comments, processing instructions, CDATA, predefined/numeric entities, mixed content and xml:space while DTD/ENTITY declarations are deliberately refused.",
+      "standard_or_official_example": "W3C XML 1.0 Fifth Edition grounds only the rules this bounded core claims: matching element names, unique attributes, XML Char legality, predefined/legal numeric character references, forbidden ]]> in character data and xml:space='preserve'/'default' whitespace-preservation behavior in this bounded serializer. DTD/ENTITY processing is deliberately refused as a product-safety boundary; full XML 1.0 conformance is not claimed.",
       "invariants": [
         "DTD and ENTITY declarations are rejected before parsing and no network or filesystem entity resolution exists",
         "invalid XML never returns a formatted or minified success artifact",
@@ -9826,6 +9827,8 @@
       "adversarial_cases": [
         "external SYSTEM entity XXE payload",
         "unknown named entity",
+        "numeric character reference outside the XML Char production",
+        "]]> outside CDATA",
         "mismatched closing tag",
         "duplicate attributes",
         "deep nesting and oversized node count",
@@ -9843,12 +9846,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "hand-worked XML corpus with semantic whitespace and hostile DTD/entity fixtures",
-        "role": "literal parser/serializer cross-check for the declared local XML core"
+        "implementation": "hand-worked W3C-shaped literals plus independent browser DOMParser checks for valid XML and duplicate-attribute rejection",
+        "role": "normative-boundary literals plus a second parser cross-check for the specifically declared local XML subset"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "DTD validation, custom entity declarations, external subsets and schema validation are intentionally unsupported; this is a bounded well-formedness/formatting core."
+        "DTD validation, custom entity declarations, external subsets and schema validation are intentionally unsupported; Unicode XML Name coverage and complete XML declaration/processing-instruction conformance are not claimed."
       ]
     },
     {
@@ -10340,10 +10343,11 @@
       "tool_family": "developer-web",
       "maintenance_class": "E",
       "truth_sources": [
+        "nist-sp800-63b4",
         "strumentiutili-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked synthetic password shapes cover length bands, character-class diversity, repetition, repeated blocks, simple sequences and a small explicitly declared common-pattern list; no breached-password source is queried.",
+      "standard_or_official_example": "NIST SP 800-63B bounds the product policy rather than defining this score: Unicode code points are counted for length and composition requirements do not drive the score. The 0–4 bands and pattern penalties are explicitly Strumentini.it heuristics. No breached-password blocklist is queried, so this estimator must not be described as NIST-conformant or as a verifier implementation.",
       "invariants": [
         "same password always returns the same score label factors and limitations",
         "length-band increases are monotonic when other penalties remain unchanged",
@@ -10367,16 +10371,16 @@
       ],
       "portability_browser_edges": [
         "rules use deterministic Unicode code-point length and ASCII class/pattern tests",
-        "input length is bounded before regex analysis"
+        "input is bounded by Unicode code-point count before regex analysis; a cheap UTF-16 upper bound prevents oversized inputs before code-point materialization"
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "hand-worked factor-code fixture table and monotonic length assertions",
-        "role": "independent rule-outcome cross-check for the declared heuristic model"
+        "implementation": "hand-worked factor-code fixture table, monotonic length assertions, Unicode code-point length cases and same-length composition-class invariance",
+        "role": "independent rule-outcome cross-check for a project-defined heuristic whose policy boundaries are informed by NIST guidance"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "This bounded heuristic is not a cracking-time model and cannot know user context, reuse, server rate limits or breached-password membership."
+        "NIST does not define these 0–4 bands or pattern penalties. This bounded heuristic is not a password verifier or cracking-time model, does not implement the NIST verifier blocklist requirement, does not normalize Unicode before counting/scoring, and cannot know user context, reuse, server rate limits or breached-password membership."
       ]
     },
     {

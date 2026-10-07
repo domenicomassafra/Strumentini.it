@@ -124,9 +124,9 @@ Do not redirect or retire `strumentiutili.it` during preparation. It is the imme
 Execute this section only as part of the authorized production release.
 
 1. Re-run sections 4 and 5 and archive the evidence.
-2. Record the exact current Worker version with `npx wrangler deployments status --name strumentiutili-it`.
-3. Run `npx wrangler deploy`. The repository's `wrangler.jsonc` declares `strumentini.it` as a `custom_domain`, so this deploy updates the existing Worker and attaches the apex route without renaming the Worker or D1 database.
-4. Record the resulting Worker version with `npx wrangler deployments status --name strumentiutili-it`.
+2. Record the exact current Worker version with `npx wrangler deployments status --name strumentini`.
+3. Run `npx wrangler deploy`. The repository's `wrangler.jsonc` declares `strumentini.it` as a `custom_domain`, so this deploy updates the existing `strumentini` Worker and attaches the apex route while preserving the existing D1 database.
+4. Record the resulting Worker version with `npx wrangler deployments status --name strumentini`.
 5. Confirm the `www` redirect is active.
 6. Wait until authoritative and recursive DNS agree on the Cloudflare delegation and the edge certificate is valid.
 7. Run the smoke gate below before changing the legacy domain.
@@ -169,7 +169,7 @@ Do not destroy the old Vercel project, old-domain DNS evidence, or Cloudflare de
 The primary application rollback keeps DNS, TLS and the D1 binding intact. Use the exact pre-deploy Worker version recorded in section 7:
 
 ~~~sh
-npx wrangler rollback PREVIOUS_VERSION_ID --name strumentiutili-it --message "Rollback Strumentini.it production"
+npx wrangler rollback PREVIOUS_VERSION_ID --name strumentini --message "Rollback Strumentini.it production"
 ~~~
 
 Re-run the section 8 smoke gate and confirm the apex serves the previous known-good version while `AUTH_DB` still points to the same D1 UUID.

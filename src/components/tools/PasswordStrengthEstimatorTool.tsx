@@ -15,7 +15,7 @@ export function PasswordStrengthEstimatorTool() {
     } catch (cause) {
       setResult(null);
       setError(cause instanceof Error && cause.message === "PASSWORD_TOO_LONG"
-        ? `Limite locale: ${PASSWORD_STRENGTH_MAX_LENGTH} caratteri.`
+        ? `Limite locale: ${PASSWORD_STRENGTH_MAX_LENGTH} caratteri Unicode.`
         : "Non riesco ad analizzare questo valore.");
     }
   }
@@ -51,7 +51,7 @@ export function PasswordStrengthEstimatorTool() {
             aria-label="Password da stimare"
             type={revealed ? "text" : "password"}
             value={password}
-            maxLength={PASSWORD_STRENGTH_MAX_LENGTH + 1}
+            maxLength={PASSWORD_STRENGTH_MAX_LENGTH * 2 + 1}
             autoComplete="new-password"
             spellcheck={false}
             onInput={(event) => { setPassword(event.currentTarget.value); setResult(null); }}

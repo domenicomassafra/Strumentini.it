@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/developer-web-operations/json-type-schema-inference.gold.json",
-  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
-  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
+  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
   "toolId": "json-type-schema-inference",
   "runtime": {
     "location": "LOCAL",
@@ -51,11 +51,11 @@
   "identities": {
     "manifestSha256": "fe53d40f675d506432ec97e0329efa0ea7aaaa842123d14978dd25865ee7f192",
     "moduleSha256": "962be108ffc1fdaa4e8c23f7067e5843784fb5e1fa03a47dce6a97bf0d57201d",
-    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
-    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "347e8fd09b4975361b0938d1b28453b6afff1ce5cdfaa4013a9110a67efcf4ef",
-    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
-    "focusedTestsSha256": "84aee7e938fefe3dc6423d91bdd0eddd317ed805502c013ab886122d55bf449c",
+    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
+    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
+    "browserAcceptanceSha256": "6e95208a0e658b36f5e4adea1dcfef48fafd6b928fa7e88bb6ab13848c3c95f0",
+    "browserAcceptanceSourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+    "focusedTestsSha256": "5f6dfb165f182daefc3a2d62eb2e757cce4509c70a89e2ea17976118fd0cec27",
     "fixture:json-grammar:sha256": "bfafc4ab0f48a1c34b9e3a2ae8a8aa40f76a08571b93a09739b9b1b41d82a881",
     "fixture:developer-structured-data:sha256": "9595f76796e6d1efca2a5f4b02eb28e83f5152887dbcb8324194df7cfd4db0aa",
     "fixture:developer-web-gold:sha256": "5d9fdd3746a9cba8783c65a89e44e7f720e5acf6192f7cc3932e71451f314a82"

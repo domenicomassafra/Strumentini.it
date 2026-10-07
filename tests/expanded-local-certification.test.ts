@@ -16,7 +16,7 @@ const directIds = [
 ] as const;
 
 describe("expanded local Gold frontier", () => {
-  it("promotes exactly the 49 direct candidates and keeps the remaining frontier unverified", async () => {
+  it("promotes exactly the 49 direct candidates inside the fully certified non-partial catalog", async () => {
     const index = await buildCertificationIndex();
     const promoted = index.tools.filter((tool) => tool.certificationReceipt?.startsWith("quality/receipts/expanded-local/") === true);
     expect(promoted.map(({ id }) => id).toSorted()).toEqual([...directIds].toSorted());
@@ -24,11 +24,7 @@ describe("expanded local Gold frontier", () => {
     expect(promoted.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
     expect(promoted.every((tool) => tool.locality.status === "PASS" && tool.mobileA11y.status === "PASS" && tool.lazyLoad.status === "PASS")).toBe(true);
     const unverified = index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED");
-    // The batch owns only its fixed 49 tools; later expansion tranches may add
-    // unrelated unverified tools without changing this batch's certification.
-    expect(unverified.length).toBeGreaterThan(0);
-    expect(unverified.some((tool) => directIds.includes(tool.id as typeof directIds[number]))).toBe(false);
-    expect(unverified.every((tool) => tool.certificationReceipt === null && tool.blockers.includes("CERTIFICATION_RECEIPT_MISSING"))).toBe(true);
+    expect(unverified).toEqual([]);
   }, 30_000);
 
   it("binds one truthful browser PASS result to each direct candidate", async () => {

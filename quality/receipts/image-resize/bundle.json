@@ -3,14 +3,14 @@
   "page": "tools/image-resize/index.html",
   "htmlBytes": 57503,
   "initialAssets": [
-    "GlobalSearch.astro_astro_type_script_index_0_lang.C_vEnTQy.js",
+    "GlobalSearch.astro_astro_type_script_index_0_lang.DaG_COzp.js",
     "TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
     "ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
     "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js"
   ],
   "implementationChunks": [
     {
-      "file": "ExifRemoverTool.WBrc8oK2.js",
+      "file": "ExifRemoverTool.6PuyaBLo.js",
       "bytes": 2796
     },
     {

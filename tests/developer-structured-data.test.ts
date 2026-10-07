@@ -130,6 +130,24 @@ describe("tickets 165-168 developer structured data", () => {
       expect((error as DeveloperWebError).diagnostic).toMatchObject({ line: 2, path: "/root/item" });
       expect(JSON.stringify((error as DeveloperWebError).diagnostic)).not.toContain("stack");
     }
+    for (const input of [
+      '<root a="1" a="2"/>',
+      "<root>&#0;</root>",
+      "<root>&#x110000;</root>",
+      "<root>bad]]>text</root>",
+      `<root>${String.fromCharCode(1)}</root>`,
+    ]) {
+      expect(() => xmlOperation(input, "validate"), input).toThrow();
+    }
+
+    for (const codePoint of [0x9, 0xA, 0xD, 0x20, 0xD7FF, 0xE000, 0xFFFD, 0x10000, 0x10FFFF]) {
+      const input = `<root>&#x${codePoint.toString(16)};</root>`;
+      expect(xmlOperation(input, "validate"), input).toMatchObject({ valid: true, externalEntities: "disabled" });
+    }
+    for (const codePoint of [0x0, 0x1, 0xD800, 0xDFFF, 0xFFFE, 0xFFFF, 0x110000]) {
+      const input = `<root>&#x${codePoint.toString(16)};</root>`;
+      expect(() => xmlOperation(input, "validate"), input).toThrow();
+    }
   });
 
   it("runs the four new routes through the shared developer engine seam", async () => {

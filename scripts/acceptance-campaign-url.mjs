@@ -1,13 +1,45 @@
 import { chromium } from "@playwright/test";
 import { spawn } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
+import { createServer } from "node:net";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-const port = 18135;
+
+async function freeLoopbackPort() {
+  return new Promise((resolvePort, reject) => {
+    const probe = createServer();
+    probe.once("error", reject);
+    probe.listen(0, "127.0.0.1", () => {
+      const address = probe.address();
+      if (address === null || typeof address === "string") {
+        probe.close(() => reject(new Error("could not allocate loopback port")));
+        return;
+      }
+      const { port } = address;
+      probe.close((error) => error ? reject(error) : resolvePort(port));
+    });
+  });
+}
+
+const port = await freeLoopbackPort();
 const origin = `http://127.0.0.1:${port}`;
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { stdio: "ignore" });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function waitForReleaseServer() {
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    try {
+      const response = await fetch(`${origin}/tools/utm-builder/`);
+      if (response.ok) {
+        const html = await response.text();
+        if (html.includes('data-tool-page="utm-builder"') && html.includes('data-runtime="LOCAL"')) return;
+      }
+    } catch {}
+    await sleep(100);
+  }
+  throw new Error(`campaign URL acceptance server did not expose the current UTM route: ${origin}`);
+}
 
 async function accept(browser, route, sensitive, operate) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
@@ -32,7 +64,7 @@ async function accept(browser, route, sensitive, operate) {
 }
 
 try {
-  await sleep(500);
+  await waitForReleaseServer();
   const browser = await chromium.launch({ executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", headless: true });
   await accept(browser, "/tools/utm-builder", ["newsletter", "fall sale"], async (page, start) => { await page.getByLabel("URL di destinazione").fill("https://example.com/landing?ref=site#frag"); await page.getByLabel("Sorgente").fill("newsletter"); await page.getByLabel("Mezzo").fill("email"); await page.getByLabel("Campagna").fill("fall sale"); start(); await page.getByRole("button", { name: "Crea URL" }).press("Enter"); await page.getByText("https://example.com/landing?ref=site&utm_source=newsletter&utm_medium=email&utm_campaign=fall+sale#frag", { exact: true }).waitFor(); });
   await accept(browser, "/tools/tracking-cleaner", ["secret-token"], async (page, start) => { await page.getByLabel("URL da pulire").fill("https://example.com/?a=1&a=2&utm_source=x&gclid=secret-token#frag"); start(); await page.getByRole("button", { name: "Rimuovi parametri di tracciamento" }).press("Enter"); await page.getByText("https://example.com/?a=1&a=2#frag", { exact: true }).waitFor(); await page.getByText(/utm_source, gclid/u).waitFor(); });

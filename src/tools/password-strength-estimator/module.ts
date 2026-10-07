@@ -43,9 +43,13 @@ function labelFor(score: number): PasswordStrengthResult["label"] {
 
 export function estimatePasswordStrength(password: string): PasswordStrengthResult {
   if (typeof password !== "string") throw new Error("PASSWORD_REQUIRED");
-  if (password.length > PASSWORD_STRENGTH_MAX_LENGTH) throw new Error("PASSWORD_TOO_LONG");
+  // JavaScript string length counts UTF-16 code units. Two code units per code
+  // point is the maximum, so this cheap bound rejects impossible inputs before
+  // materializing the code-point array used by the public length contract.
+  if (password.length > PASSWORD_STRENGTH_MAX_LENGTH * 2) throw new Error("PASSWORD_TOO_LONG");
   const factors: StrengthFactor[] = [];
   const length = [...password].length;
+  if (length > PASSWORD_STRENGTH_MAX_LENGTH) throw new Error("PASSWORD_TOO_LONG");
   const classes = characterClassCount(password);
 
   let score = length >= 24 ? 4 : length >= 16 ? 3 : length >= 12 ? 2 : length >= 8 ? 1 : 0;
@@ -53,12 +57,12 @@ export function estimatePasswordStrength(password: string): PasswordStrengthResu
     ? { kind: "positive", code: "length", detail: `Lunghezza ${length}: la lunghezza aumenta lo spazio delle combinazioni possibili.` }
     : { kind: "warning", code: "length", detail: `Lunghezza ${length}: una password più lunga riduce la facilità di tentativi esaustivi.` });
 
-  if (classes >= 3 && length >= 12) {
-    score += 1;
-    factors.push({ kind: "positive", code: "classes", detail: `${classes} classi di caratteri presenti; il modello assegna un piccolo bonus solo insieme a una lunghezza adeguata.` });
-  } else if (classes <= 1 && length > 0) {
-    score -= 1;
-    factors.push({ kind: "warning", code: "classes", detail: "È presente una sola classe di caratteri; il modello applica una penalità limitata." });
+  if (length > 0) {
+    factors.push({
+      kind: "limit",
+      code: "classes",
+      detail: `${classes} classi di caratteri osservate. La composizione non aggiunge né sottrae punti: la stima locale usa soprattutto lunghezza e pattern osservabili.`,
+    });
   }
 
   if (/(.)\1{2,}/u.test(password)) {
@@ -84,6 +88,8 @@ export function estimatePasswordStrength(password: string): PasswordStrengthResu
   const limitations = [
     "È una stima locale basata su lunghezza e pattern osservabili, non una garanzia di sicurezza.",
     "Non consulta database di password violate e non afferma che la password sia presente o assente in una violazione.",
+    "Il piccolo elenco di pattern comuni serve solo a spiegare la stima locale e non sostituisce una blocklist di password comuni o compromesse.",
+    "Non normalizza Unicode prima di contare o stimare: rappresentazioni canoniche diverse possono quindi produrre lunghezze o punteggi diversi.",
     "Non conosce contesto personale, riuso su altri servizi, limiti di tentativi o qualità dell'autenticazione del sito.",
   ] as const;
   factors.push({ kind: "limit", code: "offline-limit", detail: limitations[1] });

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
-  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
+  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
   "toolId": "platform-size-presets",
   "runtime": {
     "location": "LOCAL",
@@ -112,8 +112,8 @@
   "identities": {
     "manifestSha256": "b9277ed1286c768d080569c94aa8996f6194454fbfd09f9aec790898c3cd7329",
     "moduleSha256": "031912da3c3bb143f5c971a9970342f7443ed0c1f0f3c20123ea0656dad7baed",
-    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
+    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
     "browserAcceptanceSha256": "c4610816e7e875cff58223530baf0a8d34afd1f3436b4225cdd3c3873961190d",
     "acceptanceScriptSha256": "2c1eef9ba70d9a6e6ff2c98dee471ff40810cd334deb65cdcf25e3a343796b39",
     "unitTestsSha256": "c7c95a388ab7368340e175d004ca3a6d505a7737a77109c0f9bd2d7fb2eb4844",

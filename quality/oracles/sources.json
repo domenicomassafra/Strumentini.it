@@ -333,6 +333,20 @@
       "checked_at": "2026-09-23"
     },
     {
+      "id": "nist-sp800-63b4",
+      "source_class": "official-primary",
+      "authority": "NIST",
+      "url": "https://pages.nist.gov/800-63-4/sp800-63b.html",
+      "locator": "NIST SP 800-63B — Authentication and Authenticator Management, current revision",
+      "supports": [
+        "Appendix A guidance that password length is a primary factor in characterizing strength",
+        "verifier Unicode code-point length counting",
+        "verifier prohibition on password composition requirements",
+        "verifier blocklist requirement used here only as an explicit non-implemented boundary"
+      ],
+      "checked_at": "2026-10-07"
+    },
+    {
       "id": "openssl-cli",
       "source_class": "independent-implementation",
       "authority": "OpenSSL Project",
@@ -873,6 +887,21 @@
         "browser-owned audio rendering lifecycle"
       ],
       "checked_at": "2026-10-06"
+    },
+    {
+      "id": "w3c-xml10",
+      "source_class": "official-primary",
+      "authority": "W3C",
+      "url": "https://www.w3.org/TR/xml/",
+      "locator": "Extensible Markup Language (XML) 1.0 (Fifth Edition)",
+      "supports": [
+        "declared well-formedness subset and element matching",
+        "unique attribute well-formedness constraint",
+        "predefined and legal numeric character references",
+        "XML Char range and forbidden CDATA close delimiter in character data",
+        "xml:space='preserve'/'default' whitespace-preservation behavior"
+      ],
+      "checked_at": "2026-10-07"
     },
     {
       "id": "w3c-webcrypto",

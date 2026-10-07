@@ -433,6 +433,15 @@ interface XmlParser {
 const XML_NAME = /^[A-Za-z_:][A-Za-z0-9_.:-]*/u;
 const XML_ENTITY = /^(?:amp|lt|gt|quot|apos|#[0-9]+|#x[0-9A-Fa-f]+)$/u;
 
+function isXml10Character(codePoint: number): boolean {
+  return codePoint === 0x9
+    || codePoint === 0xA
+    || codePoint === 0xD
+    || (codePoint >= 0x20 && codePoint <= 0xD7FF)
+    || (codePoint >= 0xE000 && codePoint <= 0xFFFD)
+    || (codePoint >= 0x10000 && codePoint <= 0x10FFFF);
+}
+
 function xmlFail(parser: XmlParser, code: string, message: string, index = parser.index): never {
   invalid(code, message, lineColumn(parser.input, index, parser.path.length === 0 ? "/" : `/${parser.path.join("/")}`));
 }
@@ -440,6 +449,17 @@ function xmlFail(parser: XmlParser, code: string, message: string, index = parse
 function xmlNode(parser: XmlParser): void {
   parser.nodeCount += 1;
   if (parser.nodeCount > MAX_XML_NODES) xmlFail(parser, "XML_TOO_LARGE", `XML exceeds the ${MAX_XML_NODES}-node local limit.`);
+}
+
+function validateXmlCharacters(parser: XmlParser): void {
+  let offset = 0;
+  for (const character of parser.input) {
+    const codePoint = character.codePointAt(0) ?? -1;
+    if (!isXml10Character(codePoint)) {
+      xmlFail(parser, "INVALID_XML", `Character U+${Math.max(0, codePoint).toString(16).toUpperCase().padStart(4, "0")} is outside the XML 1.0 Char production.`, offset);
+    }
+    offset += character.length;
+  }
 }
 
 function xmlName(parser: XmlParser): string {
@@ -460,6 +480,14 @@ function validateXmlEntities(parser: XmlParser, value: string, absoluteStart: nu
     if (semicolon < 0) xmlFail(parser, "INVALID_XML_ENTITY", "Unterminated XML entity reference.", absoluteStart + offset);
     const entity = value.slice(offset + 1, semicolon);
     if (!XML_ENTITY.test(entity)) xmlFail(parser, "XML_EXTERNAL_ENTITY_DISABLED", "Only predefined and numeric XML entity references are allowed; DTD/entity resolution is disabled.", absoluteStart + offset);
+    if (entity.startsWith("#")) {
+      const hexadecimal = entity.startsWith("#x");
+      const digits = entity.slice(hexadecimal ? 2 : 1);
+      const codePoint = Number.parseInt(digits, hexadecimal ? 16 : 10);
+      if (!Number.isSafeInteger(codePoint) || !isXml10Character(codePoint)) {
+        xmlFail(parser, "INVALID_XML_ENTITY", `Numeric XML character reference ${entity}; is outside the XML 1.0 Char production.`, absoluteStart + offset);
+      }
+    }
     offset = semicolon;
   }
 }
@@ -572,6 +600,8 @@ function parseXmlElement(parser: XmlParser, depth: number): XmlElement {
     const next = parser.input.indexOf("<", textStart);
     const end = next < 0 ? parser.input.length : next;
     const value = parser.input.slice(textStart, end);
+    const cdataClose = value.indexOf("]]>");
+    if (cdataClose >= 0) xmlFail(parser, "INVALID_XML", "Character data may not contain the CDATA closing delimiter ]]>. Use a CDATA section or escape the greater-than sign.", textStart + cdataClose);
     validateXmlEntities(parser, value, textStart);
     children.push({ kind: "text", value });
     xmlNode(parser);
@@ -591,6 +621,7 @@ export function parseXmlDocument(input: string): XmlDocumentModel {
   const forbidden = /<!\s*(?:DOCTYPE|ENTITY)\b/iu.exec(input);
   if (forbidden !== null) invalid("XML_EXTERNAL_ENTITY_DISABLED", "DTD and ENTITY declarations are disabled; external entities are never resolved.", lineColumn(input, forbidden.index, "/"));
   const parser: XmlParser = { input, index: 0, nodeCount: 0, path: [] };
+  validateXmlCharacters(parser);
   const before: XmlNode[] = [];
   const after: XmlNode[] = [];
   let root: XmlElement | null = null;

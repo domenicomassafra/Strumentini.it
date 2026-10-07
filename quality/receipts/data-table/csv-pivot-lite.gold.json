@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
-  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
+  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
   "toolId": "csv-pivot-lite",
   "runtime": {
     "location": "LOCAL",
@@ -49,8 +49,8 @@
     "manifestSha256": "2d950237dd5b0d877696e56451f795db994453038bc172315175a430821cc108",
     "operationsSha256": "ccb8acb4179870ebf71a3d9db88a77df8b3ef8430883226a35943b79b942849d",
     "csvEngineSha256": "c4dc295e0ec72ffe47bac915a1a6bc584bbc9237b2ba87a95ad2c48f627c0717",
-    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
+    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
     "browserAcceptanceSha256": "04ea2e9d48aecaffafe6535b4c79b2389784e52992e20e4d3bcebc180fdd97c7",
     "unitTestsSha256": "8b09214887a7377345f1fe058e5afa315ff65f3ae199aacbcf67e2681f2e7b2b",
     "fixture:csv-rfc4180:sha256": "6f6f74846f47fd99866d6c8b024cf1a8af33f4d92a015ae0af2e09a539111765",

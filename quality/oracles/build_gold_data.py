@@ -11,6 +11,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ORACLES = ROOT / "quality" / "oracles"
 FIXTURES = ROOT / "quality" / "fixtures"
+
+# RETIRED HISTORICAL BOOTSTRAP. This file is kept only to preserve the original
+# 200-candidate construction history. It must never write current canonical
+# oracle/fixture data. Fail unconditionally before mkdir(), dump(), or any other
+# filesystem mutation so missing/corrupt current metadata cannot reopen the old
+# destructive bootstrap path.
+raise SystemExit(
+    "build_gold_data.py is retired and cannot write canonical oracle/fixture data; edit the version-controlled authority and run quality/oracles/validate.py instead."
+)
+
+# Historical implementation below is intentionally unreachable.
 ORACLES.mkdir(parents=True, exist_ok=True)
 FIXTURES.mkdir(parents=True, exist_ok=True)
 

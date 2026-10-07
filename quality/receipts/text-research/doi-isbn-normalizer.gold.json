@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "toolId": "doi-isbn-normalizer",
   "status": "GOLD",
-  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
-  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
+  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
   "runtime": {
     "location": "LOCAL",
     "network": "forbidden"
@@ -51,7 +51,7 @@
   "identities": {
     "manifestSha256": "9bf624373f3dcf737a91b60dc11603184e2960c46af6d05407338a851770232c",
     "engineSha256": "982f2bcdc1c88969289400a9204f32734f621fe954171c92ed522d765584fff2",
-    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c"
+    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
+    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb"
   }
 }

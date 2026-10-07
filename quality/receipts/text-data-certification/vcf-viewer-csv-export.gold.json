@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/text-data-certification/vcf-viewer-csv-export.gold.json",
-  "revision": "0177d63f6de0b05ef07a1b3306f6156697f8654c",
-  "sourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
+  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
   "toolId": "vcf-viewer-csv-export",
   "runtime": {
     "location": "LOCAL",
@@ -46,10 +46,10 @@
   "identities": {
     "manifestSha256": "e9461c95a546e9d043e77b4e2029565e6280f06500a3eb5cd62361a91bf0a1e5",
     "moduleSha256": "ef36b45705b647f659d8b782e39d765ced15cab97bed7a755ca5a846ae167778",
-    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
-    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
-    "browserAcceptanceSha256": "8bd1cbb7d021e19dc4e1255d30b73c72ba1351c65ca81e6b7f7e4d7900058061",
-    "browserAcceptanceSourceFingerprint": "2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92",
+    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
+    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
+    "browserAcceptanceSha256": "c4dd5b92f316c8bc79847af3c1769ed54c108a67c1659a1310a7a3a6fe2ee57f",
+    "browserAcceptanceSourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
     "focusedTestsSha256": "3b1bc88e1f4fc6ff4f5bb8dfb5ccffcd1785bf297b6a7db5c7dbf1601e20d8a7",
     "fixture:vcard-rfc6350:sha256": "5ed8029889f75bde639de02bb937ab645af19ee15af706d772123555d5201898"
   }

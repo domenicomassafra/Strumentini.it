@@ -150,7 +150,18 @@ async function exerciseGeneric(page: Page, toolId: ToolId): Promise<{ text: stri
     return { text: await submitGeneric(page, toolId, { json: "{\"name\":\"Ada\",\"tags\":[\"local\"]}", typeName: "Root", mode: "both" }, [/Root/u, /name/u, /schema|typescript/iu]), assertion: "single-example TypeScript/JSON-Schema inference renders the named root" };
   }
   if (toolId === "xml-formatter-validator") {
-    return { text: await submitGeneric(page, toolId, { text: "<root><item id=\"1\"/></root>", mode: "prettify", indent: "2" }, [/<root>/u, /item/u]), assertion: "bounded XML prettify route renders parsed XML" };
+    const xml = "<root><item id=\"1\"/></root>";
+    const domCrossCheck = await page.evaluate((value) => {
+      const parsed = new DOMParser().parseFromString(value, "application/xml");
+      return { rootName: parsed.documentElement.localName, parserErrors: parsed.querySelectorAll("parsererror").length };
+    }, xml);
+    if (domCrossCheck.rootName !== "root" || domCrossCheck.parserErrors !== 0) throw new Error(`xml-formatter-validator: DOMParser valid-document cross-check failed: ${JSON.stringify(domCrossCheck)}`);
+    const duplicateAttributeAccepted = await page.evaluate((value) => {
+      const parsed = new DOMParser().parseFromString(value, "application/xml");
+      return parsed.querySelectorAll("parsererror").length === 0;
+    }, '<root id="1" id="2"/>');
+    if (duplicateAttributeAccepted) throw new Error("xml-formatter-validator: DOMParser duplicate-attribute cross-check unexpectedly accepted malformed XML");
+    return { text: await submitGeneric(page, toolId, { text: xml, mode: "prettify", indent: "2" }, [/<root>/u, /item/u]), assertion: "bounded XML prettify route agrees with independent browser DOMParser well-formedness checks for valid XML and duplicate-attribute refusal" };
   }
   if (toolId === "css-minifier") {
     return { text: await submitGeneric(page, toolId, { text: "/* comment */\n.card { color: red; content: \"a b\"; --gap: 1rem  2rem; }" }, [/\.card\{color:red;content:/u, /--gap:1rem 2rem/u]), assertion: "parser-backed CSS fixture preserves string semantics and minifies custom property" };
@@ -226,10 +237,10 @@ async function exercisePasswordStrength(page: Page): Promise<{ text: string; ass
   await page.getByLabel("Password da stimare").fill("Q7!mR2@zV4#tN6$pK9&x");
   await page.getByRole("button", { name: "Stima e spiega" }).click();
   const text = await page.locator("article[data-tool-page] astro-island").first().innerText();
-  if (!/Punteggio \d\/4/u.test(text) || !/Non consulta database di password violate/u.test(text) || !/non afferma che la password sia presente o assente/iu.test(text)) {
+  if (!/Punteggio \d\/4/u.test(text) || !/Non consulta database di password violate/u.test(text) || !/non afferma che la password sia presente o assente/iu.test(text) || !/composizione non aggiunge né sottrae punti/iu.test(text)) {
     throw new Error("password-strength-estimator: bounded heuristic/disclaimer evidence missing");
   }
-  return { text, assertion: "deterministic heuristic result visibly discloses that no breach database or breach-membership claim is used" };
+  return { text, assertion: "deterministic length/pattern heuristic visibly discloses that composition classes do not change score and that no breach database or breach-membership claim is used" };
 }
 
 async function exerciseRandom(page: Page): Promise<{ text: string; assertion: string }> {

@@ -1,7 +1,7 @@
 # Lane 08 — Gold correctness oracle and adversarial fixture factory
 
 Date: 2026-09-23
-Status: implemented research/fixture authority for the parallel-enablers wave.
+Status: historical implementation record; superseded by the expanded version-controlled oracle/fixture authority documented in `quality/oracles/README.md`.
 
 ## Result
 
@@ -14,7 +14,7 @@ The artifacts are deliberately separate from future production engines:
 - `quality/fixtures/index.json` records every fixture family, provenance, rights statement, source references and coverage.
 - `quality/fixtures/*/vectors.json` contains known-answer, hand-worked, policy or synthetic vectors.
 - `quality/oracles/validate.py` fails closed on count, schema, missing source references, missing provenance, missing fixture files and missing synthetic artifacts.
-- `quality/oracles/build_gold_data.py` rebuilds only the metadata/literal fixture corpus. It never imports or calls a StrumentiUtili.it production implementation to generate expected results.
+- `quality/oracles/build_gold_data.py` is preserved only as the retired bootstrap that originally produced this 200-candidate snapshot. It now fails before any filesystem mutation and must not be used to regenerate current canonical data.
 
 ## Oracle hierarchy
 
@@ -119,9 +119,8 @@ The registry is an oracle plan, not production logic. Engines remain free to cha
 
 ## Verification commands
 
-The lane is intended to be checked with:
+The historical lane is now checked against the current authority with:
 
-    python3 quality/oracles/build_gold_data.py
     python3 quality/oracles/validate.py
     python3 -m json.tool quality/oracles/sources.json >/dev/null
     python3 -m json.tool quality/oracles/registry.json >/dev/null

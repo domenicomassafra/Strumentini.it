@@ -516,7 +516,6 @@
         "license_or_rights": "Hand-worked and synthetic malformed/hostile structured-data examples authored for Strumentini.it; no third-party corpus copied."
       },
       "truth_sources": [
-        "rfc8259",
         "strumentiutili-quality",
         "fixture-policy"
       ],
@@ -1177,8 +1176,6 @@
         "license_or_rights": "Synthetic password-shape examples and project wordlist metadata authored for Strumentini.it; no breached-password corpus or user secrets."
       },
       "truth_sources": [
-        "w3c-webcrypto",
-        "italian-passphrase-v1",
         "strumentiutili-quality",
         "fixture-policy"
       ],
