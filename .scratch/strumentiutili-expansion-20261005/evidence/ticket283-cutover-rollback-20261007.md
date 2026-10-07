@@ -1,6 +1,6 @@
 # Ticket 283 — production cutover, rollback and restore evidence — 2026-10-07
 
-This receipt records the observed production exercise for the final clean Strumentini.it repository state before later uncommitted oracle-hardening work appeared in the checkout. It must not be used as evidence for later source changes.
+This receipt records both observed production exercises performed on 2026-10-07. The first section preserves the original `6480e9b` cutover evidence. A later follow-up section records the fully integrated oracle-hardening release `eb1ccfb`; the latest release authority is the follow-up section, not the historical first exercise.
 
 ## Certified source used for the release
 
@@ -92,6 +92,30 @@ The new Strumentini.it production cutover itself is proven, but the legacy domai
 
 Therefore the ticket remains blocked only on the explicit acceptance criterion that there be no legacy Vercel split-brain. Vercel CLI on this machine was checked and is currently logged out, so no legacy production mutation was attempted or claimed.
 
+## Follow-up: fully integrated release `eb1ccfb`
+
+The later oracle-hardening work was frozen, fully refreshed and committed as clean revision `eb1ccfbfa3eec168407e8ff036048481fa87e86f`, source fingerprint `61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6`. Before production mutation, the repository had 257 Gold / 2 Partial / 0 Implemented Unverified, `npm test` passed 1,091/1,091 tests, Astro check reported 0 errors / 0 warnings, the 279-page build and inspection passed, and `npm run deploy:check` passed including Wrangler dry-run.
+
+- Deploy version: `a38c668c-750e-44df-97aa-7977863c8768`.
+- Deploy id: `50155b65-e0ae-4053-85c3-6b747b6f4850`.
+- Version tag: `git-eb1ccfb`.
+- Traffic: 100%.
+- Live HTTP 200 after deploy and after restore: `/`, `/strumenti/`, `/tools/password-strength-estimator/`, `/tools/xml-formatter-validator/`, `/tools/fatturapa-reader/`, `/tools/ris-bibtex-converter/`, `/robots.txt`, `/sitemap.xml`, `/api/auth/session`.
+- `/api/auth/google/config`: expected fail-closed HTTP 503 while `GOOGLE_CLIENT_ID` is absent.
+- `www` password-strength path/query: HTTP 308 to the equivalent apex path/query.
+- Chromium, Firefox and WebKit: PASS with zero page errors or request failures on apex, directory, password-strength and XML routes.
+- Byte identity after restore: home SHA-256 `5cdaad28669ec1953969e68a2f1caa9d7bc26b8d1f863d620d0f7ee167a741fa`; password-strength SHA-256 `0ca00f99231de50d0d9b0ff8fe789300f3f555ae42f0ea71ba49829821972548`; XML formatter SHA-256 `38a6d1d47fbd8eb81f205e8409fdabb78468d1540b3f6f0037186fb9277668d0`. Each live response matched its local `dist` file exactly.
+
+### Follow-up rollback and restore
+
+A real rollback deployed previous known-good version `e0acf436-18ae-444a-be53-898072fbe37e` at 100% as deployment `a5162926-99c1-4081-af1a-50be9ea01888`. The password-strength behavior provided an application-level sentinel: before rollback the live result contained both `composizione non aggiunge né sottrae punti` and `Non normalizza Unicode`; under rollback both sentinels were absent. Apex, directory, password and XML static routes remained HTTP 200. Direct curl during rollback confirmed `/api/auth/session` HTTP 200 with `{"user":null}` and Google config HTTP 503 fail-closed. `wrangler versions view` confirmed both old and new versions retained the same D1 UUID `b172e08e-3a81-41dd-87d4-c8c4859b7274` and `TURNSTILE_SECRET` binding.
+
+Restore deployment `37201dab-8bdf-402a-8f53-f89b8ec7c2f5` returned version `a38c668c-750e-44df-97aa-7977863c8768` to 100%. Final HTTP smoke, Chromium/Firefox/WebKit smoke, both password sentinels and all three byte-identity checks passed again.
+
+### Current remaining ticket-283 blocker
+
+The legacy split-brain is unchanged after the follow-up release: `https://strumentiutili.it/` is still HTTP 200 from Vercel with the old StrumentiUtili.it title, its password-strength route is HTTP 404, and authoritative nameservers remain `ns1.vercel-dns.com` / `ns2.vercel-dns.com`. No redirect to Strumentini.it exists yet.
+
 ## Evidence boundary
 
-Later uncommitted source/oracle work in the shared checkout has a different evidence fingerprint. This receipt certifies only the clean deployed revision and fingerprint named above; any later source state needs its own frozen-source certification and must not inherit this release proof automatically.
+The latest production release and rollback proof in this receipt apply only to clean revision `eb1ccfbfa3eec168407e8ff036048481fa87e86f` / source fingerprint `61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6`. Future source changes need their own frozen-source deploy, rollback and restore evidence and must not inherit this proof automatically.

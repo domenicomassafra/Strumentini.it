@@ -55,10 +55,10 @@ Remaining release blockers are evidence/infrastructure boundaries, not hidden im
 
 1. `image-resize` remains Partial until real iOS Safari and Android Chrome device receipts exist;
 2. `microphone-recorder` remains Partial until genuine physical capture/permission evidence exists;
-3. the clean `6480e9b` / `2d54b431…` build is live on `Strumentini.it`; Chromium/Firefox/WebKit smoke, canonical/robots/sitemap checks, byte identity, a real rollback to `d89ba4c5…`, and restore to `e0acf436…` all passed. The newer oracle-hardening candidate is fully certified locally on source fingerprint `61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6` and still requires its own deploy → rollback → restore evidence before the rollback gate can be current again;
+3. the clean `eb1ccfb` / `61b7fc66…` build is live on `Strumentini.it` as Worker version `a38c668c…`; Chromium/Firefox/WebKit smoke, representative byte identity, auth/D1 smoke, a real rollback to previous known-good version `e0acf436…`, behavioral sentinel reversion, and restore to `a38c668c…` all passed. The rollback gate is current for this source;
 4. ticket 283 remains open only for the legacy-domain transition: `https://strumentiutili.it/` still serves the older Vercel site instead of redirecting to the canonical Strumentini.it origin, so a real split-brain remains outside the new production domain.
 
-The deployed production release and its rollback evidence are still bound to source fingerprint `2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92`. The fully refreshed local candidate is bound to `61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6`; all 257 Gold receipts and the five-engine browser-performance matrix are current for that candidate. Do not synthesize physical-device receipts or reuse the older rollback receipt for the newer source.
+The deployed production release, 257 Gold receipts, browser-performance matrix and rollback evidence are all bound to source fingerprint `61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6`. Do not synthesize physical-device receipts; the only per-tool non-Gold boundaries remain the genuine device requirements for `image-resize` and `microphone-recorder`.
 
 ## Design system and brand
 

@@ -1,6 +1,6 @@
 # Strumentini.it — Cloudflare custom-domain activation and cutover runbook
 
-Status: Strumentini.it activation, final build deployment, live smoke and rollback/restore certification completed on 2026-10-07 for clean revision `6480e9b` / source fingerprint `2d54b431…`. The remaining transition item is the legacy `strumentiutili.it` Vercel origin, which still serves the older site instead of redirecting to Strumentini.it.
+Status: Strumentini.it activation, current build deployment, live smoke and rollback/restore certification completed on 2026-10-07 for clean revision `eb1ccfb` / source fingerprint `61b7fc66…`. The remaining transition item is the legacy `strumentiutili.it` Vercel origin, which still serves the older site instead of redirecting to Strumentini.it.
 
 Brand/domain update: 2026-10-07. `Strumentini.it` is the canonical public brand and origin. Public DNS is delegated to Cloudflare, apex HTTPS is live, `www` redirects to the equivalent apex path, the 259-tool build is live, and deploy → rollback → restore has been observed against the production domain. Ticket 283 remains open only because the old `strumentiutili.it` Vercel site has not yet been replaced by the intended legacy-domain redirect.
 
@@ -20,7 +20,7 @@ Current production identities:
 
 The D1 name is an intentional legacy identifier and remains bound to the production Worker. The current Wrangler target is `strumentini`; the database remains `strumentiutili-auth`, preserving the existing auth data and migrations.
 
-The static build treats `https://strumentini.it` as its default canonical origin. The final clean `6480e9b` artifact is live on that custom domain and has been matched byte-for-byte on representative pages after restore.
+The static build treats `https://strumentini.it` as its default canonical origin. The current clean `eb1ccfb` artifact is live on that custom domain and has been matched byte-for-byte on representative pages after restore.
 
 ## 2. Legacy production snapshot retained as provenance
 
@@ -48,7 +48,7 @@ Re-capture both domains immediately before any release action. The values above 
 
 - `https://strumentini.it/` is the canonical public origin after activation.
 - `https://www.strumentini.it/` redirects once to the apex.
-- Worker `strumentiutili-it` continues to serve the same static artifact and account API.
+- Worker `strumentini` continues to serve the same static artifact and account API.
 - D1 binding `AUTH_DB` continues to point at the existing `strumentiutili-auth` database and its current data.
 - The built `dist/` remains provider-portable.
 - Turnstile allows the Strumentini.it hostname before password auth is considered healthy; Google Identity origin configuration is required only if `GOOGLE_CLIENT_ID` is enabled.
@@ -86,7 +86,7 @@ npm run release:validate:require-ready
 npm run deploy:check
 npx wrangler deployments list
 npx wrangler d1 info strumentiutili-auth --json
-npx wrangler secret list --name strumentiutili-it
+npx wrangler secret list --name strumentini
 
 dig +noall +answer strumentini.it NS
 dig +noall +answer strumentini.it SOA
@@ -107,10 +107,10 @@ Stop if the source revision, release gates, Worker deployment, DNS state, or leg
 
 ## 6. Prepare the Cloudflare zone
 
-1. Add `strumentini.it` to the same Cloudflare account that owns Worker `strumentiutili-it`.
+1. Add `strumentini.it` to the same Cloudflare account that owns Worker `strumentini`.
 2. Record the Cloudflare-assigned authoritative nameservers.
 3. Configure only the DNS records required for Strumentini.it. Re-create mail, SPF, verification, DMARC or CAA records from current requirements, not by copying the old zone unexamined.
-4. Keep Worker `strumentiutili-it`, D1 `strumentiutili-auth`, and binding `AUTH_DB` unchanged.
+4. Keep Worker `strumentini`, D1 `strumentiutili-auth`, and binding `AUTH_DB` unchanged.
 5. At Dynadot, set the domain's nameservers to the two Cloudflare-assigned nameservers. For this newly registered `.it` domain, wait until NIC.it clears `inactive / dnsHold` and recursive `dig NS strumentini.it` returns the Cloudflare nameservers before the production deploy.
 6. Configure Cloudflare SSL/TLS for the apex and `www`.
 7. Add `strumentini.it` (and `www.strumentini.it` if the widget requires it) to the Turnstile hostname allowlist before enabling password auth there.
@@ -197,4 +197,4 @@ Attach to the release receipt:
 - legacy-domain redirect result, if enabled;
 - rollback check result or a documented reason it was not invoked.
 
-The Strumentini.it production cutover evidence now exists for clean revision `6480e9b` / source `2d54b431…`: live multi-browser smoke, byte identity, auth/D1 smoke, real rollback and restore were observed. The broader domain migration is still incomplete only because the legacy `strumentiutili.it` Vercel origin remains independently reachable instead of redirecting to Strumentini.it.
+The Strumentini.it production cutover evidence is current for clean revision `eb1ccfb` / source `61b7fc66…`: live multi-browser smoke, byte identity, auth/D1 smoke, real rollback to `e0acf436…`, behavioral sentinel reversion, and restore to `a38c668c…` were observed. The broader domain migration is still incomplete only because the legacy `strumentiutili.it` Vercel origin remains independently reachable instead of redirecting to Strumentini.it.
