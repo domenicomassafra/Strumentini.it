@@ -55,10 +55,10 @@ Remaining release blockers are evidence/infrastructure boundaries, not hidden im
 
 1. `image-resize` remains Partial until real iOS Safari and Android Chrome device receipts exist;
 2. `microphone-recorder` remains Partial until genuine physical capture/permission evidence exists;
-3. the clean `eb1ccfb` / `61b7fc66…` build is live on `Strumentini.it` as Worker version `a38c668c…`; Chromium/Firefox/WebKit smoke, representative byte identity, auth/D1 smoke, a real rollback to previous known-good version `e0acf436…`, behavioral sentinel reversion, and restore to `a38c668c…` all passed. The rollback gate is current for this source;
+3. the clean `2af6e8c` / `2c38b13c…` build is live on `Strumentini.it` as Worker version `7e974054…`; Chromium/Firefox/WebKit smoke, representative byte identity, auth/D1 smoke, a real rollback to previous known-good version `a38c668c…`, page-hash reversion, and restore to `7e974054…` all passed. The rollback gate is current for this source;
 4. ticket 283 is complete: the Strumentini.it custom-domain release, live smoke, rollback and restore are all proven. No unrelated external domain is part of the product release gate.
 
-The deployed production release, 257 Gold receipts, browser-performance matrix and rollback evidence are all bound to source fingerprint `61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6`. Do not synthesize physical-device receipts; the only per-tool non-Gold boundaries remain the genuine device requirements for `image-resize` and `microphone-recorder`.
+The deployed production release, 257 Gold receipts, browser-performance matrix and rollback evidence are all bound to source fingerprint `2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb`. Do not synthesize physical-device receipts; the only per-tool non-Gold boundaries remain the genuine device requirements for `image-resize` and `microphone-recorder`.
 
 ## Design system and brand
 
@@ -68,7 +68,7 @@ The deployed production release, 257 Gold receipts, browser-performance matrix a
 - `design/FRONTEND-SYSTEM-STANDARDIZATION.md` is the implementation-ready refactor authority produced from the Impeccable audit. It maps duplicated primitives, concrete component/token APIs, what must remain surface-specific, migration order, screenshot/browser gates, and eight progressive waves. The rule is **consolidate the existing visual system, do not create a parallel component library**.
 - The 2026-10-03 audit's action list is **shipped**: accountant/ledger language and ledger-era faces are gone, the 13 internal categories are grouped into 10 public groups with real labels, public quality vocabulary is `Verificato` / `In verifica` instead of internal certification jargon, icons are action- and category-first from one central vocabulary, and the shell is a single header + footer over every page.
 - The public name stays **Strumentini.it**; all new copy (`/risorse/`, `/accedi/`, `/impostazioni/`, the account components) is authored Italian-first.
-- Cloudflare deploys Worker target `strumentini`. The current release candidate binds `AUTH_DB` to the new D1 database `strumentini-auth` (UUID `3351c8bf-31fc-4716-9d92-2b07c4d8fd2a`), migrated from the empty pre-rebrand account database. The previous D1 resource is retained only until the candidate completes a real deploy → rollback → restore exercise.
+- Cloudflare deploys Worker target `strumentini`. Production `AUTH_DB` is now `strumentini-auth` (UUID `3351c8bf-31fc-4716-9d92-2b07c4d8fd2a`), migrated from the empty pre-rebrand account database. A real rollback proved the previous Worker/D1 pairing, the current release was restored, and the superseded D1 resource was then permanently deleted; post-delete `/api/auth/session` still returns HTTP 200.
 
 ## How to verify
 
@@ -119,4 +119,4 @@ Run in this order; each one is unconditional (no env vars, no secrets, no networ
 
 For expansion work, use `.scratch/strumentini-expansion-20261005/TICKET-DAG.md` as the dependency authority and preserve the evidence boundary recorded by each ticket. Heavy feasibility tickets 267–275 are decision-complete, but their `REFUSE production promotion` outcomes do not authorize downstream heavy paths without the missing physical/fidelity evidence. Frontend-system consolidation remains a separate staged tranche under `design/FRONTEND-SYSTEM-STANDARDIZATION.md`.
 
-Certification work remains separate: `ris-bibtex-converter` is closed; keep `image-resize` and `microphone-recorder` separate until real physical-device evidence exists, and close the two missing certification receipts without weakening their gates. Infrastructure work that depends on ownership/billing (final custom-domain deploy/rollback certification, outer WAF, Google client ID, plan confirmation) should not be mixed into a source fingerprint unless repository code changes.
+Certification work remains separate: `ris-bibtex-converter` is closed; keep `image-resize` and `microphone-recorder` separate until real physical-device evidence exists. The custom-domain deploy/rollback/D1 migration is complete. Remaining owner-side infrastructure work is the outer WAF rule, optional Google client ID and Workers Paid confirmation; do not mix those into a source fingerprint unless repository code changes.

@@ -1,6 +1,6 @@
 # Ticket 283 — production cutover, rollback and restore evidence — 2026-10-07
 
-This receipt records both observed production exercises performed on 2026-10-07. The first section preserves the original `6480e9b` cutover evidence. A later follow-up section records the fully integrated oracle-hardening release `eb1ccfb`; the latest release authority is the follow-up section, not the historical first exercise.
+This receipt records the observed Strumentini.it production exercises. The earlier sections preserve the original cutover and oracle-hardening cycles; the latest release authority is the 2026-10-08 `2af6e8c` cycle at the end of this file.
 
 ## Certified source used for the release
 
@@ -104,4 +104,21 @@ Restore deployment `37201dab-8bdf-402a-8f53-f89b8ec7c2f5` returned version `a38c
 
 ## Evidence boundary
 
-The latest production release and rollback proof in this receipt apply only to clean revision `eb1ccfbfa3eec168407e8ff036048481fa87e86f` / source fingerprint `61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6`. Future source changes need their own frozen-source deploy, rollback and restore evidence and must not inherit this proof automatically.
+### 2026-10-08 — complete Strumentini identity and D1 cutover
+
+- Git revision: `2af6e8c4030c880780e5b151b4ae3f070b28b219`.
+- Evidence source fingerprint: `2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb`.
+- Worker version: `7e974054-1e52-4b1b-a41e-daadeece0232`.
+- Deploy id: `8cd7da0c-68bd-402d-b549-d51e9928a174`.
+- Rollback version: `a38c668c-750e-44df-97aa-7977863c8768`.
+- Rollback deployment id: `23426f6a-4f2e-4c3a-8190-efa4890fe294`.
+- Restore deployment id: `97993e35-f30c-46d1-a201-b0aa8e883793`.
+- Production D1 after restore: `strumentini-auth`, UUID `3351c8bf-31fc-4716-9d92-2b07c4d8fd2a`.
+- New-release password page SHA-256: `0f43e4e1339ee52493bfecbcbeaea5b5411cd7a0214b3e2a431e5a798589c538`.
+- Rollback password page SHA-256: `0ca00f99231de50d0d9b0ff8fe789300f3f555ae42f0ea71ba49829821972548`.
+
+Before deploy, the candidate passed 1,091/1,091 tests, Astro check with 0 errors / 0 warnings, 279-page build inspection, deploy dry-run, auth acceptance 130/130, browser-performance matrix, certification 257 Gold / 2 Partial / 0 Implemented Unverified, audit with 0 vulnerabilities, and the 327-ticket backlog validator. Live deploy returned HTTP 200 for apex, directory, password-strength, XML formatter and auth session; Google config remained expected fail-closed HTTP 503. Homepage and password-strength HTML matched local `dist` byte-for-byte, and Chromium/Firefox/WebKit smoke passed with zero page/request errors.
+
+The rollback changed both the password-page hash and the D1 binding back to the previous known-good release while auth session stayed HTTP 200. Restore returned the current page hash and `strumentini-auth` binding. After successful restore, the superseded D1 resource was permanently deleted. A final `/api/auth/session` request still returned HTTP 200 with `{"user":null}`.
+
+The latest production release and rollback proof in this receipt apply only to clean revision `2af6e8c4030c880780e5b151b4ae3f070b28b219` / source fingerprint `2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb`. Future source changes need their own frozen-source deploy, rollback and restore evidence and must not inherit this proof automatically.

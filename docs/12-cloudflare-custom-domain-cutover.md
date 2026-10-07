@@ -1,6 +1,6 @@
 # Strumentini.it — Cloudflare custom-domain activation and cutover runbook
 
-Status: Strumentini.it activation, current build deployment, live smoke and rollback/restore certification completed on 2026-10-07 for clean revision `eb1ccfb` / source fingerprint `61b7fc66…`. Ticket 283 is complete.
+Status: Strumentini.it activation, current build deployment, live smoke and rollback/restore certification completed on 2026-10-08 for clean revision `2af6e8c` / source fingerprint `2c38b13c…`. Ticket 283 is complete.
 
 Brand/domain update: 2026-10-07. `Strumentini.it` is the canonical public brand and origin. Public DNS is delegated to Cloudflare, apex HTTPS is live, `www` redirects to the equivalent apex path, the 259-tool build is live, and deploy → rollback → restore has been observed against the production domain.
 
@@ -18,9 +18,9 @@ Current production identities:
 | Public Worker origin | `https://strumentini.it/` custom domain; checked `workers.dev` hostnames are not a production authority |
 | Current Worker secret state | `TURNSTILE_SECRET` present; `GOOGLE_CLIENT_ID` absent |
 
-The current Wrangler target is `strumentini`. The release candidate binds `AUTH_DB` to `strumentini-auth`, created in the same EEUR region and populated from a verified export of the pre-rebrand account database. That source database contained no users, sessions, favourites or login-attempt rows; both migrations were preserved. Keep the previous D1 resource only through the first verified rollback/restore of this binding change.
+The current Wrangler target is `strumentini`. Production `AUTH_DB` is `strumentini-auth`, created in EEUR and populated from a verified export of the pre-rebrand account database. That source database contained no users, sessions, favourites or login-attempt rows; both migrations were preserved. The binding migration completed a real deploy → rollback → restore cycle, after which the superseded D1 resource was deleted. Post-delete auth-session smoke remained healthy.
 
-The static build treats `https://strumentini.it` as its default canonical origin. The current clean `eb1ccfb` artifact is live on that custom domain and has been matched byte-for-byte on representative pages after restore.
+The static build treats `https://strumentini.it` as its default canonical origin. The current clean `2af6e8c` artifact is live on that custom domain and has been matched byte-for-byte on representative pages after restore.
 
 ## 2. Current production authority
 
@@ -167,4 +167,4 @@ Attach to the release receipt:
 - representative browser acceptance output;
 - rollback check result or a documented reason it was not invoked.
 
-The Strumentini.it production cutover evidence is current for clean revision `eb1ccfb` / source `61b7fc66…`: live multi-browser smoke, byte identity, auth/D1 smoke, real rollback to `e0acf436…`, behavioral sentinel reversion, and restore to `a38c668c…` were observed.
+The Strumentini.it production cutover evidence is current for clean revision `2af6e8c` / source `2c38b13c…`: live multi-browser smoke, byte identity, auth/D1 smoke, real rollback to `a38c668c…`, password-page hash and D1-binding reversion, restore to `7e974054…`, and post-retirement auth smoke were observed.

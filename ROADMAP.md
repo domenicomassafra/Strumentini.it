@@ -42,7 +42,7 @@ Migration principles:
 ## P4 — release and distribution
 
 - keep whole-tree browser-performance evidence current whenever source changes (the 2026-10-07 final refresh matches the integrated source fingerprint);
-- keep rollback evidence bound to a real deploy → rollback → smoke → restore exercise; the 2026-10-07 `eb1ccfb` / `61b7fc66…` production cycle is verified;
+- keep rollback evidence bound to a real deploy → rollback → smoke → restore exercise; the 2026-10-08 `2af6e8c` / `2c38b13c…` production cycle is verified, including the `strumentini-auth` D1 cutover;
 - add and verify outer Cloudflare WAF rate limiting on the active zone;
 - configure the real Google Web Client ID and confirm Workers Paid before relying on password auth at production load;
 - keep catalog-size claims separate from certification claims.
