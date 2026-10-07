@@ -42,8 +42,8 @@ Migration principles:
 ## P4 — release and distribution
 
 - keep whole-tree browser-performance evidence current whenever source changes (the 2026-10-07 final refresh matches the integrated source fingerprint);
-- refresh rollback evidence only through a real deploy → rollback → smoke → restore exercise;
-- deploy the final Strumentini build to the already-active custom domain, then run live smoke + real rollback/restore evidence;
+- keep rollback evidence bound to a real deploy → rollback → smoke → restore exercise; the 2026-10-07 `6480e9b` production cycle is verified;
+- complete the legacy-domain transition by redirecting/retiring the independently served `strumentiutili.it` Vercel origin and capture proof that the split-brain is gone;
 - add and verify outer Cloudflare WAF rate limiting on the active zone;
 - configure the real Google Web Client ID and confirm Workers Paid before relying on password auth at production load;
 - keep catalog-size claims separate from certification claims.

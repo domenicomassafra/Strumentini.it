@@ -1,26 +1,26 @@
 # Strumentini.it — Cloudflare custom-domain activation and cutover runbook
 
-Status: domain activation complete; final Strumentini.it build deployment, smoke and rollback/restore certification remain pending. This document records the release procedure and does not itself mutate DNS or production.
+Status: Strumentini.it activation, final build deployment, live smoke and rollback/restore certification completed on 2026-10-07 for clean revision `6480e9b` / source fingerprint `2d54b431…`. The remaining transition item is the legacy `strumentiutili.it` Vercel origin, which still serves the older site instead of redirecting to Strumentini.it.
 
-Brand/domain update: 2026-10-07. `Strumentini.it` is the canonical public brand and target origin. The activation gate has cleared: public DNS is delegated to Cloudflare, apex HTTPS is live and `www` redirects to the apex. The live custom domain is still serving the pre-rebrand deployment, so the remaining cutover work is the final certified build deployment followed by live smoke and rollback/restore proof.
+Brand/domain update: 2026-10-07. `Strumentini.it` is the canonical public brand and origin. Public DNS is delegated to Cloudflare, apex HTTPS is live, `www` redirects to the equivalent apex path, the 259-tool build is live, and deploy → rollback → restore has been observed against the production domain. Ticket 283 remains open only because the old `strumentiutili.it` Vercel site has not yet been replaced by the intended legacy-domain redirect.
 
 ## 1. Infrastructure identities that stay stable
 
-The public rebrand does not rename live Cloudflare resources:
+Current production identities:
 
 | Resource | Identifier |
 |---|---|
 | Public brand | `Strumentini.it` |
 | Canonical target origin | `https://strumentini.it/` |
-| Cloudflare Worker | `strumentiutili-it` |
+| Cloudflare Worker | `strumentini` |
 | D1 auth database | `strumentiutili-auth` |
 | D1 UUID | `b172e08e-3a81-41dd-87d4-c8c4859b7274` |
-| Current Worker hostname | `https://strumentiutili-it.massafradomenico4.workers.dev` |
+| Public Worker origin | `https://strumentini.it/` custom domain; checked `workers.dev` hostnames are not a production authority |
 | Current Worker secret state | `TURNSTILE_SECRET` present; `GOOGLE_CLIENT_ID` absent |
 
-The Worker and D1 names are internal legacy identifiers. Keeping them preserves the deployed Worker history, bindings, migrations, and existing auth data. Rename them only through a separate, verified infrastructure migration.
+The D1 name is an intentional legacy identifier and remains bound to the production Worker. The current Wrangler target is `strumentini`; the database remains `strumentiutili-auth`, preserving the existing auth data and migrations.
 
-The static build treats `https://strumentini.it` as its default canonical origin. The domain and custom-domain route are now live; the production artifact still needs to be replaced with the final Strumentini-branded build.
+The static build treats `https://strumentini.it` as its default canonical origin. The final clean `6480e9b` artifact is live on that custom domain and has been matched byte-for-byte on representative pages after restore.
 
 ## 2. Legacy production snapshot retained as provenance
 
@@ -197,4 +197,4 @@ Attach to the release receipt:
 - legacy-domain redirect result, if enabled;
 - rollback check result or a documented reason it was not invoked.
 
-Until this evidence exists, Strumentini.it is the canonical release target in source but the external custom-domain cutover is incomplete.
+The Strumentini.it production cutover evidence now exists for clean revision `6480e9b` / source `2d54b431…`: live multi-browser smoke, byte identity, auth/D1 smoke, real rollback and restore were observed. The broader domain migration is still incomplete only because the legacy `strumentiutili.it` Vercel origin remains independently reachable instead of redirecting to Strumentini.it.

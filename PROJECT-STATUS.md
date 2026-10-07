@@ -56,10 +56,10 @@ Remaining release blockers are evidence/infrastructure boundaries, not hidden im
 1. `image-resize` remains Partial until real iOS Safari and Android Chrome device receipts exist;
 2. `microphone-recorder` remains Partial until genuine physical capture/permission evidence exists;
 3. `password-strength-estimator` and `xml-formatter-validator` remain Implemented Unverified because their current oracles are medium-confidence; no Gold receipt should be written until that evidence gap is actually closed;
-4. the verified rollback receipt must be refreshed after the final committed source tree is deployed and rolled back for real;
-5. `Strumentini.it` is publicly active on Cloudflare DNS/TLS and already shows the Strumentini brand, but it is still serving an older catalog build: the 2026-10-07 live recheck returns 200 at the apex while a new 259-tool route such as `/tools/fatturapa-reader/` still returns 404. Ticket 283 therefore remains open for the final 259-tool deployment plus live multi-browser and rollback/restore certification.
+4. the clean `6480e9b` / `2d54b431…` build is now live on `Strumentini.it`; Chromium/Firefox/WebKit smoke, canonical/robots/sitemap checks, byte identity, a real rollback to `d89ba4c5…`, and restore to `e0acf436…` all passed. The verified rollback receipt has been refreshed from that observed exercise;
+5. ticket 283 remains open only for the legacy-domain transition: `https://strumentiutili.it/` still serves the older Vercel site instead of redirecting to the canonical Strumentini.it origin, so a real split-brain remains outside the new production domain.
 
-The final evidence refresh is converged on source fingerprint `2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92`; browser-performance evidence matches it and all tool-level receipt source fingerprints are current. Do not synthesize physical-device receipts or promote medium-confidence oracle gaps by hand.
+The deployed production release and its final converged evidence are bound to source fingerprint `2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92`. A later uncommitted oracle-hardening WIP may change source/evidence identity; do not treat that WIP as deployed or integrated until its own full serialized certification refresh passes. Do not synthesize physical-device receipts or promote oracle gaps by hand.
 
 ## Design system and brand
 

@@ -332,7 +332,7 @@ Exactly **23** incomplete tickets currently have every declared ticket-ID blocke
 | 280 | blocked | Physical Android heavy-tool web acceptance lane | 206 |
 | 281 | blocked | Physical iOS Safari heavy-tool web acceptance lane | 206 |
 | 282 | completed | Strumentini.it Cloudflare custom-domain cutover runbook | — |
-| 283 | blocked — domain active; final build/canonical and rollback certification pending | Custom-domain post-cutover smoke and rollback certification | — |
+| 283 | blocked — Strumentini cutover/rollback certified; legacy Vercel split-brain remains | Custom-domain post-cutover smoke and rollback certification | — |
 | 284 | completed | Existing business-math 200-audit tranche | 110 |
 | 285 | completed | Existing client-work-math 200-audit tranche | 110 |
 | 286 | completed | Existing data 200-audit tranche | 110 |

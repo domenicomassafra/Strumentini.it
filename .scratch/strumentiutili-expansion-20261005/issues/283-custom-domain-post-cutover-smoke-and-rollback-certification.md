@@ -6,14 +6,14 @@
 
 **Constraints:** C-EXP-02; execute only after separately authorized DNS/cutover action.
 
-**Blocked by:** DNS/TLS activation is complete, but the live custom domain still serves the pre-rebrand deployment whose canonical/OG/robots/sitemap URLs point at `https://strumentiutili.it`. The final Strumentini.it build has not been observed on the custom domain, and rollback/restore plus multi-browser smoke have not been certified against that final build.
+**Blocked by:** the Strumentini.it cutover itself is proven, but the legacy `https://strumentiutili.it/` origin still serves the older Vercel site instead of redirecting to Strumentini.it. This leaves a real legacy-domain split-brain until that transition is completed and rechecked.
 
-**Status:** blocked — domain active; final build/canonical and rollback certification pending
+**Status:** blocked — final Strumentini.it build and rollback/restore are certified; legacy Vercel split-brain remains
 
 **Suggested skills:** deploy-ship → qa-browser
 
-- [ ] Custom domain serves the same certified build fingerprint as target Worker.
+- [x] Custom domain serves the same certified build fingerprint as target Worker.
 - [ ] Canonical/redirect/asset behavior has no legacy Vercel split-brain.
-- [ ] Rollback and restore both have observed smoke evidence.
+- [x] Rollback and restore both have observed smoke evidence.
 
-**Verification:** The 2026-10-07 live recheck proves public Cloudflare DNS (A/AAAA and `candy.ns.cloudflare.com` + `kanye.ns.cloudflare.com`), a valid TLS certificate for `strumentini.it`/`www.strumentini.it`, HTTP 200 across the core public route smoke (`/`, `/strumenti/`, `/categorie/`, `/cerca/`, `/risorse/`, `/preferiti/`, `/impostazioni/`, `/accedi/`, `/onboarding/`, `/tools/image-resize/`, `robots.txt`, `sitemap.xml`, favicon and OG image), and `www` → apex HTTP 308. The apex homepage is byte-identical to the current `workers.dev` deployment (SHA-256 `932b3a4792d6f1590866c917b76573b00478f20982deaf041ac0aceb5822fa69`), but that deployment still emits `StrumentiUtili.it` branding and `https://strumentiutili.it` canonical/OG/robots/sitemap URLs. `/api/auth/google/config` remains the expected 503 fail-closed response. See `evidence/ticket283-domain-recheck-20261007.md`. Ticket 283 stays open until the final Strumentini.it build is actually deployed and the live-domain multi-browser plus rollback/restore receipts are observed. The exact smoke and rollback procedure is in `docs/12-cloudflare-custom-domain-cutover.md`.
+**Verification:** On 2026-10-07 clean revision `6480e9b581220a72927679818a4e8388b5acdb04` / source fingerprint `2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92` was deployed to Strumentini.it as Worker version `e0acf436-18ae-444a-be53-898072fbe37e`. The live domain returned 200 for the apex, `/strumenti/`, `image-resize`, the new `fatturapa-reader` route and RIS/BibTeX; canonical/OG/robots/sitemap all use `https://strumentini.it`, and `www` preserves path/query while redirecting 308 to the apex. Chromium, Firefox and WebKit live-domain smoke passed. The live homepage and FatturaPA HTML were byte-identical to the local `dist` artifact. A real rollback to previous version `d89ba4c5-2108-4dc8-b611-4e0adda9aaed` moved the FatturaPA sentinel from 200 back to 404 while the apex stayed healthy; the current version was then restored at 100% and the final smoke returned 200 again. `/api/auth/session` returns 200 against the existing D1 binding and `/api/auth/google/config` remains the expected 503 fail-closed response. Versionable evidence is in `evidence/ticket283-cutover-rollback-20261007.md`; local machine-readable release receipts are also stored under `quality/receipts/release/`. A final read-only check still finds `https://strumentiutili.it/` served independently by Vercel with the older site, so only the legacy-domain transition remains open. The exact procedure is in `docs/12-cloudflare-custom-domain-cutover.md`.
