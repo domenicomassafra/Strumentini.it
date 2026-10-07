@@ -1,7 +1,7 @@
 {
   "toolId": "http-status-reference",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Cerca cosa significa un codice HTTP come 200, 404 o 500 usando un riferimento locale. Public jobs: Usa Significato dei codici HTTP",
   "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Cerca cosa significa un codice HTTP come 200, 404 o 500 usando un riferimento locale. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",

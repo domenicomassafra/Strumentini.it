@@ -1,7 +1,7 @@
 {
   "toolId": "citation-deduplicator",
   "category": "research",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Elimina citazioni duplicate usando identificatore oppure titolo, autore e anno. Public jobs: Usa Rimuovi citazioni duplicate.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/research-knowledge/citation-deduplicator.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

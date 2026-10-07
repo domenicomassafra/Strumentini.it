@@ -1,4 +1,4 @@
-# StrumentiUtili.it — WIP closure record
+# Strumentini.it — WIP closure record
 
 Date: **2026-10-03**
 
@@ -9,7 +9,7 @@ This record explains what happened to the old branches, worktrees, stashes, prom
 - `main` was the only local branch.
 - `origin/main` was the only remote branch (`git ls-remote --heads origin`).
 - Local `main` and `origin/main` were aligned at `aaa0c7f` before the closure commit.
-- One worktree only: `/Users/domenico/Code/StrumentiUtili.it`.
+- One worktree only: `/Users/domenico/Code/Strumentini.it`.
 - No stash.
 - Historical utilityos/worker branches had already been merged into `main` or deleted.
 
@@ -19,7 +19,7 @@ The old WIP therefore did **not** exist as active branches anymore. The remainin
 
 The following are retained as provenance only:
 
-- `.scratch/strumentiutili-v1/`
+- `.scratch/strumentini-v1/`
 - `tasks/prompt2prompt/`
 - `docs/history/2026-10-01-MEGA-HANDOFF.md`
 

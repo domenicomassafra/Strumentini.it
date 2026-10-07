@@ -9,7 +9,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29"
       ],
@@ -51,10 +51,10 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
-        "strumentiutili-local-jobs-fixtures"
+        "strumentini-local-jobs-fixtures"
       ],
       "standard_or_official_example": "unicode-uax29 with the pinned reading-rate policy in quality/fixtures/text-writing-local-jobs/vectors.json",
       "invariants": [
@@ -94,7 +94,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "unicode-uax15"
@@ -137,7 +137,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "unicode-uax15"
@@ -180,7 +180,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "unicode-uax15"
@@ -223,7 +223,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "unicode-uax15"
@@ -266,11 +266,11 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "unicode-uax15",
-        "strumentiutili-local-jobs-fixtures"
+        "strumentini-local-jobs-fixtures"
       ],
       "standard_or_official_example": "unicode-uax29, unicode-uax15 with the pinned quote policy in quality/fixtures/text-writing-local-jobs/vectors.json",
       "invariants": [
@@ -310,7 +310,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29"
       ],
@@ -352,7 +352,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29"
       ],
@@ -394,7 +394,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29"
       ],
@@ -436,7 +436,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29"
       ],
@@ -478,7 +478,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29"
       ],
@@ -520,7 +520,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29"
       ],
@@ -562,7 +562,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "commonmark",
@@ -609,7 +609,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "commonmark",
@@ -656,7 +656,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "unicode-uax15"
@@ -699,7 +699,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "rfc4180"
@@ -748,7 +748,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "rfc4180"
@@ -797,10 +797,10 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
-        "strumentiutili-local-jobs-fixtures"
+        "strumentini-local-jobs-fixtures"
       ],
       "standard_or_official_example": "unicode-uax29 with the pinned sample-data policy in quality/fixtures/text-writing-local-jobs/vectors.json",
       "invariants": [
@@ -840,11 +840,11 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax29",
         "unicode-uax24",
-        "strumentiutili-local-jobs-fixtures"
+        "strumentini-local-jobs-fixtures"
       ],
       "standard_or_official_example": "unicode-uax29, unicode-uax24 with the pinned script policy in quality/fixtures/text-writing-local-jobs/vectors.json",
       "invariants": [
@@ -889,7 +889,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -937,7 +937,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -985,7 +985,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1033,7 +1033,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1081,7 +1081,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1129,7 +1129,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1177,7 +1177,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1225,7 +1225,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1273,7 +1273,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1321,7 +1321,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1369,7 +1369,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1417,7 +1417,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1465,7 +1465,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding",
@@ -1518,7 +1518,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding",
@@ -1571,7 +1571,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1619,7 +1619,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1667,7 +1667,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1717,7 +1717,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1767,7 +1767,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1817,7 +1817,7 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-encoding"
@@ -1865,7 +1865,7 @@
       "tool_family": "structured-data-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc8259"
       ],
@@ -1910,7 +1910,7 @@
       "tool_family": "structured-data-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "yaml12"
       ],
@@ -1955,7 +1955,7 @@
       "tool_family": "structured-data-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "toml10"
       ],
@@ -2000,7 +2000,7 @@
       "tool_family": "structured-data-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc8259",
         "yaml12"
@@ -2046,7 +2046,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -2095,7 +2095,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-html",
         "owasp-xss"
@@ -2140,7 +2140,7 @@
       "tool_family": "developer-primitive-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4648"
       ],
@@ -2181,7 +2181,7 @@
       "tool_family": "developer-primitive-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc7519"
       ],
@@ -2222,7 +2222,7 @@
       "tool_family": "developer-primitive-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc9562"
       ],
@@ -2263,7 +2263,7 @@
       "tool_family": "developer-primitive-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "nist-fips180-4"
       ],
@@ -2304,7 +2304,7 @@
       "tool_family": "developer-primitive-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc2104",
         "nist-fips180-4"
@@ -2346,7 +2346,7 @@
       "tool_family": "developer-primitive-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "ecma262"
       ],
@@ -2388,7 +2388,7 @@
       "tool_family": "developer-primitive-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "posix-crontab"
       ],
@@ -2429,7 +2429,7 @@
       "tool_family": "developer-primitive-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "posix-crontab"
       ],
@@ -2471,7 +2471,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339"
       ],
@@ -2518,7 +2518,7 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "D",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc9110"
       ],
@@ -2559,7 +2559,7 @@
       "tool_family": "developer-primitive-engine",
       "maintenance_class": "D",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iana-media-types"
       ],
@@ -2600,7 +2600,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc9110"
       ],
@@ -2641,7 +2641,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -2687,7 +2687,7 @@
       "tool_family": "structured-data-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc8259",
         "whatwg-url"
@@ -2738,7 +2738,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -2782,7 +2782,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -2826,7 +2826,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -2865,7 +2865,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -2912,7 +2912,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -2959,7 +2959,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url",
         "iso-qr-18004"
@@ -2999,7 +2999,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url",
         "iso-qr-18004"
@@ -3039,7 +3039,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -3078,7 +3078,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "D",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -3117,7 +3117,7 @@
       "tool_family": "text-list-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -3156,7 +3156,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -3198,7 +3198,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url",
         "rfc9309"
@@ -3238,7 +3238,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -3285,7 +3285,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url",
         "rfc9110"
@@ -3333,7 +3333,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -3377,7 +3377,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -3421,7 +3421,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url",
         "rfc5322"
@@ -3466,7 +3466,7 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -3506,7 +3506,7 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -3546,7 +3546,7 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -3586,7 +3586,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -3632,7 +3632,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -3678,7 +3678,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -3725,7 +3725,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -3772,7 +3772,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -3818,7 +3818,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -3864,7 +3864,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -3910,7 +3910,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -3957,7 +3957,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -4003,7 +4003,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -4049,7 +4049,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -4095,7 +4095,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -4141,7 +4141,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -4190,7 +4190,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -4236,7 +4236,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -4283,7 +4283,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -4329,7 +4329,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb",
@@ -4376,7 +4376,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb",
@@ -4423,7 +4423,7 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb"
@@ -4469,11 +4469,11 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "D",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb",
-        "strumentiutili-holiday-calendar"
+        "strumentini-holiday-calendar"
       ],
       "standard_or_official_example": "rfc3339 date form plus the Gregorian computus (anonymous Gregorian algorithm); the per-country table, substitute-day rules and statutory flags are a declared embedded project policy in quality/fixtures/holiday-calendar/vectors.json",
       "invariants": [
@@ -4516,11 +4516,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "lossless conversions round-trip semantically",
         "invalid input yields a typed error",
@@ -4559,11 +4559,11 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -4611,11 +4611,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -4655,11 +4655,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -4699,11 +4699,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -4742,11 +4742,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -4786,11 +4786,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -4830,11 +4830,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -4874,11 +4874,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -4918,11 +4918,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -4962,11 +4962,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -5005,11 +5005,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "R",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -5049,11 +5049,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -5093,11 +5093,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -5136,11 +5136,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -5180,11 +5180,11 @@
       "tool_family": "date-time-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -5229,11 +5229,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "output validates under the target format",
         "deterministic fields are stable",
@@ -5272,11 +5272,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -5315,11 +5315,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "R",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -5359,11 +5359,11 @@
       "tool_family": "business-math-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "hand-worked known answers match",
         "units remain dimensionally consistent",
@@ -5403,7 +5403,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5452,7 +5452,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5501,7 +5501,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5550,7 +5550,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5599,7 +5599,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5648,7 +5648,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5697,7 +5697,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5749,7 +5749,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5802,7 +5802,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5854,7 +5854,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5909,7 +5909,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -5958,7 +5958,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -6007,7 +6007,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -6056,7 +6056,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -6105,7 +6105,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -6154,7 +6154,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -6203,7 +6203,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -6255,7 +6255,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -6304,7 +6304,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -6353,7 +6353,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -6402,7 +6402,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -6452,7 +6452,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -6502,7 +6502,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -6552,7 +6552,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -6602,7 +6602,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -6653,7 +6653,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "D",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -6703,7 +6703,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp",
@@ -6754,7 +6754,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp",
@@ -6805,7 +6805,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -6855,7 +6855,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -6905,7 +6905,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp",
@@ -6956,7 +6956,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -7006,7 +7006,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -7056,7 +7056,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -7106,7 +7106,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -7156,7 +7156,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -7206,7 +7206,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -7256,7 +7256,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -7306,7 +7306,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -7356,7 +7356,7 @@
       "tool_family": "image-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "w3c-png3",
         "google-webp"
@@ -7406,7 +7406,7 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "nist-fips180-4"
       ],
@@ -7455,7 +7455,7 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "nist-fips180-4"
       ],
@@ -7504,7 +7504,7 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "nist-fips180-4"
       ],
@@ -7553,7 +7553,7 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iana-media-types",
         "w3c-png3",
@@ -7605,10 +7605,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -7653,10 +7653,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -7701,10 +7701,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -7749,10 +7749,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -7797,10 +7797,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -7845,7 +7845,7 @@
       "tool_family": "file-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "pkware-appnote"
       ],
@@ -7894,7 +7894,7 @@
       "tool_family": "file-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "pkware-appnote"
       ],
@@ -7943,7 +7943,7 @@
       "tool_family": "file-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "pkware-appnote"
       ],
@@ -7992,7 +7992,7 @@
       "tool_family": "file-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "nist-fips180-4",
         "pkware-appnote"
@@ -8042,11 +8042,11 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "cipa-exif",
         "iso-pdf2",
-        "strumentiutili-file-privacy-fixtures"
+        "strumentini-file-privacy-fixtures"
       ],
       "standard_or_official_example": "cipa-exif (Exif 3.0) for the JPEG/TIFF metadata containers and iso-pdf2 (PDF 2.0) for the document information dictionary; the bounded scan policy and risk taxonomy are pinned in quality/fixtures/metadata-risk-scan/vectors.json",
       "invariants": [
@@ -8093,10 +8093,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -8143,10 +8143,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -8191,10 +8191,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "output validates under the target format",
         "deterministic fields are stable",
@@ -8239,10 +8239,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -8287,10 +8287,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -8335,10 +8335,10 @@
       "tool_family": "file-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -8383,7 +8383,7 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "doi-handbook",
         "whatwg-url"
@@ -8429,7 +8429,7 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "doi-handbook",
         "whatwg-url"
@@ -8475,7 +8475,7 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "isbn-manual"
       ],
@@ -8520,10 +8520,10 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "idempotent where the declared semantics allow",
         "does not mutate caller input",
@@ -8564,7 +8564,7 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "bibtex-ctan"
       ],
@@ -8609,7 +8609,7 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "bibtex-ctan"
       ],
@@ -8654,7 +8654,7 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "bibtex-ctan",
         "ris-policy",
@@ -8701,10 +8701,10 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "output validates under the target format",
         "deterministic fields are stable",
@@ -8745,10 +8745,10 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "stable deterministic order under declared comparator",
         "input multiset is preserved",
@@ -8789,10 +8789,10 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -8835,10 +8835,10 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -8879,7 +8879,7 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339"
       ],
@@ -8933,7 +8933,7 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339"
       ],
@@ -8979,7 +8979,7 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-url"
       ],
@@ -9032,10 +9032,10 @@
       "tool_family": "url-web-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -9081,10 +9081,10 @@
       "tool_family": "csv-table-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "output validates under the target format",
         "deterministic fields are stable",
@@ -9125,10 +9125,10 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "idempotent where the declared semantics allow",
         "does not mutate caller input",
@@ -9169,10 +9169,10 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -9213,10 +9213,10 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "idempotent where the declared semantics allow",
         "does not mutate caller input",
@@ -9257,10 +9257,10 @@
       "tool_family": "research-citation-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
-      "standard_or_official_example": "Hand-worked StrumentiUtili.it literals/project policy; no universal normative standard is claimed.",
+      "standard_or_official_example": "Hand-worked Strumentini.it literals/project policy; no universal normative standard is claimed.",
       "invariants": [
         "deterministic input produces deterministic output",
         "empty and invalid input behavior is explicit",
@@ -9301,7 +9301,7 @@
       "tool_family": "developer-network-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "RFC 4291 IPv6 addressing, RFC 4632 CIDR, and RFC 3021 IPv4 /31 semantics; hand-worked literals are stored separately from production code.",
@@ -9342,7 +9342,7 @@
       "tool_family": "developer-network-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Exact positional-integer arithmetic with digits 0-9 and a-z; independent hand-worked and Python integer vectors cover values beyond IEEE-754 precision.",
@@ -9383,7 +9383,7 @@
       "tool_family": "developer-network-engine",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Traditional Unix rwx/octal mode-bit mapping including setuid, setgid and sticky markers; fixtures are hand-worked separately from production code.",
@@ -9424,7 +9424,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Hand-worked arithmetic identities and standard Math literals are stored separately from production parser code; no external calculator service is treated as authority.",
@@ -9466,7 +9466,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Hand-worked rational reductions, Euclidean GCD/LCM, canonical Roman numerals and integer combinatoric identities.",
@@ -9508,7 +9508,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Hand-worked descriptive statistics and weighted-average identities with population variance divided by n and sample variance divided by n-1.",
@@ -9550,7 +9550,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Hand-worked simple-interest, compound-interest and ordinary-annuity formulas with explicit compounding cadence and end-of-period contributions.",
@@ -9593,7 +9593,7 @@
       "tool_family": "research-reference",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "independent-check-digit-arithmetic",
         "fixture-policy"
       ],
@@ -9638,7 +9638,7 @@
         "swift-iban-registry-r103",
         "independent-iban-mod97-arithmetic",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "SWIFT IBAN Registry Release 103 (Sep 2026), with official electronic-format examples and national format rows for DE, ES, FR, GB, IT and NL.",
       "invariants": [
@@ -9682,7 +9682,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "rfc8259",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "RFC 8259 strict JSON remains the acceptance target; hand-worked malformed JSONC/trailing-comma inputs exercise only disclosed syntax edits before strict reparse.",
@@ -9726,7 +9726,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "rfc8259",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Strict JSON values are compared with stable RFC-6901-style pointer escaping; hand-worked fixtures distinguish add/remove/type/value and pure array-order changes.",
@@ -9770,7 +9770,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "rfc8259",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Synthetic JSON examples exercise deterministic mapping to quoted TypeScript property signatures and a JSON Schema 2020-12-shaped structural subset without executing generated code.",
@@ -9814,7 +9814,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "w3c-xml10",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "W3C XML 1.0 Fifth Edition grounds only the rules this bounded core claims: matching element names, unique attributes, XML Char legality, predefined/legal numeric character references, forbidden ]]> in character data and xml:space='preserve'/'default' whitespace-preservation behavior in this bounded serializer. DTD/ENTITY processing is deliberately refused as a product-safety boundary; full XML 1.0 conformance is not claimed.",
@@ -9860,7 +9860,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "SI/BIPM definitions, exact international inch/pound relations, exact gallon definitions and hand-worked Celsius/Fahrenheit/Kelvin literals are represented as registry source notes and independent fixtures.",
@@ -9902,7 +9902,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Engineering units are normalized through one dimension registry with SI-derived definitions and source notes for atmosphere, horsepower, foot-candle, calorie, BTU and non-SI exact relations.",
@@ -9943,7 +9943,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "SI decimal prefixes and IEC binary prefix semantics are kept distinct; byte is defined as eight bits and download time uses only entered throughput.",
@@ -9985,7 +9985,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "mAh/Wh follows Wh = Ah×V; fuel conversion uses exact international mile plus distinct US liquid and imperial gallons; hp/CV conversions use declared mechanical and metric horsepower constants.",
@@ -10026,7 +10026,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "ISO 216 nominal A/B paper dimensions, explicit linear model scales and Pythagorean/aspect-ratio TV geometry are used; clothing/shoe fit is refused without a maintained regional source table.",
@@ -10070,7 +10070,7 @@
       "truth_sources": [
         "whatwg-html",
         "rfc9110",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Browser-exposed Navigator/Window/Screen values are reported as current-session support facts; User-Agent parsing is descriptive only. The optional public-IP result is requested only through a separately disclosed reference-network action.",
@@ -10119,7 +10119,7 @@
         "w3c-uievents",
         "whatwg-html",
         "w3c-wcag22",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "W3C UI Events KeyboardEvent fields are displayed from focused browser events; the diagnostic does not cancel default actions or install global keyboard hooks.",
@@ -10167,7 +10167,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "French amortization uses a fixed periodic payment from principal, monthly rate TAN/12/100 and number of monthly payments; schedule literals are independently recomputed with decimal cent rounding.",
@@ -10210,7 +10210,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Elementary Euclidean area/perimeter/volume and Pythagorean identities, the quadratic formula over real roots, and speed = distance/time are evaluated from explicit user units.",
@@ -10253,7 +10253,7 @@
       "tool_family": "business-math",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Everyday costs use user-entered prices, explicit physical-unit normalization, integer-cent bill splitting and explicit work/usage bases rather than live tariffs or inferred schedules.",
@@ -10298,7 +10298,7 @@
       "truth_sources": [
         "w3c-webcrypto",
         "italian-passphrase-v1",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Web Crypto getRandomValues supplies browser randomness; generated indexes discard the incomplete uint32 tail before modulo mapping. Passphrases draw from the published local it-passphrase-2026-10-v1 list.",
@@ -10344,7 +10344,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "nist-sp800-63b4",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "NIST SP 800-63B bounds the product policy rather than defining this score: Unicode code points are counted for length and composition requirements do not drive the score. The 0–4 bands and pattern penalties are explicitly Strumentini.it heuristics. No breached-password blocklist is queried, so this estimator must not be described as NIST-conformant or as a verifier implementation.",
@@ -10390,7 +10390,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "rfc6350",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Synthetic RFC-6350-shaped vCards include CRLF folding, Unicode names, repeated TEL/EMAIL values and extension properties. CSV cells beginning with spreadsheet formula sigils are escaped with a leading apostrophe before RFC-style quoting.",
@@ -10485,7 +10485,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "rfc4180",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Synthetic RFC-style CSV rows are rendered as SQL text for the explicitly selected PostgreSQL, MySQL or SQLite policy; identifier and string quoting are deterministic and no database connection is created.",
@@ -10532,7 +10532,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "rfc4180",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "A synthetic 50 MiB-class UTF-8 CSV is read in bounded Blob slices, logical records remain quote-aware across read boundaries, and every output chunk repeats the original header exactly once.",
@@ -10579,7 +10579,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "rfc4180",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Two synthetic CSV tables are indexed only by user-selected key columns; unique keys yield added removed or changed records, while duplicate keys are reported as ambiguous instead of being paired arbitrarily.",
@@ -10626,7 +10626,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "unicode-uax29",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Synthetic Unicode/CRLF text is partitioned into contiguous canonical source spans; optional overlap is separate metadata and is excluded from restore.",
@@ -10667,7 +10667,7 @@
       "tool_family": "text-writing",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Synthetic before/after pairs change ISO dates, decimal literals, HTTP(S) URLs and digit-bearing structured IDs while separate whitespace-only pairs remain marker-stable.",
@@ -10709,7 +10709,7 @@
       "tool_family": "text-writing",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Explicit synthetic names/emails are replaced by deterministic 128-bit placeholder labels and restored only when every placeholder occurrence count matches the mapping.",
@@ -10797,7 +10797,7 @@
       "truth_sources": [
         "whatwg-encoding",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "Synthetic UTF-8 bytes misread as Windows-1252 produce CafÃ¨ and lâ€™Italia; the inverse Windows-1252-byte to strict UTF-8 transform recovers the intended literals.",
       "invariants": [
@@ -10838,7 +10838,7 @@
       "tool_family": "text-writing",
       "maintenance_class": "E",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Synthetic pasted-PDF lines exercise paragraph wraps, blank paragraphs, visible hyphens, soft hyphen U+00AD and column-like spacing.",
@@ -10885,7 +10885,7 @@
         "whatwg-url",
         "unicode-uax29",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "Synthetic Unicode text contains an international-looking phone, HTTP(S) URL with embedded @/# text, standalone mention and accented hashtag with exact UTF-16/code-point spans.",
       "invariants": [
@@ -10929,7 +10929,7 @@
       "truth_sources": [
         "css-syntax-3",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "CSS is parsed into a css-tree AST and regenerated compactly; parser Raw/empty declarations and unbalanced lexical delimiters refuse output with source location.",
       "invariants": [
@@ -10973,7 +10973,7 @@
       "truth_sources": [
         "whatwg-html",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "HTML is parsed with parse5; safe mode preserves all parser text nodes and only removes ordinary comments, while advanced mode removes bounded whitespace-only block-layout nodes.",
       "invariants": [
@@ -11065,7 +11065,7 @@
         "whatwg-html",
         "owasp-xss",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "The core uses a deliberately bounded normalized document model: supported Markdown constructs follow documented CommonMark 0.31.2 meanings where implemented, HTML is parsed as inert text into an allowlisted semantic subset, and rendered preview HTML is regenerated from that model rather than raw user markup.",
       "invariants": [
@@ -11162,7 +11162,7 @@
       "maintenance_class": "E",
       "truth_sources": [
         "w3c-webcrypto",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "standard_or_official_example": "Web Crypto getRandomValues supplies unseeded entropy; every bounded choice passes through the ticket-159 uint32 rejection sampler before modulo mapping. Reproducible seeded runs use a separate deterministic PRNG and are labeled non-secure.",
@@ -11214,7 +11214,7 @@
         "r-colorspace-cvd-machado",
         "r-colorspace-simulate-cvd-linear",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "Machado, Oliveira and Fernandes (2009) publish 3×3 RGB transform matrices for protan, deutan and tritan color-vision deficiencies across severity levels. This tool exposes only the complete-dichromacy severity endpoint for protanopia, deuteranopia and tritanopia and applies the cited matrices in linearized sRGB before re-encoding to sRGB.",
       "invariants": [
@@ -11264,7 +11264,7 @@
         "sitemaps-protocol",
         "whatwg-url",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "The Sitemaps.org protocol defines a UTF-8 urlset in the sitemap/0.9 namespace, requires loc, makes lastmod/changefreq/priority optional, limits one sitemap to 50,000 URLs and 50 MB uncompressed, requires one host, and requires URL entity escaping.",
       "invariants": [
@@ -11317,7 +11317,7 @@
         "gs1-general-specifications-26",
         "iso-iec-15417-2007",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "GS1's check-digit example maps the legacy ISBN 0471384291 to GTIN-13/EAN-13 value 9780471384298, giving a known EAN-13 check digit of 8. GS1 General Specifications also publish the Code 128 symbol-character values and element widths; this tool deliberately uses Start B only and maps printable ASCII to Code Set B values.",
       "invariants": [
@@ -11372,7 +11372,7 @@
         "w3c-media-capture-streams",
         "w3c-mediastream-recording",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "Web Audio API 1.1 defines AudioContext and browser audio synthesis primitives. Product frequency, BPM, level, and duration ceilings are Strumentini safety bounds rather than W3C limits.",
       "invariants": [
@@ -11420,7 +11420,7 @@
       "truth_sources": [
         "wicg-web-speech-api",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "The Web Speech API defines SpeechSynthesis getVoices, voiceschanged, speak, cancel, and SpeechSynthesisVoice language and localService fields. Available voices and local-versus-remote synthesis are user-agent dependent.",
       "invariants": [
@@ -11468,7 +11468,7 @@
         "w3c-webvtt",
         "netflix-italian-ttsg",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "W3C WebVTT defines the WEBVTT header, cue timing model and timestamp syntax. The Netflix Italian Timed Text Style Guide publishes 17 characters/second for adult subtitles as a workflow-specific reference; this tool labels that source and keeps the threshold configurable instead of presenting it as universal truth.",
       "invariants": [
@@ -11524,7 +11524,7 @@
         "google-webp",
         "pkware-appnote",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "The analyzer reuses bounded PNG/JPEG/WebP header inspection and PKWARE central-directory facts to report only observable file-size drivers. It deliberately emits no future savings estimate before a real transform produces measured output bytes.",
       "invariants": [
@@ -11574,7 +11574,7 @@
         "commonmark",
         "pkware-appnote",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "CommonMark defines fenced code blocks and info strings; this tool uses a deliberately smaller deterministic filename-hint convention and then feeds exactly the previewed UTF-8 bytes into the already-verified store-only ZIP writer.",
       "invariants": [
@@ -11624,7 +11624,7 @@
       "truth_sources": [
         "w3c-web-audio-1-1",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "standard_or_official_example": "The live level meter uses Web Audio primitives after explicit microphone access. Recorder container and codec support are treated as runtime facts from MediaRecorder.isTypeSupported and the produced Blob rather than as a fixed product format promise.",
       "invariants": [
@@ -11674,7 +11674,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -11722,7 +11722,7 @@
       "tool_family": "pdf-engine",
       "maintenance_class": "H",
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],

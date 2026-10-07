@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/business-italy-date/ponti-ferie-optimizer.gold.json",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "ponti-ferie-optimizer",
   "runtime": {
     "location": "LOCAL",
@@ -40,10 +40,10 @@
   "identities": {
     "manifestSha256": "95fd68c56eecd1ba82f9a3750629e88dfa4b3e18f475ef2994ff7770594b4691",
     "moduleSha256": "fd08efb85cfd1ecaf4bfa46f0719312878c2bab42d1b78efbfdfc7bce58ac51d",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "browserAcceptanceSha256": "15c43eeb0aac76231518ce85ee8464d5675779d55c48acd0616c86b4ad7be802",
-    "browserAcceptanceSourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "browserAcceptanceSha256": "091b7256c97a76ff9d31650be84f2e65d4277f10eb781c4ac4f9afa63832eb01",
+    "browserAcceptanceSourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
     "focusedTestsSha256": "c55fdf1a01fba334a99c08b1bc0075678e54a3f2ed3ff5747f456a555760d6f3",
     "fixture:italy-2026-consumers:sha256": "be3213387e7f246567ca6177063807dd51dd01269ea99c262bb8c19fb8a3bb78"
   }

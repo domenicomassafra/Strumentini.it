@@ -2,7 +2,7 @@
 
 Date: 2026-09-23
 Status: implementation-input research; no production integration authorized
-Scope: PDF, image, archive, QR, hashing and file-signature capabilities for browser-local StrumentiUtili.it tools
+Scope: PDF, image, archive, QR, hashing and file-signature capabilities for browser-local Strumentini.it tools
 
 ## Executive decision
 
@@ -24,7 +24,7 @@ The most important measured result is bundle separation. The three isolated prod
 
 These numbers are from the spike builds in this repository, not package-registry estimates. Raw npm unpacked sizes in the dependency census below are recorded only as a packaging/complexity signal and must not be confused with browser transfer size.
 
-## Decision context inherited from StrumentiUtili.it
+## Decision context inherited from Strumentini.it
 
 The product architecture already requires that:
 
@@ -61,17 +61,17 @@ Legend:
 - **Observed** = exercised by this lane in Chrome, not merely inferred from documentation.
 - Package “unpacked” size is npm's package payload, not final bundle size.
 
-| Family | Candidate / exact version | License | Maintenance evidence | Browser / worker / size | Memory, cancel, quality and security notes | StrumentiUtili.it coverage / decision |
+| Family | Candidate / exact version | License | Maintenance evidence | Browser / worker / size | Memory, cancel, quality and security notes | Strumentini.it coverage / decision |
 |---|---|---|---|---|---|---|
 | PDF | `pdf-lib` 1.17.1 | MIT | npm 2022-05; repo pushed 2024-07; release v1.17.1 | Official README says Node/browser/Deno/React Native; npm unpacked ~19.5 MB; **Observed** mutation | Whole-document object model can duplicate buffers; no native progress/cancel seam; GHA 0 | Page merge/split/reorder/rotate works. Useful reference adapter, but maintenance age prevents unquestioned authority. **Wave C / fallback candidate**. |
-| PDF | `pdfjs-dist` 6.3.289 / Mozilla PDF.js | Apache-2.0 | npm 2026-08; repo pushed 2026-09-22; release v6.3.289 | Official web parser/renderer; separate worker; **Observed** worker build 1.27 MB raw | Rendering creates large RGBA surfaces; task/worker can be destroyed, but StrumentiUtili.it must normalize cancellation; GHA 0 | Best-supported render/text/metadata-reading authority in this census. **Wave C**. |
+| PDF | `pdfjs-dist` 6.3.289 / Mozilla PDF.js | Apache-2.0 | npm 2026-08; repo pushed 2026-09-22; release v6.3.289 | Official web parser/renderer; separate worker; **Observed** worker build 1.27 MB raw | Rendering creates large RGBA surfaces; task/worker can be destroyed, but Strumentini.it must normalize cancellation; GHA 0 | Best-supported render/text/metadata-reading authority in this census. **Wave C**. |
 | PDF | `@cantoo/pdf-lib` 2.11.1 | MIT | npm 2026-09; repo pushed 2026-09-11 | Browser-capable active fork; npm unpacked ~26.3 MB | Adds extraction/attachments/XFA/document-JS surface, therefore broader attack/correctness surface; GHA 0 | Promising maintained mutation/extraction fork. Requires corpus/compatibility/governance spike before adoption. **Wave C candidate**. |
 | PDF | `unpdf` 1.8.1 | MIT | npm 2026-08; repo pushed 2026-08-14; release v1.8.1 | Browser/serverless extraction/rendering wrapper around PDF.js; npm unpacked ~2.14 MB | Convenience layer can inline/abstract worker details; GHA 0 | Useful if its interface materially reduces PDF.js integration complexity. Not necessary for the first raw PDF.js adapter. **Wave C alternate**. |
 | PDF | `mupdf` 1.28.1 | AGPL-3.0-or-later | npm 2026-09; official package points to Artifex/Ghostscript source | WASM/browser-capable family; npm unpacked ~14.3 MB | Strong engine, but AGPL obligations are a product-policy blocker absent an explicit licensing decision | **Reject from default dependency shortlist** under current permissive-library posture; reconsider only with owner/legal approval. |
 | PDF | `pdfmake` 0.3.11 | MIT | npm/repo 2026-06 | Browser PDF generation; npm unpacked ~15.3 MB | Generation-focused, not existing-document mutation/render authority; GHA 0 | Does not solve the target handoff job deeply enough. **Reject for this capability set**. |
 | PDF | `pdfkit` 0.20.2 | MIT | npm 2026-09; repo pushed 2026-09-19 | Browser/Node PDF generation; npm unpacked ~10.5 MB | Generation-focused; additional browser packaging surface; GHA 0 | Valuable elsewhere if PDF creation becomes a product job, not for split/reorder/extract. **Reject for this lane's core PDF seam**. |
 | Image | Canvas + `createImageBitmap` | Web platform | Living web platform | **Observed** JPEG/WebP decode/crop/re-encode; zero library bytes | Canvas has hard browser/device dimensions and native memory outside JS heap; cancellation at operation boundaries; browser encoders vary | First choice for bounded resize/crop/JPEG/WebP conversion. **Early Gold** with megapixel limits. |
-| Image | `pica` 10.0.3 | MIT | npm/repo 2026-08 | Browser high-quality resize; README says worker selection; npm unpacked ~1.25 MB; **Observed** | README explicitly warns about iOS canvas memory; cancel must be wrapped by StrumentiUtili.it seam; GHA 0 | Quality resize upgrade over raw canvas. **Early Gold candidate**, lazy within image tool. |
+| Image | `pica` 10.0.3 | MIT | npm/repo 2026-08 | Browser high-quality resize; README says worker selection; npm unpacked ~1.25 MB; **Observed** | README explicitly warns about iOS canvas memory; cancel must be wrapped by Strumentini.it seam; GHA 0 | Quality resize upgrade over raw canvas. **Early Gold candidate**, lazy within image tool. |
 | Image | `browser-image-compression` 2.0.2 | MIT | npm 2023-03; repo pushed 2024-03 | Browser compression; worker option; npm unpacked ~863 KB; **Observed** worker mode | Maintenance is slower than alternatives; canvas-based memory constraints; abort support should be acceptance-tested before promotion; GHA 0 | Works, but overlaps native+pica. **Defer / optional adapter**, not baseline dependency. |
 | Image | `compressorjs` 1.3.0 | MIT | npm 2026-04; repo pushed 2026-09-13 | Native Canvas `toBlob`; npm unpacked ~161 KB | Official README warns large-image OOM, recommends bounded dimensions (4096 or lower), and notes browser-dependent compression; GHA 0 | Small maintained convenience adapter. Compare against a direct native module before adding. **Early Gold alternate**. |
 | Image metadata | `exifr` 7.1.3 | MIT | npm 2022-05; repo pushed 2024-03 | Browser/Node, JPEG/TIFF/PNG/HEIC/AVIF; mini/lite builds; npm unpacked ~1.29 MB; **Observed** EXIF read | Parser sees multiple metadata containers; use narrow build/options; GHA 0 | Strong metadata-inspection candidate. **Early Gold candidate** with format/field limits. |
@@ -93,7 +93,7 @@ Legend:
 | Hash | Web Crypto `subtle.digest` | Web platform | W3C/Web platform | Browser-native cryptographic digest | The interface consumes the supplied data; there is no incremental SHA-256 state API, so large files require full-buffer materialization | Excellent small-file oracle/baseline. **Do not use as large-file hashing engine**. |
 | Hash | `hash-wasm` 4.12.0 | MIT | npm/repo 2024-11; release v4.12.0 | Browser/worker, chunked streams, per-algorithm WASM; npm unpacked ~1.8 MB; **Observed** incremental SHA-256 | Manual progress is exact by bytes read; AbortSignal can stop at chunk boundary; WASM state is small; GHA 0 | Proven 24 MiB local hash path. **Early Gold candidate**, worker-wrap for large files. |
 | Hash | `@noble/hashes` 2.4.0 | MIT | npm 2026-08; repo pushed 2026-09-08; release 2.4.0 | Pure JS, modular; npm unpacked ~692 KB | Official README documents independent Cure53 audit for core scope; current maintenance stronger than hash-wasm; GHA 0 | Strong alternative. Benchmark browser incremental SHA-256 before final dependency freeze. **Early Gold candidate**. |
-| Hash | `spark-md5` 3.0.2 | WTFPL OR MIT | npm 2023-08; repo pushed 2023-11 | Browser incremental MD5; npm unpacked ~40 KB | MD5 is collision-broken and easy to misread as a security checksum; GHA 0 | **Reject for StrumentiUtili.it integrity/checksum verifier**. |
+| Hash | `spark-md5` 3.0.2 | WTFPL OR MIT | npm 2023-08; repo pushed 2023-11 | Browser incremental MD5; npm unpacked ~40 KB | MD5 is collision-broken and easy to misread as a security checksum; GHA 0 | **Reject for Strumentini.it integrity/checksum verifier**. |
 | Signature | `file-type` 22.1.1 | MIT | npm/repo 2026-09-17; release v22.1.1 | Buffer/prefix/stream signature detection; npm unpacked ~139 KB; **Observed** ZIP/PNG | Official README says result is best-effort and not proof of validity/safety; malformed-input robustness best effort; GHA 0 | Best fit for inspection hints. **Early Gold candidate**, never a security-validation claim. |
 | Signature | `magic-bytes.js` 1.13.1 | MIT | npm 2026-07; repo pushed 2026-07 | Browser/server first-byte detector; npm unpacked ~62 KB | Smaller but narrower evidence/semantics; signature matches remain hints; GHA 0 | Fine small alternate if `file-type` is too broad. **Alternate, not both**. |
 
@@ -149,7 +149,7 @@ Candidate count: **35 distinct library/platform approaches** assessed.
 The lane implements three isolated browser pages under `spikes/heavy-browser/`. Their shared public observation seam is:
 
 ```js
-window.__STRUMENTIUTILI_SPIKE_RESULT__
+window.__STRUMENTINI_SPIKE_RESULT__
 ```
 
 The page is considered successful only after behavior assertions pass and this result reports `ok: true`. Tests target observable output rather than internal function calls.
@@ -174,7 +174,7 @@ Observed operations:
 - blank selected Info metadata fields and observe them absent in the output;
 - render the first page into Canvas with PDF.js.
 
-Important negative result: blanking selected document-info fields is **not** proof of complete metadata/privacy removal. XMP, attachments, embedded files, JavaScript/actions, annotations and other document structures need an explicit sanitization contract and corpus before StrumentiUtili.it can label a PDF “clean”.
+Important negative result: blanking selected document-info fields is **not** proof of complete metadata/privacy removal. XMP, attachments, embedded files, JavaScript/actions, annotations and other document structures need an explicit sanitization contract and corpus before Strumentini.it can label a PDF “clean”.
 
 ### Spike 2 — Image pipeline + metadata + AVIF
 

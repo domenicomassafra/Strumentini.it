@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/business-italy-date/iban-validator.gold.json",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "iban-validator",
   "runtime": {
     "location": "LOCAL",
@@ -19,7 +19,7 @@
   "truthSources": [
     "fixture-policy",
     "independent-iban-mod97-arithmetic",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "swift-iban-registry-r103"
   ],
   "resolvedFixtures": [
@@ -40,10 +40,10 @@
   "identities": {
     "manifestSha256": "51e0566225f95416ca62c7d04312cad6b59cefb3cec9bf3e98487174812ce525",
     "moduleSha256": "6c8501357da13f00d3626cb123b5cfd0b2f00b843e5956a5afb954d5b569d540",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "browserAcceptanceSha256": "716c1f29ac87a67e91c3233c32682f91cac35fcb5d79f4ee38c808b3a9cf85e8",
-    "browserAcceptanceSourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "browserAcceptanceSha256": "cbac1476033e1138b20b34a3bf55ad9dde6d7469814f82b3e1c7790db80f3501",
+    "browserAcceptanceSourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
     "focusedTestsSha256": "4efbc6d6d4fec46ea15471c144f199cdf66a7c2fd6212bff58de76fa2c9078ad",
     "fixture:iban-formal-validation:sha256": "960c9f59eb156956e7f7f91467ad40239f87b9e71a8ea1909d2f98746044352d"
   }

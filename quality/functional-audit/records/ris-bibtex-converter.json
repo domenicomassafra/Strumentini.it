@@ -1,7 +1,7 @@
 {
   "toolId": "ris-bibtex-converter",
   "category": "research",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
   "decision": "UPGRADED",
   "expectedFunctionality": "Converte in locale tra record RIS e BibTeX senza interrogare metadati esterni né caricare dati. Public jobs: Usa Convertitore RIS e BibTeX.",
   "observedFunctionality": "Bidirectional RIS/BibTeX conversion is covered by hand-worked fixtures, the real browser route, and seven independent probes derived from pinned Zotero RIS/BibTeX translator expectations. The declared mapping and loss cases are explicit, cand-187 is high-confidence with no open gap for that subset, and the route now has a current Gold receipt.",
@@ -29,11 +29,11 @@
     },
     {
       "kind": "source-contract",
-      "ref": ".scratch/strumentiutili-expansion-20261005/issues/276-ris-bibtex-converter-authoritative-oracle-closure.md",
+      "ref": ".scratch/strumentini-expansion-20261005/issues/276-ris-bibtex-converter-authoritative-oracle-closure.md",
       "claim": "Ticket 276 records the completed authoritative oracle closure and receipt rebind."
     }
   ],
   "childTickets": [
-    ".scratch/strumentiutili-expansion-20261005/issues/276-ris-bibtex-converter-authoritative-oracle-closure.md"
+    ".scratch/strumentini-expansion-20261005/issues/276-ris-bibtex-converter-authoritative-oracle-closure.md"
   ]
 }

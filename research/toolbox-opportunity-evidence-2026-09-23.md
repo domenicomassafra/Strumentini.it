@@ -18,11 +18,11 @@ Conclusion: “many free tools + privacy + no upload + client-side” is a usefu
 
 - CalcolaTutto: https://calcolatutto.it/
 - Cifrel: https://cifrel.it/
-- StrumentiUtili.it: https://strumentiutili.it/
+- Strumentini.it: https://strumentini.it/
 - CalcoloFiscale: https://calcolofiscale.it/
 - Ciro Agizza toolbox: https://www.ciroagizza.it/strumenti/toolbox.html
 
-StrumentiUtili.it is especially important as a novelty blocker: it already combines Italy-specific fiscal calculators, FatturaPA/XML, mortgage/TAEG, IRPEF, IMU, ravvedimento, payslip OCR, notice-period tools and local browser processing.
+Strumentini.it is especially important as a novelty blocker: it already combines Italy-specific fiscal calculators, FatturaPA/XML, mortgage/TAEG, IRPEF, IMU, ravvedimento, payslip OCR, notice-period tools and local browser processing.
 
 Conclusion: “Italian IT-Tools” is not enough.
 

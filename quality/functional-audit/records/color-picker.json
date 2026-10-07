@@ -1,7 +1,7 @@
 {
   "toolId": "color-picker",
   "category": "image-visual",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Accept the browser-selected color value and inspect its exact normalized hexadecimal, RGB and HSL representation locally.",
   "observedFunctionality": "The module delegates to inspectColorLocal, which deliberately shares the deterministic color-conversion implementation. The tool-specific Gold receipt and browser acceptance both record a successful #336699 route result, while the image/visual tests cover the shared parse and RGB/HSL primitives.",

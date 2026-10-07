@@ -1,4 +1,4 @@
-# MEGA-HANDOFF — StrumentiUtili.it (per continuare con un altro LLM)
+# MEGA-HANDOFF — Strumentini.it (per continuare con un altro LLM)
 
 > **ARCHIVIATO IL 2026-10-03.** Questo handoff fotografa lo stato del 2026-10-01 (99 Gold / 1 Partial / 100 unverified) ed è conservato solo come cronologia. Non usarlo come fonte operativa. La fonte corrente è `/PROJECT-STATUS.md`, poi `/HANDOFF.md`, `/ROADMAP.md` e `quality/receipts/expanded-catalog-certification.json`.
 
@@ -6,8 +6,8 @@ Data: 2026-10-01. Lingua pubblica del prodotto: **solo italiano**. Lingua di que
 
 ## 1. Stato in una riga
 
-Repo: `https://github.com/domenicomassafra/strumentiutili-it` (privato).
-Checkout canonico e unico: `/Users/domenico/Code/StrumentiUtili.it`, branch `main`, `main == origin/main`, albero pulito.
+Repo: `https://github.com/domenicomassafra/strumentini-it` (privato).
+Checkout canonico e unico: `/Users/domenico/Code/Strumentini.it`, branch `main`, `main == origin/main`, albero pulito.
 Ultimi commit: `3a89730` (recertify 99 Gold), `cd3b2f2` (tranche italianizzazione + batch data-table/date-time/text-writing).
 Verde certificato: `npm test` 331/331 (47 file), `astro check` 0/0/0, build statica 204 pagine, `gold:sabotage` PASS.
 Frontiera: **99 Gold / 1 Partial (`image-resize`) / 100 `IMPLEMENTED_UNVERIFIED`** su 200 tool.
@@ -90,14 +90,14 @@ Regole critiche (violazione = tranche invalida):
 
 Situazione verificata al 2026-10-01 — **nulla da cancellare**, non ricreare lavoro:
 - Unica copia esistente: questo repo (verificato via `mdfind`, `find`, `git worktree list`, `.git/worktrees` assente, nessuno stash, solo branch `main` + `origin/main`).
-- Orca: nessun workspace StrumentiUtili (`~/orca/workspaces`), `~/.worktrees/*` vuote e non collegate, `~/Worktrees/.orphan-backup` = materiale ChatGPT-gizmo non suo.
+- Orca: nessun workspace Strumentini (`~/orca/workspaces`), `~/.worktrees/*` vuote e non collegate, `~/Worktrees/.orphan-backup` = materiale ChatGPT-gizmo non suo.
 - Altri PC via SSH: minipc, matebooklinux, macbookair raggiungibili e **senza copie**; omarchy non risolvibile (riprova se serve).
-- Prima di QUALSIASI cancellazione futura: riesegui le verifiche sopra, cancella solo target collegati a StrumentiUtili + già mergiati su `main` + zero consumer; mai toccare `~/Backups`, profili browser/auth, DB, repo altrui, history Git (niente rewrite/force-push).
+- Prima di QUALSIASI cancellazione futura: riesegui le verifiche sopra, cancella solo target collegati a Strumentini + già mergiati su `main` + zero consumer; mai toccare `~/Backups`, profili browser/auth, DB, repo altrui, history Git (niente rewrite/force-push).
 
 ## 9. Primi comandi per chi riprende
 
 ```bash
-cd /Users/domenico/Code/StrumentiUtili.it && git pull --ff-only && git status --short --branch && git log --oneline -3
+cd /Users/domenico/Code/Strumentini.it && git pull --ff-only && git status --short --branch && git log --oneline -3
 npm test 2>&1 | grep -E "Test Files|Tests "
 ./node_modules/.bin/tsx scripts/validate-release.ts --no-write-receipt 2>&1 | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['status'], d['counts'])"
 ```

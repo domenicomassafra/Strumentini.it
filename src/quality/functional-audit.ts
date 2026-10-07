@@ -66,7 +66,7 @@ export interface FunctionalAuditInventoryEntry {
 }
 
 const ticketPath = z.string().regex(
-  /^\.scratch\/strumentiutili-expansion-20261005\/issues\/\d+-[a-z0-9-]+\.md$/u,
+  /^\.scratch\/strumentini-expansion-20261005\/issues\/\d+-[a-z0-9-]+\.md$/u,
   "ticket path must point to the expansion backlog",
 );
 

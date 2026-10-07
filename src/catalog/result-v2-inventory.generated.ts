@@ -19,7 +19,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "age-date-anniversary",
@@ -38,7 +38,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "ai-code-fence-bundle",
@@ -59,7 +59,7 @@ export const resultV2Inventory = [
         "before-after"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "archive-checksum-manifest",
@@ -80,7 +80,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "aspect-ratio-calculator",
@@ -98,7 +98,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "audio-generator",
@@ -116,7 +116,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "barcode-generator",
@@ -135,7 +135,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "base-converter",
@@ -155,7 +155,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "base64-codec",
@@ -175,7 +175,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "basic-unit-converter",
@@ -194,7 +194,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "batch-checksum-manifest",
@@ -215,7 +215,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "batch-rename-preview",
@@ -235,7 +235,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "battery-vehicle-power-helper",
@@ -254,7 +254,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "bibtex-deduplicator",
@@ -275,7 +275,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "bibtex-formatter",
@@ -296,7 +296,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "break-even",
@@ -315,7 +315,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "browser-text-to-speech",
@@ -333,7 +333,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "bulk-domain-extractor",
@@ -353,7 +353,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "business-day",
@@ -372,7 +372,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "calendar-date-list-generator",
@@ -391,7 +391,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "campaign-name",
@@ -411,7 +411,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "canonical-url-helper",
@@ -431,7 +431,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "capacity-planner",
@@ -450,7 +450,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "case-converter",
@@ -470,7 +470,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "checksum-verifier",
@@ -490,7 +490,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "chmod-permission-helper",
@@ -510,7 +510,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "cidr-calculator",
@@ -529,7 +529,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "citation-deduplicator",
@@ -550,7 +550,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "citation-key-generator",
@@ -571,7 +571,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "clean-zip-creator",
@@ -592,7 +592,7 @@ export const resultV2Inventory = [
         "before-after"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "client-handoff-index-generator",
@@ -613,7 +613,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "color-blindness-image-simulation",
@@ -632,7 +632,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "color-converter",
@@ -650,7 +650,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "color-picker",
@@ -668,7 +668,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "column-type-profiler",
@@ -689,7 +689,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "connection-device-info",
@@ -709,7 +709,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "contact-sheet-generator",
@@ -728,7 +728,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "contrast-checker",
@@ -747,7 +747,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "conversion-rate-scenario",
@@ -766,7 +766,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "cpa-cpc-cpm-calculator",
@@ -785,7 +785,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "cron-explainer",
@@ -804,7 +804,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "cron-next-run",
@@ -823,7 +823,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "css-design-helper",
@@ -842,7 +842,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "css-minifier",
@@ -862,7 +862,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "csv-cleaner",
@@ -882,7 +882,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md"
   },
   {
     "toolId": "csv-column-map",
@@ -902,7 +902,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md"
   },
   {
     "toolId": "csv-column-selector",
@@ -923,7 +923,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-column-to-list",
@@ -943,7 +943,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "csv-dedupe",
@@ -963,7 +963,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md"
   },
   {
     "toolId": "csv-delimiter-detector",
@@ -984,7 +984,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-encoding-fixer",
@@ -1005,7 +1005,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-filter",
@@ -1026,7 +1026,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-group-count",
@@ -1047,7 +1047,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-join",
@@ -1068,7 +1068,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-pivot-lite",
@@ -1089,7 +1089,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-sort",
@@ -1110,7 +1110,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-splitter",
@@ -1131,7 +1131,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-to-json",
@@ -1150,7 +1150,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-to-sql",
@@ -1169,7 +1169,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "csv-viewer",
@@ -1190,7 +1190,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "currency-scenario",
@@ -1209,7 +1209,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "date-difference",
@@ -1228,7 +1228,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "date-source-normalizer",
@@ -1250,7 +1250,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "deadline-countdown",
@@ -1269,7 +1269,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "decimal-hours-converter",
@@ -1288,7 +1288,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "discount-impact",
@@ -1307,7 +1307,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "document-handoff-manifest",
@@ -1326,7 +1326,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "doi-isbn-normalizer",
@@ -1348,7 +1348,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "doi-link-builder",
@@ -1370,7 +1370,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "doi-normalizer",
@@ -1392,7 +1392,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "domain-frequency-counter",
@@ -1412,7 +1412,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "domain-subdomain-grouper",
@@ -1432,7 +1432,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "dominant-color-extractor",
@@ -1450,7 +1450,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "duplicate-file-finder",
@@ -1470,7 +1470,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "duplicate-row-profiler",
@@ -1491,7 +1491,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "duration-calculator",
@@ -1510,7 +1510,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "effective-hourly-rate",
@@ -1529,7 +1529,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "email-domain-extractor",
@@ -1549,7 +1549,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "engineering-unit-converter",
@@ -1568,7 +1568,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "epoch-batch-converter",
@@ -1587,7 +1587,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "everyday-cost-calculator",
@@ -1606,7 +1606,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "evidence-table-builder",
@@ -1627,7 +1627,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "exif-remover",
@@ -1646,7 +1646,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "fact-sensitive-text-diff",
@@ -1666,7 +1666,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "fatturapa-batch-csv",
@@ -1686,7 +1686,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md"
   },
   {
     "toolId": "fatturapa-reader",
@@ -1705,7 +1705,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md"
   },
   {
     "toolId": "favicon-app-icon-size-generator",
@@ -1724,7 +1724,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "file-hash",
@@ -1743,7 +1743,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "file-list-diff",
@@ -1763,7 +1763,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "file-signature-detector",
@@ -1783,7 +1783,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "file-size-analyzer",
@@ -1803,7 +1803,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "filename-sanitizer",
@@ -1823,7 +1823,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "find-replace-preview",
@@ -1843,7 +1843,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "folder-compare",
@@ -1863,7 +1863,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "folder-inventory",
@@ -1883,7 +1883,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "folder-size-type-summary",
@@ -1903,7 +1903,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "fraction-integer-toolkit",
@@ -1922,7 +1922,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "geometry-equation-motion-helper",
@@ -1941,7 +1941,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "gestione-separata-contributi",
@@ -1960,7 +1960,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "hash-generator",
@@ -1979,7 +1979,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "hmac-generator",
@@ -1998,7 +1998,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "html-entity-codec",
@@ -2018,7 +2018,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "html-minifier",
@@ -2038,7 +2038,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "http-status-reference",
@@ -2057,7 +2057,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "iban-validator",
@@ -2079,7 +2079,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "ics-event-builder",
@@ -2099,7 +2099,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "ics-viewer",
@@ -2119,7 +2119,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "image-compare-slider",
@@ -2138,7 +2138,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "image-compression",
@@ -2157,7 +2157,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "image-crop",
@@ -2176,7 +2176,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "image-dimensions-batch-inspector",
@@ -2194,7 +2194,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "image-format-conversion",
@@ -2213,7 +2213,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "image-metadata-viewer",
@@ -2231,7 +2231,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "image-rename-batch-preview",
@@ -2249,7 +2249,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "image-resize",
@@ -2268,7 +2268,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "images-to-pdf",
@@ -2287,7 +2287,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "inps-artigiani-commercianti",
@@ -2306,7 +2306,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "interest-savings-calculator",
@@ -2325,7 +2325,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "invisible-character-detector",
@@ -2347,7 +2347,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "invoice-math-validator",
@@ -2367,7 +2367,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "invoice-number-generator",
@@ -2386,7 +2386,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "isbn-validator-converter",
@@ -2408,7 +2408,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "italian-document-expiry",
@@ -2427,7 +2427,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "italian-gulpease-readability",
@@ -2447,7 +2447,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "json-formatter",
@@ -2467,7 +2467,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "json-path-playground",
@@ -2486,7 +2486,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "json-repair",
@@ -2506,7 +2506,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "json-structural-diff",
@@ -2525,7 +2525,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "json-to-csv",
@@ -2545,7 +2545,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "json-type-schema-inference",
@@ -2564,7 +2564,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "json-yaml-converter",
@@ -2584,7 +2584,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "jwt-inspector",
@@ -2604,7 +2604,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "keyboard-event-diagnostic",
@@ -2621,7 +2621,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "language-aware-text-statistics",
@@ -2641,7 +2641,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "late-payment-interest",
@@ -2660,7 +2660,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "line-deduplicator",
@@ -2680,7 +2680,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "line-sorter",
@@ -2700,7 +2700,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "list-compare",
@@ -2720,7 +2720,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "list-difference",
@@ -2740,7 +2740,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "list-intersection",
@@ -2760,7 +2760,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "lorem-sample-data-generator",
@@ -2779,7 +2779,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "margin-markup",
@@ -2798,7 +2798,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "markdown-preview",
@@ -2817,7 +2817,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "markdown-table-formatter",
@@ -2837,7 +2837,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "meeting-time-planner",
@@ -2856,7 +2856,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "meta-preview",
@@ -2875,7 +2875,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "metadata-risk-inspector",
@@ -2895,7 +2895,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "microphone-recorder",
@@ -2914,7 +2914,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "mime-type-lookup",
@@ -2933,7 +2933,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "missing-value-profiler",
@@ -2954,7 +2954,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "mojibake-repair",
@@ -2976,7 +2976,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "mortgage-amortization-calculator",
@@ -2996,7 +2996,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "notes-deduplicator",
@@ -3017,7 +3017,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "open-graph-preview",
@@ -3036,7 +3036,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "palette-extractor",
@@ -3054,7 +3054,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "partita-iva-validator",
@@ -3076,7 +3076,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "password-pin-passphrase-generator",
@@ -3096,7 +3096,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "password-strength-estimator",
@@ -3115,7 +3115,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "payment-fee-gross-up",
@@ -3134,7 +3134,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "pdf-compare-lite",
@@ -3153,7 +3153,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-compression-lite",
@@ -3172,7 +3172,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-copy-text-reflow",
@@ -3194,7 +3194,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-flatten",
@@ -3213,7 +3213,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-form-inspector",
@@ -3232,7 +3232,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-image-extractor",
@@ -3251,7 +3251,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-link-extractor",
@@ -3269,7 +3269,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-merge",
@@ -3288,7 +3288,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-metadata-inspector",
@@ -3307,7 +3307,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-metadata-remover",
@@ -3326,7 +3326,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-multi-text-search",
@@ -3344,7 +3344,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-page-citation-helper",
@@ -3364,7 +3364,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-page-count-verifier",
@@ -3383,7 +3383,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-page-delete-extract",
@@ -3402,7 +3402,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-page-reorder",
@@ -3421,7 +3421,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-page-size-inspector",
@@ -3440,7 +3440,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-password-check-remove",
@@ -3459,7 +3459,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-rotate",
@@ -3478,7 +3478,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-split",
@@ -3497,7 +3497,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-text-extraction",
@@ -3515,7 +3515,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-to-images",
@@ -3534,7 +3534,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "pdf-to-markdown",
@@ -3553,7 +3553,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "percentage-helper",
@@ -3572,7 +3572,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "perceptual-duplicate-finder",
@@ -3591,7 +3591,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "phone-link-hashtag-mention-extractor",
@@ -3611,7 +3611,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "platform-size-presets",
@@ -3629,7 +3629,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "ponti-ferie-optimizer",
@@ -3648,7 +3648,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "project-profitability",
@@ -3667,7 +3667,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "proposal-budget-checker",
@@ -3686,7 +3686,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "public-holiday-lookup",
@@ -3705,7 +3705,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "qr-generator",
@@ -3724,7 +3724,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "qr-reader",
@@ -3743,7 +3743,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "quarter-date-mapper",
@@ -3762,7 +3762,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "query-string-editor",
@@ -3782,7 +3782,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "quick-chart",
@@ -3803,7 +3803,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "quote-counter",
@@ -3824,7 +3824,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "random-picker-team-coupon-generator",
@@ -3844,7 +3844,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "rate-converter",
@@ -3863,7 +3863,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "reading-list-deduplicator",
@@ -3884,7 +3884,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "reading-time-estimator",
@@ -3904,7 +3904,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "recurring-date-generator",
@@ -3923,7 +3923,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "redirect-chain-inspector",
@@ -3943,7 +3943,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "reference-list-sorter",
@@ -3964,7 +3964,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "reference-size-converter",
@@ -3983,7 +3983,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "regex-tester",
@@ -4003,7 +4003,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "research-pack-manifest",
@@ -4023,7 +4023,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "research-url-cleaner",
@@ -4045,7 +4045,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "retainer-capacity",
@@ -4064,7 +4064,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "ris-bibtex-converter",
@@ -4085,7 +4085,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "roas-calculator",
@@ -4104,7 +4104,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "robots-directive-helper",
@@ -4124,7 +4124,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "safe-share-checklist",
@@ -4144,7 +4144,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "scientific-calculator",
@@ -4163,7 +4163,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "scope-creep-cost",
@@ -4182,7 +4182,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "screenshot-border-background-helper",
@@ -4201,7 +4201,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "secret-token-pattern-scanner",
@@ -4221,7 +4221,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "semantic-text-chunker",
@@ -4241,7 +4241,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "sitemap-xml-generator",
@@ -4261,7 +4261,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "slug-generator",
@@ -4281,7 +4281,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "smart-quote-normalizer",
@@ -4301,7 +4301,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "social-character-limit",
@@ -4320,7 +4320,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "stable-placeholder-anonymizer",
@@ -4340,7 +4340,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "statistics-grade-calculator",
@@ -4359,7 +4359,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "storage-download-calculator",
@@ -4378,7 +4378,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "subtitle-srt-vtt-transform",
@@ -4399,7 +4399,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "table-compare",
@@ -4420,7 +4420,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "table-transpose",
@@ -4441,7 +4441,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "target-income-rate",
@@ -4460,7 +4460,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "text-diff",
@@ -4480,7 +4480,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "text-markup-converter",
@@ -4500,7 +4500,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "text-to-csv-rows",
@@ -4520,7 +4520,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "timeline-sorter",
@@ -4540,7 +4540,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "timesheet-totaler",
@@ -4559,7 +4559,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "timezone-converter",
@@ -4578,7 +4578,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "timezone-overlap",
@@ -4597,7 +4597,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "toml-formatter",
@@ -4617,7 +4617,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "tracking-cleaner",
@@ -4637,7 +4637,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "tsv-to-csv",
@@ -4658,7 +4658,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md"
   },
   {
     "toolId": "unicode-normalizer",
@@ -4678,7 +4678,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "unix-timestamp",
@@ -4697,7 +4697,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "url-bulk-normalizer",
@@ -4717,7 +4717,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "url-codec",
@@ -4737,7 +4737,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "url-comparison",
@@ -4756,7 +4756,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "user-agent-parser",
@@ -4775,7 +4775,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "utilization-calculator",
@@ -4794,7 +4794,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "utm-builder",
@@ -4814,7 +4814,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "utm-parser",
@@ -4834,7 +4834,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "uuid-generator",
@@ -4853,7 +4853,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "vcf-viewer-csv-export",
@@ -4873,7 +4873,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "vocabulary-frequency-analyzer",
@@ -4893,7 +4893,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
     "toolId": "week-number-converter",
@@ -4912,7 +4912,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "whitespace-normalizer",
@@ -4932,7 +4932,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "word-character-line-counter",
@@ -4952,7 +4952,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
     "toolId": "working-hours",
@@ -4971,7 +4971,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "x509-csr-inspector",
@@ -4990,7 +4990,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "xml-formatter-validator",
@@ -5010,7 +5010,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "yaml-formatter",
@@ -5030,7 +5030,7 @@ export const resultV2Inventory = [
         "reset"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
     "toolId": "zero-byte-orphan-finder",
@@ -5050,7 +5050,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "zip-contents-inspector",
@@ -5070,7 +5070,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "zip-creator",
@@ -5091,6 +5091,6 @@ export const resultV2Inventory = [
         "before-after"
       ]
     },
-    "migrationOwner": ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   }
 ] as const satisfies readonly ResultV2InventoryEntry[];

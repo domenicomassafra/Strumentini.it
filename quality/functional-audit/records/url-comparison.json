@@ -1,7 +1,7 @@
 {
   "toolId": "url-comparison",
   "category": "web-operations",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Confronta due URL componente per componente con modalità esatta o semantica scelta esplicitamente. Public jobs: Usa Confronto URL.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/marketing-media/url-comparison.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "PASS",
-  "checkedAt": "2026-10-07T22:05:58.255Z",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "checkedAt": "2026-10-07T23:42:22.007Z",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "subjectToolId": "italian-document-expiry",
   "oracleEntryId": "cand-240",
   "keyboard": "submit exercised with Enter",

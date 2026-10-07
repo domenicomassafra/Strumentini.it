@@ -1,7 +1,7 @@
 {
   "toolId": "effective-hourly-rate",
   "category": "business-math",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Calcola il guadagno orario effettivo partendo da ricavi, costi e tempo lavorato. Public job: Usa Quanto guadagni davvero all'ora.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/business-math/effective-hourly-rate.gold.json; executable tests/business-tools.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/business-math/browser-acceptance.json verifies the real route interaction/locality contract.",

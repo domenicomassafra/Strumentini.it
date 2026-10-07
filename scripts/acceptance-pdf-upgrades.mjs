@@ -84,7 +84,7 @@ try {
       await context.close();
     }
     const evidence = { schemaVersion: 1, status: "PASS", scope: [220, 318], harness: "production PDF modules + production PdfResultV2", cases: results, globalReceiptRebound: false };
-    const evidenceDir = resolve(root, ".scratch/strumentiutili-expansion-20261005/evidence");
+    const evidenceDir = resolve(root, ".scratch/strumentini-expansion-20261005/evidence");
     await mkdir(evidenceDir, { recursive: true });
     await writeFile(resolve(evidenceDir, "pdf-220-318-browser.json"), `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
     console.log(`PDF 220/318 browser acceptance PASS: ${results.length} cases`);

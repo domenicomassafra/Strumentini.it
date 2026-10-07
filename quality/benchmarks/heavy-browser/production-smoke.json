@@ -31,14 +31,14 @@
           "delta": 6528072
         },
         "extracted": [
-          "STRUMENTIUTILI-PAGE-4  synthetic fixture 4",
-          "STRUMENTIUTILI-PAGE-2  synthetic fixture 2",
-          "STRUMENTIUTILI-PAGE-1  synthetic fixture 1",
-          "STRUMENTIUTILI-PAGE-3  synthetic fixture 3"
+          "STRUMENTINI-PAGE-4  synthetic fixture 4",
+          "STRUMENTINI-PAGE-2  synthetic fixture 2",
+          "STRUMENTINI-PAGE-1  synthetic fixture 1",
+          "STRUMENTINI-PAGE-3  synthetic fixture 3"
         ],
         "metadata": {
-          "sourceTitle": "Synthetic StrumentiUtili.it Fixture",
-          "sourceAuthor": "StrumentiUtili.it Lane 04",
+          "sourceTitle": "Synthetic Strumentini.it Fixture",
+          "sourceAuthor": "Strumentini.it Lane 04",
           "scrubbedTitle": null,
           "scrubbedAuthor": null,
           "note": "Targeted Info fields were blanked; this is not a proof of complete privacy metadata removal."
@@ -105,7 +105,7 @@
         "exif": {
           "before": {
             "ImageDescription": "Synthetic EXIF for local browser spike",
-            "Artist": "StrumentiUtili.it Synthetic Fixture"
+            "Artist": "Strumentini.it Synthetic Fixture"
           },
           "afterReencode": null,
           "note": "Canvas decode/re-encode strips parsed EXIF in this fixture; this does not prove removal of every metadata carrier."
@@ -138,8 +138,8 @@
           "timingMs": 1.2999999523162842
         },
         "qr": {
-          "payload": "strumentiutili://synthetic/lane-04?fixture=qr",
-          "decoded": "strumentiutili://synthetic/lane-04?fixture=qr",
+          "payload": "strumentini://synthetic/lane-04?fixture=qr",
+          "decoded": "strumentini://synthetic/lane-04?fixture=qr",
           "timingMs": 19.80000001192093
         },
         "hash": {

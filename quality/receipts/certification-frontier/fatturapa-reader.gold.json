@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "status": "GOLD",
   "goldEligible": true,
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "fatturapa-reader",
   "runtime": {
     "location": "LOCAL",
@@ -38,8 +38,8 @@
   ],
   "identities": {
     "manifestSha256": "37e0fff1ae9291f58cffbefa5db6f9a8e180c3a3cf5a95cf2f357e2056547bb7",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
     "browserAcceptanceSha256": "85fb947f94f90f95644efc7042581d04a98018d47192521fa7c988644750548d",
     "bundleIsolationSha256": "7201aba99ddca690d4413277ef45a94f6ad39d10b4549e58ff1c0b833545885b",
     "unitTestsSha256": "81de536b9dccd279eca2ac89682b0fda0adf4b6145a8701465d5e939c9dcb6c3",

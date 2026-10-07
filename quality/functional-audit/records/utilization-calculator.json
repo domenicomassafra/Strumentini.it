@@ -1,7 +1,7 @@
 {
   "toolId": "utilization-calculator",
   "category": "business-math",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra quale percentuale del tuo tempo disponibile è davvero fatturabile e quanto resta non fatturato. Public job: Usa Percentuale di ore fatturabili.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/business-math/utilization-calculator.gold.json; executable tests/business-tools.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/business-math/browser-acceptance.json verifies the real route interaction/locality contract.",

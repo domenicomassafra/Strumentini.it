@@ -1,7 +1,7 @@
 {
   "toolId": "mime-type-lookup",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Cerca il tipo MIME da un'estensione o da una piccola firma del file. Public jobs: Usa Trova il tipo MIME di un file",
   "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Cerca il tipo MIME da un'estensione o da una piccola firma del file. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",

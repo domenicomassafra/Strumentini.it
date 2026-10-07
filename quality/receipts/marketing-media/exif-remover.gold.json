@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "exif-remover",
   "runtime": {
     "location": "LOCAL",
@@ -23,7 +23,7 @@
     "iana-media-types",
     "iso-pdf2",
     "pkware-appnote",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "w3c-png3"
   ],
   "resolvedFixtures": [
@@ -94,12 +94,12 @@
   "identities": {
     "manifestSha256": "0745de51a887813b36f6708c7126e554cf6af81427cd1aa58b9af82da68e6d1b",
     "moduleSha256": "e2dc495c503f614cfedd16c23588da939f0f9f456fb161cf64455f0be4439f1f",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
     "browserAcceptanceSha256": "c4610816e7e875cff58223530baf0a8d34afd1f3436b4225cdd3c3873961190d",
     "acceptanceScriptSha256": "2c1eef9ba70d9a6e6ff2c98dee471ff40810cd334deb65cdcf25e3a343796b39",
     "unitTestsSha256": "c7c95a388ab7368340e175d004ca3a6d505a7737a77109c0f9bd2d7fb2eb4844",
-    "fixture:image-metadata:sha256": "636a2a09fef7acc95fc32184357a28883b61f1d27a1e8d7dd76c6cc73be8398d",
+    "fixture:image-metadata:sha256": "2c17827167b30b7716825e4974c17f6dbd595d07ca64b1d8feaac06472926c7d",
     "fixture:image-metadata-segments:sha256": "81e13bdb0ae7ae824c58acb90e93b0378bf5e5ae393936294f97ce2ae1bd958e",
     "fixture:mime-file-signatures:sha256": "34738fae795924ef3099e181d756509633c77ad82160905e824632ea3018d5fa"
   }

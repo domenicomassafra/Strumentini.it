@@ -1,7 +1,7 @@
 {
   "toolId": "image-format-conversion",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Converte un'immagine tra JPEG, PNG e WebP direttamente nel browser. Public jobs: Usa Converti formato immagine",
   "observedFunctionality": "Current job converts supported JPEG/PNG/WebP input to a selected verified browser-supported raster output. Ticket 312 adds richer direction/alpha/background policy beyond the present generic conversion contract.",

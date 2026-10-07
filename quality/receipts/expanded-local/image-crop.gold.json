@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "image-crop",
   "runtime": {
     "location": "LOCAL",
@@ -21,7 +21,7 @@
     "iana-media-types",
     "iso-pdf2",
     "pkware-appnote",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "w3c-png3"
   ],
   "resolvedFixtures": [
@@ -36,7 +36,7 @@
   ],
   "browserContract": {
     "assertion": "Larghezza[\\s\\S]*1|width[\\s\\S]*1",
-    "outputSha256": "3e32f8601edf3d93701ce055aa19906b08f8df3e432608dd0c25888d3fdfadcd",
+    "outputSha256": "9a21e01303e5894f3c0d74012c1e81b19a95fc69447094c19a71ebf332583644",
     "locality": "zero external/non-GET/task-body requests",
     "lazyLoad": "implementation script observed after submit",
     "mobile": "390px without horizontal overflow",
@@ -52,12 +52,12 @@
   ],
   "identities": {
     "manifestSha256": "c1fae56c621bca552f3962997007f9c025db12b412346cf18016773547113adf",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
-    "browserAcceptanceSha256": "32aa3a8c886472e7408e4d72757da6f793c94d626fee871cfaf63ae2e08e2a71",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
+    "browserAcceptanceSha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
     "acceptanceScriptSha256": "f080d5e4bf7389e7d394bd85ead21e9cb42db02e3017dd458f8f3ecb3182c42f",
     "unitTestsSha256": "41e0049894daa2eb3e6f856e98a6944994ce3070092d1ab1f21999f4058a35c2",
-    "fixture:image-metadata:sha256": "636a2a09fef7acc95fc32184357a28883b61f1d27a1e8d7dd76c6cc73be8398d",
+    "fixture:image-metadata:sha256": "2c17827167b30b7716825e4974c17f6dbd595d07ca64b1d8feaac06472926c7d",
     "fixture:mime-file-signatures:sha256": "34738fae795924ef3099e181d756509633c77ad82160905e824632ea3018d5fa"
   }
 }

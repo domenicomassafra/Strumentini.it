@@ -1,7 +1,7 @@
 {
   "toolId": "rate-converter",
   "category": "client-work-math",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Converte una tariffa tra ora, giornata e progetto usando le ore di lavoro che definisci. Public job: Usa Converti tariffa oraria, giornaliera e a progetto.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/client-time-math/rate-converter.gold.json; executable tests/client-time-math-engine.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/client-time-math/browser-acceptance.json verifies the real route interaction/locality contract.",

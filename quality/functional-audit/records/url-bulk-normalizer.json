@@ -1,7 +1,7 @@
 {
   "toolId": "url-bulk-normalizer",
   "category": "web-operations",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Normalizza un elenco di URL HTTP(S) e segnala gli errori riga per riga. Public jobs: Usa Pulisci e uniforma più URL.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/expanded-local/url-bulk-normalizer.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

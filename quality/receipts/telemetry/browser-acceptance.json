@@ -3,7 +3,7 @@
   "kind": "browser-acceptance",
   "subject": "telemetry",
   "generatedBy": "scripts/acceptance-telemetry.mjs",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
   "status": "PASS",
   "browser": "chrome",
   "verdict": {

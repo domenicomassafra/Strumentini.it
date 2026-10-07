@@ -1,7 +1,7 @@
 {
   "toolId": "image-dimensions-batch-inspector",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra larghezza, altezza, tipo e peso di più immagini locali in una sola volta. Public jobs: Usa Controlla dimensioni di più immagini",
   "observedFunctionality": "Current batch inspector iterates local images, reports dimensions/type/weight and isolates unreadable-file warnings rather than aborting the whole batch; Gold route evidence covers the batch result.",

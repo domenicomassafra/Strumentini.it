@@ -1,7 +1,7 @@
 {
   "toolId": "invisible-character-detector",
   "category": "text",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Individua caratteri Unicode invisibili, a larghezza zero o direzionali e mostra dove si trovano. Public jobs: Usa Trova caratteri invisibili.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/text-writing/invisible-character-detector.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

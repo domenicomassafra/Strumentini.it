@@ -24,7 +24,7 @@
         "standard entry types"
       ],
       "checked_at": "2026-09-23",
-      "notes": "StrumentiUtili.it fixtures are synthetic rather than copied from xampl.bib."
+      "notes": "Strumentini.it fixtures are synthetic rather than copied from xampl.bib."
     },
     {
       "id": "cipa-exif",
@@ -100,7 +100,7 @@
     {
       "id": "fixture-policy",
       "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
+      "authority": "Strumentini.it",
       "locator": "quality/fixtures/README.md",
       "supports": [
         "hand-worked literal oracle policy",
@@ -243,7 +243,7 @@
         "QR Code symbology authority"
       ],
       "checked_at": "2026-09-23",
-      "notes": "Full normative text is paywalled. StrumentiUtili.it does not fabricate unavailable vectors; Gold requires an independent decoder cross-check."
+      "notes": "Full normative text is paywalled. Strumentini.it does not fabricate unavailable vectors; Gold requires an independent decoder cross-check."
     },
     {
       "id": "italian-passphrase-v1",
@@ -623,7 +623,7 @@
     {
       "id": "ris-policy",
       "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
+      "authority": "Strumentini.it",
       "locator": "research/lanes/08-gold-oracle-factory.md",
       "supports": [
         "RIS minimal tagged-record policy"
@@ -661,9 +661,9 @@
       "checked_at": "2026-10-06"
     },
     {
-      "id": "strumentiutili-file-privacy-fixtures",
+      "id": "strumentini-file-privacy-fixtures",
       "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
+      "authority": "Strumentini.it",
       "locator": "quality/fixtures/metadata-risk-scan/vectors.json",
       "supports": [
         "bounded metadata-scan policy",
@@ -672,9 +672,9 @@
       ]
     },
     {
-      "id": "strumentiutili-holiday-calendar",
+      "id": "strumentini-holiday-calendar",
       "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
+      "authority": "Strumentini.it",
       "locator": "quality/fixtures/holiday-calendar/vectors.json",
       "supports": [
         "embedded holiday table and substitute-day policy",
@@ -683,9 +683,9 @@
       ]
     },
     {
-      "id": "strumentiutili-lane05",
+      "id": "strumentini-lane05",
       "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
+      "authority": "Strumentini.it",
       "locator": "docs/architecture/lane-05-test-seams-and-acceptance.md",
       "supports": [
         "public behavior seams",
@@ -694,9 +694,9 @@
       ]
     },
     {
-      "id": "strumentiutili-local-jobs-fixtures",
+      "id": "strumentini-local-jobs-fixtures",
       "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
+      "authority": "Strumentini.it",
       "locator": "quality/fixtures/text-writing-local-jobs/vectors.json",
       "supports": [
         "reading-rate bounds and rounding policy",
@@ -706,9 +706,9 @@
       ]
     },
     {
-      "id": "strumentiutili-quality",
+      "id": "strumentini-quality",
       "source_class": "project-policy",
-      "authority": "StrumentiUtili.it",
+      "authority": "Strumentini.it",
       "locator": "docs/07-tool-factory-quality-standard.md",
       "supports": [
         "Gold quality gate",

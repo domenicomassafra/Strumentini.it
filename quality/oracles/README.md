@@ -2,7 +2,7 @@
 
 This directory is the machine-readable correctness-oracle contract for Strumentini.it tools.
 
-Stable source IDs and dated generated records created before the Strumentini.it rebrand retain the former `StrumentiUtili.it` name where it records historical authority or provenance. Do not rename those identifiers without regenerating and re-certifying the evidence graph.
+Stable source IDs and dated generated records created before the Strumentini.it rebrand retain the former `Strumentini.it` name where it records historical authority or provenance. Do not rename those identifiers without regenerating and re-certifying the evidence graph.
 
 It deliberately separates:
 

@@ -93,7 +93,7 @@ RATIONALE = {
     "exifreader": "Current typed metadata parser with broad coverage; MPL-2.0 compliance must be recorded.",
     "pdf-lib": "Browser-capable PDF mutation API, but old release and large package require a bounded mutation-only spike.",
     "pdfjs-dist": "Current Mozilla PDF.js is the browser render/extract baseline; heavy and must stay lazy/worker-isolated.",
-    "jspdf": "Good PDF generation reference, but generation is not the primary StrumentiUtili.it PDF need and package is large.",
+    "jspdf": "Good PDF generation reference, but generation is not the primary Strumentini.it PDF need and package is large.",
     "fflate": "Current zero-dependency archive/compression primitive; strong ZIP candidate after zip-bomb and cancellation tests.",
     "jszip": "Mature and current but with more dependency/streaming overhead than fflate/zip.js; retain as comparator.",
     "pako": "Strong deflate primitive, but not a full ZIP container solution.",
@@ -256,7 +256,7 @@ for row in npm_rows:
         "wasm_native": wasm_native(pkg) if is_deep else "", "security_advisories": advisory_summary(deep or {}) if is_deep else "not deep-verified",
         "test_quality": test_quality(deep or {}) if is_deep else "", "typescript_quality": ts_quality(row, deep or {}) if is_deep else "",
         "worker_compatibility": worker_compat(row["family"], pkg) if is_deep else "", "ssr_static_build": ssr_static(row["family"], pkg) if is_deep else "",
-        "capability_coverage": row["family"], "strumentiutili_mapping": FAMILY_MAP.get(row["family"], ""),
+        "capability_coverage": row["family"], "strumentini_mapping": FAMILY_MAP.get(row["family"], ""),
         "adoption": VERDICTS.get(pkg, "REFERENCE_ONLY"),
         "rationale": RATIONALE.get(pkg, f"Census-only {row['family']} candidate; not selected for deep adoption without a proven capability gap."),
         "deep_assessed": "yes" if is_deep else "no",
@@ -288,7 +288,7 @@ for repo, license_name, pushed, adoption, reason in STUDY:
         "security_advisories": "study-only; package advisory query not applicable", "test_quality": "study-only",
         "typescript_quality": "study-only", "worker_compatibility": "architectural pattern only",
         "ssr_static_build": "architectural pattern only", "capability_coverage": "utility-suite/application architecture",
-        "strumentiutili_mapping": "tool registry, UX, worker/WASM, licensing, workflow patterns", "adoption": adoption,
+        "strumentini_mapping": "tool registry, UX, worker/WASM, licensing, workflow patterns", "adoption": adoption,
         "rationale": reason, "deep_assessed": "no", "evidence_note": "GitHub repository metadata + first-party repository/license pages",
     })
 
@@ -297,7 +297,7 @@ FIELDS = [
     "family", "candidate_kind", "candidate", "canonical_url", "latest_version", "latest_release_date",
     "license", "license_source", "maintenance", "browser_support", "esm_tree_shaking", "approx_footprint",
     "dependency_burden", "wasm_native", "security_advisories", "test_quality", "typescript_quality",
-    "worker_compatibility", "ssr_static_build", "capability_coverage", "strumentiutili_mapping", "adoption",
+    "worker_compatibility", "ssr_static_build", "capability_coverage", "strumentini_mapping", "adoption",
     "rationale", "deep_assessed", "evidence_note",
 ]
 
@@ -404,7 +404,7 @@ primary_sources = [
 ]
 
 
-report = f"""# StrumentiUtili.it OSS / GitHub donor census
+report = f"""# Strumentini.it OSS / GitHub donor census
 
 Date: 2026-09-23
 Lane: `lane-01-oss-donor-census`
@@ -412,7 +412,7 @@ Status: decision research, not dependency installation
 
 ## Executive summary
 
-StrumentiUtili.it should **not** reimplement every parser/codec from scratch, but it also should not become a dependency museum. This census found **{summary['census_rows']} distinct package/repository candidates**, including **{summary['deep_rows']} deep assessments** across every required capability family. The resulting posture is deliberately conservative: **3 `ADOPT`, 28 `SPIKE`, 86 `REFERENCE_ONLY`, 6 `AVOID`**.
+Strumentini.it should **not** reimplement every parser/codec from scratch, but it also should not become a dependency museum. This census found **{summary['census_rows']} distinct package/repository candidates**, including **{summary['deep_rows']} deep assessments** across every required capability family. The resulting posture is deliberately conservative: **3 `ADOPT`, 28 `SPIKE`, 86 `REFERENCE_ONLY`, 6 `AVOID`**.
 
 The strongest near-term pattern is:
 
@@ -437,9 +437,9 @@ Important limits:
 
 ## Native Web Platform first
 
-Prefer no dependency for these StrumentiUtili.it primitives unless acceptance tests demonstrate a real gap:
+Prefer no dependency for these Strumentini.it primitives unless acceptance tests demonstrate a real gap:
 
-| StrumentiUtili.it need | Prefer | Why |
+| Strumentini.it need | Prefer | Why |
 |---|---|---|
 | URL parse/build, UTM/query editing | `URL`, `URLSearchParams` | Native, standards-based, no dependency/security surface. |
 | Base64 for byte/text helpers | `Uint8Array`, `TextEncoder`, `TextDecoder`, narrowly-scoped helpers | Avoid Buffer polyfills in browser-only tools. |
@@ -456,11 +456,11 @@ Native-first explicitly means **do not add `qs` just to edit query strings**, do
 
 ## Dependency shortlist worth a focused spike (20)
 
-These are not blanket approvals. Each must pass the StrumentiUtili.it public-seam corpus, bundle delta, browser/mobile matrix, privacy checks and cancellation/worker requirements appropriate to its class.
+These are not blanket approvals. Each must pass the Strumentini.it public-seam corpus, bundle delta, browser/mobile matrix, privacy checks and cancellation/worker requirements appropriate to its class.
 
 {chr(10).join(shortlist_lines)}
 
-Three candidates are already strong enough for an implementation default **once their normal StrumentiUtili.it acceptance tests pass**: `diff` for text diff, `decimal.js` for exact business arithmetic, and `idb` when a wrapper is actually justified. They still remain subject to lockfile/license/bundle gates.
+Three candidates are already strong enough for an implementation default **once their normal Strumentini.it acceptance tests pass**: `diff` for text diff, `decimal.js` for exact business arithmetic, and `idb` when a wrapper is actually justified. They still remain subject to lockfile/license/bundle gates.
 
 ## Mature applications/repos worth studying, not depending on
 
@@ -473,17 +473,17 @@ The most reusable architectural lessons are:
 - **Squoosh:** worker/WASM lazy loading, progress phases, local-only image processing and before/after inspection.
 - **BentoPDF/Stirling PDF:** PDF tool decomposition and UX breadth, but their current license/fork structures require path-level diligence; do not treat either repository as a permissive source bucket.
 - **qpdf/MuPDF:** excellent behavioral/oracle references for PDF correctness; native/AGPL constraints make them poor casual browser dependencies.
-- **Zotero:** citation model and dedupe/workflow reference rather than an embeddable StrumentiUtili.it module.
+- **Zotero:** citation model and dedupe/workflow reference rather than an embeddable Strumentini.it module.
 
-## DO NOT USE / avoid as current StrumentiUtili.it core dependencies
+## DO NOT USE / avoid as current Strumentini.it core dependencies
 
 - **`xlsx` 0.18.5** — package published 2022-03-24, ~7.3 MiB unpacked, seven direct deps and multiple advisory-database hits. Spreadsheet support is outside the Wave A CSV tracer; do not pull this in “just in case.”
 - **`@iarna/toml` 2.2.5** — npm release from 2020 with stale modern-package signals. Prefer a current TOML candidate only when TOML enters an approved wave.
-- **`qs`** — capable and current, but StrumentiUtili.it Wave A query editing is covered by native `URLSearchParams`; avoid unnecessary historical security and dependency surface.
+- **`qs`** — capable and current, but Strumentini.it Wave A query editing is covered by native `URLSearchParams`; avoid unnecessary historical security and dependency surface.
 - **`@dinero.js/core` 2.0.0-alpha.1** — alpha subpackage is not an appropriate v1 arithmetic foundation. If a domain money model becomes necessary, reassess the stable top-level package separately.
 - **`citeproc`** — package license reports `CPAL-1.0 OR AGPL-1.0`; do not make it a proprietary-product dependency without explicit legal review.
 - **MuPDF (`ArtifexSoftware/mupdf`)** — AGPL-3.0/commercial dual path plus native/WASM complexity. Use as PDF behavior/reference evidence unless a separately approved license/architecture decision is made.
-- **Moment.js for new work** — census-only reference; StrumentiUtili.it should use Temporal/Intl plus focused helpers rather than adopting a legacy-style all-purpose date library.
+- **Moment.js for new work** — census-only reference; Strumentini.it should use Temporal/Intl plus focused helpers rather than adopting a legacy-style all-purpose date library.
 - **Full utility-suite source copying** from IT-Tools/BentoPDF/Stirling/CyberChef — even where licenses permit reuse, the product should copy **patterns, test ideas and algorithms only when license-compatible and independently integrated**, not wholesale application structure.
 
 ## Family conclusions
@@ -496,7 +496,7 @@ Acceptance corpus must include quoted newlines, embedded delimiters, BOM, CRLF/L
 
 ### JSON / YAML / TOML
 
-JSON formatting/validation should remain native JSON plus StrumentiUtili.it diagnostics. `yaml` 2.9.1 is the leading YAML spike. TOML is not a reason to add a stale parser now; `smol-toml` is promising but its repository provenance was not exposed by the npm metadata captured in this run, so it needs one more primary-source provenance check before adoption.
+JSON formatting/validation should remain native JSON plus Strumentini.it diagnostics. `yaml` 2.9.1 is the leading YAML spike. TOML is not a reason to add a stale parser now; `smol-toml` is promising but its repository provenance was not exposed by the npm metadata captured in this run, so it needs one more primary-source provenance check before adoption.
 
 ### Markdown / sanitization
 
@@ -516,7 +516,7 @@ Use `Temporal`/`Intl` wherever the browser floor allows. Spike `@js-temporal/pol
 
 ### Business math
 
-Use explicit exact-decimal arithmetic for money/rates rather than binary floating-point shortcuts. `decimal.js` is the primary choice; `big.js` is the smaller comparison candidate. Keep domain formulas in StrumentiUtili.it code with independent oracle fixtures rather than hiding business logic in a finance framework.
+Use explicit exact-decimal arithmetic for money/rates rather than binary floating-point shortcuts. `decimal.js` is the primary choice; `big.js` is the smaller comparison candidate. Keep domain formulas in Strumentini.it code with independent oracle fixtures rather than hiding business logic in a finance framework.
 
 ### Hashing / checksum / encoding
 
@@ -594,7 +594,7 @@ The next engineering step should not be “install the shortlist.” Create focu
 2. YAML: `yaml` hostile-input and bundle check.
 3. Markdown: parser choice + DOMPurify pinned-XSS corpus.
 4. Diff: adopt `diff` behind the shared text engine and prove bundle delta.
-5. Business math: adopt `decimal.js` behind explicit StrumentiUtili.it formulas/oracles.
+5. Business math: adopt `decimal.js` behind explicit Strumentini.it formulas/oracles.
 6. Hashing: Web Crypto baseline vs noble/hash-wasm for incremental large files.
 7. QR: `qrcode` generation corpus.
 8. Image: native baseline vs pica/compressorjs.
@@ -610,7 +610,7 @@ The next engineering step should not be “install the shortlist.” Create focu
 deep_required = [
     "license", "maintenance", "browser_support", "security_advisories", "adoption",
     "latest_version", "latest_release_date", "test_quality", "typescript_quality",
-    "worker_compatibility", "ssr_static_build", "capability_coverage", "strumentiutili_mapping",
+    "worker_compatibility", "ssr_static_build", "capability_coverage", "strumentini_mapping",
     "rationale",
 ]
 missing_deep_fields = [

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "csv-cleaner",
   "runtime": {
     "location": "LOCAL",
@@ -18,7 +18,7 @@
   "truthSources": [
     "fixture-policy",
     "rfc4180",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "whatwg-encoding"
   ],
   "identities": {

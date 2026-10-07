@@ -1,7 +1,7 @@
 {
   "toolId": "cpa-cpc-cpm-calculator",
   "category": "marketing",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Calcola il costo per acquisizione, clic o mille impression partendo dalla spesa pubblicitaria. Public jobs: Usa Calcola CPA, CPC o CPM.",
   "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/expanded-local/cpa-cpc-cpm-calculator.gold.json, executable functional tests in tests/url-marketing-tools.test.ts, and real-route browser acceptance in quality/receipts/expanded-local/browser-acceptance.json. No scoped functional gap is open for this narrow public job.",

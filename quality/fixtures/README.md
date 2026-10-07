@@ -2,7 +2,7 @@
 
 Expected values are independent of future production implementations. They come from small normative specification vectors, hand-worked literals, or synthetic local files.
 
-Dated fixture provenance created before the Strumentini.it rebrand may still name `StrumentiUtili.it`. That text records where the fixture came from and is not the current public product name.
+Fixture provenance in the current tree uses the canonical Strumentini.it brand.
 
 Rules:
 - never generate an expected value by calling the implementation under test;

@@ -17,62 +17,62 @@ export const RESULT_V2_MIGRATION_TICKETS = {
   businessMathShared: {
     id: 88,
     title: "Migrate BusinessMathTool renderer to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md",
   },
   dateTimeShared: {
     id: 89,
     title: "Migrate date-time shared renderers to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md",
   },
   calculatorMarketingBespoke: {
     id: 90,
     title: "Migrate calculator and marketing bespoke results to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md",
   },
   developerWeb: {
     id: 91,
     title: "Migrate DeveloperWebTool renderer to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md",
   },
   textWritingLists: {
     id: 92,
     title: "Migrate TextWriting and list renderers to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md",
   },
   researchReference: {
     id: 93,
     title: "Migrate research and reference renderers to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md",
   },
   tableWorkbench: {
     id: 94,
     title: "Migrate TableWorkbench shared path to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md",
   },
   bespokeCsvData: {
     id: 95,
     title: "Migrate bespoke CSV and data renderers to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md",
   },
   filePrivacyShared: {
     id: 96,
     title: "Migrate file privacy shared renderers to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md",
   },
   image: {
     id: 97,
     title: "Migrate image shared renderers to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md",
   },
   pdfDocument: {
     id: 98,
     title: "Migrate PdfTool and document renderers to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md",
   },
   urlMarketingQrBespoke: {
     id: 99,
     title: "Migrate URL marketing QR and bespoke results to Result v2",
-    path: ".scratch/strumentiutili-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md",
+    path: ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md",
   },
 } as const satisfies Readonly<Record<string, ResultV2MigrationTicket>>;
 

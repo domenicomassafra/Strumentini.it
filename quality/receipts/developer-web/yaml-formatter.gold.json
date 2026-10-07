@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "yaml-formatter",
   "runtime": {
     "location": "LOCAL",
@@ -18,7 +18,7 @@
   "exactVectors": 1,
   "truthSources": [
     "fixture-policy",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "yaml12"
   ],
   "resolvedFixtures": [
@@ -44,8 +44,8 @@
     "regexWorkerClientSha256": "5638f00112102057b38933a1c1f574760c8d7cdf3a6518c9973d1c421d5d0c5f",
     "regexWorkerSha256": "e6a86790cadc8ba464ed0eccca3d10a47139495b8a320d9b8f1c6e99c7aba25f",
     "webReferenceSha256": "1e5adaa024ce99ce81c992c26513a449373b5996d4391155a4713b94455b4ca5",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
     "browserAcceptanceSha256": "e154d7c4f13a64ab5cb8df3f5fcc3119ff33dbc19fed2d7844e7ce9ec003e681",
     "unitTestsSha256": "870eec21751cee72ad43a676726699ebad20df7f7b69fec1ba40903f80523ad6",
     "regexWorkerTestsSha256": "0368f7646383c825b014efdcdde465f3eb228acd8d50c99ca6f91343fcb7ee49",

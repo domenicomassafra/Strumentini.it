@@ -83,7 +83,7 @@ describe("Result v2 renderer migration ledger", () => {
     const missingTicket: ResultV2MigrationTicket = {
       id: 999,
       title: "Missing migration ticket",
-      path: ".scratch/strumentiutili-expansion-20261005/issues/999-missing-migration-ticket.md",
+      path: ".scratch/strumentini-expansion-20261005/issues/999-missing-migration-ticket.md",
     };
     await expect(assertResultV2MigrationTicketsExist(root, [missingTicket])).rejects.toThrow(/migration ticket does not exist/u);
 

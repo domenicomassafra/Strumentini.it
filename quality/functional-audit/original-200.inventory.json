@@ -4,7 +4,7 @@
     {
       "toolId": "add-subtract-days",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/add-subtract-days/manifest.ts",
@@ -47,7 +47,7 @@
     {
       "toolId": "age-date-anniversary",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/age-date-anniversary/manifest.ts",
@@ -90,7 +90,7 @@
     {
       "toolId": "archive-checksum-manifest",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/archive-checksum-manifest/manifest.ts",
@@ -138,7 +138,7 @@
     {
       "toolId": "aspect-ratio-calculator",
       "category": "image-visual",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/aspect-ratio-calculator/manifest.ts",
@@ -181,7 +181,7 @@
     {
       "toolId": "base64-codec",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/base64-codec/manifest.ts",
@@ -225,7 +225,7 @@
     {
       "toolId": "batch-checksum-manifest",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/batch-checksum-manifest/manifest.ts",
@@ -268,7 +268,7 @@
     {
       "toolId": "batch-rename-preview",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/batch-rename-preview/manifest.ts",
@@ -315,7 +315,7 @@
     {
       "toolId": "bibtex-deduplicator",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/bibtex-deduplicator/manifest.ts",
@@ -356,7 +356,7 @@
     {
       "toolId": "bibtex-formatter",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/bibtex-formatter/manifest.ts",
@@ -397,7 +397,7 @@
     {
       "toolId": "break-even",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/break-even/manifest.ts",
@@ -437,7 +437,7 @@
     {
       "toolId": "bulk-domain-extractor",
       "category": "web-operations",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/bulk-domain-extractor/manifest.ts",
@@ -481,7 +481,7 @@
     {
       "toolId": "business-day",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/business-day/manifest.ts",
@@ -520,7 +520,7 @@
     {
       "toolId": "calendar-date-list-generator",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/calendar-date-list-generator/manifest.ts",
@@ -563,7 +563,7 @@
     {
       "toolId": "campaign-name",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/campaign-name/manifest.ts",
@@ -594,7 +594,7 @@
         "ref": "quality/oracles/registry.json#cand-068"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md",
+        ".scratch/strumentini-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md",
         "quality/receipts/campaign-url/browser-acceptance.json",
         "quality/receipts/campaign-url/campaign-name.gold.json",
         "tests/campaign-url-engine.test.ts"
@@ -604,7 +604,7 @@
     {
       "toolId": "canonical-url-helper",
       "category": "web-operations",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/canonical-url-helper/manifest.ts",
@@ -648,7 +648,7 @@
     {
       "toolId": "capacity-planner",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/capacity-planner/manifest.ts",
@@ -688,7 +688,7 @@
     {
       "toolId": "case-converter",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/case-converter/manifest.ts",
@@ -732,7 +732,7 @@
     {
       "toolId": "checksum-verifier",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/checksum-verifier/manifest.ts",
@@ -774,7 +774,7 @@
     {
       "toolId": "citation-deduplicator",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/citation-deduplicator/manifest.ts",
@@ -814,7 +814,7 @@
     {
       "toolId": "citation-key-generator",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/citation-key-generator/manifest.ts",
@@ -862,7 +862,7 @@
     {
       "toolId": "clean-zip-creator",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/clean-zip-creator/manifest.ts",
@@ -905,7 +905,7 @@
     {
       "toolId": "client-handoff-index-generator",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/client-handoff-index-generator/manifest.ts",
@@ -952,7 +952,7 @@
     {
       "toolId": "color-converter",
       "category": "image-visual",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/color-converter/manifest.ts",
@@ -995,7 +995,7 @@
     {
       "toolId": "color-picker",
       "category": "image-visual",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/color-picker/manifest.ts",
@@ -1038,7 +1038,7 @@
     {
       "toolId": "column-type-profiler",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/column-type-profiler/manifest.ts",
@@ -1084,7 +1084,7 @@
     {
       "toolId": "contact-sheet-generator",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/contact-sheet-generator/manifest.ts",
@@ -1127,7 +1127,7 @@
     {
       "toolId": "contrast-checker",
       "category": "image-visual",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/contrast-checker/manifest.ts",
@@ -1171,7 +1171,7 @@
     {
       "toolId": "conversion-rate-scenario",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/conversion-rate-scenario/manifest.ts",
@@ -1210,7 +1210,7 @@
     {
       "toolId": "cpa-cpc-cpm-calculator",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/cpa-cpc-cpm-calculator/manifest.ts",
@@ -1249,7 +1249,7 @@
     {
       "toolId": "cron-explainer",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/cron-explainer/manifest.ts",
@@ -1292,7 +1292,7 @@
     {
       "toolId": "cron-next-run",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/cron-next-run/manifest.ts",
@@ -1335,7 +1335,7 @@
     {
       "toolId": "csv-cleaner",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-cleaner/manifest.ts",
@@ -1380,7 +1380,7 @@
     {
       "toolId": "csv-column-map",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-column-map/manifest.ts",
@@ -1425,7 +1425,7 @@
     {
       "toolId": "csv-column-selector",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-column-selector/manifest.ts",
@@ -1475,7 +1475,7 @@
     {
       "toolId": "csv-column-to-list",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-column-to-list/manifest.ts",
@@ -1519,7 +1519,7 @@
     {
       "toolId": "csv-dedupe",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-dedupe/manifest.ts",
@@ -1564,7 +1564,7 @@
     {
       "toolId": "csv-delimiter-detector",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-delimiter-detector/manifest.ts",
@@ -1614,7 +1614,7 @@
     {
       "toolId": "csv-encoding-fixer",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-encoding-fixer/manifest.ts",
@@ -1664,7 +1664,7 @@
     {
       "toolId": "csv-filter",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-filter/manifest.ts",
@@ -1714,7 +1714,7 @@
     {
       "toolId": "csv-group-count",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-group-count/manifest.ts",
@@ -1764,7 +1764,7 @@
     {
       "toolId": "csv-join",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-join/manifest.ts",
@@ -1814,7 +1814,7 @@
     {
       "toolId": "csv-pivot-lite",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-pivot-lite/manifest.ts",
@@ -1864,7 +1864,7 @@
     {
       "toolId": "csv-sort",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-sort/manifest.ts",
@@ -1914,7 +1914,7 @@
     {
       "toolId": "csv-to-json",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-to-json/manifest.ts",
@@ -1962,7 +1962,7 @@
     {
       "toolId": "csv-viewer",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/csv-viewer/manifest.ts",
@@ -2008,7 +2008,7 @@
     {
       "toolId": "currency-scenario",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/currency-scenario/manifest.ts",
@@ -2048,7 +2048,7 @@
     {
       "toolId": "date-difference",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/date-difference/manifest.ts",
@@ -2091,7 +2091,7 @@
     {
       "toolId": "date-source-normalizer",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/date-source-normalizer/manifest.ts",
@@ -2133,7 +2133,7 @@
     {
       "toolId": "deadline-countdown",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/deadline-countdown/manifest.ts",
@@ -2176,7 +2176,7 @@
     {
       "toolId": "decimal-hours-converter",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/decimal-hours-converter/manifest.ts",
@@ -2219,7 +2219,7 @@
     {
       "toolId": "discount-impact",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/discount-impact/manifest.ts",
@@ -2259,7 +2259,7 @@
     {
       "toolId": "document-handoff-manifest",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/document-handoff-manifest/manifest.ts",
@@ -2302,7 +2302,7 @@
     {
       "toolId": "doi-isbn-normalizer",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/doi-isbn-normalizer/manifest.ts",
@@ -2348,7 +2348,7 @@
     {
       "toolId": "doi-link-builder",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/doi-link-builder/manifest.ts",
@@ -2390,7 +2390,7 @@
     {
       "toolId": "doi-normalizer",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/doi-normalizer/manifest.ts",
@@ -2432,7 +2432,7 @@
     {
       "toolId": "domain-frequency-counter",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/domain-frequency-counter/manifest.ts",
@@ -2472,7 +2472,7 @@
     {
       "toolId": "domain-subdomain-grouper",
       "category": "web-operations",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/domain-subdomain-grouper/manifest.ts",
@@ -2516,7 +2516,7 @@
     {
       "toolId": "dominant-color-extractor",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/dominant-color-extractor/manifest.ts",
@@ -2559,7 +2559,7 @@
     {
       "toolId": "duplicate-file-finder",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/duplicate-file-finder/manifest.ts",
@@ -2601,7 +2601,7 @@
     {
       "toolId": "duplicate-row-profiler",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/duplicate-row-profiler/manifest.ts",
@@ -2647,7 +2647,7 @@
     {
       "toolId": "duration-calculator",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/duration-calculator/manifest.ts",
@@ -2690,7 +2690,7 @@
     {
       "toolId": "effective-hourly-rate",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/effective-hourly-rate/manifest.ts",
@@ -2730,7 +2730,7 @@
     {
       "toolId": "email-domain-extractor",
       "category": "web-operations",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/email-domain-extractor/manifest.ts",
@@ -2774,7 +2774,7 @@
     {
       "toolId": "epoch-batch-converter",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/epoch-batch-converter/manifest.ts",
@@ -2817,7 +2817,7 @@
     {
       "toolId": "evidence-table-builder",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/evidence-table-builder/manifest.ts",
@@ -2857,7 +2857,7 @@
     {
       "toolId": "exif-remover",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/exif-remover/manifest.ts",
@@ -2904,7 +2904,7 @@
     {
       "toolId": "favicon-app-icon-size-generator",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/favicon-app-icon-size-generator/manifest.ts",
@@ -2947,7 +2947,7 @@
     {
       "toolId": "file-hash",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/file-hash/manifest.ts",
@@ -2991,7 +2991,7 @@
     {
       "toolId": "file-list-diff",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/file-list-diff/manifest.ts",
@@ -3037,7 +3037,7 @@
     {
       "toolId": "file-signature-detector",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/file-signature-detector/manifest.ts",
@@ -3079,7 +3079,7 @@
     {
       "toolId": "filename-sanitizer",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/filename-sanitizer/manifest.ts",
@@ -3121,7 +3121,7 @@
     {
       "toolId": "find-replace-preview",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/find-replace-preview/manifest.ts",
@@ -3165,7 +3165,7 @@
     {
       "toolId": "folder-compare",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/folder-compare/manifest.ts",
@@ -3216,7 +3216,7 @@
     {
       "toolId": "folder-inventory",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/folder-inventory/manifest.ts",
@@ -3258,7 +3258,7 @@
     {
       "toolId": "folder-size-type-summary",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/folder-size-type-summary/manifest.ts",
@@ -3300,7 +3300,7 @@
     {
       "toolId": "hash-generator",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/hash-generator/manifest.ts",
@@ -3343,7 +3343,7 @@
     {
       "toolId": "hmac-generator",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/hmac-generator/manifest.ts",
@@ -3386,7 +3386,7 @@
     {
       "toolId": "html-entity-codec",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/html-entity-codec/manifest.ts",
@@ -3430,7 +3430,7 @@
     {
       "toolId": "http-status-reference",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/http-status-reference/manifest.ts",
@@ -3473,7 +3473,7 @@
     {
       "toolId": "ics-event-builder",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/ics-event-builder/manifest.ts",
@@ -3517,7 +3517,7 @@
     {
       "toolId": "ics-viewer",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/ics-viewer/manifest.ts",
@@ -3561,7 +3561,7 @@
     {
       "toolId": "image-compare-slider",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/image-compare-slider/manifest.ts",
@@ -3604,7 +3604,7 @@
     {
       "toolId": "image-compression",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/image-compression/manifest.ts",
@@ -3647,7 +3647,7 @@
     {
       "toolId": "image-crop",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/image-crop/manifest.ts",
@@ -3690,7 +3690,7 @@
     {
       "toolId": "image-dimensions-batch-inspector",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/image-dimensions-batch-inspector/manifest.ts",
@@ -3732,7 +3732,7 @@
     {
       "toolId": "image-format-conversion",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/image-format-conversion/manifest.ts",
@@ -3775,7 +3775,7 @@
     {
       "toolId": "image-metadata-viewer",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/image-metadata-viewer/manifest.ts",
@@ -3817,7 +3817,7 @@
     {
       "toolId": "image-rename-batch-preview",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/image-rename-batch-preview/manifest.ts",
@@ -3860,7 +3860,7 @@
     {
       "toolId": "image-resize",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "REFUSED",
       "decision": "REFUSED",
       "manifestRef": "src/tools/image-resize/manifest.ts",
@@ -3894,9 +3894,9 @@
         "ref": "quality/oracles/registry.json#cand-141"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/277-physical-android-chrome-image-resize-acceptance.md",
-        ".scratch/strumentiutili-expansion-20261005/issues/278-physical-ios-safari-image-resize-acceptance.md",
-        ".scratch/strumentiutili-expansion-20261005/issues/279-image-resize-gold-promotion-gate.md",
+        ".scratch/strumentini-expansion-20261005/issues/277-physical-android-chrome-image-resize-acceptance.md",
+        ".scratch/strumentini-expansion-20261005/issues/278-physical-ios-safari-image-resize-acceptance.md",
+        ".scratch/strumentini-expansion-20261005/issues/279-image-resize-gold-promotion-gate.md",
         "quality/receipts/image-resize/browser-chrome.json",
         "quality/receipts/image-resize/browser-edge.json",
         "quality/receipts/image-resize/certification.json",
@@ -3909,7 +3909,7 @@
     {
       "toolId": "images-to-pdf",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/images-to-pdf/manifest.ts",
@@ -3956,7 +3956,7 @@
     {
       "toolId": "invisible-character-detector",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/invisible-character-detector/manifest.ts",
@@ -4002,7 +4002,7 @@
     {
       "toolId": "invoice-math-validator",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/invoice-math-validator/manifest.ts",
@@ -4043,7 +4043,7 @@
     {
       "toolId": "invoice-number-generator",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/invoice-number-generator/manifest.ts",
@@ -4083,7 +4083,7 @@
     {
       "toolId": "isbn-validator-converter",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/isbn-validator-converter/manifest.ts",
@@ -4125,7 +4125,7 @@
     {
       "toolId": "json-formatter",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/json-formatter/manifest.ts",
@@ -4169,7 +4169,7 @@
     {
       "toolId": "json-path-playground",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/json-path-playground/manifest.ts",
@@ -4212,7 +4212,7 @@
     {
       "toolId": "json-to-csv",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/json-to-csv/manifest.ts",
@@ -4261,7 +4261,7 @@
     {
       "toolId": "json-yaml-converter",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/json-yaml-converter/manifest.ts",
@@ -4309,7 +4309,7 @@
     {
       "toolId": "jwt-inspector",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/jwt-inspector/manifest.ts",
@@ -4353,7 +4353,7 @@
     {
       "toolId": "language-aware-text-statistics",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/language-aware-text-statistics/manifest.ts",
@@ -4397,7 +4397,7 @@
     {
       "toolId": "late-payment-interest",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/late-payment-interest/manifest.ts",
@@ -4437,7 +4437,7 @@
     {
       "toolId": "line-deduplicator",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/line-deduplicator/manifest.ts",
@@ -4485,7 +4485,7 @@
     {
       "toolId": "line-sorter",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/line-sorter/manifest.ts",
@@ -4529,7 +4529,7 @@
     {
       "toolId": "list-compare",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/list-compare/manifest.ts",
@@ -4577,7 +4577,7 @@
     {
       "toolId": "list-difference",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/list-difference/manifest.ts",
@@ -4621,7 +4621,7 @@
     {
       "toolId": "list-intersection",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/list-intersection/manifest.ts",
@@ -4665,7 +4665,7 @@
     {
       "toolId": "lorem-sample-data-generator",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/lorem-sample-data-generator/manifest.ts",
@@ -4708,7 +4708,7 @@
     {
       "toolId": "margin-markup",
       "category": "client-work-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/margin-markup/manifest.ts",
@@ -4748,7 +4748,7 @@
     {
       "toolId": "markdown-preview",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/markdown-preview/manifest.ts",
@@ -4791,7 +4791,7 @@
     {
       "toolId": "markdown-table-formatter",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/markdown-table-formatter/manifest.ts",
@@ -4835,7 +4835,7 @@
     {
       "toolId": "meeting-time-planner",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/meeting-time-planner/manifest.ts",
@@ -4878,7 +4878,7 @@
     {
       "toolId": "meta-preview",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/meta-preview/manifest.ts",
@@ -4912,7 +4912,7 @@
         "ref": "quality/oracles/registry.json#cand-070"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md",
+        ".scratch/strumentini-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md",
         "quality/receipts/marketing-media/browser-acceptance.json",
         "quality/receipts/marketing-media/meta-preview.gold.json",
         "tests/url-marketing-tools.test.ts"
@@ -4922,7 +4922,7 @@
     {
       "toolId": "metadata-risk-inspector",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/metadata-risk-inspector/manifest.ts",
@@ -4969,7 +4969,7 @@
     {
       "toolId": "mime-type-lookup",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/mime-type-lookup/manifest.ts",
@@ -5012,7 +5012,7 @@
     {
       "toolId": "missing-value-profiler",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/missing-value-profiler/manifest.ts",
@@ -5058,7 +5058,7 @@
     {
       "toolId": "notes-deduplicator",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/notes-deduplicator/manifest.ts",
@@ -5099,7 +5099,7 @@
     {
       "toolId": "open-graph-preview",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/open-graph-preview/manifest.ts",
@@ -5133,7 +5133,7 @@
         "ref": "quality/oracles/registry.json#cand-071"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md",
+        ".scratch/strumentini-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md",
         "quality/receipts/marketing-media/browser-acceptance.json",
         "quality/receipts/marketing-media/open-graph-preview.gold.json",
         "tests/url-marketing-tools.test.ts"
@@ -5143,7 +5143,7 @@
     {
       "toolId": "palette-extractor",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/palette-extractor/manifest.ts",
@@ -5186,7 +5186,7 @@
     {
       "toolId": "payment-fee-gross-up",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/payment-fee-gross-up/manifest.ts",
@@ -5226,7 +5226,7 @@
     {
       "toolId": "pdf-compare-lite",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-compare-lite/manifest.ts",
@@ -5269,7 +5269,7 @@
     {
       "toolId": "pdf-compression-lite",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-compression-lite/manifest.ts",
@@ -5312,7 +5312,7 @@
     {
       "toolId": "pdf-flatten",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-flatten/manifest.ts",
@@ -5355,7 +5355,7 @@
     {
       "toolId": "pdf-form-inspector",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-form-inspector/manifest.ts",
@@ -5398,7 +5398,7 @@
     {
       "toolId": "pdf-image-extractor",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-image-extractor/manifest.ts",
@@ -5445,7 +5445,7 @@
     {
       "toolId": "pdf-link-extractor",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-link-extractor/manifest.ts",
@@ -5487,7 +5487,7 @@
     {
       "toolId": "pdf-merge",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-merge/manifest.ts",
@@ -5530,7 +5530,7 @@
     {
       "toolId": "pdf-metadata-inspector",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-metadata-inspector/manifest.ts",
@@ -5573,7 +5573,7 @@
     {
       "toolId": "pdf-metadata-remover",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-metadata-remover/manifest.ts",
@@ -5616,7 +5616,7 @@
     {
       "toolId": "pdf-page-citation-helper",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-page-citation-helper/manifest.ts",
@@ -5656,7 +5656,7 @@
     {
       "toolId": "pdf-page-count-verifier",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-page-count-verifier/manifest.ts",
@@ -5699,7 +5699,7 @@
     {
       "toolId": "pdf-page-delete-extract",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-page-delete-extract/manifest.ts",
@@ -5742,7 +5742,7 @@
     {
       "toolId": "pdf-page-reorder",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-page-reorder/manifest.ts",
@@ -5785,7 +5785,7 @@
     {
       "toolId": "pdf-page-size-inspector",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-page-size-inspector/manifest.ts",
@@ -5828,7 +5828,7 @@
     {
       "toolId": "pdf-password-check-remove",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-password-check-remove/manifest.ts",
@@ -5871,7 +5871,7 @@
     {
       "toolId": "pdf-rotate",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-rotate/manifest.ts",
@@ -5914,7 +5914,7 @@
     {
       "toolId": "pdf-split",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-split/manifest.ts",
@@ -5957,7 +5957,7 @@
     {
       "toolId": "pdf-text-extraction",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-text-extraction/manifest.ts",
@@ -5999,7 +5999,7 @@
     {
       "toolId": "pdf-to-images",
       "category": "documents",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/pdf-to-images/manifest.ts",
@@ -6046,7 +6046,7 @@
     {
       "toolId": "percentage-helper",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/percentage-helper/manifest.ts",
@@ -6086,7 +6086,7 @@
     {
       "toolId": "perceptual-duplicate-finder",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/perceptual-duplicate-finder/manifest.ts",
@@ -6129,7 +6129,7 @@
     {
       "toolId": "platform-size-presets",
       "category": "image-visual",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/platform-size-presets/manifest.ts",
@@ -6158,7 +6158,7 @@
         "ref": "quality/oracles/registry.json#cand-146"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/317-contact-sheet-favicon-and-platform-export-upgrades.md",
+        ".scratch/strumentini-expansion-20261005/issues/317-contact-sheet-favicon-and-platform-export-upgrades.md",
         "quality/receipts/marketing-media/browser-acceptance.json",
         "quality/receipts/marketing-media/platform-size-presets.gold.json",
         "tests/image-media-tools.test.ts"
@@ -6168,7 +6168,7 @@
     {
       "toolId": "project-profitability",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/project-profitability/manifest.ts",
@@ -6208,7 +6208,7 @@
     {
       "toolId": "proposal-budget-checker",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/proposal-budget-checker/manifest.ts",
@@ -6248,7 +6248,7 @@
     {
       "toolId": "public-holiday-lookup",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/public-holiday-lookup/manifest.ts",
@@ -6291,7 +6291,7 @@
     {
       "toolId": "qr-generator",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/qr-generator/manifest.ts",
@@ -6330,7 +6330,7 @@
     {
       "toolId": "qr-reader",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/qr-reader/manifest.ts",
@@ -6369,7 +6369,7 @@
     {
       "toolId": "quarter-date-mapper",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/quarter-date-mapper/manifest.ts",
@@ -6412,7 +6412,7 @@
     {
       "toolId": "query-string-editor",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/query-string-editor/manifest.ts",
@@ -6456,7 +6456,7 @@
     {
       "toolId": "quick-chart",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/quick-chart/manifest.ts",
@@ -6502,7 +6502,7 @@
     {
       "toolId": "quote-counter",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/quote-counter/manifest.ts",
@@ -6543,7 +6543,7 @@
     {
       "toolId": "rate-converter",
       "category": "client-work-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/rate-converter/manifest.ts",
@@ -6583,7 +6583,7 @@
     {
       "toolId": "reading-list-deduplicator",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/reading-list-deduplicator/manifest.ts",
@@ -6623,7 +6623,7 @@
     {
       "toolId": "reading-time-estimator",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/reading-time-estimator/manifest.ts",
@@ -6667,7 +6667,7 @@
     {
       "toolId": "recurring-date-generator",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/recurring-date-generator/manifest.ts",
@@ -6710,7 +6710,7 @@
     {
       "toolId": "redirect-chain-inspector",
       "category": "web-operations",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/redirect-chain-inspector/manifest.ts",
@@ -6754,7 +6754,7 @@
     {
       "toolId": "reference-list-sorter",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/reference-list-sorter/manifest.ts",
@@ -6794,7 +6794,7 @@
     {
       "toolId": "regex-tester",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "UPGRADED",
       "manifestRef": "src/tools/regex-tester/manifest.ts",
@@ -6829,7 +6829,7 @@
         "ref": "quality/oracles/registry.json#cand-052"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/178-regex-execution-isolation-and-hard-timeout.md",
+        ".scratch/strumentini-expansion-20261005/issues/178-regex-execution-isolation-and-hard-timeout.md",
         "quality/receipts/developer-web/browser-acceptance.json",
         "quality/receipts/developer-web/regex-tester.gold.json",
         "src/engines/developer-web/regex-worker-client.ts",
@@ -6840,7 +6840,7 @@
     {
       "toolId": "research-pack-manifest",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/research-pack-manifest/manifest.ts",
@@ -6884,7 +6884,7 @@
     {
       "toolId": "research-url-cleaner",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/research-url-cleaner/manifest.ts",
@@ -6930,7 +6930,7 @@
     {
       "toolId": "retainer-capacity",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/retainer-capacity/manifest.ts",
@@ -6970,7 +6970,7 @@
     {
       "toolId": "ris-bibtex-converter",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "UPGRADED",
       "manifestRef": "src/tools/ris-bibtex-converter/manifest.ts",
@@ -7006,7 +7006,7 @@
         "ref": "quality/oracles/registry.json#cand-187"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/276-ris-bibtex-converter-authoritative-oracle-closure.md",
+        ".scratch/strumentini-expansion-20261005/issues/276-ris-bibtex-converter-authoritative-oracle-closure.md",
         "quality/fixtures/research-ris-bibtex-conversion/ORACLE.md",
         "quality/receipts/research-knowledge/browser-acceptance.json",
         "quality/receipts/research-knowledge/ris-bibtex-converter.gold.json",
@@ -7017,7 +7017,7 @@
     {
       "toolId": "roas-calculator",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/roas-calculator/manifest.ts",
@@ -7056,7 +7056,7 @@
     {
       "toolId": "robots-directive-helper",
       "category": "web-operations",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/robots-directive-helper/manifest.ts",
@@ -7100,7 +7100,7 @@
     {
       "toolId": "safe-share-checklist",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/safe-share-checklist/manifest.ts",
@@ -7146,7 +7146,7 @@
     {
       "toolId": "scope-creep-cost",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/scope-creep-cost/manifest.ts",
@@ -7186,7 +7186,7 @@
     {
       "toolId": "screenshot-border-background-helper",
       "category": "files-assets",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/screenshot-border-background-helper/manifest.ts",
@@ -7229,7 +7229,7 @@
     {
       "toolId": "secret-token-pattern-scanner",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/secret-token-pattern-scanner/manifest.ts",
@@ -7275,7 +7275,7 @@
     {
       "toolId": "slug-generator",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/slug-generator/manifest.ts",
@@ -7319,7 +7319,7 @@
     {
       "toolId": "smart-quote-normalizer",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/smart-quote-normalizer/manifest.ts",
@@ -7363,7 +7363,7 @@
     {
       "toolId": "social-character-limit",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/social-character-limit/manifest.ts",
@@ -7393,8 +7393,8 @@
         "ref": "quality/oracles/registry.json#cand-069"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md",
-        ".scratch/strumentiutili-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md",
+        ".scratch/strumentini-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md",
+        ".scratch/strumentini-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md",
         "quality/receipts/marketing-media/browser-acceptance.json",
         "quality/receipts/marketing-media/social-character-limit.gold.json",
         "tests/url-marketing-tools.test.ts"
@@ -7404,7 +7404,7 @@
     {
       "toolId": "table-transpose",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/table-transpose/manifest.ts",
@@ -7454,7 +7454,7 @@
     {
       "toolId": "target-income-rate",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/target-income-rate/manifest.ts",
@@ -7494,7 +7494,7 @@
     {
       "toolId": "text-diff",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/text-diff/manifest.ts",
@@ -7538,7 +7538,7 @@
     {
       "toolId": "text-to-csv-rows",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/text-to-csv-rows/manifest.ts",
@@ -7582,7 +7582,7 @@
     {
       "toolId": "timeline-sorter",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/timeline-sorter/manifest.ts",
@@ -7622,7 +7622,7 @@
     {
       "toolId": "timesheet-totaler",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/timesheet-totaler/manifest.ts",
@@ -7665,7 +7665,7 @@
     {
       "toolId": "timezone-converter",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/timezone-converter/manifest.ts",
@@ -7708,7 +7708,7 @@
     {
       "toolId": "timezone-overlap",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/timezone-overlap/manifest.ts",
@@ -7747,7 +7747,7 @@
     {
       "toolId": "toml-formatter",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/toml-formatter/manifest.ts",
@@ -7791,7 +7791,7 @@
     {
       "toolId": "tracking-cleaner",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/tracking-cleaner/manifest.ts",
@@ -7826,7 +7826,7 @@
         "ref": "quality/oracles/registry.json#cand-063"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md",
+        ".scratch/strumentini-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md",
         "quality/receipts/campaign-url/browser-acceptance.json",
         "quality/receipts/campaign-url/tracking-cleaner.gold.json",
         "tests/campaign-url-engine.test.ts"
@@ -7836,7 +7836,7 @@
     {
       "toolId": "tsv-to-csv",
       "category": "data",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/tsv-to-csv/manifest.ts",
@@ -7882,7 +7882,7 @@
     {
       "toolId": "unicode-normalizer",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/unicode-normalizer/manifest.ts",
@@ -7926,7 +7926,7 @@
     {
       "toolId": "unix-timestamp",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/unix-timestamp/manifest.ts",
@@ -7969,7 +7969,7 @@
     {
       "toolId": "url-bulk-normalizer",
       "category": "web-operations",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/url-bulk-normalizer/manifest.ts",
@@ -8013,7 +8013,7 @@
     {
       "toolId": "url-codec",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/url-codec/manifest.ts",
@@ -8057,7 +8057,7 @@
     {
       "toolId": "url-comparison",
       "category": "web-operations",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/url-comparison/manifest.ts",
@@ -8100,7 +8100,7 @@
     {
       "toolId": "user-agent-parser",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/user-agent-parser/manifest.ts",
@@ -8143,7 +8143,7 @@
     {
       "toolId": "utilization-calculator",
       "category": "business-math",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/utilization-calculator/manifest.ts",
@@ -8183,7 +8183,7 @@
     {
       "toolId": "utm-builder",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/utm-builder/manifest.ts",
@@ -8218,7 +8218,7 @@
         "ref": "quality/oracles/registry.json#cand-061"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md",
+        ".scratch/strumentini-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md",
         "quality/receipts/campaign-url/browser-acceptance.json",
         "quality/receipts/campaign-url/utm-builder.gold.json",
         "tests/campaign-url-engine.test.ts"
@@ -8228,7 +8228,7 @@
     {
       "toolId": "utm-parser",
       "category": "marketing",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/utm-parser/manifest.ts",
@@ -8263,7 +8263,7 @@
         "ref": "quality/oracles/registry.json#cand-062"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md",
+        ".scratch/strumentini-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md",
         "quality/receipts/expanded-local/browser-acceptance.json",
         "quality/receipts/expanded-local/utm-parser.gold.json",
         "tests/url-marketing-tools.test.ts"
@@ -8273,7 +8273,7 @@
     {
       "toolId": "uuid-generator",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "UPGRADED",
       "manifestRef": "src/tools/uuid-generator/manifest.ts",
@@ -8307,7 +8307,7 @@
         "ref": "quality/oracles/registry.json#cand-049"
       },
       "evidenceRefs": [
-        ".scratch/strumentiutili-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md",
+        ".scratch/strumentini-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md",
         "quality/fixtures/uuid-rfc9562/vectors.json",
         "quality/receipts/developer-web/browser-acceptance.json",
         "quality/receipts/developer-web/uuid-generator.gold.json",
@@ -8318,7 +8318,7 @@
     {
       "toolId": "vocabulary-frequency-analyzer",
       "category": "research",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/vocabulary-frequency-analyzer/manifest.ts",
@@ -8362,7 +8362,7 @@
     {
       "toolId": "week-number-converter",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/week-number-converter/manifest.ts",
@@ -8405,7 +8405,7 @@
     {
       "toolId": "whitespace-normalizer",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/whitespace-normalizer/manifest.ts",
@@ -8449,7 +8449,7 @@
     {
       "toolId": "word-character-line-counter",
       "category": "text",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/word-character-line-counter/manifest.ts",
@@ -8493,7 +8493,7 @@
     {
       "toolId": "working-hours",
       "category": "date-time",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/working-hours/manifest.ts",
@@ -8536,7 +8536,7 @@
     {
       "toolId": "yaml-formatter",
       "category": "developer",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/yaml-formatter/manifest.ts",
@@ -8580,7 +8580,7 @@
     {
       "toolId": "zero-byte-orphan-finder",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/zero-byte-orphan-finder/manifest.ts",
@@ -8626,7 +8626,7 @@
     {
       "toolId": "zip-contents-inspector",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/zip-contents-inspector/manifest.ts",
@@ -8668,7 +8668,7 @@
     {
       "toolId": "zip-creator",
       "category": "files",
-      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
       "status": "VERIFIED",
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/zip-creator/manifest.ts",

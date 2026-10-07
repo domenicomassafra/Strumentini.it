@@ -11,8 +11,8 @@ import {
 } from "../src/quality/functional-audit";
 
 const root = resolve(import.meta.dirname, "..");
-const ownerTicket = ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md";
-const ticket317 = ".scratch/strumentiutili-expansion-20261005/issues/317-contact-sheet-favicon-and-platform-export-upgrades.md";
+const ownerTicket = ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md";
+const ticket317 = ".scratch/strumentini-expansion-20261005/issues/317-contact-sheet-favicon-and-platform-export-upgrades.md";
 
 const assignments = functionalAuditAssignmentIndexSchema.parse(JSON.parse(
   readFileSync(resolve(root, "quality/functional-audit/original-200.assignments.json"), "utf8"),

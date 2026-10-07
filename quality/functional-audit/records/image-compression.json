@@ -1,7 +1,7 @@
 {
   "toolId": "image-compression",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Comprime un'immagine locale nel formato supportato scelto e verifica il risultato. Public jobs: Usa Compressione immagine",
   "observedFunctionality": "Current public job is bounded local re-encoding to a selected supported format with verified output, which the route and Gold acceptance perform. Tickets 47/48 add format-native, lossless/target-size/batch modes and are not part of this narrower current promise.",

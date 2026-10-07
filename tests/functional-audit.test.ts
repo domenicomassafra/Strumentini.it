@@ -11,8 +11,8 @@ import {
   type FunctionalAuditInventoryEntry,
 } from "../src/quality/functional-audit";
 
-const owner = ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md";
-const child = ".scratch/strumentiutili-expansion-20261005/issues/121-break-even-expanded-scenarios.md";
+const owner = ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md";
+const child = ".scratch/strumentini-expansion-20261005/issues/121-break-even-expanded-scenarios.md";
 const originalAssignmentIndex = JSON.parse(
   readFileSync(new URL("../quality/functional-audit/original-200.assignments.json", import.meta.url), "utf8"),
 ) as { readonly assignments: ReadonlyArray<{ readonly toolId: string }> };
@@ -23,7 +23,7 @@ function assignments(): FunctionalAuditAssignment[] {
   return originalCatalog.map((tool) => ({
     toolId: tool.id,
     category: tool.category,
-    ownerTicket: ".scratch/strumentiutili-expansion-20261005/issues/"
+    ownerTicket: ".scratch/strumentini-expansion-20261005/issues/"
       + ({
         "business-math": "284-existing-business-math-200-audit-tranche.md",
         "client-work-math": "285-existing-client-work-math-200-audit-tranche.md",

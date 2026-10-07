@@ -1,7 +1,7 @@
 {
   "toolId": "pdf-text-extraction",
   "category": "documents",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Estrae il testo dai flussi PDF supportati e segnala quando la struttura richiede capacità non disponibili. Public jobs: Usa Estrai testo da PDF",
   "observedFunctionality": "The current implementation performs the deliberately scoped document job locally: Estrae il testo dai flussi PDF supportati e segnala quando la struttura richiede capacità non disponibili. The PDF/document corpus verifies actual bytes/structure and explicit refusals for unsupported behavior; the Gold receipt and real-route acceptance cover the public route.",

@@ -130,7 +130,7 @@
     {
       "toolId": "images-to-pdf",
       "lazyScriptCount": 11,
-      "taskRequestCount": 13,
+      "taskRequestCount": 12,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [

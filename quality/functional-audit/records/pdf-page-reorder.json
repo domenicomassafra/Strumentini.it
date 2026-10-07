@@ -1,7 +1,7 @@
 {
   "toolId": "pdf-page-reorder",
   "category": "documents",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Riordina tutte le pagine di un PDF locale usando una sequenza esplicita numerata a partire da uno. Public jobs: Usa Riordina pagine PDF",
   "observedFunctionality": "The current implementation performs the deliberately scoped document job locally: Riordina tutte le pagine di un PDF locale usando una sequenza esplicita numerata a partire da uno. The PDF/document corpus verifies actual bytes/structure and explicit refusals for unsupported behavior; the Gold receipt and real-route acceptance cover the public route.",

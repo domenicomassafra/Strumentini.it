@@ -1,6 +1,6 @@
 # RIS/BibTeX independent oracle and loss map
 
-Ticket 276 requires an oracle that is independent from the StrumentiUtili.it converter. The cross-check in this directory uses the maintained Zotero RIS and BibTeX translators plus their checked-in import test cases. Zotero documents RIS and BibTeX as standard import/export formats and documents translator test cases as input plus expected-result fixtures that are run automatically.
+Ticket 276 requires an oracle that is independent from the Strumentini.it converter. The cross-check in this directory uses the maintained Zotero RIS and BibTeX translators plus their checked-in import test cases. Zotero documents RIS and BibTeX as standard import/export formats and documents translator test cases as input plus expected-result fixtures that are run automatically.
 
 The evidence is pinned to `zotero/translators` commit `3d1c78530f42892328e08741b7cac8474ff687b8`. At that revision `RIS.js` has SHA-256 `1011694cf9459553ae019fe09c4bbb0b27ad57d739f22bd25cba0ca64d624554` and `BibTeX.js` has SHA-256 `2a99c1591f62ed3c52f85343ed6234d0318f458ab173efd2ef18549bd6ae7680`. The upstream translator files are AGPL-3.0-or-later. No upstream implementation code or full upstream fixture is copied here; `oracle-cross-check.json` contains synthetic minimal probes derived from independently maintained expected semantics and records the upstream test index for each claim.
 

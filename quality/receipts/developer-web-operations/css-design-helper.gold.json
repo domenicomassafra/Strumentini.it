@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/developer-web-operations/css-design-helper.gold.json",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "css-design-helper",
   "runtime": {
     "location": "LOCAL",
@@ -41,10 +41,10 @@
   "identities": {
     "manifestSha256": "a09d24a322b6a7dd6f5f556fe4cca208bad65b17b22588042371deef5c1a04cf",
     "moduleSha256": "2a4281ab685909a00da8c965e9873d20481c477bfee3e0f793ffee0055bceb3c",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "browserAcceptanceSha256": "6e95208a0e658b36f5e4adea1dcfef48fafd6b928fa7e88bb6ab13848c3c95f0",
-    "browserAcceptanceSourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "browserAcceptanceSha256": "0bca72b619c8b3ce60af7ae5e1efe2d9c5a24dfd02ec4a44af670375d072321a",
+    "browserAcceptanceSourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
     "focusedTestsSha256": "ae4649fea07ec9e26c2f9e32b063e9b6fb05f0a4e99644290a4ea9d5a4049119",
     "fixture:css-design-helper:sha256": "505afd632ea9a5217196632c014605acc836175dca2b0ee79b2b0af6be994d83"
   }

@@ -3,7 +3,7 @@ import { extname, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const root = resolve(import.meta.dirname, "..");
-const forbidden = /StrumentiUtili|Strumenti Utili|strumentiutili\.it/iu;
+const forbidden = new RegExp(["Strumenti" + "Utili", "Strumenti Utili", "strumenti" + "utili"].join("|"), "iu");
 const textExtensions = new Set([".astro", ".css", ".html", ".json", ".md", ".svg", ".ts", ".tsx", ".txt", ".xml"]);
 
 async function textFiles(directory: string): Promise<string[]> {

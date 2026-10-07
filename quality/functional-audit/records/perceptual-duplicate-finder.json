@@ -1,7 +1,7 @@
 {
   "toolId": "perceptual-duplicate-finder",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Confronta immagini locali per trovare copie molto simili usando dimensioni e firme cromatiche. Public jobs: Usa Trova immagini quasi duplicate",
   "observedFunctionality": "Current public summary truthfully states that near-duplicate detection uses dimensions and color signatures. The implementation bounds file count, derives deterministic signatures and only reports pairs above its fixed similarity threshold; Gold acceptance covers the real route.",

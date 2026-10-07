@@ -6,7 +6,7 @@ Status: product research. Brand, pricing and launch model are not final.
 
 The online utility market is substantially more crowded than the initial scan suggested.
 
-StrumentiUtili.it cannot differentiate on:
+Strumentini.it cannot differentiate on:
 
 - tool count;
 - privacy/client-side execution;
@@ -256,7 +256,7 @@ Privacy-first is already common marketing. Treat local execution as architecture
 
 The original naming pass found a current software-company and trademark collision involving the former codename. That collision is preserved here only as decision history and does not describe the replacement identity.
 
-Decision superseded by owner direction on 2026-09-27: **StrumentiUtili.it is the selected public brand.** Formal legal/trademark review, if required for release, remains a separate governance activity.
+Decision superseded by owner direction on 2026-09-27: **Strumentini.it is the selected public brand.** Formal legal/trademark review, if required for release, remains a separate governance activity.
 
 ### Literal naming territory is crowded
 

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "oracle": {
     "name": "Zotero RIS and BibTeX translator cross-check",
-    "independence": "The expected semantics come from Zotero's maintained import/export translators and their checked-in test cases, not from StrumentiUtili.it output.",
+    "independence": "The expected semantics come from Zotero's maintained import/export translators and their checked-in test cases, not from Strumentini.it output.",
     "repository": "https://github.com/zotero/translators",
     "commit": "3d1c78530f42892328e08741b7cac8474ff687b8",
     "license": "AGPL-3.0-or-later",

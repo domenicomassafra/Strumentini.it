@@ -43,14 +43,13 @@ Migration principles:
 
 - keep whole-tree browser-performance evidence current whenever source changes (the 2026-10-07 final refresh matches the integrated source fingerprint);
 - keep rollback evidence bound to a real deploy → rollback → smoke → restore exercise; the 2026-10-07 `eb1ccfb` / `61b7fc66…` production cycle is verified;
-- complete the legacy-domain transition by redirecting/retiring the independently served `strumentiutili.it` Vercel origin and capture proof that the split-brain is gone;
 - add and verify outer Cloudflare WAF rate limiting on the active zone;
 - configure the real Google Web Client ID and confirm Workers Paid before relying on password auth at production load;
 - keep catalog-size claims separate from certification claims.
 
 ## P5 — continue the expansion backlog selectively
 
-The expansion plan in `docs/10-tool-expansion-result-system-v2.md` has already been materialized into the 327-ticket DAG in `.scratch/strumentiutili-expansion-20261005/`. At the current checkpoint 235 tickets are completed and 92 remain blocked by explicit dependencies, source evidence, unsupported fidelity paths or physical-device requirements. Treat the validator's current frontier as the queue; do not restart the old seed wave.
+The expansion plan in `docs/10-tool-expansion-result-system-v2.md` has already been materialized into the 327-ticket DAG in `.scratch/strumentini-expansion-20261005/`. At the current checkpoint 235 tickets are completed and 92 remain blocked by explicit dependencies, source evidence, unsupported fidelity paths or physical-device requirements. Treat the validator's current frontier as the queue; do not restart the old seed wave.
 
 - keep Result System v2 and functional-audit coverage complete as the catalog evolves;
 - cover all 13 current CalcolaTutto jobs via add/upgrade/covered mappings;

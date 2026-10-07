@@ -1,7 +1,7 @@
 {
   "toolId": "unicode-normalizer",
   "category": "text",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Applica esplicitamente normalizzazione NFC, NFD, NFKC o NFKD al testo senza altre modifiche. Public jobs: Usa Normalizzatore Unicode.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/text-writing/unicode-normalizer.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

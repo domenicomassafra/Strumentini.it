@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/text-data-certification/text-markup-converter.gold.json",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "text-markup-converter",
   "runtime": {
     "location": "LOCAL",
@@ -25,7 +25,7 @@
     "commonmark",
     "fixture-policy",
     "owasp-xss",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "whatwg-html"
   ],
   "resolvedFixtures": [
@@ -50,10 +50,10 @@
   "identities": {
     "manifestSha256": "02853bfa0b0ebff144508cbe0374a80ccb35b23ee75114690be1f66017190f28",
     "moduleSha256": "d9bcc5217f5d50e5dd9b8cd1f1e9842185121d0d755db4425ff49c1ccd95c693",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "browserAcceptanceSha256": "5ed0747c5a546cc53ceacb65391df6e56abf4006562334786bf58688219a13fa",
-    "browserAcceptanceSourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "browserAcceptanceSha256": "c52230951eb20c07c7f8beba581a2bce29a56a2932e57fe30639caf670611a97",
+    "browserAcceptanceSourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
     "focusedTestsSha256": "307f66b3c4a244a608caee23882a25b9c85c698e608b774b9e014fe7e4cc7ba6",
     "fixture:text-markup-conversion:sha256": "a9165bc7d633bbc487950ed92c21e285f4fe83891c58b483ede24f03d33fe483"
   }

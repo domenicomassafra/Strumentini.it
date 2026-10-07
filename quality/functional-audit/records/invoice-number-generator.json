@@ -1,7 +1,7 @@
 {
   "toolId": "invoice-number-generator",
   "category": "business-math",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Genera un numero fattura coerente usando prefisso, anno, sequenza e formato scelti. Public job: Usa Crea numero fattura.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/business-math/invoice-number-generator.gold.json; executable tests/business-tools.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/business-math/browser-acceptance.json verifies the real route interaction/locality contract.",

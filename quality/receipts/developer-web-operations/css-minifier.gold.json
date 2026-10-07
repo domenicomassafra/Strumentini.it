@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/developer-web-operations/css-minifier.gold.json",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "css-minifier",
   "runtime": {
     "location": "LOCAL",
@@ -20,7 +20,7 @@
   "truthSources": [
     "css-syntax-3",
     "fixture-policy",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "whatwg-html"
   ],
   "resolvedFixtures": [
@@ -47,10 +47,10 @@
   "identities": {
     "manifestSha256": "7bf2cc34d4be46cf45851f6a3832d03e8cbf136d8bbe56a0a02137a0fbfea80d",
     "moduleSha256": "130470ca9090b48e8c2ab8b092281adc346441d2ce8e55f8aa27c88e86dd6b0e",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "browserAcceptanceSha256": "6e95208a0e658b36f5e4adea1dcfef48fafd6b928fa7e88bb6ab13848c3c95f0",
-    "browserAcceptanceSourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "browserAcceptanceSha256": "0bca72b619c8b3ce60af7ae5e1efe2d9c5a24dfd02ec4a44af670375d072321a",
+    "browserAcceptanceSourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
     "focusedTestsSha256": "df38b42f4ead7df2907111e8991dfdac68d11244e1dc0b7ed7be7bebd8fafaa3",
     "fixture:developer-minifiers:sha256": "1ff30aafa3f425b29f7007681d32ef70211f8548562c09928a0456554e345ca0",
     "fixture:developer-web-gold:sha256": "5d9fdd3746a9cba8783c65a89e44e7f720e5acf6192f7cc3932e71451f314a82"

@@ -1,7 +1,7 @@
 {
   "toolId": "contrast-checker",
   "category": "image-visual",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Calculate foreground/background WCAG relative-luminance contrast ratio and report the current AA normal, AA large and AAA normal thresholds.",
   "observedFunctionality": "The local engine computes contrastRatio from parsed colors and explicitly evaluates 4.5, 3 and 7 thresholds. Executable tests cover 21:1 black/white and a failing #777777-on-white AA-normal case; Gold/browser evidence records the public-route result.",

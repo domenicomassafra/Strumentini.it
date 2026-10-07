@@ -1,7 +1,7 @@
 {
   "toolId": "csv-column-to-list",
   "category": "text",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Estrae una colonna CSV per nome o numero in un elenco su più righe preservando correttamente le virgolette. Public jobs: Usa Colonna CSV in elenco.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/text-writing/csv-column-to-list.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

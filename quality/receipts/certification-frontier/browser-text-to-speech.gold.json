@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "status": "GOLD",
   "goldEligible": true,
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "browser-text-to-speech",
   "runtime": {
     "location": "LOCAL",
@@ -20,7 +20,7 @@
   "scopePolicy": "Every canonical unresolved oracle gap is matched against a tool-specific bounded-scope policy. Unknown/new gap wording fails certification.",
   "truthSources": [
     "fixture-policy",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "w3c-media-capture-streams",
     "w3c-mediastream-recording",
     "w3c-web-audio-1-1",
@@ -41,8 +41,8 @@
   ],
   "identities": {
     "manifestSha256": "2d56b1506c67e3379f79c6ad6103a8155f6dffac29226fb2304a92efdafe0e25",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
     "browserAcceptanceSha256": "2966153dcc15c9d41f1d1ed7913652ffdaf6cdfb829ea625a2e12c4f1e4c7076",
     "bundleIsolationSha256": "7201aba99ddca690d4413277ef45a94f6ad39d10b4549e58ff1c0b833545885b",
     "unitTestsSha256": "07eccbd4a6985f95ad156d41e88dc8002c59eb4fbe5b381acddb639bd7e5b6ed",

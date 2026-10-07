@@ -7,7 +7,7 @@ const root = resolve(import.meta.dirname, "..");
 const port = Number(process.env.STRUMENTINI_ITALY_2026_PORT ?? 18196);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error(`invalid port ${String(port)}`);
 const origin = `http://127.0.0.1:${port}`;
-const evidenceDir = resolve(root, ".scratch/strumentiutili-expansion-20261005/evidence");
+const evidenceDir = resolve(root, ".scratch/strumentini-expansion-20261005/evidence");
 const ordinaryPath = resolve(root, "quality/fixtures/italy-2026-consumers/fatturapa-ordinary-anonymized.xml");
 const simplifiedPath = resolve(root, "quality/fixtures/italy-2026-consumers/fatturapa-simplified-anonymized.xml");
 await mkdir(evidenceDir, { recursive: true });

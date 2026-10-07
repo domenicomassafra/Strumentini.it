@@ -1,7 +1,7 @@
 {
   "toolId": "language-aware-text-statistics",
   "category": "text",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Conta parole, frasi e caratteri e indica in modo euristico la lingua del testo. Public jobs: Usa Statistiche del testo e lingua.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/local-jobs/language-aware-text-statistics.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

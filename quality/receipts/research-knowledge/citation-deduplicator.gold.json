@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "citation-deduplicator",
   "runtime": {
     "location": "LOCAL",
@@ -20,7 +20,7 @@
     "doi-handbook",
     "fixture-policy",
     "isbn-manual",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "whatwg-url"
   ],
   "resolvedFixtures": [
@@ -29,7 +29,7 @@
       "path": "quality/fixtures/research-citation-identity/vectors.json",
       "sha256": "df42aaefaf0354bce20851fd767dbce92658b0f95104b53de2d7df2b7f479cdd",
       "provenance": "hand-worked",
-      "license_or_rights": "Hand-worked bibliographic literals and ordering rules authored for StrumentiUtili.it; no external citation corpus copied.",
+      "license_or_rights": "Hand-worked bibliographic literals and ordering rules authored for Strumentini.it; no external citation corpus copied.",
       "schemaVersion": 1
     }
   ],
@@ -57,8 +57,8 @@
   "identities": {
     "manifestSha256": "46e0686a05cadaf3346b358d5363bc8c8683bd16a23784b75b5d6ceca95cf182",
     "engineSha256": "d7417088bf48c40ccf610aa6d32d5e57c427033d5b5d61f35ffac800595cdbf6",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
     "browserAcceptanceSha256": "e4872fbbc8eca1932396ee00bd999b67e42137d44ab5b5219a28106f96dce65d",
     "acceptanceScriptSha256": "db5c4c076983c213752dc4bab33945c73015836b0f167c146cb1ae697c47136e",
     "unitTestsSha256": "46dcd92ee24212e7d895aa2c8c872eddd36b43ddd26b519b026edbdd861dbb00",

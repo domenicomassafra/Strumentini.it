@@ -7,7 +7,7 @@ import { createSimplePdf } from "../src/engines/pdf";
 import { PdfResultV2, preparePdfResult } from "../src/components/tools/pdf/PdfResultV2";
 import { PDF_RESULT_DECLARATIONS } from "../src/tools/pdf-result-declarations";
 
-const ticket98 = ".scratch/strumentiutili-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md";
+const ticket98 = ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md";
 
 function owned(bytes: Uint8Array): Uint8Array {
   return Uint8Array.from(bytes);

@@ -1,7 +1,7 @@
 {
   "toolId": "file-signature-detector",
   "category": "files",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Confronta la firma interna del file con la sua estensione per evidenziare incongruenze. Public job: Usa Controlla il vero tipo di un file.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow file job at quality/receipts/expanded-local/file-signature-detector.gold.json; executable test coverage verifies the underlying file/hash/archive/privacy behavior, while quality/receipts/expanded-local/browser-acceptance.json verifies the real route interaction and local-only contract.",

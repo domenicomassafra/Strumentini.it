@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-07T22:13:35.188Z",
+  "generatedAt": "2026-10-07T23:44:19.211Z",
   "status": "PASS",
   "toolImplementationAssets": [
     "module.-R2KqBMw.js",
@@ -388,8 +388,8 @@
       },
       "gate": "PASS",
       "navigationBaseline": {
-        "domContentLoadedMs": 30.200000047683716,
-        "loadMs": 30.600000023841858
+        "domContentLoadedMs": 19.899999976158142,
+        "loadMs": 26.699999928474426
       }
     },
     "categoryPage": {
@@ -456,17 +456,19 @@
       "ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
       "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js",
       "TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
+      "theme.BedJIwSV.js",
       "preload-helper.B3nfOi5I.js",
       "tool-icons.BD3UG4Ye.js",
       "search.DJLcN5MY.js",
       "manifest.BmmxTcxK.js",
       "browser.DS3RFGQK.js",
       "events.BpX949VT.js",
-      "theme.BedJIwSV.js",
       "GlobalSearch.astro_astro_type_script_index_0_lang.DaG_COzp.js",
       "ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
       "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js",
       "TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
+      "CronExplainerTool.D2JveejM.js",
+      "client.BQJ46GI4.js",
       "preload-helper.B3nfOi5I.js",
       "tool-icons.BD3UG4Ye.js",
       "search.DJLcN5MY.js",
@@ -474,11 +476,9 @@
       "browser.DS3RFGQK.js",
       "events.BpX949VT.js",
       "theme.BedJIwSV.js",
-      "CronExplainerTool.D2JveejM.js",
-      "client.BQJ46GI4.js",
+      "preact.module.Bl7PEaKa.js",
       "jsxRuntime.module.Bfdc-KV3.js",
       "DeveloperWebTool.cVzDb0VY.js",
-      "preact.module.Bl7PEaKa.js",
       "hooks.module.BsvH4L0y.js",
       "shared.s2w5MbYg.js",
       "tool-runtime.PNDYHntY.js",

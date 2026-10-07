@@ -31,7 +31,7 @@ const filesAssets = records.filter((record) => record.category === "files-assets
 describe("functional audit tranche 291", () => {
   it("has exact 15/15 catalog parity", () => {
     const ownedIds = new Set(assignmentIndex.assignments
-      .filter((item) => item.ownerTicket === ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md")
+      .filter((item) => item.ownerTicket === ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md")
       .map((item) => item.toolId));
     const expected = catalog.filter((tool) => ownedIds.has(tool.id)).map((tool) => tool.id).toSorted();
     const actual = filesAssets.map((record) => record.toolId).toSorted();
@@ -41,7 +41,7 @@ describe("functional audit tranche 291", () => {
       const assignment = assignmentIndex.assignments.find((item) => item.toolId === record.toolId);
       expect(assignment).toMatchObject({
         category: "files-assets",
-        ownerTicket: ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+        ownerTicket: ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
       });
       expect(record.ownerTicket).toBe(assignment?.ownerTicket);
     }
@@ -82,9 +82,9 @@ describe("functional audit tranche 291", () => {
     expect(refused.map((record) => record.toolId)).toEqual(["image-resize"]);
     const resize = refused[0]!;
     expect(resize.childTickets).toEqual([
-      ".scratch/strumentiutili-expansion-20261005/issues/277-physical-android-chrome-image-resize-acceptance.md",
-      ".scratch/strumentiutili-expansion-20261005/issues/278-physical-ios-safari-image-resize-acceptance.md",
-      ".scratch/strumentiutili-expansion-20261005/issues/279-image-resize-gold-promotion-gate.md",
+      ".scratch/strumentini-expansion-20261005/issues/277-physical-android-chrome-image-resize-acceptance.md",
+      ".scratch/strumentini-expansion-20261005/issues/278-physical-ios-safari-image-resize-acceptance.md",
+      ".scratch/strumentini-expansion-20261005/issues/279-image-resize-gold-promotion-gate.md",
     ]);
     const certification = JSON.parse(readFileSync(resolve(root, "quality/receipts/image-resize/certification.json"), "utf8")) as {
       status?: unknown;

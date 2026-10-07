@@ -1,7 +1,7 @@
 {
   "toolId": "folder-size-type-summary",
   "category": "files",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Riassume i file di una cartella per estensione, tipo e spazio occupato. Public job: Usa Riepilogo contenuto cartella.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow file job at quality/receipts/expanded-local/folder-size-type-summary.gold.json; executable test coverage verifies the underlying file/hash/archive/privacy behavior, while quality/receipts/expanded-local/browser-acceptance.json verifies the real route interaction and local-only contract.",

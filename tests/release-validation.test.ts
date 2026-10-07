@@ -19,7 +19,7 @@ import {
 } from "../src/release/validation";
 
 const validCloudflareConfig = `{
-  "name": "strumentiutili-it",
+  "name": "strumentini",
   "compatibility_date": "2026-09-24",
   "assets": { "directory": "./dist", "not_found_handling": "404-page" }
 }`;
@@ -66,7 +66,7 @@ describe("Cloudflare static asset validation", () => {
       "compatibility_date": "2026-09-24",
       "main": "worker/index.ts",
       "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "404-page" },
-      "d1_databases": [{ "binding": "AUTH_DB", "database_name": "strumentiutili-auth" }]
+      "d1_databases": [{ "binding": "AUTH_DB", "database_name": "strumentini-auth" }]
     }`)).toEqual([]);
   });
 

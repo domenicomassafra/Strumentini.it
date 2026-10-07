@@ -1,7 +1,7 @@
 {
   "toolId": "pdf-page-citation-helper",
   "category": "research",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Formatta una citazione di pagina o intervallo dai dati che inserisci. APA, MLA e Chicago sono preset locali, non guide di stile ufficiali. Public jobs: Usa Crea citazione di una pagina PDF.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/research-knowledge/pdf-page-citation-helper.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

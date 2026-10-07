@@ -1,7 +1,7 @@
 {
   "toolId": "pdf-merge",
   "category": "documents",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Combina più PDF locali in un unico documento senza caricarne le pagine su un server. Public jobs: Usa Unisci PDF",
   "observedFunctionality": "The current implementation performs the deliberately scoped document job locally: Combina più PDF locali in un unico documento senza caricarne le pagine su un server. The PDF/document corpus verifies actual bytes/structure and explicit refusals for unsupported behavior; the Gold receipt and real-route acceptance cover the public route.",

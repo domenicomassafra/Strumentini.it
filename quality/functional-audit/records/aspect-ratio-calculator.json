@@ -1,7 +1,7 @@
 {
   "toolId": "aspect-ratio-calculator",
   "category": "image-visual",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Calculate a simplified image aspect ratio from width/height and return bounded contain dimensions for the current local calculator job.",
   "observedFunctionality": "The local engine validates dimensions, reduces the ratio deterministically and computes a bounded 1920x1080 contain box. The tool-specific Gold receipt binds the manifest to fixtures and a real-route browser assertion that produced the expected ratio.",

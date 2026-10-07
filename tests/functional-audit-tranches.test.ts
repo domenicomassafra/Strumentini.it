@@ -77,7 +77,7 @@ describe("functional audit tranches 294-296", () => {
     expect(ris).toMatchObject({
       decision: "UPGRADED",
       childTickets: [
-        ".scratch/strumentiutili-expansion-20261005/issues/276-ris-bibtex-converter-authoritative-oracle-closure.md",
+        ".scratch/strumentini-expansion-20261005/issues/276-ris-bibtex-converter-authoritative-oracle-closure.md",
       ],
     });
     expect(ris?.evidence.some((item) => item.kind === "oracle" && item.ref.endsWith("/ORACLE.md"))).toBe(true);

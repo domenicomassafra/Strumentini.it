@@ -1,7 +1,7 @@
 {
   "toolId": "doi-isbn-normalizer",
   "category": "research",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Uniforma i DOI e verifica sintassi e cifre di controllo degli ISBN-10 e ISBN-13. Public jobs: Usa Pulisci e verifica DOI e ISBN.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/text-research/doi-isbn-normalizer.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

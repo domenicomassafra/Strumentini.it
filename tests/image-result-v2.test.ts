@@ -7,7 +7,7 @@ import { resultV2Inventory } from "../src/catalog/result-v2-inventory.generated"
 import { IMAGE_RESULT_DECLARATIONS } from "../src/tools/image-result-declarations";
 import { catalog } from "../src/generated/catalog";
 
-const ticket97 = ".scratch/strumentiutili-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md";
+const ticket97 = ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md";
 
 describe("ticket 97 image Result v2 migration", () => {
   it("declares every current image/image-visual tool with semantic result classes", () => {

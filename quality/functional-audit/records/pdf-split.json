@@ -1,7 +1,7 @@
 {
   "toolId": "pdf-split",
   "category": "documents",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Divide un PDF locale in file per intervalli di pagine con controlli su memoria e pagine. Public jobs: Usa Dividi PDF",
   "observedFunctionality": "The current implementation performs the deliberately scoped document job locally: Divide un PDF locale in file per intervalli di pagine con controlli su memoria e pagine. The PDF/document corpus verifies actual bytes/structure and explicit refusals for unsupported behavior; the Gold receipt and real-route acceptance cover the public route.",

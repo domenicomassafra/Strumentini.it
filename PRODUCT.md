@@ -80,7 +80,7 @@ Real and must not be fabricated away. Operational counts belong in `PROJECT-STAT
 - `worker/**` — the optional account API (Cloudflare Worker + D1): registration, sessions, profile, password, and the synced list of kept tool ids.
 - `PRODUCT-SPEC.md` — the full acceptance-criterion contract, US-01 through US-17.
 - `design/lane-04/UX-BLUEPRINT.md`, `design/lane-04/DESIGN-SYSTEM-CANDIDATE.md` — the historical "Quiet Workbench" direction, superseded as visual authority by `design/WORLD.md`.
-- `.scratch/strumentiutili-v1/` — historical first-validation ticket/provenance material only; it is no longer an active execution queue.
+- `.scratch/strumentini-v1/` — historical first-validation ticket/provenance material only; it is no longer an active execution queue.
 - `quality/receipts/**` — per-tool certification.
 
 Absences future work must not invent: no user testimonials, no customer logos, no performance benchmarks beyond the measured receipts, no pricing, no unapproved logo, no paid-traffic or conversion data, no market-share claims, **no user counts, no popularity ranking, and no "most used" badge** — there is no usage data to rank by, so popularity is never claimed and the substitutes are certification, category, alphabetical order, and an explicitly editorial selection. The public name is Strumentini.it; the 200-tool figure is a build fact, not a popularity claim.

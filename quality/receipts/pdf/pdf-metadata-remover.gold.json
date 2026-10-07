@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "pdf-metadata-remover",
   "runtime": {
     "location": "LOCAL",
@@ -19,7 +19,7 @@
   "truthSources": [
     "fixture-policy",
     "iso-pdf2",
-    "strumentiutili-quality"
+    "strumentini-quality"
   ],
   "resolvedFixtures": [
     {
@@ -43,14 +43,14 @@
     "pdfEngineIndexSha256": "a3604d8d466cf1d3d57ae60c8b3f505013477c4a7ee933a90c012f14dfcb217d",
     "pdfEngineParserSha256": "c012706639797d68bfd0adbad941fd8b5db05f9376dfa05d4c921a2b900c9d46",
     "pdfEngineWriterSha256": "7a06a3e9b9fdadf3671217ad7bed047c51ea84a8ad82c7a7b10ebb38fcda3eab",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
-    "browserAcceptanceSha256": "7ca56390c601e4a293901ff3ca97868c15fbeade1de538dacb785549a1ec3b2a",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
+    "browserAcceptanceSha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
     "conversionMatrixBrowserAcceptanceSha256": "16bf78da2d511b0a2c21ac0fcff111829e81dfe615eb87e208089de7ca476c04",
     "unitTestsSha256": "d8ec17434a89d3700d5911ca56a3996a2b624dbbbc84ebc0a731db308cea17bc",
     "fixture:pdf-signature:sha256": "7b927a96c3106a97a4c4022f175529e7b7a01f79b0dd05f77f71306eb5b1747f",
     "fixture:pdf-gold:sha256": "2b3ca4fc44b0036f1d1e7b796ba00f61f0e059ab1a195704118eac3734c21904",
-    "fixture:pdf-gold:annotated.pdf:sha256": "b7ed4b7b1e596d9b123947f28bcb1d507446582cdc636b1f7c2c2ddd658c6f8e",
+    "fixture:pdf-gold:annotated.pdf:sha256": "dd0e92cd81fd71dc1f3a18c36d3aef2b28db9077f3a12c53cde3142e8c9a2d15",
     "fixture:pdf-gold:simple-3page.pdf:sha256": "d919bbbcec4ae25a614fa6018720f22b0b5ccac35ebe440f91609bea3755a203",
     "fixture:pdf-gold:simple-2page.pdf:sha256": "0a3ea973659ca6d454738bfe49dc14fe9e21acb0ae7c82f389b3c7c14768b551",
     "fixture:pdf-gold:simple-2page-changed.pdf:sha256": "3f9d3ca5c63597184f3ec2344824d680cbf3ab94809a1113ef0cff9f0d382ab6",

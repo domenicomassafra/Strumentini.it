@@ -1,7 +1,7 @@
 {
   "toolId": "date-source-normalizer",
   "category": "research",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Trasforma date scritte in formati diversi in una forma ISO coerente per anno, mese o giorno. Public jobs: Usa Uniforma le date delle fonti.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/research-knowledge/date-source-normalizer.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

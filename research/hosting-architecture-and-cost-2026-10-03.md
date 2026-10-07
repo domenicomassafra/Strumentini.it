@@ -13,10 +13,10 @@ topics: [hosting, costi, cloudflare, minipc, autenticazione, capacity]
 
 ---
 
-ma se io compro dominio come strumentiutili.it e dichiarazionipubbliche.it e faccio tipo 300 perosne al gg o 1000 o 10k per dire quanto devo pagare server e dominiod omnio dtipo 14 anno ma tipo invcece server' non puo su mio minipc credo vero?
+ma se io compro dominio come strumentini.it e dichiarazionipubbliche.it e faccio tipo 300 perosne al gg o 1000 o 10k per dire quanto devo pagare server e dominiod omnio dtipo 14 anno ma tipo invcece server' non puo su mio minipc credo vero?
 
 Elaborato per 31s
-Sì, assolutamente: un MiniPC può tecnicamente hostare strumentiutili.it e dichiarazionipubbliche.it, anche con migliaia di visite al giorno. Il punto è che probabilmente non ti conviene usarlo come server pubblico principale, perché oggi per siti di queste dimensioni il cloud può costarti praticamente zero.
+Sì, assolutamente: un MiniPC può tecnicamente hostare strumentini.it e dichiarazionipubbliche.it, anche con migliaia di visite al giorno. Il punto è che probabilmente non ti conviene usarlo come server pubblico principale, perché oggi per siti di queste dimensioni il cloud può costarti praticamente zero.
 
 La cosa importante è distinguere utenti al giorno da carico computazionale. 10.000 persone che leggono pagine e usano tool leggeri sono niente rispetto a 300 persone che fanno conversione video, AI, OCR o elaborazioni pesanti.
 
@@ -29,7 +29,7 @@ Con Cloudflare Pages, le richieste agli asset statici sono gratuite e illimitate
 
 Quindi potresti tranquillamente avere:
 
-strumentiutili.it → Cloudflare → frontend statico → €0/mese
+strumentini.it → Cloudflare → frontend statico → €0/mese
 
 e magari:
 
@@ -58,7 +58,7 @@ Quello che farei per i tuoi due siti
 Io farei una struttura del genere:
 
 Dominio
-strumentiutili.it → ~€10–15/anno
+strumentini.it → ~€10–15/anno
 dichiarazionipubbliche.it → ~€10–15/anno
 
 Hosting
@@ -90,7 +90,7 @@ Sì: hai centrato il punto. “Statico” non significa “non fa nulla”. Sign
 Ho controllato il codice reale dei due progetti e anche il tuo MiniPC reale.
 
 Come sono messi adesso
-Operazione   StrumentiUtili.it   DichiarazioniPubbliche.it   Chi paga CPU/RAM
+Operazione   Strumentini.it   DichiarazioniPubbliche.it   Chi paga CPU/RAM
 Aprire pagina   statico   statico   CDN + browser
 Ricerca nel sito   browser   browser attualmente   PC/telefono utente
 Calcoli   browser   quasi nessuno lato pubblico   utente
@@ -105,7 +105,7 @@ Trascrizione / ASR   —   backend/provider   MiniPC + provider
 Estrazione claim / AI   —   backend/provider   MiniPC + provider
 Generazione record pubblico   —   backend   MiniPC
 Visitatori leggono record   —   CDN/browser   non MiniPC
-StrumentiUtili: è esattamente come dici tu
+Strumentini: è esattamente come dici tu
 Il progetto è già costruito apposta per questo.
 
 Nel wrangler.jsonc attuale non c'è praticamente un backend: Cloudflare riceve semplicemente la cartella dist/ come static assets.
@@ -139,7 +139,7 @@ Non:
 10.000 utenti
         ↓
 il tuo povero MiniPC fa 10.000 elaborazioni
-Ed è esattamente l'architettura che sceglierei per StrumentiUtili.
+Ed è esattamente l'architettura che sceglierei per Strumentini.
 
 Anche i tool pesanti sono già limitati
 Ho controllato i limiti nel codice.
@@ -152,7 +152,7 @@ PDF: massimo 25 MiB per PDF, 200 pagine; alcune operazioni batch arrivano a 100 
 
 File hash: viene processato a chunk/Web Worker, quindi non devi necessariamente caricare l'intero file in RAM.
 
-Questi numeri sono importanti perché impediscono che uno apra StrumentiUtili con un telefono da 3 GB e tenti di processare un CSV da 4 GB.
+Questi numeri sono importanti perché impediscono che uno apra Strumentini con un telefono da 3 GB e tenti di processare un CSV da 4 GB.
 
 La GPU praticamente non conta. Canvas/browser può sfruttare accelerazione grafica per rendering e immagini, ma non stai facendo AI locale, Stable Diffusion ecc. Non ti serve una GPU server.
 
@@ -269,7 +269,7 @@ La GPU diventerebbe interessante solo se decidessimo di fare localmente Whisper 
 Quindi 300 / 1.000 / 10.000 visitatori al giorno?
 La cosa interessante è questa:
 
-StrumentiUtili.it
+Strumentini.it
 300/giorno: irrilevante
 1.000/giorno: irrilevante
 10.000/giorno: ancora irrilevante dal punto di vista CPU server
@@ -360,9 +360,9 @@ backend editoriale cresce enormemente
 ↓
 MiniPC continua oppure piccolo VPS dedicato
 La struttura che sceglierei per noi
-StrumentiUtili
+Strumentini
 
-strumentiutili.it
+strumentini.it
       ↓
 Cloudflare CDN
       ↓
@@ -394,7 +394,7 @@ MiniPC
  └ genera nuova public projection
              ↓
          Cloudflare
-Quindi sì, la tua intuizione è giusta: ogni volta che è tecnicamente sensato, vogliamo spostare il consumo su CPU/RAM del browser dell'utente, soprattutto per StrumentiUtili.
+Quindi sì, la tua intuizione è giusta: ogni volta che è tecnicamente sensato, vogliamo spostare il consumo su CPU/RAM del browser dell'utente, soprattutto per Strumentini.
 
 E la cosa migliore è che il codice attuale è già sorprendentemente vicino a questa architettura. Non comprerei oggi nessun server per questi due siti. Terrei il MiniPC per il backend privato di Dichiarazioni Pubbliche e metterei entrambi i front-end pubblici su Cloudflare.
 
@@ -404,12 +404,12 @@ Elaborato per 3m 22s
 Updated the task plan 3 / 3 completed
 Sì, e l’ho simulato davvero sul tuo MiniPC. La conclusione è abbastanza netta: per 100 utenti contemporanei il MiniPC è enormemente sovradimensionato per questi siti, almeno per la parte web.
 
-Ho fatto il test prima col server Python di preview e poi con Caddy, cioè qualcosa di molto più vicino a come lo serviremmo davvero in produzione. Sul MiniPC ho messo temporaneamente anche la build attuale di StrumentiUtili e poi ho ripulito tutto.
+Ho fatto il test prima col server Python di preview e poi con Caddy, cioè qualcosa di molto più vicino a come lo serviremmo davvero in produzione. Sul MiniPC ho messo temporaneamente anche la build attuale di Strumentini e poi ho ripulito tutto.
 
 Test, 100 concorrenti   Risultato   Throughput   p95   p99   RAM server
 Dichiarazioni Pubbliche /esplora/   3000/3000 OK   3129 req/s   46 ms   58 ms   ~40 MB
-StrumentiUtili home   3000/3000 OK   3283 req/s   43 ms   53 ms   ~40 MB
-StrumentiUtili image-resize   3000/3000 OK   3015 req/s   47 ms   59 ms   ~40 MB
+Strumentini home   3000/3000 OK   3283 req/s   43 ms   53 ms   ~40 MB
+Strumentini image-resize   3000/3000 OK   3015 req/s   47 ms   59 ms   ~40 MB
 Zero errori.
 
 E considera che il tuo MiniPC è:
@@ -432,7 +432,7 @@ latenza Bari → utente;
 eventuale Cloudflare Tunnel;
 100 browser completi che scaricano contemporaneamente CSS/font/JS;
 utenti che contemporaneamente fanno elaborazioni client-side.
-Ma questa è proprio la parte interessante: le elaborazioni di StrumentiUtili — PDF, immagini, CSV, hash ecc. — girano sul computer dell'utente, quindi non aumentano la CPU del MiniPC.
+Ma questa è proprio la parte interessante: le elaborazioni di Strumentini — PDF, immagini, CSV, hash ecc. — girano sul computer dell'utente, quindi non aumentano la CPU del MiniPC.
 
 Perciò il primo collo di bottiglia se ospitassimo tutto da casa sarebbe molto probabilmente la connessione Internet, non Ryzen/RAM.
 
@@ -468,7 +468,7 @@ Ed è già enormemente sufficiente per servire questi siti.
 Hetzner, dopo l'adeguamento prezzi del giugno 2026, ha per esempio il CX23 a €5,49/mese IVA esclusa e senza IPv4; quindi oggi non è più propriamente nella fascia €3–5 finale per un cliente italiano.
 
 Io farei così
-Per StrumentiUtili non comprerei nemmeno una VPS all'inizio:
+Per Strumentini non comprerei nemmeno una VPS all'inizio:
 
 Cloudflare statico → gratis.
 
@@ -526,14 +526,14 @@ Elaborato per 1m 42s
 Ran npm run acceptance:auth
 Sì: Cloudflare è una base sensata e abbastanza robusta, ma va configurato bene. Non è “metto Cloudflare e sono invulnerabile”. Sul piano pratico ti dà HTTPS/TLS, CDN, mitigazione del traffico malevolo, WAF e rate limiting; anche il piano Free ha il Free Managed Ruleset e una regola di rate limiting.
 
-E sul login c’è una cosa importante: su StrumentiUtili lo abbiamo già quasi completamente implementato. Ho appena verificato il codice e lanciato i test: 12/12 unit test auth PASS e 121/121 controlli acceptance PASS. Ci sono già registrazione, login/logout, sessioni multiple, cambio password, revoca delle altre sessioni, cancellazione account, preferiti sincronizzati e cookie HttpOnly; Secure; SameSite=Lax.
+E sul login c’è una cosa importante: su Strumentini lo abbiamo già quasi completamente implementato. Ho appena verificato il codice e lanciato i test: 12/12 unit test auth PASS e 121/121 controlli acceptance PASS. Ci sono già registrazione, login/logout, sessioni multiple, cambio password, revoca delle altre sessioni, cancellazione account, preferiti sincronizzati e cookie HttpOnly; Secure; SameSite=Lax.
 
 Quindi io imposterei così:
 
-StrumentiUtili.it: nessun login obbligatorio. I 200 strumenti continuano a funzionare gratis e localmente; login opzionale per preferiti, configurazione e futura sincronizzazione tra dispositivi.
+Strumentini.it: nessun login obbligatorio. I 200 strumenti continuano a funzionare gratis e localmente; login opzionale per preferiti, configurazione e futura sincronizzazione tra dispositivi.
 DichiarazioniPubbliche.it pubblico: nessun login per leggere/cercare fact-check e record.
 Dichiarazioni Pubbliche Studio/admin: login obbligatorio e separato; qui userei Cloudflare Access davanti a /studio/* o admin.dichiarazionipubbliche.it. Access fa da identity-aware proxy e può essere deny-by-default.
-Però non metterei online il login StrumentiUtili esattamente com’è adesso. Prima del deploy sistemerei quattro cose importanti.
+Però non metterei online il login Strumentini esattamente com’è adesso. Prima del deploy sistemerei quattro cose importanti.
 
 La prima è il database production: il Worker è già configurato per D1, ma nel wrangler.jsonc manca ancora il database_id reale. Cloudflare lo richiede per il binding production.
 
@@ -546,7 +546,7 @@ La quarta è l'hashing password. Attualmente il nostro codice usa PBKDF2-SHA256 
 
 La struttura finale sarebbe quindi:
 
-STRUMENTIUTILI.IT
+STRUMENTINI.IT
 
 Cloudflare
 ├─ CDN / WAF / rate limiting
@@ -582,9 +582,9 @@ Cloudflare Access
 solo noi/operatori autorizzati
      ↓
 backend MiniPC/PostgreSQL
-Questa è una struttura che mi piace molto perché anche se introduciamo account, non trasformiamo StrumentiUtili in un SaaS pesante: i file continuano a non essere caricati sul server, la CPU continua a essere quella del cliente e nel database teniamo soltanto cose piccole tipo user, session, favorite, preferenze.
+Questa è una struttura che mi piace molto perché anche se introduciamo account, non trasformiamo Strumentini in un SaaS pesante: i file continuano a non essere caricati sul server, la CPU continua a essere quella del cliente e nel database teniamo soltanto cose piccole tipo user, session, favorite, preferenze.
 
-Quindi sì: login utenti sì, ma opzionale per StrumentiUtili; nessun login per i lettori di Dichiarazioni Pubbliche; login molto più protetto per lo Studio privato. E la parte StrumentiUtili non è da costruire da zero: è già funzionante localmente, va principalmente hardennata e collegata al D1 production prima del deploy.
+Quindi sì: login utenti sì, ma opzionale per Strumentini; nessun login per i lettori di Dichiarazioni Pubbliche; login molto più protetto per lo Studio privato. E la parte Strumentini non è da costruire da zero: è già funzionante localmente, va principalmente hardennata e collegata al D1 production prima del deploy.
 
 
 

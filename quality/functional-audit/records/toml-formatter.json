@@ -1,7 +1,7 @@
 {
   "toolId": "toml-formatter",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Analizza e formatta in locale un sottoinsieme TOML sicuro con limiti di annidamento e controllo chiavi duplicate. Public jobs: Usa Formattatore e validatore TOML",
   "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Analizza e formatta in locale un sottoinsieme TOML sicuro con limiti di annidamento e controllo chiavi duplicate. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",

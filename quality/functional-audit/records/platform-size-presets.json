@@ -1,7 +1,7 @@
 {
   "toolId": "platform-size-presets",
   "category": "image-visual",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Compare source dimensions against a selected published social/app canvas and return the source-bound target size, contain box, centered crop and upscale factor.",
   "observedFunctionality": "The current preset engine validates the selected preset and source dimensions, then calculates deterministic contain/crop/upscale data. Its Gold receipt records ten source-bound presets, zero presets without a source, crop/contain invariants and a real-route assertion; dedicated image-media tests exercise preset calculations and the public module.",
@@ -24,7 +24,7 @@
     },
     {
       "kind": "source-contract",
-      "ref": ".scratch/strumentiutili-expansion-20261005/issues/317-contact-sheet-favicon-and-platform-export-upgrades.md",
+      "ref": ".scratch/strumentini-expansion-20261005/issues/317-contact-sheet-favicon-and-platform-export-upgrades.md",
       "claim": "Ticket 317 explicitly defines future export/ZIP enhancements; it does not redefine the current preset comparison/calculation job audited here."
     }
   ],

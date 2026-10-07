@@ -1,7 +1,7 @@
 {
   "toolId": "robots-directive-helper",
   "category": "web-operations",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Analizza gruppi robots.txt, percorsi consentiti o vietati, sitemap e righe malformate in un risultato verificabile. Public jobs: Usa Assistente direttive robots.txt.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/expanded-local/robots-directive-helper.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

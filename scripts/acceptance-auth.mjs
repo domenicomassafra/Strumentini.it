@@ -77,6 +77,11 @@ async function startDevServer() {
       "--port", String(port),
       "--local",
       "--persist-to", persistTo,
+      // Wrangler otherwise derives the inner request hostname from the
+      // production custom-domain route, making a local acceptance request look
+      // public to Turnstile. Keep this harness explicitly loopback-only without
+      // weakening the production hostname check.
+      "--local-upstream", "127.0.0.1",
       "--var", `GOOGLE_CLIENT_ID:${GOOGLE_CLIENT_ID}`,
     ],
     { cwd: root, detached: true, stdio: ["ignore", "pipe", "pipe"], env: wranglerEnv() },

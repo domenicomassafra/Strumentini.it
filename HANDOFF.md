@@ -1,6 +1,6 @@
 # HANDOFF — Strumentini.it
 
-Repository: /Users/domenico/Code/StrumentiUtili.it
+Repository: /Users/domenico/Code/Strumentini.it
 Branch: main (tracking `origin/main`; the redesign/backend tranche, Google auth/mobile tranche and refreshed evidence are committed; see `PROJECT-STATUS.md` for the authoritative state and source fingerprint)
 Public brand: Strumentini.it
 Live map of the numbers and routes: `PROJECT-STATUS.md`.
@@ -31,7 +31,7 @@ Live map of the numbers and routes: `PROJECT-STATUS.md`.
 | `PRODUCT-SPEC.md` | Acceptance criteria US-01…US-17, the contract a change must not break. |
 | `PROJECT-STATUS.md` | The current numbers, the release blocker list and the "how to verify" table. |
 
-Most of `.scratch/`, `tasks/prompt2prompt/`, `research/` and `docs/history/` is historical provenance. The exception is `.scratch/strumentiutili-expansion-20261005/TICKET-DAG.md` plus its linked issue files, which remain the active dependency/scheduling authority for unfinished expansion work.
+Most of `.scratch/`, `tasks/prompt2prompt/`, `research/` and `docs/history/` is historical provenance. The exception is `.scratch/strumentini-expansion-20261005/TICKET-DAG.md` plus its linked issue files, which remain the active dependency/scheduling authority for unfinished expansion work.
 
 ## 3. The gates and what each proves
 
@@ -72,7 +72,7 @@ Also out of scope, permanently: ads, generic AI features, runtime plugins, offli
 
 ### Public account API state
 
-The account API is exposed under the production custom domain `https://strumentini.it/api/auth/*`; the current Wrangler Worker target is `strumentini`, while D1 database `strumentiutili-auth` remains the intentional legacy data identifier. Checked `workers.dev` hostnames currently return 404 and are not release authority. On 2026-10-07 clean revision `eb1ccfb` / source `61b7fc66…` was deployed to the custom domain as version `a38c668c…`, passed Chromium/Firefox/WebKit plus metadata/auth smoke and representative byte-identity checks, was rolled back for real to previous known-good version `e0acf436…` with the new password-strength sentinels disappearing, and was restored successfully to `a38c668c…`; the sentinels and byte identity returned after restore. Ticket 283 now remains open only because legacy `https://strumentiutili.it/` still serves the older Vercel site instead of redirecting to Strumentini.it. The real D1 database has both migrations, server-side Turnstile remains active for password login/registration, and `npm run acceptance:auth` passes 130/130. Google Identity Services is implemented auth-only: nonce cookie + ID-token verification against Google JWKs, no Google access/refresh token storage. Production intentionally returns 503 from `/api/auth/google/config` until the owner creates a Google Web OAuth client and supplies `GOOGLE_CLIENT_ID`; the UI hides Google while that configuration is absent.
+The account API is exposed under the production custom domain `https://strumentini.it/api/auth/*`; the Wrangler Worker target is `strumentini`. The current candidate binds `AUTH_DB` to `strumentini-auth` (UUID `3351c8bf-31fc-4716-9d92-2b07c4d8fd2a`), created in EEUR and populated from a verified export of the pre-rebrand account database; both contain zero users, sessions, favourites and login attempts, and the two schema migrations are present. Keep the previous D1 resource only until the candidate completes deploy → rollback → restore, then retire it. Checked `workers.dev` hostnames currently return 404 and are not release authority. The prior production release `eb1ccfb` / source `61b7fc66…` passed Chromium/Firefox/WebKit plus metadata/auth smoke and representative byte-identity checks, real rollback, and restore. Ticket 283 is complete. Server-side Turnstile remains active for password login/registration, and `npm run acceptance:auth` passes 130/130; the harness explicitly pins its local upstream to loopback so Wrangler's custom-domain routing cannot masquerade as a public Turnstile hostname. Google Identity Services is implemented auth-only: nonce cookie + ID-token verification against Google JWKs, no Google access/refresh token storage. Production intentionally returns 503 from `/api/auth/google/config` until the owner creates a Google Web OAuth client and supplies `GOOGLE_CLIENT_ID`; the UI hides Google while that configuration is absent.
 
 Three deployment-owner checks remain outside the repo:
 
@@ -84,7 +84,7 @@ Three deployment-owner checks remain outside the repo:
 
 1. **Certification frontier.** 257 tools are Gold. `password-strength-estimator` and `xml-formatter-validator` are now Gold on bounded high-confidence oracle contracts; only `image-resize` and `microphone-recorder` remain Partial pending genuine physical-device evidence. Do not loosen those physical gates or broaden the newly closed oracle claims without review.
 2. **Physical devices.** `image-resize` still needs genuine iOS Safari and Android Chrome evidence; `microphone-recorder` needs genuine physical capture/permission evidence. No desktop/browser emulation may be recorded as physical proof.
-3. **Deployment-owner infrastructure.** The final Strumentini.it build and rollback/restore exercise are complete. Finish ticket 283 by replacing the independently served legacy `strumentiutili.it` Vercel site with the intended verified redirect/transition, then add/verify the domain in the Turnstile widget, create/verify the outer WAF rate-limit rule, and confirm Workers Paid before relying on password flows at production load.
+3. **Deployment-owner infrastructure.** The final Strumentini.it build and rollback/restore exercise are complete. Remaining owner-side work is limited to verifying the Strumentini.it hostname in Turnstile, creating/verifying the outer WAF rate-limit rule, configuring the Google Web Client ID if Google sign-in is enabled, and confirming Workers Paid before relying on password flows at production load.
 4. **Design provenance.** `design/references/redesign-20261003/` intentionally stays as the ten reference screens for future fidelity work.
 
 Closed during this tranche: the two orphan page wrappers were deleted; the lossy legacy catalog-summary bridge was removed; D1 and Turnstile were provisioned; debug debris was removed; the roadmap was refreshed; and rollback was verified by a real Cloudflare rollback/restore exercise.

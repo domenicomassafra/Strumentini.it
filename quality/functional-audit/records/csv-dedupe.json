@@ -1,7 +1,7 @@
 {
   "toolId": "csv-dedupe",
   "category": "data",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Elimina righe duplicate usando l'intera riga o le colonne chiave che scegli. Public job: Usa Rimuovi righe duplicate dal CSV.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/table-ops/csv-dedupe.gold.json; executable tests/table-expansion.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/table-ops/browser-acceptance.json verifies the real route interaction/locality contract.",

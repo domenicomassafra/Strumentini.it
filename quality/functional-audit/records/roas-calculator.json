@@ -1,7 +1,7 @@
 {
   "toolId": "roas-calculator",
   "category": "marketing",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Calcola il ritorno sulla spesa pubblicitaria con aritmetica decimale esatta e arrotondamento solo finale. Public jobs: Usa Calcolatore ROAS.",
   "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/expanded-local/roas-calculator.gold.json, executable functional tests in tests/url-marketing-tools.test.ts, and real-route browser acceptance in quality/receipts/expanded-local/browser-acceptance.json. No scoped functional gap is open for this narrow public job.",

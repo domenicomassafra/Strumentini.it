@@ -1,7 +1,7 @@
 {
   "toolId": "decimal-hours-converter",
   "category": "date-time",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Converte HH:MM in ore decimali e viceversa senza errori di arrotondamento intermedi. Public jobs: Usa Converti ore e minuti in ore decimali",
   "observedFunctionality": "The current implementation performs the declared date/time job locally and deterministically: Converte HH:MM in ore decimali e viceversa senza errori di arrotondamento intermedi. Tool-specific Gold evidence plus engine/module tests cover boundary/error behavior; browser acceptance covers the real route. Unsupported scope is surfaced rather than silently broadened.",

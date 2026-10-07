@@ -539,7 +539,7 @@ Do not create in this wave:
 
 ## 17. Ticket execution model
 
-The historical local tracker was `.scratch/strumentiutili-v1/issues/`. It is retained as provenance, not as the current queue.
+The historical local tracker was `.scratch/strumentini-v1/issues/`. It is retained as provenance, not as the current queue.
 
 Each ticket:
 
@@ -552,7 +552,7 @@ Each ticket:
 - includes runnable verification;
 - reaches the required Gold level for any tool it makes default/public.
 
-The historical dependency graph is `.scratch/strumentiutili-v1/TICKET-DAG.md`.
+The historical dependency graph is `.scratch/strumentini-v1/TICKET-DAG.md`.
 
 The first implementation frontier was **Ticket 01 — Gold tracer: Business Day Calculator**. That frontier has long since been integrated; the old prompt/worker waves must not be restarted as active work.
 

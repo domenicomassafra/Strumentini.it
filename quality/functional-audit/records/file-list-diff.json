@@ -1,7 +1,7 @@
 {
   "toolId": "file-list-diff",
   "category": "files",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Confronta due selezioni locali di file per percorso relativo, dimensione e SHA-256 facoltativo. Public job: Usa Confronto elenchi di file.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow file job at quality/receipts/expanded-local/file-list-diff.gold.json; executable test coverage verifies the underlying file/hash/archive/privacy behavior, while quality/receipts/expanded-local/browser-acceptance.json verifies the real route interaction and local-only contract.",

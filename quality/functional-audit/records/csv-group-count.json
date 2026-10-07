@@ -1,7 +1,7 @@
 {
   "toolId": "csv-group-count",
   "category": "data",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Raggruppa le righe per una o più colonne e calcola conteggi o aggregazioni numeriche. Public job: Usa Raggruppa e conta righe CSV.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/data-table/csv-group-count.gold.json; executable tests/table-expansion.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/data-table/browser-acceptance.json verifies the real route interaction/locality contract.",

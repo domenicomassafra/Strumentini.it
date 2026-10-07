@@ -66,10 +66,10 @@ describe("functional audit tranches 287-289", () => {
     const upgraded = scoped.filter((record) => record.decision === "UPGRADED");
     expect(upgraded.map((record) => record.toolId).toSorted()).toEqual(["regex-tester", "uuid-generator"]);
     expect(upgraded.find((record) => record.toolId === "regex-tester")?.childTickets).toEqual([
-      ".scratch/strumentiutili-expansion-20261005/issues/178-regex-execution-isolation-and-hard-timeout.md",
+      ".scratch/strumentini-expansion-20261005/issues/178-regex-execution-isolation-and-hard-timeout.md",
     ]);
     expect(upgraded.find((record) => record.toolId === "uuid-generator")?.childTickets).toEqual([
-      ".scratch/strumentiutili-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md",
+      ".scratch/strumentini-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md",
     ]);
     expect(scoped.filter((record) => record.category === "date-time" && record.decision !== "ALREADY_COMPLETE")).toEqual([]);
     expect(scoped.filter((record) => record.category === "documents" && record.decision !== "ALREADY_COMPLETE")).toEqual([]);

@@ -1,7 +1,7 @@
 {
   "toolId": "image-compare-slider",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Confronta due immagini locali con un riepilogo deterministico delle differenze pixel e dei metadati. Public jobs: Usa Confronto immagini",
   "observedFunctionality": "Despite the historical internal id, the current public name/summary promises deterministic image comparison with pixel-difference and metadata facts, not an interactive slider. Gold acceptance proves those facts; ticket 316 is an additive slider/overlay/diff-workspace upgrade.",

@@ -1,7 +1,7 @@
 {
   "toolId": "uuid-generator",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
   "decision": "UPGRADED",
   "expectedFunctionality": "Genera UUIDv4 o UUIDv7 secondo RFC 9562 usando Web Crypto e maiuscole facoltative. Public jobs: Usa Generatore UUID",
   "observedFunctionality": "UUIDv4 remains unchanged and UUIDv7 now encodes the RFC 9562 48-bit Unix-millisecond timestamp before applying version/variant bits. The Appendix A.6 vector round-trips its timestamp exactly, public generation uses Web Crypto randomness, and internal seeded/byte fixture modes are explicitly labeled as test input rather than secure randomness.",
@@ -29,11 +29,11 @@
     },
     {
       "kind": "source-contract",
-      "ref": ".scratch/strumentiutili-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md",
+      "ref": ".scratch/strumentini-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md",
       "claim": "Targeted ticket records the completed RFC 9562 timestamp/layout and secure-generation acceptance criteria."
     }
   ],
   "childTickets": [
-    ".scratch/strumentiutili-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md"
+    ".scratch/strumentini-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md"
   ]
 }

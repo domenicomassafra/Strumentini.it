@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/text-data-certification/stable-placeholder-anonymizer.gold.json",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "stable-placeholder-anonymizer",
   "runtime": {
     "location": "LOCAL",
@@ -22,7 +22,7 @@
   "truthSources": [
     "fixture-policy",
     "lucisano-piemontese-1988",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "unicode-uax29"
   ],
   "resolvedFixtures": [
@@ -47,10 +47,10 @@
   "identities": {
     "manifestSha256": "6412ff77d3ae4b5f0487c9d1f2ec34246c5ff8d500ee5469cf444b67392fc903",
     "moduleSha256": "b92df6e6d7e9b77809f78227d90054c9d0304597742f8d954167ef9a77ead7e9",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "browserAcceptanceSha256": "209d65f8c8676cde1219ea2342527e3589d94cb76b81c6e9c0d789b5be62f7c7",
-    "browserAcceptanceSourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "browserAcceptanceSha256": "c9a9b9f6f1321e826932f75281f883e11cf734c45b0f1a27f827719df1255f3b",
+    "browserAcceptanceSourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
     "focusedTestsSha256": "7d03995f3e3a6ebd56a9f2ba33dd2b910169cdcf3f6b056833f99b8c1abab92c",
     "fixture:text-expansion:sha256": "0c5599cbcee93afe9ae1f5116dde6ecbc01895b6c878e3236ac9d22538ee5ce0"
   }

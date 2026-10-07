@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "research-pack-manifest",
   "runtime": {
     "location": "LOCAL",
@@ -22,7 +22,7 @@
     "nist-fips180-4",
     "openssl-cli",
     "rfc4180",
-    "strumentiutili-quality",
+    "strumentini-quality",
     "whatwg-url"
   ],
   "resolvedFixtures": [
@@ -31,7 +31,7 @@
       "path": "quality/fixtures/research-source-inventory/vectors.json",
       "sha256": "15402ed2e720d97b46d3b0403909fc7d1e16d6440292cb7c6b8d0e529386864c",
       "provenance": "hand-worked",
-      "license_or_rights": "Hand-worked URL lists, CSV rows and pack manifests authored for StrumentiUtili.it; no external corpus copied.",
+      "license_or_rights": "Hand-worked URL lists, CSV rows and pack manifests authored for Strumentini.it; no external corpus copied.",
       "schemaVersion": 1
     },
     {
@@ -39,7 +39,7 @@
       "path": "quality/fixtures/sha2-known-answers/vectors.json",
       "sha256": "5ff14b5580656e339ad88a9b997204475c43c6c11b611ab98618796097fbb99b",
       "provenance": "spec-vector",
-      "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied.",
+      "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied.",
       "schemaVersion": 1
     }
   ],
@@ -67,8 +67,8 @@
   "identities": {
     "manifestSha256": "03dde3fe36e8228e1c3d3da2c5e05c588699e343c406ad4a1c65e8005b460362",
     "engineSha256": "d7417088bf48c40ccf610aa6d32d5e57c427033d5b5d61f35ffac800595cdbf6",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
     "browserAcceptanceSha256": "e4872fbbc8eca1932396ee00bd999b67e42137d44ab5b5219a28106f96dce65d",
     "acceptanceScriptSha256": "db5c4c076983c213752dc4bab33945c73015836b0f167c146cb1ae697c47136e",
     "unitTestsSha256": "46dcd92ee24212e7d895aa2c8c872eddd36b43ddd26b519b026edbdd861dbb00",

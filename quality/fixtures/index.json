@@ -12,7 +12,7 @@
       "format": "json",
       "provenance": {
         "kind": "synthetic-local",
-        "license_or_rights": "Store-method ZIP archives assembled byte by byte for StrumentiUtili.it; no third-party content."
+        "license_or_rights": "Store-method ZIP archives assembled byte by byte for Strumentini.it; no third-party content."
       },
       "truth_sources": [
         "nist-fips180-4",
@@ -35,7 +35,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc4648"
@@ -55,11 +55,11 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked StrumentiUtili.it literals; no external corpus copied."
+        "license_or_rights": "Hand-worked Strumentini.it literals; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "coverage": [
         "index/name/ext placeholders",
@@ -106,7 +106,7 @@
         "license_or_rights": "Synthetic browser/device snapshots and keyboard events authored for Strumentini.it; no user telemetry or third-party corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "whatwg-html",
         "w3c-uievents"
@@ -129,11 +129,11 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
       "coverage": [
         "weekend crossing",
@@ -157,11 +157,11 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
       "coverage": [
         "margin/markup distinction",
@@ -186,7 +186,7 @@
       },
       "truth_sources": [
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "coverage": [
         "French amortization payment, schedule reconciliation, zero-rate, one-payment and 100-year cases",
@@ -206,11 +206,11 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked mathematical literals and synthetic boundary cases authored for StrumentiUtili.it; no third-party corpus copied."
+        "license_or_rights": "Hand-worked mathematical literals and synthetic boundary cases authored for Strumentini.it; no third-party corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "coverage": [
         "safe expression precedence and documented functions",
@@ -254,12 +254,12 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Synthetic CSV and expected-policy vectors authored for StrumentiUtili.it; no third-party corpus copied."
+        "license_or_rights": "Synthetic CSV and expected-policy vectors authored for Strumentini.it; no third-party corpus copied."
       },
       "truth_sources": [
         "rfc4180",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "coverage": [
         "PostgreSQL MySQL and SQLite identifier/value quoting with conservative type inference",
@@ -278,7 +278,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc4180",
@@ -309,7 +309,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc4180"
@@ -334,7 +334,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc4180",
@@ -361,10 +361,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "rfc8259"
@@ -388,7 +388,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc3339",
@@ -411,10 +411,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339",
         "iana-tzdb",
@@ -438,7 +438,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy"
@@ -465,7 +465,7 @@
         "css-syntax-3",
         "whatwg-html",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "coverage": [
         "CSS parser serialization with strings comments and custom properties",
@@ -490,7 +490,7 @@
         "license_or_rights": "Hand-worked RFC boundary literals and mathematical/Unix permission examples authored for Strumentini.it; no third-party corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "coverage": [
@@ -516,7 +516,7 @@
         "license_or_rights": "Hand-worked and synthetic malformed/hostile structured-data examples authored for Strumentini.it; no third-party corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "coverage": [
@@ -536,10 +536,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "coverage": [
@@ -558,7 +558,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "doi-handbook",
@@ -582,7 +582,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "nist-fips180-4",
@@ -604,7 +604,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
@@ -628,11 +628,11 @@
       "format": "json",
       "provenance": {
         "kind": "synthetic-local",
-        "license_or_rights": "Synthetic local file trees for StrumentiUtili.it; no third-party content."
+        "license_or_rights": "Synthetic local file trees for Strumentini.it; no third-party content."
       },
       "truth_sources": [
         "fixture-policy",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "nist-fips180-4"
       ],
       "coverage": [
@@ -651,7 +651,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc2104",
@@ -676,7 +676,7 @@
       },
       "truth_sources": [
         "fixture-policy",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "rfc3339"
       ],
       "coverage": [
@@ -698,7 +698,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "whatwg-html",
@@ -720,7 +720,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc9110"
@@ -765,7 +765,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc5545"
@@ -843,7 +843,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "unicode-uts39",
@@ -865,7 +865,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "isbn-manual"
@@ -934,7 +934,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc4180",
@@ -956,7 +956,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc8259"
@@ -978,7 +978,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc7519",
@@ -999,7 +999,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
@@ -1022,11 +1022,11 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
       "coverage": [
         "duplicates",
@@ -1044,7 +1044,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "commonmark",
@@ -1070,7 +1070,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy"
@@ -1120,7 +1120,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "iana-media-types",
@@ -1176,7 +1176,7 @@
         "license_or_rights": "Synthetic password-shape examples and project wordlist metadata authored for Strumentini.it; no breached-password corpus or user secrets."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "coverage": [
@@ -1197,10 +1197,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "iso-pdf2"
       ],
@@ -1227,7 +1227,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "iso-pdf2"
@@ -1247,7 +1247,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy"
@@ -1294,11 +1294,11 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "iso-qr-18004",
-        "strumentiutili-lane05"
+        "strumentini-lane05"
       ],
       "coverage": [
         "ASCII",
@@ -1316,7 +1316,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "whatwg-url"
@@ -1341,7 +1341,7 @@
       },
       "truth_sources": [
         "w3c-webcrypto",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "coverage": [
@@ -1364,10 +1364,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked BibTeX snippets authored for StrumentiUtili.it; no xampl.bib or third-party bibliography copied."
+        "license_or_rights": "Hand-worked BibTeX snippets authored for Strumentini.it; no xampl.bib or third-party bibliography copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "bibtex-ctan",
         "whatwg-url"
@@ -1394,10 +1394,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked bibliographic literals and ordering rules authored for StrumentiUtili.it; no external citation corpus copied."
+        "license_or_rights": "Hand-worked bibliographic literals and ordering rules authored for Strumentini.it; no external citation corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "doi-handbook",
         "isbn-manual",
@@ -1421,10 +1421,10 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked page-range literals and StrumentiUtili.it style presets; no style-guide text copied and no conformance claimed."
+        "license_or_rights": "Hand-worked page-range literals and Strumentini.it style presets; no style-guide text copied and no conformance claimed."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "bibtex-ctan"
       ],
@@ -1445,10 +1445,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked date literals authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked date literals authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc3339"
       ],
@@ -1470,10 +1470,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked RIS and BibTeX records authored for StrumentiUtili.it; no vendor RIS corpus copied."
+        "license_or_rights": "Hand-worked RIS and BibTeX records authored for Strumentini.it; no vendor RIS corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "ris-policy",
         "bibtex-ctan",
@@ -1500,10 +1500,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked URL lists, CSV rows and pack manifests authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked URL lists, CSV rows and pack manifests authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "rfc4180",
         "whatwg-url"
@@ -1527,10 +1527,10 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked Italian and English literals plus the declared StrumentiUtili.it stopword policy; no external corpus copied."
+        "license_or_rights": "Hand-worked Italian and English literals plus the declared Strumentini.it stopword policy; no external corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy",
         "unicode-uax15",
         "unicode-uax29"
@@ -1573,7 +1573,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc9309"
@@ -1620,7 +1620,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "nist-fips180-4",
@@ -1667,10 +1667,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-lane05",
+        "strumentini-lane05",
         "fixture-policy"
       ],
       "coverage": [
@@ -1700,7 +1700,7 @@
         "lucisano-piemontese-1988",
         "unicode-uax29",
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "coverage": [
         "exact chunk round-trip with Unicode and CRLF",
@@ -1748,10 +1748,10 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "coverage": [
@@ -1776,7 +1776,7 @@
       },
       "truth_sources": [
         "fixture-policy",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "unicode-uax29"
       ],
       "coverage": [
@@ -1799,7 +1799,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "iana-tzdb",
@@ -1821,7 +1821,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "unicode-uax15"
@@ -1849,7 +1849,7 @@
       },
       "truth_sources": [
         "fixture-policy",
-        "strumentiutili-quality"
+        "strumentini-quality"
       ],
       "coverage": [
         "cross-dimension rejection and affine temperature",
@@ -1896,7 +1896,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "whatwg-url"
@@ -1919,7 +1919,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "whatwg-url",
@@ -1943,7 +1943,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "whatwg-url",
@@ -1965,7 +1965,7 @@
       "format": "json",
       "provenance": {
         "kind": "spec-vector",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "rfc9562"
@@ -1989,7 +1989,7 @@
       },
       "truth_sources": [
         "rfc6350",
-        "strumentiutili-quality",
+        "strumentini-quality",
         "fixture-policy"
       ],
       "coverage": [
@@ -2009,7 +2009,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "fixture-policy",
@@ -2031,7 +2031,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "unicode-uax29",
@@ -2081,7 +2081,7 @@
       "format": "json",
       "provenance": {
         "kind": "project-policy",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "yaml12",
@@ -2106,7 +2106,7 @@
       "format": "json",
       "provenance": {
         "kind": "hand-worked",
-        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for StrumentiUtili.it; no external corpus copied."
+        "license_or_rights": "Hand-worked facts/literals or synthetic data authored for Strumentini.it; no external corpus copied."
       },
       "truth_sources": [
         "pkware-appnote",

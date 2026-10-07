@@ -14,7 +14,7 @@ describe("turnstile verification", () => {
     expect(isLocalTurnstileHost("localhost")).toBe(true);
     expect(isLocalTurnstileHost("127.0.0.1")).toBe(true);
     expect(isLocalTurnstileHost("::1")).toBe(true);
-    expect(isLocalTurnstileHost("strumentiutili-it.example.workers.dev")).toBe(false);
+    expect(isLocalTurnstileHost("unrelated-worker.example.workers.dev")).toBe(false);
   });
 
   it("requires a non-empty bounded token before any network call", async () => {

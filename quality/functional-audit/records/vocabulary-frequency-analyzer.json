@@ -1,7 +1,7 @@
 {
   "toolId": "vocabulary-frequency-analyzer",
   "category": "research",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra quali parole compaiono più spesso e quante volte ricorrono nel testo. Public jobs: Usa Parole più usate nel testo.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/research-knowledge/vocabulary-frequency-analyzer.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

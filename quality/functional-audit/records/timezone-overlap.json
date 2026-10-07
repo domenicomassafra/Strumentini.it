@@ -1,7 +1,7 @@
 {
   "toolId": "timezone-overlap",
   "category": "date-time",
-  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Trova le fasce lavorative che si sovrappongono tra due fusi orari, inclusa l'ora legale. Public jobs: Usa Trova ore comuni tra due fusi orari",
   "observedFunctionality": "The current implementation performs the declared date/time job locally and deterministically: Trova le fasce lavorative che si sovrappongono tra due fusi orari, inclusa l'ora legale. Tool-specific Gold evidence plus engine/module tests cover boundary/error behavior; browser acceptance covers the real route. Unsupported scope is surfaced rather than silently broadened.",

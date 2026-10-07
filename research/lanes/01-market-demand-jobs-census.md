@@ -6,7 +6,7 @@ Scope: recurring small jobs, target segments, alternatives, demand signals, firs
 
 ## Executive decision
 
-The evidence does **not** support launching StrumentiUtili.it as a generic “200–500 tools for knowledge workers” product. That framing is already crowded, is easy to substitute with search/AI/launchers, and was not supported by a fresh broad community scan.
+The evidence does **not** support launching Strumentini.it as a generic “200–500 tools for knowledge workers” product. That framing is already crowded, is easy to substitute with search/AI/launchers, and was not supported by a fresh broad community scan.
 
 The evidence supports a narrower thesis:
 
@@ -42,7 +42,7 @@ Frequency labels in the census are intentionally qualitative:
 Other census abbreviations:
 
 - **Risk** = annoyance/error/cost risk: H/M/L.
-- **AI/Search repl.** = how easily a search result or chat answer replaces the utility: H/M/L. Lower is better for StrumentiUtili.it.
+- **AI/Search repl.** = how easily a search result or chat answer replaces the utility: H/M/L. Lower is better for Strumentini.it.
 - **Files** = real user file/structured-data involvement: Y/N/Sometimes.
 - **Local** = browser/client-side feasibility: H/M/L.
 - **Profile** = Work Profile leverage: H/M/L.
@@ -63,7 +63,7 @@ No recent evidence cluster cleared its relevance floor. This is **negative evide
 
 The prompt explicitly called for Product Hunt and GitHub coverage, so those channels were checked separately rather than inferred from Reddit/HN:
 
-- Product Hunt's January 2026 Developer Tools archive listed **1,528** products in that broad topic. That is category-saturation evidence, not proof of demand for StrumentiUtili.it's particular workspace thesis.
+- Product Hunt's January 2026 Developer Tools archive listed **1,528** products in that broad topic. That is category-saturation evidence, not proof of demand for Strumentini.it's particular workspace thesis.
 - The open-source `CorentinTh/it-tools` repository currently shows roughly **40.6k GitHub stars** and a large collection of developer utilities. This is strong competition/interest evidence for developer micro-tools, but again does not prove a role-aware persistent workspace is wanted.
 - BrowseryTools-family repositories advertise **130+ browser-only utilities** spanning developer, data, image, PDF and other categories, reinforcing that “many tools + client-side privacy” is easy to find in open source.
 - The 30-day DStack run also searched GitHub; only three GitHub results survived initial collection and **no cross-source recent evidence cluster cleared the relevance floor**. Those three items are therefore not promoted into demand claims.
@@ -102,7 +102,7 @@ That description explains *why* a utility workspace is relevant; “knowledge wo
 | Platform naming discipline matters | Reddit's own DPA guidance recommends clear campaign identifiers; Google Analytics warns inconsistent campaign/UTM naming fragments reporting. | P17, P18 | Campaign-name builder can use saved schemas; this is profile/preset leverage, not just string concatenation. |
 | Citation/reference duplicates can become unmanageable | Zotero users report libraries with thousands/tens of thousands of duplicates where manual merging is impractical. | C05, C06, P08 | Dedupe/normalize tools around citation exchange formats have concrete pain, but must complement rather than reimplement Zotero. |
 | Imported citation metadata is often messy | Current Zotero-community tooling targets wrong titles, missing authors, journal names and broken metadata. | C07 | Reference cleanup/normalization has repeat value beyond format conversion. |
-| Invoicing can be “too small for SaaS, too repetitive for manual” | A small-business/freelance user described replacing subscription invoicing with Excel macros; another described repetitive invoice data entry. | C08, C09 | StrumentiUtili.it should handle math/validation/export/handoff helpers, not become accounting software. |
+| Invoicing can be “too small for SaaS, too repetitive for manual” | A small-business/freelance user described replacing subscription invoicing with Excel macros; another described repetitive invoice data entry. | C08, C09 | Strumentini.it should handle math/validation/export/handoff helpers, not become accounting software. |
 | Search/AI is a much stronger alternative in 2026 | Google reports very large AI Mode usage; ChatGPT can ingest and transform spreadsheets/documents. | P01, P02, P16 | Pure text answers and ad-hoc transforms are weak moats. Prefer deterministic/file-heavy/profile-aware tasks. |
 | Raycast already owns command-style micro-utilities | Raycast supports thousands of extensions, Quicklinks and snippets from root search. | P03, P04, P05, C10 | A command palette is not differentiation. Web portability, no install, profile reuse and file-local execution must earn the switch. |
 | Spreadsheet cleanup is already capable | Sheets removes duplicates/trims whitespace; Excel Power Query imports and transforms CSV/folders. | P06, P07 | CSV tooling must win on speed/clarity for one-off cleanup, not claim capabilities spreadsheets lack. |
@@ -140,7 +140,7 @@ These are short verbatim phrases preserved because they describe the pain more p
 | A11 | Business-day/deadline math | Commit delivery date | Calendar counting, search | H | H | M | N | H | H | H | timeanddate, calendar | E/D* | P15, I |
 | A12 | Invoice math validation / fee gross-up | Before invoice/payment link | Calculator, accounting app | M–H | H | M | Sometimes | H | H | H | Sheets, invoicing SaaS | E | C08, I |
 
-*A11 is E when user supplies workweek/holidays manually; D when StrumentiUtili.it supplies current jurisdiction holiday datasets.
+*A11 is E when user supplies workweek/holidays manually; D when Strumentini.it supplies current jurisdiction holiday datasets.
 
 ### B. Small agencies and client-service operators
 
@@ -413,13 +413,13 @@ Additional merges recommended:
 - Image resize (#141) + platform presets (#146) + format conversion (#143) + compression (#144) → one reusable image pipeline, exposed as simple operations.
 - List intersection (#10) + list difference (#11) + line dedupe (#9) → one set/list engine with distinct focused modes.
 
-## Alternative test: when StrumentiUtili.it loses
+## Alternative test: when Strumentini.it loses
 
 ### Google / AI search
 
 Search or chat wins when the user needs a one-off fact, explanation, formula or low-stakes transformation and has no reusable context. Google's 2026 AI-search expansion and ChatGPT's file/data analysis support make this alternative stronger, not weaker.
 
-StrumentiUtili.it should **not** assume users will open a separate workspace for:
+Strumentini.it should **not** assume users will open a separate workspace for:
 
 - a single percentage calculation;
 - a definition/reference lookup;
@@ -427,13 +427,13 @@ StrumentiUtili.it should **not** assume users will open a separate workspace for
 - a one-time timestamp conversion;
 - a one-off “what size should this image be?” question.
 
-StrumentiUtili.it has a better case when the answer must be deterministic, repeated, applied to a file/table, uses saved defaults, or needs a visible reproducible transform.
+Strumentini.it has a better case when the answer must be deterministic, repeated, applied to a file/table, uses saved defaults, or needs a visible reproducible transform.
 
 ### Raycast / native launchers
 
 Raycast wins for Mac users who already live in its root search and can install an extension/Quicklink/snippet. It is especially strong for developer commands, clipboard operations, links and tiny text utilities.
 
-StrumentiUtili.it can only beat that on combinations Raycast does not naturally own: no-install web portability, cross-platform use, a role/profile setup shared across many browser-local file/data utilities, and exportable packs/configuration.
+Strumentini.it can only beat that on combinations Raycast does not naturally own: no-install web portability, cross-platform use, a role/profile setup shared across many browser-local file/data utilities, and exportable packs/configuration.
 
 If users with the same job consistently say “I already do this in Raycast in one keystroke,” that job should be demoted.
 
@@ -441,7 +441,7 @@ If users with the same job consistently say “I already do this in Raycast in o
 
 Spreadsheets win when the work is already in a workbook, when the user wants an exploratory model, or when the transform must remain as a reusable query/formula inside a larger analysis.
 
-StrumentiUtili.it can win a different moment:
+Strumentini.it can win a different moment:
 
 > “I received/exported this file and need it clean enough for the next system in two minutes.”
 
@@ -451,7 +451,7 @@ The UX benchmark is therefore not feature parity with Excel. It is fewer steps, 
 
 ChatGPT can ingest spreadsheets/documents and perform transformation, calculation and charting. It wins when interpretation is required, the input is messy in a semantic way, or the user wants an explanation with the result.
 
-StrumentiUtili.it should win on repeatable operations where users value:
+Strumentini.it should win on repeatable operations where users value:
 
 - the exact same result for the same input;
 - local/no-upload processing;
@@ -478,7 +478,7 @@ The persistent-workspace thesis should be rejected, not merely repositioned, if 
 3. Repeat users overwhelmingly enter through Google to an individual tool and do not return through “Your Tools.”
 4. Pack installation/removal does not correlate with repeat use and users cannot explain what a pack gives them.
 5. Users prefer keeping 2–5 bookmarks or Raycast commands and report no meaningful switching/setup pain.
-6. File/data utilities dominate usage but users still prefer Excel/Sheets/ChatGPT because StrumentiUtili.it does not materially shorten the task.
+6. File/data utilities dominate usage but users still prefer Excel/Sheets/ChatGPT because Strumentini.it does not materially shorten the task.
 7. Tool-to-tool handoff is rarely used, or users copy/download/re-upload anyway.
 8. Local processing is appreciated in surveys but does not affect actual choice/retention.
 9. The most-used utilities are one-off commodity converters with almost zero profile leverage, making the persistent shell unnecessary.
@@ -583,13 +583,13 @@ What is still weak:
 - Community posts overrepresent people with problems severe enough to post.
 - The 30-day generic research pass did not produce a solid current cluster.
 - Some strongest community evidence is from 2024–2025; it is used as pain-language/history, not claimed as September 2026 prevalence.
-- We do not yet have StrumentiUtili.it-specific retention evidence, because no product exists.
+- We do not yet have Strumentini.it-specific retention evidence, because no product exists.
 
 Therefore this report is sufficient to choose **what to validate first**, not to claim product-market fit.
 
 ## Final answer to the mission
 
-StrumentiUtili.it should solve **recurring deterministic boundary jobs** before commodity lookup jobs: cleaning data for the next system, preparing client/campaign/research files, recomputing work economics with the same personal defaults, and normalizing/validating artifacts before handoff.
+Strumentini.it should solve **recurring deterministic boundary jobs** before commodity lookup jobs: cleaning data for the next system, preparing client/campaign/research files, recomputing work economics with the same personal defaults, and normalizing/validating artifacts before handoff.
 
 The persistent workspace beats Googling only when it compounds context:
 

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "588464208326c1f77e6392c4c6e3d0277a96eb3e",
-  "sourceFingerprint": "61b7fc66df515e762f205771cf8821b4193f824e2b3d62576775bddd306f14e6",
+  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
+  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
   "toolId": "timesheet-totaler",
   "runtime": {
     "location": "LOCAL",
@@ -21,7 +21,7 @@
     "iana-tzdb",
     "rfc3339",
     "rfc5545",
-    "strumentiutili-quality"
+    "strumentini-quality"
   ],
   "resolvedFixtures": [
     {
@@ -43,8 +43,8 @@
   "identities": {
     "manifestSha256": "3fcc5186446e2b6156b5ac38bef5b90581d4d4a18e0a59555db7e209b0dd8999",
     "engineIndexSha256": "4e4f4fbf6f817450cbecdf39d4941534cf9b0511a521133433ae2731c5541c82",
-    "fixtureIndexSha256": "1bc8cd27baa7c68f2878a73ec85be0a595021d2aeeeb3d58aa59a779df81856c",
-    "oracleRegistrySha256": "177843dfd928a31394601aff4c314e93123272f121966cae02117c4844c9eacb",
+    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
+    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
     "browserAcceptanceSha256": "b01e05bea4ac63bf78350977edec534f2e8d3e52feb3a0f4c8dc80262d861ff4",
     "unitTestsSha256": "b3954748380b4b3a1d2000ccfa5dda9442aa23e0e4f640faef8893f10c26b872",
     "fixture:decimal-hours:sha256": "a50039eb50ccbac479bdf4afb4edcc45f477c218484ef34bfc01a999fe50f7cc",
