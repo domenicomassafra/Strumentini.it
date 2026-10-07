@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
+  "revision": "e5eb69a512adfbfd4e38aa67aac8852e4bd50ab7",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "exif-remover",
   "runtime": {
     "location": "LOCAL",
@@ -61,8 +61,8 @@
       "input Exif segment inventoried, output proven metadata-free, local download offered"
     ],
     "outputSha256": [
-      "bbcf32ef254e558bbda8689f7c478d6a87c3e4fc9bd853fc44959756db586fcc",
-      "bbcf32ef254e558bbda8689f7c478d6a87c3e4fc9bd853fc44959756db586fcc"
+      "c74bd56c87213ea7c1218e6d9ee82a5f1d083eb6881fd91956afb92e1fae009d",
+      "c74bd56c87213ea7c1218e6d9ee82a5f1d083eb6881fd91956afb92e1fae009d"
     ],
     "locality": "zero external, non-GET or task-body requests after task start",
     "lazyLoad": "implementation script observed after submit",
@@ -94,9 +94,9 @@
   "identities": {
     "manifestSha256": "0745de51a887813b36f6708c7126e554cf6af81427cd1aa58b9af82da68e6d1b",
     "moduleSha256": "e2dc495c503f614cfedd16c23588da939f0f9f456fb161cf64455f0be4439f1f",
-    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
-    "browserAcceptanceSha256": "b4ad601616cc57a94acba30e9d3b47a13c1365a407a371e472f3a91695850c24",
+    "browserAcceptanceSha256": "39d46b33989a29f69828052b1c4e1c04d220f71f835a5422ad3086a4b311f8f9",
     "acceptanceScriptSha256": "2c1eef9ba70d9a6e6ff2c98dee471ff40810cd334deb65cdcf25e3a343796b39",
     "unitTestsSha256": "c7c95a388ab7368340e175d004ca3a6d505a7737a77109c0f9bd2d7fb2eb4844",
     "fixture:image-metadata:sha256": "636a2a09fef7acc95fc32184357a28883b61f1d27a1e8d7dd76c6cc73be8398d",

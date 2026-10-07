@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
-  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
+  "revision": "e5eb69a512adfbfd4e38aa67aac8852e4bd50ab7",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "open-graph-preview",
   "runtime": {
     "location": "LOCAL",
@@ -48,7 +48,7 @@
       "greater-than inside an attribute survives and the relative URL is named"
     ],
     "outputSha256": [
-      "7650e4703219f6e0889aea060c10303fa94852b9998ef3b0a29d5452b1f96d67"
+      "88bc0cf89f70ca3bdb813a1d092956e3f9acb7bac138b94848c320d7ce727ff4"
     ],
     "locality": "zero external, non-GET or task-body requests after task start",
     "lazyLoad": "implementation script observed after submit",
@@ -81,9 +81,9 @@
   "identities": {
     "manifestSha256": "8a55eabbd67c5f6c95c17f4674df29521cc318af00a3f6264b3536e0d84be04b",
     "moduleSha256": "6e9fd0514d505921575e29168506f581ca56ea595b78b95f3ad508aab6b25816",
-    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
     "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
-    "browserAcceptanceSha256": "b4ad601616cc57a94acba30e9d3b47a13c1365a407a371e472f3a91695850c24",
+    "browserAcceptanceSha256": "39d46b33989a29f69828052b1c4e1c04d220f71f835a5422ad3086a4b311f8f9",
     "acceptanceScriptSha256": "2c1eef9ba70d9a6e6ff2c98dee471ff40810cd334deb65cdcf25e3a343796b39",
     "unitTestsSha256": "8ffb71f5c9d87e24a0e82abcf77530008b2cd16ff420c2af40a4cff611677d93",
     "fixture:url-security:sha256": "498535dca23ff3fe69902dde2024e33f1f5900cd34ccc39b6079e06fb06c0a0e",
