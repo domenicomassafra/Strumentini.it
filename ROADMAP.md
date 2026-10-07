@@ -2,7 +2,7 @@
 
 Current stage: **255/259 Gold + final evidence/infrastructure closure**.
 
-Checkpoint 2026-10-07: 259 tools exist; **255 are Gold**, `image-resize` and `microphone-recorder` are **Partial**, while `password-strength-estimator` and `xml-formatter-validator` are **Implemented Unverified** because their current oracles remain medium-confidence. The integrated suite is green at **1,088 tests / 133 files**; `astro check` reports **0 errors / 0 warnings** (16 deprecation hints in tests), and the static build emits **279 pages** with build inspection PASS.
+Checkpoint 2026-10-07: 259 tools exist; **255 are Gold**, `image-resize` and `microphone-recorder` are **Partial**, while `password-strength-estimator` and `xml-formatter-validator` are **Implemented Unverified** because their current oracles remain medium-confidence. The integrated suite is green at **1,089 tests / 133 files**; `astro check` reports **0 errors / 0 warnings** (16 deprecation hints in tests), and the static build emits **279 pages** with build inspection PASS.
 
 ## P0 — preserve the quality contract
 
@@ -41,7 +41,7 @@ Migration principles:
 
 ## P4 — release and distribution
 
-- refresh whole-tree browser-performance evidence on the final tree;
+- keep whole-tree browser-performance evidence current whenever source changes (the 2026-10-07 final refresh matches the integrated source fingerprint);
 - refresh rollback evidence only through a real deploy → rollback → smoke → restore exercise;
 - deploy the final Strumentini build to the already-active custom domain, then run live smoke + real rollback/restore evidence;
 - add and verify outer Cloudflare WAF rate limiting on the active zone;

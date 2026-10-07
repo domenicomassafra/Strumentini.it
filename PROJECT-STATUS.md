@@ -45,7 +45,7 @@ Machine authority: `quality/receipts/expanded-catalog-certification.json`, gener
 
 The expansion frontier is now much smaller than the implementation wave that produced the 259-tool catalog, but release truth remains evidence-driven: a completed implementation ticket is not a Gold promotion by itself.
 
-Current integrated machine snapshot: `npm test` passes **1,088/1,088 tests across 133 files**; `npm run check` reports **0 errors / 0 warnings** (16 TypeScript deprecation hints in tests); `npm run build` emits **279 pages** and `scripts/inspect-build.ts` passes; `npm audit --omit=dev --audit-level=high` reports **0 vulnerabilities**. `npm run certification:check` passes with **259 tool(s), output current** after the final receipt refresh.
+Current integrated machine snapshot: `npm test` passes **1,089/1,089 tests across 133 files**; `npm run check` reports **0 errors / 0 warnings** (16 TypeScript deprecation hints in tests); `npm run build` emits **279 pages** and `scripts/inspect-build.ts` passes; `npm audit --omit=dev --audit-level=high` reports **0 vulnerabilities**. `npm run certification:check` passes with **259 tool(s), output current** after the final receipt refresh.
 
 ## Release status
 
@@ -53,14 +53,13 @@ The current generated authority is **255/259 Gold**, with four release-blocked t
 
 Remaining release blockers are evidence/infrastructure boundaries, not hidden implementation failures:
 
-1. `image-resize` remains Partial until real iOS Safari and Android Chrome device receipts exist and its final receipt identities are refreshed against the integrated source;
-2. `microphone-recorder` remains Partial until genuine physical capture/permission evidence exists and its final receipt identities are refreshed;
+1. `image-resize` remains Partial until real iOS Safari and Android Chrome device receipts exist;
+2. `microphone-recorder` remains Partial until genuine physical capture/permission evidence exists;
 3. `password-strength-estimator` and `xml-formatter-validator` remain Implemented Unverified because their current oracles are medium-confidence; no Gold receipt should be written until that evidence gap is actually closed;
 4. the verified rollback receipt must be refreshed after the final committed source tree is deployed and rolled back for real;
-5. any whole-tree browser-performance receipt must match the final source fingerprint;
-6. `Strumentini.it` is now publicly active on Cloudflare DNS/TLS: apex HTTPS serves 200, `/strumenti/` and `/tools/image-resize/` serve 200, and `www` redirects 308 to the apex. The 2026-10-07 live recheck also shows that the custom domain is still serving the pre-rebrand deployment: page metadata, canonical/OG URLs, `robots.txt` and `sitemap.xml` still point at `StrumentiUtili.it` / `https://strumentiutili.it`. Ticket 283 therefore remains open for the final Strumentini.it deploy plus live multi-browser and rollback/restore certification.
+5. `Strumentini.it` is publicly active on Cloudflare DNS/TLS and already shows the Strumentini brand, but it is still serving an older catalog build: the 2026-10-07 live recheck returns 200 at the apex while a new 259-tool route such as `/tools/fatturapa-reader/` still returns 404. Ticket 283 therefore remains open for the final 259-tool deployment plus live multi-browser and rollback/restore certification.
 
-The final evidence refresh is being converged on one source fingerprint before push. Do not synthesize physical-device receipts or promote medium-confidence oracle gaps by hand.
+The final evidence refresh is converged on source fingerprint `2d54b4312e0e6f50d85b125c2f88458a142512543e4123cecc68fccd639bbe92`; browser-performance evidence matches it and all tool-level receipt source fingerprints are current. Do not synthesize physical-device receipts or promote medium-confidence oracle gaps by hand.
 
 ## Design system and brand
 
