@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "family": "subtitle-transform",
+  "notes": [
+    "SRT is treated as a deliberately bounded interoperable subset: optional numeric cue index, strict hh:mm:ss,mmm timing line, then one or more text lines.",
+    "WebVTT coverage follows the W3C timing/header model but deliberately rejects cue settings and NOTE/STYLE/REGION blocks in this ticket.",
+    "The default 17 CPS reading-speed threshold is a configurable reference from the Netflix Italian Timed Text Style Guide, not universal truth."
+  ],
+  "cases": [
+    {
+      "id": "unicode-srt",
+      "format": "srt",
+      "input": "1\n00:00:01,000 --> 00:00:03,000\nCiao, mondo 👋\nSeconda riga\n\n2\n00:00:03,500 --> 00:00:05,000\nPerché l’accento resta.\n",
+      "cue_count": 2,
+      "transcript": "Ciao, mondo 👋 Seconda riga\nPerché l’accento resta.\n"
+    },
+    {
+      "id": "supported-vtt",
+      "format": "vtt",
+      "input": "WEBVTT\n\nintro\n00:00:01.000 --> 00:00:03.000\nCiao\n\n00:03.500 --> 00:05.000\nMondo\n",
+      "cue_count": 2,
+      "transcript": "Ciao\nMondo\n"
+    }
+  ],
+  "invalid_cases": [
+    {
+      "id": "malformed-srt-timing",
+      "format": "srt",
+      "input": "1\n00:00:01,000 --> nope\nTesto\n",
+      "error": "INVALID_SUBTITLE_MALFORMED_TIMING|line=2|cue=1"
+    },
+    {
+      "id": "unsupported-vtt-settings",
+      "format": "vtt",
+      "input": "WEBVTT\n\n00:00:01.000 --> 00:00:02.000 align:start\nTesto\n",
+      "error": "INVALID_SUBTITLE_UNSUPPORTED_CUE_SETTINGS|line=3|cue=1"
+    }
+  ]
+}

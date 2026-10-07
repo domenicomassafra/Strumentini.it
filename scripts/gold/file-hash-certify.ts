@@ -95,6 +95,8 @@ const receipt = {
     engineSha256: sha256(engineText),
     sha2FixtureSha256: sha256(knownText),
     fileHashFixtureSha256: sha256(fileHashText),
+    "fixture:sha2-known-answers:sha256": sha256(knownText),
+    "fixture:file-hash:sha256": sha256(fileHashText),
     fixtureIndexSha256: sha256(fixtureIndexText),
     oracleRegistrySha256: sha256(registryText),
   },

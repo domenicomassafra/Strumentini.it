@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { TEXT_RESULT_V2_DECLARATIONS } from "../text-writing/result-v2";
 
 export const slugGeneratorManifest = {
   id: "slug-generator",
@@ -13,6 +14,7 @@ export const slugGeneratorManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: TEXT_RESULT_V2_DECLARATIONS["slug-generator"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-016", fixtureFamilies: ["word-character-line-count", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 

@@ -69,8 +69,9 @@ try {
     const submit = page.getByRole("button", { name: "Confronta liste" });
     await submit.focus();
     await page.keyboard.press("Enter");
-    await page.getByText("In entrambe", { exact: false }).waitFor();
-    await page.getByText("Solo in A", { exact: false }).waitFor();
+    const comparisonTable = page.getByRole("region", { name: "Righe mostrate" }).locator("table");
+    await comparisonTable.getByText("In entrambe", { exact: true }).first().waitFor();
+    await comparisonTable.getByText("Solo in A", { exact: true }).first().waitFor();
     await page.getByText("water", { exact: true }).first().waitFor();
   });
 
@@ -83,10 +84,11 @@ try {
     const submit = page.getByRole("button", { name: "Confronta i testi" });
     await submit.focus();
     await page.keyboard.press("Enter");
-    await page.getByText("Rimossa", { exact: true }).waitFor();
-    await page.getByText("Aggiunta", { exact: true }).waitFor();
-    const removedText = await page.locator(".diff-remove").innerText();
-    const addedText = await page.locator(".diff-add").innerText();
+    const diffTable = page.getByRole("region", { name: "Righe mostrate" }).locator("table");
+    await diffTable.getByText("Rimossa", { exact: true }).waitFor();
+    await diffTable.getByText("Aggiunta", { exact: true }).waitFor();
+    const removedText = await diffTable.locator("tbody tr").filter({ hasText: "Rimossa" }).innerText();
+    const addedText = await diffTable.locator("tbody tr").filter({ hasText: "Aggiunta" }).innerText();
     if (!removedText.includes("Rimossa")) {
       throw new Error("text diff removal semantics depend on more than visible symbol+text");
     }
@@ -102,15 +104,22 @@ try {
     await field.fill(doi);
     startTask();
     await field.press("Enter");
-    await page.getByText("Formato DOI valido", { exact: true }).waitFor();
-    await page.getByText("10.1000/182", { exact: true }).waitFor();
+    const doiResult = page.locator('[data-result-class="validator"][data-research-result-tool="doi-isbn-normalizer"]');
+    await doiResult.getByText("Valido", { exact: true }).waitFor();
+    await doiResult.getByText("10.1000/182", { exact: false }).first().waitFor();
+    const doiProvenance = doiResult.locator('[data-oracle-entry="cand-181"]');
+    if (!/rete vietata/u.test(await doiProvenance.innerText())) throw new Error("DOI/ISBN provenance no longer proves the local no-network boundary");
+    for (const action of ["copy", "download", "reuse", "retry", "reset"]) {
+      if (await doiResult.locator(`[data-result-action="${action}"]`).count() !== 1) throw new Error(`DOI Result v2 action ${action} missing`);
+    }
 
     await page.getByRole("radio", { name: "ISBN" }).check();
     const isbnField = page.getByRole("textbox", { name: "ISBN" });
     await isbnField.fill(isbn);
     await isbnField.press("Enter");
-    await page.getByText("ISBN-10 valido", { exact: true }).waitFor();
-    await page.getByText("9780306406157", { exact: true }).waitFor();
+    const isbnResult = page.locator('[data-result-class="validator"][data-research-result-tool="doi-isbn-normalizer"]');
+    await isbnResult.getByText("Valido", { exact: true }).waitFor();
+    await isbnResult.getByText("9780306406157", { exact: false }).first().waitFor();
   });
 
   await browser.close();
@@ -118,7 +127,7 @@ try {
     schemaVersion: 1,
     status: "PASS",
     keyboard: "submit actions exercised via Enter",
-    diffSemantics: "visible =/−/+ symbols plus Unchanged/Removed/Added text; not color-only",
+    diffSemantics: "visible Invariata/Rimossa/Aggiunta table-state text; not color-only",
     network: "zero external requests and zero task-content-bearing requests after task start",
     mobileViewport: { width: 390, height: 844, horizontalOverflow: false },
     tools: [listReceipt, diffReceipt, referenceReceipt],

@@ -14,6 +14,14 @@ export const PDF_LIMITS = {
   maxTotalImageBytes: 40 * 1024 * 1024,
 } as const;
 
+export const PDF_TEXT_WORKFLOW_LIMITS = {
+  maxQueryCharacters: 256,
+  maxContextCharacters: 1_000,
+  defaultContextCharacters: 120,
+  maxResults: 500,
+  defaultMaxResults: 100,
+} as const;
+
 export type PdfCapability =
   | "inspect"
   | "mutate-pages"
@@ -41,7 +49,18 @@ export interface PdfMetadata {
   readonly creationDate: string | null;
   readonly modificationDate: string | null;
   readonly hasXmp: boolean;
+  readonly recognizedInfo: Readonly<Record<string, string>>;
+  readonly unknownInfo: Readonly<Record<string, string>>;
+  readonly entries: readonly PdfMetadataEntry[];
+  readonly xmpObjectIds: readonly number[];
   readonly custom: Readonly<Record<string, string>>;
+}
+
+export interface PdfMetadataEntry {
+  readonly key: string;
+  readonly value: string;
+  readonly recognized: boolean;
+  readonly source: "document-info";
 }
 
 export interface PdfPageSummary {
@@ -103,11 +122,146 @@ export interface PdfTextPage {
   readonly truncated: boolean;
 }
 
+export type PdfTextExtractionMode = "content-order" | "operator-lines";
+
+export interface PdfTextExtractionOptions {
+  readonly pages?: readonly number[];
+  readonly mode?: PdfTextExtractionMode;
+}
+
+export interface PdfTextExtractionResult {
+  readonly pages: readonly PdfTextPage[];
+  readonly text: string;
+  readonly mode: PdfTextExtractionMode;
+  readonly pageSeparator: string;
+  readonly selectedPages: readonly number[];
+  readonly truncated: boolean;
+}
+
+export interface PdfOcrHandoff {
+  readonly available: false;
+  readonly status: "not-available";
+  readonly backlogTicket: 247;
+  readonly reason: string;
+}
+
+export type PdfSearchFileStatus = "matches" | "no-match" | "no-text" | "encrypted" | "unreadable";
+
+export interface PdfSearchMatch {
+  readonly fileIndex: number;
+  readonly filename: string;
+  readonly page: number;
+  readonly matchIndex: number;
+  readonly start: number;
+  readonly end: number;
+  readonly context: string;
+}
+
+export interface PdfSearchFileResult {
+  readonly fileIndex: number;
+  readonly filename: string;
+  readonly status: PdfSearchFileStatus;
+  readonly pageCount: number | null;
+  readonly matchCount: number;
+  readonly matches: readonly PdfSearchMatch[];
+  readonly truncated: boolean;
+  readonly errorCode?: string;
+  readonly errorMessage?: string;
+  readonly ocrHandoff?: PdfOcrHandoff;
+}
+
+export interface PdfMultiSearchResult {
+  readonly query: string;
+  readonly caseSensitive: boolean;
+  readonly contextCharacters: number;
+  readonly maxResults: number;
+  readonly files: readonly PdfSearchFileResult[];
+  readonly matches: readonly PdfSearchMatch[];
+  readonly totalMatches: number;
+  readonly returnedMatches: number;
+  readonly truncated: boolean;
+  readonly provenanceConvention: "fileIndex+filename+page+matchIndex";
+  readonly limits: typeof PDF_TEXT_WORKFLOW_LIMITS;
+}
+
+export interface PdfMarkdownPage {
+  readonly page: number;
+  readonly text: string;
+  readonly markdown: string;
+  readonly provenance: string;
+  readonly truncated: boolean;
+}
+
+export interface PdfToMarkdownResult {
+  readonly filename: string;
+  readonly pageCount: number;
+  readonly status: "converted" | "no-text" | "encrypted";
+  readonly markdown: string;
+  readonly pages: readonly PdfMarkdownPage[];
+  readonly provenanceConvention: "html-comment:file-uri-encoded+page";
+  readonly extractionMode: "content-order";
+  readonly truncated: boolean;
+  readonly losses: readonly string[];
+  readonly ocrHandoff?: PdfOcrHandoff;
+}
+
+export interface PdfImageOccurrence {
+  readonly page: number;
+  readonly resourceName: string;
+  readonly object: number | null;
+}
+
+export interface PdfExtractedImageProvenance {
+  readonly filename: string;
+  readonly object: number | null;
+  readonly occurrences: readonly PdfImageOccurrence[];
+  readonly byteLength: number;
+  readonly filter: "DCTDecode";
+}
+
+export interface PdfUnsupportedImageFilter {
+  readonly page: number;
+  readonly resourceName: string;
+  readonly object: number | null;
+  readonly filters: readonly string[];
+  readonly reason: string;
+}
+
+export interface PdfImageExtractionOptions {
+  readonly pages?: readonly number[];
+  readonly dedupe?: boolean;
+}
+
+export interface PdfImageExtractionResult {
+  readonly artifacts: readonly PdfArtifact[];
+  readonly provenance: readonly PdfExtractedImageProvenance[];
+  readonly unsupported: readonly PdfUnsupportedImageFilter[];
+  readonly selectedPages: readonly number[];
+  readonly deduplicated: boolean;
+  readonly mode: "embedded-original-compressed-bytes";
+}
+
+export interface PdfMetadataRemovalVerification {
+  readonly reparsed: true;
+  readonly metadataRemoved: boolean;
+  readonly pageCount: {
+    readonly before: number;
+    readonly after: number;
+    readonly stable: boolean;
+  };
+  readonly textBaseline: {
+    readonly status: "verified" | "unavailable";
+    readonly stable: boolean | null;
+    readonly changedPages: readonly number[];
+    readonly reason?: string;
+  };
+}
+
 export interface PdfArtifact {
   readonly blob: Blob;
   readonly bytes: Uint8Array;
   readonly filename: string;
-  readonly mime: "application/pdf" | "image/jpeg" | "application/json" | "text/plain";
+  readonly mime: "application/pdf" | "image/jpeg" | "image/png" | "image/webp" | "application/zip" | "application/json" | "text/plain";
   readonly pageCount?: number;
 }
 

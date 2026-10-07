@@ -1,5 +1,5 @@
-import { ImageVisualTool } from "./ImageVisualTool";
+import { ImageTransformWorkspaceTool } from "./ImageTransformWorkspaceTool";
 
 export function ImageCropTool() {
-  return <ImageVisualTool toolId="image-crop" />;
+  return <ImageTransformWorkspaceTool />;
 }

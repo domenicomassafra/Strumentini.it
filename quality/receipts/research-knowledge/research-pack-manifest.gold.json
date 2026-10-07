@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
   "toolId": "research-pack-manifest",
   "runtime": {
     "location": "LOCAL",
@@ -29,7 +29,7 @@
     {
       "id": "research-source-inventory",
       "path": "quality/fixtures/research-source-inventory/vectors.json",
-      "sha256": "f8c19b66e496cb5c1dc239c4b2276515f8f2e4ddb0f951e0abf5e1f293efffa8",
+      "sha256": "15402ed2e720d97b46d3b0403909fc7d1e16d6440292cb7c6b8d0e529386864c",
       "provenance": "hand-worked",
       "license_or_rights": "Hand-worked URL lists, CSV rows and pack manifests authored for StrumentiUtili.it; no external corpus copied.",
       "schemaVersion": 1
@@ -45,8 +45,8 @@
   ],
   "checksumAlgorithm": "SHA-256",
   "browserContract": {
-    "assertion": "\"algoritmo_checksum\":\\s*\"SHA-256\"",
-    "outputSha256": "3cbea544c121e7e972d0e477a8aacec8bd15dc532a41ff7f4757159a4b51713a",
+    "assertion": "Algoritmo checksum\\s*SHA-256",
+    "outputSha256": "a09e959fb75114d0c0c191af3f1672c57f37bbcccc87c4c5db7030a4d687aa17",
     "locality": "zero external/non-GET/task-body requests",
     "lazyLoad": "implementation script observed after submit",
     "mobile": "390px without horizontal overflow",
@@ -65,14 +65,14 @@
     "repeat-run determinism and abort propagation re-proved on the committed source"
   ],
   "identities": {
-    "manifestSha256": "2b35ae070ccfe59e4dc98a3a5aa8db66b2e52c66d6bda9f1b8caf7bedd87246a",
-    "engineSha256": "ba102e9d78d6bc9c9cdb6a6deab5ca78d474d0a286d14f1e0666c4dd19929f78",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
-    "acceptanceScriptSha256": "8dbb68f779a4cabd67c3ac1b94e626074c3ebdcaf6f465126cf7c8b8101845fd",
+    "manifestSha256": "03dde3fe36e8228e1c3d3da2c5e05c588699e343c406ad4a1c65e8005b460362",
+    "engineSha256": "d7417088bf48c40ccf610aa6d32d5e57c427033d5b5d61f35ffac800595cdbf6",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "dce2a96b35d4633bb55cd8c9a14f9a018a5c13bb3f251516f04566512086ce3f",
+    "acceptanceScriptSha256": "2c1afde893dfcfb283d9511908e03ab10cf8d6c2bfa2a73861891d9088aade9f",
     "unitTestsSha256": "46dcd92ee24212e7d895aa2c8c872eddd36b43ddd26b519b026edbdd861dbb00",
-    "fixture:research-source-inventory:sha256": "f8c19b66e496cb5c1dc239c4b2276515f8f2e4ddb0f951e0abf5e1f293efffa8",
+    "fixture:research-source-inventory:sha256": "15402ed2e720d97b46d3b0403909fc7d1e16d6440292cb7c6b8d0e529386864c",
     "fixture:sha2-known-answers:sha256": "5ff14b5580656e339ad88a9b997204475c43c6c11b611ab98618796097fbb99b"
   }
 }

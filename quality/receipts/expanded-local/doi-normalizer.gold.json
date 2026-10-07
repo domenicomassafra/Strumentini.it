@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "doi-normalizer",
   "runtime": {
     "location": "LOCAL",
@@ -28,7 +28,7 @@
   ],
   "browserContract": {
     "assertion": "10\\.1000\\/182",
-    "outputSha256": "b02f7f9a2807e25be488c23a51a829b76e9fb5a2626b9fba208dc42ebd06aef2",
+    "outputSha256": "5dd48eada3dc7715ea3e426a20b154945c74ed463c9a308fd1d822c661d2aff8",
     "locality": "zero external/non-GET/task-body requests",
     "lazyLoad": "implementation script observed after submit",
     "mobile": "390px without horizontal overflow",
@@ -43,11 +43,11 @@
     "keyboard/mobile/a11y/locality/lazy browser acceptance"
   ],
   "identities": {
-    "manifestSha256": "e2d55ba3ddde1644dab698a89f15559b49ce05935170d47c75be5ba3656cbe27",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "cfc46c38986031b3817fa823c76ae6eaa7e31b3d6ce383c16c7f51b6ff614431",
-    "acceptanceScriptSha256": "07cedaf3a275471dd3570ec318862c4716722876adf598f7651423c6b75ab5ac",
+    "manifestSha256": "07dd47056a5003cfb0797db53856908fdd8d62f16cfb275fc72ac91e2b3e6267",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "0013bb17ddc8213c484a55674ce2f36eca1acffdfb4dc5dfdaa0053166c8dc6f",
+    "acceptanceScriptSha256": "d383d4babd80b070e8357622cb3753903254ab7afd5c355e346108c11437d851",
     "unitTestsSha256": "59dfaeb6ec2edc378bb386f229b8c48fc8abb3b3b95aabb53b94ba294939001d",
     "fixture:doi:sha256": "91108aaced0034ecfec037de85756f8f06b956dad106e4a361588e6c1ecd6e97"
   }

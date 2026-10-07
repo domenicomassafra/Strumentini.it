@@ -6,7 +6,7 @@
 
 **Constraints:** Do not claim payroll/legal finality; ISTAT-dependent or historical values must be versioned inputs/data, never fabricated.
 
-**Blocked by:** 01 — Result System v2 primitives; 07 — versioned Italy reference data.
+**Blocked by:** 134, 135.
 
 **Status:** blocked
 

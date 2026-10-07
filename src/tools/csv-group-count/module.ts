@@ -1,6 +1,6 @@
 import { assertBoundedTable, groupCountTable, makeTableHandoff, type TableAggregate } from "../../engines/table/operations";
 import { parseCsvTable } from "../../engines/table/csv";
-import { tableModule, optionalEnum, optionalNumber, requiredIndexes, requiredText } from "../table/helpers";
+import { tableModule, optionalBoolean, optionalEnum, optionalNumber, optionalStringArray, requiredIndexes, requiredText } from "../table/helpers";
 import type { CsvGroupCountOutput } from "./types";
 
 const AGGREGATES: readonly TableAggregate[] = ["count", "sum", "min", "max"];
@@ -8,7 +8,8 @@ const AGGREGATES: readonly TableAggregate[] = ["count", "sum", "min", "max"];
 const module = tableModule((value): CsvGroupCountOutput => {
   const table = assertBoundedTable(parseCsvTable(requiredText(value)));
   const countColumn = optionalNumber(value, "countColumn");
-  const result = groupCountTable(table, { groupColumns: requiredIndexes(value, "groupColumns"), ...(countColumn === undefined ? {} : { countColumn }), aggregate: optionalEnum(value, "aggregate", AGGREGATES, "count") });
+  const nullTokens = optionalStringArray(value, "nullTokens");
+  const result = groupCountTable(table, { groupColumns: requiredIndexes(value, "groupColumns"), ...(countColumn === undefined ? {} : { countColumn }), aggregate: optionalEnum(value, "aggregate", AGGREGATES, "count"), caseSensitive: optionalBoolean(value, "caseSensitive", true), ...(nullTokens === undefined ? {} : { nullTokens }), emptyAsNull: optionalBoolean(value, "emptyAsNull", false) });
   return { ...result, handoff: makeTableHandoff(result.output, result.table) };
 });
 

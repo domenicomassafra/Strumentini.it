@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "roas-calculator",
   "runtime": {
     "location": "LOCAL",
@@ -27,7 +27,7 @@
   ],
   "browserContract": {
     "assertion": "5\\.00|500\\.00",
-    "outputSha256": "5d95ac77a5eb6d0487d0c991d36b678cb43153c13dff5a2006d8bdd245007aeb",
+    "outputSha256": "d72bbab938b10b95016de97f9e6def99e7f3f077034527f0cdf30c4919f943f7",
     "locality": "zero external/non-GET/task-body requests",
     "lazyLoad": "implementation script observed after submit",
     "mobile": "390px without horizontal overflow",
@@ -42,11 +42,11 @@
     "keyboard/mobile/a11y/locality/lazy browser acceptance"
   ],
   "identities": {
-    "manifestSha256": "2b8611443d74b613ca6c7ff2840803b690c19db0dfc324ae6391bb7810fa756a",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "cfc46c38986031b3817fa823c76ae6eaa7e31b3d6ce383c16c7f51b6ff614431",
-    "acceptanceScriptSha256": "07cedaf3a275471dd3570ec318862c4716722876adf598f7651423c6b75ab5ac",
+    "manifestSha256": "9d74319c0e97111814d6685ffeabe38ff53603efd4363f294325ff5d351795be",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "0013bb17ddc8213c484a55674ce2f36eca1acffdfb4dc5dfdaa0053166c8dc6f",
+    "acceptanceScriptSha256": "d383d4babd80b070e8357622cb3753903254ab7afd5c355e346108c11437d851",
     "unitTestsSha256": "8ffb71f5c9d87e24a0e82abcf77530008b2cd16ff420c2af40a4cff611677d93",
     "fixture:marketing-math:sha256": "67537d08e40712a70e08e20a77417e36c95e083aa6af24317883d6a0fecf9648"
   }

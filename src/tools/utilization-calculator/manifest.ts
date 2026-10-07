@@ -13,6 +13,7 @@ export const utilizationCalculatorManifest = {
   engine: "business-math",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "calculator", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-104", fixtureFamilies: ["business-math"] },
 } as const satisfies ToolManifest;
 

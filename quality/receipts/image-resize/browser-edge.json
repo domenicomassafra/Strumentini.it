@@ -23,12 +23,26 @@
       "type": "image/jpeg",
       "size": 11915,
       "signatureHex": "ffd8ff"
+    },
+    "noUpscalePercent": {
+      "width": 1600,
+      "height": 1200,
+      "type": "image/jpeg",
+      "size": 32965
     }
+  },
+  "upgradeModes": {
+    "aspectLock": "PASS",
+    "percent": "PASS",
+    "liveEstimate": "PASS",
+    "containVsCoverPreview": "PASS",
+    "noUpscale": "PASS",
+    "outputFormatChoice": "PASS"
   },
   "capabilities": {
     "canvasWebpEncode": true
   },
-  "memoryPreflightText": "15.3 MiB estimated decoded working set",
+  "memoryPreflightText": "15,3 MiB stimati per l'elaborazione decodificata",
   "cancellation": "PASS",
   "corruptDecode": "PASS",
   "oversizedPredecode": "PASS",

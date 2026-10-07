@@ -2,7 +2,10 @@ import type {
   PdfArtifact,
   PdfCompareResult,
   PdfDocumentManifest,
+  PdfImageExtractionResult,
   PdfInspection,
+  PdfMetadataRemovalVerification,
+  PdfTextExtractionMode,
   PdfTextPage,
 } from "../../engines/pdf";
 
@@ -38,6 +41,21 @@ export interface PdfTextOutput {
   readonly pages: readonly PdfTextPage[];
   readonly text: string;
   readonly truncated: boolean;
+  readonly mode: PdfTextExtractionMode;
+  readonly pageSeparator: string;
+  readonly selectedPages: readonly number[];
+}
+
+export type PdfImageExtractionOutput = PdfImageExtractionResult & {
+  readonly artifactCount: number;
+  readonly totalBytes: number;
+};
+
+export interface PdfMetadataRemovalOutput extends PdfArtifactOutput {
+  readonly policy: string;
+  readonly before: PdfInspection;
+  readonly after: PdfInspection;
+  readonly verification: PdfMetadataRemovalVerification;
 }
 
 export interface PdfCompareOutput {

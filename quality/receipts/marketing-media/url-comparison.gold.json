@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
   "toolId": "url-comparison",
   "runtime": {
     "location": "LOCAL",
@@ -47,7 +47,7 @@
       "both normalised forms shown and reported equal"
     ],
     "outputSha256": [
-      "be724770ec687d9fb3503e87cb677238fb746b3a2665b7884fbe1ca125bf4cad"
+      "0b8279cfd5c5ee3bf89e99d57d97630f4dc35d21d043378dec424fcde6b7c86c"
     ],
     "locality": "zero external, non-GET or task-body requests after task start",
     "lazyLoad": "implementation script observed after submit",
@@ -77,12 +77,12 @@
     "the standard the normalisation follows is named in the result"
   ],
   "identities": {
-    "manifestSha256": "26d1b1d3b988fbcc88681f918d460f145c8ed543e8edfe1f734e20f29573d08e",
-    "moduleSha256": "2f3f42f601f07ed7b5539167df4529a3f179d0dc4f194f4186dd42a89b434d59",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "86a65cc9a41f05a7317912285e2d51df4c6dd199446c9fd1d3eef8826367326d",
-    "acceptanceScriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
+    "manifestSha256": "3ebe82f8e80e960cba24b46e26dfdcb6aeb902042dadc566c54820a739adeb00",
+    "moduleSha256": "b4f50a18cb8cd89b26460eb5c6230e104860408a29449137cfaaf17799a55cbd",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "b4ad601616cc57a94acba30e9d3b47a13c1365a407a371e472f3a91695850c24",
+    "acceptanceScriptSha256": "2c1eef9ba70d9a6e6ff2c98dee471ff40810cd334deb65cdcf25e3a343796b39",
     "unitTestsSha256": "8ffb71f5c9d87e24a0e82abcf77530008b2cd16ff420c2af40a4cff611677d93",
     "fixture:query-params:sha256": "45165ac3bf038861444d91b026cedf121b0ba4341c4e02e18b4061c5b9707677",
     "fixture:url-security:sha256": "498535dca23ff3fe69902dde2024e33f1f5900cd34ccc39b6079e06fb06c0a0e"

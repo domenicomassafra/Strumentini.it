@@ -1,9 +1,20 @@
 import { useState } from "preact/hooks";
 import { profileValuesForTool } from "../../profile/work-profile";
+import { resolveResultActions } from "../../runtime/result-actions";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import { timezoneOverlapManifest } from "../../tools/timezone-overlap/manifest";
 import type { TimezoneOverlapOutput } from "../../tools/timezone-overlap/types";
 import { useWorkProfile } from "./client-time-math/work-profile";
+import {
+  ResultActions,
+  ResultAssumptions,
+  ResultBreakdown,
+  ResultExplanation,
+  ResultInterpretation,
+  ResultPrimaryAnswer,
+  ResultProvenance,
+  ToolResultPanel,
+} from "./shared";
 import { RangeMark } from "./shared/StatusMark";
 
 const DEFAULT_HOURS = { start: "09:00", end: "17:00" } as const;
@@ -27,6 +38,7 @@ export function TimezoneOverlapTool() {
   const [otherEnd, setOtherEnd] = useState<string>(DEFAULT_HOURS.end);
   const [result, setResult] = useState<TimezoneOverlapOutput | null>(null);
   const [error, setError] = useState("");
+  const [actionStatus, setActionStatus] = useState("");
   const homeTimeZone = homeTimeZoneOverride ?? profile.timezone;
   const homeStart = homeStartOverride ?? DEFAULT_HOURS.start;
   const homeEnd = homeEndOverride ?? DEFAULT_HOURS.end;
@@ -64,9 +76,36 @@ export function TimezoneOverlapTool() {
     setOtherEnd(DEFAULT_HOURS.end);
     setResult(null);
     setError("");
+    setActionStatus("");
   }
 
   const gutterState = error !== "" ? "error" : result === null ? "idle" : result.segments.length === 0 ? "warning" : "success";
+  const declaration = timezoneOverlapManifest.result;
+  const primaryText = result === null
+    ? ""
+    : result.segments.length === 0
+      ? "Nessuna sovrapposizione"
+      : `${result.segments.length} ${result.segments.length === 1 ? "finestra condivisa" : "finestre condivise"}`;
+  const copyPayload = result === null
+    ? ""
+    : result.segments.length === 0
+      ? primaryText
+      : [primaryText, ...result.segments.map((segment) => `${result.homeTimeZone}: ${segment.home} · ${result.otherTimeZone}: ${segment.other}`)].join("\n");
+  const resultActions = result === null ? [] : resolveResultActions({
+    declaration,
+    primary: "copy",
+    hasCopyPayload: copyPayload !== "",
+    resetReady: true,
+  });
+
+  async function copyResult() {
+    if (navigator.clipboard === undefined) {
+      setActionStatus("Gli appunti non sono disponibili; seleziona il risultato e copialo manualmente.");
+      return;
+    }
+    await navigator.clipboard.writeText(copyPayload);
+    setActionStatus("Risultato copiato.");
+  }
 
   return (
     <div class="tool-operation">
@@ -118,23 +157,28 @@ export function TimezoneOverlapTool() {
           <button type="button" onClick={reset}>Reimposta</button>
         </div>
       </form>
-      <section class="result-panel gutter" data-state={gutterState} aria-live="polite" aria-atomic="true">
-        <p class="gutter-label eyebrow">Orario di lavoro condiviso</p>
-        {result === null ? <p class="gutter-placeholder result-placeholder">La sovrapposizione compare qui.</p> : result.segments.length === 0 ? (
-          <strong class="gutter-value">Nessuna sovrapposizione</strong>
-        ) : (
-          <>
-            <strong class="gutter-value">{result.segments.length} {result.segments.length === 1 ? "finestra condivisa" : "finestre condivise"}</strong>
-            <dl class="gutter-rows">
-              {result.segments.map((segment) => (
-                <div key={segment.startInstant}><dt><RangeMark start={segment.startInstant} end={segment.endInstant} /></dt><dd>{result.homeTimeZone}: {segment.home}<br />{result.otherTimeZone}: {segment.other}</dd></div>
-              ))}
-              <div><dt>Origine del fuso</dt><dd>{result.provenance.homeTimeZone === "profile" ? "Valore predefinito dal profilo" : "Sovrascrittura per questa attività"}</dd></div>
-              <div><dt>Confini DST</dt><dd>Gli orari nei salti e nelle ambiguità DST vengono rifiutati esplicitamente.</dd></div>
-            </dl>
-          </>
+      <ToolResultPanel eyebrow="Orario di lavoro condiviso" placeholder="La sovrapposizione compare qui." state={gutterState}>
+        {result !== null && (
+          <div data-result-class="calculator">
+            <ResultExplanation
+              primary={<div data-result-slot="primary"><ResultPrimaryAnswer label="Sovrapposizione">{primaryText}</ResultPrimaryAnswer></div>}
+              interpretation={<div data-result-slot="interpretation"><ResultInterpretation state={result.segments.length === 0 ? "warning" : "success"}>{result.segments.length === 0 ? "Gli intervalli di lavoro indicati non si sovrappongono in questa data." : "Sono mostrate solo le finestre condivise valide nei due fusi."}</ResultInterpretation></div>}
+              breakdown={<div data-result-slot="breakdown"><ResultBreakdown rows={result.segments.map((segment) => ({
+                label: <RangeMark start={segment.startInstant} end={segment.endInstant} />,
+                value: <>{result.homeTimeZone}: {segment.home}<br />{result.otherTimeZone}: {segment.other}</>,
+              }))} /></div>}
+              assumptions={<div data-result-slot="assumptions"><ResultAssumptions items={[
+                { label: "Origine del fuso", value: result.provenance.homeTimeZone === "profile" ? "Valore predefinito dal profilo" : "Sovrascrittura per questa attività" },
+                { label: "Confini DST", value: "Gli orari nei salti e nelle ambiguità DST vengono rifiutati esplicitamente." },
+                { label: "Base della data", value: "Data locale del fuso principale; orari di lavoro nello stesso giorno locale." },
+              ]} /></div>}
+              provenance={<div data-result-slot="provenance"><ResultProvenance>Calcolo locale con fusi IANA e regole DST del runtime del browser.</ResultProvenance></div>}
+            />
+            <ResultActions actions={resultActions} onAction={{ copy: copyResult, reset }} />
+            {actionStatus !== "" && <p class="success" role="status" aria-live="polite">{actionStatus}</p>}
+          </div>
         )}
-      </section>
+      </ToolResultPanel>
     </div>
   );
 }

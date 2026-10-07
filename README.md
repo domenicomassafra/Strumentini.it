@@ -1,8 +1,8 @@
-# StrumentiUtili.it
+# Strumentini.it
 
 Public brand and repository identity.
 
-StrumentiUtili.it is a personal utility workspace for knowledge work.
+Strumentini.it is a personal utility workspace for knowledge work.
 
 The thesis is not another website with 200 tools. The product should understand enough about what a person does for work to assemble a small relevant toolbox, reuse safe profile defaults across utilities, and let the user add or remove professional tool packs over time.
 
@@ -86,13 +86,13 @@ npm run deploy:check
 npm run deploy:check:portable
 ```
 
-`release:validate` checks the 200-tool surface, static asset inventory, public metadata and discovery files, Cloudflare configuration, truthful copy, certification receipts, and evidence boundaries. The canonical production origin defaults to `https://strumentiutili.it`; `PUBLIC_SITE_URL` can override it for an explicitly configured preview or alternate environment. `release:validate:require-ready` runs the unit suite, Astro check, portable static-host validation, and Wrangler dry run before exiting nonzero until every blocker is resolved. `deploy:check` runs both deployment gates; `deploy:check:portable` proves that the built `dist/` artifact does not require Cloudflare or any other application runtime. See `docs/09-deployment-costs-and-portability.md`.
+`release:validate` checks the 200-tool surface, static asset inventory, public metadata and discovery files, Cloudflare configuration, truthful copy, certification receipts, and evidence boundaries. The canonical production origin defaults to `https://strumentini.it`; `PUBLIC_SITE_URL` can override it for an explicitly configured preview or alternate environment. `release:validate:require-ready` runs the unit suite, Astro check, portable static-host validation, and Wrangler dry run before exiting nonzero until every blocker is resolved. `deploy:check` runs both deployment gates; `deploy:check:portable` proves that the built `dist/` artifact does not require Cloudflare or any other application runtime. See `docs/09-deployment-costs-and-portability.md`.
 
 ## Brand
 
-StrumentiUtili.it is the selected public brand. Historical naming-collision research concerned the former codename and is retained only as decision history.
+Strumentini.it is the selected public brand. Historical naming-collision research concerned the former codename and is retained only as decision history.
 
-Implementation should use StrumentiUtili.it consistently. Any formal legal/trademark clearance is a separate release-governance activity.
+Implementation should use Strumentini.it consistently. Any formal legal/trademark clearance is a separate release-governance activity.
 
 See:
 

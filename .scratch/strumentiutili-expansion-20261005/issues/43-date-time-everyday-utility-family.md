@@ -6,13 +6,12 @@
 
 **Constraints:** Reuse existing date/time/timezone/holiday engines; local clock utilities must not claim background reliability browsers cannot guarantee.
 
-**Blocked by:** 01.
+**Blocked by:** 154, 155, 156, 311.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Overlapping jobs reuse existing date/time engines or become modes/aliases instead of duplicates.
-- [ ] Timers/stopwatch handle tab suspension honestly and restore from timestamps rather than tick counts.
-- [ ] Any astronomical/location-dependent route declares timezone/location assumptions and data source.
+- [x] Leap-year/day-of-week/month calendar, world clock and live deadline were added as modes/surfaces on the existing date/time routes rather than duplicate date engines.
+- [x] Timer/stopwatch/Pomodoro state derives from absolute timestamps, persists locally, and catches up on `visibilitychange`/reload instead of trusting background tick counts.
+- [x] Ticket 311 deliberately REFUSES astronomical/location-dependent routes until a versioned maintainable local algorithm/source pack exists; therefore no route silently omits timezone/location/source assumptions.
 
-**Verification:** DST/timezone/date boundary fixtures, timer suspension/resume tests, printable calendar snapshots, and mobile controls acceptance.
-
+**Verification:** Date/time engine and module suites cover DST boundaries, leap/weekday/month snapshots and deterministic countdown semantics; `tests/resilient-clock.test.ts` plus `scripts/acceptance-date-time.mjs` cover suspension/reload behavior. Ticket311 supplies the primary-source feasibility evidence for the refused astronomy branch.

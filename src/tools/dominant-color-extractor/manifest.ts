@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const dominant_color_extractorManifest = {
   id: "dominant-color-extractor",
@@ -13,6 +14,7 @@ export const dominant_color_extractorManifest = {
   engine: "image",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["dominant-color-extractor"],
   gold: { maintenanceClass: "H", oracleEntryId: "cand-153", fixtureFamilies: ["image-metadata", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

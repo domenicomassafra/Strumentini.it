@@ -1,3 +1,3 @@
-import type { PdfFileInput, PdfArtifactOutput } from "../pdf/contracts";
+import type { PdfFileInput, PdfImageExtractionOutput } from "../pdf/contracts";
 export type PdfImageExtractorInput = PdfFileInput;
-export type PdfImageExtractorOutput = PdfArtifactOutput;
+export type PdfImageExtractorOutput = PdfImageExtractionOutput;

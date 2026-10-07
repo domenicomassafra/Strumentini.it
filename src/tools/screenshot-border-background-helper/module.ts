@@ -1,6 +1,17 @@
 import type { ToolModule } from "../../runtime/types";
 import { addImageBorderLocal } from "../../engines/image/visual-tools";
+import { composeWatermarkLocal, stitchScreenshotsLocal, suggestScreenshotOverlapLocal } from "../../engines/image/advanced-workspace";
 
-const module: ToolModule = { run(input, _context, signal) { return addImageBorderLocal(input, signal); } };
+const module: ToolModule = {
+  run(input, _context, signal) {
+    if (typeof input === "object" && input !== null) {
+      const mode = (input as Record<string, unknown>).mode;
+      if (mode === "watermark") return composeWatermarkLocal(input, signal);
+      if (mode === "stitch-suggest") return suggestScreenshotOverlapLocal(input, signal);
+      if (mode === "stitch") return stitchScreenshotsLocal(input, signal);
+    }
+    return addImageBorderLocal(input, signal);
+  },
+};
 
 export default module;

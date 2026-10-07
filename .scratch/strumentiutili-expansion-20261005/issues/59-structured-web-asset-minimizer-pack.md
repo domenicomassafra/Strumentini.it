@@ -6,7 +6,7 @@
 
 **Constraints:** Parser-backed transforms only; HTML preserves whitespace-sensitive contexts; CSS/XML must validate before/minify; regex JavaScript minification is explicitly refused.
 
-**Blocked by:** 01, 25, 47.
+**Blocked by:** 168, 191, 192, 193, 209.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] Invalid input reports source location and never emits a misleading “optimized” file.
 
 **Verification:** Parser round-trip fixtures, whitespace-sensitive HTML/CSS cases, malformed input tests and size-delta acceptance.
-

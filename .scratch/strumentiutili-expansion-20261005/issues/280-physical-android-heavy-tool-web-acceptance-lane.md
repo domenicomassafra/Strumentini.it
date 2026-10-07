@@ -1,0 +1,19 @@
+# 280 — Physical Android heavy-tool web acceptance lane
+
+**What to build:** Define the reusable physical Android Chrome lane for accepted heavy image/PDF/Office/OCR/audio/video routes with file selection, progress/cancel, memory failure and download evidence.
+
+**Traces to:** US-EXP-06; AC-06.1, AC-09.1
+
+**Constraints:** C-EXP-02, C-EXP-04, C-EXP-08; physical web evidence only.
+
+**Blocked by:** 206 — Heavy local-job mobile and performance acceptance gate.
+
+**Status:** blocked
+
+**Suggested skills:** qa-browser → browser-performance-benchmark
+
+- [ ] Lane records device/browser/build and exact route/input class.
+- [ ] OOM/unsupported state is recoverable and captured as failure/limit.
+- [ ] Receipt schema can be consumed by heavy-route promotion gates.
+
+**Verification:** Representative accepted heavy route on real Android plus artifact verification.

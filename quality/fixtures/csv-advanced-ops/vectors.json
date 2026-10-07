@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "sql": [
+    {
+      "id": "quotes-leading-zero-null-unicode",
+      "csv": "id,name,note,nullable\n00123,Zoë,O'Reilly,NULL\n42,李,\"hello, world\",",
+      "table_name": "order\"book",
+      "null_tokens": ["NULL"],
+      "empty_as_null": false,
+      "policy": "leading-zero integer-looking values infer as text; configured NULL tokens emit NULL; an empty cell stays an empty string by default"
+    }
+  ],
+  "split": [
+    {
+      "id": "semicolon-crlf-quoted-newline",
+      "csv": "id;note\r\n1;\"prima\r\nseconda\"\r\n2;città\r\n3;fine\r\n",
+      "mode": "rows",
+      "rows_per_chunk": 2,
+      "expected_data_rows": 3,
+      "expected_delimiter": ";",
+      "expected_record_separator": "\r\n"
+    }
+  ],
+  "compare": [
+    {
+      "id": "case-null-change-and-duplicate-key",
+      "left": "id,name,note\n1,Ada,NULL\n2,Grace,x\n3,Lin,a\n3,Lin,b",
+      "right": "id,name,note\n1,ada,\n2,Grace,y\n3,Lin,c\n3,Lin,d\n4,Nikola,z",
+      "key_columns": [0],
+      "compare_columns": [1, 2],
+      "case_sensitive": false,
+      "null_tokens": ["NULL"],
+      "empty_as_null": true,
+      "expected": {
+        "added_rows": 1,
+        "removed_rows": 0,
+        "changed_rows": 1,
+        "changed_cells": 1,
+        "ambiguous_keys": 1
+      }
+    }
+  ]
+}

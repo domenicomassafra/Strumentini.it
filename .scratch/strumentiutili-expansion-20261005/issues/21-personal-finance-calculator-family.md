@@ -6,13 +6,13 @@
 
 **Constraints:** Results are scenarios, not financial advice; fees/taxes/inflation are included only when explicitly modeled; currency rounding policy is stable.
 
-**Blocked by:** 01 — Result System v2 primitives.
+**Blocked by:** 145, 146, 147.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Each calculator states modeled inputs and omitted real-world costs.
-- [ ] Primary answer is paired with total/period breakdown where relevant.
-- [ ] Reverse-goal calculators expose assumptions and feasibility errors.
-- [ ] Shared finance primitives avoid duplicate formulas across routes.
+- [x] Tickets 145–147 state modeled inputs, cadence/work assumptions and omitted costs; ticket 146 includes fees only when explicitly entered and never invents TAEG/taxes/insurance.
+- [x] Interest, loan and everyday-cost outputs pair the primary answer with period/total breakdowns or exact cost components where relevant.
+- [x] Reverse savings-goal modes expose cadence assumptions and fail closed for infeasible/invalid goals.
+- [x] Shared business-math rational/money and amortization primitives are reused across routes instead of duplicating formulas.
 
-**Verification:** Independent financial vectors, zero/negative/boundary cases, currency/locale tests and answer-first browser acceptance.
+**Verification:** `tests/calculator-math-core.test.ts` and `tests/business-math-expansion.test.ts` cover independent literals, zero/negative/boundary cases, cent reconciliation and locale/currency behavior; the scoped 390px BusinessMath browser acceptance covers answer-first rendering and complete downloadable amortization output.

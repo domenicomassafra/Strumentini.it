@@ -1,7 +1,7 @@
 import type { FactoryToolManifest } from "../../tool-factory/manifest";
 
 /**
- * Copy pubblica canonica di StrumentiUtili.it.
+ * Copy pubblica canonica di Strumentini.it.
  *
  * Gli identificatori, i token di protocollo e i termini tecnici standard
  * (JSON, CSV, PDF, SHA-256, MIME, UUID...) restano invariati. Nome,
@@ -13,6 +13,7 @@ import type { FactoryToolManifest } from "../../tool-factory/manifest";
 export interface ItalianToolCopy {
   readonly name: string;
   readonly summary: string;
+  readonly searchTerms?: readonly string[];
 }
 
 export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
@@ -24,6 +25,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Calcola età e prossimo anniversario",
     summary: "Calcola anni, mesi e giorni trascorsi e mostra la data del prossimo anniversario.",
   },
+  "ai-code-fence-bundle": {
+    name: "Blocchi di codice AI → file ZIP",
+    summary: "Trasforma in locale i code fence incollati in file con nomi sicuri e deterministici, mostra l'albero previsto e scarica lo ZIP esatto.",
+    searchTerms: ["chatgpt codice in file", "code fence zip", "blocchi codice in file", "risposta ai zip", "markdown code files"],
+  },
   "archive-checksum-manifest": {
     name: "Checksum di un archivio",
     summary: "Calcola gli SHA-256 di un archivio ZIP o di più file e crea un elenco verificabile da conservare o condividere.",
@@ -32,9 +38,32 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Calcola proporzioni immagine",
     summary: "Trova il rapporto d'aspetto di un'immagine e calcola le dimensioni per adattarla a un'area.",
   },
+  "audio-generator": {
+    name: "Generatore di tono, metronomo e rumore",
+    summary: "Genera tono, metronomo con tap tempo e rumore bianco, rosa o brown tramite Web Audio, con avvio esplicito e limiti dichiarati.",
+    searchTerms: ["generatore tono", "metronomo online", "tap tempo", "rumore bianco", "rumore rosa", "rumore brown"],
+  },
+  "browser-text-to-speech": {
+    name: "Sintesi vocale del browser",
+    summary: "Legge testo con le voci SpeechSynthesis realmente disponibili, filtrando quelle italiane e mostrando i limiti della piattaforma.",
+    searchTerms: ["text to speech italiano", "sintesi vocale", "leggi testo", "voce browser", "tts italiano"],
+  },
+  "microphone-recorder": {
+    name: "Test microfono e registratore locale",
+    summary: "Controlla livello e stato del microfono e registra in locale con il formato realmente supportato dal browser, mostrando tipo, byte e durata misurati.",
+    searchTerms: ["test microfono", "registratore vocale", "registra audio", "microfono online", "voice recorder"],
+  },
+  "base-converter": {
+    name: "Convertitore di base 2–36",
+    summary: "Converte interi con segno tra basi da 2 a 36 senza perdere precisione e segnala esattamente le cifre non valide.",
+  },
   "base64-codec": {
     name: "Codifica e decodifica Base64",
     summary: "Codifica o decodifica rigorosamente testo UTF-8 con Base64 o Base64url secondo RFC 4648.",
+  },
+  "barcode-generator": {
+    name: "Crea barcode EAN-13 e Code 128",
+    summary: "Genera o verifica EAN-13 e crea Code 128 B per il solo subset ASCII stampabile dichiarato, con download SVG e PNG interamente locali.",
   },
   "batch-checksum-manifest": {
     name: "Checksum di più file",
@@ -88,6 +117,14 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Verifica integrità dei file",
     summary: "Confronta gli SHA-256 dei file con un elenco checksum atteso per verificare che non siano cambiati.",
   },
+  "chmod-permission-helper": {
+    name: "Convertitore permessi chmod",
+    summary: "Converte permessi Unix tra notazione rwx e ottale, inclusi setuid, setgid e sticky bit, senza modificare file.",
+  },
+  "cidr-calculator": {
+    name: "Calcolatore CIDR IPv4 e IPv6",
+    summary: "Calcola rete, intervallo e quantità di indirizzi per CIDR IPv4 e IPv6 con aritmetica intera esatta.",
+  },
   "citation-deduplicator": {
     name: "Rimuovi citazioni duplicate",
     summary: "Elimina citazioni duplicate usando identificatore oppure titolo, autore e anno.",
@@ -108,6 +145,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Converti HEX, RGB e HSL",
     summary: "Converte un colore tra formato esadecimale, RGB e HSL direttamente nel browser.",
   },
+  "color-blindness-image-simulation": {
+    name: "Simula il daltonismo su un'immagine",
+    summary: "Applica localmente le matrici complete di protanopia, deuteranopia o tritanopia del modello Machado e crea un PNG verificato da confrontare con l'originale.",
+    searchTerms: ["simula daltonismo", "protanopia immagine", "deuteranopia immagine", "tritanopia immagine", "simulazione visione colori"],
+  },
   "color-picker": {
     name: "Selettore colore",
     summary: "Sceglie un colore con il controllo nativo del browser e mostra i valori RGB, HSL ed esadecimali esatti.",
@@ -118,7 +160,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "contact-sheet-generator": {
     name: "Crea un foglio di anteprime immagini",
-    summary: "Unisce più immagini in un unico foglio di anteprime generato localmente nel browser.",
+    summary: "Crea contact sheet, stack e griglie con ordine modificabile oppure divide un'immagine in slice carousel con nomi deterministici e ZIP STORE verificato.",
   },
   "contrast-checker": {
     name: "Controlla contrasto colori",
@@ -127,6 +169,16 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "conversion-rate-scenario": {
     name: "Simula un nuovo tasso di conversione",
     summary: "Confronta conversione attuale e obiettivo e mostra quante conversioni otterresti con lo stesso traffico.",
+  },
+  "connection-device-info": {
+    name: "Informazioni browser e dispositivo",
+    summary: "Mostra dati utili per assistenza direttamente dal browser e cerca l'IP pubblico solo quando scegli di contattare un servizio esterno.",
+    searchTerms: ["browser info", "device info", "viewport", "dpr", "public ip", "user agent"],
+  },
+  "css-design-helper": {
+    name: "Genera gradiente, ombra e raggio CSS",
+    summary: "Crea in locale gradienti lineari, box-shadow e border-radius validati usando lo stesso valore canonico per anteprima e CSS copiato.",
+    searchTerms: ["gradiente css", "box shadow", "border radius", "generatore css", "ombra css"],
   },
   "cpa-cpc-cpm-calculator": {
     name: "Calcola CPA, CPC o CPM",
@@ -159,6 +211,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "csv-dedupe": {
     name: "Rimuovi righe duplicate dal CSV",
     summary: "Elimina righe duplicate usando l'intera riga o le colonne chiave che scegli.",
+    searchTerms: ["rimuovi duplicati csv", "elimina duplicati csv", "deduplica csv"],
   },
   "csv-delimiter-detector": {
     name: "Trova il separatore di un CSV",
@@ -184,13 +237,23 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Crea una tabella pivot da CSV",
     summary: "Raggruppa righe e aggrega valori per creare una tabella pivot direttamente nel browser.",
   },
+  "csv-splitter": {
+    name: "Dividi un CSV grande",
+    summary: "Divide un CSV locale per numero di righe o dimensione approssimativa, ripetendo l'intestazione in ogni parte e leggendo i file grandi a blocchi.",
+  },
   "csv-sort": {
     name: "Ordina righe di un CSV",
     summary: "Ordina una tabella CSV per una colonna di testo, numeri o date e gestisce esplicitamente i valori vuoti.",
+    searchTerms: ["ordina csv", "ordina righe csv", "metti in ordine csv"],
   },
   "csv-to-json": {
     name: "Converti CSV in JSON",
     summary: "Trasforma le righe di un CSV in record JSON gestendo intestazioni duplicate e celle mancanti.",
+    searchTerms: ["csv in json", "converti csv json"],
+  },
+  "csv-to-sql": {
+    name: "Converti CSV in SQL",
+    summary: "Genera in locale CREATE TABLE e INSERT per PostgreSQL, MySQL o SQLite con tipi e valori quotati esplicitamente, senza eseguire SQL.",
   },
   "csv-viewer": {
     name: "Apri e controlla un CSV",
@@ -278,11 +341,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "exif-remover": {
     name: "Rimuovi metadati EXIF",
-    summary: "Crea una nuova copia dell'immagine senza i metadati EXIF che possono contenere informazioni personali.",
+    summary: "Mostra i gruppi di metadati prima e dopo, ricrea un PNG pulito e reinspeziona metadati e pixel RGBA prima di dichiararlo riuscito.",
   },
   "favicon-app-icon-size-generator": {
     name: "Crea favicon e icone app",
-    summary: "Genera da un'immagine le principali dimensioni PNG quadrate per favicon e icone app.",
+    summary: "Genera PNG quadrati verificati in ordine deterministico e crea un ZIP STORE che contiene esattamente le varianti mostrate in anteprima.",
   },
   "file-hash": {
     name: "Hash file e verifica checksum",
@@ -295,6 +358,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "file-signature-detector": {
     name: "Controlla il vero tipo di un file",
     summary: "Confronta la firma interna del file con la sua estensione per evidenziare incongruenze.",
+  },
+  "file-size-analyzer": {
+    name: "Analizzatore dimensione file",
+    summary: "Analizza localmente dimensioni/encoding/metadati delle immagini o voci/metodi ZIP, senza inventare risparmi prima di una prova reale.",
+    searchTerms: ["perché file pesa tanto", "analizza dimensione file", "immagine pesante", "zip pesante", "file grande"],
   },
   "filename-sanitizer": {
     name: "Pulizia nomi file",
@@ -319,6 +387,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "hash-generator": {
     name: "Calcola hash di un testo",
     summary: "Calcola SHA-256, SHA-384 o SHA-512 di un testo UTF-8 direttamente nel browser.",
+    searchTerms: ["hash sha256", "calcola sha256", "genera sha-256"],
   },
   "hmac-generator": {
     name: "Calcola HMAC",
@@ -327,6 +396,16 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "html-entity-codec": {
     name: "Codifica e decodifica entità HTML",
     summary: "Converte entità di carattere HTML come testo distinguendo chiaramente decodifica e sanificazione.",
+  },
+  "iban-validator": {
+    name: "Verifica IBAN",
+    summary: "Controlla localmente struttura e checksum MOD-97 di IBAN supportati; per l'Italia separa CIN, ABI, CAB e conto senza verificarne l'esistenza bancaria.",
+    searchTerms: ["controlla iban", "verifica iban", "iban italiano", "cin abi cab", "mod 97 iban"],
+  },
+  "italian-document-expiry": {
+    name: "Calcola scadenza CIE o passaporto",
+    summary: "Calcola la scadenza secondo regole italiane ufficiali versionate per CIE e passaporto, senza presentarla come verifica del documento.",
+    searchTerms: ["scadenza cie", "scadenza carta identità", "scadenza passaporto", "validità cie", "validità passaporto"],
   },
   "http-status-reference": {
     name: "Significato dei codici HTTP",
@@ -342,15 +421,17 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "image-compare-slider": {
     name: "Confronto immagini",
-    summary: "Confronta due immagini locali con un riepilogo deterministico delle differenze pixel e dei metadati.",
+    summary: "Confronta due immagini con slider, overlay e diff, senza stirarle, e misura differenze RGBA campionate con soglia dichiarata.",
   },
   "image-compression": {
     name: "Compressione immagine",
     summary: "Comprime un'immagine locale nel formato supportato scelto e verifica il risultato.",
+    searchTerms: ["comprimi immagine", "riduci peso immagine", "compressione foto"],
   },
   "image-crop": {
-    name: "Ritaglio immagine",
-    summary: "Ritaglia un'immagine locale in un rettangolo limitato con risultato prodotto interamente nel browser.",
+    name: "Ritaglia e modifica immagine",
+    summary: "Ritaglia e modifica immagini oppure rettifica un documento fotografato da quattro angoli validati usando la stessa pipeline pixel locale dell'export PNG.",
+    searchTerms: ["ritaglia immagine", "ruota immagine", "ritaglia rotondo", "ribalta immagine", "luminosità contrasto saturazione", "bordo sfondo immagine", "raddrizza prospettiva documento", "correggi prospettiva foto"],
   },
   "image-dimensions-batch-inspector": {
     name: "Controlla dimensioni di più immagini",
@@ -358,7 +439,8 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "image-format-conversion": {
     name: "Converti formato immagine",
-    summary: "Converte un'immagine tra JPEG, PNG e WebP direttamente nel browser.",
+    summary: "Converte JPEG, PNG e WebP in locale, verifica firma e decode e richiede uno sfondo esplicito quando l'alpha deve diventare JPEG.",
+    searchTerms: ["converti jpg png", "jpg in png", "png in jpg", "webp in jpg", "converti immagine"],
   },
   "image-metadata-viewer": {
     name: "Vedi informazioni di un'immagine",
@@ -374,7 +456,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "images-to-pdf": {
     name: "Immagini in PDF",
-    summary: "Trasforma immagini JPEG locali in un PDF con una pagina per immagine senza convertitore lato server.",
+    summary: "Trasforma JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF o il primo frame GIF in PDF con ordine, rotazioni, A4/Letter/originale, margini e contain/cover.",
   },
   "invisible-character-detector": {
     name: "Trova caratteri invisibili",
@@ -396,21 +478,39 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Formattatore e validatore JSON",
     summary: "Valida e formatta JSON in modo deterministico senza caricare il documento.",
   },
+  "json-repair": {
+    name: "Ripara JSON senza indovinare",
+    summary: "Corregge solo errori sintattici non ambigui e mostra ogni modifica applicata con posizione e motivo.",
+  },
   "json-path-playground": {
     name: "Prova percorsi JSONPath",
     summary: "Interroga JSON con un sottoinsieme limitato di JSONPath e mostra ogni percorso e valore restituito.",
   },
+  "json-structural-diff": {
+    name: "Confronta la struttura di due JSON",
+    summary: "Distingue aggiunte, rimozioni, cambi di tipo o valore e riordini degli array con percorsi JSON Pointer stabili.",
+  },
   "json-to-csv": {
     name: "Converti JSON in CSV",
     summary: "Trasforma un array JSON di oggetti in CSV scegliendo come costruire le intestazioni.",
+    searchTerms: ["json in csv", "converti json csv"],
   },
   "json-yaml-converter": {
     name: "Convertitore JSON e YAML",
     summary: "Converte tra JSON e un sottoinsieme YAML sicuro e limitato mostrando direzione e modello dei valori.",
   },
+  "json-type-schema-inference": {
+    name: "Da JSON a TypeScript e JSON Schema",
+    summary: "Inferisce tipi e schema da un esempio JSON dichiarando i limiti e gestendo in sicurezza anche chiavi ostili.",
+  },
   "jwt-inspector": {
     name: "Analizzatore JWT",
     summary: "Ispeziona parti, claim, timestamp e avvisi di un JWT senza attribuirgli validità crittografica.",
+  },
+  "keyboard-event-diagnostic": {
+    name: "Diagnostica eventi tastiera",
+    summary: "Mostra key, code, posizione, modificatori, repeat e composizione mentre l'area di test ha il focus, senza salvare ciò che digiti.",
+    searchTerms: ["keyboard event", "key code", "keydown", "keyup", "tastiera", "modifier keys"],
   },
   "language-aware-text-statistics": {
     name: "Statistiche del testo e lingua",
@@ -452,6 +552,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Anteprima Markdown",
     summary: "Renderizza in locale un sottoinsieme sicuro di Markdown neutralizzando HTML grezzo e link non sicuri.",
   },
+  "text-markup-converter": {
+    name: "Converti TXT, Markdown e HTML",
+    summary: "Converte in locale tra Markdown, HTML e testo semplice tramite un modello normalizzato, mostrando anteprima sanitizzata e perdite strutturali dichiarate.",
+    searchTerms: ["markdown html", "html markdown", "markdown txt", "html txt", "txt html", "convertitore markdown html"],
+  },
   "markdown-table-formatter": {
     name: "Formatta tabella Markdown",
     summary: "Allinea colonne, intestazioni e separatori di una tabella Markdown senza cambiare il contenuto.",
@@ -463,6 +568,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "meta-preview": {
     name: "Anteprima titolo e descrizione meta",
     summary: "Misura titolo e descrizione e produce un'anteprima escapata senza renderizzare contenuto attivo.",
+    searchTerms: ["controlla meta seo", "anteprima seo", "titolo meta descrizione"],
   },
   "metadata-risk-inspector": {
     name: "Controlla metadati prima di condividere",
@@ -488,6 +594,26 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Estrai palette da un'immagine",
     summary: "Trova una palette di colori rappresentativa da un'immagine direttamente nel browser.",
   },
+  "partita-iva-validator": {
+    name: "Verifica Partita IVA italiana",
+    summary: "Normalizza e controlla formato e cifra di controllo di una Partita IVA italiana, interamente in locale, senza verificare l'esistenza nel registro.",
+    searchTerms: ["verifica partita iva", "controlla partita iva", "checksum partita iva", "p iva"],
+  },
+  "password-pin-passphrase-generator": {
+    name: "Genera password, PIN e passphrase italiane",
+    summary: "Genera in locale password, PIN numerici e passphrase italiane usando WebCrypto e selezione casuale senza distorsione da modulo.",
+    searchTerms: ["generatore password", "genera pin", "passphrase italiana", "password sicura"],
+  },
+  "password-strength-estimator": {
+    name: "Stima la robustezza di una password",
+    summary: "Valuta in locale lunghezza e pattern osservabili e spiega ogni fattore del punteggio, senza consultare database di password violate.",
+    searchTerms: ["forza password", "robustezza password", "password strength", "controllo password offline"],
+  },
+  "random-picker-team-coupon-generator": {
+    name: "Genera numeri, estrazioni, team e coupon casuali",
+    summary: "Genera in locale numeri casuali, estrazioni da liste, team bilanciati e coupon unici con WebCrypto oppure con un seed riproducibile dichiarato non sicuro.",
+    searchTerms: ["numero casuale", "estrazione casuale", "sorteggio", "dividi squadre", "generatore coupon", "random picker"],
+  },
   "payment-fee-gross-up": {
     name: "Calcola il lordo per ottenere un netto",
     summary: "Calcola quanto devi addebitare per ricevere un netto preciso dopo le commissioni.",
@@ -499,6 +625,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "pdf-compression-lite": {
     name: "Alleggerisci un PDF",
     summary: "Crea una copia più pulita rimuovendo metadati e riducendo contenuti testuali non compressi quando possibile.",
+    searchTerms: ["comprimi pdf", "compressione pdf", "riduci peso pdf"],
   },
   "pdf-flatten": {
     name: "Rimuovi elementi interattivi dal PDF",
@@ -510,7 +637,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "pdf-image-extractor": {
     name: "Estrai immagini JPEG da PDF",
-    summary: "Estrae le immagini JPEG incorporate direttamente nel PDF quando la struttura del file lo consente.",
+    summary: "Estrae per pagina i byte JPEG originali quando sono sicuri, conserva pagina/oggetto e segnala i filtri immagine non supportati.",
   },
   "pdf-link-extractor": {
     name: "Estrai link da PDF",
@@ -522,11 +649,16 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "pdf-metadata-inspector": {
     name: "Vedi metadati PDF",
-    summary: "Mostra metadati, dimensioni pagine, rotazioni e indicatori di cifratura del PDF.",
+    summary: "Distingue campi Info riconosciuti e sconosciuti, segnala gli stream XMP e mostra struttura e pagine del PDF.",
   },
   "pdf-metadata-remover": {
     name: "Rimuovi metadati PDF",
-    summary: "Crea una copia del PDF rimuovendo i metadati Info e quelli incorporati che lo strumento può raggiungere.",
+    summary: "Rimuove i metadati Info/XMP supportati, riapre il PDF prodotto e verifica che pagine e testo supportato restino stabili.",
+  },
+  "pdf-multi-text-search": {
+    name: "Cerca testo in più PDF",
+    summary: "Cerca una frase in più PDF locali e mostra file, pagina e contesto senza interrompere il batch se un documento è illeggibile, cifrato o privo di testo.",
+    searchTerms: ["cerca in più pdf", "trova testo pdf", "ricerca multipla pdf"],
   },
   "pdf-page-citation-helper": {
     name: "Crea citazione di una pagina PDF",
@@ -562,11 +694,16 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "pdf-text-extraction": {
     name: "Estrai testo da PDF",
-    summary: "Estrae il testo dai flussi PDF supportati e segnala quando la struttura richiede capacità non disponibili.",
+    summary: "Estrae pagine selezionate con separatori espliciti e modalità dichiarata, segnalando i filtri PDF non supportati.",
+  },
+  "pdf-to-markdown": {
+    name: "Converti PDF in Markdown",
+    summary: "Esporta soltanto il testo PDF estraibile con marker di pagina espliciti e dichiara le perdite di tabelle, immagini, colonne e stile.",
+    searchTerms: ["pdf markdown", "converti pdf md", "pdf in markdown"],
   },
   "pdf-to-images": {
     name: "PDF in immagini",
-    summary: "Estrae flussi JPEG incorporati direttamente nel PDF senza fingere di renderizzare pagine non supportate.",
+    summary: "Renderizza pagine PDF selezionate in JPG, PNG o WebP in locale, con scala/DPI e qualità; i risultati multipagina includono uno ZIP verificato.",
   },
   "percentage-helper": {
     name: "Calcola IVA e percentuali",
@@ -578,7 +715,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "platform-size-presets": {
     name: "Dimensioni immagini per social e app",
-    summary: "Mostra formati comuni per social, favicon e app e calcola come adattare un'immagine.",
+    summary: "Calcola il ritaglio per formati social/app oppure esporta un PNG reale con dimensioni esatte del preset, senza stretch e con fonte dichiarata.",
   },
   "project-profitability": {
     name: "Quanto rende un progetto",
@@ -678,7 +815,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "screenshot-border-background-helper": {
     name: "Bordo e sfondo per screenshot",
-    summary: "Aggiunge bordo e sfondo misurati a uno screenshot locale usando un canvas con limiti definiti.",
+    summary: "Aggiunge bordo/sfondo, watermark o overlay con preview identica all'export e unisce screenshot solo dopo conferma manuale dell'overlap suggerito.",
   },
   "secret-token-pattern-scanner": {
     name: "Ricerca pattern di segreti e token",
@@ -696,9 +833,23 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Controllo limite caratteri social",
     summary: "Conta punti di codice Unicode rispetto a un limite dichiarato mostrando caratteri rimanenti o eccedenti.",
   },
+  "sitemap-xml-generator": {
+    name: "Genera sitemap.xml",
+    summary: "Crea in locale una sitemap XML da URL HTTP(S) validati, aggiungendo lastmod, changefreq e priority solo quando li fornisci.",
+    searchTerms: ["sitemap xml", "generatore sitemap", "crea sitemap", "sitemap url"],
+  },
+  "subtitle-srt-vtt-transform": {
+    name: "Converti SRT e WebVTT, correggi timing e crea trascrizioni",
+    summary: "Converte SRT e WebVTT in locale, applica offset o rescale, esporta la trascrizione e segnala overlap e velocità di lettura con soglie configurabili.",
+    searchTerms: ["srt vtt", "converti sottotitoli", "offset sottotitoli", "trascrizione sottotitoli", "velocità lettura sottotitoli"],
+  },
   "table-transpose": {
     name: "Scambia righe e colonne",
     summary: "Trasforma le colonne in righe preservando il contenuto delle celle.",
+  },
+  "table-compare": {
+    name: "Confronta due tabelle CSV",
+    summary: "Confronta due CSV usando chiavi e colonne esplicite, segnala chiavi duplicate ambigue e mostra da quale riga e colonna arriva ogni cambiamento.",
   },
   "target-income-rate": {
     name: "Tariffa necessaria per il tuo reddito obiettivo",
@@ -723,6 +874,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "timezone-converter": {
     name: "Converti tra fusi orari",
     summary: "Converte una data e ora tra fusi IANA tenendo conto automaticamente dell'ora legale.",
+    searchTerms: ["fuso orario", "converti fuso orario", "converti orario tra paesi"],
   },
   "timezone-overlap": {
     name: "Trova ore comuni tra due fusi orari",
@@ -780,6 +932,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Generatore UUID",
     summary: "Genera UUIDv4 o UUIDv7 secondo RFC 9562 usando Web Crypto e maiuscole facoltative.",
   },
+  "vcf-viewer-csv-export": {
+    name: "Apri VCF e vCard ed esporta in CSV",
+    summary: "Legge contatti VCF/vCard in locale, conserva valori ripetuti e proprietà non supportate e crea un CSV protetto dalle formule.",
+    searchTerms: ["apri vcf", "vcard csv", "vcf csv", "contatti vcard"],
+  },
   "vocabulary-frequency-analyzer": {
     name: "Parole più usate nel testo",
     summary: "Mostra quali parole compaiono più spesso e quante volte ricorrono nel testo.",
@@ -804,6 +961,15 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Formattatore e validatore YAML",
     summary: "Analizza un sottoinsieme YAML limitato e lo formatta segnalando esplicitamente le funzionalità non supportate.",
   },
+  "x509-csr-inspector": {
+    name: "Ispeziona certificati X.509 e CSR",
+    summary: "Legge in locale certificati e richieste CSR PEM/DER e mostra nomi, SAN, validità, chiave, firma e fingerprint senza inferire fiducia o revoca.",
+    searchTerms: ["certificato x509", "csr inspector", "pem certificate", "fingerprint certificato"],
+  },
+  "xml-formatter-validator": {
+    name: "Valida, formatta e minifica XML",
+    summary: "Elabora XML in locale senza risolvere DTD o entità esterne e conserva gli spazi significativi nel testo.",
+  },
   "zero-byte-orphan-finder": {
     name: "Ricerca file vuoti e riferimenti mancanti",
     summary: "Trova file vuoti e percorsi referenziati assenti da una selezione locale entro limiti definiti.",
@@ -815,6 +981,118 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "zip-creator": {
     name: "Creatore ZIP",
     summary: "Crea un archivio ZIP limitato con metodo store a partire da file locali selezionati.",
+  },
+  "semantic-text-chunker": {
+    name: "Dividi testo in chunk reversibili",
+    summary: "Divide il testo su confini stabili e conserva gli intervalli necessari per ricostruire esattamente l'originale.",
+  },
+  "fact-sensitive-text-diff": {
+    name: "Trova cambi a numeri, date e link nei testi",
+    summary: "Evidenzia cambi lessicali a numeri, date, URL e identificativi tra una versione originale e una riscritta, senza dichiararne la verità.",
+  },
+  "stable-placeholder-anonymizer": {
+    name: "Anonimizza e ripristina con segnaposto",
+    summary: "Sostituisce valori scelti con segnaposto stabili locali e li ripristina solo quando la mappatura coincide esattamente.",
+  },
+  "italian-gulpease-readability": {
+    name: "Calcola indice Gulpease",
+    summary: "Calcola l'indice Gulpease mostrando lettere, parole, frasi e le frasi che contribuiscono di più alla difficoltà.",
+  },
+  "mojibake-repair": {
+    name: "Ripara testo con codifica errata",
+    summary: "Ripara in modo conservativo comuni errori UTF-8 e Windows-1252, mostrando la trasformazione e rifiutando i casi ambigui.",
+  },
+  "pdf-copy-text-reflow": {
+    name: "Ricompone testo copiato da PDF",
+    summary: "Ricompone gli a capo del testo copiato da PDF con regole esplicite e segnala le sillabazioni che restano ambigue.",
+  },
+  "phone-link-hashtag-mention-extractor": {
+    name: "Estrai telefoni, link, hashtag e mention",
+    summary: "Estrae corrispondenze tipizzate con intervalli esatti, regole di sovrapposizione deterministiche ed esportazione CSV.",
+  },
+  "css-minifier": {
+    name: "Minifica CSS con parser",
+    summary: "Analizza e compatta CSS con un parser, preserva stringhe e proprietà personalizzate e mostra il risparmio in byte.",
+  },
+  "html-minifier": {
+    name: "Minifica HTML preservando la semantica",
+    summary: "Compatta HTML con un parser e conserva gli spazi significativi, inclusi pre, textarea, script e style.",
+  },
+  "scientific-calculator": {
+    name: "Calcolatrice scientifica",
+    summary: "Calcola espressioni con parentesi, potenze, funzioni e costanti tramite un parser locale che non esegue codice.",
+  },
+  "fraction-integer-toolkit": {
+    name: "Frazioni e interi esatti",
+    summary: "Calcola frazioni, MCD e MCM, fattori primi, combinazioni, permutazioni e numeri romani con aritmetica intera esatta.",
+  },
+  "statistics-grade-calculator": {
+    name: "Statistiche, medie e completamento",
+    summary: "Calcola media, mediana, moda, varianza, deviazione standard, media pesata e percentuale di completamento.",
+  },
+  "interest-savings-calculator": {
+    name: "Interessi e obiettivo di risparmio",
+    summary: "Calcola interesse semplice o composto, crescita con versamenti periodici e il versamento richiesto per raggiungere un obiettivo.",
+  },
+  "basic-unit-converter": {
+    name: "Convertitore di unità di base",
+    summary: "Converte lunghezza, massa, temperatura, area e volume e blocca le conversioni tra dimensioni incompatibili.",
+  },
+  "engineering-unit-converter": {
+    name: "Convertitore di unità tecniche",
+    summary: "Converte velocità, tempo, angoli, energia, pressione, potenza, forza, coppia, frequenza, densità, portata e illuminamento.",
+  },
+  "storage-download-calculator": {
+    name: "Spazio digitale e tempo di download",
+    summary: "Distingue MB da MiB e bit da byte e stima il download usando soltanto velocità e overhead inseriti da te.",
+  },
+  "battery-vehicle-power-helper": {
+    name: "Batteria, consumi auto e potenza",
+    summary: "Converte mAh e Wh con tensione, L/100 km, km/L e MPG US/Imperial distinti, oltre a kW, CV e hp.",
+  },
+  "reference-size-converter": {
+    name: "Formati carta, scale e dimensioni TV",
+    summary: "Calcola formati ISO, scale di modellismo e geometria TV senza inventare equivalenze di vestibilità non documentate.",
+  },
+  "mortgage-amortization-calculator": {
+    name: "Mutuo e ammortamento alla francese",
+    summary: "Stima rata, interessi e totale rimborsato dal TAN e crea il piano mensile completo scaricabile in CSV.",
+    searchTerms: ["mutuo", "rata mutuo", "ammortamento francese", "piano ammortamento"],
+  },
+  "geometry-equation-motion-helper": {
+    name: "Geometria, equazioni e moto",
+    summary: "Calcola aree, perimetri, volumi, Pitagora, radici quadratiche reali e relazioni tra velocità, distanza e tempo.",
+    searchTerms: ["geometria", "equazione secondo grado", "pitagora", "velocità distanza tempo"],
+  },
+  "everyday-cost-calculator": {
+    name: "Calcola costi quotidiani",
+    summary: "Confronta prezzi unitari, divide conti, annualizza abbonamenti e stima energia, viaggio e salario orario con ipotesi dichiarate.",
+    searchTerms: ["prezzo unitario", "dividi conto", "costo energia", "costo viaggio", "salario orario"],
+  },
+  "inps-artigiani-commercianti": {
+    name: "Contributi INPS artigiani e commercianti 2026",
+    summary: "Calcola il profilo standard 2026 con minimale, fasce, massimale e fonti INPS dichiarate, senza applicare riduzioni non coperte.",
+    searchTerms: ["inps artigiani 2026", "inps commercianti 2026", "contributi artigiano", "contributi commerciante"],
+  },
+  "gestione-separata-contributi": {
+    name: "Contributi Gestione Separata 2026",
+    summary: "Calcola i due profili professionista 2026 coperti dalla circolare INPS con aliquota, base, massimale e soglia per l'accredito annuo.",
+    searchTerms: ["gestione separata 2026", "contributi professionista", "aliquota 26,07", "aliquota 24"],
+  },
+  "ponti-ferie-optimizer": {
+    name: "Ponti e ferie 2026",
+    summary: "Trova ponti deterministici usando festività nazionali ufficiali 2026, ferie disponibili e la settimana lavorativa che indichi.",
+    searchTerms: ["ponti 2026", "ferie 2026", "ottimizza ferie", "calendario ponti"],
+  },
+  "fatturapa-reader": {
+    name: "Leggi una FatturaPA XML",
+    summary: "Legge una FatturaPA supportata interamente in locale e mostra schema, parti, documento, righe ed eventuali errori di campo isolati.",
+    searchTerms: ["lettore fatturapa", "leggi fattura elettronica xml", "fatturapa xsd"],
+  },
+  "fatturapa-batch-csv": {
+    name: "FatturaPA batch in CSV",
+    summary: "Legge più FatturePA XML in locale, isola gli errori per file e crea una tabella CSV completa con schema e riconciliazione dei totali rappresentati.",
+    searchTerms: ["fatturapa csv", "fatture elettroniche batch", "xml fatture tabella"],
   },
 };
 
@@ -835,6 +1113,7 @@ export function localizeToolManifestIt(manifest: FactoryToolManifest): FactoryTo
     ...manifest.aliases,
     ...manifest.jobs,
     ...manifest.keywords,
+    ...(copy.searchTerms ?? []),
   ];
   return {
     ...manifest,

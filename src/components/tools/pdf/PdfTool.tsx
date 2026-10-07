@@ -1,35 +1,15 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
-import type { PdfArtifact } from "../../../engines/pdf";
 import { TOOL_COPY_IT } from "../../../i18n/it/tool-copy";
 import { friendlyToolErrorIt } from "../../../i18n/it/errors";
-import { StatusMark, statusMarkLabel } from "../shared/StatusMark";
-import { CONTROL, it } from "../shared/controlLabels";
+import type { PdfResultToolId } from "../../../tools/pdf-result-declarations";
+import { CONTROL, it, ToolResultPanel } from "../shared";
+import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
 
-export type PdfToolId =
-  | "pdf-merge"
-  | "pdf-split"
-  | "pdf-page-reorder"
-  | "pdf-rotate"
-  | "pdf-page-delete-extract"
-  | "images-to-pdf"
-  | "pdf-to-images"
-  | "pdf-text-extraction"
-  | "pdf-metadata-inspector"
-  | "pdf-metadata-remover"
-  | "pdf-page-size-inspector"
-  | "pdf-page-count-verifier"
-  | "pdf-password-check-remove"
-  | "pdf-flatten"
-  | "pdf-form-inspector"
-  | "pdf-link-extractor"
-  | "pdf-image-extractor"
-  | "pdf-compare-lite"
-  | "pdf-compression-lite"
-  | "document-handoff-manifest";
+export type PdfToolId = PdfResultToolId;
 
 type InputMode = "single" | "multi" | "pair";
-type OptionMode = "none" | "pages" | "groups" | "order" | "rotation" | "delete-extract" | "password";
+type OptionMode = "none" | "pages" | "groups" | "order" | "rotation" | "delete-extract" | "password" | "text-extraction" | "image-extraction" | "multi-search" | "pdf-to-markdown" | "images-to-pdf" | "pdf-to-images";
 
 export interface PdfToolProps {
   readonly toolId: PdfToolId;
@@ -41,10 +21,6 @@ export interface PdfToolProps {
   readonly accept?: string;
 }
 
-interface ToolResult {
-  readonly value: unknown;
-}
-
 const PDF_ACTION_IT: Readonly<Record<PdfToolId, string>> = {
   "pdf-merge": "Unisci PDF",
   "pdf-split": "Dividi PDF",
@@ -52,7 +28,7 @@ const PDF_ACTION_IT: Readonly<Record<PdfToolId, string>> = {
   "pdf-rotate": "Ruota pagine",
   "pdf-page-delete-extract": "Applica operazione alle pagine",
   "images-to-pdf": "Crea PDF",
-  "pdf-to-images": "Estrai immagini",
+  "pdf-to-images": "Converti PDF in immagini",
   "pdf-text-extraction": "Estrai testo",
   "pdf-metadata-inspector": "Analizza PDF",
   "pdf-metadata-remover": "Rimuovi metadati",
@@ -66,33 +42,8 @@ const PDF_ACTION_IT: Readonly<Record<PdfToolId, string>> = {
   "pdf-compare-lite": "Confronta PDF",
   "pdf-compression-lite": "Crea copia alleggerita",
   "document-handoff-manifest": "Crea manifest",
-};
-
-const RESULT_KEY_IT: Readonly<Record<string, string>> = {
-  artifacts: "file_generati",
-  inspection: "analisi",
-  capabilities: "capacità",
-  pageCount: "numero_pagine",
-  pages: "pagine",
-  width: "larghezza",
-  height: "altezza",
-  rotation: "rotazione",
-  encrypted: "cifrato",
-  metadata: "metadati",
-  links: "collegamenti",
-  fields: "campi",
-  images: "immagini",
-  text: "testo",
-  filename: "nome_file",
-  size: "dimensione",
-  sha256: "sha256",
-  structure: "struttura",
-  valid: "valido",
-  equal: "uguali",
-  differences: "differenze",
-  warnings: "avvisi",
-  warning: "avviso",
-  json: "json",
+  "pdf-multi-text-search": "Cerca nei PDF",
+  "pdf-to-markdown": "Esporta Markdown",
 };
 
 function parseNumbers(value: string): number[] {
@@ -109,35 +60,15 @@ function parseGroups(value: string): number[][] {
   })).filter((group) => group.length > 0);
 }
 
-function displayValue(value: unknown): string {
-  if (value === null || value === undefined) return "";
-  if (typeof value === "string") return value;
-  if (typeof value !== "object") return String(value);
-  try {
-    const localize = (entry: unknown): unknown => {
-      if (entry instanceof Blob) return `[Dati binari: ${entry.size} byte]`;
-      if (entry instanceof Uint8Array) return `[Byte: ${entry.byteLength}]`;
-      if (Array.isArray(entry)) return entry.map(localize);
-      if (entry === null || typeof entry !== "object") return entry;
-      return Object.fromEntries(Object.entries(entry as Record<string, unknown>).map(([key, item]) => [
-        RESULT_KEY_IT[key] ?? key,
-        localize(item),
-      ]));
-    };
-    return JSON.stringify(localize(value), null, 2);
-  } catch {
-    return "Risultato ricevuto.";
+function parseIndexedRotations(value: string): Record<number, 0 | 90 | 180 | 270> {
+  const result: Record<number, 0 | 90 | 180 | 270> = {};
+  if (value.trim() === "") return result;
+  for (const token of value.split(/[;,]+/u).map((part) => part.trim()).filter(Boolean)) {
+    const match = /^(\d+)\s*:\s*(0|90|180|270)$/u.exec(token);
+    if (match === null) throw new Error("Usa rotazioni come 1:90, 3:270.");
+    result[Number(match[1])] = Number(match[2]) as 0 | 90 | 180 | 270;
   }
-}
-
-function artifactList(value: unknown): PdfArtifact[] {
-  if (typeof value !== "object" || value === null) return [];
-  const artifacts = (value as { artifacts?: unknown }).artifacts;
-  return Array.isArray(artifacts) ? artifacts.filter((item): item is PdfArtifact => typeof item === "object" && item !== null && "blob" in item && "filename" in item) : [];
-}
-
-function isInspection(value: unknown): value is { inspection?: { capabilities?: readonly { capability: string; available: boolean; reason?: string }[] } } {
-  return typeof value === "object" && value !== null && "inspection" in value;
+  return result;
 }
 
 export function PdfTool({ toolId, title: _title, description: _description, actionLabel: _actionLabel, inputMode = "single", optionMode = "none", accept = "application/pdf,.pdf" }: PdfToolProps) {
@@ -148,28 +79,42 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [rotation, setRotation] = useState("90");
   const [deleteMode, setDeleteMode] = useState<"delete" | "extract">("extract");
   const [passwordMode, setPasswordMode] = useState<"check" | "remove">("check");
-  const [result, setResult] = useState<ToolResult | null>(null);
+  const [textExtractionMode, setTextExtractionMode] = useState<"content-order" | "operator-lines">("content-order");
+  const [imageDedupe, setImageDedupe] = useState(true);
+  const [query, setQuery] = useState("");
+  const [contextCharacters, setContextCharacters] = useState("120");
+  const [maxResults, setMaxResults] = useState("100");
+  const [caseSensitive, setCaseSensitive] = useState(false);
+  const [imageBackground, setImageBackground] = useState("#ffffff");
+  const [imageQuality, setImageQuality] = useState("0.92");
+  const [pdfImageMime, setPdfImageMime] = useState<"image/jpeg" | "image/png" | "image/webp">("image/png");
+  const [pdfImageScale, setPdfImageScale] = useState("2");
+  const [imageRotations, setImageRotations] = useState("");
+  const [pdfPageSize, setPdfPageSize] = useState<"original" | "a4" | "letter">("original");
+  const [pdfPageOrientation, setPdfPageOrientation] = useState<"auto" | "portrait" | "landscape">("auto");
+  const [pdfImageFit, setPdfImageFit] = useState<"contain" | "cover">("contain");
+  const [pdfMarginMm, setPdfMarginMm] = useState("0");
+  const [pdfCompositionMode, setPdfCompositionMode] = useState<"pages" | "contact-sheet">("pages");
+  const [contactSheetColumns, setContactSheetColumns] = useState("3");
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+  const [result, setResult] = useState<PreparedPdfResult | null>(null);
   const [error, setError] = useState("");
   const [status, setStatus] = useState<"idle" | "working" | "done">("idle");
   const controller = useRef<AbortController | null>(null);
-  const [urls, setUrls] = useState<readonly { filename: string; url: string }[]>([]);
-
-  const inspection = isInspection(result?.value) ? result.value.inspection : undefined;
 
   useEffect(() => () => {
     controller.current?.abort();
   }, []);
 
-  useEffect(() => () => {
-    for (const item of urls) URL.revokeObjectURL(item.url);
-  }, [urls]);
-
-  function clearUrls() {
-    setUrls((current) => {
-      for (const item of current) URL.revokeObjectURL(item.url);
-      return [];
-    });
-  }
+  useEffect(() => {
+    if (optionMode !== "images-to-pdf" || files[0] === undefined) {
+      setImagePreviewUrl("");
+      return;
+    }
+    const url = URL.createObjectURL(files[0]);
+    setImagePreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [files, optionMode]);
 
   function choose(event: Event, index = 0) {
     const input = event.currentTarget as HTMLInputElement;
@@ -184,7 +129,6 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         return next.filter((item): item is File => item !== undefined);
       });
     }
-    clearUrls();
     setResult(null);
     setError("");
     setStatus("idle");
@@ -192,6 +136,30 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
 
   function buildInput(): unknown {
     if (inputMode === "pair") return { first: files[0], second: files[1] };
+    if (inputMode === "multi" && optionMode === "images-to-pdf") {
+      return {
+        files,
+        background: imageBackground,
+        quality: Number(imageQuality),
+        ...(order.trim() === "" ? {} : { order: parseNumbers(order) }),
+        rotations: parseIndexedRotations(imageRotations),
+        pageSize: pdfPageSize,
+        orientation: pdfPageOrientation,
+        fit: pdfImageFit,
+        marginMm: Number(pdfMarginMm),
+        compositionMode: pdfCompositionMode,
+        contactSheetColumns: Number(contactSheetColumns),
+      };
+    }
+    if (inputMode === "multi" && optionMode === "multi-search") {
+      return {
+        files,
+        query,
+        contextCharacters: Number(contextCharacters),
+        maxResults: Number(maxResults),
+        caseSensitive,
+      };
+    }
     if (inputMode === "multi") return { files };
     if (optionMode === "pages") return { file: files[0], pages: parseNumbers(pages), ...(toolId === "pdf-page-delete-extract" ? { mode: deleteMode } : {}) };
     if (optionMode === "groups") return { file: files[0], groups: parseGroups(groups) };
@@ -199,13 +167,21 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     if (optionMode === "rotation") return { file: files[0], rotations: Object.fromEntries(parseNumbers(pages).map((page) => [page, Number(rotation)])) };
     if (optionMode === "delete-extract") return { file: files[0], pages: parseNumbers(pages), mode: deleteMode };
     if (optionMode === "password") return { file: files[0], mode: passwordMode };
+    if (optionMode === "text-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), mode: textExtractionMode };
+    if (optionMode === "image-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), dedupe: imageDedupe };
+    if (optionMode === "pdf-to-markdown") return { file: files[0] };
+    if (optionMode === "pdf-to-images") return {
+      file: files[0],
+      ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }),
+      mime: pdfImageMime,
+      scale: Number(pdfImageScale),
+      quality: Number(imageQuality),
+    };
     return { file: files[0] };
   }
 
-  async function submit(event: Event) {
-    event.preventDefault();
+  async function execute() {
     setError("");
-    clearUrls();
     setResult(null);
     if (inputMode === "pair" && files.length < 2) {
       setError("Scegli due file PDF locali.");
@@ -220,16 +196,14 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setStatus("working");
     try {
       const run = await toolRuntime.run(toolId, buildInput(), {}, abortController.signal);
-      if (!run.ok) throw new Error(run.message);
-      setResult({ value: run.value });
-      setStatus("done");
-      const outputArtifacts = artifactList(run.value);
-      if (outputArtifacts.length > 0) {
-        setUrls(outputArtifacts.map((artifact) => ({ filename: artifact.filename, url: URL.createObjectURL(artifact.blob) })));
-      } else if (typeof run.value === "object" && run.value !== null && typeof (run.value as { json?: unknown }).json === "string") {
-        const json = (run.value as { json: string }).json;
-        setUrls([{ filename: "document-handoff.json", url: URL.createObjectURL(new Blob([json], { type: "application/json" })) }]);
+      if (!run.ok) {
+        if (run.code === "CANCELLED") throw new DOMException(run.message, "AbortError");
+        throw new Error(run.message);
       }
+      const prepared = await preparePdfResult(toolId, run.value);
+      if (abortController.signal.aborted) throw new DOMException("Operation cancelled", "AbortError");
+      setResult(prepared);
+      setStatus("done");
     } catch (caught) {
       setError(caught instanceof DOMException && caught.name === "AbortError"
         ? "Operazione annullata. Non è stato prodotto alcun risultato."
@@ -238,6 +212,11 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     } finally {
       if (controller.current === abortController) controller.current = null;
     }
+  }
+
+  async function submit(event: Event) {
+    event.preventDefault();
+    await execute();
   }
 
   function reset() {
@@ -250,14 +229,38 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setRotation("90");
     setDeleteMode("extract");
     setPasswordMode("check");
+    setTextExtractionMode("content-order");
+    setImageDedupe(true);
+    setQuery("");
+    setContextCharacters("120");
+    setMaxResults("100");
+    setCaseSensitive(false);
+    setImageBackground("#ffffff");
+    setImageQuality("0.92");
+    setPdfImageMime("image/png");
+    setPdfImageScale("2");
+    setImageRotations("");
+    setPdfPageSize("original");
+    setPdfPageOrientation("auto");
+    setPdfImageFit("contain");
+    setPdfMarginMm("0");
+    setPdfCompositionMode("pages");
+    setContactSheetColumns("3");
     setResult(null);
     setError("");
     setStatus("idle");
-    clearUrls();
   }
 
   const isWorking = status === "working";
-  const gutterState = isWorking ? "running" : result === null ? "idle" : error !== "" ? "error" : "success";
+  const gutterState = isWorking
+    ? "running"
+    : result !== null
+      ? "success"
+      : error.startsWith("Operazione annullata")
+        ? "cancelled"
+        : error !== ""
+          ? "error"
+          : "idle";
   const publicCopy = TOOL_COPY_IT[toolId];
   const publicTitle = publicCopy?.name ?? toolId;
   const publicDescription = publicCopy?.summary ?? "";
@@ -285,27 +288,113 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 2" disabled={isWorking} /></label><label class="field"><span>Rotazione</span><select value={rotation} onChange={(event) => setRotation(event.currentTarget.value)} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
         {optionMode === "delete-extract" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3" disabled={isWorking} /></label><label class="field"><span>Operazione</span><select value={deleteMode} onChange={(event) => setDeleteMode(event.currentTarget.value as "delete" | "extract")} disabled={isWorking}><option value="extract">Estrai le pagine selezionate</option><option value="delete">Elimina le pagine selezionate</option></select></label></div>}
         {optionMode === "password" && <label class="field"><span>Modalità</span><select value={passwordMode} onChange={(event) => setPasswordMode(event.currentTarget.value as "check" | "remove")} disabled={isWorking}><option value="check">Controlla soltanto la cifratura</option><option value="remove">Crea una copia sicura se il PDF non è cifrato</option></select></label>}
+        {optionMode === "text-extraction" && (
+          <div class="field-grid">
+            <label class="field"><span>Pagine (facoltativo)</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 1, 3, 5 · vuoto = tutte" disabled={isWorking} /></label>
+            <label class="field"><span>Modalità testo</span><select value={textExtractionMode} onChange={(event) => setTextExtractionMode(event.currentTarget.value as "content-order" | "operator-lines")} disabled={isWorking}><option value="content-order">Ordine degli operatori, testo compatto</option><option value="operator-lines">Ordine degli operatori, una stringa per riga</option></select><small>Non viene inventato un ordine visuale: entrambe le modalità seguono l'ordine dei contenuti PDF supportati.</small></label>
+          </div>
+        )}
+        {optionMode === "image-extraction" && (
+          <div class="field-grid">
+            <label class="field"><span>Pagine (facoltativo)</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 2, 4 · vuoto = tutte" disabled={isWorking} /></label>
+            <label class="field"><span>Duplicati</span><select value={imageDedupe ? "dedupe" : "occurrences"} onChange={(event) => setImageDedupe(event.currentTarget.value === "dedupe")} disabled={isWorking}><option value="dedupe">Un file per oggetto, conserva tutte le occorrenze</option><option value="occurrences">Un file per ogni occorrenza pagina/risorsa</option></select><small>Si esportano solo byte JPEG originali con singolo filtro DCTDecode; filtri non supportati vengono elencati.</small></label>
+          </div>
+        )}
+        {optionMode === "images-to-pdf" && (
+          <>
+            <div class="field-grid">
+              <label class="field"><span>Composizione</span><select value={pdfCompositionMode} onChange={(event) => setPdfCompositionMode(event.currentTarget.value as "pages" | "contact-sheet")} disabled={isWorking}><option value="pages">Una immagine per pagina</option><option value="contact-sheet">Contact sheet su una pagina</option></select></label>
+              <label class="field"><span>Colonne contact sheet</span><input type="number" min="1" max="8" step="1" value={contactSheetColumns} onInput={(event) => setContactSheetColumns(event.currentTarget.value)} disabled={isWorking || pdfCompositionMode !== "contact-sheet"} /></label>
+            </div>
+            <div class="field-grid">
+              <label class="field"><span>Ordine immagini (facoltativo)</span><input value={order} onInput={(event) => setOrder(event.currentTarget.value)} placeholder="es. 3, 1, 2 · vuoto = selezione" disabled={isWorking} /><small>Se compilato, deve contenere ogni immagine una volta.</small></label>
+              <label class="field"><span>Rotazioni per immagine</span><input value={imageRotations} onInput={(event) => setImageRotations(event.currentTarget.value)} placeholder="es. 1:90, 3:270" disabled={isWorking} /><small>Indici dopo il riordino; valori ammessi 0/90/180/270°.</small></label>
+            </div>
+            <div class="field-grid">
+              <label class="field"><span>Formato pagina</span><select value={pdfPageSize} onChange={(event) => setPdfPageSize(event.currentTarget.value as "original" | "a4" | "letter")} disabled={isWorking}><option value="original">Dimensione immagine</option><option value="a4">A4</option><option value="letter">Letter</option></select></label>
+              <label class="field"><span>Orientamento</span><select value={pdfPageOrientation} onChange={(event) => setPdfPageOrientation(event.currentTarget.value as "auto" | "portrait" | "landscape")} disabled={isWorking}><option value="auto">Automatico</option><option value="portrait">Verticale</option><option value="landscape">Orizzontale</option></select></label>
+            </div>
+            <div class="field-grid">
+              <label class="field"><span>Adattamento</span><select value={pdfImageFit} onChange={(event) => setPdfImageFit(event.currentTarget.value as "contain" | "cover")} disabled={isWorking}><option value="contain">Contieni (nessun taglio)</option><option value="cover">Riempi (ritaglio ai bordi)</option></select></label>
+              <label class="field"><span>Margine (mm)</span><input type="number" min="0" max="100" step="1" value={pdfMarginMm} onInput={(event) => setPdfMarginMm(event.currentTarget.value)} disabled={isWorking} /></label>
+            </div>
+            <div class="field-grid">
+              <label class="field"><span>Sfondo per trasparenza</span><input type="color" value={imageBackground} onInput={(event) => setImageBackground(event.currentTarget.value)} disabled={isWorking} /><small>PNG/WebP/HEIC con alpha vengono appiattiti su questo colore prima dell'incorporamento nel PDF.</small></label>
+              <label class="field"><span>Qualità ricodifica</span><input type="number" min="0.1" max="1" step="0.01" value={imageQuality} onInput={(event) => setImageQuality(event.currentTarget.value)} disabled={isWorking} /><small>I JPEG originali vengono incorporati senza ricodifica; questa qualità vale solo per gli altri formati.</small></label>
+            </div>
+            {imagePreviewUrl !== "" && (
+              <section class="field" data-images-pdf-preview aria-label="Anteprima adattamento immagine nel PDF">
+                <span>Anteprima pagina</span>
+                <div
+                  style={{
+                    width: "min(100%, 340px)",
+                    aspectRatio: pdfPageSize === "a4"
+                      ? pdfPageOrientation === "landscape" ? "297 / 210" : "210 / 297"
+                      : pdfPageSize === "letter"
+                        ? pdfPageOrientation === "landscape" ? "11 / 8.5" : "8.5 / 11"
+                        : "1 / 1",
+                    padding: `${Math.min(28, Math.max(0, Number(pdfMarginMm) || 0))}px`,
+                    border: "1px solid var(--border)",
+                    background: imageBackground,
+                    overflow: "hidden",
+                  }}
+                >
+                  <img src={imagePreviewUrl} alt="Prima immagine selezionata nel layout PDF" style={{ width: "100%", height: "100%", objectFit: pdfImageFit, display: "block" }} />
+                </div>
+                <small>{pdfCompositionMode === "contact-sheet" ? `La contact sheet finale userà ${contactSheetColumns || "3"} colonne; questa anteprima mostra sfondo, margine e fit della pagina.` : `Anteprima ${pdfImageFit}: ${pdfPageSize === "original" ? "pagina basata sull'immagine" : pdfPageSize.toUpperCase()}, margine ${pdfMarginMm || "0"} mm.`}</small>
+              </section>
+            )}
+          </>
+        )}
+        {optionMode === "pdf-to-images" && (
+          <>
+            <div class="field-grid">
+              <label class="field"><span>Pagine (facoltativo)</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 1, 3, 5 · vuoto = tutte" disabled={isWorking} /></label>
+              <label class="field"><span>Formato uscita</span><select value={pdfImageMime} onChange={(event) => setPdfImageMime(event.currentTarget.value as "image/jpeg" | "image/png" | "image/webp")} disabled={isWorking}><option value="image/png">PNG</option><option value="image/jpeg">JPG/JPEG</option><option value="image/webp">WebP</option></select></label>
+            </div>
+            <div class="field-grid">
+              <label class="field"><span>Scala render</span><input type="number" min="0.5" max="4" step="0.25" value={pdfImageScale} onInput={(event) => setPdfImageScale(event.currentTarget.value)} disabled={isWorking} /><small>1× ≈ 72 DPI, 2× ≈ 144 DPI, 4× ≈ 288 DPI.</small></label>
+              <label class="field"><span>Qualità JPG/WebP</span><input type="number" min="0.1" max="1" step="0.01" value={imageQuality} onInput={(event) => setImageQuality(event.currentTarget.value)} disabled={isWorking} /><small>Ignorata per PNG. Ogni pagina viene renderizzata realmente, non vengono estratti soltanto gli oggetti JPEG.</small></label>
+            </div>
+          </>
+        )}
+        {optionMode === "multi-search" && (
+          <>
+            <label class="field">
+              <span>Testo da cercare</span>
+              <input aria-label="Testo da cercare" value={query} onInput={(event) => setQuery(event.currentTarget.value)} maxLength={256} disabled={isWorking} />
+              <small>Ricerca letterale locale. La query è limitata a 256 caratteri.</small>
+            </label>
+            <div class="field-grid">
+              <label class="field"><span>Contesto per lato</span><input aria-label="Contesto per lato" type="number" min="0" max="1000" step="1" value={contextCharacters} onInput={(event) => setContextCharacters(event.currentTarget.value)} disabled={isWorking} /></label>
+              <label class="field"><span>Massimo risultati</span><input aria-label="Massimo risultati" type="number" min="1" max="500" step="1" value={maxResults} onInput={(event) => setMaxResults(event.currentTarget.value)} disabled={isWorking} /></label>
+            </div>
+            <label class="checkbox-field"><input aria-label="Maiuscole e minuscole distinte" type="checkbox" checked={caseSensitive} onChange={(event) => setCaseSensitive(event.currentTarget.checked)} disabled={isWorking} /> <span>Distingui maiuscole e minuscole</span></label>
+            <p class="file-note">Ogni file viene isolato: un PDF illeggibile, cifrato o privo di testo non interrompe gli altri. I file senza testo mostrano un handoff OCR esplicito solo come non disponibile finché il relativo strumento non esiste.</p>
+          </>
+        )}
+        {optionMode === "pdf-to-markdown" && (
+          <p class="file-note">L'export usa soltanto il testo page-scoped del motore PDF in ordine contenuti. I marker di pagina sono aggiunti come commenti Markdown; titoli, tabelle, colonne, immagini e stile non vengono ricostruiti.</p>
+        )}
         {error !== "" && <p class="error" role="alert">{error}</p>}
         <div class="actions"><button class="primary" type="submit" disabled={isWorking}>{isWorking ? it(CONTROL.working) : actionLabel}</button>{isWorking && <button type="button" onClick={() => controller.current?.abort()}>{it(CONTROL.cancel)}</button>}<button type="button" onClick={reset} disabled={isWorking}>{it(CONTROL.reset)}</button></div>
       </section>
-      <section class="result-panel gutter" data-state={gutterState} aria-live="polite" aria-atomic="true" aria-busy={isWorking ? "true" : "false"}>
-        <p class="gutter-label eyebrow">{it(CONTROL.localResult)}</p>
-        {result === null ? <p class="gutter-placeholder result-placeholder">{it(CONTROL.gutterIdle)}</p> : <>
-          {inspection?.capabilities !== undefined && (
-            <ul class="status-list">
-              {inspection.capabilities.map((capability) => (
-                <li key={capability.capability}>
-                  <StatusMark kind={capability.available ? "ok" : "missing"} label={statusMarkLabel(capability.available ? "ok" : "missing")} />
-                  {capability.available ? "Funzionalità disponibile" : "Funzionalità non disponibile"}
-                </li>
-              ))}
-            </ul>
-          )}
-          {urls.length > 0 && <div class="actions">{urls.map((item) => <a class="button primary" href={item.url} download={item.filename} key={item.url}>{item.filename}</a>)}</div>}
-          {typeof result.value === "object" && result.value !== null && typeof (result.value as { text?: unknown }).text === "string" && <textarea class="csv-preview" readOnly rows={8} value={(result.value as { text: string }).text} aria-label="Testo estratto" />}
-          <details open><summary>Risultato strutturato</summary><pre class="csv-preview">{displayValue(result.value)}</pre></details>
-        </>}
-      </section>
+      <ToolResultPanel
+        eyebrow={it(CONTROL.localResult)}
+        placeholder={error === "" ? it(CONTROL.gutterIdle) : error}
+        state={gutterState}
+        busy={isWorking}
+      >
+        {result === null ? undefined : (
+          <PdfResultV2
+            toolId={toolId}
+            result={result}
+            sourceFiles={files}
+            onReset={reset}
+            onRetry={execute}
+          />
+        )}
+      </ToolResultPanel>
     </form>
   );
 }

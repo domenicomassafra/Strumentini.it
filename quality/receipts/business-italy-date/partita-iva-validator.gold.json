@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/business-italy-date/partita-iva-validator.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "partita-iva-validator",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-208",
+  "fixtureFamilies": [
+    "italian-vat-number"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "independent-check-digit-arithmetic",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "italian-vat-number",
+      "path": "quality/fixtures/italian-vat-number/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime declaration",
+    "high-confidence oracle with only explicit bounded-scope gaps",
+    "manifest maintenance class matches oracle",
+    "fixture replay through public tool module",
+    "per-tool semantic browser assertion",
+    "keyboard/locality/lazy/mobile/a11y browser acceptance",
+    "focused semantic and refusal-boundary tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "a8ae021a7ccec4da84df91fc88e9ded876aaa0c325d3d6b3cfd03164dc586832",
+    "moduleSha256": "4b3c3f23f9406586bf895731905a733a46d4616a01ba7c6c3f6d8773ff7c72d0",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "b7706005b2ae9755e9f2fdcdebe0048be0dcb37a1c7c4f7f517d906cef6eb6be",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "382a3342649d3191ecb72a4cec5c126e8aff1973e87ef9fc33d8975db383440d",
+    "fixture:italian-vat-number:sha256": "e6c6d6e5d75a157a8186f80f8d382004ebd277282f2a9d36fee4d9b0b6cc5693"
+  }
+}

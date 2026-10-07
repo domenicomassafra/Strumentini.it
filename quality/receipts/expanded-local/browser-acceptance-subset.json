@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "folder-size-type-summary",
+    "safe-share-checklist",
+    "secret-token-pattern-scanner",
+    "zero-byte-orphan-finder",
+    "zip-contents-inspector",
+    "zip-creator"
+  ],
+  "routesChecked": 6,
+  "keyboard": "every submit action exercised with Enter",
+  "accessibility": "all interactive controls in each tool form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObservedFor": [
+    "folder-size-type-summary",
+    "safe-share-checklist",
+    "secret-token-pattern-scanner",
+    "zero-byte-orphan-finder",
+    "zip-contents-inspector",
+    "zip-creator"
+  ],
+  "scriptSha256": "159628dbe56e60a09d320fc482140c06826b5fc3161d4457f1ba5f8efc66d417",
+  "results": [
+    {
+      "toolId": "folder-size-type-summary",
+      "status": "PASS",
+      "assertion": "2 file[\\s\\S]*8 byte|byte_totali[\\s\\S]*8",
+      "outputSha256": "92cf025a6a3dce062561c3ab05d9d90fb31aea56ad37ee7e1f032a890260c3b1",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "safe-share-checklist",
+      "status": "PASS",
+      "assertion": "controlli superati|checklist",
+      "outputSha256": "caaa46f45340ca6a4474f63c55639a19dc8529e2f91c3c205df59378a77ee331",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "secret-token-pattern-scanner",
+      "status": "PASS",
+      "assertion": "findingCount|private-key|secret-assignment|risultati",
+      "outputSha256": "2fb7e3a6320dd25a8f154b3ebf278efd41e6907a7e56e8bbd0ecffec77c1509d",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "zero-byte-orphan-finder",
+      "status": "PASS",
+      "assertion": "empty\\.txt|elementi da controllare",
+      "outputSha256": "e73fcd1eb74a2db4b26eb4889d8edc76dacf4ff2863d9751b216ff1418d4adf1",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "zip-contents-inspector",
+      "status": "PASS",
+      "assertion": "voci ZIP ispezionate|voci",
+      "outputSha256": "7c3fec3396d96fa587a99c92308e42823ca2c4b899b0b4a77d3885c2737dae8e",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "zip-creator",
+      "status": "PASS",
+      "assertion": "local-files\\.zip|Archivio pronto",
+      "outputSha256": "536504662e683d3a1d94f20285b47c67b41d0fd97b6e03ba339101ba39672bdf",
+      "lazyScriptCount": 2,
+      "taskRequestCount": 3,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    }
+  ]
+}

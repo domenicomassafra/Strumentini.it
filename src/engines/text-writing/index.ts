@@ -1,5 +1,8 @@
 import { compareLists, dedupeLines, diffText, parseListText, type EqualityMode } from "../text-list";
 
+export * from "./expansion";
+export * from "./subtitles";
+
 export const TEXT_WRITING_ENGINE_VERSION = "text-writing-v1";
 const MAX_TEXT_INPUT = 2 * 1024 * 1024;
 const MAX_TEXT_ROWS = 100_000;

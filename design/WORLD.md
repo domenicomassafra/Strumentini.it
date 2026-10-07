@@ -1,4 +1,4 @@
-# WORLD — the visual world of StrumentiUtili.it
+# WORLD — the visual world of Strumentini.it
 
 Status: **canonical design authority.** Every worker reads this before writing code.
 It is kept in sync with `src/styles/global.css` by `tests/design-system.test.ts`: the

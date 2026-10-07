@@ -4,10 +4,14 @@ import { describe, expect, it } from "vitest";
 import { inspectImageHeader, signatureMatches } from "../src/engines/image/format";
 import {
   IMAGE_LIMITS,
+  computeResizeDimensions,
   computeResizePlan,
   estimateDecodedBytes,
+  lockedHeightForWidth,
+  lockedWidthForHeight,
   preflightAllocation,
   safeOutputStem,
+  scaleDimensionsByPercent,
 } from "../src/engines/image/policy";
 import { resizeImageLocal } from "../src/tools/image-resize/module";
 
@@ -30,6 +34,26 @@ describe("image resize policy", () => {
       sourceHeight: 1200,
       outputWidth: 800,
       outputHeight: 800,
+    });
+  });
+
+  it("keeps percent, aspect-lock and no-upscale dimensions deterministic", () => {
+    expect(scaleDimensionsByPercent(1600, 1200, 50)).toEqual({ width: 800, height: 600 });
+    expect(scaleDimensionsByPercent(1600, 1200, 125)).toEqual({ width: 2000, height: 1500 });
+    expect(lockedHeightForWidth(1000, 1600, 1200)).toBe(750);
+    expect(lockedWidthForHeight(900, 1600, 1200)).toBe(1200);
+
+    expect(computeResizeDimensions(1600, 1200, 2400, 2400, "contain", true)).toEqual({
+      outputWidth: 1600,
+      outputHeight: 1200,
+    });
+    expect(computeResizePlan(1600, 1200, 2400, 2400, "cover", true)).toEqual({
+      sourceX: 200,
+      sourceY: 0,
+      sourceWidth: 1200,
+      sourceHeight: 1200,
+      outputWidth: 1200,
+      outputHeight: 1200,
     });
   });
 

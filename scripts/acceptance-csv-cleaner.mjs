@@ -24,8 +24,22 @@ try {
   await page.getByRole("button", { name: "Pulisci CSV" }).click();
   await page.getByText("2 righe", { exact: true }).waitFor();
   await page.locator(".gutter-rows").getByText("2", { exact: true }).first().waitFor();
-  await page.getByText("BOM rimosso: sì", { exact: true }).waitFor();
-  await page.locator("pre.csv-preview").filter({ hasText: "a,b" }).first().waitFor();
+  await page.locator(".gutter-rows > div").filter({ hasText: "BOM rimosso" }).getByText("sì", { exact: true }).waitFor();
+  const preview = await page.locator(".table-output table").evaluate(table => ({
+    headers: [...table.querySelectorAll("thead th")].map(node => node.textContent?.trim() ?? ""),
+    rows: [...table.querySelectorAll("tbody tr")].map(row => [...row.querySelectorAll("td")].map(node => node.textContent?.trim() ?? "")),
+  }));
+  if (JSON.stringify(preview) !== JSON.stringify({ headers: ["a", "b"], rows: [["1", "2"]] })) throw new Error(`CSV bounded preview mismatch: ${JSON.stringify(preview)}`);
+  await page.getByLabel("File CSV").setInputFiles({ name: "ragged.csv", mimeType: "text/csv", buffer: Buffer.from("a,b\n1\n2,3\n") });
+  await page.getByRole("button", { name: "Pulisci CSV" }).click();
+  await page.getByText(/Riga 2 · Row 2 has 1 cells; expected 2\./u).waitFor();
+  const largeCsv = ["id,payload", ...Array.from({ length: 50_000 }, (_, index) => String(index) + "," + "x".repeat(64))].join("\n");
+  await page.getByLabel("File CSV").setInputFiles({ name: "large.csv", mimeType: "text/csv", buffer: Buffer.from(largeCsv) });
+  await page.getByRole("button", { name: "Pulisci CSV" }).click();
+  await page.getByText("Anteprima: 8 di 50000 righe tabella. Il file completo resta disponibile nelle azioni del risultato.", { exact: true }).waitFor({ timeout: 15_000 });
+  if (await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)) throw new Error("CSV large-result preview overflow");
+  await page.getByRole("button", { name: "Reimposta" }).click();
+  await page.getByText("Qui appariranno un'anteprima limitata e il riepilogo esatto delle modifiche.", { exact: true }).waitFor();
   if (requests.some((r) => !r.url.startsWith(origin) || r.method !== "GET" || `${r.url}\n${r.postData ?? ""}`.includes(" 1 , 2 "))) throw new Error("CSV task content escaped browser");
   if (await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)) throw new Error("CSV mobile overflow");
   await browser.close();

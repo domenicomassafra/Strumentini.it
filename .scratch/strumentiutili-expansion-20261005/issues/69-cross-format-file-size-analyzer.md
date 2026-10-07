@@ -6,7 +6,7 @@
 
 **Constraints:** Diagnostic only; estimated savings are clearly estimates, not promises; unsupported/opaque content is reported rather than guessed; no upload.
 
-**Blocked by:** 01, 47, 51, 67, 68.
+**Blocked by:** 228, 265, 266.
 
 **Status:** blocked
 
@@ -17,4 +17,3 @@
 - [ ] Recommendations deep-link/handoff to the relevant compressor with no re-upload when the handoff contract supports the file.
 
 **Verification:** Synthetic and real files with known byte composition, recommendation rules, no-network proof and no mutation of source bytes.
-

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/business-italy-date/italian-document-expiry.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "italian-document-expiry",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "D",
+  "oracleEntryId": "cand-240",
+  "fixtureFamilies": [
+    "italian-document-expiry"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "mininterno-cie-validity",
+    "polizia-passaporto-validity"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "italian-document-expiry",
+      "path": "quality/fixtures/italian-document-expiry/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime declaration",
+    "high-confidence oracle with only explicit bounded-scope gaps",
+    "manifest maintenance class matches oracle",
+    "fixture replay through public tool module",
+    "per-tool semantic browser assertion",
+    "keyboard/locality/lazy/mobile/a11y browser acceptance",
+    "focused semantic and refusal-boundary tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "1a96a0403bd0fbc71de01ddd2837876d86f010f9b9804f5b7e06c83967a6e9a2",
+    "moduleSha256": "e37311dae7af6a627a9b514585b1b2242aab941a5672b68fa60b96c36cc3029d",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "2db5cc75c7fe39ada49559b966c93687be4ae2fa2895c790f1dfc983d0d301a4",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "c90e4a1bbf5c1fee0d123961f45c09fc9e53963b0730cce3ba948301fd7ee6b1",
+    "fixture:italian-document-expiry:sha256": "841de504fe63eaecae7d0b2ee2cf624e2ecd85b1dd253173af68a5269c454a50"
+  }
+}

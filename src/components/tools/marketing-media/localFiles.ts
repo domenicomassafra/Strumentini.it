@@ -71,6 +71,40 @@ export async function qrPngBlob(rows: readonly string[], quietZone: number, targ
   return blob;
 }
 
+/** Draws a one-dimensional module string as black bars on white and exports PNG. */
+export async function barcodePngBlob(
+  bits: string,
+  quietZoneModules: number,
+  humanReadableText?: string,
+  targetModulePixels = 3,
+  barHeightModules = 60,
+): Promise<Blob> {
+  if (!/^[01]+$/u.test(bits)) throw new Error("BARCODE_PNG_INVALID_MODULES");
+  const modulePixels = Math.max(1, Math.min(8, Math.floor(targetModulePixels)));
+  const textPixels = humanReadableText === undefined ? 0 : 32;
+  const canvas = document.createElement("canvas");
+  canvas.width = (bits.length + quietZoneModules * 2) * modulePixels;
+  canvas.height = barHeightModules * modulePixels + textPixels;
+  const context = canvas.getContext("2d");
+  if (context === null) throw new Error("BARCODE_PNG_EXPORT_UNAVAILABLE");
+  context.fillStyle = QR_PAPER;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = QR_INK;
+  for (let index = 0; index < bits.length; index += 1) {
+    if (bits[index] !== "1") continue;
+    context.fillRect((index + quietZoneModules) * modulePixels, 0, modulePixels, barHeightModules * modulePixels);
+  }
+  if (humanReadableText !== undefined) {
+    context.font = "20px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText(humanReadableText, canvas.width / 2, barHeightModules * modulePixels + textPixels / 2);
+  }
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+  if (blob === null) throw new Error("BARCODE_PNG_EXPORT_UNAVAILABLE");
+  return blob;
+}
+
 /**
  * Reads a local image file into RGBA pixels. No platform decoder is involved
  * beyond "draw this image on a canvas", which every supported browser can do.

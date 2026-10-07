@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "scope": [
+    220,
+    318
+  ],
+  "harness": "production PDF modules + production PdfResultV2",
+  "cases": [
+    {
+      "name": "ticket220-text",
+      "status": "PASS",
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    },
+    {
+      "name": "ticket220-images",
+      "status": "PASS",
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    },
+    {
+      "name": "ticket318-inspect",
+      "status": "PASS",
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    },
+    {
+      "name": "ticket318-remove",
+      "status": "PASS",
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    }
+  ],
+  "globalReceiptRebound": false
+}

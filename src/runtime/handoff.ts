@@ -56,6 +56,15 @@ function compatibleDeclaration(
 }
 
 export function proposeHandoff(envelope: TableHandoffEnvelope, target: HandoffToolSummary): HandoffProposal {
+  if (envelope.descriptor.bytes > MAX_HANDOFF_BYTES) {
+    return { compatible: false, target, descriptor: envelope.descriptor, reason: `payload exceeds handoff limit (${MAX_HANDOFF_BYTES} byte transport ceiling)` };
+  }
+  if (envelope.descriptor.rowCount > MAX_HANDOFF_ROWS) {
+    return { compatible: false, target, descriptor: envelope.descriptor, reason: `payload exceeds ${MAX_HANDOFF_ROWS} row transport limit` };
+  }
+  if (envelope.descriptor.columnCount > MAX_HANDOFF_COLUMNS) {
+    return { compatible: false, target, descriptor: envelope.descriptor, reason: `payload exceeds ${MAX_HANDOFF_COLUMNS} column transport limit` };
+  }
   const accepts = target.handoff?.accepts ?? [];
   if (accepts.length === 0) {
     return { compatible: false, target, descriptor: envelope.descriptor, reason: "target declares no compatible handoff input" };
@@ -93,7 +102,7 @@ export function compatibleHandoffTargets(
     .filter((proposal): proposal is Extract<HandoffProposal, { compatible: true }> => proposal.compatible);
 }
 
-const MESSAGE_KIND = "strumentiutili-handoff-v1";
+const MESSAGE_KIND = "strumentini-handoff-v1";
 const MAX_HANDOFF_BYTES = 2 * 1024 * 1024;
 const MAX_HANDOFF_ROWS = 100_000;
 const MAX_HANDOFF_COLUMNS = 1_000;

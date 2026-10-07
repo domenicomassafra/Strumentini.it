@@ -141,6 +141,7 @@ export interface EvidenceRow {
   date: string;
   source: string;
   doi: string;
+  isbn: string;
   notes: string;
 }
 
@@ -1245,7 +1246,7 @@ export interface PdfPageCitation {
 }
 
 /**
- * The three styles are StrumentiUtili.it presets for page-level citations. No
+ * The three styles are Strumentini.it presets for page-level citations. No
  * conformance to a published style guide is claimed anywhere in this repository.
  */
 export function formatPdfPageCitation(input: PdfPageCitationInput): PdfPageCitation {
@@ -1502,12 +1503,13 @@ function recordEvidenceRow(record: UnknownRecord): EvidenceRow {
     date: field(record, "date", "year", "published", "DA"),
     source,
     doi: field(record, "doi", "DOI"),
+    isbn: field(record, "isbn", "ISBN", "SN"),
     notes: field(record, "notes", "note", "N1"),
   };
 }
 
 export function buildEvidenceTable(records: readonly UnknownRecord[]): EvidenceTable {
-  const headers = ["title", "url", "date", "source", "doi", "notes"] as const;
+  const headers = ["title", "url", "date", "source", "doi", "isbn", "notes"] as const;
   const rows = records.map(recordEvidenceRow);
   const emptyRowIndexes = rows.flatMap((row, index) => (Object.values(row).every((value) => value === "") ? [index + 1] : []));
   const csv = [headers.join(","), ...rows.map((row) => headers.map((header) => csvCell(row[header])).join(","))].join("\n");

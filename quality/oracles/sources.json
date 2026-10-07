@@ -50,6 +50,29 @@
       "checked_at": "2026-09-23"
     },
     {
+      "id": "css-syntax-3",
+      "source_class": "official-primary",
+      "authority": "W3C",
+      "url": "https://www.w3.org/TR/css-syntax-3/",
+      "locator": "CSS Syntax Module Level 3",
+      "supports": [
+        "CSS tokenization and parsing grammar",
+        "string/comment/custom-property syntax boundaries"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "css-tree-3.2.1",
+      "source_class": "independent-implementation",
+      "authority": "CSSTree project",
+      "url": "https://github.com/csstree/csstree",
+      "locator": "css-tree 3.2.1 installed dependency",
+      "supports": [
+        "independent CSS parser validation of generated declarations"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
       "id": "doi-handbook",
       "source_class": "official-primary",
       "authority": "DOI Foundation",
@@ -86,6 +109,19 @@
       ]
     },
     {
+      "id": "fortis-gulpease-2005",
+      "source_class": "official-primary",
+      "authority": "Revista de Llengua i Dret / Escola d'Administració Pública de Catalunya",
+      "url": "https://revistes.eapc.gencat.cat/index.php/rld/article/download/780/n43-fortis-it.pdf/0",
+      "locator": "Daniele Fortis, Il linguaggio amministrativo italiano, sezione 4.5 sulle formule di leggibilità",
+      "supports": [
+        "formula Gulpease in forma equivalente",
+        "indicazione di campioni di almeno 100 parole",
+        "esempio interpretativo Gulpease 72 per livelli di scolarizzazione"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
       "id": "google-webp",
       "source_class": "official-primary",
       "authority": "Google",
@@ -98,6 +134,19 @@
         "metadata"
       ],
       "checked_at": "2026-09-23"
+    },
+    {
+      "id": "gs1-general-specifications-26",
+      "source_class": "official-primary",
+      "authority": "GS1",
+      "url": "https://ref.gs1.org/standards/genspecs/26.0.0/",
+      "locator": "GS1 General Specifications 26.0.0 — EAN/UPC and Code 128 symbology/check-digit sections",
+      "supports": [
+        "GTIN/EAN standard check digit calculation",
+        "Code 128 Code Set B character values and symbol element widths",
+        "Code 128 Start B, symbol check and Stop structure"
+      ],
+      "checked_at": "2026-10-06"
     },
     {
       "id": "iana-media-types",
@@ -123,6 +172,30 @@
       "checked_at": "2026-09-23"
     },
     {
+      "id": "independent-check-digit-arithmetic",
+      "source_class": "independent-implementation",
+      "authority": "Strumentini.it test oracle",
+      "locator": "tests/partita-iva-validator.test.ts#independentCheckDigit",
+      "supports": [
+        "independent Italian Partita IVA check-digit recomputation",
+        "positional lookup-table cross-check separate from the production checksum implementation"
+      ],
+      "checked_at": "2026-10-06",
+      "notes": "The test oracle recomputes the eleventh digit with an explicit odd-position lookup table and does not import or call the production checksum helper. Synthetic vectors make no registry-existence claim."
+    },
+    {
+      "id": "independent-iban-mod97-arithmetic",
+      "source_class": "independent-implementation",
+      "authority": "Strumentini.it test oracle",
+      "locator": "tests/iban-validator.test.ts#independentMod97",
+      "supports": [
+        "independent IBAN MOD-97 recomputation with BigInt",
+        "cross-check separate from the production digit-stream remainder implementation"
+      ],
+      "checked_at": "2026-10-06",
+      "notes": "The test oracle expands A-Z to 10-35 and evaluates the rearranged IBAN as an independent BigInt modulo 97 calculation. It does not call the production remainder helper."
+    },
+    {
       "id": "isbn-manual",
       "source_class": "official-primary",
       "authority": "International ISBN Agency",
@@ -134,6 +207,19 @@
         "check digit"
       ],
       "checked_at": "2026-09-23"
+    },
+    {
+      "id": "iso-iec-15417-2007",
+      "source_class": "official-primary",
+      "authority": "ISO/IEC",
+      "url": "https://www.iso.org/standard/43896.html",
+      "locator": "ISO/IEC 15417:2007 — Code 128 bar code symbology specification",
+      "supports": [
+        "Code 128 symbology characteristics",
+        "data character encodation",
+        "dimensions and decoding algorithm scope"
+      ],
+      "checked_at": "2026-10-06"
     },
     {
       "id": "iso-pdf2",
@@ -158,6 +244,67 @@
       ],
       "checked_at": "2026-09-23",
       "notes": "Full normative text is paywalled. StrumentiUtili.it does not fabricate unavailable vectors; Gold requires an independent decoder cross-check."
+    },
+    {
+      "id": "italian-passphrase-v1",
+      "source_class": "project-policy",
+      "authority": "Strumentini.it",
+      "locator": "src/reference-data/italian-passphrase-v1.ts",
+      "supports": [
+        "versioned local Italian passphrase wordlist",
+        "wordlist publication date and provenance statement"
+      ]
+    },
+    {
+      "id": "lucisano-piemontese-1988",
+      "source_class": "official-primary",
+      "authority": "Sapienza Università di Roma — IRIS",
+      "url": "https://iris.uniroma1.it/handle/11573/450554",
+      "locator": "Pietro Lucisano, Maria Emanuela Piemontese, Gulpease: una formula per la predizione della leggibilità di testi in lingua italiana, Scuola e Città, 1988, pp. 110-124",
+      "supports": [
+        "pubblicazione originaria dell'indice Gulpease",
+        "attribuzione e riferimenti bibliografici della formula"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "machado-cvd-2009",
+      "source_class": "official-primary",
+      "authority": "Gustavo M. Machado, Manuel M. Oliveira, Leandro A. F. Fernandes",
+      "url": "https://profs.ic.uff.br/~laffernandes/content/publications/journal/2009_tvcg_15%286%29/machado_oliveira_fernandes-tvcg-15%286%29-2009-corrected.pdf",
+      "locator": "A Physiologically-Based Model for Simulation of Color Vision Deficiency, IEEE TVCG 15(6), 2009, DOI 10.1109/TVCG.2009.113; complete-dichromacy RGB matrices",
+      "supports": [
+        "physiologically based color-vision-deficiency simulation model",
+        "protanopia deuteranopia and tritanopia transform matrices",
+        "complete dichromacy severity endpoint"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "mininterno-cie-validity",
+      "source_class": "official-primary",
+      "authority": "Ministero dell'Interno — Carta di Identità Elettronica",
+      "url": "https://www.cartaidentita.interno.gov.it/la-carta/",
+      "locator": "Cos'è la carta — Validità e costo; checked 2026-10-06",
+      "supports": [
+        "CIE validity by age at issue",
+        "first-birthday expiry rule",
+        "temporary 12-month CIE when fingerprint capture is temporarily impossible"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "netflix-italian-ttsg",
+      "source_class": "official-primary",
+      "authority": "Netflix Partner Help Center",
+      "url": "https://partnerhelp.netflixstudios.com/hc/en-us/articles/215349898-Italian-Timed-Text-Style-Guide",
+      "locator": "Italian Timed Text Style Guide — I.15 Reading Speed Limits",
+      "supports": [
+        "Italian adult subtitle reference limit up to 17 characters per second",
+        "Italian children's subtitle reference limit up to 13 characters per second",
+        "reading-speed guidance is context-specific to Netflix timed-text workflows"
+      ],
+      "checked_at": "2026-10-06"
     },
     {
       "id": "nist-fips180-4",
@@ -221,6 +368,17 @@
       "checked_at": "2026-09-23"
     },
     {
+      "id": "polizia-passaporto-validity",
+      "source_class": "official-primary",
+      "authority": "Polizia di Stato — Questura di Matera",
+      "url": "https://questure.poliziadistato.it/it/Matera/articolo/5730dd56519d7672957443",
+      "locator": "Rilascio Passaporti; checked 2026-10-06",
+      "supports": [
+        "ordinary Italian passport validity of 3 years under age 3, 5 years from age 3 to 17, and 10 years for adults"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
       "id": "posix-crontab",
       "source_class": "official-primary",
       "authority": "The Open Group",
@@ -248,6 +406,31 @@
       ]
     },
     {
+      "id": "r-colorspace-cvd-machado",
+      "source_class": "independent-implementation",
+      "authority": "R colorspace package",
+      "url": "https://rdrr.io/cran/colorspace/src/R/cvd.R",
+      "locator": "colorspace cvd.R — Machado et al. 2009 protan/deutan/tritan 3×3 RGB matrices, severity level 10",
+      "supports": [
+        "independent transcription of the Machado full-severity matrices",
+        "matrix-based RGB color-vision-deficiency simulation cross-check"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "r-colorspace-simulate-cvd-linear",
+      "source_class": "independent-implementation",
+      "authority": "R colorspace package",
+      "url": "https://rdrr.io/cran/colorspace/src/R/simulate_cvd.R",
+      "locator": "colorspace simulate_cvd.R — linear=TRUE pipeline and Machado 2009 reference",
+      "supports": [
+        "linearize sRGB before applying the Machado matrix",
+        "clamp transformed linear RGB before mapping back to gamma-corrected sRGB",
+        "preserve input alpha while transforming RGB channels"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
       "id": "rfc2104",
       "source_class": "official-primary",
       "authority": "IETF / RFC Editor",
@@ -257,6 +440,20 @@
         "HMAC construction"
       ],
       "checked_at": "2026-09-23"
+    },
+    {
+      "id": "rfc2986",
+      "source_class": "official-primary",
+      "authority": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc2986.html",
+      "locator": "RFC 2986 — PKCS #10 Certification Request Syntax Specification Version 1.7",
+      "supports": [
+        "PKCS#10 certification request structure",
+        "subject name",
+        "subject public key info",
+        "attributes and signature algorithm fields"
+      ],
+      "checked_at": "2026-10-06"
     },
     {
       "id": "rfc3339",
@@ -297,6 +494,21 @@
       "checked_at": "2026-09-23"
     },
     {
+      "id": "rfc5280",
+      "source_class": "official-primary",
+      "authority": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc5280.html",
+      "locator": "RFC 5280 — Internet X.509 Public Key Infrastructure Certificate and CRL Profile",
+      "supports": [
+        "X.509 certificate structure",
+        "subject and issuer names",
+        "validity",
+        "subjectAltName extension",
+        "subject public key info"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
       "id": "rfc5322",
       "source_class": "official-primary",
       "authority": "IETF / RFC Editor",
@@ -319,6 +531,19 @@
         "DATE-TIME"
       ],
       "checked_at": "2026-09-23"
+    },
+    {
+      "id": "rfc6350",
+      "source_class": "official-primary",
+      "authority": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc6350.html",
+      "locator": "RFC 6350 — vCard Format Specification",
+      "supports": [
+        "vCard 4.0 content-line folding and unfolding",
+        "vCard property/value and parameter structure",
+        "multi-valued contact properties"
+      ],
+      "checked_at": "2026-10-06"
     },
     {
       "id": "rfc7519",
@@ -406,6 +631,22 @@
       "notes": "The published lengths are guidance for editors, not a normative limit; the tool therefore states them as a reference and lets a reader override both numbers."
     },
     {
+      "id": "sitemaps-protocol",
+      "source_class": "official-primary",
+      "authority": "Sitemaps.org",
+      "url": "https://www.sitemaps.org/protocol.html",
+      "locator": "Sitemap protocol — XML tag definitions, entity escaping and sitemap limits",
+      "supports": [
+        "urlset namespace and required loc element",
+        "optional lastmod changefreq and priority elements",
+        "single-host constraint",
+        "50,000 URL and 50 MB uncompressed limits",
+        "loc under 2,048 characters",
+        "XML entity escaping"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
       "id": "strumentiutili-file-privacy-fixtures",
       "source_class": "project-policy",
       "authority": "StrumentiUtili.it",
@@ -460,6 +701,21 @@
         "independent oracle rule",
         "maintenance classes"
       ]
+    },
+    {
+      "id": "swift-iban-registry-r103",
+      "source_class": "official-primary",
+      "authority": "Swift, ISO 13616 Registration Authority",
+      "url": "https://www.swift.com/swift-resource/9606/download?language=en",
+      "locator": "IBAN Registry Release 103 – Sep 2026; supported rows DE, ES, FR, GB, IT and NL",
+      "supports": [
+        "ISO 13616 national IBAN lengths for the vendored supported-country subset",
+        "BBAN structural patterns for DE, ES, FR, GB, IT and NL",
+        "Italian 1!a5!n5!n12!c BBAN structure and CIN/ABI/CAB/account positions",
+        "official electronic-format examples used as known-answer fixtures"
+      ],
+      "checked_at": "2026-10-06",
+      "notes": "Release 103 is dated 17 September 2026. This tool intentionally supports only the six registry rows vendored in its local format table and fails closed for other country codes."
     },
     {
       "id": "the-open-graph-protocol",
@@ -554,6 +810,46 @@
       "checked_at": "2026-09-23"
     },
     {
+      "id": "w3c-uievents",
+      "source_class": "official-primary",
+      "authority": "W3C",
+      "url": "https://www.w3.org/TR/uievents/",
+      "locator": "UI Events",
+      "supports": [
+        "KeyboardEvent key/code/location",
+        "modifier state",
+        "repeat and composition state",
+        "default-action model"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "w3c-media-capture-streams",
+      "source_class": "official-primary",
+      "authority": "W3C WebRTC Working Group",
+      "url": "https://www.w3.org/TR/mediacapture-streams/",
+      "locator": "Media Capture and Streams",
+      "supports": [
+        "MediaDevices.getUserMedia explicit capture request",
+        "MediaStream and MediaStreamTrack lifecycle",
+        "audio track ended muted enabled and readyState facts"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "w3c-mediastream-recording",
+      "source_class": "official-primary",
+      "authority": "W3C WebRTC Working Group",
+      "url": "https://www.w3.org/TR/mediastream-recording/",
+      "locator": "MediaStream Recording",
+      "supports": [
+        "MediaRecorder states start stop pause and resume",
+        "MediaRecorder.isTypeSupported and recorder mimeType",
+        "dataavailable Blob output"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
       "id": "w3c-wcag22",
       "source_class": "official-primary",
       "authority": "W3C",
@@ -564,6 +860,45 @@
         "accessibility"
       ],
       "checked_at": "2026-09-23"
+    },
+    {
+      "id": "w3c-web-audio-1-1",
+      "source_class": "official-primary",
+      "authority": "W3C Audio Working Group",
+      "url": "https://www.w3.org/TR/webaudio-1.1/",
+      "locator": "Web Audio API 1.1 Working Draft, 22 September 2026",
+      "supports": [
+        "AudioContext and AudioNode processing/synthesis model",
+        "AudioBuffer and AudioBufferSourceNode browser audio primitives",
+        "browser-owned audio rendering lifecycle"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "w3c-webcrypto",
+      "source_class": "official-primary",
+      "authority": "W3C",
+      "url": "https://www.w3.org/TR/WebCryptoAPI/",
+      "locator": "Web Cryptography Level 2 — Crypto.getRandomValues and SubtleCrypto.digest",
+      "supports": [
+        "cryptographically strong browser random values",
+        "SHA-256 browser digest operation"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "w3c-webvtt",
+      "source_class": "official-primary",
+      "authority": "W3C Timed Text Working Group",
+      "url": "https://www.w3.org/TR/webvtt/",
+      "locator": "WebVTT: The Web Video Text Tracks Format — Candidate Recommendation Draft, 20 May 2026",
+      "supports": [
+        "WEBVTT file header",
+        "cue identifiers and cue timing model",
+        "WebVTT timestamp syntax",
+        "time-aligned text track semantics"
+      ],
+      "checked_at": "2026-10-06"
     },
     {
       "id": "whatwg-encoding",
@@ -606,6 +941,19 @@
       "checked_at": "2026-09-23"
     },
     {
+      "id": "wicg-web-speech-api",
+      "source_class": "official-primary",
+      "authority": "W3C/WICG Speech API Community",
+      "url": "https://wicg.github.io/speech-api/",
+      "locator": "Web Speech API Draft Community Group Report, 18 September 2026 — SpeechSynthesis interface",
+      "supports": [
+        "SpeechSynthesis getVoices voiceschanged speak cancel",
+        "SpeechSynthesisVoice lang localService semantics",
+        "browser or OS controlled local/remote synthesis boundary"
+      ],
+      "checked_at": "2026-10-06"
+    },
+    {
       "id": "wpt-url",
       "source_class": "independent-implementation",
       "authority": "web-platform-tests",
@@ -641,6 +989,46 @@
         "anchors"
       ],
       "checked_at": "2026-09-23"
+    },
+    {
+      "id": "zotero-translators",
+      "source_class": "independent-implementation",
+      "authority": "Zotero",
+      "url": "https://github.com/zotero/translators",
+      "locator": "commit 3d1c78530f42892328e08741b7cac8474ff687b8; RIS.js and BibTeX.js translator fixtures",
+      "supports": [
+        "independent RIS import/export field mapping",
+        "independent BibTeX import/export type mapping",
+        "translator expected-result test cases"
+      ],
+      "checked_at": "2026-10-05"
+    },
+    {
+      "id": "fatturapa-v1-4-official",
+      "source_class": "official-primary",
+      "authority": "FatturaPA / Agenzia delle Entrate",
+      "url": "https://www.fatturapa.gov.it/export/documenti/fatturapa/v1.4/Specifiche_tecniche_del_formato_FatturaPA_V1.4.pdf",
+      "locator": "Specifiche tecniche formato FatturaPA v1.4 and the pinned ordinary 1.2.3 / simplified 1.0.2 XSD artifacts",
+      "supports": ["FPA12 and FPR12 namespace/version identity", "FSM10 namespace/version identity", "FatturaPA technical specification version 1.4"],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "inps-circulars-2026-official",
+      "source_class": "official-primary",
+      "authority": "INPS",
+      "url": "https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2026/02/Circolare_15153/Allegati/16573_Circolare-numero-8-del-03-02-2026.pdf",
+      "locator": "Circolare 8/2026 Gestione Separata and Circolare 14/2026 Artigiani e Commercianti, exact vendored PDF bytes",
+      "supports": ["2026 Gestione Separata professional rates/minimum/maximum", "2026 artigiani/commercianti minimum bands rates and maxima"],
+      "checked_at": "2026-10-06"
+    },
+    {
+      "id": "normattiva-holidays-2026-official",
+      "source_class": "official-primary",
+      "authority": "Normattiva",
+      "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-10-08;151",
+      "locator": "Pinned legal set L.260/1949 art.2, L.54/1977, DPR 792/1985, L.336/2000 and L.151/2025",
+      "supports": ["2026 Italian national non-working holidays", "Easter Monday", "4 October national holiday from 2026", "local/historical exclusions"],
+      "checked_at": "2026-10-06"
     }
   ]
 }

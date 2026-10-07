@@ -34,7 +34,7 @@ async function run() {
   const heapBefore = heapUsed();
   const zipStart = now();
   const fixture = {
-    "README.txt": strToU8("StrumentiUtili.it synthetic ZIP fixture\n"),
+    "README.txt": strToU8("Strumentini.it synthetic ZIP fixture\n"),
     "data/items.csv": strToU8("id,name\n1,alpha\n2,beta\n"),
     "nested/note.json": strToU8('{"synthetic":true,"lane":4}')
   };
@@ -42,10 +42,10 @@ async function run() {
   const unzipped = unzipSync(zipBytes);
   const zipMs = now() - zipStart;
   assert(Object.keys(unzipped).length === 3, "ZIP inspection returns all three entries");
-  assert(new TextDecoder().decode(unzipped["README.txt"]).startsWith("StrumentiUtili.it"), "ZIP round-trip preserves content");
+  assert(new TextDecoder().decode(unzipped["README.txt"]).startsWith("Strumentini.it"), "ZIP round-trip preserves content");
 
   const qrStart = now();
-  const payload = "strumentiutili://synthetic/lane-04?fixture=qr";
+  const payload = "strumentini://synthetic/lane-04?fixture=qr";
   const canvas = document.querySelector("#qr");
   await QRCode.toCanvas(canvas, payload, { errorCorrectionLevel: "M", width: 256, margin: 2 });
   const imageData = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height);

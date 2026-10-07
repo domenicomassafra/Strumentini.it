@@ -3,8 +3,8 @@ import { toolRuntime } from "../../runtime/tool-runtime";
 import type { TextDiffOutput } from "../../tools/text-diff/types";
 import {
   InlineError,
-  StatusMark,
   ToolActions,
+  ToolOperation,
   ToolResetButton,
   ToolResultPanel,
   ToolSubmitButton,
@@ -12,13 +12,7 @@ import {
   useToolOperation,
 } from "./shared";
 import { CONTROL, it } from "./shared/controlLabels";
-import type { StatusMarkKind } from "./shared/StatusMark";
-
-const OPERATION_LABELS = {
-  equal: { mark: "missing" as StatusMarkKind, label: "Invariata" },
-  remove: { mark: "error" as StatusMarkKind, label: "Rimossa" },
-  add: { mark: "ok" as StatusMarkKind, label: "Aggiunta" },
-} as const;
+import { TextFamilyResultV2 } from "./text-writing/TextFamilyResultV2";
 
 export function TextDiffTool() {
   const [before, setBefore] = useState("");
@@ -46,7 +40,7 @@ export function TextDiffTool() {
   const gutterState = gutterStateFor(operation.status);
 
   return (
-    <div class="tool-operation">
+    <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit}>
         <div class="field-grid">
           <label class="field">
@@ -66,27 +60,9 @@ export function TextDiffTool() {
       </form>
       <ToolResultPanel eyebrow="Differenze riga per riga" placeholder={it(CONTROL.gutterIdle)} className="diff-result" atomic={false} busy={operation.isRunning} state={gutterState}>
         {operation.result !== null && (
-          <>
-            <dl class="gutter-rows">
-              <div><dt>Aggiunte</dt><dd>{operation.result.additions}</dd></div>
-              <div><dt>Rimosse</dt><dd>{operation.result.removals}</dd></div>
-              <div><dt>Invariate</dt><dd>{operation.result.unchanged}</dd></div>
-            </dl>
-            <ol class="diff-list">
-              {operation.result.operations.map((operationItem, index) => {
-                const presentation = OPERATION_LABELS[operationItem.kind];
-                return (
-                  <li class={`diff-row diff-${operationItem.kind}`} data-kind={operationItem.kind} key={`${index}-${operationItem.text}`}>
-                    <span class="diff-symbol"><StatusMark kind={presentation.mark} /></span>
-                    <strong>{presentation.label}</strong>
-                    <code>{operationItem.text.replace(/\n$/u, "") || "(riga vuota)"}</code>
-                  </li>
-                );
-              })}
-            </ol>
-          </>
+          <TextFamilyResultV2 tool="text-diff" value={operation.result} onReset={reset} />
         )}
       </ToolResultPanel>
-    </div>
+    </ToolOperation>
   );
 }

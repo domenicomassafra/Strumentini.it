@@ -1,0 +1,27 @@
+{
+  "toolId": "qr-reader",
+  "category": "marketing",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Legge il contenuto di un QR da matrice, SVG o immagine quando il browser supporta la decodifica. Public jobs: Usa Leggi QR code.",
+  "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/marketing-media/qr-reader.gold.json, executable functional tests in tests/qr-local-engine.test.ts, and real-route browser acceptance in quality/receipts/marketing-media/browser-acceptance.json. No scoped functional gap is open for this narrow public job.",
+  "rationale": "No correctness or required-option gap was found in the currently declared public job. No scoped functional gap is open for this narrow public job.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/marketing-media/qr-reader.gold.json",
+      "claim": "Tool-specific Gold receipt binds qr-reader to its current fixtures/oracle and functional acceptance."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/qr-local-engine.test.ts",
+      "claim": "Executable tests cover the engine/module behavior used by qr-reader, including relevant edge or invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/marketing-media/browser-acceptance.json",
+      "claim": "Committed browser acceptance names qr-reader and exercises the real route with locality/mobile/accessibility or equivalent route-functional checks."
+    }
+  ],
+  "childTickets": []
+}

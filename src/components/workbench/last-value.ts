@@ -16,9 +16,9 @@
  * - It never leaves the device. `localStorage` is the only sink.
  */
 
-export const LAST_VALUE_EVENT = "strumentiutili:last-value";
-export const LAST_VALUE_STORAGE_KEY = "strumentiutili:last-values:v1";
-export const LAST_VALUE_WINDOW_EVENT = "strumentiutili:last-values-changed";
+export const LAST_VALUE_EVENT = "strumentini:last-value";
+export const LAST_VALUE_STORAGE_KEY = "strumentini:last-values:v1";
+export const LAST_VALUE_WINDOW_EVENT = "strumentini:last-values-changed";
 
 /** Bounded so the gutter stays a reading column rather than an archive. */
 const MAX_RECORDS = 40;

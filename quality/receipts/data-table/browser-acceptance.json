@@ -53,123 +53,133 @@
     "duplicate-row-profiler",
     "quick-chart"
   ],
+  "resultV2EdgeCases": {
+    "wideLong390": "PASS",
+    "previewRowsShown": 30,
+    "previewRowsTotal": 40,
+    "fullDownloadPastPreview": "PASS",
+    "emptyTable": "PASS",
+    "malformedRaggedWarning": "PASS",
+    "sharedTableWorkbenchHandoff": "PASS",
+    "taskContentLeaks": 0
+  },
   "results": [
     {
       "toolId": "csv-viewer",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-delimiter-detector",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-encoding-fixer",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-column-selector",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-filter",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-sort",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-group-count",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-join",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-pivot-lite",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-to-json",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "json-to-csv",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "tsv-to-csv",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "table-transpose",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "missing-value-profiler",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "column-type-profiler",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "duplicate-row-profiler",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "quick-chart",
-      "lazyScriptCount": 2,
-      "taskRequestCount": 2,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     }

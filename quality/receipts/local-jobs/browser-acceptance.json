@@ -75,13 +75,13 @@
       "sample": "Inserisci un anno valido: questo strumento copre dal 1900 al 2100."
     }
   },
-  "scriptSha256": "989e5e76605c99951548b64573a96f184100ca54f6dde2d055f6f0a658e70af7",
+  "scriptSha256": "8a1820aa3ad8cc284999d6235b81d15fae4b665284bf157980d187dcbb0fcdaa",
   "results": [
     {
       "toolId": "archive-checksum-manifest",
       "status": "PASS",
       "assertion": "digest of the fixture archive must appear in the rendered result",
-      "outputSha256": "822e0b8801f3575990642790350cf7011b1c5bdbb2427b032c10938e9755722c",
+      "outputSha256": "10ac3f77d86d41febcf0a4734ae1d59b865df62c8e7bc05cbce050ea13e1f483",
       "lazyScriptCount": 2,
       "taskRequestCount": 3,
       "externalTaskRequests": 0,
@@ -90,13 +90,15 @@
       "runtimeErrors": 0,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
-      "optionalAccountProbeFailures": 1
+      "optionalAccountProbeFailures": 1,
+      "resultV2Class": "text-code",
+      "fileWorkspace": true
     },
     {
       "toolId": "batch-rename-preview",
       "status": "PASS",
       "assertion": "1-Foto IMG_1\\.jpg[\\s\\S]*2-Foto IMG_1-2\\.jpg|collisionCount|collision",
-      "outputSha256": "66bbb1d650bfb9672dead4bcc66c5b480c0ec863963be57d5c1edec1f3da99aa",
+      "outputSha256": "23d650be59e537c1f7c88884e4270d870a5c44930910cea0159912b06bcd1898",
       "lazyScriptCount": 2,
       "taskRequestCount": 3,
       "externalTaskRequests": 0,
@@ -105,13 +107,15 @@
       "runtimeErrors": 0,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
-      "optionalAccountProbeFailures": 1
+      "optionalAccountProbeFailures": 1,
+      "resultV2Class": "batch",
+      "fileWorkspace": true
     },
     {
       "toolId": "folder-compare",
       "status": "PASS",
       "assertion": "modificati|changedCount|addedCount|aggiunti",
-      "outputSha256": "2b3335261b7adea571fa1e35dd4d99079081c876f4ed152689010470629d96b1",
+      "outputSha256": "a4078c22c54ecb51511fd443f2eaf0850cafe36750b8ff82f2b0d8e535049492",
       "lazyScriptCount": 2,
       "taskRequestCount": 3,
       "externalTaskRequests": 0,
@@ -120,13 +124,15 @@
       "runtimeErrors": 0,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
-      "optionalAccountProbeFailures": 1
+      "optionalAccountProbeFailures": 1,
+      "resultV2Class": "batch",
+      "fileWorkspace": true
     },
     {
       "toolId": "metadata-risk-inspector",
       "status": "PASS",
       "assertion": "GPSInfoIFD|Model|metadataFields|contenitori|rischi",
-      "outputSha256": "842af6f06e305f29091ba5f5533f5c89d0a62704ead30d10a615f0c01b8908d9",
+      "outputSha256": "bf672e4c8069d5861adf717d1bf23dc36b7c8f7950a61a172bdb2fc92015fd73",
       "lazyScriptCount": 2,
       "taskRequestCount": 3,
       "externalTaskRequests": 0,
@@ -135,82 +141,94 @@
       "runtimeErrors": 0,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
-      "optionalAccountProbeFailures": 1
+      "optionalAccountProbeFailures": 1,
+      "resultV2Class": "validator",
+      "fileWorkspace": true
     },
     {
       "toolId": "language-aware-text-statistics",
       "status": "PASS",
       "assertion": "Latin|alfabete_dominante|dominantScript|alfabeti",
-      "outputSha256": "dd95909a3dab81550cf29c329ed20095949f523dc91fd4878fe30bf80214a783",
+      "outputSha256": "823f1c7a4d4bbde0e58448f35b2a891fe20798386ef140c2d56ddb36f61041f2",
       "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "taskRequestCount": 5,
       "externalTaskRequests": 0,
       "nonGetTaskRequests": 0,
       "taskContentLeaks": 0,
       "runtimeErrors": 0,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
-      "optionalAccountProbeFailures": 1
+      "optionalAccountProbeFailures": 1,
+      "resultV2Class": null,
+      "fileWorkspace": false
     },
     {
       "toolId": "lorem-sample-data-generator",
       "status": "PASS",
       "assertion": "the deterministic seed-7 word vector must appear verbatim",
-      "outputSha256": "c0d8035725369acb34df18671b763948249d4e978fae66ecc749083a07b182e5",
+      "outputSha256": "85b435c34f1b89542025e7fd782a15f90cca9cc903b39a567e79e0d6be8a3460",
       "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "taskRequestCount": 5,
       "externalTaskRequests": 0,
       "nonGetTaskRequests": 0,
       "taskContentLeaks": 0,
       "runtimeErrors": 0,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
-      "optionalAccountProbeFailures": 1
+      "optionalAccountProbeFailures": 1,
+      "resultV2Class": null,
+      "fileWorkspace": false
     },
     {
       "toolId": "reading-time-estimator",
       "status": "PASS",
       "assertion": "250[\\s\\S]*(?:1 minuto|minuti)|\\b250\\b[\\s\\S]*60",
-      "outputSha256": "07417a42753b6372655acc6f3ef6bd33b5530ad8f69c6cba8d5a268f74e235a5",
+      "outputSha256": "2f446819505f6435bf4e66dd80dc06a94b51406310ed454093590ff4a1950cc3",
       "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "taskRequestCount": 5,
       "externalTaskRequests": 0,
       "nonGetTaskRequests": 0,
       "taskContentLeaks": 0,
       "runtimeErrors": 0,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
-      "optionalAccountProbeFailures": 1
+      "optionalAccountProbeFailures": 1,
+      "resultV2Class": null,
+      "fileWorkspace": false
     },
     {
       "toolId": "smart-quote-normalizer",
       "status": "PASS",
       "assertion": "“l’[aà]cqua”|convertedCount|virgolette_convertite",
-      "outputSha256": "22e4fe3808525cd604af4f222a8c8929bc191491f8ba50c476dc5e2420a235ca",
+      "outputSha256": "99282f2ea2d5a4a99481f25499c5184c4f69fda92b2d7aa3af9b915fac96a1ca",
       "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "taskRequestCount": 5,
       "externalTaskRequests": 0,
       "nonGetTaskRequests": 0,
       "taskContentLeaks": 0,
       "runtimeErrors": 0,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
-      "optionalAccountProbeFailures": 1
+      "optionalAccountProbeFailures": 1,
+      "resultV2Class": null,
+      "fileWorkspace": false
     },
     {
       "toolId": "public-holiday-lookup",
       "status": "PASS",
       "assertion": "the 2021 UK weekend Christmas substitutes must both appear",
-      "outputSha256": "ed110ff5719ee88ea45d23246485ba70d6c8fe4fbf20495c54b9b0d981966227",
+      "outputSha256": "5a83a6514c00618a931d2fded55a11dc5b461b9f66357ad0bfec50edb65066f3",
       "lazyScriptCount": 3,
-      "taskRequestCount": 4,
+      "taskRequestCount": 3,
       "externalTaskRequests": 0,
       "nonGetTaskRequests": 0,
       "taskContentLeaks": 0,
       "runtimeErrors": 0,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
-      "optionalAccountProbeFailures": 1
+      "optionalAccountProbeFailures": 1,
+      "resultV2Class": null,
+      "fileWorkspace": false
     }
   ]
 }

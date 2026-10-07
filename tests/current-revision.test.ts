@@ -10,7 +10,7 @@ const execFileAsync = promisify(execFile);
 
 describe("evidence source fingerprint", () => {
   it("represents a tracked working-tree deletion instead of crashing", async () => {
-    const root = await mkdtemp(join(tmpdir(), "strumentiutili-fingerprint-"));
+    const root = await mkdtemp(join(tmpdir(), "strumentini-fingerprint-"));
     try {
       await execFileAsync("git", ["init"], { cwd: root });
       await writeFile(join(root, "package.json"), '{"name":"fixture"}\n', "utf8");

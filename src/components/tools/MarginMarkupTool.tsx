@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import { profileValuesForTool } from "../../profile/work-profile";
+import { resolveResultActions } from "../../runtime/result-actions";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import { marginMarkupManifest } from "../../tools/margin-markup/manifest";
 import type { MarginMarkupOutput } from "../../tools/margin-markup/types";
@@ -9,6 +10,13 @@ import {
   ProfileOverrideHint,
   ProfileResetButton,
   ProvenanceBadge,
+  ResultActions,
+  ResultAssumptions,
+  ResultBreakdown,
+  ResultExplanation,
+  ResultInterpretation,
+  ResultPrimaryAnswer,
+  ResultProvenance,
   ToolActions,
   ToolOperation,
   ToolResetButton,
@@ -25,6 +33,7 @@ export function MarginMarkupTool() {
   const [price, setPrice] = useState("");
   const [cost, setCost] = useState("");
   const [currencyOverride, setCurrencyOverride] = useState<string | undefined>();
+  const [actionStatus, setActionStatus] = useState("");
   const currency = currencyOverride ?? profile.currency;
   const operation = useToolOperation<MarginMarkupOutput>(
     (signal: AbortSignal) => toolRuntime.run(
@@ -48,6 +57,7 @@ export function MarginMarkupTool() {
     setPrice("");
     setCost("");
     setCurrencyOverride(undefined);
+    setActionStatus("");
     operation.reset();
   }
 
@@ -55,6 +65,22 @@ export function MarginMarkupTool() {
   const profitHeadline = result === null
     ? ""
     : `${result.currency} ${result.profit} di profitto`;
+  const declaration = marginMarkupManifest.result;
+  const resultActions = result === null ? [] : resolveResultActions({
+    declaration,
+    primary: "copy",
+    hasCopyPayload: profitHeadline !== "",
+    resetReady: true,
+  });
+
+  async function copyResult() {
+    if (navigator.clipboard === undefined) {
+      setActionStatus("Gli appunti non sono disponibili; seleziona il risultato e copialo manualmente.");
+      return;
+    }
+    await navigator.clipboard.writeText(profitHeadline);
+    setActionStatus("Risultato copiato.");
+  }
   return (
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit} noValidate>
@@ -75,19 +101,27 @@ export function MarginMarkupTool() {
         </ToolActions>
       </form>
       <ToolResultPanel eyebrow="Redditività" placeholder={it(CONTROL.gutterIdle)} busy={operation.isRunning} state={gutterStateFor(operation.status)}>
-        {/* Outside the result branch on purpose: a recompute clears the result
-            for a tick, and the headline has to keep its state through that. */}
-        <PreviousValue value={profitHeadline} retain={operation.isRunning} />
-        {operation.result !== null && (
-          <>
-            <dl class="assumptions">
-              <div><dt>Margine</dt><dd>{operation.result.marginPercent === null ? "Non definito" : `${operation.result.marginPercent}%`} · profitto ÷ prezzo × 100</dd></div>
-              <div><dt>Ricarico</dt><dd>{operation.result.markupPercent === null ? "Non definito" : `${operation.result.markupPercent}%`} · profitto ÷ costo × 100</dd></div>
-              {operation.result.denominatorErrors.map((issue) => <div key={issue.code}><dt>Denominatore non valido</dt><dd>Il calcolo non è definito con il valore inserito.</dd></div>)}
-              <div><dt>Arrotondamento</dt><dd>Solo sui valori finali · metà verso l'alto · importi a 2 decimali · percentuali a 2 decimali</dd></div>
-              <div><dt>Origine della valuta</dt><dd><ProvenanceBadge provenance={operation.result.currencyProvenance} /></dd></div>
-            </dl>
-          </>
+        {(result !== null || operation.isRunning) && (
+          <div data-result-class="calculator">
+            <ResultExplanation
+              primary={<div data-result-slot="primary"><ResultPrimaryAnswer label="Profitto"><PreviousValue value={profitHeadline} className="" retain={operation.isRunning} /></ResultPrimaryAnswer></div>}
+              interpretation={<div data-result-slot="interpretation"><ResultInterpretation state={result?.denominatorErrors.length ? "warning" : "success"}>{result === null ? "Calcolo in corso." : result.denominatorErrors.length ? "Il profitto è disponibile, ma una percentuale non è definita con denominatore zero." : "Margine e ricarico calcolati con gli stessi importi inseriti."}</ResultInterpretation></div>}
+              breakdown={result === null ? undefined : <div data-result-slot="breakdown"><ResultBreakdown rows={[
+                { label: "Prezzo o ricavi", value: `${result.currency} ${result.price}` },
+                { label: "Costo", value: `${result.currency} ${result.cost}` },
+                { label: "Margine", value: result.marginPercent === null ? "Non definito" : `${result.marginPercent}% · profitto ÷ prezzo × 100` },
+                { label: "Ricarico", value: result.markupPercent === null ? "Non definito" : `${result.markupPercent}% · profitto ÷ costo × 100` },
+              ]} /></div>}
+              assumptions={result === null ? undefined : <div data-result-slot="assumptions"><ResultAssumptions items={[
+                { label: "Formula margine", value: "profitto ÷ prezzo × 100" },
+                { label: "Formula ricarico", value: "profitto ÷ costo × 100" },
+                { label: "Arrotondamento", value: "Solo sui valori finali · metà verso l'alto · 2 decimali" },
+              ]} /></div>}
+              provenance={result === null ? undefined : <div data-result-slot="provenance"><ResultProvenance>Calcolo locale deterministico. Origine valuta: <ProvenanceBadge provenance={result.currencyProvenance} />.</ResultProvenance></div>}
+            />
+            {result !== null && <ResultActions actions={resultActions} onAction={{ copy: copyResult, reset }} />}
+            {actionStatus !== "" && <p class="success" role="status" aria-live="polite">{actionStatus}</p>}
+          </div>
         )}
       </ToolResultPanel>
     </ToolOperation>

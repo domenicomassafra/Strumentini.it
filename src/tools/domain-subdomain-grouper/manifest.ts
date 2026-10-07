@@ -13,6 +13,7 @@ export const domainSubdomainGrouperManifest = {
   engine: "url-marketing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "text-code", capabilities: ["copy", "download", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-076", fixtureFamilies: ["url-security", "query-params"] },
 } as const satisfies ToolManifest;
 

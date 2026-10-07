@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "connection_device": [
+    {
+      "id": "desktop-wide",
+      "input": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/154.0.0.0 Safari/537.36",
+        "locale": "it-IT",
+        "screenWidth": 1920,
+        "screenHeight": 1080,
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "devicePixelRatio": 2,
+        "orientationType": "landscape-primary",
+        "orientationAngle": 90,
+        "maxTouchPoints": 0,
+        "touchEventAvailable": false,
+        "coarsePointer": false
+      },
+      "expected": {
+        "browser": "Chrome",
+        "os": "macOS",
+        "breakpoint": "ampio",
+        "touchCapable": false
+      }
+    }
+  ],
+  "keyboard_event": [
+    {
+      "input": {
+        "type": "keydown",
+        "key": "K",
+        "code": "KeyK",
+        "location": 1,
+        "altKey": true,
+        "ctrlKey": true,
+        "metaKey": false,
+        "shiftKey": true,
+        "repeat": true,
+        "isComposing": false
+      },
+      "expected": {
+        "locationLabel": "sinistra",
+        "modifiers": ["Ctrl", "Alt", "Shift"]
+      }
+    }
+  ],
+  "policies": {
+    "publicIp": "No public-IP request occurs before the explicit disclosed button action; mocked success and failure are both acceptance cases.",
+    "copyAll": "Support copy excludes the public IP and states that the summary is not a unique device fingerprint.",
+    "keyboard": "Capture is focus-scoped, history is in-memory and capped at 12, browser/system shortcuts are not prevented, and typed content is never persisted."
+  }
+}

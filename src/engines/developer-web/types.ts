@@ -14,23 +14,47 @@ export interface DeveloperWebResult {
 
 export interface DeveloperWebErrorOptions {
   readonly cause?: unknown;
+  readonly diagnostic?: DeveloperDiagnostic;
+}
+
+export interface DeveloperDiagnostic {
+  readonly line?: number;
+  readonly column?: number;
+  readonly character?: number;
+  readonly path?: string;
+  readonly context?: string;
+}
+
+export interface DeveloperErrorEnvelope {
+  readonly code: string;
+  readonly message: string;
+  readonly diagnostic?: DeveloperDiagnostic;
 }
 
 const ERROR_MESSAGE_IT: Readonly<Record<string, string>> = {
   CRON_NOT_FOUND: "Non è stata trovata un'esecuzione corrispondente entro un anno di ricerca locale.",
   INPUT_TOO_LARGE: "L'ingresso supera il limite locale consentito.",
   INVALID_BASE64: "Il valore Base64 non è valido.",
+  INVALID_BASE64_CHARACTER: "Il valore Base64 contiene caratteri non validi per l'alfabeto selezionato.",
+  INVALID_BASE64_LENGTH: "La lunghezza Base64 non può rappresentare un payload valido.",
+  INVALID_BASE64_PADDING: "Il padding Base64 non è valido o non è nella posizione canonica.",
   INVALID_CONVERSION: "La direzione di conversione non è valida.",
   INVALID_CRON: "L'espressione cron non è valida.",
   INVALID_CRON_COUNT: "Il numero di esecuzioni cron richiesto non è valido.",
   INVALID_CRON_FROM: "L'istante iniziale deve essere una data-ora ISO valida.",
+  INVALID_CSS: "Il foglio CSS contiene una sintassi non valida o non rappresentabile in modo sicuro.",
   INVALID_HTML_ENTITY: "L'entità HTML non è valida o non è rappresentabile.",
+  INVALID_HTML: "L'HTML contiene un errore di parsing che impedisce una minificazione sicura.",
   INVALID_HTTP_STATUS: "Il codice di stato HTTP deve essere un intero compreso tra 100 e 599.",
   INVALID_INDENT: "Il numero di spazi di rientro non è valido.",
   INVALID_INPUT: "I dati inseriti non rispettano il formato richiesto.",
   INVALID_JSON: "Il documento JSON non è valido.",
+  JSON_DIFF_TOO_LARGE: "Il confronto JSON produce troppe differenze per il limite locale.",
+  JSON_INFERENCE_TOO_DEEP: "L'inferenza JSON supera il limite locale di annidamento.",
+  JSON_REPAIR_REFUSED: "La riparazione JSON richiederebbe una modifica ambigua e viene rifiutata.",
   INVALID_JSON_PATH: "L'espressione JSONPath non è valida o non è supportata.",
   INVALID_JWT: "Il JWT non ha una struttura valida.",
+  INVALID_JWT_REFERENCE_TIME: "L'istante di riferimento del JWT deve essere una data e ora ISO valida.",
   INVALID_MIME_INPUT: "La firma esadecimale non è valida.",
   INVALID_MIME_MODE: "La modalità di ricerca MIME non è valida.",
   INVALID_MODE: "La modalità selezionata non è valida.",
@@ -40,6 +64,7 @@ const ERROR_MESSAGE_IT: Readonly<Record<string, string>> = {
   INVALID_TIMESTAMP: "Il timestamp o la data non sono validi.",
   INVALID_TIMESTAMP_DIRECTION: "La direzione di conversione del timestamp non è valida.",
   INVALID_TIMESTAMP_UNIT: "L'unità del timestamp deve essere secondi o millisecondi.",
+  INVALID_TIMEZONE: "Il fuso orario IANA selezionato non è supportato.",
   INVALID_TOML: "Il documento TOML non è valido nel sottoinsieme supportato.",
   INVALID_URL: "L'URL non è valido.",
   INVALID_URL_SET: "La parte dell'URL selezionata non è valida.",
@@ -47,6 +72,8 @@ const ERROR_MESSAGE_IT: Readonly<Record<string, string>> = {
   INVALID_UUID_BYTES: "I byte UUID non sono validi.",
   INVALID_UUID_COUNT: "La quantità di UUID deve essere compresa tra 1 e 1000.",
   INVALID_UUID_VERSION: "Sono supportati soltanto UUIDv4 e UUIDv7.",
+  INVALID_XML: "Il documento XML non è valido nel sottoinsieme locale supportato.",
+  INVALID_XML_ENTITY: "Il riferimento a entità XML non è valido.",
   INVALID_YAML: "Il documento YAML non è valido nel sottoinsieme supportato.",
   JSON_PATH_TOO_DEEP: "Il percorso JSON supera il limite locale di profondità.",
   JSON_PATH_TOO_LARGE: "Il percorso JSON produce troppe corrispondenze.",
@@ -59,10 +86,14 @@ const ERROR_MESSAGE_IT: Readonly<Record<string, string>> = {
   UNSUPPORTED_HASH: "L'algoritmo hash richiesto non è supportato.",
   UNSUPPORTED_YAML: "Questa funzionalità YAML non è supportata dal parser locale.",
   YAML_TOO_DEEP: "L'annidamento YAML supera il limite locale di sicurezza.",
+  XML_EXTERNAL_ENTITY_DISABLED: "DTD ed entità XML esterne sono disabilitate e non vengono risolte.",
+  XML_TOO_DEEP: "L'annidamento XML supera il limite locale di sicurezza.",
+  XML_TOO_LARGE: "Il documento XML supera il limite locale di nodi.",
 };
 
 export class DeveloperWebError extends Error {
   readonly code: string;
+  readonly diagnostic: DeveloperDiagnostic | undefined;
 
   constructor(code: string, _message: string, options: DeveloperWebErrorOptions = {}) {
     const runtimeCode = code.startsWith("INVALID_") ? code : `INVALID_${code}`;
@@ -70,11 +101,26 @@ export class DeveloperWebError extends Error {
     super(`${runtimeCode}: ${localizedMessage}`, options.cause === undefined ? undefined : { cause: options.cause });
     this.name = "DeveloperWebError";
     this.code = code;
+    this.diagnostic = options.diagnostic;
   }
 }
 
-export function invalid(code: string, message: string): never {
-  throw new DeveloperWebError(code, message);
+export function invalid(code: string, message: string, diagnostic?: DeveloperDiagnostic): never {
+  throw new DeveloperWebError(code, message, diagnostic === undefined ? {} : { diagnostic });
+}
+
+export function developerErrorEnvelope(error: unknown): DeveloperErrorEnvelope {
+  if (error instanceof DeveloperWebError) {
+    return {
+      code: error.code,
+      message: error.message,
+      ...(error.diagnostic === undefined ? {} : { diagnostic: error.diagnostic }),
+    };
+  }
+  return {
+    code: "UNKNOWN_ERROR",
+    message: "UNKNOWN_ERROR: L'operazione non può essere completata con i dati forniti.",
+  };
 }
 
 export function assertInputSize(value: string, maximum = MAX_DEVELOPER_INPUT): void {

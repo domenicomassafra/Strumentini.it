@@ -1,0 +1,32 @@
+{
+  "toolId": "file-hash",
+  "category": "files",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Calcola SHA-256 in locale e può verificare un checksum atteso senza caricare il file. Public job: Usa Hash file e verifica checksum.",
+  "observedFunctionality": "The current implementation is Gold-certified for the declared narrow file job at quality/receipts/file-hash/gold.json; executable test coverage verifies the underlying file/hash/archive/privacy behavior, while quality/receipts/file-hash/browser-acceptance.json verifies the real route interaction and local-only contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Existing backlog items for richer exports/handoffs, DEFLATE, extraction or deeper privacy analysis are additive scope and are not treated as evidence that this narrow route is functionally incomplete.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/file-hash/gold.json",
+      "claim": "Tool-specific Gold receipt binds file-hash to its current source identities, fixtures and certified functional contract."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/file-hash-engine.test.ts",
+      "claim": "Executable coverage exercises the engine/module behavior used by file-hash, including relevant success, edge or invalid-input semantics."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/file-hash/browser-acceptance.json",
+      "claim": "Committed browser acceptance covers the real file-hash route or its dedicated file workflow with functional output, locality and interaction checks."
+    },
+    {
+      "kind": "oracle",
+      "ref": "quality/oracles/registry.json",
+      "claim": "Canonical oracle registry entry cand-161, referenced by the Gold receipt, is the declared truth authority for file-hash."
+    }
+  ],
+  "childTickets": []
+}

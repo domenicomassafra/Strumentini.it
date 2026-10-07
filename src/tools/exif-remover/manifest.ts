@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const exif_removerManifest = {
   id: "exif-remover",
@@ -9,10 +10,12 @@ export const exif_removerManifest = {
   jobs: ["remove exif metadata", "strip image metadata"],
   category: "files-assets",
   inputTypes: ["image/jpeg","image/png","image/webp"],
+  capabilities: ["file-read", "image-decode"],
   implementation: "../tools/exif-remover/module.ts",
   engine: "image",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["exif-remover"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-148", fixtureFamilies: ["image-metadata", "image-metadata-segments", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

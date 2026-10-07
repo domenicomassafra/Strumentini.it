@@ -21,6 +21,7 @@
   "routesChecked": 15,
   "keyboard": "every submit action exercised with Enter",
   "accessibility": "all interactive controls in the tool form have a label or accessible name",
+  "resultV2Actions": "every route exposes copy/download/reset with copy as the explicit primary action",
   "mobileViewport": {
     "width": 390,
     "height": 844,
@@ -52,106 +53,106 @@
   "results": [
     {
       "toolId": "word-character-line-counter",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "case-converter",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "whitespace-normalizer",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "invisible-character-detector",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "unicode-normalizer",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "line-sorter",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "line-deduplicator",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "list-intersection",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "list-difference",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "find-replace-preview",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "markdown-preview",
       "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "markdown-table-formatter",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "slug-generator",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "text-to-csv-rows",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "csv-column-to-list",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 5,
+      "taskRequestCount": 6,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     }

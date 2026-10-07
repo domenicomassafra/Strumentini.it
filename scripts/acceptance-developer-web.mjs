@@ -46,16 +46,56 @@ async function acceptTool(context, toolId) {
   await submit.focus();
   await page.keyboard.press("Enter");
   await page.locator(".gutter[data-state='success']").waitFor({ timeout: 10000 });
-  await page.locator("pre.developer-result-json").waitFor({ timeout: 10000 });
+  await page.locator(".bounded-result-preview pre").waitFor({ timeout: 10000 });
+  for (const action of ["copy", "download", "reset"]) {
+    if (await page.locator('[data-result-action="' + action + '"]').count() !== 1) {
+      throw new Error(toolId + ": missing Result v2 action " + action);
+    }
+  }
+  if (await page.locator('[data-primary-action="true"]').count() !== 1) {
+    throw new Error(toolId + ": expected exactly one explicit primary action");
+  }
   await page.waitForTimeout(80);
   if (scripts.length === 0) throw new Error(`${toolId}: no lazy implementation script observed after submit`);
   const bad = requests.filter((request) => !request.url.startsWith(origin) || request.method !== "GET" || (request.postData ?? "") !== "");
   if (bad.length > 0) throw new Error(`${toolId}: external, non-GET, or task-body request observed`);
+  let regexIsolation;
+  if (toolId === "regex-tester") {
+    await page.locator("#regex-tester-pattern").fill("^(a|aa)+$");
+    await page.locator("#regex-tester-flags").fill("");
+    await page.locator("#regex-tester-text").fill(`${"a".repeat(64)}b`);
+    await submit.click();
+    const timeoutError = page.locator("[data-tool-error]");
+    await timeoutError.waitFor({ timeout: 5000 });
+    const timeoutCopy = (await timeoutError.textContent()) ?? "";
+    if (!/tempo massimo|worker isolato/iu.test(timeoutCopy)) {
+      throw new Error(`regex-tester: expected isolated hard-timeout copy, got ${JSON.stringify(timeoutCopy)}`);
+    }
+    const workerRequestObserved = requests.some(({ url }) => /regex-worker[^/]*\.js(?:$|\?)/u.test(url));
+    if (!workerRequestObserved) throw new Error("regex-tester: isolated worker asset was not requested");
+
+    await page.locator("#regex-tester-pattern").fill("a+");
+    await page.locator("#regex-tester-text").fill("aaa");
+    await submit.click();
+    await page.locator(".gutter[data-state='success']").waitFor({ timeout: 5000 });
+    regexIsolation = {
+      status: "PASS",
+      timeoutObserved: true,
+      workerRequestObserved: true,
+      recoveredAfterTimeout: true,
+    };
+  }
   await page.setViewportSize({ width: 390, height: 844 });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   if (overflow) throw new Error(`${toolId}: horizontal overflow at 390px`);
   await page.close();
-  return { toolId, lazyScriptCount: scripts.length, taskRequestCount: requests.length, horizontalOverflow: false };
+  return {
+    toolId,
+    lazyScriptCount: scripts.length,
+    taskRequestCount: requests.length,
+    horizontalOverflow: false,
+    ...(regexIsolation === undefined ? {} : { regexIsolation }),
+  };
 }
 
 try {

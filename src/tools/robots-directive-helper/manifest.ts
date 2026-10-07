@@ -13,6 +13,7 @@ export const robotsDirectiveHelperManifest = {
   engine: "url-marketing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "text-code", capabilities: ["copy", "download", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-072", fixtureFamilies: ["robots", "url-security"] },
 } as const satisfies ToolManifest;
 

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import type { ImageVisualToolId } from "../../../engines/image/visual";
 import {
+  gutterStateFor,
   InlineError,
   ToolActions,
   ToolCancelButton,
@@ -12,22 +13,10 @@ import {
   useToolOperation,
 } from "../shared";
 import { CONTROL, it } from "../shared/controlLabels";
+import { ImageResultV2, prepareImageResult, type PreparedImageResult } from "./ImageResultV2";
 
 interface ImageVisualToolProps {
   readonly toolId: ImageVisualToolId;
-}
-
-type ResultValue = Record<string, unknown>;
-
-function asResult(value: unknown): ResultValue | null {
-  return typeof value === "object" && value !== null ? value as ResultValue : null;
-}
-
-function formatValue(value: unknown): string {
-  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return String(value);
-  if (Array.isArray(value)) return value.map((item) => formatValue(item)).join(", ");
-  if (typeof value === "object" && value !== null) return JSON.stringify(value);
-  return "";
 }
 
 export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
@@ -40,11 +29,12 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [secondNumberValue, setSecondNumberValue] = useState("1");
   const [mime, setMime] = useState("image/png");
   const [quality, setQuality] = useState("0.85");
-  const operation = useToolOperation<ResultValue>(async (signal) => {
-    const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality);
+  const [colorMode, setColorMode] = useState("convert");
+  const operation = useToolOperation<PreparedImageResult>(async (signal) => {
+    const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode);
     const run = await toolRuntime.run(toolId, input, {}, signal);
     if (!run.ok) return run;
-    return { ok: true, tool: run.tool, value: asResult(run.value) ?? (Array.isArray(run.value) ? { items: run.value } : { value: run.value }), defaults: run.defaults };
+    return { ok: true, tool: run.tool, value: await prepareImageResult(run.value), defaults: run.defaults };
   }, { formatThrownError: () => "L'operazione sull'immagine non è riuscita. Controlla file e parametri." });
   const result = operation.result;
 
@@ -69,6 +59,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     setSecondNumberValue("1");
     setMime("image/png");
     setQuality("0.85");
+    setColorMode("convert");
     clearResult();
   }
 
@@ -84,27 +75,8 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     operation.reset();
   }
 
-  const resultEntries = result === null ? [] : Object.entries(result).filter(([key]) => key !== "blob" && key !== "palette" && key !== "items" && key !== "dominant");
-  const resultLabel = (key: string): string => ({
-    width: "Larghezza",
-    height: "Altezza",
-    ratio: "Rapporto",
-    mime: "Tipo MIME",
-    filename: "Nome file",
-    byteLength: "Byte",
-    color: "Colore",
-    hex: "Esadecimale",
-    rgb: "RGB",
-    hsl: "HSL",
-    contrast: "Contrasto",
-    ratioValue: "Rapporto",
-    passAA: "Conforme AA",
-    passAAA: "Conforme AAA",
-    count: "Quantità",
-    columns: "Colonne",
-    rows: "Righe",
-    warnings: "Avvisi",
-  }[key] ?? key);
+  const sourceFiles = [file, secondFile, ...files].filter((item): item is File => item !== null);
+  const colorVisionMode = colorMode === "deuteranopia" || colorMode === "tritanopia" ? colorMode : "protanopia";
 
   return (
     <ToolOperation busy={operation.isRunning}>
@@ -112,12 +84,15 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
         {needsFile(toolId) && (
           <label class="field">
             <span>{needsMultipleFiles(toolId) ? "Immagini" : "Immagine"}</span>
-            <input type="file" accept="image/jpeg,image/png,image/webp" multiple={needsMultipleFiles(toolId)} onChange={needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
+            <input type="file" accept={toolId === "image-format-conversion" ? "image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,image/gif,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.gif" : "image/jpeg,image/png,image/webp"} multiple={needsMultipleFiles(toolId)} onChange={needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
             <small>File elaborati in locale, senza caricamenti né elaborazione remota alternativa.</small>
           </label>
         )}
         {toolId === "image-compare-slider" && (
           <><label class="field"><span>Seconda immagine</span><input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { const selected = event.currentTarget instanceof HTMLInputElement ? event.currentTarget.files?.[0] ?? null : null; setSecondFile(selected); operation.reset(); }} disabled={operation.isRunning} /></label></>
+        )}
+        {toolId === "contact-sheet-generator" && (
+          <label class="field"><span>Ordine immagini</span><select value={value || "selection"} onChange={(event) => { setValue(event.currentTarget.value); operation.reset(); }} disabled={operation.isRunning}><option value="selection">Ordine di selezione</option><option value="filename-asc">Nome file A→Z</option></select><small>L'ordine scelto determina posizione e riepilogo della contact sheet.</small></label>
         )}
         {needsNumber(toolId) && (
           <div class="field-grid">
@@ -127,85 +102,62 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
         )}
         {needsColor(toolId) && (
           <div class="field-grid">
-            <label class="field"><span>{toolId === "contrast-checker" ? "Primo piano" : "Colore"}</span><input type="color" value={value || "#336699"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>
+            {toolId === "color-converter" && <label class="field"><span>Modalità colore</span><select value={colorMode} onChange={(event) => { setColorMode(event.currentTarget.value); operation.reset(); }} disabled={operation.isRunning}><option value="convert">Converti colore</option><option value="named-color">Nome CSS → colore</option><option value="harmonies">Armonie HSL</option><option value="tints-shades">Tinte e ombre sRGB</option></select></label>}
+            {toolId === "color-converter" && colorMode === "named-color"
+              ? <label class="field"><span>Nome colore CSS</span><input type="text" value={value || "rebeccapurple"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>
+              : <label class="field"><span>{toolId === "contrast-checker" ? "Primo piano" : "Colore"}</span><input type="color" value={/^#[0-9a-f]{6}$/iu.test(value) ? value : "#336699"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
             {toolId === "contrast-checker" && <label class="field"><span>Sfondo</span><input type="color" value={secondValue || "#ffffff"} onInput={(event) => setSecondValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
           </div>
         )}
+        {toolId === "color-blindness-image-simulation" && (
+          <label class="field">
+            <span>Modalità di simulazione</span>
+            <select value={colorVisionMode} onChange={(event) => { setColorMode(event.currentTarget.value); operation.reset(); }} disabled={operation.isRunning}>
+              <option value="protanopia">Protanopia</option>
+              <option value="deuteranopia">Deuteranopia</option>
+              <option value="tritanopia">Tritanopia</option>
+            </select>
+            <small>Simulazione basata sul modello Machado et al. (2009). Non è una diagnosi medica e non rappresenta in modo universale la percezione di ogni persona.</small>
+          </label>
+        )}
         {needsText(toolId) && <label class="field"><span>Valore</span><input value={value} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
         {needsOutputFormat(toolId) && <label class="field"><span>Formato di uscita</span><select value={mime} onChange={(event) => setMime(event.currentTarget.value)} disabled={operation.isRunning}><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select></label>}
+        {toolId === "image-format-conversion" && mime === "image/jpeg" && <label class="field"><span>Sfondo per trasparenza → JPEG</span><input type="color" value={/^#[0-9a-f]{6}$/iu.test(value) ? value : "#ffffff"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /><small>Obbligatorio quando l'immagine contiene alpha. Il JPEG non supporta trasparenza: i pixel trasparenti vengono compositati su questo colore.</small></label>}
         {needsQuality(toolId) && <label class="field"><span>Qualità, se supportata</span><input type="number" min="0.1" max="1" step="0.01" value={quality} onInput={(event) => setQuality(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
+        {toolId === "image-format-conversion" && <p class="file-note">Input: JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF e GIF. HEIC/HEIF usa un decoder locale lazy; AVIF usa il decoder locale del browser; per GIF viene convertito esplicitamente solo il primo frame. Output: PNG, JPEG o WebP. PNG non aggiunge perdita ai pixel RGBA decodificati; JPEG/WebP sono ricodifiche lossy alla qualità scelta. I metadati container non vengono conservati.</p>}
         <InlineError message={operation.error === "" ? "" : "L'operazione non è riuscita. Controlla i file e i parametri inseriti."} />
         <ToolActions>
           <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Esegui in locale</ToolSubmitButton>
           {operation.isRunning ? <ToolCancelButton onCancel={operation.cancel} /> : <ToolResetButton onClick={reset} />}
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow="Risultato" placeholder="Il risultato locale apparirà qui." busy={operation.isRunning}>
-        {result !== null && (
-          <>
-            {resultEntries.length > 0 && <dl class="assumptions">{resultEntries.map(([key, item]) => <div key={key}><dt>{resultLabel(key)}</dt><dd>{formatValue(item)}</dd></div>)}</dl>}
-            {typeof result.blob === "object" && result.blob instanceof Blob && <DownloadButton result={result} />}
-            {Array.isArray(result.items) && <ul>{result.items.map((item, index) => <li key={index}><ItemDownload item={item} />{!isBlobRecord(item) && formatValue(item)}</li>)}</ul>}
-            {Array.isArray(result.palette) && <ul class="palette-list">{result.palette.map((item) => <li key={JSON.stringify(item)}><span class="color-swatch" style={{ background: String((item as { hex?: string }).hex ?? "") }} />{formatValue(item)}</li>)}</ul>}
-            {typeof result.dominant === "object" && result.dominant !== null && <p>Colore dominante: {formatValue(result.dominant)}</p>}
-          </>
-        )}
+      <ToolResultPanel eyebrow="Risultato" placeholder="Il risultato locale apparirà qui." busy={operation.isRunning} state={gutterStateFor(operation.status)}>
+        {result !== null && <ImageResultV2 toolId={toolId} result={result} sourceFiles={sourceFiles} onReset={reset} onRetry={() => operation.run()} />}
       </ToolResultPanel>
     </ToolOperation>
   );
 }
 
-function DownloadButton({ result }: { readonly result: ResultValue }) {
-  const [url, setUrl] = useState("");
-  const blob = result.blob;
-  useEffect(() => {
-    if (!(blob instanceof Blob)) return;
-    const nextUrl = URL.createObjectURL(blob);
-    setUrl(nextUrl);
-    return () => URL.revokeObjectURL(nextUrl);
-  }, [blob]);
-  if (!(blob instanceof Blob)) return null;
-  return url === "" ? <p role="status">Preparazione del file locale…</p> : <p><a class="button primary" href={url} download={String(result.filename ?? "immagine-risultato")}>Scarica risultato</a></p>;
-}
-
-function isBlobRecord(value: unknown): value is { readonly blob: Blob; readonly filename?: unknown } {
-  return typeof value === "object" && value !== null && "blob" in value && (value as { blob?: unknown }).blob instanceof Blob;
-}
-
-function ItemDownload({ item }: { readonly item: unknown }) {
-  const record = isBlobRecord(item) ? item : null;
-  const blob = record?.blob;
-  const filename = typeof record?.filename === "string" ? record.filename : "immagine-risultato";
-  const [url, setUrl] = useState("");
-  useEffect(() => {
-    if (!(blob instanceof Blob)) return;
-    const nextUrl = URL.createObjectURL(blob);
-    setUrl(nextUrl);
-    return () => URL.revokeObjectURL(nextUrl);
-  }, [blob]);
-  if (blob === undefined) return null;
-  return url === "" ? <span role="status">Preparazione del file locale…</span> : <a class="button primary" href={url} download={filename}>Scarica {filename}</a>;
-}
-
-function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: File | null, files: File[], value: string, secondValue: string, numberValue: string, secondNumberValue: string, mime: string, quality: string): unknown {
+function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: File | null, files: File[], value: string, secondValue: string, numberValue: string, secondNumberValue: string, mime: string, quality: string, colorMode: string): unknown {
   const qualityNumber = Number(quality);
   const primary = file ?? files[0];
   switch (toolId) {
+    case "color-blindness-image-simulation": return { file: primary, mode: colorMode === "deuteranopia" || colorMode === "tritanopia" ? colorMode : "protanopia" };
     case "image-crop": return { file: primary, x: 0, y: 0, width: Number(numberValue), height: Number(secondNumberValue), mime, quality: qualityNumber };
-    case "image-format-conversion": return { file: primary, mime, quality: qualityNumber };
+    case "image-format-conversion": return { file: primary, mime, quality: qualityNumber, ...(mime === "image/jpeg" ? { background: value || "#ffffff" } : {}) };
     case "image-compression": return { file: primary, mime, quality: qualityNumber };
     case "aspect-ratio-calculator": return { width: Number(numberValue), height: Number(secondNumberValue) };
     case "platform-size-presets": return { presetId: value || "instagram-square", width: Number(numberValue), height: Number(secondNumberValue) };
     case "image-metadata-viewer": return primary ?? null;
     case "exif-remover": return { file: primary };
     case "color-picker": return { hex: value || "#336699" };
-    case "color-converter": return { hex: value || "#336699" };
+    case "color-converter": return { color: value || (colorMode === "named-color" ? "rebeccapurple" : "#336699"), mode: colorMode };
     case "contrast-checker": return { foreground: value || "#000000", background: secondValue || "#ffffff" };
     case "palette-extractor": return { file: primary, count: Number(numberValue) };
     case "dominant-color-extractor": return primary ?? null;
     case "image-dimensions-batch-inspector": return files;
     case "image-rename-batch-preview": return { files, prefix: value, suffix: secondValue, start: Number(numberValue) };
-    case "contact-sheet-generator": return { files, columns: Number(numberValue), cellWidth: 240, cellHeight: 180 };
+    case "contact-sheet-generator": return { files, columns: Number(numberValue), cellWidth: 240, cellHeight: 180, ordering: value || "selection" };
     case "favicon-app-icon-size-generator": return { file: primary, sizes: [16, 32, 48, 64, 128, 180, 192, 512] };
     case "screenshot-border-background-helper": return { file: primary, border: Number(numberValue), padding: Number(secondNumberValue), background: value || "#ffffff" };
     case "image-compare-slider": return primary === null || secondFile === null ? null : { first: primary, second: secondFile };

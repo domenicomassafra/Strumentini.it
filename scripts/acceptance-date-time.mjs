@@ -6,6 +6,7 @@ import { resolve } from "node:path";
 const root = resolve(import.meta.dirname, "..");
 const port = 18146;
 const origin = `http://127.0.0.1:${port}`;
+const dist = process.env.STRUMENTINI_ACCEPTANCE_DIST ?? "dist";
 
 const fillDates = (...values) => async (_page, form) => {
   const fields = form.locator("input[type='date']");
@@ -30,9 +31,10 @@ const cases = [
   { id: "ics-event-builder", expect: /BEGIN:VCALENDAR/u },
   { id: "ics-viewer", expect: /esempio|Revisione/u },
   { id: "epoch-batch-converter", expect: /1970-01-01T00:00:00\.000Z/u },
+  { id: "public-holiday-lookup", expect: /festività|embedded-calendar-v2/u },
 ];
 
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
+const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], { cwd: root, stdio: "ignore" });
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
 
 async function waitForServer() {
@@ -88,6 +90,35 @@ async function acceptTool(context, testCase) {
   await result.waitFor({ timeout: 10000 });
   const output = await result.innerText();
   if (!testCase.expect.test(output)) throw new Error(`${testCase.id}: unexpected output ${JSON.stringify(output.slice(0, 700))}`);
+  const semantic = result.locator("[data-result-class]").last();
+  if (await semantic.count() !== 1) throw new Error(`${testCase.id}: Result v2 semantic root is missing`);
+  const resultClass = await semantic.getAttribute("data-result-class");
+  const expectedClass = testCase.id === "ics-event-builder" ? "text-code" : testCase.id === "ics-viewer" ? "validator" : "calculator";
+  if (resultClass !== expectedClass) throw new Error(`${testCase.id}: Result v2 class ${resultClass} does not match ${expectedClass}`);
+  const slots = await semantic.locator("[data-result-slot]").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-result-slot")));
+  const expectedSlots = expectedClass === "text-code"
+    ? ["selectable-output", "counts"]
+    : expectedClass === "validator"
+      ? ["primary", "interpretation", "checks", "provenance"]
+      : ["primary", "interpretation", "breakdown", "assumptions", "provenance"];
+  let slotCursor = -1;
+  for (const required of expectedSlots) {
+    slotCursor = slots.indexOf(required, slotCursor + 1);
+    if (slotCursor < 0) throw new Error(`${testCase.id}: Result v2 slot ${required} is missing or out of order (${slots.join(",")})`);
+  }
+  if (await semantic.locator("[data-result-primary-answer]").count() !== 1) throw new Error(`${testCase.id}: semantic primary answer is missing`);
+  const actionIds = await semantic.locator("[data-result-action]").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-result-action")));
+  for (const required of ["copy", "reset"]) {
+    if (!actionIds.includes(required)) throw new Error(`${testCase.id}: Result v2 action ${required} is missing`);
+  }
+  if (testCase.id === "ics-event-builder" && !actionIds.includes("download")) throw new Error("ics-event-builder: existing calendar download action is missing");
+  if (testCase.id === "ics-viewer" && !actionIds.includes("retry")) throw new Error("ics-viewer: validator retry action is missing");
+  const provenance = await semantic.locator(".provenance").innerText();
+  if (!/Elaborazione locale[\s\S]*fuso orario[\s\S]*calendario/u.test(provenance)) throw new Error(`${testCase.id}: timezone/calendar assumptions are not visible in the Result v2 provenance`);
+  if (testCase.id !== "ics-event-builder") {
+    const unscopedRaw = await semantic.locator("pre").evaluateAll((nodes) => nodes.filter((node) => node.closest("[data-result-secondary-raw]") === null).length);
+    if (unscopedRaw > 0) throw new Error(`${testCase.id}: raw output escaped the secondary Result v2 details`);
+  }
   // A console error is tolerated only when its own source URL is the optional
   // account probe; anything else is fatal.
   const consoleErrors = runtimeErrors.filter((entry) => !isExpectedStaticFailure(entry.url));
@@ -111,7 +142,55 @@ async function acceptTool(context, testCase) {
   }).map((control) => control.outerHTML.slice(0, 120)));
   if (unlabeled.length > 0) throw new Error(`${testCase.id}: unlabeled controls: ${unlabeled.join(" | ")}`);
   await page.close();
-  return { toolId: testCase.id, lazyScriptCount: scripts.length, taskRequestCount: requests.length, horizontalOverflow: false, unlabeledControls: 0 };
+  return { toolId: testCase.id, resultClass, resultSlots: slots, resultActions: actionIds, lazyScriptCount: scripts.length, taskRequestCount: requests.length, horizontalOverflow: false, unlabeledControls: 0 };
+}
+
+async function acceptLiveTimeSurfaces(context) {
+  const world = await context.newPage();
+  await world.goto(`${origin}/tools/timezone-converter/`, { waitUntil: "networkidle" });
+  const worldSurface = world.locator('[data-live-time-surface="world-clock"]');
+  await worldSurface.waitFor();
+  const worldBefore = await worldSurface.locator("[data-live-source-time]").innerText();
+  await world.waitForTimeout(1100);
+  const worldAfterTick = await worldSurface.locator("[data-live-source-time]").innerText();
+  if (worldAfterTick === worldBefore) throw new Error("timezone-converter: live source time did not advance from Date.now()");
+  await world.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+  const worldAfterVisibility = await worldSurface.locator("[data-live-source-time]").innerText();
+  if (!/^\d{4}-\d{2}-\d{2}T/u.test(worldAfterVisibility)) throw new Error("timezone-converter: visibility recovery did not expose a source timestamp");
+  const labels = await worldSurface.locator("dt").allInnerTexts();
+  const values = await worldSurface.locator("dd").allInnerTexts();
+  for (const required of ["Istante sorgente UTC", "Fuso sorgente", "Fuso destinazione", "Ora locale", "Offset"]) {
+    if (!labels.some((label) => label.trim().toLocaleLowerCase("it-IT").includes(required.toLocaleLowerCase("it-IT")))) throw new Error(`timezone-converter: live surface is missing ${required} (${labels.join(" | ")})`);
+  }
+  if (!values.includes("UTC") || !values.includes("Europe/Rome") || !values.some((value) => /minuti/u.test(value))) {
+    throw new Error("timezone-converter: live surface does not expose source zone, target zone, and offset values");
+  }
+  await world.close();
+
+  const deadline = await context.newPage();
+  await deadline.goto(`${origin}/tools/deadline-countdown/`, { waitUntil: "networkidle" });
+  const deadlineSurface = deadline.locator('[data-live-time-surface="deadline"]');
+  await deadlineSurface.waitFor();
+  const before = await deadlineSurface.locator("[data-live-source-time]").innerText();
+  await deadline.waitForTimeout(1100);
+  const after = await deadlineSurface.locator("[data-live-source-time]").innerText();
+  if (after === before) throw new Error("deadline-countdown: live reference did not advance from Date.now()");
+  await deadline.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+  if (await deadlineSurface.locator("[data-live-deadline-value]").count() !== 1) throw new Error("deadline-countdown: live timestamp-derived countdown missing after visibility recovery");
+  const clock = deadline.locator("[data-resilient-clock]");
+  await clock.waitFor();
+  const displayBefore = await clock.locator("[data-clock-display]").innerText();
+  await clock.getByRole("button", { name: "Avvia" }).click();
+  await deadline.waitForTimeout(1200);
+  const displayAfter = await clock.locator("[data-clock-display]").innerText();
+  if (displayAfter === displayBefore) throw new Error("deadline-countdown: resilient timer did not derive progress from timestamps");
+  await deadline.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+  await deadline.reload({ waitUntil: "networkidle" });
+  const restoredClock = deadline.locator("[data-resilient-clock]");
+  await restoredClock.waitFor();
+  if (!/ripristinato/u.test(await restoredClock.locator("[data-clock-status]").innerText())) throw new Error("deadline-countdown: resilient timer state did not survive reload");
+  await deadline.close();
+  return { worldClockTicked: true, visibilityRecovery: true, deadlineTicked: true, resilientClockReload: true };
 }
 
 try {
@@ -120,6 +199,7 @@ try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const results = [];
   for (const testCase of cases) results.push(await acceptTool(context, testCase));
+  const liveTime = await acceptLiveTimeSurfaces(context);
   await context.close();
   await browser.close();
   const receipt = {
@@ -138,6 +218,7 @@ try {
     implementationEager: false,
     lazyImplementationObservedFor: results.map((result) => result.toolId),
     results,
+    liveTime,
   };
   await mkdir(resolve(root, "quality/receipts/date-time"), { recursive: true });
   await writeFile(resolve(root, "quality/receipts/date-time/browser-acceptance.json"), `${JSON.stringify(receipt, null, 2)}\n`, "utf8");

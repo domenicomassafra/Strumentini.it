@@ -124,7 +124,8 @@
           "title": "A",
           "url": "https://example.org/a",
           "date": "2026",
-          "doi": "10.1000/182"
+          "doi": "10.1000/182",
+          "isbn": "9780306406157"
         },
         {
           "foo": 1
@@ -134,7 +135,7 @@
           "notes": "with, comma"
         }
       ],
-      "csv": "title,url,date,source,doi,notes\nA,https://example.org/a,2026,example.org,10.1000/182,\n,,,,,\n'=SUM(A1),,,,,\"with, comma\"",
+      "csv": "title,url,date,source,doi,isbn,notes\nA,https://example.org/a,2026,example.org,10.1000/182,9780306406157,\n,,,,,,\n'=SUM(A1),,,,,,\"with, comma\"",
       "rowCount": 3,
       "emptyRowCount": 1,
       "emptyRowIndexes": [
@@ -150,7 +151,7 @@
           "source": "Rivista"
         }
       ],
-      "csv": "title,url,date,source,doi,notes\nA,https://example.org/a,,Rivista,,",
+      "csv": "title,url,date,source,doi,isbn,notes\nA,https://example.org/a,,Rivista,,,",
       "rowCount": 1,
       "emptyRowCount": 0,
       "emptyRowIndexes": []
@@ -163,7 +164,7 @@
           "notes": "he said \"hi\""
         }
       ],
-      "csv": "title,url,date,source,doi,notes\nA,,,,,\"he said \"\"hi\"\"\"",
+      "csv": "title,url,date,source,doi,isbn,notes\nA,,,,,,\"he said \"\"hi\"\"\"",
       "rowCount": 1,
       "emptyRowCount": 0,
       "emptyRowIndexes": []
@@ -171,7 +172,7 @@
     {
       "name": "no records means a header-only CSV",
       "input": [],
-      "csv": "title,url,date,source,doi,notes",
+      "csv": "title,url,date,source,doi,isbn,notes",
       "rowCount": 0,
       "emptyRowCount": 0,
       "emptyRowIndexes": []

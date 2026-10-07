@@ -49,6 +49,7 @@ export function createSearch(tools: readonly SearchToolMetadata[]) {
         summary: tool.summary,
         aliases: tool.aliases,
         jobs: tool.jobs,
+        ...(tool.keywords === undefined ? {} : { keywords: tool.keywords }),
         category: tool.category,
         inputTypes: tool.inputTypes,
         ...(tool.engine === undefined ? {} : { engine: tool.engine }),

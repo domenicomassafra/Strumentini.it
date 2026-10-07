@@ -1,14 +1,14 @@
-# StrumentiUtili.it — Canonical Product Specification
+# Strumentini.it — Canonical Product Specification
 
 Status: implementation authority for the first validation build
 Date: 2026-09-23
-Public name: **StrumentiUtili.it**.
+Public name: **Strumentini.it**.
 
 This document supersedes the earlier product-definition notes for implementation scope. The research and lane artifacts remain evidence and decision history; when they disagree with this file about v1 scope, this file wins.
 
 ## 1. Product thesis
 
-StrumentiUtili.it tests one narrow proposition:
+Strumentini.it tests one narrow proposition:
 
 > A personal utility workbench for the small jobs behind knowledge work.
 
@@ -44,7 +44,7 @@ Developer utilities can reuse the same engines later, but developer/data is not 
 
 These constraints inherit into every implementation ticket.
 
-- **C-01 — Public brand.** StrumentiUtili.it is the selected public brand and must be used consistently on public product surfaces.
+- **C-01 — Public brand.** Strumentini.it is the selected public brand and must be used consistently on public product surfaces.
 - **C-02 — Workbench over catalog.** The primary product surface is a small personal Workbench. The Library is secondary supply, never the default wall of tools.
 - **C-03 — Anonymous first value.** A user can complete an ordinary deterministic tool task before onboarding, account creation, or sign-in.
 - **C-04 — Local deterministic normal path.** Ordinary deterministic operations run in the browser and require no backend request.
@@ -277,7 +277,7 @@ As the product owner, I can ship public tool/pack pages and the interactive Work
 As a prospective user, I see concrete task/relevance/readiness claims rather than unsupported novelty, privacy theater, or an un-cleared brand.
 
 - **AC-17.1:** Product copy does not claim uniqueness from tool count, free access, local processing, favorites, command palette, packs, or generic workspace alone.
-- **AC-17.2:** Public-facing copy uses StrumentiUtili.it consistently; no placeholder or former-codename treatment may ship.
+- **AC-17.2:** Public-facing copy uses Strumentini.it consistently; no placeholder or former-codename treatment may ship.
 - **AC-17.3:** Privacy claims describe mechanics near the relevant operation rather than relying on a generic “secure/privacy-first” badge.
 
 ## 8. Validation experiments and stop rules

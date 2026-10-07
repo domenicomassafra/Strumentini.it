@@ -1,4 +1,4 @@
-import { ageDateAnniversaryManifest, addSubtractDaysManifest, calendarDateListGeneratorManifest, dateDifferenceManifest, deadlineCountdownManifest, decimalHoursConverterManifest, durationCalculatorManifest, epochBatchConverterManifest, icsEventBuilderManifest, icsViewerManifest, meetingTimePlannerManifest, publicHolidayLookupManifest, quarterDateMapperManifest, recurringDateGeneratorManifest, timesheetTotalerManifest, timezoneConverterManifest, weekNumberConverterManifest, workingHoursManifest } from "../../../date-time/manifest";
+import { ageDateAnniversaryManifest, addSubtractDaysManifest, calendarDateListGeneratorManifest, dateDifferenceManifest, deadlineCountdownManifest, decimalHoursConverterManifest, durationCalculatorManifest, epochBatchConverterManifest, icsEventBuilderManifest, icsViewerManifest, italianDocumentExpiryManifest, meetingTimePlannerManifest, publicHolidayLookupManifest, quarterDateMapperManifest, recurringDateGeneratorManifest, timesheetTotalerManifest, timezoneConverterManifest, weekNumberConverterManifest, workingHoursManifest } from "../../../date-time/manifest";
 import type { IcsBuilderToolOutput } from "../../../tools/date-time/types";
 import type { DateTimeField, DateTimeToolConfig } from "./DateTimeOperation";
 
@@ -233,12 +233,33 @@ export const ageConfig: DateTimeToolConfig = {
 
 export const calendarListConfig: DateTimeToolConfig = {
   tool: calendarDateListGeneratorManifest,
-  fields: [textField("startDate", "Start date", "date"), textField("endDate", "End date", "date"), textField("stepDays", "Step in days", "number", { defaultValue: "1" })],
-  buildInput: (values) => ({ startDate: values.startDate, endDate: values.endDate, stepDays: number(values, "stepDays") }),
+  fields: [
+    textField("mode", "Mode", "select", { defaultValue: "date-list", options: ["date-list", "weekday", "leap-year", "month"] }),
+    textField("startDate", "Start date", "date", { required: false }),
+    textField("endDate", "End date", "date", { required: false }),
+    textField("stepDays", "Step in days", "number", { defaultValue: "1", required: false }),
+    textField("date", "Date", "date", { required: false }),
+    textField("year", "Year", "number", { defaultValue: "2026", required: false }),
+    textField("month", "Month", "number", { defaultValue: "10", required: false }),
+  ],
+  buildInput: (values) => values.mode === "weekday"
+    ? { mode: "weekday", date: values.date }
+    : values.mode === "leap-year"
+      ? { mode: "leap-year", year: number(values, "year") }
+      : values.mode === "month"
+        ? { mode: "month", year: number(values, "year"), month: number(values, "month") }
+        : { mode: "date-list", startDate: values.startDate, endDate: values.endDate, stepDays: number(values, "stepDays") },
   eyebrow: "Date list",
   placeholder: "The calendar list appears here.",
-  submitLabel: "Generate list",
-  resultLabel: (result) => `${(result as { dates?: unknown[] }).dates?.length ?? 0} date(s)`,
+  submitLabel: "Calculate calendar",
+  resultLabel: (result) => {
+    const value = result as { dates?: unknown[]; weekdayIt?: string; leapYear?: boolean; monthNameIt?: string; year?: number };
+    if (Array.isArray(value.dates)) return `${value.dates.length} date(s)`;
+    if (typeof value.weekdayIt === "string") return value.weekdayIt;
+    if (typeof value.leapYear === "boolean") return value.leapYear ? "Leap year" : "Common year";
+    if (typeof value.monthNameIt === "string") return `${value.monthNameIt} ${value.year ?? ""}`;
+    return "Calendar result";
+  },
 };
 
 export const icsBuilderConfig: DateTimeToolConfig = {
@@ -293,4 +314,25 @@ export const holidayConfig: DateTimeToolConfig = {
     if (/INVALID_YEAR/u.test(message)) return "Inserisci un anno valido: questo strumento copre dal 1900 al 2100.";
     return undefined;
   },
+};
+
+export const italianDocumentExpiryConfig: DateTimeToolConfig = {
+  tool: italianDocumentExpiryManifest,
+  fields: [
+    textField("documentType", "Tipo di documento", "select", { defaultValue: "cie", options: ["cie", "cie-temporary-fingerprint", "passport"] }),
+    textField("birthDate", "Data di nascita", "date", { defaultValue: "1990-08-20" }),
+    textField("issueDate", "Data di emissione", "date", { defaultValue: "2026-10-06" }),
+  ],
+  buildInput: (values) => ({ documentType: values.documentType, birthDate: values.birthDate, issueDate: values.issueDate }),
+  eyebrow: "Scadenza calcolata",
+  placeholder: "Qui apparirà la data di scadenza secondo la regola ufficiale supportata.",
+  submitLabel: "Calcola scadenza",
+  resultLabel: (result) => String((result as { expiryDate?: string }).expiryDate ?? ""),
+  errorMessage: (message) => ({
+    UNSUPPORTED_DOCUMENT_TYPE: "Questo tipo di documento non è supportato: il calcolatore rifiuta regole non versionate.",
+    UNSUPPORTED_LEAP_DAY_BOUNDARY: "Caso 29 febbraio non calcolato: la fonte usata non specifica la convenzione civile necessaria per evitare un'ipotesi.",
+    ISSUE_BEFORE_BIRTH: "La data di emissione non può precedere la data di nascita.",
+    INVALID_BIRTH_DATE: "Inserisci una data di nascita valida.",
+    INVALID_ISSUE_DATE: "Inserisci una data di emissione valida.",
+  }[message]),
 };

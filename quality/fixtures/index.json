@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-10-04",
-  "family_count": 69,
+  "family_count": 95,
   "families": [
     {
       "id": "archive-checksum-manifest",
@@ -94,6 +94,33 @@
       ]
     },
     {
+      "id": "browser-diagnostics",
+      "candidate_families": [
+        "Connection and device information",
+        "Keyboard event diagnostic"
+      ],
+      "path": "quality/fixtures/browser-diagnostics/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic browser/device snapshots and keyboard events authored for Strumentini.it; no user telemetry or third-party corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "whatwg-html",
+        "w3c-uievents"
+      ],
+      "coverage": [
+        "browser/OS descriptive hints and viewport breakpoint mapping",
+        "screen viewport DPR orientation and touch facts",
+        "explicit disclosed public-IP network action with success/failure",
+        "privacy-bounded support copy",
+        "focused key/code/location/modifier/repeat/composition capture",
+        "bounded ephemeral history and non-trapping shortcut behavior"
+      ]
+    },
+    {
       "id": "business-days",
       "candidate_families": [
         "Business-day calculator"
@@ -142,6 +169,103 @@
         "rates",
         "profitability",
         "break-even"
+      ]
+    },
+    {
+      "id": "business-math-expansion",
+      "candidate_families": [
+        "Mortgage and French amortization calculator",
+        "Geometry equation and motion helpers",
+        "Everyday cost calculator bundle"
+      ],
+      "path": "quality/fixtures/business-math-expansion/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Independent formula literals and boundary cases authored for Strumentini.it; no third-party corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "coverage": [
+        "French amortization payment, schedule reconciliation, zero-rate, one-payment and 100-year cases",
+        "geometry, Pythagorean, real quadratic-root and speed-distance-time literals",
+        "unit-price normalization, cent remainder splitting, annual subscription, energy, trip and salary-hourly costs"
+      ]
+    },
+    {
+      "id": "calculator-math-core",
+      "candidate_families": [
+        "Safe scientific expression calculator",
+        "Exact fractions and integer toolkit",
+        "Descriptive statistics grades and completion",
+        "Interest and savings-goal calculators"
+      ],
+      "path": "quality/fixtures/calculator-math-core/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked mathematical literals and synthetic boundary cases authored for StrumentiUtili.it; no third-party corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "coverage": [
+        "safe expression precedence and documented functions",
+        "exact fraction reduction and integer modes",
+        "descriptive and weighted statistics",
+        "simple, compound, periodic-contribution and reverse-goal finance formulas",
+        "zero and invalid boundary behavior"
+      ]
+    },
+    {
+      "id": "css-design-helper",
+      "candidate_families": [
+        "CSS gradient shadow and radius helper"
+      ],
+      "path": "quality/fixtures/css-design-helper/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic CSS literals authored for Strumentini.it; no external corpus copied."
+      },
+      "truth_sources": [
+        "css-syntax-3",
+        "css-tree-3.2.1",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "linear-gradient canonical declaration",
+        "box-shadow canonical declaration",
+        "four-corner border-radius",
+        "field-bound invalid ranges"
+      ]
+    },
+    {
+      "id": "csv-advanced-ops",
+      "candidate_families": [
+        "CSV to SQL dialect generator",
+        "Streaming huge CSV splitter",
+        "Table compare by explicit keys and columns"
+      ],
+      "path": "quality/fixtures/csv-advanced-ops/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic CSV and expected-policy vectors authored for StrumentiUtili.it; no third-party corpus copied."
+      },
+      "truth_sources": [
+        "rfc4180",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "coverage": [
+        "PostgreSQL MySQL and SQLite identifier/value quoting with conservative type inference",
+        "leading-zero null Unicode and quote policies for generated SQL text",
+        "streamed row and byte splitting with repeated headers quoted newlines CRLF and cancellation",
+        "keyed compare duplicate ambiguity null/case modes changed-cell provenance and complete CSV export"
       ]
     },
     {
@@ -222,7 +346,10 @@
         "empty-key preservation",
         "duplicate headers by source index",
         "column select/rename/reorder",
-        "ragged selected-cell disclosure"
+        "ragged selected-cell disclosure",
+        "filter/sort/group/join/pivot explicit null and type policy",
+        "case-folded keys and mixed numeric/text values",
+        "join null-key policy and row-count effects"
       ]
     },
     {
@@ -320,6 +447,85 @@
         "quarter hour",
         "non-quarter decimal",
         "exact decimal"
+      ]
+    },
+    {
+      "id": "developer-minifiers",
+      "candidate_families": [
+        "Parser-backed CSS minifier",
+        "Semantic HTML minifier"
+      ],
+      "path": "quality/fixtures/developer-minifiers/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic CSS/HTML snippets authored for Strumentini.it; no third-party page content."
+      },
+      "truth_sources": [
+        "css-syntax-3",
+        "whatwg-html",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "coverage": [
+        "CSS parser serialization with strings comments and custom properties",
+        "invalid CSS refusal with location",
+        "safe HTML text-node preservation",
+        "advanced block-whitespace removal",
+        "pre textarea script style preservation",
+        "invalid HTML parser refusal"
+      ]
+    },
+    {
+      "id": "developer-network-numeric",
+      "candidate_families": [
+        "IPv4/IPv6 CIDR calculator",
+        "Base 2-36 integer converter",
+        "chmod Unix permission helper"
+      ],
+      "path": "quality/fixtures/developer-network-numeric/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked RFC boundary literals and mathematical/Unix permission examples authored for Strumentini.it; no third-party corpus copied."
+      },
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "IPv4 /0 /31 /32 subnet boundaries",
+        "IPv6 /0 /127 /128 exact range arithmetic",
+        "base 2-36 signed exact round trips beyond Number precision",
+        "invalid digit and bounded-input diagnostics",
+        "rwx/octal conversion and setuid/setgid/sticky semantics"
+      ]
+    },
+    {
+      "id": "developer-structured-data",
+      "candidate_families": [
+        "Deterministic JSON repair",
+        "Structural JSON diff",
+        "JSON to TypeScript and JSON Schema inference",
+        "XML validate format and minify core"
+      ],
+      "path": "quality/fixtures/developer-structured-data/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked and synthetic malformed/hostile structured-data examples authored for Strumentini.it; no third-party corpus copied."
+      },
+      "truth_sources": [
+        "rfc8259",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "deterministic JSON repair edit log and idempotence",
+        "stable structural diff paths and array order changes",
+        "heterogeneous JSON inference and poison-key handling",
+        "XML validation formatting minification and sensitive whitespace",
+        "DTD and external-entity refusal"
       ]
     },
     {
@@ -527,6 +733,30 @@
       ]
     },
     {
+      "id": "iban-formal-validation",
+      "candidate_families": [
+        "IBAN validation and Italian coordinates"
+      ],
+      "path": "quality/fixtures/iban-formal-validation/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Official electronic-format examples are short factual identifiers from the SWIFT IBAN Registry; invalid derivatives and failure cases are synthetic Strumentini.it fixtures."
+      },
+      "truth_sources": [
+        "swift-iban-registry-r103",
+        "independent-iban-mod97-arithmetic",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "Release 103 format/length for DE ES FR GB IT NL",
+        "MOD-97 valid and invalid cases across multiple countries",
+        "Italian CIN ABI CAB account structural decomposition",
+        "character prefix country length structure and checksum failures",
+        "zero registry or bank-existence claim"
+      ]
+    },
+    {
       "id": "ics",
       "candidate_families": [
         "ICS event builder",
@@ -646,6 +876,53 @@
         "ISBN-13",
         "bad check digit",
         "10-to-13 conversion"
+      ]
+    },
+    {
+      "id": "italian-document-expiry",
+      "candidate_families": [
+        "Italian identity-document expiry helper"
+      ],
+      "path": "quality/fixtures/italian-document-expiry/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Rule facts are derived from official Italian authority pages; all fixture dates are synthetic and authored for Strumentini.it."
+      },
+      "truth_sources": [
+        "mininterno-cie-validity",
+        "polizia-passaporto-validity",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "CIE under-3, age-3 and age-18 boundaries",
+        "CIE first-birthday-after-term behavior",
+        "temporary CIE 12-month rule",
+        "passport 3/5/10-year age bands",
+        "unsupported and leap-day fail-closed branches"
+      ]
+    },
+    {
+      "id": "italian-vat-number",
+      "candidate_families": [
+        "Partita IVA formal validator"
+      ],
+      "path": "quality/fixtures/italian-vat-number/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic numeric vectors authored for Strumentini.it; no business registry data or external corpus copied."
+      },
+      "truth_sources": [
+        "independent-check-digit-arithmetic",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "optional IT prefix and whitespace normalization",
+        "11-digit length rule",
+        "decimal-character rule",
+        "check-digit success and mismatch",
+        "no registry existence claim"
       ]
     },
     {
@@ -888,6 +1165,33 @@
       ]
     },
     {
+      "id": "password-security",
+      "candidate_families": [
+        "Secure password PIN and Italian passphrase generator",
+        "Explainable password strength estimator"
+      ],
+      "path": "quality/fixtures/password-security/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic password-shape examples and project wordlist metadata authored for Strumentini.it; no breached-password corpus or user secrets."
+      },
+      "truth_sources": [
+        "w3c-webcrypto",
+        "italian-passphrase-v1",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "rejection-sampling tail refusal",
+        "password class and length constraints",
+        "PIN numeric length",
+        "versioned Italian passphrase membership",
+        "deterministic length/common/repetition strength factors",
+        "explicit offline/no-breach-claim limitations"
+      ]
+    },
+    {
       "id": "pdf-gold",
       "candidate_families": [
         "PDF and document local tools"
@@ -906,8 +1210,12 @@
       "coverage": [
         "one deterministic public-module vector per promoted PDF/document tool",
         "merge, split, reorder, rotate, delete/extract page operations with re-inspected outputs",
+        "page-scoped JPEG byte extraction with object/page provenance, dedupe, and explicit unsupported-filter reporting",
+        "page-scoped text extraction with explicit modes and page separators",
+        "recognized-vs-unknown Info metadata plus XMP carrier provenance",
+        "metadata removal with produced-output reparse and page/text baseline verification",
         "JPEG to PDF embedding and embedded-image extraction round-trip",
-        "text extraction, metadata inspection/removal, page geometry, page count, link and form inspection",
+        "metadata inspection/removal, page geometry, page count, link and form inspection",
         "encryption reporting without bypass, flatten, document comparison, bounded compression, handoff manifest"
       ]
     },
@@ -1021,6 +1329,31 @@
         "blank value",
         "space plus",
         "literal plus"
+      ]
+    },
+    {
+      "id": "random-utilities",
+      "candidate_families": [
+        "Secure random number picker team splitter and coupon generator"
+      ],
+      "path": "quality/fixtures/random-utilities/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic ranges, names, seeds and coupon alphabets authored for Strumentini.it; no real participants, promotions or secrets."
+      },
+      "truth_sources": [
+        "w3c-webcrypto",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "uint32 rejection-sampling tail",
+        "inclusive integer bounds and unique sampling",
+        "picker duplicate-ticket semantics",
+        "balanced team size invariant and duplicate-name refusal",
+        "coupon alphabet normalization and unique-code constraints",
+        "seeded reproducibility with explicit non-secure disclosure"
       ]
     },
     {
@@ -1146,7 +1479,8 @@
         "strumentiutili-quality",
         "fixture-policy",
         "ris-policy",
-        "bibtex-ctan"
+        "bibtex-ctan",
+        "zotero-translators"
       ],
       "coverage": [
         "tag mapping",
@@ -1349,6 +1683,66 @@
       ]
     },
     {
+      "id": "text-expansion",
+      "candidate_families": [
+        "Reversible semantic text chunker",
+        "Fact-sensitive original versus AI diff",
+        "Stable-placeholder anonymize and restore",
+        "Italian Gulpease readability",
+        "Mojibake repair with disclosed transforms",
+        "PDF-copy text reflow",
+        "Phone link hashtag and mention extractor"
+      ],
+      "path": "quality/fixtures/text-expansion/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic Italian and Unicode literals authored for Strumentini.it; no user or third-party corpus content."
+      },
+      "truth_sources": [
+        "lucisano-piemontese-1988",
+        "unicode-uax29",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "coverage": [
+        "exact chunk round-trip with Unicode and CRLF",
+        "lexical date number URL and ID changes",
+        "placeholder anonymize/restore and mutation refusal",
+        "Gulpease formula intermediates and Italian sentence policy",
+        "Windows-1252/UTF-8 mojibake repair and idempotence",
+        "PDF-copy line-wrap and hyphen ambiguity",
+        "Unicode source spans and deterministic extractor overlap"
+      ]
+    },
+    {
+      "id": "text-markup-conversion",
+      "candidate_families": [
+        "TXT Markdown HTML conversion core"
+      ],
+      "path": "quality/fixtures/text-markup-conversion/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Synthetic CommonMark/HTML/XSS/newline literals authored for Strumentini.it; no third-party corpus text copied."
+      },
+      "truth_sources": [
+        "commonmark",
+        "whatwg-html",
+        "owasp-xss",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "Markdown to HTML and TXT",
+        "HTML to Markdown and TXT",
+        "TXT to HTML",
+        "whitespace-sensitive pre/code handling",
+        "unsafe URL and active HTML removal",
+        "Unicode and CRLF/LF determinism",
+        "declared CommonMark/GFM subset limits"
+      ]
+    },
+    {
       "id": "text-writing-gold",
       "candidate_families": [
         "Text and writing local tools"
@@ -1439,6 +1833,34 @@
         "NFC/NFD/NFKC",
         "combining-mark order",
         "idempotence"
+      ]
+    },
+    {
+      "id": "unit-conversion-core",
+      "candidate_families": [
+        "Unit engine tranche 1 basic dimensions",
+        "Unit engine tranche 2 engineering dimensions",
+        "Digital storage and download-time calculator",
+        "Battery vehicle and power conversion helpers",
+        "Reference-size conversion helpers"
+      ],
+      "path": "quality/fixtures/unit-conversion-core/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Hand-worked physical/digital conversion literals and deterministic reference-size examples authored for Strumentini.it; no third-party corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "coverage": [
+        "cross-dimension rejection and affine temperature",
+        "engineering literals and reversible precision",
+        "SI versus IEC storage plus bit/byte distinction",
+        "entered-throughput download estimation with overhead",
+        "battery voltage, US/Imperial fuel and power constants",
+        "ISO paper, model scale, TV geometry and unsourced-fit refusal"
       ]
     },
     {
@@ -1558,6 +1980,30 @@
       ]
     },
     {
+      "id": "vcard-rfc6350",
+      "candidate_families": [
+        "VCF vCard viewer and CSV export"
+      ],
+      "path": "quality/fixtures/vcard-rfc6350/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "spec-vector",
+        "license_or_rights": "Synthetic vCard contacts authored for Strumentini.it from RFC 6350 grammar concepts; no real contact data."
+      },
+      "truth_sources": [
+        "rfc6350",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "CRLF folding/unfolding",
+        "Unicode names",
+        "repeated TEL and EMAIL properties",
+        "unsupported raw properties",
+        "CSV formula-injection prefixing"
+      ]
+    },
+    {
       "id": "whitespace-normalization",
       "candidate_families": [
         "Whitespace normalizer"
@@ -1599,6 +2045,33 @@
         "CRLF",
         "word count",
         "code-point/grapheme distinction"
+      ]
+    },
+    {
+      "id": "x509-csr-rfc",
+      "candidate_families": [
+        "X509 certificate and CSR local inspector"
+      ],
+      "path": "quality/fixtures/x509-csr-rfc/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Ephemeral RSA key generated locally only to create synthetic example.test certificate/CSR fixtures; private key discarded immediately."
+      },
+      "truth_sources": [
+        "rfc5280",
+        "rfc2986",
+        "w3c-webcrypto",
+        "openssl-cli",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "PEM and DER certificate parsing",
+        "PKCS#10 CSR parsing",
+        "subject issuer serial validity SAN key/signature facts",
+        "independent SHA-256 fingerprint comparison",
+        "malformed encrypted and unsupported refusal",
+        "no trust or revocation inference"
       ]
     },
     {
@@ -1646,6 +2119,216 @@
         "signatures",
         "zip-slip boundary",
         "resource limits"
+      ]
+    },
+    {
+      "id": "color-vision-simulation",
+      "candidate_families": [
+        "Color blindness image simulation"
+      ],
+      "path": "quality/fixtures/color-vision-simulation/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Numeric matrices are factual model parameters transcribed from the cited research and independent implementation; pixel vectors are synthetic values authored for Strumentini.it."
+      },
+      "truth_sources": [
+        "machado-cvd-2009",
+        "r-colorspace-cvd-machado",
+        "r-colorspace-simulate-cvd-linear",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "complete-dichromacy protanopia matrix",
+        "complete-dichromacy deuteranopia matrix",
+        "complete-dichromacy tritanopia matrix",
+        "linear-sRGB matrix application and encoded-sRGB output",
+        "channel clamping and alpha preservation"
+      ]
+    },
+    {
+      "id": "sitemap-xml",
+      "candidate_families": [
+        "Sitemap XML generator"
+      ],
+      "path": "quality/fixtures/sitemap-xml/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic example.com URLs and metadata authored for Strumentini.it from public sitemap protocol rules; no third-party sitemap corpus copied."
+      },
+      "truth_sources": [
+        "sitemaps-protocol",
+        "whatwg-url",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "HTTP(S)-only URL normalization",
+        "XML entity escaping",
+        "optional metadata omission and validation",
+        "single-host constraint",
+        "50,000 URL and 50 MiB output boundaries",
+        "2,047-character maximum loc"
+      ]
+    },
+    {
+      "id": "barcode-linear",
+      "candidate_families": [
+        "EAN-13 and Code-128 barcode generator"
+      ],
+      "path": "quality/fixtures/barcode-linear/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Known GS1 check-digit example and synthetic Code 128 B strings are hand-worked from the cited public standards; no barcode corpus is copied."
+      },
+      "truth_sources": [
+        "gs1-general-specifications-26",
+        "iso-iec-15417-2007",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "EAN-13 known ISBN-derived GS1 vector",
+        "EAN-13 generated and invalid check digits",
+        "EAN-13 95-module structure and parity",
+        "Code 128 Start B and modulo-103 symbol check",
+        "Code Set B printable ASCII subset only",
+        "Code 128 unsupported Unicode/control/FNC/set-switch boundaries",
+        "SVG bar-geometry independent decode round trip"
+      ]
+    },
+    {
+      "id": "subtitle-transform",
+      "candidate_families": [
+        "SRT VTT transform transcript and readability"
+      ],
+      "path": "quality/fixtures/subtitle-transform/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic subtitle cues authored for Strumentini.it; protocol shapes and reading-speed context are derived from the cited public sources without copying a subtitle corpus."
+      },
+      "truth_sources": [
+        "w3c-webvtt",
+        "netflix-italian-ttsg",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "SRT and WebVTT supported-subset parsing",
+        "cue order timing and Unicode text round trip",
+        "malformed timing line/cue diagnostics",
+        "negative-offset refuse and duration-preserving clamp policies",
+        "rescale then offset transform order",
+        "clean transcript export",
+        "overlap and configurable source-labelled characters-per-second diagnostics"
+      ]
+    },
+    {
+      "id": "browser-audio-utilities",
+      "candidate_families": [
+        "Tone metronome and noise generator",
+        "Browser text-to-speech Italian controls",
+        "Microphone test and local recorder"
+      ],
+      "path": "quality/fixtures/browser-audio-utilities/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic settings/tap times and voice descriptors authored for Strumentini.it from public browser API contracts; no audio/voice corpus copied."
+      },
+      "truth_sources": [
+        "w3c-web-audio-1-1",
+        "w3c-media-capture-streams",
+        "w3c-mediastream-recording",
+        "wicg-web-speech-api",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "bounded tone frequency level and duration",
+        "bounded metronome BPM and tap-tempo arithmetic",
+        "white pink brown noise finite sample bounds",
+        "SpeechSynthesis rate/pitch bounds",
+        "runtime Italian voice filtering",
+        "runtime-only MediaRecorder MIME selection and actual Blob type/size",
+        "pause-resume active duration from monotonic event timestamps",
+        "permission denial/revocation recovery and bounded local recording lifecycle"
+      ]
+    },
+    {
+      "id": "ai-code-fence-bundle",
+      "candidate_families": [
+        "AI response code fences to named files ZIP"
+      ],
+      "path": "quality/fixtures/ai-code-fence-bundle/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic AI-style fenced-code examples authored for Strumentini.it; no third-party response corpus copied."
+      },
+      "truth_sources": [
+        "commonmark",
+        "pkware-appnote",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "fenced-code extraction",
+        "explicit filename hints",
+        "deterministic generated names",
+        "case-insensitive duplicate suffixes",
+        "absolute and traversal path refusal",
+        "store-only ZIP preview parity"
+      ]
+    },
+    {
+      "id": "italy-2026-consumers",
+      "candidate_families": [
+        "FatturaPA local reader",
+        "FatturaPA batch CSV",
+        "INPS artigiani/commercianti 2026",
+        "Gestione Separata 2026",
+        "Ponti e ferie 2026"
+      ],
+      "path": "quality/fixtures/italy-2026-consumers/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic/anonymized Strumentini.it inputs and hand-worked arithmetic derived from the pinned official 2026 source packs; no personal invoice data or third-party corpus copied."
+      },
+      "truth_sources": [
+        "fatturapa-v1-4-official",
+        "inps-circulars-2026-official",
+        "normattiva-holidays-2026-official",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "ordinary and simplified FatturaPA identities plus hostile XML policy",
+        "per-file FatturaPA batch isolation and represented-total reconciliation",
+        "INPS minimum first-band ceiling and profile boundaries",
+        "Gestione Separata credit-threshold versus contribution-floor distinction",
+        "fixed movable and custom-workweek 2026 bridge cases"
+      ]
+    },
+    {
+      "id": "xml-interchange",
+      "candidate_families": [
+        "Representable XML to JSON CSV and XLSX mappings"
+      ],
+      "path": "quality/fixtures/xml-interchange/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic XML/JSON/table examples authored for Strumentini.it; no third-party corpus copied."
+      },
+      "truth_sources": [
+        "fixture-policy"
+      ],
+      "coverage": [
+        "JSON attribute text repeated-child and empty-element mapping",
+        "direct homogeneous tabular rows",
+        "explicit nested rowPath mapping",
+        "scalar rows with attributes",
+        "mixed repeated nested and heterogeneous ambiguity refusal",
+        "DTD and external-entity refusal"
       ]
     }
   ]

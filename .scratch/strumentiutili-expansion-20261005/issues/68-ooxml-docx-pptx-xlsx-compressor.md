@@ -6,7 +6,7 @@
 
 **Constraints:** Modern `.docx/.pptx/.xlsx` only unless legacy formats get a separate proven parser; macro-enabled packages are refused or preserved without unsafe mutation until explicitly audited; no claim that text/XML itself can always shrink materially.
 
-**Blocked by:** 34, 47, 67.
+**Blocked by:** 225, 264.
 
 **Status:** blocked
 
@@ -16,4 +16,3 @@
 - [ ] Result shows source/result bytes, savings %, media changed/skipped and any fidelity warning.
 
 **Verification:** Real OOXML corpus with images/tables/charts/fonts/links, ZIP/relationship validation, independent reopen tests, visual/semantic spot checks and mobile-memory receipt.
-

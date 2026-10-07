@@ -2,9 +2,9 @@
 
 ## Brand status
 
-StrumentiUtili.it is the selected public brand.
+Strumentini.it is the selected public brand.
 
-Historical research found a collision involving the former codename. That finding is retained as decision history; StrumentiUtili.it is the selected replacement identity.
+Historical research found a collision involving the former codename. That finding is retained as decision history; Strumentini.it is the selected replacement identity.
 
 ## Brand idea
 
@@ -19,7 +19,7 @@ The product should feel like:
 
 ## Positioning draft
 
-For independent knowledge workers who constantly jump between tiny online utilities, StrumentiUtili.it is a personal work-utility workspace that starts with the tools relevant to your job and keeps them ready with your safe defaults.
+For independent knowledge workers who constantly jump between tiny online utilities, Strumentini.it is a personal work-utility workspace that starts with the tools relevant to your job and keeps them ready with your safe defaults.
 
 Unlike generic tool directories, it is person-first: you begin with a small configured workspace, not hundreds of cards.
 
@@ -53,7 +53,7 @@ Privacy is a proof point, not the hero claim.
 
 ## Naming brief
 
-The selected public name, StrumentiUtili.it, should continue to:
+The selected public name, Strumentini.it, should continue to:
 
 - be short and pronounceable in English and Italian;
 - not contain OS;
@@ -70,7 +70,7 @@ Brand verification checklist:
 4. verify Italian and English pronunciation/readability;
 5. verify social handles where they matter.
 
-Do not silently replace StrumentiUtili.it with a new public name without an explicit owner decision.
+Do not silently replace Strumentini.it with a new public name without an explicit owner decision.
 
 ## Visual direction
 

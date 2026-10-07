@@ -13,6 +13,7 @@ export default {
   engine: "file-privacy",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "validator", capabilities: ["copy", "retry", "reset", "provenance"] },
   handoff: { emits: [{ type: "structured", format: "metadata-risk-report", maxBytes: 2_097_152 }] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-174", fixtureFamilies: ["image-metadata", "metadata-risk-scan"] },
 } as const satisfies ToolManifest;

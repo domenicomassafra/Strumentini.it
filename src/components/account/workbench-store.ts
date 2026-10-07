@@ -21,12 +21,12 @@ import { resetTelemetryAdapter } from "../../telemetry/browser";
 import { LAST_VALUE_STORAGE_KEY } from "../workbench/last-value";
 import { THEME_STORAGE_KEY } from "../shell/theme";
 
-export const SEARCH_CONTEXT_STORAGE_KEY = "strumentiutili:workbench-context:v1";
+export const SEARCH_CONTEXT_STORAGE_KEY = "strumentini:workbench-context:v1";
 export const LAST_VALUE_KEY = LAST_VALUE_STORAGE_KEY;
 export const THEME_KEY = THEME_STORAGE_KEY;
 
 /** Every key this site may own, so "delete local data" is the whole list. */
-const DEVICE_KEY_PREFIX = "strumentiutili:";
+const DEVICE_KEY_PREFIX = "strumentini:";
 /** The file name the workbench already uses for the same export. */
 const CONFIG_FILE_NAME = "workbench-config-v1.json";
 
@@ -102,7 +102,7 @@ function sweep(storage: Storage | undefined): void {
 
 /**
  * Removes everything this site keeps on the device: the IndexedDB record, the
- * `strumentiutili:*` keys in both web storages, and the per-tab telemetry
+ * `strumentini:*` keys in both web storages, and the per-tab telemetry
  * markers through the module that owns them. Nothing on the account is touched.
  */
 export async function clearDeviceData(): Promise<{ readonly persisted: boolean }> {

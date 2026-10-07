@@ -13,6 +13,7 @@ export const metaPreviewManifest = {
   engine: "url-marketing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "validator", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-070", fixtureFamilies: ["html-entities", "url-security"] },
 } as const satisfies ToolManifest;
 

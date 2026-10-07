@@ -34,6 +34,14 @@ interface SocialResult {
   readonly withinLimit: boolean;
   readonly withinLimitWeighted: boolean | null;
   readonly lineBreaks: number;
+  readonly previewPreset: {
+    readonly labelIt: string;
+    readonly platformIt: string;
+    readonly viewport: { readonly width: number; readonly height: number };
+    readonly source: string;
+    readonly checkedAt: string;
+    readonly approximationIt: string;
+  };
 }
 
 const SOCIAL_ERRORS: Readonly<Record<string, string>> = {
@@ -178,12 +186,13 @@ export function SocialCharacterLimitTool() {
               {result.limitOverridden && <div><dt>Limite applicato</dt><dd>{result.limit} caratteri, indicato da te al posto di quello dichiarato</dd></div>}
               <div><dt>Righe</dt><dd>{result.lineBreaks}</dd></div>
               <div><dt>Fonte del limite</dt><dd>{result.limitSource} · verificato il {result.limitVerifiedOn}</dd></div>
+              <div><dt>Contesto anteprima</dt><dd>{result.previewPreset.platformIt} · {result.previewPreset.viewport.width}×{result.previewPreset.viewport.height}px · {result.previewPreset.source} · preset controllato il {result.previewPreset.checkedAt}</dd></div>
             </dl>
 
             <p class="file-note">
               Le piattaforme cambiano questi valori: la data serve a dirti da quanto sono controllati, non a garantire
               che non siano cambiati nel frattempo. Se conosci il limite applicato al tuo caso, usa il campo
-              personalizzato.
+              personalizzato. {result.previewPreset.approximationIt}
             </p>
           </>
         )}

@@ -7,6 +7,7 @@ export interface SearchToolMetadata {
   summary: string;
   aliases: readonly string[];
   jobs: readonly string[];
+  keywords?: readonly string[];
   category: string;
   inputTypes: readonly string[];
   engine?: string;
@@ -41,6 +42,7 @@ export interface SearchIndexEntry extends SearchToolMetadata {
     summary: string;
     aliases: readonly string[];
     jobs: readonly string[];
+    keywords: readonly string[];
     category: string;
     inputTypes: readonly string[];
     packTags: readonly string[];

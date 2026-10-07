@@ -1,0 +1,2153 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-07T13:35:12.219Z",
+  "scope": "Tickets 267-275 feasibility decisions; no dependency in this isolated spike is production-promoted by this receipt.",
+  "networkPolicy": "The desktop benchmark aborts every non-loopback browser request before transmission.",
+  "physicalMobile": {
+    "iosSafari": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "androidChrome": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "note": "Desktop browsers, Playwright WebKit, device descriptors and viewport emulation are not physical-device evidence."
+  },
+  "memoryScope": "Measured peak values are Chromium JS-heap deltas only; WASM/native decoded surfaces, GPU memory and total process RSS remain outside the measurement.",
+  "initialSpikeBundle": {
+    "files": [
+      {
+        "file": "assets/index-DxC9YeHu.js",
+        "rawBytes": 19215,
+        "gzipBytes": 6584
+      },
+      {
+        "file": "assets/rolldown-runtime-C0FnF6B9.js",
+        "rawBytes": 1291,
+        "gzipBytes": 712
+      },
+      {
+        "file": "assets/preload-helper-BZ1Pz5am.js",
+        "rawBytes": 1218,
+        "gzipBytes": 691
+      }
+    ],
+    "rawBytes": 21724,
+    "gzipBytes": 7987
+  },
+  "tickets": [
+    {
+      "ticket": 267,
+      "title": "P7M CMS parser feasibility spike",
+      "decision": "REFUSE",
+      "ticketClosureEligible": true,
+      "reason": "PKIjs is a viable bounded parser candidate, but this spike refuses production promotion until full/mobile memory acceptance exists. The refusal still establishes a truthful local fallback boundary without claiming certificate trust-chain validity.",
+      "selectedCandidate": {
+        "package": "pkijs",
+        "version": "3.4.1",
+        "license": "BSD-3-Clause",
+        "companion": "asn1js@3.0.10",
+        "lazyBundle": {
+          "id": "pkijs-cms",
+          "entry": {
+            "file": "assets/index.es-CBqjg_vO.js",
+            "rawBytes": 332368,
+            "gzipBytes": 67416
+          },
+          "imported": [
+            {
+              "file": "assets/rolldown-runtime-C0FnF6B9.js",
+              "rawBytes": 1291,
+              "gzipBytes": 712
+            },
+            {
+              "file": "assets/index.es-BAkBZI1U.js",
+              "rawBytes": 56272,
+              "gzipBytes": 13461
+            }
+          ],
+          "assets": [],
+          "lazyRawBytes": 389931,
+          "lazyGzipBytes": 81589
+        }
+      },
+      "capabilities": {
+        "envelopeParse": "PROVEN_DESKTOP",
+        "payloadExtraction": "PROVEN_DESKTOP",
+        "certificateMetadata": "PROVEN_DESKTOP",
+        "trustChainValidity": "REFUSE_NOT_EVALUATED"
+      },
+      "fixtures": [
+        {
+          "name": "sample.p7m",
+          "bytes": 1549,
+          "sha256": "5c129f98f15127b421919462099f10dd27a52a4996c4f1531689e7640b239de8",
+          "provenance": "Generated locally by OpenSSL CMS SignedData with an ephemeral self-signed fixture certificate; payload is synthetic"
+        },
+        {
+          "name": "sample-corrupt.p7m",
+          "bytes": 774,
+          "sha256": "b6addfddfbd15b14c669d34455c3732c98bb6b2dea64bcca0514975432d5475b",
+          "provenance": "Deterministic truncation of the local valid CMS/P7M fixture"
+        },
+        {
+          "name": "sample-unsupported-cms.der",
+          "bytes": 28,
+          "sha256": "3617513b5ebe76eba2909c564654d4700754d1c960d2721519bf41b56f4cc3f6",
+          "provenance": "Locally authored CMS ContentInfo with data content type rather than SignedData"
+        }
+      ],
+      "runtime": [
+        {
+          "engine": "chrome",
+          "classification": "real-desktop-browser",
+          "status": "PASS",
+          "candidate": "pkijs@3.4.1 + asn1js@3.0.10",
+          "coldLoadMs": 294.2099999785423,
+          "runtimeMs": 88.125,
+          "peakJsHeapDeltaBytes": 14317442,
+          "value": {
+            "payloadBytes": 25,
+            "certificateCount": 1,
+            "signerCount": 1,
+            "subject": [
+              "Strumentini Feasibility",
+              "Local Test"
+            ],
+            "corruptRejected": true,
+            "unsupportedContentType": "1.2.840.113549.1.7.1",
+            "unsupportedRejected": true,
+            "trustChainStatus": "NOT_EVALUATED"
+          },
+          "externalRequestsObserved": 0
+        },
+        {
+          "engine": "edge",
+          "classification": "real-desktop-browser",
+          "status": "PASS",
+          "candidate": "pkijs@3.4.1 + asn1js@3.0.10",
+          "coldLoadMs": 300.5049999952316,
+          "runtimeMs": 134.82499998807907,
+          "peakJsHeapDeltaBytes": 16283617,
+          "value": {
+            "payloadBytes": 25,
+            "certificateCount": 1,
+            "signerCount": 1,
+            "subject": [
+              "Strumentini Feasibility",
+              "Local Test"
+            ],
+            "corruptRejected": true,
+            "unsupportedContentType": "1.2.840.113549.1.7.1",
+            "unsupportedRejected": true,
+            "trustChainStatus": "NOT_EVALUATED"
+          },
+          "externalRequestsObserved": 0
+        },
+        {
+          "engine": "chromium",
+          "classification": "desktop-regression",
+          "status": "PASS",
+          "candidate": "pkijs@3.4.1 + asn1js@3.0.10",
+          "coldLoadMs": 279.44999998807907,
+          "runtimeMs": 129.05000001192093,
+          "peakJsHeapDeltaBytes": 17048502,
+          "value": {
+            "payloadBytes": 25,
+            "certificateCount": 1,
+            "signerCount": 1,
+            "subject": [
+              "Strumentini Feasibility",
+              "Local Test"
+            ],
+            "corruptRejected": true,
+            "unsupportedContentType": "1.2.840.113549.1.7.1",
+            "unsupportedRejected": true,
+            "trustChainStatus": "NOT_EVALUATED"
+          },
+          "externalRequestsObserved": 0
+        },
+        {
+          "engine": "firefox",
+          "classification": "desktop-regression",
+          "status": "PASS",
+          "candidate": "pkijs@3.4.1 + asn1js@3.0.10",
+          "coldLoadMs": 176.14000000000001,
+          "runtimeMs": 135.26,
+          "peakJsHeapDeltaBytes": null,
+          "value": {
+            "payloadBytes": 25,
+            "certificateCount": 1,
+            "signerCount": 1,
+            "subject": [
+              "Strumentini Feasibility",
+              "Local Test"
+            ],
+            "corruptRejected": true,
+            "unsupportedContentType": "1.2.840.113549.1.7.1",
+            "unsupportedRejected": true,
+            "trustChainStatus": "NOT_EVALUATED"
+          },
+          "externalRequestsObserved": 0
+        },
+        {
+          "engine": "webkit",
+          "classification": "desktop-regression-not-safari",
+          "status": "PASS",
+          "candidate": "pkijs@3.4.1 + asn1js@3.0.10",
+          "coldLoadMs": 409.20000000000005,
+          "runtimeMs": 176.07999999999998,
+          "peakJsHeapDeltaBytes": null,
+          "value": {
+            "payloadBytes": 25,
+            "certificateCount": 1,
+            "signerCount": 1,
+            "subject": [
+              "Strumentini Feasibility",
+              "Local Test"
+            ],
+            "corruptRejected": true,
+            "unsupportedContentType": "1.2.840.113549.1.7.1",
+            "unsupportedRejected": true,
+            "trustChainStatus": "NOT_EVALUATED"
+          },
+          "externalRequestsObserved": 0
+        }
+      ],
+      "remainingEvidence": [
+        "Physical iOS Safari and Android Chrome memory/runtime evidence is absent; therefore no production parser promotion is authorized."
+      ]
+    },
+    {
+      "ticket": 268,
+      "title": "Image codec and SVG optimizer feasibility spike",
+      "decision": "REFUSE",
+      "ticketClosureEligible": true,
+      "reason": "The feasibility matrix is complete, but this lane refuses new codec/optimizer production promotion. Browser-native JPEG/PNG remain bounded existing paths; HEIC stays a libheif spike and cannot be promoted without the required real-iPhone plus physical-mobile evidence.",
+      "modes": {
+        "jpegEncode": "IMPLEMENT_BROWSER_NATIVE_BOUNDED",
+        "webpEncode": "REFUSE_AS_UNIFORM_NATIVE_PATH",
+        "pngEncode": "IMPLEMENT_BROWSER_NATIVE_BOUNDED",
+        "jpegWebpAdvancedCodecControls": "REFUSE_NO_VETTED_UNIFORM_CODEC_PATH",
+        "pngOptimization": "REFUSE_NO_VETTED_OPTIMIZER",
+        "svgOptimization": "REFUSE_NO_BROWSER_NATIVE_OPTIMIZER",
+        "heicDecode": "SPIKE_LIBHEIF_JS_1_23_5",
+        "avifEncode": "REFUSE_AS_UNIFORM_NATIVE_PATH",
+        "animatedGifDecode": "SPIKE_DESKTOP_PROVEN",
+        "animatedGifWriteOptimize": "REFUSE_UNPROVEN"
+      },
+      "evidence": {
+        "nativeModes": [
+          {
+            "engine": "chrome",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "browser-native image decode/canvas encode",
+            "coldLoadMs": 0,
+            "runtimeMs": 168.64500004053116,
+            "peakJsHeapDeltaBytes": 20040939,
+            "value": {
+              "gif": {
+                "width": 64,
+                "height": 64,
+                "frameCount": 4,
+                "imageDecoder": true
+              },
+              "encoders": {
+                "jpeg": {
+                  "type": "image/jpeg",
+                  "bytes": 762
+                },
+                "webp": {
+                  "type": "image/webp",
+                  "bytes": 550
+                },
+                "png": {
+                  "type": "image/png",
+                  "bytes": 105
+                },
+                "avif": {
+                  "type": "image/png",
+                  "bytes": 105
+                }
+              },
+              "svgOptimizer": "NO_BROWSER_NATIVE_OPTIMIZER"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "edge",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "browser-native image decode/canvas encode",
+            "coldLoadMs": 0,
+            "runtimeMs": 206.7699999809265,
+            "peakJsHeapDeltaBytes": 22623444,
+            "value": {
+              "gif": {
+                "width": 64,
+                "height": 64,
+                "frameCount": 4,
+                "imageDecoder": true
+              },
+              "encoders": {
+                "jpeg": {
+                  "type": "image/jpeg",
+                  "bytes": 762
+                },
+                "webp": {
+                  "type": "image/webp",
+                  "bytes": 550
+                },
+                "png": {
+                  "type": "image/png",
+                  "bytes": 105
+                },
+                "avif": {
+                  "type": "image/png",
+                  "bytes": 105
+                }
+              },
+              "svgOptimizer": "NO_BROWSER_NATIVE_OPTIMIZER"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "chromium",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "browser-native image decode/canvas encode",
+            "coldLoadMs": 0,
+            "runtimeMs": 200.75999999046326,
+            "peakJsHeapDeltaBytes": 21884180,
+            "value": {
+              "gif": {
+                "width": 64,
+                "height": 64,
+                "frameCount": 4,
+                "imageDecoder": true
+              },
+              "encoders": {
+                "jpeg": {
+                  "type": "image/jpeg",
+                  "bytes": 762
+                },
+                "webp": {
+                  "type": "image/webp",
+                  "bytes": 550
+                },
+                "png": {
+                  "type": "image/png",
+                  "bytes": 105
+                },
+                "avif": {
+                  "type": "image/png",
+                  "bytes": 105
+                }
+              },
+              "svgOptimizer": "NO_BROWSER_NATIVE_OPTIMIZER"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "firefox",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "browser-native image decode/canvas encode",
+            "coldLoadMs": 0,
+            "runtimeMs": 85.12,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "gif": {
+                "width": 64,
+                "height": 64,
+                "frameCount": 4,
+                "imageDecoder": true
+              },
+              "encoders": {
+                "jpeg": {
+                  "type": "image/jpeg",
+                  "bytes": 634
+                },
+                "webp": {
+                  "type": "image/webp",
+                  "bytes": 68
+                },
+                "png": {
+                  "type": "image/png",
+                  "bytes": 104
+                },
+                "avif": {
+                  "type": "image/png",
+                  "bytes": 104
+                }
+              },
+              "svgOptimizer": "NO_BROWSER_NATIVE_OPTIMIZER"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "webkit",
+            "classification": "desktop-regression-not-safari",
+            "status": "PASS",
+            "candidate": "browser-native image decode/canvas encode",
+            "coldLoadMs": 0,
+            "runtimeMs": 230.50000000000006,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "gif": {
+                "width": 64,
+                "height": 64,
+                "frameCount": 4,
+                "imageDecoder": true
+              },
+              "encoders": {
+                "jpeg": {
+                  "type": "image/jpeg",
+                  "bytes": 777
+                },
+                "webp": {
+                  "type": "image/png",
+                  "bytes": 171
+                },
+                "png": {
+                  "type": "image/png",
+                  "bytes": 171
+                },
+                "avif": {
+                  "type": "image/avif",
+                  "bytes": 375
+                }
+              },
+              "svgOptimizer": "NO_BROWSER_NATIVE_OPTIMIZER"
+            },
+            "externalRequestsObserved": 0
+          }
+        ],
+        "libheif": {
+          "package": "libheif-js",
+          "version": "1.23.5",
+          "license": "LGPL-3.0",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 2041229,
+            "gzipBytes": 715049,
+            "emittedAssets": []
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "heic-libheif",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 117.07499998807907,
+            "runtimeMs": 35.2049999833107,
+            "peakJsHeapDeltaBytes": 4196026,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "NEEDS_WORKER_TERMINATION",
+            "note": "Decode API has no AbortSignal seam; downstream path must own it in a worker and terminate on cancel/resource breach."
+          },
+          "fallback": "Native browser decode when capability probe proves it; otherwise explicit unsupported state."
+        },
+        "heicFixture": {
+          "name": "sample.heic",
+          "bytes": 488,
+          "sha256": "1148e821663865e8c785bff45fd6a705225bfb02ea5fb233ab236e440ed7992f",
+          "provenance": "Converted from heic-source.png with macOS sips -s format heic"
+        },
+        "animatedGifFixture": {
+          "name": "sample-animated.gif",
+          "bytes": 3816,
+          "sha256": "d27d8e49dcbda8a41aa54e0ba7d470734163690214d6de21eace9c911e4c4877",
+          "provenance": "64x64 1-second animated GIF generated locally with FFmpeg testsrc"
+        },
+        "realIphoneHeicPresent": false,
+        "initialSpikeBundleGzipBytes": 7987
+      },
+      "remainingEvidence": [
+        "Required real-iPhone HEIC fixture is absent; current HEIC was synthesized from a PNG with macOS sips.",
+        "Genuine iOS Safari and Android Chrome codec/memory receipts are absent."
+      ]
+    },
+    {
+      "ticket": 269,
+      "title": "Advanced PDF renderer and mutation feasibility spike",
+      "decision": "REFUSE",
+      "ticketClosureEligible": true,
+      "reason": "The feasibility matrix is complete: existing in-house operations stay preferred, bounded mutation/render candidates remain spikes, and fidelity-sensitive advanced capabilities are refused. No new advanced PDF dependency is production-promoted without physical-mobile memory evidence.",
+      "capabilities": {
+        "existingInHouseOperations": "KEEP",
+        "boundedMutation": "SPIKE_CANTOO_PDF_LIB_2_11_1",
+        "renderAndText": "SPIKE_PDFJS_DIST_6_4_299",
+        "encryption": "REFUSE_UNPROVEN",
+        "irreversibleRedaction": "REFUSE_UNPROVEN",
+        "repair": "REFUSE_UNPROVEN",
+        "pdfA": "REFUSE_UNPROVEN",
+        "richConversion": "REFUSE_UNPROVEN"
+      },
+      "evidence": {
+        "mutation": {
+          "package": "@cantoo/pdf-lib",
+          "version": "2.11.1",
+          "license": "MIT",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 579248,
+            "gzipBytes": 248951,
+            "emittedAssets": []
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "pdf-cantoo-mutate",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 132.17500001192093,
+            "runtimeMs": 5.584999978542328,
+            "peakJsHeapDeltaBytes": 1384338,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "NONE",
+            "note": "Object-model mutation has no direct AbortSignal; worker termination plus corrupt/large corpus limits are required."
+          },
+          "fallback": "Preserve current in-house PDF engine for operations it already handles."
+        },
+        "renderer": {
+          "package": "pdfjs-dist",
+          "version": "6.4.299",
+          "license": "Apache-2.0",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 2661847,
+            "gzipBytes": 602370,
+            "emittedAssets": [
+              {
+                "file": "assets/pdf.worker-PhvoOpM7.mjs",
+                "rawBytes": 2229713,
+                "gzipBytes": 474156
+              }
+            ]
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "pdfjs-render",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 121.99000000953674,
+            "runtimeMs": 94.49000000953674,
+            "peakJsHeapDeltaBytes": 8397499,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "AVAILABLE_NOT_STRESS_TESTED",
+            "note": "LoadingTask.destroy()/render task cancellation exist; this tranche validates cleanup but not forced mid-render termination."
+          },
+          "fallback": "Structural-only inspection or current in-house operations when full rendering is not required."
+        },
+        "large200Page": [
+          {
+            "engine": "chrome",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1 + pdfjs-dist@6.4.299",
+            "coldLoadMs": 258.64999997615814,
+            "runtimeMs": 188.45999997854233,
+            "peakJsHeapDeltaBytes": 13660153,
+            "value": {
+              "pages": 200,
+              "inputBytes": 94663,
+              "savedBytes": 94683,
+              "cancellationObserved": true
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "edge",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1 + pdfjs-dist@6.4.299",
+            "coldLoadMs": 283.4800000190735,
+            "runtimeMs": 204.00499999523163,
+            "peakJsHeapDeltaBytes": 6438067,
+            "value": {
+              "pages": 200,
+              "inputBytes": 94663,
+              "savedBytes": 94684,
+              "cancellationObserved": true
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "chromium",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1 + pdfjs-dist@6.4.299",
+            "coldLoadMs": 280.7649999856949,
+            "runtimeMs": 227.1899999976158,
+            "peakJsHeapDeltaBytes": 15880120,
+            "value": {
+              "pages": 200,
+              "inputBytes": 94663,
+              "savedBytes": 94684,
+              "cancellationObserved": true
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "firefox",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1 + pdfjs-dist@6.4.299",
+            "coldLoadMs": 203.27999999999997,
+            "runtimeMs": 224.5,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "pages": 200,
+              "inputBytes": 94663,
+              "savedBytes": 94684,
+              "cancellationObserved": true
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "webkit",
+            "classification": "desktop-regression-not-safari",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1 + pdfjs-dist@6.4.299",
+            "coldLoadMs": 263.14,
+            "runtimeMs": 302,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "pages": 200,
+              "inputBytes": 94663,
+              "savedBytes": 94684,
+              "cancellationObserved": true
+            },
+            "externalRequestsObserved": 0
+          }
+        ],
+        "fixture": {
+          "name": "sample-200.pdf",
+          "bytes": 94663,
+          "sha256": "3c286787a415fd3887db0f46fb2b52c998041aa557e8ff19b900b6648fdef63d",
+          "provenance": "Generated by this script with @cantoo/pdf-lib 2.11.1; 200 bounded synthetic pages"
+        }
+      },
+      "remainingEvidence": [
+        "Required mobile case/memory evidence is absent on physical iOS Safari and Android Chrome.",
+        "No fidelity corpus yet proves encryption, destructive redaction, repair, PDF/A, or rich conversion claims."
+      ]
+    },
+    {
+      "ticket": 270,
+      "title": "Office spreadsheet parser writer and renderer feasibility spike",
+      "decision": "REFUSE",
+      "ticketClosureEligible": true,
+      "reason": "The feasibility decision is complete: bounded DOCX semantic/generation/preview candidates are measured, while the current XLSX/PPTX choices and faithful Office rendering are explicitly refused. Missing physical-mobile/fidelity evidence is retained as the reason no Office stack is promoted.",
+      "capabilities": {
+        "xlsxParseWrite": "REFUSE_XLSX_0_18_5_SECURITY_AUDIT",
+        "docxSemanticExtract": "SPIKE_MAMMOTH_1_13_0",
+        "docxGenerate": "SPIKE_DOCX_9_8_1",
+        "docxPreview": "SPIKE_NON_FIDELITY_DOCX_PREVIEW_0_4_1",
+        "pptxGenerate": "REFUSE_PPTXGENJS_4_0_1_SECURITY_AUDIT",
+        "faithfulOfficeRender": "REFUSE_UNPROVEN",
+        "csvToXlsx": "REFUSE_UNTIL_CLEAN_XLSX_WRITER_SELECTED",
+        "macrosActiveContent": "REFUSE",
+        "externalLinkedContent": "REFUSE_AUTOMATIC_FETCH_OR_RENDER"
+      },
+      "evidence": {
+        "xlsx": {
+          "package": "xlsx",
+          "version": "0.18.5",
+          "license": "Apache-2.0",
+          "decision": "DENY",
+          "securityAudit": {
+            "status": "FAIL",
+            "severity": "high",
+            "advisories": [
+              {
+                "title": "Prototype Pollution in sheetJS",
+                "severity": "high",
+                "url": "https://github.com/advisories/GHSA-4r6h-8v6p-xvw6",
+                "range": "<0.19.3"
+              },
+              {
+                "title": "SheetJS Regular Expression Denial of Service (ReDoS)",
+                "severity": "high",
+                "url": "https://github.com/advisories/GHSA-5pgg-2g8v-p4x9",
+                "range": "<0.20.2"
+              }
+            ],
+            "effects": [],
+            "fixAvailable": false
+          },
+          "lazyBundle": {
+            "rawBytes": 423955,
+            "gzipBytes": 138725,
+            "emittedAssets": []
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "office-xlsx",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 109.00499999523163,
+            "runtimeMs": 11.145000040531158,
+            "peakJsHeapDeltaBytes": 2102827,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "NONE",
+            "note": "Synchronous parse/write surface requires worker isolation for any future bounded use."
+          },
+          "fallback": "Keep CSV/table paths; evaluate a separately audited XLSX adapter before implementation."
+        },
+        "mammoth": {
+          "package": "mammoth",
+          "version": "1.13.0",
+          "license": "BSD-2-Clause",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 299952,
+            "gzipBytes": 87132,
+            "emittedAssets": []
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "office-docx-extract",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 69.84500002861023,
+            "runtimeMs": 91.85500001907349,
+            "peakJsHeapDeltaBytes": 13318301,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "NONE",
+            "note": "No direct AbortSignal; future use needs worker termination and document-size limits."
+          },
+          "fallback": "Offer package/metadata inspection or explicit unsupported conversion for fidelity-sensitive DOCX."
+        },
+        "docx": {
+          "package": "docx",
+          "version": "9.8.1",
+          "license": "MIT",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 439273,
+            "gzipBytes": 124539,
+            "emittedAssets": []
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "office-docx-write",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 84.07499998807907,
+            "runtimeMs": 146.0649999976158,
+            "peakJsHeapDeltaBytes": 22743214,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "NONE",
+            "note": "Generation has no direct AbortSignal; worker ownership is required for larger documents."
+          },
+          "fallback": "Generate HTML/TXT locally when DOCX output cannot meet fidelity/resource gate."
+        },
+        "docxPreview": {
+          "package": "docx-preview",
+          "version": "0.4.1",
+          "license": "Apache-2.0",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 172889,
+            "gzipBytes": 49374,
+            "emittedAssets": []
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "office-docx-preview",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 46.49500000476837,
+            "runtimeMs": 90.84500002861023,
+            "peakJsHeapDeltaBytes": 12231253,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "NONE",
+            "note": "Render API has no tested cancel seam; worker/off-main-thread feasibility remains downstream work."
+          },
+          "fallback": "Semantic extraction without claiming Word-faithful rendering."
+        },
+        "pptx": {
+          "package": "pptxgenjs",
+          "version": "4.0.1",
+          "license": "MIT",
+          "decision": "DENY",
+          "securityAudit": {
+            "status": "FAIL",
+            "severity": "high",
+            "advisories": [],
+            "effects": [],
+            "fixAvailable": {
+              "name": "pptxgenjs",
+              "version": "4.0.0",
+              "isSemVerMajor": true
+            }
+          },
+          "lazyBundle": {
+            "rawBytes": 371168,
+            "gzipBytes": 123543,
+            "emittedAssets": []
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "office-pptx-write",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 95.44499999284744,
+            "runtimeMs": 135.96999996900558,
+            "peakJsHeapDeltaBytes": 21245581,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "NONE",
+            "note": "No cancellation acceptance because dependency audit already blocks promotion."
+          },
+          "fallback": "Do not ship until dependency audit is clean; page-as-image/PDF workflows remain separate."
+        }
+      },
+      "remainingEvidence": [
+        "Genuine mobile memory/runtime evidence is absent.",
+        "No corpus establishes faithful Word/PowerPoint layout rendering; preview remains explicitly non-fidelity."
+      ]
+    },
+    {
+      "ticket": 271,
+      "title": "OCR engine feasibility spike",
+      "decision": "REFUSE",
+      "ticketClosureEligible": true,
+      "reason": "The feasibility decision is complete: Italian OCR and same-origin assets are proven on the desktop corpus, but production promotion is refused because physical-mobile and complete WASM/native-memory evidence is absent. Searchable-PDF composition remains a separate integration concern.",
+      "capabilities": {
+        "italianRasterOcr": "SPIKE_TESSERACT_JS_7_0_0",
+        "languageData": "LOCAL_SAME_ORIGIN_ITA_1_0_0",
+        "offlineCaching": "LOCAL_ASSET_PATH_PROVEN_CACHE_POLICY_NOT_PROMOTED",
+        "searchablePdfTextLayer": "REFUSE_IN_OCR_ENGINE_SPIKE_SEPARATE_INTEGRATION"
+      },
+      "evidence": {
+        "engine": {
+          "package": "tesseract.js",
+          "version": "7.0.0",
+          "license": "Apache-2.0",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 4035650,
+            "gzipBytes": 1504272,
+            "emittedAssets": [],
+            "runtimeAssets": [
+              {
+                "file": "worker.min.js",
+                "rawBytes": 111307,
+                "gzipBytes": 33611
+              },
+              {
+                "file": "core/tesseract-core-relaxedsimd-lstm.wasm.js",
+                "rawBytes": 3905767,
+                "gzipBytes": 1462723
+              }
+            ],
+            "note": "Observed Chrome path: JS entry plus same-origin worker and the selected runtime core wrapper. Italian language data is reported separately on tesseract-ita."
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "ocr-tesseract-ita",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 38.15499997138977,
+            "runtimeMs": 417.5300000309944,
+            "peakJsHeapDeltaBytes": 11224772,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "PARTIAL",
+            "note": "Worker lifecycle is explicit and terminate() is used for cleanup; mid-recognition cancel/restart still belongs to ticket 101."
+          },
+          "fallback": "Refuse OCR on resource-risk devices; no server OCR fallback."
+        },
+        "language": {
+          "package": "@tesseract.js-data/ita",
+          "version": "1.0.0",
+          "license": "MIT",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 6933830,
+            "gzipBytes": 6907823,
+            "emittedAssets": [],
+            "runtimeAssets": [
+              {
+                "file": "lang/ita.traineddata.gz",
+                "rawBytes": 6933830,
+                "gzipBytes": 6907823
+              }
+            ],
+            "note": "Italian traineddata is already gzip-compressed; gzipBytes here is a second gzip measurement for consistency, while the rawBytes value is the actual .traineddata.gz asset size served by the spike."
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "ocr-tesseract-ita",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 38.15499997138977,
+            "runtimeMs": 417.5300000309944,
+            "peakJsHeapDeltaBytes": 11224772,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "N_A",
+            "note": "Data asset; cancellation belongs to the Tesseract worker."
+          },
+          "fallback": "OCR unavailable until language data is present locally."
+        },
+        "runtime": [
+          {
+            "engine": "chrome",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "tesseract.js@7.0.0 + ita@1.0.0",
+            "coldLoadMs": 37.705000042915344,
+            "runtimeMs": 453.06999999284744,
+            "peakJsHeapDeltaBytes": 20486529,
+            "value": {
+              "text": "Fattura numero 12345 - Totale euro 678,90",
+              "confidence": 94,
+              "progressEvents": 11
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "edge",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "tesseract.js@7.0.0 + ita@1.0.0",
+            "coldLoadMs": 51.18000000715256,
+            "runtimeMs": 459.7699999809265,
+            "peakJsHeapDeltaBytes": 23003220,
+            "value": {
+              "text": "Fattura numero 12345 - Totale euro 678,90",
+              "confidence": 94,
+              "progressEvents": 11
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "chromium",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "tesseract.js@7.0.0 + ita@1.0.0",
+            "coldLoadMs": 58.39999997615814,
+            "runtimeMs": 461.6550000309944,
+            "peakJsHeapDeltaBytes": 22017062,
+            "value": {
+              "text": "Fattura numero 12345 - Totale euro 678,90",
+              "confidence": 94,
+              "progressEvents": 11
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "firefox",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "tesseract.js@7.0.0 + ita@1.0.0",
+            "coldLoadMs": 36.19999999999999,
+            "runtimeMs": 595.3,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "text": "Fattura numero 12345 - Totale euro 678,90",
+              "confidence": 94,
+              "progressEvents": 11
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "webkit",
+            "classification": "desktop-regression-not-safari",
+            "status": "PASS",
+            "candidate": "tesseract.js@7.0.0 + ita@1.0.0",
+            "coldLoadMs": 35.72,
+            "runtimeMs": 507.58000000000004,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "text": "Fattura numero 12345 - Totale euro 678,90",
+              "confidence": 94,
+              "progressEvents": 11
+            },
+            "externalRequestsObserved": 0
+          }
+        ],
+        "fixture": {
+          "name": "ocr-it.png",
+          "bytes": 14305,
+          "sha256": "1bfc71b54560679f6b6d0e8f978201b2ca27fdfcd84d47ef9344d41db0a2f27b",
+          "provenance": "1280x240 PNG rendered locally with Pillow + system Helvetica; contains fixed Italian invoice text"
+        }
+      },
+      "remainingEvidence": [
+        "Required physical mobile OCR behavior is not measured.",
+        "WASM/native memory remains outside performance.memory JS-heap accounting."
+      ]
+    },
+    {
+      "ticket": 272,
+      "title": "Archive codec feasibility spike",
+      "decision": "REFUSE",
+      "ticketClosureEligible": true,
+      "reason": "fflate is a small clean ZIP/GZIP candidate, but the measured unsafe path exposure, high expansion ratios, synchronous API and missing physical-mobile resource evidence justify refusing production promotion in this feasibility ticket. 7z and RAR are separately refused because no maintained approved local codec was proven.",
+      "capabilities": {
+        "zipDeflate": "REFUSE_PROMOTION_FFLATE_0_8_3_REQUIRES_SECURITY_RESOURCE_WRAPPER",
+        "gzip": "REFUSE_PROMOTION_FFLATE_0_8_3_REQUIRES_SECURITY_RESOURCE_WRAPPER",
+        "sevenZip": "REFUSE_NO_APPROVED_LOCAL_CODEC_PROVEN",
+        "rar": "REFUSE_NO_APPROVED_LOCAL_CODEC_PROVEN"
+      },
+      "selectedCandidate": {
+        "package": "fflate",
+        "version": "0.8.3",
+        "license": "MIT",
+        "lazyBundle": {
+          "id": "fflate",
+          "entry": {
+            "file": "assets/browser-BV4XJ9Z2.js",
+            "rawBytes": 1098,
+            "gzipBytes": 479
+          },
+          "imported": [
+            {
+              "file": "assets/browser-ClCPJ7Bh.js",
+              "rawBytes": 31384,
+              "gzipBytes": 11962
+            }
+          ],
+          "assets": [],
+          "lazyRawBytes": 32482,
+          "lazyGzipBytes": 12441
+        }
+      },
+      "requiredWrapperIfReopened": [
+        "Reject absolute, parent-traversal and normalized-outside-target entry paths before writing.",
+        "Bound entry count, per-entry bytes, cumulative expanded bytes and expansion ratio before/while materializing output.",
+        "Run synchronous codec work in the shared terminable worker or adopt a bounded streaming API so cancel/resource breach stops computation."
+      ],
+      "evidence": {
+        "runtime": [
+          {
+            "engine": "chrome",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "fflate@0.8.3",
+            "coldLoadMs": 133.83000004291534,
+            "runtimeMs": 64.02499997615814,
+            "peakJsHeapDeltaBytes": 15818801,
+            "value": {
+              "zipInputBytes": 394,
+              "gzipInputBytes": 282,
+              "expandedBytes": 90112,
+              "zipExpansionRatio": 228.71065989847716,
+              "gzipExpansionRatio": 319.54609929078015,
+              "unsafeNames": [
+                "../escape.txt"
+              ],
+              "corruptZipRejected": true,
+              "corruptGzipRejected": true,
+              "cancellation": "SYNC_API_REQUIRES_OUTER_WORKER_TERMINATION_OR_STREAMING_WRAPPER"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "edge",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "fflate@0.8.3",
+            "coldLoadMs": 142.12000000476837,
+            "runtimeMs": 93.57499998807907,
+            "peakJsHeapDeltaBytes": 16016753,
+            "value": {
+              "zipInputBytes": 394,
+              "gzipInputBytes": 282,
+              "expandedBytes": 90112,
+              "zipExpansionRatio": 228.71065989847716,
+              "gzipExpansionRatio": 319.54609929078015,
+              "unsafeNames": [
+                "../escape.txt"
+              ],
+              "corruptZipRejected": true,
+              "corruptGzipRejected": true,
+              "cancellation": "SYNC_API_REQUIRES_OUTER_WORKER_TERMINATION_OR_STREAMING_WRAPPER"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "chromium",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "fflate@0.8.3",
+            "coldLoadMs": 146.24000000953674,
+            "runtimeMs": 70.34999996423721,
+            "peakJsHeapDeltaBytes": 15627765,
+            "value": {
+              "zipInputBytes": 394,
+              "gzipInputBytes": 282,
+              "expandedBytes": 90112,
+              "zipExpansionRatio": 228.71065989847716,
+              "gzipExpansionRatio": 319.54609929078015,
+              "unsafeNames": [
+                "../escape.txt"
+              ],
+              "corruptZipRejected": true,
+              "corruptGzipRejected": true,
+              "cancellation": "SYNC_API_REQUIRES_OUTER_WORKER_TERMINATION_OR_STREAMING_WRAPPER"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "firefox",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "fflate@0.8.3",
+            "coldLoadMs": 50.47999999999999,
+            "runtimeMs": 115.02000000000004,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "zipInputBytes": 394,
+              "gzipInputBytes": 282,
+              "expandedBytes": 90112,
+              "zipExpansionRatio": 228.71065989847716,
+              "gzipExpansionRatio": 319.54609929078015,
+              "unsafeNames": [
+                "../escape.txt"
+              ],
+              "corruptZipRejected": true,
+              "corruptGzipRejected": true,
+              "cancellation": "SYNC_API_REQUIRES_OUTER_WORKER_TERMINATION_OR_STREAMING_WRAPPER"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "webkit",
+            "classification": "desktop-regression-not-safari",
+            "status": "PASS",
+            "candidate": "fflate@0.8.3",
+            "coldLoadMs": 159.2,
+            "runtimeMs": 105.90000000000003,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "zipInputBytes": 394,
+              "gzipInputBytes": 282,
+              "expandedBytes": 90112,
+              "zipExpansionRatio": 228.71065989847716,
+              "gzipExpansionRatio": 319.54609929078015,
+              "unsafeNames": [
+                "../escape.txt"
+              ],
+              "corruptZipRejected": true,
+              "corruptGzipRejected": true,
+              "cancellation": "SYNC_API_REQUIRES_OUTER_WORKER_TERMINATION_OR_STREAMING_WRAPPER"
+            },
+            "externalRequestsObserved": 0
+          }
+        ],
+        "fixtures": [
+          {
+            "name": "sample.zip",
+            "bytes": 394,
+            "sha256": "c5e8160309a08d6fd093318fc6088e8b62f3cba66450819d1d5450d090284964",
+            "provenance": "Generated locally with fflate 0.8.3 from a synthetic repeated text payload"
+          },
+          {
+            "name": "sample.gz",
+            "bytes": 282,
+            "sha256": "2d9ecc1e0f07dd02c1b0317c113fa002e6963925e3568d89276c125768a278ee",
+            "provenance": "Generated locally with fflate 0.8.3 from the same synthetic repeated text payload"
+          },
+          {
+            "name": "sample-unsafe-path.zip",
+            "bytes": 164,
+            "sha256": "da4118968ec3a58184896355158352b3784792067dd39b24acc8fe40daa565b7",
+            "provenance": "Generated locally with fflate 0.8.3 and an intentionally unsafe ../ archive entry name"
+          },
+          {
+            "name": "sample-corrupt.zip",
+            "bytes": 382,
+            "sha256": "5c163f936762cdc69c9f47c963dda6007476e285b640b507d60ac26267ef7bad",
+            "provenance": "Deterministic truncation of the local ZIP fixture"
+          },
+          {
+            "name": "sample-corrupt.gz",
+            "bytes": 274,
+            "sha256": "2fdfd8a4876c4466892dc4be460d402d1bb0c646c648a371cce9efbc791ed564",
+            "provenance": "Deterministic truncation of the local GZIP fixture"
+          }
+        ]
+      },
+      "remainingEvidence": [
+        "Physical mobile archive cost is not measured; this is one reason current promotion is refused."
+      ]
+    },
+    {
+      "ticket": 273,
+      "title": "Audio codec and DSP feasibility spike",
+      "decision": "REFUSE",
+      "ticketClosureEligible": true,
+      "reason": "The feasibility matrix is complete: Web Audio DSP and media inspection remain measured spikes, exact codec support stays runtime-gated, and the available ffmpeg/lame baselines are refused. Production promotion is refused until representative physical iOS/Android evidence exists.",
+      "capabilities": {
+        "webAudioDsp": "SPIKE_DESKTOP_PROVEN",
+        "wavInspection": "SPIKE_MEDIABUNNY_1_61_3",
+        "codecDecodeEncode": "RUNTIME_WEBCODECS_CAPABILITY_GATED",
+        "ffmpegWasmTranscode": "REFUSE_CURRENT_CORE_LICENSE",
+        "standaloneMp3Encoder": "REFUSE_LAMEJS_BASELINE"
+      },
+      "evidence": {
+        "dsp": [
+          {
+            "engine": "chrome",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "Web Audio OfflineAudioContext",
+            "coldLoadMs": 0,
+            "runtimeMs": 5.694999992847443,
+            "peakJsHeapDeltaBytes": 452895,
+            "value": {
+              "frames": 96000,
+              "rms": 0.3535533166280829
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "edge",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "Web Audio OfflineAudioContext",
+            "coldLoadMs": 0,
+            "runtimeMs": 20.634999990463257,
+            "peakJsHeapDeltaBytes": 1131329,
+            "value": {
+              "frames": 96000,
+              "rms": 0.3535533166280829
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "chromium",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "Web Audio OfflineAudioContext",
+            "coldLoadMs": 0,
+            "runtimeMs": 14.019999980926514,
+            "peakJsHeapDeltaBytes": 670451,
+            "value": {
+              "frames": 96000,
+              "rms": 0.3535533166280829
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "firefox",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "Web Audio OfflineAudioContext",
+            "coldLoadMs": 0,
+            "runtimeMs": 5.899999999999977,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "frames": 96000,
+              "rms": 0.35355353704031145
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "webkit",
+            "classification": "desktop-regression-not-safari",
+            "status": "PASS",
+            "candidate": "Web Audio OfflineAudioContext",
+            "coldLoadMs": 0,
+            "runtimeMs": 10.23999999999998,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "frames": 96000,
+              "rms": 0.35355331632688325
+            },
+            "externalRequestsObserved": 0
+          }
+        ],
+        "media": {
+          "package": "mediabunny",
+          "version": "1.61.3",
+          "license": "MPL-2.0",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 696627,
+            "gzipBytes": 173610,
+            "emittedAssets": []
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "media-mediabunny-inspect",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 135.92499995231628,
+            "runtimeMs": 5.0950000286102295,
+            "peakJsHeapDeltaBytes": 219471,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "PARTIAL",
+            "note": "Input.dispose() provides an explicit lifecycle seam; conversion cancellation and worker ownership still require dedicated acceptance."
+          },
+          "fallback": "Metadata-only native probes or explicit unsupported state; no remote processing."
+        },
+        "ffmpeg": {
+          "package": "@ffmpeg/core",
+          "version": "0.12.10",
+          "license": "GPL-2.0-or-later",
+          "decision": "DENY",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": null,
+            "gzipBytes": null,
+            "emittedAssets": [],
+            "note": "Candidate was metadata-reviewed but intentionally not installed/executed in this tranche."
+          },
+          "runtime": {
+            "status": "NOT_BENCHMARKED",
+            "caseId": null
+          },
+          "cancellation": {
+            "status": "NOT_BENCHMARKED",
+            "note": "Denied before runtime benchmarking."
+          },
+          "fallback": "No production inclusion under current GPL-disallow policy."
+        },
+        "lamejs": {
+          "package": "lamejs",
+          "version": "1.2.1",
+          "license": "LGPL-3.0",
+          "decision": "DENY",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": null,
+            "gzipBytes": null,
+            "emittedAssets": [],
+            "note": "Candidate was metadata-reviewed but intentionally not installed/executed in this tranche."
+          },
+          "runtime": {
+            "status": "NOT_BENCHMARKED",
+            "caseId": null
+          },
+          "cancellation": {
+            "status": "NOT_BENCHMARKED",
+            "note": "Denied before runtime benchmarking."
+          },
+          "fallback": "Use proven native/WebCodecs audio codecs where available; otherwise refuse export."
+        },
+        "fixture": {
+          "name": "sample.wav",
+          "bytes": 192078,
+          "sha256": "aac5dc69dd34403e505f80abf52836101dc986195d45f8d8db34e84e0048d0c7",
+          "provenance": "2-second 48 kHz PCM sine wave generated locally with FFmpeg"
+        }
+      },
+      "remainingEvidence": [
+        "Physical iOS Safari and Android Chrome behavior is explicitly required and remains NOT_RUN."
+      ]
+    },
+    {
+      "ticket": 274,
+      "title": "Video codec and media-processing feasibility spike",
+      "decision": "REFUSE",
+      "ticketClosureEligible": true,
+      "reason": "The feasibility matrix is complete: Mediabunny/MP4Box inspection remain spikes, WebCodecs transcoding stays exact-capability gated, and the current ffmpeg.wasm core is refused. Production promotion is refused until representative physical mobile memory/cancellation evidence exists.",
+      "capabilities": {
+        "mp4Inspection": "SPIKE_MEDIABUNNY_1_61_3",
+        "isoBmffInspection": "SPIKE_MP4BOX_2_4_1",
+        "webCodecsTranscode": "SPIKE_ONLY_WHEN_EXACT_CONFIG_PROBE_PASSES",
+        "ffmpegWasmTranscode": "REFUSE_CURRENT_CORE_LICENSE"
+      },
+      "evidence": {
+        "media": {
+          "package": "mediabunny",
+          "version": "1.61.3",
+          "license": "MPL-2.0",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 696627,
+            "gzipBytes": 173610,
+            "emittedAssets": []
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "media-mediabunny-inspect",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 135.92499995231628,
+            "runtimeMs": 5.0950000286102295,
+            "peakJsHeapDeltaBytes": 219471,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "PARTIAL",
+            "note": "Input.dispose() provides an explicit lifecycle seam; conversion cancellation and worker ownership still require dedicated acceptance."
+          },
+          "fallback": "Metadata-only native probes or explicit unsupported state; no remote processing."
+        },
+        "mp4box": {
+          "package": "mp4box",
+          "version": "2.4.1",
+          "license": "BSD-3-Clause",
+          "decision": "SPIKE",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": 182431,
+            "gzipBytes": 41239,
+            "emittedAssets": []
+          },
+          "runtime": {
+            "status": "PASS",
+            "caseId": "video-mp4box-inspect",
+            "representativeBrowser": "system Google Chrome",
+            "coldLoadMs": 105.49000000953674,
+            "runtimeMs": 3.5199999809265137,
+            "peakJsHeapDeltaBytes": 441347,
+            "memoryScope": "JS heap observation only on Chromium performance.memory; excludes WASM linear memory, native decoded surfaces and browser process RSS.",
+            "allObservedDesktopPass": true,
+            "engines": [
+              {
+                "engine": "chrome",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "edge",
+                "classification": "real-desktop-browser",
+                "status": "PASS"
+              },
+              {
+                "engine": "chromium",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "firefox",
+                "classification": "desktop-regression",
+                "status": "PASS"
+              },
+              {
+                "engine": "webkit",
+                "classification": "desktop-regression-not-safari",
+                "status": "PASS"
+              }
+            ]
+          },
+          "cancellation": {
+            "status": "MANUAL",
+            "note": "Progressive parser can be abandoned/worker-terminated; no end-to-end cancellation acceptance was run."
+          },
+          "fallback": "Mediabunny inspection if smaller/stronger after bundle comparison."
+        },
+        "ffmpeg": {
+          "package": "@ffmpeg/core",
+          "version": "0.12.10",
+          "license": "GPL-2.0-or-later",
+          "decision": "DENY",
+          "securityAudit": {
+            "status": "PASS",
+            "severity": null,
+            "advisories": []
+          },
+          "lazyBundle": {
+            "rawBytes": null,
+            "gzipBytes": null,
+            "emittedAssets": [],
+            "note": "Candidate was metadata-reviewed but intentionally not installed/executed in this tranche."
+          },
+          "runtime": {
+            "status": "NOT_BENCHMARKED",
+            "caseId": null
+          },
+          "cancellation": {
+            "status": "NOT_BENCHMARKED",
+            "note": "Denied before runtime benchmarking."
+          },
+          "fallback": "No production inclusion under current GPL-disallow policy."
+        },
+        "largeInspection": [
+          {
+            "engine": "chrome",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 137.04999995231628,
+            "runtimeMs": 16.64000004529953,
+            "peakJsHeapDeltaBytes": 4424074,
+            "value": {
+              "bytes": 4954611,
+              "duration": 10,
+              "width": 1280,
+              "height": 720,
+              "cancellationSeam": "Input.dispose()"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "edge",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 154.13499999046326,
+            "runtimeMs": 16.615000009536743,
+            "peakJsHeapDeltaBytes": 4415423,
+            "value": {
+              "bytes": 4954611,
+              "duration": 10,
+              "width": 1280,
+              "height": 720,
+              "cancellationSeam": "Input.dispose()"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "chromium",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 149.80000001192093,
+            "runtimeMs": 14.114999949932098,
+            "peakJsHeapDeltaBytes": 4140302,
+            "value": {
+              "bytes": 4954611,
+              "duration": 10,
+              "width": 1280,
+              "height": 720,
+              "cancellationSeam": "Input.dispose()"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "firefox",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 112.85999999999999,
+            "runtimeMs": 11.180000000000007,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "bytes": 4954611,
+              "duration": 10,
+              "width": 1280,
+              "height": 720,
+              "cancellationSeam": "Input.dispose()"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "webkit",
+            "classification": "desktop-regression-not-safari",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 196.22000000000003,
+            "runtimeMs": 79.83999999999997,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "bytes": 4954611,
+              "duration": 10,
+              "width": 1280,
+              "height": 720,
+              "cancellationSeam": "Input.dispose()"
+            },
+            "externalRequestsObserved": 0
+          }
+        ],
+        "fixture": {
+          "name": "sample-10s-720p.mp4",
+          "bytes": 4954611,
+          "sha256": "86cf6266c95125286224b0e20cdf0e2bd2ea512ee11e304c6374930c0ea0aeb1",
+          "provenance": "10-second 1280x720 H.264/AAC MP4 generated locally with FFmpeg testsrc2+sine"
+        }
+      },
+      "remainingEvidence": [
+        "Genuine physical iOS Safari and Android Chrome evidence is absent.",
+        "No production-approved general transcode dependency exists; exact WebCodecs encode/decode support remains runtime capability-gated."
+      ]
+    },
+    {
+      "ticket": 275,
+      "title": "EML MSG and EPUB parser feasibility spike",
+      "decision": "REFUSE",
+      "ticketClosureEligible": true,
+      "reason": "No maintained approved local EML/MSG/EPUB parser is installed or evidenced in this spike. The safe decision is to refuse all three rather than ship a catalog-count dependency; hostile HTML/remote-resource fixtures are detected without rendering or network resolution.",
+      "capabilities": {
+        "eml": "REFUSE_NO_APPROVED_PARSER",
+        "msg": "REFUSE_NO_APPROVED_PARSER",
+        "epub": "REFUSE_NO_APPROVED_PARSER",
+        "activeRemoteContentPolicy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+      },
+      "evidence": {
+        "runtime": [
+          {
+            "engine": "chrome",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "no approved EML/MSG/EPUB parser; fflate used only to expose hostile EPUB fixture bytes",
+            "coldLoadMs": 133.22000002861023,
+            "runtimeMs": 110.77999997138977,
+            "peakJsHeapDeltaBytes": 17065342,
+            "value": {
+              "eml": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "epub": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "msg": {
+                "decision": "REFUSE",
+                "compoundFileSignatureDetected": true,
+                "parser": null
+              },
+              "policy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "edge",
+            "classification": "real-desktop-browser",
+            "status": "PASS",
+            "candidate": "no approved EML/MSG/EPUB parser; fflate used only to expose hostile EPUB fixture bytes",
+            "coldLoadMs": 141.38999998569489,
+            "runtimeMs": 148.09499996900558,
+            "peakJsHeapDeltaBytes": 16767035,
+            "value": {
+              "eml": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "epub": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "msg": {
+                "decision": "REFUSE",
+                "compoundFileSignatureDetected": true,
+                "parser": null
+              },
+              "policy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "chromium",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "no approved EML/MSG/EPUB parser; fflate used only to expose hostile EPUB fixture bytes",
+            "coldLoadMs": 146.0700000524521,
+            "runtimeMs": 132.38499999046326,
+            "peakJsHeapDeltaBytes": 17940969,
+            "value": {
+              "eml": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "epub": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "msg": {
+                "decision": "REFUSE",
+                "compoundFileSignatureDetected": true,
+                "parser": null
+              },
+              "policy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "firefox",
+            "classification": "desktop-regression",
+            "status": "PASS",
+            "candidate": "no approved EML/MSG/EPUB parser; fflate used only to expose hostile EPUB fixture bytes",
+            "coldLoadMs": 50.23999999999998,
+            "runtimeMs": 196.24,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "eml": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "epub": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "msg": {
+                "decision": "REFUSE",
+                "compoundFileSignatureDetected": true,
+                "parser": null
+              },
+              "policy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+            },
+            "externalRequestsObserved": 0
+          },
+          {
+            "engine": "webkit",
+            "classification": "desktop-regression-not-safari",
+            "status": "PASS",
+            "candidate": "no approved EML/MSG/EPUB parser; fflate used only to expose hostile EPUB fixture bytes",
+            "coldLoadMs": 157.38,
+            "runtimeMs": 220.01999999999998,
+            "peakJsHeapDeltaBytes": null,
+            "value": {
+              "eml": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "epub": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "msg": {
+                "decision": "REFUSE",
+                "compoundFileSignatureDetected": true,
+                "parser": null
+              },
+              "policy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+            },
+            "externalRequestsObserved": 0
+          }
+        ],
+        "fixtures": [
+          {
+            "name": "hostile.eml",
+            "bytes": 353,
+            "sha256": "b708774bbc90f7886813c077e2e961dc8dbf03776ece244c46213f793a761b1a",
+            "provenance": "Synthetic HTML EML containing script, remote image and iframe references for inert-content policy testing"
+          },
+          {
+            "name": "hostile.epub",
+            "bytes": 839,
+            "sha256": "b7141889eff840573a5b3eca0b215f69e06d904582cb9dc947428294a63ff524",
+            "provenance": "Synthetic EPUB ZIP containing XHTML with script and remote references for inert-content policy testing"
+          },
+          {
+            "name": "unsupported.msg",
+            "bytes": 512,
+            "sha256": "a899fb4496afa7230c378d5be03cf3461990994993110fd2dad3257111081275",
+            "provenance": "Synthetic CFB-signature-only MSG-shaped invalid fixture; deliberately not claimed as a valid Outlook MSG"
+          }
+        ]
+      },
+      "remainingEvidence": []
+    }
+  ],
+  "umbrella34": {
+    "decision": "READY_FOR_REVIEW",
+    "blockers": [],
+    "physicalPromotionRule": "No physical mobile result is inferred from desktop Chrome/Edge/Firefox/WebKit or viewport/device emulation."
+  }
+}

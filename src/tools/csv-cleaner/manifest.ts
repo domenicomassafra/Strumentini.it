@@ -16,6 +16,7 @@ export const csvCleanerManifest = {
   handoff: {
     emits: [{ type: "table", format: "csv" }],
   },
+  result: { class: "table", capabilities: ["copy", "download", "handoff", "reset"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-022", fixtureFamilies: ["csv-rfc4180", "csv-cleaning"] },
 } as const satisfies ToolManifest;
 

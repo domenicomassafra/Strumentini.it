@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "toolId": "business-day",
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "runtime": {
     "location": "LOCAL",
     "network": "forbidden"
@@ -31,10 +31,10 @@
     }
   ],
   "identities": {
-    "manifestSha256": "006195d10601064ea4894979797c5d2615b39769dad0728bc63a2c1d1067361c",
+    "manifestSha256": "118a98ea1dad48b637c6427189c23189d8f12448aefaa3695bdb03c48608ad35",
     "engineSha256": "ed8fd8a90c56ef617a06ac6dad2a36b99a9648b00b1015b230748d0801800b52",
     "fixtureSha256": "1edebf58d15ec4672014a05554e28e229c44dd6484edb4a1069bfed7b588d4b3",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6"
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c"
   }
 }

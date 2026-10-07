@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { PDF_RESULT_DECLARATIONS } from "../pdf-result-declarations";
 
 export const pdfCompareManifest = {
   id: "pdf-compare-lite",
@@ -14,6 +15,7 @@ export const pdfCompareManifest = {
   engine: "pdf",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: PDF_RESULT_DECLARATIONS["pdf-compare-lite"],
   handoff: { emits: [{ type: "structured", format: "pdf-compare" }] },
   gold: { maintenanceClass: "H", oracleEntryId: "cand-138", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;

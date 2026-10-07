@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-05T22:45:55.224Z",
+  "scenarios": {
+    "light-calculator": {
+      "maxInitialJsBytes": 108804,
+      "maxLazyJsBytes": 180000,
+      "maxActionMs": 1000,
+      "maxLongTaskMs": 50
+    },
+    "large-text-output": {
+      "maxInitialJsBytes": 182344,
+      "maxLazyJsBytes": 240000,
+      "maxActionMs": 1000,
+      "maxLongTaskMs": 50
+    },
+    "file-output": {
+      "maxInitialJsBytes": 90917,
+      "maxLazyJsBytes": 30000,
+      "maxActionMs": 1000,
+      "maxLongTaskMs": 50
+    }
+  },
+  "invariant": "No eager WASM and no non-GET/external task request; JS/action/long-task ceilings are versioned from the measured baseline."
+}

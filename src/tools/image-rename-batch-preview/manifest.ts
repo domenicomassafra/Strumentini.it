@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const image_rename_batch_previewManifest = {
   id: "image-rename-batch-preview",
@@ -13,6 +14,7 @@ export const image_rename_batch_previewManifest = {
   engine: "image",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["image-rename-batch-preview"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-155", fixtureFamilies: ["image-metadata", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

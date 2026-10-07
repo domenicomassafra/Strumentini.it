@@ -52,8 +52,12 @@ try{
   if(await storageContains(dedupe,"1,Ada"))throw new Error("handoff payload persisted in browser storage");
   await dedupe.getByRole("button",{name:"Rimuovi duplicati"}).press("Enter");
   await dedupe.getByText("1 riga duplicata rimossa",{exact:true}).waitFor();
-  await dedupe.locator(".gutter-rows").getByText("2",{exact:true}).waitFor();
-  await dedupe.getByText("id,name\n1,Ada\n2,Grace",{exact:true}).waitFor();
+  await dedupe.locator(".gutter-rows").getByText("2",{exact:true}).first().waitFor();
+  const dedupePreview=await dedupe.locator(".table-output table").evaluate(table=>({
+    headers:[...table.querySelectorAll("thead th")].map(node=>node.textContent?.trim()??""),
+    rows:[...table.querySelectorAll("tbody tr")].map(row=>[...row.querySelectorAll("td")].map(node=>node.textContent?.trim()??"")),
+  }));
+  if(JSON.stringify(dedupePreview)!==JSON.stringify({headers:["id","name"],rows:[["1","Ada"],["2","Grace"]]}))throw new Error(`CSV Dedupe bounded preview mismatch: ${JSON.stringify(dedupePreview)}`);
   await dedupe.setViewportSize({width:390,height:844});
   if(await dedupe.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth))throw new Error("CSV Dedupe 390px horizontal overflow");
 
@@ -69,7 +73,8 @@ try{
   await mapper.getByRole("button",{name:"Applica la mappatura"}).press("Enter");
   await mapper.getByText("3 colonne di output",{exact:true}).waitFor();
   await mapper.locator(".gutter-rows").getByText("0",{exact:true}).first().waitFor();
-  await mapper.getByText(/email,first_name,last/u).waitFor();
+  const mappedHeaders=await mapper.locator(".table-output table thead th").allInnerTexts();
+  if(JSON.stringify(mappedHeaders)!==JSON.stringify(["email","first_name","last"]))throw new Error(`CSV Column Map preview headers mismatch: ${JSON.stringify(mappedHeaders)}`);
   await mapper.setViewportSize({width:390,height:844});
   if(await mapper.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth))throw new Error("CSV Column Map 390px horizontal overflow");
 

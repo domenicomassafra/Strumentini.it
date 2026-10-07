@@ -105,6 +105,13 @@ function summaryOf(manifest: FactoryToolManifest): FactoryCatalogSummary {
       ...(field.sensitive === undefined ? {} : { sensitive: field.sensitive }),
     })),
     ...(handoff === undefined ? {} : { handoff }),
+    ...(manifest.result === undefined ? {} : {
+      result: {
+        class: manifest.result.class,
+        capabilities: [...manifest.result.capabilities],
+      },
+    }),
+    ...(manifest.deterministic ? {} : { deterministic: false }),
     gold: manifest.gold,
   };
 }

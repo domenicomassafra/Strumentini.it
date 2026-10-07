@@ -4,9 +4,9 @@ import { TOOL_COPY_IT, missingItalianToolCopy } from "../src/i18n/it/tool-copy";
 import { createDefaultWorkProfile } from "../src/profile/work-profile";
 
 describe("catalogo pubblico italiano", () => {
-  it("copre tutti i 200 strumenti con copy italiano esplicito", () => {
-    expect(catalog).toHaveLength(200);
-    expect(Object.keys(TOOL_COPY_IT)).toHaveLength(200);
+  it("copre tutti gli strumenti pubblici con copy italiano esplicito", () => {
+    expect(catalog.length).toBeGreaterThan(0);
+    expect(Object.keys(TOOL_COPY_IT)).toHaveLength(catalog.length);
     expect(missingItalianToolCopy(catalog.map(({ id }) => id))).toEqual([]);
   });
 

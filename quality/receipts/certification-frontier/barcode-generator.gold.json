@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "9418f6d684412c1fc8346a54637d766a06c7f2cdcea37ddf6ba6cd24639a17b6",
+  "toolId": "barcode-generator",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-246",
+  "fixtureFamilies": [
+    "barcode-linear"
+  ],
+  "boundedScopeGaps": [
+    "Code 128 support is intentionally limited to printable ASCII Code Set B; no Code A/C optimisation, FNC, GS1-128 or extended-byte interpretation is claimed.",
+    "The tool generates symbol geometry but does not certify printer resolution, reflectance, physical X-dimension or ISO/IEC 15416 print-quality grade.",
+    "EAN-13 syntax/checksum validation does not prove that a GS1 company prefix or GTIN allocation is assigned to the user."
+  ],
+  "scopePolicy": "Every canonical unresolved oracle gap is matched against a tool-specific bounded-scope policy. Unknown/new gap wording fails certification.",
+  "truthSources": [
+    "fixture-policy",
+    "gs1-general-specifications-26",
+    "iso-iec-15417-2007",
+    "strumentiutili-quality"
+  ],
+  "directChecks": [
+    "EAN-13 known vector exact",
+    "Code128B exact codewords/checksum",
+    "out-of-scope character classes refused"
+  ],
+  "propertyChecks": [
+    "local-only public runtime",
+    "canonical oracle confidence high",
+    "all oracle gaps classified as bounded exclusions",
+    "fixture replay",
+    "real browser locality/mobile acceptance",
+    "route bundle isolated from home initial JS"
+  ],
+  "identities": {
+    "manifestSha256": "34ab480b91e097925f5f9b1082f1d291a2163730670d67c491a80b219fbc934e",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "browserAcceptanceSha256": "21ee7236238be4022f8bbcbca13d133f64eb5e32475562b981c0e8aa0bd0b917",
+    "bundleIsolationSha256": "f8cc75d37de5f47d79a94a350710156bbf079972838dfdf080685192016e91c2",
+    "unitTestsSha256": "52921cdd64b26fb9668fb6f851ebf13d11b466cb18984cc44836256766ce9a1a",
+    "fixture:barcode-linear:sha256": "3f57b35ada1ae2594cd890b9d185155093eb47d7d382c7e96d6b857d0381007a"
+  }
+}

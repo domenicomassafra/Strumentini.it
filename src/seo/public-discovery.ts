@@ -3,7 +3,7 @@ import type { ToolSummary } from "../catalog/manifest";
 export type DiscoveryTool = Pick<ToolSummary, "route" | "name" | "summary" | "category">;
 
 const GENERIC_DESCRIPTION = "runs locally in your browser with bounded inputs and explicit results.";
-const BRAND = "StrumentiUtili.it";
+const BRAND = "Strumentini.it";
 
 function normalizedSiteUrl(siteUrl: string | URL | undefined): string | undefined {
   if (siteUrl === undefined) return undefined;
@@ -91,7 +91,7 @@ export function buildDirectoryStructuredData(
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Tutti gli strumenti — StrumentiUtili.it",
+    name: "Tutti gli strumenti — Strumentini.it",
     description: "Il catalogo completo degli strumenti online gratuiti: cercabili per attività, ingresso, categoria e dove girano.",
     url: canonicalUrl,
     mainEntity: {

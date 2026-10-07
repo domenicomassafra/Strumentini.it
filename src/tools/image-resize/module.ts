@@ -42,13 +42,16 @@ function validateInput(value: unknown): ImageResizeInput {
   if (input.fit !== "contain" && input.fit !== "cover") {
     throw new ImageResizeError("INVALID_INPUT", "Fit must be contain or cover");
   }
+  if (input.noUpscale !== undefined && typeof input.noUpscale !== "boolean") {
+    throw new ImageResizeError("INVALID_INPUT", "No-upscale must be enabled or disabled");
+  }
   if (input.outputMime !== "image/jpeg" && input.outputMime !== "image/webp") {
     throw new ImageResizeError("INVALID_INPUT", "Output format must be JPEG or WebP");
   }
   if (typeof input.quality !== "number" || !Number.isFinite(input.quality) || input.quality < 0.4 || input.quality > 1) {
     throw new ImageResizeError("INVALID_INPUT", "Quality must be between 0.4 and 1");
   }
-  return input as ImageResizeInput;
+  return { ...input, noUpscale: input.noUpscale ?? false } as ImageResizeInput;
 }
 
 function canvasToBlob(
@@ -93,8 +96,24 @@ export async function resizeImageLocal(
   const header = inspectImageHeader(headerBytes);
 
   emit(onProgress, "preflight", "Checking pixel and memory limits");
-  // Before decode, reserve against the requested output rectangle (the largest possible result).
-  preflightAllocation(input.file.size, header.width, header.height, input.width, input.height);
+  // Fail unsafe sources before target geometry is considered. This preserves
+  // the source-specific error even when no-upscale would reduce the output.
+  preflightAllocation(input.file.size, header.width, header.height, 1, 1);
+  const headerPlan = computeResizePlan(
+    header.width,
+    header.height,
+    input.width,
+    input.height,
+    input.fit,
+    input.noUpscale,
+  );
+  preflightAllocation(
+    input.file.size,
+    header.width,
+    header.height,
+    headerPlan.outputWidth,
+    headerPlan.outputHeight,
+  );
   abortIfNeeded(signal);
 
   emit(onProgress, "decode", "Decoding locally");
@@ -111,7 +130,14 @@ export async function resizeImageLocal(
   abortIfNeeded(signal);
 
   try {
-    const plan = computeResizePlan(bitmap.width, bitmap.height, input.width, input.height, input.fit);
+    const plan = computeResizePlan(
+      bitmap.width,
+      bitmap.height,
+      input.width,
+      input.height,
+      input.fit,
+      input.noUpscale,
+    );
     const allocation = preflightAllocation(
       input.file.size,
       bitmap.width,

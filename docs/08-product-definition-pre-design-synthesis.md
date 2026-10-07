@@ -7,7 +7,7 @@ Pending before implementation planning: lane 04 product-design response.
 
 ## What exists today
 
-StrumentiUtili.it is **not yet an implemented product**.
+Strumentini.it is **not yet an implemented product**.
 
 There is currently:
 
@@ -242,7 +242,7 @@ Ordinary deterministic utilities may remain free forever.
 
 ## Brand status
 
-StrumentiUtili.it is the selected public brand.
+Strumentini.it is the selected public brand.
 
 Historical Lane 03 preliminary shortlist, retained only as decision history:
 
@@ -259,7 +259,7 @@ Historical Lane 03 preliminary shortlist, retained only as decision history:
 
 Plerova and Tivanoa had the cleanest bounded namespace observations in that historical lane, but **neither is selected**.
 
-The owner selected StrumentiUtili.it; any formal legal/trademark clearance is tracked separately.
+The owner selected Strumentini.it; any formal legal/trademark clearance is tracked separately.
 
 ## Engineering architecture already settled enough to preserve
 

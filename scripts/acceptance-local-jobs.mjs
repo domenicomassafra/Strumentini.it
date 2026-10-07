@@ -6,10 +6,11 @@ import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
 const root = resolve(import.meta.dirname, "..");
-const port = Number(process.env.STRUMENTIUTILI_LOCAL_JOBS_PORT ?? 18177);
-if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error(`invalid acceptance port: ${process.env.STRUMENTIUTILI_LOCAL_JOBS_PORT ?? ""}`);
+const port = Number(process.env.STRUMENTINI_LOCAL_JOBS_PORT ?? 18177);
+if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error(`invalid acceptance port: ${process.env.STRUMENTINI_LOCAL_JOBS_PORT ?? ""}`);
 const origin = `http://127.0.0.1:${port}`;
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
+const dist = process.env.STRUMENTINI_ACCEPTANCE_DIST ?? "dist";
+const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], { cwd: root, stdio: "ignore" });
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 
@@ -43,7 +44,7 @@ const isExpectedStaticFailure = (url) => {
   }
 };
 
-const tempRoot = await mkdtemp(join(tmpdir(), "strumentiutili-local-jobs-"));
+const tempRoot = await mkdtemp(join(tmpdir(), "strumentini-local-jobs-"));
 const beforeDir = join(tempRoot, "prima");
 const afterDir = join(tempRoot, "dopo");
 await mkdir(beforeDir, { recursive: true });
@@ -142,6 +143,13 @@ const cases = [
   },
 ];
 
+const filePrivacyIds = new Set([
+  "archive-checksum-manifest",
+  "batch-rename-preview",
+  "folder-compare",
+  "metadata-risk-inspector",
+]);
+
 if (cases.length !== 9 || new Set(cases.map(({ id }) => id)).size !== 9) throw new Error(`local-jobs acceptance must contain exactly 9 unique tools; got ${cases.length}`);
 
 async function waitForServer() {
@@ -219,10 +227,10 @@ async function acceptTool(context, testCase) {
     await submit.focus();
     await page.keyboard.press("Enter");
     const panel = page.locator(".result-panel").last();
-    const resultContent = panel.locator("pre, dl, ul, a.button").first();
+    const terminalResult = page.locator(".result-panel[data-state='success'], .result-panel[data-state='warning'], .result-panel[data-state='partial']").last();
     const inlineError = form.locator('[role="alert"]').last();
     const outcome = await Promise.race([
-      resultContent.waitFor({ timeout: 15_000 }).then(() => "result"),
+      terminalResult.waitFor({ timeout: 15_000 }).then(() => "result"),
       inlineError.waitFor({ timeout: 15_000 }).then(() => "error"),
     ]).catch(() => "timeout");
     if (outcome !== "result") {
@@ -231,6 +239,30 @@ async function acceptTool(context, testCase) {
     }
     const output = await panel.innerText();
     if (!testCase.expect.test(output)) throw new Error(`${testCase.id}: contract assertion ${testCase.expect} failed for ${JSON.stringify(output.slice(0, 1200))}`);
+    let resultV2Class = null;
+    let fileWorkspace = false;
+    if (filePrivacyIds.has(testCase.id)) {
+      const semantic = panel.locator("[data-result-class]").last();
+      if (await semantic.count() !== 1) throw new Error(`${testCase.id}: Result v2 semantic root is missing`);
+      resultV2Class = await semantic.getAttribute("data-result-class");
+      const expectedClass = testCase.id === "archive-checksum-manifest"
+        ? "text-code"
+        : testCase.id === "metadata-risk-inspector"
+          ? "validator"
+          : "batch";
+      if (resultV2Class !== expectedClass) throw new Error(`${testCase.id}: Result v2 class ${resultV2Class} does not match ${expectedClass}`);
+      const slots = await semantic.locator("[data-result-slot]").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-result-slot")));
+      const requiredSlot = expectedClass === "text-code" ? "selectable-output" : expectedClass === "validator" ? "checks" : "batch-summary";
+      if (!slots.includes(requiredSlot)) throw new Error(`${testCase.id}: Result v2 slot ${requiredSlot} is missing (${slots.join(",")})`);
+      fileWorkspace = await semantic.locator('section[aria-label="File elaborati"]').count() === 1;
+      if (!fileWorkspace) throw new Error(`${testCase.id}: FileResultWorkspace is missing`);
+      const privacyCopy = await semantic.locator('section[aria-label="File elaborati"] .file-note').first().innerText();
+      if (!/browser|rete/iu.test(privacyCopy)) throw new Error(`${testCase.id}: local privacy copy is missing from FileResultWorkspace`);
+      const actionIds = await semantic.locator("[data-result-action]").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-result-action")));
+      for (const required of ["retry", "reset"]) {
+        if (!actionIds.includes(required)) throw new Error(`${testCase.id}: Result v2 action ${required} is missing`);
+      }
+    }
     const expectedFailures = responseFailures.filter((failure) => isExpectedStaticFailure(failure.slice(failure.indexOf(" ") + 1)));
     const unexpectedFailures = responseFailures.filter((failure) => !expectedFailures.includes(failure));
     if (unexpectedFailures.length > 0) throw new Error(`${testCase.id}: unexpected failed response: ${unexpectedFailures.join(" | ")}`);
@@ -262,6 +294,8 @@ async function acceptTool(context, testCase) {
       horizontalOverflow: false,
       unlabeledControls: 0,
       optionalAccountProbeFailures: expectedFailures.length,
+      resultV2Class,
+      fileWorkspace,
     };
   } finally {
     await page.close();

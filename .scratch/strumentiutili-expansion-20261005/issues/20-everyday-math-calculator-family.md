@@ -6,13 +6,13 @@
 
 **Constraints:** Use a safe parser instead of eval; each job must earn a route by distinct intent; domain errors and undefined results must be explicit.
 
-**Blocked by:** 01 — Result System v2 primitives.
+**Blocked by:** 141, 142, 143, 144.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Expression evaluation has a constrained grammar and no code execution.
-- [ ] Statistics/math tools show intermediate values where they aid verification.
-- [ ] Geometry tools label units and reject incompatible inputs.
-- [ ] The family backlog is pruned to distinct jobs before route creation.
+- [x] Ticket 141 provides a constrained expression grammar with no `eval`/code execution.
+- [x] Tickets 142–143 expose exact/intermediate arithmetic and descriptive-statistics values where they aid verification.
+- [x] Ticket 144 labels/normalizes units through the shared unit engine and rejects invalid geometry/motion domains and cross-dimension inputs.
+- [x] The implemented family is split only into distinct jobs (scientific expressions, fractions/integer toolkit, descriptive statistics/grades, geometry/equation/motion), with shared engines reused instead of route duplication.
 
-**Verification:** Known-answer fixtures, parser security tests, domain/NaN boundaries, locale decimals and browser acceptance.
+**Verification:** `tests/calculator-math-core.test.ts`, `tests/business-math-expansion.test.ts` and the scoped 390px browser acceptance cover known answers, parser security, invalid domains, unit handling and route behavior.

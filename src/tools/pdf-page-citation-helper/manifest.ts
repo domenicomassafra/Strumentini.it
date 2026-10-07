@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const pdfPageCitationHelperManifest = {
   id: "pdf-page-citation-helper",
@@ -13,6 +14,7 @@ export const pdfPageCitationHelperManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("pdf-page-citation-helper"),
   gold: { maintenanceClass: "E", oracleEntryId: "cand-190", fixtureFamilies: ["research-citation-pages"] },
 } as const satisfies ToolManifest;
 

@@ -1,0 +1,27 @@
+{
+  "toolId": "screenshot-border-background-helper",
+  "category": "files-assets",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Aggiunge bordo e sfondo misurati a uno screenshot locale usando un canvas con limiti definiti. Public jobs: Usa Bordo e sfondo per screenshot",
+  "observedFunctionality": "Current job adds measured border/padding/background to a local screenshot and verifies bounded canvas output. Ticket 213 adds a broader direct-manipulation workspace but is not required by this helper’s current promise.",
+  "rationale": "No missing behavior required by the current declared public job was found. Existing image-expansion tickets are treated as additive only where they broaden controls, formats, previews or packaging beyond the present truthful route contract; they are not used to manufacture a false incomplete result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/screenshot-border-background-helper.gold.json",
+      "claim": "Tool-specific Gold receipt binds screenshot-border-background-helper to the current declared local image semantics and fixture/oracle frontier."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Real-route expanded-local acceptance includes screenshot-border-background-helper with a tool-specific output assertion/hash plus locality, lazy-load, 390px and accessibility checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": "src/engines/image/visual-tools.ts",
+      "claim": "Shared image operations implement bounded input validation, local decoding/processing and verified output or deterministic inspection semantics used by this route."
+    }
+  ],
+  "childTickets": []
+}

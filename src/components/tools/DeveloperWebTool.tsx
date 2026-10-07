@@ -1,7 +1,17 @@
 import { useMemo, useState } from "preact/hooks";
+import { createBoundedTextPreview } from "../../runtime/bounded-preview";
+import { createOutputArtifactDescriptor } from "../../runtime/output-artifact";
+import { resolveResultActions } from "../../runtime/result-actions";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import {
+  BoundedTextResultPreview,
   InlineError,
+  ResultActions,
+  ResultBreakdown,
+  ResultExplanation,
+  ResultInterpretation,
+  ResultPrimaryAnswer,
+  ResultProvenance,
   ToolGutter,
   ToolActions,
   ToolResetButton,
@@ -10,6 +20,7 @@ import {
   useToolOperation,
 } from "./shared";
 import type { DeveloperWebToolId } from "../../engines/developer-web";
+import { developerResultDeclaration } from "../../engines/developer-web/manifest";
 import { TOOL_COPY_IT } from "../../i18n/it/tool-copy";
 import { gutterStateFor } from "./shared/ToolGutter";
 import { CONTROL, it } from "./shared/controlLabels";
@@ -44,26 +55,35 @@ const number = (key: string, label: string, defaultValue: string): FieldDefiniti
 const select = (key: string, label: string, options: readonly string[], defaultValue: string): FieldDefinition => ({ key, label, kind: "select", defaultValue, options, required: true });
 
 const DEVELOPER_WEB_CONFIGS_RAW: Readonly<Record<DeveloperWebToolId, DeveloperWebToolConfig>> = {
-  "json-formatter": { id: "json-formatter", title: "JSON Formatter & Validator", eyebrow: "JSON result", submitLabel: "Format JSON", placeholder: "Enter a JSON document.", fields: [area("text", "JSON", '{"name":"Ada","items":[1,true,null]}'), select("mode", "Operation", ["format", "validate"], "format"), number("indent", "Indent spaces", "2"), select("sortKeys", "Sort object keys", ["false", "true"], "false")] },
+  "json-formatter": { id: "json-formatter", title: "JSON Formatter & Validator", eyebrow: "JSON result", submitLabel: "Format JSON", placeholder: "Enter a JSON document.", fields: [area("text", "JSON", '{"name":"Ada","items":[1,true,null]}'), select("mode", "Operation", ["prettify", "minify", "validate"], "prettify"), number("indent", "Indent spaces", "2"), select("sortKeys", "Sort object keys", ["false", "true"], "false")] },
   "yaml-formatter": { id: "yaml-formatter", title: "YAML Formatter & Validator", eyebrow: "YAML result", submitLabel: "Format YAML", placeholder: "Enter a supported YAML document.", fields: [area("text", "YAML", "name: Ada\nitems:\n  - one\n  - two\n"), number("indent", "Indent spaces", "2")] },
   "toml-formatter": { id: "toml-formatter", title: "TOML Formatter & Validator", eyebrow: "TOML result", submitLabel: "Format TOML", placeholder: "Enter a supported TOML document.", fields: [area("text", "TOML", "name = \"Ada\"\nenabled = true\n", 10)] },
   "json-yaml-converter": { id: "json-yaml-converter", title: "JSON ↔ YAML Converter", eyebrow: "Converted value", submitLabel: "Convert value", placeholder: "Enter JSON or YAML according to the selected direction.", fields: [area("text", "Source", "name: Ada\nitems:\n  - one\n  - two\n"), select("direction", "Direction", ["json-to-yaml", "yaml-to-json"], "yaml-to-json"), number("indent", "Indent spaces", "2")] },
   "url-codec": { id: "url-codec", title: "URL Encode & Decode", eyebrow: "Percent-coded value", submitLabel: "Convert value", placeholder: "Enter text to encode or decode.", fields: [area("text", "Text", "Say what‽", 3), select("mode", "Operation", ["encode", "decode"], "encode"), select("set", "URL set", ["component", "query", "path", "userinfo"], "component")] },
   "html-entity-codec": { id: "html-entity-codec", title: "HTML Entity Encode & Decode", eyebrow: "Entity value", submitLabel: "Convert entities", placeholder: "Enter text or entity references.", fields: [area("text", "Text", "<hello & goodbye>", 3), select("mode", "Operation", ["encode", "decode"], "encode"), select("numeric", "Numeric output", ["false", "true"], "false")] },
   "base64-codec": { id: "base64-codec", title: "Base64 Encode & Decode", eyebrow: "Base64 value", submitLabel: "Convert Base64", placeholder: "Enter UTF-8 text or Base64.", fields: [area("text", "Text", "Caffè ☕", 3), select("mode", "Operation", ["encode", "decode"], "encode"), select("urlSafe", "Alphabet", ["standard", "url-safe"], "standard")] },
-  "jwt-inspector": { id: "jwt-inspector", title: "JWT Inspector", eyebrow: "JWT inspection", submitLabel: "Inspect JWT", placeholder: "Paste a compact JWT.", fields: [area("token", "JWT", "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjMifQ.", 4)] },
+  "jwt-inspector": { id: "jwt-inspector", title: "JWT Inspector", eyebrow: "JWT inspection", submitLabel: "Inspect JWT", placeholder: "Paste a compact JWT.", fields: [area("token", "JWT", "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjMifQ.", 4), optionalText("referenceTime", "Reference time (ISO, optional)", "")] },
   "uuid-generator": { id: "uuid-generator", title: "UUID Generator", eyebrow: "Generated UUIDs", submitLabel: "Generate UUIDs", placeholder: "Choose a version and count.", fields: [number("count", "How many", "1"), select("version", "UUID version", ["4", "7"], "4"), select("uppercase", "Letter case", ["false", "true"], "false")] },
   "hash-generator": { id: "hash-generator", title: "Hash Generator", eyebrow: "Digest", submitLabel: "Hash text", placeholder: "Enter UTF-8 text to hash.", fields: [area("text", "Text", "abc", 4), select("algorithm", "Algorithm", ["SHA-256", "SHA-384", "SHA-512"], "SHA-256")] },
   "hmac-generator": { id: "hmac-generator", title: "HMAC Generator", eyebrow: "Authentication tag", submitLabel: "Generate HMAC", placeholder: "Enter a message and a local key.", fields: [area("message", "Message", "The quick brown fox jumps over the lazy dog", 4), text("key", "Key", "key"), select("algorithm", "Algorithm", ["SHA-256", "SHA-384", "SHA-512"], "SHA-256")] },
   "regex-tester": { id: "regex-tester", title: "Regex Tester", eyebrow: "Matches", submitLabel: "Test expression", placeholder: "Enter a regular expression and subject text.", fields: [text("pattern", "Pattern", "(\\w+)@(\\w+)"), optionalText("flags", "Flags", "g"), area("text", "Subject", "ada@example and grace@example", 5), optionalText("replacement", "Replacement", "")] },
   "cron-explainer": { id: "cron-explainer", title: "Cron Explainer", eyebrow: "Schedule explanation", submitLabel: "Explain cron", placeholder: "Enter a five-field POSIX cron expression.", fields: [text("expression", "Cron expression", "*/15 9-17 * * 1-5")] },
-  "cron-next-run": { id: "cron-next-run", title: "Cron Next-Run Calculator", eyebrow: "Upcoming UTC runs", submitLabel: "Calculate next runs", placeholder: "Enter a cron expression and an optional ISO start time.", fields: [text("expression", "Cron expression", "*/15 * * * *"), optionalText("from", "From (UTC ISO)", "2026-01-01T00:00:00.000Z"), number("count", "How many runs", "5")] },
+  "cron-next-run": { id: "cron-next-run", title: "Cron Next-Run Calculator", eyebrow: "Upcoming runs", submitLabel: "Calculate next runs", placeholder: "Enter a cron expression, reference instant and IANA timezone.", fields: [text("expression", "Cron expression", "*/15 * * * *"), optionalText("from", "From (UTC ISO)", "2026-01-01T00:00:00.000Z"), text("timezone", "IANA timezone", "Europe/Rome"), number("count", "How many runs", "5")] },
   "unix-timestamp": { id: "unix-timestamp", title: "Unix Timestamp Converter", eyebrow: "UTC date-time", submitLabel: "Convert timestamp", placeholder: "Enter a Unix timestamp or an ISO date.", fields: [text("value", "Timestamp or date", "0"), select("unit", "Unit", ["seconds", "milliseconds"], "seconds"), select("direction", "Direction", ["to-date", "to-timestamp"], "to-date")] },
   "http-status-reference": { id: "http-status-reference", title: "HTTP Status Reference", eyebrow: "Status meaning", submitLabel: "Look up status", placeholder: "Enter an HTTP status code.", fields: [number("status", "HTTP status", "404")] },
   "mime-type-lookup": { id: "mime-type-lookup", title: "MIME Type Lookup", eyebrow: "Media type evidence", submitLabel: "Look up type", placeholder: "Enter an extension, filename, or signature hex.", fields: [text("lookup", "Extension or filename", "png"), select("mode", "Lookup mode", ["extension", "signature"], "extension"), optionalText("bytes", "Signature hex (optional)", "")] },
   "user-agent-parser": { id: "user-agent-parser", title: "User-Agent Parser", eyebrow: "Descriptive hints", submitLabel: "Parse user-agent", placeholder: "Paste a user-agent string.", fields: [area("userAgent", "User-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1", 5)] },
   "query-string-editor": { id: "query-string-editor", title: "Query-String Editor", eyebrow: "Edited query", submitLabel: "Edit query", placeholder: "Enter a query string or full URL.", fields: [area("query", "Query or URL", "a=1&a=2&blank=&space=hello+world", 3), optionalText("baseUrl", "Base URL (optional)", ""), optionalText("setKey", "Set key (optional)", ""), optionalText("setValue", "Set value (optional)", ""), optionalText("removeKey", "Remove key (optional)", ""), select("sort", "Sort pairs", ["false", "true"], "false")] },
   "json-path-playground": { id: "json-path-playground", title: "JSON Path Playground", eyebrow: "Path matches", submitLabel: "Query JSON", placeholder: "Enter JSON and a bounded JSONPath expression.", fields: [area("json", "JSON", '{"users":[{"name":"Ada"},{"name":"Grace"}]}', 8), text("path", "JSONPath", "$.users[*].name")] },
+  "cidr-calculator": { id: "cidr-calculator", title: "IPv4 & IPv6 CIDR Calculator", eyebrow: "Network range", submitLabel: "Calculate CIDR", placeholder: "Enter an IPv4 or IPv6 CIDR.", fields: [text("cidr", "CIDR", "2001:db8::1234/64")] },
+  "base-converter": { id: "base-converter", title: "Base 2–36 Integer Converter", eyebrow: "Exact integer", submitLabel: "Convert integer", placeholder: "Enter an integer and source/target bases.", fields: [text("value", "Integer", "ff"), number("fromBase", "Source base", "16"), number("toBase", "Target base", "10")] },
+  "chmod-permission-helper": { id: "chmod-permission-helper", title: "chmod Permission Helper", eyebrow: "Unix permissions", submitLabel: "Convert permissions", placeholder: "Enter 755, 4755, or rwxr-xr-x.", fields: [text("permissions", "Permissions", "755")] },
+  "json-repair": { id: "json-repair", title: "JSON Repair", eyebrow: "Repair log", submitLabel: "Repair JSON", placeholder: "Enter malformed JSON that can be repaired without guessing values.", fields: [area("text", "JSON", '{\n  // comment\n  "name": "Ada",\n}', 10)] },
+  "json-structural-diff": { id: "json-structural-diff", title: "Structural JSON Diff", eyebrow: "Structural differences", submitLabel: "Compare JSON", placeholder: "Compare two JSON values by stable paths.", fields: [area("leftJson", "JSON before", '{"items":[1,2],"active":true}', 8), area("rightJson", "JSON after", '{"items":[2,1],"active":"yes"}', 8)] },
+  "json-type-schema-inference": { id: "json-type-schema-inference", title: "JSON to TypeScript & Schema", eyebrow: "Inferred contract", submitLabel: "Infer types", placeholder: "Infer a reproducible TypeScript type and JSON Schema from one example.", fields: [area("json", "JSON", '{"name":"Ada","tags":["local","safe"],"meta":{"__proto__":"data"}}', 10), text("typeName", "Root type name", "Root"), select("mode", "Output", ["both", "typescript", "json-schema"], "both")] },
+  "xml-formatter-validator": { id: "xml-formatter-validator", title: "XML Validator, Formatter & Minifier", eyebrow: "XML result", submitLabel: "Process XML", placeholder: "Validate, format or minify XML locally without DTD/entity resolution.", fields: [area("text", "XML", '<root><item xml:space="preserve">  keep  </item><empty/></root>', 10), select("mode", "Operation", ["prettify", "minify", "validate"], "prettify"), number("indent", "Indent spaces", "2")] },
+  "css-minifier": { id: "css-minifier", title: "Parser-backed CSS Minifier", eyebrow: "CSS minified", submitLabel: "Minify CSS", placeholder: "Enter CSS to parse and serialize compactly.", fields: [area("text", "CSS", '/* comment */\n.card { color: red; content: "a b"; --gap: 1rem  2rem; }', 10)] },
+  "html-minifier": { id: "html-minifier", title: "Semantic HTML Minifier", eyebrow: "HTML minified", submitLabel: "Minify HTML", placeholder: "Enter HTML to parse and serialize with semantic whitespace rules.", fields: [area("text", "HTML", '<div>\n  <p>Hello <strong>world</strong>.</p>\n  <pre>  keep\n  this </pre>\n</div>', 10), select("mode", "Operation", ["safe", "advanced"], "safe")] },
 };
 
 const FIELD_LABEL_IT: Readonly<Record<string, string>> = {
@@ -76,6 +96,7 @@ const FIELD_LABEL_IT: Readonly<Record<string, string>> = {
   numeric: "Usa entità numeriche",
   urlSafe: "Alfabeto",
   token: "JWT",
+  referenceTime: "Istante di riferimento (ISO, facoltativo)",
   count: "Quantità",
   version: "Versione UUID",
   uppercase: "Usa lettere maiuscole",
@@ -87,6 +108,7 @@ const FIELD_LABEL_IT: Readonly<Record<string, string>> = {
   replacement: "Sostituzione",
   expression: "Espressione cron",
   from: "Da (ISO UTC)",
+  timezone: "Fuso orario IANA",
   value: "Valore",
   unit: "Unità",
   status: "Stato HTTP",
@@ -101,10 +123,22 @@ const FIELD_LABEL_IT: Readonly<Record<string, string>> = {
   sort: "Ordina le coppie",
   json: "JSON",
   path: "JSONPath",
+  cidr: "CIDR IPv4 o IPv6",
+  fromBase: "Base di partenza",
+  toBase: "Base di arrivo",
+  permissions: "Permessi chmod",
+  leftJson: "JSON prima",
+  rightJson: "JSON dopo",
+  typeName: "Nome del tipo radice",
+  xml: "XML",
+  css: "CSS",
+  html: "HTML",
 };
 
 const OPTION_LABEL_IT: Readonly<Record<string, string>> = {
   format: "Formatta",
+  prettify: "Formatta leggibile",
+  minify: "Minifica",
   validate: "Valida",
   "json-to-yaml": "Da JSON a YAML",
   "yaml-to-json": "Da YAML a JSON",
@@ -124,6 +158,11 @@ const OPTION_LABEL_IT: Readonly<Record<string, string>> = {
   "to-timestamp": "Da data a timestamp",
   extension: "Estensione",
   signature: "Firma",
+  both: "TypeScript e JSON Schema",
+  typescript: "TypeScript",
+  "json-schema": "JSON Schema",
+  safe: "Sicura",
+  advanced: "Avanzata",
 };
 
 const DEVELOPER_ACTION_IT: Readonly<Record<DeveloperWebToolId, readonly [eyebrow: string, submit: string]>> = {
@@ -147,6 +186,15 @@ const DEVELOPER_ACTION_IT: Readonly<Record<DeveloperWebToolId, readonly [eyebrow
   "user-agent-parser": ["Indicazioni descrittive", "Analizza User-Agent"],
   "query-string-editor": ["Parametri modificati", "Modifica parametri"],
   "json-path-playground": ["Corrispondenze del percorso", "Interroga JSON"],
+  "cidr-calculator": ["Rete e intervallo", "Calcola CIDR"],
+  "base-converter": ["Intero esatto", "Converti base"],
+  "chmod-permission-helper": ["Permessi Unix", "Converti permessi"],
+  "json-repair": ["Registro riparazioni", "Ripara JSON"],
+  "json-structural-diff": ["Differenze strutturali", "Confronta JSON"],
+  "json-type-schema-inference": ["Contratto inferito", "Inferisci tipi"],
+  "xml-formatter-validator": ["Risultato XML", "Elabora XML"],
+  "css-minifier": ["CSS minificato", "Minifica CSS"],
+  "html-minifier": ["HTML minificato", "Minifica HTML"],
 };
 
 function localizeDeveloperConfig(config: DeveloperWebToolConfig): DeveloperWebToolConfig {
@@ -237,6 +285,46 @@ const RESULT_KEY_IT: Readonly<Record<string, string>> = {
   month: "mese",
   dayOfWeek: "giorno_della_settimana",
   command: "comando",
+  family: "famiglia",
+  prefix: "prefisso",
+  network: "rete",
+  range: "intervallo",
+  first: "primo",
+  last: "ultimo",
+  addressCount: "numero_indirizzi",
+  subnetMask: "maschera_sottorete",
+  wildcardMask: "maschera_wildcard",
+  broadcast: "broadcast",
+  broadcastSemantics: "semantica_broadcast",
+  hostRange: "intervallo_host",
+  semantics: "semantica",
+  fromBase: "base_partenza",
+  toBase: "base_arrivo",
+  canonicalInput: "ingresso_canonico",
+  decimal: "decimale",
+  exact: "esatto",
+  inputDigitCount: "cifre_ingresso",
+  outputDigitCount: "cifre_risultato",
+  signPolicy: "regola_segno",
+  bound: "limite",
+  maximumInputDigits: "cifre_massime_ingresso",
+  human: "rappresentazione_umana",
+  machine: "rappresentazione_macchina",
+  integer: "intero",
+  octal: "ottale",
+  octalPadded: "ottale_quattro_cifre",
+  symbolic: "simbolico",
+  permissions: "permessi",
+  owner: "proprietario",
+  group: "gruppo",
+  other: "altri",
+  read: "lettura",
+  write: "scrittura",
+  execute: "esecuzione",
+  specialBits: "bit_speciali",
+  setuid: "setuid",
+  setgid: "setgid",
+  sticky: "sticky",
 };
 
 const RESULT_VALUE_IT: Readonly<Record<string, string>> = {
@@ -274,6 +362,44 @@ function resultText(value: unknown): string {
   }
 }
 
+function reusableResultText(value: unknown): string | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  const record = value as Record<string, unknown>;
+  for (const key of ["formatted", "output", "value", "query", "url"]) {
+    const candidate = record[key];
+    if (typeof candidate === "string") return candidate;
+  }
+  return null;
+}
+
+function validatorResultLabel(value: unknown): string {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return "Controllato";
+  return (value as Record<string, unknown>).valid === false ? "Non valido" : "Valido";
+}
+
+function chmodPermissionRows(value: unknown): readonly { readonly label: string; readonly value: string }[] | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  const permissions = (value as Record<string, unknown>).permissions;
+  if (typeof permissions !== "object" || permissions === null || Array.isArray(permissions)) return null;
+  const record = permissions as Record<string, unknown>;
+  const describe = (key: "owner" | "group" | "other"): string | null => {
+    const entry = record[key];
+    if (typeof entry !== "object" || entry === null || Array.isArray(entry)) return null;
+    const symbolic = (entry as Record<string, unknown>).symbolic;
+    if (typeof symbolic !== "string") return null;
+    return symbolic;
+  };
+  const owner = describe("owner");
+  const group = describe("group");
+  const other = describe("other");
+  if (owner === null || group === null || other === null) return null;
+  return [
+    { label: "Proprietario", value: owner },
+    { label: "Gruppo", value: group },
+    { label: "Altri", value: other },
+  ];
+}
+
 function errorText(message: string): string {
   const known: Readonly<Record<string, string>> = {
     INVALID_JSON: "Il documento JSON non è valido secondo la grammatica RFC 8259.",
@@ -294,7 +420,19 @@ function errorText(message: string): string {
     INVALID_REGEX_FLAGS: "Le opzioni dell'espressione regolare non sono valide o sono duplicate.",
     REGEX_TOO_LARGE: "L'espressione regolare supera il limite locale consentito.",
     REGEX_COMPLEXITY: "L'espressione contiene quantificatori annidati non limitati e viene rifiutata per sicurezza.",
+    REGEX_TIMEOUT: "L'espressione ha superato il tempo massimo di esecuzione ed è stata interrotta nel worker isolato.",
+    REGEX_WORKER_FAILURE: "L'esecuzione isolata dell'espressione regolare non è disponibile in questo browser.",
     REGEX_TOO_MANY_MATCHES: "L'espressione regolare ha prodotto troppe corrispondenze.",
+    JSON_REPAIR_REFUSED: "La riparazione è stata rifiutata perché richiederebbe di indovinare struttura o valori.",
+    JSON_DIFF_TOO_LARGE: "Il confronto produce troppe differenze per il limite locale.",
+    JSON_INFERENCE_TOO_DEEP: "Il JSON è troppo annidato per l'inferenza locale.",
+    INVALID_XML: "Il documento XML non è valido.",
+    INVALID_XML_ENTITY: "Il documento contiene un riferimento a entità XML non valido.",
+    XML_EXTERNAL_ENTITY_DISABLED: "DTD ed entità XML esterne sono disabilitate: nessuna risorsa viene risolta o scaricata.",
+    XML_TOO_DEEP: "Il documento XML supera il limite locale di annidamento.",
+    XML_TOO_LARGE: "Il documento XML supera il limite locale di nodi.",
+    INVALID_CSS: "Il CSS non è valido o contiene sintassi che il parser non può minificare in sicurezza.",
+    INVALID_HTML: "L'HTML contiene un errore di parsing: correggilo prima di creare un output minificato.",
   };
   const code = message.split(":", 1)[0] ?? message;
   return known[code] ?? `Errore dello strumento (${code}). Controlla i valori inseriti.`;
@@ -306,6 +444,7 @@ export interface DeveloperWebToolProps {
 
 export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
   const [values, setValues] = useState<Record<string, string>>(() => initialValues(config));
+  const [actionStatus, setActionStatus] = useState("");
   const operation = useToolOperation<unknown>(
     (signal) => toolRuntime.run(config.id, values, {}, signal),
     { formatError: (result) => errorText(result.message) },
@@ -323,10 +462,80 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
 
   function reset() {
     setValues(initialValues(config));
+    setActionStatus("");
     operation.reset();
   }
 
   const gutterState = gutterStateFor(operation.status);
+  const serializedResult = useMemo(
+    () => operation.result === null ? "" : resultText(operation.result),
+    [operation.result],
+  );
+  const artifact = useMemo(() => operation.result === null
+    ? null
+    : createOutputArtifactDescriptor({
+        kind: "structured",
+        name: config.id + "-risultato.json",
+        mime: "application/json",
+        bytes: new TextEncoder().encode(serializedResult),
+        verification: {
+          state: "verified",
+          verifiedMime: "application/json",
+          method: "JSON serializer output from the completed local result",
+        },
+        fidelity: "structural",
+        fidelityNote: "Il file contiene il risultato completo serializzato senza il limite dell'anteprima.",
+      }), [config.id, operation.result, serializedResult]);
+  const preview = useMemo(
+    () => artifact === null ? null : createBoundedTextPreview(artifact, 80, "code"),
+    [artifact],
+  );
+  const declaration = developerResultDeclaration(config.id);
+  const permissionRows = config.id === "chmod-permission-helper" ? chmodPermissionRows(operation.result) : null;
+  const reusableText = operation.result === null ? null : reusableResultText(operation.result);
+  const reusableField = config.fields.find((field) => field.kind === "text" || field.kind === "textarea");
+  const resultActions = operation.result === null || artifact === null
+    ? []
+    : resolveResultActions({
+        declaration,
+        primary: "copy",
+        hasCopyPayload: serializedResult !== "",
+        artifact,
+        reuseReady: reusableText !== null && reusableField !== undefined,
+        retryReady: declaration.class === "validator",
+        resetReady: true,
+      });
+
+  async function copyResult() {
+    if (serializedResult === "" || navigator.clipboard === undefined) {
+      setActionStatus("Gli appunti non sono disponibili; seleziona l'anteprima e copia manualmente.");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(serializedResult);
+      setActionStatus("Risultato completo copiato.");
+    } catch {
+      setActionStatus("L'accesso agli appunti è stato bloccato; seleziona e copia manualmente.");
+    }
+  }
+
+  function downloadResult() {
+    if (artifact === null || !artifact.download.ready) return;
+    const blob = new Blob([artifact.bytes.slice().buffer], { type: artifact.mime });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = artifact.name;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function reuseResult() {
+    if (reusableText === null || reusableField === undefined) return;
+    setValues((current) => ({ ...current, [reusableField.key]: reusableText }));
+    setActionStatus("Risultato riutilizzato nel primo campo compatibile.");
+    operation.reset();
+  }
 
   return (
     <ToolSurface
@@ -337,10 +546,56 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
           placeholder={operation.isRunning ? it(CONTROL.gutterRunning) : it(CONTROL.gutterIdle)}
           busy={operation.isRunning}
         >
-          {operation.result !== null && (
-            <pre class="developer-result-json" aria-label={`${config.title} — risultato`}>
-              {resultText(operation.result)}
-            </pre>
+          {operation.result !== null && artifact !== null && preview !== null && (
+            <>
+              {declaration.class === "validator" && (
+                <ResultExplanation
+                  primary={<ResultPrimaryAnswer label="Esito">{validatorResultLabel(operation.result)}</ResultPrimaryAnswer>}
+                  interpretation={
+                    <ResultInterpretation state={validatorResultLabel(operation.result) === "Valido" ? "success" : "warning"}>
+                      Il risultato include l'evidenza strutturata prodotta dal controllo locale.
+                    </ResultInterpretation>
+                  }
+                  breakdown={
+                    <ResultBreakdown
+                      label="Controlli"
+                      rows={[
+                        { label: "Strumento", value: config.title },
+                        { label: "Dimensione risultato completo", value: String(artifact.byteLength) + " byte" },
+                      ]}
+                    />
+                  }
+                  provenance={<ResultProvenance>Controllo eseguito localmente dal motore developer.</ResultProvenance>}
+                />
+              )}
+              <BoundedTextResultPreview preview={preview} />
+              {declaration.class !== "validator" && (
+                <>
+                  {permissionRows !== null && (
+                    <ResultBreakdown label="Permessi per classe" rows={permissionRows} />
+                  )}
+                  <ResultBreakdown
+                    label="Dimensione risultato"
+                    rows={[
+                      { label: "Caratteri serializzati", value: String(serializedResult.length) },
+                      { label: "Byte completi", value: String(artifact.byteLength) },
+                    ]}
+                  />
+                  <ResultProvenance>Elaborazione locale deterministica; il download usa il risultato completo.</ResultProvenance>
+                </>
+              )}
+              <ResultActions
+                actions={resultActions}
+                onAction={{
+                  copy: copyResult,
+                  download: downloadResult,
+                  reuse: reuseResult,
+                  retry: operation.retry,
+                  reset,
+                }}
+              />
+              {actionStatus !== "" && <p class="success" role="status" aria-live="polite">{actionStatus}</p>}
+            </>
           )}
         </ToolGutter>
       }

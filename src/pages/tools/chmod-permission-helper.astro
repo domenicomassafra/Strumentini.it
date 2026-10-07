@@ -1,0 +1,8 @@
+---
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
+import { DeveloperWebTool, DEVELOPER_WEB_CONFIGS } from "../../components/tools/DeveloperWebTool";
+---
+
+<ItalianToolPage toolId="chmod-permission-helper">
+  <DeveloperWebTool config={DEVELOPER_WEB_CONFIGS["chmod-permission-helper"]} client:load />
+</ItalianToolPage>

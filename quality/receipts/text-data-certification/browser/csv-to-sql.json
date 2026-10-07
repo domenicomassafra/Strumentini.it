@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "subjectToolId": "csv-to-sql",
+  "oracleEntryId": "cand-228",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "checkedAt": "2026-10-07",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "keyboard": "submit exercised with Enter",
+  "network": "zero external/non-GET/task-body requests after task start",
+  "result": {
+    "toolId": "csv-to-sql",
+    "status": "PASS",
+    "semanticAssertion": "quoted SQL fixture visible",
+    "horizontalOverflow": false,
+    "unlabeledControls": 0,
+    "externalRequests": 0,
+    "nonGetRequests": 0,
+    "taskBodyLeaks": 0,
+    "runtimeErrors": 0,
+    "lazyScriptRequests": 6
+  }
+}

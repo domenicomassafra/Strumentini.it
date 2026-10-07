@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 2,
+  "ticket": 117,
+  "datasetId": "italy-fiscal-annual",
+  "checkedAt": "2026-10-06",
+  "scope": "Annual official fiscal source snapshots for IVA, national IRPEF and regime forfettario. Values are populated only when one tax year is covered by publication-specific official artifacts for every required subpack.",
+  "requiredSubpacks": [
+    "iva-rates",
+    "irpef-national-brackets",
+    "forfettario-coefficients-and-tax-rules"
+  ],
+  "freshOfficialChecks": [
+    {
+      "authority": "Agenzia delle Entrate",
+      "title": "Redditi PF 2026 - Quadro RN",
+      "url": "https://infoprecompilata.agenziaentrate.gov.it/portale/quadro-rn-quadro-rv",
+      "sufficiency": "INSUFFICIENT",
+      "reason": "The official 2026 declaration page states that Quadro RN determines IRPEF due for tax year 2025; it is not an annual tax-year-2026 IRPEF snapshot."
+    },
+    {
+      "authority": "Agenzia delle Entrate",
+      "title": "Redditi PF 2026 - Quadro LM",
+      "url": "https://infoprecompilata.agenziaentrate.gov.it/portale/web/guest/quadro-lm",
+      "sufficiency": "INSUFFICIENT",
+      "reason": "The official page documents the forfettario declaration workflow but does not by itself pin a complete tax-year-2026 coefficient/rate/threshold pack."
+    }
+  ],
+  "publicationSpecificArtifacts": [],
+  "decision": "BLOCKED",
+  "reason": "No single tax year has a complete pinned official artifact set for IVA rates, national IRPEF brackets and forfettario coefficients/rules. Current Redditi PF 2026 material concerns tax year 2025 for IRPEF, so no 2026 fiscal constants are promoted."
+}

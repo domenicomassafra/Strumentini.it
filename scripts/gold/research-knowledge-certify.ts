@@ -20,21 +20,12 @@ import pdfPageCitationHelper from "../../src/tools/pdf-page-citation-helper/modu
 import readingListDeduplicator from "../../src/tools/reading-list-deduplicator/module";
 import referenceListSorter from "../../src/tools/reference-list-sorter/module";
 import researchPackManifest from "../../src/tools/research-pack-manifest/module";
+import risBibtexConverter from "../../src/tools/ris-bibtex-converter/module";
 import vocabularyFrequencyAnalyzer from "../../src/tools/vocabulary-frequency-analyzer/module";
 import { currentEvidenceSourceFingerprint, currentRevision } from "../lib/current-revision";
 
 /**
- * `ris-bibtex-converter` is deliberately NOT in this set. Its oracle entry
- * (cand-187) is medium confidence and carries an unresolved gap: no single
- * freely accessible normative RIS authority exists and the declared
- * parser cross-check has not been performed. It keeps its hand-worked fixtures,
- * unit tests and real browser acceptance, but an unclosed oracle gap is not a
- * Gold receipt. Promoting it would mean editing the oracle to fit the outcome.
- */
-const blockedByOpenOracleGap = ["ris-bibtex-converter"] as const;
-
-/**
- * The research-knowledge Gold set is the 13 tools whose oracle entry, fixture
+ * The research-knowledge Gold set is the 14 tools whose oracle entry, fixture
  * families, real browser acceptance and unit tests now all exist, with a
  * high-confidence oracle and no unresolved gap. It is fixed here on purpose: a
  * tool joins only by being added to this list together with its own evidence.
@@ -52,6 +43,7 @@ const tools = [
   { id: "reading-list-deduplicator", run: (input: unknown) => readingListDeduplicator.run(input, { defaults: {} }) },
   { id: "reference-list-sorter", run: (input: unknown) => referenceListSorter.run(input, { defaults: {} }) },
   { id: "research-pack-manifest", run: (input: unknown) => researchPackManifest.run(input, { defaults: {} }) },
+  { id: "ris-bibtex-converter", run: (input: unknown) => risBibtexConverter.run(input, { defaults: {} }) },
   { id: "vocabulary-frequency-analyzer", run: (input: unknown) => vocabularyFrequencyAnalyzer.run(input, { defaults: {} }) },
 ] as const;
 
@@ -115,11 +107,8 @@ const revision = await currentRevision(root);
 const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
 const sha256 = (value: string | Uint8Array): string => createHash("sha256").update(value).digest("hex");
 
-if (tools.length !== 13 || new Set(tools.map(({ id }) => id)).size !== 13) {
-  throw new Error(`research-knowledge Gold set must contain exactly 13 unique tools; got ${tools.length}`);
-}
-if (tools.some(({ id }) => (blockedByOpenOracleGap as readonly string[]).includes(id))) {
-  throw new Error("a tool with an open oracle gap must not be in the research-knowledge Gold set");
+if (tools.length !== 14 || new Set(tools.map(({ id }) => id)).size !== 14) {
+  throw new Error(`research-knowledge Gold set must contain exactly 14 unique tools; got ${tools.length}`);
 }
 
 const [engineText, fixtureIndexText, oracleRegistryText, acceptanceText, acceptanceScriptText, ...unitTestTexts] = await Promise.all([
@@ -150,7 +139,7 @@ const acceptedRouteCount = 14;
 if (acceptance.status !== "PASS") issues.push("research-knowledge browser acceptance is missing or not PASS");
 if (acceptance.routesChecked !== acceptedRouteCount || acceptedTools.length !== acceptedRouteCount || new Set(acceptedTools).size !== acceptedRouteCount) issues.push(`research-knowledge browser acceptance must cover exactly ${acceptedRouteCount} unique routes`);
 if (toolIds.some((id) => !acceptedTools.includes(id))) issues.push("research-knowledge browser acceptance does not cover every Gold tool");
-if (acceptedTools.some((id) => !toolIds.includes(id as (typeof toolIds)[number]) && !(blockedByOpenOracleGap as readonly string[]).includes(id))) issues.push("research-knowledge browser acceptance covers a route outside the Gold set and the documented blocked set");
+if (acceptedTools.some((id) => !toolIds.includes(id as (typeof toolIds)[number]))) issues.push("research-knowledge browser acceptance covers a route outside the Gold set");
 if (results.length !== acceptedRouteCount || new Set(results.map(({ toolId }) => toolId)).size !== acceptedRouteCount) issues.push("research-knowledge browser acceptance must contain exactly one result per accepted route");
 if (acceptance.externalTaskRequests !== 0 || acceptance.nonGetTaskRequests !== 0 || acceptance.taskContentLeaks !== 0 || acceptance.runtimeConsoleErrors !== 0 || acceptance.implementationEager !== false) issues.push("research-knowledge browser acceptance global locality/runtime contract is incomplete");
 if (!Array.isArray(acceptance.lazyImplementationObservedFor) || toolIds.some((id) => !(acceptance.lazyImplementationObservedFor as unknown[]).includes(id))) issues.push("research-knowledge browser acceptance did not observe lazy implementation loading for every tool");
@@ -192,6 +181,7 @@ const determinismInputs: Readonly<Record<string, unknown>> = {
   "reading-list-deduplicator": { records: [{ isbn: "0-306-40615-2" }, { isbn: "978-0-306-40615-7" }] },
   "reference-list-sorter": { records: [{ title: "Zeta", author: "Ada Rossi", year: "2020" }, { title: "Alfa", author: "Ada Smith", year: "2019" }], order: "author" },
   "research-pack-manifest": { name: "Ricerca di base", tools: "quote-counter\ndoi-normalizer\nquote-counter" },
+  "ris-bibtex-converter": { direction: "ris-to-bibtex", text: "TY  - JOUR\nTI  - Determinism\nA1  - Alpha, Alice\nAU  - Beta, Bob\nDA  - 2026/10/05\nER  - \n" },
   "vocabulary-frequency-analyzer": { text: "il gatto e il cane con una casa per la città" },
 };
 
@@ -236,6 +226,17 @@ for (const { id, run } of tools) {
     readFile(resolve(root, `src/tools/${id}/manifest.ts`), "utf8"),
     ...fixtures.map((entry) => readFile(resolve(root, entry.path), "utf8")),
   ]);
+  const converterEvidencePaths = id === "ris-bibtex-converter" ? [
+    "src/tools/ris-bibtex-converter/module.ts",
+    "src/tools/ris-bibtex-converter/conversion.ts",
+    "quality/fixtures/research-ris-bibtex-conversion/ORACLE.md",
+    "quality/fixtures/research-ris-bibtex-conversion/oracle-cross-check.json",
+    "quality/fixtures/research-ris-bibtex-conversion/verify-oracle.ts",
+  ] : [];
+  const converterEvidenceIdentities = Object.fromEntries(await Promise.all(converterEvidencePaths.map(async (path) => [
+    `evidence:${path}:sha256`,
+    sha256(await readFile(resolve(root, path), "utf8")),
+  ])));
   const fixtureIdentities = Object.fromEntries(fixtures.map((entry, index) => [`fixture:${entry.id}:sha256`, sha256(fixtureTexts[index] ?? "")]));
   const resolvedFixtures = await Promise.all(fixtures.map(async (entry) => {
     const text = await readFile(resolve(root, entry.path), "utf8");
@@ -292,6 +293,7 @@ for (const { id, run } of tools) {
       browserAcceptanceSha256: sha256(acceptanceText),
       acceptanceScriptSha256: sha256(acceptanceScriptText),
       unitTestsSha256: sha256(unitTestTexts.join("\n")),
+      ...converterEvidenceIdentities,
       ...fixtureIdentities,
     },
   };
@@ -315,9 +317,4 @@ if (issues.length > 0) {
   process.exit(1);
 }
 
-for (const id of blockedByOpenOracleGap) {
-  const manifestModule = await import(pathToFileURL(resolve(root, `src/tools/${id}/manifest.ts`)).href) as { default: ToolManifest };
-  const oracle = oracleRegistry.entries.find((entry) => entry.id === manifestModule.default.gold.oracleEntryId);
-  console.log(`BLOCKED (left unverified): ${id} — oracle ${oracle?.id ?? "?"} confidence "${oracle?.confidence ?? "?"}", unresolved gaps: ${JSON.stringify(oracle?.unresolved_gaps ?? [])}`);
-}
-console.log(`research-knowledge Gold set: ${tools.length} tool(s) certified; ${blockedByOpenOracleGap.length} route(s) accepted in the browser but left unverified on an open oracle gap.`);
+console.log(`research-knowledge Gold set: ${tools.length} tool(s) certified; every accepted route is bound to a high-confidence oracle with no open gap.`);

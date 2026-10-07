@@ -1,0 +1,27 @@
+{
+  "toolId": "qr-generator",
+  "category": "marketing",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Crea un QR code SVG da testo o URL direttamente nel browser. Public jobs: Usa Crea QR code.",
+  "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/marketing-media/qr-generator.gold.json, executable functional tests in tests/qr-local-engine.test.ts, and real-route browser acceptance in quality/receipts/marketing-media/browser-acceptance.json. No scoped functional gap is open for this narrow public job.",
+  "rationale": "No correctness or required-option gap was found in the currently declared public job. No scoped functional gap is open for this narrow public job.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/marketing-media/qr-generator.gold.json",
+      "claim": "Tool-specific Gold receipt binds qr-generator to its current fixtures/oracle and functional acceptance."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/qr-local-engine.test.ts",
+      "claim": "Executable tests cover the engine/module behavior used by qr-generator, including relevant edge or invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/marketing-media/browser-acceptance.json",
+      "claim": "Committed browser acceptance names qr-generator and exercises the real route with locality/mobile/accessibility or equivalent route-functional checks."
+    }
+  ],
+  "childTickets": []
+}

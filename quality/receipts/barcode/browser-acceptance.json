@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tool": "barcode-generator",
+  "ean13": {
+    "keyboardGenerate": "PASS",
+    "knownVector": "9780471384298",
+    "invalidChecksumRefused": "PASS"
+  },
+  "code128b": {
+    "subsetDisclosure": "PASS",
+    "checksumVector": 19,
+    "humanReadableToggle": "PASS"
+  },
+  "downloads": {
+    "svgClean": true,
+    "pngSignatureVerified": true
+  },
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "accessibility": {
+    "unlabeledControls": 0
+  },
+  "network": "zero external, non-GET or task-body requests after task start",
+  "runtimeErrors": 0,
+  "svgSha256": "11dddb09e8bc41f3c4805c6386dd34670503e30cf389e0b46bbed807b6cb0642",
+  "pngSha256": "f7e1e588ab204d4638bfd548eb26ae8f0302c96d463b1fca8452fc161cb4228a",
+  "scriptSha256": "ca6f7e0f8ca53d384380cceba827367d0b40e8915f02d5f1f28c973599fc81ab"
+}

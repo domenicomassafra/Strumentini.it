@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const image_dimensions_batch_inspectorManifest = {
   id: "image-dimensions-batch-inspector",
@@ -13,6 +14,7 @@ export const image_dimensions_batch_inspectorManifest = {
   engine: "image",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["image-dimensions-batch-inspector"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-154", fixtureFamilies: ["image-metadata", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

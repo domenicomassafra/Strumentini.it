@@ -16,6 +16,7 @@ export const timezoneOverlapManifest = {
     { key: "timezone" },
     { key: "workingHours", defaultValue: { start: "09:00", end: "17:00" } },
   ],
+  result: { class: "calculator", capabilities: ["copy", "reset", "provenance"] },
   gold: {
     maintenanceClass: "E",
     oracleEntryId: "cand-086",

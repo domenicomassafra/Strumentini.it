@@ -52,7 +52,7 @@ const ID_RULES: ReadonlyArray<readonly [RegExp, ToolIconKey]> = [
   [/(?:image|screenshot|favicon|exif|aspect-ratio)/u, "image"],
   [/(?:color|palette|contrast)/u, "palette"],
   [/(?:csv|tsv|table|column|row|pivot|delimiter|missing-value)/u, "table"],
-  [/(?:qr)/u, "qr"],
+  [/(?:qr|barcode)/u, "qr"],
   [/(?:url|domain|utm|redirect|robots|open-graph|meta-preview|query-string|email-domain|tracking-cleaner)/u, "link"],
   [/(?:json|yaml|toml|jwt|regex|cron|uuid|base64|html-entity|user-agent|mime-type)/u, "code"],
   [/(?:compare|comparison|diff|duplicate|dedupe|intersection|difference)/u, "compare"],

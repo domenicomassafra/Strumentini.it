@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "9418f6d684412c1fc8346a54637d766a06c7f2cdcea37ddf6ba6cd24639a17b6",
+  "toolId": "color-blindness-image-simulation",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "R",
+  "oracleEntryId": "cand-244",
+  "fixtureFamilies": [
+    "color-vision-simulation"
+  ],
+  "boundedScopeGaps": [
+    "The Machado transform is a model-based simulation, not a measurement of any one person's perception; display calibration, adaptation and individual variation remain outside scope.",
+    "Only complete dichromacy endpoints are exposed; anomalous-trichromacy severity interpolation is intentionally outside this ticket."
+  ],
+  "scopePolicy": "Every canonical unresolved oracle gap is matched against a tool-specific bounded-scope policy. Unknown/new gap wording fails certification.",
+  "truthSources": [
+    "fixture-policy",
+    "machado-cvd-2009",
+    "r-colorspace-cvd-machado",
+    "r-colorspace-simulate-cvd-linear",
+    "strumentiutili-quality"
+  ],
+  "directChecks": [
+    "8 exact independently transcribed RGBA vectors",
+    "alpha preserved"
+  ],
+  "propertyChecks": [
+    "local-only public runtime",
+    "canonical oracle confidence high",
+    "all oracle gaps classified as bounded exclusions",
+    "fixture replay",
+    "real browser locality/mobile acceptance",
+    "route bundle isolated from home initial JS"
+  ],
+  "identities": {
+    "manifestSha256": "55c5cd63e3bdae6c9630921dcd3c6c99c81d7f32385381b02713930a506e4812",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "browserAcceptanceSha256": "01230857f8e23f4e7015eb09f7322e35ee11e36e8177096e2894555fd6679448",
+    "bundleIsolationSha256": "f8cc75d37de5f47d79a94a350710156bbf079972838dfdf080685192016e91c2",
+    "unitTestsSha256": "908cc7cb3244a53a45175625bda14e019c8af6973d062a6948945e49fc05f18e",
+    "fixture:color-vision-simulation:sha256": "209cbf8ef6857bf834f692bcf1fde8647b6b30792d66e4122aed051c8aa6f755"
+  }
+}

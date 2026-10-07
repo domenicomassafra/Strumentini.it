@@ -1,0 +1,32 @@
+{
+  "toolId": "meta-preview",
+  "category": "marketing",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Misura titolo e descrizione e produce un'anteprima escapata senza renderizzare contenuto attivo. Public jobs: Usa Anteprima titolo e descrizione meta.",
+  "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/marketing-media/meta-preview.gold.json, executable functional tests in tests/url-marketing-tools.test.ts, and real-route browser acceptance in quality/receipts/marketing-media/browser-acceptance.json. Broader additive work is already owned by .scratch/strumentiutili-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "rationale": "No correctness or required-option gap was found in the currently declared public job. Broader additive work is already owned by .scratch/strumentiutili-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/marketing-media/meta-preview.gold.json",
+      "claim": "Tool-specific Gold receipt binds meta-preview to its current fixtures/oracle and functional acceptance."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/url-marketing-tools.test.ts",
+      "claim": "Executable tests cover the engine/module behavior used by meta-preview, including relevant edge or invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/marketing-media/browser-acceptance.json",
+      "claim": "Committed browser acceptance names meta-preview and exercises the real route with locality/mobile/accessibility or equivalent route-functional checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md",
+      "claim": "Existing targeted backlog owns additive functionality beyond meta-preview's current narrow public job; it is not counted as already shipped by this audit."
+    }
+  ],
+  "childTickets": []
+}

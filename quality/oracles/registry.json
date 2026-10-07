@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 200,
+  "entry_count": 259,
   "entries": [
     {
       "id": "cand-001",
@@ -5701,21 +5701,24 @@
         "fixture-policy",
         "iso-pdf2"
       ],
-      "standard_or_official_example": "iso-pdf2",
+      "standard_or_official_example": "ISO 32000 pages are rendered through a local PDF renderer at an explicit viewport scale; raster export does not claim vector preservation.",
       "invariants": [
-        "deterministic input produces deterministic output",
-        "empty and invalid input behavior is explicit",
-        "input remains unchanged"
+        "selected page numbers must exist and output preserves the requested page order",
+        "each successful page produces exactly one deterministically named JPG, PNG, or WebP raster at dimensions implied by the chosen PDF viewport scale",
+        "effective DPI is disclosed as 72 times the render scale and JPEG/WebP quality is explicit",
+        "per-page render failures are isolated and reported; success requires at least one page artifact",
+        "multi-page output includes a verified ZIP whose entry count matches successful page artifacts",
+        "input remains unchanged and the renderer is loaded locally/lazily without task-time network requests"
       ],
       "adversarial_cases": [
-        "empty input",
-        "very large but supported input",
+        "out-of-range and reversed page selections",
+        "page raster exceeding dimension or pixel bounds",
+        "one page render failure among otherwise renderable pages",
+        "password-protected PDF",
         "corrupt or truncated file",
-        "mismatched extension/signature",
-        "resource bomb or oversized dimensions",
-        "path traversal filename"
+        "multi-page ZIP naming and entry-count mismatch"
       ],
-      "expected_output_strategy": "Validate output with an independent parser/decoder and exact dimensions/signatures/metadata invariants using locally generated synthetic media.",
+      "expected_output_strategy": "Run the public module in Chromium against a frozen two-page PDF, render pages [2,1] at 1x, reopen both PNGs at 612x792, and reopen the two-entry ZIP before accepting the vector.",
       "security_privacy_edges": [
         "LOCAL by default; fixture payload is never telemetry",
         "no implicit persistence of tool input",
@@ -5732,12 +5735,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent browser/system image or PDF parser",
-        "role": "required for Gold where format permits"
+        "implementation": "Chromium createImageBitmap reopen plus verified ZIP inspection in scripts/acceptance-conversion-matrix.mjs",
+        "role": "exact page-order, raster-dimension, signature and ZIP integrity cross-check"
       },
       "confidence": "high",
       "unresolved_gaps": [
-        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
+        "No unresolved gap for bounded local raster page export to JPG/PNG/WebP; vector preservation and exhaustive PDF renderer conformance are explicitly not claimed."
       ]
     },
     {
@@ -5750,24 +5753,25 @@
         "fixture-policy",
         "iso-pdf2"
       ],
-      "standard_or_official_example": "iso-pdf2",
+      "standard_or_official_example": "ISO 32000 PDF page content streams are page-scoped and text-showing strings occur in content-stream order; this bounded implementation supports unfiltered/Flate streams only and labels that limitation explicitly.",
       "invariants": [
-        "deterministic input produces deterministic output",
-        "empty and invalid input behavior is explicit",
-        "input remains unchanged"
+        "selected page numbers must exist and output preserves the caller's selected-page order",
+        "every page in combined text is preceded by an explicit PAGINA N separator",
+        "content-order mode normalizes extracted string whitespace while operator-lines mode preserves one supported text string per output line",
+        "both modes follow supported content-stream/operator order and do not claim visual reading-order reconstruction",
+        "unfiltered and FlateDecode content streams are bounded; other stream filters fail explicitly instead of producing guessed text",
+        "input remains unchanged and total extracted text is capped by PDF_LIMITS.maxTextBytes"
       ],
       "adversarial_cases": [
-        "empty input",
-        "very large but supported input",
-        "composed/decomposed Unicode",
-        "emoji and combining marks",
-        "CRLF/LF",
+        "out-of-range and empty page selections",
+        "selected pages supplied out of document order",
+        "multiple text-showing strings on one page",
+        "unsupported content stream filter",
+        "text exceeding the bounded extraction limit",
         "corrupt or truncated file",
-        "mismatched extension/signature",
-        "resource bomb or oversized dimensions",
-        "path traversal filename"
+        "encrypted or malformed page tree"
       ],
-      "expected_output_strategy": "Validate output with an independent parser/decoder and exact dimensions/signatures/metadata invariants using locally generated synthetic media.",
+      "expected_output_strategy": "Use a synthetic multi-page PDF with known text strings to assert exact selected pages, exact page separators, both declared modes, truncation behavior and explicit refusal of unsupported stream filters.",
       "security_privacy_edges": [
         "LOCAL by default; fixture payload is never telemetry",
         "no implicit persistence of tool input",
@@ -5784,12 +5788,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent browser/system image or PDF parser",
-        "role": "required for Gold where format permits"
+        "implementation": "synthetic page/content-stream corpus plus exact expected strings in tests/pdf-extraction-metadata-upgrades.test.ts",
+        "role": "page-selection, separator and mode cross-check independent of UI rendering"
       },
       "confidence": "high",
       "unresolved_gaps": [
-        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
+        "No unresolved gap for the declared content-order/operator-lines subset; font encodings, layout reconstruction and arbitrary PDF stream filters remain explicitly outside scope."
       ]
     },
     {
@@ -5802,11 +5806,13 @@
         "fixture-policy",
         "iso-pdf2"
       ],
-      "standard_or_official_example": "iso-pdf2",
+      "standard_or_official_example": "ISO 32000 document information dictionaries use well-known keys such as Title/Author/Subject/Keywords/Creator/Producer/CreationDate/ModDate while other Info keys can exist; metadata streams are identified separately as /Type /Metadata.",
       "invariants": [
         "inspection does not mutate payload",
-        "reported structure agrees with an independent parser/signature",
-        "malformed input fails without execution"
+        "recognized document Info fields are separated from unknown Info entries without discarding either",
+        "every reported Info entry carries document-info provenance and recognized status",
+        "XMP metadata stream object ids are reported separately from Info entries",
+        "reported structure agrees with the bounded parser/signature and malformed input fails without execution"
       ],
       "adversarial_cases": [
         "empty input",
@@ -5814,9 +5820,10 @@
         "corrupt or truncated file",
         "mismatched extension/signature",
         "resource bomb or oversized dimensions",
-        "path traversal filename"
+        "unknown Info dictionary keys",
+        "XMP /Metadata stream plus Info dictionary metadata"
       ],
-      "expected_output_strategy": "Validate output with an independent parser/decoder and exact dimensions/signatures/metadata invariants using locally generated synthetic media.",
+      "expected_output_strategy": "Inspect a synthetic PDF containing recognized Title/Author/ModDate fields, an unknown CustomKey and a separate XMP /Metadata stream; assert exact recognized/unknown partitions and carrier object provenance.",
       "security_privacy_edges": [
         "LOCAL by default; fixture payload is never telemetry",
         "no implicit persistence of tool input",
@@ -5833,12 +5840,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent browser/system image or PDF parser",
-        "role": "required for Gold where format permits"
+        "implementation": "hand-authored metadata corpus in quality/fixtures/pdf-gold/page-scoped-images-metadata.pdf",
+        "role": "exact Info/XMP carrier classification cross-check"
       },
       "confidence": "high",
       "unresolved_gaps": [
-        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
+        "No unresolved gap for the declared Info-dictionary and /Type /Metadata inspection semantics; other application-specific metadata carriers are not claimed."
       ]
     },
     {
@@ -5851,11 +5858,14 @@
         "fixture-policy",
         "iso-pdf2"
       ],
-      "standard_or_official_example": "iso-pdf2",
+      "standard_or_official_example": "The remover addresses the PDF trailer Info dictionary and /Type /Metadata streams, then reparses the produced PDF before success rather than trusting the writer request alone.",
       "invariants": [
-        "deterministic input produces deterministic output",
-        "empty and invalid input behavior is explicit",
-        "input remains unchanged"
+        "source bytes remain unchanged while the produced copy omits addressed Info and XMP metadata carriers",
+        "metadata-only rewrite uses flatten=false so page-level interactive hooks are not intentionally removed as part of metadata cleanup",
+        "the produced PDF is reparsed and success requires recognized Info, unknown Info and XMP metadata to be absent",
+        "page count must equal the source page count",
+        "when bounded source text extraction is available the produced text baseline must match page-by-page",
+        "when the source text baseline is unavailable because of an unsupported filter the output reports that limitation instead of claiming text verification"
       ],
       "adversarial_cases": [
         "empty input",
@@ -5863,9 +5873,12 @@
         "corrupt or truncated file",
         "mismatched extension/signature",
         "resource bomb or oversized dimensions",
-        "path traversal filename"
+        "recognized plus unknown Info fields",
+        "XMP metadata stream",
+        "metadata removal from multi-page PDF with stable text baseline",
+        "source text stream whose filter is outside the bounded extractor"
       ],
-      "expected_output_strategy": "Validate output with an independent parser/decoder and exact dimensions/signatures/metadata invariants using locally generated synthetic media.",
+      "expected_output_strategy": "Reparse the generated artifact, independently inspect addressed metadata carriers, compare before/after page count and compare bounded page text whenever the source text mode is supported.",
       "security_privacy_edges": [
         "LOCAL by default; fixture payload is never telemetry",
         "no implicit persistence of tool input",
@@ -5882,12 +5895,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent browser/system image or PDF parser",
-        "role": "required for Gold where format permits"
+        "implementation": "before/after local parser reinspection plus page/text baseline assertions in tests/pdf-extraction-metadata-upgrades.test.ts",
+        "role": "post-write metadata absence and non-metadata baseline verification"
       },
       "confidence": "high",
       "unresolved_gaps": [
-        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
+        "No unresolved gap for the addressed Info/XMP carriers and declared page/text preservation baseline; application-specific hidden metadata carriers remain explicitly outside scope."
       ]
     },
     {
@@ -6194,21 +6207,24 @@
         "fixture-policy",
         "iso-pdf2"
       ],
-      "standard_or_official_example": "iso-pdf2",
+      "standard_or_official_example": "PDF page resources map XObject names to image streams; a single DCTDecode image stream can expose its original JPEG compressed bytes directly, while other filter pipelines require decoding/re-encoding and are therefore not silently exported by this mode.",
       "invariants": [
-        "deterministic input produces deterministic output",
-        "empty and invalid input behavior is explicit",
-        "input remains unchanged"
+        "image discovery is scoped to selected page XObject resources and each occurrence records page resource name and source object id when indirect",
+        "original compressed bytes are exported only when the image stream has exactly one DCTDecode filter and independently parses as JPEG",
+        "unsupported or compound filters are reported with page/object provenance instead of being silently skipped or misdecoded",
+        "optional dedupe collapses repeated indirect image objects to one artifact while preserving every occurrence in provenance",
+        "non-deduped mode emits one artifact per page/resource occurrence",
+        "image count dimensions per-image bytes and total output bytes remain bounded"
       ],
       "adversarial_cases": [
-        "empty input",
-        "very large but supported input",
-        "corrupt or truncated file",
-        "mismatched extension/signature",
-        "resource bomb or oversized dimensions",
-        "path traversal filename"
+        "same JPEG object referenced from multiple pages",
+        "FlateDecode raw image samples",
+        "compound filter chain containing DCTDecode",
+        "DCTDecode declaration whose bytes are not JPEG",
+        "out-of-range selected page",
+        "image count byte and pixel resource limits"
       ],
-      "expected_output_strategy": "Validate output with an independent parser/decoder and exact dimensions/signatures/metadata invariants using locally generated synthetic media.",
+      "expected_output_strategy": "Use a synthetic two-page PDF where one DCT JPEG object is shared across pages and one Flate image is page-local; compare extracted JPEG bytes byte-for-byte with the source fixture and assert dedupe provenance plus explicit unsupported-filter records.",
       "security_privacy_edges": [
         "LOCAL by default; fixture payload is never telemetry",
         "no implicit persistence of tool input",
@@ -6225,12 +6241,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent browser/system image or PDF parser",
-        "role": "required for Gold where format permits"
+        "implementation": "byte-identity JPEG fixture plus page/resource/object provenance assertions in tests/pdf-extraction-metadata-upgrades.test.ts",
+        "role": "original-stream identity and unsupported-filter cross-check"
       },
       "confidence": "high",
       "unresolved_gaps": [
-        "No unresolved gap for the currently declared deterministic semantics; full ISO 32000 conformance is out of scope and is not claimed by the tool manifests; re-open if a manifest expands its claims."
+        "No unresolved gap for direct page-resource DCT JPEG extraction; nested Form XObject traversal and decoded export of non-DCT filters remain explicitly outside scope."
       ]
     },
     {
@@ -8641,9 +8657,10 @@
         "strumentiutili-quality",
         "fixture-policy",
         "bibtex-ctan",
-        "ris-policy"
+        "ris-policy",
+        "zotero-translators"
       ],
-      "standard_or_official_example": "bibtex-ctan, ris-policy",
+      "standard_or_official_example": "bibtex-ctan, ris-policy, zotero-translators@3d1c78530f42892328e08741b7cac8474ff687b8",
       "invariants": [
         "lossless conversions round-trip semantically",
         "invalid input yields a typed error",
@@ -8657,7 +8674,7 @@
         "duplicate record",
         "unknown fields or tags"
       ],
-      "expected_output_strategy": "Use synthetic bibliographic/identifier records grounded in format-owner documentation; preserve unknown fields and cross-check with an independent parser when available.",
+      "expected_output_strategy": "Use synthetic bibliographic records grounded in BibTeX/RIS documentation and pinned Zotero translator expectations; preserve unknown fields and require the independent Zotero/parser cross-check for the declared subset.",
       "security_privacy_edges": [
         "LOCAL by default; fixture payload is never telemetry",
         "no implicit persistence of tool input",
@@ -8670,12 +8687,12 @@
       ],
       "cross_check": {
         "usable": true,
-        "implementation": "independent bibliography parser in test tooling",
-        "role": "recommended"
+        "implementation": "Pinned Zotero RIS.js/BibTeX.js translator expectations plus a test-only RIS parser; see quality/fixtures/research-ris-bibtex-conversion/oracle-cross-check.json",
+        "role": "required independent cross-check for the declared conversion subset"
       },
-      "confidence": "medium",
+      "confidence": "high",
       "unresolved_gaps": [
-        "No single freely accessible normative RIS authority is treated as canonical; preserve unknown tags and require parser cross-check."
+        "No unresolved gap for the currently declared RIS/BibTeX subset; re-open if mappings, types, TeX semantics, or round-trip claims expand beyond the pinned independent cross-check."
       ]
     },
     {
@@ -9277,6 +9294,2551 @@
       "unresolved_gaps": [
         "No unresolved gap for the currently declared deterministic semantics; re-open if the tool manifest expands its claims."
       ]
+    },
+    {
+      "id": "cand-201",
+      "candidate": "IPv4/IPv6 CIDR calculator",
+      "tool_family": "developer-network-engine",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "RFC 4291 IPv6 addressing, RFC 4632 CIDR, and RFC 3021 IPv4 /31 semantics; hand-worked literals are stored separately from production code.",
+      "invariants": [
+        "network and range arithmetic is exact for all 32-bit and 128-bit addresses",
+        "IPv4 broadcast is present and IPv6 broadcast is not fabricated",
+        "prefix bounds are explicit for IPv4 and IPv6"
+      ],
+      "adversarial_cases": [
+        "IPv4 /0 /31 /32",
+        "IPv6 /0 /127 /128",
+        "maximum IPv6 address",
+        "compressed IPv6 syntax",
+        "invalid prefix and malformed address"
+      ],
+      "expected_output_strategy": "Use hand-worked boundary networks and independent integer-mask calculations over RFC-known literals; compare exact decimal address counts and canonical endpoints.",
+      "security_privacy_edges": [
+        "LOCAL only; address input is never sent to a network service",
+        "no DNS or reachability lookup is implied by subnet arithmetic"
+      ],
+      "portability_browser_edges": [
+        "IPv6 address arithmetic uses BigInt rather than lossy Number values",
+        "deterministic output must match across supported browsers"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent Python integer/ipaddress calculations for release vectors",
+        "role": "secondary cross-check; RFC boundary literals remain primary"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Zone identifiers are intentionally outside CIDR network input semantics."
+      ]
+    },
+    {
+      "id": "cand-202",
+      "candidate": "Base 2-36 exact integer converter",
+      "tool_family": "developer-network-engine",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Exact positional-integer arithmetic with digits 0-9 and a-z; independent hand-worked and Python integer vectors cover values beyond IEEE-754 precision.",
+      "invariants": [
+        "conversion is exact for every supported base from 2 through 36",
+        "round-trip returns the same mathematical integer",
+        "sign normalization is explicit and negative zero becomes zero"
+      ],
+      "adversarial_cases": [
+        "invalid digit for source base",
+        "base below 2 or above 36",
+        "positive and negative values",
+        "values far above Number safe-integer range",
+        "input beyond the declared digit bound"
+      ],
+      "expected_output_strategy": "Use hand-worked known literals plus independent Python int(value, base) and formatting logic for randomized round trips.",
+      "security_privacy_edges": [
+        "LOCAL only; integer text is never sent to a network service",
+        "input digit count is bounded before repeated BigInt multiplication"
+      ],
+      "portability_browser_edges": [
+        "BigInt is the sole integer accumulator for converted values",
+        "canonical lowercase output is deterministic across browsers"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "Python arbitrary-precision integers",
+        "role": "independent exact-integer cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Fractional and floating-point values are intentionally outside this integer-only tool."
+      ]
+    },
+    {
+      "id": "cand-203",
+      "candidate": "chmod Unix permission helper",
+      "tool_family": "developer-network-engine",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Traditional Unix rwx/octal mode-bit mapping including setuid, setgid and sticky markers; fixtures are hand-worked separately from production code.",
+      "invariants": [
+        "ordinary rwx bits map bidirectionally to octal owner/group/other digits",
+        "setuid setgid and sticky bits preserve executable versus non-executable case markers",
+        "the helper never mutates filesystem permissions"
+      ],
+      "adversarial_cases": [
+        "000 and 777",
+        "setuid/setgid/sticky modes",
+        "uppercase S or T without execute bit",
+        "invalid octal digit",
+        "invalid symbolic position"
+      ],
+      "expected_output_strategy": "Use hand-worked mode-bit truth tables and round-trip every supported octal/symbolic representation.",
+      "security_privacy_edges": [
+        "LOCAL pure conversion only",
+        "no chmod syscall or filesystem write is exposed"
+      ],
+      "portability_browser_edges": [
+        "mode parsing uses plain deterministic bit arithmetic",
+        "output does not depend on host OS permission APIs"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent Unix mode-bit truth table",
+        "role": "independent literal cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "ACLs, umask application, file type bits and filesystem mutation are intentionally out of scope."
+      ]
+    },
+    {
+      "id": "cand-204",
+      "candidate": "Safe scientific expression calculator",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Hand-worked arithmetic identities and standard Math literals are stored separately from production parser code; no external calculator service is treated as authority.",
+      "invariants": [
+        "operator precedence is deterministic",
+        "only documented constants and one-argument functions are accepted",
+        "every intermediate and final result is finite"
+      ],
+      "adversarial_cases": [
+        "property and constructor syntax",
+        "unknown identifiers",
+        "division by zero",
+        "sqrt and logarithm domain errors",
+        "deep nesting and oversized expressions"
+      ],
+      "expected_output_strategy": "Use independently hand-worked arithmetic literals, identities such as sin(pi/2)=1, and explicit parser rejection cases.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "no eval, Function constructor, property access or arbitrary identifier resolution",
+        "bounded expression length, token count and nesting depth"
+      ],
+      "portability_browser_edges": [
+        "documented Math functions use finite numeric outputs only",
+        "decimal comma is normalized only inside numeric literals"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "hand-worked arithmetic and independent standard-library calculations",
+        "role": "secondary cross-check; literal and parser-rejection fixtures remain primary"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Angles are radians; complex numbers and arbitrary-precision transcendental functions are intentionally out of scope."
+      ]
+    },
+    {
+      "id": "cand-205",
+      "candidate": "Exact fractions and integer toolkit",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Hand-worked rational reductions, Euclidean GCD/LCM, canonical Roman numerals and integer combinatoric identities.",
+      "invariants": [
+        "fraction arithmetic remains exact with BigInt numerators and denominators",
+        "GCD and LCM are non-negative",
+        "Roman validation accepts only the canonical round-trip representation"
+      ],
+      "adversarial_cases": [
+        "zero denominator",
+        "gcd(0,0)",
+        "factorization of zero",
+        "negative factorization",
+        "noncanonical Roman input",
+        "combinatoric inputs outside bounds"
+      ],
+      "expected_output_strategy": "Use independent hand-worked rational, integer, Roman and combinatoric literals plus round-trip properties within declared bounds.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "integer digit counts and factorization/combinatoric domains are bounded before expensive loops"
+      ],
+      "portability_browser_edges": [
+        "BigInt is used for exact integer and rational arithmetic",
+        "output is deterministic text independent of locale except the surrounding UI"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent arbitrary-precision rational/integer calculations and Roman truth table",
+        "role": "independent exact-arithmetic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Number-to-words output is explicitly English and bounded to absolute values below one trillion."
+      ]
+    },
+    {
+      "id": "cand-206",
+      "candidate": "Descriptive statistics grades and completion",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Hand-worked descriptive statistics and weighted-average identities with population variance divided by n and sample variance divided by n-1.",
+      "invariants": [
+        "population and sample variance semantics are explicit",
+        "weighted averages require equal-length values and non-negative weights with positive total",
+        "completion requires 0 <= completed <= total and total > 0"
+      ],
+      "adversarial_cases": [
+        "empty input",
+        "singleton sample variance",
+        "multimodal ties",
+        "zero total weight",
+        "mismatched weight count",
+        "completed greater than total"
+      ],
+      "expected_output_strategy": "Use independent hand-worked means, medians, modes, variances, weighted averages and completion ratios.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "value count and absolute magnitude are bounded"
+      ],
+      "portability_browser_edges": [
+        "decimal parsing reuses exact rational input normalization",
+        "standard deviation is derived from the explicit rational variance and then bounded to finite Number output"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent descriptive-statistics calculations",
+        "role": "independent numeric cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Inferential statistics, confidence intervals and arbitrary-precision square roots are intentionally out of scope."
+      ]
+    },
+    {
+      "id": "cand-207",
+      "candidate": "Interest and savings-goal calculators",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Hand-worked simple-interest, compound-interest and ordinary-annuity formulas with explicit compounding cadence and end-of-period contributions.",
+      "invariants": [
+        "zero-rate branches are defined without dividing by zero",
+        "period count is an exact non-negative integer within the declared bound",
+        "currency rounding occurs only when final totals are formatted"
+      ],
+      "adversarial_cases": [
+        "zero rate",
+        "zero periods",
+        "goal already met",
+        "goal impossible at zero periods",
+        "invalid compounding cadence",
+        "negative savings rate in contribution modes"
+      ],
+      "expected_output_strategy": "Use independent finance formulas and hand-worked zero-rate cases; compare final displayed totals after full-precision intermediate computation.",
+      "security_privacy_edges": [
+        "LOCAL scenario calculator only",
+        "no market rates, taxes, fees, inflation or advice are implied",
+        "amount, rate, year and period domains are bounded"
+      ],
+      "portability_browser_edges": [
+        "all intermediate Number results must remain finite",
+        "currency selection affects presentation metadata rather than formula semantics"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent spreadsheet-style finance formula calculations",
+        "role": "independent formula cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Irregular cash flows, taxes, inflation, fees and investment-return uncertainty are intentionally out of scope."
+      ]
+    },
+    {
+      "id": "cand-208",
+      "candidate": "Partita IVA formal validator",
+      "tool_family": "research-reference",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "independent-check-digit-arithmetic",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic 11-digit examples are checked with an independent arithmetic implementation. The oracle makes no business-registration or VIES existence claim.",
+      "invariants": [
+        "optional IT presentation prefix and whitespace do not change the 11-digit value",
+        "non-decimal characters, wrong length and checksum mismatch are distinct failures",
+        "formal checksum validity never implies business or registry existence"
+      ],
+      "adversarial_cases": [
+        "10 or 12 digits",
+        "alphabetic or punctuation input",
+        "wrong check digit",
+        "whitespace and optional IT prefix",
+        "synthetic checksum-valid values that are not asserted to exist in any registry"
+      ],
+      "expected_output_strategy": "Recompute the eleventh digit independently with a positional lookup table over the first ten decimal digits and compare exact failure rules.",
+      "security_privacy_edges": [
+        "LOCAL only; entered identifiers are never sent to a registry or network service",
+        "result explicitly records registerVerified=false"
+      ],
+      "portability_browser_edges": [
+        "plain integer digit arithmetic only",
+        "deterministic normalization and checksum across supported browsers"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent positional lookup-table checksum in focused tests",
+        "role": "independent arithmetic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Registry existence and EU VIES verification are intentionally outside this local formal validator and remain separate work."
+      ]
+    },
+    {
+      "id": "cand-209",
+      "candidate": "IBAN validation and Italian coordinates",
+      "tool_family": "research-reference",
+      "maintenance_class": "R",
+      "truth_sources": [
+        "swift-iban-registry-r103",
+        "independent-iban-mod97-arithmetic",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "SWIFT IBAN Registry Release 103 (Sep 2026), with official electronic-format examples and national format rows for DE, ES, FR, GB, IT and NL.",
+      "invariants": [
+        "spaces and case are presentation only and normalize before validation",
+        "the supported country's Release 103 fixed length and BBAN structure must match before MOD-97",
+        "a formally valid IBAN never implies that the bank or account exists",
+        "Italian CIN ABI CAB and account slices are structural coordinates only"
+      ],
+      "adversarial_cases": [
+        "unsupported country code",
+        "wrong country length",
+        "non-alphanumeric character",
+        "malformed country/check-digit prefix",
+        "country BBAN structure mismatch",
+        "MOD-97 checksum mismatch"
+      ],
+      "expected_output_strategy": "Use SWIFT Release 103 official examples for known-good format values, synthetic one-rule-at-a-time invalid derivatives, and an independent BigInt MOD-97 implementation in focused tests.",
+      "security_privacy_edges": [
+        "LOCAL only; entered IBANs are never sent to a bank, registry or network service",
+        "accountVerified is always false in this formal validator"
+      ],
+      "portability_browser_edges": [
+        "production MOD-97 uses bounded streaming integer remainder arithmetic rather than unsafe Number conversion of the full IBAN",
+        "normalization and structural slicing are deterministic across supported browsers"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent BigInt expansion and modulo calculation in tests/iban-validator.test.ts",
+        "role": "independent MOD-97 cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "The local format table deliberately covers only DE, ES, FR, GB, IT and NL from Release 103; other IBAN countries fail closed until their current registry rows are vendored.",
+        "Bank and account existence are not verified by this tool."
+      ]
+    },
+    {
+      "id": "cand-210",
+      "candidate": "Deterministic JSON repair with ordered edit log",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "rfc8259",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "RFC 8259 strict JSON remains the acceptance target; hand-worked malformed JSONC/trailing-comma inputs exercise only disclosed syntax edits before strict reparse.",
+      "invariants": [
+        "accepted repaired output must parse as strict JSON",
+        "every edit is ordered and carries an original input character span plus a stable reason",
+        "running repair again on accepted output produces no further edits",
+        "repair never invents a missing value, key, delimiter meaning or data type"
+      ],
+      "adversarial_cases": [
+        "missing comma or colon requiring a structural guess",
+        "unterminated block comment",
+        "deeply malformed or over-limit input",
+        "comment markers inside JSON strings",
+        "duplicate object member names"
+      ],
+      "expected_output_strategy": "Use literal malformed examples where BOM/comments/trailing commas have one deterministic edit, then reparse with the independent strict JSON parser and assert second-pass idempotence.",
+      "security_privacy_edges": [
+        "LOCAL only; input is never executed or evaluated",
+        "bounded input uses the shared developer parser limits",
+        "ambiguous repair paths fail closed instead of guessing"
+      ],
+      "portability_browser_edges": [
+        "repair scans UTF-16 character positions deterministically and strict output is serialized only by the shared JSON parser",
+        "no runtime-specific eval or Function constructor is used"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "strict RFC-8259-oriented parser already used by json-formatter plus literal edit-log fixtures",
+        "role": "strict post-repair validation and idempotence cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Single-quoted strings, unquoted keys, missing delimiters and semantic-value reconstruction are intentionally refused rather than guessed."
+      ]
+    },
+    {
+      "id": "cand-211",
+      "candidate": "Structural JSON diff",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "rfc8259",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Strict JSON values are compared with stable RFC-6901-style pointer escaping; hand-worked fixtures distinguish add/remove/type/value and pure array-order changes.",
+      "invariants": [
+        "object traversal order is deterministic and independent of source member order",
+        "difference paths use stable JSON Pointer escaping for slash and tilde",
+        "array reorder is reported distinctly when the same canonical items appear in a different order",
+        "the complete result is bounded while the UI preview may be shorter"
+      ],
+      "adversarial_cases": [
+        "duplicate member names",
+        "poison-key member names",
+        "heterogeneous arrays",
+        "root type changes",
+        "more than the local maximum number of differences"
+      ],
+      "expected_output_strategy": "Compare nested literal pairs with hand-worked JSON Pointer paths and exact difference kinds, then assert preview truncation does not truncate the complete downloadable result.",
+      "security_privacy_edges": [
+        "LOCAL only; neither JSON input is executed",
+        "strict bounded parsing is reused for both documents",
+        "own-property checks prevent prototype traversal"
+      ],
+      "portability_browser_edges": [
+        "keys and canonical values are sorted deterministically before order-sensitive comparison",
+        "result paths and kinds do not depend on browser object iteration quirks"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "hand-worked nested/object/array/type fixtures with RFC-6901 escaping cases",
+        "role": "literal structural-diff cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Duplicate JSON member names are surfaced as a caveat because strict JSON interoperability does not define a universal duplicate-key merge policy."
+      ]
+    },
+    {
+      "id": "cand-212",
+      "candidate": "JSON to TypeScript and JSON Schema inference",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "rfc8259",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic JSON examples exercise deterministic mapping to quoted TypeScript property signatures and a JSON Schema 2020-12-shaped structural subset without executing generated code.",
+      "invariants": [
+        "the source example satisfies the generated schema subset",
+        "all TypeScript property names are emitted as quoted string literals",
+        "heterogeneous array element shapes become deterministic unions/anyOf variants",
+        "inference limitations are included in every result"
+      ],
+      "adversarial_cases": [
+        "__proto__ constructor and prototype keys",
+        "invalid or reserved root type names",
+        "null and empty arrays",
+        "heterogeneous arrays",
+        "deep nesting"
+      ],
+      "expected_output_strategy": "Use synthetic poison-key and heterogeneous examples, compile the emitted TypeScript syntax in focused tests, and validate the source against the generated schema subset.",
+      "security_privacy_edges": [
+        "LOCAL only and no eval/Function execution of generated output",
+        "schema/property maps use own-property-safe construction",
+        "input and inference depth are bounded"
+      ],
+      "portability_browser_edges": [
+        "union and property order is sorted deterministically",
+        "root identifier normalization is locale-independent ASCII policy"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "TypeScript parser/transpiler syntax check plus generated-schema subset validator in focused tests",
+        "role": "independent generated-output validity cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "One example cannot prove optional fields, closed-world object shapes or semantic formats; generated output explicitly states these limits."
+      ]
+    },
+    {
+      "id": "cand-213",
+      "candidate": "XML validate format and minify core",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Hand-worked XML documents cover elements, attributes, comments, processing instructions, CDATA, predefined/numeric entities, mixed content and xml:space while DTD/ENTITY declarations are deliberately refused.",
+      "invariants": [
+        "DTD and ENTITY declarations are rejected before parsing and no network or filesystem entity resolution exists",
+        "invalid XML never returns a formatted or minified success artifact",
+        "mixed-content and xml:space=preserve text whitespace is preserved byte-for-byte",
+        "element nesting and node count are bounded"
+      ],
+      "adversarial_cases": [
+        "external SYSTEM entity XXE payload",
+        "unknown named entity",
+        "mismatched closing tag",
+        "duplicate attributes",
+        "deep nesting and oversized node count",
+        "mixed content where inserted or removed whitespace changes text"
+      ],
+      "expected_output_strategy": "Use literal valid/invalid/XXE-style documents; compare exact minified mixed-content output and exact pretty element-only output while verifying structured error locations.",
+      "security_privacy_edges": [
+        "LOCAL only; parser exposes no resolver callback and performs no network or filesystem access",
+        "DTD/entity declarations fail closed",
+        "input, depth and node count are bounded"
+      ],
+      "portability_browser_edges": [
+        "the parser is deterministic TypeScript and does not depend on browser DOMParser error-document behavior",
+        "serialization preserves original attribute quote style and sensitive text"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "hand-worked XML corpus with semantic whitespace and hostile DTD/entity fixtures",
+        "role": "literal parser/serializer cross-check for the declared local XML core"
+      },
+      "confidence": "medium",
+      "unresolved_gaps": [
+        "DTD validation, custom entity declarations, external subsets and schema validation are intentionally unsupported; this is a bounded well-formedness/formatting core."
+      ]
+    },
+    {
+      "id": "cand-214",
+      "candidate": "Unit engine tranche 1 basic dimensions",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "SI/BIPM definitions, exact international inch/pound relations, exact gallon definitions and hand-worked Celsius/Fahrenheit/Kelvin literals are represented as registry source notes and independent fixtures.",
+      "invariants": [
+        "every unit has exactly one dimension, symbol, aliases and conversion authority note",
+        "cross-dimension conversion fails closed",
+        "temperature uses scale plus offset rather than multiplicative-only conversion",
+        "comma and point decimal separators represent the same ungrouped numeric value"
+      ],
+      "adversarial_cases": [
+        "length to mass conversion",
+        "ambiguous gallon alias",
+        "grouped Italian number",
+        "large decimal digit count",
+        "temperature round trip"
+      ],
+      "expected_output_strategy": "Use exact rational known-answer vectors and round-trip properties for length, mass, area and volume plus affine temperature fixed points.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "no parsing or execution beyond bounded decimal input and registry lookup"
+      ],
+      "portability_browser_edges": [
+        "BigInt rational arithmetic for rational definitions",
+        "irrational operations are explicitly bounded finite Number math only"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent hand-worked dimensional conversion literals",
+        "role": "literal and round-trip cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Locale grouping separators are intentionally unsupported to avoid comma/dot ambiguity; users enter ungrouped decimals."
+      ]
+    },
+    {
+      "id": "cand-215",
+      "candidate": "Unit engine tranche 2 engineering dimensions",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Engineering units are normalized through one dimension registry with SI-derived definitions and source notes for atmosphere, horsepower, foot-candle, calorie, BTU and non-SI exact relations.",
+      "invariants": [
+        "speed, time, angle, energy, pressure, power, force, torque, frequency, density, flow and illuminance remain dimension-isolated",
+        "ambiguous aliases throw instead of selecting silently",
+        "source/authority notes are returned for both endpoints"
+      ],
+      "adversarial_cases": [
+        "cross-dimension engineering pair",
+        "ambiguous alias",
+        "radian and degree round trip",
+        "rpm boundary",
+        "pressure exact literal"
+      ],
+      "expected_output_strategy": "Use known literals such as 100 km/h, 1 atm, 60 rpm and 1 turn plus reversible pairs across every engineering dimension.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "registry is static and input magnitude is bounded"
+      ],
+      "portability_browser_edges": [
+        "rational constants use BigInt",
+        "π-dependent angle conversion is the only declared irrational registry scale"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "hand-worked SI/non-SI engineering literals and inverse conversions",
+        "role": "independent known-answer cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Specialized domain units outside the declared registry are rejected rather than guessed."
+      ]
+    },
+    {
+      "id": "cand-216",
+      "candidate": "Digital storage and download-time calculator",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "SI decimal prefixes and IEC binary prefix semantics are kept distinct; byte is defined as eight bits and download time uses only entered throughput.",
+      "invariants": [
+        "1 kB = 1000 B while 1 KiB = 1024 B",
+        "bit and byte symbols remain case-sensitive",
+        "download estimates never invoke a network speed test",
+        "overhead is explicitly deducted from user-entered throughput"
+      ],
+      "adversarial_cases": [
+        "b/B ambiguity",
+        "1000/1024 boundary",
+        "zero throughput",
+        "100 percent overhead",
+        "negative size"
+      ],
+      "expected_output_strategy": "Use exact bit-based rational conversions and hand-worked download-time equations at SI/IEC boundaries.",
+      "security_privacy_edges": [
+        "LOCAL only; no network call",
+        "throughput and file size are scalar inputs only"
+      ],
+      "portability_browser_edges": [
+        "all storage/rate factors are exact integers or rationals",
+        "display policy is deterministic"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent bit-count and seconds arithmetic",
+        "role": "exact digital-unit cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Protocol-specific overhead is not inferred; the user supplies a single explicit overhead percentage."
+      ]
+    },
+    {
+      "id": "cand-217",
+      "candidate": "Battery vehicle and power conversion helpers",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "mAh/Wh follows Wh = Ah×V; fuel conversion uses exact international mile plus distinct US liquid and imperial gallons; hp/CV conversions use declared mechanical and metric horsepower constants.",
+      "invariants": [
+        "battery conversion requires positive voltage",
+        "US MPG and Imperial MPG are distinct units",
+        "power conversions are reversible within the shared precision policy"
+      ],
+      "adversarial_cases": [
+        "missing voltage",
+        "zero or negative voltage",
+        "US versus imperial same MPG input",
+        "fuel zero denominator",
+        "hp/CV reverse conversion"
+      ],
+      "expected_output_strategy": "Use hand-worked voltage, gallon-system and horsepower vectors with bidirectional checks.",
+      "security_privacy_edges": [
+        "LOCAL deterministic scalar calculation",
+        "no vehicle or battery telemetry is collected"
+      ],
+      "portability_browser_edges": [
+        "all declared vehicle/power constants are rational decimal definitions",
+        "no locale-dependent unit inference"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent spreadsheet-style energy and fuel formulas",
+        "role": "formula and round-trip cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Battery voltage is an explicit assumption; discharge curves, efficiency and chemistry-specific behavior are outside scope."
+      ]
+    },
+    {
+      "id": "cand-218",
+      "candidate": "Reference-size conversion helpers",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "ISO 216 nominal A/B paper dimensions, explicit linear model scales and Pythagorean/aspect-ratio TV geometry are used; clothing/shoe fit is refused without a maintained regional source table.",
+      "invariants": [
+        "paper dimensions come from a bounded nominal table",
+        "model scale requires a positive explicit denominator",
+        "TV diagonal-to-dimensions requires explicit aspect ratio",
+        "unsourced clothing or shoe fit claims fail closed"
+      ],
+      "adversarial_cases": [
+        "unknown paper size",
+        "zero scale",
+        "missing TV aspect",
+        "zero TV dimensions",
+        "shoe/clothing mode without source table"
+      ],
+      "expected_output_strategy": "Use A4 nominal dimensions, exact linear scale literals, 16:9 diagonal geometry and explicit missing-source refusal.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "no demographic or fit profile is inferred or stored"
+      ],
+      "portability_browser_edges": [
+        "paper/scale conversions use shared rational length units",
+        "TV square-root geometry is finite and display-bounded"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent geometry and nominal-size literals",
+        "role": "deterministic reference-size cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Clothing and shoe region tables remain intentionally unsupported until a bounded maintained source pack exists."
+      ]
+    },
+    {
+      "id": "cand-219",
+      "candidate": "Connection and device information",
+      "tool_family": "browser-diagnostics",
+      "maintenance_class": "D",
+      "truth_sources": [
+        "whatwg-html",
+        "rfc9110",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Browser-exposed Navigator/Window/Screen values are reported as current-session support facts; User-Agent parsing is descriptive only. The optional public-IP result is requested only through a separately disclosed reference-network action.",
+      "invariants": [
+        "local browser/device facts render without an external request",
+        "displayed screen viewport DPR orientation locale and touch facts reflect browser-exposed values rather than inferred identity",
+        "public-IP lookup never runs before the explicit disclosed button action",
+        "the copied support summary excludes public IP and explicitly rejects unique-fingerprint claims"
+      ],
+      "adversarial_cases": [
+        "missing Screen Orientation API",
+        "zero touch points and fine pointer",
+        "390px viewport breakpoint",
+        "malformed public-IP response",
+        "public-IP HTTP failure",
+        "clipboard unavailable"
+      ],
+      "expected_output_strategy": "Use synthetic browser snapshots for deterministic normalization and real browser acceptance that compares rendered facts with browser APIs while intercepting all external requests and mocking public-IP success/failure.",
+      "security_privacy_edges": [
+        "no implicit public-IP request or hidden device-data upload",
+        "public-IP disclosure is visible before the action and the request omits credentials/referrer",
+        "copy-all is support-oriented and excludes public IP",
+        "no claim that the displayed facts uniquely identify a person or device"
+      ],
+      "portability_browser_edges": [
+        "orientation and visualViewport have explicit fallbacks",
+        "touch capability combines maxTouchPoints with exposed pointer/touch signals without claiming hardware identity",
+        "breakpoints derive only from the current CSS viewport width"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "Playwright reads the same live browser APIs and intercepts external requests independently of the production formatter",
+        "role": "required browser behavior cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "No unresolved gap for the declared support-diagnostic contract; the optional public-IP service may be unavailable and failure is a first-class result."
+      ]
+    },
+    {
+      "id": "cand-220",
+      "candidate": "Keyboard event diagnostic",
+      "tool_family": "browser-diagnostics",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "w3c-uievents",
+        "whatwg-html",
+        "w3c-wcag22",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "W3C UI Events KeyboardEvent fields are displayed from focused browser events; the diagnostic does not cancel default actions or install global keyboard hooks.",
+      "invariants": [
+        "events are captured only while the explicit test surface is active and focused",
+        "key code location modifiers repeat and composition state mirror the received KeyboardEvent",
+        "history is bounded to 12 events and exists only in component memory",
+        "no captured event calls preventDefault or stopPropagation"
+      ],
+      "adversarial_cases": [
+        "left/right/numpad locations",
+        "Ctrl Alt Shift Meta combinations",
+        "repeat=true",
+        "isComposing=true",
+        "Tab focus exit",
+        "browser/system shortcut chord",
+        "more than 12 events",
+        "reset and blur"
+      ],
+      "expected_output_strategy": "Normalize hand-authored KeyboardEvent-shaped vectors in unit tests, then dispatch independent browser events to the focused surface and verify DOM output, bounded history, focus exit, unchanged storage and defaultPrevented=false.",
+      "security_privacy_edges": [
+        "no storage, telemetry or network write of captured keys",
+        "event text is bounded before entering the in-memory history",
+        "focus scope prevents global key logging",
+        "browser and operating-system shortcuts are not trapped"
+      ],
+      "portability_browser_edges": [
+        "location labels follow the standard numeric KeyboardEvent locations",
+        "composition and repeat are shown as received rather than inferred",
+        "Tab remains a normal focus-navigation key"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "Playwright dispatches browser KeyboardEvents and inspects defaultPrevented, focus movement, storage and rendered fields",
+        "role": "required browser event cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "No unresolved gap for the declared event-inspection semantics; operating systems may reserve shortcuts before a webpage receives them, which the tool does not claim to observe."
+      ]
+    },
+    {
+      "id": "cand-221",
+      "candidate": "Mortgage and French amortization calculator",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "French amortization uses a fixed periodic payment from principal, monthly rate TAN/12/100 and number of monthly payments; schedule literals are independently recomputed with decimal cent rounding.",
+      "invariants": [
+        "the nominal payment follows the French annuity formula or principal divided by periods at zero rate",
+        "each schedule row payment equals principal quota plus interest quota",
+        "schedule principal quotas sum to the cent-rounded starting principal and ending balance is zero",
+        "reported totals are sums of the rounded schedule rows rather than a separate approximation"
+      ],
+      "adversarial_cases": [
+        "zero TAN",
+        "single monthly payment",
+        "100-year term",
+        "sub-cent principal erosion",
+        "negative TAN",
+        "non-integer term"
+      ],
+      "expected_output_strategy": "Use an independently written decimal amortization worksheet with half-up cent rounding for payment and each interest quota, then reconcile CSV rows to totals.",
+      "security_privacy_edges": [
+        "LOCAL deterministic scalar calculation",
+        "no lender lookup, credit decision or financial profile leaves the browser"
+      ],
+      "portability_browser_edges": [
+        "full schedule is serialized to CSV while only a bounded first/last preview is rendered",
+        "term is capped at 3600 monthly rows"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent decimal annuity and row-by-row cent arithmetic in quality/fixtures/business-math-expansion/vectors.json",
+        "role": "required independent formula and reconciliation cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "TAEG/APR, fees, insurance, taxes and lender-specific conventions remain outside scope unless explicitly modeled by a future sourced tool."
+      ]
+    },
+    {
+      "id": "cand-222",
+      "candidate": "Geometry equation and motion helpers",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Elementary Euclidean area/perimeter/volume and Pythagorean identities, the quadratic formula over real roots, and speed = distance/time are evaluated from explicit user units.",
+      "invariants": [
+        "geometric lengths must be strictly positive",
+        "quadratic coefficient a must be nonzero and negative discriminants are reported as outside the real-root scope",
+        "motion inputs normalize through the shared dimension registry before arithmetic",
+        "division by zero is rejected instead of producing infinity"
+      ],
+      "adversarial_cases": [
+        "negative or zero dimensions",
+        "a=0 quadratic",
+        "negative discriminant",
+        "zero elapsed time",
+        "zero speed when solving time",
+        "cross-dimension unit selection"
+      ],
+      "expected_output_strategy": "Use hand-worked 3-4-5, rectangle, quadratic and 180 km over 2 h literals plus invalid-domain cases.",
+      "security_privacy_edges": [
+        "LOCAL deterministic numeric calculation",
+        "no location or motion sensor data is accessed"
+      ],
+      "portability_browser_edges": [
+        "unit normalization reuses the existing bounded registry",
+        "irrational geometry is displayed with a declared finite precision"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent elementary-math literals in quality/fixtures/business-math-expansion/vectors.json",
+        "role": "known-answer and invalid-domain cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Complex quadratic roots and higher-order geometry are intentionally outside the declared helper scope."
+      ]
+    },
+    {
+      "id": "cand-223",
+      "candidate": "Everyday cost calculator bundle",
+      "tool_family": "business-math",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Everyday costs use user-entered prices, explicit physical-unit normalization, integer-cent bill splitting and explicit work/usage bases rather than live tariffs or inferred schedules.",
+      "invariants": [
+        "unit-price comparisons normalize quantity into the selected compatible unit before division",
+        "split-bill shares reconcile exactly in integer cents including any remainder",
+        "zero energy-use or zero trip distance deterministically costs zero while divisors remain positive",
+        "salary-hourly conversion always exposes hours per week and weeks per year"
+      ],
+      "adversarial_cases": [
+        "cross-dimension unit price",
+        "three-way one/two-cent remainder",
+        "zero usage",
+        "zero distance",
+        "zero people",
+        "zero annual working hours"
+      ],
+      "expected_output_strategy": "Use hand-worked price-per-kilogram, bill remainder, subscription, kWh, L/100km trip and 40x52 work-basis literals.",
+      "security_privacy_edges": [
+        "LOCAL deterministic scalar calculation",
+        "no utility, vehicle, payroll or subscription account is contacted"
+      ],
+      "portability_browser_edges": [
+        "physical unit conversion reuses the shared registry",
+        "money-facing outputs use deterministic cent rounding"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent spreadsheet-style literals in quality/fixtures/business-math-expansion/vectors.json",
+        "role": "worked-literal and boundary cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Taxes, fees, variable tariffs, benefits and vehicle operating costs are not inferred beyond the explicit scalar inputs."
+      ]
+    },
+    {
+      "id": "cand-224",
+      "candidate": "Secure password PIN and Italian passphrase generator",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "w3c-webcrypto",
+        "italian-passphrase-v1",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Web Crypto getRandomValues supplies browser randomness; generated indexes discard the incomplete uint32 tail before modulo mapping. Passphrases draw from the published local it-passphrase-2026-10-v1 list.",
+      "invariants": [
+        "every random bounded choice uses rejection sampling before modulo reduction",
+        "password output includes every selected character class and exact requested length",
+        "PIN output contains exactly the requested number of decimal digits",
+        "passphrase output contains exactly the requested number of words from the declared versioned wordlist",
+        "generated secrets are held only in component memory and never written to URL history storage or telemetry"
+      ],
+      "adversarial_cases": [
+        "uint32 value in modulo-bias rejection tail",
+        "all password character classes disabled",
+        "minimum and maximum password/PIN/passphrase lengths",
+        "clipboard unavailable or denied",
+        "WebCrypto unavailable"
+      ],
+      "expected_output_strategy": "Inject a deterministic random-fill seam to force rejection-tail values, then use property-style generation loops for class/length/membership constraints and real-browser checks for clipboard/no-network/no-storage/no-URL mutation.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "secret state is ephemeral and excluded from URL/history/storage/telemetry",
+        "clipboard write occurs only after an explicit user action",
+        "wordlist contains no user or breach-derived data"
+      ],
+      "portability_browser_edges": [
+        "requires Crypto.getRandomValues and fails explicitly when unavailable",
+        "uint32 rejection arithmetic is exact within JavaScript safe integers"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "deterministic injected uint32 stream plus independent constraint/property assertions",
+        "role": "proves rejection-tail behavior and exact public generation constraints without reusing production randomness"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Generated secrecy still depends on the browser/operating-system WebCrypto implementation; the tool does not estimate entropy of user-modified outputs."
+      ]
+    },
+    {
+      "id": "cand-225",
+      "candidate": "Explainable password strength estimator",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Hand-worked synthetic password shapes cover length bands, character-class diversity, repetition, repeated blocks, simple sequences and a small explicitly declared common-pattern list; no breached-password source is queried.",
+      "invariants": [
+        "same password always returns the same score label factors and limitations",
+        "length-band increases are monotonic when other penalties remain unchanged",
+        "every score-changing rule emits a factor explanation",
+        "the result explicitly says it does not query breach databases or prove breach presence/absence"
+      ],
+      "adversarial_cases": [
+        "empty password",
+        "three-character repetition",
+        "repeated multi-character block",
+        "ascending/descending sequence",
+        "common-pattern substring",
+        "1024-character local limit"
+      ],
+      "expected_output_strategy": "Use worked literals with expected factor codes and monotonic comparable passwords; repeat evaluations byte-for-byte to prove determinism.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "password exists only in current component state",
+        "no storage telemetry or breach lookup",
+        "no security guarantee is inferred from the score"
+      ],
+      "portability_browser_edges": [
+        "rules use deterministic Unicode code-point length and ASCII class/pattern tests",
+        "input length is bounded before regex analysis"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "hand-worked factor-code fixture table and monotonic length assertions",
+        "role": "independent rule-outcome cross-check for the declared heuristic model"
+      },
+      "confidence": "medium",
+      "unresolved_gaps": [
+        "This bounded heuristic is not a cracking-time model and cannot know user context, reuse, server rate limits or breached-password membership."
+      ]
+    },
+    {
+      "id": "cand-226",
+      "candidate": "VCF vCard viewer and CSV export",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "rfc6350",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic RFC-6350-shaped vCards include CRLF folding, Unicode names, repeated TEL/EMAIL values and extension properties. CSV cells beginning with spreadsheet formula sigils are escaped with a leading apostrophe before RFC-style quoting.",
+      "invariants": [
+        "folded physical lines are unfolded into one logical value while raw source remains visible",
+        "repeated TEL and EMAIL properties remain separate ordered values traceable to the source contact",
+        "unsupported properties remain visible with their raw content instead of being silently discarded",
+        "CSV export uses fixed unique headers and protects leading equals plus minus at-sign formula-like cells"
+      ],
+      "adversarial_cases": [
+        "nested or unterminated VCARD",
+        "content outside VCARD",
+        "oversized unfolded line",
+        "base64 or quoted-printable encoded property retained as unsupported raw",
+        "formula-like FN beginning with equals",
+        "more than local contact/property limits"
+      ],
+      "expected_output_strategy": "Parse one synthetic multi-contact corpus and assert exact unfolded values, repeated-array lengths, raw extension text and protected CSV cells.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "contact file size/contact/property/line counts are bounded",
+        "unsupported encodings are preserved raw rather than decoded by an unsafe secondary parser",
+        "CSV formula injection is neutralized before serialization"
+      ],
+      "portability_browser_edges": [
+        "CRLF CR and LF inputs normalize deterministically",
+        "UTF-8 file text is handled by browser File.text while vCard escaping is processed by the local parser"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "hand-worked RFC-shaped VCF corpus with source-to-contact assertions and exact CSV literals",
+        "role": "literal structural cross-check independent of the rendered table"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Legacy charset conversion and quoted-printable/base64 vCard value decoding are intentionally unsupported and retained as raw properties."
+      ]
+    },
+    {
+      "id": "cand-227",
+      "candidate": "X509 certificate and CSR local inspector",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "rfc5280",
+        "rfc2986",
+        "w3c-webcrypto",
+        "openssl-cli",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic example.test X.509 certificate and PKCS#10 CSR generated locally with OpenSSL exercise subject/issuer/serial/validity/SAN/SPKI/signature fields; certificate DER fingerprint is cross-checked with an independent SHA-256 implementation.",
+      "invariants": [
+        "ASN.1 parsing uses bounded definite-length DER only with maximum input depth and node counts",
+        "certificate inspection reports syntax facts without claiming chain trust revocation hostname match or private-key possession",
+        "CSR inspection reports no invented issuer serial or certificate validity",
+        "extension bytes are parsed only as bounded data and never executed",
+        "malformed encrypted-private-key-style and unsupported inputs fail explicitly"
+      ],
+      "adversarial_cases": [
+        "indefinite-length BER",
+        "truncated DER",
+        "unsupported high-tag-number encoding",
+        "encrypted private-key PEM",
+        "non-certificate/non-CSR DER",
+        "SAN DNS URI email and IP forms"
+      ],
+      "expected_output_strategy": "Inspect stored synthetic PEM/DER certificate plus CSR, compare expected names/SAN/key facts and recompute DER SHA-256 with Node crypto separately from the browser WebCrypto production path.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "input is bounded to 256 KiB with ASN.1 depth/node limits",
+        "no extension content is executed or resolved externally",
+        "no trust/revocation/OCSP/CRL inference is made"
+      ],
+      "portability_browser_edges": [
+        "PEM Base64 and DER parser are implemented locally without browser certificate APIs",
+        "fingerprint uses standard WebCrypto SHA-256 and fails explicitly if unavailable"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "OpenSSL-created synthetic certificate/CSR plus independent Node crypto SHA-256 fingerprint",
+        "role": "format-fact and fingerprint cross-check separate from production fingerprint implementation"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Only a bounded subset of common X.509/PKCS#10 fields and SAN forms is rendered; chain building revocation signature verification policy/name constraints and uncommon ASN.1 forms remain outside scope."
+      ]
+    },
+    {
+      "id": "cand-228",
+      "candidate": "CSV to SQL dialect generator",
+      "tool_family": "data-table",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "rfc4180",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic RFC-style CSV rows are rendered as SQL text for the explicitly selected PostgreSQL, MySQL or SQLite policy; identifier and string quoting are deterministic and no database connection is created.",
+      "invariants": [
+        "the selected dialect controls identifier delimiters and physical SQL types",
+        "single quotes in values and dialect delimiter characters in identifiers are doubled",
+        "leading-zero integer-looking fields infer as text unless the user explicitly overrides the type",
+        "configured NULL tokens and empty-cell policy are disclosed and deterministic",
+        "the operation emits SQL text only and never executes it"
+      ],
+      "adversarial_cases": [
+        "single quote in text value",
+        "double quote or backtick in identifier",
+        "Unicode text",
+        "leading-zero identifier-like value",
+        "configured NULL token",
+        "empty cell distinct from NULL",
+        "invalid forced numeric value",
+        "NUL in identifier or value"
+      ],
+      "expected_output_strategy": "Use hand-worked quoting and type-policy vectors in quality/fixtures/csv-advanced-ops/vectors.json and assert exact statement fragments independently of the production generator.",
+      "security_privacy_edges": [
+        "LOCAL only; CSV contents never leave the browser",
+        "generated SQL is a downloadable/copyable preview and is never submitted to a database or network endpoint"
+      ],
+      "portability_browser_edges": [
+        "UTF-8 CSV parsing reuses the shared table parser",
+        "SQL output is plain deterministic text with explicit PostgreSQL MySQL and SQLite policies"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent hand-worked identifier/value quoting and type-policy assertions",
+        "role": "deterministic SQL text cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Vendor-specific bulk loaders, schema constraints and database execution are intentionally outside scope."
+      ]
+    },
+    {
+      "id": "cand-229",
+      "candidate": "Streaming huge CSV splitter",
+      "tool_family": "data-table",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "rfc4180",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "A synthetic 50 MiB-class UTF-8 CSV is read in bounded Blob slices, logical records remain quote-aware across read boundaries, and every output chunk repeats the original header exactly once.",
+      "invariants": [
+        "recombining decoded data rows from all chunks preserves source CSV cell semantics and row order",
+        "each chunk contains the intended header exactly once",
+        "record separator and detected field delimiter are preserved",
+        "the source file is never materialized as a second whole-file text buffer",
+        "AbortSignal cancellation stops further reads and suppresses a successful result"
+      ],
+      "adversarial_cases": [
+        "quoted delimiter",
+        "quoted CRLF newline",
+        "escaped quote split across read chunks",
+        "Unicode across byte boundaries",
+        "single record near the chunk target",
+        "50 MiB-class input",
+        "abort after first read block",
+        "unterminated quoted field"
+      ],
+      "expected_output_strategy": "Reparse generated chunks with the independent shared CSV parser, reconstruct all small-fixture rows, and run a 50 MiB-class benchmark asserting bounded parser-buffer accounting plus abort behavior.",
+      "security_privacy_edges": [
+        "LOCAL only; the selected Blob is read through local browser APIs",
+        "no upload or network API participates in splitting"
+      ],
+      "portability_browser_edges": [
+        "TextDecoder streaming preserves multi-byte UTF-8 across slices",
+        "Blob slicing bounds each source read while output chunks remain ordinary downloadable UTF-8 CSV text"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "shared parser reconstruction plus independent byte/header/row accounting in focused tests",
+        "role": "semantic reconstruction and bounded-memory cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "The browser must still retain generated output chunks that the user may download; the bounded-memory claim applies to duplicate source/input parsing buffers rather than eliminating output storage."
+      ]
+    },
+    {
+      "id": "cand-230",
+      "candidate": "Table compare by explicit keys and columns",
+      "tool_family": "data-table",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "rfc4180",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Two synthetic CSV tables are indexed only by user-selected key columns; unique keys yield added removed or changed records, while duplicate keys are reported as ambiguous instead of being paired arbitrarily.",
+      "invariants": [
+        "left and right key arity and compared-column arity must match",
+        "duplicate keys on either side are surfaced as ambiguity and are not silently paired",
+        "every changed cell records key left/right row numbers column indexes/names and before/after values",
+        "null and case equivalence follow explicit policies",
+        "the rendered preview is bounded while the CSV download contains the complete accepted diff"
+      ],
+      "adversarial_cases": [
+        "duplicate key only on left",
+        "duplicate key on both sides",
+        "NULL token versus empty cell",
+        "case-only difference",
+        "added row",
+        "removed row",
+        "different column names by paired index",
+        "diff exceeding the explicit complete-export ceiling"
+      ],
+      "expected_output_strategy": "Use independently counted small keyed tables plus generated unique-key tables; compare full exported CSV counts with bounded Result v2 preview metadata and inspect changed-cell provenance literals.",
+      "security_privacy_edges": [
+        "LOCAL only; both tables remain in browser memory",
+        "no fuzzy identity matching or inferred key selection is performed"
+      ],
+      "portability_browser_edges": [
+        "CSV input/output uses the shared deterministic parser/serializer",
+        "case policy is explicit and null equivalence is user-controlled"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent keyed-map expectations and exported-row recount in focused tests",
+        "role": "keyed diff and provenance cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Ambiguous duplicate keys require the user to choose a more specific key; the tool intentionally does not guess pairings."
+      ]
+    },
+    {
+      "id": "cand-231",
+      "candidate": "Reversible semantic text chunker",
+      "tool_family": "text-writing",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "unicode-uax29",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic Unicode/CRLF text is partitioned into contiguous canonical source spans; optional overlap is separate metadata and is excluded from restore.",
+      "invariants": [
+        "joining chunk.text in numeric order reproduces source code units exactly",
+        "chunk canonical spans are contiguous and non-overlapping",
+        "overlapBefore ends at canonical chunk start and is never joined"
+      ],
+      "adversarial_cases": [
+        "emoji surrogate boundary",
+        "CRLF source",
+        "paragraph and sentence boundary near size target",
+        "overlap enabled",
+        "mutated canonical span"
+      ],
+      "expected_output_strategy": "Rejoin canonical spans byte-for-byte/code-unit-for-code-unit and independently validate every start/end against the source.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "no chunk text or overlap leaves browser memory"
+      ],
+      "portability_browser_edges": [
+        "UTF-16 spans never split a surrogate pair at fallback boundary",
+        "newline code units remain untouched"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "direct source slicing plus independent restore span validator in tests",
+        "role": "independent deterministic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Semantic preference is deterministic lexical punctuation/whitespace policy rather than linguistic sentence understanding."
+      ]
+    },
+    {
+      "id": "cand-232",
+      "candidate": "Fact-sensitive original versus AI diff",
+      "tool_family": "text-writing",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic before/after pairs change ISO dates, decimal literals, HTTP(S) URLs and digit-bearing structured IDs while separate whitespace-only pairs remain marker-stable.",
+      "invariants": [
+        "marker categories are lexically defined",
+        "marker changes are reported before line operations",
+        "formatting-only classification collapses whitespace only",
+        "no output asserts factual correctness"
+      ],
+      "adversarial_cases": [
+        "date change",
+        "number change",
+        "URL change",
+        "structured ID change",
+        "whitespace-only edit",
+        "overlapping marker candidate"
+      ],
+      "expected_output_strategy": "Hand-count marker multisets independently from the line diff and assert explicit no-truth limitation.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "no AI or content network call"
+      ],
+      "portability_browser_edges": [
+        "Unicode text is accepted while marker grammar remains explicit and bounded"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "hand-worked marker multiset expectations in text-expansion fixtures",
+        "role": "independent deterministic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "The tool cannot determine whether a changed or unchanged token is factually correct."
+      ]
+    },
+    {
+      "id": "cand-233",
+      "candidate": "Stable-placeholder anonymize and restore",
+      "tool_family": "text-writing",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Explicit synthetic names/emails are replaced by deterministic 128-bit placeholder labels and restored only when every placeholder occurrence count matches the mapping.",
+      "invariants": [
+        "entity selection is supplied by user and never inferred",
+        "placeholder labels are stable for identical entity strings",
+        "source placeholder collisions and hash collisions fail closed",
+        "restore rejects missing mutated unknown or duplicated placeholder occurrences"
+      ],
+      "adversarial_cases": [
+        "same entities in different selection order",
+        "source placeholder collision",
+        "missing placeholder",
+        "unknown/mutated placeholder",
+        "duplicate occurrence"
+      ],
+      "expected_output_strategy": "Anonymize then restore exact synthetic text and mutate one placeholder/count to prove fail-closed validation.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "mapping is returned only in operation memory unless user copies it",
+        "no telemetry/network capability in manifest"
+      ],
+      "portability_browser_edges": [
+        "TextEncoder-based deterministic hash input",
+        "mapping JSON is plain portable text"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "round-trip and mutation-refusal assertions over synthetic entity selections",
+        "role": "independent deterministic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "The deterministic placeholder hash is collision-resistant for accidental local collisions but is not advertised as cryptographic anonymization."
+      ]
+    },
+    {
+      "id": "cand-234",
+      "candidate": "Italian Gulpease readability",
+      "tool_family": "text-writing",
+      "maintenance_class": "R",
+      "truth_sources": [
+        "lucisano-piemontese-1988",
+        "fortis-gulpease-2005",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Published Gulpease formula is 89 + (300×sentences − 10×letters)/words; published interpretation examples include scores 60 and 72 tied to schooling bands.",
+      "invariants": [
+        "letters words sentences and formula are all exposed",
+        "word and sentence token policies are documented",
+        "difficult-sentence contributors reuse the same counting policy",
+        "result explicitly does not judge absolute quality accuracy or appropriateness"
+      ],
+      "adversarial_cases": [
+        "Italian abbreviation before period",
+        "question/exclamation/ellipsis terminators",
+        "Unicode accented letters",
+        "very short text above nominal scale",
+        "zero-word input"
+      ],
+      "expected_output_strategy": "Recompute the published formula independently from exposed intermediate counts and test published score-interpretation thresholds plus punctuation/abbreviation policy.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "input text is not persisted or sent to a readability service"
+      ],
+      "portability_browser_edges": [
+        "Unicode Letter counting is explicit",
+        "short samples may mathematically fall outside 0-100 and are shown rather than silently clamped"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "hand calculation from exposed counts plus published formula/interpretation references",
+        "role": "independent deterministic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Sentence tokenization conventions vary across software; this implementation declares its punctuation and abbreviation policy."
+      ]
+    },
+    {
+      "id": "cand-235",
+      "candidate": "Mojibake repair with disclosed transforms",
+      "tool_family": "text-writing",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "whatwg-encoding",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "Synthetic UTF-8 bytes misread as Windows-1252 produce CafÃ¨ and lâ€™Italia; the inverse Windows-1252-byte to strict UTF-8 transform recovers the intended literals.",
+      "invariants": [
+        "repair is offered only when strict UTF-8 decode succeeds and mojibake signal count decreases",
+        "original is always preserved",
+        "accepted output is idempotent on second pass",
+        "ambiguous or non-representable input is returned unchanged with warning"
+      ],
+      "adversarial_cases": [
+        "curly apostrophe corruption",
+        "accent corruption",
+        "legitimate non-signal Unicode",
+        "invalid UTF-8 candidate",
+        "second-pass idempotence"
+      ],
+      "expected_output_strategy": "Use independently known UTF-8 byte sequences for accented characters and curly punctuation, then assert strict-decode refusal cases.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "original and output stay in memory"
+      ],
+      "portability_browser_edges": [
+        "TextDecoder fatal UTF-8 mode is required and browser-standard",
+        "explicit Windows-1252 special-byte table covers 0x80-0x9F mappings"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "known UTF-8/Windows-1252 byte literals plus second-pass equality",
+        "role": "independent deterministic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Only the declared common UTF-8-as-Windows-1252 corruption direction is repaired automatically."
+      ]
+    },
+    {
+      "id": "cand-236",
+      "candidate": "PDF-copy text reflow",
+      "tool_family": "text-writing",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic pasted-PDF lines exercise paragraph wraps, blank paragraphs, visible hyphens, soft hyphen U+00AD and column-like spacing.",
+      "invariants": [
+        "ordinary paragraph line breaks become one space only under explicit rules",
+        "visible hyphens are preserved and ambiguity is surfaced",
+        "only U+00AD is deleted at a wrap",
+        "original and change counts remain available",
+        "accepted output is idempotent"
+      ],
+      "adversarial_cases": [
+        "visible hyphen at lowercase continuation",
+        "soft hyphen",
+        "blank paragraph",
+        "list-like line",
+        "column-like multi-space line",
+        "second pass"
+      ],
+      "expected_output_strategy": "Compare exact output literals and verify that removing inserted line breaks never creates punctuation/word characters absent from the declared soft-hyphen rule.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "pasted text is not uploaded"
+      ],
+      "portability_browser_edges": [
+        "CRLF/CR normalize to LF as one disclosed change class",
+        "Unicode letters drive only lowercase continuation detection"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "exact before/after synthetic wrap corpus plus idempotence",
+        "role": "independent deterministic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "True page-column reconstruction and dictionary-based dehyphenation are intentionally outside this conservative text-only mode."
+      ]
+    },
+    {
+      "id": "cand-237",
+      "candidate": "Phone link hashtag and mention extractor",
+      "tool_family": "text-writing",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "whatwg-url",
+        "unicode-uax29",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "Synthetic Unicode text contains an international-looking phone, HTTP(S) URL with embedded @/# text, standalone mention and accented hashtag with exact UTF-16/code-point spans.",
+      "invariants": [
+        "every result original equals the exact source substring",
+        "overlap policy is deterministic URL > phone > hashtag > mention at equal start",
+        "phone normalization is explicit digits plus optional leading plus",
+        "URLs/account-like tokens are lexical and never fetched or verified"
+      ],
+      "adversarial_cases": [
+        "emoji before match offsets",
+        "URL containing mention/hashtag characters",
+        "email address false mention",
+        "trailing URL punctuation",
+        "short digit sequence",
+        "accented hashtag"
+      ],
+      "expected_output_strategy": "Slice each reported UTF-16 span from source, independently count code points and assert exact type order/normalization.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "no extracted URL or phone is contacted"
+      ],
+      "portability_browser_edges": [
+        "both UTF-16 and code-point offsets are emitted",
+        "Unicode hashtag/mention classes are explicit"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "source-substring/span reconstruction and hand-worked overlap expectations",
+        "role": "independent deterministic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Phone matching is locale-neutral and conservative; it does not validate numbering-plan existence."
+      ]
+    },
+    {
+      "id": "cand-238",
+      "candidate": "Parser-backed CSS minifier",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "css-syntax-3",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "CSS is parsed into a css-tree AST and regenerated compactly; parser Raw/empty declarations and unbalanced lexical delimiters refuse output with source location.",
+      "invariants": [
+        "minification is parse/serialize rather than regex substitution",
+        "strings and escapes remain parser nodes",
+        "custom property token content keeps parser semantics",
+        "invalid syntax emits no optimized artifact",
+        "input/output UTF-8 byte delta is exact"
+      ],
+      "adversarial_cases": [
+        "comment adjacent to string",
+        "custom property whitespace",
+        "unclosed block/string/comment",
+        "empty declaration",
+        "unrepresentable Raw syntax"
+      ],
+      "expected_output_strategy": "Parse minified output again, compare exact known strings/custom-property serialization and independently recompute UTF-8 byte lengths.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "CSS is never executed or fetched"
+      ],
+      "portability_browser_edges": [
+        "pure JavaScript parser is browser-bundle compatible",
+        "diagnostics use line column and character offsets when available"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "css-tree AST round-trip plus hand-worked invalid syntax fixtures",
+        "role": "independent deterministic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Unknown future CSS constructs represented as Raw are refused rather than emitted under a false safety claim."
+      ]
+    },
+    {
+      "id": "cand-239",
+      "candidate": "Semantic HTML minifier",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "whatwg-html",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "HTML is parsed with parse5; safe mode preserves all parser text nodes and only removes ordinary comments, while advanced mode removes bounded whitespace-only block-layout nodes.",
+      "invariants": [
+        "safe mode preserves every text node including inline whitespace",
+        "pre textarea script and style contents are never rewritten by regex",
+        "conditional comments are preserved with warning",
+        "parser errors refuse an artifact",
+        "advanced whitespace removal is explicitly opt-in"
+      ],
+      "adversarial_cases": [
+        "inline span spacing",
+        "pre/textarea whitespace",
+        "script less-than operator",
+        "style string spaces",
+        "conditional comment",
+        "null-character parse error",
+        "block-only whitespace advanced mode"
+      ],
+      "expected_output_strategy": "Reparse before/after fragments and compare text content in safe mode, assert sensitive raw-text literals, and use exact advanced-mode block fixture.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "HTML is parsed as data and never inserted/executed by the engine"
+      ],
+      "portability_browser_edges": [
+        "parse5 follows WHATWG tree construction",
+        "document and fragment inputs are detected explicitly"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "parse5 tree/text equivalence in safe fixtures plus exact sensitive-element assertions",
+        "role": "independent deterministic cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Advanced mode can remove layout whitespace next to block elements and is therefore explicit rather than default."
+      ]
+    },
+    {
+      "id": "cand-240",
+      "candidate": "Italian identity-document expiry helper",
+      "tool_family": "date-time",
+      "maintenance_class": "D",
+      "truth_sources": [
+        "mininterno-cie-validity",
+        "polizia-passaporto-validity",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Current official CIE validity rules from the Ministry of the Interior and ordinary passport validity rules from the Polizia di Stato, checked 2026-10-06; synthetic dates exercise boundaries without asserting any real document status.",
+      "invariants": [
+        "document type is explicitly supported or refused",
+        "age band is evaluated at issue date",
+        "CIE expiry follows the cited first-birthday-after-term rule",
+        "passport expiry follows the cited 3/5/10-year term",
+        "the result is calculation-only and never document verification"
+      ],
+      "adversarial_cases": [
+        "age exactly 3",
+        "age exactly 18",
+        "issue date before birth",
+        "unsupported document type",
+        "29-February birthday or issue date where the cited source does not define the civil-date convention"
+      ],
+      "expected_output_strategy": "Use hand-worked civil-date literals at the 3-year and 18-year age boundaries plus official duration rules. Refuse date conventions not stated by the sources rather than guessing.",
+      "security_privacy_edges": [
+        "LOCAL only; dates never leave the browser",
+        "no authenticity, travel acceptance, revocation or live registry check is implied"
+      ],
+      "portability_browser_edges": [
+        "calendar arithmetic uses timezone-independent integer date parts",
+        "no locale parser or wall-clock timezone is used"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent hand-worked age-band and calendar-date literals in quality/fixtures/italian-document-expiry/vectors.json",
+        "role": "independent literal cross-check against official rule text"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Leap-day civil-date convention is intentionally refused until an authoritative rule for the supported documents is sourced."
+      ]
+    },
+    {
+      "id": "cand-241",
+      "candidate": "TXT Markdown HTML conversion core",
+      "tool_family": "text",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "commonmark",
+        "whatwg-html",
+        "owasp-xss",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "The core uses a deliberately bounded normalized document model: supported Markdown constructs follow documented CommonMark 0.31.2 meanings where implemented, HTML is parsed as inert text into an allowlisted semantic subset, and rendered preview HTML is regenerated from that model rather than raw user markup.",
+      "invariants": [
+        "all five required directions pass through the same normalized block/inline model",
+        "raw input HTML is never directly inserted into the preview",
+        "script style template iframe object and embed content never survives into normalized preview output",
+        "unsafe link schemes lose the destination while retaining visible label text",
+        "preformatted HTML/code-block text preserves internal normalized-LF whitespace",
+        "CRLF and CR normalize deterministically to LF while Unicode composition is not silently changed",
+        "unsupported CommonMark/GFM/HTML constructs are disclosed instead of silently claimed as preserved"
+      ],
+      "adversarial_cases": [
+        "script and event-handler HTML",
+        "javascript URL with numeric/entity obfuscation",
+        "raw HTML embedded in Markdown",
+        "pre/code leading trailing and tab whitespace",
+        "CRLF CR and decomposed Unicode",
+        "GFM task-list and table syntax",
+        "supported Markdown-HTML-Markdown round trip"
+      ],
+      "expected_output_strategy": "Use exact hand-worked literals in quality/fixtures/text-markup-conversion/vectors.json for each direction, plus independent XSS absence assertions, supported-subset round-trip/idempotence checks and UTF-8/newline assertions.",
+      "security_privacy_edges": [
+        "LOCAL only; no document contents leave the browser",
+        "preview HTML is an allowlist serialization of the normalized model",
+        "active HTML containers and event/CSS attributes are discarded",
+        "unsafe href schemes are removed before serialization"
+      ],
+      "portability_browser_edges": [
+        "output downloads are UTF-8 text/html text/markdown or text/plain with deterministic filenames",
+        "preview and source/result panes remain bounded while copy/download use the full result",
+        "no DOM parser or browser-specific HTML execution is required by the conversion engine"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "exact fixture literals plus round-trip/idempotence and XSS-negative assertions in tests/text-markup-conversion.test.ts",
+        "role": "independent deterministic and security cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "This is not a complete CommonMark or GFM parser: tables, task-list semantics, GFM autolinks and footnotes are explicitly outside the supported subset.",
+        "HTML named character references are decoded only for the common named set plus numeric references; unknown named references are preserved literally.",
+        "Complex HTML table layout, nested-list depth, CSS/layout and media are intentionally flattened or dropped with disclosure."
+      ]
+    },
+    {
+      "id": "cand-242",
+      "candidate": "CSS gradient shadow and radius helper",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "css-syntax-3",
+        "css-tree-3.2.1",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Hand-worked gradient, box-shadow and four-corner border-radius declarations are parsed independently by css-tree 3.2.1 under CSS Syntax Level 3 grammar.",
+      "invariants": [
+        "preview and copied CSS derive from the same canonical property/value pair",
+        "gradient angle is bounded to 0..360 degrees",
+        "shadow blur cannot be negative",
+        "radius values cannot be negative",
+        "colors are normalized through the existing bounded sRGB hex parser"
+      ],
+      "adversarial_cases": [
+        "gradient angle outside range",
+        "negative shadow blur",
+        "oversized shadow offsets/spread",
+        "negative corner radius",
+        "invalid color literal"
+      ],
+      "expected_output_strategy": "Compare exact hand-worked declarations and independently parse every generated fixture with css-tree rather than trusting the production serializer alone.",
+      "security_privacy_edges": [
+        "LOCAL deterministic generation",
+        "no user CSS is executed as script or sent over network",
+        "preview styles use only generated validated property values"
+      ],
+      "portability_browser_edges": [
+        "native number/color/select controls remain keyboard/touch accessible",
+        "responsive shared field grid has no fixed-width control requirement"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "css-tree 3.2.1 parser plus hand-worked declarations in tests/css-design-helper.test.ts",
+        "role": "independent syntax parse and exact-literal cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "The helper intentionally covers one linear gradient form, one outer box-shadow form and pixel corner radii; advanced CSS composition remains outside scope."
+      ]
+    },
+    {
+      "id": "cand-243",
+      "candidate": "Secure random number picker team splitter and coupon generator",
+      "tool_family": "developer-web",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "w3c-webcrypto",
+        "strumentiutili-quality",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Web Crypto getRandomValues supplies unseeded entropy; every bounded choice passes through the ticket-159 uint32 rejection sampler before modulo mapping. Reproducible seeded runs use a separate deterministic PRNG and are labeled non-secure.",
+      "invariants": [
+        "secure bounded choices reuse rejection sampling and never map the incomplete uint32 tail with modulo",
+        "seeded mode reproduces the same ordered result for the same inputs while remaining explicitly non-secure",
+        "picker draws source-line tickets without replacement while preserving duplicate labels as distinct tickets",
+        "team splitting rejects duplicate trimmed participant labels and produces team sizes differing by at most one",
+        "coupon alphabets deduplicate by first occurrence and every returned final coupon is unique",
+        "all tool state remains in component memory with network forbidden and no task-manager persistence"
+      ],
+      "adversarial_cases": [
+        "uint32 value in modulo-bias rejection tail",
+        "unique number count larger than inclusive range",
+        "duplicate picker labels on separate source lines",
+        "duplicate trimmed participant labels",
+        "coupon request larger than available code space",
+        "empty or overlong reproducible seed"
+      ],
+      "expected_output_strategy": "Inject deterministic uint32 fills to force the rejection tail; run property-style secure generations for range and uniqueness; compare repeated seeded outputs; assert source-index uniqueness, team-size delta, duplicate refusals and coupon-space constraints.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "secure mode depends on browser WebCrypto and fails when unavailable",
+        "seeded mode is never presented as suitable for secrets, prizes or unpredictable draws",
+        "results are not written to URL, browser storage or a persistent task manager"
+      ],
+      "portability_browser_edges": [
+        "WebCrypto getRandomValues is the only entropy source for secure mode",
+        "seed hashing and PRNG arithmetic use explicit 32-bit JavaScript integer operations",
+        "list parsing normalizes CRLF/CR to LF before trimming non-empty source lines"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "deterministic injected fill plus seeded repeatability and independently checked combinatorial constraints",
+        "role": "property and edge cross-check separate from browser entropy"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "The seeded PRNG is intentionally not cryptographically secure and is offered only for reproducibility."
+      ]
+    },
+    {
+      "id": "cand-244",
+      "candidate": "Color blindness image simulation",
+      "tool_family": "image",
+      "maintenance_class": "R",
+      "truth_sources": [
+        "machado-cvd-2009",
+        "r-colorspace-cvd-machado",
+        "r-colorspace-simulate-cvd-linear",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "Machado, Oliveira and Fernandes (2009) publish 3×3 RGB transform matrices for protan, deutan and tritan color-vision deficiencies across severity levels. This tool exposes only the complete-dichromacy severity endpoint for protanopia, deuteranopia and tritanopia and applies the cited matrices in linearized sRGB before re-encoding to sRGB.",
+      "invariants": [
+        "only the three documented complete-dichromacy modes protanopia deuteranopia and tritanopia are accepted",
+        "encoded sRGB channels are linearized before matrix multiplication and re-encoded after clamping",
+        "alpha is preserved byte-for-byte",
+        "the chosen mode and Machado 2009 model identity are returned with every result",
+        "the PNG output is signature and dimension verified before download is offered",
+        "copy explicitly describes the output as a simulation rather than diagnosis or universal perception"
+      ],
+      "adversarial_cases": [
+        "pure red green and blue inputs",
+        "white and black endpoints",
+        "matrix results outside the displayable linear-sRGB gamut",
+        "non-opaque alpha",
+        "unsupported simulation mode",
+        "image at local pixel and byte resource limits"
+      ],
+      "expected_output_strategy": "Compare the production matrices byte-for-byte with independently transcribed Machado severity-1 matrices, then assert hand-worked encoded-sRGB pixel outputs after linearization, matrix multiplication, clamping and re-encoding. Browser acceptance must compare original/result previews and independently verify the produced PNG artifact.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "input image pixels stay in browser memory",
+        "no medical diagnosis or individual impairment inference is made from an uploaded image"
+      ],
+      "portability_browser_edges": [
+        "the shared bounded image decoder enforces file dimension and pixel limits before transformation",
+        "Canvas 2D writes the transformed RGBA buffer and the shared artifact verifier checks the output PNG signature and dimensions",
+        "comparison preview labels original and simulated output separately on desktop and mobile"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "exact Machado full-severity matrices independently transcribed from the R colorspace implementation plus synthetic pixel fixtures in tests/color-vision-simulation.test.ts",
+        "role": "independent matrix transcription and hand-worked pixel cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "The Machado transform is a model-based simulation, not a measurement of any one person's perception; display calibration, adaptation and individual variation remain outside scope.",
+        "Only complete dichromacy endpoints are exposed; anomalous-trichromacy severity interpolation is intentionally outside this ticket."
+      ]
+    },
+    {
+      "id": "cand-245",
+      "candidate": "Sitemap XML generator",
+      "tool_family": "url-marketing",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "sitemaps-protocol",
+        "whatwg-url",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "The Sitemaps.org protocol defines a UTF-8 urlset in the sitemap/0.9 namespace, requires loc, makes lastmod/changefreq/priority optional, limits one sitemap to 50,000 URLs and 50 MB uncompressed, requires one host, and requires URL entity escaping.",
+      "invariants": [
+        "every loc originates from a successfully parsed HTTP or HTTPS URL and is serialized through the shared WHATWG URL normalizer",
+        "lastmod changefreq and priority are emitted only when the corresponding input column is non-empty and valid",
+        "every XML text value is entity-escaped before serialization",
+        "all entries use one normalized host",
+        "the result has at most 50,000 URL entries and at most 52,428,800 UTF-8 bytes",
+        "the downloadable artifact contains the complete generated XML and no network request is required"
+      ],
+      "adversarial_cases": [
+        "non-http scheme",
+        "malformed percent escape",
+        "credential-bearing URL",
+        "mixed hosts",
+        "invalid leap-day lastmod",
+        "invalid changefreq or priority",
+        "50,001st URL",
+        "output one byte above 50 MiB",
+        "loc at and above the 2,048-character protocol boundary"
+      ],
+      "expected_output_strategy": "Use synthetic fixture vectors for exact normalized loc values and optional-tag counts; independently count UTF-8 bytes, force count/size bounds at exact limits, and verify entity-escaped query separators in complete XML output.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "credential-bearing input fails closed instead of silently publishing or redacting a different target",
+        "no URL is fetched or resolved beyond standards-based local parsing",
+        "generated XML remains only in browser memory until explicit copy or download"
+      ],
+      "portability_browser_edges": [
+        "TextEncoder defines the UTF-8 byte count used by the 50 MiB boundary",
+        "CRLF and CR input normalize to LF before TSV row parsing",
+        "download MIME is application/xml with UTF-8 bytes"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "exact fixture literals plus independent boundary and XML-escape assertions in tests/sitemap-xml-generator.test.ts",
+        "role": "protocol-shape and resource-bound cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "The generator creates one sitemap.xml only; sitemap index generation and automatic splitting into multiple sitemap files remain outside this ticket."
+      ]
+    },
+    {
+      "id": "cand-246",
+      "candidate": "EAN-13 and Code-128 barcode generator",
+      "tool_family": "marketing-media",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "gs1-general-specifications-26",
+        "iso-iec-15417-2007",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "GS1's check-digit example maps the legacy ISBN 0471384291 to GTIN-13/EAN-13 value 9780471384298, giving a known EAN-13 check digit of 8. GS1 General Specifications also publish the Code 128 symbol-character values and element widths; this tool deliberately uses Start B only and maps printable ASCII to Code Set B values.",
+      "invariants": [
+        "EAN-13 generate mode accepts exactly 12 decimal digits and appends the calculated GS1 check digit",
+        "EAN-13 validate mode accepts exactly 13 decimal digits and produces no barcode when the supplied final digit disagrees with the calculated digit",
+        "EAN-13 data bars contain exactly 95 modules with the documented left parity selected by the first digit",
+        "Code 128 generation accepts only printable ASCII U+0020 through U+007E and always starts with Start B value 104",
+        "Code 128 symbol check is the Start B value plus weighted data symbol values modulo 103 followed by Stop value 106",
+        "Code A Code C FNC characters set switching GS1-128 and extended bytes are outside the advertised subset and fail closed",
+        "SVG and PNG exports are rendered from the same validated one-dimensional module sequence with black bars white background and explicit quiet zones"
+      ],
+      "adversarial_cases": [
+        "EAN input with non-digit whitespace or wrong length",
+        "EAN value with incorrect supplied check digit",
+        "EAN leading zeros",
+        "Code 128 empty input",
+        "Code 128 newline control character",
+        "Code 128 accented or emoji Unicode",
+        "Code 128 input above the implementation's 80-character symbol-width ceiling",
+        "human-readable text disabled while encoded bars remain unchanged"
+      ],
+      "expected_output_strategy": "Use the GS1 ISBN-derived EAN-13 vector plus hand-worked Code 128 B codewords/checksum. Reconstruct module bits independently from rendered SVG rectangle geometry and decode them in test-only EAN-13 and Code 128 B decoders whose mapping tables are not imported from the production encoder.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "input text exists only in browser memory until an explicit local SVG or PNG download",
+        "SVG contains generated rectangles/text only and has no script external resource or user-supplied markup injection path"
+      ],
+      "portability_browser_edges": [
+        "SVG is standards-shaped black-on-white vector output with crisp integer module geometry",
+        "PNG uses Canvas 2D only as a local rasterization of the exact module bits",
+        "human-readable text is optional and never participates in barcode decoding"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "independent test-only SVG geometry reconstruction plus EAN-13 and Code 128 B decoders and hand-worked known vectors in tests/barcode-generator.test.ts",
+        "role": "independent encoded-bar round-trip and checksum cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Code 128 support is intentionally limited to printable ASCII Code Set B; no Code A/C optimisation, FNC, GS1-128 or extended-byte interpretation is claimed.",
+        "The tool generates symbol geometry but does not certify printer resolution, reflectance, physical X-dimension or ISO/IEC 15416 print-quality grade.",
+        "EAN-13 syntax/checksum validation does not prove that a GS1 company prefix or GTIN allocation is assigned to the user."
+      ]
+    },
+    {
+      "id": "cand-247",
+      "candidate": "Tone metronome and noise generator",
+      "tool_family": "media-browser",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "w3c-web-audio-1-1",
+        "w3c-media-capture-streams",
+        "w3c-mediastream-recording",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "Web Audio API 1.1 defines AudioContext and browser audio synthesis primitives. Product frequency, BPM, level, and duration ceilings are Strumentini safety bounds rather than W3C limits.",
+      "invariants": [
+        "no AudioContext is created before an explicit user start action",
+        "tone frequency is bounded to 20 through 20000 Hz",
+        "metronome BPM is bounded to 30 through 300",
+        "output level is bounded to 0 through 0.2",
+        "duration is bounded to one hour and checked against an absolute deadline after visibility changes",
+        "white pink and brown generated samples remain finite and inside minus one through one",
+        "stop releases active source timers and AudioContext resources"
+      ],
+      "adversarial_cases": [
+        "frequency outside bounds",
+        "BPM outside bounds",
+        "unsafe output level",
+        "tab visibility change after deadline",
+        "stop and restart",
+        "noise sample ceiling"
+      ],
+      "expected_output_strategy": "Use fixed numeric literals and an injected deterministic sample source for noise bounds, plus browser AudioContext mocks for gesture, start, stop, and visibility lifecycle behavior.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "audio starts only after explicit user action",
+        "this route never requests microphone input"
+      ],
+      "portability_browser_edges": [
+        "Web Audio support is feature detected",
+        "background scheduling limitations are disclosed and duration recovery uses an absolute timestamp"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "injected-source noise tests plus hand-worked tap-tempo and bound vectors",
+        "role": "independent numeric and lifecycle cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Background scheduling precision remains browser and platform controlled."
+      ]
+    },
+    {
+      "id": "cand-248",
+      "candidate": "Browser text-to-speech Italian controls",
+      "tool_family": "media-browser",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "wicg-web-speech-api",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "The Web Speech API defines SpeechSynthesis getVoices, voiceschanged, speak, cancel, and SpeechSynthesisVoice language and localService fields. Available voices and local-versus-remote synthesis are user-agent dependent.",
+      "invariants": [
+        "voice choices come only from the runtime getVoices result",
+        "Italian filtering uses runtime it language tags",
+        "new speech cancels a prior utterance first",
+        "rate and pitch are bounded to 0.5 through 2",
+        "unsupported and no-voice states are recoverable",
+        "copy does not claim that the selected synthesis engine is local"
+      ],
+      "adversarial_cases": [
+        "empty runtime voice list",
+        "no Italian voices",
+        "voiceschanged replaces the prior inventory",
+        "rate or pitch outside bounds",
+        "unsupported SpeechSynthesis",
+        "stop followed by restart"
+      ],
+      "expected_output_strategy": "Use synthetic runtime voice descriptors and fixed control vectors, with browser SpeechSynthesis mocks for queue, cancel, and voiceschanged behavior.",
+      "security_privacy_edges": [
+        "Strumentini performs no own network request for TTS",
+        "the underlying browser or OS synthesis implementation may be local or remote and is disclosed",
+        "text is not persisted by Strumentini"
+      ],
+      "portability_browser_edges": [
+        "SpeechSynthesis support and voice inventory are runtime dependent",
+        "voice availability can change asynchronously through voiceschanged"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "synthetic runtime voice inventory tests and SpeechSynthesis mock acceptance",
+        "role": "API-boundary and filtering cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "The platform may use a remote speech service; Strumentini cannot certify the underlying voice implementation as offline."
+      ]
+    },
+    {
+      "id": "cand-249",
+      "candidate": "SRT VTT transform transcript and readability",
+      "tool_family": "text-writing",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "w3c-webvtt",
+        "netflix-italian-ttsg",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "W3C WebVTT defines the WEBVTT header, cue timing model and timestamp syntax. The Netflix Italian Timed Text Style Guide publishes 17 characters/second for adult subtitles as a workflow-specific reference; this tool labels that source and keeps the threshold configurable instead of presenting it as universal truth.",
+      "invariants": [
+        "cue order is never sorted or otherwise rearranged by parse convert offset rescale transcript or analysis operations",
+        "cue text lines remain Unicode-preserving under SRT/WebVTT conversion within the documented supported subset",
+        "rescale is applied before offset and any transform that collapses a positive cue below one millisecond fails closed",
+        "negative offsets use one explicit caller-selected policy: refuse on the first negative cue start or clamp that cue to zero while preserving its transformed duration",
+        "transcript export removes timing/index structure only and preserves cue sequence",
+        "reading-speed diagnostics use a configurable characters-per-second threshold with source/configuration provenance and are not presented as absolute readability truth",
+        "the tool is LOCAL with network forbidden and complete UTF-8 output remains downloadable when the preview is bounded"
+      ],
+      "adversarial_cases": [
+        "malformed SRT timing with exact source line and cue location",
+        "WebVTT cue settings outside the supported subset",
+        "WebVTT NOTE STYLE or REGION block",
+        "negative offset under refuse and clamp policies",
+        "scale factor that rounds a one-millisecond cue to zero duration",
+        "overlapping and out-of-order cues",
+        "Unicode emoji combining punctuation and accented Italian text",
+        "reading-speed threshold overridden by the user"
+      ],
+      "expected_output_strategy": "Round-trip synthetic SRT and WebVTT fixtures through the production parser/serializers and compare ordered cue timing/text tuples; assert exact malformed line/cue errors, offset/rescale boundary behavior, transcript literals, overlap diagnostics and source-labelled CPS configuration.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "subtitle contents remain in browser memory until explicit copy or download",
+        "no cloud transcription or media fetch is implied by transcript export",
+        "unsupported WebVTT executable/style-adjacent blocks are rejected instead of re-emitted into preview/output"
+      ],
+      "portability_browser_edges": [
+        "input line endings normalize to LF while cue text code points are otherwise preserved",
+        "SRT output uses comma millisecond separators and WebVTT output uses period millisecond separators",
+        "bounded text preview is independent from complete UTF-8 download bytes",
+        "shared Result v2 controls must remain usable without horizontal overflow at 390px"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "hand-worked subtitle fixtures plus parse-serialize-parse tuple equivalence and exact transform/diagnostic assertions in tests/subtitle-transform.test.ts",
+        "role": "round-trip, timing-boundary and readability-provenance cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "SRT has no single normative standard; this ticket intentionally supports a strict common subset rather than claiming full ecosystem compatibility.",
+        "WebVTT cue settings NOTE STYLE REGION ruby voice/class markup semantics and positioning conversion are outside this supported subset and fail closed where structurally relevant."
+      ]
+    },
+    {
+      "id": "cand-250",
+      "candidate": "Cross-format file-size analyzer core",
+      "tool_family": "files",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "w3c-png3",
+        "google-webp",
+        "pkware-appnote",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "The analyzer reuses bounded PNG/JPEG/WebP header inspection and PKWARE central-directory facts to report only observable file-size drivers. It deliberately emits no future savings estimate before a real transform produces measured output bytes.",
+      "invariants": [
+        "the selected source file is read-only and its SHA-256 is returned for identity",
+        "image analysis reports only decoded header dimensions encoding and locally observable metadata risk",
+        "ZIP analysis reads central-directory compressed and uncompressed sizes methods and largest entries without decompression",
+        "unknown formats report unknown cause instead of guessed savings",
+        "estimatedSavingsBytes is always null in diagnostic-only mode",
+        "next actions are stable tool ids rather than promises of a specific byte reduction"
+      ],
+      "adversarial_cases": [
+        "opaque unknown binary",
+        "truncated image header",
+        "ZIP with path traversal flag",
+        "ZIP with encrypted entries",
+        "ZIP with a very large declared uncompressed total",
+        "source file identity checked before and after analysis"
+      ],
+      "expected_output_strategy": "Use the existing synthetic image metadata and ZIP-signature fixtures, independently compare source SHA-256/bytes, and assert exact dimensions, entry totals, method counts and null savings estimate.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "analysis never rewrites the source file",
+        "ZIP contents are not decompressed by this diagnostic",
+        "metadata findings remain bounded and categorical"
+      ],
+      "portability_browser_edges": [
+        "WebCrypto SHA-256 identifies the unchanged source",
+        "image header inspection uses bounded prefix bytes",
+        "ZIP inspection uses bounded central-directory parsing"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "synthetic image and ZIP fixtures with independent byte/hash and central-directory assertions",
+        "role": "read-only composition and no-guessed-savings cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Opaque formats remain intentionally unexplained until a format-specific evidence adapter is added."
+      ]
+    },
+    {
+      "id": "cand-251",
+      "candidate": "AI response code fences to named files ZIP",
+      "tool_family": "files",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "commonmark",
+        "pkware-appnote",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "CommonMark defines fenced code blocks and info strings; this tool uses a deliberately smaller deterministic filename-hint convention and then feeds exactly the previewed UTF-8 bytes into the already-verified store-only ZIP writer.",
+      "invariants": [
+        "no model or network request is used to infer file names or content",
+        "absolute paths NULs and parent-directory segments fail closed",
+        "unnamed fences receive deterministic snippet-NNN names with language-derived extensions",
+        "case-insensitive duplicate paths receive deterministic numeric suffixes",
+        "file contents are the normalized LF fenced payload plus one terminal LF when the fence contains at least one line",
+        "the ZIP entry path and bytes derive from the same parsed preview list",
+        "ZIP method is store only and no compression-savings claim is made"
+      ],
+      "adversarial_cases": [
+        "unclosed code fence",
+        "absolute filename hint",
+        "parent traversal filename hint",
+        "Windows drive absolute path",
+        "duplicate explicit file names",
+        "unknown language token",
+        "more than 200 code fences"
+      ],
+      "expected_output_strategy": "Parse hand-worked fenced responses, compare exact preview paths and UTF-8 payload bytes, then inspect the generated ZIP central directory and assert that its entry set exactly equals the preview set.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "pasted response content stays in browser memory until explicit ZIP download",
+        "unsafe paths are refused before any archive bytes are created"
+      ],
+      "portability_browser_edges": [
+        "CRLF and CR input normalize to LF before fence parsing",
+        "generated ZIP uses UTF-8 path flag and store method",
+        "File/Blob output is verified through the shared ZIP artifact seam"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "fixture path expectations plus independent ZIP central-directory inspection in file-privacy tests",
+        "role": "preview-to-archive parity and path-safety cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Filename hints intentionally support a bounded explicit convention rather than trying to infer arbitrary prose intent."
+      ]
+    },
+    {
+      "id": "cand-252",
+      "candidate": "Microphone test and local recorder",
+      "tool_family": "media-browser",
+      "maintenance_class": "E",
+      "truth_sources": [
+        "w3c-web-audio-1-1",
+        "fixture-policy",
+        "strumentiutili-quality"
+      ],
+      "standard_or_official_example": "The live level meter uses Web Audio primitives after explicit microphone access. Recorder container and codec support are treated as runtime facts from MediaRecorder.isTypeSupported and the produced Blob rather than as a fixed product format promise.",
+      "invariants": [
+        "getUserMedia is called only after an explicit user button action",
+        "permission denial revocation device-end and unsupported states leave a recoverable UI",
+        "a requested MIME is passed to MediaRecorder only when the runtime reports it supported",
+        "final type and byte size come from the produced Blob and recorder data",
+        "recorded active duration is derived from monotonic start pause resume and stop event timestamps",
+        "recording is bounded to 15 active minutes or 256 MiB of buffered chunks",
+        "stop reset and component cleanup release microphone tracks and local object URLs"
+      ],
+      "adversarial_cases": [
+        "permission denied then granted on retry",
+        "track ended or permission revoked after activation",
+        "MediaRecorder with only one non-default MIME reported as supported",
+        "runtime with no probed MIME support and browser-selected default type",
+        "pause resume stop duration accounting",
+        "recording byte and duration ceilings",
+        "reset and unmount resource cleanup"
+      ],
+      "expected_output_strategy": "Use pure event-clock and MIME-selection vectors plus a no-network browser acceptance with mocked getUserMedia, MediaRecorder, track revocation, Blob URLs and a 390px viewport.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "microphone permission is never requested on page load",
+        "audio chunks stay in browser memory until explicit local download or reset",
+        "the microphone track is stopped when recording stops and on reset or cleanup"
+      ],
+      "portability_browser_edges": [
+        "getUserMedia MediaRecorder and Web Audio are feature detected",
+        "no codec or container is advertised as universally available",
+        "unsupported browsers show a stable explanation without requesting permission",
+        "the browser-selected MIME and resulting Blob metadata are displayed verbatim"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "unit-tested MIME/event-clock helpers plus mocked-browser acceptance for permission lifecycle, recorder events, Blob facts, local URLs and zero external requests",
+        "role": "runtime capability and lifecycle cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Physical iOS and Android permission and recorder behavior still require the explicit mobile acceptance run from ticket 229."
+      ]
+    },
+    {
+      "id": "cand-253",
+      "candidate": "Multi-PDF text search",
+      "tool_family": "pdf-engine",
+      "maintenance_class": "H",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "iso-pdf2"
+      ],
+      "standard_or_official_example": "PDF page content is page-scoped. This search reuses the bounded local text extractor and reports file/page/context provenance without claiming OCR, layout reconstruction, or support for encrypted content.",
+      "invariants": [
+        "each file is parsed and classified independently so one unreadable encrypted no-text or no-match file does not abort the rest",
+        "every returned hit records source file index filename page number and per-page match index",
+        "literal query length context length and returned hit count are explicitly bounded",
+        "files with extractable text but no hits are distinct from files with no extractable text",
+        "no-text files expose an OCR handoff state that is explicitly unavailable until ticket 247 ships",
+        "all processing is local and network forbidden"
+      ],
+      "adversarial_cases": [
+        "mixed batch containing searchable no-match no-text encrypted and malformed PDFs",
+        "query longer than the declared bound",
+        "context and result limits above their ceilings",
+        "more matches than the returned result cap",
+        "case-insensitive Unicode text"
+      ],
+      "expected_output_strategy": "Use a mixed synthetic PDF corpus with exact known strings and assert per-file states, exact page provenance, bounded contexts, global hit truncation and continued processing after bad files.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "encrypted PDFs are never brute-forced or bypassed",
+        "malformed files are isolated to their own result row",
+        "total selected input bytes remain bounded"
+      ],
+      "portability_browser_edges": [
+        "uses the same deterministic page-scoped extractor as ticket 220",
+        "results remain usable at a 390px viewport",
+        "File API inputs preserve source filenames in provenance"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "mixed synthetic searchable no-match no-text encrypted and malformed corpus in tests/pdf-search-markdown-upgrades.test.ts",
+        "role": "per-file isolation and exact page/context provenance cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "OCR remains unavailable until the dedicated local OCR/searchable-PDF work lands; no OCR result is fabricated."
+      ]
+    },
+    {
+      "id": "cand-254",
+      "candidate": "PDF to Markdown page-scoped export",
+      "tool_family": "pdf-engine",
+      "maintenance_class": "H",
+      "truth_sources": [
+        "strumentiutili-quality",
+        "fixture-policy",
+        "iso-pdf2"
+      ],
+      "standard_or_official_example": "PDF page text operators do not imply Markdown semantics. This export therefore preserves page provenance and escaped extracted text only, while explicitly declaring layout, table, image, multi-column and style losses.",
+      "invariants": [
+        "only page-scoped content-order text from the existing PDF extractor is used as source material",
+        "each exported page begins with a deterministic HTML comment containing URI-encoded source filename and page number",
+        "Markdown metacharacters from source text are escaped so headings lists emphasis links or HTML are not invented",
+        "tables images multi-column layout typography and semantic headings are declared as unrecovered losses",
+        "no-text input returns no Markdown and exposes an explicitly unavailable OCR handoff",
+        "encrypted input returns no Markdown and is never bypassed"
+      ],
+      "adversarial_cases": [
+        "source text containing Markdown metacharacters",
+        "multi-page born-digital PDF",
+        "no-text or scanned-shaped PDF",
+        "encrypted PDF",
+        "text extraction truncation at the shared PDF bound"
+      ],
+      "expected_output_strategy": "Generate exact multi-page text fixtures, assert deterministic provenance comments and escaped literal text, then assert no-text/encrypted states and declared loss warnings.",
+      "security_privacy_edges": [
+        "LOCAL only and network forbidden",
+        "source PDF is read-only",
+        "no active Markdown or HTML semantics are inferred from PDF text",
+        "download bytes are UTF-8 text/markdown only when conversion has searchable text"
+      ],
+      "portability_browser_edges": [
+        "UTF-8 Markdown bytes round-trip deterministically",
+        "page provenance does not depend on browser rendering",
+        "the result workspace remains usable at 390px"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "exact born-digital/no-text/encrypted vectors plus Markdown escaping assertions in tests/pdf-search-markdown-upgrades.test.ts",
+        "role": "page provenance and no-invented-semantics cross-check"
+      },
+      "confidence": "high",
+      "unresolved_gaps": [
+        "Visual reading order, semantic headings, tables, images, multi-column reconstruction and styles are intentionally outside this export mode."
+      ]
+    },
+    {
+      "id": "cand-255",
+      "candidate": "FatturaPA single-invoice local reader",
+      "tool_family": "italy-data",
+      "maintenance_class": "R",
+      "truth_sources": ["fatturapa-v1-4-official", "fixture-policy"],
+      "standard_or_official_example": "Pinned FatturaPA v1.4 schemas identify ordinary FPA12/FPR12 and simplified FSM10 documents; the local reader refuses all other namespace/format combinations.",
+      "invariants": ["network forbidden and file stays local", "DTD and ENTITY declarations are refused before mapping", "root namespace root versione and FormatoTrasmissione must agree with a pinned schema", "malformed mapped fields are isolated without discarding other readable fields"],
+      "adversarial_cases": ["external entity declaration", "unknown namespace", "root/format mismatch", "invalid date or decimal in one mapped field"],
+      "expected_output_strategy": "Use anonymized ordinary and simplified XML fixtures plus hostile deterministic mutations; assert parties document metadata lines schema identity and isolated field errors.",
+      "security_privacy_edges": ["no upload or network", "external entity resolution disabled", "bounded 5 MiB local input"],
+      "portability_browser_edges": ["UTF-8 XML text", "390px result surface", "local File API only"],
+      "cross_check": {"usable": true, "implementation": "tests/italy-2026-consumers.test.ts plus pinned XSD identities", "role": "schema and parser-behavior cross-check"},
+      "confidence": "high",
+      "unresolved_gaps": ["This reader maps a bounded human-readable field subset; it does not claim full XSD validation of every optional FatturaPA field."]
+    },
+    {
+      "id": "cand-256",
+      "candidate": "INPS artigiani/commercianti 2026 contribution calculator",
+      "tool_family": "italy-business-math",
+      "maintenance_class": "R",
+      "truth_sources": ["inps-circulars-2026-official", "fixture-policy"],
+      "standard_or_official_example": "INPS Circular 14/2026 supplies the standard adult artigiani/commercianti annual minimum, first-band boundary, rates and supported maxima used by this bounded calculator.",
+      "invariants": ["exact-cent inputs and outputs", "official annual minimum is itemized separately", "rates apply only to income above the minimum in the modeled bands", "unsupported reductions and special profiles fail explicitly"],
+      "adversarial_cases": ["income below minimum", "exact first-band edge", "income above selected maximum", "unsupported reduction or year"],
+      "expected_output_strategy": "Hand-work minimum/threshold examples independently from the engine and reconcile every displayed band to the total.",
+      "security_privacy_edges": ["LOCAL only and network forbidden", "no payroll identity data required"],
+      "portability_browser_edges": ["decimal input uses exact cents", "390px form/result", "no locale-dependent arithmetic"],
+      "cross_check": {"usable": true, "implementation": "hand-worked vectors in quality/fixtures/italy-2026-consumers/vectors.json", "role": "threshold arithmetic cross-check"},
+      "confidence": "high",
+      "unresolved_gaps": ["Age-based collaborator and forfettario reductions are outside the pinned normalized subset."]
+    },
+    {
+      "id": "cand-257",
+      "candidate": "Gestione Separata professional contributions 2026",
+      "tool_family": "italy-business-math",
+      "maintenance_class": "R",
+      "truth_sources": ["inps-circulars-2026-official", "fixture-policy"],
+      "standard_or_official_example": "INPS Circular 8/2026 supplies the 26.07% and 24% professional profiles, €18,808 full-year-credit minimum income and €122,295 maximum income.",
+      "invariants": ["actual income is the contribution base until the maximum", "€18,808 is not turned into a contribution floor", "profile rate and optional components are explicit", "unsupported parasubordinate/special profiles fail"],
+      "adversarial_cases": ["income below credit threshold", "exact threshold", "income above maximum", "unsupported profile or year"],
+      "expected_output_strategy": "Hand-work rate multiplication at low income threshold and ceiling and compare to exact-cent engine output.",
+      "security_privacy_edges": ["LOCAL only and network forbidden", "no external profile lookup"],
+      "portability_browser_edges": ["exact-cent arithmetic", "390px form/result", "stable profile labels"],
+      "cross_check": {"usable": true, "implementation": "hand-worked vectors in quality/fixtures/italy-2026-consumers/vectors.json", "role": "rate/base/ceiling cross-check"},
+      "confidence": "high",
+      "unresolved_gaps": ["Parasubordinate and special-sector Gestione Separata codes are intentionally unsupported."]
+    },
+    {
+      "id": "cand-258",
+      "candidate": "Italy 2026 ponti and ferie optimizer",
+      "tool_family": "italy-date-time",
+      "maintenance_class": "R",
+      "truth_sources": ["normattiva-holidays-2026-official", "fixture-policy"],
+      "standard_or_official_example": "The optimizer uses only the pinned 2026 national non-working holiday set plus the caller's workweek and leave-day budget.",
+      "invariants": ["unsupported years fail closed", "every opportunity exposes exact leave dates and continuous interval", "movable Easter Monday participates as an explicit 2026 date", "local patronal holidays are not auto-added"],
+      "adversarial_cases": ["custom Tuesday-Saturday workweek", "zero leave budget", "holiday on weekend", "unsupported 2027 request"],
+      "expected_output_strategy": "Use hand-counted Easter and Republic Day intervals and compare exact leave dates and consecutive days off.",
+      "security_privacy_edges": ["LOCAL only and network forbidden", "no calendar account access"],
+      "portability_browser_edges": ["UTC date arithmetic avoids timezone drift", "390px checkbox/result layout"],
+      "cross_check": {"usable": true, "implementation": "hand-counted bridge vectors in quality/fixtures/italy-2026-consumers/vectors.json", "role": "calendar interval cross-check"},
+      "confidence": "high",
+      "unresolved_gaps": ["Only calendar year 2026 is enabled by the authoritative source pack."]
+    },
+    {
+      "id": "cand-259",
+      "candidate": "FatturaPA batch to table and CSV",
+      "tool_family": "italy-data",
+      "maintenance_class": "R",
+      "truth_sources": ["fatturapa-v1-4-official", "fixture-policy"],
+      "standard_or_official_example": "Each selected XML is parsed through the same cand-255 reader; filename and pinned schema identity remain explicit on every exported invoice row.",
+      "invariants": ["one malformed file never aborts other files", "CSV includes filename schema format and reconciliation columns", "ordinary represented line totals plus VAT summary tax are reconciled to document total when all terms exist", "preview is bounded while download contains every row"],
+      "adversarial_cases": ["mixed ordinary simplified malformed and hostile XML batch", "more rows than preview limit", "CSV formula-like filenames", "per-file size and total-batch bounds"],
+      "expected_output_strategy": "Batch anonymized fixtures with one deliberately malformed XML; assert per-file state exact CSV row count represented-total reconciliation and complete-export byte payload.",
+      "security_privacy_edges": ["LOCAL only and network forbidden", "bounded 50-file/25 MiB batch", "CSV formula injection prefix protection"],
+      "portability_browser_edges": ["bounded horizontally scrollable preview at 390px", "UTF-8 CSV download", "File API only"],
+      "cross_check": {"usable": true, "implementation": "batch tests reuse exact single-reader fixtures and independent CSV row assertions", "role": "per-file isolation and export completeness cross-check"},
+      "confidence": "high",
+      "unresolved_gaps": ["Simplified invoices have no ordinary DatiRiepilogo/document-total reconciliation path, so those rows report reconciliation unavailable rather than inventing one."]
     }
   ]
 }

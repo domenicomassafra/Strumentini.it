@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "tool_vectors": [
+    {
+      "tool_id": "mortgage-amortization-calculator",
+      "operation": "mortgage-amortization-calculator",
+      "input": { "principal": "100000", "annualRatePercent": "3", "termMonths": "12" },
+      "expected": { "monthlyPayment": 8469.37, "totalInterest": "1632.44", "totalRepaid": "101632.44", "lastPayment": "8469.37" }
+    },
+    {
+      "tool_id": "geometry-equation-motion-helper",
+      "operation": "geometry-equation-motion-helper",
+      "input": { "mode": "rectangle", "width": "4", "height": "3", "lengthUnit": "meter" },
+      "expected": { "result": 12, "area": "12.00000000 m²", "perimeter": "14.00000000 m" }
+    },
+    {
+      "tool_id": "everyday-cost-calculator",
+      "operation": "everyday-cost-calculator",
+      "input": { "mode": "unit-price", "price": "4.50", "quantity": "750", "quantityUnit": "gram", "normalizeUnit": "kilogram" },
+      "expected": { "result": 6, "unitPrice": "6.0000", "normalizedQuantity": "0.75 kg" }
+    }
+  ],
+  "mortgage": [
+    {
+      "case": "one-year-french",
+      "input": { "principal": "100000", "annualRatePercent": "3", "termMonths": "12" },
+      "expected": { "monthlyPayment": 8469.37, "totalInterest": "1632.44", "totalRepaid": "101632.44", "firstInterest": "250.00", "lastBalance": "0.00" }
+    },
+    {
+      "case": "zero-rate",
+      "input": { "principal": "1200", "annualRatePercent": "0", "termMonths": "12" },
+      "expected": { "monthlyPayment": 100, "totalInterest": "0.00", "totalRepaid": "1200.00", "lastPayment": "100.00" }
+    },
+    {
+      "case": "single-payment",
+      "input": { "principal": "10000", "annualRatePercent": "5", "termMonths": "1" },
+      "expected": { "monthlyPayment": 10041.67, "totalInterest": "41.67", "totalRepaid": "10041.67", "lastPayment": "10041.67" }
+    },
+    {
+      "case": "hundred-year-long-term",
+      "input": { "principal": "250000", "annualRatePercent": "4.2", "termMonths": "1200" },
+      "expected": { "monthlyPayment": 888.42, "totalInterest": "816111.38", "totalRepaid": "1066111.38", "lastPayment": "895.80" }
+    }
+  ],
+  "geometry_motion": [
+    { "case": "rectangle", "input": { "mode": "rectangle", "width": "4", "height": "3", "lengthUnit": "meter" }, "expected": { "area": "12.00000000 m²", "perimeter": "14.00000000 m" } },
+    { "case": "pythagorean", "input": { "mode": "pythagorean", "legA": "3", "legB": "4", "lengthUnit": "meter" }, "expected": { "hypotenuse": "5.00000000 m" } },
+    { "case": "quadratic-two-real", "input": { "mode": "quadratic", "coefficientA": "1", "coefficientB": "-3", "coefficientC": "2" }, "expected": { "root1": "2.00000000", "root2": "1.00000000", "discriminant": "1", "rootType": "two-real" } },
+    { "case": "speed-with-unit-normalization", "input": { "mode": "speed", "distance": "180", "distanceUnit": "kilometer", "time": "2", "timeUnit": "hour", "speedUnit": "kilometer-per-hour" }, "expected": { "result": 90, "value": "90 km/h" } }
+  ],
+  "everyday_cost": [
+    { "case": "unit-price-normalized", "input": { "mode": "unit-price", "price": "4.50", "quantity": "750", "quantityUnit": "gram", "normalizeUnit": "kilogram" }, "expected": { "result": 6, "unitPrice": "6.0000", "normalizedQuantity": "0.75 kg" } },
+    { "case": "split-remainder", "input": { "mode": "split-bill", "bill": "100", "tipPercent": "10", "people": "3" }, "expected": { "baseShare": "36.66", "higherShare": "36.67", "peopleWithHigherShare": 2, "totalWithTip": "110.00" } },
+    { "case": "annual-subscription", "input": { "mode": "annual-subscription", "periodicCost": "9.99", "periodsPerYear": "12" }, "expected": { "result": 119.88, "annualCost": "119.88" } },
+    { "case": "energy-cost", "input": { "mode": "energy-cost", "power": "1500", "powerUnit": "watt", "usageHours": "2", "pricePerKwh": "0.30" }, "expected": { "result": 0.9, "energyKwh": "3.000000", "amount": "0.90" } },
+    { "case": "car-trip-cost", "input": { "mode": "car-trip-cost", "distance": "250", "distanceUnit": "kilometer", "consumptionLitersPer100Km": "6.5", "fuelPricePerLiter": "1.85" }, "expected": { "result": 30.06, "liters": "16.250000", "amount": "30.06" } },
+    { "case": "salary-to-hourly", "input": { "mode": "salary-hourly", "salaryDirection": "salary-to-hourly", "amount": "40000", "hoursPerWeek": "40", "weeksPerYear": "52" }, "expected": { "result": 19.23, "hourlyRate": "19.23", "assumedAnnualHours": "2080" } }
+  ]
+}

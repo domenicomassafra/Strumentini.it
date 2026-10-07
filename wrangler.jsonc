@@ -1,8 +1,16 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "strumentiutili-it",
+  // Historical Cloudflare resource name retained deliberately: it already has
+  // production deployment/rollback history. Public branding is Strumentini.it.
+  "name": "strumentini",
   "compatibility_date": "2026-09-24",
   "main": "worker/index.ts",
+  "routes": [
+    {
+      "pattern": "strumentini.it",
+      "custom_domain": true
+    }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
@@ -14,6 +22,7 @@
   "d1_databases": [
     {
       "binding": "AUTH_DB",
+      // Existing D1 resource retained to preserve account/session data.
       "database_name": "strumentiutili-auth",
       "database_id": "b172e08e-3a81-41dd-87d4-c8c4859b7274",
       "migrations_dir": "worker/migrations"

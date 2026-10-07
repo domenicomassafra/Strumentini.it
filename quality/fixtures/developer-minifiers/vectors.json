@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "css": [
+    {
+      "name": "string-custom-property-comment",
+      "input": "/* comment */\n.card { color: red; content: \"a b\"; --gap: 1rem  2rem; }",
+      "expected": ".card{color:red;content:\"a b\";--gap:1rem 2rem}"
+    }
+  ],
+  "invalid_css": [
+    "a { color: red",
+    "a { color:; }",
+    "a { color: red; broken ??? }"
+  ],
+  "html": [
+    {
+      "name": "safe-sensitive-whitespace",
+      "mode": "safe",
+      "input": "<div>\n  <p>Hello <strong>world</strong>.</p>\n  <pre>  keep\n  this </pre>\n</div>"
+    },
+    {
+      "name": "advanced-block-whitespace",
+      "mode": "advanced",
+      "input": "<div>\n <p>A</p>\n <p>B</p>\n</div>",
+      "expected": "<div><p>A</p><p>B</p></div>"
+    }
+  ],
+  "invalid_html": [
+    "<div>\u0000</div>"
+  ]
+}

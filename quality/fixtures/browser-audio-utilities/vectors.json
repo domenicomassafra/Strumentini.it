@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "audio": [
+    { "mode": "tone", "frequencyHz": 440, "level": 0.05, "durationSeconds": 2 },
+    { "mode": "metronome", "bpm": 120, "level": 0.05, "durationSeconds": 0 },
+    { "mode": "noise", "noiseKind": "pink", "level": 0.05, "durationSeconds": 0 }
+  ],
+  "tapTimesMs": [0, 500, 1000, 1500],
+  "expectedBpm": 120,
+  "speech": { "rate": 1, "pitch": 1 },
+  "microphoneRecorder": {
+    "supportedMimeTypes": ["audio/ogg;codecs=opus"],
+    "eventTimesMs": { "start": 100, "pause": 400, "resume": 1000, "stop": 1300 },
+    "expectedActiveDurationMs": 600,
+    "blobType": "audio/ogg;codecs=opus"
+  }
+}

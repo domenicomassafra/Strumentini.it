@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/text-data-certification/fact-sensitive-text-diff.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "fact-sensitive-text-diff",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-232",
+  "fixtureFamilies": [
+    "text-expansion"
+  ],
+  "exactVectors": 1,
+  "boundedOracleGaps": [
+    "The tool cannot determine whether a changed or unchanged token is factually correct."
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "lucisano-piemontese-1988",
+    "strumentiutili-quality",
+    "unicode-uax29"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "text-expansion",
+      "path": "quality/fixtures/text-expansion/vectors.json"
+    }
+  ],
+  "focusedTests": [
+    "tests/text-expansion.test.ts"
+  ],
+  "propertyChecks": [
+    "LOCAL runtime with network forbidden",
+    "high-confidence oracle and exact explicit bounded-gap policy",
+    "manifest maintenance class matches oracle",
+    "fixture replay through the public tool module",
+    "per-tool semantic browser assertion at 390px",
+    "zero external/non-GET/task-body requests after browser task start",
+    "keyboard submit and accessible form controls",
+    "focused semantic/refusal-boundary tests bound by content identity"
+  ],
+  "identities": {
+    "manifestSha256": "872ec8ad2a32e28cbea1981cef0080cd395b62fe38b0e3999794832ef0e90aaf",
+    "moduleSha256": "45def6bad1c30e9ce165393f9811d1ec3519053a020ba7335d0819d7cec4c43c",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "6a3785ccc2fd0c13ef76115ce04c81c53ee55f07cbb1f5507b259c15f324caf5",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "7d03995f3e3a6ebd56a9f2ba33dd2b910169cdcf3f6b056833f99b8c1abab92c",
+    "fixture:text-expansion:sha256": "0c5599cbcee93afe9ae1f5116dde6ecbc01895b6c878e3236ac9d22538ee5ce0"
+  }
+}

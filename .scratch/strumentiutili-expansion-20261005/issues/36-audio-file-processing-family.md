@@ -6,7 +6,7 @@
 
 **Constraints:** Codec list is evidence-driven; preserve source when possible; no cloud transcription/cleanup hidden behind a local-looking UI.
 
-**Blocked by:** 01, 34.
+**Blocked by:** 230, 231.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] Silence-removal/cleanup parameters are previewable and cancellable.
 
 **Verification:** Real audio corpus across accepted formats, duration/waveform/export checks, performance/memory receipts, and genuine mobile acceptance.
-

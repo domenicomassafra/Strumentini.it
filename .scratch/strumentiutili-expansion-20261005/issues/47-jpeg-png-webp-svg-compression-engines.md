@@ -6,7 +6,7 @@
 
 **Constraints:** Preserve alpha/vector semantics where applicable; “lossless” requires pixel/DOM-semantic proof appropriate to the format; codecs are lazy and benchmarked; SVG scripts/external references get explicit safety treatment.
 
-**Blocked by:** 01, 34.
+**Blocked by:** 207, 208, 209.
 
 **Status:** blocked
 
@@ -16,4 +16,3 @@
 - [ ] SVG optimization shows raw and gzip byte reduction, visual original-vs-optimized preview, multipass/precision settings and unsafe/aggressive changes separately.
 
 **Verification:** Real corpus per format, byte/pixel/vector-render comparisons, malformed input cases, bundle/runtime/mobile receipts, and output-signature verification.
-

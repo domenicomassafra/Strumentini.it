@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "ticket": 278,
+  "status": "BLOCKED",
+  "target": "ios-safari",
+  "route": "/tools/image-resize/",
+  "observedAt": "2026-10-07T11:58:43.059Z",
+  "physicalSelection": {
+    "platformName": "iOS",
+    "safari:useSimulator": false,
+    "safari:deviceUDID": "00008120-0006384E14D8201E"
+  },
+  "device": {
+    "name": "iPhone di Domenico",
+    "marketingName": "iPhone 14 Pro Max",
+    "productType": "iPhone15,3",
+    "reality": "physical",
+    "udid": "00008120-0006384E14D8201E",
+    "osVersion": "26.6.2",
+    "osBuild": "23G90",
+    "developerMode": "Enabled (1)"
+  },
+  "browser": {
+    "safariDriverVersion": "Included with Safari 26.6.2 (21624.5.1.11.3)",
+    "sessionCapabilities": null
+  },
+  "build": {
+    "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+    "distImageResizeSha256": "68a13f3220854d839763f12068060300490cc0bdc3849a7b2fc4e5e36076b333"
+  },
+  "fixture": {
+    "filename": "image-resize-boundary-4000x4000.jpg",
+    "sha256": "ca8455d8504b35c80a29ec12d8fd03f056786fb622715af5d0fbb9695a1e45b2",
+    "source": {
+      "width": 4000,
+      "height": 4000,
+      "pixels": 16000000
+    },
+    "recommendedOutput": {
+      "width": 1200,
+      "height": 1200
+    },
+    "estimatedDecodedBytes": 94400000
+  },
+  "stages": [
+    {
+      "stage": "session-create",
+      "status": "BLOCKED",
+      "message": "Could not create a session: Some devices were found, but could not be used:\n- iPhone di Domenico (00008120-0006384E14D8201E): Web Inspector is not enabled on device"
+    }
+  ],
+  "output": null,
+  "passEligibility": {
+    "physicalDevice": false,
+    "noSimulatorSubstitution": false,
+    "nativeFilePickerObserved": false,
+    "resizeCompleted": false,
+    "actualDownloadedArtifactVerified": false
+  },
+  "blocker": {
+    "stage": "session-create",
+    "message": "Could not create a session: Some devices were found, but could not be used:\n- iPhone di Domenico (00008120-0006384E14D8201E): Web Inspector is not enabled on device",
+    "note": "No WebDriver command reached the page; file picker, resize and download remain unproven."
+  },
+  "canonicalReceiptWritten": false
+}

@@ -13,6 +13,7 @@ export const manifest = {
   engine: "file-privacy",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "batch", capabilities: ["copy", "retry", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-180", fixtureFamilies: ["file-hash", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

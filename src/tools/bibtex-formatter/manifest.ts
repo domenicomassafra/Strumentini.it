@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const bibtexFormatterManifest = {
   id: "bibtex-formatter",
@@ -13,6 +14,7 @@ export const bibtexFormatterManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("bibtex-formatter"),
   gold: { maintenanceClass: "E", oracleEntryId: "cand-185", fixtureFamilies: ["research-bibtex-syntax"] },
 } as const satisfies ToolManifest;
 

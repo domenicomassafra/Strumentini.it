@@ -4,6 +4,7 @@ import {
   buildIcsEvent,
   calculateAge,
   calculateWorkingDuration,
+  calendarWeekday,
   calendarDateList,
   convertEpochBatch,
   convertTimeZone,
@@ -15,9 +16,11 @@ import {
   findMeetingWindows,
   generateRecurringDates,
   inspectIcs,
+  isGregorianLeapYear,
   lookupPublicHolidays,
   quarterForDate,
   quarterForNumber,
+  printableMonthCalendar,
   timeToDecimalHours,
   totalTimesheet,
   weekNumberToDate,
@@ -84,6 +87,18 @@ describe("date/time/planning engine", () => {
       { input: "-1", ok: true, epochMilliseconds: -1000, iso: "1969-12-31T23:59:59.000Z", local: "1969-12-31T23:59:59+00:00" },
       { input: "bad", ok: false, error: "INVALID_EPOCH" },
     ]);
+  });
+
+  it("reuses Gregorian date primitives for weekday, leap-year, and printable Italian month helpers", () => {
+    expect(isGregorianLeapYear(1900)).toBe(false);
+    expect(isGregorianLeapYear(2000)).toBe(true);
+    expect(isGregorianLeapYear(2100)).toBe(false);
+    expect(calendarWeekday("2024-02-29")).toEqual({ date: "2024-02-29", isoWeekday: 4, weekdayIt: "giovedì" });
+    const february = printableMonthCalendar(2024, 2);
+    expect(february).toMatchObject({ year: 2024, month: 2, monthNameIt: "febbraio", locale: "it-IT", weekStartsOn: "monday" });
+    expect(february.weeks[0]).toEqual([null, null, null, 1, 2, 3, 4]);
+    expect(february.weeks.at(-1)).toEqual([26, 27, 28, 29, null, null, null]);
+    expect(february.text).toBe("Febbraio 2024\nLun Mar Mer Gio Ven Sab Dom\n          1  2  3  4\n 5  6  7  8  9 10 11\n12 13 14 15 16 17 18\n19 20 21 22 23 24 25\n26 27 28 29         ");
   });
 
   it("builds and inspects valid ICS text while rejecting invalid date forms", () => {

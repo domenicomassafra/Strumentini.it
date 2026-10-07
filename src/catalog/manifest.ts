@@ -1,5 +1,31 @@
 export type RuntimeLocation = "LOCAL" | "REFERENCE" | "REMOTE" | "AI";
 export type MaintenanceClass = "E" | "D" | "R" | "H" | "S";
+export const RESULT_CLASSES = [
+  "calculator",
+  "validator",
+  "text-code",
+  "table",
+  "file",
+  "image",
+  "pdf",
+  "batch",
+  "reference-network",
+] as const;
+export const RESULT_CAPABILITIES = [
+  "copy",
+  "download",
+  "download-all",
+  "share",
+  "reuse",
+  "reset",
+  "retry",
+  "handoff",
+  "batch",
+  "provenance",
+  "before-after",
+] as const;
+export type ResultClass = (typeof RESULT_CLASSES)[number];
+export type ResultCapability = (typeof RESULT_CAPABILITIES)[number];
 export type ToolCapability =
   | "clipboard"
   | "share"
@@ -46,6 +72,11 @@ export interface HandoffDeclaration {
   emits?: readonly HandoffDescriptorDeclaration[];
 }
 
+export interface ResultDeclaration {
+  class: ResultClass;
+  capabilities: readonly ResultCapability[];
+}
+
 export interface ToolManifest {
   id: string;
   route: string;
@@ -64,6 +95,8 @@ export interface ToolManifest {
   };
   profileFields: readonly ProfileFieldDeclaration[];
   handoff?: HandoffDeclaration;
+  result?: ResultDeclaration;
+  deterministic?: boolean;
   gold: {
     maintenanceClass: MaintenanceClass;
     oracleEntryId: string;

@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { TEXT_RESULT_V2_DECLARATIONS } from "../text-writing/result-v2";
 
 export const caseConverterManifest = {
   id: "case-converter",
@@ -13,6 +14,7 @@ export const caseConverterManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: TEXT_RESULT_V2_DECLARATIONS["case-converter"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-003", fixtureFamilies: ["unicode-normalization", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 

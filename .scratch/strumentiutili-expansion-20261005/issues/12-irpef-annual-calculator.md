@@ -6,7 +6,7 @@
 
 **Constraints:** Never label an estimate as an official tax assessment; unsupported deductions/municipal rules must be explicit; no unexplained annual constants in code.
 
-**Blocked by:** 01 — Result System v2 primitives; 07 — versioned Italy reference data.
+**Blocked by:** 127, 128.
 
 **Status:** blocked
 

@@ -3,11 +3,13 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 import UiIcon from "../../icons/UiIcon.astro";
 import ToolCard from "../ToolCard.astro";
 import { catalog } from "../../../generated/catalog";
+import { handoffCatalog } from "../../../generated/handoff-catalog";
 import { categoryLabelIt, inputTypeLabelIt } from "../../../i18n/it/taxonomy";
 import { toolIconSvg } from "../../../ui/tool-icons";
 import { qualityIndex } from "../../../generated/quality";
 import { goldToolIds } from "../../../onboarding/quality";
-import { groupForCategory, toolsInGroup, toneForCategory } from "../../../catalog/groups";
+import { groupForCategory, toneForCategory } from "../../../catalog/groups";
+import { relatedToolsFor } from "../../../runtime/related-tool-graph";
 import "../tool-surface.css";
 
 interface Props {
@@ -28,9 +30,7 @@ const titleIcon = toolIconSvg(tool, "tool-heading-glyph");
 const tone = toneForCategory(tool.category);
 const verified = goldToolIds(qualityIndex).has(tool.id);
 
-const related = toolsInGroup(group)
-  .filter((entry) => entry.id !== tool.id)
-  .slice(0, 4);
+const related = relatedToolsFor(tool.id, catalog, handoffCatalog);
 
 const networkCopy = tool.runtime.network === "forbidden"
   ? "Accesso alla rete vietato dal contratto dello strumento."
@@ -70,6 +70,7 @@ const steps = [
   { icon: "sliders" as const, title: "Regola le opzioni", body: "Scegli solo ciò che serve; i valori predefiniti sono già sensati." },
   { icon: "check-circle" as const, title: "Leggi il risultato", body: "Il valore prodotto resta nella colonna del risultato, pronto da copiare o scaricare." },
 ];
+const deterministic = !("deterministic" in tool) || tool.deterministic !== false;
 
 const faqs = [
   {
@@ -84,7 +85,9 @@ const faqs = [
   },
   {
     question: "Il risultato è sempre lo stesso a parità di ingresso?",
-    answer: "Sì. Lo strumento è deterministico: a parità di ingresso e di opzioni il risultato non cambia.",
+    answer: deterministic
+      ? "Sì. Lo strumento è deterministico: a parità di ingresso e di opzioni il risultato non cambia."
+      : "No. Questo strumento è dichiarato non deterministico: a parità di opzioni può produrre risultati diversi.",
   },
   {
     question: "Cosa succede se l'ingresso non è valido?",
@@ -169,7 +172,7 @@ const headerArtGlyph = toolIconSvg(tool, "tool-heading-art-glyph");
         <div>
           <h2 class="section-title" id={`faq-${tool.id}`}>Perché usare {tool.name}</h2>
           <p class="section-sub">
-            {tool.summary} Il risultato è deterministico e il contratto di esecuzione è dichiarato: {networkCopy.toLowerCase()}
+            {tool.summary} {deterministic ? "Il risultato è deterministico" : "Il risultato può variare a ogni esecuzione"} e il contratto di esecuzione è dichiarato: {networkCopy.toLowerCase()}
           </p>
         </div>
       </div>
@@ -201,7 +204,7 @@ const headerArtGlyph = toolIconSvg(tool, "tool-heading-art-glyph");
         <div class="section-head">
           <div>
             <h2 class="section-title" id={`correlati-${tool.id}`}>Strumenti correlati</h2>
-            <p class="section-sub">Altri strumenti della categoria {group.label}.</p>
+            <p class="section-sub">Strumenti collegati da ingressi, output o attività dichiarate.</p>
           </div>
           <a class="section-link" href={`/categorie/${group.slug}/`}>Vedi tutta la categoria</a>
         </div>

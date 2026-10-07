@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "unicode-normalizer",
   "runtime": {
     "location": "LOCAL",
@@ -40,12 +40,12 @@
     "keyboard/mobile/a11y/locality/lazy browser acceptance"
   ],
   "identities": {
-    "manifestSha256": "f2b142b9a0832f37f420b3a1eab1572ac6e524623448ef494c11402a968eb12c",
-    "engineIndexSha256": "f98e7b5bf5905ebf87fce67a2ee9422364daab6800499025a21e97a55a66cb09",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "348536efa415a3c31d610ca807bf27a5476a28b0462447bbc0d0ffb3be2d96f1",
-    "unitTestsSha256": "92dbe156bff42ec935f87b7a3ad0b05141d513c6d2d872266fff1cb0b82035e8",
+    "manifestSha256": "516715b20b77a0331e926df8bc0f8f3f59c641bd301f39af8f209cdbc32aef25",
+    "engineIndexSha256": "898d8964bf6ba747e834e1033e06fb7236b1170d7898040bd42f5dc8b6c7635e",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "0fa1a11d6b5cec7b12190c6eae49ee4ce3a4502e075b621f4a04743106c86283",
+    "unitTestsSha256": "925ea26297377fc68604730d8cb5ee1aa7849e7af2ab9e1b0afcc128ed4c64e4",
     "fixture:unicode-normalization:sha256": "be1445efa4f06603369fab44b61300eedfb95cab6786f534f9be85adb593733e",
     "fixture:text-writing-gold:sha256": "9a2f4f86a8f9e471e5b471e769cb0d85adc9c0b2a3cbade749717966ca6efae7"
   }

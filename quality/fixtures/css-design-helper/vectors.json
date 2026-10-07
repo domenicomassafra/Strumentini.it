@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "vectors": [
+    { "input": { "mode": "gradient", "angle": 90, "startColor": "#000000", "endColor": "#ffffff" }, "css": "background: linear-gradient(90deg, #000000, #ffffff);" },
+    { "input": { "mode": "shadow", "offsetX": 0, "offsetY": 8, "blur": 24, "spread": -4, "color": "#112233" }, "css": "box-shadow: 0px 8px 24px -4px #112233;" },
+    { "input": { "mode": "radius", "topLeft": 4, "topRight": 8, "bottomRight": 12, "bottomLeft": 16 }, "css": "border-radius: 4px 8px 12px 16px;" }
+  ]
+}

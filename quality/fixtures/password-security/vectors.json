@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "id": "short-lowercase",
+      "password": "abcdefgh",
+      "expected_max_score": 1,
+      "expected_factor_codes": ["length", "classes", "sequence", "common-pattern"]
+    },
+    {
+      "id": "long-mixed",
+      "password": "Ghiaia!Torre7Menta?Fiume",
+      "expected_min_score": 3,
+      "expected_factor_codes": ["length", "classes"]
+    },
+    {
+      "id": "repeated-block",
+      "password": "Gatto77Gatto77Gatto77",
+      "expected_factor_codes": ["length", "classes", "repeated-block"]
+    }
+  ]
+}

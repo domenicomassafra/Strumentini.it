@@ -27,11 +27,16 @@ export type QuarterToolInput = { date?: string; year?: number; quarter?: number;
 export type DeadlineToolInput = { deadline: string; reference: string };
 export type RecurringDateToolInput = RecurrenceInput;
 export type AgeToolInput = { birthDate: string; asOfDate: string };
-export type CalendarDateListToolInput = { startDate: string; endDate: string; stepDays: number };
+export type CalendarDateListToolInput =
+  | { mode?: "date-list"; startDate: string; endDate: string; stepDays: number }
+  | { mode: "weekday"; date: string }
+  | { mode: "leap-year"; year: number }
+  | { mode: "month"; year: number; month: number };
 export type IcsBuilderToolInput = IcsEventInput;
 export type IcsViewerToolInput = { text: string };
 export type EpochBatchToolInput = { values: readonly string[]; unit?: "seconds" | "milliseconds"; timeZone?: string };
 export type PublicHolidayToolInput = { country: string; year: number };
+export type ItalianDocumentExpiryToolInput = import("../../engines/date-time/italian-document-expiry").ItalianDocumentExpiryInput;
 export type DateDifferenceToolOutput = DateDifferenceResult;
 export type AddSubtractDaysToolOutput = { startDate: string; amount: number; resultDate: string; basis: "calendar-day" };
 export type WorkingHoursToolOutput = WorkingDurationResult;
@@ -45,8 +50,13 @@ export type QuarterToolOutput = QuarterResult;
 export type DeadlineToolOutput = CountdownResult;
 export type RecurringDateToolOutput = { dates: readonly string[]; policy: RecurrenceInput };
 export type AgeToolOutput = AgeResult;
-export type CalendarDateListToolOutput = { dates: readonly string[]; stepDays: number; inclusive: boolean };
+export type CalendarDateListToolOutput =
+  | { dates: readonly string[]; stepDays: number; inclusive: boolean }
+  | { date: string; isoWeekday: number; weekdayIt: string }
+  | { year: number; leapYear: boolean; calendar: "proleptic-gregorian" }
+  | import("../../engines/date-time").PrintableMonthCalendar;
 export type IcsBuilderToolOutput = { text: string; uid: string };
 export type IcsViewerToolOutput = IcsInspection;
 export type EpochBatchToolOutput = { rows: readonly EpochConversionRow[]; timeZone: string };
 export type PublicHolidayToolOutput = { country: string; year: number; holidays: readonly HolidayRecord[]; source: string };
+export type ItalianDocumentExpiryToolOutput = import("../../engines/date-time/italian-document-expiry").ItalianDocumentExpiryResult;

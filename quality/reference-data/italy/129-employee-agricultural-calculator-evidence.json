@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "ticket": 129,
+  "checkedAt": "2026-10-07",
+  "status": "READY",
+  "implementationScope": "Reusable 2026 FPLD contribution primitive for OTD/OTI agricultural workers employed by the generality of agricultural employers, bounded at or below the source-reported additional-1% threshold.",
+  "sourcePack": {
+    "datasetId": "inps-contributions-annual",
+    "datasetVersion": "2026.2",
+    "path": "quality/reference-data/italy/118-inps-annual-evidence.json",
+    "sha256": "sha256:144c00d1377760268abcdf47e88f6680b422570d190f6c3ecee3547fb640ad73"
+  },
+  "pinnedArtifacts": [
+    {
+      "path": "quality/reference-data/italy/artifacts/129-inps-employee-2026/inps-circolare-43-2026.pdf",
+      "sha256": "sha256:34b25b4d6a64e96becf723f548fd2f129e4ccb26026bccb0bba6e8077e8e575b",
+      "supports": [
+        "general agricultural-employer OTD/OTI FPLD scope",
+        "30.50% total FPLD rate",
+        "8.84% worker FPLD share",
+        "part-time minimum formula €58.13 × 6/39 = €8.94"
+      ]
+    },
+    {
+      "path": "quality/reference-data/italy/artifacts/129-inps-employee-2026/inps-lavoratori-dipendenti-2026.html",
+      "sha256": "sha256:d4ba5807e11c6fcfe3c52a2153dd7329ec9fb0ea323f8512e6e7d69fc1132529",
+      "supports": [
+        "2026 daily remuneration minimum €58.13",
+        "additional 1% above €56,224 annual remuneration (€4,685 monthly)",
+        "source-reported annual contribution-base maximum €122,295"
+      ]
+    }
+  ],
+  "normalizedFacts": {
+    "profile": "agricultural-worker-general",
+    "totalFpldRatePercent": 30.5,
+    "workerFpldRatePercent": 8.84,
+    "employerFpldRatePercent": 21.66,
+    "employerFpldRateDerivation": "30.50 - 8.84; exact arithmetic derivation, not a verbatim percentage in Circular 43/2026",
+    "dailyMinimumReferenceEur": 58.13,
+    "partTimeMinimumHourlyEur": 8.94,
+    "additionalOnePercentThresholdEur": 56224,
+    "sourceReportedAnnualBaseMaximumReferenceEur": 122295,
+    "supportedBaseCeilingEur": 56224
+  },
+  "calculationSemantics": [
+    "The caller supplies an already determined FPLD contribution base.",
+    "Total contribution is rounded from the 30.50% total rate; worker contribution is rounded from 8.84%; employer contribution is the cent-exact remainder so the breakdown reconciles to the total.",
+    "The primitive does not construct a contribution base from salary, days, collective-contract minima or payroll-period rules.",
+    "The €122,295 figure remains reference-only because this v1 fails closed before the additional-1% path at €56,224."
+  ],
+  "failClosedBoundaries": [
+    "year other than 2026",
+    "employee profile other than agricultural-worker-general",
+    "contribution base above €56,224",
+    "declared part-time hourly remuneration below €8.94",
+    "more than two decimal places or non-finite/negative monetary inputs"
+  ],
+  "verificationFixture": {
+    "path": "quality/fixtures/italy-2026-consumers/employee-agricultural-2026.json",
+    "sha256": "sha256:e96133f490360617e3b2fc1432d4fd7afae786bde158bb0f5a06a64214c1deb6"
+  }
+}

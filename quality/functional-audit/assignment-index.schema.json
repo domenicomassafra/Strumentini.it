@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://strumentini.it/schemas/original-200-functional-audit-assignment-index.json",
+  "title": "Strumentini.it original-200 functional audit pending assignment index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "assignments"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "assignments": {
+      "type": "array",
+      "minItems": 200,
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["toolId", "category", "ownerTicket", "status", "decision"],
+        "properties": {
+          "toolId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "category": { "type": "string", "minLength": 1 },
+          "ownerTicket": {
+            "type": "string",
+            "pattern": "^\\.scratch/strumentiutili-expansion-20261005/issues/[0-9]+-[a-z0-9-]+\\.md$"
+          },
+          "status": { "const": "pending" },
+          "decision": { "type": "null" }
+        }
+      }
+    }
+  }
+}

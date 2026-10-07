@@ -13,6 +13,7 @@ export const roasCalculatorManifest = {
   engine: "marketing-math",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "calculator", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-078", fixtureFamilies: ["marketing-math"] },
 } as const satisfies ToolManifest;
 

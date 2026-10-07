@@ -25,6 +25,7 @@ export function createSearchIndex(tools: readonly SearchToolMetadata[]): readonl
       summary: normalize(tool.summary),
       aliases: normalizedList(tool.aliases),
       jobs: normalizedList(tool.jobs),
+      keywords: normalizedList(tool.keywords),
       category: normalize(`${tool.category} ${categoryLabelIt(tool.category)}`),
       inputTypes: tool.inputTypes.map((value) => normalize(`${value} ${inputTypeLabelIt(value)}`)),
       packTags: [...new Set((tool.packTags ?? []).flatMap((value) => [normalize(value), normalize(tagLabelIt(value))]))],
@@ -38,6 +39,7 @@ export function createSearchIndex(tools: readonly SearchToolMetadata[]): readonl
       normalized.summary,
       ...normalized.aliases,
       ...normalized.jobs,
+      ...normalized.keywords,
       normalized.category,
       ...normalized.inputTypes,
       ...normalized.packTags,
@@ -52,6 +54,7 @@ export function createSearchIndex(tools: readonly SearchToolMetadata[]): readonl
       summary: tool.summary,
       aliases: [...tool.aliases],
       jobs: [...tool.jobs],
+      ...(tool.keywords === undefined ? {} : { keywords: [...tool.keywords] }),
       category: tool.category,
       inputTypes: [...tool.inputTypes],
       ...(tool.engine === undefined ? {} : { engine: tool.engine }),
@@ -72,6 +75,7 @@ function matchScore(entry: SearchIndexEntry, query: string, tokens: readonly str
   const directPhraseMatch = entry.normalized.name.includes(query)
     || entry.normalized.aliases.some((value) => value.includes(query))
     || entry.normalized.jobs.some((value) => value.includes(query))
+    || entry.normalized.keywords.some((value) => value.includes(query))
     || entry.normalized.category.includes(query)
     || entry.normalized.inputTypes.some((value) => value.includes(query))
     || entry.normalized.roleTags.some((value) => value.includes(query))
@@ -88,6 +92,8 @@ function matchScore(entry: SearchIndexEntry, query: string, tokens: readonly str
   else if (entry.normalized.aliases.some((value) => phraseMatches(value, query, tokens))) score += 70;
   if (entry.normalized.jobs.some((value) => value === query)) score += 92;
   else if (entry.normalized.jobs.some((value) => phraseMatches(value, query, tokens))) score += 76;
+  if (entry.normalized.keywords.some((value) => value === query)) score += 90;
+  else if (entry.normalized.keywords.some((value) => phraseMatches(value, query, tokens))) score += 68;
 
   if (entry.normalized.category.includes(query)) score += 34;
   if (entry.normalized.inputTypes.some((value) => phraseMatches(value, query, tokens))) score += 30;
@@ -120,6 +126,7 @@ function classifyTier(
     exactIdentity
     || entry.normalized.jobs.some((value) => phraseMatches(value, query, tokens))
     || entry.normalized.aliases.some((value) => phraseMatches(value, query, tokens))
+    || entry.normalized.keywords.some((value) => phraseMatches(value, query, tokens))
   );
   if (strongTaskIntent) return "task-intent";
   if (recent.has(entry.id)) return "recent";
@@ -188,7 +195,7 @@ export function suggestCloseIntents(
 
   const candidates = new Map<string, { label: string; distance: number; ratio: number }>();
   for (const entry of index) {
-    for (const label of [...entry.aliases, ...entry.jobs, entry.name]) {
+    for (const label of [...entry.aliases, ...entry.jobs, ...(entry.keywords ?? []), entry.name]) {
       const normalized = normalize(label);
       if (normalized === "" || normalized === query) continue;
       const distance = editDistance(query, normalized);

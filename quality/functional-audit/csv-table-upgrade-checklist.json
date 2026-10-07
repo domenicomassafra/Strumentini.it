@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "ticket": 60,
+  "scope": "Every current catalog route whose engine is table-csv or table-operations.",
+  "route_count": 25,
+  "handoff_policy": {
+    "json": "AVAILABLE_WHEN_DESCRIPTOR_COMPATIBLE",
+    "sql": "AVAILABLE_WHEN_DESCRIPTOR_COMPATIBLE_AND_HEADERS_UNIQUE",
+    "xlsx": "REFUSED_NO_TARGET_IN_CURRENT_CATALOG",
+    "transport": "Only targets returned by compatibleHandoffTargets are offered; the runtime handoff transport limit is authoritative."
+  },
+  "routes": [
+    {
+      "tool_id": "csv-viewer",
+      "audit_record": "quality/functional-audit/records/csv-viewer.json",
+      "covered_by": [194],
+      "upgrade": "Bounded table preview, explicit delimiter/UTF-8/dynamicTyping=false dialect, exact zero affected rows/cells.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-cleaner",
+      "audit_record": "quality/functional-audit/records/csv-cleaner.json",
+      "covered_by": [194],
+      "upgrade": "Bounded result preview; exact BOM and record-break changes; parsed cells preserved; affected rows/cells remain zero; compatible CSV handoffs only.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-delimiter-detector",
+      "audit_record": "quality/functional-audit/records/csv-delimiter-detector.json",
+      "covered_by": [194],
+      "upgrade": "Explicit detected delimiter/confidence/candidates and UTF-8 string-preserving dialect; inspection reports zero affected rows/cells.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-encoding-fixer",
+      "audit_record": "quality/functional-audit/records/csv-encoding-fixer.json",
+      "covered_by": [194],
+      "upgrade": "Exact input/output bytes, detected/requested encoding, BOM/record-break/replacement counts, zero semantic affected rows/cells, bounded output preview.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-dedupe",
+      "audit_record": "quality/functional-audit/records/csv-dedupe.json",
+      "covered_by": [194],
+      "upgrade": "Whole-row or explicit key-column dedupe; exact input/output/removed rows and affected cells; stable first occurrence; compatible CSV handoffs only.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-column-selector",
+      "audit_record": "quality/functional-audit/records/csv-column-selector.json",
+      "covered_by": [195],
+      "upgrade": "Explicit selected/reordered column indexes and names, dropped columns, missing-cell fill count and row-count effect.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-column-map",
+      "audit_record": "quality/functional-audit/records/csv-column-map.json",
+      "covered_by": [194, 195],
+      "upgrade": "Explicit source-index mapping/rename/reorder with dropped-column and ragged-cell disclosure; existing narrow route retained.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-filter",
+      "audit_record": "quality/functional-audit/records/csv-filter.json",
+      "covered_by": [195],
+      "upgrade": "Explicit filter column/name, case policy, NULL tokens/empty policy, text type policy and input/output/rejected row counts.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-sort",
+      "audit_record": "quality/functional-audit/records/csv-sort.json",
+      "covered_by": [195],
+      "upgrade": "Explicit sort column/name, lexical/numeric/date comparator, case policy, NULL placement, invalid typed values as NULL, stable row count.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-group-count",
+      "audit_record": "quality/functional-audit/records/csv-group-count.json",
+      "covered_by": [195],
+      "upgrade": "Explicit group key columns/names, case/NULL grouping policy, strict numeric aggregate policy and input/output group row counts.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-join",
+      "audit_record": "quality/functional-audit/records/csv-join.json",
+      "covered_by": [195],
+      "upgrade": "Explicit left/right key columns/names, case/NULL key policy, matched/unmatched/output counts and pre-materialization row/cell explosion estimate/guard.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-pivot-lite",
+      "audit_record": "quality/functional-audit/records/csv-pivot-lite.json",
+      "covered_by": [195],
+      "upgrade": "Explicit group/value/aggregate column names, case/NULL grouping policy, strict numeric aggregate policy and input/output row counts.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-to-json",
+      "audit_record": "quality/functional-audit/records/csv-to-json.json",
+      "covered_by": [60],
+      "upgrade": "Deterministic preserve/unique header policy; all CSV cell values remain strings; route is the real JSON conversion target for compatible table handoffs.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "json-to-csv",
+      "audit_record": "quality/functional-audit/records/json-to-csv.json",
+      "covered_by": [60],
+      "upgrade": "Explicit first-record/union header schema with dropped-key disclosure and CSV handoff output.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "tsv-to-csv",
+      "audit_record": "quality/functional-audit/records/tsv-to-csv.json",
+      "covered_by": [60],
+      "upgrade": "Quote-aware TSV parsing and deterministic CSV serialization with shared bounded table/result behavior.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "table-transpose",
+      "audit_record": "quality/functional-audit/records/table-transpose.json",
+      "covered_by": [60],
+      "upgrade": "Deterministic transpose with bounded table limits and compatible CSV handoff output.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "missing-value-profiler",
+      "audit_record": "quality/functional-audit/records/missing-value-profiler.json",
+      "covered_by": [194],
+      "upgrade": "Per-column missing/present counts and missing rate with inspection-only string-preserving input semantics.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "column-type-profiler",
+      "audit_record": "quality/functional-audit/records/column-type-profiler.json",
+      "covered_by": [194],
+      "upgrade": "Per-column number/boolean/date/string/empty evidence with dominant/mixed classification; profiling does not coerce source cells.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "duplicate-row-profiler",
+      "audit_record": "quality/functional-audit/records/duplicate-row-profiler.json",
+      "covered_by": [194],
+      "upgrade": "Optional explicit key columns, duplicate group counts and bounded examples without mutating source rows.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "quick-chart",
+      "audit_record": "quality/functional-audit/records/quick-chart.json",
+      "covered_by": [60],
+      "upgrade": "Explicit label/value columns, count/sum/min/max aggregation and bounded bar count; CSV handoff remains available.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-to-sql",
+      "audit_record": null,
+      "covered_by": [170],
+      "upgrade": "Real PostgreSQL/MySQL/SQLite SQL-text target with explicit type/NULL policy and safe identifier/value quoting; SQL is never executed.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "csv-splitter",
+      "audit_record": null,
+      "covered_by": [171],
+      "upgrade": "Streaming huge-CSV split strategy with repeated header, dialect/newline preservation, abort and bounded source parser buffer.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "table-compare",
+      "audit_record": null,
+      "covered_by": [172],
+      "upgrade": "Explicit keyed compare with duplicate-key ambiguity, null/case policy, changed-cell provenance, bounded preview and complete accepted export.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "fatturapa-reader",
+      "audit_record": null,
+      "covered_by": [148],
+      "upgrade": "Bounded local FatturaPA XML reader with schema/version provenance, hostile XML refusal, explicit invoice fields and isolated malformed-field errors.",
+      "status": "COMPLETE"
+    },
+    {
+      "tool_id": "fatturapa-batch-csv",
+      "audit_record": null,
+      "covered_by": [149],
+      "upgrade": "Batch FatturaPA to stable CSV/table export with per-file failure isolation, source/schema columns, bounded preview and represented-total reconciliation.",
+      "status": "COMPLETE"
+    }
+  ],
+  "refusals": [
+    {
+      "capability": "XLSX handoff",
+      "decision": "REFUSED",
+      "reason": "The current generated catalog has no XLSX route that accepts a CSV table handoff. Ticket 60 does not invent or add an XLSX converter."
+    }
+  ]
+}

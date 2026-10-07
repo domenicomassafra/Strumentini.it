@@ -67,7 +67,7 @@ for (const path of files) {
 }
 
 const home = await readFile(join(dist, "index.html"), "utf8");
-if (!home.includes('href="https://strumentiutili.it/"')) {
+if (!home.includes('href="https://strumentini.it/"')) {
   throw new Error("portable static check: production canonical origin is missing from dist/index.html");
 }
 

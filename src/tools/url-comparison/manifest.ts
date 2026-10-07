@@ -13,6 +13,7 @@ export const urlComparisonManifest = {
   engine: "url-marketing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "validator", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-064", fixtureFamilies: ["query-params", "url-security"] },
 } as const satisfies ToolManifest;
 

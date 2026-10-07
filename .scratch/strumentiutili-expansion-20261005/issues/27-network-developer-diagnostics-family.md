@@ -6,13 +6,12 @@
 
 **Constraints:** Inspection/calculation only; no port scanning, exploitation, credential attacks, or hidden network requests.
 
-**Blocked by:** 01.
+**Blocked by:** 173, 174, 175, 176, 177.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] CIDR tool covers network/broadcast/host ranges, masks/wildcards, prefix conversion, and IPv6-safe arithmetic.
-- [ ] Certificate inspector shows parsed facts/fingerprints without implying online trust validation.
-- [ ] Base/chmod/key-event tools have copyable human and machine representations.
+- [x] Ticket 173 covers IPv4/IPv6 network ranges and prefix arithmetic with BigInt-safe IPv6 behavior and explicit IPv4 broadcast semantics.
+- [x] Ticket 177 parses local X.509/CSR facts and fingerprints while explicitly refusing trust/revocation inference.
+- [x] Tickets 174–176 provide exact base conversion, chmod symbolic/octal representations and keyboard-event diagnostics through copyable shared Result v2 surfaces with no hidden network activity.
 
-**Verification:** Standards-based vectors for IPv4/IPv6/base/permissions/certificate parsing and a no-network assertion for all local modes.
-
+**Verification:** Developer network-numeric, browser-diagnostics and X.509/CSR focused suites plus browser acceptance cover standards/literal vectors and zero-network local behavior.

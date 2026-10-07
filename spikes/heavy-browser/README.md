@@ -1,4 +1,4 @@
-# StrumentiUtili.it heavy-browser isolated spikes
+# Strumentini.it heavy-browser isolated spikes
 
 This folder is research-only and intentionally does not integrate production app code.
 

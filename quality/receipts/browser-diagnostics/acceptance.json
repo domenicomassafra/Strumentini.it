@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": {
+    "connectionDeviceInfo": {
+      "route": "/tools/connection-device-info/",
+      "localFactsWithoutExternalRequests": "PASS",
+      "publicIpDisclosureBeforeAction": "PASS",
+      "publicIpMockSuccess": "PASS",
+      "publicIpMockFailure": "PASS",
+      "copiedSummaryExcludesPublicIp": "PASS",
+      "fingerprintUniquenessNotClaimed": "PASS"
+    },
+    "keyboardEventDiagnostic": {
+      "route": "/tools/keyboard-event-diagnostic/",
+      "focusedCapture": "PASS",
+      "keyCodeModifiersRepeatComposition": "PASS",
+      "boundedHistory12": "PASS",
+      "tabFocusExit": "PASS",
+      "shortcutEventNotPrevented": "PASS",
+      "storageUnchanged": "PASS",
+      "externalRequests": 0
+    }
+  },
+  "mobile390": {
+    "connectionOverflow": false,
+    "keyboardOverflow": false
+  }
+}

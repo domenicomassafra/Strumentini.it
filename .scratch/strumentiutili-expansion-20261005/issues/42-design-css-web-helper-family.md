@@ -6,13 +6,12 @@
 
 **Constraints:** Generated CSS/XML must be standards-valid; accessibility simulation is illustrative and must not replace real contrast/accessibility checks.
 
-**Blocked by:** 01.
+**Blocked by:** 199, 200, 201, 202, 203, 310.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] CSS helpers have live preview plus copyable standards-valid output.
-- [ ] Sitemap generator validates/normalizes URLs and emits downloadable XML.
-- [ ] Existing color/meta/robots/QR routes are enhanced through modes/hand-offs instead of duplicated.
+- [x] Tickets 199/200 provide CSS design helpers and color modes through the existing design/image seams with previewable, copyable generated output.
+- [x] Ticket 202 validates/normalizes HTTP(S) URLs and emits bounded downloadable `sitemap.xml` with optional metadata only when supplied.
+- [x] Tickets 200/201/203/310 extend canonical color/image/QR/web-helper surfaces through modes or shared engines rather than cloning equivalent primitives.
 
-**Verification:** Parser/validator fixtures for generated CSS/XML, contrast/color edge cases, QR round-trip, and mobile preview tests.
-
+**Verification:** CSS-design, sitemap, image/color and QR focused suites plus their browser acceptance cover parser/validator fixtures, color/contrast boundaries, QR round trips and mobile-width previews.

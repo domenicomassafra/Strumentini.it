@@ -1,0 +1,32 @@
+{
+  "toolId": "aspect-ratio-calculator",
+  "category": "image-visual",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Calculate a simplified image aspect ratio from width/height and return bounded contain dimensions for the current local calculator job.",
+  "observedFunctionality": "The local engine validates dimensions, reduces the ratio deterministically and computes a bounded 1920x1080 contain box. The tool-specific Gold receipt binds the manifest to fixtures and a real-route browser assertion that produced the expected ratio.",
+  "rationale": "The current narrow public job is functionally complete. Tickets 298-317 add separate composition, conversion, resize, metadata, compare and export capabilities; none is required by this calculator's declared current job, so future image-workspace enhancements are not misclassified as a present functional gap.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/aspect-ratio-calculator.gold.json",
+      "claim": "Tool-specific Gold receipt binds aspect-ratio-calculator to its manifest, image fixtures and real-route output assertion."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/image-visual-tools.test.ts",
+      "claim": "Executable tests assert 1600x1200 reduces to 4:3 and that the local calculator returns the expected 1440x1080 bounded contain dimensions."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Expanded-local acceptance includes the real aspect-ratio-calculator route and asserts the submitted result while also recording locality and mobile interaction evidence."
+    },
+    {
+      "kind": "source-contract",
+      "ref": "src/engines/image/visual-tools.ts",
+      "claim": "calculateAspectRatioLocal validates width/height and returns ratio plus deterministic fitDimensions output; no file-editing or future workspace capability is claimed."
+    }
+  ],
+  "childTickets": []
+}

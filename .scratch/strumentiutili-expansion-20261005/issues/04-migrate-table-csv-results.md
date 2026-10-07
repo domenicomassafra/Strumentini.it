@@ -6,13 +6,14 @@
 
 **Constraints:** Preserve CSV dialect/encoding behavior and existing fixtures; no screenshot-as-table presentation.
 
-**Blocked by:** 01 — Expand Result System v2 primitives.
+**Blocked by:** 94, 95.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] 20/20 engine entries are covered by a table/result declaration.
-- [ ] Outputs show rows/columns and a bounded real preview before raw serialization.
-- [ ] Errors identify the affected row/column when the engine can determine it.
+- [x] 20/20 engine entries are covered by a table/result declaration.
+- [x] Outputs show rows/columns and a bounded real preview before raw serialization.
+- [x] Errors identify the affected row/column when the engine can determine it.
 
 **Verification:** Generated 20/20 coverage proof, existing data-table Gold suite, and mobile/browser tests with wide/long cells.
 
+**Evidence:** child tickets 94 and 95 are completed: all 17 TableWorkbench and 3 bespoke CSV ids declare table semantics. Data-table Gold/browser acceptance covers wide/long/ragged/empty/full-download cases and shared handoff; bespoke CSV browser acceptance covers positioned ragged warnings and a 50,000-row bounded preview with complete download/reset behavior.

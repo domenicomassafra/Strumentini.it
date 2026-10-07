@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "id": "folds-multi-values-unsupported-unicode",
+      "vcf": "BEGIN:VCARD\r\nVERSION:4.0\r\nFN:Giulia Èrba\r\nN:Èrba;Giulia;;;\r\nTEL;TYPE=cell:+39 333 1111111\r\nTEL;TYPE=work:+39 080 2222222\r\nEMAIL;TYPE=home:giulia@example.test\r\nEMAIL;TYPE=work:g.erba@example.test\r\nORG:Acme;Ricerca\r\nNOTE:prima parte molto lunga che viene piegata\r\n e continua qui\r\nX-CUSTOM;X-FOO=bar:valore grezzo\r\nEND:VCARD\r\nBEGIN:VCARD\r\nVERSION:3.0\r\nFN:=2+3\r\nTEL:+39 000 0000000\r\nEND:VCARD\r\n",
+      "expected": {
+        "contacts": 2,
+        "first_phones": 2,
+        "first_emails": 2,
+        "first_note": "prima parte molto lunga che viene piegatae continua qui",
+        "unsupported_name": "X-CUSTOM",
+        "csv_formula_cell": "'=2+3"
+      }
+    }
+  ]
+}

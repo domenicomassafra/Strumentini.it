@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/business-italy-date/gestione-separata-contributi.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "gestione-separata-contributi",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "R",
+  "oracleEntryId": "cand-257",
+  "fixtureFamilies": [
+    "italy-2026-consumers"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fatturapa-v1-4-official",
+    "fixture-policy",
+    "inps-circulars-2026-official",
+    "normattiva-holidays-2026-official"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "italy-2026-consumers",
+      "path": "quality/fixtures/italy-2026-consumers/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime declaration",
+    "high-confidence oracle with only explicit bounded-scope gaps",
+    "manifest maintenance class matches oracle",
+    "fixture replay through public tool module",
+    "per-tool semantic browser assertion",
+    "keyboard/locality/lazy/mobile/a11y browser acceptance",
+    "focused semantic and refusal-boundary tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "ec9b31c1d819f2093604604d1df89b33d314fc2cd08573def78b3d8f1b1d71ed",
+    "moduleSha256": "7d5382c1bf9e86a1b2ea73c0699536c56b4e67f9d180f800deeb2269ebd4a029",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "67bedc8ff00212cc0f10870df267a0d7878af5e1c31ca7d8dc85fb3e981f573a",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "c55fdf1a01fba334a99c08b1bc0075678e54a3f2ed3ff5747f456a555760d6f3",
+    "fixture:italy-2026-consumers:sha256": "be3213387e7f246567ca6177063807dd51dd01269ea99c262bb8c19fb8a3bb78"
+  }
+}

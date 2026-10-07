@@ -1,4 +1,10 @@
-import { buildUtmUrl, CAMPAIGN_URL_ENGINE_VERSION } from "../../engines/campaign-url";
+import {
+  buildUtmUrl,
+  buildUtmUrlsBulk,
+  CAMPAIGN_URL_ENGINE_VERSION,
+  UTM_DUPLICATE_POLICY,
+  UTM_ENCODING_POLICY,
+} from "../../engines/campaign-url";
 import type { ToolModule } from "../../runtime/types";
 import type { UtmBuilderInput, UtmBuilderOutput } from "./types";
 
@@ -9,10 +15,21 @@ function validate(value: unknown): UtmBuilderInput {
   return input as UtmBuilderInput;
 }
 
+function lines(value: string): readonly string[] {
+  return value.replace(/\r\n?/gu, "\n").split("\n").map((entry) => entry.trim()).filter((entry) => entry !== "");
+}
+
 const module: ToolModule = {
-  run(value): UtmBuilderOutput {
+  run(value): UtmBuilderOutput | unknown {
     const input = validate(value);
-    return { url: buildUtmUrl(input.baseUrl, input), engineVersion: CAMPAIGN_URL_ENGINE_VERSION };
+    const bulk = (value as Record<string, unknown>).bulk === true;
+    if (bulk) return buildUtmUrlsBulk(lines(input.baseUrl), input);
+    return {
+      url: buildUtmUrl(input.baseUrl, input),
+      encodingPolicy: UTM_ENCODING_POLICY,
+      duplicatePolicy: UTM_DUPLICATE_POLICY,
+      engineVersion: CAMPAIGN_URL_ENGINE_VERSION,
+    };
   },
 };
 

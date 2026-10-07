@@ -1,5 +1,6 @@
 import {
   PDF_LIMITS,
+  PDF_TEXT_WORKFLOW_LIMITS,
   type PdfCapability,
   type PdfCapabilityReport,
   type PdfCompareResult,
@@ -9,9 +10,22 @@ import {
   type PdfInspection,
   type PdfLink,
   type PdfMetadata,
+  type PdfMetadataRemovalVerification,
   type PdfMutationOptions,
   type PdfPageSummary,
+  type PdfExtractedImageProvenance,
+  type PdfImageExtractionOptions,
+  type PdfImageExtractionResult,
+  type PdfUnsupportedImageFilter,
   type PdfTextPage,
+  type PdfTextExtractionMode,
+  type PdfTextExtractionOptions,
+  type PdfTextExtractionResult,
+  type PdfMultiSearchResult,
+  type PdfOcrHandoff,
+  type PdfSearchFileResult,
+  type PdfSearchMatch,
+  type PdfToMarkdownResult,
   type PdfArtifact,
 } from "./types";
 import {
@@ -38,6 +52,7 @@ import {
   parseJpeg,
   type EmbeddedJpeg,
   type PdfBuildPage,
+  type PdfImagePageLayoutOptions,
 } from "./writer";
 import { inflatePdfStream } from "./inflate";
 import { redactUrl, redactUrlCredentials } from "../url-marketing";
@@ -45,7 +60,7 @@ import { redactUrl, redactUrlCredentials } from "../url-marketing";
 export * from "./types";
 export { buildPdfFromJpegs, buildPdfFromPages, createSimplePdf, parseJpeg };
 export { inflatePdfStream } from "./inflate";
-export type { EmbeddedJpeg, PdfBuildPage };
+export type { EmbeddedJpeg, PdfBuildPage, PdfImagePageLayoutOptions };
 
 export type PdfErrorCode =
   | "INVALID_INPUT"
@@ -314,7 +329,14 @@ function metadataFromDocument(document: PdfDocumentModel): PdfMetadata {
     const text = valueToText(resolveReference(document, value));
     if (text !== null) Object.defineProperty(custom, key, { configurable: true, enumerable: true, value: text, writable: true });
   }
-  const hasXmp = [...document.objects.values()].some((object) => object.value.kind === "stream" && nameValue(object.value.dictionary.entries.get("Type")) === "Metadata");
+  const recognizedInfo = Object.fromEntries(Object.entries(custom).filter(([key]) => known.has(key)));
+  const unknownInfo = Object.fromEntries(Object.entries(custom).filter(([key]) => !known.has(key)));
+  const entries = Object.entries(custom).map(([key, value]) => ({ key, value, recognized: known.has(key), source: "document-info" as const }));
+  const xmpObjectIds = [...document.objects.values()]
+    .filter((object) => object.value.kind === "stream" && nameValue(object.value.dictionary.entries.get("Type")) === "Metadata")
+    .map((object) => object.id)
+    .toSorted((left, right) => left - right);
+  const hasXmp = xmpObjectIds.length > 0;
   return {
     title: custom.Title ?? null,
     author: custom.Author ?? null,
@@ -325,7 +347,11 @@ function metadataFromDocument(document: PdfDocumentModel): PdfMetadata {
     creationDate: custom.CreationDate ?? null,
     modificationDate: custom.ModDate ?? null,
     hasXmp,
-    custom: Object.fromEntries(Object.entries(custom).filter(([key]) => !known.has(key))),
+    recognizedInfo,
+    unknownInfo,
+    entries,
+    xmpObjectIds,
+    custom: unknownInfo,
   };
 }
 
@@ -488,29 +514,304 @@ async function inflateStream(stream: PdfStream, signal?: AbortSignal): Promise<U
   }
 }
 
-export async function extractPdfText(input: PdfInput, signal?: AbortSignal): Promise<PdfTextPage[]> {
+function selectedPageNumbers(document: PdfDocumentModel, pages?: readonly number[]): number[] {
+  const allPages = document.pages.map((_, index) => index + 1);
+  if (pages === undefined) return allPages;
+  const unique = [...new Set(pages)];
+  if (unique.length === 0 || unique.some((page) => !Number.isInteger(page) || page < 1 || page > document.pages.length)) {
+    throw new PdfError("INVALID_INPUT", "Page numbers must be within the document page range.");
+  }
+  return unique;
+}
+
+function normalizeTextMode(mode: PdfTextExtractionMode | undefined): PdfTextExtractionMode {
+  if (mode === undefined || mode === "content-order") return "content-order";
+  if (mode === "operator-lines") return mode;
+  throw new PdfError("INVALID_INPUT", "Text extraction mode must be content-order or operator-lines.");
+}
+
+export async function extractPdfTextScoped(input: PdfInput, options: PdfTextExtractionOptions = {}, signal?: AbortSignal): Promise<PdfTextExtractionResult> {
   const document = parseDocument(await readInput(input, signal));
   const capability = capabilityReport(document, "extract-text");
   if (!capability.available) throw new PdfError("UNSUPPORTED_CAPABILITY", capability.reason ?? "Text extraction is unavailable.");
+  const selectedPages = selectedPageNumbers(document, options.pages);
+  const mode = normalizeTextMode(options.mode);
   const output: PdfTextPage[] = [];
   let total = 0;
-  for (let index = 0; index < document.pages.length; index += 1) {
+  for (const pageNumber of selectedPages) {
     abortIfNeeded(signal);
-    const page = document.pages[index];
+    const page = document.pages[pageNumber - 1];
     if (page === undefined) continue;
     const values: string[] = [];
     for (const stream of contentStreams(document, page)) {
       const bytes = await inflateStream(stream, signal);
       values.push(...stringsInContent(bytes));
     }
-    let text = values.join(" ").replaceAll(/\s+/gu, " ").trim();
+    let text = mode === "operator-lines"
+      ? values.map((value) => value.replaceAll(/[\t ]+/gu, " ").trim()).filter(Boolean).join("\n")
+      : values.join(" ").replaceAll(/\s+/gu, " ").trim();
     const truncated = total + text.length > PDF_LIMITS.maxTextBytes;
     if (truncated) text = text.slice(0, Math.max(0, PDF_LIMITS.maxTextBytes - total));
     total += text.length;
-    output.push({ page: index + 1, text, truncated });
+    output.push({ page: pageNumber, text, truncated });
     if (total >= PDF_LIMITS.maxTextBytes) break;
   }
-  return output;
+  const pageSeparator = "\n\n===== PAGINA {page} =====\n\n";
+  const text = output.map((page) => `===== PAGINA ${page.page} =====\n\n${page.text}`).join("\n\n");
+  return { pages: output, text, mode, pageSeparator, selectedPages, truncated: output.some((page) => page.truncated) };
+}
+
+export async function extractPdfText(input: PdfInput, signal?: AbortSignal): Promise<PdfTextPage[]> {
+  return [...(await extractPdfTextScoped(input, {}, signal)).pages];
+}
+
+const OCR_HANDOFF_UNAVAILABLE: PdfOcrHandoff = {
+  available: false,
+  status: "not-available",
+  backlogTicket: 247,
+  reason: "Questo file non contiene testo estraibile con il motore PDF locale. Il percorso OCR è previsto dal ticket 247 ma non è disponibile in questa build, quindi non viene simulato.",
+};
+
+function assertSearchOptions(queryInput: string, contextCharacters: number, maxResults: number): string {
+  const query = queryInput.trim();
+  if (query === "" || [...query].length > PDF_TEXT_WORKFLOW_LIMITS.maxQueryCharacters || query.includes("\0")) {
+    throw new PdfError("INVALID_INPUT", "Search query must contain 1-" + PDF_TEXT_WORKFLOW_LIMITS.maxQueryCharacters + " characters.");
+  }
+  if (!Number.isInteger(contextCharacters) || contextCharacters < 0 || contextCharacters > PDF_TEXT_WORKFLOW_LIMITS.maxContextCharacters) {
+    throw new PdfError("INVALID_INPUT", "Context must be between 0 and " + PDF_TEXT_WORKFLOW_LIMITS.maxContextCharacters + " characters.");
+  }
+  if (!Number.isInteger(maxResults) || maxResults < 1 || maxResults > PDF_TEXT_WORKFLOW_LIMITS.maxResults) {
+    throw new PdfError("INVALID_INPUT", "Maximum results must be between 1 and " + PDF_TEXT_WORKFLOW_LIMITS.maxResults + ".");
+  }
+  return query;
+}
+
+function literalSearchRegex(query: string, caseSensitive: boolean): RegExp {
+  const escaped = query.replace(/[.*+?^$()|[\]\\{}]/gu, "\\$&");
+  return new RegExp(escaped, caseSensitive ? "gu" : "giu");
+}
+
+function searchPageText(
+  filename: string,
+  fileIndex: number,
+  page: number,
+  text: string,
+  query: string,
+  caseSensitive: boolean,
+  contextCharacters: number,
+): PdfSearchMatch[] {
+  const matches: PdfSearchMatch[] = [];
+  const regex = literalSearchRegex(query, caseSensitive);
+  let matchIndex = 0;
+  for (const match of text.matchAll(regex)) {
+    const start = match.index ?? 0;
+    const matched = match[0] ?? "";
+    const end = start + matched.length;
+    const contextStart = Math.max(0, start - contextCharacters);
+    const contextEnd = Math.min(text.length, end + contextCharacters);
+    matches.push({
+      fileIndex,
+      filename,
+      page,
+      matchIndex,
+      start,
+      end,
+      context: text.slice(contextStart, contextEnd),
+    });
+    matchIndex += 1;
+  }
+  return matches;
+}
+
+export async function searchPdfTextAcrossFiles(
+  inputs: readonly { readonly filename: string; readonly input: PdfInput }[],
+  options: {
+    readonly query: string;
+    readonly caseSensitive?: boolean;
+    readonly contextCharacters?: number;
+    readonly maxResults?: number;
+  },
+  signal?: AbortSignal,
+): Promise<PdfMultiSearchResult> {
+  if (inputs.length === 0 || inputs.length > PDF_LIMITS.maxFiles) {
+    throw new PdfError("INVALID_INPUT", "Choose between 1 and " + PDF_LIMITS.maxFiles + " PDF files.");
+  }
+  const caseSensitive = options.caseSensitive ?? false;
+  const contextCharacters = options.contextCharacters ?? PDF_TEXT_WORKFLOW_LIMITS.defaultContextCharacters;
+  const maxResults = options.maxResults ?? PDF_TEXT_WORKFLOW_LIMITS.defaultMaxResults;
+  const query = assertSearchOptions(options.query, contextCharacters, maxResults);
+  const files: PdfSearchFileResult[] = [];
+  const returned: PdfSearchMatch[] = [];
+  let totalMatches = 0;
+
+  for (const [fileIndex, item] of inputs.entries()) {
+    abortIfNeeded(signal);
+    let inspection: PdfInspection;
+    try {
+      inspection = await inspectPdf(item.input, signal);
+    } catch (error) {
+      files.push({
+        fileIndex,
+        filename: item.filename,
+        status: "unreadable",
+        pageCount: null,
+        matchCount: 0,
+        matches: [],
+        truncated: false,
+        errorCode: error instanceof PdfError ? error.code : "READ_FAILURE",
+        errorMessage: error instanceof Error ? error.message : "The PDF could not be read.",
+      });
+      continue;
+    }
+
+    if (inspection.encrypted) {
+      files.push({
+        fileIndex,
+        filename: item.filename,
+        status: "encrypted",
+        pageCount: inspection.pageCount,
+        matchCount: 0,
+        matches: [],
+        truncated: false,
+        errorCode: "ENCRYPTED_PDF",
+        errorMessage: "Il PDF dichiara cifratura; la ricerca non tenta password, bypass o brute force.",
+      });
+      continue;
+    }
+
+    let extracted: PdfTextExtractionResult;
+    try {
+      extracted = await extractPdfTextScoped(item.input, { mode: "content-order" }, signal);
+    } catch (error) {
+      files.push({
+        fileIndex,
+        filename: item.filename,
+        status: "unreadable",
+        pageCount: inspection.pageCount,
+        matchCount: 0,
+        matches: [],
+        truncated: false,
+        errorCode: error instanceof PdfError ? error.code : "READ_FAILURE",
+        errorMessage: error instanceof Error ? error.message : "Text extraction failed.",
+      });
+      continue;
+    }
+
+    if (!extracted.pages.some((page) => page.text.trim() !== "")) {
+      files.push({
+        fileIndex,
+        filename: item.filename,
+        status: "no-text",
+        pageCount: inspection.pageCount,
+        matchCount: 0,
+        matches: [],
+        truncated: extracted.truncated,
+        ocrHandoff: OCR_HANDOFF_UNAVAILABLE,
+      });
+      continue;
+    }
+
+    const fileMatches: PdfSearchMatch[] = [];
+    let matchCount = 0;
+    for (const page of extracted.pages) {
+      const pageMatches = searchPageText(item.filename, fileIndex, page.page, page.text, query, caseSensitive, contextCharacters);
+      matchCount += pageMatches.length;
+      totalMatches += pageMatches.length;
+      const room = Math.max(0, maxResults - returned.length);
+      if (room > 0) {
+        const accepted = pageMatches.slice(0, room);
+        fileMatches.push(...accepted);
+        returned.push(...accepted);
+      }
+    }
+    files.push({
+      fileIndex,
+      filename: item.filename,
+      status: matchCount > 0 ? "matches" : "no-match",
+      pageCount: inspection.pageCount,
+      matchCount,
+      matches: fileMatches,
+      truncated: extracted.truncated || fileMatches.length < matchCount,
+    });
+  }
+
+  return {
+    query,
+    caseSensitive,
+    contextCharacters,
+    maxResults,
+    files,
+    matches: returned,
+    totalMatches,
+    returnedMatches: returned.length,
+    truncated: returned.length < totalMatches || files.some((file) => file.truncated),
+    provenanceConvention: "fileIndex+filename+page+matchIndex",
+    limits: PDF_TEXT_WORKFLOW_LIMITS,
+  };
+}
+
+const PDF_MARKDOWN_LOSSES = [
+  "Nessuna gerarchia semantica di titoli, elenchi o paragrafi viene ricostruita dal layout.",
+  "Tabelle e colonne multiple restano testo nell'ordine degli operatori supportati; struttura e ordine visuale possono andare persi.",
+  "Immagini, grafica vettoriale e posizione sulla pagina non vengono esportate nel Markdown.",
+  "Font, stile, dimensioni, colori e altri attributi tipografici non vengono recuperati.",
+] as const;
+
+function markdownPlainText(text: string): string {
+  return text.replaceAll("\\", "\\\\").replaceAll(/([#*_\[\]<>])/gu, "\\$1").replaceAll(String.fromCharCode(96), "\\" + String.fromCharCode(96));
+}
+
+export async function pdfToMarkdown(
+  filename: string,
+  input: PdfInput,
+  signal?: AbortSignal,
+): Promise<PdfToMarkdownResult> {
+  const inspection = await inspectPdf(input, signal);
+  if (inspection.encrypted) {
+    return {
+      filename,
+      pageCount: inspection.pageCount,
+      status: "encrypted",
+      markdown: "",
+      pages: [],
+      provenanceConvention: "html-comment:file-uri-encoded+page",
+      extractionMode: "content-order",
+      truncated: false,
+      losses: PDF_MARKDOWN_LOSSES,
+    };
+  }
+  const extracted = await extractPdfTextScoped(input, { mode: "content-order" }, signal);
+  if (!extracted.pages.some((page) => page.text.trim() !== "")) {
+    return {
+      filename,
+      pageCount: inspection.pageCount,
+      status: "no-text",
+      markdown: "",
+      pages: [],
+      provenanceConvention: "html-comment:file-uri-encoded+page",
+      extractionMode: "content-order",
+      truncated: extracted.truncated,
+      losses: PDF_MARKDOWN_LOSSES,
+      ocrHandoff: OCR_HANDOFF_UNAVAILABLE,
+    };
+  }
+  const encodedFilename = encodeURIComponent(filename);
+  const pages = extracted.pages.map((page) => {
+    const provenance = "<!-- strumentini-pdf-page file=\"" + encodedFilename + "\" page=\"" + page.page + "\" -->";
+    const markdown = provenance + "\n\n" + markdownPlainText(page.text);
+    return { page: page.page, text: page.text, markdown, provenance, truncated: page.truncated };
+  });
+  return {
+    filename,
+    pageCount: inspection.pageCount,
+    status: "converted",
+    markdown: pages.map((page) => page.markdown).join("\n\n"),
+    pages,
+    provenanceConvention: "html-comment:file-uri-encoded+page",
+    extractionMode: "content-order",
+    truncated: extracted.truncated,
+    losses: PDF_MARKDOWN_LOSSES,
+  };
 }
 
 function pageInputs(document: PdfDocumentModel, pages: readonly number[]): PdfBuildPage[] {
@@ -562,7 +863,7 @@ export async function mutatePdf(input: PdfInput, request: PdfMutationRequest, si
   const allPages = document.pages.map((_, index) => index + 1);
   const selected = request.pages ?? allPages;
   const stripMetadata = request.stripMetadata ?? request.kind === "metadata-remove";
-  if (request.flatten === false) throw new PdfError("UNSUPPORTED_CAPABILITY", "Generated PDFs always remove interactive page hooks; preserving them is not supported.");
+  if (request.flatten === false && request.kind !== "metadata-remove") throw new PdfError("UNSUPPORTED_CAPABILITY", "This mutation mode does not support preserving interactive page hooks.");
   const flatten = request.flatten ?? true;
   const compress = request.compress ?? request.kind === "compress";
   const buildOptions = {
@@ -639,7 +940,7 @@ export async function mergePdfs(inputs: readonly PdfInput[], signal?: AbortSigna
   return outputArtifact(bytes, "merged.pdf", pages.length);
 }
 
-export async function imagesToPdf(inputs: readonly PdfInput[], signal?: AbortSignal): Promise<PdfArtifact> {
+export async function imagesToPdf(inputs: readonly PdfInput[], layout: PdfImagePageLayoutOptions = {}, signal?: AbortSignal): Promise<PdfArtifact> {
   if (inputs.length === 0 || inputs.length > PDF_LIMITS.maxFiles) throw new PdfError("INVALID_INPUT", "Choose between one and fifty images.");
   const images: EmbeddedJpeg[] = [];
   let total = 0;
@@ -653,29 +954,143 @@ export async function imagesToPdf(inputs: readonly PdfInput[], signal?: AbortSig
     if (image === null) throw new PdfError("UNSUPPORTED_CAPABILITY", "Images to PDF currently accepts JPEG images only; no server conversion is used.");
     images.push(image);
   }
-  return outputArtifact(buildPdfFromJpegs(images), "images.pdf", images.length);
+  return outputArtifact(buildPdfFromJpegs(images, layout), "images.pdf", images.length);
 }
 
 export async function extractPdfImages(input: PdfInput, signal?: AbortSignal): Promise<PdfArtifact[]> {
+  return [...(await extractPdfImagesScoped(input, {}, signal)).artifacts];
+}
+
+export async function extractPdfImagesScoped(input: PdfInput, options: PdfImageExtractionOptions = {}, signal?: AbortSignal): Promise<PdfImageExtractionResult> {
   const document = parseDocument(await readInput(input, signal));
   const capability = capabilityReport(document, "extract-images");
   if (!capability.available) throw new PdfError("UNSUPPORTED_CAPABILITY", capability.reason ?? "Image extraction is unavailable.");
+  const selectedPages = selectedPageNumbers(document, options.pages);
+  const deduplicated = options.dedupe === true;
   const artifacts: PdfArtifact[] = [];
-  for (const object of document.objects.values()) {
+  const provenance: PdfExtractedImageProvenance[] = [];
+  const unsupported: PdfUnsupportedImageFilter[] = [];
+  const artifactByObject = new Map<number, number>();
+  let totalOutputBytes = 0;
+  for (const pageNumber of selectedPages) {
     abortIfNeeded(signal);
-    if (object.value.kind !== "stream" || nameValue(object.value.dictionary.entries.get("Subtype")) !== "Image") continue;
-    const filters = filterNames(document, object.value.dictionary.entries.get("Filter"));
-    if (!filters.includes("DCTDecode")) continue;
-    if (artifacts.length >= PDF_LIMITS.maxImages) throw new PdfError("PDF_LIMIT", "Extracted image count exceeds the local safety limit.");
-    const width = numberValue(object.value.dictionary.entries.get("Width"));
-    const height = numberValue(object.value.dictionary.entries.get("Height"));
-    if (width === null || height === null || width < 1 || height < 1 || width > PDF_LIMITS.maxPageDimension || height > PDF_LIMITS.maxPageDimension || width * height > PDF_LIMITS.maxImagePixels) throw new PdfError("PDF_LIMIT", "Extracted image dimensions exceed the local safety limit.");
-    if (object.value.bytes.byteLength > PDF_LIMITS.maxImageBytes) throw new PdfError("PDF_LIMIT", "Extracted image exceeds the local byte limit.");
-    artifacts.push({ bytes: object.value.bytes.slice(), blob: new Blob([ownedArrayBuffer(object.value.bytes)], { type: "image/jpeg" }), filename: `image-${artifacts.length + 1}.jpg`, mime: "image/jpeg" });
+    const page = document.pages[pageNumber - 1];
+    if (page === undefined) continue;
+    const resources = dictionaryOrNull(document, page.inherited.Resources ?? (page.object.value.kind === "dict" ? page.object.value.entries.get("Resources") : undefined));
+    const xobjects = dictionaryOrNull(document, resources?.entries.get("XObject"));
+    if (xobjects === null) continue;
+    for (const [resourceName, sourceValue] of xobjects.entries) {
+      abortIfNeeded(signal);
+      const stream = streamOrNull(document, sourceValue);
+      if (stream === null || nameValue(stream.dictionary.entries.get("Subtype")) !== "Image") continue;
+      const object = sourceValue.kind === "ref" ? sourceValue.id : null;
+      const filters = filterNames(document, stream.dictionary.entries.get("Filter"));
+      if (filters.length !== 1 || filters[0] !== "DCTDecode") {
+        unsupported.push({
+          page: pageNumber,
+          resourceName,
+          object,
+          filters,
+          reason: filters.length === 0
+            ? "Raw/unfiltered image samples are not exported because the original stream is not a standalone image file."
+            : `Original compressed bytes are only exported for a single DCTDecode filter; found ${filters.join(" → ")}.`,
+        });
+        continue;
+      }
+      const width = numberValue(stream.dictionary.entries.get("Width"));
+      const height = numberValue(stream.dictionary.entries.get("Height"));
+      if (width === null || height === null || width < 1 || height < 1 || width > PDF_LIMITS.maxPageDimension || height > PDF_LIMITS.maxPageDimension || width * height > PDF_LIMITS.maxImagePixels) {
+        throw new PdfError("PDF_LIMIT", "Extracted image dimensions exceed the local safety limit.");
+      }
+      if (stream.bytes.byteLength > PDF_LIMITS.maxImageBytes) throw new PdfError("PDF_LIMIT", "Extracted image exceeds the local byte limit.");
+      if (parseJpeg(stream.bytes) === null) throw new PdfError("MALFORMED_PDF", `Page ${pageNumber} image ${resourceName} declares DCTDecode but does not contain a valid JPEG stream.`);
+      const occurrence = { page: pageNumber, resourceName, object };
+      if (deduplicated && object !== null && artifactByObject.has(object)) {
+        const provenanceIndex = artifactByObject.get(object);
+        if (provenanceIndex !== undefined) {
+          const current = provenance[provenanceIndex];
+          if (current !== undefined) provenance[provenanceIndex] = { ...current, occurrences: [...current.occurrences, occurrence] };
+        }
+        continue;
+      }
+      if (artifacts.length >= PDF_LIMITS.maxImages) throw new PdfError("PDF_LIMIT", "Extracted image count exceeds the local safety limit.");
+      totalOutputBytes += stream.bytes.byteLength;
+      if (totalOutputBytes > PDF_LIMITS.maxOutputBytes) throw new PdfError("PDF_LIMIT", "Extracted images exceed the local output byte limit.");
+      const ordinal = artifacts.length + 1;
+      const objectSuffix = object === null ? "direct" : `obj-${object}`;
+      const filename = `page-${String(pageNumber).padStart(3, "0")}-${resourceName}-${objectSuffix}-${ordinal}.jpg`;
+      const bytes = stream.bytes.slice();
+      artifacts.push({ bytes, blob: new Blob([ownedArrayBuffer(bytes)], { type: "image/jpeg" }), filename, mime: "image/jpeg" });
+      provenance.push({ filename, object, occurrences: [occurrence], byteLength: bytes.byteLength, filter: "DCTDecode" });
+      if (deduplicated && object !== null) artifactByObject.set(object, provenance.length - 1);
+    }
   }
-  if (artifacts.length === 0) throw new PdfError("UNSUPPORTED_CAPABILITY", "No directly extractable JPEG image streams were found; vector/raster rendering is not silently substituted.");
-  if (artifacts.reduce((total, artifact) => total + artifact.bytes.byteLength, 0) > PDF_LIMITS.maxOutputBytes) throw new PdfError("PDF_LIMIT", "Extracted images exceed the local output byte limit.");
-  return artifacts;
+  if (artifacts.length === 0 && unsupported.length === 0) {
+    throw new PdfError("UNSUPPORTED_CAPABILITY", "No page-scoped embedded image XObjects were found; page rasterization is not silently substituted.");
+  }
+  return { artifacts, provenance, unsupported, selectedPages, deduplicated, mode: "embedded-original-compressed-bytes" };
+}
+
+function metadataIsEmpty(metadata: PdfMetadata): boolean {
+  return Object.keys(metadata.recognizedInfo).length === 0
+    && Object.keys(metadata.unknownInfo).length === 0
+    && metadata.xmpObjectIds.length === 0
+    && !metadata.hasXmp;
+}
+
+async function textBaselineFor(bytes: Uint8Array, signal?: AbortSignal): Promise<{ status: "verified"; pages: PdfTextPage[] } | { status: "unavailable"; reason: string }> {
+  try {
+    return { status: "verified", pages: await extractPdfText(bytes, signal) };
+  } catch (error) {
+    if (error instanceof PdfError && error.code === "UNSUPPORTED_CAPABILITY") return { status: "unavailable", reason: error.message };
+    throw error;
+  }
+}
+
+export async function removePdfMetadataVerified(
+  input: PdfInput,
+  filename: string | undefined,
+  signal?: AbortSignal,
+): Promise<{ artifact: PdfArtifact; before: PdfInspection; after: PdfInspection; verification: PdfMetadataRemovalVerification }> {
+  const sourceBytes = await readInput(input, signal);
+  const before = inspectPdfBytes(sourceBytes);
+  const beforeText = await textBaselineFor(sourceBytes, signal);
+  const artifacts = await mutatePdf(sourceBytes, { kind: "metadata-remove", ...(filename === undefined ? {} : { filename }), flatten: false, stripMetadata: true }, signal);
+  const artifact = artifacts[0];
+  if (artifact === undefined) throw new PdfError("WRITE_FAILURE", "Metadata removal did not produce an output PDF.");
+  abortIfNeeded(signal);
+  const after = inspectPdfBytes(artifact.bytes);
+  const metadataRemoved = metadataIsEmpty(after.metadata);
+  if (!metadataRemoved) throw new PdfError("WRITE_FAILURE", "Produced PDF still exposes metadata through a recognized Info entry, unknown Info entry, or XMP metadata stream.");
+  const pageStable = before.pageCount === after.pageCount;
+  if (!pageStable) throw new PdfError("WRITE_FAILURE", `Metadata removal changed page count from ${before.pageCount} to ${after.pageCount}.`);
+  let textBaseline: PdfMetadataRemovalVerification["textBaseline"];
+  if (beforeText.status === "unavailable") {
+    textBaseline = { status: "unavailable", stable: null, changedPages: [], reason: beforeText.reason };
+  } else {
+    const afterText = await textBaselineFor(artifact.bytes, signal);
+    if (afterText.status === "unavailable") throw new PdfError("WRITE_FAILURE", "Produced PDF no longer supports the source document's bounded text baseline extraction.");
+    const changedPages = beforeText.pages
+      .filter((page, index) => page.text !== afterText.pages[index]?.text)
+      .map((page) => page.page);
+    if (beforeText.pages.length !== afterText.pages.length) {
+      for (let page = Math.min(beforeText.pages.length, afterText.pages.length) + 1; page <= Math.max(beforeText.pages.length, afterText.pages.length); page += 1) changedPages.push(page);
+    }
+    const stable = changedPages.length === 0;
+    if (!stable) throw new PdfError("WRITE_FAILURE", `Metadata removal changed the bounded extracted-text baseline on pages ${changedPages.join(", ")}.`);
+    textBaseline = { status: "verified", stable: true, changedPages: [] };
+  }
+  return {
+    artifact,
+    before,
+    after,
+    verification: {
+      reparsed: true,
+      metadataRemoved,
+      pageCount: { before: before.pageCount, after: after.pageCount, stable: true },
+      textBaseline,
+    },
+  };
 }
 
 export async function comparePdfs(first: PdfInput, second: PdfInput, signal?: AbortSignal): Promise<PdfCompareResult> {

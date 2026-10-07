@@ -1,0 +1,27 @@
+{
+  "toolId": "pdf-page-citation-helper",
+  "category": "research",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Formatta una citazione di pagina o intervallo dai dati che inserisci. APA, MLA e Chicago sono preset locali, non guide di stile ufficiali. Public jobs: Usa Crea citazione di una pagina PDF.",
+  "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/research-knowledge/pdf-page-citation-helper.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Broader backlog enhancements are additive to this narrow route contract and are not used to manufacture an incomplete audit result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/research-knowledge/pdf-page-citation-helper.gold.json",
+      "claim": "Tool-specific Gold receipt binds the current implementation to declared fixtures/oracle evidence and functional acceptance for pdf-page-citation-helper."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/research-knowledge-engine.test.ts",
+      "claim": "Executable family tests exercise the engine/module behavior used by pdf-page-citation-helper, including relevant edge or invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/research-knowledge/browser-acceptance.json",
+      "claim": "Committed browser acceptance includes pdf-page-citation-helper and verifies a real route submit plus locality/lazy/mobile/accessibility behavior."
+    }
+  ],
+  "childTickets": []
+}

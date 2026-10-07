@@ -6,13 +6,12 @@
 
 **Constraints:** Platform limits/presets with changing external values need version/source metadata; previews are approximations, not guarantees of a platform render.
 
-**Blocked by:** 01, 02, 42.
+**Blocked by:** 321, 322, 323, 324, 325.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] UTM builder/parser/cleaner can round-trip, bulk-process and copy/export without losing non-tracking query parameters.
-- [ ] Meta/Open Graph/social previews label platform/viewport assumptions and update preset data from one authority.
-- [ ] Redirect/reference-network tools clearly separate live network checks from local URL parsing.
+- [x] Tickets 321/323 extend the existing UTM and URL normalize/compare routes with round-trip/bulk processing, per-row isolation, explicit normalization rules and preservation of non-tracking query parameters.
+- [x] Ticket 322 centralizes Meta/Open Graph/social preview presets with source/checked-date metadata and labels viewport/platform rendering as an approximation rather than a guarantee.
+- [x] Tickets 324/325 separate local syntax/normalization guidance from explicitly triggered reference-network checks, retaining partial redirect evidence, retrieval time and privacy boundaries.
 
-**Verification:** Existing Gold plus round-trip/bulk fixtures, network-boundary tests, versioned platform-preset tests and route checklist.
-
+**Verification:** `tests/url-marketing-upgrades.test.ts` plus `scripts/acceptance-url-marketing-upgrades.mjs` pass the round-trip/bulk, versioned preset and network-boundary cases; browser acceptance at 390px observes zero live requests before explicit submit and no horizontal overflow.

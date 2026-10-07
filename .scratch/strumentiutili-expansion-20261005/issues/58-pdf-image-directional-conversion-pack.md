@@ -6,13 +6,14 @@
 
 **Constraints:** Directional routes reuse existing engines/workspace; HEIC depends on verified decode; PDF page rendering stays raster and does not imply vector extraction.
 
-**Blocked by:** 01, 05, 49.
+**Blocked by:** 235, 236.
 
 **Status:** blocked
 
-- [ ] Images→PDF supports reorder/rotate, A4/Letter/original page, margins, orientation and fit/fill.
-- [ ] PDF→images supports page range, JPG/PNG/WebP, scale/DPI and quality with one-file-per-page naming.
-- [ ] Batch/multi-page results download cleanly as ZIP with total pages/bytes.
+- [x] Images→PDF supports reorder/rotate, A4/Letter/original page, margins, orientation and fit/fill.
+- [x] PDF→images supports page range, JPG/PNG/WebP, scale/DPI and quality with one-file-per-page naming.
+- [x] Batch/multi-page results download cleanly as ZIP with total pages/bytes.
 
 **Verification:** Mixed-image and multi-page PDF fixtures, page dimension/render checks, ZIP integrity and route-specific acceptance.
 
+**Implementation evidence (2026-10-07):** Both existing canonical routes were upgraded rather than duplicated. Images→PDF accepts JPG/PNG/WebP/AVIF/HEIC/HEIF/GIF-first-frame and exposes order, per-image rotation, original/A4/Letter geometry, margins, orientation, contain/cover and contact-sheet composition. PDF→images uses lazy local PDF.js page rendering with page selection, JPG/PNG/WebP, scale/DPI, quality, deterministic per-page names, per-page failure isolation and a verified ZIP for multi-page output. `scripts/acceptance-conversion-matrix.mjs` proves the mixed PNG+HEIC PDF path, layout facts, contact-sheet mode, `[2,1]` PDF page rendering and ZIP integrity at 390px with no task-time external/non-GET requests. Status remains `blocked` only because umbrella dependencies 235/236 retain broader physical/mobile prerequisite blockers, not because these directional conversion ACs are missing.

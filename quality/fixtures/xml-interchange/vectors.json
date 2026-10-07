@@ -1,0 +1,80 @@
+{
+  "json": [
+    {
+      "name": "attributes repeated children empty element and entities",
+      "input": "<?xml version=\"1.0\"?><catalog version=\"1\"><item id=\"001\"><name>A &amp; B</name><tag>one</tag><tag>two</tag><empty/></item><item id=\"002\"><name><![CDATA[C < D]]></name><tag>three</tag><empty/></item></catalog>",
+      "expected": {
+        "catalog": {
+          "@version": "1",
+          "item": [
+            {
+              "@id": "001",
+              "name": "A & B",
+              "tag": ["one", "two"],
+              "empty": null
+            },
+            {
+              "@id": "002",
+              "name": "C < D",
+              "tag": "three",
+              "empty": null
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "tabular": [
+    {
+      "name": "direct homogeneous rows",
+      "input": "<rows><row id=\"001\"><name>A &amp; B</name><amount>10</amount></row><row id=\"002\"><name>C</name><amount>20</amount></row></rows>",
+      "expectedHeader": ["attr:id", "name", "amount"],
+      "expectedRows": [["001", "A & B", "10"], ["002", "C", "20"]],
+      "expectedRowPath": "/rows/row"
+    },
+    {
+      "name": "explicit nested row path",
+      "input": "<export><items><item code=\"A\"><name>Alpha</name></item><item code=\"B\"><name>Beta</name></item></items></export>",
+      "rowPath": "items/item",
+      "expectedHeader": ["attr:code", "name"],
+      "expectedRows": [["A", "Alpha"], ["B", "Beta"]],
+      "expectedRowPath": "/export/items/item"
+    },
+    {
+      "name": "scalar rows with attributes",
+      "input": "<values><value code=\"x\">001</value><value code=\"y\"><![CDATA[002]]></value></values>",
+      "expectedHeader": ["attr:code", "#text"],
+      "expectedRows": [["x", "001"], ["y", "002"]],
+      "expectedRowPath": "/values/value"
+    }
+  ],
+  "ambiguous": [
+    {
+      "name": "heterogeneous root needs explicit non-lossy mapping",
+      "input": "<root><row><value>1</value></row><meta><value>x</value></meta></root>",
+      "code": "TABULAR_MAPPING_REQUIRED"
+    },
+    {
+      "name": "mixed row text and fields",
+      "input": "<rows><row>prefix<name>A</name></row></rows>",
+      "code": "AMBIGUOUS_XML_MAPPING"
+    },
+    {
+      "name": "repeated row field",
+      "input": "<rows><row><tag>a</tag><tag>b</tag></row></rows>",
+      "code": "AMBIGUOUS_XML_MAPPING"
+    },
+    {
+      "name": "nested row field",
+      "input": "<rows><row><address><city>Bari</city></address></row></rows>",
+      "code": "AMBIGUOUS_XML_MAPPING"
+    }
+  ],
+  "hostile": [
+    {
+      "name": "DTD external entity",
+      "input": "<!DOCTYPE rows [<!ENTITY ext SYSTEM \"https://example.invalid/entity.txt\">]><rows><row><value>&ext;</value></row></rows>",
+      "error": "XML_EXTERNAL_ENTITY_DISABLED"
+    }
+  ]
+}

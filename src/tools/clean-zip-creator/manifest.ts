@@ -13,6 +13,7 @@ export default {
   engine: "file-privacy",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "file", capabilities: ["download", "retry", "reset", "provenance", "before-after"] },
   handoff: { emits: [{ type: "file", format: "zip", maxBytes: 104_857_600 }] },
   gold: { maintenanceClass: "H", oracleEntryId: "cand-172", fixtureFamilies: ["zip-signatures"] },
 } as const satisfies ToolManifest;

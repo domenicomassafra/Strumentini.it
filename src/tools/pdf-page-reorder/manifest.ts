@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { PDF_RESULT_DECLARATIONS } from "../pdf-result-declarations";
 
 export const pdfPageReorderManifest = {
   id: "pdf-page-reorder",
@@ -14,6 +15,7 @@ export const pdfPageReorderManifest = {
   engine: "pdf",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: PDF_RESULT_DECLARATIONS["pdf-page-reorder"],
   handoff: { emits: [{ type: "file", format: "pdf" }] },
   gold: { maintenanceClass: "H", oracleEntryId: "cand-123", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;

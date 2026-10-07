@@ -27,7 +27,7 @@ const pdfFixture = Buffer.from([
   "",
 ].join(newline));
 const imageFixture = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64");
-const fileFixture = Buffer.from("strumentiutili-cross-family-private-value", "utf8");
+const fileFixture = Buffer.from("strumentini-cross-family-private-value", "utf8");
 const fileDigest = createHash("sha256").update(fileFixture).digest("hex");
 
 function assert(condition, message) {
@@ -316,7 +316,7 @@ const families = [
   {
     id: "file-privacy",
     route: "/tools/file-hash/",
-    sensitive: ["owner-private-name.txt", "strumentiutili-cross-family-private-value", fileDigest],
+    sensitive: ["owner-private-name.txt", "strumentini-cross-family-private-value", fileDigest],
     invalid: async (page) => {
       await page.getByRole("button", { name: "Calcola SHA-256" }).press("Enter");
     },

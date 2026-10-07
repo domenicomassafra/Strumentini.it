@@ -1,0 +1,3942 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-06T11:58:16.504Z",
+  "origin": "http://127.0.0.1:41934",
+  "networkPolicy": "All non-loopback requests are aborted by the browser context before transmission.",
+  "physicalMobile": {
+    "iosSafari": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "androidChrome": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "note": "Desktop browsers, Playwright WebKit, device descriptors and viewport emulation are not physical-device evidence."
+  },
+  "results": [
+    {
+      "engine": "chrome",
+      "label": "system Google Chrome",
+      "classification": "real-desktop-browser",
+      "status": "OBSERVED",
+      "wallMs": 661.5561250000001,
+      "localRequests": [
+        "http://127.0.0.1:41934/",
+        "http://127.0.0.1:41934/assets/index-DxC9YeHu.js",
+        "http://127.0.0.1:41934/assets/rolldown-runtime-C0FnF6B9.js",
+        "http://127.0.0.1:41934/assets/preload-helper-BZ1Pz5am.js",
+        "http://127.0.0.1:41934/assets/libheif-bundle-BmxSuLdv.js",
+        "http://127.0.0.1:41934/assets/src-SuYvKHvm.js",
+        "http://127.0.0.1:41934/assets/mammoth.browser-C4-72Yf8.js",
+        "http://127.0.0.1:41934/assets/dist-CL8pu169.js",
+        "http://127.0.0.1:41934/assets/docx-preview-t9k1qJMu.js",
+        "http://127.0.0.1:41934/assets/jszip.min-B7Fa2WXl.js",
+        "http://127.0.0.1:41934/assets/pptxgen.es-DnYj_vjT.js",
+        "http://127.0.0.1:41934/assets/es-DwI2HWNb.js",
+        "http://127.0.0.1:41934/assets/browser-ClCPJ7Bh.js",
+        "http://127.0.0.1:41934/assets/pdf-D8meTUzS.js",
+        "http://127.0.0.1:41934/assets/src-BTc-yaYS.js",
+        "http://127.0.0.1:41934/assets/__vite-browser-external-DpH90L5b.js",
+        "http://127.0.0.1:41934/assets/index.es-DWRrRQ1b.js",
+        "http://127.0.0.1:41934/assets/index.es-BAkBZI1U.js",
+        "http://127.0.0.1:41934/assets/index.es-CBqjg_vO.js",
+        "http://127.0.0.1:41934/assets/browser-BV4XJ9Z2.js",
+        "http://127.0.0.1:41934/corpus/sample-animated.gif",
+        "http://127.0.0.1:41934/assets/xlsx-BKER4Xe2.js",
+        "http://127.0.0.1:41934/assets/mp4box.all-ClpO_XUd.js",
+        "http://127.0.0.1:41934/corpus/ocr-it.png",
+        "http://127.0.0.1:41934/corpus/sample.heic",
+        "http://127.0.0.1:41934/corpus/sample.docx",
+        "http://127.0.0.1:41934/corpus/sample.mp4",
+        "http://127.0.0.1:41934/corpus/sample.xlsx",
+        "http://127.0.0.1:41934/corpus/sample.pdf",
+        "http://127.0.0.1:41934/corpus/sample-200.pdf",
+        "http://127.0.0.1:41934/corpus/hostile.eml",
+        "http://127.0.0.1:41934/corpus/sample.zip",
+        "http://127.0.0.1:41934/corpus/sample.gz",
+        "http://127.0.0.1:41934/corpus/sample-unsafe-path.zip",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.zip",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.gz",
+        "http://127.0.0.1:41934/corpus/sample-10s-720p.mp4",
+        "http://127.0.0.1:41934/corpus/sample.p7m",
+        "http://127.0.0.1:41934/tesseract/worker.min.js",
+        "http://127.0.0.1:41934/corpus/hostile.epub",
+        "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+        "http://127.0.0.1:41934/corpus/sample.wav",
+        "http://127.0.0.1:41934/tesseract/core/tesseract-core-relaxedsimd-lstm.wasm.js",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.p7m",
+        "http://127.0.0.1:41934/corpus/unsupported.msg",
+        "http://127.0.0.1:41934/corpus/sample-unsupported-cms.der",
+        "http://127.0.0.1:41934/tesseract/lang/ita.traineddata.gz"
+      ],
+      "externalRequests": [],
+      "consoleErrors": [
+        "Error: failed to load ./ita.special-words"
+      ],
+      "payload": {
+        "schemaVersion": 1,
+        "generatedAt": "2026-10-06T11:58:06.969Z",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+        "memoryMeasurement": "performance.memory JS heap checkpoints/polling only; excludes WASM linear memory, decoded native surfaces and full browser RSS",
+        "results": [
+          {
+            "id": "browser-capabilities",
+            "family": "platform",
+            "status": "PASS",
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+            "crossOriginIsolated": true,
+            "hardwareConcurrency": 10,
+            "deviceMemoryGiB": 32,
+            "apis": {
+              "webAssembly": true,
+              "worker": true,
+              "createImageBitmap": true,
+              "offscreenCanvas": true,
+              "videoDecoder": true,
+              "videoEncoder": true,
+              "audioDecoder": true,
+              "audioEncoder": true,
+              "offlineAudioContext": true
+            },
+            "codecProbes": {
+              "h264Decode": true,
+              "aacDecode": true
+            }
+          },
+          {
+            "id": "heic-libheif",
+            "family": "heic",
+            "status": "PASS",
+            "candidate": "libheif-js@1.23.5",
+            "coldLoadMs": 55.70999997854233,
+            "value": {
+              "width": 96,
+              "height": 64,
+              "rgbaBytes": 24576,
+              "imageCount": 1
+            },
+            "runtimeMs": 31.22999995946884,
+            "startJsHeapBytes": 20387760,
+            "endJsHeapBytes": 23422171,
+            "peakJsHeapBytes": 23422171,
+            "peakJsHeapDeltaBytes": 3034411
+          },
+          {
+            "id": "ocr-tesseract-ita",
+            "family": "ocr",
+            "status": "PASS",
+            "candidate": "tesseract.js@7.0.0 + ita@1.0.0",
+            "coldLoadMs": 37.705000042915344,
+            "networkPolicy": "same-origin assets only",
+            "value": {
+              "text": "Fattura numero 12345 - Totale euro 678,90",
+              "confidence": 94,
+              "progressEvents": 11
+            },
+            "runtimeMs": 453.06999999284744,
+            "startJsHeapBytes": 20563942,
+            "endJsHeapBytes": 41050471,
+            "peakJsHeapBytes": 41050471,
+            "peakJsHeapDeltaBytes": 20486529
+          },
+          {
+            "id": "office-xlsx",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "xlsx@0.18.5",
+            "coldLoadMs": 92.72999995946884,
+            "value": {
+              "rows": 3,
+              "outputBytes": 8802
+            },
+            "runtimeMs": 10.15499997138977,
+            "startJsHeapBytes": 24026977,
+            "endJsHeapBytes": 26139900,
+            "peakJsHeapBytes": 26139900,
+            "peakJsHeapDeltaBytes": 2112923
+          },
+          {
+            "id": "office-docx-extract",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "mammoth@1.13.0",
+            "coldLoadMs": 77.66000002622604,
+            "value": {
+              "text": "Fattura di prova\n\nCliente: Mario Rossi\n\nTotale: 299,90 EUR",
+              "messages": 0
+            },
+            "runtimeMs": 205.8149999976158,
+            "startJsHeapBytes": 23177223,
+            "endJsHeapBytes": 41050040,
+            "peakJsHeapBytes": 41050040,
+            "peakJsHeapDeltaBytes": 17872817
+          },
+          {
+            "id": "office-docx-write",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "docx@9.8.1",
+            "coldLoadMs": 111.97999995946884,
+            "value": {
+              "outputBytes": 9457
+            },
+            "runtimeMs": 154.05500000715256,
+            "startJsHeapBytes": 16984921,
+            "endJsHeapBytes": 37781427,
+            "peakJsHeapBytes": 37781427,
+            "peakJsHeapDeltaBytes": 20796506
+          },
+          {
+            "id": "office-docx-preview",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "docx-preview@0.4.1",
+            "coldLoadMs": 87.14499998092651,
+            "value": {
+              "textLength": 5312,
+              "renderedElements": 13
+            },
+            "runtimeMs": 87.79000002145767,
+            "startJsHeapBytes": 23478137,
+            "endJsHeapBytes": 36011284,
+            "peakJsHeapBytes": 36204961,
+            "peakJsHeapDeltaBytes": 12726824
+          },
+          {
+            "id": "office-pptx-write",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "pptxgenjs@4.0.1",
+            "coldLoadMs": 92.90499997138977,
+            "value": {
+              "outputBytes": 44751
+            },
+            "runtimeMs": 175.55000001192093,
+            "startJsHeapBytes": 16053551,
+            "endJsHeapBytes": 38069404,
+            "peakJsHeapBytes": 38069404,
+            "peakJsHeapDeltaBytes": 22015853
+          },
+          {
+            "id": "pdf-cantoo-mutate",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1",
+            "coldLoadMs": 128.75999999046326,
+            "value": {
+              "pages": 3,
+              "outputBytes": 2166
+            },
+            "runtimeMs": 4.865000009536743,
+            "startJsHeapBytes": 26152668,
+            "endJsHeapBytes": 27266418,
+            "peakJsHeapBytes": 27266418,
+            "peakJsHeapDeltaBytes": 1113750
+          },
+          {
+            "id": "pdfjs-render",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "pdfjs-dist@6.4.299",
+            "coldLoadMs": 136.2249999642372,
+            "value": {
+              "pages": 3,
+              "width": 480,
+              "height": 320,
+              "textLength": 51
+            },
+            "runtimeMs": 88.80000001192093,
+            "startJsHeapBytes": 27264590,
+            "endJsHeapBytes": 39590160,
+            "peakJsHeapBytes": 39590160,
+            "peakJsHeapDeltaBytes": 12325570
+          },
+          {
+            "id": "media-mediabunny-inspect",
+            "family": "audio-video",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 140.1850000023842,
+            "value": {
+              "videoDuration": 2.0416666666666665,
+              "wavDuration": 2,
+              "videoWidth": 320,
+              "videoHeight": 180,
+              "audioSampleRate": 48000
+            },
+            "runtimeMs": 6.405000030994415,
+            "startJsHeapBytes": 34586488,
+            "endJsHeapBytes": 36101099,
+            "peakJsHeapBytes": 36101099,
+            "peakJsHeapDeltaBytes": 1514611
+          },
+          {
+            "id": "video-mp4box-inspect",
+            "family": "video",
+            "status": "PASS",
+            "candidate": "mp4box@2.4.1",
+            "coldLoadMs": 89.33499997854233,
+            "value": {
+              "duration": 2,
+              "videoTracks": 1,
+              "audioTracks": 1
+            },
+            "runtimeMs": 3.439999997615814,
+            "startJsHeapBytes": 23575644,
+            "endJsHeapBytes": 24017463,
+            "peakJsHeapBytes": 24017463,
+            "peakJsHeapDeltaBytes": 441819
+          },
+          {
+            "id": "audio-native-dsp",
+            "family": "audio",
+            "status": "PASS",
+            "candidate": "Web Audio OfflineAudioContext",
+            "coldLoadMs": 0,
+            "value": {
+              "frames": 96000,
+              "rms": 0.3535533166280829
+            },
+            "runtimeMs": 5.694999992847443,
+            "startJsHeapBytes": 880439,
+            "endJsHeapBytes": 1333334,
+            "peakJsHeapBytes": 1333334,
+            "peakJsHeapDeltaBytes": 452895
+          },
+          {
+            "id": "cms-pkijs",
+            "family": "cms",
+            "status": "PASS",
+            "candidate": "pkijs@3.4.1 + asn1js@3.0.10",
+            "coldLoadMs": 294.2099999785423,
+            "value": {
+              "payloadBytes": 25,
+              "certificateCount": 1,
+              "signerCount": 1,
+              "subject": [
+                "Strumentini Feasibility",
+                "Local Test"
+              ],
+              "corruptRejected": true,
+              "unsupportedContentType": "1.2.840.113549.1.7.1",
+              "unsupportedRejected": true,
+              "trustChainStatus": "NOT_EVALUATED"
+            },
+            "runtimeMs": 88.125,
+            "startJsHeapBytes": 23161944,
+            "endJsHeapBytes": 37479386,
+            "peakJsHeapBytes": 37479386,
+            "peakJsHeapDeltaBytes": 14317442
+          },
+          {
+            "id": "archive-fflate",
+            "family": "archive",
+            "status": "PASS",
+            "candidate": "fflate@0.8.3",
+            "coldLoadMs": 133.83000004291534,
+            "value": {
+              "zipInputBytes": 394,
+              "gzipInputBytes": 282,
+              "expandedBytes": 90112,
+              "zipExpansionRatio": 228.71065989847716,
+              "gzipExpansionRatio": 319.54609929078015,
+              "unsafeNames": [
+                "../escape.txt"
+              ],
+              "corruptZipRejected": true,
+              "corruptGzipRejected": true,
+              "cancellation": "SYNC_API_REQUIRES_OUTER_WORKER_TERMINATION_OR_STREAMING_WRAPPER"
+            },
+            "runtimeMs": 64.02499997615814,
+            "startJsHeapBytes": 20251148,
+            "endJsHeapBytes": 36069949,
+            "peakJsHeapBytes": 36069949,
+            "peakJsHeapDeltaBytes": 15818801
+          },
+          {
+            "id": "image-native-modes",
+            "family": "image",
+            "status": "PASS",
+            "candidate": "browser-native image decode/canvas encode",
+            "coldLoadMs": 0,
+            "value": {
+              "gif": {
+                "width": 64,
+                "height": 64,
+                "frameCount": 4,
+                "imageDecoder": true
+              },
+              "encoders": {
+                "jpeg": {
+                  "type": "image/jpeg",
+                  "bytes": 762
+                },
+                "webp": {
+                  "type": "image/webp",
+                  "bytes": 550
+                },
+                "png": {
+                  "type": "image/png",
+                  "bytes": 105
+                },
+                "avif": {
+                  "type": "image/png",
+                  "bytes": 105
+                }
+              },
+              "svgOptimizer": "NO_BROWSER_NATIVE_OPTIMIZER"
+            },
+            "runtimeMs": 168.64500004053116,
+            "startJsHeapBytes": 19940865,
+            "endJsHeapBytes": 39981804,
+            "peakJsHeapBytes": 39981804,
+            "peakJsHeapDeltaBytes": 20040939
+          },
+          {
+            "id": "pdf-large-200",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1 + pdfjs-dist@6.4.299",
+            "coldLoadMs": 258.64999997615814,
+            "value": {
+              "pages": 200,
+              "inputBytes": 94663,
+              "savedBytes": 94683,
+              "cancellationObserved": true
+            },
+            "runtimeMs": 188.45999997854233,
+            "startJsHeapBytes": 27390267,
+            "endJsHeapBytes": 41008022,
+            "peakJsHeapBytes": 41050420,
+            "peakJsHeapDeltaBytes": 13660153
+          },
+          {
+            "id": "video-large-inspect",
+            "family": "video",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 137.04999995231628,
+            "value": {
+              "bytes": 4954611,
+              "duration": 10,
+              "width": 1280,
+              "height": 720,
+              "cancellationSeam": "Input.dispose()"
+            },
+            "runtimeMs": 16.64000004529953,
+            "startJsHeapBytes": 31039933,
+            "endJsHeapBytes": 35464007,
+            "peakJsHeapBytes": 35464007,
+            "peakJsHeapDeltaBytes": 4424074
+          },
+          {
+            "id": "mail-epub-refusal-policy",
+            "family": "mail-ebook",
+            "status": "PASS",
+            "candidate": "no approved EML/MSG/EPUB parser; fflate used only to expose hostile EPUB fixture bytes",
+            "coldLoadMs": 133.22000002861023,
+            "value": {
+              "eml": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "epub": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "msg": {
+                "decision": "REFUSE",
+                "compoundFileSignatureDetected": true,
+                "parser": null
+              },
+              "policy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+            },
+            "runtimeMs": 110.77999997138977,
+            "startJsHeapBytes": 20246433,
+            "endJsHeapBytes": 37311775,
+            "peakJsHeapBytes": 37311775,
+            "peakJsHeapDeltaBytes": 17065342
+          }
+        ]
+      },
+      "resources": [
+        {
+          "url": "http://127.0.0.1:41934/assets/index-DxC9YeHu.js",
+          "transferSize": 19515,
+          "encodedBodySize": 19215,
+          "decodedBodySize": 19215,
+          "durationMs": 19.305000007152557
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/rolldown-runtime-C0FnF6B9.js",
+          "transferSize": 1591,
+          "encodedBodySize": 1291,
+          "decodedBodySize": 1291,
+          "durationMs": 20.5
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/preload-helper-BZ1Pz5am.js",
+          "transferSize": 1518,
+          "encodedBodySize": 1218,
+          "decodedBodySize": 1218,
+          "durationMs": 20.50499999523163
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/libheif-bundle-BmxSuLdv.js",
+          "transferSize": 2040238,
+          "encodedBodySize": 2039938,
+          "decodedBodySize": 2039938,
+          "durationMs": 32.30500000715256
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/src-SuYvKHvm.js",
+          "transferSize": 17585,
+          "encodedBodySize": 17285,
+          "decodedBodySize": 17285,
+          "durationMs": 30.9650000333786
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/mammoth.browser-C4-72Yf8.js",
+          "transferSize": 298961,
+          "encodedBodySize": 298661,
+          "decodedBodySize": 298661,
+          "durationMs": 46.810000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/dist-CL8pu169.js",
+          "transferSize": 438282,
+          "encodedBodySize": 437982,
+          "decodedBodySize": 437982,
+          "durationMs": 46.7950000166893
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/docx-preview-t9k1qJMu.js",
+          "transferSize": 75895,
+          "encodedBodySize": 75595,
+          "decodedBodySize": 75595,
+          "durationMs": 46.8400000333786
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/jszip.min-B7Fa2WXl.js",
+          "transferSize": 96303,
+          "encodedBodySize": 96003,
+          "decodedBodySize": 96003,
+          "durationMs": 47.5450000166893
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pptxgen.es-DnYj_vjT.js",
+          "transferSize": 272956,
+          "encodedBodySize": 272656,
+          "decodedBodySize": 272656,
+          "durationMs": 47.1149999499321
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/es-DwI2HWNb.js",
+          "transferSize": 569069,
+          "encodedBodySize": 568769,
+          "decodedBodySize": 568769,
+          "durationMs": 47.935000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/browser-ClCPJ7Bh.js",
+          "transferSize": 31684,
+          "encodedBodySize": 31384,
+          "decodedBodySize": 31384,
+          "durationMs": 56.55000001192093
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf-D8meTUzS.js",
+          "transferSize": 431216,
+          "encodedBodySize": 430916,
+          "decodedBodySize": 430916,
+          "durationMs": 56.93000000715256
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/src-BTc-yaYS.js",
+          "transferSize": 695481,
+          "encodedBodySize": 695181,
+          "decodedBodySize": 695181,
+          "durationMs": 57.66500002145767
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/__vite-browser-external-DpH90L5b.js",
+          "transferSize": 455,
+          "encodedBodySize": 155,
+          "decodedBodySize": 155,
+          "durationMs": 57.060000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-DWRrRQ1b.js",
+          "transferSize": 1461,
+          "encodedBodySize": 1161,
+          "decodedBodySize": 1161,
+          "durationMs": 55.54000002145767
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-BAkBZI1U.js",
+          "transferSize": 56572,
+          "encodedBodySize": 56272,
+          "decodedBodySize": 56272,
+          "durationMs": 55.735000014305115
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-CBqjg_vO.js",
+          "transferSize": 332668,
+          "encodedBodySize": 332368,
+          "decodedBodySize": 332368,
+          "durationMs": 60.4099999666214
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/browser-BV4XJ9Z2.js",
+          "transferSize": 1398,
+          "encodedBodySize": 1098,
+          "decodedBodySize": 1098,
+          "durationMs": 63.689999997615814
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-animated.gif",
+          "transferSize": 4116,
+          "encodedBodySize": 3816,
+          "decodedBodySize": 3816,
+          "durationMs": 63.185000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/xlsx-BKER4Xe2.js",
+          "transferSize": 424255,
+          "encodedBodySize": 423955,
+          "decodedBodySize": 423955,
+          "durationMs": 63.52999997138977
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/mp4box.all-ClpO_XUd.js",
+          "transferSize": 182731,
+          "encodedBodySize": 182431,
+          "decodedBodySize": 182431,
+          "durationMs": 65.36000001430511
+        },
+        {
+          "url": "http://127.0.0.1:41934/favicon.ico",
+          "transferSize": 0,
+          "encodedBodySize": 0,
+          "decodedBodySize": 0,
+          "durationMs": 11.605000019073486
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/ocr-it.png",
+          "transferSize": 14605,
+          "encodedBodySize": 14305,
+          "decodedBodySize": 14305,
+          "durationMs": 32.09999996423721
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.heic",
+          "transferSize": 788,
+          "encodedBodySize": 488,
+          "decodedBodySize": 488,
+          "durationMs": 20.280000030994415
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.docx",
+          "transferSize": 9803,
+          "encodedBodySize": 9503,
+          "decodedBodySize": 9503,
+          "durationMs": 3.0950000286102295
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.docx",
+          "transferSize": 9803,
+          "encodedBodySize": 9503,
+          "decodedBodySize": 9503,
+          "durationMs": 2.185000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.mp4",
+          "transferSize": 77160,
+          "encodedBodySize": 76860,
+          "decodedBodySize": 76860,
+          "durationMs": 2.1949999928474426
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.xlsx",
+          "transferSize": 8998,
+          "encodedBodySize": 8698,
+          "decodedBodySize": 8698,
+          "durationMs": 2.175000011920929
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.pdf",
+          "transferSize": 2444,
+          "encodedBodySize": 2144,
+          "decodedBodySize": 2144,
+          "durationMs": 4.074999988079071
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-200.pdf",
+          "transferSize": 94963,
+          "encodedBodySize": 94663,
+          "decodedBodySize": 94663,
+          "durationMs": 4.0799999833106995
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.pdf",
+          "transferSize": 2444,
+          "encodedBodySize": 2144,
+          "decodedBodySize": 2144,
+          "durationMs": 3.6200000047683716
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/hostile.eml",
+          "transferSize": 653,
+          "encodedBodySize": 353,
+          "decodedBodySize": 353,
+          "durationMs": 3.5799999833106995
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.zip",
+          "transferSize": 694,
+          "encodedBodySize": 394,
+          "decodedBodySize": 394,
+          "durationMs": 3.675000011920929
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.gz",
+          "transferSize": 582,
+          "encodedBodySize": 282,
+          "decodedBodySize": 282,
+          "durationMs": 3.7700000405311584
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-unsafe-path.zip",
+          "transferSize": 464,
+          "encodedBodySize": 164,
+          "decodedBodySize": 164,
+          "durationMs": 3.909999966621399
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.zip",
+          "transferSize": 682,
+          "encodedBodySize": 382,
+          "decodedBodySize": 382,
+          "durationMs": 4.394999980926514
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.gz",
+          "transferSize": 574,
+          "encodedBodySize": 274,
+          "decodedBodySize": 274,
+          "durationMs": 4.435000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-10s-720p.mp4",
+          "transferSize": 4954911,
+          "encodedBodySize": 4954611,
+          "decodedBodySize": 4954611,
+          "durationMs": 61.910000026226044
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.mp4",
+          "transferSize": 77160,
+          "encodedBodySize": 76860,
+          "decodedBodySize": 76860,
+          "durationMs": 2.324999988079071
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.p7m",
+          "transferSize": 1849,
+          "encodedBodySize": 1549,
+          "decodedBodySize": 1549,
+          "durationMs": 2.7300000190734863
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/hostile.epub",
+          "transferSize": 1139,
+          "encodedBodySize": 839,
+          "decodedBodySize": 839,
+          "durationMs": 2.8799999952316284
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.wav",
+          "transferSize": 192378,
+          "encodedBodySize": 192078,
+          "decodedBodySize": 192078,
+          "durationMs": 3.2049999833106995
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+          "transferSize": 2230013,
+          "encodedBodySize": 2229713,
+          "decodedBodySize": 2229713,
+          "durationMs": 2.935000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.p7m",
+          "transferSize": 1074,
+          "encodedBodySize": 774,
+          "decodedBodySize": 774,
+          "durationMs": 6.769999980926514
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/unsupported.msg",
+          "transferSize": 812,
+          "encodedBodySize": 512,
+          "decodedBodySize": 512,
+          "durationMs": 4.399999976158142
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-unsupported-cms.der",
+          "transferSize": 328,
+          "encodedBodySize": 28,
+          "decodedBodySize": 28,
+          "durationMs": 6.410000026226044
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+          "transferSize": 2230013,
+          "encodedBodySize": 2229713,
+          "decodedBodySize": 2229713,
+          "durationMs": 2.1299999952316284
+        }
+      ]
+    },
+    {
+      "engine": "edge",
+      "label": "system Microsoft Edge",
+      "classification": "real-desktop-browser",
+      "status": "OBSERVED",
+      "wallMs": 687.1614579999987,
+      "localRequests": [
+        "http://127.0.0.1:41934/",
+        "http://127.0.0.1:41934/assets/index-DxC9YeHu.js",
+        "http://127.0.0.1:41934/assets/rolldown-runtime-C0FnF6B9.js",
+        "http://127.0.0.1:41934/assets/preload-helper-BZ1Pz5am.js",
+        "http://127.0.0.1:41934/assets/libheif-bundle-BmxSuLdv.js",
+        "http://127.0.0.1:41934/assets/src-SuYvKHvm.js",
+        "http://127.0.0.1:41934/assets/mammoth.browser-C4-72Yf8.js",
+        "http://127.0.0.1:41934/assets/dist-CL8pu169.js",
+        "http://127.0.0.1:41934/assets/docx-preview-t9k1qJMu.js",
+        "http://127.0.0.1:41934/assets/jszip.min-B7Fa2WXl.js",
+        "http://127.0.0.1:41934/assets/pptxgen.es-DnYj_vjT.js",
+        "http://127.0.0.1:41934/assets/es-DwI2HWNb.js",
+        "http://127.0.0.1:41934/assets/browser-ClCPJ7Bh.js",
+        "http://127.0.0.1:41934/assets/pdf-D8meTUzS.js",
+        "http://127.0.0.1:41934/assets/src-BTc-yaYS.js",
+        "http://127.0.0.1:41934/assets/__vite-browser-external-DpH90L5b.js",
+        "http://127.0.0.1:41934/assets/index.es-DWRrRQ1b.js",
+        "http://127.0.0.1:41934/assets/index.es-BAkBZI1U.js",
+        "http://127.0.0.1:41934/assets/index.es-CBqjg_vO.js",
+        "http://127.0.0.1:41934/assets/browser-BV4XJ9Z2.js",
+        "http://127.0.0.1:41934/corpus/sample-animated.gif",
+        "http://127.0.0.1:41934/assets/xlsx-BKER4Xe2.js",
+        "http://127.0.0.1:41934/assets/mp4box.all-ClpO_XUd.js",
+        "http://127.0.0.1:41934/corpus/ocr-it.png",
+        "http://127.0.0.1:41934/corpus/sample.docx",
+        "http://127.0.0.1:41934/corpus/sample.heic",
+        "http://127.0.0.1:41934/corpus/sample.pdf",
+        "http://127.0.0.1:41934/corpus/sample.mp4",
+        "http://127.0.0.1:41934/corpus/sample.xlsx",
+        "http://127.0.0.1:41934/corpus/sample.zip",
+        "http://127.0.0.1:41934/corpus/sample.gz",
+        "http://127.0.0.1:41934/corpus/sample-unsafe-path.zip",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.zip",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.gz",
+        "http://127.0.0.1:41934/corpus/hostile.eml",
+        "http://127.0.0.1:41934/corpus/sample-200.pdf",
+        "http://127.0.0.1:41934/corpus/sample-10s-720p.mp4",
+        "http://127.0.0.1:41934/corpus/sample.p7m",
+        "http://127.0.0.1:41934/tesseract/worker.min.js",
+        "http://127.0.0.1:41934/corpus/hostile.epub",
+        "http://127.0.0.1:41934/tesseract/core/tesseract-core-relaxedsimd-lstm.wasm.js",
+        "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+        "http://127.0.0.1:41934/corpus/sample.wav",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.p7m",
+        "http://127.0.0.1:41934/corpus/unsupported.msg",
+        "http://127.0.0.1:41934/corpus/sample-unsupported-cms.der",
+        "http://127.0.0.1:41934/tesseract/lang/ita.traineddata.gz"
+      ],
+      "externalRequests": [],
+      "consoleErrors": [
+        "Error: failed to load ./ita.special-words"
+      ],
+      "payload": {
+        "schemaVersion": 1,
+        "generatedAt": "2026-10-06T11:58:09.760Z",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0",
+        "memoryMeasurement": "performance.memory JS heap checkpoints/polling only; excludes WASM linear memory, decoded native surfaces and full browser RSS",
+        "results": [
+          {
+            "id": "browser-capabilities",
+            "family": "platform",
+            "status": "PASS",
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0",
+            "crossOriginIsolated": true,
+            "hardwareConcurrency": 10,
+            "deviceMemoryGiB": 32,
+            "apis": {
+              "webAssembly": true,
+              "worker": true,
+              "createImageBitmap": true,
+              "offscreenCanvas": true,
+              "videoDecoder": true,
+              "videoEncoder": true,
+              "audioDecoder": true,
+              "audioEncoder": true,
+              "offlineAudioContext": true
+            },
+            "codecProbes": {
+              "h264Decode": true,
+              "aacDecode": true
+            }
+          },
+          {
+            "id": "heic-libheif",
+            "family": "heic",
+            "status": "PASS",
+            "candidate": "libheif-js@1.23.5",
+            "coldLoadMs": 104.08000004291534,
+            "value": {
+              "width": 96,
+              "height": 64,
+              "rgbaBytes": 24576,
+              "imageCount": 1
+            },
+            "runtimeMs": 44.50999999046326,
+            "startJsHeapBytes": 21306354,
+            "endJsHeapBytes": 23641968,
+            "peakJsHeapBytes": 23641968,
+            "peakJsHeapDeltaBytes": 2335614
+          },
+          {
+            "id": "ocr-tesseract-ita",
+            "family": "ocr",
+            "status": "PASS",
+            "candidate": "tesseract.js@7.0.0 + ita@1.0.0",
+            "coldLoadMs": 51.18000000715256,
+            "networkPolicy": "same-origin assets only",
+            "value": {
+              "text": "Fattura numero 12345 - Totale euro 678,90",
+              "confidence": 94,
+              "progressEvents": 11
+            },
+            "runtimeMs": 459.7699999809265,
+            "startJsHeapBytes": 19614176,
+            "endJsHeapBytes": 34774066,
+            "peakJsHeapBytes": 42617396,
+            "peakJsHeapDeltaBytes": 23003220
+          },
+          {
+            "id": "office-xlsx",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "xlsx@0.18.5",
+            "coldLoadMs": 148.39500004053116,
+            "value": {
+              "rows": 3,
+              "outputBytes": 8802
+            },
+            "runtimeMs": 11.875,
+            "startJsHeapBytes": 25856626,
+            "endJsHeapBytes": 27951049,
+            "peakJsHeapBytes": 27951049,
+            "peakJsHeapDeltaBytes": 2094423
+          },
+          {
+            "id": "office-docx-extract",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "mammoth@1.13.0",
+            "coldLoadMs": 86.39499998092651,
+            "value": {
+              "text": "Fattura di prova\n\nCliente: Mario Rossi\n\nTotale: 299,90 EUR",
+              "messages": 0
+            },
+            "runtimeMs": 155.3299999833107,
+            "startJsHeapBytes": 20517666,
+            "endJsHeapBytes": 40256466,
+            "peakJsHeapBytes": 40256466,
+            "peakJsHeapDeltaBytes": 19738800
+          },
+          {
+            "id": "office-docx-write",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "docx@9.8.1",
+            "coldLoadMs": 117.09499996900558,
+            "value": {
+              "outputBytes": 9454
+            },
+            "runtimeMs": 205.97500002384186,
+            "startJsHeapBytes": 13819274,
+            "endJsHeapBytes": 40920795,
+            "peakJsHeapBytes": 40920795,
+            "peakJsHeapDeltaBytes": 27101521
+          },
+          {
+            "id": "office-docx-preview",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "docx-preview@0.4.1",
+            "coldLoadMs": 59.2950000166893,
+            "value": {
+              "textLength": 5312,
+              "renderedElements": 13
+            },
+            "runtimeMs": 152.36500000953674,
+            "startJsHeapBytes": 20485864,
+            "endJsHeapBytes": 38910315,
+            "peakJsHeapBytes": 38910315,
+            "peakJsHeapDeltaBytes": 18424451
+          },
+          {
+            "id": "office-pptx-write",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "pptxgenjs@4.0.1",
+            "coldLoadMs": 86.01999998092651,
+            "value": {
+              "outputBytes": 44751
+            },
+            "runtimeMs": 238.71499997377396,
+            "startJsHeapBytes": 11523643,
+            "endJsHeapBytes": 41208328,
+            "peakJsHeapBytes": 41208328,
+            "peakJsHeapDeltaBytes": 29684685
+          },
+          {
+            "id": "pdf-cantoo-mutate",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1",
+            "coldLoadMs": 141.63499999046326,
+            "value": {
+              "pages": 3,
+              "outputBytes": 2166
+            },
+            "runtimeMs": 5.574999988079071,
+            "startJsHeapBytes": 24170963,
+            "endJsHeapBytes": 25045001,
+            "peakJsHeapBytes": 25045001,
+            "peakJsHeapDeltaBytes": 874038
+          },
+          {
+            "id": "pdfjs-render",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "pdfjs-dist@6.4.299",
+            "coldLoadMs": 158.18000000715256,
+            "value": {
+              "pages": 3,
+              "width": 480,
+              "height": 320,
+              "textLength": 51
+            },
+            "runtimeMs": 96.66500002145767,
+            "startJsHeapBytes": 36765023,
+            "endJsHeapBytes": 42480278,
+            "peakJsHeapBytes": 43085396,
+            "peakJsHeapDeltaBytes": 6320373
+          },
+          {
+            "id": "media-mediabunny-inspect",
+            "family": "audio-video",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 161.375,
+            "value": {
+              "videoDuration": 2.0416666666666665,
+              "wavDuration": 2,
+              "videoWidth": 320,
+              "videoHeight": 180,
+              "audioSampleRate": 48000
+            },
+            "runtimeMs": 7.780000030994415,
+            "startJsHeapBytes": 33256157,
+            "endJsHeapBytes": 36069664,
+            "peakJsHeapBytes": 36069664,
+            "peakJsHeapDeltaBytes": 2813507
+          },
+          {
+            "id": "video-mp4box-inspect",
+            "family": "video",
+            "status": "PASS",
+            "candidate": "mp4box@2.4.1",
+            "coldLoadMs": 143.66500002145767,
+            "value": {
+              "duration": 2,
+              "videoTracks": 1,
+              "audioTracks": 1
+            },
+            "runtimeMs": 3.60999995470047,
+            "startJsHeapBytes": 25122645,
+            "endJsHeapBytes": 25562572,
+            "peakJsHeapBytes": 25562572,
+            "peakJsHeapDeltaBytes": 439927
+          },
+          {
+            "id": "audio-native-dsp",
+            "family": "audio",
+            "status": "PASS",
+            "candidate": "Web Audio OfflineAudioContext",
+            "coldLoadMs": 0,
+            "value": {
+              "frames": 96000,
+              "rms": 0.3535533166280829
+            },
+            "runtimeMs": 20.634999990463257,
+            "startJsHeapBytes": 874655,
+            "endJsHeapBytes": 2005984,
+            "peakJsHeapBytes": 2005984,
+            "peakJsHeapDeltaBytes": 1131329
+          },
+          {
+            "id": "cms-pkijs",
+            "family": "cms",
+            "status": "PASS",
+            "candidate": "pkijs@3.4.1 + asn1js@3.0.10",
+            "coldLoadMs": 300.5049999952316,
+            "value": {
+              "payloadBytes": 25,
+              "certificateCount": 1,
+              "signerCount": 1,
+              "subject": [
+                "Strumentini Feasibility",
+                "Local Test"
+              ],
+              "corruptRejected": true,
+              "unsupportedContentType": "1.2.840.113549.1.7.1",
+              "unsupportedRejected": true,
+              "trustChainStatus": "NOT_EVALUATED"
+            },
+            "runtimeMs": 134.82499998807907,
+            "startJsHeapBytes": 20471162,
+            "endJsHeapBytes": 34033018,
+            "peakJsHeapBytes": 36754779,
+            "peakJsHeapDeltaBytes": 16283617
+          },
+          {
+            "id": "archive-fflate",
+            "family": "archive",
+            "status": "PASS",
+            "candidate": "fflate@0.8.3",
+            "coldLoadMs": 142.12000000476837,
+            "value": {
+              "zipInputBytes": 394,
+              "gzipInputBytes": 282,
+              "expandedBytes": 90112,
+              "zipExpansionRatio": 228.71065989847716,
+              "gzipExpansionRatio": 319.54609929078015,
+              "unsafeNames": [
+                "../escape.txt"
+              ],
+              "corruptZipRejected": true,
+              "corruptGzipRejected": true,
+              "cancellation": "SYNC_API_REQUIRES_OUTER_WORKER_TERMINATION_OR_STREAMING_WRAPPER"
+            },
+            "runtimeMs": 93.57499998807907,
+            "startJsHeapBytes": 19970164,
+            "endJsHeapBytes": 35986917,
+            "peakJsHeapBytes": 35986917,
+            "peakJsHeapDeltaBytes": 16016753
+          },
+          {
+            "id": "image-native-modes",
+            "family": "image",
+            "status": "PASS",
+            "candidate": "browser-native image decode/canvas encode",
+            "coldLoadMs": 0,
+            "value": {
+              "gif": {
+                "width": 64,
+                "height": 64,
+                "frameCount": 4,
+                "imageDecoder": true
+              },
+              "encoders": {
+                "jpeg": {
+                  "type": "image/jpeg",
+                  "bytes": 762
+                },
+                "webp": {
+                  "type": "image/webp",
+                  "bytes": 550
+                },
+                "png": {
+                  "type": "image/png",
+                  "bytes": 105
+                },
+                "avif": {
+                  "type": "image/png",
+                  "bytes": 105
+                }
+              },
+              "svgOptimizer": "NO_BROWSER_NATIVE_OPTIMIZER"
+            },
+            "runtimeMs": 206.7699999809265,
+            "startJsHeapBytes": 19993984,
+            "endJsHeapBytes": 39946804,
+            "peakJsHeapBytes": 42617428,
+            "peakJsHeapDeltaBytes": 22623444
+          },
+          {
+            "id": "pdf-large-200",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1 + pdfjs-dist@6.4.299",
+            "coldLoadMs": 283.4800000190735,
+            "value": {
+              "pages": 200,
+              "inputBytes": 94663,
+              "savedBytes": 94684,
+              "cancellationObserved": true
+            },
+            "runtimeMs": 204.00499999523163,
+            "startJsHeapBytes": 36116185,
+            "endJsHeapBytes": 34731769,
+            "peakJsHeapBytes": 42554252,
+            "peakJsHeapDeltaBytes": 6438067
+          },
+          {
+            "id": "video-large-inspect",
+            "family": "video",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 154.13499999046326,
+            "value": {
+              "bytes": 4954611,
+              "duration": 10,
+              "width": 1280,
+              "height": 720,
+              "cancellationSeam": "Input.dispose()"
+            },
+            "runtimeMs": 16.615000009536743,
+            "startJsHeapBytes": 31916372,
+            "endJsHeapBytes": 36331795,
+            "peakJsHeapBytes": 36331795,
+            "peakJsHeapDeltaBytes": 4415423
+          },
+          {
+            "id": "mail-epub-refusal-policy",
+            "family": "mail-ebook",
+            "status": "PASS",
+            "candidate": "no approved EML/MSG/EPUB parser; fflate used only to expose hostile EPUB fixture bytes",
+            "coldLoadMs": 141.38999998569489,
+            "value": {
+              "eml": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "epub": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "msg": {
+                "decision": "REFUSE",
+                "compoundFileSignatureDetected": true,
+                "parser": null
+              },
+              "policy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+            },
+            "runtimeMs": 148.09499996900558,
+            "startJsHeapBytes": 19985788,
+            "endJsHeapBytes": 33228415,
+            "peakJsHeapBytes": 36752823,
+            "peakJsHeapDeltaBytes": 16767035
+          }
+        ]
+      },
+      "resources": [
+        {
+          "url": "http://127.0.0.1:41934/assets/index-DxC9YeHu.js",
+          "transferSize": 19515,
+          "encodedBodySize": 19215,
+          "decodedBodySize": 19215,
+          "durationMs": 10.810000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/rolldown-runtime-C0FnF6B9.js",
+          "transferSize": 1591,
+          "encodedBodySize": 1291,
+          "decodedBodySize": 1291,
+          "durationMs": 10.110000014305115
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/preload-helper-BZ1Pz5am.js",
+          "transferSize": 1518,
+          "encodedBodySize": 1218,
+          "decodedBodySize": 1218,
+          "durationMs": 10.159999966621399
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/libheif-bundle-BmxSuLdv.js",
+          "transferSize": 2040238,
+          "encodedBodySize": 2039938,
+          "decodedBodySize": 2039938,
+          "durationMs": 39.644999980926514
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/src-SuYvKHvm.js",
+          "transferSize": 17585,
+          "encodedBodySize": 17285,
+          "decodedBodySize": 17285,
+          "durationMs": 44.44999998807907
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/mammoth.browser-C4-72Yf8.js",
+          "transferSize": 298961,
+          "encodedBodySize": 298661,
+          "decodedBodySize": 298661,
+          "durationMs": 40.689999997615814
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/dist-CL8pu169.js",
+          "transferSize": 438282,
+          "encodedBodySize": 437982,
+          "decodedBodySize": 437982,
+          "durationMs": 44.0799999833107
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/docx-preview-t9k1qJMu.js",
+          "transferSize": 75895,
+          "encodedBodySize": 75595,
+          "decodedBodySize": 75595,
+          "durationMs": 44.060000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/jszip.min-B7Fa2WXl.js",
+          "transferSize": 96303,
+          "encodedBodySize": 96003,
+          "decodedBodySize": 96003,
+          "durationMs": 44.13499999046326
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pptxgen.es-DnYj_vjT.js",
+          "transferSize": 272956,
+          "encodedBodySize": 272656,
+          "decodedBodySize": 272656,
+          "durationMs": 44.214999973773956
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/es-DwI2HWNb.js",
+          "transferSize": 569069,
+          "encodedBodySize": 568769,
+          "decodedBodySize": 568769,
+          "durationMs": 44.355000019073486
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/browser-ClCPJ7Bh.js",
+          "transferSize": 31684,
+          "encodedBodySize": 31384,
+          "decodedBodySize": 31384,
+          "durationMs": 60.5900000333786
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf-D8meTUzS.js",
+          "transferSize": 431216,
+          "encodedBodySize": 430916,
+          "decodedBodySize": 430916,
+          "durationMs": 60.90000003576279
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/src-BTc-yaYS.js",
+          "transferSize": 695481,
+          "encodedBodySize": 695181,
+          "decodedBodySize": 695181,
+          "durationMs": 61.53999996185303
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/__vite-browser-external-DpH90L5b.js",
+          "transferSize": 455,
+          "encodedBodySize": 155,
+          "decodedBodySize": 155,
+          "durationMs": 60.50999999046326
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-DWRrRQ1b.js",
+          "transferSize": 1461,
+          "encodedBodySize": 1161,
+          "decodedBodySize": 1161,
+          "durationMs": 54.95999997854233
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-BAkBZI1U.js",
+          "transferSize": 56572,
+          "encodedBodySize": 56272,
+          "decodedBodySize": 56272,
+          "durationMs": 55.02500003576279
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-CBqjg_vO.js",
+          "transferSize": 332668,
+          "encodedBodySize": 332368,
+          "decodedBodySize": 332368,
+          "durationMs": 59.05000001192093
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/browser-BV4XJ9Z2.js",
+          "transferSize": 1398,
+          "encodedBodySize": 1098,
+          "decodedBodySize": 1098,
+          "durationMs": 58.7950000166893
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-animated.gif",
+          "transferSize": 4116,
+          "encodedBodySize": 3816,
+          "decodedBodySize": 3816,
+          "durationMs": 59.27999997138977
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/xlsx-BKER4Xe2.js",
+          "transferSize": 424255,
+          "encodedBodySize": 423955,
+          "decodedBodySize": 423955,
+          "durationMs": 58.42500001192093
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/mp4box.all-ClpO_XUd.js",
+          "transferSize": 182731,
+          "encodedBodySize": 182431,
+          "decodedBodySize": 182431,
+          "durationMs": 59.49000000953674
+        },
+        {
+          "url": "http://127.0.0.1:41934/favicon.ico",
+          "transferSize": 0,
+          "encodedBodySize": 0,
+          "decodedBodySize": 0,
+          "durationMs": 7.2200000286102295
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/ocr-it.png",
+          "transferSize": 14605,
+          "encodedBodySize": 14305,
+          "decodedBodySize": 14305,
+          "durationMs": 18.0900000333786
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.docx",
+          "transferSize": 9803,
+          "encodedBodySize": 9503,
+          "decodedBodySize": 9503,
+          "durationMs": 13.839999973773956
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.docx",
+          "transferSize": 9803,
+          "encodedBodySize": 9503,
+          "decodedBodySize": 9503,
+          "durationMs": 2.2850000262260437
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.heic",
+          "transferSize": 788,
+          "encodedBodySize": 488,
+          "decodedBodySize": 488,
+          "durationMs": 3.560000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.pdf",
+          "transferSize": 2444,
+          "encodedBodySize": 2144,
+          "decodedBodySize": 2144,
+          "durationMs": 3.8949999809265137
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.mp4",
+          "transferSize": 77160,
+          "encodedBodySize": 76860,
+          "decodedBodySize": 76860,
+          "durationMs": 2.1600000262260437
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.xlsx",
+          "transferSize": 8998,
+          "encodedBodySize": 8698,
+          "decodedBodySize": 8698,
+          "durationMs": 1.8149999976158142
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.zip",
+          "transferSize": 694,
+          "encodedBodySize": 394,
+          "decodedBodySize": 394,
+          "durationMs": 3.8550000190734863
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.gz",
+          "transferSize": 582,
+          "encodedBodySize": 282,
+          "decodedBodySize": 282,
+          "durationMs": 3.990000009536743
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-unsafe-path.zip",
+          "transferSize": 464,
+          "encodedBodySize": 164,
+          "decodedBodySize": 164,
+          "durationMs": 4.024999976158142
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.zip",
+          "transferSize": 682,
+          "encodedBodySize": 382,
+          "decodedBodySize": 382,
+          "durationMs": 4.120000004768372
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.gz",
+          "transferSize": 574,
+          "encodedBodySize": 274,
+          "decodedBodySize": 274,
+          "durationMs": 4.164999961853027
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/hostile.eml",
+          "transferSize": 653,
+          "encodedBodySize": 353,
+          "decodedBodySize": 353,
+          "durationMs": 4.030000030994415
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-200.pdf",
+          "transferSize": 94963,
+          "encodedBodySize": 94663,
+          "decodedBodySize": 94663,
+          "durationMs": 6.694999992847443
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.pdf",
+          "transferSize": 2444,
+          "encodedBodySize": 2144,
+          "decodedBodySize": 2144,
+          "durationMs": 6.949999988079071
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.mp4",
+          "transferSize": 77160,
+          "encodedBodySize": 76860,
+          "decodedBodySize": 76860,
+          "durationMs": 5.694999992847443
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-10s-720p.mp4",
+          "transferSize": 4954911,
+          "encodedBodySize": 4954611,
+          "decodedBodySize": 4954611,
+          "durationMs": 95.91000002622604
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.p7m",
+          "transferSize": 1849,
+          "encodedBodySize": 1549,
+          "decodedBodySize": 1549,
+          "durationMs": 37.330000042915344
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/hostile.epub",
+          "transferSize": 1139,
+          "encodedBodySize": 839,
+          "decodedBodySize": 839,
+          "durationMs": 2.7850000262260437
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.wav",
+          "transferSize": 192378,
+          "encodedBodySize": 192078,
+          "decodedBodySize": 192078,
+          "durationMs": 4.700000047683716
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.p7m",
+          "transferSize": 1074,
+          "encodedBodySize": 774,
+          "decodedBodySize": 774,
+          "durationMs": 3.574999988079071
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+          "transferSize": 2230013,
+          "encodedBodySize": 2229713,
+          "decodedBodySize": 2229713,
+          "durationMs": 2.4200000166893005
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/unsupported.msg",
+          "transferSize": 812,
+          "encodedBodySize": 512,
+          "decodedBodySize": 512,
+          "durationMs": 3.915000021457672
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-unsupported-cms.der",
+          "transferSize": 328,
+          "encodedBodySize": 28,
+          "decodedBodySize": 28,
+          "durationMs": 3.5699999928474426
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+          "transferSize": 2230013,
+          "encodedBodySize": 2229713,
+          "decodedBodySize": 2229713,
+          "durationMs": 2.240000009536743
+        }
+      ]
+    },
+    {
+      "engine": "chromium",
+      "label": "Playwright Chromium",
+      "classification": "desktop-regression",
+      "status": "OBSERVED",
+      "wallMs": 699.6551670000008,
+      "localRequests": [
+        "http://127.0.0.1:41934/",
+        "http://127.0.0.1:41934/assets/index-DxC9YeHu.js",
+        "http://127.0.0.1:41934/assets/rolldown-runtime-C0FnF6B9.js",
+        "http://127.0.0.1:41934/assets/preload-helper-BZ1Pz5am.js",
+        "http://127.0.0.1:41934/assets/libheif-bundle-BmxSuLdv.js",
+        "http://127.0.0.1:41934/assets/src-SuYvKHvm.js",
+        "http://127.0.0.1:41934/assets/mammoth.browser-C4-72Yf8.js",
+        "http://127.0.0.1:41934/assets/dist-CL8pu169.js",
+        "http://127.0.0.1:41934/assets/docx-preview-t9k1qJMu.js",
+        "http://127.0.0.1:41934/assets/jszip.min-B7Fa2WXl.js",
+        "http://127.0.0.1:41934/assets/pptxgen.es-DnYj_vjT.js",
+        "http://127.0.0.1:41934/assets/es-DwI2HWNb.js",
+        "http://127.0.0.1:41934/assets/browser-ClCPJ7Bh.js",
+        "http://127.0.0.1:41934/assets/pdf-D8meTUzS.js",
+        "http://127.0.0.1:41934/assets/src-BTc-yaYS.js",
+        "http://127.0.0.1:41934/assets/__vite-browser-external-DpH90L5b.js",
+        "http://127.0.0.1:41934/assets/index.es-DWRrRQ1b.js",
+        "http://127.0.0.1:41934/assets/index.es-BAkBZI1U.js",
+        "http://127.0.0.1:41934/assets/index.es-CBqjg_vO.js",
+        "http://127.0.0.1:41934/assets/browser-BV4XJ9Z2.js",
+        "http://127.0.0.1:41934/corpus/sample-animated.gif",
+        "http://127.0.0.1:41934/assets/xlsx-BKER4Xe2.js",
+        "http://127.0.0.1:41934/assets/mp4box.all-ClpO_XUd.js",
+        "http://127.0.0.1:41934/corpus/ocr-it.png",
+        "http://127.0.0.1:41934/corpus/sample.docx",
+        "http://127.0.0.1:41934/corpus/sample.heic",
+        "http://127.0.0.1:41934/corpus/sample.mp4",
+        "http://127.0.0.1:41934/corpus/sample.pdf",
+        "http://127.0.0.1:41934/corpus/sample-200.pdf",
+        "http://127.0.0.1:41934/corpus/sample.zip",
+        "http://127.0.0.1:41934/corpus/sample.gz",
+        "http://127.0.0.1:41934/corpus/sample-unsafe-path.zip",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.zip",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.gz",
+        "http://127.0.0.1:41934/corpus/hostile.eml",
+        "http://127.0.0.1:41934/corpus/sample-10s-720p.mp4",
+        "http://127.0.0.1:41934/corpus/sample.p7m",
+        "http://127.0.0.1:41934/corpus/sample.xlsx",
+        "http://127.0.0.1:41934/tesseract/worker.min.js",
+        "http://127.0.0.1:41934/tesseract/core/tesseract-core-relaxedsimd-lstm.wasm.js",
+        "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+        "http://127.0.0.1:41934/corpus/hostile.epub",
+        "http://127.0.0.1:41934/corpus/sample.wav",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.p7m",
+        "http://127.0.0.1:41934/corpus/unsupported.msg",
+        "http://127.0.0.1:41934/corpus/sample-unsupported-cms.der",
+        "http://127.0.0.1:41934/tesseract/lang/ita.traineddata.gz"
+      ],
+      "externalRequests": [],
+      "consoleErrors": [
+        "Error: failed to load ./ita.special-words"
+      ],
+      "payload": {
+        "schemaVersion": 1,
+        "generatedAt": "2026-10-06T11:58:11.618Z",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+        "memoryMeasurement": "performance.memory JS heap checkpoints/polling only; excludes WASM linear memory, decoded native surfaces and full browser RSS",
+        "results": [
+          {
+            "id": "browser-capabilities",
+            "family": "platform",
+            "status": "PASS",
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+            "crossOriginIsolated": true,
+            "hardwareConcurrency": 10,
+            "deviceMemoryGiB": 32,
+            "apis": {
+              "webAssembly": true,
+              "worker": true,
+              "createImageBitmap": true,
+              "offscreenCanvas": true,
+              "videoDecoder": true,
+              "videoEncoder": true,
+              "audioDecoder": true,
+              "audioEncoder": true,
+              "offlineAudioContext": true
+            },
+            "codecProbes": {
+              "h264Decode": true,
+              "aacDecode": true
+            }
+          },
+          {
+            "id": "heic-libheif",
+            "family": "heic",
+            "status": "PASS",
+            "candidate": "libheif-js@1.23.5",
+            "coldLoadMs": 109.66499996185303,
+            "value": {
+              "width": 96,
+              "height": 64,
+              "rgbaBytes": 24576,
+              "imageCount": 1
+            },
+            "runtimeMs": 47.889999985694885,
+            "startJsHeapBytes": 20696888,
+            "endJsHeapBytes": 25760193,
+            "peakJsHeapBytes": 25760193,
+            "peakJsHeapDeltaBytes": 5063305
+          },
+          {
+            "id": "ocr-tesseract-ita",
+            "family": "ocr",
+            "status": "PASS",
+            "candidate": "tesseract.js@7.0.0 + ita@1.0.0",
+            "coldLoadMs": 58.39999997615814,
+            "networkPolicy": "same-origin assets only",
+            "value": {
+              "text": "Fattura numero 12345 - Totale euro 678,90",
+              "confidence": 94,
+              "progressEvents": 11
+            },
+            "runtimeMs": 461.6550000309944,
+            "startJsHeapBytes": 19489185,
+            "endJsHeapBytes": 41506222,
+            "peakJsHeapBytes": 41506247,
+            "peakJsHeapDeltaBytes": 22017062
+          },
+          {
+            "id": "office-xlsx",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "xlsx@0.18.5",
+            "coldLoadMs": 162.87999999523163,
+            "value": {
+              "rows": 3,
+              "outputBytes": 8802
+            },
+            "runtimeMs": 11.77999997138977,
+            "startJsHeapBytes": 24135667,
+            "endJsHeapBytes": 26234822,
+            "peakJsHeapBytes": 26234822,
+            "peakJsHeapDeltaBytes": 2099155
+          },
+          {
+            "id": "office-docx-extract",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "mammoth@1.13.0",
+            "coldLoadMs": 84.7950000166893,
+            "value": {
+              "text": "Fattura di prova\n\nCliente: Mario Rossi\n\nTotale: 299,90 EUR",
+              "messages": 0
+            },
+            "runtimeMs": 248.5600000023842,
+            "startJsHeapBytes": 20457127,
+            "endJsHeapBytes": 42134487,
+            "peakJsHeapBytes": 42134487,
+            "peakJsHeapDeltaBytes": 21677360
+          },
+          {
+            "id": "office-docx-write",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "docx@9.8.1",
+            "coldLoadMs": 121.41999995708466,
+            "value": {
+              "outputBytes": 9453
+            },
+            "runtimeMs": 187.8850000500679,
+            "startJsHeapBytes": 15763522,
+            "endJsHeapBytes": 38270178,
+            "peakJsHeapBytes": 38270178,
+            "peakJsHeapDeltaBytes": 22506656
+          },
+          {
+            "id": "office-docx-preview",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "docx-preview@0.4.1",
+            "coldLoadMs": 95.05000001192093,
+            "value": {
+              "textLength": 5312,
+              "renderedElements": 13
+            },
+            "runtimeMs": 137.49500000476837,
+            "startJsHeapBytes": 20676465,
+            "endJsHeapBytes": 36600898,
+            "peakJsHeapBytes": 38571688,
+            "peakJsHeapDeltaBytes": 17895223
+          },
+          {
+            "id": "office-pptx-write",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "pptxgenjs@4.0.1",
+            "coldLoadMs": 95.42500001192093,
+            "value": {
+              "outputBytes": 44751
+            },
+            "runtimeMs": 214.71499997377396,
+            "startJsHeapBytes": 13687754,
+            "endJsHeapBytes": 38468475,
+            "peakJsHeapBytes": 38468475,
+            "peakJsHeapDeltaBytes": 24780721
+          },
+          {
+            "id": "pdf-cantoo-mutate",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1",
+            "coldLoadMs": 145.25499999523163,
+            "value": {
+              "pages": 3,
+              "outputBytes": 2167
+            },
+            "runtimeMs": 6.535000026226044,
+            "startJsHeapBytes": 23886395,
+            "endJsHeapBytes": 25141167,
+            "peakJsHeapBytes": 25141167,
+            "peakJsHeapDeltaBytes": 1254772
+          },
+          {
+            "id": "pdfjs-render",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "pdfjs-dist@6.4.299",
+            "coldLoadMs": 151.74000000953674,
+            "value": {
+              "pages": 3,
+              "width": 480,
+              "height": 320,
+              "textLength": 51
+            },
+            "runtimeMs": 150.00999999046326,
+            "startJsHeapBytes": 25308507,
+            "endJsHeapBytes": 41848460,
+            "peakJsHeapBytes": 41848460,
+            "peakJsHeapDeltaBytes": 16539953
+          },
+          {
+            "id": "media-mediabunny-inspect",
+            "family": "audio-video",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 157.9350000023842,
+            "value": {
+              "videoDuration": 2.0416666666666665,
+              "wavDuration": 2,
+              "videoWidth": 320,
+              "videoHeight": 180,
+              "audioSampleRate": 48000
+            },
+            "runtimeMs": 9.0450000166893,
+            "startJsHeapBytes": 34030425,
+            "endJsHeapBytes": 37021852,
+            "peakJsHeapBytes": 37021852,
+            "peakJsHeapDeltaBytes": 2991427
+          },
+          {
+            "id": "video-mp4box-inspect",
+            "family": "video",
+            "status": "PASS",
+            "candidate": "mp4box@2.4.1",
+            "coldLoadMs": 132.8200000524521,
+            "value": {
+              "duration": 2,
+              "videoTracks": 1,
+              "audioTracks": 1
+            },
+            "runtimeMs": 3.8700000047683716,
+            "startJsHeapBytes": 23496440,
+            "endJsHeapBytes": 23882727,
+            "peakJsHeapBytes": 23882727,
+            "peakJsHeapDeltaBytes": 386287
+          },
+          {
+            "id": "audio-native-dsp",
+            "family": "audio",
+            "status": "PASS",
+            "candidate": "Web Audio OfflineAudioContext",
+            "coldLoadMs": 0,
+            "value": {
+              "frames": 96000,
+              "rms": 0.3535533166280829
+            },
+            "runtimeMs": 14.019999980926514,
+            "startJsHeapBytes": 912903,
+            "endJsHeapBytes": 1583354,
+            "peakJsHeapBytes": 1583354,
+            "peakJsHeapDeltaBytes": 670451
+          },
+          {
+            "id": "cms-pkijs",
+            "family": "cms",
+            "status": "PASS",
+            "candidate": "pkijs@3.4.1 + asn1js@3.0.10",
+            "coldLoadMs": 279.44999998807907,
+            "value": {
+              "payloadBytes": 25,
+              "certificateCount": 1,
+              "signerCount": 1,
+              "subject": [
+                "Strumentini Feasibility",
+                "Local Test"
+              ],
+              "corruptRejected": true,
+              "unsupportedContentType": "1.2.840.113549.1.7.1",
+              "unsupportedRejected": true,
+              "trustChainStatus": "NOT_EVALUATED"
+            },
+            "runtimeMs": 129.05000001192093,
+            "startJsHeapBytes": 20681998,
+            "endJsHeapBytes": 37730500,
+            "peakJsHeapBytes": 37730500,
+            "peakJsHeapDeltaBytes": 17048502
+          },
+          {
+            "id": "archive-fflate",
+            "family": "archive",
+            "status": "PASS",
+            "candidate": "fflate@0.8.3",
+            "coldLoadMs": 146.24000000953674,
+            "value": {
+              "zipInputBytes": 394,
+              "gzipInputBytes": 282,
+              "expandedBytes": 90112,
+              "zipExpansionRatio": 228.71065989847716,
+              "gzipExpansionRatio": 319.54609929078015,
+              "unsafeNames": [
+                "../escape.txt"
+              ],
+              "corruptZipRejected": true,
+              "corruptGzipRejected": true,
+              "cancellation": "SYNC_API_REQUIRES_OUTER_WORKER_TERMINATION_OR_STREAMING_WRAPPER"
+            },
+            "runtimeMs": 70.34999996423721,
+            "startJsHeapBytes": 19455096,
+            "endJsHeapBytes": 35082861,
+            "peakJsHeapBytes": 35082861,
+            "peakJsHeapDeltaBytes": 15627765
+          },
+          {
+            "id": "image-native-modes",
+            "family": "image",
+            "status": "PASS",
+            "candidate": "browser-native image decode/canvas encode",
+            "coldLoadMs": 0,
+            "value": {
+              "gif": {
+                "width": 64,
+                "height": 64,
+                "frameCount": 4,
+                "imageDecoder": true
+              },
+              "encoders": {
+                "jpeg": {
+                  "type": "image/jpeg",
+                  "bytes": 762
+                },
+                "webp": {
+                  "type": "image/webp",
+                  "bytes": 550
+                },
+                "png": {
+                  "type": "image/png",
+                  "bytes": 105
+                },
+                "avif": {
+                  "type": "image/png",
+                  "bytes": 105
+                }
+              },
+              "svgOptimizer": "NO_BROWSER_NATIVE_OPTIMIZER"
+            },
+            "runtimeMs": 200.75999999046326,
+            "startJsHeapBytes": 19448024,
+            "endJsHeapBytes": 40840932,
+            "peakJsHeapBytes": 41332204,
+            "peakJsHeapDeltaBytes": 21884180
+          },
+          {
+            "id": "pdf-large-200",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1 + pdfjs-dist@6.4.299",
+            "coldLoadMs": 280.7649999856949,
+            "value": {
+              "pages": 200,
+              "inputBytes": 94663,
+              "savedBytes": 94684,
+              "cancellationObserved": true
+            },
+            "runtimeMs": 227.1899999976158,
+            "startJsHeapBytes": 25626159,
+            "endJsHeapBytes": 41463849,
+            "peakJsHeapBytes": 41506279,
+            "peakJsHeapDeltaBytes": 15880120
+          },
+          {
+            "id": "video-large-inspect",
+            "family": "video",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 149.80000001192093,
+            "value": {
+              "bytes": 4954611,
+              "duration": 10,
+              "width": 1280,
+              "height": 720,
+              "cancellationSeam": "Input.dispose()"
+            },
+            "runtimeMs": 14.114999949932098,
+            "startJsHeapBytes": 33078169,
+            "endJsHeapBytes": 37218471,
+            "peakJsHeapBytes": 37218471,
+            "peakJsHeapDeltaBytes": 4140302
+          },
+          {
+            "id": "mail-epub-refusal-policy",
+            "family": "mail-ebook",
+            "status": "PASS",
+            "candidate": "no approved EML/MSG/EPUB parser; fflate used only to expose hostile EPUB fixture bytes",
+            "coldLoadMs": 146.0700000524521,
+            "value": {
+              "eml": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "epub": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "msg": {
+                "decision": "REFUSE",
+                "compoundFileSignatureDetected": true,
+                "parser": null
+              },
+              "policy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+            },
+            "runtimeMs": 132.38499999046326,
+            "startJsHeapBytes": 19470504,
+            "endJsHeapBytes": 37411473,
+            "peakJsHeapBytes": 37411473,
+            "peakJsHeapDeltaBytes": 17940969
+          }
+        ]
+      },
+      "resources": [
+        {
+          "url": "http://127.0.0.1:41934/assets/index-DxC9YeHu.js",
+          "transferSize": 19515,
+          "encodedBodySize": 19215,
+          "decodedBodySize": 19215,
+          "durationMs": 17.57499998807907
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/rolldown-runtime-C0FnF6B9.js",
+          "transferSize": 1591,
+          "encodedBodySize": 1291,
+          "decodedBodySize": 1291,
+          "durationMs": 18.530000030994415
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/preload-helper-BZ1Pz5am.js",
+          "transferSize": 1518,
+          "encodedBodySize": 1218,
+          "decodedBodySize": 1218,
+          "durationMs": 17.975000023841858
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/libheif-bundle-BmxSuLdv.js",
+          "transferSize": 2040238,
+          "encodedBodySize": 2039938,
+          "decodedBodySize": 2039938,
+          "durationMs": 53.969999969005585
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/src-SuYvKHvm.js",
+          "transferSize": 17585,
+          "encodedBodySize": 17285,
+          "decodedBodySize": 17285,
+          "durationMs": 55.58499997854233
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/mammoth.browser-C4-72Yf8.js",
+          "transferSize": 298961,
+          "encodedBodySize": 298661,
+          "decodedBodySize": 298661,
+          "durationMs": 56.67500001192093
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/dist-CL8pu169.js",
+          "transferSize": 438282,
+          "encodedBodySize": 437982,
+          "decodedBodySize": 437982,
+          "durationMs": 58.519999980926514
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/docx-preview-t9k1qJMu.js",
+          "transferSize": 75895,
+          "encodedBodySize": 75595,
+          "decodedBodySize": 75595,
+          "durationMs": 58.25
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/jszip.min-B7Fa2WXl.js",
+          "transferSize": 96303,
+          "encodedBodySize": 96003,
+          "decodedBodySize": 96003,
+          "durationMs": 58.49500000476837
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pptxgen.es-DnYj_vjT.js",
+          "transferSize": 272956,
+          "encodedBodySize": 272656,
+          "decodedBodySize": 272656,
+          "durationMs": 59.60999995470047
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/es-DwI2HWNb.js",
+          "transferSize": 569069,
+          "encodedBodySize": 568769,
+          "decodedBodySize": 568769,
+          "durationMs": 65.92500001192093
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/browser-ClCPJ7Bh.js",
+          "transferSize": 31684,
+          "encodedBodySize": 31384,
+          "decodedBodySize": 31384,
+          "durationMs": 65.53999996185303
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf-D8meTUzS.js",
+          "transferSize": 431216,
+          "encodedBodySize": 430916,
+          "decodedBodySize": 430916,
+          "durationMs": 70.0450000166893
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/src-BTc-yaYS.js",
+          "transferSize": 695481,
+          "encodedBodySize": 695181,
+          "decodedBodySize": 695181,
+          "durationMs": 71.00999999046326
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/__vite-browser-external-DpH90L5b.js",
+          "transferSize": 455,
+          "encodedBodySize": 155,
+          "decodedBodySize": 155,
+          "durationMs": 70.2950000166893
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-DWRrRQ1b.js",
+          "transferSize": 1461,
+          "encodedBodySize": 1161,
+          "decodedBodySize": 1161,
+          "durationMs": 63.875
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-BAkBZI1U.js",
+          "transferSize": 56572,
+          "encodedBodySize": 56272,
+          "decodedBodySize": 56272,
+          "durationMs": 64.00999999046326
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-CBqjg_vO.js",
+          "transferSize": 332668,
+          "encodedBodySize": 332368,
+          "decodedBodySize": 332368,
+          "durationMs": 64.10500001907349
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/browser-BV4XJ9Z2.js",
+          "transferSize": 1398,
+          "encodedBodySize": 1098,
+          "decodedBodySize": 1098,
+          "durationMs": 73.89999997615814
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-animated.gif",
+          "transferSize": 4116,
+          "encodedBodySize": 3816,
+          "decodedBodySize": 3816,
+          "durationMs": 73.51999998092651
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/xlsx-BKER4Xe2.js",
+          "transferSize": 424255,
+          "encodedBodySize": 423955,
+          "decodedBodySize": 423955,
+          "durationMs": 73.99000000953674
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/mp4box.all-ClpO_XUd.js",
+          "transferSize": 182731,
+          "encodedBodySize": 182431,
+          "decodedBodySize": 182431,
+          "durationMs": 73.7849999666214
+        },
+        {
+          "url": "http://127.0.0.1:41934/favicon.ico",
+          "transferSize": 0,
+          "encodedBodySize": 0,
+          "decodedBodySize": 0,
+          "durationMs": 36.41500002145767
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/ocr-it.png",
+          "transferSize": 14605,
+          "encodedBodySize": 14305,
+          "decodedBodySize": 14305,
+          "durationMs": 25.069999992847443
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.docx",
+          "transferSize": 9803,
+          "encodedBodySize": 9503,
+          "decodedBodySize": 9503,
+          "durationMs": 5.810000002384186
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.docx",
+          "transferSize": 9803,
+          "encodedBodySize": 9503,
+          "decodedBodySize": 9503,
+          "durationMs": 9.805000007152557
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.heic",
+          "transferSize": 788,
+          "encodedBodySize": 488,
+          "decodedBodySize": 488,
+          "durationMs": 2.64000004529953
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.mp4",
+          "transferSize": 77160,
+          "encodedBodySize": 76860,
+          "decodedBodySize": 76860,
+          "durationMs": 2.415000021457672
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.pdf",
+          "transferSize": 2444,
+          "encodedBodySize": 2144,
+          "decodedBodySize": 2144,
+          "durationMs": 2.334999978542328
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.pdf",
+          "transferSize": 2444,
+          "encodedBodySize": 2144,
+          "decodedBodySize": 2144,
+          "durationMs": 3.115000009536743
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-200.pdf",
+          "transferSize": 94963,
+          "encodedBodySize": 94663,
+          "decodedBodySize": 94663,
+          "durationMs": 4.424999952316284
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.zip",
+          "transferSize": 694,
+          "encodedBodySize": 394,
+          "decodedBodySize": 394,
+          "durationMs": 4.385000050067902
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.gz",
+          "transferSize": 582,
+          "encodedBodySize": 282,
+          "decodedBodySize": 282,
+          "durationMs": 4.459999978542328
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-unsafe-path.zip",
+          "transferSize": 464,
+          "encodedBodySize": 164,
+          "decodedBodySize": 164,
+          "durationMs": 4.75
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.zip",
+          "transferSize": 682,
+          "encodedBodySize": 382,
+          "decodedBodySize": 382,
+          "durationMs": 4.48499995470047
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.gz",
+          "transferSize": 574,
+          "encodedBodySize": 274,
+          "decodedBodySize": 274,
+          "durationMs": 4.735000014305115
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/hostile.eml",
+          "transferSize": 653,
+          "encodedBodySize": 353,
+          "decodedBodySize": 353,
+          "durationMs": 4.669999957084656
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.mp4",
+          "transferSize": 77160,
+          "encodedBodySize": 76860,
+          "decodedBodySize": 76860,
+          "durationMs": 3.9449999928474426
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-10s-720p.mp4",
+          "transferSize": 4954911,
+          "encodedBodySize": 4954611,
+          "decodedBodySize": 4954611,
+          "durationMs": 93.47499996423721
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.p7m",
+          "transferSize": 1849,
+          "encodedBodySize": 1549,
+          "decodedBodySize": 1549,
+          "durationMs": 3.759999990463257
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.xlsx",
+          "transferSize": 8998,
+          "encodedBodySize": 8698,
+          "decodedBodySize": 8698,
+          "durationMs": 3.3600000143051147
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/hostile.epub",
+          "transferSize": 1139,
+          "encodedBodySize": 839,
+          "decodedBodySize": 839,
+          "durationMs": 9.235000014305115
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.wav",
+          "transferSize": 192378,
+          "encodedBodySize": 192078,
+          "decodedBodySize": 192078,
+          "durationMs": 8.22000002861023
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.p7m",
+          "transferSize": 1074,
+          "encodedBodySize": 774,
+          "decodedBodySize": 774,
+          "durationMs": 20.414999961853027
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+          "transferSize": 2230013,
+          "encodedBodySize": 2229713,
+          "decodedBodySize": 2229713,
+          "durationMs": 2.5949999690055847
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/unsupported.msg",
+          "transferSize": 812,
+          "encodedBodySize": 512,
+          "decodedBodySize": 512,
+          "durationMs": 4.534999966621399
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-unsupported-cms.der",
+          "transferSize": 328,
+          "encodedBodySize": 28,
+          "decodedBodySize": 28,
+          "durationMs": 3.399999976158142
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+          "transferSize": 2230013,
+          "encodedBodySize": 2229713,
+          "decodedBodySize": 2229713,
+          "durationMs": 1.7300000190734863
+        }
+      ]
+    },
+    {
+      "engine": "firefox",
+      "label": "Playwright Firefox",
+      "classification": "desktop-regression",
+      "status": "OBSERVED",
+      "wallMs": 1011.1140000000014,
+      "localRequests": [
+        "http://127.0.0.1:41934/",
+        "http://127.0.0.1:41934/assets/index-DxC9YeHu.js",
+        "http://127.0.0.1:41934/assets/rolldown-runtime-C0FnF6B9.js",
+        "http://127.0.0.1:41934/assets/preload-helper-BZ1Pz5am.js",
+        "http://127.0.0.1:41934/assets/libheif-bundle-BmxSuLdv.js",
+        "http://127.0.0.1:41934/assets/src-SuYvKHvm.js",
+        "http://127.0.0.1:41934/assets/mammoth.browser-C4-72Yf8.js",
+        "http://127.0.0.1:41934/assets/dist-CL8pu169.js",
+        "http://127.0.0.1:41934/assets/docx-preview-t9k1qJMu.js",
+        "http://127.0.0.1:41934/assets/jszip.min-B7Fa2WXl.js",
+        "http://127.0.0.1:41934/assets/pptxgen.es-DnYj_vjT.js",
+        "http://127.0.0.1:41934/assets/es-DwI2HWNb.js",
+        "http://127.0.0.1:41934/assets/browser-ClCPJ7Bh.js",
+        "http://127.0.0.1:41934/assets/pdf-D8meTUzS.js",
+        "http://127.0.0.1:41934/assets/src-BTc-yaYS.js",
+        "http://127.0.0.1:41934/assets/__vite-browser-external-DpH90L5b.js",
+        "http://127.0.0.1:41934/assets/index.es-DWRrRQ1b.js",
+        "http://127.0.0.1:41934/assets/index.es-BAkBZI1U.js",
+        "http://127.0.0.1:41934/assets/index.es-CBqjg_vO.js",
+        "http://127.0.0.1:41934/assets/browser-BV4XJ9Z2.js",
+        "http://127.0.0.1:41934/assets/xlsx-BKER4Xe2.js",
+        "http://127.0.0.1:41934/assets/mp4box.all-ClpO_XUd.js",
+        "http://127.0.0.1:41934/corpus/sample-animated.gif",
+        "http://127.0.0.1:41934/corpus/sample.docx",
+        "http://127.0.0.1:41934/corpus/ocr-it.png",
+        "http://127.0.0.1:41934/corpus/sample.zip",
+        "http://127.0.0.1:41934/corpus/sample.gz",
+        "http://127.0.0.1:41934/corpus/sample-unsafe-path.zip",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.zip",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.gz",
+        "http://127.0.0.1:41934/corpus/hostile.eml",
+        "http://127.0.0.1:41934/corpus/sample.pdf",
+        "http://127.0.0.1:41934/corpus/sample.heic",
+        "http://127.0.0.1:41934/corpus/sample.mp4",
+        "http://127.0.0.1:41934/corpus/sample-10s-720p.mp4",
+        "http://127.0.0.1:41934/corpus/sample.xlsx",
+        "http://127.0.0.1:41934/corpus/sample-200.pdf",
+        "http://127.0.0.1:41934/corpus/sample.p7m",
+        "http://127.0.0.1:41934/corpus/hostile.epub",
+        "http://127.0.0.1:41934/corpus/sample.wav",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.p7m",
+        "http://127.0.0.1:41934/corpus/unsupported.msg",
+        "http://127.0.0.1:41934/corpus/sample-unsupported-cms.der",
+        "http://127.0.0.1:41934/tesseract/worker.min.js",
+        "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+        "http://127.0.0.1:41934/tesseract/core/tesseract-core-relaxedsimd-lstm.wasm.js",
+        "http://127.0.0.1:41934/tesseract/lang/ita.traineddata.gz"
+      ],
+      "externalRequests": [],
+      "consoleErrors": [
+        "Error: failed to load ./ita.special-words"
+      ],
+      "payload": {
+        "schemaVersion": 1,
+        "generatedAt": "2026-10-06T11:58:14.234Z",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:155.0) Gecko/20100101 Firefox/155.0",
+        "memoryMeasurement": "performance.memory JS heap checkpoints/polling only; excludes WASM linear memory, decoded native surfaces and full browser RSS",
+        "results": [
+          {
+            "id": "browser-capabilities",
+            "family": "platform",
+            "status": "PASS",
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:155.0) Gecko/20100101 Firefox/155.0",
+            "crossOriginIsolated": true,
+            "hardwareConcurrency": 10,
+            "deviceMemoryGiB": null,
+            "apis": {
+              "webAssembly": true,
+              "worker": true,
+              "createImageBitmap": true,
+              "offscreenCanvas": true,
+              "videoDecoder": true,
+              "videoEncoder": true,
+              "audioDecoder": true,
+              "audioEncoder": true,
+              "offlineAudioContext": true
+            },
+            "codecProbes": {
+              "h264Decode": true,
+              "aacDecode": true
+            }
+          },
+          {
+            "id": "heic-libheif",
+            "family": "heic",
+            "status": "PASS",
+            "candidate": "libheif-js@1.23.5",
+            "coldLoadMs": 94.65999999999997,
+            "value": {
+              "width": 96,
+              "height": 64,
+              "rgbaBytes": 24576,
+              "imageCount": 1
+            },
+            "runtimeMs": 48.04000000000002,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "ocr-tesseract-ita",
+            "family": "ocr",
+            "status": "PASS",
+            "candidate": "tesseract.js@7.0.0 + ita@1.0.0",
+            "coldLoadMs": 36.19999999999999,
+            "networkPolicy": "same-origin assets only",
+            "value": {
+              "text": "Fattura numero 12345 - Totale euro 678,90",
+              "confidence": 94,
+              "progressEvents": 11
+            },
+            "runtimeMs": 595.3,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "office-xlsx",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "xlsx@0.18.5",
+            "coldLoadMs": 116.53999999999999,
+            "value": {
+              "rows": 3,
+              "outputBytes": 8802
+            },
+            "runtimeMs": 9.660000000000025,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "office-docx-extract",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "mammoth@1.13.0",
+            "coldLoadMs": 66.00000000000003,
+            "value": {
+              "text": "Fattura di prova\n\nCliente: Mario Rossi\n\nTotale: 299,90 EUR",
+              "messages": 0
+            },
+            "runtimeMs": 109.25999999999999,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "office-docx-write",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "docx@9.8.1",
+            "coldLoadMs": 93.84,
+            "value": {
+              "outputBytes": 9454
+            },
+            "runtimeMs": 197.26,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "office-docx-preview",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "docx-preview@0.4.1",
+            "coldLoadMs": 35.66,
+            "value": {
+              "textLength": 5312,
+              "renderedElements": 13
+            },
+            "runtimeMs": 109.86000000000001,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "office-pptx-write",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "pptxgenjs@4.0.1",
+            "coldLoadMs": 40.420000000000016,
+            "value": {
+              "outputBytes": 44751
+            },
+            "runtimeMs": 252.26000000000005,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "pdf-cantoo-mutate",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1",
+            "coldLoadMs": 93.39999999999998,
+            "value": {
+              "pages": 3,
+              "outputBytes": 2167
+            },
+            "runtimeMs": 4.600000000000023,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "pdfjs-render",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "pdfjs-dist@6.4.299",
+            "coldLoadMs": 115.76000000000002,
+            "value": {
+              "pages": 3,
+              "width": 480,
+              "height": 320,
+              "textLength": 51
+            },
+            "runtimeMs": 189.72000000000003,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "media-mediabunny-inspect",
+            "family": "audio-video",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 115.63999999999999,
+            "value": {
+              "videoDuration": 2.0416666666666665,
+              "wavDuration": 2,
+              "videoWidth": 320,
+              "videoHeight": 180,
+              "audioSampleRate": 48000
+            },
+            "runtimeMs": 9.519999999999982,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "video-mp4box-inspect",
+            "family": "video",
+            "status": "PASS",
+            "candidate": "mp4box@2.4.1",
+            "coldLoadMs": 115.41999999999999,
+            "value": {
+              "duration": 2,
+              "videoTracks": 1,
+              "audioTracks": 1
+            },
+            "runtimeMs": 2.6999999999999886,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "audio-native-dsp",
+            "family": "audio",
+            "status": "PASS",
+            "candidate": "Web Audio OfflineAudioContext",
+            "coldLoadMs": 0,
+            "value": {
+              "frames": 96000,
+              "rms": 0.35355353704031145
+            },
+            "runtimeMs": 5.899999999999977,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "cms-pkijs",
+            "family": "cms",
+            "status": "PASS",
+            "candidate": "pkijs@3.4.1 + asn1js@3.0.10",
+            "coldLoadMs": 176.14000000000001,
+            "value": {
+              "payloadBytes": 25,
+              "certificateCount": 1,
+              "signerCount": 1,
+              "subject": [
+                "Strumentini Feasibility",
+                "Local Test"
+              ],
+              "corruptRejected": true,
+              "unsupportedContentType": "1.2.840.113549.1.7.1",
+              "unsupportedRejected": true,
+              "trustChainStatus": "NOT_EVALUATED"
+            },
+            "runtimeMs": 135.26,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "archive-fflate",
+            "family": "archive",
+            "status": "PASS",
+            "candidate": "fflate@0.8.3",
+            "coldLoadMs": 50.47999999999999,
+            "value": {
+              "zipInputBytes": 394,
+              "gzipInputBytes": 282,
+              "expandedBytes": 90112,
+              "zipExpansionRatio": 228.71065989847716,
+              "gzipExpansionRatio": 319.54609929078015,
+              "unsafeNames": [
+                "../escape.txt"
+              ],
+              "corruptZipRejected": true,
+              "corruptGzipRejected": true,
+              "cancellation": "SYNC_API_REQUIRES_OUTER_WORKER_TERMINATION_OR_STREAMING_WRAPPER"
+            },
+            "runtimeMs": 115.02000000000004,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "image-native-modes",
+            "family": "image",
+            "status": "PASS",
+            "candidate": "browser-native image decode/canvas encode",
+            "coldLoadMs": 0,
+            "value": {
+              "gif": {
+                "width": 64,
+                "height": 64,
+                "frameCount": 4,
+                "imageDecoder": true
+              },
+              "encoders": {
+                "jpeg": {
+                  "type": "image/jpeg",
+                  "bytes": 634
+                },
+                "webp": {
+                  "type": "image/webp",
+                  "bytes": 68
+                },
+                "png": {
+                  "type": "image/png",
+                  "bytes": 104
+                },
+                "avif": {
+                  "type": "image/png",
+                  "bytes": 104
+                }
+              },
+              "svgOptimizer": "NO_BROWSER_NATIVE_OPTIMIZER"
+            },
+            "runtimeMs": 85.12,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "pdf-large-200",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1 + pdfjs-dist@6.4.299",
+            "coldLoadMs": 203.27999999999997,
+            "value": {
+              "pages": 200,
+              "inputBytes": 94663,
+              "savedBytes": 94684,
+              "cancellationObserved": true
+            },
+            "runtimeMs": 224.5,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "video-large-inspect",
+            "family": "video",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 112.85999999999999,
+            "value": {
+              "bytes": 4954611,
+              "duration": 10,
+              "width": 1280,
+              "height": 720,
+              "cancellationSeam": "Input.dispose()"
+            },
+            "runtimeMs": 11.180000000000007,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "mail-epub-refusal-policy",
+            "family": "mail-ebook",
+            "status": "PASS",
+            "candidate": "no approved EML/MSG/EPUB parser; fflate used only to expose hostile EPUB fixture bytes",
+            "coldLoadMs": 50.23999999999998,
+            "value": {
+              "eml": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "epub": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "msg": {
+                "decision": "REFUSE",
+                "compoundFileSignatureDetected": true,
+                "parser": null
+              },
+              "policy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+            },
+            "runtimeMs": 196.24,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          }
+        ]
+      },
+      "resources": [
+        {
+          "url": "http://127.0.0.1:41934/assets/index-DxC9YeHu.js",
+          "transferSize": 19515,
+          "encodedBodySize": 19215,
+          "decodedBodySize": 19215,
+          "durationMs": 34.69999999999999
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/rolldown-runtime-C0FnF6B9.js",
+          "transferSize": 1591,
+          "encodedBodySize": 1291,
+          "decodedBodySize": 1291,
+          "durationMs": 34.69999999999999
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/preload-helper-BZ1Pz5am.js",
+          "transferSize": 1518,
+          "encodedBodySize": 1218,
+          "decodedBodySize": 1218,
+          "durationMs": 35.75999999999999
+        },
+        {
+          "url": "http://127.0.0.1:41934/favicon.ico",
+          "transferSize": 0,
+          "encodedBodySize": 0,
+          "decodedBodySize": 0,
+          "durationMs": 0
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/libheif-bundle-BmxSuLdv.js",
+          "transferSize": 2040238,
+          "encodedBodySize": 2039938,
+          "decodedBodySize": 2039938,
+          "durationMs": 21.74000000000001
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/src-SuYvKHvm.js",
+          "transferSize": 17585,
+          "encodedBodySize": 17285,
+          "decodedBodySize": 17285,
+          "durationMs": 14.879999999999995
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/mammoth.browser-C4-72Yf8.js",
+          "transferSize": 298961,
+          "encodedBodySize": 298661,
+          "decodedBodySize": 298661,
+          "durationMs": 16.340000000000003
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/dist-CL8pu169.js",
+          "transferSize": 438282,
+          "encodedBodySize": 437982,
+          "decodedBodySize": 437982,
+          "durationMs": 17.159999999999997
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/docx-preview-t9k1qJMu.js",
+          "transferSize": 75895,
+          "encodedBodySize": 75595,
+          "decodedBodySize": 75595,
+          "durationMs": 16.620000000000005
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/jszip.min-B7Fa2WXl.js",
+          "transferSize": 96303,
+          "encodedBodySize": 96003,
+          "decodedBodySize": 96003,
+          "durationMs": 17
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pptxgen.es-DnYj_vjT.js",
+          "transferSize": 272956,
+          "encodedBodySize": 272656,
+          "decodedBodySize": 272656,
+          "durationMs": 17.02000000000001
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/es-DwI2HWNb.js",
+          "transferSize": 569069,
+          "encodedBodySize": 568769,
+          "decodedBodySize": 568769,
+          "durationMs": 17.72
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/browser-ClCPJ7Bh.js",
+          "transferSize": 31684,
+          "encodedBodySize": 31384,
+          "decodedBodySize": 31384,
+          "durationMs": 17.560000000000002
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf-D8meTUzS.js",
+          "transferSize": 431216,
+          "encodedBodySize": 430916,
+          "decodedBodySize": 430916,
+          "durationMs": 18
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/src-BTc-yaYS.js",
+          "transferSize": 695481,
+          "encodedBodySize": 695181,
+          "decodedBodySize": 695181,
+          "durationMs": 19.319999999999993
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/__vite-browser-external-DpH90L5b.js",
+          "transferSize": 455,
+          "encodedBodySize": 155,
+          "decodedBodySize": 155,
+          "durationMs": 18.060000000000002
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-DWRrRQ1b.js",
+          "transferSize": 1461,
+          "encodedBodySize": 1161,
+          "decodedBodySize": 1161,
+          "durationMs": 17.339999999999975
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-BAkBZI1U.js",
+          "transferSize": 56572,
+          "encodedBodySize": 56272,
+          "decodedBodySize": 56272,
+          "durationMs": 26.47999999999999
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-CBqjg_vO.js",
+          "transferSize": 332668,
+          "encodedBodySize": 332368,
+          "decodedBodySize": 332368,
+          "durationMs": 30.159999999999997
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/browser-BV4XJ9Z2.js",
+          "transferSize": 1398,
+          "encodedBodySize": 1098,
+          "decodedBodySize": 1098,
+          "durationMs": 28.560000000000002
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-animated.gif",
+          "transferSize": 4116,
+          "encodedBodySize": 3816,
+          "decodedBodySize": 3816,
+          "durationMs": 36.380000000000024
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/xlsx-BKER4Xe2.js",
+          "transferSize": 424255,
+          "encodedBodySize": 423955,
+          "decodedBodySize": 423955,
+          "durationMs": 31.879999999999995
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/mp4box.all-ClpO_XUd.js",
+          "transferSize": 182731,
+          "encodedBodySize": 182431,
+          "decodedBodySize": 182431,
+          "durationMs": 32.22
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.docx",
+          "transferSize": 9803,
+          "encodedBodySize": 9503,
+          "decodedBodySize": 9503,
+          "durationMs": 26.24000000000001
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/ocr-it.png",
+          "transferSize": 14605,
+          "encodedBodySize": 14305,
+          "decodedBodySize": 14305,
+          "durationMs": 26.120000000000005
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.zip",
+          "transferSize": 694,
+          "encodedBodySize": 394,
+          "decodedBodySize": 394,
+          "durationMs": 25.840000000000032
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.gz",
+          "transferSize": 582,
+          "encodedBodySize": 282,
+          "decodedBodySize": 282,
+          "durationMs": 25.620000000000005
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-unsafe-path.zip",
+          "transferSize": 464,
+          "encodedBodySize": 164,
+          "decodedBodySize": 164,
+          "durationMs": 25.659999999999968
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.zip",
+          "transferSize": 682,
+          "encodedBodySize": 382,
+          "decodedBodySize": 382,
+          "durationMs": 25.659999999999968
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.gz",
+          "transferSize": 574,
+          "encodedBodySize": 274,
+          "decodedBodySize": 274,
+          "durationMs": 25.619999999999948
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/hostile.eml",
+          "transferSize": 653,
+          "encodedBodySize": 353,
+          "decodedBodySize": 353,
+          "durationMs": 25.660000000000025
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.docx",
+          "transferSize": 9803,
+          "encodedBodySize": 9503,
+          "decodedBodySize": 9503,
+          "durationMs": 14.239999999999952
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.pdf",
+          "transferSize": 2444,
+          "encodedBodySize": 2144,
+          "decodedBodySize": 2144,
+          "durationMs": 9.879999999999995
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.heic",
+          "transferSize": 788,
+          "encodedBodySize": 488,
+          "decodedBodySize": 488,
+          "durationMs": 9.859999999999957
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.pdf",
+          "transferSize": 2444,
+          "encodedBodySize": 2144,
+          "decodedBodySize": 2144,
+          "durationMs": 18.220000000000027
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.mp4",
+          "transferSize": 77160,
+          "encodedBodySize": 76860,
+          "decodedBodySize": 76860,
+          "durationMs": 18.060000000000002
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-10s-720p.mp4",
+          "transferSize": 4954911,
+          "encodedBodySize": 4954611,
+          "decodedBodySize": 4954611,
+          "durationMs": 38.45999999999998
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.mp4",
+          "transferSize": 77160,
+          "encodedBodySize": 76860,
+          "decodedBodySize": 76860,
+          "durationMs": 18.060000000000002
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.xlsx",
+          "transferSize": 8998,
+          "encodedBodySize": 8698,
+          "decodedBodySize": 8698,
+          "durationMs": 21.340000000000032
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-200.pdf",
+          "transferSize": 94963,
+          "encodedBodySize": 94663,
+          "decodedBodySize": 94663,
+          "durationMs": 21.379999999999995
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.p7m",
+          "transferSize": 1849,
+          "encodedBodySize": 1549,
+          "decodedBodySize": 1549,
+          "durationMs": 21.659999999999968
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/hostile.epub",
+          "transferSize": 1139,
+          "encodedBodySize": 839,
+          "decodedBodySize": 839,
+          "durationMs": 17.71999999999997
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.wav",
+          "transferSize": 192378,
+          "encodedBodySize": 192078,
+          "decodedBodySize": 192078,
+          "durationMs": 8.899999999999977
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.p7m",
+          "transferSize": 1074,
+          "encodedBodySize": 774,
+          "decodedBodySize": 774,
+          "durationMs": 2.7200000000000273
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/unsupported.msg",
+          "transferSize": 812,
+          "encodedBodySize": 512,
+          "decodedBodySize": 512,
+          "durationMs": 3.5400000000000205
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-unsupported-cms.der",
+          "transferSize": 328,
+          "encodedBodySize": 28,
+          "decodedBodySize": 28,
+          "durationMs": 3.3799999999999955
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+          "transferSize": 2230013,
+          "encodedBodySize": 2229713,
+          "decodedBodySize": 2229713,
+          "durationMs": 4.32000000000005
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+          "transferSize": 2230013,
+          "encodedBodySize": 2229713,
+          "decodedBodySize": 2229713,
+          "durationMs": 4.8799999999999955
+        }
+      ]
+    },
+    {
+      "engine": "webkit",
+      "label": "Playwright WebKit",
+      "classification": "desktop-regression-not-safari",
+      "status": "OBSERVED",
+      "wallMs": 911.5892920000024,
+      "localRequests": [
+        "http://127.0.0.1:41934/",
+        "http://127.0.0.1:41934/assets/index-DxC9YeHu.js",
+        "http://127.0.0.1:41934/assets/rolldown-runtime-C0FnF6B9.js",
+        "http://127.0.0.1:41934/assets/preload-helper-BZ1Pz5am.js",
+        "http://127.0.0.1:41934/assets/libheif-bundle-BmxSuLdv.js",
+        "http://127.0.0.1:41934/assets/src-SuYvKHvm.js",
+        "http://127.0.0.1:41934/assets/mammoth.browser-C4-72Yf8.js",
+        "http://127.0.0.1:41934/assets/dist-CL8pu169.js",
+        "http://127.0.0.1:41934/assets/docx-preview-t9k1qJMu.js",
+        "http://127.0.0.1:41934/assets/jszip.min-B7Fa2WXl.js",
+        "http://127.0.0.1:41934/assets/pptxgen.es-DnYj_vjT.js",
+        "http://127.0.0.1:41934/assets/es-DwI2HWNb.js",
+        "http://127.0.0.1:41934/assets/browser-ClCPJ7Bh.js",
+        "http://127.0.0.1:41934/assets/pdf-D8meTUzS.js",
+        "http://127.0.0.1:41934/assets/src-BTc-yaYS.js",
+        "http://127.0.0.1:41934/assets/__vite-browser-external-DpH90L5b.js",
+        "http://127.0.0.1:41934/assets/index.es-DWRrRQ1b.js",
+        "http://127.0.0.1:41934/assets/index.es-BAkBZI1U.js",
+        "http://127.0.0.1:41934/assets/index.es-CBqjg_vO.js",
+        "http://127.0.0.1:41934/assets/browser-BV4XJ9Z2.js",
+        "http://127.0.0.1:41934/corpus/sample-animated.gif",
+        "http://127.0.0.1:41934/assets/xlsx-BKER4Xe2.js",
+        "http://127.0.0.1:41934/assets/mp4box.all-ClpO_XUd.js",
+        "http://127.0.0.1:41934/corpus/ocr-it.png",
+        "http://127.0.0.1:41934/corpus/sample.docx",
+        "http://127.0.0.1:41934/corpus/sample.heic",
+        "http://127.0.0.1:41934/corpus/sample.pdf",
+        "http://127.0.0.1:41934/corpus/sample.xlsx",
+        "http://127.0.0.1:41934/corpus/sample.mp4",
+        "http://127.0.0.1:41934/corpus/sample.zip",
+        "http://127.0.0.1:41934/corpus/sample.gz",
+        "http://127.0.0.1:41934/corpus/sample-unsafe-path.zip",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.zip",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.gz",
+        "http://127.0.0.1:41934/corpus/sample-200.pdf",
+        "http://127.0.0.1:41934/corpus/hostile.eml",
+        "http://127.0.0.1:41934/corpus/sample-10s-720p.mp4",
+        "http://127.0.0.1:41934/corpus/sample.p7m",
+        "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+        "http://127.0.0.1:41934/tesseract/worker.min.js",
+        "http://127.0.0.1:41934/corpus/hostile.epub",
+        "http://127.0.0.1:41934/corpus/sample.wav",
+        "http://127.0.0.1:41934/corpus/sample-corrupt.p7m",
+        "http://127.0.0.1:41934/tesseract/core/tesseract-core-relaxedsimd-lstm.wasm.js",
+        "http://127.0.0.1:41934/corpus/unsupported.msg",
+        "http://127.0.0.1:41934/corpus/sample-unsupported-cms.der",
+        "http://127.0.0.1:41934/tesseract/lang/ita.traineddata.gz"
+      ],
+      "externalRequests": [],
+      "consoleErrors": [
+        "Error: failed to load ./ita.special-words"
+      ],
+      "payload": {
+        "schemaVersion": 1,
+        "generatedAt": "2026-10-06T11:58:16.468Z",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15",
+        "memoryMeasurement": "performance.memory JS heap checkpoints/polling only; excludes WASM linear memory, decoded native surfaces and full browser RSS",
+        "results": [
+          {
+            "id": "browser-capabilities",
+            "family": "platform",
+            "status": "PASS",
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15",
+            "crossOriginIsolated": true,
+            "hardwareConcurrency": 8,
+            "deviceMemoryGiB": null,
+            "apis": {
+              "webAssembly": true,
+              "worker": true,
+              "createImageBitmap": true,
+              "offscreenCanvas": true,
+              "videoDecoder": true,
+              "videoEncoder": true,
+              "audioDecoder": true,
+              "audioEncoder": true,
+              "offlineAudioContext": true
+            },
+            "codecProbes": {
+              "h264Decode": true,
+              "aacDecode": true
+            }
+          },
+          {
+            "id": "heic-libheif",
+            "family": "heic",
+            "status": "PASS",
+            "candidate": "libheif-js@1.23.5",
+            "coldLoadMs": 66.94000000000003,
+            "value": {
+              "width": 96,
+              "height": 64,
+              "rgbaBytes": 24576,
+              "imageCount": 1
+            },
+            "runtimeMs": 43.74000000000001,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "ocr-tesseract-ita",
+            "family": "ocr",
+            "status": "PASS",
+            "candidate": "tesseract.js@7.0.0 + ita@1.0.0",
+            "coldLoadMs": 35.72,
+            "networkPolicy": "same-origin assets only",
+            "value": {
+              "text": "Fattura numero 12345 - Totale euro 678,90",
+              "confidence": 94,
+              "progressEvents": 11
+            },
+            "runtimeMs": 507.58000000000004,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "office-xlsx",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "xlsx@0.18.5",
+            "coldLoadMs": 136.92,
+            "value": {
+              "rows": 3,
+              "outputBytes": 8802
+            },
+            "runtimeMs": 21.25999999999999,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "office-docx-extract",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "mammoth@1.13.0",
+            "coldLoadMs": 48.80000000000001,
+            "value": {
+              "text": "Fattura di prova\n\nCliente: Mario Rossi\n\nTotale: 299,90 EUR",
+              "messages": 0
+            },
+            "runtimeMs": 416.76,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "office-docx-write",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "docx@9.8.1",
+            "coldLoadMs": 90.52000000000001,
+            "value": {
+              "outputBytes": 9453
+            },
+            "runtimeMs": 349.32,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "office-docx-preview",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "docx-preview@0.4.1",
+            "coldLoadMs": 148.4,
+            "value": {
+              "textLength": 5312,
+              "renderedElements": 13
+            },
+            "runtimeMs": 165.27999999999997,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "office-pptx-write",
+            "family": "office",
+            "status": "PASS",
+            "candidate": "pptxgenjs@4.0.1",
+            "coldLoadMs": 147.37999999999997,
+            "value": {
+              "outputBytes": 44751
+            },
+            "runtimeMs": 294.67999999999995,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "pdf-cantoo-mutate",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1",
+            "coldLoadMs": 164.95999999999998,
+            "value": {
+              "pages": 3,
+              "outputBytes": 2166
+            },
+            "runtimeMs": 7.400000000000034,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "pdfjs-render",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "pdfjs-dist@6.4.299",
+            "coldLoadMs": 112.12,
+            "value": {
+              "pages": 3,
+              "width": 480,
+              "height": 320,
+              "textLength": 51
+            },
+            "runtimeMs": 216.54000000000008,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "media-mediabunny-inspect",
+            "family": "audio-video",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 203.64000000000001,
+            "value": {
+              "videoDuration": 2.0416666666666665,
+              "wavDuration": 2,
+              "videoWidth": 320,
+              "videoHeight": 180,
+              "audioSampleRate": 48000
+            },
+            "runtimeMs": 26.039999999999964,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "video-mp4box-inspect",
+            "family": "video",
+            "status": "PASS",
+            "candidate": "mp4box@2.4.1",
+            "coldLoadMs": 142.39999999999998,
+            "value": {
+              "duration": 2,
+              "videoTracks": 1,
+              "audioTracks": 1
+            },
+            "runtimeMs": 4.439999999999998,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "audio-native-dsp",
+            "family": "audio",
+            "status": "PASS",
+            "candidate": "Web Audio OfflineAudioContext",
+            "coldLoadMs": 0,
+            "value": {
+              "frames": 96000,
+              "rms": 0.35355331632688325
+            },
+            "runtimeMs": 10.23999999999998,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "cms-pkijs",
+            "family": "cms",
+            "status": "PASS",
+            "candidate": "pkijs@3.4.1 + asn1js@3.0.10",
+            "coldLoadMs": 409.20000000000005,
+            "value": {
+              "payloadBytes": 25,
+              "certificateCount": 1,
+              "signerCount": 1,
+              "subject": [
+                "Strumentini Feasibility",
+                "Local Test"
+              ],
+              "corruptRejected": true,
+              "unsupportedContentType": "1.2.840.113549.1.7.1",
+              "unsupportedRejected": true,
+              "trustChainStatus": "NOT_EVALUATED"
+            },
+            "runtimeMs": 176.07999999999998,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "archive-fflate",
+            "family": "archive",
+            "status": "PASS",
+            "candidate": "fflate@0.8.3",
+            "coldLoadMs": 159.2,
+            "value": {
+              "zipInputBytes": 394,
+              "gzipInputBytes": 282,
+              "expandedBytes": 90112,
+              "zipExpansionRatio": 228.71065989847716,
+              "gzipExpansionRatio": 319.54609929078015,
+              "unsafeNames": [
+                "../escape.txt"
+              ],
+              "corruptZipRejected": true,
+              "corruptGzipRejected": true,
+              "cancellation": "SYNC_API_REQUIRES_OUTER_WORKER_TERMINATION_OR_STREAMING_WRAPPER"
+            },
+            "runtimeMs": 105.90000000000003,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "image-native-modes",
+            "family": "image",
+            "status": "PASS",
+            "candidate": "browser-native image decode/canvas encode",
+            "coldLoadMs": 0,
+            "value": {
+              "gif": {
+                "width": 64,
+                "height": 64,
+                "frameCount": 4,
+                "imageDecoder": true
+              },
+              "encoders": {
+                "jpeg": {
+                  "type": "image/jpeg",
+                  "bytes": 777
+                },
+                "webp": {
+                  "type": "image/png",
+                  "bytes": 171
+                },
+                "png": {
+                  "type": "image/png",
+                  "bytes": 171
+                },
+                "avif": {
+                  "type": "image/avif",
+                  "bytes": 375
+                }
+              },
+              "svgOptimizer": "NO_BROWSER_NATIVE_OPTIMIZER"
+            },
+            "runtimeMs": 230.50000000000006,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "pdf-large-200",
+            "family": "pdf",
+            "status": "PASS",
+            "candidate": "@cantoo/pdf-lib@2.11.1 + pdfjs-dist@6.4.299",
+            "coldLoadMs": 263.14,
+            "value": {
+              "pages": 200,
+              "inputBytes": 94663,
+              "savedBytes": 94684,
+              "cancellationObserved": true
+            },
+            "runtimeMs": 302,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "video-large-inspect",
+            "family": "video",
+            "status": "PASS",
+            "candidate": "mediabunny@1.61.3",
+            "coldLoadMs": 196.22000000000003,
+            "value": {
+              "bytes": 4954611,
+              "duration": 10,
+              "width": 1280,
+              "height": 720,
+              "cancellationSeam": "Input.dispose()"
+            },
+            "runtimeMs": 79.83999999999997,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          },
+          {
+            "id": "mail-epub-refusal-policy",
+            "family": "mail-ebook",
+            "status": "PASS",
+            "candidate": "no approved EML/MSG/EPUB parser; fflate used only to expose hostile EPUB fixture bytes",
+            "coldLoadMs": 157.38,
+            "value": {
+              "eml": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "epub": {
+                "decision": "REFUSE",
+                "activeContentDetected": true,
+                "parser": null
+              },
+              "msg": {
+                "decision": "REFUSE",
+                "compoundFileSignatureDetected": true,
+                "parser": null
+              },
+              "policy": "REJECT_BEFORE_RENDER_OR_EXTERNAL_RESOURCE_RESOLUTION"
+            },
+            "runtimeMs": 220.01999999999998,
+            "startJsHeapBytes": null,
+            "endJsHeapBytes": null,
+            "peakJsHeapBytes": null,
+            "peakJsHeapDeltaBytes": null
+          }
+        ]
+      },
+      "resources": [
+        {
+          "url": "http://127.0.0.1:41934/assets/index-DxC9YeHu.js",
+          "transferSize": 19528,
+          "encodedBodySize": 19228,
+          "decodedBodySize": 19215,
+          "durationMs": 3.519999999999982
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/rolldown-runtime-C0FnF6B9.js",
+          "transferSize": 1603,
+          "encodedBodySize": 1303,
+          "decodedBodySize": 1291,
+          "durationMs": 4.460000000000008
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/preload-helper-BZ1Pz5am.js",
+          "transferSize": 1530,
+          "encodedBodySize": 1230,
+          "decodedBodySize": 1218,
+          "durationMs": 4.8799999999999955
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/libheif-bundle-BmxSuLdv.js",
+          "transferSize": 2040253,
+          "encodedBodySize": 2039953,
+          "decodedBodySize": 2039938,
+          "durationMs": 12
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/src-SuYvKHvm.js",
+          "transferSize": 17598,
+          "encodedBodySize": 17298,
+          "decodedBodySize": 17285,
+          "durationMs": 11.140000000000015
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/mammoth.browser-C4-72Yf8.js",
+          "transferSize": 298975,
+          "encodedBodySize": 298675,
+          "decodedBodySize": 298661,
+          "durationMs": 11.219999999999999
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/dist-CL8pu169.js",
+          "transferSize": 438296,
+          "encodedBodySize": 437996,
+          "decodedBodySize": 437982,
+          "durationMs": 16.700000000000017
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/docx-preview-t9k1qJMu.js",
+          "transferSize": 75909,
+          "encodedBodySize": 75609,
+          "decodedBodySize": 75595,
+          "durationMs": 16.799999999999983
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/jszip.min-B7Fa2WXl.js",
+          "transferSize": 96317,
+          "encodedBodySize": 96017,
+          "decodedBodySize": 96003,
+          "durationMs": 17.960000000000008
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pptxgen.es-DnYj_vjT.js",
+          "transferSize": 272970,
+          "encodedBodySize": 272670,
+          "decodedBodySize": 272656,
+          "durationMs": 13
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/es-DwI2HWNb.js",
+          "transferSize": 569083,
+          "encodedBodySize": 568783,
+          "decodedBodySize": 568769,
+          "durationMs": 16.159999999999997
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/browser-ClCPJ7Bh.js",
+          "transferSize": 31697,
+          "encodedBodySize": 31397,
+          "decodedBodySize": 31384,
+          "durationMs": 12.740000000000009
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf-D8meTUzS.js",
+          "transferSize": 431230,
+          "encodedBodySize": 430930,
+          "decodedBodySize": 430916,
+          "durationMs": 17.939999999999998
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/src-BTc-yaYS.js",
+          "transferSize": 695495,
+          "encodedBodySize": 695195,
+          "decodedBodySize": 695181,
+          "durationMs": 18.879999999999995
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/__vite-browser-external-DpH90L5b.js",
+          "transferSize": 466,
+          "encodedBodySize": 166,
+          "decodedBodySize": 155,
+          "durationMs": 18.960000000000008
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-DWRrRQ1b.js",
+          "transferSize": 1473,
+          "encodedBodySize": 1173,
+          "decodedBodySize": 1161,
+          "durationMs": 16.74000000000001
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-BAkBZI1U.js",
+          "transferSize": 56585,
+          "encodedBodySize": 56285,
+          "decodedBodySize": 56272,
+          "durationMs": 17.680000000000007
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/index.es-CBqjg_vO.js",
+          "transferSize": 332682,
+          "encodedBodySize": 332382,
+          "decodedBodySize": 332368,
+          "durationMs": 17.819999999999993
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/browser-BV4XJ9Z2.js",
+          "transferSize": 1410,
+          "encodedBodySize": 1110,
+          "decodedBodySize": 1098,
+          "durationMs": 18.139999999999986
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-animated.gif",
+          "transferSize": 4128,
+          "encodedBodySize": 3828,
+          "decodedBodySize": 3816,
+          "durationMs": 18.25999999999999
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/xlsx-BKER4Xe2.js",
+          "transferSize": 424269,
+          "encodedBodySize": 423969,
+          "decodedBodySize": 423955,
+          "durationMs": 18.5
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/mp4box.all-ClpO_XUd.js",
+          "transferSize": 182745,
+          "encodedBodySize": 182445,
+          "decodedBodySize": 182431,
+          "durationMs": 18.900000000000006
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/ocr-it.png",
+          "transferSize": 14618,
+          "encodedBodySize": 14318,
+          "decodedBodySize": 14305,
+          "durationMs": 1.4399999999999977
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.docx",
+          "transferSize": 9816,
+          "encodedBodySize": 9516,
+          "decodedBodySize": 9503,
+          "durationMs": 1.6199999999999477
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.heic",
+          "transferSize": 800,
+          "encodedBodySize": 500,
+          "decodedBodySize": 488,
+          "durationMs": 1.4599999999999795
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.pdf",
+          "transferSize": 2456,
+          "encodedBodySize": 2156,
+          "decodedBodySize": 2144,
+          "durationMs": 1.6000000000000227
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.xlsx",
+          "transferSize": 9011,
+          "encodedBodySize": 8711,
+          "decodedBodySize": 8698,
+          "durationMs": 2
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.mp4",
+          "transferSize": 77174,
+          "encodedBodySize": 76874,
+          "decodedBodySize": 76860,
+          "durationMs": 2.0400000000000205
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.docx",
+          "transferSize": 9816,
+          "encodedBodySize": 9516,
+          "decodedBodySize": 9503,
+          "durationMs": 2.0600000000000023
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.pdf",
+          "transferSize": 2456,
+          "encodedBodySize": 2156,
+          "decodedBodySize": 2144,
+          "durationMs": 4.699999999999989
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.zip",
+          "transferSize": 706,
+          "encodedBodySize": 406,
+          "decodedBodySize": 394,
+          "durationMs": 4.980000000000018
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.gz",
+          "transferSize": 594,
+          "encodedBodySize": 294,
+          "decodedBodySize": 282,
+          "durationMs": 5.919999999999959
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-unsafe-path.zip",
+          "transferSize": 475,
+          "encodedBodySize": 175,
+          "decodedBodySize": 164,
+          "durationMs": 6.079999999999984
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.zip",
+          "transferSize": 694,
+          "encodedBodySize": 394,
+          "decodedBodySize": 382,
+          "durationMs": 6.639999999999986
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.gz",
+          "transferSize": 586,
+          "encodedBodySize": 286,
+          "decodedBodySize": 274,
+          "durationMs": 6.720000000000027
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-200.pdf",
+          "transferSize": 94977,
+          "encodedBodySize": 94677,
+          "decodedBodySize": 94663,
+          "durationMs": 7.039999999999964
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/hostile.eml",
+          "transferSize": 665,
+          "encodedBodySize": 365,
+          "decodedBodySize": 353,
+          "durationMs": 7.080000000000041
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-10s-720p.mp4",
+          "transferSize": 4954926,
+          "encodedBodySize": 4954626,
+          "decodedBodySize": 4954611,
+          "durationMs": 5.0400000000000205
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.mp4",
+          "transferSize": 77174,
+          "encodedBodySize": 76874,
+          "decodedBodySize": 76860,
+          "durationMs": 2.4599999999999795
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.p7m",
+          "transferSize": 1861,
+          "encodedBodySize": 1561,
+          "decodedBodySize": 1549,
+          "durationMs": 3.5600000000000023
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+          "transferSize": 2230028,
+          "encodedBodySize": 2229728,
+          "decodedBodySize": 2229713,
+          "durationMs": 16.660000000000025
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/hostile.epub",
+          "transferSize": 1151,
+          "encodedBodySize": 851,
+          "decodedBodySize": 839,
+          "durationMs": 2.340000000000032
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample.wav",
+          "transferSize": 192392,
+          "encodedBodySize": 192092,
+          "decodedBodySize": 192078,
+          "durationMs": 3.4400000000000546
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-corrupt.p7m",
+          "transferSize": 1086,
+          "encodedBodySize": 786,
+          "decodedBodySize": 774,
+          "durationMs": 1.740000000000009
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/unsupported.msg",
+          "transferSize": 824,
+          "encodedBodySize": 524,
+          "decodedBodySize": 512,
+          "durationMs": 1.5
+        },
+        {
+          "url": "http://127.0.0.1:41934/corpus/sample-unsupported-cms.der",
+          "transferSize": 339,
+          "encodedBodySize": 39,
+          "decodedBodySize": 28,
+          "durationMs": 1.5399999999999636
+        },
+        {
+          "url": "http://127.0.0.1:41934/assets/pdf.worker-PhvoOpM7.mjs",
+          "transferSize": 2230028,
+          "encodedBodySize": 2229728,
+          "decodedBodySize": 2229713,
+          "durationMs": 3.1000000000000227
+        }
+      ]
+    }
+  ]
+}

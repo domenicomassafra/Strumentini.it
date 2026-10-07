@@ -13,6 +13,7 @@ export const trackingCleanerManifest = {
   engine: "campaign-url",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "text-code", capabilities: ["copy", "download", "reuse", "reset"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-063", fixtureFamilies: ["utm-roundtrip", "query-params"] },
 } as const satisfies ToolManifest;
 

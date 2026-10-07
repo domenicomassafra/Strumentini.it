@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "checkedAt": "2026-10-07T14:41:29.187Z",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "subjectToolId": "italian-document-expiry",
+  "oracleEntryId": "cand-240",
+  "keyboard": "submit exercised with Enter",
+  "accessibility": "all interactive controls in the exercised form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObserved": true,
+  "semanticEvidence": "fixture-aligned bounded input produced the asserted visible domain output",
+  "result": {
+    "toolId": "italian-document-expiry",
+    "oracleEntryId": "cand-240",
+    "status": "PASS",
+    "semanticAssertion": "2036-10-06",
+    "outputSha256": "6ce298eca16bd91f86dd93b7fa56f36701f6d4e7c10f6558e0ad8cb429f4ef4f",
+    "taskRequestCount": 11,
+    "lazyScriptCount": 11,
+    "externalTaskRequests": 0,
+    "nonGetTaskRequests": 0,
+    "taskContentLeaks": 0,
+    "runtimeErrors": 0,
+    "horizontalOverflow": false,
+    "unlabeledControls": 0,
+    "oracleMarkerObserved": false
+  }
+}

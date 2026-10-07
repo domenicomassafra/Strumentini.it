@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-07",
+  "scope": "Ticket 161 XLSX interchange and ticket 225 bounded OOXML package rebuild; this evidence does not promote generic ZIP DEFLATE modes or faithful Office rendering.",
+  "dependencies": [
+    { "package": "fflate", "version": "0.8.3", "license": "MIT", "decision": "IMPLEMENT_BOUNDED_WORKER" },
+    { "package": "read-excel-file", "version": "9.3.10", "license": "MIT", "decision": "IMPLEMENT_BOUNDED_WORKER" },
+    { "package": "write-excel-file", "version": "4.1.1", "license": "MIT", "decision": "IMPLEMENT_BOUNDED_WORKER" }
+  ],
+  "transitiveLicenseCheck": {
+    "fflate": "MIT",
+    "saxen@11.2.0": "MIT",
+    "unzipper-esm@0.13.3": "MIT",
+    "worker-f@0.1.20": "MIT"
+  },
+  "audit": {
+    "command": "npm audit --omit=dev --audit-level=high --json",
+    "productionVulnerabilities": { "info": 0, "low": 0, "moderate": 0, "high": 0, "critical": 0, "total": 0 },
+    "fullTreeNote": "The current shared tree separately reports dev-only undici/miniflare/wrangler advisories; none is introduced or reached by the Office production dependency graph."
+  },
+  "standaloneBrowserBundle": {
+    "initial": { "rawBytes": 3168, "gzipBytes": 1552 },
+    "lazyClient": { "rawBytes": 35914, "gzipBytes": 12517 },
+    "lazyWorker": { "rawBytes": 192162, "gzipBytes": 54504 },
+    "note": "The Office client and worker chunks are absent before explicit user action in the acceptance fixture."
+  },
+  "spreadsheet": {
+    "status": "PASS",
+    "policies": [
+      "Columns default to explicit XLSX string cells; no heuristic text/date/number coercion.",
+      "Numeric conversion requires an explicit column policy and rejects leading-zero decimal text rather than losing identifier semantics.",
+      "Date conversion requires explicit YYYY-MM-DD input and an explicit date column policy.",
+      "Multi-sheet XLSX to CSV requires an explicit sheet when more than one sheet exists."
+    ],
+    "goldenWorkbook": {
+      "path": "quality/reference-data/italy/artifacts/115-administrative-geography/istat-elenco-comuni-2026-02-21.xlsx",
+      "bytes": 1229843,
+      "sheets": ["CODICI al 21_02_2026", "NOTE", "Legenda"],
+      "leadingZeroProof": ["01", "201", "001", "001", "001001"],
+      "rowsInSelectedSheet": 7894
+    },
+    "generatedRoundtrip": {
+      "browser": "PASS",
+      "values": ["00123", "03/04/2026", 12.5],
+      "reader": "read-excel-file@9.3.10",
+      "writer": "write-excel-file@4.1.1"
+    }
+  },
+  "ooxml": {
+    "status": "PASS",
+    "preflight": {
+      "maxInputBytes": 20971520,
+      "maxEntries": 2048,
+      "maxEntryUncompressedBytes": 12582912,
+      "maxTotalUncompressedBytes": 41943040,
+      "maxExpansionRatio": 100,
+      "compressionMethods": [0, 8],
+      "zip64": "refused",
+      "encrypted": "refused",
+      "macroEnabled": "refused",
+      "unsafePaths": "refused",
+      "externalRelationships": "preserved inert; never resolved"
+    },
+    "realWorkbookBoundCheck": {
+      "path": "quality/reference-data/italy/artifacts/115-administrative-geography/istat-elenco-comuni-2026-02-21.xlsx",
+      "declaredExpandedBytes": 9429339,
+      "largestMemberBytes": 8786213,
+      "maxObservedExpansionRatio": 12.179775280898877
+    },
+    "rebuildCorpus": [
+      { "path": "spikes/heavy-local-feasibility/public/corpus/sample.xlsx", "inputBytes": 8698, "outputBytes": 5747, "members": 10, "sizeOutcome": "smaller", "allMembersDeflated": true, "memberBytesUnchanged": true },
+      { "path": "spikes/heavy-local-feasibility/public/corpus/sample.docx", "inputBytes": 9503, "outputBytes": 9617, "members": 22, "sizeOutcome": "larger", "allMembersDeflated": true, "memberBytesUnchanged": true },
+      { "path": "spikes/heavy-local-feasibility/public/corpus/sample.pptx", "inputBytes": 45410, "outputBytes": 14675, "members": 39, "sizeOutcome": "smaller", "allMembersDeflated": true, "memberBytesUnchanged": true }
+    ],
+    "independentZipReopen": {
+      "command": "npm run check:office-ooxml-reopen (uses /usr/bin/unzip -t and zipinfo -v)",
+      "xlsx": "PASS",
+      "docx": "PASS",
+      "pptx": "PASS",
+      "zipinfo": "all output members report compression method deflated"
+    },
+    "hostileCorpus": {
+      "parentTraversal": "REFUSED_BEFORE_DECOMPRESSION",
+      "expansionRatioOver100": "REFUSED_BEFORE_DECOMPRESSION",
+      "macroPackage": "REFUSED"
+    }
+  },
+  "browserAcceptance": {
+    "command": "npm run acceptance:office-interchange",
+    "status": "PASS",
+    "viewport": "390x844",
+    "workersObserved": 3,
+    "externalRequests": 0,
+    "horizontalOverflow": false,
+    "docxSizeOutcome": "larger",
+    "note": "A larger rebuild is reported as larger; no compression saving is fabricated."
+  },
+  "physicalMobile": {
+    "iosSafari": "NOT_RUN",
+    "androidChrome": "NOT_RUN",
+    "claim": "No physical-device evidence is inferred from the 390px browser run. Generic ticket 222 remains unpromoted."
+  }
+}

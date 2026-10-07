@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "conversionMatrix": {
+    "conversions": [
+      {
+        "id": "jpg",
+        "inputKind": "jpeg",
+        "decoder": "browser",
+        "framePolicy": "single-image",
+        "outputMime": "image/png",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          137,
+          80,
+          78,
+          71,
+          13,
+          10,
+          26,
+          10,
+          0,
+          0,
+          0,
+          13
+        ]
+      },
+      {
+        "id": "jpg",
+        "inputKind": "jpeg",
+        "decoder": "browser",
+        "framePolicy": "single-image",
+        "outputMime": "image/webp",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          82,
+          73,
+          70,
+          70,
+          42,
+          2,
+          0,
+          0,
+          87,
+          69,
+          66,
+          80
+        ]
+      },
+      {
+        "id": "png",
+        "inputKind": "png",
+        "decoder": "browser",
+        "framePolicy": "single-image",
+        "outputMime": "image/jpeg",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          255,
+          216,
+          255,
+          224,
+          0,
+          16,
+          74,
+          70,
+          73,
+          70,
+          0,
+          1
+        ]
+      },
+      {
+        "id": "png",
+        "inputKind": "png",
+        "decoder": "browser",
+        "framePolicy": "single-image",
+        "outputMime": "image/webp",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          82,
+          73,
+          70,
+          70,
+          68,
+          2,
+          0,
+          0,
+          87,
+          69,
+          66,
+          80
+        ]
+      },
+      {
+        "id": "webp",
+        "inputKind": "webp",
+        "decoder": "browser",
+        "framePolicy": "single-image",
+        "outputMime": "image/jpeg",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          255,
+          216,
+          255,
+          224,
+          0,
+          16,
+          74,
+          70,
+          73,
+          70,
+          0,
+          1
+        ]
+      },
+      {
+        "id": "webp",
+        "inputKind": "webp",
+        "decoder": "browser",
+        "framePolicy": "single-image",
+        "outputMime": "image/png",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          137,
+          80,
+          78,
+          71,
+          13,
+          10,
+          26,
+          10,
+          0,
+          0,
+          0,
+          13
+        ]
+      },
+      {
+        "id": "heic",
+        "inputKind": "heic",
+        "decoder": "libheif-wasm",
+        "framePolicy": "single-image",
+        "outputMime": "image/jpeg",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          255,
+          216,
+          255,
+          224,
+          0,
+          16,
+          74,
+          70,
+          73,
+          70,
+          0,
+          1
+        ]
+      },
+      {
+        "id": "heic",
+        "inputKind": "heic",
+        "decoder": "libheif-wasm",
+        "framePolicy": "single-image",
+        "outputMime": "image/png",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          137,
+          80,
+          78,
+          71,
+          13,
+          10,
+          26,
+          10,
+          0,
+          0,
+          0,
+          13
+        ]
+      },
+      {
+        "id": "heic",
+        "inputKind": "heic",
+        "decoder": "libheif-wasm",
+        "framePolicy": "single-image",
+        "outputMime": "image/webp",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          82,
+          73,
+          70,
+          70,
+          58,
+          2,
+          0,
+          0,
+          87,
+          69,
+          66,
+          80
+        ]
+      },
+      {
+        "id": "avif",
+        "inputKind": "avif",
+        "decoder": "browser",
+        "framePolicy": "single-image",
+        "outputMime": "image/jpeg",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          255,
+          216,
+          255,
+          224,
+          0,
+          16,
+          74,
+          70,
+          73,
+          70,
+          0,
+          1
+        ]
+      },
+      {
+        "id": "avif",
+        "inputKind": "avif",
+        "decoder": "browser",
+        "framePolicy": "single-image",
+        "outputMime": "image/png",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          137,
+          80,
+          78,
+          71,
+          13,
+          10,
+          26,
+          10,
+          0,
+          0,
+          0,
+          13
+        ]
+      },
+      {
+        "id": "avif",
+        "inputKind": "avif",
+        "decoder": "browser",
+        "framePolicy": "single-image",
+        "outputMime": "image/webp",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          82,
+          73,
+          70,
+          70,
+          50,
+          2,
+          0,
+          0,
+          87,
+          69,
+          66,
+          80
+        ]
+      },
+      {
+        "id": "gif",
+        "inputKind": "gif",
+        "decoder": "browser",
+        "framePolicy": "first-frame-only",
+        "outputMime": "image/jpeg",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          255,
+          216,
+          255,
+          224,
+          0,
+          16,
+          74,
+          70,
+          73,
+          70,
+          0,
+          1
+        ]
+      },
+      {
+        "id": "gif",
+        "inputKind": "gif",
+        "decoder": "browser",
+        "framePolicy": "first-frame-only",
+        "outputMime": "image/png",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          137,
+          80,
+          78,
+          71,
+          13,
+          10,
+          26,
+          10,
+          0,
+          0,
+          0,
+          13
+        ]
+      },
+      {
+        "id": "gif",
+        "inputKind": "gif",
+        "decoder": "browser",
+        "framePolicy": "first-frame-only",
+        "outputMime": "image/webp",
+        "dimensions": [
+          2,
+          2
+        ],
+        "signature": [
+          82,
+          73,
+          70,
+          70,
+          72,
+          2,
+          0,
+          0,
+          87,
+          69,
+          66,
+          80
+        ]
+      }
+    ],
+    "imageToPdf": {
+      "pageCount": 2,
+      "pages": [
+        [
+          841.89,
+          595.28
+        ],
+        [
+          841.89,
+          595.28
+        ]
+      ],
+      "conversions": [
+        {
+          "name": "source.heic",
+          "inputMime": "image/heic",
+          "embeddedAs": "jpeg-reencode",
+          "alphaPolicy": "flattened-on-background",
+          "background": "#ffffff",
+          "framePolicy": "single-image",
+          "decoder": "libheif-wasm"
+        },
+        {
+          "name": "source.png",
+          "inputMime": "image/png",
+          "embeddedAs": "jpeg-reencode",
+          "alphaPolicy": "flattened-on-background",
+          "background": "#ffffff",
+          "framePolicy": "single-image",
+          "decoder": "browser"
+        }
+      ],
+      "order": [
+        2,
+        1
+      ],
+      "rotations": {
+        "1": 90,
+        "2": 180
+      },
+      "pageSize": "a4",
+      "orientation": "landscape",
+      "fit": "contain",
+      "marginMm": 12,
+      "signature": "%PDF-"
+    },
+    "contactSheetPdf": {
+      "pageCount": 1,
+      "compositionMode": "contact-sheet",
+      "columns": 2,
+      "contactSheet": {
+        "width": 640,
+        "height": 240,
+        "columns": 2,
+        "sourceCount": 2
+      }
+    },
+    "pdfToImages": {
+      "selectedPages": [
+        2,
+        1
+      ],
+      "pageCount": 2,
+      "renderer": "pdfjs-local-lazy",
+      "dpi": 72,
+      "scale": 1,
+      "quality": null,
+      "renderedImageCount": 2,
+      "failures": [],
+      "dims": [
+        [
+          612,
+          792,
+          "image/png",
+          "page-002.png"
+        ],
+        [
+          612,
+          792,
+          "image/png",
+          "page-001.png"
+        ]
+      ],
+      "zipIncluded": true,
+      "zipEntries": 2,
+      "artifactMimes": [
+        "image/png",
+        "image/png",
+        "application/zip"
+      ]
+    }
+  },
+  "routes": [
+    "image-format-conversion",
+    "images-to-pdf",
+    "pdf-to-images"
+  ],
+  "locality": "no task-time external or non-GET requests",
+  "viewport": "390x844"
+}

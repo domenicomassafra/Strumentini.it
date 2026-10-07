@@ -29,6 +29,14 @@ interface ComparisonResult {
   readonly right: string;
   readonly differences: readonly ComparisonDifference[];
   readonly credentialWarning: boolean;
+  readonly comparisonSource: string;
+  readonly comparisonVerifiedOn: string;
+  readonly normalizationRules: {
+    readonly sortQuery: boolean;
+    readonly ignoreFragment: boolean;
+    readonly removeTrailingSlash: boolean;
+    readonly dropTracking: boolean;
+  };
 }
 
 /** Italian names for the URL parts the engine compares. */
@@ -58,8 +66,11 @@ export function UrlComparisonTool() {
   const [rightUrl, setRightUrl] = useState("");
   const [mode, setMode] = useState<"semantic" | "exact">("semantic");
   const [ignoreFragment, setIgnoreFragment] = useState(true);
+  const [sortQuery, setSortQuery] = useState(true);
+  const [removeTrailingSlash, setRemoveTrailingSlash] = useState(false);
+  const [dropTracking, setDropTracking] = useState(false);
   const operation = useToolOperation<ComparisonResult>(
-    async (signal) => toolRuntime.run("url-comparison", { leftUrl, rightUrl, mode, ignoreFragment }, {}, signal),
+    async (signal) => toolRuntime.run("url-comparison", { leftUrl, rightUrl, mode, ignoreFragment, sortQuery, removeTrailingSlash, dropTracking }, {}, signal),
     { formatError: comparisonErrorIt },
   );
   const result: ComparisonResult | null = operation.result;
@@ -99,7 +110,12 @@ export function UrlComparisonTool() {
             <select
               aria-label="Modalità di confronto"
               value={mode}
-              onChange={(event) => setMode(event.currentTarget.value as "semantic" | "exact")}
+              onChange={(event) => {
+                const nextMode = event.currentTarget.value as "semantic" | "exact";
+                setMode(nextMode);
+                setSortQuery(nextMode === "semantic");
+                setIgnoreFragment(nextMode === "semantic");
+              }}
               disabled={operation.isRunning}
             >
               <option value="semantic">Semantica: ordine dei parametri indifferente</option>
@@ -119,6 +135,18 @@ export function UrlComparisonTool() {
               <small>Attivo in modalità semantica; disattivalo per confrontare anche l'ancora.</small>
             </span>
           </label>
+          <label class="check-field">
+            <input type="checkbox" aria-label="Ordina i parametri query nel confronto" checked={sortQuery} onChange={(event) => setSortQuery(event.currentTarget.checked)} disabled={operation.isRunning} />
+            <span><span>Ordina i parametri query</span><small>Rende irrilevante il loro ordine senza cambiare i valori.</small></span>
+          </label>
+          <label class="check-field">
+            <input type="checkbox" aria-label="Ignora lo slash finale nel confronto" checked={removeTrailingSlash} onChange={(event) => setRemoveTrailingSlash(event.currentTarget.checked)} disabled={operation.isRunning} />
+            <span><span>Ignora lo slash finale</span><small>Solo per percorsi diversi dalla radice.</small></span>
+          </label>
+          <label class="check-field">
+            <input type="checkbox" aria-label="Ignora parametri di tracciamento nel confronto" checked={dropTracking} onChange={(event) => setDropTracking(event.currentTarget.checked)} disabled={operation.isRunning} />
+            <span><span>Ignora parametri di tracciamento conosciuti</span><small>Rimuove UTM e identificatori di tracking dalla forma confrontata.</small></span>
+          </label>
         </ToolFormCard>
         <InlineError message={operation.error} />
         <ToolActions>
@@ -127,6 +155,11 @@ export function UrlComparisonTool() {
             operation.reset();
             setLeftUrl("");
             setRightUrl("");
+            setMode("semantic");
+            setIgnoreFragment(true);
+            setSortQuery(true);
+            setRemoveTrailingSlash(false);
+            setDropTracking(false);
           }} />
         </ToolActions>
       </form>
@@ -156,6 +189,13 @@ export function UrlComparisonTool() {
             <dl class="assumptions">
               <div><dt>Primo URL normalizzato</dt><dd>{result.left}</dd></div>
               <div><dt>Secondo URL normalizzato</dt><dd>{result.right}</dd></div>
+              <div><dt>Regole applicate</dt><dd>{[
+                result.normalizationRules.sortQuery ? "query ordinata" : "ordine query preservato",
+                result.normalizationRules.ignoreFragment ? "frammento ignorato" : "frammento confrontato",
+                result.normalizationRules.removeTrailingSlash ? "slash finale ignorato" : "slash finale preservato",
+                result.normalizationRules.dropTracking ? "tracking ignorato" : "tracking preservato",
+              ].join(" · ")}</dd></div>
+              <div><dt>Fonte normalizzazione</dt><dd>{result.comparisonSource} · controllata il {result.comparisonVerifiedOn}</dd></div>
             </dl>
 
             {result.differences.length > 0 && (

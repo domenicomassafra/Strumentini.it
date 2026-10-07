@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-06T09:58:22.343Z",
+  "providerMutation": false,
+  "evidenceMode": "same-origin browser interception plus denied fixture; no provider endpoint is contacted",
+  "local": {
+    "route": "/tools/business-day/",
+    "taskRequests": 2,
+    "contentLeaks": 0,
+    "externalOrNonGetRequests": 0,
+    "requests": [
+      {
+        "path": "/_astro/registry.BZYHVDuB.js",
+        "method": "GET",
+        "hasBody": false
+      },
+      {
+        "path": "/_astro/module.Bmr23zJa.js",
+        "method": "GET",
+        "hasBody": false
+      }
+    ]
+  },
+  "referenceFixture": {
+    "explicitBeforeAction": true,
+    "requestsBeforeAction": 0,
+    "requestsAfterAction": 1,
+    "requests": [
+      {
+        "path": "/__result-v2-reference-fixture",
+        "queryKeys": [
+          "code"
+        ]
+      }
+    ],
+    "provenance": "remote-valid / network-used / remote-authoritative"
+  },
+  "deniedFixture": {
+    "provenance": "unavailable / network-denied / none",
+    "remoteInvalidClaimed": false
+  },
+  "status": "PASS"
+}

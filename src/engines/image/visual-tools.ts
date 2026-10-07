@@ -8,8 +8,9 @@ import {
   assertCoordinate,
   assertFile,
   assertFiles,
-  assertPixels,
   contrastRatio,
+  colorHarmony,
+  colorTintsAndShades,
   decodeBitmap,
   extractPalette,
   fitDimensions,
@@ -17,6 +18,7 @@ import {
   hslToRgb,
   normalizeName,
   parseHexColor,
+  resolveCssColor,
   rgbToHex,
   rgbToHsl,
   type ImageVisualFile,
@@ -38,6 +40,13 @@ import {
   type ImageDataResult,
   type OutputMime,
 } from "./operations";
+import {
+  applyImageTransformPixels,
+  defaultImageTransformState,
+  pixelFrameToCanvas,
+} from "./transform-workspace";
+import { createZip, inspectZip } from "../file-privacy";
+import { decodePortableImage } from "./portable-decode";
 
 export interface TransformInput {
   readonly file: Blob;
@@ -55,6 +64,139 @@ export interface ImageOutput {
   readonly width: number;
   readonly height: number;
   readonly estimatedBytesSaved?: number;
+}
+
+export interface ImageConversionOutput extends ImageOutput {
+  readonly quality: number | null;
+  readonly lossy: boolean;
+  readonly lossNote: string;
+  readonly sourceHadAlpha: boolean;
+  readonly alphaPolicy: "preserved" | "opaque-source" | "flattened-on-background";
+  readonly background: string | null;
+  readonly verification: {
+    readonly signature: true;
+    readonly decoded: true;
+    readonly dimensions: true;
+  };
+  readonly inputKind: "jpeg" | "png" | "webp" | "gif" | "avif" | "heic" | "heif";
+  readonly framePolicy: "single-image" | "first-frame-only";
+  readonly decoder: "browser" | "libheif-wasm";
+}
+
+export const MACHADO_CVD_MATRICES = {
+  protanopia: [
+    0.152286, 1.052583, -0.204868,
+    0.114503, 0.786281, 0.099216,
+    -0.003882, -0.048116, 1.051998,
+  ],
+  deuteranopia: [
+    0.367322, 0.860646, -0.227968,
+    0.280085, 0.672501, 0.047413,
+    -0.011820, 0.042940, 0.968881,
+  ],
+  tritanopia: [
+    1.255528, -0.076749, -0.178779,
+    -0.078411, 0.930809, 0.147602,
+    0.004733, 0.691367, 0.303900,
+  ],
+} as const;
+
+export type ColorVisionSimulationMode = keyof typeof MACHADO_CVD_MATRICES;
+
+export const COLOR_VISION_SIMULATION_LABELS: Readonly<Record<ColorVisionSimulationMode, string>> = {
+  protanopia: "Protanopia",
+  deuteranopia: "Deuteranopia",
+  tritanopia: "Tritanopia",
+};
+
+const MACHADO_MODEL = "Machado, Oliveira & Fernandes (2009), complete dichromacy matrix at severity 1.0";
+const MACHADO_DOI = "10.1109/TVCG.2009.113";
+const COLOR_VISION_DISCLAIMER =
+  "This is a model-based visual simulation, not a medical diagnosis and not a universal representation of how every person with a color-vision deficiency perceives color.";
+
+function assertColorVisionSimulationMode(value: unknown): ColorVisionSimulationMode {
+  if (value === "protanopia" || value === "deuteranopia" || value === "tritanopia") return value;
+  throw new ImageVisualError("INVALID_INPUT", "Choose protanopia, deuteranopia, or tritanopia simulation");
+}
+
+function srgbToLinearByte(value: number): number {
+  const encoded = Math.max(0, Math.min(255, value)) / 255;
+  return encoded <= 0.04045
+    ? encoded / 12.92
+    : ((encoded + 0.055) / 1.055) ** 2.4;
+}
+
+function linearToSrgbByte(value: number): number {
+  const linear = Math.max(0, Math.min(1, value));
+  const encoded = linear <= 0.0031308
+    ? 12.92 * linear
+    : 1.055 * (linear ** (1 / 2.4)) - 0.055;
+  return Math.round(Math.max(0, Math.min(1, encoded)) * 255);
+}
+
+export function simulateColorVisionRgba(
+  rgba: Uint8ClampedArray,
+  mode: ColorVisionSimulationMode,
+): Uint8ClampedArray {
+  if (rgba.length % 4 !== 0) throw new ImageVisualError("INVALID_INPUT", "RGBA pixel data length must be divisible by four");
+  const matrix = MACHADO_CVD_MATRICES[mode];
+  const output = new Uint8ClampedArray(rgba.length);
+  for (let index = 0; index < rgba.length; index += 4) {
+    const red = srgbToLinearByte(rgba[index] ?? 0);
+    const green = srgbToLinearByte(rgba[index + 1] ?? 0);
+    const blue = srgbToLinearByte(rgba[index + 2] ?? 0);
+    output[index] = linearToSrgbByte(matrix[0] * red + matrix[1] * green + matrix[2] * blue);
+    output[index + 1] = linearToSrgbByte(matrix[3] * red + matrix[4] * green + matrix[5] * blue);
+    output[index + 2] = linearToSrgbByte(matrix[6] * red + matrix[7] * green + matrix[8] * blue);
+    output[index + 3] = rgba[index + 3] ?? 255;
+  }
+  return output;
+}
+
+export interface ColorVisionSimulationOutput extends ImageOutput {
+  readonly mode: ColorVisionSimulationMode;
+  readonly modeLabel: string;
+  readonly model: string;
+  readonly modelDoi: string;
+  readonly transformSpace: "linear RGB from sRGB";
+  readonly disclaimer: string;
+}
+
+export async function simulateColorVisionLocal(
+  input: unknown,
+  signal?: AbortSignal,
+  progress?: (value: ImageVisualProgress) => void,
+): Promise<ColorVisionSimulationOutput> {
+  const value = validateObject(input);
+  const file = asFile(value.file);
+  const mode = assertColorVisionSimulationMode(value.mode);
+  const source = await imageDataFromFile(file, signal, progress);
+  abortIfNeeded(signal);
+  progress?.({ phase: "transform", label: `Simulating ${COLOR_VISION_SIMULATION_LABELS[mode]}` });
+  const transformed = simulateColorVisionRgba(source.data, mode);
+  abortIfNeeded(signal);
+  const canvas = makeCanvas(source.width, source.height);
+  const context = get2d(canvas);
+  const imageData = context.createImageData(source.width, source.height);
+  imageData.data.set(transformed);
+  context.putImageData(imageData, 0, 0);
+  const outputMime = "image/png" as const;
+  const blob = await outputBlob(canvas, outputMime, undefined, source.width, source.height, signal, progress);
+  const header = await readHeader(file, signal);
+  return {
+    blob,
+    filename: outputName(file, `${mode}-simulation`, outputMime),
+    inputMime: header.mime,
+    outputMime,
+    width: source.width,
+    height: source.height,
+    mode,
+    modeLabel: COLOR_VISION_SIMULATION_LABELS[mode],
+    model: MACHADO_MODEL,
+    modelDoi: MACHADO_DOI,
+    transformSpace: "linear RGB from sRGB",
+    disclaimer: COLOR_VISION_DISCLAIMER,
+  };
 }
 
 function asFile(value: unknown): ImageVisualFile {
@@ -77,30 +219,91 @@ export async function cropImageLocal(input: unknown, signal?: AbortSignal, progr
   if (x + width > IMAGE_VISUAL_LIMITS.maxDimension || y + height > IMAGE_VISUAL_LIMITS.maxDimension) {
     throw new ImageVisualError("INVALID_INPUT", "Crop rectangle exceeds the local dimension limit");
   }
-  progress?.({ phase: "decode", label: "Decoding locally" });
-  const decoded = await decodeImage(file, signal, progress);
-  try {
-    if (x + width > decoded.width || y + height > decoded.height) throw new ImageVisualError("INVALID_INPUT", "Crop rectangle must fit inside the image");
-    const canvas = makeCanvas(width, height);
-    const context = get2d(canvas);
-    context.drawImage(decoded.bitmap, x, y, width, height, 0, 0, width, height);
-    const blob = await outputBlob(canvas, mime, quality, width, height, signal, progress);
-    return { blob, filename: outputName(file, `${width}x${height}-crop`, mime), inputMime: inspectImageHeader(new Uint8Array(await file.blob.slice(0, 2 * 1024 * 1024).arrayBuffer())).mime, outputMime: mime, width, height, estimatedBytesSaved: file.size - blob.size };
-  } finally {
-    decoded.bitmap.close();
-  }
+  const source = await imageDataFromFile(file, signal, progress);
+  if (x + width > source.width || y + height > source.height) throw new ImageVisualError("INVALID_INPUT", "Crop rectangle must fit inside the image");
+  const pixels = applyImageTransformPixels(source, {
+    ...defaultImageTransformState(source.width, source.height),
+    crop: { x, y, width, height },
+  });
+  const blob = await outputBlob(pixelFrameToCanvas(pixels), mime, quality, width, height, signal, progress);
+  return { blob, filename: outputName(file, `${width}x${height}-crop`, mime), inputMime: inspectImageHeader(new Uint8Array(await file.blob.slice(0, 2 * 1024 * 1024).arrayBuffer())).mime, outputMime: mime, width, height, estimatedBytesSaved: file.size - blob.size };
 }
 
-export async function convertImageFormatLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<ImageOutput> {
+function canvasTransparency(canvas: HTMLCanvasElement): boolean {
+  const pixels = get2d(canvas).getImageData(0, 0, canvas.width, canvas.height).data;
+  for (let index = 3; index < pixels.length; index += 4) {
+    if ((pixels[index] ?? 255) < 255) return true;
+  }
+  return false;
+}
+
+function conversionCanvas(bitmap: ImageBitmap, mime: OutputMime, background: unknown): {
+  readonly canvas: HTMLCanvasElement;
+  readonly sourceHadAlpha: boolean;
+  readonly background: string | null;
+  readonly alphaPolicy: ImageConversionOutput["alphaPolicy"];
+} {
+  const sourceCanvas = bitmapCanvas(bitmap);
+  const sourceHadAlpha = canvasTransparency(sourceCanvas);
+  if (mime !== "image/jpeg") {
+    return { canvas: sourceCanvas, sourceHadAlpha, background: null, alphaPolicy: sourceHadAlpha ? "preserved" : "opaque-source" };
+  }
+  if (!sourceHadAlpha) {
+    return { canvas: sourceCanvas, sourceHadAlpha, background: null, alphaPolicy: "opaque-source" };
+  }
+  if (typeof background !== "string" || background.trim() === "") {
+    throw new ImageVisualError("JPEG_ALPHA_BACKGROUND_REQUIRED", "Transparent pixels require an explicit JPEG background color");
+  }
+  const color = parseHexColor(background);
+  const backgroundHex = rgbToHex(color.r, color.g, color.b);
+  const canvas = makeCanvas(bitmap.width, bitmap.height);
+  const context = get2d(canvas);
+  context.fillStyle = backgroundHex;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(bitmap, 0, 0);
+  return { canvas, sourceHadAlpha, background: backgroundHex, alphaPolicy: "flattened-on-background" };
+}
+
+export async function convertImageFormatLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<ImageConversionOutput> {
   const value = validateObject(input);
   const file = asFile(value.file);
   const mime = assertOutputMime(value.mime);
   const quality = validateQuality(value.quality ?? 0.92);
-  const decoded = await decodeImage(file, signal, progress);
+  const decoded = await decodePortableImage(file, signal, progress);
   try {
-    const canvas = bitmapCanvas(decoded.bitmap);
+    const prepared = conversionCanvas(decoded.bitmap, mime, value.background);
+    const canvas = prepared.canvas;
     const blob = await outputBlob(canvas, mime, quality, decoded.width, decoded.height, signal, progress);
-    return { blob, filename: outputName(file, `converted.${extensionForMime(mime)}`, mime).replace(/\.([^.]+)\.([^.]+)$/u, ".$2"), inputMime: inspectImageHeader(new Uint8Array(await file.blob.slice(0, 2 * 1024 * 1024).arrayBuffer())).mime, outputMime: mime, width: decoded.width, height: decoded.height, estimatedBytesSaved: file.size - blob.size };
+    const lossy = mime === "image/jpeg" || mime === "image/webp";
+    const sourceNote = decoded.framePolicy === "first-frame-only"
+      ? " Animated GIF input is intentionally converted from the first decoded frame only."
+      : decoded.decoder === "libheif-wasm"
+        ? " HEIC/HEIF is decoded locally with the lazy libheif/WASM path before re-encoding."
+        : decoded.kind === "avif"
+          ? " AVIF decode uses the browser's local decoder and fails explicitly when that decoder is unavailable."
+          : "";
+    const lossNote = mime === "image/png"
+      ? `PNG re-encodes the decoded RGBA pixels without additional pixel loss, but source metadata/color-profile bytes are not preserved and prior lossy compression cannot be recovered.${sourceNote}`
+      : `${mime === "image/jpeg" ? "JPEG" : "WebP"} output is a lossy re-encode at quality ${quality.toFixed(2)} of the decoded pixels; source metadata bytes are not preserved.${sourceNote}`;
+    return {
+      blob,
+      filename: outputName(file, `converted.${extensionForMime(mime)}`, mime).replace(/\.([^.]+)\.([^.]+)$/u, ".$2"),
+      inputMime: decoded.mime,
+      outputMime: mime,
+      width: decoded.width,
+      height: decoded.height,
+      estimatedBytesSaved: file.size - blob.size,
+      quality: mime === "image/png" ? null : quality,
+      lossy,
+      lossNote,
+      sourceHadAlpha: prepared.sourceHadAlpha,
+      alphaPolicy: prepared.alphaPolicy,
+      background: prepared.background,
+      verification: { signature: true, decoded: true, dimensions: true },
+      inputKind: decoded.kind,
+      framePolicy: decoded.framePolicy,
+      decoder: decoded.decoder,
+    };
   } finally {
     decoded.bitmap.close();
   }
@@ -227,11 +430,24 @@ export interface ContactSheetOutput extends ImageOutput {
   readonly columns: number;
   readonly cellWidth: number;
   readonly cellHeight: number;
+  readonly ordering: "selection" | "filename-asc";
+  readonly sourceItems: readonly {
+    readonly index: number;
+    readonly name: string;
+    readonly width: number;
+    readonly height: number;
+  }[];
+  readonly verification: { readonly signature: true; readonly decoded: true; readonly dimensions: true };
 }
 
 export async function createContactSheetLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<ContactSheetOutput> {
   const value = validateObject(input);
-  const files = assertFiles(value.files, 24);
+  const selectedFiles = assertFiles(value.files, 24);
+  const ordering = value.ordering ?? "selection";
+  if (ordering !== "selection" && ordering !== "filename-asc") throw new ImageVisualError("INVALID_INPUT", "Contact-sheet ordering must be selection or filename-asc");
+  const files = ordering === "filename-asc"
+    ? [...selectedFiles].sort((left, right) => left.name.localeCompare(right.name, "en-US"))
+    : selectedFiles;
   const columns = Number.isInteger(value.columns) ? Number(value.columns) : 3;
   const cellWidth = assertDimension(value.cellWidth ?? 240, "Cell width");
   const cellHeight = assertDimension(value.cellHeight ?? 180, "Cell height");
@@ -242,10 +458,12 @@ export async function createContactSheetLocal(input: unknown, signal?: AbortSign
   const context = get2d(canvas);
   context.fillStyle = "#ffffff";
   context.fillRect(0, 0, canvas.width, canvas.height);
+  const sourceItems: Array<{ index: number; name: string; width: number; height: number }> = [];
   for (let index = 0; index < files.length; index += 1) {
     abortIfNeeded(signal);
-    const decoded = await decodeImage(files[index]!, signal, progress);
+    const decoded = await decodePortableImage(files[index]!, signal, progress);
     try {
+      sourceItems.push({ index: index + 1, name: files[index]!.name, width: decoded.width, height: decoded.height });
       const scale = Math.min(cellWidth / decoded.width, cellHeight / decoded.height);
       const width = Math.max(1, Math.round(decoded.width * scale));
       const height = Math.max(1, Math.round(decoded.height * scale));
@@ -258,31 +476,135 @@ export async function createContactSheetLocal(input: unknown, signal?: AbortSign
   }
   const mime = "image/png" as const;
   const blob = await outputBlob(canvas, mime, undefined, canvas.width, canvas.height, signal, progress);
-  return { blob, filename: "contact-sheet.png", inputMime: "image/*", outputMime: mime, width: canvas.width, height: canvas.height, columns, cellWidth, cellHeight };
+  return {
+    blob,
+    filename: "contact-sheet.png",
+    inputMime: "image/*",
+    outputMime: mime,
+    width: canvas.width,
+    height: canvas.height,
+    columns,
+    cellWidth,
+    cellHeight,
+    ordering,
+    sourceItems,
+    verification: { signature: true, decoded: true, dimensions: true },
+  };
 }
 
 export interface IconOutput {
   readonly size: number;
   readonly blob: Blob;
   readonly filename: string;
+  readonly outputMime: "image/png";
+  readonly width: number;
+  readonly height: number;
+  readonly verification: { readonly signature: true; readonly decoded: true; readonly dimensions: true };
 }
 
-export async function createIconSizesLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<readonly IconOutput[]> {
+export interface IconBatchOutput {
+  readonly items: readonly IconOutput[];
+  readonly source: { readonly width: number; readonly height: number; readonly name: string };
+  readonly ordering: "size-ascending";
+  readonly zipBlob: Blob;
+  readonly zipFilename: string;
+  readonly zipCompression: "store";
+  readonly zipEntries: readonly string[];
+  readonly zipVerified: true;
+}
+
+export function normalizeIconSizes(input: unknown): readonly number[] {
+  const sizes = Array.isArray(input) ? input : [16, 32, 48, 64, 128, 180, 192, 512];
+  if (sizes.length < 1 || sizes.length > 12) throw new ImageVisualError("INVALID_INPUT", "Choose 1 to 12 icon sizes");
+  return [...new Set(sizes.map((size) => assertDimension(size, "Icon size")))].sort((left, right) => left - right);
+}
+
+export async function createIconSizesLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<IconBatchOutput> {
   const value = validateObject(input);
   const file = asFile(value.file);
-  const sizes = Array.isArray(value.sizes) ? value.sizes : [16, 32, 48, 64, 128, 180, 192, 512];
-  if (!Array.isArray(sizes) || sizes.length < 1 || sizes.length > 12) throw new ImageVisualError("INVALID_INPUT", "Choose 1 to 12 icon sizes");
+  const sizes = normalizeIconSizes(value.sizes);
   const decoded = await decodeImage(file, signal, progress);
   try {
     const outputs: IconOutput[] = [];
-    for (const rawSize of sizes) {
+    for (const size of sizes) {
       abortIfNeeded(signal);
-      const size = assertDimension(rawSize, "Icon size");
       const canvas = bitmapCanvas(decoded.bitmap, size, size);
       const blob = await outputBlob(canvas, "image/png", undefined, size, size, signal, progress);
-      outputs.push({ size, blob, filename: outputName(file, `${size}x${size}`, "image/png") });
+      outputs.push({
+        size,
+        blob,
+        filename: outputName(file, `${size}x${size}`, "image/png"),
+        outputMime: "image/png",
+        width: size,
+        height: size,
+        verification: { signature: true, decoded: true, dimensions: true },
+      });
     }
-    return outputs;
+    if (typeof File === "undefined") throw new ImageVisualError("UNSUPPORTED_BROWSER", "File API is required for verified ZIP packaging");
+    const files = outputs.map((output) => new File([output.blob], output.filename, { type: output.outputMime }));
+    const archive = await createZip({ files }, signal);
+    if (!("blob" in archive) || !(archive.blob instanceof Blob) || archive.compression !== "store") {
+      throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", "Store-only ZIP packaging did not produce a verifiable archive");
+    }
+    const zipFilename = `${normalizeName(file.name)}-favicon-app-icons.zip`;
+    const archiveFile = new File([archive.blob], zipFilename, { type: "application/zip" });
+    const inspected = await inspectZip({ files: [archiveFile] }, signal);
+    const expectedEntries = outputs.map((output) => output.filename);
+    const inspectedEntries = "entries" in inspected && Array.isArray(inspected.entries) ? inspected.entries : [];
+    const inspectedPaths = inspectedEntries.map((entry) => typeof entry === "object" && entry !== null && "path" in entry ? String(entry.path) : "");
+    const storeOnly = inspectedEntries.every((entry) => typeof entry === "object" && entry !== null && "method" in entry && entry.method === 0);
+    if (!storeOnly || inspectedPaths.length !== expectedEntries.length || inspectedPaths.some((path, index) => path !== expectedEntries[index])) {
+      throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", "ZIP central directory does not exactly match the previewed icon list");
+    }
+    return {
+      items: outputs,
+      source: { width: decoded.width, height: decoded.height, name: file.name },
+      ordering: "size-ascending",
+      zipBlob: archive.blob,
+      zipFilename,
+      zipCompression: "store",
+      zipEntries: expectedEntries,
+      zipVerified: true,
+    };
+  } finally {
+    decoded.bitmap.close();
+  }
+}
+
+export interface PlatformImageExportOutput extends ImageOutput {
+  readonly preset: PlatformSizeResult["preset"];
+  readonly source: { readonly width: number; readonly height: number };
+  readonly coverCrop: PlatformSizeResult["coverCrop"];
+  readonly ordering: "single-selected-preset";
+  readonly verification: { readonly signature: true; readonly decoded: true; readonly dimensions: true };
+}
+
+export async function createPlatformImageExportLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<PlatformImageExportOutput> {
+  const value = validateObject(input);
+  const file = asFile(value.file);
+  const preset = PLATFORM_PRESETS.find((item) => item.id === value.presetId);
+  if (preset === undefined) throw new ImageVisualError("INVALID_INPUT", "Choose a supported platform preset");
+  const decoded = await decodeImage(file, signal, progress);
+  try {
+    const sizing = calculatePlatformSizes(preset, decoded.width, decoded.height);
+    const canvas = makeCanvas(preset.width, preset.height);
+    const context = get2d(canvas);
+    const crop = sizing.coverCrop;
+    context.drawImage(decoded.bitmap, crop.x, crop.y, crop.width, crop.height, 0, 0, preset.width, preset.height);
+    const blob = await outputBlob(canvas, "image/png", undefined, preset.width, preset.height, signal, progress);
+    return {
+      blob,
+      filename: `${normalizeName(file.name)}-${preset.id}-${preset.width}x${preset.height}.png`,
+      inputMime: (await readHeader(file, signal)).mime,
+      outputMime: "image/png",
+      width: preset.width,
+      height: preset.height,
+      preset,
+      source: { width: decoded.width, height: decoded.height },
+      coverCrop: crop,
+      ordering: "single-selected-preset",
+      verification: { signature: true, decoded: true, dimensions: true },
+    };
   } finally {
     decoded.bitmap.close();
   }
@@ -302,53 +624,140 @@ export async function addImageBorderLocal(input: unknown, signal?: AbortSignal, 
   const background = typeof value.background === "string" ? value.background : "#ffffff";
   const color = parseHexColor(background);
   if (border < 0 || border > 512 || padding < 0 || padding > 512) throw new ImageVisualError("INVALID_INPUT", "Border and padding must be from 0 to 512 pixels");
-  const decoded = await decodeImage(file, signal, progress);
-  try {
-    const width = decoded.width + (border + padding) * 2;
-    const height = decoded.height + (border + padding) * 2;
-    assertPixels(width, height, "bordered image");
-    const canvas = makeCanvas(width, height);
-    const context = get2d(canvas);
-    context.fillStyle = rgbToHex(color.r, color.g, color.b);
-    context.fillRect(0, 0, width, height);
-    context.drawImage(decoded.bitmap, border + padding, border + padding, decoded.width, decoded.height);
-    const blob = await outputBlob(canvas, "image/png", undefined, width, height, signal, progress);
-    return { blob, filename: outputName(file, "bordered", "image/png"), inputMime: "image/*", outputMime: "image/png", width, height, border, padding, background: rgbToHex(color.r, color.g, color.b) };
-  } finally {
-    decoded.bitmap.close();
-  }
+  const source = await imageDataFromFile(file, signal, progress);
+  const frame = border + padding;
+  const backgroundHex = rgbToHex(color.r, color.g, color.b);
+  const pixels = applyImageTransformPixels(source, {
+    ...defaultImageTransformState(source.width, source.height),
+    border: frame,
+    borderColor: backgroundHex,
+    backgroundMode: "color",
+    backgroundColor: backgroundHex,
+  });
+  const blob = await outputBlob(pixelFrameToCanvas(pixels), "image/png", undefined, pixels.width, pixels.height, signal, progress);
+  return { blob, filename: outputName(file, "bordered", "image/png"), inputMime: "image/*", outputMime: "image/png", width: pixels.width, height: pixels.height, border, padding, background: backgroundHex };
 }
 
 export interface CompareResult {
   readonly first: MetadataResult;
   readonly second: MetadataResult;
   readonly sameDimensions: boolean;
+  readonly alignmentPolicy: "top-left-overlap-no-stretch";
+  readonly comparedWidth: number;
+  readonly comparedHeight: number;
+  readonly unmatchedPixels: number;
+  readonly threshold: number;
+  readonly algorithm: string;
+  readonly maxSampledPixels: number;
   readonly sampledPixels: number;
-  readonly differentChannels: number;
+  readonly differentPixels: number;
   readonly differenceRatio: number;
+  readonly meanAbsoluteChannelDifference: number;
+  readonly diffBlob: Blob;
+  readonly diffFilename: string;
+  readonly diffMime: "image/png";
+}
+
+export interface PixelDiffSummary {
+  readonly sampledPixels: number;
+  readonly differentPixels: number;
+  readonly differenceRatio: number;
+  readonly meanAbsoluteChannelDifference: number;
+}
+
+export function compareRgbaBounded(
+  first: ImageDataResult,
+  second: ImageDataResult,
+  threshold = 0,
+  maxSamples: number = IMAGE_VISUAL_LIMITS.maxPalettePixels,
+): PixelDiffSummary {
+  if (!Number.isInteger(threshold) || threshold < 0 || threshold > 255) throw new ImageVisualError("INVALID_INPUT", "Pixel difference threshold must be an integer from 0 to 255");
+  if (!Number.isInteger(maxSamples) || maxSamples < 1 || maxSamples > IMAGE_VISUAL_LIMITS.maxPalettePixels) throw new ImageVisualError("INVALID_INPUT", "Pixel sample bound is invalid");
+  const width = Math.min(first.width, second.width);
+  const height = Math.min(first.height, second.height);
+  const overlapPixels = width * height;
+  const sampleCount = Math.min(maxSamples, overlapPixels);
+  let differentPixels = 0;
+  let totalAbsoluteChannelDifference = 0;
+  for (let sample = 0; sample < sampleCount; sample += 1) {
+    const pixelIndex = Math.floor((sample * overlapPixels) / sampleCount);
+    const x = pixelIndex % width;
+    const y = Math.floor(pixelIndex / width);
+    const firstOffset = (y * first.width + x) * 4;
+    const secondOffset = (y * second.width + x) * 4;
+    let maximumDelta = 0;
+    for (let channel = 0; channel < 4; channel += 1) {
+      const delta = Math.abs((first.data[firstOffset + channel] ?? 0) - (second.data[secondOffset + channel] ?? 0));
+      totalAbsoluteChannelDifference += delta;
+      maximumDelta = Math.max(maximumDelta, delta);
+    }
+    if (maximumDelta > threshold) differentPixels += 1;
+  }
+  return {
+    sampledPixels: sampleCount,
+    differentPixels,
+    differenceRatio: sampleCount === 0 ? 0 : differentPixels / sampleCount,
+    meanAbsoluteChannelDifference: sampleCount === 0 ? 0 : totalAbsoluteChannelDifference / (sampleCount * 4),
+  };
+}
+
+async function createPixelDiffBlob(
+  first: ImageDataResult,
+  second: ImageDataResult,
+  signal?: AbortSignal,
+  progress?: (value: ImageVisualProgress) => void,
+): Promise<Blob> {
+  const width = Math.min(first.width, second.width);
+  const height = Math.min(first.height, second.height);
+  const canvas = makeCanvas(width, height);
+  const context = get2d(canvas);
+  const image = context.createImageData(width, height);
+  for (let y = 0; y < height; y += 1) {
+    abortIfNeeded(signal);
+    for (let x = 0; x < width; x += 1) {
+      const targetOffset = (y * width + x) * 4;
+      const firstOffset = (y * first.width + x) * 4;
+      const secondOffset = (y * second.width + x) * 4;
+      image.data[targetOffset] = Math.abs((first.data[firstOffset] ?? 0) - (second.data[secondOffset] ?? 0));
+      image.data[targetOffset + 1] = Math.abs((first.data[firstOffset + 1] ?? 0) - (second.data[secondOffset + 1] ?? 0));
+      image.data[targetOffset + 2] = Math.abs((first.data[firstOffset + 2] ?? 0) - (second.data[secondOffset + 2] ?? 0));
+      image.data[targetOffset + 3] = 255;
+    }
+  }
+  context.putImageData(image, 0, 0);
+  return outputBlob(canvas, "image/png", undefined, width, height, signal, progress);
 }
 
 export async function compareImagesLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<CompareResult> {
   const value = validateObject(input);
   const first = asFile(value.first);
   const second = asFile(value.second);
+  const alignmentPolicy = value.alignmentPolicy ?? "top-left-overlap-no-stretch";
+  if (alignmentPolicy !== "top-left-overlap-no-stretch") throw new ImageVisualError("INVALID_INPUT", "Comparison alignment must be top-left overlap without stretching");
+  const threshold = value.threshold === undefined ? 0 : Number(value.threshold);
   const firstDecoded = await imageDataFromFile(first, signal, progress);
   const secondDecoded = await imageDataFromFile(second, signal, progress);
   const width = Math.min(firstDecoded.width, secondDecoded.width);
   const height = Math.min(firstDecoded.height, secondDecoded.height);
-  const sampleCount = Math.min(IMAGE_VISUAL_LIMITS.maxPalettePixels, width * height);
-  const stride = Math.max(1, Math.floor((width * height) / sampleCount));
-  let sampled = 0;
-  let different = 0;
-  for (let y = 0; y < height; y += stride) {
-    for (let x = 0; x < width; x += stride) {
-      const offset = (y * width + x) * 4;
-      const otherOffset = (y * secondDecoded.width + x) * 4;
-      if (firstDecoded.data[offset] !== secondDecoded.data[otherOffset] || firstDecoded.data[offset + 1] !== secondDecoded.data[otherOffset + 1] || firstDecoded.data[offset + 2] !== secondDecoded.data[otherOffset + 2]) different += 1;
-      sampled += 1;
-    }
-  }
-  return { first: await inspectImageMetadataLocal(first.blob, signal), second: await inspectImageMetadataLocal(second.blob, signal), sameDimensions: firstDecoded.width === secondDecoded.width && firstDecoded.height === secondDecoded.height, sampledPixels: sampled, differentChannels: different, differenceRatio: sampled === 0 ? 0 : different / sampled };
+  const summary = compareRgbaBounded(firstDecoded, secondDecoded, threshold);
+  const diffBlob = await createPixelDiffBlob(firstDecoded, secondDecoded, signal, progress);
+  const overlapPixels = width * height;
+  return {
+    first: await inspectImageMetadataLocal(first.blob, signal),
+    second: await inspectImageMetadataLocal(second.blob, signal),
+    sameDimensions: firstDecoded.width === secondDecoded.width && firstDecoded.height === secondDecoded.height,
+    alignmentPolicy,
+    comparedWidth: width,
+    comparedHeight: height,
+    unmatchedPixels: firstDecoded.width * firstDecoded.height + secondDecoded.width * secondDecoded.height - 2 * overlapPixels,
+    threshold,
+    algorithm: `Top-left overlap, no stretch; evenly sample at most ${IMAGE_VISUAL_LIMITS.maxPalettePixels} overlap pixels; a sampled pixel differs when any RGBA channel delta is > threshold.`,
+    maxSampledPixels: IMAGE_VISUAL_LIMITS.maxPalettePixels,
+    ...summary,
+    diffBlob,
+    diffFilename: "image-pixel-diff.png",
+    diffMime: "image/png",
+  };
 }
 
 function colorSignature(data: ImageDataResult): string {
@@ -391,11 +800,29 @@ export async function findPerceptualDuplicatesLocal(input: unknown, signal?: Abo
   return pairs;
 }
 
-export function convertColorLocal(input: unknown, _signal?: AbortSignal): { hex: string; rgb: { r: number; g: number; b: number }; hsl: { h: number; s: number; l: number } } {
+export function convertColorLocal(input: unknown, _signal?: AbortSignal): unknown {
   const value = validateObject(input);
-  const hex = typeof value.hex === "string" ? value.hex : "";
-  const rgb = parseHexColor(hex);
-  return { hex: rgbToHex(rgb.r, rgb.g, rgb.b), rgb, hsl: rgbToHsl(rgb.r, rgb.g, rgb.b) };
+  const source = typeof value.color === "string" ? value.color : typeof value.hex === "string" ? value.hex : "";
+  const mode = typeof value.mode === "string" ? value.mode : "convert";
+  const resolved = resolveCssColor(source);
+  if (mode === "harmonies") {
+    return { mode, input: source, namedColor: resolved.namedColor, ...colorHarmony(source) };
+  }
+  if (mode === "tints-shades") {
+    return { mode, input: source, namedColor: resolved.namedColor, ...colorTintsAndShades(source) };
+  }
+  if (mode === "convert" || mode === "named-color") {
+    return {
+      mode,
+      input: source,
+      namedColor: resolved.namedColor,
+      hex: resolved.hex,
+      rgb: resolved.rgb,
+      hsl: rgbToHsl(resolved.rgb.r, resolved.rgb.g, resolved.rgb.b),
+      colorSpace: "sRGB/HSL",
+    };
+  }
+  throw new ImageVisualError("INVALID_INPUT", "Choose convert, named-color, harmonies, or tints-shades mode");
 }
 
 export function checkContrastLocal(input: unknown, _signal?: AbortSignal): { foreground: string; background: string; ratio: number; aaNormal: boolean; aaLarge: boolean; aaaNormal: boolean } {
@@ -413,7 +840,7 @@ export function calculateAspectRatioLocal(input: unknown, _signal?: AbortSignal)
   return { ratio: aspectRatio(width, height), width, height, contain: fitDimensions(width, height, 1920, 1080) };
 }
 
-export function inspectColorLocal(input: unknown, _signal?: AbortSignal): { hex: string; rgb: { r: number; g: number; b: number }; hsl: { h: number; s: number; l: number } } {
+export function inspectColorLocal(input: unknown, _signal?: AbortSignal): unknown {
   return convertColorLocal(input);
 }
 

@@ -6,13 +6,14 @@
 
 **Constraints:** Stream/chunk large inputs where possible; preserve identifiers/leading zeros; SQL generation must quote identifiers/values safely for its declared dialect and never execute SQL.
 
-**Blocked by:** 01, 23.
+**Blocked by:** None — 169, 170, 171 and 172 are complete.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] CSV→SQL offers explicit dialect and inferred/overridden column types with preview.
-- [ ] Split CSV does not load the entire source into duplicate memory and repeats headers correctly.
-- [ ] Nested/ambiguous XML structures are rejected or explained rather than silently flattened.
+- [x] CSV→SQL offers explicit dialect and inferred/overridden column types with preview.
+- [x] Split CSV does not load the entire source into duplicate memory and repeats headers correctly.
+- [x] Nested/ambiguous XML structures are rejected or explained rather than silently flattened.
 
 **Verification:** Large-file benchmark, dialect fixture snapshots, leading-zero/Unicode cases, and browser memory acceptance.
 
+**Closure evidence (2026-10-07):** `tests/table-advanced-operations.test.ts` covers PostgreSQL/MySQL/SQLite quoting, explicit type overrides, null policy, hostile values, duplicate-key comparison provenance, header-preserving row/byte splitting, cancellation and a 48 MiB-class bounded parser buffer. `tests/xml-interchange.test.ts` covers representable XML→CSV/XLSX plus explicit refusal of nested/repeated/mixed-content ambiguity. The dedicated text/data browser acceptance certifies the CSV→SQL/split/table-compare routes at the mobile viewport with local-only execution and lazy route loading.

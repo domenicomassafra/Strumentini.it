@@ -5,17 +5,20 @@ import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
 const port = 18129;
-const origin = `http://127.0.0.1:${port}`;
+const externalOrigin = process.env.IMAGE_RESIZE_ORIGIN?.replace(/\/$/u, "") ?? null;
+const origin = externalOrigin ?? `http://127.0.0.1:${port}`;
 const browserTarget = process.env.IMAGE_RESIZE_BROWSER ?? "chrome";
-const server = spawn(
-  "python3",
-  ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"],
-  { cwd: root, stdio: "ignore" },
-);
+const server = externalOrigin === null
+  ? spawn(
+    "python3",
+    ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"],
+    { cwd: root, stdio: "ignore" },
+  )
+  : null;
 const sleep = (ms) => new Promise((resolvePromise) => setTimeout(resolvePromise, ms));
 
 try {
-  await sleep(500);
+  if (server !== null) await sleep(500);
   const browser = browserTarget === "webkit"
     ? await webkit.launch({ headless: true })
     : await chromium.launch({
@@ -83,9 +86,19 @@ try {
     input.dispatchEvent(new Event("change", { bubbles: true }));
   });
 
+  await page.locator("[data-resize-estimate]").filter({ hasText: "Originale 1600×1200" }).waitFor();
+  await page.getByLabel("Mantieni le proporzioni originali").check();
+  await page.getByLabel("Larghezza").fill("1000");
+  if (await page.getByLabel("Altezza").inputValue() !== "750") {
+    throw new Error("Aspect-lock did not derive 1000×750 from the 1600×1200 source");
+  }
+  await page.getByLabel("Mantieni le proporzioni originali").uncheck();
+
   await page.getByLabel("Larghezza").fill("800");
   await page.getByLabel("Altezza").fill("800");
   await page.getByLabel("Ritaglia per riempire").check();
+  await page.getByText("Riempi e ritaglia: riempie l'area richiesta e ritaglia al centro quando il rapporto cambia.", { exact: true }).waitFor();
+  await page.locator("[data-resize-estimate]").filter({ hasText: "Stima 800×800 con ritaglio centrale" }).waitFor();
   const primaryMime = webpEncodeSupported ? "image/webp" : "image/jpeg";
   await page.getByLabel("Formato di uscita").selectOption(primaryMime);
 
@@ -101,7 +114,7 @@ try {
   await page.getByRole("button", { name: "Ridimensiona" }).click();
   await page.getByRole("button", { name: /^(?:Cancel|Annulla)$/u }).waitFor();
   await page.getByRole("button", { name: /^(?:Cancel|Annulla)$/u }).click();
-  const cancelledAlert = page.getByRole("alert");
+  const cancelledAlert = page.getByRole("alert").filter({ hasText: /annullata/u }).first();
   await cancelledAlert.waitFor();
   if (!/annullata/u.test(await cancelledAlert.innerText())) {
     throw new Error("Cancelled operation did not surface a recoverable cancellation state");
@@ -152,6 +165,10 @@ try {
   const memoryPreflightText = await page.getByText(/stimati per l'elaborazione decodificata/u).innerText();
 
   await page.getByLabel("Contieni nell'area").check();
+  await page.getByText("Contieni: mantiene tutta l'immagine e la fa entrare nell'area senza ritagliarla.", { exact: true }).waitFor();
+  await page.getByLabel("Percentuale").check();
+  await page.getByLabel("Scala percentuale").fill("50");
+  await page.locator("[data-resize-estimate]").filter({ hasText: "Stima 800×600 senza ritaglio" }).waitFor();
   await page.getByLabel("Formato di uscita").selectOption("image/jpeg");
   await page.getByRole("button", { name: "Ridimensiona" }).click();
   await page.getByText("800×600", { exact: true }).waitFor();
@@ -180,6 +197,23 @@ try {
     throw new Error(`JPEG independent output verification failed: ${JSON.stringify(decodedJpeg)}`);
   }
 
+  await page.getByLabel("Scala percentuale").fill("125");
+  await page.locator("[data-resize-estimate]").filter({ hasText: "Stima 1600×1200 senza ritaglio · ingrandimento bloccato" }).waitFor();
+  await page.getByRole("button", { name: "Ridimensiona" }).click();
+  await page.getByText("1600×1200", { exact: true }).waitFor();
+  const noUpscaleHref = await page.getByRole("link", { name: "Scarica" }).getAttribute("href");
+  if (!noUpscaleHref?.startsWith("blob:")) throw new Error("No-upscale download does not use a local blob URL");
+  const decodedNoUpscale = await page.evaluate(async (url) => {
+    const blob = await fetch(url).then((res) => res.blob());
+    const bitmap = await createImageBitmap(blob);
+    const result = { width: bitmap.width, height: bitmap.height, type: blob.type, size: blob.size };
+    bitmap.close();
+    return result;
+  }, noUpscaleHref);
+  if (decodedNoUpscale.width !== 1600 || decodedNoUpscale.height !== 1200 || decodedNoUpscale.type !== "image/jpeg") {
+    throw new Error(`No-upscale independent output verification failed: ${JSON.stringify(decodedNoUpscale)}`);
+  }
+
   await page.setViewportSize({ width: 390, height: 844 });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   if (overflow) throw new Error("Mobile viewport has horizontal overflow");
@@ -198,7 +232,7 @@ try {
     buffer: corruptPng,
   });
   await page.getByRole("button", { name: "Ridimensiona" }).click();
-  const corruptAlert = page.getByRole("alert");
+  const corruptAlert = page.getByRole("alert").filter({ hasText: /danneggiata|incompleta/u }).first();
   await corruptAlert.waitFor();
   if (!/danneggiata|incompleta/u.test(await corruptAlert.innerText())) {
     throw new Error("Corrupt image did not produce the recoverable decode error");
@@ -216,7 +250,7 @@ try {
     buffer: oversizedPngHeader,
   });
   await page.getByRole("button", { name: "Ridimensiona" }).click();
-  const oversizedAlert = page.getByRole("alert");
+  const oversizedAlert = page.getByRole("alert").filter({ hasText: /limite locale di sicurezza|dimensioni più piccole/u }).first();
   await oversizedAlert.waitFor();
   if (!/limite locale di sicurezza|dimensioni più piccole/u.test(await oversizedAlert.innerText())) {
     throw new Error("Oversized decoded dimensions were not rejected before decode");
@@ -230,6 +264,15 @@ try {
     verifiedOutputs: {
       cover: decoded,
       jpegContain: decodedJpeg,
+      noUpscalePercent: decodedNoUpscale,
+    },
+    upgradeModes: {
+      aspectLock: "PASS",
+      percent: "PASS",
+      liveEstimate: "PASS",
+      containVsCoverPreview: "PASS",
+      noUpscale: "PASS",
+      outputFormatChoice: "PASS",
     },
     capabilities: {
       canvasWebpEncode: webpEncodeSupported,
@@ -258,5 +301,5 @@ try {
     `image resize acceptance PASS [${browserTarget}]: output=${decoded.width}x${decoded.height} ${decoded.type}, local requests only, cancel/corrupt/oversized/mobile PASS`,
   );
 } finally {
-  server.kill("SIGTERM");
+  server?.kill("SIGTERM");
 }

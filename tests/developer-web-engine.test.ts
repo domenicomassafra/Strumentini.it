@@ -1,10 +1,14 @@
 import { readFile } from "node:fs/promises";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   base64Operation,
+  base64FileOperation,
+  imageBase64Operation,
   decodeBase64Bytes,
   encodeBase64Bytes,
   formatJson,
+  jsonFormatterOperation,
+  jsonValidatorOperation,
   formatToml,
   formatYaml,
   generateUuids,
@@ -46,6 +50,9 @@ const manifests = [jsonFormatterManifest, yamlFormatterManifest, tomlFormatterMa
 const goldVectors = JSON.parse(
   await readFile(new URL("../quality/fixtures/developer-web-gold/vectors.json", import.meta.url), "utf8"),
 ) as { tool_vectors: Array<{ tool_id: Parameters<typeof runDeveloperWebTool>[0]; input: Record<string, unknown>; expected: Record<string, unknown> }> };
+const uuidVectors = JSON.parse(
+  await readFile(new URL("../quality/fixtures/uuid-rfc9562/vectors.json", import.meta.url), "utf8"),
+) as { vectors: Array<{ value: string; version?: number; unix_ts_ms?: number; source?: string }> };
 
 const moduleInputs: Array<[Parameters<typeof runDeveloperWebTool>[0], Record<string, unknown>]> = [
   ["json-formatter", { text: "{\"b\":2,\"a\":1}", sortKeys: true }],
@@ -85,6 +92,29 @@ describe("developer/web structured data", () => {
     expect(result.formatted).toBe("{\n  \"a\": 2\n}");
     expect(result.duplicateKeys).toEqual(["a"]);
     expect(() => formatJson("[1,]")).toThrow(/INVALID_JSON/u);
+  });
+
+  it("preserves structured JSON parser diagnostics without stack leakage", () => {
+    const result = jsonValidatorOperation('{\n  "user": {\n    "name": "Ada",\n    "age" 42\n  }\n}') as Record<string, unknown>;
+    expect(result).toMatchObject({
+      valid: false,
+      code: "INVALID_JSON",
+      diagnostic: { line: 4, column: 11, character: 44, path: "$.user" },
+    });
+    expect(String(result.error)).not.toContain("at jsonFail");
+    expect(JSON.stringify(result.diagnostic)).not.toContain("stack");
+  });
+
+  it("prettifies and minifies to the same value and reports encoded byte delta", () => {
+    const source = '{ "b": 2, "a": [1, true] }';
+    const pretty = jsonFormatterOperation(source, 2, true, "prettify") as Record<string, unknown>;
+    const minified = jsonFormatterOperation(source, 2, true, "minify") as Record<string, unknown>;
+    expect(JSON.parse(String(pretty.formatted))).toEqual(JSON.parse(String(minified.formatted)));
+    expect(minified.formatted).toBe('{"a":[1,true],"b":2}');
+    expect(minified.inputBytes).toBe(new TextEncoder().encode(source).length);
+    expect(minified.outputBytes).toBe(new TextEncoder().encode(String(minified.formatted)).length);
+    expect(minified.byteDelta).toBe((minified.outputBytes as number) - (minified.inputBytes as number));
+    expect(() => jsonFormatterOperation("{bad", 2, false, "minify")).toThrow(/INVALID_JSON/u);
   });
 
   it("parses the supported YAML subset and rejects tab indentation", () => {
@@ -132,6 +162,30 @@ describe("developer/web encoding and cryptography", () => {
     expect(() => decodeBase64Bytes("===")).toThrow(/INVALID_BASE64/u);
     expect(() => decodeBase64Bytes("Zm9v*")).toThrow(/INVALID_BASE64/u);
     expect(base64Operation("foo", "encode")).toMatchObject({ value: "Zm9v", byteLength: 3 });
+    expect(base64Operation("ÿ?", "encode", true)).toMatchObject({ alphabet: "base64url", paddingPolicy: expect.stringContaining("without-padding") });
+    const raw = Uint8Array.from([0x00, 0xff, 0x10, 0x80, 0x41]);
+    const encoded = base64FileOperation(raw, "encode-bytes") as Record<string, unknown>;
+    expect(encoded).toMatchObject({ inputKind: "raw-bytes", outputKind: "base64-text", byteLength: 5, value: "AP8QgEE=" });
+    expect(base64FileOperation(String(encoded.value), "decode-bytes")).toMatchObject({ bytes: [0, 255, 16, 128, 65], byteLength: 5 });
+    const url = base64FileOperation(raw, "encode-bytes", true) as Record<string, unknown>;
+    expect(url.value).toBe("AP8QgEE");
+    expect(base64FileOperation(String(url.value), "decode-bytes", true)).toMatchObject({ bytes: [0, 255, 16, 128, 65] });
+    expect(() => base64FileOperation("A===", "decode-bytes")).toThrow(/INVALID_BASE64/u);
+  });
+
+  it("round-trips signature-verified images through plain Base64 and data URLs", async () => {
+    const png = new Uint8Array(await readFile(new URL("../quality/fixtures/image-metadata/synthetic-2x3-rgba-text.png", import.meta.url)));
+    const plain = imageBase64Operation(png, "encode-image", "plain") as Record<string, unknown>;
+    expect(plain).toMatchObject({ mime: "image/png", width: 2, height: 3, signatureVerified: true, envelope: "plain" });
+    const decoded = imageBase64Operation(String(plain.value), "decode-image", "plain") as Record<string, unknown>;
+    expect(decoded).toMatchObject({ mime: "image/png", bytes: Array.from(png), signatureVerified: true });
+
+    const dataUrl = imageBase64Operation(png, "encode-image", "data-url") as Record<string, unknown>;
+    expect(String(dataUrl.value)).toMatch(/^data:image\/png;base64,/u);
+    expect(imageBase64Operation(String(dataUrl.value), "decode-image", "data-url")).toMatchObject({ mime: "image/png", width: 2, height: 3 });
+    const wrongMime = String(dataUrl.value).replace("data:image/png", "data:image/jpeg");
+    expect(() => imageBase64Operation(wrongMime, "decode-image", "data-url")).toThrow(/IMAGE_MIME_MISMATCH/u);
+    expect(() => imageBase64Operation("aGVsbG8=", "decode-image", "plain")).toThrow(/INVALID_IMAGE_SIGNATURE/u);
   });
 
   it("uses explicit percent and HTML entity policies", () => {
@@ -148,11 +202,69 @@ describe("developer/web encoding and cryptography", () => {
     expect((await hmacText("The quick brown fox jumps over the lazy dog", "key", "SHA-256")).digestHex).toBe("f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8");
   });
 
+  it("encodes UUIDv7 with the RFC 9562 48-bit Unix-millisecond field", () => {
+    const vector = uuidVectors.vectors.find(({ version, source }) => version === 7 && source === "RFC 9562 Appendix A.6");
+    expect(vector).toBeDefined();
+    const now = vector!.unix_ts_ms!;
+    const bytes = vector!.value.replaceAll("-", "").match(/../gu)!.map((pair) => Number.parseInt(pair, 16));
+    const clock = vi.spyOn(Date, "now").mockReturnValue(now);
+    try {
+      const result = generateUuids({ version: 7, bytes }) as unknown as {
+        uuids: string[];
+        randomness: string;
+      };
+      expect(result.uuids).toEqual([vector!.value]);
+      const encodedMilliseconds = Number.parseInt(result.uuids[0]!.replaceAll("-", "").slice(0, 12), 16);
+      expect(encodedMilliseconds).toBe(now);
+      expect(result.randomness).toBe("explicit-test-input");
+    } finally {
+      clock.mockRestore();
+    }
+  });
+
+  it("labels seeded UUID generation as explicit test input rather than secure randomness", () => {
+    const result = generateUuids({ version: 7, seed: "fixture" }) as unknown as { randomness: string };
+    expect(result.randomness).toBe("explicit-test-input");
+  });
+
   it("inspects JWT structure and labels unsecured tokens", () => {
     const result = inspectJwt("eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjMifQ.");
     expect(result.unsecured).toBe(true);
     expect(result.payload).toMatchObject({ sub: "123" });
     expect(() => inspectJwt("not.a.valid.token")).toThrow(/INVALID_JWT/u);
+  });
+
+  it("interprets JWT temporal claims against an explicit reference clock", () => {
+    const header = Buffer.from(JSON.stringify({ alg: "none", typ: "JWT" })).toString("base64url");
+    const payload = Buffer.from(JSON.stringify({
+      exp: 1_767_229_200,
+      nbf: 1_767_222_000,
+      iat: 1_767_218_400,
+    })).toString("base64url");
+    const token = `${header}.${payload}.`;
+    const before = inspectJwt(token, "2026-01-01T00:30:00.000Z") as Record<string, unknown>;
+    expect(before.temporal).toMatchObject({
+      referenceTime: "2026-01-01T00:30:00.000Z",
+      expired: false,
+      notYetValid: false,
+      issuedInFuture: false,
+      claimIssues: [],
+    });
+    const atExpiry = inspectJwt(token, "2026-01-01T02:00:00.000Z") as Record<string, unknown>;
+    expect(atExpiry.temporal).toMatchObject({ expired: true });
+  });
+
+  it("explains malformed JWT temporal claims without treating them as verified", () => {
+    const header = Buffer.from(JSON.stringify({ alg: "none" })).toString("base64url");
+    const payload = Buffer.from(JSON.stringify({ exp: "tomorrow", nbf: 1_900_000_000 })).toString("base64url");
+    const result = inspectJwt(`${header}.${payload}.`, "2026-01-01T00:00:00.000Z") as Record<string, unknown>;
+    expect(result.temporal).toMatchObject({
+      expired: null,
+      notYetValid: true,
+      claimIssues: [{ claim: "exp", issue: "NON_NUMERIC" }],
+    });
+    expect(result.warnings).toEqual(expect.arrayContaining([expect.stringMatching(/non verifica firma/u), expect.stringMatching(/claim temporali/u)]));
+    expect(() => inspectJwt(`${header}.${payload}.`, "not-a-date")).toThrow(/INVALID_JWT_REFERENCE_TIME/u);
   });
 
   it("tests regular expressions and bounds risky input", () => {
@@ -186,6 +298,25 @@ describe("developer/web references and schedule operations", () => {
     expect(explainCronOperation("*/15 9-17 * * 1-5")).toMatchObject({ expression: "*/15 9-17 * * 1-5", semantics: expect.stringContaining("POSIX") });
     const result = cronNextRunOperation("*/15 * * * *", "2026-01-01T00:00:00.000Z", 3);
     expect(result.runs).toEqual(["2026-01-01T00:15:00.000Z", "2026-01-01T00:30:00.000Z", "2026-01-01T00:45:00.000Z"]);
+  });
+
+  it("applies deterministic Europe/Rome DST gap and overlap cron policy", () => {
+    const spring = cronNextRunOperation("30 2 * * *", "2026-03-28T01:31:00.000Z", 1, "Europe/Rome") as Record<string, unknown>;
+    expect(spring).toMatchObject({
+      timezone: "Europe/Rome",
+      runs: ["2026-03-30T00:30:00.000Z"],
+      localRuns: [{ local: "2026-03-30T02:30", utc: "2026-03-30T00:30:00.000Z" }],
+      dstPolicy: { gap: "skip-nonexistent-local-times", overlap: "include-each-distinct-utc-instant" },
+    });
+    const fall = cronNextRunOperation("30 2 * * *", "2026-10-24T01:31:00.000Z", 2, "Europe/Rome") as Record<string, unknown>;
+    expect(fall).toMatchObject({
+      runs: ["2026-10-25T00:30:00.000Z", "2026-10-25T01:30:00.000Z"],
+      localRuns: [
+        { local: "2026-10-25T02:30", utc: "2026-10-25T00:30:00.000Z" },
+        { local: "2026-10-25T02:30", utc: "2026-10-25T01:30:00.000Z" },
+      ],
+    });
+    expect(() => cronNextRunOperation("0 9 * * *", "2026-01-01T00:00:00.000Z", 1, "Mars/Olympus")).toThrow(/INVALID_TIMEZONE/u);
   });
 });
 

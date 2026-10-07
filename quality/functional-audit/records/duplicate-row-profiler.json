@@ -1,0 +1,32 @@
+{
+  "toolId": "duplicate-row-profiler",
+  "category": "data",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Individua righe duplicate o valori duplicati nelle colonne chiave e mostra conteggi ed esempi. Public job: Usa Trova righe duplicate.",
+  "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/data-table/duplicate-row-profiler.gold.json; executable tests/table-expansion.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/data-table/browser-acceptance.json verifies the real route interaction/locality contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Broader backlog enhancements remain additive work and are not treated as proof that this existing narrow route is functionally incomplete.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/data-table/duplicate-row-profiler.gold.json",
+      "claim": "Tool-specific Gold receipt binds duplicate-row-profiler to exact fixtures, current source identities and functional acceptance."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/table-expansion.test.ts",
+      "claim": "Executable tests exercise the engine/module behavior used by duplicate-row-profiler, including relevant edge, invalid-input or transformation semantics."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/data-table/browser-acceptance.json",
+      "claim": "Browser acceptance covers the real duplicate-row-profiler route or its explicit functional workflow, including submit/locality and the relevant mobile/preview/handoff behavior."
+    },
+    {
+      "kind": "oracle",
+      "ref": "quality/oracles/registry.json",
+      "claim": "Canonical oracle registry entry cand-039, referenced by the Gold receipt, is the declared truth authority for duplicate-row-profiler."
+    }
+  ],
+  "childTickets": []
+}

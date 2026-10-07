@@ -1,0 +1,39 @@
+{
+  "toolId": "regex-tester",
+  "category": "developer",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "decision": "UPGRADED",
+  "expectedFunctionality": "Testa un'espressione regolare sul testo e mostra corrispondenze e gruppi trovati. Public jobs: Usa Prova una regex",
+  "observedFunctionality": "The route preserves ordinary ECMAScript regex matching while executing the potentially expensive RegExp operation in a dedicated worker with input/result bounds, AbortSignal termination and a 750 ms hard timeout. Real Chromium acceptance observes the worker, forces a timeout with an adversarial non-match, and proves the route recovers for the next benign run.",
+  "rationale": "Ticket 178 closed the concrete responsiveness gap identified by the audit. Timeout, cancellation and invalid-regex failures now have distinct runtime states, while existing benign semantics remain covered by the developer fixtures.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/developer-web/regex-tester.gold.json",
+      "claim": "Fresh Gold receipt binds regex-tester to the current worker implementation, worker tests, browser evidence and canonical fixtures/oracle."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/regex-worker-client.test.ts",
+      "claim": "Focused tests prove benign completion, hard timeout, AbortSignal cancellation and pre-worker oversized-input rejection."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/developer-web/browser-acceptance.json",
+      "claim": "Real Chromium acceptance observes the regex worker, a hard timeout on an adversarial ReDoS input, post-timeout recovery, mobile behavior and zero task-content network leakage."
+    },
+    {
+      "kind": "source-contract",
+      "ref": "src/engines/developer-web/regex-worker-client.ts",
+      "claim": "The browser execution seam creates a dedicated worker, enforces the hard timeout, propagates cancellation and terminates the worker on every terminal path."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/178-regex-execution-isolation-and-hard-timeout.md",
+      "claim": "Targeted ticket records the completed worker-isolation and hard-timeout acceptance criteria."
+    }
+  ],
+  "childTickets": [
+    ".scratch/strumentiutili-expansion-20261005/issues/178-regex-execution-isolation-and-hard-timeout.md"
+  ]
+}

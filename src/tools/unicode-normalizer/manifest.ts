@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { TEXT_RESULT_V2_DECLARATIONS } from "../text-writing/result-v2";
 
 export const unicodeNormalizerManifest = {
   id: "unicode-normalizer",
@@ -13,6 +14,7 @@ export const unicodeNormalizerManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: TEXT_RESULT_V2_DECLARATIONS["unicode-normalizer"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-006", fixtureFamilies: ["unicode-normalization", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 

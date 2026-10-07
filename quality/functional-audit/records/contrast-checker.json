@@ -1,0 +1,32 @@
+{
+  "toolId": "contrast-checker",
+  "category": "image-visual",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Calculate foreground/background WCAG relative-luminance contrast ratio and report the current AA normal, AA large and AAA normal thresholds.",
+  "observedFunctionality": "The local engine computes contrastRatio from parsed colors and explicitly evaluates 4.5, 3 and 7 thresholds. Executable tests cover 21:1 black/white and a failing #777777-on-white AA-normal case; Gold/browser evidence records the public-route result.",
+  "rationale": "The declared WCAG contrast-checking job is implemented and directly tested. Tickets 298-317 are image editing/export enhancements and do not constitute a gap in this current contrast calculator contract.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/contrast-checker.gold.json",
+      "claim": "Gold receipt binds contrast-checker to its oracle/fixtures and records a real-route contrast assertion of 21."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/image-visual-tools.test.ts",
+      "claim": "Executable tests call checkContrastLocal and verify both passing WCAG thresholds for black/white and failing AA-normal behavior for #777777 on white."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Expanded-local acceptance includes contrast-checker and verifies its real-route submitted output plus locality/mobile/lazy evidence."
+    },
+    {
+      "kind": "oracle",
+      "ref": "quality/oracles/registry.json",
+      "claim": "The Gold receipt binds cand-151 and includes the W3C WCAG 2.2 truth source for the contrast thresholds used by the tool."
+    }
+  ],
+  "childTickets": []
+}

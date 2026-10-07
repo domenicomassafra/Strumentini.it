@@ -1,3 +1,5 @@
+import { inspectImageHeader } from "../image/format";
+
 export const FILE_PRIVACY_ENGINE_VERSION = "file-privacy-v2";
 
 export const FILE_PRIVACY_LIMITS = {
@@ -23,6 +25,8 @@ export type FilePrivacyOperation =
   | "batch-checksum-manifest"
   | "checksum-verifier"
   | "file-signature-detector"
+  | "file-size-analyzer"
+  | "ai-code-fence-bundle"
   | "folder-inventory"
   | "folder-size-type-summary"
   | "duplicate-file-finder"
@@ -93,8 +97,30 @@ export interface ZipEntryRecord {
 export interface SecretFinding {
   readonly file: string;
   readonly line: number;
+  readonly columnStart: number;
+  readonly columnEnd: number;
   readonly kind: string;
+  readonly evidenceCategory: "potential-secret-pattern";
+  readonly classification: "potential";
   readonly preview: string;
+}
+
+export interface MetadataRiskFinding {
+  readonly category:
+    | "metadata-marker"
+    | "path-like-text"
+    | "email-like-text"
+    | "secret-like-text"
+    | "temporary-backup-name"
+    | "empty-file"
+    | "unverified-signature"
+    | "encrypted-container"
+    | "location-metadata"
+    | "embedded-metadata";
+  readonly evidence: string;
+  readonly line?: number;
+  readonly columnStart?: number;
+  readonly columnEnd?: number;
 }
 
 const textDecoder = new TextDecoder("utf-8");
@@ -551,6 +577,244 @@ export async function inspectZip(input: unknown, signal?: AbortSignal): Promise<
   return { operation: "zip-contents-inspector", archive: pathOf(file), entryCount: entries.length, entries, totalUncompressedBytes: entries.reduce((sum, entry) => sum + entry.uncompressedSize, 0), hasPathTraversal: entries.some((entry) => entry.pathTraversal), hasEncryptedEntries: entries.some((entry) => entry.encrypted), methodNote: "Central-directory inspection only; file contents are not decompressed." };
 }
 
+export async function analyzeFileSize(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const source = recordOf(input);
+  const files = fileList(source.files);
+  if (files.length !== 1) fail("INVALID_INPUT", "File-size analyzer accepts exactly one file");
+  const file = files[0];
+  if (file === undefined) fail("INVALID_INPUT", "File is required");
+  const sourceSha256 = await digestFile(file, signal, Math.max(FILE_PRIVACY_LIMITS.maxFileBytes, FILE_PRIVACY_LIMITS.maxZipBytes));
+  throwIfAborted(signal);
+  const signature = await detectFileSignature(file, signal);
+  const detectedMime = String(signature.detectedMime ?? "application/octet-stream");
+  const common = {
+    operation: "file-size-analyzer" as const,
+    file: pathOf(file),
+    bytes: file.size,
+    sourceSha256,
+    sourceMutation: "none" as const,
+    detectedMime,
+    estimatedSavingsBytes: null,
+    estimatePolicy: "No savings estimate is emitted before an actual transform/compression run.",
+  };
+
+  if (detectedMime === "image/png" || detectedMime === "image/jpeg" || detectedMime === "image/webp") {
+    const prefix = new Uint8Array(await file.slice(0, Math.min(file.size, 2 * 1024 * 1024)).arrayBuffer());
+    throwIfAborted(signal);
+    const header = inspectImageHeader(prefix);
+    const metadata = await inspectMetadataRisk({ files: [file] }, signal);
+    const metadataFile = Array.isArray(metadata.files) ? metadata.files[0] as Record<string, unknown> | undefined : undefined;
+    return {
+      ...common,
+      kind: "image",
+      image: {
+        width: header.width,
+        height: header.height,
+        pixels: header.width * header.height,
+        encoding: header.mime,
+        metadataRiskCount: typeof metadataFile?.riskCount === "number" ? metadataFile.riskCount : 0,
+        metadataFields: Array.isArray(metadataFile?.metadataFields) ? metadataFile.metadataFields : [],
+      },
+      evidence: [
+        `${header.width}×${header.height} pixels`,
+        `container/signature: ${header.mime}`,
+        `${file.size} source bytes`,
+      ],
+      nextActions: ["image-metadata-viewer", "image-resize", "image-compression"],
+      note: "Dimensioni, encoding e metadati osservabili spiegano il file sorgente; nessuna riduzione viene promessa prima di eseguire un'operazione separata e misurarne l'output.",
+    };
+  }
+
+  if (detectedMime === "application/zip") {
+    const inspected = await inspectZip({ files: [file] }, signal);
+    const entries = Array.isArray(inspected.entries) ? inspected.entries as ZipEntryRecord[] : [];
+    const largestEntries = [...entries]
+      .sort((left, right) => right.uncompressedSize - left.uncompressedSize || right.compressedSize - left.compressedSize || left.path.localeCompare(right.path))
+      .slice(0, 10)
+      .map((entry) => ({ path: entry.path, compressedSize: entry.compressedSize, uncompressedSize: entry.uncompressedSize, method: entry.method }));
+    const methodCounts = Object.fromEntries([...new Set(entries.map((entry) => entry.method))].sort((a, b) => a - b).map((method) => [String(method), entries.filter((entry) => entry.method === method).length]));
+    const totalCompressedEntryBytes = entries.reduce((sum, entry) => sum + entry.compressedSize, 0);
+    const totalUncompressedBytes = entries.reduce((sum, entry) => sum + entry.uncompressedSize, 0);
+    return {
+      ...common,
+      kind: "zip",
+      zip: {
+        entryCount: entries.length,
+        totalCompressedEntryBytes,
+        totalUncompressedBytes,
+        methodCounts,
+        largestEntries,
+        hasPathTraversal: inspected.hasPathTraversal === true,
+        hasEncryptedEntries: inspected.hasEncryptedEntries === true,
+      },
+      evidence: [
+        `${entries.length} central-directory entries`,
+        `${totalCompressedEntryBytes} compressed entry bytes`,
+        `${totalUncompressedBytes} declared uncompressed bytes`,
+      ],
+      nextActions: ["zip-contents-inspector", "archive-checksum-manifest"],
+      note: "Il report legge soltanto la directory ZIP: indica quali voci pesano di più ma non stima risparmi futuri e non decomprime contenuti.",
+    };
+  }
+
+  return {
+    ...common,
+    kind: "unknown",
+    evidence: [`${file.size} source bytes`, `bounded signature: ${String(signature.label ?? "unknown")}`],
+    nextActions: ["file-signature-detector"],
+    note: "Il contenuto non rientra negli adattatori immagine/ZIP supportati: la causa della dimensione resta sconosciuta invece di essere stimata.",
+  };
+}
+
+const CODE_FENCE_LANGUAGE_EXTENSION: Readonly<Record<string, string>> = {
+  javascript: ".js",
+  js: ".js",
+  typescript: ".ts",
+  ts: ".ts",
+  tsx: ".tsx",
+  jsx: ".jsx",
+  json: ".json",
+  html: ".html",
+  css: ".css",
+  python: ".py",
+  py: ".py",
+  bash: ".sh",
+  sh: ".sh",
+  shell: ".sh",
+  sql: ".sql",
+  yaml: ".yaml",
+  yml: ".yml",
+  xml: ".xml",
+  markdown: ".md",
+  md: ".md",
+  text: ".txt",
+  txt: ".txt",
+};
+
+export interface ParsedCodeFenceFile {
+  readonly path: string;
+  readonly language: string;
+  readonly content: string;
+  readonly byteLength: number;
+  readonly sourceStartLine: number;
+  readonly sourceEndLine: number;
+  readonly naming: "explicit" | "generated";
+}
+
+function filenameHintFromLine(line: string): string | null {
+  const html = /^\s*<!--\s*(?:file|filename|path)\s*:\s*(.+?)\s*-->\s*$/iu.exec(line);
+  if (html?.[1] !== undefined) return html[1].trim();
+  const plain = /^\s*(?:#{1,6}\s*)?(?:file|filename|path)\s*:\s*(.+?)\s*$/iu.exec(line);
+  return plain?.[1]?.trim() ?? null;
+}
+
+function filenameHintFromInfo(info: string): string | null {
+  const match = /(?:^|\s)(?:file|filename|path)\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s]+))/iu.exec(info);
+  return (match?.[1] ?? match?.[2] ?? match?.[3] ?? "").trim() || null;
+}
+
+function languageFromInfo(info: string): string {
+  const token = info.trim().split(/\s+/u)[0] ?? "";
+  if (token === "" || /^(?:file|filename|path)=/iu.test(token)) return "text";
+  return token.replace(/[^A-Za-z0-9_+#.-]/gu, "").toLocaleLowerCase("en-US") || "text";
+}
+
+function dedupeBundlePath(path: string, used: Set<string>): string {
+  const key = path.toLocaleLowerCase("en-US");
+  if (!used.has(key)) {
+    used.add(key);
+    return path;
+  }
+  const slash = path.lastIndexOf("/");
+  const directory = slash >= 0 ? path.slice(0, slash + 1) : "";
+  const base = slash >= 0 ? path.slice(slash + 1) : path;
+  const dot = base.lastIndexOf(".");
+  const stem = dot > 0 ? base.slice(0, dot) : base;
+  const extension = dot > 0 ? base.slice(dot) : "";
+  for (let index = 2; index <= 10_000; index += 1) {
+    const candidate = `${directory}${stem}-${index}${extension}`;
+    const candidateKey = candidate.toLocaleLowerCase("en-US");
+    if (!used.has(candidateKey)) {
+      used.add(candidateKey);
+      return candidate;
+    }
+  }
+  return fail("INVALID_INPUT", "Too many duplicate code-fence file names");
+}
+
+export function parseAiCodeFenceFiles(text: string): ParsedCodeFenceFile[] {
+  if (typeof text !== "string" || text.trim() === "") fail("INVALID_INPUT", "Paste an AI response containing fenced code blocks");
+  const bytes = textEncoder.encode(text);
+  if (bytes.byteLength > FILE_PRIVACY_LIMITS.maxTextBytes) fail("TEXT_TOO_LARGE", "AI response exceeds the local text limit");
+  const lines = text.replace(/\r\n?/gu, "\n").split("\n");
+  const output: ParsedCodeFenceFile[] = [];
+  const used = new Set<string>();
+  let index = 0;
+  while (index < lines.length) {
+    const opening = /^(\s*)(`{3,})([^`]*)$/u.exec(lines[index] ?? "");
+    if (opening === null) {
+      index += 1;
+      continue;
+    }
+    const marker = opening[2]!;
+    const info = opening[3]?.trim() ?? "";
+    const startLine = index + 1;
+    const contentLines: string[] = [];
+    index += 1;
+    while (index < lines.length && !new RegExp(`^\\s*${marker}\\s*$`, "u").test(lines[index] ?? "")) {
+      contentLines.push(lines[index] ?? "");
+      index += 1;
+    }
+    if (index >= lines.length) fail("INVALID_INPUT", `Code fence opened on line ${startLine} is not closed`);
+    const endLine = index + 1;
+    const language = languageFromInfo(info);
+    const explicitHint = filenameHintFromInfo(info) ?? (startLine >= 2 ? filenameHintFromLine(lines[startLine - 2] ?? "") : null);
+    const fallbackExtension = CODE_FENCE_LANGUAGE_EXTENSION[language] ?? ".txt";
+    const rawPath = explicitHint ?? `snippet-${String(output.length + 1).padStart(3, "0")}${fallbackExtension}`;
+    const safePath = sanitizeRelativePath(rawPath);
+    const path = dedupeBundlePath(safePath, used);
+    const content = `${contentLines.join("\n")}${contentLines.length > 0 ? "\n" : ""}`;
+    output.push({
+      path,
+      language,
+      content,
+      byteLength: textEncoder.encode(content).byteLength,
+      sourceStartLine: startLine,
+      sourceEndLine: endLine,
+      naming: explicitHint === null ? "generated" : "explicit",
+    });
+    if (output.length > 200) fail("TOO_MANY_FILES", "At most 200 code fences are supported per bundle");
+    index += 1;
+  }
+  if (output.length === 0) fail("INVALID_INPUT", "No fenced code blocks were found");
+  const totalBytes = output.reduce((sum, item) => sum + item.byteLength, 0);
+  if (totalBytes > FILE_PRIVACY_LIMITS.maxTotalBytes) fail("FILE_TOO_LARGE", "Generated code files exceed the local total-size limit");
+  return output;
+}
+
+export async function createAiCodeFenceBundle(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
+  const source = recordOf(input);
+  const text = typeof source.text === "string" ? source.text : typeof source.expected === "string" ? source.expected : "";
+  const preview = parseAiCodeFenceFiles(text);
+  const files = preview.map((item) => {
+    const generated = new File([item.content], item.path.split("/").at(-1) ?? item.path, { type: "text/plain;charset=utf-8" });
+    Object.defineProperty(generated, "webkitRelativePath", { value: item.path });
+    return generated;
+  });
+  const zip = await createZip({ files }, signal);
+  return {
+    ...zip,
+    operation: "ai-code-fence-bundle",
+    filename: "ai-code-files.zip",
+    preview: preview.map(({ content: _content, ...item }) => item),
+    fileCount: preview.length,
+    totalContentBytes: preview.reduce((sum, item) => sum + item.byteLength, 0),
+    namingPolicy: "Explicit safe path when supplied; otherwise snippet-NNN plus language-derived extension. Case-insensitive duplicates receive -2, -3, ... suffixes.",
+    pathPolicy: "Absolute paths, NULs and parent-directory segments are refused before ZIP generation.",
+    compression: "store",
+  };
+}
+
 function crc32(bytes: Uint8Array): number {
   let crc = 0xffffffff;
   for (const byte of bytes) {
@@ -890,9 +1154,21 @@ export async function scanSecretPatterns(input: unknown, signal?: AbortSignal): 
   const inspectText = (fileName: string, value: string) => {
     value.split(/\r?\n/u).forEach((line, index) => {
       for (const { kind, pattern } of secretPatterns) {
-        const matcher = new RegExp(pattern.source, pattern.flags.replace("g", ""));
-        const match = matcher.exec(line);
-        if (match !== null) findings.push({ file: fileName, line: index + 1, kind, preview: redact(match[0]) });
+        const flags = pattern.flags.includes("g") ? pattern.flags : `${pattern.flags}g`;
+        const matcher = new RegExp(pattern.source, flags);
+        for (const match of line.matchAll(matcher)) {
+          const start = match.index ?? 0;
+          findings.push({
+            file: fileName,
+            line: index + 1,
+            columnStart: start + 1,
+            columnEnd: start + match[0].length + 1,
+            kind,
+            evidenceCategory: "potential-secret-pattern",
+            classification: "potential",
+            preview: redact(match[0]),
+          });
+        }
       }
     });
   };
@@ -902,7 +1178,7 @@ export async function scanSecretPatterns(input: unknown, signal?: AbortSignal): 
     if (content !== null) inspectText(pathOf(file), content);
   }
   if (files.length === 0 && text === null) fail("INVALID_INPUT", "Choose a text file or paste text to scan");
-  return { operation: "secret-token-pattern-scanner", findings, findingCount: findings.length, inspectedFiles: files.length, note: "Findings are heuristic pattern matches; review and rotate any real secret before sharing." };
+  return { operation: "secret-token-pattern-scanner", findings, findingCount: findings.length, inspectedFiles: files.length, note: "Ogni risultato è una corrispondenza potenziale basata su pattern, non la conferma di una credenziale reale. L'evidenza resta locale e il valore completo non viene restituito." };
 }
 
 const LOCATION_METADATA_FIELDS = new Set(["GPSInfoIFD"]);
@@ -916,18 +1192,48 @@ export async function inspectMetadataRisk(input: unknown, signal?: AbortSignal):
     const detectedMime = String(signature.detectedMime);
     const container = await binaryMetadata(file, detectedMime, signal);
     const risks: string[] = [];
-    if (/(?:exif|xmp|iptc|gps| latitude|longitude)/iu.test(content ?? "")) risks.push("text contains a metadata-like marker");
-    if (/(?:[A-Z]:\\|\/(?:home|Users|private|var)\/)/u.test(content ?? "")) risks.push("text contains an absolute path-like value");
-    if (/(?:@|mailto:)/iu.test(content ?? "")) risks.push("text contains an email-like marker");
-    if (/(?:token|secret|password|api[_-]?key)/iu.test(content ?? "")) risks.push("text contains a secret-like keyword");
-    if (/\.(?:tmp|log|bak|old|swp)$/iu.test(file.name)) risks.push("temporary or backup extension");
-    if (file.size === 0) risks.push("file is zero bytes");
-    if (detectedMime === "application/octet-stream" && content === null) risks.push("content signature is not verified as a supported text format");
+    const findings: MetadataRiskFinding[] = [];
+    const textFinding = (category: MetadataRiskFinding["category"], expression: RegExp, label: string) => {
+      const source = content ?? "";
+      const match = expression.exec(source);
+      if (match === null) return;
+      const before = source.slice(0, match.index);
+      const line = before.split(/\r?\n/u).length;
+      const lastBreak = Math.max(before.lastIndexOf("\n"), before.lastIndexOf("\r"));
+      const columnStart = match.index - lastBreak;
+      risks.push(label);
+      findings.push({ category, evidence: label, line, columnStart, columnEnd: columnStart + match[0].length });
+    };
+    textFinding("metadata-marker", /(?:exif|xmp|iptc|gps| latitude|longitude)/iu, "text contains a metadata-like marker");
+    textFinding("path-like-text", /(?:[A-Z]:\\|\/(?:home|Users|private|var)\/)/u, "text contains an absolute path-like value");
+    textFinding("email-like-text", /(?:@|mailto:)/iu, "text contains an email-like marker");
+    textFinding("secret-like-text", /(?:token|secret|password|api[_-]?key)/iu, "text contains a secret-like keyword");
+    if (/\.(?:tmp|log|bak|old|swp)$/iu.test(file.name)) {
+      risks.push("temporary or backup extension");
+      findings.push({ category: "temporary-backup-name", evidence: `filename extension ${extensionOf(file.name) || "(none)"}` });
+    }
+    if (file.size === 0) {
+      risks.push("file is zero bytes");
+      findings.push({ category: "empty-file", evidence: "size=0 bytes" });
+    }
+    if (detectedMime === "application/octet-stream" && content === null) {
+      risks.push("content signature is not verified as a supported text format");
+      findings.push({ category: "unverified-signature", evidence: "bounded signature detector returned application/octet-stream" });
+    }
     const containers = container?.containers ?? [];
     const fields = container?.fields ?? [];
-    if (containers.includes("encrypted")) risks.push("the file is encrypted, so its metadata cannot be inspected here");
-    if (fields.some((field) => LOCATION_METADATA_FIELDS.has(field))) risks.push("the file carries a GPS tag");
-    if (fields.length > 0) risks.push("the file carries embedded metadata fields");
+    if (containers.includes("encrypted")) {
+      risks.push("the file is encrypted, so its metadata cannot be inspected here");
+      findings.push({ category: "encrypted-container", evidence: "encrypted container marker detected" });
+    }
+    if (fields.some((field) => LOCATION_METADATA_FIELDS.has(field))) {
+      risks.push("the file carries a GPS tag");
+      findings.push({ category: "location-metadata", evidence: "GPSInfoIFD" });
+    }
+    if (fields.length > 0) {
+      risks.push("the file carries embedded metadata fields");
+      findings.push({ category: "embedded-metadata", evidence: fields.join(", ") });
+    }
     const scanCoverage = container === null
       ? detectedMime === "application/octet-stream" || content !== null ? "text-markers" : "not-inspectable"
       : container.containers.length === 0 ? "container-parsed-no-metadata" : "container-parsed";
@@ -940,6 +1246,7 @@ export async function inspectMetadataRisk(input: unknown, signal?: AbortSignal):
       inspectedText: content !== null,
       metadataContainers: containers,
       metadataFields: fields,
+      findings,
       scanCoverage,
     });
   }
@@ -952,7 +1259,10 @@ export async function inspectMetadataRisk(input: unknown, signal?: AbortSignal):
 }
 
 export async function safeShareChecklist(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
-  const files = fileList(recordOf(input).files);
+  const source = recordOf(input);
+  const files = fileList(source.files);
+  const recipientConfirmed = source.recipientConfirmed === true;
+  const sensitiveContentReviewed = source.sensitiveContentReviewed === true;
   const [metadata, secrets] = await Promise.all([inspectMetadataRisk({ files }, signal), scanSecretPatterns({ files }, signal)]);
   const metadataResults = metadata.files as Array<Record<string, unknown>>;
   const secretResults = secrets.findings as SecretFinding[];
@@ -961,8 +1271,10 @@ export async function safeShareChecklist(input: unknown, signal?: AbortSignal): 
     { id: "no-secret-patterns", label: "No obvious secret/token patterns were found", passed: secretResults.length === 0, detail: `${secretResults.length} finding(s)` },
     { id: "no-metadata-markers", label: "No metadata-like text markers were found", passed: metadataResults.every((result) => Array.isArray(result.risks) && !(result.risks as string[]).some((risk) => risk.includes("metadata"))), detail: `${metadataResults.filter((result) => Array.isArray(result.risks) && (result.risks as string[]).some((risk) => risk.includes("metadata"))).length} file(s) flagged` },
     { id: "safe-names", label: "File names contain no temporary/backup markers", passed: metadataResults.every((result) => !/\.(?:tmp|log|bak|old|swp)$/iu.test(String(result.file))), detail: "Names are checked locally" },
+    { id: "recipient-confirmed", label: "Recipient/audience has been explicitly confirmed", passed: recipientConfirmed, detail: recipientConfirmed ? "Confirmed by the user" : "User confirmation required" },
+    { id: "sensitive-context-reviewed", label: "Sensitive-content context has been explicitly reviewed", passed: sensitiveContentReviewed, detail: sensitiveContentReviewed ? "Confirmed by the user" : "User confirmation required" },
   ];
-  return { operation: "safe-share-checklist", files: files.map((file) => pathOf(file)), checks, passedCount: checks.filter((check) => check.passed).length, totalChecks: checks.length, allPassed: checks.every((check) => check.passed), note: "A checklist is guidance, not a guarantee that a file is safe to publish." };
+  return { operation: "safe-share-checklist", files: files.map((file) => pathOf(file)), checks, userContext: { recipientConfirmed, sensitiveContentReviewed }, passedCount: checks.filter((check) => check.passed).length, totalChecks: checks.length, allPassed: checks.every((check) => check.passed), note: "A checklist is guidance based on detected local facts plus your explicit confirmations, not a guarantee that a file is safe to publish." };
 }
 
 export async function clientHandoffIndex(input: unknown, signal?: AbortSignal): Promise<FilePrivacyResult> {
@@ -1075,6 +1387,8 @@ export async function runFilePrivacyOperation(operation: FilePrivacyOperation, i
       const files = fileList(recordOf(input).files);
       return { operation, files: await Promise.all(files.map((file) => detectFileSignature(file, signal))) };
     }
+    case "file-size-analyzer": return analyzeFileSize(input, signal);
+    case "ai-code-fence-bundle": return createAiCodeFenceBundle(input, signal);
     case "folder-inventory": return folderInventory(input);
     case "folder-size-type-summary": return folderSizeTypeSummary(input);
     case "duplicate-file-finder": return duplicateFileFinder(input, signal);

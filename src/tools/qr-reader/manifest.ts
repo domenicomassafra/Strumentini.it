@@ -13,6 +13,7 @@ export const qrReaderManifest = {
   engine: "qr-local",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "text-code", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-067", fixtureFamilies: ["qr-contract"] },
 } as const satisfies ToolManifest;
 

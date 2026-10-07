@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "toolId": "file-hash",
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "runtime": {
     "location": "LOCAL",
     "network": "forbidden"
@@ -39,11 +39,13 @@
     "nist-fips180-4"
   ],
   "identities": {
-    "manifestSha256": "cf7b1591cd42899ef43b472d5caf09e9ae7a8dbae88f7b12276581b6e9bc2d2a",
+    "manifestSha256": "77cb1990447291c9c44d4716d43f04687cb14d7ee44d089bc067645c6531e704",
     "engineSha256": "51a70b72e61b0156e97df5220c470bee794bb1a8ccff97ab1e03ce003c41d958",
     "sha2FixtureSha256": "5ff14b5580656e339ad88a9b997204475c43c6c11b611ab98618796097fbb99b",
     "fileHashFixtureSha256": "dcfff44b5e335c6c11c095783579641f8f4be62b481c7cd84adb9b5ef3300b5f",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6"
+    "fixture:sha2-known-answers:sha256": "5ff14b5580656e339ad88a9b997204475c43c6c11b611ab98618796097fbb99b",
+    "fixture:file-hash:sha256": "dcfff44b5e335c6c11c095783579641f8f4be62b481c7cd84adb9b5ef3300b5f",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c"
   }
 }

@@ -1,0 +1,32 @@
+{
+  "toolId": "csv-to-json",
+  "category": "data",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Trasforma le righe di un CSV in record JSON gestendo intestazioni duplicate e celle mancanti. Public job: Usa Converti CSV in JSON.",
+  "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/data-table/csv-to-json.gold.json; executable tests/table-expansion.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/data-table/browser-acceptance.json verifies the real route interaction/locality contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Broader backlog enhancements remain additive work and are not treated as proof that this existing narrow route is functionally incomplete.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/data-table/csv-to-json.gold.json",
+      "claim": "Tool-specific Gold receipt binds csv-to-json to exact fixtures, current source identities and functional acceptance."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/table-expansion.test.ts",
+      "claim": "Executable tests exercise the engine/module behavior used by csv-to-json, including relevant edge, invalid-input or transformation semantics."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/data-table/browser-acceptance.json",
+      "claim": "Browser acceptance covers the real csv-to-json route or its explicit functional workflow, including submit/locality and the relevant mobile/preview/handoff behavior."
+    },
+    {
+      "kind": "oracle",
+      "ref": "quality/oracles/registry.json",
+      "claim": "Canonical oracle registry entry cand-033, referenced by the Gold receipt, is the declared truth authority for csv-to-json."
+    }
+  ],
+  "childTickets": []
+}

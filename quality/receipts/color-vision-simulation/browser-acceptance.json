@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "acceptanceToolId": "color-blindness-image-simulation",
+  "harness": "production simulation engine + production ImageResultV2",
+  "model": "Machado, Oliveira & Fernandes (2009)",
+  "modelDoi": "10.1109/TVCG.2009.113",
+  "modes": [
+    {
+      "mode": "protanopia",
+      "label": "Protanopia",
+      "status": "PASS",
+      "comparisonImages": 2,
+      "downloadFilename": "browser-source-protanopia-simulation.png",
+      "outputSha256": "b45fe089a4f8007d77487819b2b971081d1feba82da9d8ddf26b8f224763a2bc",
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    },
+    {
+      "mode": "deuteranopia",
+      "label": "Deuteranopia",
+      "status": "PASS",
+      "comparisonImages": 2,
+      "downloadFilename": "browser-source-deuteranopia-simulation.png",
+      "outputSha256": "2ff79503f47f81b59cdb46b31c5c0d709d0e21ea623c14fe9d0f3550717afa2d",
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    },
+    {
+      "mode": "tritanopia",
+      "label": "Tritanopia",
+      "status": "PASS",
+      "comparisonImages": 2,
+      "downloadFilename": "browser-source-tritanopia-simulation.png",
+      "outputSha256": "ea4ac1abb8ce79452491ed23f211f60f2ee2aaf557d3717b4f601d01535aa30f",
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    }
+  ],
+  "comparison": "original and simulated image are both rendered and labeled with the exact selected mode",
+  "artifact": "shared verifier enables a PNG download whose filename contains the exact selected mode",
+  "medicalClaim": "result states simulation-not-diagnosis and not-universal-perception limits",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "network": "zero external/non-GET/task-body requests after simulation starts"
+}

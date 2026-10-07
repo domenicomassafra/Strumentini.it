@@ -16,6 +16,7 @@ export const fileHashManifest = {
     network: "forbidden",
   },
   profileFields: [],
+  result: { class: "validator", capabilities: ["copy", "reset", "provenance"] },
   gold: {
     maintenanceClass: "E",
     oracleEntryId: "cand-161",

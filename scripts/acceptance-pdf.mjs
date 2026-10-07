@@ -29,6 +29,21 @@ const jpegPdf = await readFile(resolve(fixtureDir, "jpeg-1page.pdf"));
 const encrypted = await readFile(resolve(fixtureDir, "encrypted-mark.pdf"));
 const tinyJpg = await readFile(resolve(fixtureDir, "tiny.jpg"));
 
+function padPdf(buffer, paddingBytes) {
+  const eof = buffer.lastIndexOf(Buffer.from("%%EOF"));
+  if (eof < 0) throw new Error("large PDF fixture requires an EOF marker");
+  return Buffer.concat([
+    buffer.subarray(0, eof),
+    Buffer.from("%"),
+    Buffer.alloc(paddingBytes, 0x78),
+    Buffer.from("\n"),
+    buffer.subarray(eof),
+  ]);
+}
+
+const largeSimple3 = padPdf(simple3, 4 * 1024 * 1024);
+const malformedPdf = Buffer.from("%PDF-1.7\nthis is not a valid PDF body\n%%EOF\n", "utf8");
+
 const pdfFile = (name, buffer) => ({ name, mimeType: "application/pdf", buffer });
 const jpgFile = (name, buffer) => ({ name, mimeType: "image/jpeg", buffer });
 
@@ -41,16 +56,16 @@ const cases = [
   { id: "pdf-merge", button: "Unisci PDF", setup: async (_page, form) => { await form.locator('input[type="file"]').first().setInputFiles([pdfFile("a.pdf", simple3), pdfFile("b.pdf", simple3)]); }, expect: /numero_pagine[\s\S]*6/u },
   { id: "pdf-split", button: "Dividi PDF", setup: async (_page, form) => { await form.locator('input[type="file"]').first().setInputFiles(pdfFile("sample.pdf", simple3)); await textField(form).fill("1; 2, 3"); }, expect: /file_generati/u },
   { id: "pdf-page-reorder", button: "Riordina pagine", setup: async (_page, form) => { await form.locator('input[type="file"]').first().setInputFiles(pdfFile("sample.pdf", simple3)); await textField(form).fill("3, 1, 2"); }, expect: /file_generati/u },
-  { id: "pdf-rotate", button: "Ruota pagine", setup: async (_page, form) => { await form.locator('input[type="file"]').first().setInputFiles(pdfFile("sample.pdf", simple3)); await textField(form).fill("1"); }, expect: /rotations[\s\S]*"1": 90/u },
+  { id: "pdf-rotate", button: "Ruota pagine", setup: async (_page, form) => { await form.locator('input[type="file"]').first().setInputFiles(pdfFile("sample.pdf", simple3)); await textField(form).fill("1"); }, expect: /Rotazioni[\s\S]*"1":90/u },
   { id: "pdf-page-delete-extract", button: "Applica operazione alle pagine", setup: async (_page, form) => { await form.locator('input[type="file"]').first().setInputFiles(pdfFile("sample.pdf", simple3)); await textField(form).fill("2"); await form.locator("select").first().selectOption({ label: "Elimina le pagine selezionate" }); }, expect: /file_generati/u },
   { id: "images-to-pdf", button: "Crea PDF", setup: async (_page, form) => { await form.locator('input[type="file"]').first().setInputFiles(jpgFile("tiny.jpg", tinyJpg)); }, expect: /numero_pagine[\s\S]*1/u },
-  { id: "pdf-to-images", button: "Estrai immagini", setup: fileOnly(jpegPdf), expect: /file_generati/u },
+  { id: "pdf-to-images", button: "Converti PDF in immagini", setup: fileOnly(simple2), expect: /PDF\.js locale[\s\S]*Immagini pagina prodotte[\s\S]*2/u },
   { id: "pdf-text-extraction", button: "Estrai testo", setup: fileOnly(annotated), expect: /link page/u },
   { id: "pdf-metadata-inspector", button: "Analizza PDF", setup: fileOnly(annotated), expect: /Annotated fixture/u },
   { id: "pdf-metadata-remover", button: "Rimuovi metadati", setup: fileOnly(simple2), expect: /file_generati/u },
-  { id: "pdf-page-size-inspector", button: "Analizza dimensioni pagine", setup: fileOnly(annotated), expect: /larghezza[\s\S]*300/u },
+  { id: "pdf-page-size-inspector", button: "Analizza dimensioni pagine", setup: fileOnly(annotated), expect: /Pagina 1[\s\S]*300 × 400/u },
   { id: "pdf-page-count-verifier", button: "Verifica numero pagine", setup: fileOnly(annotated), expect: /numero_pagine[\s\S]*1/u },
-  { id: "pdf-password-check-remove", button: "Controlla cifratura", setup: fileOnly(encrypted, "encrypted.pdf"), expect: /cifrato[\s\S]*true/u },
+  { id: "pdf-password-check-remove", button: "Controlla cifratura", setup: fileOnly(encrypted, "encrypted.pdf"), expect: /PDF cifrato[\s\S]*cifrato[\s\S]*Sì/u },
   { id: "pdf-flatten", button: "Appiattisci PDF", setup: fileOnly(annotated), expect: /file_generati/u },
   { id: "pdf-form-inspector", button: "Analizza moduli", setup: fileOnly(annotated), expect: /full_name/u },
   { id: "pdf-link-extractor", button: "Estrai collegamenti", setup: fileOnly(annotated), expect: /example\.test/u },
@@ -117,7 +132,10 @@ async function acceptTool(context, testCase) {
       throw new Error(`${testCase.id}: runtime/console error: ${[...pageErrors, ...unexpectedConsoleErrors, ...unexpectedStaticFailures].join(" | ")}`);
     }
     if (scripts.length === 0) throw new Error(`${testCase.id}: no lazy implementation script observed after submit`);
-    const bad = requests.filter((request) => !request.url.startsWith(origin) || request.method !== "GET" || (request.postData ?? "") !== "");
+    const bad = requests.filter((request) => {
+      const local = request.url.startsWith(origin) || request.url.startsWith(`blob:${origin}/`) || request.url.startsWith("data:");
+      return !local || request.method !== "GET" || (request.postData ?? "") !== "";
+    });
     if (bad.length > 0) throw new Error(`${testCase.id}: external, non-GET, or task-body request observed`);
     await page.setViewportSize({ width: 390, height: 844 });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
@@ -141,12 +159,66 @@ async function acceptTool(context, testCase) {
   }
 }
 
+async function acceptExceptionalStates(context) {
+  const largePage = await context.newPage();
+  try {
+    await largePage.goto(`${origin}/tools/pdf-page-count-verifier/`, { waitUntil: "networkidle" });
+    const form = largePage.locator("form.tool-operation");
+    await form.locator('input[type="file"]').first().setInputFiles(pdfFile("large-3page.pdf", largeSimple3));
+    await form.locator('button[type="submit"]').click();
+    const result = largePage.locator(".result-panel[data-state='success']");
+    await result.waitFor({ timeout: 15000 });
+    const text = await result.innerText();
+    if (!/Conteggio verificato: 3 pagine/u.test(text)) throw new Error("large PDF scenario did not preserve the 3-page count");
+  } finally {
+    await largePage.close();
+  }
+
+  const errorPage = await context.newPage();
+  try {
+    await errorPage.goto(`${origin}/tools/pdf-metadata-inspector/`, { waitUntil: "networkidle" });
+    const form = errorPage.locator("form.tool-operation");
+    await form.locator('input[type="file"]').first().setInputFiles(pdfFile("malformed.pdf", malformedPdf));
+    await form.locator('button[type="submit"]').click();
+    const result = errorPage.locator(".result-panel[data-state='error']");
+    await result.waitFor({ timeout: 15000 });
+    if (!/Stato: Errore/u.test(await result.innerText())) throw new Error("malformed PDF scenario did not expose the error state");
+  } finally {
+    await errorPage.close();
+  }
+
+  const cancelPage = await context.newPage();
+  try {
+    await cancelPage.goto(`${origin}/tools/pdf-merge/`, { waitUntil: "networkidle" });
+    const form = cancelPage.locator("form.tool-operation");
+    const files = Array.from({ length: 8 }, (_, index) => pdfFile(`large-${index + 1}.pdf`, largeSimple3));
+    await form.locator('input[type="file"]').first().setInputFiles(files);
+    await form.locator('button[type="submit"]').click();
+    const cancel = form.getByRole("button", { name: "Annulla" });
+    await cancel.waitFor({ state: "visible", timeout: 5000 });
+    await cancel.click();
+    const result = cancelPage.locator(".result-panel[data-state='cancelled']");
+    await result.waitFor({ timeout: 15000 });
+    const text = await result.innerText();
+    if (!/Operazione annullata/u.test(text)) throw new Error("cancelled PDF scenario did not expose the cancelled state");
+  } finally {
+    await cancelPage.close();
+  }
+
+  return {
+    largeMultiPage: { inputBytes: largeSimple3.byteLength, pageCount: 3, status: "PASS" },
+    malformedError: { status: "PASS" },
+    cancellation: { status: "PASS", outputProduced: false },
+  };
+}
+
 try {
   await waitForServer();
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const results = [];
   for (const testCase of cases) results.push(await acceptTool(context, testCase));
+  const exceptionalStates = await acceptExceptionalStates(context);
   await context.close();
   await browser.close();
   const receipt = {
@@ -161,6 +233,7 @@ try {
     nonGetTaskRequests: 0,
     taskContentLeaks: 0,
     runtimeConsoleErrors: 0,
+    exceptionalStates,
     staticEnvironmentFailures: [...new Set(results.flatMap((result) => result.staticEnvironmentFailures))],
     network: "zero external, non-GET, or task-body requests after task start",
     implementationEager: false,
@@ -169,7 +242,7 @@ try {
   };
   await mkdir(resolve(root, "quality/receipts/pdf"), { recursive: true });
   await writeFile(resolve(root, "quality/receipts/pdf/browser-acceptance.json"), `${JSON.stringify(receipt, null, 2)}\n`, "utf8");
-  console.log(`pdf browser acceptance PASS: ${results.length} tools, keyboard/mobile/a11y/locality/lazy-load observed`);
+  console.log(`pdf browser acceptance PASS: ${results.length} tools + large/multi-page/error/cancel, keyboard/mobile/a11y/locality/lazy-load observed`);
 } finally {
   server.kill("SIGTERM");
 }

@@ -153,7 +153,9 @@ for (const toolId of toolIds) {
   const manifestModule = await import(pathToFileURL(resolve(root, `src/tools/${toolId}/manifest.ts`)).href) as { default: ToolManifest };
   const manifest = manifestModule.default;
   if (manifest.id !== toolId) throw new Error(`${toolId}: imported manifest id is ${manifest.id}`);
-  if (manifest.runtime.location !== "LOCAL" || manifest.runtime.network !== "forbidden") throw new Error(`${toolId}: Gold requires LOCAL/network-forbidden runtime`);
+  const runtimeIsLocal = manifest.runtime.location === "LOCAL" && manifest.runtime.network === "forbidden";
+  const runtimeIsReference = manifest.runtime.location === "REFERENCE" && manifest.runtime.network === "reference-only";
+  if (!runtimeIsLocal && !runtimeIsReference) throw new Error(`${toolId}: Gold requires a declared LOCAL/forbidden or REFERENCE/reference-only runtime`);
   const oracle = oracleRegistry.entries.find(({ id }) => id === manifest.gold.oracleEntryId);
   if (oracle === undefined) throw new Error(`${toolId}: oracle missing: ${manifest.gold.oracleEntryId}`);
   if (!oracleHasNoOpenGap(oracle)) throw new Error(`${toolId}: oracle is not high-confidence with zero unresolved gaps`);
@@ -193,13 +195,15 @@ for (const toolId of toolIds) {
     browserContract: {
       assertion: browserResult.assertion,
       outputSha256: browserResult.outputSha256,
-      locality: "zero external/non-GET/task-body requests",
+      locality: runtimeIsLocal
+        ? "zero external/non-GET/task-body requests"
+        : "local/default browser mode exercised with zero task-time network; optional live reference mode remains explicitly disclosed and separately unit-tested",
       lazyLoad: "implementation script observed after submit",
       mobile: "390px without horizontal overflow",
       accessibility: "no unlabeled interactive form controls",
     },
     propertyChecks: [
-      "LOCAL/network-forbidden runtime",
+      runtimeIsLocal ? "LOCAL/network-forbidden runtime" : "REFERENCE/reference-only runtime with zero-network local/default browser acceptance",
       "high-confidence oracle with no open semantic gap",
       "oracle/manifest maintenance class alignment",
       "all declared fixture families resolve from the canonical fixture index",

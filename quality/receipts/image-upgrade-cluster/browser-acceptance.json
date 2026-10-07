@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "matrix": [
+    {
+      "id": "png-jpeg",
+      "outputMime": "image/jpeg",
+      "width": 1,
+      "height": 1,
+      "lossy": true
+    },
+    {
+      "id": "png-webp",
+      "outputMime": "image/webp",
+      "width": 1,
+      "height": 1,
+      "lossy": true
+    },
+    {
+      "id": "jpeg-png",
+      "outputMime": "image/png",
+      "width": 1,
+      "height": 1,
+      "lossy": false
+    },
+    {
+      "id": "jpeg-webp",
+      "outputMime": "image/webp",
+      "width": 1,
+      "height": 1,
+      "lossy": true
+    },
+    {
+      "id": "webp-png",
+      "outputMime": "image/png",
+      "width": 1,
+      "height": 1,
+      "lossy": false
+    },
+    {
+      "id": "webp-jpeg",
+      "outputMime": "image/jpeg",
+      "width": 1,
+      "height": 1,
+      "lossy": true
+    }
+  ],
+  "alphaToJpeg": {
+    "missingBackgroundRefused": true,
+    "explicitBackground": "#123456",
+    "verified": true
+  },
+  "metadata": {
+    "metadataFree": true,
+    "before": [
+      "exif",
+      "text"
+    ],
+    "removed": [
+      "exif",
+      "text"
+    ],
+    "retained": [],
+    "outputSegments": 0,
+    "fidelity": {
+      "outputFormat": "image/png",
+      "dimensionsPreserved": true,
+      "decodedRgbaExact": true,
+      "verification": "browser-decoded RGBA before vs reopened PNG RGBA",
+      "limitation": "The claim is exact for the browser-decoded RGBA raster. Original container bytes, metadata, ICC/profile semantics and pre-decode codec history are not preserved."
+    }
+  },
+  "compare": {
+    "sameDimensions": false,
+    "alignmentPolicy": "top-left-overlap-no-stretch",
+    "compared": [
+      2,
+      2
+    ],
+    "unmatchedPixels": 2,
+    "sampledPixels": 4,
+    "maxSampledPixels": 250000,
+    "threshold": 0,
+    "algorithm": "Top-left overlap, no stretch; evenly sample at most 250000 overlap pixels; a sampled pixel differs when any RGBA channel delta is > threshold.",
+    "diffType": "image/png",
+    "keyboardSlider": true,
+    "keyboardOverlay": true,
+    "buttonsExposeBoth": true,
+    "mobile390": true
+  },
+  "contactSheet": {
+    "ordering": "filename-asc",
+    "names": [
+      "opaque.png",
+      "rgba.png"
+    ],
+    "dimensions": [
+      160,
+      80
+    ],
+    "outputMime": "image/png",
+    "verification": {
+      "signature": true,
+      "decoded": true,
+      "dimensions": true
+    }
+  },
+  "favicon": {
+    "sizes": [
+      16,
+      32,
+      64
+    ],
+    "filenames": [
+      "opaque-16x16.png",
+      "opaque-32x32.png",
+      "opaque-64x64.png"
+    ],
+    "dimensions": [
+      [
+        16,
+        16
+      ],
+      [
+        32,
+        32
+      ],
+      [
+        64,
+        64
+      ]
+    ],
+    "types": [
+      "image/png",
+      "image/png",
+      "image/png"
+    ],
+    "verified": true,
+    "zipCompression": "store",
+    "zipEntries": [
+      "opaque-16x16.png",
+      "opaque-32x32.png",
+      "opaque-64x64.png"
+    ],
+    "zipVerified": true,
+    "mobile390": true,
+    "downloadedZipSignature": "PK"
+  },
+  "platform": {
+    "preset": "instagram-square",
+    "source": {
+      "width": 2,
+      "height": 3
+    },
+    "output": [
+      1080,
+      1080
+    ],
+    "outputMime": "image/png",
+    "filename": "rgba-instagram-square-1080x1080.png",
+    "verification": {
+      "signature": true,
+      "decoded": true,
+      "dimensions": true
+    }
+  },
+  "network": "LOCAL route; after task start only same-origin GET assets and no task-content request bodies"
+}

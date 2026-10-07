@@ -1,0 +1,27 @@
+{
+  "toolId": "doi-normalizer",
+  "category": "research",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Uniforma un DOI e controlla localmente che la sua sintassi sia valida. Public jobs: Usa Pulisci e verifica un DOI.",
+  "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/expanded-local/doi-normalizer.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Broader backlog enhancements are additive to this narrow route contract and are not used to manufacture an incomplete audit result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/doi-normalizer.gold.json",
+      "claim": "Tool-specific Gold receipt binds the current implementation to declared fixtures/oracle evidence and functional acceptance for doi-normalizer."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/research-reference-engine.test.ts",
+      "claim": "Executable family tests exercise the engine/module behavior used by doi-normalizer, including relevant edge or invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Committed browser acceptance includes doi-normalizer and verifies a real route submit plus locality/lazy/mobile/accessibility behavior."
+    }
+  ],
+  "childTickets": []
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "9418f6d684412c1fc8346a54637d766a06c7f2cdcea37ddf6ba6cd24639a17b6",
+  "toolId": "subtitle-srt-vtt-transform",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-249",
+  "fixtureFamilies": [
+    "subtitle-transform"
+  ],
+  "boundedScopeGaps": [
+    "SRT has no single normative standard; this ticket intentionally supports a strict common subset rather than claiming full ecosystem compatibility.",
+    "WebVTT cue settings NOTE STYLE REGION ruby voice/class markup semantics and positioning conversion are outside this supported subset and fail closed where structurally relevant."
+  ],
+  "scopePolicy": "Every canonical unresolved oracle gap is matched against a tool-specific bounded-scope policy. Unknown/new gap wording fails certification.",
+  "truthSources": [
+    "fixture-policy",
+    "netflix-italian-ttsg",
+    "strumentiutili-quality",
+    "w3c-webvtt"
+  ],
+  "directChecks": [
+    "SRT/WebVTT bounded subset fixtures exact",
+    "invalid settings/timing fail closed",
+    "complete browser downloads verified"
+  ],
+  "propertyChecks": [
+    "local-only public runtime",
+    "canonical oracle confidence high",
+    "all oracle gaps classified as bounded exclusions",
+    "fixture replay",
+    "real browser locality/mobile acceptance",
+    "route bundle isolated from home initial JS"
+  ],
+  "identities": {
+    "manifestSha256": "9be55da7dd778529d49517699518f845140fa6d25493cffe0dac7554ae10ccdb",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "browserAcceptanceSha256": "3c5dbc396ef2431cacc2135e708b388869e233dd218c38541646e46eb3585ec0",
+    "bundleIsolationSha256": "f8cc75d37de5f47d79a94a350710156bbf079972838dfdf080685192016e91c2",
+    "unitTestsSha256": "e7f2fd366386e07cf79fa2ea462bac8adcdc548cd086c24b2f3b27f8e448b759",
+    "fixture:subtitle-transform:sha256": "a715fb93b0dc014da1e1172837671aa62179b17cc6546e54d7f84af1b5152fb8"
+  }
+}

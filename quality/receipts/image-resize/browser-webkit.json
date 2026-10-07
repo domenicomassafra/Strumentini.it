@@ -23,16 +23,30 @@
       "type": "image/jpeg",
       "size": 32675,
       "signatureHex": "ffd8ff"
+    },
+    "noUpscalePercent": {
+      "width": 1600,
+      "height": 1200,
+      "type": "image/jpeg",
+      "size": 95862
     }
+  },
+  "upgradeModes": {
+    "aspectLock": "PASS",
+    "percent": "PASS",
+    "liveEstimate": "PASS",
+    "containVsCoverPreview": "PASS",
+    "noUpscale": "PASS",
+    "outputFormatChoice": "PASS"
   },
   "capabilities": {
     "canvasWebpEncode": false
   },
-  "memoryPreflightText": "15.3 MiB estimated decoded working set",
+  "memoryPreflightText": "15,3 MiB stimati per l'elaborazione decodificata",
   "cancellation": "PASS",
   "corruptDecode": "PASS",
   "oversizedPredecode": "PASS",
-  "lazyScriptsAfterAction": 1,
+  "lazyScriptsAfterAction": 2,
   "taskContentNetworkRequests": 0,
   "externalRequests": 0,
   "mobileViewport": {

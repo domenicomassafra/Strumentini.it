@@ -1,0 +1,66 @@
+---
+import BaseLayout from "../../../../../../src/layouts/BaseLayout.astro";
+import GroupTools from "../../../../../../src/components/catalog/GroupTools.astro";
+import { catalog } from "../../../../../../src/generated/catalog";
+import { groups } from "../../../../../../src/catalog/groups";
+import type { ToolSummary } from "../../../../../../src/catalog/manifest";
+
+const FIXTURE_SLUG = "fixture-scale";
+const SYNTHETIC_COUNT = 220;
+
+export function getStaticPaths() {
+  return [{ params: { slug: "fixture-scale" } }];
+}
+
+const group = groups[0];
+if (group === undefined) throw new Error("Expanded category fixture requires at least one catalog group");
+const seeds = group.memberCategories.map((category) => {
+  const seed = catalog.find((tool) => tool.category === category);
+  if (seed === undefined) throw new Error(`Expanded category fixture has no seed for ${category}`);
+  return seed;
+});
+const realTools = catalog.filter((tool) => group.memberCategories.includes(tool.category));
+const syntheticTools: ToolSummary[] = Array.from({ length: SYNTHETIC_COUNT }, (_, index) => {
+  const source = seeds[index % seeds.length]!;
+  const serial = String(index + 1).padStart(3, "0");
+  return {
+    ...source,
+    id: `fixture-category-expanded-${serial}`,
+    route: `/tools/fixture-category-expanded-${serial}`,
+    name: `Fixture categoria espansa ${serial}`,
+    summary: `Voce sintetica ${serial} per verificare filtri, conteggi e densità della pagina categoria con centinaia di strumenti.`,
+    aliases: [`fixture categoria ${serial}`],
+    jobs: [`Verificare la scalabilità della categoria sintetica ${serial}`],
+    engine: `fixture-category-${source.engine}`,
+    gold: {
+      ...source.gold,
+      oracleEntryId: `fixture-category-expanded-${serial}`,
+      fixtureFamilies: ["expanded-directory-scalability"],
+    },
+  };
+});
+const tools: readonly ToolSummary[] = [...realTools, ...syntheticTools];
+const counts = Object.fromEntries(group.memberCategories.map((category) => [
+  category,
+  tools.filter((tool) => tool.category === category).length,
+]));
+const contract = JSON.stringify({
+  slug: FIXTURE_SLUG,
+  group: group.slug,
+  realCount: realTools.length,
+  syntheticCount: syntheticTools.length,
+  totalCount: tools.length,
+  counts,
+}).replace(/</gu, "\\u003c");
+---
+
+<BaseLayout
+  title="Fixture categoria espansa"
+  description="Fixture test-only per il gate di scalabilità delle pagine categoria."
+  noindex
+>
+  <main class="tool-page group-page">
+    <GroupTools group={group} tools={tools} />
+    <script type="application/json" data-expanded-category-fixture set:html={contract}></script>
+  </main>
+</BaseLayout>

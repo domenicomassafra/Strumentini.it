@@ -1,0 +1,32 @@
+{
+  "toolId": "palette-extractor",
+  "category": "files-assets",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Trova una palette di colori rappresentativa da un'immagine direttamente nel browser. Public jobs: Usa Estrai palette da un'immagine",
+  "observedFunctionality": "Current job extracts a representative bounded palette from local pixels; unit tests cover deterministic quantization and pixel limits, while Gold acceptance covers the real route.",
+  "rationale": "No missing behavior required by the current declared public job was found. Existing image-expansion tickets are treated as additive only where they broaden controls, formats, previews or packaging beyond the present truthful route contract; they are not used to manufacture a false incomplete result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/palette-extractor.gold.json",
+      "claim": "Tool-specific Gold receipt binds palette-extractor to the current declared local image semantics and fixture/oracle frontier."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/image-visual-tools.test.ts",
+      "claim": "Executable image/visual tests cover deterministic palette/color primitives, bounded pixel handling and non-mutating image rename preview semantics used by this tool family."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Real-route expanded-local acceptance includes palette-extractor with a tool-specific output assertion/hash plus locality, lazy-load, 390px and accessibility checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": "src/engines/image/visual-tools.ts",
+      "claim": "Shared image operations implement bounded input validation, local decoding/processing and verified output or deterministic inspection semantics used by this route."
+    }
+  ],
+  "childTickets": []
+}

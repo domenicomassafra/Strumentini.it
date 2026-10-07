@@ -23,6 +23,14 @@ export function optionalText(value: unknown, field: string): string | undefined 
   return candidate;
 }
 
+export function optionalStringArray(value: unknown, field: string): string[] | undefined {
+  const object = inputObject(value);
+  const candidate = object[field];
+  if (candidate === undefined) return undefined;
+  if (!Array.isArray(candidate) || candidate.some((item) => typeof item !== "string")) throw new Error("INVALID_INPUT");
+  return [...candidate] as string[];
+}
+
 export function optionalNumber(value: unknown, field: string): number | undefined {
   const object = inputObject(value);
   const candidate = object[field];

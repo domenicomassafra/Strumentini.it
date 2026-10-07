@@ -1,0 +1,27 @@
+{
+  "toolId": "image-crop",
+  "category": "files-assets",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Ritaglia un'immagine locale in un rettangolo limitato con risultato prodotto interamente nel browser. Public jobs: Usa Ritaglio immagine",
+  "observedFunctionality": "Current public job is an explicit bounded rectangular crop with local output, and the shared image engine validates the rectangle and output. Ticket 213 adds direct-manipulation/round-crop workspace behavior beyond this numeric crop contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Existing image-expansion tickets are treated as additive only where they broaden controls, formats, previews or packaging beyond the present truthful route contract; they are not used to manufacture a false incomplete result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/image-crop.gold.json",
+      "claim": "Tool-specific Gold receipt binds image-crop to the current declared local image semantics and fixture/oracle frontier."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Real-route expanded-local acceptance includes image-crop with a tool-specific output assertion/hash plus locality, lazy-load, 390px and accessibility checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": "src/engines/image/visual-tools.ts",
+      "claim": "Shared image operations implement bounded input validation, local decoding/processing and verified output or deterministic inspection semantics used by this route."
+    }
+  ],
+  "childTickets": []
+}

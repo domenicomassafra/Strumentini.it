@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "json_repair": [
+    {
+      "name": "comments-and-trailing-comma",
+      "input": "{\n  // local note\n  \"name\": \"Ada\",\n  \"items\": [1, 2,],\n}",
+      "expected": {
+        "value": { "name": "Ada", "items": [1, 2] },
+        "edit_reasons": ["REPLACE_LINE_COMMENT", "REMOVE_TRAILING_COMMA", "REMOVE_TRAILING_COMMA"]
+      }
+    },
+    {
+      "name": "block-comment-token-separator",
+      "input": "[1/* keep tokens separate */,2]",
+      "expected": { "value": [1, 2], "edit_reasons": ["REPLACE_BLOCK_COMMENT"] }
+    }
+  ],
+  "json_diff": [
+    {
+      "name": "nested-type-add-remove-and-order",
+      "left": "{\"a\":1,\"nested\":{\"old\":true},\"items\":[1,2,3]}",
+      "right": "{\"a\":\"1\",\"nested\":{\"new\":true},\"items\":[3,2,1]}",
+      "expected_kinds": ["type", "add", "remove", "order"]
+    }
+  ],
+  "json_inference": [
+    {
+      "name": "heterogeneous-poison-keys",
+      "input": "{\"name\":\"Ada\",\"items\":[1,\"two\",null],\"__proto__\":{\"polluted\":true},\"constructor\":\"data\"}",
+      "root_name": "123 unsafe root"
+    }
+  ],
+  "xml": [
+    {
+      "name": "element-only-formatting",
+      "input": "<root><item id=\"1\"/><item id=\"2\"/></root>",
+      "pretty": "<root>\n  <item id=\"1\"/>\n  <item id=\"2\"/>\n</root>",
+      "minified": "<root><item id=\"1\"/><item id=\"2\"/></root>"
+    },
+    {
+      "name": "mixed-content-whitespace",
+      "input": "<p>Hello <b>world</b> !</p>",
+      "minified": "<p>Hello <b>world</b> !</p>"
+    },
+    {
+      "name": "xml-space-preserve",
+      "input": "<root xml:space=\"preserve\">  keep  <b> x </b>  </root>",
+      "minified": "<root xml:space=\"preserve\">  keep  <b> x </b>  </root>"
+    }
+  ],
+  "hostile": [
+    {
+      "name": "external-entity",
+      "input": "<!DOCTYPE root [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]><root>&xxe;</root>",
+      "expected_code": "XML_EXTERNAL_ENTITY_DISABLED"
+    },
+    {
+      "name": "ambiguous-json-missing-comma",
+      "input": "{\"a\":1 \"b\":2}",
+      "expected_code": "JSON_REPAIR_REFUSED"
+    }
+  ]
+}

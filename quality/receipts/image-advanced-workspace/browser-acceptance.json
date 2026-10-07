@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tickets": [
+    298,
+    299,
+    301,
+    302
+  ],
+  "engine": {
+    "watermark": {
+      "changedBytes": 8,
+      "dimensions": [
+        4,
+        4
+      ],
+      "sourceBytes": 74,
+      "outputBytes": 117,
+      "alphaPolicy": "Canvas source-over compositing; PNG preserves resulting alpha. Opacity changes only overlay contribution.",
+      "colorSpacePolicy": "Canvas 2D default browser color space (sRGB-compatible); no linear-light or embedded-profile preservation claim.",
+      "privacyClaim": "visual-overlay-not-redaction",
+      "previewExportIdentity": "same-rendered-png-blob"
+    },
+    "compose": {
+      "dimensions": [
+        18,
+        6
+      ],
+      "outputBytes": 152,
+      "names": [
+        "workspace-stitch-b-8x6.png",
+        "workspace-stitch-a-8x6.png"
+      ],
+      "sourceBytes": [
+        102,
+        103
+      ]
+    },
+    "sliced": {
+      "widths": [
+        4,
+        3,
+        3
+      ],
+      "heights": [
+        4,
+        4,
+        4
+      ],
+      "names": [
+        "workspace-slice-10x4-slice-01-of-03-4x4.png",
+        "workspace-slice-10x4-slice-02-of-03-3x4.png",
+        "workspace-slice-10x4-slice-03-of-03-3x4.png"
+      ],
+      "bytes": [
+        113,
+        112,
+        113
+      ],
+      "zipEntries": [
+        "workspace-slice-10x4-slice-01-of-03-4x4.png",
+        "workspace-slice-10x4-slice-02-of-03-3x4.png",
+        "workspace-slice-10x4-slice-03-of-03-3x4.png"
+      ],
+      "zipVerified": true,
+      "zipCompression": "store"
+    },
+    "stitch": {
+      "suggestedOverlap": 2,
+      "confidence": 1,
+      "confidenceMargin": 0.14379084967320255,
+      "ambiguous": false,
+      "ambiguousFixtureFlag": true,
+      "dimensions": [
+        8,
+        10
+      ],
+      "order": [
+        "workspace-stitch-a-8x6.png",
+        "workspace-stitch-b-8x6.png"
+      ],
+      "overlap": 2,
+      "manualCorrection": true
+    },
+    "perspective": {
+      "dimensions": [
+        8,
+        6
+      ],
+      "sourceDimensions": [
+        8,
+        6
+      ],
+      "exactIdentityPixels": true,
+      "sampling": "inverse-homography-bilinear-rgba",
+      "boundary": {
+        "polygon": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
+            "x": 7,
+            "y": 5
+          },
+          {
+            "x": 0,
+            "y": 5
+          }
+        ],
+        "sourceWidth": 8,
+        "sourceHeight": 6
+      }
+    }
+  },
+  "browser": {
+    "viewport": "390x844",
+    "watermarkKeyboard": true,
+    "watermarkExactBlobPreview": true,
+    "stitchSuggestionPreview": true,
+    "stitchManualCorrection": true,
+    "stitchZeroOverlapFallback": true,
+    "composeReorderPreview": true,
+    "slicePreviewZipDownload": true,
+    "perspectiveKeyboardCornerControl": true,
+    "noHorizontalOverflow": true
+  },
+  "network": "LOCAL routes; after task start only same-origin GET/blob/data requests and no task-content request bodies"
+}

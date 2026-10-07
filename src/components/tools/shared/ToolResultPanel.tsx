@@ -1,4 +1,5 @@
 import type { ComponentChildren } from "preact";
+import { ResultStateCue, type AccessibleResultStatus } from "./ResultAccessibility";
 
 export interface ToolResultPanelProps {
   eyebrow: string;
@@ -8,8 +9,7 @@ export interface ToolResultPanelProps {
   bare?: boolean;
   atomic?: boolean;
   busy?: boolean;
-  /** `success` and `error` set the 3px semantic rule inside the panel's edge. */
-  state?: "idle" | "running" | "success" | "error" | "warning" | "info";
+  state?: AccessibleResultStatus;
 }
 
 /**
@@ -35,10 +35,12 @@ export function ToolResultPanel({
   const content = hasContent
     ? children
     : <p class="gutter-placeholder result-placeholder">{placeholder}</p>;
+  const effectiveState: AccessibleResultStatus = busy && state === "idle" ? "running" : state;
   if (bare) {
     return (
-      <section class={["gutter", className].filter(Boolean).join(" ")} data-state={state} aria-live="polite" aria-atomic={atomic ? "true" : "false"} aria-busy={busy ? "true" : "false"}>
+      <section class={["gutter", className].filter(Boolean).join(" ")} data-state={effectiveState} aria-busy={busy ? "true" : "false"}>
         <p class="eyebrow">{eyebrow}</p>
+        <ResultStateCue status={effectiveState} atomic={atomic} />
         {content}
       </section>
     );
@@ -46,12 +48,11 @@ export function ToolResultPanel({
   return (
     <section
       class={classes}
-      data-state={state}
-      aria-live="polite"
-      aria-atomic={atomic ? "true" : "false"}
+      data-state={effectiveState}
       aria-busy={busy ? "true" : "false"}
     >
       <p class="gutter-label eyebrow">{eyebrow}</p>
+      <ResultStateCue status={effectiveState} atomic={atomic} />
       {content}
     </section>
   );

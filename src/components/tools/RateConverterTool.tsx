@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import { profileValuesForTool } from "../../profile/work-profile";
+import { resolveResultActions } from "../../runtime/result-actions";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import type { RateUnit } from "../../engines/client-time-math";
 import { rateConverterManifest } from "../../tools/rate-converter/manifest";
@@ -10,6 +11,13 @@ import {
   ProfileOverrideHint,
   ProfileResetButton,
   ProvenanceBadge,
+  ResultActions,
+  ResultAssumptions,
+  ResultBreakdown,
+  ResultExplanation,
+  ResultInterpretation,
+  ResultPrimaryAnswer,
+  ResultProvenance,
   ToolActions,
   ToolOperation,
   ToolResetButton,
@@ -36,6 +44,7 @@ export function RateConverterTool() {
   const [hoursPerDayOverride, setHoursPerDayOverride] = useState<string | undefined>();
   const [projectHours, setProjectHours] = useState("40");
   const [currencyOverride, setCurrencyOverride] = useState<string | undefined>();
+  const [actionStatus, setActionStatus] = useState("");
   const currency = currencyOverride ?? profile.currency;
   const hoursPerDay = hoursPerDayOverride ?? "8";
   const usesProject = from === "project" || to === "project";
@@ -71,11 +80,28 @@ export function RateConverterTool() {
     setHoursPerDayOverride(undefined);
     setProjectHours("40");
     setCurrencyOverride(undefined);
+    setActionStatus("");
     operation.reset();
   }
 
   const rateResult = operation.result;
   const rateHeadline = rateResult === null ? "" : `${rateResult.currency} ${rateResult.amount} / ${UNIT_LABELS[to]}`;
+  const declaration = rateConverterManifest.result;
+  const resultActions = rateResult === null ? [] : resolveResultActions({
+    declaration,
+    primary: "copy",
+    hasCopyPayload: rateHeadline !== "",
+    resetReady: true,
+  });
+
+  async function copyResult() {
+    if (navigator.clipboard === undefined) {
+      setActionStatus("Gli appunti non sono disponibili; seleziona il risultato e copialo manualmente.");
+      return;
+    }
+    await navigator.clipboard.writeText(rateHeadline);
+    setActionStatus("Risultato copiato.");
+  }
   return (
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit} noValidate>
@@ -112,19 +138,25 @@ export function RateConverterTool() {
         </ToolActions>
       </form>
       <ToolResultPanel eyebrow="Tasso convertito" placeholder={it(CONTROL.gutterIdle)} busy={operation.isRunning} state={gutterStateFor(operation.status)}>
-        {/* Held outside the result branch: a recompute clears the result for a
-            tick, and the headline has to keep its state through that. */}
-        <PreviousValue value={rateHeadline} retain={operation.isRunning} />
-        {operation.result !== null && (
-          <>
-            <dl class="assumptions">
-              <div><dt>Formula</dt><dd>{operation.result.formula}</dd></div>
-              <div><dt>Ore al giorno</dt><dd>{operation.result.assumptions.hoursPerDay} · <ProvenanceBadge provenance={operation.result.provenance.hoursPerDay} /></dd></div>
-              {operation.result.assumptions.projectHours !== undefined && <div><dt>Ore del progetto</dt><dd>{operation.result.assumptions.projectHours}</dd></div>}
-              <div><dt>Arrotondamento</dt><dd>Solo sul risultato finale · metà verso l'alto · 2 decimali</dd></div>
-              <div><dt>Valuta</dt><dd>{operation.result.currency} è soltanto un'etichetta. Nessuna conversione valutaria reale o implicita.</dd></div>
-            </dl>
-          </>
+        {(rateResult !== null || operation.isRunning) && (
+          <div data-result-class="calculator">
+            <ResultExplanation
+              primary={<div data-result-slot="primary"><ResultPrimaryAnswer label="Tariffa convertita"><PreviousValue value={rateHeadline} className="" retain={operation.isRunning} /></ResultPrimaryAnswer></div>}
+              interpretation={<div data-result-slot="interpretation"><ResultInterpretation state="success">{rateResult === null ? "Conversione in corso." : "Tariffa convertita sulla base temporale dichiarata, senza cambio valuta."}</ResultInterpretation></div>}
+              breakdown={rateResult === null ? undefined : <div data-result-slot="breakdown"><ResultBreakdown rows={[
+                { label: "Ore al giorno", value: rateResult.assumptions.hoursPerDay },
+                ...(rateResult.assumptions.projectHours === undefined ? [] : [{ label: "Ore del progetto", value: rateResult.assumptions.projectHours }]),
+              ]} /></div>}
+              assumptions={rateResult === null ? undefined : <div data-result-slot="assumptions"><ResultAssumptions items={[
+                { label: "Formula", value: rateResult.formula },
+                { label: "Arrotondamento", value: "Solo sul risultato finale · metà verso l'alto · 2 decimali" },
+                { label: "Valuta", value: `${rateResult.currency} è solo un'etichetta; nessuna conversione valutaria è implicita.` },
+              ]} /></div>}
+              provenance={rateResult === null ? undefined : <div data-result-slot="provenance"><ResultProvenance>Calcolo locale deterministico. Base ore/giorno: <ProvenanceBadge provenance={rateResult.provenance.hoursPerDay} />.</ResultProvenance></div>}
+            />
+            {rateResult !== null && <ResultActions actions={resultActions} onAction={{ copy: copyResult, reset }} />}
+            {actionStatus !== "" && <p class="success" role="status" aria-live="polite">{actionStatus}</p>}
+          </div>
         )}
       </ToolResultPanel>
     </ToolOperation>

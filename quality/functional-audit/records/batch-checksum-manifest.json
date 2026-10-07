@@ -1,0 +1,37 @@
+{
+  "toolId": "batch-checksum-manifest",
+  "category": "files",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Calcola gli SHA-256 di più file in locale e crea un elenco checksum portabile. Public job: Usa Checksum di più file.",
+  "observedFunctionality": "The current implementation is Gold-certified for the declared narrow file job at quality/receipts/expanded-local/batch-checksum-manifest.gold.json; executable test coverage verifies the underlying file/hash/archive/privacy behavior, while quality/receipts/expanded-local/browser-acceptance.json verifies the real route interaction and local-only contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Existing backlog items for richer exports/handoffs, DEFLATE, extraction or deeper privacy analysis are additive scope and are not treated as evidence that this narrow route is functionally incomplete.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/batch-checksum-manifest.gold.json",
+      "claim": "Tool-specific Gold receipt binds batch-checksum-manifest to its current source identities, fixtures and certified functional contract."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/file-privacy-engine.test.ts",
+      "claim": "Executable coverage exercises the engine/module behavior used by batch-checksum-manifest, including relevant success, edge or invalid-input semantics."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/file-privacy-modules.test.ts",
+      "claim": "Executable coverage exercises the engine/module behavior used by batch-checksum-manifest, including relevant success, edge or invalid-input semantics."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Committed browser acceptance covers the real batch-checksum-manifest route or its dedicated file workflow with functional output, locality and interaction checks."
+    },
+    {
+      "kind": "oracle",
+      "ref": "quality/oracles/registry.json",
+      "claim": "Canonical oracle registry entry cand-162, referenced by the Gold receipt, is the declared truth authority for batch-checksum-manifest."
+    }
+  ],
+  "childTickets": []
+}

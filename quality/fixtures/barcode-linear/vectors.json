@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "ean13": [
+    {
+      "id": "gs1-isbn-example",
+      "payload12": "978047138429",
+      "expected_check_digit": 8,
+      "expected_value13": "9780471384298",
+      "source_note": "GS1 example derived from ISBN 0471384291"
+    },
+    {
+      "id": "all-zero-boundary",
+      "payload12": "000000000000",
+      "expected_check_digit": 0,
+      "expected_value13": "0000000000000"
+    },
+    {
+      "id": "invalid-check-digit",
+      "value13": "9780471384297",
+      "expected_check_digit": 8,
+      "expected_valid": false
+    }
+  ],
+  "code128b": [
+    {
+      "id": "ascii-ab12",
+      "text": "AB12",
+      "expected_data_codes": [33, 34, 17, 18],
+      "expected_checksum": 19,
+      "expected_codewords": [104, 33, 34, 17, 18, 19, 106],
+      "expected_widths": ["211214", "111323", "131123", "123221", "223211", "221132", "2331112"]
+    },
+    {
+      "id": "ascii-mixed",
+      "text": "Hello, World!",
+      "expected_checksum": 76
+    }
+  ],
+  "refusals": [
+    { "input": "é", "reason": "outside printable ASCII 32-126" },
+    { "input": "line\nbreak", "reason": "ASCII control character is outside the declared Code Set B subset" },
+    { "input": "🙂", "reason": "Unicode outside printable ASCII is unsupported" }
+  ]
+}

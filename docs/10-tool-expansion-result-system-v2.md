@@ -8,7 +8,7 @@ Detailed format/operation authority: `docs/11-format-operation-matrix.md`.
 
 ## 1. Why this plan exists
 
-StrumentiUtili.it already has 200 implemented tools and a strong local-first quality system. The next phase is not a vanity catalog-count exercise. It has two user-facing goals:
+Strumentini.it already has 200 implemented tools and a strong local-first quality system. The next phase is not a vanity catalog-count exercise. It has two user-facing goals:
 
 1. make the result of **every current tool** feel like an answer to the user's job rather than a dump of fields/JSON; and
 2. fill high-value gaps exposed by Italian and international utility sites, especially everyday calculations, Italy-specific utilities, Office/spreadsheet interchange, document workflows, privacy/security, and local audio/video.
@@ -44,7 +44,7 @@ Observed competitor patterns that matter to this product:
 ### User stories
 
 - **US-EXP-01 — Answer-first results.** As a user of any existing tool, I get a result whose primary answer, meaning, next action, and provenance are immediately understandable.
-- **US-EXP-02 — Full CalcolaTutto parity.** As an Italian user, I can perform every public job currently offered by CalcolaTutto, either through an existing StrumentiUtili tool upgraded to parity or a new tool.
+- **US-EXP-02 — Full CalcolaTutto parity.** As an Italian user, I can perform every public job currently offered by CalcolaTutto, either through an existing Strumentini tool upgraded to parity or a new tool.
 - **US-EXP-03 — Everyday calculations and conversions.** As a non-technical user, I can solve common unit, percentage, finance, date, math, and household calculations without knowing a formula.
 - **US-EXP-04 — Practical files and documents.** As a user handling Office, PDF, images, archives, and tables, I can finish common conversion, cleanup, privacy, extraction, and handoff jobs locally when technically feasible.
 - **US-EXP-05 — Developer and security utilities.** As a technical user, I can repair, validate, convert, inspect, and safely transform common web/data formats with precise errors and copy/download outputs.
@@ -98,7 +98,7 @@ Observed competitor patterns that matter to this product:
 
 ## 4. CalcolaTutto parity matrix — all 13 current tools
 
-| CalcolaTutto job | StrumentiUtili status | Future action |
+| CalcolaTutto job | Strumentini status | Future action |
 |---|---|---|
 | Codice Fiscale | missing | **ADD** generation + decode + checksum, municipality/Belfiore dataset, omocodia limits made explicit |
 | Partita IVA | missing | **ADD** local Italian checksum + separate opt-in VIES authoritative lookup |
@@ -116,7 +116,7 @@ Observed competitor patterns that matter to this product:
 
 ## 5. Expansion inventory captured from the benchmark
 
-This is an inventory, not a promise to clone competitor catalogs. Items already covered by an existing StrumentiUtili job are upgrades/aliases, not duplicate engines.
+This is an inventory, not a promise to clone competitor catalogs. Items already covered by an existing Strumentini job are upgrades/aliases, not duplicate engines.
 
 ### 5.1 Conversions and everyday math
 

@@ -1,0 +1,32 @@
+{
+  "toolId": "campaign-name",
+  "category": "marketing",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Crea nomi di campagna coerenti partendo dai campi e dal separatore che scegli. Public jobs: Usa Crea nome campagna.",
+  "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/campaign-url/campaign-name.gold.json, executable functional tests in tests/campaign-url-engine.test.ts, and real-route browser acceptance in quality/receipts/campaign-url/browser-acceptance.json. Broader additive work is already owned by .scratch/strumentiutili-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "rationale": "No correctness or required-option gap was found in the currently declared public job. Broader additive work is already owned by .scratch/strumentiutili-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/campaign-url/campaign-name.gold.json",
+      "claim": "Tool-specific Gold receipt binds campaign-name to its current fixtures/oracle and functional acceptance."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/campaign-url-engine.test.ts",
+      "claim": "Executable tests cover the engine/module behavior used by campaign-name, including relevant edge or invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/campaign-url/browser-acceptance.json",
+      "claim": "Committed browser acceptance names campaign-name and exercises the real route with locality/mobile/accessibility or equivalent route-functional checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md",
+      "claim": "Existing targeted backlog owns additive functionality beyond campaign-name's current narrow public job; it is not counted as already shipped by this audit."
+    }
+  ],
+  "childTickets": []
+}

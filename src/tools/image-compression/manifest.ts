@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const image_compressionManifest = {
   id: "image-compression",
@@ -13,6 +14,7 @@ export const image_compressionManifest = {
   engine: "image",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["image-compression"],
   gold: { maintenanceClass: "H", oracleEntryId: "cand-144", fixtureFamilies: ["image-metadata", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

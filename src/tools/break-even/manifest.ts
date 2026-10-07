@@ -13,6 +13,7 @@ export const breakEvenManifest = {
   engine: "business-math",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [{ key: "currency", defaultValue: "USD" }],
+  result: { class: "calculator", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-110", fixtureFamilies: ["business-math"] },
 } as const satisfies ToolManifest;
 

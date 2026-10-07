@@ -83,12 +83,12 @@ describe("session tokens", () => {
   });
 
   it("reads the session token back out of a request", () => {
-    const request = new Request("https://strumentiutili.it/api/auth/session", {
+    const request = new Request("https://strumentini.it/api/auth/session", {
       headers: { cookie: "theme=dark; su_session=abc123; other=1" },
     });
     expect(readSessionToken(request)).toBe("abc123");
-    expect(readSessionToken(new Request("https://strumentiutili.it/"))).toBeNull();
-    expect(readSessionToken(new Request("https://strumentiutili.it/", { headers: { cookie: "su_session=" } }))).toBeNull();
+    expect(readSessionToken(new Request("https://strumentini.it/"))).toBeNull();
+    expect(readSessionToken(new Request("https://strumentini.it/", { headers: { cookie: "su_session=" } }))).toBeNull();
     expect(parseCookies(null).size).toBe(0);
     expect(parseCookies('a="quoted value"; b=1; a=second').get("a")).toBe("quoted value");
   });

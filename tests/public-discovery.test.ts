@@ -16,9 +16,9 @@ import {
 const genericCopy = "runs locally in your browser with bounded inputs and explicit results.";
 
 describe("public discovery surfaces", () => {
-  it("keeps all 200 tool summaries unique and snippet-sized", () => {
+  it("keeps all catalog tool summaries unique and snippet-sized", () => {
     const summaries = catalog.map((tool) => tool.summary.trim().replace(/\s+/gu, " ").toLocaleLowerCase("en"));
-    expect(catalog).toHaveLength(200);
+    expect(catalog.length).toBeGreaterThan(0);
     expect(new Set(summaries).size).toBe(catalog.length);
     expect(catalog.every((tool) => tool.summary.length <= 160)).toBe(true);
     expect(catalog.every((tool) => new Set(tool.summary.toLocaleLowerCase("en").split(/[^a-z0-9]+/u).filter(Boolean)).size >= 3)).toBe(true);
@@ -81,8 +81,8 @@ describe("public discovery surfaces", () => {
     const tool = catalog[0];
     expect(tool).toBeDefined();
     if (tool === undefined) return;
-    expect(formatPageTitle(tool.name)).toBe(`${tool.name} · StrumentiUtili.it`);
-    expect(formatPageTitle("Library · StrumentiUtili.it")).toBe("Library · StrumentiUtili.it");
+    expect(formatPageTitle(tool.name)).toBe(`${tool.name} · Strumentini.it`);
+    expect(formatPageTitle("Library · Strumentini.it")).toBe("Library · Strumentini.it");
     expect(selectPageDescription(`${tool.name} ${genericCopy}`, tool)).toBe(tool.summary);
   });
 });

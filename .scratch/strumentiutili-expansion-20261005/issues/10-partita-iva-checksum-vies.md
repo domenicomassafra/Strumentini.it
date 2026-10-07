@@ -6,13 +6,12 @@
 
 **Constraints:** Network call only after explicit user action; VIES downtime/error is not converted into "invalid VAT number".
 
-**Blocked by:** 07 — Versioned Italy reference-data framework.
+**Blocked by:** 123, 124.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Local checksum mode works offline and reports exact format/checksum failures.
-- [ ] VIES mode displays authority, timestamp, and network boundary before/after execution.
-- [ ] Local-valid/VIES-unavailable/VIES-valid/VIES-invalid are distinct states.
+- [x] Ticket 123 provides offline normalization/checksum validation with distinct character, length and checksum failures and `registerVerified=false`.
+- [x] Ticket 124 adds a separately triggered VIES action that discloses the network boundary before execution and shows European Commission/VIES authority plus retrieval timestamp afterward.
+- [x] Local-valid, VIES-valid, VIES-invalid and VIES-unavailable remain distinct: remote transport/service failures never overwrite the local checksum result.
 
-**Verification:** Checksum vectors plus mocked VIES success/invalid/unavailable responses and browser proof that local mode performs no network request.
-
+**Verification:** `tests/partita-iva-validator.test.ts`, `tests/vies-worker.test.ts`, `tests/reference-result.test.ts` and `scripts/acceptance-partita-iva-vies.mjs` cover local checksum vectors, zero implicit network, mocked VIES valid/invalid/unavailable/fault responses, explicit opt-in POST and rendered authority/timestamp provenance.

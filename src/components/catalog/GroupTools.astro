@@ -2,7 +2,6 @@
 import type { CatalogGroup } from "../../catalog/groups";
 import type { ToolSummary } from "../../catalog/manifest";
 import { categoryLabelIt } from "../../i18n/it/taxonomy";
-import { catalog } from "../../generated/catalog";
 import { qualityIndex } from "../../generated/quality";
 import { goldToolIds } from "../../onboarding/quality";
 import ToolCard from "../tools/ToolCard.astro";
@@ -10,10 +9,10 @@ import ToolCard from "../tools/ToolCard.astro";
 /**
  * The filterable, sortable full list of a group's tools.
  *
- * Sub-category pills and the sort control are plain DOM state: the inline
- * script reads one metadata map (route → category + certification) and moves
- * the `ToolCard` items that are already on the page. No results are fetched and
- * no URL changes.
+ * Sub-category pills, pagination and the sort control are plain DOM state: the
+ * inline script reads one metadata map (route → category + certification) and
+ * moves the `ToolCard` items that are already on the page. No results are
+ * fetched and the current <=24-tool category pages keep their one-page behavior.
  */
 interface Props {
   group: CatalogGroup;
@@ -27,7 +26,10 @@ const verifiedIds = goldToolIds(qualityIndex);
 const subCategories = group.memberCategories.map((category) => ({
   value: category,
   label: categoryLabelIt(category),
-  count: catalog.filter((tool) => tool.category === category).length,
+  // Counts belong to the inventory this surface actually renders. Using the
+  // generated production catalog here makes test-only expanded inventories —
+  // and any future scoped inventory — lie about their facet totals.
+  count: tools.filter((tool) => tool.category === category).length,
 }));
 
 const meta: Record<string, { category: string; verified: boolean }> = {};
@@ -40,7 +42,7 @@ const total = tools.length;
 <section class="group-tools" data-group-tools aria-labelledby="tutti-gli-strumenti">
   <div class="section-head">
     <div>
-      <h2 class="section-title" id="tutti-gli-strumenti">Tutti gli strumenti ({total})</h2>
+      <h2 class="section-title" id="tutti-gli-strumenti" tabindex="-1">Tutti gli strumenti ({total})</h2>
       <p class="section-sub" data-tool-status aria-live="polite">{total} strumenti in questa categoria.</p>
     </div>
 
@@ -71,6 +73,10 @@ const total = tools.length;
     {tools.map((tool) => <ToolCard tool={tool} variant="card" />)}
   </ul>
 
+  <nav aria-label="Pagine della categoria" data-group-pagination hidden>
+    <ul class="group-filters" data-group-pagination-list></ul>
+  </nav>
+
   <p class="group-tools-empty" data-tool-empty hidden>Nessuno strumento in questa sottocategoria.</p>
 
   <script type="application/json" data-tool-meta set:html={metaJson}></script>
@@ -84,6 +90,9 @@ const total = tools.length;
       const sortSelect = root.querySelector("[data-tool-sort]");
       const status = root.querySelector("[data-tool-status]");
       const empty = root.querySelector("[data-tool-empty]");
+      const pagination = root.querySelector("[data-group-pagination]");
+      const paginationList = root.querySelector("[data-group-pagination-list]");
+      const heading = root.querySelector("#tutti-gli-strumenti");
       const pills = Array.prototype.slice.call(root.querySelectorAll("[data-filter]"));
       if (!grid || !sortSelect || pills.length === 0) return;
 
@@ -105,10 +114,67 @@ const total = tools.length;
       });
 
       const collator = new Intl.Collator("it", { sensitivity: "base" });
+      const PAGE_SIZE = 24;
       const total = cards.length;
       let active = "all";
+      let page = 1;
 
-      const apply = () => {
+      const pageItems = (current, pageCount) => {
+        const items = [];
+        for (let candidate = 1; candidate <= pageCount; candidate += 1) {
+          if (candidate === 1 || candidate === pageCount || Math.abs(candidate - current) <= 1) items.push(candidate);
+          else if (items[items.length - 1] !== "gap") items.push("gap");
+        }
+        return items;
+      };
+
+      const renderPagination = (pageCount) => {
+        if (!pagination || !paginationList) return;
+        paginationList.replaceChildren();
+        pagination.hidden = pageCount <= 1;
+        if (pageCount <= 1) return;
+
+        const addPageButton = (target, label, current = false) => {
+          const item = document.createElement("li");
+          if (current) {
+            const here = document.createElement("span");
+            here.className = "pill pill-brand";
+            here.setAttribute("aria-current", "page");
+            here.textContent = label;
+            item.appendChild(here);
+          } else {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "pill";
+            button.dataset.groupPage = String(target);
+            button.textContent = label;
+            button.addEventListener("click", () => {
+              page = target;
+              apply(true);
+            });
+            item.appendChild(button);
+          }
+          paginationList.appendChild(item);
+        };
+
+        if (page > 1) addPageButton(page - 1, "Precedente");
+        for (const item of pageItems(page, pageCount)) {
+          if (item === "gap") {
+            const gapItem = document.createElement("li");
+            const gap = document.createElement("span");
+            gap.className = "pill";
+            gap.setAttribute("aria-hidden", "true");
+            gap.textContent = "…";
+            gapItem.appendChild(gap);
+            paginationList.appendChild(gapItem);
+          } else {
+            addPageButton(item, String(item), item === page);
+          }
+        }
+        if (page < pageCount) addPageButton(page + 1, "Successiva");
+      };
+
+      const apply = (focusHeading = false) => {
         const mode = sortSelect.value;
         const sorted = cards.slice().sort((a, b) => {
           if (mode === "verified") {
@@ -120,25 +186,39 @@ const total = tools.length;
           return mode === "za" ? -byName : byName;
         });
 
-        let shown = 0;
+        const matching = sorted.filter((card) => active === "all" || card.dataset.category === active);
+        const pageCount = Math.max(1, Math.ceil(matching.length / PAGE_SIZE));
+        page = Math.min(Math.max(page, 1), pageCount);
+        const start = (page - 1) * PAGE_SIZE;
+        const visible = new Set(matching.slice(start, start + PAGE_SIZE));
         sorted.forEach((card) => {
-          const visible = active === "all" || card.dataset.category === active;
-          card.hidden = !visible;
-          if (visible) shown += 1;
+          card.hidden = !visible.has(card);
           grid.appendChild(card);
         });
 
         if (status) {
-          status.textContent = active === "all"
-            ? total + " strumenti in questa categoria."
-            : "Mostrati " + shown + " di " + total + " strumenti.";
+          if (matching.length === 0) status.textContent = "Nessuno strumento in questa sottocategoria.";
+          else if (matching.length <= PAGE_SIZE) {
+            status.textContent = active === "all"
+              ? total + " strumenti in questa categoria."
+              : "Mostrati " + matching.length + " di " + total + " strumenti.";
+          } else {
+            const first = start + 1;
+            const last = Math.min(start + PAGE_SIZE, matching.length);
+            status.textContent = active === "all"
+              ? "Mostrati " + first + "–" + last + " di " + matching.length + " strumenti in questa categoria."
+              : "Mostrati " + first + "–" + last + " di " + matching.length + " strumenti filtrati (" + total + " totali).";
+          }
         }
-        if (empty) empty.hidden = shown !== 0;
+        if (empty) empty.hidden = matching.length !== 0;
+        renderPagination(pageCount);
+        if (focusHeading && heading instanceof HTMLElement) heading.focus();
       };
 
       pills.forEach((pill) => {
         pill.addEventListener("click", () => {
           active = pill.dataset.filter || "all";
+          page = 1;
           pills.forEach((other) => {
             const on = other === pill;
             other.setAttribute("aria-pressed", on ? "true" : "false");
@@ -148,7 +228,10 @@ const total = tools.length;
         });
       });
 
-      sortSelect.addEventListener("change", apply);
+      sortSelect.addEventListener("change", () => {
+        page = 1;
+        apply();
+      });
       apply();
     })();
   </script>

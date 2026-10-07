@@ -1,4 +1,4 @@
-# StrumentiUtili.it — Structural Design
+# Strumentini.it — Structural Design
 
 The visual authority is `design/WORLD.md`; this document owns the **structure** —
 what surfaces exist, what each one is for, and how they fit together. Where the
@@ -130,10 +130,10 @@ full catalogue projection is imported lazily — never on first paint, asserted 
 | Where | Key | Holds |
 |---|---|---|
 | IndexedDB | `utility-workbench` / `state` / `workbench/state:v1` | kept tools, packs, work profile, preferences, recents |
-| localStorage | `strumentiutili:last-values:v1` | the last value each tool produced (bounded, truncated) |
-| localStorage | `strumentiutili:theme:v1` | `light` \| `dark` \| `system`; absent means light |
-| localStorage | `strumentiutili:recent-searches:v1` | the last few search queries |
-| sessionStorage | `strumentiutili:workbench-context:v1` | search ⇄ workbench context for this tab |
+| localStorage | `strumentini:last-values:v1` | the last value each tool produced (bounded, truncated) |
+| localStorage | `strumentini:theme:v1` | `light` \| `dark` \| `system`; absent means light |
+| localStorage | `strumentini:recent-searches:v1` | the last few search queries |
+| sessionStorage | `strumentini:workbench-context:v1` | search ⇄ workbench context for this tab |
 
 Nothing else. No file a visitor opens is uploaded, and no result of a job is sent
 anywhere. On the server side the account API stores only: email, name, a PBKDF2

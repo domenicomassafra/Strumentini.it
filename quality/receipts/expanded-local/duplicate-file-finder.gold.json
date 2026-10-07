@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "duplicate-file-finder",
   "runtime": {
     "location": "LOCAL",
@@ -28,7 +28,7 @@
   ],
   "browserContract": {
     "assertion": "duplicateGroups|duplicateFileCount|duplicati",
-    "outputSha256": "b744ea449c32a4b2e71ade51d32f4167653dce79e1c74e10932fc0a642f9083f",
+    "outputSha256": "cdc16f9ff5bd215113ee81926beba8ea656d0db0786c78570fd76d7c179c2601",
     "locality": "zero external/non-GET/task-body requests",
     "lazyLoad": "implementation script observed after submit",
     "mobile": "390px without horizontal overflow",
@@ -43,12 +43,12 @@
     "keyboard/mobile/a11y/locality/lazy browser acceptance"
   ],
   "identities": {
-    "manifestSha256": "aa2494467c3e169c9211e30a15a1faba66bb7a882473bcd483057ec38712398a",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "cfc46c38986031b3817fa823c76ae6eaa7e31b3d6ce383c16c7f51b6ff614431",
-    "acceptanceScriptSha256": "07cedaf3a275471dd3570ec318862c4716722876adf598f7651423c6b75ab5ac",
-    "unitTestsSha256": "744ba8b7980e7ea6e56aeca85378f1f3cbf0d234d6527854d60f6c702d7038ce",
+    "manifestSha256": "07b1e25df328e25e38d330057b1ee76e4effa94d814add7a041b294a6a2c2c84",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "0013bb17ddc8213c484a55674ce2f36eca1acffdfb4dc5dfdaa0053166c8dc6f",
+    "acceptanceScriptSha256": "d383d4babd80b070e8357622cb3753903254ab7afd5c355e346108c11437d851",
+    "unitTestsSha256": "c21910be49153151556fece047f2f106a5a2f10c977f3fcbcb633ba1f4844c4f",
     "fixture:file-hash:sha256": "dcfff44b5e335c6c11c095783579641f8f4be62b481c7cd84adb9b5ef3300b5f"
   }
 }

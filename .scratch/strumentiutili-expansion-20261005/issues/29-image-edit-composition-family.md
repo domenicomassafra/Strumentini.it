@@ -6,13 +6,14 @@
 
 **Constraints:** Preserve orientation/color-space transparency behavior as far as the chosen browser APIs support it and disclose format changes.
 
-**Blocked by:** 01, 28.
+**Blocked by:** 213, 298, 299, 300.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Editing controls update a real preview and export the intended pixel result.
-- [ ] Batch/composition tools provide ordering/removal and before→after dimensions/size.
-- [ ] Existing crop/resize/compression tools can reuse the same file workspace without behavior regression.
+- [x] Editing controls update a real preview and export the intended pixel result.
+- [x] Batch/composition tools provide ordering/removal and before→after dimensions/size.
+- [x] Existing crop/resize/compression tools can reuse the same file workspace without behavior regression.
 
 **Verification:** Pixel-level fixtures for transforms, alpha/orientation cases, mobile touch editing, and output metadata/size assertions.
 
+**Evidence (2026-10-07):** Dependency tickets 213, 298, 299 and 300 are completed on the existing canonical image routes. Crop/rotate/flip/round-crop/background/tonal editing continues to use the shared transform workspace and exact preview/export pixel pipeline; watermark/overlay extends the screenshot helper, while stack/grid/slicing extends the contact-sheet route. Composition now reports source dimensions/bytes and produced dimensions/bytes, with explicit pre-export ordering/removal. Base64 remains a bounded mode on its existing route. Regression coverage across `image-resize-engine`, `image-transform-workspace`, `image-advanced-workspace`, `image-media-tools`, `image-upgrade-cluster` and `image-result-v2` passes 47/47, and the advanced browser acceptance passes the new composition modes at 390px without adding duplicate public routes.

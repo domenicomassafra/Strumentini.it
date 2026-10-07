@@ -1,0 +1,27 @@
+{
+  "toolId": "ics-viewer",
+  "category": "date-time",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Legge e valida un evento iCalendar senza importarlo nel calendario né modificarlo. Public jobs: Usa Apri e controlla un file ICS",
+  "observedFunctionality": "The current implementation performs the declared date/time job locally and deterministically: Legge e valida un evento iCalendar senza importarlo nel calendario né modificarlo. Tool-specific Gold evidence plus engine/module tests cover boundary/error behavior; browser acceptance covers the real route. Unsupported scope is surfaced rather than silently broadened.",
+  "rationale": "No missing behavior required by the current declared public job was found. Broader calendar/live/reference-data backlog work is additive to the explicitly scoped route contract and is not used to manufacture an incomplete audit result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/date-time/ics-viewer.gold.json",
+      "claim": "Tool-specific Gold receipt binds the current ics-viewer implementation to executable functional fixtures/oracle evidence."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/date-time-engine.test.ts",
+      "claim": "Date/time family tests exercise the deterministic engine behavior, boundary cases and invalid-input handling used by this tool."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/date-time/browser-acceptance.json",
+      "claim": "Real-route browser acceptance exercises submit/keyboard behavior and confirms local task data does not leave the browser."
+    }
+  ],
+  "childTickets": []
+}

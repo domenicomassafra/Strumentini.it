@@ -1,0 +1,27 @@
+{
+  "toolId": "exif-remover",
+  "category": "files-assets",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Crea una nuova copia dell'immagine senza i metadati EXIF che possono contenere informazioni personali. Public jobs: Usa Rimuovi metadati EXIF",
+  "observedFunctionality": "Current job is removal of privacy-bearing EXIF/metadata from a newly produced local copy. Gold evidence inventories source segments and re-scans the output before calling it clean; ticket 315 adds richer before/after classification rather than repairing this declared removal job.",
+  "rationale": "No missing behavior required by the current declared public job was found. Existing image-expansion tickets are treated as additive only where they broaden controls, formats, previews or packaging beyond the present truthful route contract; they are not used to manufacture a false incomplete result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/marketing-media/exif-remover.gold.json",
+      "claim": "Tool-specific Gold receipt proves the current EXIF-removal semantics against metadata fixtures and verified clean output."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/image-media-tools.test.ts",
+      "claim": "Executable metadata-segment tests distinguish EXIF/XMP/IPTC/privacy carriers, fail closed on truncated inputs, and verify the metadata-removal engine contract."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/marketing-media/browser-acceptance.json",
+      "claim": "Real-route browser acceptance submits exif-remover, verifies produced output is free of identifying segments, and records locality/mobile/accessibility/lazy behavior."
+    }
+  ],
+  "childTickets": []
+}

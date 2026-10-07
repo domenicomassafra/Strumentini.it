@@ -6,7 +6,7 @@
 
 **Constraints:** Prefer inspection/parsing without transcoding; subtitle limits/targets must be configurable/source-labelled rather than universal claims.
 
-**Blocked by:** 01, 34.
+**Blocked by:** 232, 233, 305.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] Frame extraction exports the real decoded frame at the chosen timestamp with disclosed seek precision.
 
 **Verification:** Media/subtitle fixture corpus, timecode boundary tests, VFR cases, permission tests for webcam, and mobile playback/seek acceptance.
-

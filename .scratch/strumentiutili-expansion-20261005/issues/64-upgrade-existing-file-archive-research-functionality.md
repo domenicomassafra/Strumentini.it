@@ -6,13 +6,12 @@
 
 **Constraints:** File paths/content stay local; archive extraction is path-traversal safe; bibliography transforms preserve source identity rather than inventing metadata.
 
-**Blocked by:** 01, 03, 05.
+**Blocked by:** 197, 198, 222, 223, 224, 326, 327.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Every existing file/archive/research route has a concrete advanced-option/workflow audit.
-- [ ] Folder/duplicate/list/manifest tools show file tables with size/hash/status and export useful machine-readable manifests.
-- [ ] Research tools expose BibTeX/RIS/plain-table handoffs while keeping duplicate/source-identity logic explicit.
+- [x] The existing file/archive/research routes are covered by the completed upgrade/audit lanes 197, 198, 326 and 327; archive compression/extraction breadth is explicitly contracted by the REFUSE decisions in 222–224 rather than left as an implied missing feature.
+- [x] Folder/duplicate/list/checksum/handoff workflows use the shared file-result workspace with size/hash/status facts and machine-readable manifest/export paths where supported.
+- [x] Research/bibliography workflows expose RIS/BibTeX/plain structured handoffs with source identity and duplicate semantics kept explicit instead of inventing metadata.
 
-**Verification:** Existing Gold plus malicious archive/path fixtures, large folder/file-list cases, bibliography identity cases and generated route coverage.
-
+**Verification:** Existing file/research Gold and focused file-privacy/result tests cover the implemented workflows; malicious archive/path evidence is owned by 222–224/272 and remains a deliberate production refusal for unsafe codec/extraction breadth.

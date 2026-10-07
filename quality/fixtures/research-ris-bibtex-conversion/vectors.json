@@ -170,5 +170,12 @@
   "properties": [
     "every converted record keeps a stable author order",
     "an unmapped tag or field is always reported, never dropped without a trace"
-  ]
+  ],
+  "oracle_supplement": {
+    "corpus": "quality/fixtures/research-ris-bibtex-conversion/oracle-cross-check.json",
+    "mapping_and_losses": "quality/fixtures/research-ris-bibtex-conversion/ORACLE.md",
+    "verification": "npx tsx quality/fixtures/research-ris-bibtex-conversion/verify-oracle.ts",
+    "certification_preflight": "npx tsx quality/fixtures/research-ris-bibtex-conversion/verify-certification.ts",
+    "gold_gate": "All independent oracle probes must pass before cand-187 can be promoted and a Gold receipt can be generated."
+  }
 }

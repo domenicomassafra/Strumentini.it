@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/developer-web-operations/x509-csr-inspector.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "x509-csr-inspector",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-227",
+  "fixtureFamilies": [
+    "x509-csr-rfc"
+  ],
+  "fixtureReplayCount": 1,
+  "truthSources": [
+    "fixture-policy",
+    "openssl-cli",
+    "rfc2986",
+    "rfc5280",
+    "w3c-webcrypto"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "x509-csr-rfc",
+      "path": "quality/fixtures/x509-csr-rfc/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "oracle confidence is high and every unresolved-gap string matches this tool's explicitly reviewed bounded-scope pattern",
+    "manifest maintenance class matches oracle registry",
+    "fixture/property replay passes through the public tool module",
+    "per-tool browser action produces semantic domain output",
+    "task execution has zero unexpected external/non-GET/body-bearing requests",
+    "task execution leaves local/session storage and visible URL unchanged",
+    "390px viewport has no horizontal overflow and exercised controls have accessible names",
+    "built route component is absent from home HTML, proving the tool implementation is not in the home eager surface",
+    "focused semantic/refusal tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "da7fd4c79b00e725f514a8e196af2906b1a8cb9ae58b67eb1e0c7589a8e5c2c1",
+    "moduleSha256": "81f6353188cdc4e9288ee9ddd35a15e5ace3c844f41d5a7aa77e8c3d8994beb3",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "95ec130bfdb0cdbed0833ae1dfeb61f1d2e4195f322b987ae2a66fccf43dc1e3",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "3b1bc88e1f4fc6ff4f5bb8dfb5ccffcd1785bf297b6a7db5c7dbf1601e20d8a7",
+    "fixture:x509-csr-rfc:sha256": "80042583c68af239d5d1c8ec80bb46f9e85108ddab9c72780b1692c1d4806838"
+  }
+}

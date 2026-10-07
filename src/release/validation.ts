@@ -1,5 +1,3 @@
-export const RELEASE_TOOL_COUNT = 200;
-
 export type ReleaseFindingSeverity = "error" | "blocker" | "warning";
 
 export interface ReleaseFinding {
@@ -70,6 +68,7 @@ export interface ReleaseEvidence {
 }
 
 export interface ReleaseValidationInput {
+  readonly expectedToolCount: number;
   readonly catalog: readonly ReleaseCatalogEntry[];
   readonly manifestFiles: readonly string[];
   readonly toolPageFiles: readonly string[];
@@ -133,29 +132,33 @@ export function validateToolSurface(
   catalog: readonly ReleaseCatalogEntry[],
   manifestFiles: readonly string[],
   toolPageFiles: readonly string[],
+  expectedToolCount: number,
 ): ReleaseFinding[] {
   const findings: ReleaseFinding[] = [];
-  if (catalog.length !== RELEASE_TOOL_COUNT) {
+  if (!Number.isSafeInteger(expectedToolCount) || expectedToolCount < 1) {
+    findings.push(finding("EXPECTED_TOOL_COUNT_INVALID", "error", `expected tool count must be a positive safe integer; found ${expectedToolCount}`, "quality/oracles/registry.json"));
+  }
+  if (catalog.length !== expectedToolCount) {
     findings.push(finding(
       "TOOL_COUNT_MISMATCH",
       "error",
-      `expected ${RELEASE_TOOL_COUNT} catalog entries, found ${catalog.length}`,
+      `expected ${expectedToolCount} catalog entries, found ${catalog.length}`,
       "src/generated/catalog.ts",
     ));
   }
-  if (manifestFiles.length !== RELEASE_TOOL_COUNT) {
+  if (manifestFiles.length !== expectedToolCount) {
     findings.push(finding(
       "MANIFEST_COUNT_MISMATCH",
       "error",
-      `expected ${RELEASE_TOOL_COUNT} tool manifests, found ${manifestFiles.length}`,
+      `expected ${expectedToolCount} tool manifests, found ${manifestFiles.length}`,
       "src/tools",
     ));
   }
-  if (toolPageFiles.length !== RELEASE_TOOL_COUNT) {
+  if (toolPageFiles.length !== expectedToolCount) {
     findings.push(finding(
       "TOOL_PAGE_COUNT_MISMATCH",
       "error",
-      `expected ${RELEASE_TOOL_COUNT} public tool pages, found ${toolPageFiles.length}`,
+      `expected ${expectedToolCount} public tool pages, found ${toolPageFiles.length}`,
       "src/pages/tools",
     ));
   }
@@ -400,7 +403,7 @@ export function validateStaticAssetSurface(surface: StaticAssetSurface, catalog:
 }
 
 const forbiddenClaims: readonly { readonly code: string; readonly pattern: RegExp; readonly message: string }[] = [
-  { code: "PUBLIC_BRAND_PLACEHOLDER", pattern: /\[BRAND\]|\bworking codename\b|\bbrand is not final\b/iu, message: "public copy must use the selected StrumentiUtili.it brand rather than a placeholder" },
+  { code: "PUBLIC_BRAND_PLACEHOLDER", pattern: /\[BRAND\]|\bworking codename\b|\bbrand is not final\b/iu, message: "public copy must use the selected Strumentini.it brand rather than a placeholder" },
   { code: "UNSUPPORTED_BEST", pattern: /\b(?:the\s+)?best\b/iu, message: "unsupported superiority claim" },
   { code: "UNSUPPORTED_UNIQUE", pattern: /\bunique\s+(?:technology|tool|suite|platform|product|workspace)\b/iu, message: "unsupported uniqueness claim" },
   { code: "UNSUPPORTED_PRIVACY", pattern: /\b(?:most\s+private|privacy[- ]first|private\s+by\s+design)\b/iu, message: "generic privacy claim must state concrete mechanics near the operation" },
@@ -655,7 +658,7 @@ export function validateRelease(input: ReleaseValidationInput): ReleaseValidatio
   const rollbackRecord = asRecord(input.rollbackReceipt);
   if (rollbackRecord?.status === "UNPROVEN") rollbackFindings.push(finding("ROLLBACK_UNPROVEN", "blocker", "rollback is explicitly unproven; release is not deployable", "quality/receipts/release/rollback.json"));
   const findings: ReleaseFinding[] = [
-    ...validateToolSurface(input.catalog, input.manifestFiles, input.toolPageFiles),
+    ...validateToolSurface(input.catalog, input.manifestFiles, input.toolPageFiles, input.expectedToolCount),
     ...validateCloudflareStaticAssets(input.cloudflareConfig),
     ...validatePublicSiteUrl(input.siteUrl),
     ...(input.publicSources === undefined ? [finding("PUBLIC_COPY_NOT_RUN", "blocker", "public copy validation was not run", "src/pages")] : validateTruthfulClaims(input.publicSources)),
@@ -686,7 +689,7 @@ export function validateRelease(input: ReleaseValidationInput): ReleaseValidatio
   return {
     schemaVersion: 1,
     status,
-    expectedToolCount: RELEASE_TOOL_COUNT,
+    expectedToolCount: input.expectedToolCount,
     catalogToolCount: input.catalog.length,
     manifestCount: input.manifestFiles.length,
     toolPageCount: input.toolPageFiles.length,

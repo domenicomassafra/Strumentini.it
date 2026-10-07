@@ -34,6 +34,11 @@ export interface ResizePlan {
   outputHeight: number;
 }
 
+export interface ResizeDimensions {
+  outputWidth: number;
+  outputHeight: number;
+}
+
 function assertDimension(value: number, label: string): number {
   if (!Number.isInteger(value) || value < 1 || value > IMAGE_LIMITS.maxDimension) {
     throw new ImageResizeError(
@@ -44,36 +49,114 @@ function assertDimension(value: number, label: string): number {
   return value;
 }
 
-export function computeResizePlan(
+export function scaleDimensionsByPercent(
+  sourceWidth: number,
+  sourceHeight: number,
+  percent: number,
+): { width: number; height: number } {
+  assertDimension(sourceWidth, "Source width");
+  assertDimension(sourceHeight, "Source height");
+  if (!Number.isFinite(percent) || percent <= 0 || percent > 500) {
+    throw new ImageResizeError("INVALID_INPUT", "Percent must be greater than 0 and no more than 500");
+  }
+  const factor = percent / 100;
+  return {
+    width: Math.max(1, Math.round(sourceWidth * factor)),
+    height: Math.max(1, Math.round(sourceHeight * factor)),
+  };
+}
+
+export function lockedHeightForWidth(
+  width: number,
+  sourceWidth: number,
+  sourceHeight: number,
+): number {
+  assertDimension(sourceWidth, "Source width");
+  assertDimension(sourceHeight, "Source height");
+  if (!Number.isFinite(width) || width < 1) {
+    throw new ImageResizeError("INVALID_INPUT", "Width must be positive");
+  }
+  return Math.max(1, Math.round(width * sourceHeight / sourceWidth));
+}
+
+export function lockedWidthForHeight(
+  height: number,
+  sourceWidth: number,
+  sourceHeight: number,
+): number {
+  assertDimension(sourceWidth, "Source width");
+  assertDimension(sourceHeight, "Source height");
+  if (!Number.isFinite(height) || height < 1) {
+    throw new ImageResizeError("INVALID_INPUT", "Height must be positive");
+  }
+  return Math.max(1, Math.round(height * sourceWidth / sourceHeight));
+}
+
+export function computeResizeDimensions(
   sourceWidth: number,
   sourceHeight: number,
   targetWidth: number,
   targetHeight: number,
   fit: "contain" | "cover",
-): ResizePlan {
+  noUpscale = false,
+): ResizeDimensions {
   assertDimension(sourceWidth, "Source width");
   assertDimension(sourceHeight, "Source height");
   assertDimension(targetWidth, "Target width");
   assertDimension(targetHeight, "Target height");
 
   if (fit === "contain") {
-    const scale = Math.min(targetWidth / sourceWidth, targetHeight / sourceHeight);
+    const requestedScale = Math.min(targetWidth / sourceWidth, targetHeight / sourceHeight);
+    const scale = noUpscale ? Math.min(1, requestedScale) : requestedScale;
+    return {
+      outputWidth: Math.max(1, Math.round(sourceWidth * scale)),
+      outputHeight: Math.max(1, Math.round(sourceHeight * scale)),
+    };
+  }
+  if (fit !== "cover") {
+    throw new ImageResizeError("INVALID_INPUT", "Fit must be contain or cover");
+  }
+
+  const requestedScale = Math.max(targetWidth / sourceWidth, targetHeight / sourceHeight);
+  if (!noUpscale || requestedScale <= 1) {
+    return { outputWidth: targetWidth, outputHeight: targetHeight };
+  }
+  const reduction = 1 / requestedScale;
+  return {
+    outputWidth: Math.max(1, Math.round(targetWidth * reduction)),
+    outputHeight: Math.max(1, Math.round(targetHeight * reduction)),
+  };
+}
+
+export function computeResizePlan(
+  sourceWidth: number,
+  sourceHeight: number,
+  targetWidth: number,
+  targetHeight: number,
+  fit: "contain" | "cover",
+  noUpscale = false,
+): ResizePlan {
+  const dimensions = computeResizeDimensions(
+    sourceWidth,
+    sourceHeight,
+    targetWidth,
+    targetHeight,
+    fit,
+    noUpscale,
+  );
+
+  if (fit === "contain") {
     return {
       sourceX: 0,
       sourceY: 0,
       sourceWidth,
       sourceHeight,
-      outputWidth: Math.max(1, Math.round(sourceWidth * scale)),
-      outputHeight: Math.max(1, Math.round(sourceHeight * scale)),
+      ...dimensions,
     };
   }
 
-  if (fit !== "cover") {
-    throw new ImageResizeError("INVALID_INPUT", "Fit must be contain or cover");
-  }
-
   const sourceAspect = sourceWidth / sourceHeight;
-  const targetAspect = targetWidth / targetHeight;
+  const targetAspect = dimensions.outputWidth / dimensions.outputHeight;
   if (sourceAspect > targetAspect) {
     const cropWidth = sourceHeight * targetAspect;
     return {
@@ -81,8 +164,7 @@ export function computeResizePlan(
       sourceY: 0,
       sourceWidth: cropWidth,
       sourceHeight,
-      outputWidth: targetWidth,
-      outputHeight: targetHeight,
+      ...dimensions,
     };
   }
 
@@ -92,8 +174,7 @@ export function computeResizePlan(
     sourceY: (sourceHeight - cropHeight) / 2,
     sourceWidth,
     sourceHeight: cropHeight,
-    outputWidth: targetWidth,
-    outputHeight: targetHeight,
+    ...dimensions,
   };
 }
 

@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const domainFrequencyCounterManifest = {
   id: "domain-frequency-counter",
@@ -13,6 +14,7 @@ export const domainFrequencyCounterManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("domain-frequency-counter"),
   gold: { maintenanceClass: "E", oracleEntryId: "cand-195", fixtureFamilies: ["research-source-inventory"] },
 } as const satisfies ToolManifest;
 

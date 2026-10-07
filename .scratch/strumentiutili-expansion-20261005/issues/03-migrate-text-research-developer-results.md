@@ -6,13 +6,14 @@
 
 **Constraints:** Raw JSON/code may remain an optional technical representation but cannot be the default human result where a clearer answer exists.
 
-**Blocked by:** 01 — Expand Result System v2 primitives.
+**Blocked by:** 91, 92, 93.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] 62/62 engine entries have declared result semantics.
-- [ ] Validators identify failing rule/location; transforms expose copy/download and change counts where meaningful.
-- [ ] Large outputs are preview-bounded without data loss in the downloadable result.
+- [x] 62/62 engine entries have declared result semantics.
+- [x] Validators identify failing rule/location; transforms expose copy/download and change counts where meaningful.
+- [x] Large outputs are preview-bounded without data loss in the downloadable result.
 
 **Verification:** Generated 62/62 coverage assertion plus existing Gold tests and representative accessibility/mobile browser acceptance.
 
+**Evidence:** child tickets 91, 92 and 93 are completed, covering 20 developer + 21 text/list + 21 research/reference ids for 62/62 declared semantics. Developer, text and research browser/Gold lanes pass; long-output fixtures retain complete artifacts beyond bounded previews. Research provenance remains separate from user content, and the RIS/BibTeX authoritative-oracle gap remains truthfully REFUSED rather than being promoted by the UI migration.

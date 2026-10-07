@@ -1,4 +1,4 @@
-import { previewMeta } from "../../engines/url-marketing";
+import { previewMeta, type PreviewPresetId } from "../../engines/url-marketing";
 import type { ToolModule } from "../../runtime/types";
 
 const module: ToolModule = {
@@ -11,11 +11,14 @@ const module: ToolModule = {
     if (typeof title !== "string" || typeof description !== "string") throw new Error("INVALID_INPUT");
     const titleLimit = record.titleLimit;
     const descriptionLimit = record.descriptionLimit;
+    const preset = record.preset;
     if (titleLimit !== undefined && (typeof titleLimit !== "number" || !Number.isInteger(titleLimit) || titleLimit < 1)) throw new Error("INVALID_META_LIMIT");
     if (descriptionLimit !== undefined && (typeof descriptionLimit !== "number" || !Number.isInteger(descriptionLimit) || descriptionLimit < 1)) throw new Error("INVALID_META_LIMIT");
+    if (preset !== undefined && preset !== "search-mobile" && preset !== "search-desktop") throw new Error("INVALID_PREVIEW_PRESET");
     return previewMeta(title, description, {
       ...(titleLimit === undefined ? {} : { title: titleLimit }),
       ...(descriptionLimit === undefined ? {} : { description: descriptionLimit }),
+      ...(preset === undefined ? {} : { preset: preset as PreviewPresetId }),
     });
   },
 };

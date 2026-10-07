@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { PDF_RESULT_DECLARATIONS } from "../pdf-result-declarations";
 
 export const pdfPageCountVerifierManifest = {
   id: "pdf-page-count-verifier",
@@ -14,6 +15,7 @@ export const pdfPageCountVerifierManifest = {
   engine: "pdf",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: PDF_RESULT_DECLARATIONS["pdf-page-count-verifier"],
   handoff: { emits: [{ type: "structured", format: "pdf-pages" }] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-132", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;

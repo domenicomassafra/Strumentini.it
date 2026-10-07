@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "checkedAt": "2026-10-07T14:41:15.413Z",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "subjectToolId": "scientific-calculator",
+  "oracleEntryId": "cand-204",
+  "keyboard": "submit exercised with Enter",
+  "accessibility": "all interactive controls in the exercised form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObserved": true,
+  "semanticEvidence": "fixture-aligned bounded input produced the asserted visible domain output",
+  "result": {
+    "toolId": "scientific-calculator",
+    "oracleEntryId": "cand-204",
+    "status": "PASS",
+    "semanticAssertion": "\\b14\\b",
+    "outputSha256": "4a6ce04f2de148ea3ddbf36f2c632afd4d20e3fe2c38633000af5974bee2fc35",
+    "taskRequestCount": 6,
+    "lazyScriptCount": 6,
+    "externalTaskRequests": 0,
+    "nonGetTaskRequests": 0,
+    "taskContentLeaks": 0,
+    "runtimeErrors": 0,
+    "horizontalOverflow": false,
+    "unlabeledControls": 0,
+    "oracleMarkerObserved": false
+  }
+}

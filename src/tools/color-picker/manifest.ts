@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const color_pickerManifest = {
   id: "color-picker",
@@ -13,6 +14,7 @@ export const color_pickerManifest = {
   engine: "image-visual",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["color-picker"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-149", fixtureFamilies: ["image-metadata", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

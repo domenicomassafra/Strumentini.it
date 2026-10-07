@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import { projectCatalog } from "../src/catalog/projections";
 import type { ToolSummary } from "../src/catalog/manifest";
+import { catalog } from "../src/generated/catalog";
 
 function generatedSource(name: string): Promise<string> {
   return readFile(new URL(`../src/generated/${name}`, import.meta.url), "utf8");
@@ -30,7 +31,7 @@ function clientScripts(astroSource: string): string {
     .join("\n");
 }
 
-describe("200-tool catalog performance boundaries", () => {
+describe("catalog performance boundaries", () => {
   it("keeps generated projections aligned without shipping full manifest metadata", async () => {
     const [fullText, searchText, workbenchText, runtimeText, handoffText] = await Promise.all([
       generatedSource("catalog.ts"),
@@ -45,10 +46,10 @@ describe("200-tool catalog performance boundaries", () => {
     const runtime = generatedArray(runtimeText, "runtimeToolIndex") as Record<string, unknown>[];
     const handoff = generatedArray(handoffText, "handoffCatalog") as Record<string, unknown>[];
 
-    expect(summaries).toHaveLength(200);
-    expect(search).toHaveLength(200);
-    expect(workbench).toHaveLength(200);
-    expect(runtime).toHaveLength(200);
+    expect(summaries).toHaveLength(catalog.length);
+    expect(search).toHaveLength(summaries.length);
+    expect(workbench).toHaveLength(summaries.length);
+    expect(runtime).toHaveLength(summaries.length);
     expect(handoff.length).toBeGreaterThan(0);
     expect(Object.keys(search[0] ?? {})).not.toContain("gold");
     expect(Object.keys(search[0] ?? {})).not.toContain("profileFields");
@@ -59,8 +60,8 @@ describe("200-tool catalog performance boundaries", () => {
     expect(search.every((tool) => tool.quality === "verified" || tool.quality === "checking")).toBe(true);
 
     const projections = projectCatalog(summaries);
-    expect(projections.search).toHaveLength(200);
-    expect(projections.runtime).toHaveLength(200);
+    expect(projections.search).toHaveLength(summaries.length);
+    expect(projections.runtime).toHaveLength(summaries.length);
     expect(Buffer.byteLength(searchText)).toBeLessThan(Buffer.byteLength(fullText));
     expect(Buffer.byteLength(runtimeText)).toBeLessThan(Buffer.byteLength(searchText));
   });

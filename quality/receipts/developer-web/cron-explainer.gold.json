@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "cron-explainer",
   "runtime": {
     "location": "LOCAL",
@@ -39,14 +39,17 @@
   ],
   "identities": {
     "manifestSha256": "2a6f909a6b0b895f592b24d0bd5d868f61d62d5644b2309d5a2a0d3a49ba02a8",
-    "engineIndexSha256": "617ab6a3c652ef2daae8d33f02fe62f67c1d81e27e6f66ccd2812949ecb3241f",
-    "structuredDataSha256": "09d1b45697c9353cd4d8ce894c7fa4dd115373cf53d3ba668ab0a9d7864f0ed9",
-    "encodingCryptoSha256": "3abe5ddc4829df00af12141fed527102fd026e56e6a89c820f830721f035d736",
-    "webReferenceSha256": "23616903506748c5383a3a150f7ec8073b56a99ff84452187e5dc4e37a0d8bfc",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "b409da35f24a9ceee07ec827236a8f261b1caaf7ae1955868107e5bab2d5e5ff",
-    "unitTestsSha256": "98dc6391b3185a038bf019996e0cac4b705e4a1895f755b458d1322b6aa7d833",
+    "engineIndexSha256": "12ec91a77339395d9f33cd98ed789c202d1cb3c6f0e7129bf2b58fe010ec4690",
+    "structuredDataSha256": "54078076688738605e1b64846f38827d0d1d42ff34b3edaf7002a7479765c500",
+    "encodingCryptoSha256": "69a5675d93e2b71a355ef73b697c3dd996ceef183316178d7a9295aa0533553f",
+    "regexWorkerClientSha256": "5638f00112102057b38933a1c1f574760c8d7cdf3a6518c9973d1c421d5d0c5f",
+    "regexWorkerSha256": "e6a86790cadc8ba464ed0eccca3d10a47139495b8a320d9b8f1c6e99c7aba25f",
+    "webReferenceSha256": "1e5adaa024ce99ce81c992c26513a449373b5996d4391155a4713b94455b4ca5",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "7b3c2d98bf9310a52bd67cb16dddf76cbf3ec68134aa293b47f627637485710a",
+    "unitTestsSha256": "870eec21751cee72ad43a676726699ebad20df7f7b69fec1ba40903f80523ad6",
+    "regexWorkerTestsSha256": "0368f7646383c825b014efdcdde465f3eb228acd8d50c99ca6f91343fcb7ee49",
     "fixture:date-arithmetic:sha256": "3db2f711b091093e8ffc0cdcaea3dfed9a0032858695a750f63ba8e410f81034",
     "fixture:developer-web-gold:sha256": "5d9fdd3746a9cba8783c65a89e44e7f720e5acf6192f7cc3932e71451f314a82"
   }

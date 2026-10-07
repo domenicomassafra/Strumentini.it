@@ -21,6 +21,7 @@ import type {
   TableDelimiter,
   TableFilterOperator,
   TableJoinType,
+  TableJoinNullKeyPolicy,
   TableSortComparator,
 } from "../../engines/table/operations";
 
@@ -47,6 +48,7 @@ export type {
   TableDelimiter,
   TableFilterOperator,
   TableJoinType,
+  TableJoinNullKeyPolicy,
   TableSortComparator,
 };
 
@@ -58,15 +60,15 @@ export interface CsvEncodingFixerInput { bytes: ArrayBuffer | Uint8Array | numbe
 export type CsvEncodingFixerOutput = EncodingFixResult & { handoff?: TableHandoff };
 export interface CsvColumnSelectorInput { text: string; columns: number[] }
 export type CsvColumnSelectorOutput = TableColumnSelectionResult & { handoff: TableHandoff };
-export interface CsvFilterInput { text: string; column: number; operator: TableFilterOperator; value?: string; caseSensitive?: boolean }
+export interface CsvFilterInput { text: string; column: number; operator: TableFilterOperator; value?: string; caseSensitive?: boolean; nullTokens?: string[]; emptyAsNull?: boolean }
 export type CsvFilterOutput = TableFilterResult & { handoff: TableHandoff };
-export interface CsvSortInput { text: string; column: number; direction?: "asc" | "desc"; comparator?: TableSortComparator; nulls?: "first" | "last"; caseSensitive?: boolean }
+export interface CsvSortInput { text: string; column: number; direction?: "asc" | "desc"; comparator?: TableSortComparator; nulls?: "first" | "last"; caseSensitive?: boolean; nullTokens?: string[]; emptyAsNull?: boolean }
 export type CsvSortOutput = TableSortResult & { handoff: TableHandoff };
-export interface CsvGroupCountInput { text: string; groupColumns: number[]; countColumn?: number; aggregate?: TableAggregate }
+export interface CsvGroupCountInput { text: string; groupColumns: number[]; countColumn?: number; aggregate?: TableAggregate; caseSensitive?: boolean; nullTokens?: string[]; emptyAsNull?: boolean }
 export type CsvGroupCountOutput = TableGroupCountResult & { handoff: TableHandoff };
-export interface CsvJoinInput { leftText: string; rightText: string; leftKeyColumns: number[]; rightKeyColumns: number[]; joinType?: TableJoinType; caseSensitive?: boolean; suffix?: string }
+export interface CsvJoinInput { leftText: string; rightText: string; leftKeyColumns: number[]; rightKeyColumns: number[]; joinType?: TableJoinType; caseSensitive?: boolean; suffix?: string; nullTokens?: string[]; emptyAsNull?: boolean; nullKeyPolicy?: TableJoinNullKeyPolicy }
 export type CsvJoinOutput = TableJoinResult & { handoff: TableHandoff };
-export interface CsvPivotInput { text: string; groupColumns: number[]; valueColumn?: number; valueHeaderColumn?: number; aggregateColumn?: number; aggregate?: TableAggregate }
+export interface CsvPivotInput { text: string; groupColumns: number[]; valueColumn?: number; valueHeaderColumn?: number; aggregateColumn?: number; aggregate?: TableAggregate; caseSensitive?: boolean; nullTokens?: string[]; emptyAsNull?: boolean }
 export type CsvPivotOutput = TablePivotResult & { handoff: TableHandoff };
 export interface CsvToJsonInput { text: string; headerPolicy?: "preserve" | "unique"; pretty?: boolean }
 export type CsvToJsonOutput = CsvToJsonResult;

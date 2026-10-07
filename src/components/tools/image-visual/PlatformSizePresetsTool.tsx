@@ -1,21 +1,30 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
+import { resolveResultActions } from "../../../runtime/result-actions";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import type { ToolRunResult } from "../../../runtime/types";
+import { platform_size_presetsManifest } from "../../../tools/platform-size-presets/manifest";
 import {
   CONTROL,
   InlineError,
   it,
-  StatusMark,
-  statusMarkLabel,
+  ResultActions,
+  ResultAssumptions,
+  ResultBreakdown,
+  ResultExplanation,
+  ResultInterpretation,
+  ResultPrimaryAnswer,
+  ResultProvenance,
   ToolActions,
   ToolFormCard,
   ToolOperation,
   ToolResetButton,
   ToolResultPanel,
   ToolSubmitButton,
+  gutterStateFor,
   useToolOperation,
 } from "../shared";
 import { PLATFORM_PRESETS, type CropBox, type PixelBox, type PlatformFit, type PlatformPreset } from "../../../engines/image/presets";
+import { DownloadLink } from "../marketing-media/DownloadLink";
 
 interface PresetsResult {
   readonly preset: PlatformPreset;
@@ -31,6 +40,38 @@ interface PresetsResult {
   readonly sourceRatio: string;
   readonly presetRatio: string;
   readonly ratioDifferencePercent: number;
+}
+
+interface PlatformExportResult {
+  readonly blob: Blob;
+  readonly filename: string;
+  readonly inputMime: string;
+  readonly outputMime: "image/png";
+  readonly width: number;
+  readonly height: number;
+  readonly preset: PlatformPreset;
+  readonly source: PixelBox;
+  readonly coverCrop: CropBox;
+  readonly ordering: "single-selected-preset";
+  readonly verification: { readonly signature: true; readonly decoded: true; readonly dimensions: true };
+}
+
+function isPlatformExport(value: PresetsResult | PlatformExportResult): value is PlatformExportResult {
+  return "blob" in value && value.blob instanceof Blob;
+}
+
+function useBlobPreview(blob: Blob | undefined): string {
+  const [url, setUrl] = useState("");
+  useEffect(() => {
+    if (blob === undefined) {
+      setUrl("");
+      return;
+    }
+    const next = URL.createObjectURL(blob);
+    setUrl(next);
+    return () => URL.revokeObjectURL(next);
+  }, [blob]);
+  return url;
 }
 
 const PRESETS_ERRORS: Readonly<Record<string, string>> = {
@@ -65,12 +106,48 @@ export function PlatformSizePresetsTool() {
   const [presetId, setPresetId] = useState<string>(PLATFORM_PRESETS[0]?.id ?? "instagram-square");
   const [width, setWidth] = useState("1600");
   const [height, setHeight] = useState("900");
-  const operation = useToolOperation<PresetsResult>(
-    async (signal) => toolRuntime.run("platform-size-presets", { presetId, width: Number(width), height: Number(height) }, {}, signal),
+  const [file, setFile] = useState<File | null>(null);
+  const [actionStatus, setActionStatus] = useState("");
+  const operation = useToolOperation<PresetsResult | PlatformExportResult>(
+    async (signal) => toolRuntime.run("platform-size-presets", file === null
+      ? { presetId, width: Number(width), height: Number(height) }
+      : { presetId, file }, {}, signal),
     { formatError: presetsErrorIt },
   );
-  const result: PresetsResult | null = operation.result;
-  const fit = result === null ? null : FIT_IT[result.fit];
+  const result = operation.result;
+  const exportResult = result !== null && isPlatformExport(result) ? result : null;
+  const sizingResult = result !== null && !isPlatformExport(result) ? result : null;
+  const fit = sizingResult === null ? null : FIT_IT[sizingResult.fit];
+  const previewUrl = useBlobPreview(exportResult?.blob);
+  const copyPayload = sizingResult === null ? "" : [
+    `${sizingResult.preset.labelIt}: ${sizingResult.cover.width}×${sizingResult.cover.height} px`,
+    `Contenuto senza ritaglio: ${sizingResult.contain.width}×${sizingResult.contain.height} px`,
+    `Ritaglio centrale: ${sizingResult.coverCrop.width}×${sizingResult.coverCrop.height} px @ ${sizingResult.coverCrop.x},${sizingResult.coverCrop.y}`,
+    `Fonte: ${sizingResult.preset.source} · verificato il ${sizingResult.preset.verifiedOn}`,
+  ].join("\n");
+  const resultActions = sizingResult === null ? [] : resolveResultActions({
+    declaration: platform_size_presetsManifest.result,
+    primary: "copy",
+    hasCopyPayload: true,
+    resetReady: true,
+  });
+
+  function reset() {
+    operation.reset();
+    setWidth("1600");
+    setHeight("900");
+    setFile(null);
+    setActionStatus("");
+  }
+
+  async function copyResult() {
+    if (navigator.clipboard === undefined) {
+      setActionStatus("Gli appunti non sono disponibili; seleziona il risultato e copialo manualmente.");
+      return;
+    }
+    await navigator.clipboard.writeText(copyPayload);
+    setActionStatus("Dimensioni copiate.");
+  }
 
   return (
     <ToolOperation busy={operation.isRunning}>
@@ -97,6 +174,11 @@ export function PlatformSizePresetsTool() {
               ))}
             </select>
           </label>
+          <label class="field">
+            <span>Immagine da esportare · facoltativa</span>
+            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { setFile(event.currentTarget.files?.item(0) ?? null); operation.reset(); }} disabled={operation.isRunning} />
+            <small>{file === null ? "Senza file calcolo soltanto ritaglio e dimensioni. Con un file genero un PNG reale del preset scelto." : `${file.name} · verrà applicato un ritaglio centrale, mai stretch.`}</small>
+          </label>
           <div class="field-grid">
             <label class="field">
               <span>Larghezza di partenza</span>
@@ -107,7 +189,7 @@ export function PlatformSizePresetsTool() {
                 step="1"
                 value={width}
                 onInput={(event) => setWidth(event.currentTarget.value)}
-                disabled={operation.isRunning}
+                disabled={operation.isRunning || file !== null}
               />
             </label>
             <label class="field">
@@ -119,71 +201,59 @@ export function PlatformSizePresetsTool() {
                 step="1"
                 value={height}
                 onInput={(event) => setHeight(event.currentTarget.value)}
-                disabled={operation.isRunning}
+                disabled={operation.isRunning || file !== null}
               />
             </label>
           </div>
-          <p class="file-note">In pixel. Lo strumento non legge né carica file: lavora sulle sole dimensioni.</p>
+          <p class="file-note">Se scegli un file, resta locale nel browser e l'output PNG viene verificato per firma, decode e dimensioni esatte del preset. Il ritaglio è sempre centrato e dichiarato.</p>
         </ToolFormCard>
         <InlineError message={operation.error} />
         <ToolActions>
           <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Calcola le dimensioni</ToolSubmitButton>
-          <ToolResetButton onClick={() => {
-            operation.reset();
-            setWidth("1600");
-            setHeight("900");
-          }} />
+          <ToolResetButton onClick={reset} />
         </ToolActions>
       </form>
       <ToolResultPanel
         eyebrow="Risultato"
         placeholder="Il riquadro della piattaforma, il ritaglio necessario e il rapporto appariranno qui."
         busy={operation.isRunning}
-        state={operation.status === "success" ? "success" : operation.status === "error" ? "error" : "idle"}
+        state={gutterStateFor(operation.status)}
       >
-        {result !== null && fit !== null && (
-          <>
-            <ul class="status-list">
-              <li>
-                <StatusMark kind={fit.mark} label={statusMarkLabel(fit.mark)} />{" "}
-                {fit.title}. {fit.body}
-              </li>
-              <li>
-                <StatusMark kind={result.meetsResolution ? "ok" : "warn"} label={statusMarkLabel(result.meetsResolution ? "ok" : "warn")} />{" "}
-                {result.meetsResolution
-                  ? "L'immagine di partenza è già almeno grande quanto il riquadro: non serve ingrandire."
-                  : `L'immagine di partenza è più piccola del riquadro: per riempirlo serve un ingrandimento di ${String(result.upscaleFactor).replace(".", ",")}×.`}
-              </li>
-              <li>
-                <StatusMark kind="info" label={statusMarkLabel("info")} />{" "}
-                Differenza di rapporto: {String(result.ratioDifferencePercent).replace(".", ",")}% rispetto a {result.presetRatio}.
-              </li>
-            </ul>
-
-            <dl class="assumptions">
-              <div><dt>Riquadro della piattaforma</dt><dd>{result.cover.width}×{result.cover.height} px ({result.presetRatio})</dd></div>
-              <div><dt>Uso consigliato</dt><dd>{result.preset.scopeIt}</dd></div>
-              <div>
-                <dt>Contenuto senza ritaglio</dt>
-                <dd>{result.contain.width}×{result.contain.height} px, al rapporto {result.sourceRatio}</dd>
-              </div>
-              <div>
-                <dt>Ritaglio al centro</dt>
-                <dd>
-                  {result.coverCrop.width}×{result.coverCrop.height} px, origine ({result.coverCrop.x}, {result.coverCrop.y})
-                </dd>
-              </div>
-              <div><dt>Parti dell'immagine ritagliate</dt><dd>{(result.croppedFraction * 100).toFixed(1).replace(".", ",")}% dell'area</dd></div>
-              <div><dt>Riduzione per il ritaglio</dt><dd>{String(result.coverScale).replace(".", ",")} pixel di partenza per ogni pixel del riquadro</dd></div>
-              <div><dt>Fonte del riquadro</dt><dd>{result.preset.source} · verificato il {result.preset.verifiedOn}</dd></div>
-            </dl>
-
-            <p class="file-note">
-              Il ritaglio è calcolato al centro perché è l'unico che uno strumento può produrre onestamente: se il
-              soggetto non è centrato, sposta tu il rettangolo di ritaglio. I valori sono le dimensioni consigliate
-              pubblicate dalla piattaforma e cambiano nel tempo; la data dice da quanto sono controllati.
-            </p>
-          </>
+        {sizingResult !== null && fit !== null && (
+          <div data-result-class="calculator">
+            <ResultExplanation
+              primary={<div data-result-slot="primary"><ResultPrimaryAnswer label="Riquadro della piattaforma">{sizingResult.cover.width}×{sizingResult.cover.height} px</ResultPrimaryAnswer></div>}
+              interpretation={<div data-result-slot="interpretation"><ResultInterpretation state={fit.mark === "ok" ? "success" : "warning"}>{fit.title}. {fit.body} {sizingResult.meetsResolution ? "Non serve ingrandire la sorgente." : `Serve un ingrandimento di ${String(sizingResult.upscaleFactor).replace(".", ",")}×.`}</ResultInterpretation></div>}
+              breakdown={<div data-result-slot="breakdown"><ResultBreakdown rows={[
+                { label: "Contenuto senza ritaglio", value: `${sizingResult.contain.width}×${sizingResult.contain.height} px · ${sizingResult.sourceRatio}` },
+                { label: "Ritaglio centrale", value: `${sizingResult.coverCrop.width}×${sizingResult.coverCrop.height} px · origine ${sizingResult.coverCrop.x}, ${sizingResult.coverCrop.y}` },
+                { label: "Area ritagliata", value: `${(sizingResult.croppedFraction * 100).toFixed(1).replace(".", ",")}%` },
+                { label: "Differenza di rapporto", value: `${String(sizingResult.ratioDifferencePercent).replace(".", ",")}% rispetto a ${sizingResult.presetRatio}` },
+              ]} /></div>}
+              assumptions={<div data-result-slot="assumptions"><ResultAssumptions items={[
+                { label: "Uso consigliato", value: sizingResult.preset.scopeIt },
+                { label: "Politica di ritaglio", value: "Ritaglio centrato; il soggetto non viene rilevato automaticamente." },
+              ]} /></div>}
+              provenance={<div data-result-slot="provenance"><ResultProvenance>{sizingResult.preset.source} · verificato il {sizingResult.preset.verifiedOn}</ResultProvenance></div>}
+            />
+            <ResultActions actions={resultActions} onAction={{ copy: copyResult, reset }} />
+            {actionStatus !== "" && <p class="success" role="status" aria-live="polite">{actionStatus}</p>}
+          </div>
+        )}
+        {exportResult !== null && (
+          <div data-result-class="image">
+            <ResultPrimaryAnswer label="PNG esportato">{exportResult.width}×{exportResult.height} px · {exportResult.preset.labelIt}</ResultPrimaryAnswer>
+            <ResultInterpretation state="success">Il file usa il ritaglio centrale dichiarato, senza stretch, ed è stato riaperto dopo encoding per verificare tipo e dimensioni.</ResultInterpretation>
+            {previewUrl !== "" && <figure><img src={previewUrl} alt={`Anteprima ${exportResult.preset.labelIt}`} /><figcaption>{exportResult.filename}</figcaption></figure>}
+            <ResultBreakdown rows={[
+              { label: "Sorgente", value: `${exportResult.source.width}×${exportResult.source.height} px · ${exportResult.inputMime}` },
+              { label: "Ritaglio sorgente", value: `${exportResult.coverCrop.width}×${exportResult.coverCrop.height} @ ${exportResult.coverCrop.x},${exportResult.coverCrop.y}` },
+              { label: "Output verificato", value: `${exportResult.width}×${exportResult.height} · ${exportResult.outputMime}` },
+              { label: "Ordine/nome", value: `singolo preset selezionato · ${exportResult.filename}` },
+            ]} />
+            <ResultProvenance>{exportResult.preset.source} · verificato il {exportResult.preset.verifiedOn}</ResultProvenance>
+            <ToolActions><DownloadLink blob={exportResult.blob} filename={exportResult.filename}>Scarica PNG verificato</DownloadLink><ToolResetButton onClick={reset} /></ToolActions>
+          </div>
         )}
       </ToolResultPanel>
     </ToolOperation>

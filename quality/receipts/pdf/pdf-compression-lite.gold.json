@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "pdf-compression-lite",
   "runtime": {
     "location": "LOCAL",
@@ -35,26 +35,28 @@
     "local-only runtime",
     "high-confidence oracle with no open semantic gap",
     "tool-specific PDF/document fixture remains bound",
-    "exact public-module vector plus re-inspected output bytes",
+    "exact public-module vector plus re-inspected output bytes or exact browser raster evidence",
     "keyboard/mobile/a11y/locality/lazy browser acceptance"
   ],
   "identities": {
-    "manifestSha256": "4f67852267392006fb1169f6aaa290ab912866a67172f8412377e65fc79c1eac",
-    "pdfEngineIndexSha256": "48f1f3568e453f683cefebc179444358bd458b8776cb01758fc7920607a78017",
+    "manifestSha256": "ad153a96eeb0f49722be937b2417fc9cfccbf4ec9795fffcd934d83462094d49",
+    "pdfEngineIndexSha256": "a3604d8d466cf1d3d57ae60c8b3f505013477c4a7ee933a90c012f14dfcb217d",
     "pdfEngineParserSha256": "c012706639797d68bfd0adbad941fd8b5db05f9376dfa05d4c921a2b900c9d46",
-    "pdfEngineWriterSha256": "dbb1f374a8c7f64a8962a41733d4c700102c1277fd8452ded0f8b89fcf09cc3a",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "1c180d17984d64f2cd89bb0a7a816cabe930c738412b0fb7bcf91cdd55f65fd5",
-    "unitTestsSha256": "9ee50a4490ce9b258be22f58e059b07e493df0de25408b8d58d928ec32ae74fb",
+    "pdfEngineWriterSha256": "7a06a3e9b9fdadf3671217ad7bed047c51ea84a8ad82c7a7b10ebb38fcda3eab",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "7ca56390c601e4a293901ff3ca97868c15fbeade1de538dacb785549a1ec3b2a",
+    "conversionMatrixBrowserAcceptanceSha256": "16bf78da2d511b0a2c21ac0fcff111829e81dfe615eb87e208089de7ca476c04",
+    "unitTestsSha256": "d8ec17434a89d3700d5911ca56a3996a2b624dbbbc84ebc0a731db308cea17bc",
     "fixture:pdf-signature:sha256": "7b927a96c3106a97a4c4022f175529e7b7a01f79b0dd05f77f71306eb5b1747f",
-    "fixture:pdf-gold:sha256": "8c16c7203f6bf57901189e9a044fecefd649df2829d524477b18fb469ec2d093",
+    "fixture:pdf-gold:sha256": "2b3ca4fc44b0036f1d1e7b796ba00f61f0e059ab1a195704118eac3734c21904",
     "fixture:pdf-gold:annotated.pdf:sha256": "b7ed4b7b1e596d9b123947f28bcb1d507446582cdc636b1f7c2c2ddd658c6f8e",
     "fixture:pdf-gold:simple-3page.pdf:sha256": "d919bbbcec4ae25a614fa6018720f22b0b5ccac35ebe440f91609bea3755a203",
     "fixture:pdf-gold:simple-2page.pdf:sha256": "0a3ea973659ca6d454738bfe49dc14fe9e21acb0ae7c82f389b3c7c14768b551",
     "fixture:pdf-gold:simple-2page-changed.pdf:sha256": "3f9d3ca5c63597184f3ec2344824d680cbf3ab94809a1113ef0cff9f0d382ab6",
     "fixture:pdf-gold:jpeg-1page.pdf:sha256": "ad46989de58a0ed64555ecec711ded425cd8b1aad94ce14ae71ebba22a2242b6",
     "fixture:pdf-gold:encrypted-mark.pdf:sha256": "0bed5afd5f385bcb55685396dda6dde332b11b43840be0bd1454c49d9f8412d1",
-    "fixture:pdf-gold:tiny.jpg:sha256": "63dc907b6262441b36fa89e125a6d07a503602fc6f7bed072685440c05b12c9a"
+    "fixture:pdf-gold:tiny.jpg:sha256": "63dc907b6262441b36fa89e125a6d07a503602fc6f7bed072685440c05b12c9a",
+    "fixture:pdf-gold:page-scoped-images-metadata.pdf:sha256": "c8aef2839de8e6219be00022c2a52e4609f0960fca6c91043f6dafd244f3be17"
   }
 }

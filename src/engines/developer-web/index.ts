@@ -18,15 +18,29 @@ import {
   yamlFormatterOperation,
 } from "./structured-data";
 import {
+  jsonInferenceOperation,
+  jsonRepairOperation,
+  jsonStructuralDiffOperation,
+  xmlOperation,
+} from "./structured-repair";
+import { cssMinifyOperation, htmlMinifyOperation } from "./minifiers";
+import {
   base64Operation,
+  base64FileOperation,
+  imageBase64Operation,
   generateUuids,
   hashGeneratorOperation,
   hmacOperation,
   htmlEntityOperation,
   inspectJwt,
-  regexTestOperation,
   urlCodecOperation,
 } from "./encoding-crypto";
+import { regexTestOperationBounded } from "./regex-worker-client";
+import {
+  baseConversionOperation,
+  chmodPermissionOperation,
+  cidrOperation,
+} from "./network-numeric";
 import {
   cronNextRunOperation,
   explainCronOperation,
@@ -41,6 +55,9 @@ export * from "./types";
 export * from "./structured-data";
 export * from "./encoding-crypto";
 export * from "./web-reference";
+export * from "./network-numeric";
+export * from "./structured-repair";
+export * from "./minifiers";
 
 export type DeveloperWebToolId =
   | "json-formatter"
@@ -62,7 +79,16 @@ export type DeveloperWebToolId =
   | "mime-type-lookup"
   | "user-agent-parser"
   | "query-string-editor"
-  | "json-path-playground";
+  | "json-path-playground"
+  | "cidr-calculator"
+  | "base-converter"
+  | "chmod-permission-helper"
+  | "json-repair"
+  | "json-structural-diff"
+  | "json-type-schema-inference"
+  | "xml-formatter-validator"
+  | "css-minifier"
+  | "html-minifier";
 
 function requireDirection(value: Record<string, unknown>): string {
   const direction = optionalStringField(value, "direction", "operation", "mode");
@@ -79,8 +105,10 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
     const text = stringField(value, "text", "input", "json");
     const indent = optionalNumberField(value, "indent", "spaces") ?? 2;
     const sortKeys = booleanField(value, false, "sortKeys", "sort");
-    if (optionalStringField(value, "mode", "operation", "validateOnly", "action") === "validate") return jsonValidatorOperation(text);
-    return jsonFormatterOperation(text, indent, sortKeys);
+    const mode = optionalStringField(value, "mode", "operation", "validateOnly", "action") ?? "prettify";
+    if (mode === "validate") return jsonValidatorOperation(text);
+    if (mode !== "format" && mode !== "prettify" && mode !== "minify") invalid("INVALID_MODE", "JSON mode must be prettify, minify, or validate.");
+    return jsonFormatterOperation(text, indent, sortKeys, mode === "minify" ? "minify" : "prettify");
   }
   if (toolId === "yaml-formatter") return yamlFormatterOperation(stringField(value, "text", "input", "yaml"), optionalNumberField(value, "indent", "spaces") ?? 2);
   if (toolId === "toml-formatter") return tomlFormatterOperation(stringField(value, "text", "input", "toml"));
@@ -90,9 +118,31 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
   if (toolId === "base64-codec") {
     const urlSafeValue = optionalStringField(value, "urlSafe", "base64url");
     const urlSafe = urlSafeValue === "url-safe" || urlSafeValue === "base64url" || urlSafeValue === "true";
-    return base64Operation(stringField(value, "text", "input", "value"), optionalStringField(value, "mode", "operation") ?? "encode", urlSafe);
+    const mode = optionalStringField(value, "mode", "operation") ?? "encode";
+    if (mode === "encode-image") {
+      const bytes = value.bytes;
+      if (!Array.isArray(bytes) || bytes.some((entry) => typeof entry !== "number" || !Number.isInteger(entry) || entry < 0 || entry > 255)) invalid("INVALID_INPUT", "Image Base64 bytes must be integers from 0 to 255.");
+      const envelope = optionalStringField(value, "envelope") ?? "plain";
+      if (envelope !== "plain" && envelope !== "data-url") invalid("INVALID_MODE", "Image Base64 envelope must be plain or data-url.");
+      return imageBase64Operation(Uint8Array.from(bytes as number[]), mode, envelope);
+    }
+    if (mode === "decode-image") {
+      const envelope = optionalStringField(value, "envelope") ?? "plain";
+      if (envelope !== "plain" && envelope !== "data-url") invalid("INVALID_MODE", "Image Base64 envelope must be plain or data-url.");
+      return imageBase64Operation(stringField(value, "text", "input", "value"), mode, envelope);
+    }
+    if (mode === "encode-bytes") {
+      const bytes = value.bytes;
+      if (!Array.isArray(bytes) || bytes.some((entry) => typeof entry !== "number" || !Number.isInteger(entry) || entry < 0 || entry > 255)) invalid("INVALID_INPUT", "Base64 file bytes must be integers from 0 to 255.");
+      return base64FileOperation(Uint8Array.from(bytes as number[]), mode, urlSafe);
+    }
+    if (mode === "decode-bytes") return base64FileOperation(stringField(value, "text", "input", "value"), mode, urlSafe);
+    return base64Operation(stringField(value, "text", "input", "value"), mode, urlSafe);
   }
-  if (toolId === "jwt-inspector") return inspectJwt(stringField(value, "token", "input", "text"));
+  if (toolId === "jwt-inspector") return inspectJwt(
+    stringField(value, "token", "input", "text"),
+    optionalStringField(value, "referenceTime", "reference", "now"),
+  );
   if (toolId === "uuid-generator") {
     const bytes = value.bytes;
     let parsedBytes: number[] | undefined;
@@ -110,11 +160,16 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
   }
   if (toolId === "hash-generator") return hashGeneratorOperation(stringField(value, "text", "input", "message"), optionalStringField(value, "algorithm", "hashAlgorithm"), signal);
   if (toolId === "hmac-generator") return hmacOperation(stringField(value, "message", "text", "input"), stringField(value, "key", "secret"), optionalStringField(value, "algorithm", "hashAlgorithm"), signal);
-  if (toolId === "regex-tester") return regexTestOperation(stringField(value, "pattern", "expression"), optionalStringField(value, "flags") ?? "", stringField(value, "text", "input", "subject"), optionalStringField(value, "replacement"));
+  if (toolId === "regex-tester") return regexTestOperationBounded(stringField(value, "pattern", "expression"), optionalStringField(value, "flags") ?? "", stringField(value, "text", "input", "subject"), optionalStringField(value, "replacement"), signal);
   if (toolId === "cron-explainer") return explainCronOperation(stringField(value, "expression", "cron", "text", "input"));
   if (toolId === "cron-next-run") {
     const from = optionalStringField(value, "from", "fromDate");
-    return cronNextRunOperation(stringField(value, "expression", "cron", "text", "input"), from === undefined || from.trim() === "" ? new Date().toISOString() : from, optionalCount(value, 5));
+    return cronNextRunOperation(
+      stringField(value, "expression", "cron", "text", "input"),
+      from === undefined || from.trim() === "" ? new Date().toISOString() : from,
+      optionalCount(value, 5),
+      optionalStringField(value, "timezone", "timeZone") ?? "UTC",
+    );
   }
   if (toolId === "unix-timestamp") return unixTimestampOperation(value.timestamp ?? value.value ?? value.input, optionalStringField(value, "unit") ?? "seconds", optionalStringField(value, "direction", "operation") ?? "to-date");
   if (toolId === "http-status-reference") return httpStatusOperation(value.status ?? value.input ?? value.value);
@@ -125,6 +180,15 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
   if (toolId === "user-agent-parser") return userAgentOperation(stringField(value, "userAgent", "ua", "input", "text"));
   if (toolId === "query-string-editor") return queryStringOperation(value);
   if (toolId === "json-path-playground") return jsonPathOperation(stringField(value, "json", "text", "input", "document"), stringField(value, "path", "query", "jsonPath"));
+  if (toolId === "cidr-calculator") return cidrOperation(stringField(value, "cidr", "input", "value"));
+  if (toolId === "base-converter") return baseConversionOperation(stringField(value, "value", "input"), stringField(value, "fromBase", "sourceBase"), stringField(value, "toBase", "targetBase"));
+  if (toolId === "chmod-permission-helper") return chmodPermissionOperation(stringField(value, "permissions", "mode", "input", "value"));
+  if (toolId === "json-repair") return jsonRepairOperation(stringField(value, "text", "json", "input"));
+  if (toolId === "json-structural-diff") return jsonStructuralDiffOperation(stringField(value, "leftJson", "left", "before"), stringField(value, "rightJson", "right", "after"));
+  if (toolId === "json-type-schema-inference") return jsonInferenceOperation(stringField(value, "json", "text", "input"), optionalStringField(value, "typeName", "name") ?? "Root", optionalStringField(value, "mode", "output") ?? "both");
+  if (toolId === "xml-formatter-validator") return xmlOperation(stringField(value, "text", "xml", "input"), optionalStringField(value, "mode", "operation") ?? "prettify", optionalNumberField(value, "indent", "spaces") ?? 2);
+  if (toolId === "css-minifier") return cssMinifyOperation(stringField(value, "text", "css", "input"));
+  if (toolId === "html-minifier") return htmlMinifyOperation(stringField(value, "text", "html", "input"), optionalStringField(value, "mode", "operation") ?? "safe");
   return invalid("UNKNOWN_TOOL", `Unknown developer/web tool: ${String(toolId)}.`);
 }
 

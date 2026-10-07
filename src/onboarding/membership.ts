@@ -18,7 +18,7 @@ const CATEGORY_HINTS: Readonly<Record<WorkContextId, readonly string[]>> = {
   "marketing-growth": ["marketing", "web-operations", "image", "files-assets", "data", "text"],
   "data-cleanup": ["data", "text", "files", "csv", "table", "developer"],
   "research-evidence": ["research", "documents", "text", "data", "files"],
-  "file-asset-handoff": ["files", "files-assets", "documents", "data", "text", "image"],
+  "file-asset-handoff": ["files", "files-assets", "documents", "data", "text", "image", "media"],
 };
 
 function normalize(value: string): string {

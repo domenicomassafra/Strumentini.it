@@ -28,7 +28,7 @@ const args = new Set(process.argv.slice(2));
 const requireReady = args.has("--require-ready");
 const writeReceipts = !args.has("--no-write-receipt");
 const receiptDirectory = resolve(root, process.argv.find((value) => value.startsWith("--receipt-dir="))?.slice("--receipt-dir=".length) ?? "quality/receipts/release");
-const defaultSite = new URL("https://strumentiutili.it");
+const defaultSite = new URL("https://strumentini.it");
 
 async function git(...command: string[]): Promise<string> {
   const result = await execFileAsync("git", command, { cwd: root });
@@ -66,6 +66,20 @@ async function readJson(path: string): Promise<unknown> {
   } catch {
     return undefined;
   }
+}
+
+async function loadExpectedToolCount(): Promise<number> {
+  const value = await readJson(resolve(root, "quality/oracles/registry.json"));
+  if (typeof value !== "object" || value === null || Array.isArray(value)) throw new Error("quality/oracles/registry.json: expected an object");
+  const registry = value as Record<string, unknown>;
+  const entries = registry.entries;
+  const entryCount = registry.entry_count;
+  if (registry.schema_version !== 1) throw new Error("quality/oracles/registry.json: schema_version must be 1");
+  if (!Array.isArray(entries) || entries.length === 0) throw new Error("quality/oracles/registry.json: entries must be a non-empty array");
+  if (!Number.isSafeInteger(entryCount) || (entryCount as number) < 1 || entryCount !== entries.length) {
+    throw new Error("quality/oracles/registry.json: entry_count must be a positive safe integer matching entries.length");
+  }
+  return entryCount as number;
 }
 
 function isVerifiedRollback(value: unknown): boolean {
@@ -197,6 +211,7 @@ async function main(): Promise<void> {
   const revision = await git("rev-parse", "HEAD").catch(() => "unknown");
   const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
   const workingTreeDirty = (await git("status", "--porcelain").catch(() => "")).length > 0;
+  const expectedToolCount = await loadExpectedToolCount();
   const catalog = await loadCatalog();
   const manifestFiles = (await relativeFiles(resolve(root, "src/tools"))).filter((path) => path.endsWith("/manifest.ts"));
   const toolPageFiles = (await relativeFiles(resolve(root, "src/pages/tools"))).filter((path) => path.endsWith(".astro"));
@@ -215,6 +230,7 @@ async function main(): Promise<void> {
   const rollbackReceipt = isVerifiedRollback(existingRollback) ? existingRollback : createUnprovenRollbackReceipt(revision, sourceFingerprint);
   const browser = await readJson(resolve(root, "quality/receipts/browser-performance/fresh-browser-matrix.json"));
   const input: ReleaseValidationInput = {
+    expectedToolCount,
     catalog,
     manifestFiles,
     toolPageFiles,

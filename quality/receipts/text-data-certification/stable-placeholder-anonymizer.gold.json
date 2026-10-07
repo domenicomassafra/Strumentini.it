@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/text-data-certification/stable-placeholder-anonymizer.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "stable-placeholder-anonymizer",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-233",
+  "fixtureFamilies": [
+    "text-expansion"
+  ],
+  "exactVectors": 1,
+  "boundedOracleGaps": [
+    "The deterministic placeholder hash is collision-resistant for accidental local collisions but is not advertised as cryptographic anonymization."
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "lucisano-piemontese-1988",
+    "strumentiutili-quality",
+    "unicode-uax29"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "text-expansion",
+      "path": "quality/fixtures/text-expansion/vectors.json"
+    }
+  ],
+  "focusedTests": [
+    "tests/text-expansion.test.ts"
+  ],
+  "propertyChecks": [
+    "LOCAL runtime with network forbidden",
+    "high-confidence oracle and exact explicit bounded-gap policy",
+    "manifest maintenance class matches oracle",
+    "fixture replay through the public tool module",
+    "per-tool semantic browser assertion at 390px",
+    "zero external/non-GET/task-body requests after browser task start",
+    "keyboard submit and accessible form controls",
+    "focused semantic/refusal-boundary tests bound by content identity"
+  ],
+  "identities": {
+    "manifestSha256": "6412ff77d3ae4b5f0487c9d1f2ec34246c5ff8d500ee5469cf444b67392fc903",
+    "moduleSha256": "b92df6e6d7e9b77809f78227d90054c9d0304597742f8d954167ef9a77ead7e9",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "a5ba4f695ddd72a370e514f4d6a8929897d0d5bc7d009f3176ee978bf36af96b",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "7d03995f3e3a6ebd56a9f2ba33dd2b910169cdcf3f6b056833f99b8c1abab92c",
+    "fixture:text-expansion:sha256": "0c5599cbcee93afe9ae1f5116dde6ecbc01895b6c878e3236ac9d22538ee5ce0"
+  }
+}

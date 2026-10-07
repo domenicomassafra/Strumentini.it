@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-06T09:10:47.612Z",
+  "status": "PASS",
+  "scenarios": [
+    {
+      "name": "light-calculator",
+      "resultClass": "calculator",
+      "route": "/tools/business-day/",
+      "initialScripts": [
+        "GlobalSearch.astro_astro_type_script_index_0_lang.DeXUeTVv.js",
+        "ThemeToggle.astro_astro_type_script_index_0_lang.Pxm5KA7M.js",
+        "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.Cdi__Np-.js",
+        "TelemetryBootstrap.astro_astro_type_script_index_0_lang.BhWyJZTb.js",
+        "theme.B5SGcNvj.js",
+        "preload-helper.B3nfOi5I.js",
+        "tool-icons.KyturOEx.js",
+        "search.fenT6hcj.js",
+        "manifest.BmmxTcxK.js",
+        "browser.DOR1ftZe.js",
+        "events.BX6P3nqi.js",
+        "BusinessDayTool.BS_sPyjo.js",
+        "client.ygwfx5Gv.js",
+        "preact.module.Bl7PEaKa.js",
+        "hooks.module.KvFRugKm.js",
+        "jsxRuntime.module.Bfdc-KV3.js",
+        "tool-runtime.RvnPFfym.js",
+        "PreviousValue.0yjoIn8K.js",
+        "ToolGutter.BOKiZ2S0.js",
+        "StatusMark.DCSKeSbv.js"
+      ],
+      "initialJsBytes": 87043,
+      "lazyScripts": [
+        "registry.BXLn5KM3.js",
+        "module.Bmr23zJa.js"
+      ],
+      "lazyJsBytes": 145362,
+      "boundedPreview": null,
+      "initialWasmRequests": [],
+      "actionMs": 128.33395900000005,
+      "longTasks": {
+        "observerSupported": true,
+        "count": 0,
+        "maxDurationMs": 0
+      },
+      "taskRequests": 3,
+      "badTaskRequests": [],
+      "budget": {
+        "maxInitialJsBytes": 108804,
+        "maxLazyJsBytes": 180000,
+        "maxActionMs": 1000,
+        "maxLongTaskMs": 50
+      }
+    },
+    {
+      "name": "large-text-output",
+      "resultClass": "text-code",
+      "route": "/tools/json-formatter/",
+      "initialScripts": [
+        "GlobalSearch.astro_astro_type_script_index_0_lang.DeXUeTVv.js",
+        "ThemeToggle.astro_astro_type_script_index_0_lang.Pxm5KA7M.js",
+        "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.Cdi__Np-.js",
+        "TelemetryBootstrap.astro_astro_type_script_index_0_lang.BhWyJZTb.js",
+        "preload-helper.B3nfOi5I.js",
+        "tool-icons.KyturOEx.js",
+        "search.fenT6hcj.js",
+        "manifest.BmmxTcxK.js",
+        "browser.DOR1ftZe.js",
+        "events.BX6P3nqi.js",
+        "theme.B5SGcNvj.js",
+        "JsonFormatterTool.DHUIkUBW.js",
+        "client.ygwfx5Gv.js",
+        "jsxRuntime.module.Bfdc-KV3.js",
+        "DeveloperWebTool.BHFq0Fqk.js",
+        "preact.module.Bl7PEaKa.js",
+        "hooks.module.KvFRugKm.js",
+        "bounded-preview.Dgd4D_Er.js",
+        "shared.BZNY2yTu.js",
+        "result-actions.BtkxofOl.js",
+        "tool-runtime.RvnPFfym.js",
+        "controlLabels.jIFTOOEN.js",
+        "ToolGutter.BOKiZ2S0.js",
+        "tool-copy.D8D1iIR6.js",
+        "PreviousValue.0yjoIn8K.js",
+        "StatusMark.DCSKeSbv.js",
+        "errors.DJHIN2en.js"
+      ],
+      "initialJsBytes": 153054,
+      "lazyScripts": [
+        "registry.BXLn5KM3.js",
+        "module.zRboX2e2.js",
+        "developer-web.B-dPCbc2.js"
+      ],
+      "lazyJsBytes": 191901,
+      "boundedPreview": {
+        "maxLines": 80,
+        "shown": 80,
+        "total": 6011,
+        "renderedLines": 80,
+        "truncated": true
+      },
+      "initialWasmRequests": [],
+      "actionMs": 93.64991699999973,
+      "longTasks": {
+        "observerSupported": true,
+        "count": 0,
+        "maxDurationMs": 0
+      },
+      "taskRequests": 4,
+      "badTaskRequests": [],
+      "budget": {
+        "maxInitialJsBytes": 182344,
+        "maxLazyJsBytes": 240000,
+        "maxActionMs": 1000,
+        "maxLongTaskMs": 50
+      }
+    },
+    {
+      "name": "file-output",
+      "resultClass": "file",
+      "route": "/tools/file-hash/",
+      "initialScripts": [
+        "GlobalSearch.astro_astro_type_script_index_0_lang.DeXUeTVv.js",
+        "ThemeToggle.astro_astro_type_script_index_0_lang.Pxm5KA7M.js",
+        "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.Cdi__Np-.js",
+        "TelemetryBootstrap.astro_astro_type_script_index_0_lang.BhWyJZTb.js",
+        "theme.B5SGcNvj.js",
+        "preload-helper.B3nfOi5I.js",
+        "tool-icons.KyturOEx.js",
+        "search.fenT6hcj.js",
+        "manifest.BmmxTcxK.js",
+        "browser.DOR1ftZe.js",
+        "events.BX6P3nqi.js",
+        "FileHashTool.BZmDq6ys.js",
+        "client.ygwfx5Gv.js",
+        "preact.module.Bl7PEaKa.js",
+        "hooks.module.KvFRugKm.js",
+        "jsxRuntime.module.Bfdc-KV3.js",
+        "shared.BZNY2yTu.js",
+        "controlLabels.jIFTOOEN.js",
+        "worker-client.DMtbayWL.js",
+        "PreviousValue.0yjoIn8K.js",
+        "StatusMark.DCSKeSbv.js",
+        "ToolGutter.BOKiZ2S0.js",
+        "errors.DJHIN2en.js"
+      ],
+      "initialJsBytes": 74955,
+      "lazyScripts": [
+        "worker-DP4Ep3z2.js"
+      ],
+      "lazyJsBytes": 19555,
+      "boundedPreview": null,
+      "initialWasmRequests": [],
+      "actionMs": 105.17058299999962,
+      "longTasks": {
+        "observerSupported": true,
+        "count": 0,
+        "maxDurationMs": 0
+      },
+      "taskRequests": 2,
+      "badTaskRequests": [],
+      "budget": {
+        "maxInitialJsBytes": 90917,
+        "maxLazyJsBytes": 30000,
+        "maxActionMs": 1000,
+        "maxLongTaskMs": 50
+      }
+    }
+  ],
+  "deterministicBudgetSource": {
+    "schemaVersion": 1,
+    "requiredScenarios": [
+      "light-calculator",
+      "large-text-output",
+      "file-output"
+    ],
+    "invariant": "No eager WASM and no non-GET/external task request; JS/action/long-task ceilings are versioned from the measured baseline."
+  },
+  "heavyControlled": {
+    "schemaVersion": 1,
+    "generatedAt": "2026-10-05T23:56:09.950Z",
+    "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+    "scope": "controlled heavy-local runtime acceptance; no codec/provider/network dependency is loaded",
+    "networkPolicy": "forbidden",
+    "resourceAccounting": "explicit main-thread initial bytes + owned resources + worker reserve/release messages; hard working-set breach terminates worker",
+    "scenarios": {
+      "success": {
+        "status": "PASS",
+        "startProtocol": {
+          "type": "start",
+          "jobId": 1,
+          "networkPolicy": "forbidden",
+          "payload": {
+            "scenario": "success"
+          }
+        },
+        "progress": [
+          {
+            "kind": "indeterminate",
+            "phase": "decode"
+          },
+          {
+            "kind": "determinate",
+            "fraction": 0.5,
+            "phase": "transform"
+          }
+        ],
+        "metrics": {
+          "jobId": 1,
+          "durationMs": 7,
+          "progressEvents": 2,
+          "peakAccountedWorkingSetBytes": 6815744,
+          "accountedBytesReleasedOnCleanup": 2621440,
+          "finalAccountedWorkingSetBytes": 0
+        },
+        "cleanup": {
+          "terminateCount": 1,
+          "leaseCleanupCount": 1,
+          "ownedResourceReleaseCount": 1
+        }
+      },
+      "cancellationRetry": {
+        "status": "PASS",
+        "firstJobId": 1,
+        "secondJobId": 2,
+        "cancelName": "AbortError",
+        "activeAfterStale": 2,
+        "staleSuppressed": true,
+        "workers": [
+          {
+            "terminateCount": 1
+          },
+          {
+            "terminateCount": 1
+          }
+        ],
+        "cleanupCount": 2,
+        "resourceReleaseCount": 1
+      },
+      "resourceLimit": {
+        "status": "PASS",
+        "code": "RESOURCE_LIMIT",
+        "terminateCount": 1
+      },
+      "preflight": {
+        "status": "PASS",
+        "code": "PREFLIGHT_REJECTED",
+        "workerCreated": 0
+      }
+    }
+  },
+  "failures": []
+}

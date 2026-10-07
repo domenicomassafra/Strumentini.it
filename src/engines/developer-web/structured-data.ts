@@ -5,6 +5,7 @@ import {
   type JsonRecord,
   type DeveloperWebResult,
   assertInputSize,
+  developerErrorEnvelope,
   invalid,
 } from "./types";
 
@@ -27,7 +28,20 @@ function defineRecordValue(record: JsonRecord, key: string, value: unknown): voi
 }
 
 function jsonFail(parser: JsonParser, message: string): never {
-  invalid("INVALID_JSON", `${message} at character ${parser.index + 1}.`);
+  const prefix = parser.input.slice(0, parser.index);
+  const lines = prefix.split("\n");
+  const line = lines.length;
+  const column = (lines.at(-1)?.length ?? 0) + 1;
+  const contextStart = Math.max(0, parser.index - 24);
+  const contextEnd = Math.min(parser.input.length, parser.index + 24);
+  const context = parser.input.slice(contextStart, contextEnd).replaceAll("\n", "↵");
+  invalid("INVALID_JSON", `${message} at character ${parser.index + 1}.`, {
+    line,
+    column,
+    character: parser.index + 1,
+    path: parser.path.length === 0 ? "$" : `$.${parser.path.join(".")}`,
+    context,
+  });
 }
 
 function skipJsonWhitespace(parser: JsonParser): void {
@@ -182,12 +196,13 @@ export function parseJsonWithMetadata(input: string): JsonParseResult {
   return { value, duplicateKeys: [...new Set(parser.duplicates)] };
 }
 
-export function validateJson(input: string): { valid: true; value: unknown; duplicateKeys: string[] } | { valid: false; code: "INVALID_JSON"; message: string } {
+export function validateJson(input: string): { valid: true; value: unknown; duplicateKeys: string[] } | { valid: false; code: string; message: string; diagnostic?: import("./types").DeveloperDiagnostic } {
   try {
     const parsed = parseJsonWithMetadata(input);
     return { valid: true, value: parsed.value, duplicateKeys: parsed.duplicateKeys };
   } catch (error) {
-    return { valid: false, code: "INVALID_JSON", message: error instanceof Error ? error.message : "Invalid JSON." };
+    const envelope = developerErrorEnvelope(error);
+    return { valid: false, ...envelope };
   }
 }
 
@@ -208,13 +223,19 @@ export function formatJson(input: string, indent = 2, sortKeys = false): { forma
   return { formatted, value, duplicateKeys: parsed.duplicateKeys };
 }
 
-export function jsonFormatterOperation(input: string, indent = 2, sortKeys = false): DeveloperWebResult {
-  const result = formatJson(input, indent, sortKeys);
+export function jsonFormatterOperation(input: string, indent = 2, sortKeys = false, mode: "prettify" | "minify" = "prettify"): DeveloperWebResult {
+  const result = formatJson(input, mode === "minify" ? 0 : indent, sortKeys);
+  const inputBytes = new TextEncoder().encode(input).length;
+  const outputBytes = new TextEncoder().encode(result.formatted).length;
   return {
     valid: true,
+    mode,
     formatted: result.formatted,
     value: result.value,
     duplicateKeys: result.duplicateKeys,
+    inputBytes,
+    outputBytes,
+    byteDelta: outputBytes - inputBytes,
     warnings: result.duplicateKeys.length === 0 ? [] : ["In presenza di chiavi duplicate, il parser JSON mantiene l'ultimo valore incontrato."],
   } as DeveloperWebResult;
 }
@@ -222,7 +243,7 @@ export function jsonFormatterOperation(input: string, indent = 2, sortKeys = fal
 export function jsonValidatorOperation(input: string): DeveloperWebResult {
   const result = validateJson(input);
   if (!result.valid) {
-    return { valid: false, error: result.message } as DeveloperWebResult;
+    return { valid: false, code: result.code, error: result.message, ...(result.diagnostic === undefined ? {} : { diagnostic: result.diagnostic }) } as DeveloperWebResult;
   }
   return {
     valid: true,

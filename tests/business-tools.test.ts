@@ -188,6 +188,25 @@ describe("business/independent-work deterministic engine", () => {
     expect(calculatePercentage({ amount: "120", ratePercent: "20", mode: "reverse" })).toMatchObject({ net: "100.00", percentageAmount: "20.00" });
   });
 
+  it("covers the human percentage modes with exact decimal math", () => {
+    expect(calculatePercentage({ base: "250", ratePercent: "12,5", mode: "of" })).toMatchObject({ result: "31.25" });
+    expect(calculatePercentage({ base: "80", amount: "20", mode: "what-percent" })).toMatchObject({ result: "25.00", ratePercent: "25.00" });
+    expect(calculatePercentage({ base: "80", ratePercent: "25", mode: "increase" })).toMatchObject({ result: "100.00" });
+    expect(calculatePercentage({ base: "80", ratePercent: "25", mode: "decrease" })).toMatchObject({ result: "60.00" });
+    expect(calculatePercentage({ base: "80", amount: "100", mode: "variation" })).toMatchObject({ result: "25.00" });
+    expect(calculatePercentage({ base: "80", ratePercent: "20", mode: "reverse-discount" })).toMatchObject({ result: "100.00" });
+    expect(calculatePercentage({ base: "100", rates: ["10", "20"], mode: "cascade" })).toMatchObject({ result: "72.00", ratePercent: "28.00", rates: ["10.00", "20.00"] });
+  });
+
+  it("defines negative, 100%+, and zero-denominator percentage edges", () => {
+    expect(calculatePercentage({ base: "-100", ratePercent: "10", mode: "of" })).toMatchObject({ result: "-10.00" });
+    expect(calculatePercentage({ base: "100", ratePercent: "125", mode: "decrease" })).toMatchObject({ result: "-25.00" });
+    expect(calculatePercentage({ base: "100", ratePercent: "100", mode: "decrease" })).toMatchObject({ result: "0.00" });
+    expect(() => calculatePercentage({ base: "0", amount: "2", mode: "what-percent" })).toThrow("INVALID_BASE");
+    expect(() => calculatePercentage({ base: "80", ratePercent: "100", mode: "reverse-discount" })).toThrow("INVALID_RATE");
+    expect(() => calculatePercentage({ base: "80", ratePercent: "-100", mode: "reverse" })).toThrow("INVALID_RATE");
+  });
+
   it("applies a manually entered currency scenario and its inverse", () => {
     expect(calculateCurrencyScenario({ amount: "100", rate: "1.2", fromCurrency: "EUR", toCurrency: "USD" })).toMatchObject({
       convertedAmount: "120.00",
@@ -229,6 +248,8 @@ describe("business/independent-work tool modules and canonical routes", () => {
 
   it("runs percentage and currency modules", () => {
     expect(run<Record<string, unknown>>(percentageHelperModule, { base: "200", ratePercent: "10" })).toMatchObject({ total: "220.00" });
+    expect(run<Record<string, unknown>>(percentageHelperModule, { base: "100", ratePercent: "12,5", mode: "of" })).toMatchObject({ result: "12.50" });
+    expect(run<Record<string, unknown>>(percentageHelperModule, { base: "100", rates: "10; 20", mode: "cascade" })).toMatchObject({ result: "72.00" });
     expect(run<Record<string, unknown>>(currencyScenarioModule, { amount: "50", rate: "2", fromCurrency: "EUR", toCurrency: "USD" })).toMatchObject({ convertedAmount: "100.00" });
   });
 

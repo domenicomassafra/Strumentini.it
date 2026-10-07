@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "status": "PARTIAL",
+  "goldEligible": false,
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "9418f6d684412c1fc8346a54637d766a06c7f2cdcea37ddf6ba6cd24639a17b6",
+  "toolId": "microphone-recorder",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-252",
+  "fixtureFamilies": [
+    "browser-audio-utilities"
+  ],
+  "unresolvedGaps": [
+    "Physical iOS and Android permission and recorder behavior still require the explicit mobile acceptance run from ticket 229."
+  ],
+  "blocker": "PHYSICAL_DEVICE_EVIDENCE_MISSING",
+  "physicalAcceptance": {
+    "iosSafari": "MISSING",
+    "androidChrome": "MISSING"
+  },
+  "directChecks": [
+    "runtime MIME preference fixture exact",
+    "pause/resume active duration exact",
+    "desktop mock browser lifecycle verified; physical iOS/Android intentionally not inferred"
+  ],
+  "identities": {
+    "manifestSha256": "be40a94f1e654894f8fa4121cedee31ca5f950d5088102776f5a9338b04a5e89",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "browserAcceptanceSha256": "2071930f9d2c04bc668de7442f5238d20e1989e858e63631a1b31d05b49dcfc8",
+    "bundleIsolationSha256": "f8cc75d37de5f47d79a94a350710156bbf079972838dfdf080685192016e91c2",
+    "unitTestsSha256": "07eccbd4a6985f95ad156d41e88dc8002c59eb4fbe5b381acddb639bd7e5b6ed"
+  }
+}

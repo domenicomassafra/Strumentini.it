@@ -27,7 +27,7 @@ export function ToolSubmitButton({
 }: ToolSubmitButtonProps) {
   const classes = ["primary", className].filter(Boolean).join(" ");
   return (
-    <button class={classes} type="submit" disabled={disabled || busy}>
+    <button class={classes} type="submit" data-tool-run-control disabled={disabled || busy}>
       {busy ? busyLabel ?? children : children}
     </button>
   );

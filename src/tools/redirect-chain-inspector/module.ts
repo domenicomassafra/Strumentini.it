@@ -1,4 +1,4 @@
-import { inspectRedirectChain, type RedirectHop } from "../../engines/url-marketing";
+import { inspectRedirectChain, inspectRedirectChainLive, type RedirectHop } from "../../engines/url-marketing";
 import type { ToolModule } from "../../runtime/types";
 
 function parseHops(value: unknown): readonly RedirectHop[] {
@@ -29,6 +29,19 @@ const module: ToolModule = {
     if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
     if (typeof value !== "object" || value === null) throw new Error("INVALID_INPUT");
     const record = value as Record<string, unknown>;
+    const mode = record.mode ?? "local";
+    if (mode !== "local" && mode !== "live") throw new Error("INVALID_INPUT");
+    if (mode === "live") {
+      if (typeof record.url !== "string") throw new Error("INVALID_URL");
+      const maxHops = record.maxHops ?? 10;
+      const timeoutMs = record.timeoutMs ?? 8_000;
+      if (typeof maxHops !== "number" || typeof timeoutMs !== "number") throw new Error("INVALID_INPUT");
+      return inspectRedirectChainLive(record.url, {
+        maxHops,
+        timeoutMs,
+        ...(signal === undefined ? {} : { signal }),
+      });
+    }
     const source = record.hops ?? record.steps ?? record.chain ?? record.text;
     return inspectRedirectChain(parseHops(source));
   },

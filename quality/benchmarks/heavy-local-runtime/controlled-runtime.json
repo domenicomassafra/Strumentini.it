@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-05T23:56:09.950Z",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "scope": "controlled heavy-local runtime acceptance; no codec/provider/network dependency is loaded",
+  "networkPolicy": "forbidden",
+  "resourceAccounting": "explicit main-thread initial bytes + owned resources + worker reserve/release messages; hard working-set breach terminates worker",
+  "scenarios": {
+    "success": {
+      "status": "PASS",
+      "startProtocol": {
+        "type": "start",
+        "jobId": 1,
+        "networkPolicy": "forbidden",
+        "payload": {
+          "scenario": "success"
+        }
+      },
+      "progress": [
+        {
+          "kind": "indeterminate",
+          "phase": "decode"
+        },
+        {
+          "kind": "determinate",
+          "fraction": 0.5,
+          "phase": "transform"
+        }
+      ],
+      "metrics": {
+        "jobId": 1,
+        "durationMs": 7,
+        "progressEvents": 2,
+        "peakAccountedWorkingSetBytes": 6815744,
+        "accountedBytesReleasedOnCleanup": 2621440,
+        "finalAccountedWorkingSetBytes": 0
+      },
+      "cleanup": {
+        "terminateCount": 1,
+        "leaseCleanupCount": 1,
+        "ownedResourceReleaseCount": 1
+      }
+    },
+    "cancellationRetry": {
+      "status": "PASS",
+      "firstJobId": 1,
+      "secondJobId": 2,
+      "cancelName": "AbortError",
+      "activeAfterStale": 2,
+      "staleSuppressed": true,
+      "workers": [
+        {
+          "terminateCount": 1
+        },
+        {
+          "terminateCount": 1
+        }
+      ],
+      "cleanupCount": 2,
+      "resourceReleaseCount": 1
+    },
+    "resourceLimit": {
+      "status": "PASS",
+      "code": "RESOURCE_LIMIT",
+      "terminateCount": 1
+    },
+    "preflight": {
+      "status": "PASS",
+      "code": "PREFLIGHT_REJECTED",
+      "workerCreated": 0
+    }
+  }
+}

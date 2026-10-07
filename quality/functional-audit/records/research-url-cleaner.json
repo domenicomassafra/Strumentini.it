@@ -1,0 +1,27 @@
+{
+  "toolId": "research-url-cleaner",
+  "category": "research",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Rimuove parametri comuni di tracciamento e ordina le chiavi della query negli URL di ricerca. Public jobs: Usa Pulizia URL di ricerca.",
+  "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/expanded-local/research-url-cleaner.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Broader backlog enhancements are additive to this narrow route contract and are not used to manufacture an incomplete audit result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/research-url-cleaner.gold.json",
+      "claim": "Tool-specific Gold receipt binds the current implementation to declared fixtures/oracle evidence and functional acceptance for research-url-cleaner."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/research-reference-engine.test.ts",
+      "claim": "Executable family tests exercise the engine/module behavior used by research-url-cleaner, including relevant edge or invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Committed browser acceptance includes research-url-cleaner and verifies a real route submit plus locality/lazy/mobile/accessibility behavior."
+    }
+  ],
+  "childTickets": []
+}

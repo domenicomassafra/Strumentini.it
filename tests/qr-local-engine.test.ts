@@ -14,7 +14,7 @@ import { buildDataCodewords, describeSymbol, generateQr, penalty, renderQrSvg, r
 import { decodeQrMatrixValue, normalizeMatrixInput } from "../src/engines/qr/decode";
 import { decodeQrFromRaster, QR_RASTER_MAX_PIXELS } from "../src/engines/qr/raster";
 import { readQrMatrix, readQrPixels } from "../src/engines/qr";
-import qrGeneratorModule from "../src/tools/qr-generator/module";
+import qrGeneratorModule, { buildWifiQrPayload } from "../src/tools/qr-generator/module";
 import qrReaderModule from "../src/tools/qr-reader/module";
 
 interface QrFixture {
@@ -323,6 +323,22 @@ describe("QR generation against the fixture", () => {
     expect(() => qrGeneratorModule.run({ payload: "ciao", mask: -1 }, context)).toThrow("QR_INVALID_MASK");
     expect(() => qrGeneratorModule.run({ payload: 7 }, context)).toThrow("QR_INPUT_REQUIRED");
     expect(qrGeneratorModule.run({ payload: "ciao" }, context)).toMatchObject({ byteLimit: QR_MAX_BYTES, bytesRemaining: QR_MAX_BYTES - 4 });
+  });
+
+  it("builds escaped Wi-Fi presets and round-trips them through the canonical QR engine", () => {
+    const payload = buildWifiQrPayload({
+      ssid: 'Caffè;Ospiti: "2G"',
+      password: "p\\ass;word,uno:due",
+      security: "WPA",
+      hidden: true,
+    });
+    expect(payload).toBe('WIFI:T:WPA;S:Caffè\\;Ospiti\\: \\"2G\\";P:p\\\\ass\\;word\\,uno\\:due;H:true;;');
+    const generated = qrGeneratorModule.run({ preset: "wifi", ssid: 'Caffè;Ospiti: "2G"', password: "p\\ass;word,uno:due", security: "WPA", hidden: true }, context) as { matrixRows: string[]; payload: string };
+    expect(generated.payload).toBe(payload);
+    expect(readQrMatrix(generated.matrixRows).payload).toBe(payload);
+    expect(buildWifiQrPayload({ ssid: "Rete aperta", security: "nopass" })).toBe("WIFI:T:nopass;S:Rete aperta;;");
+    expect(() => buildWifiQrPayload({ ssid: "", security: "WPA", password: "x" })).toThrow("QR_WIFI_SSID_REQUIRED");
+    expect(() => buildWifiQrPayload({ ssid: "Rete", security: "WPA" })).toThrow("QR_WIFI_PASSWORD_REQUIRED");
   });
 
   it("rejects an empty payload rather than producing an empty symbol", () => {

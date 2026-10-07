@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 2,
+  "ticket": 116,
+  "datasetId": "italy-national-holidays",
+  "checkedAt": "2026-10-06",
+  "effectiveCoverage": {
+    "from": "2026-01-01",
+    "to": "2026-12-31"
+  },
+  "scope": "Named national non-working holidays for Italy in calendar year 2026, plus the legal exclusions needed to avoid treating historical or local observances as nationwide holidays.",
+  "artifacts": [
+    {
+      "authority": "Normattiva",
+      "title": "Legge 27 maggio 1949, n. 260 - articolo 2 (testo vigente)",
+      "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1949-05-27;260~art2",
+      "path": "quality/reference-data/italy/artifacts/116-national-holidays/normattiva-legge-260-1949-art2-current.html",
+      "sha256": "sha256:672c7fdcff96f45391091e6d47ce1cce9e11d42217e157b815e3b9e088042c26",
+      "mediaType": "text/html"
+    },
+    {
+      "authority": "Normattiva",
+      "title": "Legge 5 marzo 1977, n. 54",
+      "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1977-03-05;54",
+      "path": "quality/reference-data/italy/artifacts/116-national-holidays/normattiva-legge-54-1977.html",
+      "sha256": "sha256:60980047d9007ed57637cacff85edaf2de74062b411a9618cddfd45671c35105",
+      "mediaType": "text/html"
+    },
+    {
+      "authority": "Normattiva",
+      "title": "D.P.R. 28 dicembre 1985, n. 792",
+      "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:presidente.repubblica:decreto:1985-12-28;792",
+      "path": "quality/reference-data/italy/artifacts/116-national-holidays/normattiva-dpr-792-1985.html",
+      "sha256": "sha256:1108a9fcf497621d8361e063b929de138065bd4507df5617831ab0c97bfc4d65",
+      "mediaType": "text/html"
+    },
+    {
+      "authority": "Normattiva",
+      "title": "Legge 20 novembre 2000, n. 336",
+      "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2000-11-20;336",
+      "path": "quality/reference-data/italy/artifacts/116-national-holidays/normattiva-legge-336-2000.html",
+      "sha256": "sha256:aab8d8ff6f2e400b91586827306c681ffbdd3892cce9f599f06f2d28fde8d9bc",
+      "mediaType": "text/html"
+    },
+    {
+      "authority": "Normattiva",
+      "title": "Legge 8 ottobre 2025, n. 151",
+      "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-10-08;151",
+      "path": "quality/reference-data/italy/artifacts/116-national-holidays/normattiva-legge-151-2025.html",
+      "sha256": "sha256:8f1278032f970f8d273a918982e651a8c06cacc98da6b2e2ba721be1cb979c9c",
+      "mediaType": "text/html"
+    }
+  ],
+  "rules2026": {
+    "fixedNationalNonWorking": [
+      { "monthDay": "01-01", "name": "Capodanno", "source": "DPR-792-1985" },
+      { "monthDay": "01-06", "name": "Epifania", "source": "DPR-792-1985" },
+      { "monthDay": "04-25", "name": "Anniversario della Liberazione", "source": "L-260-1949-art2" },
+      { "monthDay": "05-01", "name": "Festa del Lavoro", "source": "L-260-1949-art2" },
+      { "monthDay": "06-02", "name": "Festa nazionale della Repubblica", "source": "L-336-2000" },
+      { "monthDay": "08-15", "name": "Assunzione", "source": "DPR-792-1985" },
+      { "monthDay": "10-04", "name": "Festa nazionale di San Francesco d'Assisi", "source": "L-151-2025" },
+      { "monthDay": "11-01", "name": "Tutti i Santi", "source": "DPR-792-1985" },
+      { "monthDay": "12-08", "name": "Immacolata Concezione", "source": "DPR-792-1985" },
+      { "monthDay": "12-25", "name": "Natale", "source": "DPR-792-1985" },
+      { "monthDay": "12-26", "name": "Santo Stefano", "source": "L-260-1949-art2" }
+    ],
+    "movable": [
+      {
+        "id": "easter-monday",
+        "name": "Lunedì dopo Pasqua",
+        "rule": "Monday immediately following Easter Sunday",
+        "example2026": "2026-04-06",
+        "source": "L-260-1949-art2"
+      }
+    ],
+    "localOnly": [
+      {
+        "monthDay": "06-29",
+        "name": "SS. Pietro e Paolo",
+        "scope": "Comune di Roma",
+        "source": "DPR-792-1985"
+      }
+    ],
+    "explicitlyNotNationwideNonWorking": [
+      { "name": "San Giuseppe", "reason": "ceased civil holiday under L. 54/1977" },
+      { "name": "Ascensione", "reason": "ceased civil holiday under L. 54/1977" },
+      { "name": "Corpus Domini", "reason": "ceased civil holiday under L. 54/1977" },
+      { "name": "SS. Pietro e Paolo", "reason": "ceased nationwide civil holiday under L. 54/1977; DPR 792/1985 recognizes 29 June only for Comune di Roma" },
+      { "name": "4 novembre", "reason": "ceased to be a non-working holiday under L. 54/1977" }
+    ]
+  },
+  "excludedEvidence": [
+    {
+      "path": "quality/fixtures/holiday-calendar/vectors.json",
+      "reason": "Existing deterministic calendar fixture is project-policy evidence and cannot be reclassified as an authoritative Italian national-holiday source."
+    }
+  ],
+  "decision": "READY",
+  "reason": "The 2026 national-holiday rules are derived only from pinned official legal texts. Easter Monday is explicit, the 4 October national holiday is effective from 2026, and historical/local observances that are not nationwide non-working holidays are represented as exclusions."
+}

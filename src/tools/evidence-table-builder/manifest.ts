@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const evidenceTableBuilderManifest = {
   id: "evidence-table-builder",
@@ -13,6 +14,8 @@ export const evidenceTableBuilderManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("evidence-table-builder"),
+  handoff: { emits: [{ type: "table", format: "csv" }] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-196", fixtureFamilies: ["research-source-inventory"] },
 } as const satisfies ToolManifest;
 

@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const researchUrlCleanerManifest = {
   id: "research-url-cleaner",
@@ -13,6 +14,7 @@ export const researchUrlCleanerManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("research-url-cleaner"),
   gold: { maintenanceClass: "E", oracleEntryId: "cand-194", fixtureFamilies: ["query-params", "url-percent-encoding"] },
 } as const satisfies ToolManifest;
 

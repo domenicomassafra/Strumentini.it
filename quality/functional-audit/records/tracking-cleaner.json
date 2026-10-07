@@ -1,0 +1,32 @@
+{
+  "toolId": "tracking-cleaner",
+  "category": "marketing",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Pulisce un URL dai parametri noti di campagna e tracciamento senza toccare quelli utili. Public jobs: Usa Rimuovi parametri di tracciamento.",
+  "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/campaign-url/tracking-cleaner.gold.json, executable functional tests in tests/campaign-url-engine.test.ts, and real-route browser acceptance in quality/receipts/campaign-url/browser-acceptance.json. Broader additive work is already owned by .scratch/strumentiutili-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "rationale": "No correctness or required-option gap was found in the currently declared public job. Broader additive work is already owned by .scratch/strumentiutili-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/campaign-url/tracking-cleaner.gold.json",
+      "claim": "Tool-specific Gold receipt binds tracking-cleaner to its current fixtures/oracle and functional acceptance."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/campaign-url-engine.test.ts",
+      "claim": "Executable tests cover the engine/module behavior used by tracking-cleaner, including relevant edge or invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/campaign-url/browser-acceptance.json",
+      "claim": "Committed browser acceptance names tracking-cleaner and exercises the real route with locality/mobile/accessibility or equivalent route-functional checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md",
+      "claim": "Existing targeted backlog owns additive functionality beyond tracking-cleaner's current narrow public job; it is not counted as already shipped by this audit."
+    }
+  ],
+  "childTickets": []
+}

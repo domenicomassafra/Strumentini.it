@@ -1,8 +1,20 @@
 import { useMemo, useState } from "preact/hooks";
 import { toolRuntime } from "../../runtime/tool-runtime";
+import { resolveResultActions } from "../../runtime/result-actions";
+import { businessDayManifest } from "../../tools/business-day/manifest";
 import type { DayCode } from "../../engines/date-time/business-days";
 import type { BusinessDayOutput } from "../../tools/business-day/types";
 import { PreviousValue } from "./shared/PreviousValue";
+import {
+  ResultActions,
+  ResultAssumptions,
+  ResultBreakdown,
+  ResultExplanation,
+  ResultInterpretation,
+  ResultPrimaryAnswer,
+  ResultProvenance,
+  ToolResultPanel,
+} from "./shared";
 import { gutterStateFromResult } from "./shared/ToolGutter";
 
 const PROFILE_WORKWEEK: readonly DayCode[] = ["MON", "TUE", "WED", "THU", "FRI"];
@@ -40,6 +52,7 @@ export function BusinessDayTool() {
   const [explicitWorkweek, setExplicitWorkweek] = useState<readonly DayCode[] | undefined>();
   const [result, setResult] = useState<BusinessDayOutput | null>(null);
   const [error, setError] = useState("");
+  const [actionStatus, setActionStatus] = useState("");
 
   const locale = "it-IT";
   const workweek = explicitWorkweek ?? PROFILE_WORKWEEK;
@@ -103,9 +116,26 @@ export function BusinessDayTool() {
     setExplicitWorkweek(undefined);
     setResult(null);
     setError("");
+    setActionStatus("");
   }
 
   const gutterState = gutterStateFromResult(result, error);
+  const declaration = businessDayManifest.result;
+  const resultActions = result === null ? [] : resolveResultActions({
+    declaration,
+    primary: "copy",
+    hasCopyPayload: resultText !== "",
+    resetReady: true,
+  });
+
+  async function copyResult() {
+    if (navigator.clipboard === undefined) {
+      setActionStatus("Gli appunti non sono disponibili; seleziona il risultato e copialo manualmente.");
+      return;
+    }
+    await navigator.clipboard.writeText(resultText);
+    setActionStatus("Risultato copiato.");
+  }
   return (
     <div class="tool-operation">
       <form onSubmit={submit} noValidate>
@@ -220,22 +250,25 @@ export function BusinessDayTool() {
         </div>
       </form>
 
-      <section class="result-panel gutter" data-state={gutterState} aria-live="polite" aria-atomic="true">
-        <p class="gutter-label eyebrow">Risultato</p>
-        {result === null ? (
-          <p class="result-placeholder">Il risultato apparirà qui.</p>
-        ) : (
-          <>
-            <PreviousValue value={resultText} />
-            {result.mode === "add" && <code>{result.resultDate}</code>}
-            <dl class="assumptions">
-              <div><dt>Settimana lavorativa</dt><dd>{result.assumptions.workweek.map((day) => DAY_LABELS.find(({ code }) => code === day)?.label ?? day).join(", ")}</dd></div>
-              <div><dt>Date escluse</dt><dd>{result.assumptions.excludedDates.length || "Nessuna"}</dd></div>
-              <div><dt>Estremi</dt><dd>Data iniziale esclusa · data finale inclusa</dd></div>
-            </dl>
-          </>
+      <ToolResultPanel eyebrow="Risultato" placeholder="Il risultato apparirà qui." state={gutterState}>
+        {result !== null && (
+          <div data-result-class="calculator">
+            <ResultExplanation
+              primary={<div data-result-slot="primary"><ResultPrimaryAnswer label={result.mode === "add" ? "Data lavorativa" : "Giorni lavorativi"}><PreviousValue value={resultText} className="" /></ResultPrimaryAnswer></div>}
+              interpretation={<div data-result-slot="interpretation"><ResultInterpretation state="success">{result.mode === "add" ? "Data ottenuta applicando la settimana lavorativa e le esclusioni indicate." : "Conteggio ottenuto con data iniziale esclusa e data finale inclusa."}</ResultInterpretation></div>}
+              breakdown={<div data-result-slot="breakdown"><ResultBreakdown rows={result.mode === "add" ? [{ label: "Data ISO", value: result.resultDate }, { label: "Giorni aggiunti", value: String(result.amount) }] : [{ label: "Giorni lavorativi", value: String(result.businessDays) }]} /></div>}
+              assumptions={<div data-result-slot="assumptions"><ResultAssumptions items={[
+                { label: "Settimana lavorativa", value: result.assumptions.workweek.map((day) => DAY_LABELS.find(({ code }) => code === day)?.label ?? day).join(", ") },
+                { label: "Date escluse", value: result.assumptions.excludedDates.length === 0 ? "Nessuna" : result.assumptions.excludedDates.join(", ") },
+                { label: "Estremi", value: "Data iniziale esclusa · data finale inclusa" },
+              ]} /></div>}
+              provenance={<div data-result-slot="provenance"><ResultProvenance>Calcolo locale; non viene interrogato alcun servizio esterno di festività.</ResultProvenance></div>}
+            />
+            <ResultActions actions={resultActions} onAction={{ copy: copyResult, reset }} />
+            {actionStatus !== "" && <p class="success" role="status" aria-live="polite">{actionStatus}</p>}
+          </div>
         )}
-      </section>
+      </ToolResultPanel>
     </div>
   );
 }

@@ -6,7 +6,7 @@
 
 **Constraints:** No route is promoted merely because it renders; existing non-Gold boundaries and historical receipts remain truthful; physical-device requirements cannot be replaced by emulation.
 
-**Blocked by:** 06, 18, 45, 65, 66.
+**Blocked by:** 06, 18, 45, 65, 66, 111, 112, 113, 114, 158, 206, 276, 279, 280, 281.
 
 **Status:** blocked
 

@@ -38,6 +38,10 @@ const FIELD_LABELS: Readonly<Record<string, string>> = {
   values: "Valori epoch",
   unit: "Unità di ingresso",
   country: "Paese",
+  mode: "Modalità",
+  month: "Mese",
+  documentType: "Tipo di documento",
+  issueDate: "Data di emissione",
 };
 
 const FIELD_HELP: Readonly<Record<string, string>> = {
@@ -75,6 +79,13 @@ const OPTION_LABELS: Readonly<Record<string, string>> = {
   CA: "Canada",
   GB: "Regno Unito",
   IT: "Italia",
+  "date-list": "Elenco di date",
+  weekday: "Giorno della settimana",
+  "leap-year": "Anno bisestile",
+  month: "Calendario mensile",
+  cie: "Carta d'identità elettronica (CIE)",
+  "cie-temporary-fingerprint": "CIE temporanea senza impronte",
+  passport: "Passaporto ordinario",
 };
 
 export interface DateTimeUiCopy {
@@ -97,11 +108,12 @@ export const DATE_TIME_UI_IT: Readonly<Record<string, DateTimeUiCopy>> = {
   "deadline-countdown": { eyebrow: "Tempo alla scadenza", placeholder: "Qui apparirà il tempo rimanente o trascorso.", submit: "Calcola scadenza" },
   "recurring-date-generator": { eyebrow: "Serie di date", placeholder: "Qui appariranno le date generate.", submit: "Genera date" },
   "age-date-anniversary": { eyebrow: "Età e anniversario", placeholder: "Qui appariranno età e prossimo anniversario.", submit: "Calcola età" },
-  "calendar-date-list-generator": { eyebrow: "Elenco date", placeholder: "Qui apparirà l'elenco di calendario.", submit: "Genera elenco" },
+  "calendar-date-list-generator": { eyebrow: "Utilità calendario", placeholder: "Qui appariranno elenco date, giorno della settimana, regola bisestile o calendario mensile.", submit: "Calcola calendario" },
   "ics-event-builder": { eyebrow: "Evento ICS", placeholder: "Qui apparirà l'evento RFC 5545.", submit: "Crea evento ICS" },
   "ics-viewer": { eyebrow: "Analisi ICS", placeholder: "Qui apparirà la struttura dell'evento analizzato.", submit: "Analizza ICS" },
   "epoch-batch-converter": { eyebrow: "Conversione epoch", placeholder: "Qui appariranno le righe convertite.", submit: "Converti valori" },
   "public-holiday-lookup": { eyebrow: "Festività pubbliche", placeholder: "Qui apparirà il calendario incorporato.", submit: "Cerca festività" },
+  "italian-document-expiry": { eyebrow: "Scadenza calcolata", placeholder: "Qui apparirà la scadenza secondo la regola ufficiale supportata.", submit: "Calcola scadenza" },
 };
 
 export function dateTimeFieldLabelIt(key: string, fallback: string): string {
@@ -142,11 +154,17 @@ export function dateTimeResultHeadlineIt(toolId: string, result: unknown): strin
   if (toolId === "deadline-countdown") return `${directionIt(String(value.status ?? ""))} · ${Number(value.days ?? 0)} giorni`;
   if (toolId === "recurring-date-generator") return `${Array.isArray(value.dates) ? value.dates.length : 0} date`;
   if (toolId === "age-date-anniversary") return `${Number(value.years ?? 0)} anni · prossimo ${String(value.nextAnniversary ?? "")}`;
-  if (toolId === "calendar-date-list-generator") return `${Array.isArray(value.dates) ? value.dates.length : 0} date`;
+  if (toolId === "calendar-date-list-generator") {
+    if (Array.isArray(value.dates)) return `${value.dates.length} date`;
+    if (typeof value.weekdayIt === "string") return String(value.weekdayIt);
+    if (typeof value.leapYear === "boolean") return value.leapYear ? "Anno bisestile" : "Anno non bisestile";
+    if (typeof value.monthNameIt === "string") return `${String(value.monthNameIt)} ${String(value.year ?? "")}`;
+  }
   if (toolId === "ics-event-builder") return "Testo ICS locale valido";
   if (toolId === "ics-viewer") return `${Array.isArray(value.events) ? value.events.length : 0} eventi`;
   if (toolId === "epoch-batch-converter") return `${Array.isArray(value.rows) ? value.rows.length : 0} righe`;
   if (toolId === "public-holiday-lookup") return `${Array.isArray(value.holidays) ? value.holidays.length : 0} festività`;
+  if (toolId === "italian-document-expiry") return String(value.expiryDate ?? "");
   return "";
 }
 
@@ -192,6 +210,15 @@ const RESULT_KEYS: Readonly<Record<string, string>> = {
   ok: "valido",
   error: "errore",
   engineVersion: "versione_motore",
+  documentType: "tipo_documento",
+  issueDate: "data_emissione",
+  expiryDate: "data_scadenza",
+  ageAtIssue: "età_al_rilascio",
+  rule: "regola",
+  ruleVersion: "versione_regola",
+  checkedAt: "fonte_verificata_il",
+  verification: "limite_verifica",
+  sources: "fonti",
 };
 
 export function localizeDateTimeResultIt(value: unknown): unknown {

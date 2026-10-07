@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://strumentini.it/schemas/original-200-functional-audit-inventory.json",
+  "title": "Strumentini.it original-200 functional audit inventory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "entries"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "entries": {
+      "type": "array",
+      "minItems": 200,
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["toolId", "category", "ownerTicket", "status", "decision", "manifestRef", "runtime", "result", "fixtureRefs", "oracleRef", "evidenceRefs", "recordRef"],
+        "properties": {
+          "toolId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "category": { "type": "string", "minLength": 1 },
+          "ownerTicket": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["PENDING", "VERIFIED", "REFUSED"] },
+          "decision": { "type": ["string", "null"], "enum": ["UPGRADED", "ALREADY_COMPLETE", "REFUSED", null] },
+          "manifestRef": { "type": "string", "pattern": "^src/tools/[a-z0-9]+(?:-[a-z0-9]+)*/manifest\\.ts$" },
+          "runtime": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["location", "network"],
+            "properties": {
+              "location": { "enum": ["LOCAL", "REFERENCE", "REMOTE", "AI"] },
+              "network": { "enum": ["forbidden", "reference-only", "required"] }
+            }
+          },
+          "result": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ref", "declaration"],
+            "properties": {
+              "ref": { "type": "string", "pattern": "^src/tools/[a-z0-9]+(?:-[a-z0-9]+)*/manifest\\.ts#result$" },
+              "declaration": {
+                "type": ["object", "null"],
+                "properties": {
+                  "class": { "type": "string", "minLength": 1 },
+                  "capabilities": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+                },
+                "required": ["class", "capabilities"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "fixtureRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "ref"],
+              "properties": {
+                "id": { "type": "string", "minLength": 1 },
+                "ref": { "type": "string", "minLength": 1 }
+              }
+            }
+          },
+          "oracleRef": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["entryId", "ref"],
+            "properties": {
+              "entryId": { "type": "string", "minLength": 1 },
+              "ref": { "type": "string", "pattern": "^quality/oracles/registry\\.json#[a-z0-9-]+$" }
+            }
+          },
+          "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "recordRef": { "type": ["string", "null"], "pattern": "^quality/functional-audit/records/[a-z0-9]+(?:-[a-z0-9]+)*\\.json$" }
+        }
+      }
+    }
+  }
+}

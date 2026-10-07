@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "vectors": [
+    {
+      "id": "explicit-and-generated-names",
+      "input": "filename: src/app.ts\n```ts\nexport const answer = 42;\n```\n\n```json filename=package.json\n{\"name\":\"demo\"}\n```\n\n```python\nprint(\"ciao\")\n```",
+      "expectedPaths": ["src/app.ts", "package.json", "snippet-003.py"]
+    },
+    {
+      "id": "duplicate-name-suffix",
+      "input": "```js filename=app.js\nconsole.log(1)\n```\n```js filename=app.js\nconsole.log(2)\n```",
+      "expectedPaths": ["app.js", "app-2.js"]
+    }
+  ],
+  "refusals": ["../escape.ts", "/absolute.ts", "C:/absolute.ts"]
+}

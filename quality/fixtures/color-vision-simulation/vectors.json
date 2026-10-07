@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "model": "Machado, Oliveira & Fernandes (2009)",
+  "severity": 1,
+  "matrices": {
+    "protanopia": [
+      [0.152286, 1.052583, -0.204868],
+      [0.114503, 0.786281, 0.099216],
+      [-0.003882, -0.048116, 1.051998]
+    ],
+    "deuteranopia": [
+      [0.367322, 0.860646, -0.227968],
+      [0.280085, 0.672501, 0.047413],
+      [-0.011820, 0.042940, 0.968881]
+    ],
+    "tritanopia": [
+      [1.255528, -0.076749, -0.178779],
+      [-0.078411, 0.930809, 0.147602],
+      [0.004733, 0.691367, 0.303900]
+    ]
+  },
+  "vectors": [
+    { "name": "protanopia red preserves alpha", "mode": "protanopia", "input": [255, 0, 0, 77], "expected": [109, 95, 0, 77] },
+    { "name": "protanopia green", "mode": "protanopia", "input": [0, 255, 0, 255], "expected": [255, 229, 0, 255] },
+    { "name": "deuteranopia red", "mode": "deuteranopia", "input": [255, 0, 0, 255], "expected": [163, 144, 0, 255] },
+    { "name": "deuteranopia bounded sRGB sample", "mode": "deuteranopia", "input": [51, 102, 153, 201], "expected": [66, 95, 152, 201] },
+    { "name": "tritanopia green", "mode": "tritanopia", "input": [0, 255, 0, 129], "expected": [0, 247, 217, 129] },
+    { "name": "tritanopia blue", "mode": "tritanopia", "input": [0, 0, 255, 255], "expected": [0, 107, 150, 255] },
+    { "name": "white remains white", "mode": "protanopia", "input": [255, 255, 255, 255], "expected": [255, 255, 255, 255] },
+    { "name": "black remains black", "mode": "deuteranopia", "input": [0, 0, 0, 31], "expected": [0, 0, 0, 31] }
+  ]
+}

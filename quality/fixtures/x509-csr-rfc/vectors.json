@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "artifacts": [
+    { "path": "quality/fixtures/x509-csr-rfc/sample-cert.pem" },
+    { "path": "quality/fixtures/x509-csr-rfc/sample-cert.der" },
+    { "path": "quality/fixtures/x509-csr-rfc/sample.csr.pem" },
+    { "path": "quality/fixtures/x509-csr-rfc/sample.csr.der" }
+  ],
+  "certificate": {
+    "subject_contains": "CN=example.test",
+    "issuer_contains": "CN=example.test",
+    "serial": "6D277C4FF0DCD69A49B46D0CB00833C588B5E148",
+    "sans": ["DNS:example.test", "DNS:www.example.test", "IP:127.0.0.1"],
+    "public_key_algorithm": "RSA",
+    "public_key_bits": 2048,
+    "sha256_fingerprint": "40:05:E5:F2:BD:BB:E0:D7:E5:2D:BC:B1:CD:94:13:CD:CA:2A:DF:F6:AC:80:AD:00:B1:C7:03:D9:A6:9A:1A:53"
+  },
+  "csr": {
+    "subject_contains": "CN=csr.example.test",
+    "sans": ["DNS:csr.example.test", "DNS:alt.example.test"],
+    "public_key_algorithm": "RSA",
+    "public_key_bits": 2048
+  }
+}

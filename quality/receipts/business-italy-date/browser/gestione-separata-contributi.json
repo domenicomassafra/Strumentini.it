@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "checkedAt": "2026-10-07T14:41:33.524Z",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "subjectToolId": "gestione-separata-contributi",
+  "oracleEntryId": "cand-257",
+  "keyboard": "submit exercised with Enter",
+  "accessibility": "all interactive controls in the exercised form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObserved": true,
+  "semanticEvidence": "fixture-aligned bounded input produced the asserted visible domain output",
+  "result": {
+    "toolId": "gestione-separata-contributi",
+    "oracleEntryId": "cand-257",
+    "status": "PASS",
+    "semanticAssertion": "2[.\\s]?607[,.]00\\s*€",
+    "outputSha256": "7dd7edc9fd68bbb6724ba80ed35a6c9a4b4e94d45d330403d27ace4c916d6814",
+    "taskRequestCount": 18,
+    "lazyScriptCount": 18,
+    "externalTaskRequests": 0,
+    "nonGetTaskRequests": 0,
+    "taskContentLeaks": 0,
+    "runtimeErrors": 0,
+    "horizontalOverflow": false,
+    "unlabeledControls": 0,
+    "oracleMarkerObserved": true
+  }
+}

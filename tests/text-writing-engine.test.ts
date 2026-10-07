@@ -40,6 +40,13 @@ import sampleDataModule from "../src/tools/lorem-sample-data-generator/module";
 import slugModule from "../src/tools/slug-generator/module";
 import textToCsvModule from "../src/tools/text-to-csv-rows/module";
 import textDiffModule from "../src/tools/text-diff/module";
+import semanticTextChunkerModule from "../src/tools/semantic-text-chunker/module";
+import factSensitiveTextDiffModule from "../src/tools/fact-sensitive-text-diff/module";
+import stablePlaceholderAnonymizerModule from "../src/tools/stable-placeholder-anonymizer/module";
+import italianGulpeaseReadabilityModule from "../src/tools/italian-gulpease-readability/module";
+import mojibakeRepairModule from "../src/tools/mojibake-repair/module";
+import pdfCopyTextReflowModule from "../src/tools/pdf-copy-text-reflow/module";
+import phoneLinkHashtagMentionExtractorModule from "../src/tools/phone-link-hashtag-mention-extractor/module";
 
 const modules = [
   wordCharacterLineCounterModule,
@@ -62,6 +69,13 @@ const modules = [
   slugModule,
   textToCsvModule,
   textDiffModule,
+  semanticTextChunkerModule,
+  factSensitiveTextDiffModule,
+  stablePlaceholderAnonymizerModule,
+  italianGulpeaseReadabilityModule,
+  mojibakeRepairModule,
+  pdfCopyTextReflowModule,
+  phoneLinkHashtagMentionExtractorModule,
 ];
 
 describe("text-writing engine", () => {
@@ -166,6 +180,14 @@ describe("text-writing tool modules", () => {
     expect(sampleDataModule.run({ type: "numbers", count: 2, seed: 1 }, { defaults: {} })).toMatchObject({ count: 2 });
     expect(languageStatisticsModule.run({ text: "Hello" }, { defaults: {} })).toMatchObject({ words: 1 });
     expect(textDiffModule.run({ before: "a", after: "b" }, { defaults: {} })).toMatchObject({ additions: 1, removals: 1 });
+    expect(semanticTextChunkerModule.run({ text: "A sentence. Another sentence.", targetCharacters: 32 }, { defaults: {} })).toMatchObject({ exactRoundTrip: true });
+    expect(factSensitiveTextDiffModule.run({ before: "42", after: "43" }, { defaults: {} })).toMatchObject({ sensitiveChangeCount: 2 });
+    const anonymized = stablePlaceholderAnonymizerModule.run({ text: "Mario", mode: "anonymize", entities: ["Mario"] }, { defaults: {} }) as { output: string; mapping: unknown[] };
+    expect(anonymized.mapping).toHaveLength(1);
+    expect(italianGulpeaseReadabilityModule.run({ text: "Il gatto corre." }, { defaults: {} })).toMatchObject({ words: 3, sentences: 1 });
+    expect(mojibakeRepairModule.run({ text: "CafÃ¨" }, { defaults: {} })).toMatchObject({ output: "Cafè", accepted: true });
+    expect(pdfCopyTextReflowModule.run({ text: "prima riga\ncontinua." }, { defaults: {} })).toMatchObject({ output: "prima riga continua." });
+    expect(phoneLinkHashtagMentionExtractorModule.run({ text: "#ciao" }, { defaults: {} })).toMatchObject({ count: 1 });
   });
 
   it("rejects cancelled work at the shared module seam", () => {
@@ -175,6 +197,6 @@ describe("text-writing tool modules", () => {
   });
 
   it("keeps module count aligned with the implemented family", () => {
-    expect(modules).toHaveLength(20);
+    expect(modules).toHaveLength(27);
   });
 });

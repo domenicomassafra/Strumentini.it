@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "9418f6d684412c1fc8346a54637d766a06c7f2cdcea37ddf6ba6cd24639a17b6",
+  "toolId": "browser-text-to-speech",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-248",
+  "fixtureFamilies": [
+    "browser-audio-utilities"
+  ],
+  "boundedScopeGaps": [
+    "The platform may use a remote speech service; Strumentini cannot certify the underlying voice implementation as offline."
+  ],
+  "scopePolicy": "Every canonical unresolved oracle gap is matched against a tool-specific bounded-scope policy. Unknown/new gap wording fails certification.",
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-quality",
+    "w3c-media-capture-streams",
+    "w3c-mediastream-recording",
+    "w3c-web-audio-1-1",
+    "wicg-web-speech-api"
+  ],
+  "directChecks": [
+    "text/rate/pitch bounds exact",
+    "Italian runtime voice filter exact",
+    "platform remote-service limitation disclosed"
+  ],
+  "propertyChecks": [
+    "local-only public runtime",
+    "canonical oracle confidence high",
+    "all oracle gaps classified as bounded exclusions",
+    "fixture replay",
+    "real browser locality/mobile acceptance",
+    "route bundle isolated from home initial JS"
+  ],
+  "identities": {
+    "manifestSha256": "2d56b1506c67e3379f79c6ad6103a8155f6dffac29226fb2304a92efdafe0e25",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "browserAcceptanceSha256": "2966153dcc15c9d41f1d1ed7913652ffdaf6cdfb829ea625a2e12c4f1e4c7076",
+    "bundleIsolationSha256": "f8cc75d37de5f47d79a94a350710156bbf079972838dfdf080685192016e91c2",
+    "unitTestsSha256": "07eccbd4a6985f95ad156d41e88dc8002c59eb4fbe5b381acddb639bd7e5b6ed",
+    "fixture:browser-audio-utilities:sha256": "81a447840ffa112ab7f3d409a3db92723b5d453ffe6ec1ac5d86ed703ae0a2d9"
+  }
+}

@@ -1,5 +1,5 @@
 /*
- * StrumentiUtili.it — tool renderer vocabulary.
+ * Strumentini.it — tool renderer vocabulary.
  *
  * Everything shared across surfaces (cards, fields, actions, results, the
  * result column) lives in `src/styles/global.css`. This sheet declares only
@@ -239,6 +239,72 @@ progress { width: 100%; margin: var(--space-2) 0; accent-color: var(--brand); }
 .markdown-output a { color: var(--brand); text-decoration: underline; }
 
 .preset-provenance { color: var(--text-muted); font-size: var(--font-size-sm); }
+
+/* ── Direct image transform workspace ─────────────────────────────────── */
+
+.image-transform-stage {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 var(--space-6);
+}
+
+.image-transform-canvas {
+  display: block;
+  width: min(100%, 720px);
+  max-height: min(62vh, 560px);
+  margin-inline: auto;
+  object-fit: contain;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background-image:
+    linear-gradient(45deg, var(--surface-subtle) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--surface-subtle) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--surface-subtle) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--surface-subtle) 75%);
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  background-size: 16px 16px;
+  touch-action: none;
+  cursor: grab;
+  outline-offset: 3px;
+}
+
+.image-transform-canvas:active { cursor: grabbing; }
+
+/* ── Browser diagnostics ───────────────────────────────────────────────── */
+
+.network-action-card {
+  margin-top: var(--space-6);
+  padding: var(--space-5);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-subtle);
+}
+
+.network-action-card h3 { margin-top: 0; }
+.network-action-result { min-height: 1.5em; margin-top: var(--space-3); }
+
+.keyboard-test-surface {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+  padding: var(--space-6);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-subtle);
+  outline-offset: 3px;
+}
+
+.keyboard-test-surface[data-active="true"] { border-color: var(--brand); }
+.keyboard-history { margin-top: var(--space-6); }
+.table-scroll { max-width: 100%; overflow-x: auto; }
+.keyboard-history table { width: 100%; border-collapse: collapse; }
+.keyboard-history th,
+.keyboard-history td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
 
 /* ── Mobile: the result column drops below the input, full width ────────── */
 

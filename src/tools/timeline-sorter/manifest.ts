@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const timelineSorterManifest = {
   id: "timeline-sorter",
@@ -13,6 +14,7 @@ export const timelineSorterManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("timeline-sorter"),
   gold: { maintenanceClass: "E", oracleEntryId: "cand-192", fixtureFamilies: ["date-arithmetic"] },
 } as const satisfies ToolManifest;
 

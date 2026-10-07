@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "profile": "agricultural-worker-general",
+  "year": 2026,
+  "positiveCases": [
+    {
+      "id": "round-base-1000",
+      "input": {
+        "contributionBaseEur": 1000
+      },
+      "expected": {
+        "workerContributionEur": 88.4,
+        "employerContributionEur": 216.6,
+        "totalFpldContributionEur": 305
+      }
+    },
+    {
+      "id": "at-additional-one-percent-boundary",
+      "input": {
+        "contributionBaseEur": 56224
+      },
+      "expected": {
+        "workerContributionEur": 4970.2,
+        "employerContributionEur": 12178.12,
+        "totalFpldContributionEur": 17148.32
+      }
+    },
+    {
+      "id": "part-time-at-pinned-hourly-minimum",
+      "input": {
+        "contributionBaseEur": 1000,
+        "partTimeHourlyRemunerationEur": 8.94
+      },
+      "expected": {
+        "workerContributionEur": 88.4,
+        "employerContributionEur": 216.6,
+        "totalFpldContributionEur": 305
+      }
+    }
+  ],
+  "rejectionCases": [
+    {
+      "id": "above-bounded-v1-threshold",
+      "input": {
+        "year": 2026,
+        "profile": "agricultural-worker-general",
+        "contributionBaseEur": 56224.01
+      },
+      "expectedErrorCode": "EMPLOYEE_BASE_ABOVE_BOUNDED_V1"
+    },
+    {
+      "id": "part-time-below-hourly-minimum",
+      "input": {
+        "year": 2026,
+        "profile": "agricultural-worker-general",
+        "contributionBaseEur": 1000,
+        "partTimeHourlyRemunerationEur": 8.93
+      },
+      "expectedErrorCode": "EMPLOYEE_PART_TIME_HOURLY_MINIMUM_NOT_MET"
+    },
+    {
+      "id": "unsupported-cross-sector-profile",
+      "input": {
+        "year": 2026,
+        "profile": "employee-general",
+        "contributionBaseEur": 1000
+      },
+      "expectedErrorCode": "UNSUPPORTED_EMPLOYEE_PROFILE"
+    },
+    {
+      "id": "unsupported-year",
+      "input": {
+        "year": 2027,
+        "profile": "agricultural-worker-general",
+        "contributionBaseEur": 1000
+      },
+      "expectedErrorCode": "UNSUPPORTED_INPS_YEAR"
+    }
+  ]
+}

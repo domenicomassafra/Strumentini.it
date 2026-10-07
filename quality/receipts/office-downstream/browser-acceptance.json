@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "scope": "bounded Office downstream 161/163/225/226/227/260-outline/261; no faithful raster claim",
+  "workersObserved": 8,
+  "lazyResourcesAdded": 134,
+  "externalRequests": 0,
+  "mobileOverflow": false,
+  "result": {
+    "csv": "id,date-like,amount\n00123,03/04/2026,12.5",
+    "generatedXlsxBytes": 2716,
+    "docx": {
+      "kind": "docx",
+      "outputBytes": 9617,
+      "sizeOutcome": "larger",
+      "verification": {
+        "memberSetUnchanged": true,
+        "memberBytesUnchanged": true,
+        "relationshipBytesUnchanged": true,
+        "contentTypesBytesUnchanged": true,
+        "structuralCountsUnchanged": true,
+        "outputCompression": "deflate",
+        "externalRelationshipsPreservedInert": 0
+      },
+      "structure": {
+        "kind": "docx",
+        "previewPolicy": "semantic-structure-only-not-faithful-rendering",
+        "activeContentPolicy": "macros-refused-scripts-never-executed-external-links-never-resolved"
+      },
+      "semanticText": "Fattura di prova\n\nCliente: Mario Rossi\n\nTotale: 299,90 EUR",
+      "metadata": {
+        "removed": 5,
+        "after": 0,
+        "verification": {
+          "metadataReinspectionEmpty": true,
+          "memberSetUnchanged": true,
+          "relationshipBytesUnchanged": true,
+          "contentTypesBytesUnchanged": true,
+          "structuralCountsUnchanged": true
+        }
+      },
+      "generated": {
+        "kind": "docx",
+        "text": "Browser DOCX\n\nvoce\n\nid\tvalore\n007\tBond",
+        "verification": {
+          "reopened": true,
+          "memberSetValidated": true,
+          "deterministicSimpleStyleTemplate": true
+        }
+      }
+    },
+    "pptx": {
+      "slides": [
+        {
+          "slideNumber": 1,
+          "part": "ppt/slides/slide1.xml",
+          "title": "Presentazione di prova",
+          "titleSource": "first-text-fallback",
+          "text": [
+            "Presentazione di prova",
+            "Valore verificabile: 12345"
+          ]
+        }
+      ],
+      "rasterExport": {
+        "status": "REFUSED",
+        "reason": "No approved faithful PPTX renderer exists in the bounded Office runtime."
+      }
+    }
+  }
+}

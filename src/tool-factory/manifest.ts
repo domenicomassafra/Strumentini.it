@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RESULT_CAPABILITIES, RESULT_CLASSES, type ResultDeclaration } from "../catalog/manifest";
 
 export const TOOL_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 export const TOOL_ROUTE_PATTERN = /^\/tools\/[a-z0-9]+(?:-[a-z0-9]+)*$/u;
@@ -53,6 +54,11 @@ export const handoffDescriptorSchema = z.object({
 export const handoffSchema = z.object({
   accepts: z.array(handoffDescriptorSchema).readonly().optional(),
   emits: z.array(handoffDescriptorSchema).readonly().optional(),
+}).strict();
+
+export const resultDeclarationSchema = z.object({
+  class: z.enum(RESULT_CLASSES),
+  capabilities: z.array(z.enum(RESULT_CAPABILITIES)).readonly(),
 }).strict();
 
 export const dependencySchema = z.object({
@@ -117,6 +123,7 @@ export const toolManifestSchema = z.object({
   capabilities: z.array(z.enum(CAPABILITIES)).readonly().optional(),
   profileFields: z.array(profileFieldSchema).readonly(),
   handoff: handoffSchema.optional(),
+  result: resultDeclarationSchema.optional(),
   gold: z.object({
     maintenanceClass: z.enum(MAINTENANCE_CLASSES),
     oracleEntryId: z.string().regex(/^cand-\d{3}$/u),
@@ -183,6 +190,7 @@ export interface FactoryToolManifest {
   readonly capabilities: readonly Capability[];
   readonly profileFields: readonly z.infer<typeof profileFieldSchema>[];
   readonly handoff?: z.infer<typeof handoffSchema>;
+  readonly result?: ResultDeclaration;
   readonly gold: {
     readonly maintenanceClass: MaintenanceClass;
     readonly oracleEntryId: string;
@@ -297,6 +305,12 @@ function normalizeManifest(parsed: ParsedToolManifest): FactoryToolManifest {
     capabilities: [...(parsed.capabilities ?? [])],
     profileFields: parsed.profileFields.map((field) => ({ ...field })),
     ...(parsed.handoff === undefined ? {} : { handoff: parsed.handoff }),
+    ...(parsed.result === undefined ? {} : {
+      result: {
+        class: parsed.result.class,
+        capabilities: [...parsed.result.capabilities],
+      },
+    }),
     gold: { ...parsed.gold, fixtureFamilies: [...parsed.gold.fixtureFamilies] },
     version: parsed.version ?? "0.0.0",
     deterministic: parsed.deterministic ?? true,
@@ -396,6 +410,9 @@ export function collectManifestIssues(
   issues.push(...collectDuplicateValues(manifest.packIds, `${manifest.id}: packIds`));
   issues.push(...collectDuplicateValues(manifest.roleTags, `${manifest.id}: roleTags`));
   issues.push(...collectDuplicateValues(manifest.profileFields.map((field) => field.key), `${manifest.id}: profileFields`));
+  if (manifest.result !== undefined) {
+    issues.push(...collectDuplicateValues(manifest.result.capabilities, `${manifest.id}: result.capabilities`));
+  }
   issues.push(...collectDuplicateValues(manifest.gold.fixtureFamilies, `${manifest.id}: gold.fixtureFamilies`));
   issues.push(...collectDuplicateValues(manifest.dependencies.map((dependency) => dependency.name), `${manifest.id}: dependencies`));
   issues.push(...collectDuplicateValues(

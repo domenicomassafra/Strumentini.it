@@ -3,7 +3,7 @@
   "kind": "browser-acceptance",
   "subject": "onboarding",
   "generatedBy": "scripts/acceptance-onboarding.mjs",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
   "status": "PASS",
   "browser": "chrome",
   "viewport": {

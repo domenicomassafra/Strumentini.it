@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
   "toolId": "bibtex-formatter",
   "runtime": {
     "location": "LOCAL",
@@ -35,7 +35,7 @@
   "checksumAlgorithm": "SHA-256",
   "browserContract": {
     "assertion": "@article\\{rossi2026,[\\s\\S]*author = \\{Ada Rossi\\}[\\s\\S]*year = \\{2026\\}",
-    "outputSha256": "ee6f617b0f01b82b2c75b0f1a990091b7d698119f2c2c7ef3688b5ea3b9bc37f",
+    "outputSha256": "a7c09c34ae831173d1aa4705eaff1bcc5e572c020b446d595f37764ebd3f82fd",
     "locality": "zero external/non-GET/task-body requests",
     "lazyLoad": "implementation script observed after submit",
     "mobile": "390px without horizontal overflow",
@@ -54,12 +54,12 @@
     "repeat-run determinism and abort propagation re-proved on the committed source"
   ],
   "identities": {
-    "manifestSha256": "e17c8df417068d96dcf0477c7bc1a4906fe6bbd220d4416dcd5c2b8d038cb0e3",
-    "engineSha256": "ba102e9d78d6bc9c9cdb6a6deab5ca78d474d0a286d14f1e0666c4dd19929f78",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "ddd71f1cbdcfa4d4df1e85240a1976cbe6f0f36fa6634d9f6214e58824cb7048",
-    "acceptanceScriptSha256": "8dbb68f779a4cabd67c3ac1b94e626074c3ebdcaf6f465126cf7c8b8101845fd",
+    "manifestSha256": "98c5e61b7a4605d987aabac2a74db1444e85638490f3a6ec1afba66cf1a13661",
+    "engineSha256": "d7417088bf48c40ccf610aa6d32d5e57c427033d5b5d61f35ffac800595cdbf6",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "dce2a96b35d4633bb55cd8c9a14f9a018a5c13bb3f251516f04566512086ce3f",
+    "acceptanceScriptSha256": "2c1afde893dfcfb283d9511908e03ab10cf8d6c2bfa2a73861891d9088aade9f",
     "unitTestsSha256": "46dcd92ee24212e7d895aa2c8c872eddd36b43ddd26b519b026edbdd861dbb00",
     "fixture:research-bibtex-syntax:sha256": "946fc56e46532ffe569a3e9dae10a1be4633f2d8b48351ba661270b27e8dc0bf"
   }

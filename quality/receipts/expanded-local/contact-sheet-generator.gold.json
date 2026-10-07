@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "contact-sheet-generator",
   "runtime": {
     "location": "LOCAL",
@@ -36,7 +36,7 @@
   ],
   "browserContract": {
     "assertion": "Colonne|columns|Righe|rows",
-    "outputSha256": "6457a117067de1dcc15dbfdc0facc8b3eb2f7834495e15efa16b49c0f08b00f0",
+    "outputSha256": "e86713cdd13a171496b01db59952a650e84c8875462c1cd4086798289c0c037c",
     "locality": "zero external/non-GET/task-body requests",
     "lazyLoad": "implementation script observed after submit",
     "mobile": "390px without horizontal overflow",
@@ -51,12 +51,12 @@
     "keyboard/mobile/a11y/locality/lazy browser acceptance"
   ],
   "identities": {
-    "manifestSha256": "7f12027e689b60238d03a9a199b7f3f27dc841fc159bd10410881b368847775a",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "cfc46c38986031b3817fa823c76ae6eaa7e31b3d6ce383c16c7f51b6ff614431",
-    "acceptanceScriptSha256": "07cedaf3a275471dd3570ec318862c4716722876adf598f7651423c6b75ab5ac",
-    "unitTestsSha256": "a3314530c29759c41167e9c2be44b552723c2f39589a57ff7013a6d770c786e8",
+    "manifestSha256": "1648d20c03802ae8198d69ccec49e6f69c3c65a1522279d01e176abf68817178",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "0013bb17ddc8213c484a55674ce2f36eca1acffdfb4dc5dfdaa0053166c8dc6f",
+    "acceptanceScriptSha256": "d383d4babd80b070e8357622cb3753903254ab7afd5c355e346108c11437d851",
+    "unitTestsSha256": "41e0049894daa2eb3e6f856e98a6944994ce3070092d1ab1f21999f4058a35c2",
     "fixture:image-metadata:sha256": "636a2a09fef7acc95fc32184357a28883b61f1d27a1e8d7dd76c6cc73be8398d",
     "fixture:mime-file-signatures:sha256": "34738fae795924ef3099e181d756509633c77ad82160905e824632ea3018d5fa"
   }

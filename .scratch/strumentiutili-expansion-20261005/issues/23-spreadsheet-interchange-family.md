@@ -6,13 +6,15 @@
 
 **Constraints:** Preserve leading zeros/text intentionally; sheet selection and encoding choices are explicit; heavy parsers are lazy and bounded.
 
-**Blocked by:** 01 — Result System v2 primitives.
+**Blocked by:** None — 161, 169 and 171 are complete.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] CSV→XLSX offers column text-preservation controls and proves them with fixtures.
-- [ ] XLSX→CSV requires explicit sheet choice for multi-sheet files.
-- [ ] XML conversions reject/describe non-tabular structures rather than flatten silently.
-- [ ] Large CSV splitting repeats headers and proves byte/row reconstruction.
+- [x] CSV→XLSX offers column text-preservation controls and proves them with fixtures.
+- [x] XLSX→CSV requires explicit sheet choice for multi-sheet files.
+- [x] XML conversions reject/describe non-tabular structures rather than flatten silently.
+- [x] Large CSV splitting repeats headers and proves byte/row reconstruction.
 
 **Verification:** Golden file round trips, leading-zero/date-like fixtures, malformed input tests, memory-size guidance and browser acceptance.
+
+**Closure evidence (2026-10-07):** `tests/spreadsheet-interchange.test.ts` proves default-text preservation for `00123` and date-like strings, explicit number/date column policies, explicit multi-sheet selection, Markdown→XLSX reopen and the pinned ISTAT workbook's leading-zero administrative codes. `tests/xml-interchange.test.ts` proves deterministic XML→JSON/CSV/XLSX mappings and ambiguity refusal. `tests/table-advanced-operations.test.ts` proves header-preserving CSV split reconstruction, byte-mode splitting, cancellation and a 48 MiB-class bounded parser buffer. The heavy XLSX path is lazy and browser-bounded by the ticket-161 acceptance evidence.

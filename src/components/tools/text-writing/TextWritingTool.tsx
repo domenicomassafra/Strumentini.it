@@ -11,6 +11,7 @@ import {
 } from "../shared";
 import { CONTROL, it } from "../shared/controlLabels";
 import { gutterStateFor } from "../shared/ToolGutter";
+import { TextFamilyResultV2 } from "./TextFamilyResultV2";
 
 export type TextWritingToolId =
   | "word-character-line-counter"
@@ -31,7 +32,14 @@ export type TextWritingToolId =
   | "text-to-csv-rows"
   | "csv-column-to-list"
   | "lorem-sample-data-generator"
-  | "language-aware-text-statistics";
+  | "language-aware-text-statistics"
+  | "semantic-text-chunker"
+  | "fact-sensitive-text-diff"
+  | "stable-placeholder-anonymizer"
+  | "italian-gulpease-readability"
+  | "mojibake-repair"
+  | "pdf-copy-text-reflow"
+  | "phone-link-hashtag-mention-extractor";
 
 interface TextWritingToolProps {
   tool: TextWritingToolId;
@@ -61,6 +69,13 @@ const TOOL_LABELS: Record<TextWritingToolId, string> = {
   "csv-column-to-list": "Estrai colonna",
   "lorem-sample-data-generator": "Genera dati di esempio",
   "language-aware-text-statistics": "Analizza il testo",
+  "semantic-text-chunker": "Dividi il testo",
+  "fact-sensitive-text-diff": "Confronta testi e marker",
+  "stable-placeholder-anonymizer": "Elabora segnaposto",
+  "italian-gulpease-readability": "Calcola Gulpease",
+  "mojibake-repair": "Controlla codifica testo",
+  "pdf-copy-text-reflow": "Ricompone testo da PDF",
+  "phone-link-hashtag-mention-extractor": "Estrai contatti e riferimenti",
 };
 
 const CASE_LABELS: Readonly<Record<CaseMode, string>> = {
@@ -101,6 +116,10 @@ function isListPair(tool: TextWritingToolId): boolean {
   return tool === "list-intersection" || tool === "list-difference";
 }
 
+function needsSecondary(tool: TextWritingToolId): boolean {
+  return isListPair(tool) || tool === "fact-sensitive-text-diff" || tool === "stable-placeholder-anonymizer";
+}
+
 function inputFor(tool: TextWritingToolId, values: {
   text: string;
   secondary: string;
@@ -124,7 +143,15 @@ function inputFor(tool: TextWritingToolId, values: {
   lowercase: boolean;
   maxLength: string;
   wordsPerMinute: string;
+  expansionMode: "anonymize" | "restore";
+  targetCharacters: string;
+  overlapCharacters: string;
 }): Record<string, unknown> {
+  if (tool === "semantic-text-chunker") return { text: values.text, targetCharacters: values.targetCharacters, overlapCharacters: values.overlapCharacters };
+  if (tool === "fact-sensitive-text-diff") return { before: values.text, after: values.secondary };
+  if (tool === "stable-placeholder-anonymizer") return values.expansionMode === "anonymize"
+    ? { text: values.text, mode: "anonymize", entities: values.secondary }
+    : { text: values.text, mode: "restore", mapping: values.secondary };
   if (tool === "reading-time-estimator") {
     const input: Record<string, unknown> = { text: values.text };
     if (values.wordsPerMinute.trim() !== "") input.wordsPerMinute = values.wordsPerMinute;
@@ -161,105 +188,6 @@ function inputFor(tool: TextWritingToolId, values: {
   return { text: values.text };
 }
 
-function stringValue(value: unknown): string | null {
-  return typeof value === "string" ? value : null;
-}
-
-function outputValue(value: unknown): string | null {
-  if (typeof value !== "object" || value === null) return null;
-  const record = value as Record<string, unknown>;
-  for (const key of ["output", "csv", "list", "data", "cleanText", "html"]) {
-    const candidate = record[key];
-    if (typeof candidate === "string") return candidate;
-  }
-  return null;
-}
-
-const MARKDOWN_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6", "p", "br", "strong", "em", "del", "code", "pre", "blockquote", "ul", "ol", "li", "hr", "a"]);
-
-function safePreviewHtml(value: string): string | null {
-  if (typeof DOMParser === "undefined") return null;
-  const parsed = new DOMParser().parseFromString(`<body>${value}</body>`, "text/html");
-  for (const element of [...parsed.body.querySelectorAll("*")]) {
-    const tag = element.tagName.toLowerCase();
-    if (!MARKDOWN_TAGS.has(tag)) {
-      element.remove();
-      continue;
-    }
-    for (const attribute of [...element.attributes]) {
-      if (tag === "a" && attribute.name === "href") continue;
-      if (tag === "a" && attribute.name === "rel") continue;
-      element.removeAttribute(attribute.name);
-    }
-    if (tag === "a") {
-      const href = element.getAttribute("href");
-      if (href === null) continue;
-      try {
-        const protocol = new URL(href, "https://preview.invalid/").protocol;
-        if (protocol !== "http:" && protocol !== "https:" && protocol !== "mailto:" && protocol !== "tel:") element.removeAttribute("href");
-      } catch {
-        element.removeAttribute("href");
-      }
-    }
-  }
-  return parsed.body.innerHTML;
-}
-
-function ResultOutput({ tool, value }: { tool: TextWritingToolId; value: unknown }) {
-  if (tool === "markdown-preview" && typeof value === "object" && value !== null) {
-    const html = stringValue((value as Record<string, unknown>).html);
-    if (html !== null) {
-      const safeHtml = safePreviewHtml(html);
-      if (safeHtml !== null) return <div class="markdown-output" dangerouslySetInnerHTML={{ __html: safeHtml }} />;
-      return <pre class="text-result">{html}</pre>;
-    }
-  }
-  const text = outputValue(value);
-  if (text !== null) return <pre class="text-result">{text === "" ? "(risultato vuoto)" : text}</pre>;
-  const keys: Readonly<Record<string, string>> = {
-    words: "parole",
-    characters: "caratteri",
-    codePoints: "punti_codice",
-    charactersNoWhitespace: "caratteri_senza_spazi",
-    lines: "righe",
-    paragraphs: "paragrafi",
-    readingMinutes: "minuti_lettura",
-    sentences: "frasi",
-    counts: "conteggi",
-    frequencies: "frequenze",
-    language: "lingua",
-    languageHeuristic: "stima_lingua",
-    scripts: "alfabeti",
-    duplicatesRemoved: "duplicati_rimossi",
-    matches: "corrispondenze",
-    warnings: "avvisi",
-    warning: "avviso",
-    form: "forma",
-    changed: "modificato",
-    delimiter: "delimitatore",
-    headers: "intestazioni",
-    rows: "righe",
-    seed: "seme",
-    count: "quantità",
-    type: "tipo",
-    direction: "direzione",
-    wordsPerMinute: "parole_al_minuto",
-    exactMinutes: "minuti_esatti",
-    minutes: "minuti",
-    seconds: "secondi",
-    convertedCount: "virgolette_convertite",
-    dominantScript: "alfabete_dominante",
-    detectedLanguage: "lingua_stimata",
-    confidence: "affidabilità",
-  };
-  const localize = (entry: unknown): unknown => {
-    if (Array.isArray(entry)) return entry.map(localize);
-    if (entry === null || typeof entry !== "object") return entry;
-    return Object.fromEntries(Object.entries(entry as Record<string, unknown>).map(([key, item]) => [keys[key] ?? key, localize(item)]));
-  };
-  return <pre class="text-result">{JSON.stringify(localize(value), null, 2)}</pre>;
-}
-
 export function TextWritingTool({ tool }: TextWritingToolProps) {
   const [text, setText] = useState("");
   const [secondary, setSecondary] = useState("");
@@ -283,16 +211,17 @@ export function TextWritingTool({ tool }: TextWritingToolProps) {
   const [lowercase, setLowercase] = useState(true);
   const [maxLength, setMaxLength] = useState("");
   const [wordsPerMinute, setWordsPerMinute] = useState("200");
-  const [copyStatus, setCopyStatus] = useState("");
+  const [expansionMode, setExpansionMode] = useState<"anonymize" | "restore">("anonymize");
+  const [targetCharacters, setTargetCharacters] = useState("800");
+  const [overlapCharacters, setOverlapCharacters] = useState("0");
   const operation = useToolOperation<unknown>(
     (signal) => toolRuntime.run(tool, inputFor(tool, {
-      text, secondary, find, replace, mode, equality, form, direction, descending, caseSensitive, regex, delimiter, column, count, seed, sampleType, preserveBlankLines, hasHeader, separator, lowercase, maxLength, wordsPerMinute,
+      text, secondary, find, replace, mode, equality, form, direction, descending, caseSensitive, regex, delimiter, column, count, seed, sampleType, preserveBlankLines, hasHeader, separator, lowercase, maxLength, wordsPerMinute, expansionMode, targetCharacters, overlapCharacters,
     }), {}, signal),
   );
 
   function submit(event: Event) {
     event.preventDefault();
-    setCopyStatus("");
     void operation.run();
   }
 
@@ -319,31 +248,26 @@ export function TextWritingTool({ tool }: TextWritingToolProps) {
     setLowercase(true);
     setMaxLength("");
     setWordsPerMinute("200");
-    setCopyStatus("");
+    setExpansionMode("anonymize");
+    setTargetCharacters("800");
+    setOverlapCharacters("0");
     operation.reset();
   }
 
-  async function copyOutput() {
-    const output = outputValue(operation.result);
-    if (output === null || navigator.clipboard === undefined) {
-      setCopyStatus("Gli appunti non sono disponibili; seleziona e copia il risultato manualmente.");
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(output);
-      setCopyStatus("Risultato copiato.");
-    } catch {
-      setCopyStatus("L'accesso agli appunti è stato bloccato; seleziona e copia il risultato manualmente.");
-    }
+  function reuseResult(output: string) {
+    setText(output);
+    operation.reset();
   }
 
-  const primaryLabel = tool === "csv-column-to-list" ? "CSV di ingresso" : tool === "lorem-sample-data-generator" ? "Nota sorgente · facoltativa" : tool === "find-replace-preview" ? "Testo da modificare" : "Testo";
+  const primaryLabel = tool === "csv-column-to-list" ? "CSV di ingresso" : tool === "lorem-sample-data-generator" ? "Nota sorgente · facoltativa" : tool === "find-replace-preview" ? "Testo da modificare" : tool === "fact-sensitive-text-diff" ? "Testo originale" : "Testo";
   const publicError = operation.error;
   return (
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit}>
         {tool !== "lorem-sample-data-generator" && <label class="field"><span>{primaryLabel}</span><textarea rows={tool === "markdown-preview" ? 12 : 9} value={text} onInput={(event) => setText(event.currentTarget.value)} placeholder={isTextTool(tool) ? "Incolla o scrivi il testo" : "nome,email\nAda,ada@esempio.test"} /></label>}
-        {isListPair(tool) && <label class="field"><span>Lista B</span><textarea rows={9} value={secondary} onInput={(event) => setSecondary(event.currentTarget.value)} placeholder="beta\ngamma" /></label>}
+        {needsSecondary(tool) && <label class="field"><span>{tool === "fact-sensitive-text-diff" ? "Testo da confrontare" : tool === "stable-placeholder-anonymizer" ? (expansionMode === "anonymize" ? "Entità da sostituire · una per riga" : "Mappatura JSON creata in anonimizzazione") : "Lista B"}</span><textarea rows={9} value={secondary} onInput={(event) => setSecondary(event.currentTarget.value)} placeholder={tool === "stable-placeholder-anonymizer" ? (expansionMode === "anonymize" ? "Mario Rossi\nmario@example.it" : '[{"placeholder":"[[ANON_…]]","value":"Mario Rossi","count":1}]') : "beta\ngamma"} /></label>}
+        {tool === "semantic-text-chunker" && <div class="field-grid"><label class="field"><span>Dimensione obiettivo · caratteri</span><input inputMode="numeric" value={targetCharacters} onInput={(event) => setTargetCharacters(event.currentTarget.value)} /></label><label class="field"><span>Contesto sovrapposto · caratteri</span><input inputMode="numeric" value={overlapCharacters} onInput={(event) => setOverlapCharacters(event.currentTarget.value)} /></label></div>}
+        {tool === "stable-placeholder-anonymizer" && <label class="field"><span>Operazione</span><select value={expansionMode} onChange={(event) => setExpansionMode(event.currentTarget.value as "anonymize" | "restore")}><option value="anonymize">Anonimizza</option><option value="restore">Ripristina</option></select><small>Le entità e la mappatura restano nel browser. Il ripristino richiede la mappatura esatta prodotta dall'anonimizzazione.</small></label>}
         {tool === "find-replace-preview" && <div class="field-grid"><label class="field"><span>Trova</span><input required value={find} onInput={(event) => setFind(event.currentTarget.value)} /></label><label class="field"><span>Sostituisci con</span><input value={replace} onInput={(event) => setReplace(event.currentTarget.value)} /></label></div>}
         {tool === "case-converter" && <label class="field"><span>Stile</span><select value={mode} onChange={(event) => setMode(event.currentTarget.value as CaseMode)}>{(["lower", "upper", "title", "sentence", "camel", "pascal", "kebab", "snake", "constant"] as CaseMode[]).map((option) => <option value={option} key={option}>{CASE_LABELS[option]}</option>)}</select></label>}
         {(tool === "unicode-normalizer") && <label class="field"><span>Forma Unicode</span><select value={form} onChange={(event) => setForm(event.currentTarget.value)}>{["NFC", "NFD", "NFKC", "NFKD"].map((option) => <option value={option} key={option}>{option}</option>)}</select></label>}
@@ -363,7 +287,15 @@ export function TextWritingTool({ tool }: TextWritingToolProps) {
         <ToolActions><ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{TOOL_LABELS[tool]}</ToolSubmitButton><ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton></ToolActions>
       </form>
       <ToolResultPanel eyebrow="Risultato" placeholder={it(CONTROL.gutterIdle)} busy={operation.isRunning} state={gutterStateFor(operation.status)}>
-        {operation.result !== null && <><ResultOutput tool={tool} value={operation.result} />{tool !== "markdown-preview" && <div class="actions"><button type="button" onClick={() => void copyOutput()}>{it(CONTROL.copy)}</button></div>}{copyStatus !== "" && <p class="success" role="status" aria-live="polite">{copyStatus}</p>}</>}
+        {operation.result !== null && (
+          <TextFamilyResultV2
+            tool={tool}
+            value={operation.result}
+            onReuse={reuseResult}
+            onRetry={operation.retry}
+            onReset={reset}
+          />
+        )}
       </ToolResultPanel>
     </ToolOperation>
   );

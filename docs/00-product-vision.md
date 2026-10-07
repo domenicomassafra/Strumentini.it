@@ -6,7 +6,7 @@ Knowledge workers repeatedly leave their main applications to solve tiny jobs: c
 
 Each job is small. Collectively they create a lot of switching, search and repeated setup.
 
-Existing utility sites mostly optimize for feature count and SEO landing pages. Existing workspaces mostly optimize for project management, CRM, documents or AI assistance. StrumentiUtili.it explores the space between those categories.
+Existing utility sites mostly optimize for feature count and SEO landing pages. Existing workspaces mostly optimize for project management, CRM, documents or AI assistance. Strumentini.it explores the space between those categories.
 
 ## Product promise
 

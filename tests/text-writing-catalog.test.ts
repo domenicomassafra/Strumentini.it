@@ -21,6 +21,13 @@ import { textDiffManifest } from "../src/tools/text-diff/manifest";
 import { unicodeNormalizerManifest } from "../src/tools/unicode-normalizer/manifest";
 import { whitespaceNormalizerManifest } from "../src/tools/whitespace-normalizer/manifest";
 import { wordCharacterLineCounterManifest } from "../src/tools/word-character-line-counter/manifest";
+import { semanticTextChunkerManifest } from "../src/tools/semantic-text-chunker/manifest";
+import { factSensitiveTextDiffManifest } from "../src/tools/fact-sensitive-text-diff/manifest";
+import { stablePlaceholderAnonymizerManifest } from "../src/tools/stable-placeholder-anonymizer/manifest";
+import { italianGulpeaseReadabilityManifest } from "../src/tools/italian-gulpease-readability/manifest";
+import { mojibakeRepairManifest } from "../src/tools/mojibake-repair/manifest";
+import { pdfCopyTextReflowManifest } from "../src/tools/pdf-copy-text-reflow/manifest";
+import { phoneLinkHashtagMentionExtractorManifest } from "../src/tools/phone-link-hashtag-mention-extractor/manifest";
 
 const textManifests = [
   wordCharacterLineCounterManifest,
@@ -43,14 +50,21 @@ const textManifests = [
   csvColumnToListManifest,
   loremSampleDataGeneratorManifest,
   languageAwareTextStatisticsManifest,
+  semanticTextChunkerManifest,
+  factSensitiveTextDiffManifest,
+  stablePlaceholderAnonymizerManifest,
+  italianGulpeaseReadabilityManifest,
+  mojibakeRepairManifest,
+  pdfCopyTextReflowManifest,
+  phoneLinkHashtagMentionExtractorManifest,
 ] as const;
 
-describe("20-tool text and writing catalog family", () => {
-  it("compiles all 20 candidates as independent LOCAL routes", () => {
+describe("27-tool text and writing catalog family", () => {
+  it("compiles all 27 candidates as independent LOCAL routes", () => {
     const compiled = compileFactoryCatalog(textManifests);
-    expect(compiled.summaries).toHaveLength(20);
-    expect(new Set(compiled.summaries.map(({ id }) => id)).size).toBe(20);
-    expect(new Set(compiled.summaries.map(({ route }) => route)).size).toBe(20);
+    expect(compiled.summaries).toHaveLength(27);
+    expect(new Set(compiled.summaries.map(({ id }) => id)).size).toBe(27);
+    expect(new Set(compiled.summaries.map(({ route }) => route)).size).toBe(27);
     for (const summary of compiled.summaries) {
       expect(summary.route).toBe(`/tools/${summary.id}`);
       expect(summary.category).toBe("text");
@@ -62,7 +76,7 @@ describe("20-tool text and writing catalog family", () => {
 
   it("gives every candidate a distinct lazy module implementation", () => {
     const compiled = compileFactoryCatalog(textManifests);
-    expect(new Set(compiled.loaders.map(({ implementation }) => implementation)).size).toBe(20);
+    expect(new Set(compiled.loaders.map(({ implementation }) => implementation)).size).toBe(27);
     expect(compiled.loaders.every(({ implementation }) => implementation.endsWith("/module.ts"))).toBe(true);
   });
 
@@ -93,6 +107,13 @@ describe("20-tool text and writing catalog family", () => {
       "csv-column-to-list": "CsvColumnToListTool.tsx",
       "lorem-sample-data-generator": "LoremSampleDataGeneratorTool.tsx",
       "language-aware-text-statistics": "LanguageAwareTextStatisticsTool.tsx",
+      "semantic-text-chunker": "SemanticTextChunkerTool.tsx",
+      "fact-sensitive-text-diff": "FactSensitiveTextDiffTool.tsx",
+      "stable-placeholder-anonymizer": "StablePlaceholderAnonymizerTool.tsx",
+      "italian-gulpease-readability": "ItalianGulpeaseReadabilityTool.tsx",
+      "mojibake-repair": "MojibakeRepairTool.tsx",
+      "pdf-copy-text-reflow": "PdfCopyTextReflowTool.tsx",
+      "phone-link-hashtag-mention-extractor": "PhoneLinkHashtagMentionExtractorTool.tsx",
     };
     for (const manifest of textManifests) {
       expect(existsSync(new URL(`../src/tools/${manifest.id}/module.ts`, import.meta.url))).toBe(true);

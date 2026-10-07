@@ -1,0 +1,18 @@
+export const candidates = [
+  { id: "libheif-js", family: "heic", package: "libheif-js", version: "1.23.5", role: "HEIC/HEIF decode", decision: "SPIKE", fallback: "Native browser decode when capability probe proves it; otherwise explicit unsupported state." },
+  { id: "heic2any", family: "heic", package: "heic2any", version: "0.0.4", role: "HEIC conversion wrapper", decision: "DENY", fallback: "Use maintained libheif-js spike or refuse HEIC conversion." },
+  { id: "tesseract-js", family: "ocr", package: "tesseract.js", version: "7.0.0", role: "Italian local OCR", decision: "SPIKE", fallback: "Refuse OCR on resource-risk devices; no server OCR fallback." },
+  { id: "tesseract-ita", family: "ocr", package: "@tesseract.js-data/ita", version: "1.0.0", role: "Italian trained data", decision: "SPIKE", fallback: "OCR unavailable until language data is present locally." },
+  { id: "xlsx", family: "office", package: "xlsx", version: "0.18.5", role: "XLSX parse/write", decision: "DENY", fallback: "Keep CSV/table paths; evaluate a separately audited XLSX adapter before implementation." },
+  { id: "mammoth", family: "office", package: "mammoth", version: "1.13.0", role: "DOCX semantic extraction", decision: "SPIKE", fallback: "Offer package/metadata inspection or explicit unsupported conversion for fidelity-sensitive DOCX." },
+  { id: "docx", family: "office", package: "docx", version: "9.8.1", role: "DOCX generation", decision: "SPIKE", fallback: "Generate HTML/TXT locally when DOCX output cannot meet fidelity/resource gate." },
+  { id: "docx-preview", family: "office", package: "docx-preview", version: "0.4.1", role: "DOCX browser rendering", decision: "SPIKE", fallback: "Semantic extraction without claiming Word-faithful rendering." },
+  { id: "pptxgenjs", family: "office", package: "pptxgenjs", version: "4.0.1", role: "PPTX generation", decision: "DENY", fallback: "Do not ship until dependency audit is clean; page-as-image/PDF workflows remain separate." },
+  { id: "cantoo-pdf-lib", family: "pdf", package: "@cantoo/pdf-lib", version: "2.11.1", role: "PDF mutation", decision: "SPIKE", fallback: "Preserve current in-house PDF engine for operations it already handles." },
+  { id: "pdfjs-dist", family: "pdf", package: "pdfjs-dist", version: "6.4.299", role: "PDF render/text inspection", decision: "SPIKE", fallback: "Structural-only inspection or current in-house operations when full rendering is not required." },
+  { id: "mediabunny", family: "audio-video", package: "mediabunny", version: "1.61.3", role: "Media inspection/container work/WebCodecs orchestration", decision: "SPIKE", fallback: "Metadata-only native probes or explicit unsupported state; no remote processing." },
+  { id: "mp4box", family: "video", package: "mp4box", version: "2.4.1", role: "MP4 inspection", decision: "SPIKE", fallback: "Mediabunny inspection if smaller/stronger after bundle comparison." },
+  { id: "ffmpeg-wasm", family: "audio-video", package: "@ffmpeg/ffmpeg", version: "0.12.15", role: "FFmpeg browser controller", decision: "DENY", fallback: "Use browser-native/WebCodecs-backed paths only for proven codecs; otherwise refuse transcode." },
+  { id: "ffmpeg-core", family: "audio-video", package: "@ffmpeg/core", version: "0.12.10", role: "FFmpeg WASM core", decision: "DENY", fallback: "No production inclusion under current GPL-disallow policy." },
+  { id: "lamejs", family: "audio", package: "lamejs", version: "1.2.1", role: "MP3 encode", decision: "DENY", fallback: "Use proven native/WebCodecs audio codecs where available; otherwise refuse export." },
+];

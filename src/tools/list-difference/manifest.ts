@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { TEXT_RESULT_V2_DECLARATIONS } from "../text-writing/result-v2";
 
 export const listDifferenceManifest = {
   id: "list-difference",
@@ -13,6 +14,7 @@ export const listDifferenceManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: TEXT_RESULT_V2_DECLARATIONS["list-difference"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-011", fixtureFamilies: ["list-set-ops", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 

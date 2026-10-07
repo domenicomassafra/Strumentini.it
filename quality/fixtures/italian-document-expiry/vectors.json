@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "sourceSnapshot": "quality/reference-data/italy/153-identity-document-expiry-rules.json",
+  "vectors": [
+    {
+      "id": "cie-under-3",
+      "input": { "documentType": "cie", "birthDate": "2025-11-15", "issueDate": "2026-10-06" },
+      "expected": { "ageAtIssue": 0, "expiryDate": "2029-11-15" }
+    },
+    {
+      "id": "cie-age-3-boundary",
+      "input": { "documentType": "cie", "birthDate": "2023-10-06", "issueDate": "2026-10-06" },
+      "expected": { "ageAtIssue": 3, "expiryDate": "2032-10-06" }
+    },
+    {
+      "id": "cie-minor",
+      "input": { "documentType": "cie", "birthDate": "2015-04-01", "issueDate": "2026-10-06" },
+      "expected": { "ageAtIssue": 11, "expiryDate": "2032-04-01" }
+    },
+    {
+      "id": "cie-age-18-boundary",
+      "input": { "documentType": "cie", "birthDate": "2008-10-06", "issueDate": "2026-10-06" },
+      "expected": { "ageAtIssue": 18, "expiryDate": "2036-10-06" }
+    },
+    {
+      "id": "cie-adult",
+      "input": { "documentType": "cie", "birthDate": "1990-08-20", "issueDate": "2026-03-10" },
+      "expected": { "ageAtIssue": 35, "expiryDate": "2035-08-20" }
+    },
+    {
+      "id": "cie-temporary-fingerprint",
+      "input": { "documentType": "cie-temporary-fingerprint", "birthDate": "1990-08-20", "issueDate": "2026-10-06" },
+      "expected": { "ageAtIssue": 36, "expiryDate": "2027-10-06" }
+    },
+    {
+      "id": "passport-under-3",
+      "input": { "documentType": "passport", "birthDate": "2025-11-15", "issueDate": "2026-10-06" },
+      "expected": { "ageAtIssue": 0, "expiryDate": "2029-10-06" }
+    },
+    {
+      "id": "passport-minor",
+      "input": { "documentType": "passport", "birthDate": "2015-04-01", "issueDate": "2026-10-06" },
+      "expected": { "ageAtIssue": 11, "expiryDate": "2031-10-06" }
+    },
+    {
+      "id": "passport-adult",
+      "input": { "documentType": "passport", "birthDate": "1990-08-20", "issueDate": "2026-10-06" },
+      "expected": { "ageAtIssue": 36, "expiryDate": "2036-10-06" }
+    }
+  ]
+}

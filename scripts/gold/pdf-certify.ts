@@ -26,7 +26,7 @@ const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
 const sha256 = (value: string | Uint8Array) => createHash("sha256").update(value).digest("hex");
 const context: ToolExecutionContext = { defaults: {} };
 
-const [fixtureIndexText, oracleRegistryText, goldFixtureText, engineIndexText, engineParserText, engineWriterText, acceptanceText, unitTestsText] = await Promise.all([
+const [fixtureIndexText, oracleRegistryText, goldFixtureText, engineIndexText, engineParserText, engineWriterText, acceptanceText, conversionAcceptanceText, unitTestsText] = await Promise.all([
   readFile(resolve(root, "quality/fixtures/index.json"), "utf8"),
   readFile(resolve(root, "quality/oracles/registry.json"), "utf8"),
   readFile(resolve(fixtureDir, "vectors.json"), "utf8"),
@@ -34,13 +34,21 @@ const [fixtureIndexText, oracleRegistryText, goldFixtureText, engineIndexText, e
   readFile(resolve(root, "src/engines/pdf/parser.ts"), "utf8"),
   readFile(resolve(root, "src/engines/pdf/writer.ts"), "utf8"),
   readFile(resolve(receiptRoot, "browser-acceptance.json"), "utf8"),
+  readFile(resolve(receiptRoot, "conversion-matrix-browser.json"), "utf8"),
   readFile(resolve(root, "tests/pdf-document-tools.test.ts"), "utf8"),
 ]);
 const fixtureIndex = JSON.parse(fixtureIndexText) as { families: FixtureEntry[] };
 const registry = JSON.parse(oracleRegistryText) as { entries: OracleEntry[] };
 const goldFixture = JSON.parse(goldFixtureText) as { tool_vectors: GoldVector[] };
 const acceptance = JSON.parse(acceptanceText) as { status?: unknown; tools?: unknown };
+const conversionAcceptance = JSON.parse(conversionAcceptanceText) as {
+  status?: unknown;
+  conversionMatrix?: {
+    pdfToImages?: unknown;
+  };
+};
 if (acceptance.status !== "PASS" || !Array.isArray(acceptance.tools)) throw new Error("pdf browser acceptance is missing or not PASS");
+if (conversionAcceptance.status !== "PASS" || conversionAcceptance.conversionMatrix?.pdfToImages === undefined) throw new Error("PDF conversion-matrix browser acceptance is missing or not PASS");
 if (goldFixture.tool_vectors.length !== toolIds.length || new Set(goldFixture.tool_vectors.map((vector) => vector.tool_id)).size !== toolIds.length) throw new Error("pdf Gold fixture does not cover every promoted tool exactly once");
 
 function assertExpected(toolId: string, actual: unknown, expected: unknown, path = "result"): void {
@@ -107,7 +115,6 @@ async function assertOutputBytes(toolId: string, output: unknown): Promise<void>
       if (!(extractedBytes instanceof Uint8Array) || sha256(extractedBytes) !== sha256(tiny)) throw new Error(`${toolId}: round-trip JPEG bytes do not match the embedded source`);
       return;
     }
-    case "pdf-to-images":
     case "pdf-image-extractor": {
       const bytes = artifactBytes(output, toolId);
       const tiny = new Uint8Array(await readFile(resolve(fixtureDir, "tiny.jpg")));
@@ -172,9 +179,12 @@ for (const toolId of toolIds) {
   if (!(acceptance.tools as unknown[]).includes(toolId)) throw new Error(`${toolId}: browser acceptance missing`);
   const vector = goldFixture.tool_vectors.find((entry) => entry.tool_id === toolId);
   if (vector === undefined) throw new Error(`${toolId}: exact Gold vector missing`);
-  const output = await moduleImport.default.run(await resolveInput(vector.input), context);
+  const output = toolId === "pdf-to-images"
+    ? conversionAcceptance.conversionMatrix?.pdfToImages
+    : await moduleImport.default.run(await resolveInput(vector.input), context);
+  if (output === undefined) throw new Error(`${toolId}: exact vector did not produce evidence`);
   assertExpected(toolId, output, vector.expected);
-  await assertOutputBytes(toolId, output);
+  if (toolId !== "pdf-to-images") await assertOutputBytes(toolId, output);
   const fixtureRecords = manifest.gold.fixtureFamilies.map((id) => {
     const entry = fixtureIndex.families.find((candidate) => candidate.id === id);
     if (entry === undefined) throw new Error(`${toolId}: fixture family missing from index: ${id}`);
@@ -182,7 +192,7 @@ for (const toolId of toolIds) {
   });
   const fixtureIdentities = Object.fromEntries(await Promise.all(fixtureRecords.map(async (entry) => [`fixture:${entry.id}:sha256`, sha256(await readFile(resolve(root, entry.path)))])));
   const binaryIdentities = Object.fromEntries(await Promise.all(
-    ["annotated.pdf", "simple-3page.pdf", "simple-2page.pdf", "simple-2page-changed.pdf", "jpeg-1page.pdf", "encrypted-mark.pdf", "tiny.jpg"].map(async (name) => [`fixture:pdf-gold:${name}:sha256`, sha256(await readFile(resolve(fixtureDir, name)))]),
+    ["annotated.pdf", "simple-3page.pdf", "simple-2page.pdf", "simple-2page-changed.pdf", "jpeg-1page.pdf", "encrypted-mark.pdf", "tiny.jpg", "page-scoped-images-metadata.pdf"].map(async (name) => [`fixture:pdf-gold:${name}:sha256`, sha256(await readFile(resolve(fixtureDir, name)))]),
   ));
   const manifestText = await readFile(resolve(root, `src/tools/${toolId}/manifest.ts`), "utf8");
   const receipt = {
@@ -199,7 +209,7 @@ for (const toolId of toolIds) {
     exactVectors: 1,
     truthSources: [...new Set([...oracle.truth_sources, ...fixtureRecords.flatMap((entry) => entry.truth_sources)])].sort(),
     resolvedFixtures: fixtureRecords.map((entry) => ({ id: entry.id, path: entry.path })),
-    propertyChecks: ["local-only runtime", "high-confidence oracle with no open semantic gap", "tool-specific PDF/document fixture remains bound", "exact public-module vector plus re-inspected output bytes", "keyboard/mobile/a11y/locality/lazy browser acceptance"],
+    propertyChecks: ["local-only runtime", "high-confidence oracle with no open semantic gap", "tool-specific PDF/document fixture remains bound", "exact public-module vector plus re-inspected output bytes or exact browser raster evidence", "keyboard/mobile/a11y/locality/lazy browser acceptance"],
     identities: {
       manifestSha256: sha256(manifestText),
       pdfEngineIndexSha256: sha256(engineIndexText),
@@ -208,6 +218,7 @@ for (const toolId of toolIds) {
       fixtureIndexSha256: sha256(fixtureIndexText),
       oracleRegistrySha256: sha256(oracleRegistryText),
       browserAcceptanceSha256: sha256(acceptanceText),
+      conversionMatrixBrowserAcceptanceSha256: sha256(conversionAcceptanceText),
       unitTestsSha256: sha256(unitTestsText),
       ...fixtureIdentities,
       ...binaryIdentities,

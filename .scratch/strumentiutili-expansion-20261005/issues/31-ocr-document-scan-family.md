@@ -6,7 +6,7 @@
 
 **Constraints:** OCR accuracy is never presented as exact transcription; language packs are lazy; large scans are cancellable and memory-bounded.
 
-**Blocked by:** 01, 29, 34.
+**Blocked by:** 246, 247.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] Searchable PDF output is verified to contain selectable/searchable text without destroying page appearance beyond accepted tolerance.
 
 **Verification:** Real scan/photo corpus, OCR accuracy/error fixtures, PDF text-layer inspection, bundle/lazy-load receipt, and physical mobile acceptance.
-

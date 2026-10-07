@@ -126,7 +126,7 @@ const indexPayload = {
     import type { SearchHit } from "../search/search";
     import type { SearchToolMetadata } from "../search/types";
 
-    const RECENT_KEY = "strumentiutili:recent-searches:v1";
+    const RECENT_KEY = "strumentini:recent-searches:v1";
     const MAX_RECENT = 6;
 
     interface IndexPayload {
@@ -165,6 +165,7 @@ const indexPayload = {
     })[character] ?? character);
 
     let hits: SearchHit[] = [];
+    let closeIntents: string[] = [];
     let activeCategory: string | null = null;
     let engine: ReturnType<typeof createSearch> | undefined;
     let engineLoad: Promise<ReturnType<typeof createSearch>> | undefined;
@@ -251,6 +252,8 @@ const indexPayload = {
       const pills = new Set<string>();
       const related = base === ""
         ? ["unisci PDF", "comprimi immagine", "pulisci CSV", "conta parole", "converti data", "genera QR code"]
+        : closeIntents.length > 0
+          ? closeIntents
         : [base, `comprimi ${base}`, `converti ${base}`, `estrai ${base}`, `pulisci ${base}`];
       for (const pill of related) pills.add(pill);
       suggestions.innerHTML = [...pills].slice(0, 6)
@@ -298,13 +301,16 @@ const indexPayload = {
       if (input !== null && input.value !== query) input.value = query;
       if (query === "") {
         hits = [];
+        closeIntents = [];
         activeCategory = null;
         paintSuggestions();
         paint();
         return;
       }
       const search = await loadEngine();
-      hits = search.query(query, undefined, 60).hits;
+      const result = search.query(query, undefined, 60);
+      hits = result.hits;
+      closeIntents = result.closeIntents;
       if (remember) writeRecent(query);
       paintSuggestions();
       paint();
@@ -342,6 +348,7 @@ const indexPayload = {
     page?.querySelector("[data-search-clear]")?.addEventListener("click", () => {
       if (input !== null) input.value = "";
       hits = [];
+      closeIntents = [];
       activeCategory = null;
       history.replaceState(null, "", location.pathname);
       paintSuggestions();

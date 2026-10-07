@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/text-data-certification/text-markup-converter.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "text-markup-converter",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-241",
+  "fixtureFamilies": [
+    "text-markup-conversion"
+  ],
+  "exactVectors": 8,
+  "boundedOracleGaps": [
+    "This is not a complete CommonMark or GFM parser: tables, task-list semantics, GFM autolinks and footnotes are explicitly outside the supported subset.",
+    "HTML named character references are decoded only for the common named set plus numeric references; unknown named references are preserved literally.",
+    "Complex HTML table layout, nested-list depth, CSS/layout and media are intentionally flattened or dropped with disclosure."
+  ],
+  "truthSources": [
+    "commonmark",
+    "fixture-policy",
+    "owasp-xss",
+    "strumentiutili-quality",
+    "whatwg-html"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "text-markup-conversion",
+      "path": "quality/fixtures/text-markup-conversion/vectors.json"
+    }
+  ],
+  "focusedTests": [
+    "tests/text-markup-conversion.test.ts"
+  ],
+  "propertyChecks": [
+    "LOCAL runtime with network forbidden",
+    "high-confidence oracle and exact explicit bounded-gap policy",
+    "manifest maintenance class matches oracle",
+    "fixture replay through the public tool module",
+    "per-tool semantic browser assertion at 390px",
+    "zero external/non-GET/task-body requests after browser task start",
+    "keyboard submit and accessible form controls",
+    "focused semantic/refusal-boundary tests bound by content identity"
+  ],
+  "identities": {
+    "manifestSha256": "02853bfa0b0ebff144508cbe0374a80ccb35b23ee75114690be1f66017190f28",
+    "moduleSha256": "d9bcc5217f5d50e5dd9b8cd1f1e9842185121d0d755db4425ff49c1ccd95c693",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "5da2b0f76de27c882953ce233b57670ec7eb2b3cfc414050541784ff78fa3c3e",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "307f66b3c4a244a608caee23882a25b9c85c698e608b774b9e014fe7e4cc7ba6",
+    "fixture:text-markup-conversion:sha256": "a9165bc7d633bbc487950ed92c21e285f4fe83891c58b483ede24f03d33fe483"
+  }
+}

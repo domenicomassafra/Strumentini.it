@@ -113,12 +113,15 @@ describe("table and CSV expansion", () => {
     const result = run<ReturnType<typeof cleanCsvText>>(csvCleanerModule, { text: "\uFEFFa,b\r\n1,2\r\n" });
     expect(result.output).toBe("a,b\n1,2\n");
     expect(result.changes).toEqual({ strippedBom: true, normalizedRecordBreaks: 2 });
+    expect(result).toMatchObject({ dialect: { delimiter: ",", encoding: "utf-8", dynamicTyping: false }, affectedRows: 0, affectedCells: 0 });
   });
 
   it("23 detects semicolon and tab delimiters", () => {
     expect(detectCsvDelimiter("a;b\n1;2\n3;4\n").delimiter).toBe(";");
     expect(detectCsvDelimiter("a\tb\n1\t2\n3\t4\n").delimiter).toBe("\t");
-    expect(run<ReturnType<typeof detectCsvDelimiter>>(csvDelimiterDetectorModule, { text: "a|b\n1|2\n" }).label).toBe("pipe");
+    const pipe = run<ReturnType<typeof detectCsvDelimiter>>(csvDelimiterDetectorModule, { text: "a|b\n1|2\n" });
+    expect(pipe.label).toBe("pipe");
+    expect(pipe).toMatchObject({ dialect: { delimiter: "|", encoding: "utf-8", dynamicTyping: false }, affectedRows: 0, affectedCells: 0 });
   });
 
   it("24 decodes UTF-16 and removes a byte-order mark", () => {
@@ -135,12 +138,14 @@ describe("table and CSV expansion", () => {
     expect(result.detectedEncoding).toBe("utf-16le");
     expect(result.bomRemoved).toBe(true);
     expect(result.output).toBe(source);
+    expect(result).toMatchObject({ inputBytes: bytes.byteLength, affectedRows: 0, affectedCells: 0, textChanges: { bomRemoved: true, normalizedLineEndings: 0, replacementCharacters: 0 } });
   });
 
   it("25 dedupes whole rows with stable first occurrence", () => {
     const result = run<ReturnType<typeof dedupeCsvTable>>(csvDedupeModule, { text: tableText, mode: "whole-row" });
     expect(result.output).toBe("name,score\nAda,10\nGrace,2");
     expect(result.removedRows).toBe(1);
+    expect(result).toMatchObject({ affectedRows: 1, affectedCells: 2, dialect: { delimiter: ",", encoding: "utf-8", dynamicTyping: false } });
   });
 
   it("escapes formula-leading cells in generated CSV and rejects nested regex filters", () => {

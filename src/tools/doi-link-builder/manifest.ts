@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const doiLinkBuilderManifest = {
   id: "doi-link-builder",
@@ -13,6 +14,7 @@ export const doiLinkBuilderManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("doi-link-builder"),
   gold: { maintenanceClass: "E", oracleEntryId: "cand-182", fixtureFamilies: ["doi"] },
 } as const satisfies ToolManifest;
 

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "checkedAt": "2026-10-07T14:41:19.298Z",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "subjectToolId": "partita-iva-validator",
+  "oracleEntryId": "cand-208",
+  "keyboard": "submit exercised with Enter",
+  "accessibility": "all interactive controls in the exercised form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObserved": true,
+  "semanticEvidence": "fixture-aligned bounded input produced the asserted visible domain output",
+  "result": {
+    "toolId": "partita-iva-validator",
+    "oracleEntryId": "cand-208",
+    "status": "PASS",
+    "semanticAssertion": "Valido",
+    "outputSha256": "52fea0da5fb566dec1b19ad85bd7cb93cba4ac3031029e96502a1a7b98bb4aa0",
+    "taskRequestCount": 6,
+    "lazyScriptCount": 5,
+    "externalTaskRequests": 0,
+    "nonGetTaskRequests": 0,
+    "taskContentLeaks": 0,
+    "runtimeErrors": 0,
+    "horizontalOverflow": false,
+    "unlabeledControls": 0,
+    "oracleMarkerObserved": true
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "decision": "REFUSE",
+  "claim": "authoritative Italian syllabification",
+  "evaluatedCandidate": {
+    "package": "hyphen",
+    "version": "1.14.1",
+    "engineLicense": "ISC",
+    "entryPoint": "hyphen/it",
+    "semantics": "typographic hyphenation opportunities, not a complete syllable-boundary oracle"
+  },
+  "sources": [
+    {
+      "id": "treccani-grammar-2012",
+      "url": "https://www.treccani.it/enciclopedia/divisione-in-sillabe_%28La-grammatica-italiana%29/",
+      "role": "orthographic rules and examples"
+    },
+    {
+      "id": "treccani-encyclopedia-2011",
+      "url": "https://www.treccani.it/enciclopedia/divisione-in-prontuario-sillabe_%28Enciclopedia-dell%27Italiano%29/",
+      "role": "phonetic/orthographic distinction and ambiguity"
+    },
+    {
+      "id": "hyph-utf8",
+      "url": "https://ctan.org/pkg/hyph-utf8",
+      "role": "TeX hyphenation collection metadata"
+    },
+    {
+      "id": "hyph-it-license",
+      "url": "https://android.googlesource.com/platform/external/hyphenation-patterns/+/refs/tags/android-platform-14.0.0_r9/it/hyph-it.lic.txt",
+      "role": "Italian pattern version/licence and UNI 6461 compliance intent"
+    }
+  ],
+  "cases": [
+    {
+      "id": "initial-vowel-amido",
+      "tags": ["basic"],
+      "input": "amido",
+      "sourceExpected": ["a-mi-do"],
+      "candidateObserved": "ami-do",
+      "classification": "mismatch",
+      "note": "Hyphenation left-minimum behavior omits a real syllable boundary."
+    },
+    {
+      "id": "hiatus-mia",
+      "tags": ["hiatus"],
+      "input": "mia",
+      "sourceExpected": ["mi-a"],
+      "candidateObserved": "mia",
+      "classification": "mismatch",
+      "note": "Treccani treats the two vowels as hiatus in this example."
+    },
+    {
+      "id": "hiatus-leone",
+      "tags": ["hiatus"],
+      "input": "leone",
+      "sourceExpected": ["le-o-ne"],
+      "candidateObserved": "leo-ne",
+      "classification": "mismatch",
+      "note": "The candidate exposes line-break points rather than all syllable boundaries."
+    },
+    {
+      "id": "diphthong-pianura",
+      "tags": ["diphthong"],
+      "input": "pianura",
+      "sourceExpected": ["pia-nu-ra"],
+      "candidateObserved": "pia-nu-ra",
+      "classification": "match",
+      "note": "Representative source-backed diphthong case."
+    },
+    {
+      "id": "triphthong-aiuola",
+      "tags": ["diphthong", "triphthong"],
+      "input": "aiuola",
+      "sourceExpected": ["a-iuo-la"],
+      "candidateObserved": "aiuo-la",
+      "classification": "mismatch",
+      "note": "The first syllable boundary is omitted by the hyphenator."
+    },
+    {
+      "id": "digraph-chiaro",
+      "tags": ["digraph"],
+      "input": "chiaro",
+      "sourceExpected": ["chia-ro"],
+      "candidateObserved": "chia-ro",
+      "classification": "match",
+      "note": "The graphic group stays with the following vowel."
+    },
+    {
+      "id": "digraph-luglio",
+      "tags": ["digraph"],
+      "input": "luglio",
+      "sourceExpected": ["lu-glio"],
+      "candidateObserved": "lu-glio",
+      "classification": "match",
+      "note": "Representative gli/diacritic-group case."
+    },
+    {
+      "id": "apostrophe-nessun-amica",
+      "tags": ["apostrophe"],
+      "input": "nessun'amica",
+      "sourceExpected": ["nes-su-n'a-mi-ca"],
+      "candidateObserved": "nes-sun'a-mi-ca",
+      "classification": "mismatch",
+      "note": "Treccani's apostrophe convention and the typographic pattern output differ."
+    },
+    {
+      "id": "cluster-acquatico",
+      "tags": ["digraph", "consonant-cluster"],
+      "input": "acquatico",
+      "sourceExpected": ["ac-qua-ti-co"],
+      "candidateObserved": "ac-qua-ti-co",
+      "classification": "match",
+      "note": "Representative cq split."
+    },
+    {
+      "id": "cluster-storico",
+      "tags": ["consonant-cluster"],
+      "input": "storico",
+      "sourceExpected": ["sto-ri-co"],
+      "candidateObserved": "sto-ri-co",
+      "classification": "match",
+      "note": "Representative s + consonant onset."
+    },
+    {
+      "id": "foreign-cluster-tungsteno",
+      "tags": ["foreign-word", "consonant-cluster"],
+      "input": "tungsteno",
+      "sourceExpected": ["tung-ste-no"],
+      "candidateObserved": "tung-ste-no",
+      "classification": "match",
+      "note": "Treccani uses this as an exceptional long-cluster example."
+    },
+    {
+      "id": "foreign-cluster-feldspato",
+      "tags": ["foreign-word", "consonant-cluster"],
+      "input": "feldspato",
+      "sourceExpected": ["feld-spa-to"],
+      "candidateObserved": "feld-spa-to",
+      "classification": "match",
+      "note": "Treccani documents the split for this borrowed/scientific cluster."
+    },
+    {
+      "id": "foreign-weekend",
+      "tags": ["foreign-word", "ambiguity"],
+      "input": "weekend",
+      "sourceExpected": [],
+      "candidateObserved": "wee-kend",
+      "classification": "unresolved",
+      "note": "A spelling-only generic rule does not establish the intended language/pronunciation or an authoritative Italian syllabification."
+    }
+  ]
+}

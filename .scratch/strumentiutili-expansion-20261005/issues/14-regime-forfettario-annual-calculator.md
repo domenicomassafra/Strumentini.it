@@ -6,7 +6,7 @@
 
 **Constraints:** Official annual coefficients/rates only; eligibility is not certified by the tool; unsupported previdential cases must fail honestly.
 
-**Blocked by:** 01 — Result System v2 primitives; 07 — versioned Italy reference data.
+**Blocked by:** 133.
 
 **Status:** blocked
 

@@ -53,6 +53,7 @@ import {
 } from "./google";
 import { isLocalTurnstileHost, verifyTurnstileToken } from "./turnstile";
 import { MESSAGES, normalizeEmail, validateEmail, validateName, validatePassword, validateToolId } from "./validation";
+import { checkViesVat } from "./vies";
 
 export interface Env {
   readonly ASSETS: Fetcher;
@@ -672,6 +673,15 @@ async function handleFavoritesClear(context: RouteContext): Promise<Response> {
   return noContent();
 }
 
+async function handleViesCheck(context: RouteContext): Promise<Response> {
+  const parsed = await readJsonObject(context.request);
+  if (!parsed.ok) return parsed.response;
+  const vatNumber = readString(parsed.body, "vatNumber").replace(/\s/gu, "");
+  if (!/^\d{11}$/u.test(vatNumber)) return errorResponse(400, "Partita IVA italiana non valida per la verifica VIES.");
+  const result = await checkViesVat(vatNumber, { now: () => context.now });
+  return jsonResponse(result, 200);
+}
+
 /* ------------------------------------------------------------- routing -- */
 
 const ROUTES: readonly Route[] = [
@@ -691,6 +701,7 @@ const ROUTES: readonly Route[] = [
   { pattern: "/api/favorites", method: "DELETE", handle: handleFavoritesClear },
   { pattern: "/api/favorites/:toolId", method: "PUT", handle: handleFavoritePut },
   { pattern: "/api/favorites/:toolId", method: "DELETE", handle: handleFavoriteDelete },
+  { pattern: "/api/vies/check", method: "POST", handle: handleViesCheck },
 ];
 
 function buildRouteTable(): ReadonlyMap<string, readonly Route[]> {

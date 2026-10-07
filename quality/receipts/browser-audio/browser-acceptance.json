@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "audio-generator",
+    "browser-text-to-speech"
+  ],
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "network": "zero external/non-GET/task-body requests after user action",
+  "results": [
+    {
+      "toolId": "audio-generator",
+      "status": "PASS",
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "scope": "bounded controls, start/stop, tap-tempo surface; browser scheduling precision remains platform controlled"
+    },
+    {
+      "toolId": "browser-text-to-speech",
+      "status": "PASS",
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false,
+      "speechSynthesisAvailable": true,
+      "scope": "runtime browser SpeechSynthesis handoff; voice availability/implementation may be remote and is explicitly outside Strumentini certification"
+    }
+  ]
+}

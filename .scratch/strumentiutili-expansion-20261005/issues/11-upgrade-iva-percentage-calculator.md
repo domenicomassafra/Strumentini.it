@@ -6,7 +6,7 @@
 
 **Constraints:** Do not duplicate engines for each mode; VAT presets and effective dates must be sourced/versioned; distinguish exact arithmetic from fiscal advice.
 
-**Blocked by:** 01 — Result System v2 primitives; 07 — versioned Italy reference data.
+**Blocked by:** 125, 126.
 
 **Status:** blocked
 

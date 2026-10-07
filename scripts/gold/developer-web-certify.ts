@@ -55,22 +55,44 @@ const manifests: readonly ToolManifest[] = [
   httpStatusReferenceManifest, mimeTypeLookupManifest, userAgentParserManifest, queryStringEditorManifest, jsonPathManifest,
 ];
 
-const [fixtureIndexText, oracleRegistryText, goldFixtureText, engineIndexText, structuredText, cryptoText, referenceText, acceptanceText, testsText] = await Promise.all([
+const [fixtureIndexText, oracleRegistryText, goldFixtureText, engineIndexText, structuredText, cryptoText, regexWorkerClientText, regexWorkerText, referenceText, acceptanceText, testsText, regexWorkerTestsText] = await Promise.all([
   readFile(resolve(root, "quality/fixtures/index.json"), "utf8"),
   readFile(resolve(root, "quality/oracles/registry.json"), "utf8"),
   readFile(resolve(root, "quality/fixtures/developer-web-gold/vectors.json"), "utf8"),
   readFile(resolve(root, "src/engines/developer-web/index.ts"), "utf8"),
   readFile(resolve(root, "src/engines/developer-web/structured-data.ts"), "utf8"),
   readFile(resolve(root, "src/engines/developer-web/encoding-crypto.ts"), "utf8"),
+  readFile(resolve(root, "src/engines/developer-web/regex-worker-client.ts"), "utf8"),
+  readFile(resolve(root, "src/engines/developer-web/regex-worker.ts"), "utf8"),
   readFile(resolve(root, "src/engines/developer-web/web-reference.ts"), "utf8"),
   readFile(resolve(receiptRoot, "browser-acceptance.json"), "utf8"),
   readFile(resolve(root, "tests/developer-web-engine.test.ts"), "utf8"),
+  readFile(resolve(root, "tests/regex-worker-client.test.ts"), "utf8"),
 ]);
 const fixtureIndex = JSON.parse(fixtureIndexText) as { families: FixtureEntry[] };
 const registry = JSON.parse(oracleRegistryText) as { entries: OracleEntry[] };
 const goldFixture = JSON.parse(goldFixtureText) as { tool_vectors: GoldVector[] };
-const acceptance = JSON.parse(acceptanceText) as { status?: unknown; tools?: unknown };
+const acceptance = JSON.parse(acceptanceText) as {
+  status?: unknown;
+  tools?: unknown;
+  results?: ReadonlyArray<{
+    toolId?: unknown;
+    regexIsolation?: {
+      status?: unknown;
+      timeoutObserved?: unknown;
+      workerRequestObserved?: unknown;
+      recoveredAfterTimeout?: unknown;
+    };
+  }>;
+};
 if (acceptance.status !== "PASS" || !Array.isArray(acceptance.tools)) throw new Error("developer-web browser acceptance is missing or not PASS");
+const regexAcceptance = acceptance.results?.find(({ toolId }) => toolId === "regex-tester")?.regexIsolation;
+if (regexAcceptance?.status !== "PASS"
+  || regexAcceptance.timeoutObserved !== true
+  || regexAcceptance.workerRequestObserved !== true
+  || regexAcceptance.recoveredAfterTimeout !== true) {
+  throw new Error("regex-tester Gold requires browser-observed worker isolation, hard timeout, and post-timeout recovery");
+}
 if (goldFixture.tool_vectors.length !== 20 || new Set(goldFixture.tool_vectors.map((vector) => vector.tool_id)).size !== 20) throw new Error("developer-web Gold fixture must contain exactly one vector per tool");
 
 function assertExpected(toolId: string, actual: unknown, expected: Record<string, unknown>) {
@@ -121,11 +143,14 @@ for (const manifest of manifests) {
       engineIndexSha256: sha256(engineIndexText),
       structuredDataSha256: sha256(structuredText),
       encodingCryptoSha256: sha256(cryptoText),
+      regexWorkerClientSha256: sha256(regexWorkerClientText),
+      regexWorkerSha256: sha256(regexWorkerText),
       webReferenceSha256: sha256(referenceText),
       fixtureIndexSha256: sha256(fixtureIndexText),
       oracleRegistrySha256: sha256(oracleRegistryText),
       browserAcceptanceSha256: sha256(acceptanceText),
       unitTestsSha256: sha256(testsText),
+      regexWorkerTestsSha256: sha256(regexWorkerTestsText),
       ...fixtureIdentities,
     },
   };

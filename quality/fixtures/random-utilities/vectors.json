@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "family": "random-utilities",
+  "notes": [
+    "Secure mode uses WebCrypto through the ticket-159 unbiased uint32 rejection-sampling seam.",
+    "Seeded mode is reproducible by design and must always be disclosed as non-secure.",
+    "Picker duplicate labels remain separate source tickets, team duplicate labels are rejected after trim, and coupon outputs are unique."
+  ],
+  "cases": [
+    {
+      "id": "inclusive-integer-range",
+      "mode": "number",
+      "input": { "minimum": -50, "maximum": 50, "count": 40, "allowDuplicates": false },
+      "invariants": ["all values are inside the inclusive range", "all values are unique"]
+    },
+    {
+      "id": "duplicate-picker-tickets",
+      "mode": "picker",
+      "input": { "items": "Ada\nAda\nBruno\nCarla", "count": 4, "randomness": "seeded", "seed": "draw" },
+      "invariants": ["all four source positions are selected once", "both Ada tickets remain present"]
+    },
+    {
+      "id": "balanced-five-teams",
+      "mode": "teams",
+      "input": { "participantCount": 23, "teamCount": 5, "randomness": "seeded", "seed": "teams" },
+      "invariants": ["every participant appears exactly once", "largest and smallest team sizes differ by at most one"]
+    },
+    {
+      "id": "unique-coupon-space",
+      "mode": "coupon",
+      "input": { "count": 50, "length": 8, "alphabet": "AABC123", "prefix": "PROMO-", "randomness": "seeded", "seed": "coupons" },
+      "invariants": ["alphabet becomes ABC123", "all final coupon strings are unique", "same seed reproduces the same ordered output"]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "toolId": "image-resize",
+  "category": "files-assets",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "decision": "REFUSED",
+  "expectedFunctionality": "Ridimensiona o ritaglia JPEG, PNG e WebP in locale producendo un JPEG o WebP entro limiti definiti. Public jobs: Usa Ridimensiona immagine",
+  "observedFunctionality": "Current real-route Chrome and Edge ticket-314 receipts independently verify manual dimensions, aspect lock, percent scaling, contain versus cover/crop, no-upscale, JPEG/WebP choice, downloaded output dimensions and 390px usability. Existing canonical desktop acceptance also covers cancellation, corrupt-input handling, memory preflight and locality. The canonical certification nevertheless remains PARTIAL/goldEligible=false because required physical iOS Safari and Android Chrome receipts are missing.",
+  "rationale": "The resize engine now has stronger desktop functional evidence, including the completed ticket-314 upgrade, but this audit still refuses to call it complete while its canonical evidence policy explicitly requires two physical-device runs that do not exist. This does not promote the tool by fiat and does not use Result v2 status as evidence; tickets 277 and 278 own the missing physical proofs and 279 owns evidence-derived re-evaluation.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/image-resize/certification.json",
+      "claim": "Canonical image-resize certification is PARTIAL with automated/desktop PASS but iosSafari=MISSING and androidChrome=MISSING; goldEligible is false."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/image-resize-engine.test.ts",
+      "claim": "Resize policy tests cover contain/cover geometry, decoded-memory preflight, oversized dimensions, signatures/header checks and cancellation."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/image-resize/browser-chrome.json",
+      "claim": "Real Chrome route acceptance verifies contain/cover output dimensions/type/signature, cancellation, corrupt/oversize handling, locality and mobile viewport behavior."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/image-resize/browser-edge.json",
+      "claim": "Real Edge route acceptance independently verifies the same bounded resize and output contract."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/image-resize/upgrade-314-chrome.json",
+      "claim": "Current Chrome route evidence independently decodes manual cover/crop, percent and no-upscale outputs and verifies the new sizing controls plus 390px usability."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/image-resize/upgrade-314-edge.json",
+      "claim": "Current Edge route evidence independently repeats the ticket-314 sizing and downloaded-output checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/277-physical-android-chrome-image-resize-acceptance.md",
+      "claim": "Ticket 277 owns the missing physical Android Chrome proof required by the canonical certification policy."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/278-physical-ios-safari-image-resize-acceptance.md",
+      "claim": "Ticket 278 owns the missing physical iOS Safari proof and forbids substituting desktop WebKit."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/279-image-resize-gold-promotion-gate.md",
+      "claim": "Ticket 279 owns the final evidence-derived Gold re-evaluation only after both physical receipts exist."
+    }
+  ],
+  "childTickets": [
+    ".scratch/strumentiutili-expansion-20261005/issues/277-physical-android-chrome-image-resize-acceptance.md",
+    ".scratch/strumentiutili-expansion-20261005/issues/278-physical-ios-safari-image-resize-acceptance.md",
+    ".scratch/strumentiutili-expansion-20261005/issues/279-image-resize-gold-promotion-gate.md"
+  ]
+}

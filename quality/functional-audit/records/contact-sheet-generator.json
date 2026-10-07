@@ -1,0 +1,27 @@
+{
+  "toolId": "contact-sheet-generator",
+  "category": "files-assets",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Unisce più immagini in un unico foglio di anteprime generato localmente nel browser. Public jobs: Usa Crea un foglio di anteprime immagini",
+  "observedFunctionality": "Current job composes selected local images into one bounded sheet; browser Gold proves the route/output. Ticket 317 adds ordering/ZIP/export ergonomics beyond this declared one-sheet job.",
+  "rationale": "No missing behavior required by the current declared public job was found. Existing image-expansion tickets are treated as additive only where they broaden controls, formats, previews or packaging beyond the present truthful route contract; they are not used to manufacture a false incomplete result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/contact-sheet-generator.gold.json",
+      "claim": "Tool-specific Gold receipt binds contact-sheet-generator to the current declared local image semantics and fixture/oracle frontier."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Real-route expanded-local acceptance includes contact-sheet-generator with a tool-specific output assertion/hash plus locality, lazy-load, 390px and accessibility checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": "src/engines/image/visual-tools.ts",
+      "claim": "Shared image operations implement bounded input validation, local decoding/processing and verified output or deterministic inspection semantics used by this route."
+    }
+  ],
+  "childTickets": []
+}

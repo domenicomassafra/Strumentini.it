@@ -29,6 +29,14 @@ interface OpenGraphResult {
   readonly titleCharacters: number;
   readonly descriptionCharacters: number;
   readonly missingCore: readonly string[];
+  readonly previewPreset: {
+    readonly labelIt: string;
+    readonly platformIt: string;
+    readonly viewport: { readonly width: number; readonly height: number };
+    readonly source: string;
+    readonly checkedAt: string;
+    readonly approximationIt: string;
+  };
   readonly warnings: readonly string[];
 }
 
@@ -79,7 +87,7 @@ function openGraphErrorIt(result: Extract<ToolRunResult, { ok: false }>): string
 export function OpenGraphPreviewTool() {
   const [html, setHtml] = useState("");
   const operation = useToolOperation<OpenGraphResult>(
-    async (signal) => toolRuntime.run("open-graph-preview", { html }, {}, signal),
+    async (signal) => toolRuntime.run("open-graph-preview", { html, preset: "social-card" }, {}, signal),
     { formatError: openGraphErrorIt },
   );
   const result: OpenGraphResult | null = operation.result;
@@ -135,9 +143,11 @@ export function OpenGraphPreviewTool() {
               <div><dt>Immagine da</dt><dd>{result.imageSourceKey ?? "nessun tag immagine"}</dd></div>
               <div><dt>Lunghezza titolo</dt><dd>{result.titleCharacters} caratteri</dd></div>
               <div><dt>Lunghezza descrizione</dt><dd>{result.descriptionCharacters} caratteri</dd></div>
+              <div><dt>Preset</dt><dd>{result.previewPreset.platformIt} · {result.previewPreset.viewport.width}×{result.previewPreset.viewport.height}px</dd></div>
+              <div><dt>Fonte preset</dt><dd>{result.previewPreset.source} · controllata il {result.previewPreset.checkedAt}</dd></div>
             </dl>
 
-            <p class="eyebrow">Anteprima della scheda</p>
+            <p class="eyebrow">Anteprima della scheda · {result.previewPreset.labelIt}</p>
             <p style={{ color: "var(--brand)", margin: "0 0 var(--space-1)", overflowWrap: "anywhere" }}>{result.url ?? "URL non dichiarato"}</p>
             <p style={{ margin: "0 0 var(--space-1)", fontSize: "var(--font-size-lg)" }}>{result.title ?? "Nessun titolo"}</p>
             <p style={{ margin: "0 0 var(--space-4)", color: "var(--text-muted)" }}>{result.description ?? "Nessuna descrizione"}</p>
@@ -170,6 +180,7 @@ export function OpenGraphPreviewTool() {
                 scaricare nulla. Sostituiscilo con l'indirizzo reale del sito prima di pubblicare.
               </p>
             )}
+            <p class="file-note">{result.previewPreset.approximationIt}</p>
 
             <details>
               <summary>Tutti i tag trovati</summary>

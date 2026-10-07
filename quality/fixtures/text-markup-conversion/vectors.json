@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "newline": "CRLF and CR normalize to LF; serializers add no synthetic terminal newline",
+    "unicode": "preserve code points without NFC/NFKC normalization; serialize downloads as UTF-8",
+    "markdown": "conservative CommonMark-inspired subset with strikethrough only as a targeted GFM extension",
+    "html_preview": "serialize only the normalized allowlisted document model; never render raw input HTML"
+  },
+  "vectors": [
+    {
+      "id": "markdown-basic-html",
+      "mode": "markdown-to-html",
+      "input": "# Caffè\r\n\r\n**forte**  \r\nlinea",
+      "expected_output": "<h1>Caffè</h1>\n<p><strong>forte</strong><br />linea</p>"
+    },
+    {
+      "id": "html-markdown-pre-whitespace",
+      "mode": "html-to-markdown",
+      "input": "<h2>Caffè</h2><p><strong>forte</strong><br>linea</p><pre> a\n  b </pre>",
+      "expected_output": "## Caffè\n\n**forte**  \nlinea\n\n```\n a\n  b \n```"
+    },
+    {
+      "id": "markdown-plain-text-structure",
+      "mode": "markdown-to-text",
+      "input": "# Caffè\n\n- uno\n- due\n\n[Link](https://example.com)",
+      "expected_output": "Caffè\n\n- uno\n- due\n\nLink (https://example.com)"
+    },
+    {
+      "id": "text-html-newlines",
+      "mode": "text-to-html",
+      "input": "Caffè\r\nlinea 2\r\n\r\nAltro",
+      "expected_output": "<p>Caffè<br />linea 2</p>\n<p>Altro</p>"
+    },
+    {
+      "id": "html-text-whitespace",
+      "mode": "html-to-text",
+      "input": "<h1>Caffè</h1><ul><li>uno</li><li>due</li></ul><pre> a\n  b </pre>",
+      "expected_output": "Caffè\n\n- uno\n- due\n\n a\n  b "
+    },
+    {
+      "id": "html-xss-active-content",
+      "mode": "html-to-text",
+      "input": "<p>safe<script>alert(1)</script><a href=\"javascript:alert(2)\" onclick=\"alert(3)\">link</a><img src=x onerror=\"alert(4)\" alt=\"ALT\"></p>",
+      "expected_output": "safelinkALT",
+      "must_not_contain_preview": ["script", "javascript:", "onclick", "onerror"]
+    },
+    {
+      "id": "markdown-xss-raw-html",
+      "mode": "markdown-to-html",
+      "input": "<img src=x onerror=alert(1)>\n\n[x](javascript:alert(2))",
+      "expected_output": "<p>&lt;img src=x onerror=alert(1)&gt;</p>\n<p>x</p>",
+      "must_not_contain_preview": ["<img", "javascript:", "onerror=alert(1)>"]
+    },
+    {
+      "id": "gfm-limit-task-list",
+      "mode": "markdown-to-html",
+      "input": "- [x] task",
+      "expected_output": "<ul>\n<li>[x] task</li>\n</ul>",
+      "expected_dropped_contains": "GFM task list"
+    }
+  ]
+}

@@ -6,7 +6,7 @@
 
 **Constraints:** Target-size success is asserted only if final bytes are `<= target`; iterative quality/downscale strategy and minimum quality/dimension policy are visible; no fake exact-size promise.
 
-**Blocked by:** 47.
+**Blocked by:** 210, 211.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] Files that cannot hit the target remain downloadable as best-effort only after an explicit warning, never as successful target hits.
 
 **Verification:** Target boundary tests, mixed-format batch corpus, failure isolation, ZIP integrity, and memory/cancellation acceptance.
-

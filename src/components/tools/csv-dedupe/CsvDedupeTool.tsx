@@ -1,9 +1,11 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { CSV_HARD_FILE_BYTES, readBlobText } from "../../../engines/table/csv";
-import { receiveHandoffFromOpener } from "../../../runtime/handoff";
+import { handoffCatalog } from "../../../generated/handoff-catalog";
+import { compatibleHandoffTargets, openHandoffTarget, receiveHandoffFromOpener } from "../../../runtime/handoff";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { csvDedupeManifest } from "../../../tools/csv-dedupe/manifest";
 import type { CsvDedupeOutput } from "../../../tools/csv-dedupe/types";
+import { CsvTableResultV2 } from "../csv-shared/CsvTableResultV2";
 
 export function CsvDedupeTool() {
   const [text, setText] = useState("");
@@ -13,6 +15,7 @@ export function CsvDedupeTool() {
   const [keyColumns, setKeyColumns] = useState<number[]>([]);
   const [result, setResult] = useState<CsvDedupeOutput | null>(null);
   const [error, setError] = useState("");
+  const fileInput = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => receiveHandoffFromOpener(csvDedupeManifest, (envelope, proposal) => {
     setText(envelope.payload);
@@ -44,24 +47,56 @@ export function CsvDedupeTool() {
     setResult(run.value as CsvDedupeOutput);
   }
 
-  function download() {
-    if (result === null) return;
-    const url = URL.createObjectURL(new Blob([result.output], { type: "text/csv;charset=utf-8" }));
-    const anchor = document.createElement("a"); anchor.href = url; anchor.download = "deduped.csv"; anchor.click(); URL.revokeObjectURL(url);
+  function reset() {
+    setText("");
+    setSourceName("");
+    setHeaders([]);
+    setMode("whole-row");
+    setKeyColumns([]);
+    setResult(null);
+    setError("");
+    if (fileInput.current !== null) fileInput.current.value = "";
   }
 
   const gutterState = gutterStateFromResult(result, error);
+  const handoffTargets = result === null
+    ? []
+    : compatibleHandoffTargets(result.handoff, handoffCatalog).filter(({ target }) => target.id !== csvDedupeManifest.id);
   return <form class="tool-operation" onSubmit={dedupe}>
     <section class="tool-form-card">
-      <label class="field"><span>File CSV</span><input aria-label="File CSV" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => void loadFile(event.currentTarget.files?.[0])} /></label>
+      <label class="field"><span>File CSV</span><input ref={fileInput} aria-label="File CSV" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => void loadFile(event.currentTarget.files?.[0])} /></label>
       {sourceName && <p class="file-note" role="status">{sourceName}</p>}
-      <p class="file-note">Limite file diretto: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB. Limite passaggio tra strumenti: 10 MiB.</p>
+      <p class="file-note">Limite file diretto: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB. Limite passaggio tra strumenti: 2 MiB.</p>
       <fieldset><legend>Regola per i duplicati</legend><label class="choice-line"><input type="radio" name="dedupe-mode" checked={mode === "whole-row"} onChange={() => setMode("whole-row")} /> Riga intera: stessa sequenza esatta di celle</label><label class="choice-line"><input type="radio" name="dedupe-mode" checked={mode === "key-columns"} onChange={() => setMode("key-columns")} /> Colonne chiave: mantieni la prima riga per ogni chiave selezionata</label></fieldset>
       {mode === "key-columns" && <fieldset><legend>Colonne chiave</legend><p class="file-note">Le colonne sono identificate dalla posizione, quindi intestazioni duplicate restano distinguibili. Le righe con tutte le celle chiave vuote restano separate.</p>{headers.map((name, index) => <label class="choice-line" key={`${index}-${name}`}><input type="checkbox" checked={keyColumns.includes(index)} onChange={(event) => setKeyColumns(event.currentTarget.checked ? [...keyColumns, index].toSorted((a,b)=>a-b) : keyColumns.filter((value) => value !== index))} /> Colonna {index + 1}: {name || "(intestazione vuota)"}</label>)}</fieldset>}
       {error && <p class="error" role="alert">{error}</p>}
       <button class="primary tool-submit" type="submit">Rimuovi duplicati</button>
     </section>
-    <section class="result-panel gutter" data-state={gutterState} aria-live="polite"><p class="gutter-label eyebrow">Risultato deduplicato</p>{result ? <><strong class="gutter-value">{result.removedRows} {result.removedRows === 1 ? "riga duplicata rimossa" : "righe duplicate rimosse"}</strong><dl class="gutter-rows"><div><dt>Righe dati rimanenti</dt><dd>{result.outputRows}</dd></div></dl><p class="file-note">Viene mantenuta la prima occorrenza. Le righe con tutte le chiavi vuote restano distinte.</p><pre class="csv-preview">{result.output.split("\n").slice(0, 8).join("\n")}</pre><button type="button" onClick={download}>Scarica CSV deduplicato</button></> : <p class="gutter-placeholder result-placeholder">Il risultato deduplicato e il numero esatto di righe rimosse appariranno qui.</p>}</section>
+    <CsvTableResultV2
+      eyebrow="Risultato deduplicato"
+      placeholder="Il risultato deduplicato e il numero esatto di righe rimosse appariranno qui."
+      state={gutterState}
+      output={result?.output ?? null}
+      filename="deduped.csv"
+      declaration={csvDedupeManifest.result}
+      summaryLabel="Duplicati rimossi"
+      summaryValue={result === null ? "" : String(result.removedRows) + " " + (result.removedRows === 1 ? "riga duplicata rimossa" : "righe duplicate rimosse")}
+      metrics={result === null ? [] : [
+        { label: "Righe dati in ingresso", value: result.inputRows },
+        { label: "Righe dati rimanenti", value: result.outputRows },
+        { label: "Righe dati interessate", value: result.affectedRows },
+        { label: "Celle rimosse", value: result.affectedCells },
+        { label: "Regola", value: result.mode === "whole-row" ? "riga intera" : "colonne chiave" },
+      ]}
+      warnings={result?.warnings}
+      provenance="Deduplicazione locale e stabile: viene mantenuta la prima occorrenza; le chiavi vuote restano distinte."
+      handoffTargetCount={handoffTargets.length}
+      onHandoff={handoffTargets[0] === undefined || result === null ? undefined : () => {
+        const proposal = handoffTargets[0]!;
+        void openHandoffTarget(proposal, result.handoff, { sourceToolId: csvDedupeManifest.id });
+      }}
+      onReset={reset}
+    />
   </form>;
 }
 

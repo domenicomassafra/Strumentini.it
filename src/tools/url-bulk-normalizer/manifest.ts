@@ -13,6 +13,7 @@ export const urlBulkNormalizerManifest = {
   engine: "url-marketing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "text-code", capabilities: ["copy", "download", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-065", fixtureFamilies: ["query-params", "url-security"] },
 } as const satisfies ToolManifest;
 

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tool": "microphone-recorder",
+  "automatedScope": "desktop Chromium with deterministic getUserMedia/MediaRecorder mocks for permission, revoke, MIME, Blob, cleanup and unsupported-state behavior",
+  "physicalAcceptance": {
+    "iosSafari": "NOT_OBSERVED",
+    "androidChrome": "NOT_OBSERVED"
+  },
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "network": "zero external requests during automated task scope",
+  "goldPromotion": "BLOCKED_PHYSICAL_DEVICE_EVIDENCE"
+}

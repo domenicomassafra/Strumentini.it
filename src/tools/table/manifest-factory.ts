@@ -1,4 +1,5 @@
 import type { FactoryToolManifest } from "../../tool-factory/manifest";
+import type { ResultCapability } from "../../catalog/manifest";
 
 export interface TableManifestSpec {
   id: string;
@@ -17,6 +18,12 @@ export interface TableManifestSpec {
 }
 
 export function makeTableManifest(spec: TableManifestSpec): FactoryToolManifest {
+  const emitsCsv = (spec.handoff?.emits ?? []).some((descriptor) => descriptor.type === "table" && descriptor.format === "csv");
+  const acceptsCsv = (spec.handoff?.accepts ?? []).some((descriptor) => descriptor.type === "table" && descriptor.format === "csv");
+  const resultCapabilities: ResultCapability[] = ["copy", "download"];
+  if (emitsCsv && acceptsCsv) resultCapabilities.push("reuse");
+  if (emitsCsv) resultCapabilities.push("handoff");
+  resultCapabilities.push("reset");
   return {
     id: spec.id,
     route: `/tools/${spec.id}`,
@@ -36,6 +43,7 @@ export function makeTableManifest(spec: TableManifestSpec): FactoryToolManifest 
     capabilities: ["file-read", "file-write"],
     profileFields: [],
     ...(spec.handoff === undefined ? {} : { handoff: spec.handoff }),
+    result: { class: "table", capabilities: resultCapabilities },
     gold: spec.gold,
     version: "0.1.0",
     deterministic: true,

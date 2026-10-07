@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "cidr": [
+    {
+      "input": "192.0.2.129/24",
+      "expected": {
+        "family": "IPv4",
+        "network": "192.0.2.0/24",
+        "broadcast": "192.0.2.255",
+        "addressCount": "256"
+      }
+    },
+    {
+      "input": "192.0.2.10/31",
+      "expected": {
+        "network": "192.0.2.10/31",
+        "broadcast": "192.0.2.11",
+        "usableHosts": "2"
+      }
+    },
+    {
+      "input": "2001:db8::1234/64",
+      "expected": {
+        "family": "IPv6",
+        "network": "2001:db8::/64",
+        "last": "2001:db8::ffff:ffff:ffff:ffff",
+        "addressCount": "18446744073709551616"
+      }
+    },
+    {
+      "input": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff/128",
+      "expected": {
+        "network": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff/128",
+        "addressCount": "1"
+      }
+    }
+  ],
+  "baseConversion": [
+    {
+      "value": "ff",
+      "fromBase": "16",
+      "toBase": "2",
+      "expected": "11111111"
+    },
+    {
+      "value": "340282366920938463463374607431768211455",
+      "fromBase": "10",
+      "toBase": "16",
+      "expected": "ffffffffffffffffffffffffffffffff"
+    },
+    {
+      "value": "-101010",
+      "fromBase": "2",
+      "toBase": "36",
+      "expected": "-16"
+    }
+  ],
+  "chmod": [
+    {
+      "input": "755",
+      "expectedOctal": "755",
+      "expectedSymbolic": "rwxr-xr-x"
+    },
+    {
+      "input": "4755",
+      "expectedOctal": "4755",
+      "expectedSymbolic": "rwsr-xr-x"
+    },
+    {
+      "input": "rwxrwxrwt",
+      "expectedOctal": "1777",
+      "expectedSymbolic": "rwxrwxrwt"
+    }
+  ]
+}

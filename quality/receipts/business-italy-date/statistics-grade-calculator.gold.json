@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/business-italy-date/statistics-grade-calculator.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "statistics-grade-calculator",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-206",
+  "fixtureFamilies": [
+    "calculator-math-core"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "calculator-math-core",
+      "path": "quality/fixtures/calculator-math-core/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime declaration",
+    "high-confidence oracle with only explicit bounded-scope gaps",
+    "manifest maintenance class matches oracle",
+    "fixture replay through public tool module",
+    "per-tool semantic browser assertion",
+    "keyboard/locality/lazy/mobile/a11y browser acceptance",
+    "focused semantic and refusal-boundary tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "3c048adaafa0be5507a83d5a7bc3ecc670bc5d98e3a890f5a2ac7df030a2598a",
+    "moduleSha256": "ff1adb60fca07db9d90b96e9231fd64d0ed97cad0e5f3f45989dd2d047fe04ae",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "000f2af41777740ecf4aa7c9564047c18f69cc00eb7ef24ab9f4ab544abc70f6",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "3906506956e6f2b38118a2d26f4b497286e004d7465c740d30dc0862b3c42fc1",
+    "fixture:calculator-math-core:sha256": "e9f53d8825ea53f273dd0aa6e9567fd5b58f715da32c523ace07ce2ab8030e86"
+  }
+}

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
   "toolId": "platform-size-presets",
   "runtime": {
     "location": "LOCAL",
@@ -80,7 +80,7 @@
       "crop box, letterbox need and source of the canvas all reported"
     ],
     "outputSha256": [
-      "36a3d331274eae61891bf91c2f6997d20cc0416afe0e09faeea2e71b1025ed5e"
+      "76c0de458c4aab7f5dc73ac6ed1ba7c43b7a6998dd1cdb6778d2e737b29087b4"
     ],
     "locality": "zero external, non-GET or task-body requests after task start",
     "lazyLoad": "implementation script observed after submit",
@@ -110,12 +110,12 @@
     "the contain box stays inside the canvas"
   ],
   "identities": {
-    "manifestSha256": "1205d653c3dc86a14b7b42a743255ad33f4e211e4b652ca4bc5b7928d3c2bc8f",
-    "moduleSha256": "ec4c5490f2fa39fe4ef59efa19ee6ae2f08e04a6088a9e67cfd41e41ce987bd5",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "86a65cc9a41f05a7317912285e2d51df4c6dd199446c9fd1d3eef8826367326d",
-    "acceptanceScriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
+    "manifestSha256": "b9277ed1286c768d080569c94aa8996f6194454fbfd09f9aec790898c3cd7329",
+    "moduleSha256": "031912da3c3bb143f5c971a9970342f7443ed0c1f0f3c20123ea0656dad7baed",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "b4ad601616cc57a94acba30e9d3b47a13c1365a407a371e472f3a91695850c24",
+    "acceptanceScriptSha256": "2c1eef9ba70d9a6e6ff2c98dee471ff40810cd334deb65cdcf25e3a343796b39",
     "unitTestsSha256": "c7c95a388ab7368340e175d004ca3a6d505a7737a77109c0f9bd2d7fb2eb4844",
     "fixture:platform-image-presets:sha256": "33fad935987f435e0a65f7723f5e4eb4f148a62baed4525c72de0627ca4ec73d"
   }

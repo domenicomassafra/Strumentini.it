@@ -1,0 +1,551 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-06T11:58:19.931Z",
+  "method": "Vite 8.3 production build; gzip level 9 over emitted bytes. lazy totals include direct emitted imports/assets, not runtime-fetched OCR language/core assets.",
+  "initial": {
+    "files": [
+      {
+        "file": "assets/index-DxC9YeHu.js",
+        "rawBytes": 19215,
+        "gzipBytes": 6584
+      },
+      {
+        "file": "assets/rolldown-runtime-C0FnF6B9.js",
+        "rawBytes": 1291,
+        "gzipBytes": 712
+      },
+      {
+        "file": "assets/preload-helper-BZ1Pz5am.js",
+        "rawBytes": 1218,
+        "gzipBytes": 691
+      }
+    ],
+    "rawBytes": 21724,
+    "gzipBytes": 7987
+  },
+  "runtimeAssetGroups": {
+    "tesseract": {
+      "note": "Tesseract chooses a compatible core variant at runtime; these are all locally served worker/core/language assets available to the spike, not one-request transfer size.",
+      "files": [
+        {
+          "file": "core/tesseract-core-lstm.wasm",
+          "rawBytes": 2855361,
+          "gzipBytes": 1055092
+        },
+        {
+          "file": "core/tesseract-core-lstm.wasm.js",
+          "rawBytes": 3896484,
+          "gzipBytes": 1460861
+        },
+        {
+          "file": "core/tesseract-core-relaxedsimd-lstm.wasm",
+          "rawBytes": 2862266,
+          "gzipBytes": 1057005
+        },
+        {
+          "file": "core/tesseract-core-relaxedsimd-lstm.wasm.js",
+          "rawBytes": 3905767,
+          "gzipBytes": 1462723
+        },
+        {
+          "file": "core/tesseract-core-relaxedsimd.wasm",
+          "rawBytes": 3456075,
+          "gzipBytes": 1296431
+        },
+        {
+          "file": "core/tesseract-core-relaxedsimd.wasm.js",
+          "rawBytes": 4697227,
+          "gzipBytes": 1768052
+        },
+        {
+          "file": "core/tesseract-core-simd-lstm.wasm",
+          "rawBytes": 2857601,
+          "gzipBytes": 1055812
+        },
+        {
+          "file": "core/tesseract-core-simd-lstm.wasm.js",
+          "rawBytes": 3899472,
+          "gzipBytes": 1461519
+        },
+        {
+          "file": "core/tesseract-core-simd.wasm",
+          "rawBytes": 3451410,
+          "gzipBytes": 1294899
+        },
+        {
+          "file": "core/tesseract-core-simd.wasm.js",
+          "rawBytes": 4690932,
+          "gzipBytes": 1767715
+        },
+        {
+          "file": "core/tesseract-core.wasm",
+          "rawBytes": 3449168,
+          "gzipBytes": 1294354
+        },
+        {
+          "file": "core/tesseract-core.wasm.js",
+          "rawBytes": 4687944,
+          "gzipBytes": 1766303
+        },
+        {
+          "file": "lang/ita.traineddata.gz",
+          "rawBytes": 6933830,
+          "gzipBytes": 6907823
+        },
+        {
+          "file": "worker.min.js",
+          "rawBytes": 111307,
+          "gzipBytes": 33611
+        }
+      ],
+      "rawBytes": 51754844,
+      "gzipBytes": 23682200
+    }
+  },
+  "candidates": [
+    {
+      "id": "cantoo-pdf-lib",
+      "entry": {
+        "file": "assets/es-DwI2HWNb.js",
+        "rawBytes": 568769,
+        "gzipBytes": 244516
+      },
+      "imported": [
+        {
+          "file": "assets/rolldown-runtime-C0FnF6B9.js",
+          "rawBytes": 1291,
+          "gzipBytes": 712
+        },
+        {
+          "file": "assets/browser-ClCPJ7Bh.js",
+          "rawBytes": 31384,
+          "gzipBytes": 11962
+        }
+      ],
+      "assets": [],
+      "lazyRawBytes": 601444,
+      "lazyGzipBytes": 257190
+    },
+    {
+      "id": "docx-preview",
+      "entry": {
+        "file": "assets/docx-preview-t9k1qJMu.js",
+        "rawBytes": 75595,
+        "gzipBytes": 20467
+      },
+      "imported": [
+        {
+          "file": "assets/rolldown-runtime-C0FnF6B9.js",
+          "rawBytes": 1291,
+          "gzipBytes": 712
+        },
+        {
+          "file": "assets/jszip.min-B7Fa2WXl.js",
+          "rawBytes": 96003,
+          "gzipBytes": 28195
+        }
+      ],
+      "assets": [],
+      "lazyRawBytes": 172889,
+      "lazyGzipBytes": 49374
+    },
+    {
+      "id": "docx",
+      "entry": {
+        "file": "assets/dist-CL8pu169.js",
+        "rawBytes": 437982,
+        "gzipBytes": 123827
+      },
+      "imported": [
+        {
+          "file": "assets/rolldown-runtime-C0FnF6B9.js",
+          "rawBytes": 1291,
+          "gzipBytes": 712
+        }
+      ],
+      "assets": [],
+      "lazyRawBytes": 439273,
+      "lazyGzipBytes": 124539
+    },
+    {
+      "id": "fflate",
+      "entry": {
+        "file": "assets/browser-BV4XJ9Z2.js",
+        "rawBytes": 1098,
+        "gzipBytes": 479
+      },
+      "imported": [
+        {
+          "file": "assets/browser-ClCPJ7Bh.js",
+          "rawBytes": 31384,
+          "gzipBytes": 11962
+        }
+      ],
+      "assets": [],
+      "lazyRawBytes": 32482,
+      "lazyGzipBytes": 12441
+    },
+    {
+      "id": "libheif-js",
+      "entry": {
+        "file": "assets/libheif-bundle-BmxSuLdv.js",
+        "rawBytes": 2039938,
+        "gzipBytes": 714337
+      },
+      "imported": [
+        {
+          "file": "assets/rolldown-runtime-C0FnF6B9.js",
+          "rawBytes": 1291,
+          "gzipBytes": 712
+        }
+      ],
+      "assets": [],
+      "lazyRawBytes": 2041229,
+      "lazyGzipBytes": 715049
+    },
+    {
+      "id": "mammoth",
+      "entry": {
+        "file": "assets/mammoth.browser-C4-72Yf8.js",
+        "rawBytes": 298661,
+        "gzipBytes": 86420
+      },
+      "imported": [
+        {
+          "file": "assets/rolldown-runtime-C0FnF6B9.js",
+          "rawBytes": 1291,
+          "gzipBytes": 712
+        }
+      ],
+      "assets": [],
+      "lazyRawBytes": 299952,
+      "lazyGzipBytes": 87132
+    },
+    {
+      "id": "mediabunny",
+      "entry": {
+        "file": "assets/src-BTc-yaYS.js",
+        "rawBytes": 695181,
+        "gzipBytes": 172736
+      },
+      "imported": [
+        {
+          "file": "assets/rolldown-runtime-C0FnF6B9.js",
+          "rawBytes": 1291,
+          "gzipBytes": 712
+        },
+        {
+          "file": "assets/__vite-browser-external-DpH90L5b.js",
+          "rawBytes": 155,
+          "gzipBytes": 162
+        }
+      ],
+      "assets": [],
+      "lazyRawBytes": 696627,
+      "lazyGzipBytes": 173610
+    },
+    {
+      "id": "mp4box",
+      "entry": {
+        "file": "assets/mp4box.all-ClpO_XUd.js",
+        "rawBytes": 182431,
+        "gzipBytes": 41239
+      },
+      "imported": [],
+      "assets": [],
+      "lazyRawBytes": 182431,
+      "lazyGzipBytes": 41239
+    },
+    {
+      "id": "pdfjs-dist",
+      "entry": {
+        "file": "assets/pdf-D8meTUzS.js",
+        "rawBytes": 430916,
+        "gzipBytes": 127523
+      },
+      "imported": [
+        {
+          "file": "assets/preload-helper-BZ1Pz5am.js",
+          "rawBytes": 1218,
+          "gzipBytes": 691
+        }
+      ],
+      "assets": [
+        {
+          "file": "assets/pdf.worker-PhvoOpM7.mjs",
+          "rawBytes": 2229713,
+          "gzipBytes": 474156
+        }
+      ],
+      "lazyRawBytes": 2661847,
+      "lazyGzipBytes": 602370
+    },
+    {
+      "id": "pkijs-cms",
+      "entry": {
+        "file": "assets/index.es-CBqjg_vO.js",
+        "rawBytes": 332368,
+        "gzipBytes": 67416
+      },
+      "imported": [
+        {
+          "file": "assets/rolldown-runtime-C0FnF6B9.js",
+          "rawBytes": 1291,
+          "gzipBytes": 712
+        },
+        {
+          "file": "assets/index.es-BAkBZI1U.js",
+          "rawBytes": 56272,
+          "gzipBytes": 13461
+        }
+      ],
+      "assets": [],
+      "lazyRawBytes": 389931,
+      "lazyGzipBytes": 81589
+    },
+    {
+      "id": "pptxgenjs",
+      "entry": {
+        "file": "assets/pptxgen.es-DnYj_vjT.js",
+        "rawBytes": 272656,
+        "gzipBytes": 93945
+      },
+      "imported": [
+        {
+          "file": "assets/rolldown-runtime-C0FnF6B9.js",
+          "rawBytes": 1291,
+          "gzipBytes": 712
+        },
+        {
+          "file": "assets/preload-helper-BZ1Pz5am.js",
+          "rawBytes": 1218,
+          "gzipBytes": 691
+        },
+        {
+          "file": "assets/jszip.min-B7Fa2WXl.js",
+          "rawBytes": 96003,
+          "gzipBytes": 28195
+        }
+      ],
+      "assets": [],
+      "lazyRawBytes": 371168,
+      "lazyGzipBytes": 123543
+    },
+    {
+      "id": "tesseract-js",
+      "entry": {
+        "file": "assets/src-SuYvKHvm.js",
+        "rawBytes": 17285,
+        "gzipBytes": 7226
+      },
+      "imported": [
+        {
+          "file": "assets/rolldown-runtime-C0FnF6B9.js",
+          "rawBytes": 1291,
+          "gzipBytes": 712
+        }
+      ],
+      "assets": [],
+      "lazyRawBytes": 18576,
+      "lazyGzipBytes": 7938
+    },
+    {
+      "id": "xlsx",
+      "entry": {
+        "file": "assets/xlsx-BKER4Xe2.js",
+        "rawBytes": 423955,
+        "gzipBytes": 138725
+      },
+      "imported": [],
+      "assets": [],
+      "lazyRawBytes": 423955,
+      "lazyGzipBytes": 138725
+    }
+  ],
+  "chunks": [
+    {
+      "key": "___vite-browser-external-DpH90L5b.js",
+      "src": null,
+      "file": "assets/__vite-browser-external-DpH90L5b.js",
+      "dynamic": false,
+      "rawBytes": 155,
+      "gzipBytes": 162
+    },
+    {
+      "key": "__vite-browser-external",
+      "src": "__vite-browser-external",
+      "file": "assets/__vite-browser-external-BYj5CyAs.js",
+      "dynamic": true,
+      "rawBytes": 77,
+      "gzipBytes": 95
+    },
+    {
+      "key": "_browser-ClCPJ7Bh.js",
+      "src": null,
+      "file": "assets/browser-ClCPJ7Bh.js",
+      "dynamic": false,
+      "rawBytes": 31384,
+      "gzipBytes": 11962
+    },
+    {
+      "key": "_index.es-BAkBZI1U.js",
+      "src": null,
+      "file": "assets/index.es-BAkBZI1U.js",
+      "dynamic": false,
+      "rawBytes": 56272,
+      "gzipBytes": 13461
+    },
+    {
+      "key": "_jszip.min-B7Fa2WXl.js",
+      "src": null,
+      "file": "assets/jszip.min-B7Fa2WXl.js",
+      "dynamic": false,
+      "rawBytes": 96003,
+      "gzipBytes": 28195
+    },
+    {
+      "key": "_preload-helper-BZ1Pz5am.js",
+      "src": null,
+      "file": "assets/preload-helper-BZ1Pz5am.js",
+      "dynamic": false,
+      "rawBytes": 1218,
+      "gzipBytes": 691
+    },
+    {
+      "key": "_rolldown-runtime-C0FnF6B9.js",
+      "src": null,
+      "file": "assets/rolldown-runtime-C0FnF6B9.js",
+      "dynamic": false,
+      "rawBytes": 1291,
+      "gzipBytes": 712
+    },
+    {
+      "key": "index.html",
+      "src": "index.html",
+      "file": "assets/index-DxC9YeHu.js",
+      "dynamic": false,
+      "rawBytes": 19215,
+      "gzipBytes": 6584
+    },
+    {
+      "key": "node_modules/@cantoo/pdf-lib/es/index.js",
+      "src": "node_modules/@cantoo/pdf-lib/es/index.js",
+      "file": "assets/es-DwI2HWNb.js",
+      "dynamic": true,
+      "rawBytes": 568769,
+      "gzipBytes": 244516
+    },
+    {
+      "key": "node_modules/asn1js/build/index.es.js",
+      "src": "node_modules/asn1js/build/index.es.js",
+      "file": "assets/index.es-DWRrRQ1b.js",
+      "dynamic": true,
+      "rawBytes": 1161,
+      "gzipBytes": 613
+    },
+    {
+      "key": "node_modules/docx-preview/dist/docx-preview.mjs",
+      "src": "node_modules/docx-preview/dist/docx-preview.mjs",
+      "file": "assets/docx-preview-t9k1qJMu.js",
+      "dynamic": true,
+      "rawBytes": 75595,
+      "gzipBytes": 20467
+    },
+    {
+      "key": "node_modules/docx/dist/index.mjs",
+      "src": "node_modules/docx/dist/index.mjs",
+      "file": "assets/dist-CL8pu169.js",
+      "dynamic": true,
+      "rawBytes": 437982,
+      "gzipBytes": 123827
+    },
+    {
+      "key": "node_modules/fflate/esm/browser.js",
+      "src": "node_modules/fflate/esm/browser.js",
+      "file": "assets/browser-BV4XJ9Z2.js",
+      "dynamic": true,
+      "rawBytes": 1098,
+      "gzipBytes": 479
+    },
+    {
+      "key": "node_modules/libheif-js/libheif-wasm/libheif-bundle.mjs",
+      "src": "node_modules/libheif-js/libheif-wasm/libheif-bundle.mjs",
+      "file": "assets/libheif-bundle-BmxSuLdv.js",
+      "dynamic": true,
+      "rawBytes": 2039938,
+      "gzipBytes": 714337
+    },
+    {
+      "key": "node_modules/mammoth/mammoth.browser.js",
+      "src": "node_modules/mammoth/mammoth.browser.js",
+      "file": "assets/mammoth.browser-C4-72Yf8.js",
+      "dynamic": true,
+      "rawBytes": 298661,
+      "gzipBytes": 86420
+    },
+    {
+      "key": "node_modules/mediabunny/dist/modules/src/index.js",
+      "src": "node_modules/mediabunny/dist/modules/src/index.js",
+      "file": "assets/src-BTc-yaYS.js",
+      "dynamic": true,
+      "rawBytes": 695181,
+      "gzipBytes": 172736
+    },
+    {
+      "key": "node_modules/mp4box/dist/mp4box.all.mjs",
+      "src": "node_modules/mp4box/dist/mp4box.all.mjs",
+      "file": "assets/mp4box.all-ClpO_XUd.js",
+      "dynamic": true,
+      "rawBytes": 182431,
+      "gzipBytes": 41239
+    },
+    {
+      "key": "node_modules/pdfjs-dist/build/pdf.mjs",
+      "src": "node_modules/pdfjs-dist/build/pdf.mjs",
+      "file": "assets/pdf-D8meTUzS.js",
+      "dynamic": true,
+      "rawBytes": 430916,
+      "gzipBytes": 127523
+    },
+    {
+      "key": "node_modules/pdfjs-dist/build/pdf.worker.mjs",
+      "src": "node_modules/pdfjs-dist/build/pdf.worker.mjs",
+      "file": "assets/pdf.worker-PhvoOpM7.mjs",
+      "dynamic": false,
+      "rawBytes": 2229713,
+      "gzipBytes": 474156
+    },
+    {
+      "key": "node_modules/pkijs/build/index.es.js",
+      "src": "node_modules/pkijs/build/index.es.js",
+      "file": "assets/index.es-CBqjg_vO.js",
+      "dynamic": true,
+      "rawBytes": 332368,
+      "gzipBytes": 67416
+    },
+    {
+      "key": "node_modules/pptxgenjs/dist/pptxgen.es.js",
+      "src": "node_modules/pptxgenjs/dist/pptxgen.es.js",
+      "file": "assets/pptxgen.es-DnYj_vjT.js",
+      "dynamic": true,
+      "rawBytes": 272656,
+      "gzipBytes": 93945
+    },
+    {
+      "key": "node_modules/tesseract.js/src/index.js",
+      "src": "node_modules/tesseract.js/src/index.js",
+      "file": "assets/src-SuYvKHvm.js",
+      "dynamic": true,
+      "rawBytes": 17285,
+      "gzipBytes": 7226
+    },
+    {
+      "key": "node_modules/xlsx/xlsx.mjs",
+      "src": "node_modules/xlsx/xlsx.mjs",
+      "file": "assets/xlsx-BKER4Xe2.js",
+      "dynamic": true,
+      "rawBytes": 423955,
+      "gzipBytes": 138725
+    }
+  ]
+}

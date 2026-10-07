@@ -1,6 +1,8 @@
 import { inspectImageHeader } from "./format";
+import { CSS_NAMED_COLORS, type CssNamedColor } from "./css-named-colors";
 
 export type ImageVisualToolId =
+  | "color-blindness-image-simulation"
   | "image-crop"
   | "image-format-conversion"
   | "image-compression"
@@ -173,6 +175,84 @@ export function parseHexColor(value: string): { r: number; g: number; b: number 
     r: Number.parseInt(expanded.slice(0, 2), 16),
     g: Number.parseInt(expanded.slice(2, 4), 16),
     b: Number.parseInt(expanded.slice(4, 6), 16),
+  };
+}
+
+export function resolveCssColor(value: string): { hex: string; rgb: { r: number; g: number; b: number }; namedColor: CssNamedColor | null } {
+  const normalized = value.trim().toLowerCase();
+  const named = CSS_NAMED_COLORS[normalized as CssNamedColor];
+  const hex = named ?? value;
+  const rgb = parseHexColor(hex);
+  return { hex: rgbToHex(rgb.r, rgb.g, rgb.b), rgb, namedColor: named === undefined ? null : normalized as CssNamedColor };
+}
+
+export interface ColorPaletteEntry {
+  readonly hex: string;
+  readonly hsl: { readonly h: number; readonly s: number; readonly l: number };
+  readonly contrastWithWhite: number;
+  readonly contrastWithBlack: number;
+}
+
+function paletteEntry(rgb: { r: number; g: number; b: number }): ColorPaletteEntry {
+  return {
+    hex: rgbToHex(rgb.r, rgb.g, rgb.b),
+    hsl: rgbToHsl(rgb.r, rgb.g, rgb.b),
+    contrastWithWhite: contrastRatio(rgb, { r: 255, g: 255, b: 255 }),
+    contrastWithBlack: contrastRatio(rgb, { r: 0, g: 0, b: 0 }),
+  };
+}
+
+function hslPaletteEntry(h: number, s: number, l: number): ColorPaletteEntry {
+  return paletteEntry(hslToRgb(h, s, l));
+}
+
+export function colorHarmony(value: string): {
+  readonly base: ColorPaletteEntry;
+  readonly complementary: readonly ColorPaletteEntry[];
+  readonly analogous: readonly ColorPaletteEntry[];
+  readonly triadic: readonly ColorPaletteEntry[];
+  readonly rule: string;
+  readonly colorSpace: "sRGB/HSL";
+} {
+  const resolved = resolveCssColor(value);
+  const hsl = rgbToHsl(resolved.rgb.r, resolved.rgb.g, resolved.rgb.b);
+  return {
+    base: paletteEntry(resolved.rgb),
+    complementary: [hslPaletteEntry(hsl.h + 180, hsl.s, hsl.l)],
+    analogous: [hslPaletteEntry(hsl.h - 30, hsl.s, hsl.l), hslPaletteEntry(hsl.h + 30, hsl.s, hsl.l)],
+    triadic: [hslPaletteEntry(hsl.h + 120, hsl.s, hsl.l), hslPaletteEntry(hsl.h + 240, hsl.s, hsl.l)],
+    rule: "Hue rotations are performed in HSL using the resolved sRGB color; contrast numbers are WCAG contrast ratios against pure white/black and are not an accessibility verdict.",
+    colorSpace: "sRGB/HSL",
+  };
+}
+
+function mixSrgbChannel(channel: number, target: number, amount: number): number {
+  return channel + (target - channel) * amount;
+}
+
+export function colorTintsAndShades(value: string): {
+  readonly base: ColorPaletteEntry;
+  readonly tints: readonly (ColorPaletteEntry & { amountPercent: number })[];
+  readonly shades: readonly (ColorPaletteEntry & { amountPercent: number })[];
+  readonly rule: string;
+  readonly colorSpace: "encoded-sRGB";
+} {
+  const { rgb } = resolveCssColor(value);
+  const amounts = [10, 25, 50, 75] as const;
+  const make = (target: number, amountPercent: number) => ({
+    ...paletteEntry({
+      r: mixSrgbChannel(rgb.r, target, amountPercent / 100),
+      g: mixSrgbChannel(rgb.g, target, amountPercent / 100),
+      b: mixSrgbChannel(rgb.b, target, amountPercent / 100),
+    }),
+    amountPercent,
+  });
+  return {
+    base: paletteEntry(rgb),
+    tints: amounts.map((amount) => make(255, amount)),
+    shades: amounts.map((amount) => make(0, amount)),
+    rule: "Tint/shade channels use deterministic interpolation in encoded sRGB toward white/black; this is not perceptual-lightness mixing.",
+    colorSpace: "encoded-sRGB",
   };
 }
 

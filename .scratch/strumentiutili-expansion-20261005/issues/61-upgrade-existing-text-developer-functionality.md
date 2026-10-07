@@ -6,13 +6,12 @@
 
 **Constraints:** Inspection is not cryptographic verification where keys/signatures are absent; regex execution needs time/input bounds; developer outputs remain deterministic/local.
 
-**Blocked by:** 01, 03, 25, 27.
+**Blocked by:** 164, 178, 179, 180, 181, 182, 196.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Each existing developer/text route is audited for missing common modes and receives a concrete upgrade/refusal record.
-- [ ] Validators point to exact position/rule; encoders expose swap/reverse when naturally bidirectional.
-- [ ] Diff/list/text tools add whitespace/case/order options only when their semantics stay understandable.
+- [x] Ticket 196 records the original developer/text route audit and the concrete `ALREADY_COMPLETE`/`UPGRADED` decisions, while tickets 164/178–182 close the missing developer modes with bounded implementations.
+- [x] Structured validators return exact diagnostic context where parsers provide it; naturally bidirectional encoders now expose reverse/swap modes, including raw-byte Base64/Base64url.
+- [x] Text/diff/list upgrades were added only where semantics stay explicit (for example lexical fact-sensitive diff and disclosed transforms), while unsupported/ambiguous behavior fails closed instead of adding opaque switches.
 
-**Verification:** Existing Gold plus adversarial invalid inputs, regex bounds, JWT/cron/UUID/hash standards vectors and generated route checklist.
-
+**Verification:** Existing developer/text Gold plus focused regex worker, UUID RFC 9562, JWT temporal, timezone-aware cron, Base64 raw-byte, structured-parser and original-route audit suites cover the upgraded surface.

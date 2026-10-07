@@ -17,9 +17,9 @@ import { tmpdir } from "node:os";
  */
 
 const root = resolve(import.meta.dirname, "..");
-const port = Number(process.env.STRUMENTIUTILI_ACCEPTANCE_PORT ?? 18261);
+const port = Number(process.env.STRUMENTINI_ACCEPTANCE_PORT ?? 18261);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) {
-  throw new Error(`invalid acceptance port: ${process.env.STRUMENTIUTILI_ACCEPTANCE_PORT ?? ""}`);
+  throw new Error(`invalid acceptance port: ${process.env.STRUMENTINI_ACCEPTANCE_PORT ?? ""}`);
 }
 const origin = `http://127.0.0.1:${port}`;
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], {
@@ -38,7 +38,7 @@ const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 const OPTIONAL_API_PATH = /\/api\//u;
 
 const exifBytes = await readFile(resolve(root, "quality/fixtures/image-metadata-segments/with-exif.png"));
-const tempRoot = await resolve(tmpdir(), "strumentiutili-marketing-media-");
+const tempRoot = await resolve(tmpdir(), "strumentini-marketing-media-");
 await rm(tempRoot, { recursive: true, force: true });
 await mkdir(tempRoot, { recursive: true });
 const qrPngPath = resolve(tempRoot, "qr.png");

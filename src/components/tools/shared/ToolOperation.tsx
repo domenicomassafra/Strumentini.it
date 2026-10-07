@@ -8,7 +8,7 @@ export interface ToolOperationProps {
 
 export function ToolOperation({ children, className = "", busy = false }: ToolOperationProps) {
   const classes = ["tool-operation", className].filter(Boolean).join(" ");
-  return <div class={classes} aria-busy={busy ? "true" : undefined}>{children}</div>;
+  return <div class={classes} data-tool-operation aria-busy={busy ? "true" : undefined}>{children}</div>;
 }
 
 export interface ToolFormCardProps {

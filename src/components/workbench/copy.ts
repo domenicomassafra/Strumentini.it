@@ -56,7 +56,7 @@ export const COPY = {
   },
 
   onboarding: {
-    title: "Benvenuto su Strumenti Utili!",
+    title: "Benvenuto su Strumentini!",
     lede: "Quattro domande rapide per preparare i tuoi strumenti: potrai cambiarli quando vuoi.",
     skip: "Salta — sfoglia tutti gli strumenti",
     start: "Inizia",

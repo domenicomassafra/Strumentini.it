@@ -16,6 +16,7 @@ export const rateConverterManifest = {
     { key: "currency" },
     { key: "hoursPerDay", defaultValue: "8" },
   ],
+  result: { class: "calculator", capabilities: ["copy", "reset", "provenance"] },
   gold: {
     maintenanceClass: "E",
     oracleEntryId: "cand-101",

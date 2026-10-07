@@ -18,9 +18,10 @@
     "calendar-date-list-generator",
     "ics-event-builder",
     "ics-viewer",
-    "epoch-batch-converter"
+    "epoch-batch-converter",
+    "public-holiday-lookup"
   ],
-  "routesChecked": 17,
+  "routesChecked": 18,
   "keyboard": "every submit action exercised with Enter",
   "accessibility": "all interactive controls in the tool form have a label or accessible name",
   "mobileViewport": {
@@ -51,127 +52,355 @@
     "calendar-date-list-generator",
     "ics-event-builder",
     "ics-viewer",
-    "epoch-batch-converter"
+    "epoch-batch-converter",
+    "public-holiday-lookup"
   ],
   "results": [
     {
       "toolId": "date-difference",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "add-subtract-days",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "working-hours",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "timezone-converter",
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
       "lazyScriptCount": 3,
-      "taskRequestCount": 4,
+      "taskRequestCount": 3,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "meeting-time-planner",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "duration-calculator",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "decimal-hours-converter",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "timesheet-totaler",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "week-number-converter",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "quarter-date-mapper",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "deadline-countdown",
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
       "lazyScriptCount": 3,
-      "taskRequestCount": 4,
+      "taskRequestCount": 3,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "recurring-date-generator",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "age-date-anniversary",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "calendar-date-list-generator",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "ics-event-builder",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 4,
+      "resultClass": "text-code",
+      "resultSlots": [
+        "selectable-output",
+        "counts"
+      ],
+      "resultActions": [
+        "copy",
+        "download",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
+      "taskRequestCount": 5,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "ics-viewer",
-      "lazyScriptCount": 3,
+      "resultClass": "validator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "checks",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "retry",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     },
     {
       "toolId": "epoch-batch-converter",
-      "lazyScriptCount": 3,
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
+      "taskRequestCount": 4,
+      "horizontalOverflow": false,
+      "unlabeledControls": 0
+    },
+    {
+      "toolId": "public-holiday-lookup",
+      "resultClass": "calculator",
+      "resultSlots": [
+        "primary",
+        "interpretation",
+        "breakdown",
+        "assumptions",
+        "provenance"
+      ],
+      "resultActions": [
+        "copy",
+        "reset"
+      ],
+      "lazyScriptCount": 4,
       "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0
     }
-  ]
+  ],
+  "liveTime": {
+    "worldClockTicked": true,
+    "visibilityRecovery": true,
+    "deadlineTicked": true,
+    "resilientClockReload": true
+  }
 }

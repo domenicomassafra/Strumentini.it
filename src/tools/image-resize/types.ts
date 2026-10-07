@@ -15,6 +15,7 @@ export interface ImageResizeInput {
   width: number;
   height: number;
   fit: ImageResizeFit;
+  noUpscale: boolean;
   outputMime: ImageResizeOutputMime;
   quality: number;
 }

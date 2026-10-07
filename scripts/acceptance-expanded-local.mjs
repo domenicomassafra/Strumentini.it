@@ -6,8 +6,8 @@ import { resolve, join } from "node:path";
 import { tmpdir } from "node:os";
 
 const root = resolve(import.meta.dirname, "..");
-const port = Number(process.env.STRUMENTIUTILI_ACCEPTANCE_PORT ?? 18159);
-if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error(`invalid acceptance port: ${process.env.STRUMENTIUTILI_ACCEPTANCE_PORT ?? ""}`);
+const port = Number(process.env.STRUMENTINI_ACCEPTANCE_PORT ?? 18159);
+if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error(`invalid acceptance port: ${process.env.STRUMENTINI_ACCEPTANCE_PORT ?? ""}`);
 const origin = `http://127.0.0.1:${port}`;
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
@@ -17,7 +17,7 @@ const pngBytes = await readFile(resolve(root, "quality/fixtures/image-metadata/s
 const textFile = (name = "one.txt", text = "one") => ({ name, mimeType: "text/plain", buffer: Buffer.from(text, "utf8") });
 const pngFile = (name = "fixture.png") => ({ name, mimeType: "image/png", buffer: pngBytes });
 const emptyZip = { name: "empty.zip", mimeType: "application/zip", buffer: Buffer.from("504b0506000000000000000000000000000000000000", "hex") };
-const tempRoot = await mkdtemp(join(tmpdir(), "strumentiutili-expanded-local-"));
+const tempRoot = await mkdtemp(join(tmpdir(), "strumentini-expanded-local-"));
 const directoryFixture = join(tempRoot, "directory");
 const zeroByteFixture = join(tempRoot, "zero-byte");
 await mkdir(directoryFixture, { recursive: true });
@@ -33,21 +33,21 @@ const fillFirstTextarea = (value) => async (_page, form) => form.locator("textar
 const uploadFirst = (files) => async (_page, form) => form.locator("input[type='file']").first().setInputFiles(files);
 
 const cases = [
-  { id: "batch-checksum-manifest", setup: uploadFirst(textFile()), expect: /one\.txt[\s\S]*(?:sha256|manifest)|(?:sha256|manifest)[\s\S]*one\.txt/iu },
-  { id: "checksum-verifier", setup: async (_page, form) => { await form.locator("input[type='file']").first().setInputFiles(textFile()); await form.locator("textarea").fill(`${"0".repeat(64)}  one.txt`); }, expect: /mismatch/iu },
-  { id: "clean-zip-creator", setup: uploadFirst(textFile()), expect: /local-clean\.zip|byteLength|compression/iu },
+  { id: "batch-checksum-manifest", setup: uploadFirst(textFile()), expect: /one\.txt[\s\S]*SHA-?256|SHA-?256[\s\S]*one\.txt/iu },
+  { id: "checksum-verifier", setup: async (_page, form) => { await form.locator("input[type='file']").first().setInputFiles(textFile()); await form.locator("textarea").fill(`${"0".repeat(64)}  one.txt`); }, expect: /problemi di checksum|checksum non corrisponde/iu },
+  { id: "clean-zip-creator", setup: uploadFirst(textFile()), expect: /local-clean\.zip|Archivio pronto/iu },
   { id: "client-handoff-index-generator", setup: uploadFirst(textFile()), expect: /one\.txt/iu },
   { id: "duplicate-file-finder", setup: async (_page, form) => form.locator("input[type='file']").first().setInputFiles(directoryFixture), expect: /duplicateGroups|duplicateFileCount|duplicati/iu },
   { id: "file-list-diff", setup: async (_page, form) => { const inputs = form.locator("input[type='file']"); await inputs.nth(0).setInputFiles(textFile("same.txt", "a")); await inputs.nth(1).setInputFiles(textFile("same.txt", "changed")); }, expect: /changedCount|modificati|changed/iu },
-  { id: "file-signature-detector", setup: uploadFirst(pngFile()), expect: /image\/png/iu },
+  { id: "file-signature-detector", setup: uploadFirst(pngFile()), expect: /fixture\.png[\s\S]*firme controllate|firme controllate[\s\S]*fixture\.png/iu },
   { id: "filename-sanitizer", setup: fillFirstTextarea("bad name?.txt"), expect: /changedCount|modificati|ripulito/iu },
   { id: "folder-inventory", setup: async (_page, form) => form.locator("input[type='file']").first().setInputFiles(directoryFixture), expect: /one\.txt/iu },
-  { id: "folder-size-type-summary", setup: async (_page, form) => form.locator("input[type='file']").first().setInputFiles(directoryFixture), expect: /txt|text\/plain/iu },
-  { id: "safe-share-checklist", setup: uploadFirst(textFile()), expect: /allPassed|checks|passedCount/iu },
+  { id: "folder-size-type-summary", setup: async (_page, form) => form.locator("input[type='file']").first().setInputFiles(directoryFixture), expect: /2 file[\s\S]*8 byte|byte_totali[\s\S]*8/iu },
+  { id: "safe-share-checklist", setup: uploadFirst(textFile()), expect: /controlli superati|checklist/iu },
   { id: "secret-token-pattern-scanner", setup: fillFirstTextarea("password=12345678"), expect: /findingCount|private-key|secret-assignment|risultati/iu },
-  { id: "zero-byte-orphan-finder", setup: async (_page, form) => form.locator("input[type='file']").first().setInputFiles(zeroByteFixture), expect: /emptyFiles|empty\.txt|unreferencedFiles/iu },
-  { id: "zip-contents-inspector", setup: uploadFirst(emptyZip), expect: /entryCount|voci|totalUncompressedBytes/iu },
-  { id: "zip-creator", setup: uploadFirst(textFile()), expect: /local-files\.zip|byteLength|compression/iu },
+  { id: "zero-byte-orphan-finder", setup: async (_page, form) => form.locator("input[type='file']").first().setInputFiles(zeroByteFixture), expect: /empty\.txt|elementi da controllare/iu },
+  { id: "zip-contents-inspector", setup: uploadFirst(emptyZip), expect: /voci ZIP ispezionate|voci/iu },
+  { id: "zip-creator", setup: uploadFirst(textFile()), expect: /local-files\.zip|Archivio pronto/iu },
 
   { id: "contact-sheet-generator", setup: uploadFirst([pngFile("one.png"), pngFile("two.png")]), expect: /Colonne|columns|Righe|rows/iu },
   { id: "dominant-color-extractor", setup: uploadFirst(pngFile()), expect: /Colore dominante|dominant/iu },
@@ -89,6 +89,18 @@ const cases = [
 ];
 
 if (cases.length !== 49 || new Set(cases.map(({ id }) => id)).size !== 49) throw new Error(`expanded-local acceptance must contain exactly 49 unique tools; got ${cases.length}`);
+const requestedIds = (process.env.STRUMENTINI_ACCEPTANCE_IDS ?? "")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
+const selectedCases = requestedIds.length === 0
+  ? cases
+  : requestedIds.map((id) => {
+      const testCase = cases.find((entry) => entry.id === id);
+      if (testCase === undefined) throw new Error(`unknown expanded-local acceptance id: ${id}`);
+      return testCase;
+    });
+if (new Set(selectedCases.map(({ id }) => id)).size !== selectedCases.length) throw new Error("expanded-local subset contains duplicate ids");
 
 async function waitForServer() {
   for (let attempt = 0; attempt < 60; attempt += 1) {
@@ -113,6 +125,7 @@ async function a11yAudit(form) {
 // answers 404 here by design. Every other failed response, and every console
 // error, stays fatal. See scripts/acceptance-family-matrix.mjs for the same rule.
 const staticOnlyFailurePaths = new Set(["/api/auth/session"]);
+const isLocalTaskUrl = (url) => url.startsWith(origin) || url.startsWith(`blob:${origin}/`);
 const isExpectedStaticFailure = (url) => {
   try {
     return staticOnlyFailurePaths.has(new URL(url).pathname);
@@ -163,7 +176,7 @@ async function acceptTool(context, testCase) {
   const consoleErrors = runtimeErrors.filter((entry) => !isExpectedStaticFailure(entry.url));
   if (consoleErrors.length > 0) throw new Error(`${testCase.id}: runtime/console error: ${consoleErrors.map((entry) => `${entry.text} (${entry.url})`).join(" | ")}`);
     if (scripts.length === 0) throw new Error(`${testCase.id}: no lazy implementation script observed after submit`);
-    const bad = requests.filter((request) => !request.url.startsWith(origin) || request.method !== "GET" || (request.postData ?? "") !== "");
+    const bad = requests.filter((request) => !isLocalTaskUrl(request.url) || request.method !== "GET" || (request.postData ?? "") !== "");
     if (bad.length > 0) throw new Error(`${testCase.id}: external, non-GET, or task-body request observed: ${JSON.stringify(bad)}`);
     const unlabeled = await a11yAudit(form);
     if (unlabeled.length > 0) throw new Error(`${testCase.id}: unlabeled controls: ${unlabeled.join(" | ")}`);
@@ -183,7 +196,7 @@ try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const results = [];
   try {
-    for (const testCase of cases) {
+    for (const testCase of selectedCases) {
       console.log(`accepting ${testCase.id}`);
       results.push(await acceptTool(context, testCase));
     }
@@ -195,7 +208,7 @@ try {
   const receipt = {
     schemaVersion: 1,
     status: "PASS",
-    tools: cases.map(({ id }) => id),
+    tools: selectedCases.map(({ id }) => id),
     routesChecked: results.length,
     keyboard: "every submit action exercised with Enter",
     accessibility: "all interactive controls in each tool form have a label or accessible name",
@@ -212,7 +225,8 @@ try {
   };
   const receiptRoot = resolve(root, "quality/receipts/expanded-local");
   await mkdir(receiptRoot, { recursive: true });
-  await writeFile(resolve(receiptRoot, "browser-acceptance.json"), `${JSON.stringify(receipt, null, 2)}\n`, "utf8");
+  const receiptFilename = requestedIds.length === 0 ? "browser-acceptance.json" : "browser-acceptance-subset.json";
+  await writeFile(resolve(receiptRoot, receiptFilename), `${JSON.stringify(receipt, null, 2)}\n`, "utf8");
   console.log(`expanded-local browser acceptance PASS: ${results.length} tools with per-tool output/locality/lazy/mobile/a11y evidence`);
 } finally {
   server.kill("SIGTERM");

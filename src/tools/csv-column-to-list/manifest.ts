@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { TEXT_RESULT_V2_DECLARATIONS } from "../text-writing/result-v2";
 
 export const csvColumnToListManifest = {
   id: "csv-column-to-list",
@@ -13,6 +14,7 @@ export const csvColumnToListManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: TEXT_RESULT_V2_DECLARATIONS["csv-column-to-list"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-018", fixtureFamilies: ["csv-rfc4180", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 

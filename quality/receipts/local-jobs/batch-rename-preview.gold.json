@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
   "toolId": "batch-rename-preview",
   "runtime": {
     "location": "LOCAL",
@@ -34,7 +34,7 @@
   ],
   "browserContract": {
     "assertion": "1-Foto IMG_1\\.jpg[\\s\\S]*2-Foto IMG_1-2\\.jpg|collisionCount|collision",
-    "outputSha256": "66bbb1d650bfb9672dead4bcc66c5b480c0ec863963be57d5c1edec1f3da99aa",
+    "outputSha256": "23d650be59e537c1f7c88884e4270d870a5c44930910cea0159912b06bcd1898",
     "locality": "zero external/non-GET/task-body requests",
     "lazyLoad": "implementation script observed after submit",
     "mobile": "390px without horizontal overflow",
@@ -56,12 +56,12 @@
     "Italian error state verified in the browser or explicitly unreachable"
   ],
   "identities": {
-    "manifestSha256": "cdc42c07ab47025705ad972ae94421cac46b1399ef00cbf1f0a1999347a573c0",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "8209264f7a115b5d2af3a6e6cbf62986638f8c4ae3d6b0446ae7860464a662ec",
-    "acceptanceScriptSha256": "989e5e76605c99951548b64573a96f184100ca54f6dde2d055f6f0a658e70af7",
-    "unitTestsSha256": "070727d7e33ca17a5ac438a4cd00525a9ec936aedc398d8d9e9700162f87bdfc",
+    "manifestSha256": "c3b3cc71db646f320b6b48f0aeb16550171824af3aa77185c92385e0b620cf3f",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "e543386910c7b66cb9eb150873d13518b6da164a7b643af4fe356cce7554c627",
+    "acceptanceScriptSha256": "8a1820aa3ad8cc284999d6235b81d15fae4b665284bf157980d187dcbb0fcdaa",
+    "unitTestsSha256": "d2cfa67ee598aba089d11b7d945b85f3114cadbc7c31c5fc1cf6041a15f720b3",
     "italianErrorCatalogSha256": "058f1732d3def14155154402903e9964047fc5ec413924593ce1073c8c0aa94b",
     "fixture:filename-sanitization:sha256": "8374dacc37f211289e8dd85ddfd0f82321fb65155e5f0a02a96331ef367cc27e",
     "fixture:batch-rename-plan:sha256": "140df2d84468c1288624390dee42a24303a6a0f1a04c8860bcfe67f8dae6100c"

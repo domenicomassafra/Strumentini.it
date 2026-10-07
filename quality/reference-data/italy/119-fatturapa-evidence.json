@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 2,
+  "ticket": 119,
+  "datasetId": "fatturapa-technical-schema",
+  "checkedAt": "2026-10-06",
+  "scope": "Current official FatturaPA format documentation and XSD bytes exposed by the FatturaPA portal.",
+  "artifacts": [
+    {
+      "authority": "FatturaPA / Agenzia delle Entrate",
+      "title": "Specifiche tecniche del formato FatturaPA - versione 1.4",
+      "url": "https://www.fatturapa.gov.it/export/documenti/fatturapa/v1.4/Specifiche_tecniche_del_formato_FatturaPA_V1.4.pdf",
+      "path": "quality/reference-data/italy/artifacts/119-fatturapa-v1.4/Specifiche_tecniche_del_formato_FatturaPA_V1.4.pdf",
+      "sha256": "sha256:8adde9acf0596f14e2cce66f3c1a4d36ce4e13f65582b45c333fe28eee4d93dc",
+      "mediaType": "application/pdf",
+      "version": "1.4"
+    },
+    {
+      "authority": "FatturaPA / Agenzia delle Entrate",
+      "title": "Schema VFPA12 versione 1.2.3",
+      "url": "https://www.fatturapa.gov.it/export/documenti/fatturapa/v1.4/Schema_VFPA12_V1.2.3.xsd",
+      "path": "quality/reference-data/italy/artifacts/119-fatturapa-v1.4/Schema_VFPA12_V1.2.3.xsd",
+      "sha256": "sha256:152944f6eef9f5d69ef6e955ee173b32142b00a8c1c5222fc97dfab5910e8a8c",
+      "mediaType": "application/xml",
+      "version": "1.2.3"
+    },
+    {
+      "authority": "FatturaPA / Agenzia delle Entrate",
+      "title": "Schema VFPR12 versione 1.2.3",
+      "url": "https://www.fatturapa.gov.it/export/documenti/fatturapa/v1.4/Schema_VFPR12_v1.2.3.xsd",
+      "path": "quality/reference-data/italy/artifacts/119-fatturapa-v1.4/Schema_VFPR12_v1.2.3.xsd",
+      "sha256": "sha256:152944f6eef9f5d69ef6e955ee173b32142b00a8c1c5222fc97dfab5910e8a8c",
+      "mediaType": "application/xml",
+      "version": "1.2.3",
+      "note": "The current official VFPA12 and VFPR12 endpoints returned byte-identical ordinary-invoice schema content at checkedAt."
+    },
+    {
+      "authority": "FatturaPA / Agenzia delle Entrate",
+      "title": "Schema VFSM10 versione 1.0.2",
+      "url": "https://www.fatturapa.gov.it/export/documenti/fatturapa/v1.4/Schema_VFSM10v_1.0.2.xsd",
+      "path": "quality/reference-data/italy/artifacts/119-fatturapa-v1.4/Schema_VFSM10v_1.0.2.xsd",
+      "sha256": "sha256:1640503a126507a4834ad730eb0b5d570585f964e52f1088ffc67cc4bfe095f9",
+      "mediaType": "application/xml",
+      "version": "1.0.2"
+    }
+  ],
+  "supportedSchemas": [
+    {
+      "family": "ordinary",
+      "transmissionFormats": ["FPA12", "FPR12"],
+      "namespace": "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2",
+      "xsdVersion": "1.2.3",
+      "rootElement": "FatturaElettronica"
+    },
+    {
+      "family": "simplified",
+      "transmissionFormats": ["FSM10"],
+      "namespace": "http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.0",
+      "xsdVersion": "1.0.2",
+      "rootElement": "FatturaElettronicaSemplificata"
+    }
+  ],
+  "technicalSpecificationVersion": "1.4",
+  "unknownVersionPolicy": "Any namespace/schema version or transmission format not explicitly listed in supportedSchemas is unsupported; consumers must not parse it as the current format.",
+  "decision": "READY",
+  "reason": "The official FatturaPA v1.4 specification PDF and current ordinary/simplified XSD bytes are vendored with exact hashes and explicit schema namespaces/versions."
+}

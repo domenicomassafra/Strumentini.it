@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "pdf-multi-text-search",
+    "pdf-to-markdown"
+  ],
+  "scope": [
+    248,
+    252
+  ],
+  "harness": "production PDF modules + production PdfResultV2",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "network": "zero external/non-GET/task-body requests after operation start",
+  "cases": [
+    {
+      "name": "ticket248-search",
+      "status": "PASS",
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    },
+    {
+      "name": "ticket252-markdown",
+      "status": "PASS",
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    }
+  ],
+  "globalReceiptRebound": false
+}

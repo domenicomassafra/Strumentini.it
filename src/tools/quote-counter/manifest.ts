@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const quoteCounterManifest = {
   id: "quote-counter",
@@ -13,6 +14,7 @@ export const quoteCounterManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("quote-counter"),
   gold: { maintenanceClass: "E", oracleEntryId: "cand-191", fixtureFamilies: ["word-character-line-count"] },
 } as const satisfies ToolManifest;
 

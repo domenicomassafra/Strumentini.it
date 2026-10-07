@@ -1,8 +1,8 @@
-# HANDOFF — StrumentiUtili.it
+# HANDOFF — Strumentini.it
 
 Repository: /Users/domenico/Code/StrumentiUtili.it
 Branch: main (tracking `origin/main`; the redesign/backend tranche, Google auth/mobile tranche and refreshed evidence are committed; see `PROJECT-STATUS.md` for the authoritative state and source fingerprint)
-Public brand: StrumentiUtili.it
+Public brand: Strumentini.it
 Live map of the numbers and routes: `PROJECT-STATUS.md`.
 
 ## 1. What this repository is now
@@ -72,19 +72,19 @@ Also out of scope, permanently: ads, generic AI features, runtime plugins, offli
 
 ### Public account API state
 
-The API is exposed on `https://strumentiutili-it.massafradomenico4.workers.dev`. The real D1 database has both migrations, server-side Turnstile remains active for password login/registration, and `npm run acceptance:auth` passes 130/130. Google Identity Services is implemented auth-only: nonce cookie + ID-token verification against Google JWKs, no Google access/refresh token storage. Production intentionally returns 503 from `/api/auth/google/config` until the owner creates a Google Web OAuth client and supplies `GOOGLE_CLIENT_ID`; the UI hides Google while that configuration is absent.
+The API is exposed on `https://strumentiutili-it.massafradomenico4.workers.dev`. The Worker name `strumentiutili-it` and D1 database name `strumentiutili-auth` are retained as legacy Cloudflare resource identifiers so the rebrand does not fork or disconnect live auth data. The public brand and canonical target are **Strumentini.it** / `https://strumentini.it`. As of the 2026-10-07 recheck, the custom domain is active on Cloudflare DNS/TLS and the apex serves the same homepage bytes as the current `workers.dev` deployment, but that deployed build is still pre-rebrand: canonical/OG metadata, `robots.txt` and `sitemap.xml` point at `https://strumentiutili.it`. Ticket 283 therefore remains open for the final Strumentini.it deploy and live rollback/restore certification. The real D1 database has both migrations, server-side Turnstile remains active for password login/registration, and `npm run acceptance:auth` passes 130/130. Google Identity Services is implemented auth-only: nonce cookie + ID-token verification against Google JWKs, no Google access/refresh token storage. Production intentionally returns 503 from `/api/auth/google/config` until the owner creates a Google Web OAuth client and supplies `GOOGLE_CLIENT_ID`; the UI hides Google while that configuration is absent.
 
-Two deployment-owner checks remain outside the repo:
+Three deployment-owner checks remain outside the repo:
 
-1. **Outer rate limiting.** The Worker has its own sliding window (10 failed attempts per IP per 15 minutes). A WAF rule *in front* of `/api/auth/*` needs a custom domain in a user-controlled Cloudflare zone, so it is not available on the current `workers.dev` hostname. Add it when the custom domain is connected.
+1. **Outer rate limiting.** The Worker has its own sliding window (10 failed attempts per IP per 15 minutes). The required user-controlled Cloudflare zone is now active for `Strumentini.it`; this repository still has no receipt proving an outer WAF rate-limit rule in front of `/api/auth/*` is configured and effective.
 2. **Billing plan.** PBKDF2-HMAC-SHA256 at 600,000 iterations measured ~81 ms per hash on the owner's machine. The repo cannot attest the Cloudflare account's billing plan; confirm Workers Paid before treating password flows as production capacity.
-3. **Google client ID.** In Google Auth Platform create a **Web application** OAuth client, authorize `https://strumentiutili-it.massafradomenico4.workers.dev` as a JavaScript origin (and later the custom domain), then configure that client ID on the Worker as `GOOGLE_CLIENT_ID`. The implementation does not require a client secret.
+3. **Google client ID.** In Google Auth Platform create a **Web application** OAuth client, authorize both `https://strumentiutili-it.massafradomenico4.workers.dev` and `https://strumentini.it` as JavaScript origins, then configure that client ID on the Worker as `GOOGLE_CLIENT_ID`. The implementation does not require a client secret.
 
 ## 5. Known gaps
 
 1. **Certification frontier.** 198 tools are Gold. `ris-bibtex-converter` is the only Implemented Unverified tool because its RIS oracle remains medium-confidence; `image-resize` is Partial pending real iOS Safari and Android Chrome evidence. Do not loosen either gate.
 2. **Physical devices.** `image-resize` still needs genuine iOS Safari and Android Chrome evidence. No desktop/browser emulation may be recorded as physical proof.
-3. **Deployment-owner infrastructure.** Add the custom domain, add it to the Turnstile widget, create the outer WAF rate-limit rule, and confirm Workers Paid before relying on password flows at production load.
+3. **Deployment-owner infrastructure.** Deploy the final Strumentini.it build to the now-active custom domain, finish ticket-283 smoke/rollback certification, add/verify the domain in the Turnstile widget, create/verify the outer WAF rate-limit rule, and confirm Workers Paid before relying on password flows at production load.
 4. **Design provenance.** `design/references/redesign-20261003/` intentionally stays as the ten reference screens for future fidelity work.
 
 Closed during this tranche: the two orphan page wrappers were deleted; the lossy legacy catalog-summary bridge was removed; D1 and Turnstile were provisioned; debug debris was removed; the roadmap was refreshed; and rollback was verified by a real Cloudflare rollback/restore exercise.
@@ -155,7 +155,7 @@ These contain earlier rejected/narrowed candidates too. Read the latest scope co
 
 ## Brand / GTM update
 
-StrumentiUtili.it is the owner-selected public brand. The prior codename collision is historical and no longer defines the product identity.
+Strumentini.it is the owner-selected public brand. The prior codename collision is historical and no longer defines the product identity.
 
 Important deeper blockers:
 

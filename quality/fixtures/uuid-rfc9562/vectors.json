@@ -24,6 +24,13 @@
     {
       "value": "00000000-0000-0000-0000-000000000000",
       "special": "Nil UUID"
+    },
+    {
+      "value": "017f22e2-79b0-7cc3-98c4-dc0c0c07398f",
+      "version": 7,
+      "variant_bits": "10",
+      "unix_ts_ms": 1645557742000,
+      "source": "RFC 9562 Appendix A.6"
     }
   ],
   "note": "Collision smoke tests are non-authoritative and cannot prove randomness quality."

@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { PDF_RESULT_DECLARATIONS } from "../pdf-result-declarations";
 
 export const pdfPageSizeInspectorManifest = {
   id: "pdf-page-size-inspector",
@@ -14,6 +15,7 @@ export const pdfPageSizeInspectorManifest = {
   engine: "pdf",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: PDF_RESULT_DECLARATIONS["pdf-page-size-inspector"],
   handoff: { emits: [{ type: "structured", format: "pdf-pages" }] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-131", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;

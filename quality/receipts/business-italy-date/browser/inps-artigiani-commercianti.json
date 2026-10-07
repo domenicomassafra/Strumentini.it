@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "checkedAt": "2026-10-07T14:41:30.382Z",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "subjectToolId": "inps-artigiani-commercianti",
+  "oracleEntryId": "cand-256",
+  "keyboard": "submit exercised with Enter",
+  "accessibility": "all interactive controls in the exercised form have a label or accessible name",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeConsoleErrors": 0,
+  "network": "zero external, non-GET, or task-body requests after task start",
+  "implementationEager": false,
+  "lazyImplementationObserved": true,
+  "semanticEvidence": "fixture-aligned bounded input produced the asserted visible domain output",
+  "result": {
+    "toolId": "inps-artigiani-commercianti",
+    "oracleEntryId": "cand-256",
+    "status": "PASS",
+    "semanticAssertion": "13[.\\s]?501[,.]20\\s*€",
+    "outputSha256": "39df4216e4d4e0933bf558ac7174c8d89563188b67dbb1d95940f3b18298ba41",
+    "taskRequestCount": 18,
+    "lazyScriptCount": 18,
+    "externalTaskRequests": 0,
+    "nonGetTaskRequests": 0,
+    "taskContentLeaks": 0,
+    "runtimeErrors": 0,
+    "horizontalOverflow": false,
+    "unlabeledControls": 0,
+    "oracleMarkerObserved": true
+  }
+}

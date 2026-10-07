@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "chunker": [
+    {
+      "name": "unicode-crlf-roundtrip",
+      "input": "Prima frase 🧪.\r\n\r\nSecondo paragrafo con perché e città.",
+      "target_characters": 32,
+      "overlap_characters": 8,
+      "expect_exact_roundtrip": true
+    }
+  ],
+  "fact_diff": [
+    {
+      "name": "date-number-url-id-changes",
+      "before": "Report 2026-10-06: totale 1.250. https://example.it/a pratica AB-123.",
+      "after": "Report 2026-10-07: totale 1.350. https://example.it/b pratica AB-124.",
+      "expected_kinds": ["date", "number", "url", "id"]
+    }
+  ],
+  "placeholder": [
+    {
+      "name": "explicit-selection-roundtrip",
+      "text": "Mario Rossi scrive a mario@example.it. Mario Rossi risponde.",
+      "entities": ["Mario Rossi", "mario@example.it"]
+    }
+  ],
+  "gulpease": [
+    {
+      "name": "two-simple-sentences",
+      "text": "Il gatto corre. Il cane dorme.",
+      "letters": 23,
+      "words": 6,
+      "sentences": 2,
+      "score": 150.7
+    }
+  ],
+  "mojibake": [
+    {
+      "name": "utf8-read-as-windows1252",
+      "input": "CafÃ¨ e lâ€™Italia",
+      "output": "Cafè e l’Italia"
+    }
+  ],
+  "pdf_reflow": [
+    {
+      "name": "paragraph-wrap",
+      "input": "Questa riga continua\nsulla seconda riga.\n\nNuovo paragrafo.",
+      "output": "Questa riga continua sulla seconda riga.\n\nNuovo paragrafo."
+    },
+    {
+      "name": "visible-hyphen-preserved",
+      "input": "pre-\nfisso",
+      "output": "pre-fisso",
+      "ambiguity_count": 1
+    }
+  ],
+  "extractor": [
+    {
+      "name": "unicode-span-and-url-overlap",
+      "input": "🧪 Chiama +39 080 123 4567 e visita https://example.it/@mario#news; cita @utente #città.",
+      "expected_types": ["phone", "url", "mention", "hashtag"]
+    }
+  ]
+}

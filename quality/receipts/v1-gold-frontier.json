@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "expectedToolCount": 15,
-  "catalogToolCount": 200,
-  "expansionToolCount": 185,
+  "catalogToolCount": 240,
+  "expansionToolCount": 225,
   "goldCount": 14,
   "blockedCount": 1,
   "readyForTicket11": false,

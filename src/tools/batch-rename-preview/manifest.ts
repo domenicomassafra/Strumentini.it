@@ -13,6 +13,7 @@ export default {
   engine: "file-privacy",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "batch", capabilities: ["copy", "retry", "reset", "provenance"] },
   handoff: { emits: [{ type: "structured", format: "rename-plan", maxBytes: 2_097_152 }] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-169", fixtureFamilies: ["filename-sanitization", "batch-rename-plan"] },
 } as const satisfies ToolManifest;

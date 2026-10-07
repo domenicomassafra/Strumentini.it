@@ -14,6 +14,9 @@ export interface CsvDedupeOutput {
   mode: "whole-row" | "key-columns";
   keyColumns: number[];
   emptyKeyPolicy: "keep";
+  affectedRows: number;
+  affectedCells: number;
+  dialect: { delimiter: string; encoding: "utf-8"; dynamicTyping: false };
   headers: string[];
   warnings: Array<{ code: string; message: string; row?: number }>;
   engineVersion: string;

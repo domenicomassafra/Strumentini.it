@@ -3,6 +3,12 @@ import {
   xWeightedLength,
   type SocialPlatformRule,
 } from "./social-limits";
+import {
+  getPreviewPreset,
+  PREVIEW_PRESETS,
+  type PreviewPreset,
+  type PreviewPresetId,
+} from "./preview-presets";
 
 export const URL_MARKETING_ENGINE_VERSION = "url-marketing-v2";
 const MAX_URL_MARKETING_TEXT = 2 * 1024 * 1024;
@@ -60,6 +66,43 @@ export interface NormalizedUrlDetails {
   readonly engineVersion: string;
 }
 
+export const SITEMAP_MAX_URLS = 50_000;
+export const SITEMAP_MAX_BYTES = 50 * 1024 * 1024;
+export const SITEMAP_LOC_MAX_CHARACTERS = 2_047;
+
+export const SITEMAP_CHANGEFREQ_VALUES = [
+  "always",
+  "hourly",
+  "daily",
+  "weekly",
+  "monthly",
+  "yearly",
+  "never",
+] as const;
+
+export type SitemapChangefreq = (typeof SITEMAP_CHANGEFREQ_VALUES)[number];
+
+export interface SitemapEntry {
+  readonly loc: string;
+  readonly lastmod?: string;
+  readonly changefreq?: SitemapChangefreq;
+  readonly priority?: string;
+}
+
+export interface SitemapXmlResult {
+  readonly xml: string;
+  readonly entries: readonly SitemapEntry[];
+  readonly count: number;
+  readonly byteLength: number;
+  readonly host: string;
+  readonly metadataCounts: {
+    readonly lastmod: number;
+    readonly changefreq: number;
+    readonly priority: number;
+  };
+  readonly engineVersion: string;
+}
+
 export interface ParsedUtmUrl {
   readonly url: string;
   readonly source?: string;
@@ -89,6 +132,14 @@ export interface UrlComparison {
   /** The URL standard the normalisation follows, and when it was last checked. */
   readonly comparisonSource: string;
   readonly comparisonVerifiedOn: string;
+  readonly normalizationRules: {
+    readonly sortQuery: boolean;
+    readonly ignoreFragment: boolean;
+    readonly removeTrailingSlash: boolean;
+    readonly dropTracking: boolean;
+  };
+  readonly network: "not-used";
+  readonly verificationScope: "local-transform-only";
   readonly engineVersion: string;
 }
 
@@ -106,8 +157,15 @@ export interface CanonicalUrlResult {
   readonly sameOrigin: boolean;
   readonly html: string;
   readonly warnings: readonly string[];
+  readonly guidanceSource: string;
+  readonly guidanceCheckedAt: string;
+  readonly guidanceScope: "local-syntax";
+  readonly network: "not-used";
   readonly engineVersion: string;
 }
+
+export const CANONICAL_GUIDANCE_SOURCE = "Google Search Central — canonical URL guidance";
+export const CANONICAL_GUIDANCE_CHECKED_AT = "2026-09-23";
 
 export interface DomainExtractionResult {
   readonly domains: readonly string[];
@@ -146,8 +204,15 @@ export interface RobotsResult {
   readonly groups: readonly RobotsGroup[];
   readonly sitemaps: readonly string[];
   readonly errors: readonly string[];
+  readonly guidanceSource: string;
+  readonly guidanceCheckedAt: string;
+  readonly guidanceScope: "local-syntax";
+  readonly network: "not-used";
   readonly engineVersion: string;
 }
+
+export const ROBOTS_GUIDANCE_SOURCE = "Google Search Central — robots.txt introduction";
+export const ROBOTS_GUIDANCE_CHECKED_AT = "2026-09-23";
 
 export interface OpenGraphResult {
   readonly tags: Readonly<Record<string, string>>;
@@ -169,6 +234,7 @@ export interface OpenGraphResult {
   /** The specification this extractor follows, and when it was last checked. */
   readonly protocolSource: string;
   readonly protocolVerifiedOn: string;
+  readonly previewPreset: PreviewPreset;
   readonly warnings: readonly string[];
   readonly engineVersion: string;
 }
@@ -209,6 +275,7 @@ export interface SocialLimitResult {
   readonly withinLimit: boolean;
   readonly withinLimitWeighted: boolean | null;
   readonly lineBreaks: number;
+  readonly previewPreset: PreviewPreset;
   readonly engineVersion: string;
 }
 
@@ -236,8 +303,12 @@ export interface MetaPreviewResult {
   readonly truncatedDescription: string;
   readonly escapedTitle: string;
   readonly escapedDescription: string;
+  readonly previewPreset: PreviewPreset;
   readonly engineVersion: string;
 }
+
+export { PREVIEW_PRESETS };
+export type { PreviewPreset, PreviewPresetId };
 
 /** The reference lengths a SERP preview is measured against. */
 export const META_TITLE_DEFAULT_LIMIT = 60;
@@ -258,6 +329,32 @@ export interface RedirectChainResult {
   readonly loopDetected: boolean;
   readonly terminalUrl: string;
   readonly warnings: readonly string[];
+  readonly engineVersion: string;
+}
+
+export type RedirectLiveOutcome = "complete" | "loop" | "timeout" | "blocked" | "hop-limit";
+
+export interface RedirectFetchResponse {
+  readonly status: number;
+  readonly headers: {
+    get(name: string): string | null;
+  };
+}
+
+export type RedirectFetcher = (input: string, init: RequestInit) => Promise<RedirectFetchResponse>;
+
+export interface RedirectLiveResult {
+  readonly requestedUrl: string;
+  readonly hops: readonly RedirectHop[];
+  readonly hopCount: number;
+  readonly loopDetected: boolean;
+  readonly terminalUrl: string;
+  readonly outcome: RedirectLiveOutcome;
+  readonly retrievedAt: string;
+  readonly warnings: readonly string[];
+  readonly failureCode: string | null;
+  readonly network: "used";
+  readonly privacyBoundary: string;
   readonly engineVersion: string;
 }
 
@@ -396,6 +493,142 @@ export function normalizeUrl(input: string, options: NormalizeUrlOptions = {}): 
   return normalizeUrlDetails(input, { sortQuery: true, ...options }).url;
 }
 
+function sitemapXmlEscape(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
+}
+
+function isLeapYear(year: number): boolean {
+  return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+}
+
+function validCalendarDate(year: number, month: number, day: number): boolean {
+  if (year < 0 || month < 1 || month > 12 || day < 1) return false;
+  const monthLengths = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
+  return day <= (monthLengths[month - 1] ?? 0);
+}
+
+export function isValidSitemapLastmod(value: string): boolean {
+  const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/u.exec(value);
+  if (dateMatch !== null) {
+    return validCalendarDate(Number(dateMatch[1]), Number(dateMatch[2]), Number(dateMatch[3]));
+  }
+  const dateTimeMatch = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-]\d{2}:\d{2})$/u.exec(value);
+  if (dateTimeMatch === null) return false;
+  const validDate = validCalendarDate(Number(dateTimeMatch[1]), Number(dateTimeMatch[2]), Number(dateTimeMatch[3]));
+  if (!validDate) return false;
+  const hour = Number(dateTimeMatch[4]);
+  const minute = Number(dateTimeMatch[5]);
+  const second = Number(dateTimeMatch[6]);
+  if (hour > 23 || minute > 59 || second > 59) return false;
+  const zone = dateTimeMatch[7] ?? "";
+  if (zone === "Z") return true;
+  const zoneMatch = /^[+-](\d{2}):(\d{2})$/u.exec(zone);
+  return zoneMatch !== null && Number(zoneMatch[1]) <= 23 && Number(zoneMatch[2]) <= 59;
+}
+
+function validSitemapPriority(value: string): boolean {
+  if (!/^(?:0(?:\.\d+)?|1(?:\.0+)?)$/u.test(value)) return false;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 && parsed <= 1;
+}
+
+export function assertSitemapBounds(urlCount: number, byteLength: number): void {
+  if (!Number.isSafeInteger(urlCount) || urlCount < 1) invalid("INVALID_SITEMAP_EMPTY");
+  if (urlCount > SITEMAP_MAX_URLS) invalid("INVALID_SITEMAP_URL_COUNT_LIMIT");
+  if (!Number.isSafeInteger(byteLength) || byteLength < 0 || byteLength > SITEMAP_MAX_BYTES) invalid("INVALID_SITEMAP_SIZE_LIMIT");
+}
+
+function parseSitemapLine(line: string, row: number): { rawUrl: string; lastmod?: string; changefreq?: SitemapChangefreq; priority?: string } {
+  const columns = line.split("\t");
+  if (columns.length > 4) invalid(`INVALID_SITEMAP_ROW_${row}_COLUMN_COUNT`);
+  const rawUrl = (columns[0] ?? "").trim();
+  if (rawUrl === "") invalid(`INVALID_SITEMAP_ROW_${row}_URL`);
+  const lastmod = (columns[1] ?? "").trim();
+  const changefreq = (columns[2] ?? "").trim();
+  const priority = (columns[3] ?? "").trim();
+  if (lastmod !== "" && !isValidSitemapLastmod(lastmod)) invalid(`INVALID_SITEMAP_ROW_${row}_LASTMOD`);
+  if (changefreq !== "" && !SITEMAP_CHANGEFREQ_VALUES.includes(changefreq as SitemapChangefreq)) invalid(`INVALID_SITEMAP_ROW_${row}_CHANGEFREQ`);
+  if (priority !== "" && !validSitemapPriority(priority)) invalid(`INVALID_SITEMAP_ROW_${row}_PRIORITY`);
+  return {
+    rawUrl,
+    ...(lastmod === "" ? {} : { lastmod }),
+    ...(changefreq === "" ? {} : { changefreq: changefreq as SitemapChangefreq }),
+    ...(priority === "" ? {} : { priority }),
+  };
+}
+
+export function generateSitemapXml(input: string): SitemapXmlResult {
+  if (typeof input !== "string") invalid("INVALID_SITEMAP_INPUT");
+  const inputBytes = new TextEncoder().encode(input).byteLength;
+  if (inputBytes > SITEMAP_MAX_BYTES) invalid("INVALID_SITEMAP_INPUT_SIZE_LIMIT");
+  const sourceLines = input.replace(/\r\n?/gu, "\n").split("\n");
+  const rows = sourceLines
+    .map((line, index) => ({ line, row: index + 1 }))
+    .filter(({ line }) => line.trim() !== "");
+  if (rows.length === 0) invalid("INVALID_SITEMAP_EMPTY");
+  if (rows.length > SITEMAP_MAX_URLS) invalid("INVALID_SITEMAP_URL_COUNT_LIMIT");
+
+  const entries: SitemapEntry[] = [];
+  let requiredHost: string | null = null;
+  for (const { line, row } of rows) {
+    const parsed = parseSitemapLine(line, row);
+    let source: URL;
+    try {
+      source = parseHttpUrl(parsed.rawUrl);
+    } catch (error) {
+      const code = error instanceof Error ? error.message : "INVALID_URL";
+      invalid(`INVALID_SITEMAP_ROW_${row}_${code}`);
+    }
+    if (hasUrlCredentials(source)) invalid(`INVALID_SITEMAP_ROW_${row}_CREDENTIALS`);
+    const normalized = normalizeUrlDetails(parsed.rawUrl, {
+      sortQuery: true,
+      removeFragment: false,
+      removeTrailingSlash: false,
+      dropTracking: false,
+    }).url;
+    if ([...normalized].length > SITEMAP_LOC_MAX_CHARACTERS) invalid(`INVALID_SITEMAP_ROW_${row}_LOC_LENGTH`);
+    const normalizedHost = new URL(normalized).host;
+    if (requiredHost === null) requiredHost = normalizedHost;
+    else if (normalizedHost !== requiredHost) invalid(`INVALID_SITEMAP_ROW_${row}_HOST_MISMATCH`);
+    entries.push({
+      loc: normalized,
+      ...(parsed.lastmod === undefined ? {} : { lastmod: parsed.lastmod }),
+      ...(parsed.changefreq === undefined ? {} : { changefreq: parsed.changefreq }),
+      ...(parsed.priority === undefined ? {} : { priority: parsed.priority }),
+    });
+  }
+
+  const body = entries.map((entry) => {
+    const metadata = [
+      entry.lastmod === undefined ? "" : `\n    <lastmod>${sitemapXmlEscape(entry.lastmod)}</lastmod>`,
+      entry.changefreq === undefined ? "" : `\n    <changefreq>${sitemapXmlEscape(entry.changefreq)}</changefreq>`,
+      entry.priority === undefined ? "" : `\n    <priority>${sitemapXmlEscape(entry.priority)}</priority>`,
+    ].join("");
+    return `  <url>\n    <loc>${sitemapXmlEscape(entry.loc)}</loc>${metadata}\n  </url>`;
+  }).join("\n");
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+  const byteLength = new TextEncoder().encode(xml).byteLength;
+  assertSitemapBounds(entries.length, byteLength);
+  return {
+    xml,
+    entries,
+    count: entries.length,
+    byteLength,
+    host: requiredHost ?? "",
+    metadataCounts: {
+      lastmod: entries.filter((entry) => entry.lastmod !== undefined).length,
+      changefreq: entries.filter((entry) => entry.changefreq !== undefined).length,
+      priority: entries.filter((entry) => entry.priority !== undefined).length,
+    },
+    engineVersion: URL_MARKETING_ENGINE_VERSION,
+  };
+}
+
 const UTM_FIELDS: Readonly<Record<string, string>> = {
   utm_source: "source",
   utm_medium: "medium",
@@ -450,15 +683,35 @@ function comparePart(left: URL, right: URL, field: string, ignoreFragment: boole
 export function compareUrls(
   leftInput: string,
   rightInput: string,
-  options: { readonly mode?: "exact" | "semantic"; readonly ignoreFragment?: boolean } = {},
+  options: {
+    readonly mode?: "exact" | "semantic";
+    readonly ignoreFragment?: boolean;
+    readonly sortQuery?: boolean;
+    readonly removeTrailingSlash?: boolean;
+    readonly dropTracking?: boolean;
+  } = {},
 ): UrlComparison {
   const left = parseHttpUrl(leftInput);
   const right = parseHttpUrl(rightInput);
   const mode = options.mode ?? "semantic";
   if (mode !== "exact" && mode !== "semantic") invalid("INVALID_COMPARISON_MODE");
   const ignoreFragment = options.ignoreFragment ?? mode === "semantic";
-  const leftNormalized = normalizeUrlDetails(left.href, { sortQuery: mode === "semantic", removeFragment: ignoreFragment });
-  const rightNormalized = normalizeUrlDetails(right.href, { sortQuery: mode === "semantic", removeFragment: ignoreFragment });
+  const sortQuery = options.sortQuery ?? mode === "semantic";
+  const removeTrailingSlash = options.removeTrailingSlash ?? false;
+  const dropTracking = options.dropTracking ?? false;
+  const normalizationRules = { sortQuery, ignoreFragment, removeTrailingSlash, dropTracking };
+  const leftNormalized = normalizeUrlDetails(left.href, {
+    sortQuery,
+    removeFragment: ignoreFragment,
+    removeTrailingSlash,
+    dropTracking,
+  });
+  const rightNormalized = normalizeUrlDetails(right.href, {
+    sortQuery,
+    removeFragment: ignoreFragment,
+    removeTrailingSlash,
+    dropTracking,
+  });
   const leftUrl = parseHttpUrl(leftNormalized.url);
   const rightUrl = parseHttpUrl(rightNormalized.url);
   const differences = ["origin", "path", "query", "hash"]
@@ -476,6 +729,9 @@ export function compareUrls(
     credentialWarning: leftNormalized.credentialWarning || rightNormalized.credentialWarning,
     comparisonSource: URL_COMPARISON_SOURCE,
     comparisonVerifiedOn: URL_COMPARISON_VERIFIED_ON,
+    normalizationRules,
+    network: "not-used",
+    verificationScope: "local-transform-only",
     engineVersion: URL_MARKETING_ENGINE_VERSION,
   };
 }
@@ -509,6 +765,10 @@ export function canonicalUrlDetails(
     sameOrigin: canonical.origin === page.origin,
     html: `<link rel="canonical" href="${escapeAttribute(canonical.href)}">`,
     warnings,
+    guidanceSource: CANONICAL_GUIDANCE_SOURCE,
+    guidanceCheckedAt: CANONICAL_GUIDANCE_CHECKED_AT,
+    guidanceScope: "local-syntax",
+    network: "not-used",
     engineVersion: URL_MARKETING_ENGINE_VERSION,
   };
 }
@@ -724,7 +984,10 @@ const OG_CORE_KEYS = ["og:title", "og:description", "og:image", "og:url", "og:ty
 export const OPEN_GRAPH_PROTOCOL_SOURCE = "The Open Graph protocol (ogp.me) — basic metadata";
 export const OPEN_GRAPH_PROTOCOL_VERIFIED_ON = "2026-09-23";
 
-export function parseOpenGraph(value: string | Readonly<Record<string, unknown>>): OpenGraphResult {
+export function parseOpenGraph(
+  value: string | Readonly<Record<string, unknown>>,
+  options: { readonly preset?: PreviewPresetId } = {},
+): OpenGraphResult {
   const tags: Record<string, string> = {};
   let tagCount = 0;
   if (typeof value === "string") {
@@ -809,6 +1072,7 @@ export function parseOpenGraph(value: string | Readonly<Record<string, unknown>>
     missingCore: missingCore.map((key) => key.replaceAll("og:", "")),
     protocolSource: OPEN_GRAPH_PROTOCOL_SOURCE,
     protocolVerifiedOn: OPEN_GRAPH_PROTOCOL_VERIFIED_ON,
+    previewPreset: getPreviewPreset(options.preset ?? "social-card"),
     warnings: [...new Set(warnings)],
     engineVersion: URL_MARKETING_ENGINE_VERSION,
   };
@@ -854,7 +1118,16 @@ export function parseRobots(text: string): RobotsResult {
     }
   }
   finish();
-  return { groups, sitemaps, errors, engineVersion: URL_MARKETING_ENGINE_VERSION };
+  return {
+    groups,
+    sitemaps,
+    errors,
+    guidanceSource: ROBOTS_GUIDANCE_SOURCE,
+    guidanceCheckedAt: ROBOTS_GUIDANCE_CHECKED_AT,
+    guidanceScope: "local-syntax",
+    network: "not-used",
+    engineVersion: URL_MARKETING_ENGINE_VERSION,
+  };
 }
 
 /**
@@ -908,6 +1181,7 @@ export function checkSocialLimit(platformInput: string, text: string, customLimi
     withinLimit: effective <= limit,
     withinLimitWeighted: weighted === null ? null : weighted <= limit,
     lineBreaks: (text.match(/\r\n|\r|\n/gu) ?? []).length,
+    previewPreset: getPreviewPreset("social-card"),
     engineVersion: URL_MARKETING_ENGINE_VERSION,
   };
 }
@@ -928,7 +1202,11 @@ function escapeText(value: string): string {
 export function previewMeta(
   titleInput: string,
   descriptionInput: string,
-  limits: { readonly title?: number; readonly description?: number } = {},
+  limits: {
+    readonly title?: number;
+    readonly description?: number;
+    readonly preset?: PreviewPresetId;
+  } = {},
 ): MetaPreviewResult {
   if (typeof titleInput !== "string" || typeof descriptionInput !== "string") invalid("INVALID_INPUT");
   assertMarketingText(titleInput);
@@ -961,6 +1239,7 @@ export function previewMeta(
     truncatedDescription: descriptionCodePoints.slice(0, descriptionLimit).join(""),
     escapedTitle: escapeText(title),
     escapedDescription: escapeText(description),
+    previewPreset: getPreviewPreset(limits.preset ?? "search-mobile"),
     engineVersion: URL_MARKETING_ENGINE_VERSION,
   };
 }
@@ -1007,4 +1286,133 @@ export function inspectRedirectChain(hopsInput: readonly RedirectHop[]): Redirec
     warnings: [...new Set(warnings)],
     engineVersion: URL_MARKETING_ENGINE_VERSION,
   };
+}
+
+const LIVE_REDIRECT_PRIVACY_BOUNDARY = "The browser requests the starting URL and redirect targets exposed by the chain. No pasted local hop list or unrelated task data is sent.";
+
+function redirectLiveResult(
+  requestedUrl: string,
+  hops: readonly RedirectHop[],
+  outcome: RedirectLiveOutcome,
+  terminalUrl: string,
+  warnings: readonly string[],
+  failureCode: string | null,
+  now: () => string,
+): RedirectLiveResult {
+  return {
+    requestedUrl,
+    hops,
+    hopCount: hops.length,
+    loopDetected: outcome === "loop",
+    terminalUrl,
+    outcome,
+    retrievedAt: now(),
+    warnings: [...new Set(warnings)],
+    failureCode,
+    network: "used",
+    privacyBoundary: LIVE_REDIRECT_PRIVACY_BOUNDARY,
+    engineVersion: URL_MARKETING_ENGINE_VERSION,
+  };
+}
+
+export async function inspectRedirectChainLive(
+  input: string,
+  options: {
+    readonly fetcher?: RedirectFetcher;
+    readonly maxHops?: number;
+    readonly timeoutMs?: number;
+    readonly signal?: AbortSignal;
+    readonly now?: () => string;
+  } = {},
+): Promise<RedirectLiveResult> {
+  const start = parseHttpUrl(input);
+  if (hasUrlCredentials(start)) invalid("URL_CREDENTIALS_NOT_ALLOWED");
+  const maxHops = options.maxHops ?? 10;
+  const timeoutMs = options.timeoutMs ?? 8_000;
+  if (!Number.isInteger(maxHops) || maxHops < 1 || maxHops > 50) invalid("INVALID_REDIRECT_HOP_LIMIT");
+  if (!Number.isInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 60_000) invalid("INVALID_REDIRECT_TIMEOUT");
+  const fetcher: RedirectFetcher = options.fetcher ?? ((url, init) => fetch(url, init));
+  const now = options.now ?? (() => new Date().toISOString());
+  const requestedUrl = displayUrl(start);
+  const hops: RedirectHop[] = [];
+  const warnings: string[] = [];
+  const seen = new Set<string>();
+  let current = start;
+
+  for (let index = 0; index < maxHops; index += 1) {
+    if (options.signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+    const safeCurrent = displayUrl(current);
+    if (seen.has(safeCurrent)) {
+      warnings.push("REDIRECT_LOOP");
+      return redirectLiveResult(requestedUrl, hops, "loop", safeCurrent, warnings, "REDIRECT_LOOP", now);
+    }
+    seen.add(safeCurrent);
+
+    const controller = new AbortController();
+    let timedOut = false;
+    const onExternalAbort = () => controller.abort();
+    options.signal?.addEventListener("abort", onExternalAbort, { once: true });
+    const timeout = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, timeoutMs);
+
+    let response: RedirectFetchResponse;
+    try {
+      response = await fetcher(current.href, {
+        method: "GET",
+        redirect: "manual",
+        credentials: "omit",
+        cache: "no-store",
+        referrerPolicy: "no-referrer",
+        signal: controller.signal,
+      });
+    } catch (error) {
+      clearTimeout(timeout);
+      options.signal?.removeEventListener("abort", onExternalAbort);
+      if (options.signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+      if (timedOut) {
+        warnings.push("REQUEST_TIMEOUT");
+        return redirectLiveResult(requestedUrl, hops, "timeout", safeCurrent, warnings, "REQUEST_TIMEOUT", now);
+      }
+      warnings.push("NETWORK_REQUEST_BLOCKED");
+      return redirectLiveResult(requestedUrl, hops, "blocked", safeCurrent, warnings, error instanceof TypeError ? "NETWORK_REQUEST_BLOCKED" : "NETWORK_REQUEST_FAILED", now);
+    }
+    clearTimeout(timeout);
+    options.signal?.removeEventListener("abort", onExternalAbort);
+
+    if (!Number.isInteger(response.status) || response.status < 100 || response.status > 599) {
+      warnings.push("OPAQUE_OR_INVALID_RESPONSE");
+      return redirectLiveResult(requestedUrl, hops, "blocked", safeCurrent, warnings, "OPAQUE_OR_INVALID_RESPONSE", now);
+    }
+    const rawLocation = response.headers.get("location");
+    const isRedirect = response.status >= 300 && response.status < 400;
+    if (!isRedirect) {
+      hops.push({ url: safeCurrent, status: response.status, location: null, delayMs: null });
+      return redirectLiveResult(requestedUrl, hops, "complete", safeCurrent, warnings, null, now);
+    }
+    if (rawLocation === null || rawLocation.trim() === "") {
+      hops.push({ url: safeCurrent, status: response.status, location: null, delayMs: null });
+      warnings.push("REDIRECT_LOCATION_UNAVAILABLE");
+      return redirectLiveResult(requestedUrl, hops, "blocked", safeCurrent, warnings, "REDIRECT_LOCATION_UNAVAILABLE", now);
+    }
+
+    let nextUrl: string;
+    try {
+      nextUrl = redirectLocation(rawLocation, current);
+    } catch {
+      hops.push({ url: safeCurrent, status: response.status, location: null, delayMs: null });
+      warnings.push("INVALID_REDIRECT_LOCATION");
+      return redirectLiveResult(requestedUrl, hops, "blocked", safeCurrent, warnings, "INVALID_REDIRECT_LOCATION", now);
+    }
+    hops.push({ url: safeCurrent, status: response.status, location: nextUrl, delayMs: null });
+    if (seen.has(nextUrl)) {
+      warnings.push("REDIRECT_LOOP");
+      return redirectLiveResult(requestedUrl, hops, "loop", nextUrl, warnings, "REDIRECT_LOOP", now);
+    }
+    current = parseHttpUrl(nextUrl);
+  }
+
+  warnings.push("REDIRECT_HOP_LIMIT");
+  return redirectLiveResult(requestedUrl, hops, "hop-limit", displayUrl(current), warnings, "REDIRECT_HOP_LIMIT", now);
 }

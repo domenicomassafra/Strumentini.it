@@ -1,5 +1,31 @@
-import { createBusinessModule, currencyDecoration, inputRecord, optionalDecimal } from "../business-module";
+import { createBusinessModule, currencyDecoration, inputRecord, optionalDecimal, optionalInputString } from "../business-module";
 import type { PercentageHelperInput } from "./types";
+
+const MODES = new Set([
+  "add",
+  "reverse",
+  "of",
+  "what-percent",
+  "increase",
+  "decrease",
+  "variation",
+  "reverse-discount",
+  "cascade",
+]);
+
+function discountRates(input: Record<string, unknown>): readonly string[] | undefined {
+  const raw = input.rates;
+  if (Array.isArray(raw)) {
+    const values = raw.map((value) => typeof value === "number" ? String(value) : typeof value === "string" ? value.trim() : "");
+    if (values.some((value) => value === "")) throw new Error("INVALID_RATE");
+    return values;
+  }
+  const text = optionalInputString(input, "rates");
+  if (text === undefined) return undefined;
+  const values = text.split(";").map((value) => value.trim()).filter(Boolean);
+  if (values.length === 0) throw new Error("INVALID_RATE");
+  return values;
+}
 
 const module = createBusinessModule(
   "percentage-helper",
@@ -9,12 +35,14 @@ const module = createBusinessModule(
     const amount = optionalDecimal(input, "amount");
     const ratePercent = optionalDecimal(input, "ratePercent") ?? optionalDecimal(input, "percent");
     const mode = input.mode;
-    if (ratePercent === undefined) throw new Error("INVALID_INPUT");
-    if (mode !== undefined && mode !== "add" && mode !== "reverse") throw new Error("INVALID_MODE");
+    if (mode !== undefined && (typeof mode !== "string" || !MODES.has(mode))) throw new Error("INVALID_MODE");
+    if (ratePercent === undefined && mode !== "what-percent" && mode !== "variation" && mode !== "cascade") throw new Error("INVALID_INPUT");
+    const rates = discountRates(input);
     return {
       ...(base === undefined ? {} : { base }),
       ...(amount === undefined ? {} : { amount }),
-      ratePercent,
+      ...(ratePercent === undefined ? {} : { ratePercent }),
+      ...(rates === undefined ? {} : { rates }),
       ...(mode === undefined ? {} : { mode }),
     } as PercentageHelperInput;
   },

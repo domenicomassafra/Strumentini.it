@@ -1,4 +1,4 @@
-# StrumentiUtili.it — Canonical Implementation Plan
+# Strumentini.it — Canonical Implementation Plan
 
 > **Historical first-validation plan.** This document records the original 15-Gold validation architecture and ticket model from 2026-09-23. It is no longer the live execution authority. For current work use `PROJECT-STATUS.md`, `HANDOFF.md`, `ROADMAP.md` and `quality/receipts/expanded-catalog-certification.json`.
 
@@ -582,6 +582,6 @@ The first implementation frontier was **Ticket 01 — Gold tracer: Business Day 
 
 ### Known non-blocking uncertainty
 
-- The public brand is selected as StrumentiUtili.it; formal legal/trademark clearance remains a separate governance check.
+- The public brand is selected as Strumentini.it; formal legal/trademark clearance remains a separate governance check.
 - Product-market success, retention, Work Profile reuse, pack comprehension, and handoff value remain experiment outcomes; the implementation must measure them rather than encode a favorable answer.
 - Remaining parallel oracle/heavy-browser lanes may improve implementation choices, but they do not invalidate the current Ticket 01 frontier.

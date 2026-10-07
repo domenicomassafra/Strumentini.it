@@ -1,0 +1,27 @@
+{
+  "toolId": "markdown-table-formatter",
+  "category": "text",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Allinea colonne, intestazioni e separatori di una tabella Markdown senza cambiare il contenuto. Public jobs: Usa Formatta tabella Markdown.",
+  "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/text-writing/markdown-table-formatter.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Broader backlog enhancements are additive to this narrow route contract and are not used to manufacture an incomplete audit result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/text-writing/markdown-table-formatter.gold.json",
+      "claim": "Tool-specific Gold receipt binds the current implementation to declared fixtures/oracle evidence and functional acceptance for markdown-table-formatter."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/text-writing-engine.test.ts",
+      "claim": "Executable family tests exercise the engine/module behavior used by markdown-table-formatter, including relevant edge or invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/text-writing/browser-acceptance.json",
+      "claim": "Committed browser acceptance includes markdown-table-formatter and verifies a real route submit plus locality/lazy/mobile/accessibility behavior."
+    }
+  ],
+  "childTickets": []
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "ticket": 120,
+  "datasetId": "cap-comune",
+  "checkedAt": "2026-10-06",
+  "scope": "Primary-source-only feasibility decision using repository-vendored evidence; no opaque scraping and no newly invented source metadata.",
+  "authoritativeCandidates": [],
+  "repositorySearch": {
+    "searchedConcepts": [
+      "CAP",
+      "postal",
+      "Poste Italiane",
+      "Comune to CAP",
+      "CAP to Comune"
+    ],
+    "admissibleNationwideMappingFound": false
+  },
+  "requirementsForImplement": [
+    "authoritative nationwide ownership/source identity",
+    "licence or redistribution terms compatible with a vendored local snapshot",
+    "documented update cadence/version",
+    "explicit support for one-to-many and many-to-one postal relationships"
+  ],
+  "decision": "REFUSED",
+  "reason": "The allowed repository evidence does not prove an authoritative, maintainable, licensable nationwide CAP↔Comune dataset. The product must not infer postal coverage from municipality/Belfiore codes or substitute an opaque scraped dataset.",
+  "reopenWhen": "Reopen only when an authoritative nationwide source with explicit licence/redistribution terms, update/version semantics, and reproducible sample coverage is vendored or an existing repository fetch pipeline is added and reviewed."
+}

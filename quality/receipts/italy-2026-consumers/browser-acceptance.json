@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "inps-artigiani-commercianti",
+    "gestione-separata-contributi",
+    "ponti-ferie-optimizer",
+    "fatturapa-reader",
+    "fatturapa-batch-csv"
+  ],
+  "checkedAt": "2026-10-06",
+  "scope": [
+    131,
+    132,
+    148,
+    149,
+    151
+  ],
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "cases": [
+    {
+      "id": "inps-artigiani-commercianti",
+      "oracle": "cand-256",
+      "status": "PASS",
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "horizontalOverflow": false,
+        "operationVisible": true
+      }
+    },
+    {
+      "id": "gestione-separata-contributi",
+      "oracle": "cand-257",
+      "status": "PASS",
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "horizontalOverflow": false,
+        "operationVisible": true
+      }
+    },
+    {
+      "id": "ponti-ferie-optimizer",
+      "oracle": "cand-258",
+      "status": "PASS",
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "horizontalOverflow": false,
+        "operationVisible": true
+      }
+    },
+    {
+      "id": "fatturapa-reader",
+      "oracle": "cand-255",
+      "status": "PASS",
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "horizontalOverflow": false,
+        "operationVisible": true
+      }
+    },
+    {
+      "id": "fatturapa-batch-csv",
+      "oracle": "cand-259",
+      "status": "PASS",
+      "downloadRows": 3,
+      "externalRequests": 0,
+      "nonGetRequests": 0,
+      "taskBodyLeaks": 0,
+      "runtimeErrors": 0,
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "horizontalOverflow": false,
+        "operationVisible": true
+      }
+    }
+  ],
+  "privacy": "zero external/non-GET/task-body requests after operation start",
+  "globalReceiptRebound": false
+}

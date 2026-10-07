@@ -16,6 +16,7 @@ export const targetIncomeRateManifest = {
     { key: "currency", defaultValue: "USD" },
     { key: "hoursPerDay", defaultValue: "8" },
   ],
+  result: { class: "calculator", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-103", fixtureFamilies: ["business-math"] },
 } as const satisfies ToolManifest;
 

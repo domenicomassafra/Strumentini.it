@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { PDF_RESULT_DECLARATIONS } from "../pdf-result-declarations";
 
 export const pdfRotateManifest = {
   id: "pdf-rotate",
@@ -14,6 +15,7 @@ export const pdfRotateManifest = {
   engine: "pdf",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: PDF_RESULT_DECLARATIONS["pdf-rotate"],
   handoff: { emits: [{ type: "file", format: "pdf" }] },
   gold: { maintenanceClass: "H", oracleEntryId: "cand-124", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;

@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 import { imageResizeManifest } from "../src/tools/image-resize/manifest";
 import { imageVisualToolDefinitions } from "../src/tools/image-visual-definitions";
 import { catalog } from "../src/generated/catalog";
+import { searchCatalog } from "../src/generated/search-catalog";
 import { TOOL_COPY_IT } from "../src/i18n/it/tool-copy";
-import { aspectRatio, contrastRatio, extractPalette, fitDimensions, imageDataPixels, parseHexColor, rgbToHsl } from "../src/engines/image/visual";
+import { aspectRatio, colorHarmony, colorTintsAndShades, contrastRatio, extractPalette, fitDimensions, imageDataPixels, parseHexColor, resolveCssColor, rgbToHsl } from "../src/engines/image/visual";
 import { calculateAspectRatioLocal, checkContrastLocal, convertColorLocal, previewImageRenamesLocal } from "../src/engines/image/visual-tools";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -28,11 +29,16 @@ describe("image/visual expansion manifests", () => {
 
   it("keeps generated visual definitions aligned with public manifests", () => {
     const manifests = new Map(catalog.map((tool) => [tool.id, tool]));
+    const searchEntries = new Map(searchCatalog.map((tool) => [tool.id, tool]));
     for (const [id] of imageVisualToolDefinitions) {
       const copy = TOOL_COPY_IT[id];
       expect(copy).toBeDefined();
       if (copy === undefined) continue;
-      expect(manifests.get(id)).toMatchObject(copy);
+      expect(manifests.get(id)).toMatchObject({ name: copy.name, summary: copy.summary });
+      if (copy.searchTerms !== undefined) {
+        const keywords = searchEntries.get(id)?.keywords ?? [];
+        expect(keywords, id).toEqual(expect.arrayContaining([...copy.searchTerms]));
+      }
     }
   });
 });
@@ -40,6 +46,13 @@ describe("image/visual expansion manifests", () => {
 describe("image/visual pure operations", () => {
   it("converts colors and reports WCAG contrast thresholds", () => {
     expect(convertColorLocal({ hex: "#336699" })).toMatchObject({ hex: "#336699", rgb: { r: 51, g: 102, b: 153 } });
+    expect(convertColorLocal({ color: "rebeccapurple", mode: "named-color" })).toMatchObject({ hex: "#663399", namedColor: "rebeccapurple", colorSpace: "sRGB/HSL" });
+    expect(resolveCssColor("AliceBlue")).toMatchObject({ hex: "#f0f8ff", namedColor: "aliceblue" });
+    expect(colorHarmony("#ff0000").complementary[0]?.hex).toBe("#00ffff");
+    const scales = colorTintsAndShades("#808080");
+    expect(scales.tints.map((entry) => entry.amountPercent)).toEqual([10, 25, 50, 75]);
+    expect(scales.shades[2]?.hex).toBe("#404040");
+    expect(scales.rule).toMatch(/encoded sRGB/u);
     expect(checkContrastLocal({ foreground: "#000000", background: "#ffffff" })).toMatchObject({ aaNormal: true, aaLarge: true, aaaNormal: true });
     expect(checkContrastLocal({ foreground: "#777777", background: "#ffffff" }).aaNormal).toBe(false);
   });

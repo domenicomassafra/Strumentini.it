@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const contrast_checkerManifest = {
   id: "contrast-checker",
@@ -13,6 +14,7 @@ export const contrast_checkerManifest = {
   engine: "image-visual",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["contrast-checker"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-151", fixtureFamilies: ["image-metadata", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "ticket": 314,
+  "status": "PASS",
+  "browser": "edge",
+  "route": "/tools/image-resize/",
+  "source": {
+    "width": 1600,
+    "height": 1200,
+    "type": "image/png"
+  },
+  "verifiedOutputs": {
+    "cover": {
+      "width": 800,
+      "height": 800,
+      "type": "image/webp",
+      "bytes": 1692
+    },
+    "percent": {
+      "width": 800,
+      "height": 600,
+      "type": "image/jpeg",
+      "bytes": 3611
+    },
+    "noUpscale": {
+      "width": 1600,
+      "height": 1200,
+      "type": "image/jpeg",
+      "bytes": 12011
+    }
+  },
+  "controls": {
+    "aspectLock": "PASS",
+    "percent": "PASS",
+    "liveDimensionEstimate": "PASS",
+    "containVsCoverCropPreview": "PASS",
+    "noUpscale": "PASS",
+    "outputFormatChoice": "JPEG_AND_WEBP"
+  },
+  "mobile": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false,
+    "fileInputVisible": true
+  },
+  "physicalDeviceEvidence": "NOT_CLAIMED",
+  "identities": {
+    "src/engines/image/policy.ts": "88a8bb439df722060a103cd13446e465d6a9696ee8b3fa879ed557d1af66db0a",
+    "src/tools/image-resize/module.ts": "72fd3369cfa0c651ce11972f85583645582b7e846a92ab4ae6b22840df681889",
+    "src/tools/image-resize/types.ts": "2e48d108176599d92f7b245538179f9043f965767a5db5341525cb01a73e6ee3",
+    "src/components/tools/image-resize/ImageResizeTool.tsx": "dc7db9148c9a601d9f5d72a7d6245df80446aafe5341435c759fe93dad5c0590"
+  }
+}

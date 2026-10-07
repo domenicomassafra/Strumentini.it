@@ -13,6 +13,7 @@ export const latePaymentInterestManifest = {
   engine: "business-math",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [{ key: "currency", defaultValue: "USD" }],
+  result: { class: "calculator", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "R", oracleEntryId: "cand-112", fixtureFamilies: ["business-math"] },
 } as const satisfies ToolManifest;
 

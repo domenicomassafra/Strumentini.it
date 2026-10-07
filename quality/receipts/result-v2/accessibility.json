@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-06T09:56:44.161Z",
+  "classes": [
+    {
+      "class": "calculator",
+      "actionCount": 2,
+      "keyboardActionCount": 2,
+      "primaryNamed": true,
+      "nonColorCue": true,
+      "ariaSnapshotObserved": true
+    },
+    {
+      "class": "validator",
+      "actionCount": 3,
+      "keyboardActionCount": 3,
+      "primaryNamed": true,
+      "nonColorCue": true,
+      "ariaSnapshotObserved": true
+    },
+    {
+      "class": "text-code",
+      "actionCount": 4,
+      "keyboardActionCount": 4,
+      "primaryNamed": true,
+      "nonColorCue": true,
+      "ariaSnapshotObserved": true
+    },
+    {
+      "class": "table",
+      "actionCount": 4,
+      "keyboardActionCount": 4,
+      "primaryNamed": true,
+      "nonColorCue": true,
+      "ariaSnapshotObserved": true
+    },
+    {
+      "class": "file",
+      "actionCount": 3,
+      "keyboardActionCount": 3,
+      "primaryNamed": true,
+      "nonColorCue": true,
+      "ariaSnapshotObserved": true
+    },
+    {
+      "class": "image",
+      "actionCount": 2,
+      "keyboardActionCount": 2,
+      "primaryNamed": true,
+      "nonColorCue": true,
+      "ariaSnapshotObserved": true
+    },
+    {
+      "class": "pdf",
+      "actionCount": 2,
+      "keyboardActionCount": 2,
+      "primaryNamed": true,
+      "nonColorCue": true,
+      "ariaSnapshotObserved": true
+    },
+    {
+      "class": "batch",
+      "actionCount": 3,
+      "keyboardActionCount": 3,
+      "primaryNamed": true,
+      "nonColorCue": true,
+      "ariaSnapshotObserved": true
+    },
+    {
+      "class": "reference-network",
+      "actionCount": 3,
+      "keyboardActionCount": 3,
+      "primaryNamed": true,
+      "nonColorCue": true,
+      "ariaSnapshotObserved": true
+    }
+  ],
+  "keyboardRetry": true,
+  "keyboardDirectManipulationAlternatives": 1,
+  "keyboardFocusablePreviews": 2,
+  "nonColorState": true,
+  "accessibilityTreeObserved": true,
+  "zoom200Reflow": true,
+  "zoom200EquivalentWidths": [
+    390,
+    320
+  ],
+  "longItalianLabelWraps": true,
+  "reducedMotion": true
+}

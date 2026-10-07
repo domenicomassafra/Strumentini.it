@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "family": "sitemap-xml",
+  "source": "https://www.sitemaps.org/protocol.html",
+  "vectors": [
+    {
+      "id": "minimal-http-url",
+      "input": "HTTPS://EXAMPLE.COM:443/a/../b?z=2&a=1",
+      "expected_entries": [
+        { "loc": "https://example.com/b?a=1&z=2" }
+      ],
+      "expected_metadata_counts": { "lastmod": 0, "changefreq": 0, "priority": 0 }
+    },
+    {
+      "id": "optional-metadata",
+      "input": "https://example.com/\nhttps://example.com/news?x=1&y=2\t2026-10-06\tweekly\t0.8",
+      "expected_entries": [
+        { "loc": "https://example.com/" },
+        { "loc": "https://example.com/news?x=1&y=2", "lastmod": "2026-10-06", "changefreq": "weekly", "priority": "0.8" }
+      ],
+      "expected_metadata_counts": { "lastmod": 1, "changefreq": 1, "priority": 1 }
+    }
+  ],
+  "invalid_cases": [
+    { "id": "unsafe-scheme", "input": "ftp://example.com/file", "error": "INVALID_SITEMAP_ROW_1_UNSAFE_URL_SCHEME" },
+    { "id": "bad-percent-escape", "input": "https://example.com/%ZZ", "error": "INVALID_SITEMAP_ROW_1_INVALID_URL" },
+    { "id": "credentialed-url", "input": "https://user:pass@example.com/private", "error": "INVALID_SITEMAP_ROW_1_CREDENTIALS" },
+    { "id": "host-mismatch", "input": "https://example.com/a\nhttps://www.example.com/b", "error": "INVALID_SITEMAP_ROW_2_HOST_MISMATCH" },
+    { "id": "invalid-lastmod", "input": "https://example.com/a\t2025-02-29", "error": "INVALID_SITEMAP_ROW_1_LASTMOD" },
+    { "id": "invalid-changefreq", "input": "https://example.com/a\t\tWeekly", "error": "INVALID_SITEMAP_ROW_1_CHANGEFREQ" },
+    { "id": "invalid-priority", "input": "https://example.com/a\t\tweekly\t1.1", "error": "INVALID_SITEMAP_ROW_1_PRIORITY" }
+  ]
+}

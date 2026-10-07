@@ -1,0 +1,1405 @@
+{
+  "schemaVersion": 1,
+  "assignments": [
+    {
+      "toolId": "add-subtract-days",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "age-date-anniversary",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "archive-checksum-manifest",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "aspect-ratio-calculator",
+      "category": "image-visual",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "base64-codec",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "batch-checksum-manifest",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "batch-rename-preview",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "bibtex-deduplicator",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "bibtex-formatter",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "break-even",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "bulk-domain-extractor",
+      "category": "web-operations",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "business-day",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "calendar-date-list-generator",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "campaign-name",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "canonical-url-helper",
+      "category": "web-operations",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "capacity-planner",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "case-converter",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "checksum-verifier",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "citation-deduplicator",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "citation-key-generator",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "clean-zip-creator",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "client-handoff-index-generator",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "color-converter",
+      "category": "image-visual",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "color-picker",
+      "category": "image-visual",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "column-type-profiler",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "contact-sheet-generator",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "contrast-checker",
+      "category": "image-visual",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "conversion-rate-scenario",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "cpa-cpc-cpm-calculator",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "cron-explainer",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "cron-next-run",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-cleaner",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-column-map",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-column-selector",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-column-to-list",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-dedupe",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-delimiter-detector",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-encoding-fixer",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-filter",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-group-count",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-join",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-pivot-lite",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-sort",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-to-json",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "csv-viewer",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "currency-scenario",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "date-difference",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "date-source-normalizer",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "deadline-countdown",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "decimal-hours-converter",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "discount-impact",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "document-handoff-manifest",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "doi-isbn-normalizer",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "doi-link-builder",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "doi-normalizer",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "domain-frequency-counter",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "domain-subdomain-grouper",
+      "category": "web-operations",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "dominant-color-extractor",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "duplicate-file-finder",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "duplicate-row-profiler",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "duration-calculator",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "effective-hourly-rate",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "email-domain-extractor",
+      "category": "web-operations",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "epoch-batch-converter",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "evidence-table-builder",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "exif-remover",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "favicon-app-icon-size-generator",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "file-hash",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "file-list-diff",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "file-signature-detector",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "filename-sanitizer",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "find-replace-preview",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "folder-compare",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "folder-inventory",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "folder-size-type-summary",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "hash-generator",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "hmac-generator",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "html-entity-codec",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "http-status-reference",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "ics-event-builder",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "ics-viewer",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "image-compare-slider",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "image-compression",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "image-crop",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "image-dimensions-batch-inspector",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "image-format-conversion",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "image-metadata-viewer",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "image-rename-batch-preview",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "image-resize",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "images-to-pdf",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "invisible-character-detector",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "invoice-math-validator",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "invoice-number-generator",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "isbn-validator-converter",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "json-formatter",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "json-path-playground",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "json-to-csv",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "json-yaml-converter",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "jwt-inspector",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "language-aware-text-statistics",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "late-payment-interest",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "line-deduplicator",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "line-sorter",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "list-compare",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "list-difference",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "list-intersection",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "lorem-sample-data-generator",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "margin-markup",
+      "category": "client-work-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "markdown-preview",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "markdown-table-formatter",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "meeting-time-planner",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "meta-preview",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "metadata-risk-inspector",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "mime-type-lookup",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "missing-value-profiler",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "notes-deduplicator",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "open-graph-preview",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "palette-extractor",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "payment-fee-gross-up",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-compare-lite",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-compression-lite",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-flatten",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-form-inspector",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-image-extractor",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-link-extractor",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-merge",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-metadata-inspector",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-metadata-remover",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-page-citation-helper",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-page-count-verifier",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-page-delete-extract",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-page-reorder",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-page-size-inspector",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-password-check-remove",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-rotate",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-split",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-text-extraction",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "pdf-to-images",
+      "category": "documents",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "percentage-helper",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "perceptual-duplicate-finder",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "platform-size-presets",
+      "category": "image-visual",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "project-profitability",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "proposal-budget-checker",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "public-holiday-lookup",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "qr-generator",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "qr-reader",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "quarter-date-mapper",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "query-string-editor",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "quick-chart",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "quote-counter",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "rate-converter",
+      "category": "client-work-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "reading-list-deduplicator",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "reading-time-estimator",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "recurring-date-generator",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "redirect-chain-inspector",
+      "category": "web-operations",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "reference-list-sorter",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "regex-tester",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "research-pack-manifest",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "research-url-cleaner",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "retainer-capacity",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "ris-bibtex-converter",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "roas-calculator",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "robots-directive-helper",
+      "category": "web-operations",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "safe-share-checklist",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "scope-creep-cost",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "screenshot-border-background-helper",
+      "category": "files-assets",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "secret-token-pattern-scanner",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "slug-generator",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "smart-quote-normalizer",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "social-character-limit",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "table-transpose",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "target-income-rate",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "text-diff",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "text-to-csv-rows",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "timeline-sorter",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "timesheet-totaler",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "timezone-converter",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "timezone-overlap",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "toml-formatter",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "tracking-cleaner",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "tsv-to-csv",
+      "category": "data",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "unicode-normalizer",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "unix-timestamp",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "url-bulk-normalizer",
+      "category": "web-operations",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "url-codec",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "url-comparison",
+      "category": "web-operations",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "user-agent-parser",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "utilization-calculator",
+      "category": "business-math",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "utm-builder",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "utm-parser",
+      "category": "marketing",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "uuid-generator",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "vocabulary-frequency-analyzer",
+      "category": "research",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "week-number-converter",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "whitespace-normalizer",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "word-character-line-counter",
+      "category": "text",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "working-hours",
+      "category": "date-time",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "yaml-formatter",
+      "category": "developer",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "zero-byte-orphan-finder",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "zip-contents-inspector",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    },
+    {
+      "toolId": "zip-creator",
+      "category": "files",
+      "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+      "status": "pending",
+      "decision": null
+    }
+  ]
+}

@@ -13,6 +13,7 @@ export const campaignNameManifest = {
   engine: "campaign-url",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "text-code", capabilities: ["copy", "download", "reuse", "reset"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-068", fixtureFamilies: ["utm-roundtrip"] },
 } as const satisfies ToolManifest;
 

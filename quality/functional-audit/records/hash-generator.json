@@ -1,0 +1,27 @@
+{
+  "toolId": "hash-generator",
+  "category": "developer",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Calcola SHA-256, SHA-384 o SHA-512 di un testo UTF-8 direttamente nel browser. Public jobs: Usa Calcola hash di un testo",
+  "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Calcola SHA-256, SHA-384 o SHA-512 di un testo UTF-8 direttamente nel browser. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",
+  "rationale": "No missing behavior required by the current declared public job was found. Broader backlog modes (such as new file inputs, additional formats or timezone-aware variants) are additive to the route’s explicitly bounded current contract and are not used to manufacture an incomplete audit result.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/developer-web/hash-generator.gold.json",
+      "claim": "Tool-specific Gold receipt binds the current hash-generator implementation to executable functional fixtures/oracle evidence."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/developer-web-engine.test.ts",
+      "claim": "Developer/web engine tests exercise the tool family with deterministic vectors, explicit parser/format/crypto/reference bounds and invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/developer-web/browser-acceptance.json",
+      "claim": "Developer-web browser acceptance includes this real route and verifies keyboard submit, 390px behavior, locality/lazy loading and zero task-content network leakage."
+    }
+  ],
+  "childTickets": []
+}

@@ -1,3 +1,3 @@
-import type { PdfFileInput, PdfArtifactOutput } from "../pdf/contracts";
+import type { PdfFileInput, PdfMetadataRemovalOutput } from "../pdf/contracts";
 export type PdfMetadataRemoverInput = PdfFileInput;
-export type PdfMetadataRemoverOutput = PdfArtifactOutput & { readonly policy: string };
+export type PdfMetadataRemoverOutput = PdfMetadataRemovalOutput;

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/business-italy-date/fraction-integer-toolkit.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "fraction-integer-toolkit",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-205",
+  "fixtureFamilies": [
+    "calculator-math-core"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "calculator-math-core",
+      "path": "quality/fixtures/calculator-math-core/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime declaration",
+    "high-confidence oracle with only explicit bounded-scope gaps",
+    "manifest maintenance class matches oracle",
+    "fixture replay through public tool module",
+    "per-tool semantic browser assertion",
+    "keyboard/locality/lazy/mobile/a11y browser acceptance",
+    "focused semantic and refusal-boundary tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "37ae6e00465fe4d1d9210cec13fdc46bfe98f254b8bfc0f304c6281671608d15",
+    "moduleSha256": "8c23fd2b71679a3a061e945a7234148cb21356080717697da331202d77529f6e",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "c038482c00dd9b04564cd02541b3c2a1a73c3a791df6d93fa8350a3b2cf56e1e",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "3906506956e6f2b38118a2d26f4b497286e004d7465c740d30dc0862b3c42fc1",
+    "fixture:calculator-math-core:sha256": "e9f53d8825ea53f273dd0aa6e9567fd5b58f715da32c523ace07ce2ab8030e86"
+  }
+}

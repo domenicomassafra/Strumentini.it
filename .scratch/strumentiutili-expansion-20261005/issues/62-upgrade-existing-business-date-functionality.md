@@ -6,7 +6,7 @@
 
 **Constraints:** Existing formulas/Gold remain authoritative until a ticket explicitly changes them; locale/timezone assumptions are always visible.
 
-**Blocked by:** 01, 02, 19, 20, 21, 43.
+**Blocked by:** 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 154, 155, 156.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] Business calculators show scenario tables/schedules and export when that helps a decision.
 
 **Verification:** Existing Gold plus scenario/timezone/DST/calendar boundary fixtures and generated route coverage.
-

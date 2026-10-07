@@ -5,8 +5,8 @@ import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-const port = Number(process.env.STRUMENTIUTILI_ACCEPTANCE_PORT ?? 18161);
-if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error(`invalid acceptance port: ${process.env.STRUMENTIUTILI_ACCEPTANCE_PORT ?? ""}`);
+const port = Number(process.env.STRUMENTINI_ACCEPTANCE_PORT ?? 18161);
+if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error(`invalid acceptance port: ${process.env.STRUMENTINI_ACCEPTANCE_PORT ?? ""}`);
 const origin = `http://127.0.0.1:${port}`;
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
@@ -41,6 +41,23 @@ const URL_LIST = [
   "javascript:alert(1)",
 ];
 
+const RESULT_META = {
+  "bibtex-formatter": { class: "text-code", oracle: "cand-185" },
+  "bibtex-deduplicator": { class: "text-code", oracle: "cand-186" },
+  "citation-deduplicator": { class: "table", oracle: "cand-184" },
+  "citation-key-generator": { class: "table", oracle: "cand-188" },
+  "date-source-normalizer": { class: "validator", oracle: "cand-193" },
+  "domain-frequency-counter": { class: "table", oracle: "cand-195" },
+  "evidence-table-builder": { class: "table", oracle: "cand-196" },
+  "notes-deduplicator": { class: "text-code", oracle: "cand-197" },
+  "pdf-page-citation-helper": { class: "text-code", oracle: "cand-190" },
+  "reading-list-deduplicator": { class: "table", oracle: "cand-199" },
+  "reference-list-sorter": { class: "table", oracle: "cand-189" },
+  "research-pack-manifest": { class: "text-code", oracle: "cand-200" },
+  "ris-bibtex-converter": { class: "text-code", oracle: "cand-187" },
+  "vocabulary-frequency-analyzer": { class: "table", oracle: "cand-198" },
+};
+
 const cases = [
   {
     id: "bibtex-formatter",
@@ -55,7 +72,7 @@ const cases = [
     id: "bibtex-deduplicator",
     boundary: { kind: "typed-error", invalid: { BibTeX: "" } },
     fill: { BibTeX: "@article{a, title = {A}, doi = {10.1000/182}}\n@article{b, title = {B}, doi = {doi:10.1000/182}}\n" },
-    expect: /1 duplicato rimosso · regole: doi/u,
+    expect: /Rimossi\s*1[\s\S]*Regole\s*doi/u,
     alsoExpect: [/@article\{a,\n  title = \{A\}/u],
     mustNotMatch: [/@article\{b,/u],
   },
@@ -65,14 +82,14 @@ const cases = [
     // reachable from the page; the module-level rejection is covered by unit tests.
     boundary: { kind: "empty-result" },
     fill: { "Citazioni (array JSON oppure un oggetto per riga)": JSON.stringify(CITATIONS), "Regola di identità": "identifier" },
-    expect: /1 duplicato rimosso/u,
+    expect: /Rimossi\s*1/u,
   },
   {
     id: "citation-key-generator",
     boundary: { kind: "empty-result" },
     fill: { "Citazioni (array JSON oppure un oggetto per riga)": JSON.stringify([{ author: "Smith, Ada", title: "Deep Learning", year: "2026" }, { author: "Ada Smith", title: "Deep Learning", year: "2026" }]) },
     expect: /smith_2026_deep_2/u,
-    alsoExpect: [/1 chiave con suffisso/u],
+    alsoExpect: [/Collisioni\s*1/u],
   },
   {
     id: "date-source-normalizer",
@@ -84,19 +101,19 @@ const cases = [
     id: "domain-frequency-counter",
     boundary: { kind: "empty-result" },
     fill: { "URL (uno per riga)": URL_LIST.join("\n") },
-    expect: /3 occorrenze, 1 dominio · 2 valori non validi/u,
+    expect: /Totale\s*3[\s\S]*Non validi\s*2[\s\S]*Domini\s*1/u,
   },
   {
     id: "evidence-table-builder",
     boundary: { kind: "empty-result" },
     fill: { "Evidenze (array JSON oppure un oggetto per riga)": JSON.stringify(EVIDENCE) },
-    expect: /title,url,date,source,doi,notes/u,
+    expect: /title\s+url\s+date\s+source\s+doi\s+notes/iu,
   },
   {
     id: "notes-deduplicator",
     boundary: { kind: "empty-result" },
     fill: { "Note (array JSON oppure una per riga)": "prima\nPRIMA\nseconda" },
-    expect: /1 duplicato rimosso/u,
+    expect: /Rimossi\s*1/u,
   },
   {
     id: "pdf-page-citation-helper",
@@ -108,19 +125,19 @@ const cases = [
     id: "reading-list-deduplicator",
     boundary: { kind: "empty-result" },
     fill: { "Elementi della lista (array JSON oppure un oggetto per riga)": JSON.stringify(READING_LIST) },
-    expect: /"rimossi": 1|"removed": 1/u,
+    expect: /Rimossi\s*1/u,
   },
   {
     id: "reference-list-sorter",
     boundary: { kind: "empty-result" },
     fill: { "Riferimenti (array JSON oppure un oggetto per riga)": JSON.stringify(REFERENCES), "Ordina per": "author" },
-    expect: /"confronto":\s*"cognome del primo autore/u,
+    expect: /Confronto[\s\S]*cognome del primo autore/u,
   },
   {
     id: "research-pack-manifest",
     boundary: { kind: "typed-error", invalid: { "Nome del pacchetto": "" } },
     fill: { "Nome del pacchetto": "Ricerca di base", "ID strumenti (uno per riga)": "quote-counter\ndoi-normalizer\nquote-counter" },
-    expect: /"algoritmo_checksum":\s*"SHA-256"/u,
+    expect: /Algoritmo checksum\s*SHA-256/u,
   },
   {
     id: "ris-bibtex-converter",
@@ -133,13 +150,14 @@ const cases = [
     id: "vocabulary-frequency-analyzer",
     boundary: { kind: "typed-error", invalid: { Testo: "" } },
     fill: { Testo: "il gatto e il cane con una casa per la città", "Lunghezza minima del termine": "1", "Numero massimo di termini": "10" },
-    expect: /"percorso_parole_chiave":\s*"it\+en"/u,
+    expect: /Profilo stopword\s*it\+en/u,
   },
 ];
 
 if (cases.length !== 14 || new Set(cases.map(({ id }) => id)).size !== 14) throw new Error(`research-knowledge acceptance must contain exactly 14 unique tools; got ${cases.length}`);
 for (const testCase of cases) {
   if (testCase.boundary === undefined) throw new Error(`${testCase.id}: every case must declare its boundary behaviour`);
+  if (RESULT_META[testCase.id] === undefined) throw new Error(`${testCase.id}: Result v2 semantic metadata missing`);
 }
 
 // The site shell asks the optional account Worker for the current session on every
@@ -188,7 +206,7 @@ async function checkBoundaryState(page, form, submit, testCase) {
     await firstField.fill("");
     await submit.focus();
     await page.keyboard.press("Enter");
-    const output = page.locator(".result-panel").last().locator("pre").first();
+    const output = page.locator(".result-panel").last().locator("[data-result-class]").first();
     await output.waitFor({ timeout: 15_000 });
     const text = await page.locator(".result-panel").last().innerText();
     if (text.trim() === "") throw new Error(`${testCase.id}: an empty input produced no visible deterministic result`);
@@ -258,7 +276,8 @@ async function acceptTool(context, testCase) {
     await submit.focus();
     await page.keyboard.press("Enter");
     const panel = page.locator(".result-panel").last();
-    const output = panel.locator("pre").first();
+    const meta = RESULT_META[testCase.id];
+    const output = panel.locator(`[data-result-class="${meta.class}"]`).first();
     const inlineError = form.locator('[role="alert"]').last();
     const outcome = await Promise.race([
       output.waitFor({ timeout: 15_000 }).then(() => "result"),
@@ -275,6 +294,17 @@ async function acceptTool(context, testCase) {
     }
     for (const forbidden of testCase.mustNotMatch ?? []) {
       if (forbidden.test(text)) throw new Error(`${testCase.id}: forbidden pattern ${forbidden} appeared for ${JSON.stringify(text.slice(0, 1200))}`);
+    }
+    if (await panel.locator("[data-result-class]").count() !== 1) throw new Error(`${testCase.id}: Result v2 semantic class missing or duplicated`);
+    const provenance = panel.locator(`[data-oracle-entry="${meta.oracle}"]`).first();
+    await provenance.waitFor();
+    const provenanceText = await provenance.innerText();
+    if (!provenanceText.includes(meta.oracle)) throw new Error(`${testCase.id}: provenance does not name manifest oracle ${meta.oracle}`);
+    if (testCase.id === "ris-bibtex-converter" && /REFUSED|ticket 276|non promuove Gold/u.test(provenanceText)) {
+      throw new Error("ris-bibtex-converter: Result v2 provenance still exposes the closed oracle gate");
+    }
+    for (const action of ["copy", "download", "reset"]) {
+      if (await panel.locator(`[data-result-action="${action}"]`).count() !== 1) throw new Error(`${testCase.id}: truthful Result v2 action ${action} missing`);
     }
     if (runtimeErrors.length > 0) throw new Error(`${testCase.id}: runtime/console error: ${runtimeErrors.join(" | ")}`);
     if (scripts.length === 0) throw new Error(`${testCase.id}: no lazy implementation script observed after submit`);
@@ -293,16 +323,94 @@ async function acceptTool(context, testCase) {
   }
 }
 
+async function acceptLongBibliography(context) {
+  const page = await context.newPage();
+  const requests = [];
+  const runtimeErrors = [];
+  let started = false;
+  page.on("request", (request) => {
+    if (!started) return;
+    requests.push({ url: request.url(), method: request.method(), postData: request.postData() });
+  });
+  page.on("pageerror", (error) => runtimeErrors.push(String(error)));
+  page.on("console", (message) => {
+    if (message.type() !== "error" || isExpectedStaticFailure(message.location().url)) return;
+    runtimeErrors.push(`${message.text()} @ ${message.location().url}`);
+  });
+  try {
+    await page.goto(`${origin}/tools/bibtex-formatter/`, { waitUntil: "networkidle" });
+    const form = page.locator("form").last();
+    const sentinel = "USER_BIBLIOGRAPHY_SENTINEL";
+    const source = Array.from({ length: 120 }, (_, index) => [
+      `@article{k${index},`,
+      `  title = {${index === 0 ? sentinel : `Titolo ${index}`}},`,
+      `  author = {Autore ${index}},`,
+      "  year = {2026}",
+      "}",
+    ].join("\n")).join("\n\n");
+    await form.locator("textarea").first().fill(source);
+    started = true;
+    await form.locator("button[type='submit']").press("Enter");
+    const panel = page.locator(".result-panel").last();
+    const result = panel.locator('[data-result-class="text-code"]');
+    await result.waitFor({ timeout: 15_000 });
+    const preview = result.locator('[data-result-slot="selectable-output"]');
+    await preview.getByText(/Anteprima: 80 di \d+ righe/u).waitFor();
+    if (await preview.getByText("@article{k119,", { exact: false }).count() !== 0) throw new Error("long bibliography preview was not bounded");
+    const provenance = result.locator('[data-oracle-entry="cand-185"]');
+    const provenanceText = await provenance.innerText();
+    if (provenanceText.includes(sentinel)) throw new Error("user bibliography content leaked into oracle provenance");
+    const downloadPromise = page.waitForEvent("download");
+    await result.locator('[data-result-action="download"]').click();
+    const download = await downloadPromise;
+    const path = await download.path();
+    if (path === null) throw new Error("long bibliography download has no browser-local path");
+    const downloaded = await readFile(path, "utf8");
+    if (!downloaded.includes("@article{k119,") || !downloaded.includes(sentinel)) throw new Error("long bibliography download was truncated or altered");
+    if (runtimeErrors.length > 0) throw new Error(`long bibliography runtime/console error: ${runtimeErrors.join(" | ")}`);
+    const bad = requests.filter((request) => !request.url.startsWith(origin) || request.method !== "GET" || (request.postData ?? "") !== "");
+    if (bad.length > 0) throw new Error(`long bibliography leaked task data or used external network: ${JSON.stringify(bad)}`);
+    return { status: "PASS", previewLinesShown: 80, completeDownloadIncludesLastEntry: true, provenanceOracle: "cand-185", userContentInProvenance: false, taskContentLeaks: 0 };
+  } finally {
+    await page.close();
+  }
+}
+
+async function acceptProvenanceSeparation(context) {
+  const page = await context.newPage();
+  try {
+    await page.goto(`${origin}/tools/evidence-table-builder/`, { waitUntil: "networkidle" });
+    const form = page.locator("form").last();
+    const sentinel = "USER_SOURCE_SENTINEL_DO_NOT_TREAT_AS_PROVENANCE";
+    await form.locator("textarea").first().fill(JSON.stringify([{ title: "Studio", source: sentinel, url: "https://example.org/studio", date: "2026" }]));
+    await form.locator("button[type='submit']").press("Enter");
+    const result = page.locator('.result-panel [data-result-class="table"]').last();
+    await result.waitFor({ timeout: 15_000 });
+    await result.getByText(sentinel, { exact: true }).waitFor();
+    const provenance = result.locator('[data-oracle-entry="cand-196"]');
+    const provenanceText = await provenance.innerText();
+    if (provenanceText.includes(sentinel)) throw new Error("user source identity was confused with manifest/oracle provenance");
+    if (!provenanceText.includes("cand-196") || !/rete vietata/u.test(provenanceText)) throw new Error("evidence-table provenance lost manifest source identity or locality");
+    return { status: "PASS", oracle: "cand-196", userSourceVisibleInTable: true, userSourceAbsentFromProvenance: true };
+  } finally {
+    await page.close();
+  }
+}
+
 try {
   await waitForServer();
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const results = [];
+  let resultV2LongBibliography;
+  let resultV2ProvenanceSeparation;
   try {
     for (const testCase of cases) {
       console.log(`accepting ${testCase.id}`);
       results.push(await acceptTool(context, testCase));
     }
+    resultV2LongBibliography = await acceptLongBibliography(context);
+    resultV2ProvenanceSeparation = await acceptProvenanceSeparation(context);
   } finally {
     await context.close();
     await browser.close();
@@ -324,6 +432,10 @@ try {
     implementationEager: false,
     lazyImplementationObservedFor: results.map(({ toolId }) => toolId),
     publicErrorCopy: "tools with a rejected input show a non-empty Italian message and never a machine code; the others still render a deterministic result for an empty input",
+    resultV2EdgeCases: {
+      longBibliography: resultV2LongBibliography,
+      provenanceSeparation: resultV2ProvenanceSeparation,
+    },
     scriptSha256: sha256(scriptText),
     results,
   };

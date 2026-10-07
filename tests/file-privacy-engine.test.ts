@@ -1,18 +1,23 @@
 import { describe, expect, it } from "vitest";
 import {
   FilePrivacyError,
+  analyzeFileSize,
   batchChecksumManifest,
   batchRenamePreview,
   clientHandoffIndex,
   createCleanZip,
+  createAiCodeFenceBundle,
   createZip,
   detectFileSignature,
   duplicateFileFinder,
   fileListDiff,
   filenameSanitizer,
+  folderCompare,
   folderInventory,
   folderSizeTypeSummary,
+  inspectMetadataRisk,
   inspectZip,
+  parseAiCodeFenceFiles,
   runFilePrivacyOperation,
   safeShareChecklist,
   scanSecretPatterns,
@@ -82,6 +87,13 @@ describe("file/privacy engine", () => {
     expect((byHash.differences as Array<{ path: string; status: string }>).find((item) => item.path === "same.txt")?.status).toBe("changed");
   });
 
+  it("fails closed when distinct source paths sanitize to the same relative identity", async () => {
+    const first = file("report?.txt", "one", "text/plain", "docs/report?.txt");
+    const second = file("report*.txt", "two", "text/plain", "docs/report*.txt");
+    await expect(folderCompare({ before: [first, second], after: [file("ok.txt", "ok")] }))
+      .rejects.toMatchObject({ code: "INVALID_INPUT" });
+  });
+
   it("finds empty files and orphan references", () => {
     const result = zeroByteOrphanFinder({ files: [file("empty.txt", ""), file("present.txt", "x")], references: "present.txt\nmissing.txt" });
     expect(result.emptyFiles).toEqual(["empty.txt"]);
@@ -92,10 +104,28 @@ describe("file/privacy engine", () => {
   it("redacts secret findings and keeps checklist claims bounded", async () => {
     const findings = await scanSecretPatterns({ files: [], text: "api_key=super-secret-value\nplain text" });
     expect(findings.findingCount).toBe(1);
+    expect((findings.findings as Array<Record<string, unknown>>)[0]).toMatchObject({ line: 1, kind: "secret-assignment", evidenceCategory: "potential-secret-pattern", classification: "potential", columnStart: 1 });
     expect(String((findings.findings as Array<{ preview: string }>)[0]?.preview)).toContain("…");
+    expect(JSON.stringify(findings)).not.toContain("super-secret-value");
     const checklist = await safeShareChecklist({ files: [file("notes.txt", "api_key=super-secret-value"), file("empty.txt", "")] });
     expect(checklist.allPassed).toBe(false);
     expect(String(checklist.note)).toContain("not a guarantee");
+    expect(checklist).toMatchObject({ userContext: { recipientConfirmed: false, sensitiveContentReviewed: false }, totalChecks: 6 });
+    const confirmed = await safeShareChecklist({ files: [file("clean.txt", "ordinary content")], recipientConfirmed: true, sensitiveContentReviewed: true });
+    expect(confirmed).toMatchObject({ allPassed: true, passedCount: 6, totalChecks: 6, userContext: { recipientConfirmed: true, sensitiveContentReviewed: true } });
+  });
+
+  it("reports local metadata-risk evidence categories and spans without exporting source content", async () => {
+    const result = await inspectMetadataRisk({ files: [file("notes.log", "hello\npassword=something\n/home/alice/report")] });
+    const first = (result.files as Array<Record<string, unknown>>)[0]!;
+    expect(first.riskCount).toBeGreaterThanOrEqual(3);
+    expect(first.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ category: "secret-like-text", line: 2 }),
+      expect.objectContaining({ category: "path-like-text", line: 3 }),
+      expect.objectContaining({ category: "temporary-backup-name" }),
+    ]));
+    expect(JSON.stringify(first.findings)).not.toContain("something");
+    expect(JSON.stringify(first.findings)).not.toContain("alice");
   });
 
   it("round-trips a local ZIP and rejects traversal paths", async () => {
@@ -127,11 +157,92 @@ describe("file/privacy engine", () => {
     await expect(inspectZip({ files: [bomb] })).rejects.toMatchObject({ code: "ARCHIVE_TOO_LARGE" });
   });
 
+  it("explains image and ZIP size drivers without mutating bytes or guessing savings", async () => {
+    const png = new Uint8Array(24);
+    png.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], 0);
+    png.set([0x49, 0x48, 0x44, 0x52], 12);
+    png.set([0, 0, 0, 2], 16);
+    png.set([0, 0, 0, 3], 20);
+    const imageFile = file("tiny.png", png, "image/png");
+    const imageBefore = new Uint8Array(await imageFile.arrayBuffer());
+    const imageResult = await analyzeFileSize({ files: [imageFile] });
+    expect(imageResult).toMatchObject({
+      kind: "image",
+      bytes: png.byteLength,
+      sourceMutation: "none",
+      estimatedSavingsBytes: null,
+      image: { width: 2, height: 3, pixels: 6, encoding: "image/png" },
+      nextActions: ["image-metadata-viewer", "image-resize", "image-compression"],
+    });
+    expect(imageResult.sourceSha256).toMatch(/^[0-9a-f]{64}$/u);
+    expect(new Uint8Array(await imageFile.arrayBuffer())).toEqual(imageBefore);
+
+    const created = await createZip({ files: [file("small.txt", "a"), file("large.txt", "abcdefghij")] });
+    const zipFile = new File([await (created.blob as Blob).arrayBuffer()], "bundle.zip", { type: "application/zip" });
+    const zipBefore = new Uint8Array(await zipFile.arrayBuffer());
+    const zipResult = await analyzeFileSize({ files: [zipFile] });
+    expect(zipResult).toMatchObject({
+      kind: "zip",
+      sourceMutation: "none",
+      estimatedSavingsBytes: null,
+      zip: { entryCount: 2, totalUncompressedBytes: 11 },
+      nextActions: ["zip-contents-inspector", "archive-checksum-manifest"],
+    });
+    const largest = (zipResult.zip as { largestEntries: Array<{ path: string }> }).largestEntries;
+    expect(largest[0]?.path).toBe("large.txt");
+    expect(new Uint8Array(await zipFile.arrayBuffer())).toEqual(zipBefore);
+
+    const opaque = await analyzeFileSize({ files: [file("opaque.bin", new Uint8Array([1, 2, 3, 4]), "application/octet-stream")] });
+    expect(opaque).toMatchObject({ kind: "unknown", estimatedSavingsBytes: null, nextActions: ["file-signature-detector"] });
+  });
+
+  it("turns fenced code into the exact previewed safe ZIP entries", async () => {
+    const source = [
+      "filename: src/app.ts",
+      "```ts",
+      "export const answer = 42;",
+      "```",
+      "```json filename=package.json",
+      '{"name":"demo"}',
+      "```",
+      "```python",
+      'print("ciao")',
+      "```",
+    ].join("\n");
+    const parsed = parseAiCodeFenceFiles(source);
+    expect(parsed.map((entry) => entry.path)).toEqual(["src/app.ts", "package.json", "snippet-003.py"]);
+    expect(parsed.map((entry) => entry.content)).toEqual([
+      "export const answer = 42;\n",
+      '{"name":"demo"}\n',
+      'print("ciao")\n',
+    ]);
+    const bundled = await createAiCodeFenceBundle({ text: source });
+    expect(bundled).toMatchObject({ operation: "ai-code-fence-bundle", fileCount: 3, filename: "ai-code-files.zip", compression: "store" });
+    const archive = new File([await (bundled.blob as Blob).arrayBuffer()], "bundle.zip", { type: "application/zip" });
+    const inspected = await inspectZip({ files: [archive] });
+    expect((inspected.entries as Array<{ path: string }>).map((entry) => entry.path)).toEqual(parsed.map((entry) => entry.path));
+    expect((bundled.preview as Array<{ path: string }>).map((entry) => entry.path)).toEqual(parsed.map((entry) => entry.path));
+  });
+
+  it("refuses unsafe code-fence paths and resolves duplicate names deterministically", () => {
+    const duplicates = parseAiCodeFenceFiles("```js filename=app.js\n1\n```\n```js filename=app.js\n2\n```");
+    expect(duplicates.map((entry) => entry.path)).toEqual(["app.js", "app-2.js"]);
+    expect(() => parseAiCodeFenceFiles("```ts filename=../escape.ts\nx\n```")).toThrow(/UNSAFE_ARCHIVE_PATH/u);
+    expect(() => parseAiCodeFenceFiles("```ts filename=/absolute.ts\nx\n```")).toThrow(/UNSAFE_ARCHIVE_PATH/u);
+    expect(() => parseAiCodeFenceFiles("```ts\nunclosed")).toThrow(/not closed/u);
+  });
+
   it("generates a bounded client handoff index with hashes", async () => {
-    const result = await clientHandoffIndex({ files: [file("brief.txt", "brief")], title: "Acme handoff" });
+    const result = await clientHandoffIndex({ files: [file("handoff.txt", "LEAK_ME_CONTENT_42", "text/plain", "docs/handoff.txt")], title: "Acme handoff" });
     expect(result.title).toBe("Acme handoff");
     expect(String(result.markdown)).toContain("# Acme handoff");
     expect(String(result.json)).toContain("local-utility-handoff-index-v1");
+    const machine = JSON.parse(String(result.json)) as { schema: string; files: Array<{ path: string; size: number; sha256: string }> };
+    expect(machine).toMatchObject({ schema: "local-utility-handoff-index-v1" });
+    expect(machine.files[0]).toMatchObject({ path: "docs/handoff.txt", size: 18 });
+    expect(machine.files[0]?.sha256).toMatch(/^[0-9a-f]{64}$/u);
+    expect(String(result.json)).not.toContain("LEAK_ME_CONTENT_42");
+    expect(String(result.markdown)).not.toContain("LEAK_ME_CONTENT_42");
   });
 
   it("normalizes invalid and cancelled operations", async () => {

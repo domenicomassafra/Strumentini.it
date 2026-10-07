@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "basic": [
+    { "value": "1,5", "from": "meter", "to": "centimeter", "expected": "150" },
+    { "value": "0", "from": "celsius", "to": "fahrenheit", "expected": "32" },
+    { "value": "32", "from": "fahrenheit", "to": "celsius", "expected": "0" },
+    { "value": "1", "from": "liter", "to": "cubic-centimeter", "expected": "1000" }
+  ],
+  "engineering": [
+    { "value": "100", "from": "kilometer-per-hour", "to": "meter-per-second", "expected": "27.777777777778" },
+    { "value": "1", "from": "standard-atmosphere", "to": "pascal", "expected": "101325" },
+    { "value": "60", "from": "revolution-per-minute", "to": "hertz", "expected": "1" },
+    { "value": "1", "from": "turn", "to": "degree", "expected": "360" }
+  ],
+  "storage": [
+    { "value": "1", "from": "kilobyte", "to": "byte", "expected": "1000" },
+    { "value": "1", "from": "kibibyte", "to": "byte", "expected": "1024" },
+    { "value": "8", "from": "bit", "to": "byte", "expected": "1" }
+  ],
+  "download": [
+    { "size": "100", "sizeUnit": "megabyte", "throughput": "100", "throughputUnit": "megabit-per-second", "overheadPercent": "20", "expectedSeconds": "10" }
+  ],
+  "batteryVehiclePower": [
+    { "mode": "battery", "direction": "mah-to-wh", "value": "5000", "voltage": "3.7", "expected": "18.5" },
+    { "mode": "fuel", "value": "30", "from": "mpg-us", "to": "l-per-100km", "expected": "7.840486110785" },
+    { "mode": "fuel", "value": "30", "from": "mpg-imperial", "to": "l-per-100km", "expected": "9.416031211061" },
+    { "mode": "power", "value": "1", "from": "mechanical-horsepower", "to": "kilowatt", "expected": "0.745699871582" }
+  ],
+  "reference": [
+    { "mode": "paper", "paper": "A4", "outputUnit": "millimeter", "expected": "210 × 297 mm" },
+    { "mode": "model-scale", "value": "6", "inputUnit": "meter", "outputUnit": "centimeter", "scale": "50", "direction": "real-to-model", "expected": "12 cm" },
+    { "mode": "tv-diagonal-to-dimensions", "diagonal": "55", "inputUnit": "inch", "outputUnit": "inch", "aspectWidth": "16", "aspectHeight": "9", "expectedWidthApprox": 47.94, "expectedHeightApprox": 26.96 }
+  ]
+}

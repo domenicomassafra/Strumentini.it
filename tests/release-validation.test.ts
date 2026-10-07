@@ -16,7 +16,6 @@ import {
   validateStaticAssetSurface,
   validateToolSurface,
   validateTruthfulClaims,
-  RELEASE_TOOL_COUNT,
 } from "../src/release/validation";
 
 const validCloudflareConfig = `{
@@ -25,8 +24,8 @@ const validCloudflareConfig = `{
   "assets": { "directory": "./dist", "not_found_handling": "404-page" }
 }`;
 
-function toolSurface() {
-  const catalog = Array.from({ length: RELEASE_TOOL_COUNT }, (_, index) => ({
+function toolSurface(expectedToolCount = 3) {
+  const catalog = Array.from({ length: expectedToolCount }, (_, index) => ({
     id: `tool-${index}`,
     route: `/tools/tool-${index}`,
   }));
@@ -38,15 +37,20 @@ function toolSurface() {
 }
 
 describe("release validation tool surface", () => {
-  it("requires exactly 200 manifests, catalog entries, and public pages", () => {
+  it("requires the authority count across manifests, catalog entries, and public pages", () => {
     const surface = toolSurface();
-    expect(validateToolSurface(surface.catalog, surface.manifests, surface.pages)).toEqual([]);
+    expect(validateToolSurface(surface.catalog, surface.manifests, surface.pages, surface.catalog.length)).toEqual([]);
   });
 
   it("fails closed on an unindexed public page and a count mismatch", () => {
     const surface = toolSurface();
-    const findings = validateToolSurface(surface.catalog.slice(1), surface.manifests, [...surface.pages.slice(1), "src/pages/tools/extra.astro"]);
+    const findings = validateToolSurface(surface.catalog.slice(1), surface.manifests, [...surface.pages.slice(1), "src/pages/tools/extra.astro"], surface.catalog.length);
     expect(findings.map((item) => item.code)).toEqual(expect.arrayContaining(["TOOL_COUNT_MISMATCH", "UNINDEXED_MANIFEST", "UNINDEXED_TOOL_PAGE"]));
+  });
+
+  it("fails closed when the authority count is invalid", () => {
+    const surface = toolSurface();
+    expect(validateToolSurface(surface.catalog, surface.manifests, surface.pages, 0).map((item) => item.code)).toContain("EXPECTED_TOOL_COUNT_INVALID");
   });
 });
 
@@ -141,7 +145,7 @@ describe("public metadata and discovery", () => {
 describe("truthful claims and evidence boundaries", () => {
   it("allows concrete local mechanics and rejects unsupported public assertions", () => {
     expect(validateTruthfulClaims([{ path: "src/pages/tools/example.astro", text: "Runs on this device. The file is not uploaded." }])).toEqual([]);
-    expect(validateTruthfulClaims([{ path: "src/pages/index.astro", text: "StrumentiUtili.it" }])).toEqual([]);
+    expect(validateTruthfulClaims([{ path: "src/pages/index.astro", text: "Strumentini.it" }])).toEqual([]);
     const findings = validateTruthfulClaims([
       { path: "src/pages/index.astro", text: "The best unique workspace for 200 Gold tools." },
       { path: "src/pages/tools/other.astro", text: "[BRAND] is privacy-first and available offline." },
@@ -286,6 +290,7 @@ describe("consolidated release result", () => {
   it("reports blocked rather than passing when rollback proof is absent", () => {
     const surface = toolSurface();
     const result = validateRelease({
+      expectedToolCount: surface.catalog.length,
       catalog: surface.catalog,
       manifestFiles: surface.manifests,
       toolPageFiles: surface.pages,
@@ -294,7 +299,8 @@ describe("consolidated release result", () => {
     });
     expect(result.status).toBe("BLOCKED");
     expect(result.findings.map((item) => item.code)).toEqual(expect.arrayContaining(["PUBLIC_METADATA_NOT_RUN", "GOLD_RECEIPTS_NOT_RUN", "EXTERNAL_EVIDENCE_NOT_RUN"]));
-    expect(result.catalogToolCount).toBe(RELEASE_TOOL_COUNT);
+    expect(result.catalogToolCount).toBe(surface.catalog.length);
+    expect(result.expectedToolCount).toBe(surface.catalog.length);
   });
 });
 

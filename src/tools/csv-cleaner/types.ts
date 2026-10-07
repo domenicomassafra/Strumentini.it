@@ -9,6 +9,9 @@ export interface CsvCleanerOutput {
   delimiter: string;
   warnings: Array<{ code: string; message: string; row?: number }>;
   changes: { strippedBom: boolean; normalizedRecordBreaks: number };
+  dialect: { delimiter: string; encoding: "utf-8"; dynamicTyping: false };
+  affectedRows: 0;
+  affectedCells: 0;
   engineVersion: string;
   handoff: TableHandoffEnvelope;
 }

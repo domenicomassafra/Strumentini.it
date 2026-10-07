@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "source_release": "SWIFT IBAN Registry Release 103 – Sep 2026",
+  "supported_countries": ["DE", "ES", "FR", "GB", "IT", "NL"],
+  "vectors": [
+    { "id": "swift-it-valid", "input": "IT60 X054 2811 1010 0000 0123 456", "valid": true, "countryCode": "IT", "normalized": "IT60X0542811101000000123456" },
+    { "id": "swift-de-valid", "input": "DE89 3704 0044 0532 0130 00", "valid": true, "countryCode": "DE", "normalized": "DE89370400440532013000" },
+    { "id": "swift-fr-valid", "input": "FR14 2004 1010 0505 0001 3M02 606", "valid": true, "countryCode": "FR", "normalized": "FR1420041010050500013M02606" },
+    { "id": "swift-es-valid", "input": "ES91 2100 0418 4502 0005 1332", "valid": true, "countryCode": "ES", "normalized": "ES9121000418450200051332" },
+    { "id": "swift-nl-valid", "input": "NL91 ABNA 0417 1643 00", "valid": true, "countryCode": "NL", "normalized": "NL91ABNA0417164300" },
+    { "id": "swift-gb-valid", "input": "GB29 NWBK 6016 1331 9268 19", "valid": true, "countryCode": "GB", "normalized": "GB29NWBK60161331926819" },
+    { "id": "it-checksum-invalid", "input": "IT61X0542811101000000123456", "valid": false, "failureRule": "checksum" },
+    { "id": "de-checksum-invalid", "input": "DE88370400440532013000", "valid": false, "failureRule": "checksum" },
+    { "id": "fr-checksum-invalid", "input": "FR1520041010050500013M02606", "valid": false, "failureRule": "checksum" },
+    { "id": "es-checksum-invalid", "input": "ES9021000418450200051332", "valid": false, "failureRule": "checksum" },
+    { "id": "nl-checksum-invalid", "input": "NL90ABNA0417164300", "valid": false, "failureRule": "checksum" },
+    { "id": "gb-checksum-invalid", "input": "GB28NWBK60161331926819", "valid": false, "failureRule": "checksum" },
+    { "id": "it-structure-invalid", "input": "IT6010542811101000000123456", "valid": false, "failureRule": "structure" },
+    { "id": "de-length-invalid", "input": "DE8937040044053201300", "valid": false, "failureRule": "length" },
+    { "id": "unsupported-country", "input": "ZZ001234567890", "valid": false, "failureRule": "country" },
+    { "id": "bad-prefix", "input": "I160X0542811101000000123456", "valid": false, "failureRule": "prefix" },
+    { "id": "bad-character", "input": "IT60X05428111010000001234-6", "valid": false, "failureRule": "character" }
+  ]
+}

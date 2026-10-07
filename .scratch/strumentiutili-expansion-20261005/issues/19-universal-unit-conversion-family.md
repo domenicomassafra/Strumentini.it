@@ -6,13 +6,13 @@
 
 **Constraints:** Separate affine conversions such as temperature from multiplicative units; declare decimal vs binary storage; no unsupported cross-dimension conversions.
 
-**Blocked by:** 01 — Result System v2 primitives.
+**Blocked by:** 136, 137, 138, 139, 140.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Unit registry declares dimension, symbol, aliases and conversion authority.
-- [ ] Bidirectional conversions preserve a documented precision policy.
-- [ ] High-intent job routes reuse the registry but have distinct defaults/copy where justified.
-- [ ] Search aliases cover Italian/common symbols without ambiguous silent matches.
+- [x] Tickets 136–140 now share one unit registry declaring dimension, symbol, aliases, rational scale/offset and source/authority notes.
+- [x] Multiplicative and affine conversions round-trip under the documented 12-decimal display policy; temperature uses the shared offset path rather than a special duplicate engine.
+- [x] Distinct high-intent routes reuse the same registry for general units, engineering units, storage/download-time, battery/vehicle/power and reference-size helpers.
+- [x] Common symbols/aliases are indexed with explicit ambiguity refusal (`AMBIGUOUS_UNIT_ALIAS`) instead of silent matches; Italian comma-decimal input is covered.
 
-**Verification:** Independent known-answer vectors per dimension, property round trips, locale input tests, search/discovery and mobile browser acceptance.
+**Verification:** `tests/unit-conversion.test.ts` plus the focused unit-tool suites cover known answers, cross-dimension refusal, affine temperature, alias collisions, SI-vs-IEC storage, battery/fuel/power, paper/model/TV helpers and Italian decimal input. Catalog/build checks include all five routes and the shared registry.

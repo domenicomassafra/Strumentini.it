@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
   "toolId": "qr-reader",
   "runtime": {
     "location": "LOCAL",
@@ -44,8 +44,8 @@
       "symbol generated in the browser, rasterised from that SVG, and decoded back to the exact payload with syndromes verified"
     ],
     "outputSha256": [
-      "ce7b80c029aafa76b20391599a8a90c011ac15b6fc89ae1e7dc34513bb01a064",
-      "6d83ce307fae2a4c2aefcaff1d98f2fb7104c0a5487d044f64b605eebf9903aa"
+      "0d5efe546e9a53ddcb6c9a94f86e3874172b547e686fec0e30afad0a7e0859b2",
+      "f522678fd20b1ff15c1d1d326dcf7e7c05f943272fe7af8197317551697c88b6"
     ],
     "locality": "zero external, non-GET or task-body requests after task start",
     "lazyLoad": "implementation script observed after submit",
@@ -76,13 +76,13 @@
     "no platform barcode API is used anywhere in the read path"
   ],
   "identities": {
-    "manifestSha256": "4cf847d676ce59e5b5ddec2567f55898c8695324f350709000439dd585b9c2fa",
+    "manifestSha256": "3a2d593049366f2a59f51b4c3d036d68dcae403246546510dac0eec715a05a95",
     "moduleSha256": "ebca927091e620c7d4c0a7850f3820aa68f0d9833bd50b2c01e475762aad6bad",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "86a65cc9a41f05a7317912285e2d51df4c6dd199446c9fd1d3eef8826367326d",
-    "acceptanceScriptSha256": "a06c03d8edec7054476080798748659a069fe506ba70be166c4f55276981f322",
-    "unitTestsSha256": "54d90b1a9abc18bd31e33b9a0ea6ad35818552b1825a354689bc5141e8e3969a",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "b4ad601616cc57a94acba30e9d3b47a13c1365a407a371e472f3a91695850c24",
+    "acceptanceScriptSha256": "2c1eef9ba70d9a6e6ff2c98dee471ff40810cd334deb65cdcf25e3a343796b39",
+    "unitTestsSha256": "9165d9baca64fa8a0dec985a629f5d05746001b9e032a091b3e8d67a9038e680",
     "fixture:qr-contract:sha256": "3e2f322fa486002aa247a2b9f374233f82bcbf4e1ce42951e9bd63950e92c8d5"
   }
 }

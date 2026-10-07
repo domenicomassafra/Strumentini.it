@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const palette_extractorManifest = {
   id: "palette-extractor",
@@ -13,6 +14,7 @@ export const palette_extractorManifest = {
   engine: "image",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["palette-extractor"],
   gold: { maintenanceClass: "H", oracleEntryId: "cand-152", fixtureFamilies: ["image-metadata", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

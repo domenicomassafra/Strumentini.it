@@ -13,6 +13,7 @@ export const utmBuilderManifest = {
   engine: "campaign-url",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "text-code", capabilities: ["copy", "download", "reuse", "reset"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-061", fixtureFamilies: ["utm-roundtrip", "url-percent-encoding"] },
 } as const satisfies ToolManifest;
 

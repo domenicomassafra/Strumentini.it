@@ -6,7 +6,7 @@
 
 **Constraints:** Thumbnail rendering is lazy/bounded; keyboard operations mirror drag interactions; page mutations remain deterministic and preserve non-target pages.
 
-**Blocked by:** 01, 05.
+**Blocked by:** 215, 216, 217.
 
 **Status:** blocked
 
@@ -16,4 +16,3 @@
 - [ ] Result reports page counts/order and offers ZIP for multi-output splits/extractions.
 
 **Verification:** Page-order fixture corpus, keyboard/mobile drag-selection acceptance, output page hash/order checks, cancellation and memory limits.
-

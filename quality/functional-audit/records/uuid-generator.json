@@ -1,0 +1,39 @@
+{
+  "toolId": "uuid-generator",
+  "category": "developer",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "decision": "UPGRADED",
+  "expectedFunctionality": "Genera UUIDv4 o UUIDv7 secondo RFC 9562 usando Web Crypto e maiuscole facoltative. Public jobs: Usa Generatore UUID",
+  "observedFunctionality": "UUIDv4 remains unchanged and UUIDv7 now encodes the RFC 9562 48-bit Unix-millisecond timestamp before applying version/variant bits. The Appendix A.6 vector round-trips its timestamp exactly, public generation uses Web Crypto randomness, and internal seeded/byte fixture modes are explicitly labeled as test input rather than secure randomness.",
+  "rationale": "Ticket 179 repaired the public RFC 9562 claim with a published vector and millisecond round-trip proof while preserving the secure public generation path.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/developer-web/uuid-generator.gold.json",
+      "claim": "Fresh Gold receipt binds the repaired uuid-generator implementation to RFC-oriented fixtures, browser evidence and developer tests."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/developer-web-engine.test.ts",
+      "claim": "Developer tests reproduce the RFC 9562 Appendix A.6 UUIDv7 vector, prove the 48-bit millisecond timestamp round-trip and verify test-only seeded generation is not labeled cryptographic."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/developer-web/browser-acceptance.json",
+      "claim": "Developer-web browser acceptance includes this real route and verifies keyboard submit, 390px behavior, locality/lazy loading and zero task-content network leakage."
+    },
+    {
+      "kind": "source-contract",
+      "ref": "quality/fixtures/uuid-rfc9562/vectors.json",
+      "claim": "The canonical UUID fixture now includes RFC 9562 Appendix A.6 with version, variant and Unix-millisecond evidence."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md",
+      "claim": "Targeted ticket records the completed RFC 9562 timestamp/layout and secure-generation acceptance criteria."
+    }
+  ],
+  "childTickets": [
+    ".scratch/strumentiutili-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md"
+  ]
+}

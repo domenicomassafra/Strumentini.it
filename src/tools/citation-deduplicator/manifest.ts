@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const citationDeduplicatorManifest = {
   id: "citation-deduplicator",
@@ -13,6 +14,8 @@ export const citationDeduplicatorManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("citation-deduplicator"),
+  handoff: { emits: [{ type: "table", format: "csv" }] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-184", fixtureFamilies: ["research-citation-identity"] },
 } as const satisfies ToolManifest;
 

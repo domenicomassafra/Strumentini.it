@@ -6,7 +6,7 @@ export const CSV_HARD_FILE_BYTES = 50 * 1024 * 1024;
 export const CSV_MAX_ROWS = 100_000;
 export const CSV_MAX_CELLS = 2_000_000;
 
-export type CsvWarningCode = "DUPLICATE_HEADER" | "RAGGED_ROW" | "DELIMITER_FALLBACK";
+export type CsvWarningCode = "DUPLICATE_HEADER" | "DUPLICATE_KEY" | "RAGGED_ROW" | "DELIMITER_FALLBACK";
 
 export interface CsvWarning {
   code: CsvWarningCode;
@@ -31,6 +31,9 @@ export interface CsvCleanResult {
     strippedBom: boolean;
     normalizedRecordBreaks: number;
   };
+  dialect: { readonly delimiter: string; readonly encoding: "utf-8"; readonly dynamicTyping: false };
+  affectedRows: 0;
+  affectedCells: 0;
 }
 
 export interface CsvTable {
@@ -49,6 +52,9 @@ export interface CsvDedupeResult {
   mode: "whole-row" | "key-columns";
   keyColumns: number[];
   emptyKeyPolicy: "keep";
+  affectedRows: number;
+  affectedCells: number;
+  dialect: { readonly delimiter: string; readonly encoding: "utf-8"; readonly dynamicTyping: false };
 }
 
 export interface CsvColumnMapEntry {
@@ -175,12 +181,16 @@ export function dedupeCsvTable(
     : [];
   const seen = new Set<string>();
   const rows: string[][] = [];
+  let affectedCells = 0;
   for (let index = 0; index < table.rows.length; index += 1) {
     const row = table.rows[index] ?? [];
     const keyValues = options.mode === "whole-row" ? row : keyColumns.map((column) => row[column] ?? "");
     const emptyKey = options.mode === "key-columns" && keyValues.every((value) => value === "");
     const key = emptyKey ? `__empty_key_row_${index}` : JSON.stringify(keyValues);
-    if (seen.has(key)) continue;
+    if (seen.has(key)) {
+      affectedCells += row.length;
+      continue;
+    }
     seen.add(key);
     rows.push([...row]);
   }
@@ -194,6 +204,9 @@ export function dedupeCsvTable(
     mode: options.mode,
     keyColumns,
     emptyKeyPolicy: "keep",
+    affectedRows: table.rows.length - rows.length,
+    affectedCells,
+    dialect: { delimiter: table.delimiter, encoding: "utf-8", dynamicTyping: false },
   };
 }
 
@@ -274,6 +287,9 @@ export function cleanCsvText(input: string): CsvCleanResult {
     delimiter: after.delimiter,
     warnings: after.warnings,
     changes: { strippedBom, normalizedRecordBreaks: lineEndings.normalized },
+    dialect: { delimiter: after.delimiter, encoding: "utf-8", dynamicTyping: false },
+    affectedRows: 0,
+    affectedCells: 0,
   };
 }
 

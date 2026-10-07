@@ -1,0 +1,32 @@
+{
+  "toolId": "color-picker",
+  "category": "image-visual",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Accept the browser-selected color value and inspect its exact normalized hexadecimal, RGB and HSL representation locally.",
+  "observedFunctionality": "The module delegates to inspectColorLocal, which deliberately shares the deterministic color-conversion implementation. The tool-specific Gold receipt and browser acceptance both record a successful #336699 route result, while the image/visual tests cover the shared parse and RGB/HSL primitives.",
+  "rationale": "The present picker/inspection job is complete for the exact color value supplied by the browser control. Future image composition and export tickets 298-317 do not expand this route's declared job and are not treated as missing current functionality.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/color-picker.gold.json",
+      "claim": "Gold receipt binds color-picker to current manifest/fixtures and a tool-specific real-route output hash/assertion."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/image-visual-tools.test.ts",
+      "claim": "Image/visual tests exercise parseHexColor and rgbToHsl, the exact deterministic primitives used by inspectColorLocal through convertColorLocal."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Expanded-local acceptance includes the real color-picker route and asserts #336699 after submit with locality/lazy/mobile checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": "src/engines/image/visual-tools.ts",
+      "claim": "inspectColorLocal delegates directly to the tested local conversion path and returns normalized hex, RGB and HSL values."
+    }
+  ],
+  "childTickets": []
+}

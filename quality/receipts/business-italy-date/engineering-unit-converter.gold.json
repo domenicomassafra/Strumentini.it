@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/business-italy-date/engineering-unit-converter.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "engineering-unit-converter",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-215",
+  "fixtureFamilies": [
+    "unit-conversion-core"
+  ],
+  "exactVectors": 1,
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "unit-conversion-core",
+      "path": "quality/fixtures/unit-conversion-core/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "local-only runtime declaration",
+    "high-confidence oracle with only explicit bounded-scope gaps",
+    "manifest maintenance class matches oracle",
+    "fixture replay through public tool module",
+    "per-tool semantic browser assertion",
+    "keyboard/locality/lazy/mobile/a11y browser acceptance",
+    "focused semantic and refusal-boundary tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "7dbab12fd8c63a61f7a06084cb7f9f36a71b57baeab4ef31c169699aa4eee06f",
+    "moduleSha256": "048692c68093c3c71f75fa5bf0959564eed1438ec35c2be0e3e11649c2b6c00c",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "0759524179b7742969572842fe3c9c38c3883cc144fb6275a19337233ea93314",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "5cd79b904ce8cca6aad543ee6ba23797b3765a92ec478d84c6d2c5aba10ccd05",
+    "fixture:unit-conversion-core:sha256": "826793277d4d707117f50436876267285aa7d71be892b07f881819dd0d7268d1"
+  }
+}

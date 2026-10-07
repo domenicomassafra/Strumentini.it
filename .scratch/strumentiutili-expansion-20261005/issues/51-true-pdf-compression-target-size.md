@@ -6,7 +6,7 @@
 
 **Constraints:** Searchable text/vector content remains intact unless a mode explicitly rasterizes; target size must be verified after encoding; profile trade-offs are visible; output is locally verified as a valid PDF.
 
-**Blocked by:** 01, 05, 34.
+**Blocked by:** 218, 219.
 
 **Status:** blocked
 
@@ -16,4 +16,3 @@
 - [ ] Batch mode processes multiple PDFs with per-file results and ZIP download.
 
 **Verification:** Text-heavy, image-heavy, scanned, vector-heavy and already-optimized PDF corpus; extraction/render regression checks; size-target assertions; mobile memory receipt.
-

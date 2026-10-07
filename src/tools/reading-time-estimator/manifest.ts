@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { TEXT_RESULT_V2_DECLARATIONS } from "../text-writing/result-v2";
 
 export const readingTimeEstimatorManifest = {
   id: "reading-time-estimator",
@@ -13,6 +14,7 @@ export const readingTimeEstimatorManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: TEXT_RESULT_V2_DECLARATIONS["reading-time-estimator"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-002", fixtureFamilies: ["word-character-line-count", "text-writing-local-jobs"] },
 } as const satisfies ToolManifest;
 

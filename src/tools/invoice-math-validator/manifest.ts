@@ -13,6 +13,7 @@ export const invoiceMathValidatorManifest = {
   engine: "business-math",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [{ key: "currency", defaultValue: "USD" }],
+  result: { class: "validator", capabilities: ["copy", "retry", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-118", fixtureFamilies: ["business-math"] },
 } as const satisfies ToolManifest;
 

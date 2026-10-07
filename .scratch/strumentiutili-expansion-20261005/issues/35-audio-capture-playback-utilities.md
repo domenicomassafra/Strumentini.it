@@ -6,7 +6,7 @@
 
 **Constraints:** Permission prompts occur only after user action; recordings remain local; unsupported browser codec/voice capabilities are explained.
 
-**Blocked by:** 01.
+**Blocked by:** 229, 303, 304.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] TTS lists actual browser voices rather than promising unavailable voices.
 
 **Verification:** Media-permission browser tests, generated-audio frequency/timing checks, local-only network assertion, and mobile permission acceptance.
-

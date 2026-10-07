@@ -7,7 +7,8 @@ import { chromium } from "@playwright/test";
 const root = resolve(import.meta.dirname, "..");
 const port = 18124;
 const origin = `http://127.0.0.1:${port}`;
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], {
+const dist = process.env.STRUMENTINI_ACCEPTANCE_DIST ?? "dist";
+const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], {
   cwd: root,
   stdio: "ignore",
 });
@@ -35,7 +36,7 @@ try {
     throw new Error("mobile file-hash layout has horizontal overflow");
   }
 
-  const payload = Buffer.from("private-file-payload-strumentiutili-ticket-10", "utf8");
+  const payload = Buffer.from("private-file-payload-strumentini-ticket-10", "utf8");
   const expected = createHash("sha256").update(payload).digest("hex");
   selected = true;
   // The page's own FAQ section is labelled "Perché usare Hash file…", so an

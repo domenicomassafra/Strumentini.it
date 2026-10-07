@@ -58,13 +58,13 @@ Confirmed and binding:
 
 Explicitly out of scope, never to reintroduce: ads, generic AI features, runtime plugins, PWA/offline marketing claims, the historical 40-tool wave, and the legacy "signed-in" shell. **Account and cross-device sync are in scope**, at the scope stated above and no wider: no social login, no magic link, no second factor, no email delivery, no server-side storage of anything a tool produces.
 
-Resolved: the public brand name is StrumentiUtili.it. The logo, type licence/source, and accent colour remain design decisions recorded in DESIGN.md rather than product facts.
+Resolved: the public brand name is Strumentini.it. The logo, type licence/source, and accent colour remain design decisions recorded in DESIGN.md rather than product facts.
 
 ## Brand Commitments
 
-StrumentiUtili.it is the owner-selected public brand and is the name that should ship on public product surfaces. Any legal/trademark review is tracked separately from implementation of the selected identity.
+Strumentini.it is the owner-selected public brand and is the name that should ship on public product surfaces. Any legal/trademark review is tracked separately from implementation of the selected identity.
 
-The public brand is **StrumentiUtili.it** and is Italian-primary. Product copy, repository identity, deployment metadata, and public discovery surfaces should use that identity consistently.
+The public brand is **Strumentini.it** and is Italian-primary. Product copy, repository identity, deployment metadata, and public discovery surfaces should use that identity consistently.
 
 Confirmed voice traits, carried from PRODUCT-MARKETING-CONTEXT.md: plain, concrete, specific, un-hyped, no AI-adjacent language, no invented claims. An instrument does not congratulate you.
 
@@ -83,7 +83,7 @@ Real and must not be fabricated away. Operational counts belong in `PROJECT-STAT
 - `.scratch/strumentiutili-v1/` — historical first-validation ticket/provenance material only; it is no longer an active execution queue.
 - `quality/receipts/**` — per-tool certification.
 
-Absences future work must not invent: no user testimonials, no customer logos, no performance benchmarks beyond the measured receipts, no pricing, no unapproved logo, no paid-traffic or conversion data, no market-share claims, **no user counts, no popularity ranking, and no "most used" badge** — there is no usage data to rank by, so popularity is never claimed and the substitutes are certification, category, alphabetical order, and an explicitly editorial selection. The public name is StrumentiUtili.it; the 200-tool figure is a build fact, not a popularity claim.
+Absences future work must not invent: no user testimonials, no customer logos, no performance benchmarks beyond the measured receipts, no pricing, no unapproved logo, no paid-traffic or conversion data, no market-share claims, **no user counts, no popularity ranking, and no "most used" badge** — there is no usage data to rank by, so popularity is never claimed and the substitutes are certification, category, alphabetical order, and an explicitly editorial selection. The public name is Strumentini.it; the 200-tool figure is a build fact, not a popularity claim.
 
 ## Product Principles
 

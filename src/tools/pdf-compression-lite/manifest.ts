@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { PDF_RESULT_DECLARATIONS } from "../pdf-result-declarations";
 
 export const pdfCompressionManifest = {
   id: "pdf-compression-lite",
@@ -14,6 +15,7 @@ export const pdfCompressionManifest = {
   engine: "pdf",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: PDF_RESULT_DECLARATIONS["pdf-compression-lite"],
   handoff: { emits: [{ type: "file", format: "pdf" }] },
   gold: { maintenanceClass: "H", oracleEntryId: "cand-139", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;

@@ -50,6 +50,9 @@ describe("date/time/planning tool modules", () => {
     expect(recurringDateGenerator.run({ startDate: "2024-01-31", count: 3, frequency: "monthly" }, context)).toMatchObject({ dates: ["2024-01-31", "2024-03-31", "2024-05-31"] });
     expect(ageDateAnniversary.run({ birthDate: "2000-02-29", asOfDate: "2025-02-28" }, context)).toMatchObject({ years: 24, nextAnniversary: "2025-02-28" });
     expect(calendarDateListGenerator.run({ startDate: "2024-01-01", endDate: "2024-01-05", stepDays: 2 }, context)).toMatchObject({ dates: ["2024-01-01", "2024-01-03", "2024-01-05"] });
+    expect(calendarDateListGenerator.run({ mode: "weekday", date: "2024-02-29" }, context)).toMatchObject({ isoWeekday: 4, weekdayIt: "giovedì" });
+    expect(calendarDateListGenerator.run({ mode: "leap-year", year: 2000 }, context)).toMatchObject({ leapYear: true });
+    expect(calendarDateListGenerator.run({ mode: "month", year: 2024, month: 2 }, context)).toMatchObject({ monthNameIt: "febbraio", weeks: expect.any(Array) });
     const built = icsEventBuilder.run({ uid: "module-event", summary: "Review", start: "2024-01-15T12:00:00Z", end: "2024-01-15T13:00:00Z" }, context) as { text: string };
     expect(icsViewer.run({ text: built.text }, context)).toMatchObject({ events: [{ uid: "module-event" }] });
     expect(epochBatchConverter.run({ values: ["0"], unit: "seconds", timeZone: "UTC" }, context)).toMatchObject({ rows: [{ iso: "1970-01-01T00:00:00.000Z" }] });

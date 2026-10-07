@@ -2,7 +2,7 @@
 
 ## Current default
 
-StrumentiUtili.it builds to a static `dist/` directory. Normal deterministic tools execute in the browser and do not require SSR, an application server, a database, or a paid Worker invocation.
+Strumentini.it builds to a static `dist/` directory. Normal deterministic tools execute in the browser and do not require SSR, an application server, a database, or a paid Worker invocation.
 
 Cloudflare Workers Static Assets is the default deployment target because it provides a global static cache, custom-domain support, versioned deployments, and a simple CLI release path while keeping ordinary static asset delivery outside Worker compute.
 

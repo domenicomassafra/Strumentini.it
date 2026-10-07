@@ -6,13 +6,13 @@
 
 **Constraints:** Repairs may not invent missing semantic values; every mutation is listed; parsers must report location/context without executing input.
 
-**Blocked by:** 01 — Result System v2 primitives.
+**Blocked by:** 164, 165, 166, 167, 168, 170.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] JSON repair produces both repaired output and an ordered repair log.
-- [ ] Diffs distinguish structural/value/type changes with stable paths.
-- [ ] Validators expose precise line/column/path when the parser can provide it.
-- [ ] Generated schemas/types state inference limits and preserve a reproducible mapping.
+- [x] JSON repair produces both repaired output and an ordered repair log.
+- [x] Diffs distinguish structural/value/type changes with stable paths.
+- [x] Validators expose precise line/column/path when the parser can provide it.
+- [x] Generated schemas/types state inference limits and preserve a reproducible mapping.
 
-**Verification:** Malformed corpus fixtures, repair idempotence tests, parser security tests, large-output bounded preview and browser acceptance.
+**Verification:** Tickets 164–168 and 170 are all completed. Focused developer structured-data suites cover malformed corpora, repair idempotence, parser security, bounded diff/schema output and CSV→SQL quoting; shared DeveloperWeb/Table Result v2 seams provide the browser/result path.

@@ -13,6 +13,7 @@ export const openGraphPreviewManifest = {
   engine: "url-marketing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "validator", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-071", fixtureFamilies: ["url-security", "html-entities"] },
 } as const satisfies ToolManifest;
 

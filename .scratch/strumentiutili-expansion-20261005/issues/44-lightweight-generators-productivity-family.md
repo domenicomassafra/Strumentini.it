@@ -6,13 +6,12 @@
 
 **Constraints:** Secure randomness where uniqueness/security matters; entertainment games remain out of implementation scope; no persistent multi-user workflow product.
 
-**Blocked by:** 01.
+**Blocked by:** 204, 205.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Barcode outputs validate against their format/checksum rules and download cleanly.
-- [ ] Random/selection tools disclose secure-vs-nonsecure randomness semantics and support reproducible options only when intentionally seeded.
-- [ ] No tool introduces accounts/workflows just to persist a trivial list/counter.
+- [x] Ticket 204 validates/generates EAN-13 checksums and a documented Code 128 B subset, with independent decode checks and local SVG/PNG export.
+- [x] Ticket 205 distinguishes WebCrypto-backed secure selection from explicitly non-secure seeded reproducibility and defines deterministic uniqueness/team/coupon policies.
+- [x] Both tools remain one-shot LOCAL utilities with no account, shared workflow or task-manager persistence.
 
-**Verification:** Barcode decode round-trips, randomness/path tests, uniqueness constraints, and mobile accessibility checks.
-
+**Verification:** Barcode independent SVG decode/PNG signature tests and the random utility/property suites cover checksums, secure sampling, seeded reproducibility, uniqueness constraints and bounded browser UI behavior.

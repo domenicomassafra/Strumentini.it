@@ -12,7 +12,7 @@
  * choice never flashes the other ground.
  */
 
-export const THEME_STORAGE_KEY = "strumentiutili:theme:v1";
+export const THEME_STORAGE_KEY = "strumentini:theme:v1";
 
 export type ThemeChoice = "light" | "dark" | "system";
 

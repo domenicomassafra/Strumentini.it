@@ -22,6 +22,7 @@ export const businessDayManifest = {
     },
     { key: "locale" },
   ],
+  result: { class: "calculator", capabilities: ["copy", "reset", "provenance"] },
   gold: {
     maintenanceClass: "E",
     oracleEntryId: "cand-083",

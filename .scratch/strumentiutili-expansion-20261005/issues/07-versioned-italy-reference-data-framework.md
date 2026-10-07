@@ -8,12 +8,13 @@
 
 **Blocked by:** None — can start immediately.
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] A fiscal/reference data version is addressable by year/effective interval.
-- [ ] Source metadata is available to tests and result UI.
-- [ ] Boundary fixtures can target each threshold/bracket/rate change.
-- [ ] A stale/unsupported year fails honestly instead of silently reusing the latest rules.
+- [x] A fiscal/reference data version is addressable by year/effective interval.
+- [x] Source metadata is available to tests and result UI.
+- [x] Boundary fixtures can target each threshold/bracket/rate change.
+- [x] A stale/unsupported year fails honestly instead of silently reusing the latest rules.
 
 **Verification:** Unit tests for version selection, stale-year behavior, source metadata, and boundary fixture loading; no existing tool behavior changes.
 
+**Evidence (2026-10-06):** `src/reference-data/italy/` defines the typed version, official-source provenance, effective-interval registry and boundary-fixture contract. `tests/italy-reference-data.test.ts` proves version/year/date selection, unsupported gaps/years, source metadata, fixture loading and invalid/ambiguous packs; the focused suite passes 5/5, `npx tsc --noEmit` passes and this foundation changes no existing tool engine behavior.

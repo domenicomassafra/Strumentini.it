@@ -1,42 +1,50 @@
 import { useState } from "preact/hooks";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import type { DoiIsbnOutput } from "../../tools/doi-isbn-normalizer/types";
-import { gutterStateFromResult } from "./shared/ToolGutter";
+import {
+  gutterStateFor,
+  InlineError,
+  ToolActions,
+  ToolOperation,
+  ToolResetButton,
+  ToolResultPanel,
+  ToolSubmitButton,
+  useToolOperation,
+} from "./shared";
+import { ResearchResultV2 } from "./research-knowledge/ResearchResultV2";
 
 export function DoiIsbnNormalizerTool() {
   const [kind, setKind] = useState<"doi" | "isbn">("doi");
   const [value, setValue] = useState("");
-  const [result, setResult] = useState<DoiIsbnOutput | null>(null);
-  const [error, setError] = useState("");
+  const operation = useToolOperation<DoiIsbnOutput>(
+    (signal) => toolRuntime.run("doi-isbn-normalizer", { kind, value }, {}, signal),
+    { formatError: () => "Identificatore non valido. Controlla formato e cifra di controllo." },
+  );
 
   async function submit(event: Event) {
     event.preventDefault();
-    setError("");
-    const run = await toolRuntime.run("doi-isbn-normalizer", { kind, value });
-    if (!run.ok) {
-      setResult(null);
-      setError("Identificatore non valido. Controlla formato e cifra di controllo.");
-      return;
-    }
-    setResult(run.value as DoiIsbnOutput);
+    await operation.run();
   }
 
   function changeKind(next: "doi" | "isbn") {
     setKind(next);
-    setResult(null);
-    setError("");
+    operation.reset();
   }
 
   function reset() {
     setKind("doi");
     setValue("");
-    setResult(null);
-    setError("");
+    operation.reset();
   }
 
-  const gutterState = gutterStateFromResult(result, error);
+  function reuseResult(field: string, text: string) {
+    if (field !== "value") return;
+    setValue(text);
+    operation.reset();
+  }
+
   return (
-    <div class="tool-operation">
+    <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit}>
         <fieldset class="segmented">
           <legend>Tipo di identificatore</legend>
@@ -54,40 +62,29 @@ export function DoiIsbnNormalizerTool() {
             spellcheck={false}
           />
         </label>
-        {error !== "" && <p class="error" role="alert">{error}</p>}
-        <div class="actions">
-          <button class="primary" type="submit">Normalizza e valida</button>
-          <button type="button" onClick={reset}>Reimposta</button>
-        </div>
+        <InlineError message={operation.error} />
+        <ToolActions>
+          <ToolSubmitButton busy={operation.isRunning}>Normalizza e valida</ToolSubmitButton>
+          <ToolResetButton onClick={reset} disabled={operation.isRunning} />
+        </ToolActions>
       </form>
 
-      <section class="result-panel gutter" data-state={gutterState} aria-live="polite">
-        <p class="eyebrow">Risultato</p>
-        {result === null ? <p class="result-placeholder">L'identificatore normalizzato apparirà qui.</p> : result.valid ? (
-          result.kind === "DOI" ? (
-            <>
-              <strong class="gutter-value">Formato DOI valido</strong>
-              <dl class="assumptions">
-                <div><dt>Normalizzato</dt><dd><code>{result.normalized}</code></dd></div>
-                <div><dt>Resolver URL</dt><dd><code>{result.url}</code></dd></div>
-              </dl>
-            </>
-          ) : (
-            <>
-              <strong class="gutter-value">{result.kind} valido</strong>
-              <dl class="assumptions">
-                <div><dt>Cifre</dt><dd><code>{result.digits}</code></dd></div>
-                {result.kind === "ISBN-10" && <div><dt>ISBN-13</dt><dd><code>{result.isbn13}</code></dd></div>}
-              </dl>
-            </>
-          )
-        ) : (
-          <>
-            <strong class="gutter-value">Non valido</strong>
-            <p>Il valore non rispetta le regole dell'identificatore selezionato.</p>
-          </>
+      <ToolResultPanel
+        eyebrow="Risultato"
+        placeholder="L'identificatore normalizzato apparirà qui."
+        busy={operation.isRunning}
+        state={gutterStateFor(operation.status)}
+      >
+        {operation.result !== null && (
+          <ResearchResultV2
+            tool="doi-isbn-normalizer"
+            value={operation.result}
+            onReuse={reuseResult}
+            onRetry={operation.retry}
+            onReset={reset}
+          />
         )}
-      </section>
-    </div>
+      </ToolResultPanel>
+    </ToolOperation>
   );
 }

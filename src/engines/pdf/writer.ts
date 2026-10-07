@@ -47,7 +47,8 @@ function isDictionary(value: PdfValue): value is PdfDictionary {
 const INTERACTIVE_PDF_KEYS = new Set(["A", "AA", "AcroForm", "Annots", "EmbeddedFiles", "JavaScript", "JS", "Launch", "Names", "OpenAction", "URI"]);
 
 function isMetadataObject(value: PdfValue): boolean {
-  return isDictionary(value) && nameValue(value.entries.get("Type")) === "Metadata";
+  if (isDictionary(value)) return nameValue(value.entries.get("Type")) === "Metadata";
+  return value.kind === "stream" && nameValue(value.dictionary.entries.get("Type")) === "Metadata";
 }
 
 function isObjectToSkip(value: PdfValue, flatten: boolean): boolean {
@@ -289,8 +290,25 @@ function cloneInfo(builder: PdfBuilder, document: PdfDocumentModel, options: Pdf
   return reference;
 }
 
-function catalogValue(pages: ReturnType<typeof pdfReference>): PdfDictionary {
-  return pdfDict({ Type: pdfName("Catalog"), Pages: pages });
+function catalogValue(
+  builder: PdfBuilder,
+  pages: ReturnType<typeof pdfReference>,
+  source: PdfDocumentModel | null,
+  options: PdfBuildOptions,
+): PdfDictionary {
+  if (source === null || source.root === null) return pdfDict({ Type: pdfName("Catalog"), Pages: pages });
+  const rootObject = source.objects.get(source.root.id)?.value;
+  if (rootObject?.kind !== "dict") return pdfDict({ Type: pdfName("Catalog"), Pages: pages });
+  const state = createState(source, options, skipIdsFor(source, options), () => builder.reserve());
+  const entries = new Map<string, PdfValue | null>([["Type", pdfName("Catalog")], ["Pages", pages]]);
+  for (const [key, value] of rootObject.entries) {
+    if (key === "Type" || key === "Pages") continue;
+    if (options.stripMetadata === true && (key === "Metadata" || key === "Info")) continue;
+    if (options.flatten !== false && INTERACTIVE_PDF_KEYS.has(key)) continue;
+    entries.set(key, cloneSourceValue(value, state));
+  }
+  addClonedObjects(builder, state);
+  return omitNullEntries(entries);
 }
 
 function buildFromPages(pagesToBuild: readonly PdfBuildPage[], options: PdfBuildOptions = {}): { bytes: Uint8Array; pageCount: number } {
@@ -301,7 +319,7 @@ function buildFromPages(pagesToBuild: readonly PdfBuildPage[], options: PdfBuild
   builder.put(pagesReference, pdfDict({ Type: pdfName("Pages"), Kids: pdfArray(pageReferences), Count: pdfNumber(pageReferences.length) }));
   const rootReference = builder.reserve();
   const source = pagesToBuild[0]?.document ?? null;
-  builder.put(rootReference, catalogValue(pagesReference));
+  builder.put(rootReference, catalogValue(builder, pagesReference, source, options));
   const info = source === null ? null : cloneInfo(builder, source, options);
   return { bytes: builder.build(rootReference, info), pageCount: pageReferences.length };
 }
@@ -353,6 +371,18 @@ export interface EmbeddedJpeg {
   readonly name: string;
 }
 
+export type PdfImagePageSize = "original" | "a4" | "letter";
+export type PdfImageFit = "contain" | "cover";
+export type PdfImageOrientation = "auto" | "portrait" | "landscape";
+
+export interface PdfImagePageLayoutOptions {
+  readonly pageSize?: PdfImagePageSize;
+  readonly fit?: PdfImageFit;
+  readonly orientation?: PdfImageOrientation;
+  readonly marginPoints?: number;
+  readonly rotations?: Readonly<Record<number, 0 | 90 | 180 | 270>>;
+}
+
 function jpegDimension(bytes: Uint8Array): { width: number; height: number } | null {
   if (bytes[0] !== 0xff || bytes[1] !== 0xd8) return null;
   let offset = 2;
@@ -383,7 +413,7 @@ export function parseJpeg(bytes: Uint8Array, name = "image.jpg"): EmbeddedJpeg |
   return dimensions === null ? null : { bytes: bytes.slice(), ...dimensions, name };
 }
 
-export function buildPdfFromJpegs(images: readonly EmbeddedJpeg[]): Uint8Array {
+export function buildPdfFromJpegs(images: readonly EmbeddedJpeg[], options: PdfImagePageLayoutOptions = {}): Uint8Array {
   if (images.length === 0) throw new Error("INVALID_INPUT: choose at least one JPEG image");
   if (images.length > PDF_LIMITS.maxFiles) throw new Error("PDF_LIMIT: too many images");
   let totalBytes = 0;
@@ -396,11 +426,50 @@ export function buildPdfFromJpegs(images: readonly EmbeddedJpeg[]): Uint8Array {
   const builder = new PdfBuilder();
   const pagesReference = builder.reserve();
   const pageReferences: ReturnType<typeof pdfReference>[] = [];
-  for (const image of images) {
+  const pageSize = options.pageSize ?? "original";
+  const fit = options.fit ?? "contain";
+  const orientation = options.orientation ?? "auto";
+  const margin = options.marginPoints ?? 0;
+  if (!Number.isFinite(margin) || margin < 0 || margin > 288) throw new Error("INVALID_INPUT: PDF image margin must be between 0 and 288 points");
+  const fixedPage = pageSize === "a4" ? { width: 595.28, height: 841.89 } : pageSize === "letter" ? { width: 612, height: 792 } : null;
+  for (let index = 0; index < images.length; index += 1) {
+    const image = images[index]!;
+    const rotation = options.rotations?.[index + 1] ?? 0;
+    if (![0, 90, 180, 270].includes(rotation)) throw new Error("INVALID_INPUT: Image rotation must be 0, 90, 180, or 270 degrees");
+    const rotatedSourceWidth = rotation === 90 || rotation === 270 ? image.height : image.width;
+    const rotatedSourceHeight = rotation === 90 || rotation === 270 ? image.width : image.height;
+    let pageWidth: number;
+    let pageHeight: number;
+    if (fixedPage === null) {
+      pageWidth = rotatedSourceWidth + margin * 2;
+      pageHeight = rotatedSourceHeight + margin * 2;
+    } else {
+      const landscape = orientation === "landscape" || (orientation === "auto" && rotatedSourceWidth > rotatedSourceHeight);
+      pageWidth = landscape ? fixedPage.height : fixedPage.width;
+      pageHeight = landscape ? fixedPage.width : fixedPage.height;
+    }
+    const availableWidth = pageWidth - margin * 2;
+    const availableHeight = pageHeight - margin * 2;
+    if (availableWidth <= 0 || availableHeight <= 0) throw new Error("INVALID_INPUT: PDF margin leaves no printable page area");
+    const scale = fit === "cover"
+      ? Math.max(availableWidth / rotatedSourceWidth, availableHeight / rotatedSourceHeight)
+      : Math.min(availableWidth / rotatedSourceWidth, availableHeight / rotatedSourceHeight);
+    const targetWidth = rotatedSourceWidth * scale;
+    const targetHeight = rotatedSourceHeight * scale;
+    const x = margin + (availableWidth - targetWidth) / 2;
+    const y = margin + (availableHeight - targetHeight) / 2;
+    const transform = rotation === 90
+      ? `0 ${-targetHeight} ${targetWidth} 0 ${x} ${y + targetHeight}`
+      : rotation === 180
+        ? `${-targetWidth} 0 0 ${-targetHeight} ${x + targetWidth} ${y + targetHeight}`
+        : rotation === 270
+          ? `0 ${targetHeight} ${-targetWidth} 0 ${x + targetWidth} ${y}`
+          : `${targetWidth} 0 0 ${targetHeight} ${x} ${y}`;
     const imageReference = builder.putAuto({ kind: "stream", dictionary: pdfDict({ Type: pdfName("XObject"), Subtype: pdfName("Image"), Width: pdfNumber(image.width), Height: pdfNumber(image.height), ColorSpace: pdfName("DeviceRGB"), BitsPerComponent: pdfNumber(8), Filter: pdfName("DCTDecode") }), bytes: image.bytes.slice() });
-    const contentText = `q\n${image.width} 0 0 ${image.height} 0 0 cm\n/Im0 Do\nQ\n`;
+    const clip = fit === "cover" ? `${margin} ${margin} ${availableWidth} ${availableHeight} re W n\n` : "";
+    const contentText = `q\n${clip}${transform} cm\n/Im0 Do\nQ\n`;
     const contentReference = builder.putAuto({ kind: "stream", dictionary: pdfDict({}), bytes: new TextEncoder().encode(contentText) });
-    const pageReference = builder.putAuto(pdfDict({ Type: pdfName("Page"), MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(image.width), pdfNumber(image.height)]), Resources: pdfDict({ XObject: pdfDict({ Im0: imageReference }) }), Contents: contentReference }));
+    const pageReference = builder.putAuto(pdfDict({ Type: pdfName("Page"), MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(pageWidth), pdfNumber(pageHeight)]), Resources: pdfDict({ XObject: pdfDict({ Im0: imageReference }) }), Contents: contentReference }));
     pageReferences.push(pageReference);
   }
   builder.put(pagesReference, pdfDict({ Type: pdfName("Pages"), Kids: pdfArray(pageReferences), Count: pdfNumber(pageReferences.length) }));

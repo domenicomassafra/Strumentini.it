@@ -6,14 +6,13 @@
 
 **Constraints:** Deterministic only; never send content to an LLM; restore must refuse ambiguous/corrupted placeholders rather than inserting the wrong private value.
 
-**Blocked by:** 01, 23.
+**Blocked by:** 54, 165, 183, 184, 185, 186, 189.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Code extraction preserves file names when explicit and sanitizes paths before ZIP creation.
-- [ ] Chunking is reversible and emits numbered/context-preserving boundaries.
-- [ ] AI diff promotes changed numbers/dates/facts above cosmetic edits.
-- [ ] Anonymize/restore mapping stays local and detects missing/duplicated/mutated placeholders.
+- [x] Ticket 183 preserves explicit safe file-name hints, generates deterministic fallbacks/duplicate suffixes, and refuses absolute/traversal paths before store-only ZIP creation.
+- [x] Ticket 184 provides reversible semantic chunking with numbered/context-preserving boundaries and exact join semantics.
+- [x] Ticket 185 promotes changed numbers/dates/fact-like tokens above cosmetic lexical changes without calling an LLM.
+- [x] Ticket 186 keeps stable-placeholder anonymize/restore mappings local and refuses missing, duplicated or mutated placeholders instead of substituting the wrong private value.
 
-**Verification:** Adversarial fenced-code/path fixtures, exact chunk round-trip, structured diff cases, anonymization round-trip and secret-leak network/telemetry assertions.
-
+**Verification:** `tests/file-privacy-engine.test.ts` covers fenced-code/path/ZIP parity; `tests/text-expansion.test.ts` covers chunk round-trip, fact-sensitive diff and anonymization restore/refusal. All participating manifests are LOCAL/network-forbidden and their Result v2 paths retain the shared privacy boundary.

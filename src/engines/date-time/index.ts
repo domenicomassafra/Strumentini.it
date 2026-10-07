@@ -402,6 +402,58 @@ function daysInMonth(year: number, month: number): number {
   return utcDate(year, month, 0).getUTCDate();
 }
 
+const ITALIAN_WEEKDAYS = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"] as const;
+const ITALIAN_MONTHS = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"] as const;
+
+export function isGregorianLeapYear(year: number): boolean {
+  if (!Number.isInteger(year) || year < 1 || year > 9999) throw new Error("INVALID_YEAR");
+  return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+}
+
+export function calendarWeekday(date: string): { date: string; isoWeekday: number; weekdayIt: string } {
+  const parsed = parseIsoDate(date);
+  const isoWeekday = parsed.getUTCDay() === 0 ? 7 : parsed.getUTCDay();
+  return { date, isoWeekday, weekdayIt: ITALIAN_WEEKDAYS[isoWeekday - 1]! };
+}
+
+export interface PrintableMonthCalendar {
+  readonly year: number;
+  readonly month: number;
+  readonly monthNameIt: string;
+  readonly weekdayHeadersIt: readonly ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"];
+  readonly weeks: readonly (readonly (number | null)[])[];
+  readonly text: string;
+  readonly locale: "it-IT";
+  readonly weekStartsOn: "monday";
+}
+
+export function printableMonthCalendar(year: number, month: number): PrintableMonthCalendar {
+  if (!Number.isInteger(year) || year < 1 || year > 9999) throw new Error("INVALID_YEAR");
+  if (!Number.isInteger(month) || month < 1 || month > 12) throw new Error("INVALID_MONTH");
+  const first = utcDate(year, month - 1, 1);
+  const firstIsoWeekday = first.getUTCDay() === 0 ? 7 : first.getUTCDay();
+  const totalDays = daysInMonth(year, month);
+  const cells: Array<number | null> = Array.from({ length: firstIsoWeekday - 1 }, () => null);
+  for (let day = 1; day <= totalDays; day += 1) cells.push(day);
+  while (cells.length % 7 !== 0) cells.push(null);
+  const weeks: Array<readonly (number | null)[]> = [];
+  for (let index = 0; index < cells.length; index += 7) weeks.push(cells.slice(index, index + 7));
+  const weekdayHeadersIt = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"] as const;
+  const monthNameIt = ITALIAN_MONTHS[month - 1]!;
+  const title = `${monthNameIt[0]!.toLocaleUpperCase("it-IT")}${monthNameIt.slice(1)} ${year}`;
+  const rows = weeks.map((week) => week.map((day) => day === null ? "  " : String(day).padStart(2, " ")).join(" "));
+  return {
+    year,
+    month,
+    monthNameIt,
+    weekdayHeadersIt,
+    weeks,
+    text: [title, weekdayHeadersIt.join(" "), ...rows].join("\n"),
+    locale: "it-IT",
+    weekStartsOn: "monday",
+  };
+}
+
 function parseDateTimeField(value: string, timeZone?: string): number {
   return parseInstantOrDate(value, timeZone).milliseconds;
 }
@@ -816,7 +868,7 @@ export function buildIcsEvent(input: IcsEventInput): { text: string; uid: string
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//StrumentiUtili.it//Strumenti data e ora//IT",
+    "PRODID:-//Strumentini.it//Strumenti data e ora//IT",
     "CALSCALE:GREGORIAN",
     "BEGIN:VEVENT",
     `UID:${escapeIcsText(uid)}`,

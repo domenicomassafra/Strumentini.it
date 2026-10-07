@@ -5,7 +5,6 @@ import { pathToFileURL } from "node:url";
 import type { ToolManifest } from "../catalog/manifest";
 
 export const CERTIFICATION_SCHEMA_VERSION = 1;
-export const EXPECTED_CATALOG_TOOL_COUNT = 200;
 
 export type EvidenceStatus = "PASS" | "PARTIAL" | "UNVERIFIED" | "EXTERNAL" | "DECLARED" | "NOT_OBSERVED";
 export type CertificationStatus = "GOLD" | "PARTIAL" | "IMPLEMENTED_UNVERIFIED";
@@ -162,6 +161,7 @@ export interface CertificationIndex {
 }
 
 interface AuthorityData {
+  readonly expectedToolCount: number;
   readonly registry: JsonRecord;
   readonly registryText: string;
   readonly registrySha256: string;
@@ -173,6 +173,7 @@ interface AuthorityData {
   readonly sourcesSha256: string;
   readonly oracleById: ReadonlyMap<string, JsonRecord>;
   readonly fixtureById: ReadonlyMap<string, JsonRecord>;
+  readonly fixtureSha256ById: ReadonlyMap<string, string>;
   readonly sourceIds: ReadonlySet<string>;
 }
 
@@ -214,6 +215,7 @@ interface ReceiptRecord {
   };
   readonly physicalAcceptance?: JsonRecord;
   readonly identities: Readonly<Record<string, string>>;
+  readonly fixtureIdentities: Readonly<Record<string, string>>;
   readonly fingerprint: AuthorityFingerprint;
 }
 
@@ -279,11 +281,7 @@ const pdfEvidence = {
   lazyLoad: ["quality/receipts/pdf/browser-acceptance.json"],
 } as const;
 
-/**
- * Browser acceptance for the research-knowledge family covers the whole family,
- * including ris-bibtex-converter, whose route is accepted here even though it
- * stays IMPLEMENTED_UNVERIFIED on its open oracle gap.
- */
+/** Browser acceptance for the whole research-knowledge family. */
 const researchKnowledgeEvidence = {
   locality: ["quality/receipts/research-knowledge/browser-acceptance.json"],
   mobileA11y: ["quality/receipts/research-knowledge/browser-acceptance.json"],
@@ -318,6 +316,81 @@ const expandedLocalEvidence = {
   mobileA11y: ["quality/receipts/expanded-local/browser-acceptance.json"],
   lazyLoad: ["quality/receipts/expanded-local/browser-acceptance.json"],
 } as const;
+
+const businessItalyDateToolIds = [
+  "scientific-calculator",
+  "fraction-integer-toolkit",
+  "statistics-grade-calculator",
+  "interest-savings-calculator",
+  "partita-iva-validator",
+  "iban-validator",
+  "basic-unit-converter",
+  "engineering-unit-converter",
+  "storage-download-calculator",
+  "battery-vehicle-power-helper",
+  "reference-size-converter",
+  "mortgage-amortization-calculator",
+  "geometry-equation-motion-helper",
+  "everyday-cost-calculator",
+  "italian-document-expiry",
+  "inps-artigiani-commercianti",
+  "gestione-separata-contributi",
+  "ponti-ferie-optimizer",
+] as const;
+
+const developerWebOperationsEvidence = {
+  locality: ["quality/receipts/developer-web-operations/browser-acceptance.json"],
+  mobileA11y: ["quality/receipts/developer-web-operations/browser-acceptance.json"],
+  lazyLoad: ["quality/receipts/developer-web-operations/browser-acceptance.json"],
+} as const;
+
+const developerWebOperationsToolIds = [
+  "base-converter",
+  "chmod-permission-helper",
+  "cidr-calculator",
+  "connection-device-info",
+  "css-design-helper",
+  "css-minifier",
+  "html-minifier",
+  "json-repair",
+  "json-structural-diff",
+  "json-type-schema-inference",
+  "keyboard-event-diagnostic",
+  "password-pin-passphrase-generator",
+  "password-strength-estimator",
+  "random-picker-team-coupon-generator",
+  "sitemap-xml-generator",
+  "x509-csr-inspector",
+  "xml-formatter-validator",
+] as const;
+
+const textDataCertificationToolIds = [
+  "csv-splitter",
+  "csv-to-sql",
+  "fatturapa-batch-csv",
+  "fact-sensitive-text-diff",
+  "italian-gulpease-readability",
+  "mojibake-repair",
+  "pdf-copy-text-reflow",
+  "phone-link-hashtag-mention-extractor",
+  "semantic-text-chunker",
+  "stable-placeholder-anonymizer",
+  "table-compare",
+  "text-markup-converter",
+  "vcf-viewer-csv-export",
+] as const;
+
+const certificationFrontierBundleEvidence = {
+  lazyLoad: ["quality/receipts/certification-frontier/bundle-isolation.json"],
+} as const;
+
+function frontierEvidence(browserReceipt: string) {
+  return {
+    locality: [browserReceipt],
+    mobileA11y: [browserReceipt],
+    ...certificationFrontierBundleEvidence,
+  } as const;
+}
 
 const expandedLocalToolIds = [
   "aspect-ratio-calculator",
@@ -374,6 +447,26 @@ const expandedLocalToolIds = [
 const toolEvidencePaths: Readonly<Record<string, Partial<Record<EvidenceDimension, readonly string[]>>>> = {
   ...Object.fromEntries(expandedLocalToolIds.map((toolId) => [toolId, expandedLocalEvidence])),
   ...Object.fromEntries(marketingMediaToolIds.map((toolId) => [toolId, marketingMediaEvidence])),
+  ...Object.fromEntries(developerWebOperationsToolIds.map((toolId) => [toolId, developerWebOperationsEvidence])),
+  ...Object.fromEntries(textDataCertificationToolIds.map((toolId) => {
+    const path = `quality/receipts/text-data-certification/browser/${toolId}.json`;
+    return [toolId, { locality: [path], mobileA11y: [path], lazyLoad: [path] }];
+  })),
+  ...Object.fromEntries(businessItalyDateToolIds.map((toolId) => {
+    const path = `quality/receipts/business-italy-date/browser/${toolId}.json`;
+    return [toolId, { locality: [path], mobileA11y: [path], lazyLoad: [path] }];
+  })),
+  "ai-code-fence-bundle": frontierEvidence("quality/receipts/file-certification-frontier/browser-acceptance.json"),
+  "file-size-analyzer": frontierEvidence("quality/receipts/file-certification-frontier/browser-acceptance.json"),
+  "fatturapa-reader": frontierEvidence("quality/receipts/italy-2026-consumers/browser-acceptance.json"),
+  "pdf-multi-text-search": frontierEvidence("quality/receipts/pdf-search-markdown/browser-acceptance.json"),
+  "pdf-to-markdown": frontierEvidence("quality/receipts/pdf-search-markdown/browser-acceptance.json"),
+  "color-blindness-image-simulation": frontierEvidence("quality/receipts/color-vision-simulation/browser-acceptance.json"),
+  "barcode-generator": frontierEvidence("quality/receipts/barcode/browser-acceptance.json"),
+  "audio-generator": frontierEvidence("quality/receipts/browser-audio/browser-acceptance.json"),
+  "browser-text-to-speech": frontierEvidence("quality/receipts/browser-audio/browser-acceptance.json"),
+  "subtitle-srt-vtt-transform": frontierEvidence("quality/receipts/subtitle-transform/browser-acceptance.json"),
+  "microphone-recorder": frontierEvidence("quality/receipts/microphone-recorder/browser-acceptance.json"),
   "bibtex-deduplicator": researchKnowledgeEvidence,
   "bibtex-formatter": researchKnowledgeEvidence,
   "citation-deduplicator": researchKnowledgeEvidence,
@@ -766,7 +859,7 @@ function normalizeManifest(raw: JsonRecord, directory: string, context: string):
   };
 }
 
-async function discoverManifests(root: string): Promise<ManifestRecord[]> {
+async function discoverManifests(root: string, expectedToolCount: number): Promise<ManifestRecord[]> {
   const toolsRoot = resolve(root, "src/tools");
   const entries = await readdir(toolsRoot, { withFileTypes: true });
   const records: ManifestRecord[] = [];
@@ -803,7 +896,7 @@ async function discoverManifests(root: string): Promise<ManifestRecord[]> {
     });
   }
   records.sort((left, right) => left.id.localeCompare(right.id));
-  if (records.length !== EXPECTED_CATALOG_TOOL_COUNT) fail(`expanded catalog must contain exactly ${EXPECTED_CATALOG_TOOL_COUNT} manifests; found ${records.length}`);
+  if (records.length !== expectedToolCount) fail(`expanded catalog must contain exactly ${expectedToolCount} manifests; found ${records.length}`);
   return records;
 }
 
@@ -865,8 +958,10 @@ async function loadAuthorities(root: string): Promise<AuthorityData> {
     }
   }
   const registryRows = registryFile.value.entries;
-  if (!Array.isArray(registryRows) || registryRows.length !== EXPECTED_CATALOG_TOOL_COUNT) fail(`oracle registry must contain exactly ${EXPECTED_CATALOG_TOOL_COUNT} entries`);
-  if (registryFile.value.entry_count !== registryRows.length) fail("oracle registry entry_count does not match entries");
+  if (!Array.isArray(registryRows) || registryRows.length === 0) fail("oracle registry must contain entries");
+  const expectedToolCount = registryFile.value.entry_count;
+  if (!Number.isSafeInteger(expectedToolCount) || (expectedToolCount as number) < 1) fail("oracle registry entry_count must be a positive safe integer");
+  if (expectedToolCount !== registryRows.length) fail("oracle registry entry_count does not match entries");
   const oracleById = new Map<string, JsonRecord>();
   for (const [index, row] of registryRows.entries()) {
     if (!isRecord(row)) fail(`oracle registry entry ${index} is not an object`);
@@ -878,7 +973,7 @@ async function loadAuthorities(root: string): Promise<AuthorityData> {
     }
     oracleById.set(id, row);
   }
-  for (let index = 1; index <= EXPECTED_CATALOG_TOOL_COUNT; index += 1) {
+  for (let index = 1; index <= (expectedToolCount as number); index += 1) {
     const id = `cand-${String(index).padStart(3, "0")}`;
     if (!oracleById.has(id)) fail(`oracle registry is missing ${id}`);
   }
@@ -886,6 +981,7 @@ async function loadAuthorities(root: string): Promise<AuthorityData> {
   if (!Array.isArray(fixtureRows) || fixtureRows.length === 0) fail("fixture index must contain families");
   if (fixturesFile.value.family_count !== fixtureRows.length) fail("fixture index family_count does not match families");
   const fixtureById = new Map<string, JsonRecord>();
+  const fixtureSha256ById = new Map<string, string>();
   for (const [index, row] of fixtureRows.entries()) {
     if (!isRecord(row)) fail(`fixture family ${index} is not an object`);
     const id = requiredString(row, "id", `fixture family ${index}`);
@@ -897,9 +993,11 @@ async function loadAuthorities(root: string): Promise<AuthorityData> {
     const truthSources = stringArray(row.truth_sources, `${id}.truth_sources`);
     for (const source of truthSources) if (!sourceIds.has(source)) fail(`${id}: unknown truth source ${source}`);
     await validateFixturePayload(root, row, `fixture family ${id}`);
+    fixtureSha256ById.set(id, sha256(await readFile(resolve(root, requiredString(row, "path", `fixture family ${id}`)))));
     fixtureById.set(id, row);
   }
   return {
+    expectedToolCount: expectedToolCount as number,
     registry: registryFile.value,
     registryText: registryFile.text,
     registrySha256: sha256(registryFile.text),
@@ -911,6 +1009,7 @@ async function loadAuthorities(root: string): Promise<AuthorityData> {
     sourcesSha256: sha256(sourcesFile.text),
     oracleById,
     fixtureById,
+    fixtureSha256ById,
     sourceIds,
   };
 }
@@ -938,6 +1037,25 @@ function identityValues(value: unknown): Record<string, string> {
   return result;
 }
 
+function receiptFixtureIdentities(receipt: JsonRecord, fixtureFamilies: readonly string[], identities: Readonly<Record<string, string>>): Record<string, string> {
+  const result: Record<string, string> = {};
+  const resolvedFixtures = Array.isArray(receipt.resolvedFixtures) ? receipt.resolvedFixtures : [];
+  for (const family of fixtureFamilies) {
+    const explicit = identities[`fixture:${family}:sha256`] ?? identities[family];
+    if (explicit !== undefined) {
+      result[family] = explicit;
+      continue;
+    }
+    const resolved = resolvedFixtures.find((value) => isRecord(value) && value.id === family && typeof value.sha256 === "string");
+    if (isRecord(resolved) && typeof resolved.sha256 === "string") {
+      result[family] = resolved.sha256;
+      continue;
+    }
+    if (fixtureFamilies.length === 1 && identities.fixtureSha256 !== undefined) result[family] = identities.fixtureSha256;
+  }
+  return result;
+}
+
 async function discoverReceipts(root: string, toolIds: ReadonlySet<string>): Promise<Map<string, ReceiptRecord>> {
   const receiptRoot = resolve(root, "quality/receipts");
   const files = await walkFiles(receiptRoot, (path) => path.endsWith(".json"));
@@ -961,16 +1079,19 @@ async function discoverReceipts(root: string, toolIds: ReadonlySet<string>): Pro
     if (parsed.goldEligible === true && status !== "GOLD") fail(`receipt ${relativeFile} cannot be Gold with status ${status}`);
     const runtime = receiptRuntime(parsed);
     const physicalAcceptance = isRecord(parsed.physicalAcceptance) ? parsed.physicalAcceptance : undefined;
+    const fixtureFamilies = receiptFixtureFamilies(parsed);
+    const identities = identityValues(parsed.identities);
     const record: ReceiptRecord = {
       path: relativeFile,
       toolId,
       status,
       goldEligible,
       oracleEntryIds: receiptOracleIds(parsed),
-      fixtureFamilies: receiptFixtureFamilies(parsed),
+      fixtureFamilies,
       ...(runtime === undefined ? {} : { runtime }),
       ...(physicalAcceptance === undefined ? {} : { physicalAcceptance }),
-      identities: identityValues(parsed.identities),
+      identities,
+      fixtureIdentities: receiptFixtureIdentities(parsed, fixtureFamilies, identities),
       fingerprint: { path: relativeFile, sha256: sha256(await readFile(path)) },
     };
     byTool.set(toolId, record);
@@ -1097,7 +1218,7 @@ function buildGlobalCertification(root: string, authorities: AuthorityData, cach
     locality: {
       status: "PARTIAL",
       evidence: evidenceReferences(root, "locality", localityPaths, cache),
-      gaps: ["Per-tool browser/network evidence exists for the certified frontier, not all 200 expanded routes."],
+      gaps: [`Per-tool browser/network evidence exists for the certified frontier, not all ${manifests.length} expanded routes.`],
     },
     mobileA11y: {
       status: "PARTIAL",
@@ -1186,7 +1307,19 @@ function evidenceForTool(
     if (receipt.runtime !== undefined && (receipt.runtime.location !== tool.runtime.location || receipt.runtime.network !== tool.runtime.network)) blockers.push("RECEIPT_RUNTIME_MISMATCH");
     if (receipt.identities.manifestSha256 !== undefined && receipt.identities.manifestSha256 !== tool.manifestFingerprint.sha256) blockers.push("RECEIPT_MANIFEST_IDENTITY_STALE");
     if (receipt.identities.oracleRegistrySha256 !== undefined && receipt.identities.oracleRegistrySha256 !== authorities.registrySha256) blockers.push("RECEIPT_ORACLE_IDENTITY_STALE");
-    if (receipt.identities.fixtureIndexSha256 !== undefined && receipt.identities.fixtureIndexSha256 !== authorities.fixturesSha256) blockers.push("RECEIPT_FIXTURE_IDENTITY_STALE");
+    let hasGranularFixtureIdentityForEveryBinding = true;
+    for (const family of receipt.fixtureFamilies) {
+      const expectedSha256 = receipt.fixtureIdentities[family];
+      if (expectedSha256 === undefined) {
+        hasGranularFixtureIdentityForEveryBinding = false;
+        continue;
+      }
+      const currentSha256 = authorities.fixtureSha256ById.get(family);
+      if (currentSha256 !== undefined && currentSha256 !== expectedSha256) blockers.push("RECEIPT_FIXTURE_IDENTITY_STALE");
+    }
+    if (!hasGranularFixtureIdentityForEveryBinding
+      && receipt.identities.fixtureIndexSha256 !== undefined
+      && receipt.identities.fixtureIndexSha256 !== authorities.fixturesSha256) blockers.push("RECEIPT_FIXTURE_IDENTITY_STALE");
   }
   if (physical.required && physical.status !== "PASS") blockers.push("PHYSICAL_DEVICE_EVIDENCE_MISSING");
   for (const issue of acceptanceIssues.get(tool.id) ?? []) blockers.push(`ACCEPTANCE_EVIDENCE_FAILURE:${issue}`);
@@ -1294,8 +1427,8 @@ async function discoverTestFiles(root: string, manifests: readonly ManifestRecor
 }
 
 export async function buildCertificationIndex(root = resolve(import.meta.dirname, "../..")): Promise<CertificationIndex> {
-  const manifests = await discoverManifests(root);
   const authorities = await loadAuthorities(root);
+  const manifests = await discoverManifests(root, authorities.expectedToolCount);
   const cache = await toolEvidenceCache(root);
   cache.set("quality/oracles/registry.json", { __sha256: authorities.registrySha256 });
   cache.set("quality/fixtures/index.json", { __sha256: authorities.fixturesSha256 });
@@ -1314,7 +1447,7 @@ export async function buildCertificationIndex(root = resolve(import.meta.dirname
   const index: CertificationIndex = {
     schemaVersion: CERTIFICATION_SCHEMA_VERSION,
     generatedBy: "scripts/build-certification-index.ts",
-    expectedCatalogToolCount: EXPECTED_CATALOG_TOOL_COUNT,
+    expectedCatalogToolCount: authorities.expectedToolCount,
     catalogToolCount: tools.length,
     authorities: {
       oracleRegistry: { path: "quality/oracles/registry.json", sha256: authorities.registrySha256 },
@@ -1345,8 +1478,10 @@ export function renderCertificationIndex(index: CertificationIndex): string {
 export function assertCertificationIndex(index: CertificationIndex): void {
   const issues: string[] = [];
   if (index.schemaVersion !== CERTIFICATION_SCHEMA_VERSION) issues.push(`schemaVersion must be ${CERTIFICATION_SCHEMA_VERSION}`);
-  if (index.expectedCatalogToolCount !== EXPECTED_CATALOG_TOOL_COUNT) issues.push(`expectedCatalogToolCount must be ${EXPECTED_CATALOG_TOOL_COUNT}`);
-  if (index.catalogToolCount !== EXPECTED_CATALOG_TOOL_COUNT || index.tools.length !== EXPECTED_CATALOG_TOOL_COUNT) issues.push(`catalog must contain exactly ${EXPECTED_CATALOG_TOOL_COUNT} tools`);
+  if (!Number.isSafeInteger(index.expectedCatalogToolCount) || index.expectedCatalogToolCount < 1) issues.push("expectedCatalogToolCount must be a positive safe integer");
+  if (index.expectedCatalogToolCount !== index.global.oracle.entryCount) issues.push("expectedCatalogToolCount must match the oracle authority entry count");
+  if (index.catalogToolCount !== index.expectedCatalogToolCount || index.tools.length !== index.expectedCatalogToolCount) issues.push(`catalog must contain exactly ${index.expectedCatalogToolCount} tools`);
+  if (index.authorities.oracleRegistry.sha256 !== index.global.oracle.sha256) issues.push("oracle authority fingerprint does not match global oracle evidence");
   const ids = new Set<string>();
   const routes = new Set<string>();
   for (const tool of index.tools) {

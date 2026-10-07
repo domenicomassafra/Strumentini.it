@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "68ae1ed2cfb1fb2eda344587e6e0fe3d5a1748a72a7501300b0a5a50cdd92dd1",
+  "toolId": "ris-bibtex-converter",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "engine": "research-knowledge",
+  "engineVersion": "research-knowledge-v2",
+  "oracleEntryId": "cand-187",
+  "oracleConfidence": "high",
+  "fixtureFamilies": [
+    "research-ris-bibtex-conversion",
+    "research-bibtex-syntax"
+  ],
+  "truthSources": [
+    "bibtex-ctan",
+    "fixture-policy",
+    "ris-policy",
+    "strumentiutili-quality",
+    "whatwg-url",
+    "zotero-translators"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "research-ris-bibtex-conversion",
+      "path": "quality/fixtures/research-ris-bibtex-conversion/vectors.json",
+      "sha256": "b412d724aa8851d0180abcb4cf66deb375ea062d4cabd83ebce14a245ee97480",
+      "provenance": "hand-worked",
+      "license_or_rights": "Hand-worked RIS and BibTeX records authored for StrumentiUtili.it; no vendor RIS corpus copied.",
+      "schemaVersion": 1
+    },
+    {
+      "id": "research-bibtex-syntax",
+      "path": "quality/fixtures/research-bibtex-syntax/vectors.json",
+      "sha256": "946fc56e46532ffe569a3e9dae10a1be4633f2d8b48351ba661270b27e8dc0bf",
+      "provenance": "hand-worked",
+      "license_or_rights": "Hand-worked BibTeX snippets authored for StrumentiUtili.it; no xampl.bib or third-party bibliography copied.",
+      "schemaVersion": 1
+    }
+  ],
+  "checksumAlgorithm": "SHA-256",
+  "browserContract": {
+    "assertion": "smith_2026_synthetic",
+    "outputSha256": "5e8cbca41393876ff48dbfa00c5658ce004539bd95cf8dede5e72ba0224e8a4f",
+    "locality": "zero external/non-GET/task-body requests",
+    "lazyLoad": "implementation script observed after submit",
+    "mobile": "390px without horizontal overflow",
+    "accessibility": "no unlabeled interactive form controls",
+    "publicErrorState": "typed-italian-error"
+  },
+  "determinism": "two identical runs produced byte-identical output and an aborted run produced nothing",
+  "propertyChecks": [
+    "LOCAL/network-forbidden runtime",
+    "high-confidence oracle with no open semantic gap",
+    "oracle/manifest maintenance class alignment",
+    "every declared fixture family resolves from the canonical fixture index with recorded provenance",
+    "family unit tests cover the hand-worked vectors, the adversarial cases and the Italian public copy",
+    "real route submit produced the tool-specific asserted output",
+    "keyboard/mobile/a11y/locality/lazy browser acceptance plus the declared boundary state",
+    "repeat-run determinism and abort propagation re-proved on the committed source"
+  ],
+  "identities": {
+    "manifestSha256": "06eeb4adfe55266448a75e1e0d47823c4c33770b8cba7aa2edbedc11c5913f01",
+    "engineSha256": "d7417088bf48c40ccf610aa6d32d5e57c427033d5b5d61f35ffac800595cdbf6",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "dce2a96b35d4633bb55cd8c9a14f9a018a5c13bb3f251516f04566512086ce3f",
+    "acceptanceScriptSha256": "2c1afde893dfcfb283d9511908e03ab10cf8d6c2bfa2a73861891d9088aade9f",
+    "unitTestsSha256": "46dcd92ee24212e7d895aa2c8c872eddd36b43ddd26b519b026edbdd861dbb00",
+    "evidence:src/tools/ris-bibtex-converter/module.ts:sha256": "e360cf22a7f3501559e7b78c58211d56d6c8c62528901bf7d22b9d992bb70aba",
+    "evidence:src/tools/ris-bibtex-converter/conversion.ts:sha256": "2631fa5f5c0da23db9e9757ecd29b7608707d6671e6be700fee0d03ca09ff1be",
+    "evidence:quality/fixtures/research-ris-bibtex-conversion/ORACLE.md:sha256": "f5190df680a220bf88ff3becd8dafb2f5a62979be2df0b47737934eace4a2055",
+    "evidence:quality/fixtures/research-ris-bibtex-conversion/oracle-cross-check.json:sha256": "856f572617d6a5a8b6290f2c778e08f6b29a085cf22c60435ae02081e09c5c02",
+    "evidence:quality/fixtures/research-ris-bibtex-conversion/verify-oracle.ts:sha256": "191d1f13babc9e1b29dccb6495213820ee23a94db420cca53f00a60c5bccb952",
+    "fixture:research-ris-bibtex-conversion:sha256": "b412d724aa8851d0180abcb4cf66deb375ea062d4cabd83ebce14a245ee97480",
+    "fixture:research-bibtex-syntax:sha256": "946fc56e46532ffe569a3e9dae10a1be4633f2d8b48351ba661270b27e8dc0bf"
+  }
+}

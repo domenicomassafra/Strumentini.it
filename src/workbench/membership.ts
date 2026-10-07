@@ -18,7 +18,7 @@ import { createWorkbenchRepository } from "./repository";
 import type { RecentToolActivity } from "./state";
 import { createDefaultWorkbenchState, installTool, recordRecentTool, removeTool } from "./state";
 
-export const MEMBERSHIP_EVENT = "strumentiutili:membership-changed";
+export const MEMBERSHIP_EVENT = "strumentini:membership-changed";
 
 export interface Membership {
   readonly installed: readonly string[];

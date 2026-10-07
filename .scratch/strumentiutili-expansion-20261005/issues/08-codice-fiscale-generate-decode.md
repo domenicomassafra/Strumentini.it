@@ -6,7 +6,7 @@
 
 **Constraints:** Personal data stays local; generated code is never described as a substitute for the official Agenzia delle Entrate assignment.
 
-**Blocked by:** 07 — Versioned Italy reference-data framework.
+**Blocked by:** 121, 122.
 
 **Status:** blocked
 
@@ -16,4 +16,3 @@
 - [ ] Omocodia ambiguity is surfaced rather than guessed away.
 
 **Verification:** Official-rule vector suite plus browser tests showing no identifier leaves the device and clear result limitations.
-

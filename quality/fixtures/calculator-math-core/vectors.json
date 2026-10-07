@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "scientific": [
+    { "expression": "2 + 3 * 4", "expected": 14 },
+    { "expression": "2^3^2", "expected": 512 },
+    { "expression": "-2^2", "expected": -4 },
+    { "expression": "sqrt(81) + sin(pi / 2)", "expected": 10 }
+  ],
+  "fractions": [
+    { "left": "2/3", "right": "5/7", "operation": "add", "expected": "29/21" },
+    { "left": "6/8", "right": "3/4", "operation": "subtract", "expected": "0" },
+    { "left": "-3/5", "right": "10/9", "operation": "multiply", "expected": "-2/3" }
+  ],
+  "integers": [
+    { "mode": "gcd-lcm", "left": "84", "right": "30", "gcd": "6", "lcm": "420" },
+    { "mode": "prime-factor", "left": "360", "expected": "2 × 2 × 2 × 3 × 3 × 5" },
+    { "mode": "combinatorics", "left": "10", "right": "3", "operation": "combination", "expected": "120" },
+    { "mode": "roman", "left": "MCMXCIV", "expected": "1994" }
+  ],
+  "statistics": [
+    { "mode": "descriptive", "values": "1; 2; 2; 5", "mean": "2.5", "median": "2", "populationVariance": "2.25000000" },
+    { "mode": "weighted", "values": "18; 24; 30", "weights": "1; 2; 1", "expected": 24 },
+    { "mode": "completion", "completed": "75", "total": "120", "expected": 62.5 }
+  ],
+  "finance": [
+    { "mode": "simple", "principal": "1000", "annualRatePercent": "5", "years": "2", "expected": "1100.00" },
+    { "mode": "compound", "principal": "1000", "annualRatePercent": "12", "years": "1", "compoundsPerYear": "12", "expected": "1126.83" },
+    { "mode": "contribution", "principal": "1000", "annualRatePercent": "0", "years": "1", "compoundsPerYear": "12", "periodicContribution": "100", "expected": "2200.00" },
+    { "mode": "goal", "principal": "1000", "annualRatePercent": "0", "years": "1", "compoundsPerYear": "12", "target": "2200", "expected": "100.00" }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "toolId": "pdf-rotate",
+  "category": "documents",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Ruota localmente le pagine selezionate di 90, 180 o 270 gradi in modo esplicito. Public jobs: Usa Ruota PDF",
+  "observedFunctionality": "The current implementation performs the deliberately scoped document job locally: Ruota localmente le pagine selezionate di 90, 180 o 270 gradi in modo esplicito. The PDF/document corpus verifies actual bytes/structure and explicit refusals for unsupported behavior; the Gold receipt and real-route acceptance cover the public route.",
+  "rationale": "No missing behavior required by the current declared public job was found. Narrow PDF limits are part of the truthful product contract (for example embedded-JPEG extraction, supported text/AcroForm structures, lite compression, and no password bypass) and are exercised as success/refusal behavior rather than hidden behind broader claims. Later PDF expansion tickets are additive.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/pdf/pdf-rotate.gold.json",
+      "claim": "Tool-specific Gold receipt binds the current pdf-rotate implementation to executable functional fixtures/oracle evidence."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/pdf-document-tools.test.ts",
+      "claim": "PDF/document tests exercise the 20 real modules, including inspection, bounded mutations, conversions, explicit unsupported cases, encryption refusal and artifact-producing operations."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/pdf/browser-acceptance.json",
+      "claim": "PDF browser acceptance includes this real route and verifies keyboard submit, labels, 390px behavior, locality/lazy loading and zero task-content network leakage."
+    }
+  ],
+  "childTickets": []
+}

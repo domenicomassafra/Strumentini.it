@@ -1,0 +1,32 @@
+{
+  "toolId": "platform-size-presets",
+  "category": "image-visual",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Compare source dimensions against a selected published social/app canvas and return the source-bound target size, contain box, centered crop and upscale factor.",
+  "observedFunctionality": "The current preset engine validates the selected preset and source dimensions, then calculates deterministic contain/crop/upscale data. Its Gold receipt records ten source-bound presets, zero presets without a source, crop/contain invariants and a real-route assertion; dedicated image-media tests exercise preset calculations and the public module.",
+  "rationale": "The current comparison/calculation job is complete and evidence-backed. Ticket 317 intentionally proposes future multi-output generation/ZIP and generated-vs-source export summaries; those are additive output-production capabilities beyond the present calculator contract, so they are not a current functional-audit blocker.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/marketing-media/platform-size-presets.gold.json",
+      "claim": "Tool-specific Gold receipt verifies all 10 current presets have bound sources, crop/contain invariants hold and the real route returns the declared calculations."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/image-media-tools.test.ts",
+      "claim": "Dedicated tests execute calculatePlatformSizes across fixture vectors and edge dimensions and call platformSizePresetsModule directly."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/marketing-media/browser-acceptance.json",
+      "claim": "Marketing-media browser acceptance includes platform-size-presets and verifies crop/letterbox/source facts on the real route with locality/mobile/a11y checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/317-contact-sheet-favicon-and-platform-export-upgrades.md",
+      "claim": "Ticket 317 explicitly defines future export/ZIP enhancements; it does not redefine the current preset comparison/calculation job audited here."
+    }
+  ],
+  "childTickets": []
+}

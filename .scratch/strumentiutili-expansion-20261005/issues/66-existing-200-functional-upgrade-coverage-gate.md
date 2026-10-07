@@ -6,7 +6,7 @@
 
 **Constraints:** Do not force feature creep into tools whose current narrow contract is already correct; “already complete” requires evidence, not assumption.
 
-**Blocked by:** 50, 53, 60, 61, 62, 63, 64.
+**Blocked by:** 50, 53, 60, 61, 62, 63, 64, 110, 297.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] No tool is counted as upgraded solely because Result v2 changed its visuals.
 
 **Verification:** Generated audit index checked against the current catalog and failing CI on any missing original tool.
-

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "status": "PASS",
   "keyboard": "submit actions exercised via Enter",
-  "diffSemantics": "visible =/−/+ symbols plus Unchanged/Removed/Added text; not color-only",
+  "diffSemantics": "visible Invariata/Rimossa/Aggiunta table-state text; not color-only",
   "network": "zero external requests and zero task-content-bearing requests after task start",
   "mobileViewport": {
     "width": 390,

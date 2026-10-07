@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "9418f6d684412c1fc8346a54637d766a06c7f2cdcea37ddf6ba6cd24639a17b6",
+  "toolId": "ai-code-fence-bundle",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-251",
+  "fixtureFamilies": [
+    "ai-code-fence-bundle"
+  ],
+  "boundedScopeGaps": [
+    "Filename hints intentionally support a bounded explicit convention rather than trying to infer arbitrary prose intent."
+  ],
+  "scopePolicy": "Every canonical unresolved oracle gap is matched against a tool-specific bounded-scope policy. Unknown/new gap wording fails certification.",
+  "truthSources": [
+    "commonmark",
+    "fixture-policy",
+    "pkware-appnote",
+    "strumentiutili-quality"
+  ],
+  "directChecks": [
+    "fixture code-fence paths exact",
+    "STORE ZIP central-directory paths equal preview"
+  ],
+  "propertyChecks": [
+    "local-only public runtime",
+    "canonical oracle confidence high",
+    "all oracle gaps classified as bounded exclusions",
+    "fixture replay",
+    "real browser locality/mobile acceptance",
+    "route bundle isolated from home initial JS"
+  ],
+  "identities": {
+    "manifestSha256": "c0a252ca7ca0ba2d167f9cc5e223899c4f2d9627bbc31579420318f804ca6456",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "browserAcceptanceSha256": "84c6e1d5e9edfe6d275dcf5912d9687b1787055d7708fe3c4b874c9cecd2fa42",
+    "bundleIsolationSha256": "f8cc75d37de5f47d79a94a350710156bbf079972838dfdf080685192016e91c2",
+    "unitTestsSha256": "c21910be49153151556fece047f2f106a5a2f10c977f3fcbcb633ba1f4844c4f",
+    "fixture:ai-code-fence-bundle:sha256": "fb607189365ec6450a3106ba87855939bf54ea5a90991f09fa430034bbc05066"
+  }
+}

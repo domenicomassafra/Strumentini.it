@@ -6,11 +6,52 @@ import "../tool-surface.css";
 
 export { CONTROL, it } from "./controlLabels";
 export type { ControlLabel } from "./controlLabels";
+export { BoundedTableResultPreview, BoundedTextResultPreview } from "./BoundedResultPreview";
+export { BatchResult } from "./BatchResult";
+export { FileResultRow, FileResultWorkspace } from "./FileResultWorkspace";
+export type { FileResultRowProps, FileResultWorkspaceProps } from "./FileResultWorkspace";
 export { InlineError } from "./InlineError";
 export { JsonResult } from "./JsonResult";
 export { PreviousValue } from "./PreviousValue";
 export type { PreviousValueProps } from "./PreviousValue";
+export { focusToolOperationRecovery, resultAccessibilityFor, ResultStateCue } from "./ResultAccessibility";
+export type {
+  AccessibleResultStatus,
+  RecoveryFocusRoot,
+  RecoveryFocusStatus,
+  ResultAccessibilityDescriptor,
+  ResultAnnouncementPriority,
+  ResultStateCueProps,
+} from "./ResultAccessibility";
 export { ProfileOverrideHint, ProfileResetButton, ProvenanceBadge } from "./Provenance";
+export {
+  ResultAssumptions,
+  ResultBreakdown,
+  ResultExplanation,
+  ResultInterpretation,
+  ResultPrimaryAnswer,
+  ResultProvenance,
+} from "./ResultPrimitives";
+export type {
+  ResultAssumption,
+  ResultAssumptionsProps,
+  ResultBreakdownProps,
+  ResultDetailRow,
+  ResultExplanationProps,
+  ResultInterpretationProps,
+  ResultPrimaryAnswerProps,
+  ResultProvenanceProps,
+} from "./ResultPrimitives";
+export { ResultActions } from "./ResultActions";
+export type { ResultActionsProps } from "./ResultActions";
+export { ReferenceResultProvenance } from "./ReferenceResultProvenance";
+export { StructuredTextResultV2 } from "./StructuredTextResultV2";
+export type { StructuredTextMetric, StructuredTextResultV2Props } from "./StructuredTextResultV2";
+export {
+  CalculatorResultV2Exemplar,
+  TransformResultV2Exemplar,
+  ValidatorResultV2Exemplar,
+} from "./ResultV2Exemplars";
 export { CaretMark, RangeMark, StatusMark, statusMarkLabel } from "./StatusMark";
 export type {
   CaretDirection,
@@ -30,9 +71,12 @@ export type { ToolSurfaceProps } from "./ToolSurface";
 export {
   cancelToolOperation,
   idleToolOperation,
+  partialToolOperation,
   settleToolOperation,
+  shouldCommitToolOperation,
   startToolOperation,
   useToolOperation,
+  warningToolOperation,
 } from "./useToolOperation";
 export type {
   ToolOperationController,

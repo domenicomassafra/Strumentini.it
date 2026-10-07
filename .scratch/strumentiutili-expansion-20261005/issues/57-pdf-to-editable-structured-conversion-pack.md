@@ -6,7 +6,7 @@
 
 **Constraints:** Never sell arbitrary visual PDF→XLSX as a spreadsheet; table extraction is table extraction. Page-as-slide PPTX is distinct from editable object reconstruction. Scanned PDFs require OCR and must say so.
 
-**Blocked by:** 31, 34, 55.
+**Blocked by:** 252, 253, 254, 255.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] PDF→PPTX baseline preserves each page visually as a slide; any editable mode is separately labelled/proven.
 
 **Verification:** Born-digital/scanned/mixed PDF corpus, semantic/table fidelity metrics, OCR handoff tests, OOXML output validation.
-

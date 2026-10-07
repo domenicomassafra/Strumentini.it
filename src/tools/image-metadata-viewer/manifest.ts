@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const image_metadata_viewerManifest = {
   id: "image-metadata-viewer",
@@ -13,6 +14,7 @@ export const image_metadata_viewerManifest = {
   engine: "image",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["image-metadata-viewer"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-147", fixtureFamilies: ["image-metadata", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

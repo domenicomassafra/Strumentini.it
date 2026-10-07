@@ -80,6 +80,14 @@ async function acceptTool(context, testCase) {
   await result.waitFor({ timeout: 10000 });
   const output = await result.innerText();
   if (!testCase.expect.test(output)) throw new Error(`${testCase.id}: unexpected output ${JSON.stringify(output.slice(0, 500))}`);
+  for (const actionId of ["copy", "download", "reset"]) {
+    const action = result.locator(`[data-result-action="${actionId}"]`);
+    if (await action.count() !== 1) throw new Error(`${testCase.id}: missing Result v2 ${actionId} action`);
+    if (await action.getAttribute("type") !== "button") throw new Error(`${testCase.id}: ${actionId} action is not a keyboard button`);
+  }
+  if (await result.locator('[data-primary-action="true"][data-result-action="copy"]').count() !== 1) {
+    throw new Error(`${testCase.id}: copy is not the explicit primary Result v2 action`);
+  }
   // A console error is tolerated only when its own source URL is the optional
   // account probe; anything else is fatal.
   const consoleErrors = runtimeErrors.filter((entry) => !isExpectedStaticFailure(entry.url));
@@ -121,6 +129,7 @@ try {
     routesChecked: results.length,
     keyboard: "every submit action exercised with Enter",
     accessibility: "all interactive controls in the tool form have a label or accessible name",
+    resultV2Actions: "every route exposes copy/download/reset with copy as the explicit primary action",
     mobileViewport: { width: 390, height: 844, horizontalOverflow: false },
     externalTaskRequests: 0,
     nonGetTaskRequests: 0,

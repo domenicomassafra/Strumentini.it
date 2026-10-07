@@ -62,6 +62,7 @@ SOURCES = [
     {"id":"bibtex-ctan","source_class":"official-primary","authority":"BibTeX / CTAN distribution","url":"https://www.ctan.org/tex-archive/biblio/bibtex/base/","locator":"BibTeX base distribution, btxdoc and xampl.bib","supports":["BibTeX syntax","standard entry types"],"checked_at":"2026-09-23","notes":"StrumentiUtili.it fixtures are synthetic rather than copied from xampl.bib."},
     {"id":"fixture-policy","source_class":"project-policy","authority":"StrumentiUtili.it","locator":"quality/fixtures/README.md","supports":["hand-worked literal oracle policy","synthetic fixture provenance","no self-generated expected values"]},
     {"id":"ris-policy","source_class":"project-policy","authority":"StrumentiUtili.it","locator":"research/lanes/08-gold-oracle-factory.md","supports":["RIS minimal tagged-record policy"],"notes":"RIS vendor lineage has uneven freely accessible normative documentation. Use synthetic records plus independent parser cross-check."},
+    {"id":"zotero-translators","source_class":"independent-implementation","authority":"Zotero","url":"https://github.com/zotero/translators","locator":"commit 3d1c78530f42892328e08741b7cac8474ff687b8; RIS.js and BibTeX.js translator fixtures","supports":["independent RIS import/export field mapping","independent BibTeX import/export type mapping","translator expected-result test cases"],"checked_at":"2026-10-05"},
     {"id":"python-stdlib","source_class":"independent-implementation","authority":"CPython","url":"https://docs.python.org/3/library/","locator":"Python standard library used only as a secondary test implementation","supports":["csv","json","base64","hashlib","urllib","datetime","zoneinfo"]},
     {"id":"openssl-cli","source_class":"independent-implementation","authority":"OpenSSL Project","url":"https://docs.openssl.org/master/man1/openssl-dgst/","locator":"openssl dgst CLI","supports":["hash and HMAC cross-check"]},
     {"id":"wpt-url","source_class":"independent-implementation","authority":"web-platform-tests","url":"https://github.com/web-platform-tests/wpt/tree/master/url","locator":"URL conformance suite","supports":["WHATWG URL cross-check"]},
@@ -468,7 +469,7 @@ fixture("ris",["RIS/BibTeX converter"],{
     ],
     "policy":{"repeat_tags":"preserve ordered list","unknown_tags":"preserve","record_terminator":"ER"},
     "provenance":"Synthetic tagged records; no vendor corpus copied."
-},["ris-policy"],["repeated tags","CRLF/LF","unknown-tag preservation"],"synthetic-local","Synthetic tagged records; no external RIS sample corpus copied.")
+},["ris-policy","zotero-translators"],["repeated tags","CRLF/LF","unknown-tag preservation","independent pinned Zotero translator cross-check"],"synthetic-local","Synthetic tagged records; no external RIS sample corpus copied. Expected semantics are independently cross-checked against pinned Zotero translator expectations.")
 
 fixture("ics",["ICS event builder","ICS viewer"],{
     "schema_version":1,
@@ -759,6 +760,8 @@ def truth_sources(n: int, name: str) -> list[str]:
             src += ["bibtex-ctan"]
         if "ris" in low:
             src += ["ris-policy"]
+            if n == 187:
+                src += ["zotero-translators"]
         if "date" in low or "timeline" in low:
             src += ["rfc3339"]
         if "url" in low:
@@ -886,6 +889,8 @@ def cross_check(n: int, name: str) -> dict:
         return {"usable":True,"implementation":"independent QR decoder selected by integration lane","role":"required for Gold"}
     if 121 <= n <= 160:
         return {"usable":True,"implementation":"independent browser/system image or PDF parser","role":"required for Gold where format permits"}
+    if n == 187:
+        return {"usable":True,"implementation":"Pinned Zotero RIS.js/BibTeX.js translator expectations plus a test-only RIS parser; see quality/fixtures/research-ris-bibtex-conversion/oracle-cross-check.json","role":"required independent cross-check for the declared conversion subset"}
     if "bibtex" in low or "ris" in low:
         return {"usable":True,"implementation":"independent bibliography parser in test tooling","role":"recommended"}
     return {"usable":True,"implementation":"independent standard-library/tooling implementation where available","role":"secondary; literal/spec oracle remains primary"}
@@ -906,7 +911,7 @@ for n, name in CANDIDATES:
     if 121 <= n <= 140:
         confidence = "medium"
         gaps.append("Full ISO PDF normative text is not bundled; deeper conformance corpus/parser requires separate license/dependency review.")
-    if "ris" in low:
+    if "ris" in low and n != 187:
         confidence = "medium"
         gaps.append("No single freely accessible normative RIS authority is treated as canonical; preserve unknown tags and require parser cross-check.")
     if not gaps:

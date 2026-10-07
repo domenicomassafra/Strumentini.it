@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "id": "synthetic-valid-prefixed",
+      "input": "IT 12345678903",
+      "valid": true,
+      "normalized": "12345678903",
+      "checkDigit": "3"
+    },
+    {
+      "id": "synthetic-valid-spaced",
+      "input": "00012 34567 4",
+      "valid": true,
+      "normalized": "00012345674",
+      "checkDigit": "4"
+    },
+    {
+      "id": "wrong-length",
+      "input": "1234567890",
+      "valid": false,
+      "failureRule": "length"
+    },
+    {
+      "id": "invalid-character",
+      "input": "12345A78903",
+      "valid": false,
+      "failureRule": "character"
+    },
+    {
+      "id": "wrong-checksum",
+      "input": "12345678904",
+      "valid": false,
+      "failureRule": "checksum",
+      "expectedCheckDigit": "3",
+      "checkDigit": "4"
+    }
+  ]
+}

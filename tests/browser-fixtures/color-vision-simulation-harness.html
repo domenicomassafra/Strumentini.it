@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Color vision simulation acceptance harness</title>
+  </head>
+  <body>
+    <main>
+      <label for="mode">Modalità di simulazione</label>
+      <select id="mode">
+        <option value="protanopia">Protanopia</option>
+        <option value="deuteranopia">Deuteranopia</option>
+        <option value="tritanopia">Tritanopia</option>
+      </select>
+      <button id="run" type="button">Esegui simulazione</button>
+      <div id="result"></div>
+    </main>
+    <script type="module" src="./color-vision-simulation-harness.tsx"></script>
+  </body>
+</html>

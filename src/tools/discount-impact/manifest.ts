@@ -13,6 +13,7 @@ export const discountImpactManifest = {
   engine: "business-math",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [{ key: "currency", defaultValue: "USD" }],
+  result: { class: "calculator", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-113", fixtureFamilies: ["percentage-math"] },
 } as const satisfies ToolManifest;
 

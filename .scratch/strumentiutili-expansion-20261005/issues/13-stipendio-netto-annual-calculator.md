@@ -6,7 +6,7 @@
 
 **Constraints:** Do not imply payroll-certificate accuracy; regional/municipal or contract-specific items outside supported scope must be disclosed; reuse IRPEF math rather than fork it.
 
-**Blocked by:** 12 — IRPEF annual calculator.
+**Blocked by:** 130.
 
 **Status:** blocked
 

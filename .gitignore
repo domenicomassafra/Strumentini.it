@@ -6,6 +6,8 @@ dist/
 !.env.example
 coverage/
 *.log
+__pycache__/
+*.pyc
 .astro/
 .wrangler/
 .wrangler-dry-run/

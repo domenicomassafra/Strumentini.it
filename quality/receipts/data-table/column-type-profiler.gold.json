@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "column-type-profiler",
   "runtime": {
     "location": "LOCAL",
@@ -42,13 +42,13 @@
   ],
   "identities": {
     "manifestSha256": "a56c7af04799b13ce0a556da147f866b2e18d75d23ced5a3cadba1963d2401f2",
-    "operationsSha256": "75fa300718e83d1686e773f7e406fdc69b32d32e7bfe2c9eb60dd9b4ffab07fc",
-    "csvEngineSha256": "d84f81fef62f4acec84b3c236ea88cb9cd1deaba257083513923aaaa9e3d42b7",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "022f3381c4ef3dd181e17de58e1b7f55592780b681b799ccbb8ce5af9b53abe2",
-    "unitTestsSha256": "a0d23ffd449e77e17dad8074ca4b3fb19445d5ceba3ba60ebf5d9c51e463b66f",
-    "fixture:csv-table-ops:sha256": "d9fed155c6536ca6ee6c60c5209cf7499d9ad7cc4b8d9c5cfe9461efa1cf91f2",
+    "operationsSha256": "ccb8acb4179870ebf71a3d9db88a77df8b3ef8430883226a35943b79b942849d",
+    "csvEngineSha256": "c4dc295e0ec72ffe47bac915a1a6bc584bbc9237b2ba87a95ad2c48f627c0717",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "04ea2e9d48aecaffafe6535b4c79b2389784e52992e20e4d3bcebc180fdd97c7",
+    "unitTestsSha256": "8b09214887a7377345f1fe058e5afa315ff65f3ae199aacbcf67e2681f2e7b2b",
+    "fixture:csv-table-ops:sha256": "879a421cef35fb8e43394b0852c12390df3735fe970fbc6523357bcec0b67b7f",
     "fixture:data-table-gold:sha256": "51a4f3c5cbdad3102da73fd138fd73ac31bb7cea41b37ca84d733d8894a04a50"
   }
 }

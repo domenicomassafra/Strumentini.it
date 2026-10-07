@@ -1,7 +1,7 @@
 /*
  * Vocabolario pubblico unico dell'applicazione.
  *
- * StrumentiUtili.it è un prodotto in italiano: non manteniamo una seconda
+ * Strumentini.it è un prodotto in italiano: non manteniamo una seconda
  * versione inglese delle etichette perché rischierebbe di diventare di nuovo la
  * fonte implicita della UI. I token tecnici (JSON, SHA-256, MIME...) restano
  * invariati; il testo rivolto alla persona è italiano.

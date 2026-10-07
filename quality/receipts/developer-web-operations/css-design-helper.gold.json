@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/developer-web-operations/css-design-helper.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "css-design-helper",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-242",
+  "fixtureFamilies": [
+    "css-design-helper"
+  ],
+  "fixtureReplayCount": 1,
+  "truthSources": [
+    "css-syntax-3",
+    "css-tree-3.2.1",
+    "fixture-policy"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "css-design-helper",
+      "path": "quality/fixtures/css-design-helper/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "oracle confidence is high and every unresolved-gap string matches this tool's explicitly reviewed bounded-scope pattern",
+    "manifest maintenance class matches oracle registry",
+    "fixture/property replay passes through the public tool module",
+    "per-tool browser action produces semantic domain output",
+    "task execution has zero unexpected external/non-GET/body-bearing requests",
+    "task execution leaves local/session storage and visible URL unchanged",
+    "390px viewport has no horizontal overflow and exercised controls have accessible names",
+    "built route component is absent from home HTML, proving the tool implementation is not in the home eager surface",
+    "focused semantic/refusal tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "a09d24a322b6a7dd6f5f556fe4cca208bad65b17b22588042371deef5c1a04cf",
+    "moduleSha256": "2a4281ab685909a00da8c965e9873d20481c477bfee3e0f793ffee0055bceb3c",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "95ec130bfdb0cdbed0833ae1dfeb61f1d2e4195f322b987ae2a66fccf43dc1e3",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "ae4649fea07ec9e26c2f9e32b063e9b6fb05f0a4e99644290a4ea9d5a4049119",
+    "fixture:css-design-helper:sha256": "505afd632ea9a5217196632c014605acc836175dca2b0ee79b2b0af6be994d83"
+  }
+}

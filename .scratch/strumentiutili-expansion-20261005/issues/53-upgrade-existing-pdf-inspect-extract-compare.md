@@ -6,7 +6,7 @@
 
 **Constraints:** No password bypass/brute force; original embedded bytes are preferred over re-encoding when extracting; comparison claims only what can actually be parsed/rendered.
 
-**Blocked by:** 01, 05, 52.
+**Blocked by:** 220, 221, 242, 318, 319, 320.
 
 **Status:** blocked
 
@@ -17,4 +17,3 @@
 - [ ] Password removal accepts a supplied valid password when the engine/library supports it and clearly refuses unsupported encryption.
 
 **Verification:** Encrypted/forms/annotations/images/text corpus, post-output inspection, extraction byte checks, compare fixtures, and no-bypass security tests.
-

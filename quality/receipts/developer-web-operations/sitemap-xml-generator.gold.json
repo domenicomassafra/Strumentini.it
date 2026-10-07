@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/developer-web-operations/sitemap-xml-generator.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "sitemap-xml-generator",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-245",
+  "fixtureFamilies": [
+    "sitemap-xml"
+  ],
+  "fixtureReplayCount": 1,
+  "truthSources": [
+    "fixture-policy",
+    "sitemaps-protocol",
+    "strumentiutili-quality",
+    "whatwg-url"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "sitemap-xml",
+      "path": "quality/fixtures/sitemap-xml/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "oracle confidence is high and every unresolved-gap string matches this tool's explicitly reviewed bounded-scope pattern",
+    "manifest maintenance class matches oracle registry",
+    "fixture/property replay passes through the public tool module",
+    "per-tool browser action produces semantic domain output",
+    "task execution has zero unexpected external/non-GET/body-bearing requests",
+    "task execution leaves local/session storage and visible URL unchanged",
+    "390px viewport has no horizontal overflow and exercised controls have accessible names",
+    "built route component is absent from home HTML, proving the tool implementation is not in the home eager surface",
+    "focused semantic/refusal tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "7a9f90cef987825046472b82a2091556809d6e16e5f528844d354a6c64312862",
+    "moduleSha256": "5f247f3eb4a21f50c5577eece63e220ffcc6b9876d0364e32940b032b9d18b2f",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "95ec130bfdb0cdbed0833ae1dfeb61f1d2e4195f322b987ae2a66fccf43dc1e3",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "e70b1cbf9a090edf74537f561df0e53289b4fae45feacbcf23ed4f47d7ad6211",
+    "fixture:sitemap-xml:sha256": "f5ccea2c984dff73f557203bf009b19f35ecbdce1af7f187cad6a158acfa49df"
+  }
+}

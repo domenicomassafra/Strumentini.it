@@ -5,11 +5,23 @@ import {
   assertGeneratedCatalogCurrent,
   compileFactoryCatalog,
 } from "../../src/tool-factory/catalog";
-import { renderCatalogSources, type SearchProjectionDecoration } from "../../src/catalog/projections";
+import {
+  projectCatalog,
+  projectResultV2Inventory,
+  renderCatalogSources,
+  renderResultV2InventorySource,
+  type SearchProjectionDecoration,
+} from "../../src/catalog/projections";
 import type { FixtureIndex, OracleRegistry } from "../../src/tool-factory/manifest";
 import { buildGoldQualityIndex, renderGoldQualitySource } from "../../src/onboarding/quality";
 import { contextTagsForTools } from "../../src/onboarding/membership";
 import { missingItalianToolCopy } from "../../src/i18n/it/tool-copy";
+import { discoverResultV2RendererSeams } from "./result-v2-inventory";
+import {
+  assertResultV2MigrationLedgerComplete,
+  assertResultV2MigrationTicketsExist,
+  assignResultV2MigrationOwners,
+} from "./result-v2-migration-ledger";
 
 const root = resolve(import.meta.dirname, "../..");
 const toolsRoot = resolve(root, "src/tools");
@@ -70,14 +82,34 @@ const quality = buildGoldQualityIndex(
 );
 const contextTags = contextTagsForTools(artifacts.summaries);
 const verifiedToolIds = new Set(quality.index.tools.map(({ toolId }) => toolId));
+const searchIndexById = new Map(artifacts.searchIndex.map((entry) => [entry.id, entry] as const));
 const searchDecorations = new Map<string, SearchProjectionDecoration>(
   artifacts.summaries.map((tool) => [tool.id, {
     packTags: contextTags.get(tool.id) ?? [],
     roleTags: [],
     quality: verifiedToolIds.has(tool.id) ? "verified" : "checking",
+    keywords: searchIndexById.get(tool.id)?.keywords ?? [],
   }]),
 );
+const projectedSearchById = new Map(
+  projectCatalog(artifacts.summaries, searchDecorations).search.map((entry) => [entry.id, entry] as const),
+);
+for (const historical of artifacts.searchIndex) {
+  const projected = projectedSearchById.get(historical.id);
+  if (projected === undefined) throw new Error(`search projection lost catalog id: ${historical.id}`);
+  const projectedKeywords = projected.keywords ?? [];
+  if (projectedKeywords.length !== historical.keywords.length
+    || historical.keywords.some((keyword, index) => projectedKeywords[index] !== keyword)) {
+    throw new Error(`search projection lost or reordered localized/historical keywords for ${historical.id}`);
+  }
+}
 const sources = renderCatalogSources(artifacts.summaries, artifacts.loaders, searchDecorations);
+const resultV2RendererSeams = await discoverResultV2RendererSeams(root, artifacts.summaries.map(({ id }) => id));
+await assertResultV2MigrationTicketsExist(root);
+const resultV2MigrationOwners = assignResultV2MigrationOwners(artifacts.summaries, resultV2RendererSeams);
+const resultV2Inventory = projectResultV2Inventory(artifacts.summaries, resultV2RendererSeams, resultV2MigrationOwners);
+assertResultV2MigrationLedgerComplete(resultV2Inventory);
+const resultV2InventoryOutput = renderResultV2InventorySource(resultV2Inventory);
 const generatedPaths = {
   catalog: resolve(root, "src/generated/catalog.ts"),
   loaders: resolve(root, "src/generated/tool-loaders.ts"),
@@ -86,10 +118,12 @@ const generatedPaths = {
   runtimeToolIndex: resolve(root, "src/generated/runtime-tool-index.ts"),
   handoffCatalog: resolve(root, "src/generated/handoff-catalog.ts"),
 };
+const resultV2InventoryPath = resolve(root, "src/catalog/result-v2-inventory.generated.ts");
 const qualityPath = resolve(root, "src/generated/quality.ts");
 const qualityOutput = renderGoldQualitySource(quality.index);
 const outputs = [
   ...Object.entries(sources).map(([key, content]) => [generatedPaths[key as keyof typeof generatedPaths], content] as const),
+  [resultV2InventoryPath, resultV2InventoryOutput] as const,
   [qualityPath, qualityOutput] as const,
 ];
 
@@ -97,6 +131,7 @@ if (checkOnly) {
   const files = {
     catalog: await readFile(generatedPaths.catalog, "utf8").catch(() => ""),
     loaders: await readFile(generatedPaths.loaders, "utf8").catch(() => ""),
+    resultV2Inventory: await readFile(resultV2InventoryPath, "utf8").catch(() => ""),
     quality: await readFile(qualityPath, "utf8").catch(() => ""),
   };
   assertGeneratedCatalogCurrent(artifacts, files);
@@ -105,6 +140,9 @@ if (checkOnly) {
     if (await readFile(path, "utf8").catch(() => "") !== sources[key as keyof typeof sources]) {
       throw new Error(`tool-factory catalog output is stale: ${relative(root, path)}`);
     }
+  }
+  if (files.resultV2Inventory !== resultV2InventoryOutput) {
+    throw new Error(`tool-factory catalog output is stale: src/catalog/result-v2-inventory.generated.ts`);
   }
   if (files.quality !== qualityOutput) throw new Error(`factory catalog output is stale: src/generated/quality.ts`);
   console.log(`tool-factory catalog: ${artifacts.summaries.length} tool(s), Gold receipts ${quality.index.tools.length}, outputs current`);

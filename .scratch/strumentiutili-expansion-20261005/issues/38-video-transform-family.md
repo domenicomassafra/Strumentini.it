@@ -6,7 +6,7 @@
 
 **Constraints:** Heavy processing is lazy, cancellable, and local; output format claims reflect the actual encoder stack; no downloader functionality for third-party platforms is included.
 
-**Blocked by:** 01, 34.
+**Blocked by:** 234, 306, 307, 308.
 
 **Status:** blocked
 
@@ -16,4 +16,3 @@
 - [ ] File/memory ceilings and unsupported devices fail early with a usable explanation.
 
 **Verification:** Real media corpus, A/V duration-sync checks, output probing, cancellation/memory tests, and genuine iOS/Android acceptance for promoted paths.
-

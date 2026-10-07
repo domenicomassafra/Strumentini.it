@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 2,
+  "ticket": 118,
+  "datasetId": "inps-contributions-annual",
+  "checkedAt": "2026-10-07",
+  "effectiveCoverage": {
+    "year": 2026,
+    "from": "2026-01-01",
+    "to": "2026-12-31"
+  },
+  "scope": "Official 2026 source pack for Gestione Separata professionals, artigiani/commercianti and one bounded agricultural-worker OTD/OTI employee profile.",
+  "artifacts": [
+    {
+      "authority": "INPS",
+      "title": "Circolare numero 8 del 03-02-2026 - Gestione Separata",
+      "url": "https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2026/02/Circolare_15153/Allegati/16573_Circolare-numero-8-del-03-02-2026.pdf",
+      "path": "quality/reference-data/italy/artifacts/118-inps-2026/inps-circolare-8-2026.pdf",
+      "sha256": "sha256:4dc9598ded1271b458f9ee21f921600ab8cc2f36e4642e47b3b39692d304adf2",
+      "mediaType": "application/pdf",
+      "publishedAt": "2026-02-03"
+    },
+    {
+      "authority": "INPS",
+      "title": "Circolare numero 14 del 09-02-2026 - Artigiani e commercianti",
+      "url": "https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2026/02/Circolare_15162/Allegati/16561_Circolare-numero-14-del-09-02-2026.pdf",
+      "path": "quality/reference-data/italy/artifacts/118-inps-2026/inps-circolare-14-2026.pdf",
+      "sha256": "sha256:1122d02097852f5f1271efb6639e2422ebb3a1a61f9e9f2605fc4164f93209c8",
+      "mediaType": "application/pdf",
+      "publishedAt": "2026-02-09"
+    },
+    {
+      "authority": "INPS",
+      "title": "Circolare numero 43 del 07-04-2026 - Lavoratori agricoli",
+      "url": "https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2026/04/Circolare_15228/Allegati/16697_Circolare-numero-43-del-07-04-2026.pdf",
+      "path": "quality/reference-data/italy/artifacts/129-inps-employee-2026/inps-circolare-43-2026.pdf",
+      "sha256": "sha256:34b25b4d6a64e96becf723f548fd2f129e4ccb26026bccb0bba6e8077e8e575b",
+      "mediaType": "application/pdf",
+      "publishedAt": "2026-04-07"
+    },
+    {
+      "authority": "INPS",
+      "title": "Lavoratori dipendenti: limite minimo di retribuzione giornaliera 2026",
+      "url": "https://www.inps.it/it/it/inps-comunica/notizie/dettaglio-news-page.news.2026.02.lavoratori-dipendenti-limite-minimo-di-retribuzione-giornaliera-2026.html",
+      "path": "quality/reference-data/italy/artifacts/129-inps-employee-2026/inps-lavoratori-dipendenti-2026.html",
+      "sha256": "sha256:d4ba5807e11c6fcfe3c52a2153dd7329ec9fb0ea323f8512e6e7d69fc1132529",
+      "mediaType": "text/html",
+      "publishedAt": "2026-02-02"
+    }
+  ],
+  "parsedFacts2026": {
+    "gestioneSeparataProfessionisti": {
+      "incomeMinimumEur": 18808,
+      "incomeMaximumEur": 122295,
+      "profiles": [
+        {
+          "id": "professional-no-other-mandatory-pension-coverage",
+          "ratePercent": 26.07,
+          "componentsPercent": {
+            "ivs": 25,
+            "additionalBenefits": 0.72,
+            "iscro": 0.35
+          }
+        },
+        {
+          "id": "professional-pensioner-or-other-mandatory-pension-coverage",
+          "ratePercent": 24
+        }
+      ]
+    },
+    "artigianiCommercianti": {
+      "incomeMinimumEur": 18808,
+      "firstBandUpperEur": 56224,
+      "ratesPercent": {
+        "artigiani": {
+          "throughFirstBand": 24,
+          "aboveFirstBand": 25
+        },
+        "commercianti": {
+          "throughFirstBand": 24.48,
+          "aboveFirstBand": 25.48
+        }
+      },
+      "annualMinimumContributionEur": {
+        "artigiani": 4521.36,
+        "commercianti": 4611.64
+      },
+      "incomeMaximumEur": {
+        "withContributionSeniorityBefore1996": 93707,
+        "withoutContributionSeniorityAt1995YearEnd": 122295
+      }
+    },
+    "employeeProfiles": {
+      "agricultural-worker-general": {
+        "employmentScope": "operai agricoli a tempo determinato e indeterminato presso la generalità dei datori di lavoro agricoli",
+        "totalFpldRatePercent": 30.5,
+        "workerFpldRatePercent": 8.84,
+        "employerFpldRatePercent": 21.66,
+        "employerFpldRateDerivation": "30.50 - 8.84; derived arithmetic because Circular 43/2026 states the total and worker shares but does not print 21.66% verbatim",
+        "dailyMinimumReferenceEur": 58.13,
+        "partTimeMinimumHourlyEur": 8.94,
+        "additionalOnePercentThresholdEur": 56224,
+        "sourceReportedAnnualBaseMaximumReferenceEur": 122295,
+        "annualBaseMaximumUsage": "reference-only-not-applied-by-v1",
+        "supportedBaseCeilingEur": 56224
+      }
+    },
+    "employeeFactSupport": {
+      "circular43Direct": [
+        "general agricultural employers employing OTI/OTD workers and assimilated workers",
+        "2026 FPLD total rate 30.50%",
+        "worker share 8.84%",
+        "part-time minimum formula €58.13 × 6/39 = €8.94"
+      ],
+      "employeeNewsPageDirect": [
+        "2026 daily remuneration minimum €58.13",
+        "source-reported annual contribution-base maximum €122,295",
+        "additional 1% above €56,224 annual remuneration (€4,685 monthly)"
+      ],
+      "derivedOnly": [
+        "employer FPLD share 21.66% = 30.50% total - 8.84% worker"
+      ]
+    }
+  },
+  "coverageLimits": [
+    "Gestione Separata parasubordinate/special-sector codes are present in circular 8 but are not normalized into this bounded source-pack snapshot.",
+    "The employee path is intentionally limited to the general agricultural-worker OTD/OTI FPLD profile and contribution bases at or below the 2026 additional-1% threshold; other employee sectors and higher bases remain unsupported.",
+    "The €122,295 annual base maximum is retained only as a source-reported reference value; the bounded employee calculator never reaches or applies that ceiling because it fails closed above €56,224.",
+    "The employee calculator accepts an already determined FPLD contribution base and does not derive payroll contribution bases from salary, days, collective-contract minima or other remuneration rules.",
+    "Industrial agricultural employers, special reductions, NASpI, INAIL and LOAgri are not folded into the bounded employee FPLD calculator.",
+    "Downstream calculators must select only an explicitly supported profile and year; no fallback to a nearby profile or year is permitted."
+  ],
+  "decision": "READY",
+  "reason": "Exact official INPS 2026 source bytes are pinned and hash-addressed, with bounded machine-readable facts for Gestione Separata professionals, artigiani/commercianti and one agricultural-worker employee profile. Unsupported profiles remain explicit rather than inheriting values."
+}

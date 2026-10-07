@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const imageResizeManifest = {
   id: "image-resize",
@@ -16,6 +17,7 @@ export const imageResizeManifest = {
     network: "forbidden",
   },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["image-resize"],
   gold: {
     maintenanceClass: "H",
     oracleEntryId: "cand-141",

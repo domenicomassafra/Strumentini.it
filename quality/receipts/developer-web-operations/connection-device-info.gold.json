@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/developer-web-operations/connection-device-info.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "connection-device-info",
+  "runtime": {
+    "location": "REFERENCE",
+    "network": "reference-only"
+  },
+  "maintenanceClass": "D",
+  "oracleEntryId": "cand-219",
+  "fixtureFamilies": [
+    "browser-diagnostics"
+  ],
+  "fixtureReplayCount": 1,
+  "truthSources": [
+    "fixture-policy",
+    "rfc9110",
+    "strumentiutili-quality",
+    "w3c-uievents",
+    "whatwg-html"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "browser-diagnostics",
+      "path": "quality/fixtures/browser-diagnostics/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "oracle confidence is high and every unresolved-gap string matches this tool's explicitly reviewed bounded-scope pattern",
+    "manifest maintenance class matches oracle registry",
+    "fixture/property replay passes through the public tool module",
+    "per-tool browser action produces semantic domain output",
+    "task execution has zero unexpected external/non-GET/body-bearing requests",
+    "task execution leaves local/session storage and visible URL unchanged",
+    "390px viewport has no horizontal overflow and exercised controls have accessible names",
+    "built route component is absent from home HTML, proving the tool implementation is not in the home eager surface",
+    "focused semantic/refusal tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "086bc33ea234a6b63aebfe540d7a8081cbe47fe1358cd58e8f59f58c420071d9",
+    "moduleSha256": "c180336cce9a90692716a445bc0b6e546758c28f8e9d53d135b3f04ee7866cd2",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "95ec130bfdb0cdbed0833ae1dfeb61f1d2e4195f322b987ae2a66fccf43dc1e3",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "9a13fe77056ae064970fd0d030c2f2a989ca7161e4fe278cdb0dc03820aa793b",
+    "fixture:browser-diagnostics:sha256": "d6a6db97caeb7e0b4b057fc9ed6cc4f267dc44a7696e50020b94104a4b99cdd1"
+  }
+}

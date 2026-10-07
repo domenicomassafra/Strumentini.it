@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { TEXT_RESULT_V2_DECLARATIONS } from "../text-writing/result-v2";
 
 export const languageAwareTextStatisticsManifest = {
   id: "language-aware-text-statistics",
@@ -13,6 +14,7 @@ export const languageAwareTextStatisticsManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: TEXT_RESULT_V2_DECLARATIONS["language-aware-text-statistics"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-020", fixtureFamilies: ["unicode-normalization", "text-writing-local-jobs"] },
 } as const satisfies ToolManifest;
 

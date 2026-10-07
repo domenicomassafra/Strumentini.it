@@ -29,6 +29,35 @@ export type TableFilterOperator =
   | "not-empty";
 export type TableJoinType = "inner" | "left" | "right" | "full";
 export type TableAggregate = "count" | "sum" | "min" | "max";
+export type TableJoinNullKeyPolicy = "match" | "never-match";
+
+export interface TableNullPolicy {
+  readonly tokens: readonly string[];
+  readonly emptyAsNull: boolean;
+}
+
+export interface TableRowCountEffect {
+  readonly inputRows: number;
+  readonly outputRows: number;
+  readonly delta: number;
+}
+
+export interface TableColumnDisclosure {
+  readonly index: number;
+  readonly name: string;
+}
+
+export interface TableJoinEstimate {
+  readonly estimatedOutputRows: number;
+  readonly estimatedOutputCells: number;
+  readonly matchedOutputRows: number;
+  readonly unmatchedLeftRows: number;
+  readonly unmatchedRightRows: number;
+  readonly explosionFactor: number;
+  readonly outputLimitRows: number;
+  readonly outputLimitCells: number;
+  readonly guardedBeforeMaterialization: true;
+}
 
 export interface TableTextOptions {
   delimiter?: TableDelimiter;
@@ -52,6 +81,9 @@ export interface DelimiterDetection {
   candidates: DelimiterCandidate[];
   sample: string;
   warnings: CsvWarning[];
+  dialect: { readonly delimiter: TableDelimiter; readonly encoding: "utf-8"; readonly dynamicTyping: false };
+  affectedRows: 0;
+  affectedCells: 0;
 }
 
 export interface TablePreviewResult {
@@ -63,9 +95,13 @@ export interface TablePreviewResult {
   previewRows: string[][];
   previewTruncated: boolean;
   engineVersion: string;
+  dialect: { readonly delimiter: string; readonly encoding: "utf-8"; readonly dynamicTyping: false };
+  affectedRows: 0;
+  affectedCells: 0;
 }
 
 export interface EncodingFixResult {
+  inputBytes: number;
   output: string;
   outputBytes: number;
   detectedEncoding: string;
@@ -75,6 +111,13 @@ export interface EncodingFixResult {
   replacementCharacters: number;
   warnings: string[];
   engineVersion: string;
+  affectedRows: 0;
+  affectedCells: 0;
+  textChanges: {
+    readonly bomRemoved: boolean;
+    readonly normalizedLineEndings: number;
+    readonly replacementCharacters: number;
+  };
 }
 
 export interface TableColumnSelectionResult {
@@ -84,6 +127,11 @@ export interface TableColumnSelectionResult {
   headers: string[];
   droppedColumns: Array<{ index: number; name: string }>;
   filledMissingCells: number;
+  inputRows: number;
+  outputRows: number;
+  rowCountEffect: TableRowCountEffect;
+  selectedColumnDisclosure: TableColumnDisclosure[];
+  policySummary: string;
   engineVersion: string;
 }
 
@@ -96,6 +144,13 @@ export interface TableFilterResult {
   operator: TableFilterOperator;
   value: string;
   caseSensitive: boolean;
+  inputRows: number;
+  outputRows: number;
+  rowCountEffect: TableRowCountEffect;
+  selectedColumn: TableColumnDisclosure;
+  nullPolicy: TableNullPolicy;
+  typePolicy: { readonly mode: "text"; readonly invalidValues: "literal" };
+  policySummary: string;
   engineVersion: string;
 }
 
@@ -107,6 +162,14 @@ export interface TableSortResult {
   comparator: TableSortComparator;
   direction: "asc" | "desc";
   nulls: "first" | "last";
+  caseSensitive: boolean;
+  inputRows: number;
+  outputRows: number;
+  rowCountEffect: TableRowCountEffect;
+  selectedColumn: TableColumnDisclosure;
+  nullPolicy: TableNullPolicy;
+  invalidValues: "as-null";
+  policySummary: string;
   engineVersion: string;
 }
 
@@ -117,6 +180,16 @@ export interface TableGroupCountResult {
   groups: number;
   countColumn?: number;
   aggregate: TableAggregate;
+  inputRows: number;
+  outputRows: number;
+  rowCountEffect: TableRowCountEffect;
+  groupColumnDisclosure: TableColumnDisclosure[];
+  aggregateColumnDisclosure?: TableColumnDisclosure;
+  caseSensitive: boolean;
+  nullPolicy: TableNullPolicy;
+  nullKeys: "group";
+  numericPolicy: "ignore-null-reject-non-numeric";
+  policySummary: string;
   engineVersion: string;
 }
 
@@ -131,6 +204,15 @@ export interface TableJoinResult {
   matchedRows: number;
   unmatchedLeftRows: number;
   unmatchedRightRows: number;
+  outputRows: number;
+  rowCountEffect: { readonly leftInputRows: number; readonly rightInputRows: number; readonly outputRows: number };
+  leftKeyDisclosure: TableColumnDisclosure[];
+  rightKeyDisclosure: TableColumnDisclosure[];
+  caseSensitive: boolean;
+  nullPolicy: TableNullPolicy;
+  nullKeyPolicy: TableJoinNullKeyPolicy;
+  estimate: TableJoinEstimate;
+  policySummary: string;
   engineVersion: string;
 }
 
@@ -144,6 +226,17 @@ export interface TablePivotResult {
   aggregate: TableAggregate;
   valueHeaders: string[];
   groups: number;
+  inputRows: number;
+  outputRows: number;
+  rowCountEffect: TableRowCountEffect;
+  groupColumnDisclosure: TableColumnDisclosure[];
+  valueHeaderColumnDisclosure?: TableColumnDisclosure;
+  aggregateColumnDisclosure?: TableColumnDisclosure;
+  caseSensitive: boolean;
+  nullPolicy: TableNullPolicy;
+  nullKeys: "group";
+  numericPolicy: "ignore-null-reject-non-numeric";
+  policySummary: string;
   engineVersion: string;
 }
 
@@ -395,6 +488,9 @@ export function detectCsvDelimiter(text: string): DelimiterDetection {
       candidates,
       sample: text.slice(0, 500),
       warnings: [{ code: "DELIMITER_FALLBACK", message: "No consistent delimiter was found; comma fallback was used." }],
+      dialect: { delimiter: ",", encoding: "utf-8", dynamicTyping: false },
+      affectedRows: 0,
+      affectedCells: 0,
     };
   }
   let table: CsvTable | undefined;
@@ -405,7 +501,17 @@ export function detectCsvDelimiter(text: string): DelimiterDetection {
     warnings = [{ code: "DELIMITER_FALLBACK", message: error instanceof Error ? error.message : "Delimiter candidate could not be parsed." }];
   }
   const confidence = selected.consistency >= 0.8 && selected.positiveRecords >= 2 ? "high" : selected.consistency >= 0.5 ? "medium" : "low";
-  return { delimiter: selected.delimiter, label: selected.label, confidence, candidates, sample: table === undefined ? text.slice(0, 500) : serializeCsvTable(table).slice(0, 500), warnings };
+  return {
+    delimiter: selected.delimiter,
+    label: selected.label,
+    confidence,
+    candidates,
+    sample: table === undefined ? text.slice(0, 500) : serializeCsvTable(table).slice(0, 500),
+    warnings,
+    dialect: { delimiter: selected.delimiter, encoding: "utf-8", dynamicTyping: false },
+    affectedRows: 0,
+    affectedCells: 0,
+  };
 }
 
 export function viewCsvTable(text: string, options: TableTextOptions = {}): TablePreviewResult {
@@ -421,6 +527,9 @@ export function viewCsvTable(text: string, options: TableTextOptions = {}): Tabl
     previewRows: table.rows.slice(0, maxPreviewRows).map((row) => [...row]),
     previewTruncated: table.rows.length > maxPreviewRows,
     engineVersion: TABLE_ENGINE_VERSION,
+    dialect: { delimiter: table.delimiter, encoding: "utf-8", dynamicTyping: false },
+    affectedRows: 0,
+    affectedCells: 0,
   };
 }
 
@@ -496,6 +605,7 @@ export function fixTableEncoding(value: ArrayBuffer | Uint8Array | number[], req
   if (bomRemoved) warnings.push("Removed a leading byte-order mark.");
   if (replacementCharacters > 0) warnings.push(`${replacementCharacters} replacement character${replacementCharacters === 1 ? "" : "s"} remained after decoding.`);
   return {
+    inputBytes: bytes.byteLength,
     output: normalized.output,
     outputBytes: byteLength(normalized.output),
     detectedEncoding,
@@ -505,6 +615,13 @@ export function fixTableEncoding(value: ArrayBuffer | Uint8Array | number[], req
     replacementCharacters,
     warnings,
     engineVersion: TABLE_ENGINE_VERSION,
+    affectedRows: 0,
+    affectedCells: 0,
+    textChanges: {
+      bomRemoved,
+      normalizedLineEndings: normalized.normalized,
+      replacementCharacters,
+    },
   };
 }
 
@@ -545,6 +662,40 @@ function outputTable(table: CsvTable, rows: string[][], warnings: CsvWarning[] =
   return { header: [...table.header], rows: rows.map((row) => [...row]), delimiter: table.delimiter, warnings: [...table.warnings, ...warnings] };
 }
 
+function rowCountEffect(inputRows: number, outputRows: number): TableRowCountEffect {
+  return { inputRows, outputRows, delta: outputRows - inputRows };
+}
+
+function columnDisclosure(table: CsvTable, indexes: readonly number[]): TableColumnDisclosure[] {
+  return indexes.map((index) => ({ index, name: table.header[index] ?? `column_${index + 1}` }));
+}
+
+function normalizedNullPolicy(nullTokens: readonly string[] | undefined, emptyAsNull: boolean): TableNullPolicy {
+  return { tokens: [...new Set(nullTokens ?? [])], emptyAsNull };
+}
+
+function isPolicyNull(value: string, policy: TableNullPolicy): boolean {
+  return policy.tokens.includes(value) || (policy.emptyAsNull && value.trim() === "");
+}
+
+function nullPolicySummary(policy: TableNullPolicy): string {
+  const tokens = policy.tokens.length === 0 ? "nessun token NULL" : `token NULL ${policy.tokens.join(" / ")}`;
+  return `${tokens}; celle vuote ${policy.emptyAsNull ? "trattate come NULL" : "mantenute come valore"}`;
+}
+
+function normalizedKey(
+  values: readonly string[],
+  caseSensitive: boolean,
+  policy: TableNullPolicy,
+  nullKeyPolicy: TableJoinNullKeyPolicy | "group",
+): string | null {
+  const parts = values.map((value) => isPolicyNull(value, policy)
+    ? { kind: "null" as const }
+    : { kind: "value" as const, value: caseSensitive ? value : value.toLowerCase() });
+  if (nullKeyPolicy === "never-match" && parts.some(({ kind }) => kind === "null")) return null;
+  return JSON.stringify(parts);
+}
+
 export function selectTableColumns(table: CsvTable, indexes: readonly number[]): TableColumnSelectionResult {
   const selected = validateIndexes(indexes, table.header.length, "INVALID_COLUMNS");
   let filledMissingCells = 0;
@@ -564,6 +715,11 @@ export function selectTableColumns(table: CsvTable, indexes: readonly number[]):
     headers,
     droppedColumns: table.header.flatMap((name, index) => selectedSet.has(index) ? [] : [{ index, name }]),
     filledMissingCells,
+    inputRows: table.rows.length,
+    outputRows: result.rows.length,
+    rowCountEffect: rowCountEffect(table.rows.length, result.rows.length),
+    selectedColumnDisclosure: columnDisclosure(table, selected),
+    policySummary: `Selezione per indice; valori mantenuti come testo; celle mancanti nelle colonne scelte riempite con stringa vuota (${filledMissingCells}).`,
     engineVersion: TABLE_ENGINE_VERSION,
   };
 }
@@ -573,11 +729,13 @@ function validateTableRegex(pattern: string): void {
   if (/\([^)]*[+*][^)]*\)[+*]/u.test(pattern) || /\([^)]*\{[^}]+\}[^)]*\)[+*]/u.test(pattern)) throw new Error("REGEX_COMPLEXITY");
 }
 
-function filterValue(value: string, operator: TableFilterOperator, query: string, caseSensitive: boolean): boolean {
-  const left = caseSensitive ? value : value.toLocaleLowerCase();
-  const right = caseSensitive ? query : query.toLocaleLowerCase();
-  if (operator === "empty") return value.trim() === "";
-  if (operator === "not-empty") return value.trim() !== "";
+function filterValue(value: string, operator: TableFilterOperator, query: string, caseSensitive: boolean, nullPolicy: TableNullPolicy): boolean {
+  const emptyOrNull = value.trim() === "" || isPolicyNull(value, nullPolicy);
+  if (operator === "empty") return emptyOrNull;
+  if (operator === "not-empty") return !emptyOrNull;
+  if (isPolicyNull(value, nullPolicy)) return false;
+  const left = caseSensitive ? value : value.toLowerCase();
+  const right = caseSensitive ? query : query.toLowerCase();
   if (operator === "equals") return left === right;
   if (operator === "not-equals") return left !== right;
   if (operator === "contains") return left.includes(right);
@@ -588,14 +746,15 @@ function filterValue(value: string, operator: TableFilterOperator, query: string
   return new RegExp(query, caseSensitive ? "u" : "iu").test(value);
 }
 
-export function filterTable(table: CsvTable, options: { column: number; operator: TableFilterOperator; value?: string; caseSensitive?: boolean }): TableFilterResult {
+export function filterTable(table: CsvTable, options: { column: number; operator: TableFilterOperator; value?: string; caseSensitive?: boolean; nullTokens?: readonly string[]; emptyAsNull?: boolean }): TableFilterResult {
   const allowedOperators: readonly TableFilterOperator[] = ["equals", "not-equals", "contains", "not-contains", "starts-with", "ends-with", "regex", "empty", "not-empty"];
   if (!allowedOperators.includes(options.operator)) throw new Error("INVALID_OPERATOR");
   const column = options.column;
   if (!Number.isInteger(column) || column < 0 || column >= table.header.length) throw new Error("INVALID_COLUMN");
   const value = options.value ?? "";
   const caseSensitive = options.caseSensitive ?? true;
-  const rows = table.rows.filter((row) => filterValue(row[column] ?? "", options.operator, value, caseSensitive));
+  const nullPolicy = normalizedNullPolicy(options.nullTokens, options.emptyAsNull ?? false);
+  const rows = table.rows.filter((row) => filterValue(row[column] ?? "", options.operator, value, caseSensitive, nullPolicy));
   const result = assertBoundedTable(outputTable(table, rows));
   return {
     output: serializeCsvTable(result),
@@ -606,6 +765,13 @@ export function filterTable(table: CsvTable, options: { column: number; operator
     operator: options.operator,
     value,
     caseSensitive,
+    inputRows: table.rows.length,
+    outputRows: result.rows.length,
+    rowCountEffect: rowCountEffect(table.rows.length, result.rows.length),
+    selectedColumn: columnDisclosure(table, [column])[0]!,
+    nullPolicy,
+    typePolicy: { mode: "text", invalidValues: "literal" },
+    policySummary: `Filtro testuale ${caseSensitive ? "sensibile" : "non sensibile"} alle maiuscole; ${nullPolicySummary(nullPolicy)}; i NULL configurati non soddisfano confronti testuali.`,
     engineVersion: TABLE_ENGINE_VERSION,
   };
 }
@@ -615,8 +781,8 @@ interface SortValue {
   key: string | number;
 }
 
-function rowValue(value: string, comparator: TableSortComparator, caseSensitive: boolean): SortValue {
-  if (value.trim() === "") return { missing: true, key: "" };
+function rowValue(value: string, comparator: TableSortComparator, caseSensitive: boolean, nullPolicy: TableNullPolicy): SortValue {
+  if (isPolicyNull(value, nullPolicy)) return { missing: true, key: "" };
   if (comparator === "numeric") {
     const key = Number(value);
     return { missing: !Number.isFinite(key), key };
@@ -625,20 +791,21 @@ function rowValue(value: string, comparator: TableSortComparator, caseSensitive:
     const key = Date.parse(value);
     return { missing: Number.isNaN(key), key };
   }
-  return { missing: false, key: caseSensitive ? value : value.toLocaleLowerCase() };
+  return { missing: false, key: caseSensitive ? value : value.toLowerCase() };
 }
 
-export function sortTable(table: CsvTable, options: { column: number; direction?: "asc" | "desc"; comparator?: TableSortComparator; nulls?: "first" | "last"; caseSensitive?: boolean }): TableSortResult {
+export function sortTable(table: CsvTable, options: { column: number; direction?: "asc" | "desc"; comparator?: TableSortComparator; nulls?: "first" | "last"; caseSensitive?: boolean; nullTokens?: readonly string[]; emptyAsNull?: boolean }): TableSortResult {
   const column = options.column;
   if (!Number.isInteger(column) || column < 0 || column >= table.header.length) throw new Error("INVALID_COLUMN");
   const direction = options.direction ?? "asc";
   const comparator = options.comparator ?? "lexical";
   const nulls = options.nulls ?? "last";
   const caseSensitive = options.caseSensitive ?? true;
+  const nullPolicy = normalizedNullPolicy(options.nullTokens, options.emptyAsNull ?? true);
   const indexed = table.rows.map((row, index) => ({ row, index }));
   indexed.sort((left, right) => {
-    const leftValue = rowValue(left.row[column] ?? "", comparator, caseSensitive);
-    const rightValue = rowValue(right.row[column] ?? "", comparator, caseSensitive);
+    const leftValue = rowValue(left.row[column] ?? "", comparator, caseSensitive, nullPolicy);
+    const rightValue = rowValue(right.row[column] ?? "", comparator, caseSensitive, nullPolicy);
     if (leftValue.missing !== rightValue.missing) return nulls === "first" ? (leftValue.missing ? -1 : 1) : (leftValue.missing ? 1 : -1);
     if (leftValue.missing && rightValue.missing) return left.index - right.index;
     let comparison = 0;
@@ -648,31 +815,50 @@ export function sortTable(table: CsvTable, options: { column: number; direction?
     return direction === "asc" ? comparison : -comparison;
   });
   const result = assertBoundedTable(outputTable(table, indexed.map(({ row }) => row)));
-  return { output: serializeCsvTable(result), table: result, sortedRows: result.rows.length, column, comparator, direction, nulls, engineVersion: TABLE_ENGINE_VERSION };
+  return {
+    output: serializeCsvTable(result),
+    table: result,
+    sortedRows: result.rows.length,
+    column,
+    comparator,
+    direction,
+    nulls,
+    caseSensitive,
+    inputRows: table.rows.length,
+    outputRows: result.rows.length,
+    rowCountEffect: rowCountEffect(table.rows.length, result.rows.length),
+    selectedColumn: columnDisclosure(table, [column])[0]!,
+    nullPolicy,
+    invalidValues: "as-null",
+    policySummary: `Ordinamento ${comparator}; valori non validi per il tipo ordinati come NULL; ${nullPolicySummary(nullPolicy)}; NULL ${nulls === "first" ? "prima" : "dopo"}.`,
+    engineVersion: TABLE_ENGINE_VERSION,
+  };
 }
 
-function keyFor(values: readonly string[], caseSensitive: boolean): string {
-  return JSON.stringify(values.map((value) => caseSensitive ? value : value.toLocaleLowerCase()));
-}
-
-export function groupCountTable(table: CsvTable, options: { groupColumns: readonly number[]; countColumn?: number; aggregate?: TableAggregate }): TableGroupCountResult {
+export function groupCountTable(table: CsvTable, options: { groupColumns: readonly number[]; countColumn?: number; aggregate?: TableAggregate; caseSensitive?: boolean; nullTokens?: readonly string[]; emptyAsNull?: boolean }): TableGroupCountResult {
   const groupColumns = validateIndexes(options.groupColumns, table.header.length, "INVALID_GROUP_COLUMNS");
   if (options.countColumn !== undefined && (!Number.isInteger(options.countColumn) || options.countColumn < 0 || options.countColumn >= table.header.length)) throw new Error("INVALID_COUNT_COLUMN");
   const aggregate = options.aggregate ?? "count";
   if (aggregate !== "count" && options.countColumn === undefined) throw new Error("VALUE_COLUMN_REQUIRED");
+  const caseSensitive = options.caseSensitive ?? true;
+  const nullPolicy = normalizedNullPolicy(options.nullTokens, options.emptyAsNull ?? false);
   const groups = new Map<string, { values: string[]; count: number; numeric: number[] }>();
   for (const row of table.rows) {
     const values = groupColumns.map((column) => row[column] ?? "");
-    const key = JSON.stringify(values);
+    const key = normalizedKey(values, caseSensitive, nullPolicy, "group")!;
     const current = groups.get(key) ?? { values, count: 0, numeric: [] };
     current.count += 1;
     if (options.countColumn !== undefined) {
       const raw = row[options.countColumn] ?? "";
       if (aggregate === "count") current.count += 0;
       else {
+        if (isPolicyNull(raw, nullPolicy)) {
+          groups.set(key, current);
+          continue;
+        }
         const number = Number(raw);
-        if (raw.trim() !== "" && Number.isFinite(number)) current.numeric.push(number);
-        else if (raw.trim() !== "") throw new Error("INVALID_NUMERIC_VALUE");
+        if (Number.isFinite(number)) current.numeric.push(number);
+        else throw new Error("INVALID_NUMERIC_VALUE");
       }
     }
     groups.set(key, current);
@@ -686,7 +872,25 @@ export function groupCountTable(table: CsvTable, options: { groupColumns: readon
     return [...group.values, String(count)];
   });
   const result = assertBoundedTable({ header: outputHeader, rows: outputRows, delimiter: table.delimiter, warnings: [...table.warnings] });
-  return { output: serializeCsvTable(result), table: result, groupColumns, groups: result.rows.length, ...(options.countColumn === undefined ? {} : { countColumn: options.countColumn }), aggregate, engineVersion: TABLE_ENGINE_VERSION };
+  return {
+    output: serializeCsvTable(result),
+    table: result,
+    groupColumns,
+    groups: result.rows.length,
+    ...(options.countColumn === undefined ? {} : { countColumn: options.countColumn }),
+    aggregate,
+    inputRows: table.rows.length,
+    outputRows: result.rows.length,
+    rowCountEffect: rowCountEffect(table.rows.length, result.rows.length),
+    groupColumnDisclosure: columnDisclosure(table, groupColumns),
+    ...(options.countColumn === undefined ? {} : { aggregateColumnDisclosure: columnDisclosure(table, [options.countColumn])[0]! }),
+    caseSensitive,
+    nullPolicy,
+    nullKeys: "group",
+    numericPolicy: "ignore-null-reject-non-numeric",
+    policySummary: `Chiavi di gruppo ${caseSensitive ? "sensibili" : "non sensibili"} alle maiuscole; i NULL formano un gruppo; ${nullPolicySummary(nullPolicy)}; aggregazioni numeriche ignorano NULL e rifiutano testo non numerico.`,
+    engineVersion: TABLE_ENGINE_VERSION,
+  };
 }
 
 function uniqueHeaders(headers: readonly string[], suffix = ""): string[] {
@@ -704,17 +908,99 @@ function uniqueHeaders(headers: readonly string[], suffix = ""): string[] {
   });
 }
 
-export function joinCsvTables(left: CsvTable, right: CsvTable, options: { leftKeyColumns: readonly number[]; rightKeyColumns: readonly number[]; joinType?: TableJoinType; caseSensitive?: boolean; suffix?: string }): TableJoinResult {
-  const joinType = options.joinType ?? "inner";
-  const caseSensitive = options.caseSensitive ?? true;
-  const suffix = options.suffix ?? "_right";
+export interface TableJoinOptions {
+  readonly leftKeyColumns: readonly number[];
+  readonly rightKeyColumns: readonly number[];
+  readonly joinType?: TableJoinType;
+  readonly caseSensitive?: boolean;
+  readonly suffix?: string;
+  readonly nullTokens?: readonly string[];
+  readonly emptyAsNull?: boolean;
+  readonly nullKeyPolicy?: TableJoinNullKeyPolicy;
+}
+
+interface PreparedJoinPolicy {
+  readonly leftKeys: number[];
+  readonly rightKeys: number[];
+  readonly joinType: TableJoinType;
+  readonly caseSensitive: boolean;
+  readonly nullPolicy: TableNullPolicy;
+  readonly nullKeyPolicy: TableJoinNullKeyPolicy;
+}
+
+function prepareJoinPolicy(left: CsvTable, right: CsvTable, options: TableJoinOptions): PreparedJoinPolicy {
   const leftKeys = validateIndexes(options.leftKeyColumns, left.header.length, "INVALID_LEFT_KEY_COLUMNS");
   const rightKeys = validateIndexes(options.rightKeyColumns, right.header.length, "INVALID_RIGHT_KEY_COLUMNS");
   if (leftKeys.length !== rightKeys.length) throw new Error("KEY_COLUMN_COUNT_MISMATCH");
+  return {
+    leftKeys,
+    rightKeys,
+    joinType: options.joinType ?? "inner",
+    caseSensitive: options.caseSensitive ?? true,
+    nullPolicy: normalizedNullPolicy(options.nullTokens, options.emptyAsNull ?? false),
+    nullKeyPolicy: options.nullKeyPolicy ?? "match",
+  };
+}
+
+export function estimateTableJoinRows(left: CsvTable, right: CsvTable, options: TableJoinOptions): TableJoinEstimate {
+  const policy = prepareJoinPolicy(left, right, options);
+  const rightCounts = new Map<string, number>();
+  let unmatchedRightRows = 0;
+  for (const row of right.rows) {
+    const key = normalizedKey(policy.rightKeys.map((column) => row[column] ?? ""), policy.caseSensitive, policy.nullPolicy, policy.nullKeyPolicy);
+    if (key === null) {
+      unmatchedRightRows += 1;
+      continue;
+    }
+    rightCounts.set(key, (rightCounts.get(key) ?? 0) + 1);
+  }
+
+  const leftKeysSeen = new Set<string>();
+  let matchedOutputRows = 0;
+  let unmatchedLeftRows = 0;
+  for (const row of left.rows) {
+    const key = normalizedKey(policy.leftKeys.map((column) => row[column] ?? ""), policy.caseSensitive, policy.nullPolicy, policy.nullKeyPolicy);
+    if (key === null) {
+      unmatchedLeftRows += 1;
+      continue;
+    }
+    leftKeysSeen.add(key);
+    const matches = rightCounts.get(key) ?? 0;
+    if (matches === 0) unmatchedLeftRows += 1;
+    else matchedOutputRows += matches;
+  }
+  for (const [key, count] of rightCounts) if (!leftKeysSeen.has(key)) unmatchedRightRows += count;
+
+  let estimatedOutputRows = matchedOutputRows;
+  if (policy.joinType === "left" || policy.joinType === "full") estimatedOutputRows += unmatchedLeftRows;
+  if (policy.joinType === "right" || policy.joinType === "full") estimatedOutputRows += unmatchedRightRows;
+  const baselineRows = Math.max(1, left.rows.length, right.rows.length);
+  const estimatedOutputCells = estimatedOutputRows * (left.header.length + right.header.length);
+  return {
+    estimatedOutputRows,
+    estimatedOutputCells,
+    matchedOutputRows,
+    unmatchedLeftRows,
+    unmatchedRightRows,
+    explosionFactor: estimatedOutputRows / baselineRows,
+    outputLimitRows: TABLE_MAX_ROWS,
+    outputLimitCells: TABLE_MAX_CELLS,
+    guardedBeforeMaterialization: true,
+  };
+}
+
+export function joinCsvTables(left: CsvTable, right: CsvTable, options: TableJoinOptions): TableJoinResult {
+  const policy = prepareJoinPolicy(left, right, options);
+  const suffix = options.suffix ?? "_right";
+  const estimate = estimateTableJoinRows(left, right, options);
+  if (estimate.estimatedOutputRows > TABLE_MAX_ROWS || estimate.estimatedOutputCells > TABLE_MAX_CELLS) {
+    throw new Error(`TABLE_JOIN_EXPLOSION: estimated ${estimate.estimatedOutputRows} rows / ${estimate.estimatedOutputCells} cells exceeds ${TABLE_MAX_ROWS} row or ${TABLE_MAX_CELLS} cell limit before materialization`);
+  }
   const rightMap = new Map<string, Array<{ row: string[]; index: number }>>();
   for (let index = 0; index < right.rows.length; index += 1) {
     const row = right.rows[index] ?? [];
-    const key = keyFor(rightKeys.map((column) => row[column] ?? ""), caseSensitive);
+    const key = normalizedKey(policy.rightKeys.map((column) => row[column] ?? ""), policy.caseSensitive, policy.nullPolicy, policy.nullKeyPolicy);
+    if (key === null) continue;
     const current = rightMap.get(key) ?? [];
     current.push({ row, index });
     rightMap.set(key, current);
@@ -738,17 +1024,12 @@ export function joinCsvTables(left: CsvTable, right: CsvTable, options: { leftKe
   if (outputHeader.length > TABLE_MAX_COLUMNS) throw new Error("TABLE_TOO_MANY_COLUMNS");
   const outputRows: string[][] = [];
   const matchedRight = new Set<number>();
-  const unmatchedLeft: string[] = [];
   let matchedOutputRows = 0;
-  let projectedRows = 0;
   for (const leftRow of left.rows) {
-    const key = keyFor(leftKeys.map((column) => leftRow[column] ?? ""), caseSensitive);
-    const matches = rightMap.get(key) ?? [];
-    projectedRows += matches.length === 0 ? (joinType === "left" || joinType === "full" ? 1 : 0) : matches.length;
-    if (projectedRows > TABLE_MAX_ROWS) throw new Error("TABLE_RESULT_TOO_LARGE");
+    const key = normalizedKey(policy.leftKeys.map((column) => leftRow[column] ?? ""), policy.caseSensitive, policy.nullPolicy, policy.nullKeyPolicy);
+    const matches = key === null ? [] : rightMap.get(key) ?? [];
     if (matches.length === 0) {
-      unmatchedLeft.push(key);
-      if (joinType === "left" || joinType === "full") outputRows.push([...leftRow, ...right.header.map(() => "")]);
+      if (policy.joinType === "left" || policy.joinType === "full") outputRows.push([...leftRow, ...right.header.map(() => "")]);
       continue;
     }
     for (const match of matches) {
@@ -757,9 +1038,7 @@ export function joinCsvTables(left: CsvTable, right: CsvTable, options: { leftKe
       matchedOutputRows += 1;
     }
   }
-  if (joinType === "right" || joinType === "full") {
-    projectedRows += [...Array(right.rows.length).keys()].filter((index) => !matchedRight.has(index)).length;
-    if (projectedRows > TABLE_MAX_ROWS) throw new Error("TABLE_RESULT_TOO_LARGE");
+  if (policy.joinType === "right" || policy.joinType === "full") {
     for (let index = 0; index < right.rows.length; index += 1) {
       if (!matchedRight.has(index)) outputRows.push([...left.header.map(() => ""), ...(right.rows[index] ?? [])]);
     }
@@ -768,43 +1047,58 @@ export function joinCsvTables(left: CsvTable, right: CsvTable, options: { leftKe
   return {
     output: serializeCsvTable(result),
     table: result,
-    joinType,
-    leftKeyColumns: leftKeys,
-    rightKeyColumns: rightKeys,
+    joinType: policy.joinType,
+    leftKeyColumns: policy.leftKeys,
+    rightKeyColumns: policy.rightKeys,
     leftRows: left.rows.length,
     rightRows: right.rows.length,
     matchedRows: matchedOutputRows,
-    unmatchedLeftRows: unmatchedLeft.length,
-    unmatchedRightRows: [...Array(right.rows.length).keys()].filter((index) => !matchedRight.has(index)).length,
+    unmatchedLeftRows: estimate.unmatchedLeftRows,
+    unmatchedRightRows: estimate.unmatchedRightRows,
+    outputRows: result.rows.length,
+    rowCountEffect: { leftInputRows: left.rows.length, rightInputRows: right.rows.length, outputRows: result.rows.length },
+    leftKeyDisclosure: columnDisclosure(left, policy.leftKeys),
+    rightKeyDisclosure: columnDisclosure(right, policy.rightKeys),
+    caseSensitive: policy.caseSensitive,
+    nullPolicy: policy.nullPolicy,
+    nullKeyPolicy: policy.nullKeyPolicy,
+    estimate,
+    policySummary: `Join ${policy.joinType}; chiavi ${policy.caseSensitive ? "sensibili" : "non sensibili"} alle maiuscole; NULL ${policy.nullKeyPolicy === "match" ? "possono corrispondere" : "non corrispondono mai"}; ${nullPolicySummary(policy.nullPolicy)}; stima ${estimate.estimatedOutputRows} righe / ${estimate.estimatedOutputCells} celle prima della materializzazione.`,
     engineVersion: TABLE_ENGINE_VERSION,
   };
 }
 
-export function pivotTable(table: CsvTable, options: { groupColumns: readonly number[]; valueColumn?: number; valueHeaderColumn?: number; aggregateColumn?: number; aggregate?: TableAggregate }): TablePivotResult {
+export function pivotTable(table: CsvTable, options: { groupColumns: readonly number[]; valueColumn?: number; valueHeaderColumn?: number; aggregateColumn?: number; aggregate?: TableAggregate; caseSensitive?: boolean; nullTokens?: readonly string[]; emptyAsNull?: boolean }): TablePivotResult {
   const groupColumns = validateIndexes(options.groupColumns, table.header.length, "INVALID_GROUP_COLUMNS");
   const aggregate = options.aggregate ?? "sum";
+  const caseSensitive = options.caseSensitive ?? true;
+  const nullPolicy = normalizedNullPolicy(options.nullTokens, options.emptyAsNull ?? false);
   const valueHeaderColumn = options.valueHeaderColumn;
   const aggregateColumn = options.aggregateColumn ?? options.valueColumn;
   if (valueHeaderColumn !== undefined && (!Number.isInteger(valueHeaderColumn) || valueHeaderColumn < 0 || valueHeaderColumn >= table.header.length)) throw new Error("INVALID_VALUE_HEADER_COLUMN");
   if (aggregateColumn !== undefined && (!Number.isInteger(aggregateColumn) || aggregateColumn < 0 || aggregateColumn >= table.header.length)) throw new Error("INVALID_VALUE_COLUMN");
   if (aggregate !== "count" && aggregateColumn === undefined) throw new Error("VALUE_COLUMN_REQUIRED");
   const groups = new Map<string, string[]>();
-  const values = new Set<string>();
+  const valueLabels = new Map<string, string>();
   for (const row of table.rows) {
     const groupValues = groupColumns.map((column) => row[column] ?? "");
-    const groupKey = JSON.stringify(groupValues);
+    const groupKey = normalizedKey(groupValues, caseSensitive, nullPolicy, "group")!;
     if (!groups.has(groupKey)) groups.set(groupKey, groupValues);
     const value = valueHeaderColumn === undefined ? (aggregateColumn === undefined ? "count" : row[aggregateColumn] ?? "") : row[valueHeaderColumn] ?? "";
-    values.add(value);
+    const valueKey = normalizedKey([value], caseSensitive, nullPolicy, "group")!;
+    if (!valueLabels.has(valueKey)) valueLabels.set(valueKey, isPolicyNull(value, nullPolicy) ? "(NULL)" : value);
   }
-  const valueHeaders = [...values];
+  const valueKeys = [...valueLabels.keys()];
+  const valueHeaders = valueKeys.map((key) => valueLabels.get(key) ?? "");
   if (groupColumns.length + valueHeaders.length > TABLE_MAX_COLUMNS) throw new Error("TABLE_TOO_MANY_COLUMNS");
   const records = new Map<string, Array<{ seen: boolean; value: number }>>();
   for (const groupKey of groups.keys()) records.set(groupKey, valueHeaders.map(() => ({ seen: false, value: 0 })));
+  const valueIndexByKey = new Map(valueKeys.map((key, index) => [key, index] as const));
   for (const row of table.rows) {
-    const groupKey = JSON.stringify(groupColumns.map((column) => row[column] ?? ""));
+    const groupKey = normalizedKey(groupColumns.map((column) => row[column] ?? ""), caseSensitive, nullPolicy, "group")!;
     const value = valueHeaderColumn === undefined ? (aggregateColumn === undefined ? "count" : row[aggregateColumn] ?? "") : row[valueHeaderColumn] ?? "";
-    const valueIndex = valueHeaders.indexOf(value);
+    const valueKey = normalizedKey([value], caseSensitive, nullPolicy, "group")!;
+    const valueIndex = valueIndexByKey.get(valueKey) ?? -1;
     const target = records.get(groupKey);
     const cell = target?.[valueIndex];
     if (cell === undefined) continue;
@@ -814,7 +1108,7 @@ export function pivotTable(table: CsvTable, options: { groupColumns: readonly nu
       continue;
     }
     const rawNumber = aggregateColumn === undefined ? "" : row[aggregateColumn] ?? "";
-    if (rawNumber.trim() === "") continue;
+    if (isPolicyNull(rawNumber, nullPolicy)) continue;
     const number = Number(rawNumber);
     if (!Number.isFinite(number)) throw new Error("INVALID_NUMERIC_VALUE");
     if (!cell.seen) {
@@ -826,11 +1120,33 @@ export function pivotTable(table: CsvTable, options: { groupColumns: readonly nu
   }
   const outputHeader = [...groupColumns.map((index) => table.header[index] ?? `column_${index + 1}`), ...valueHeaders];
   const outputRows = [...groups.values()].map((groupValues) => {
-    const groupKey = JSON.stringify(groupValues);
+    const groupKey = normalizedKey(groupValues, caseSensitive, nullPolicy, "group")!;
     return [...groupValues, ...(records.get(groupKey) ?? valueHeaders.map(() => ({ seen: false, value: 0 }))).map((cell) => cell.seen ? String(cell.value) : "")];
   });
   const result = assertBoundedTable({ header: outputHeader, rows: outputRows, delimiter: table.delimiter, warnings: [...table.warnings] });
-  return { output: serializeCsvTable(result), table: result, groupColumns, ...(options.valueColumn === undefined ? {} : { valueColumn: options.valueColumn }), ...(valueHeaderColumn === undefined ? {} : { valueHeaderColumn }), ...(options.aggregateColumn === undefined ? {} : { aggregateColumn: options.aggregateColumn }), aggregate, valueHeaders, groups: outputRows.length, engineVersion: TABLE_ENGINE_VERSION };
+  return {
+    output: serializeCsvTable(result),
+    table: result,
+    groupColumns,
+    ...(options.valueColumn === undefined ? {} : { valueColumn: options.valueColumn }),
+    ...(valueHeaderColumn === undefined ? {} : { valueHeaderColumn }),
+    ...(options.aggregateColumn === undefined ? {} : { aggregateColumn: options.aggregateColumn }),
+    aggregate,
+    valueHeaders,
+    groups: outputRows.length,
+    inputRows: table.rows.length,
+    outputRows: result.rows.length,
+    rowCountEffect: rowCountEffect(table.rows.length, result.rows.length),
+    groupColumnDisclosure: columnDisclosure(table, groupColumns),
+    ...(valueHeaderColumn === undefined ? {} : { valueHeaderColumnDisclosure: columnDisclosure(table, [valueHeaderColumn])[0]! }),
+    ...(aggregateColumn === undefined ? {} : { aggregateColumnDisclosure: columnDisclosure(table, [aggregateColumn])[0]! }),
+    caseSensitive,
+    nullPolicy,
+    nullKeys: "group",
+    numericPolicy: "ignore-null-reject-non-numeric",
+    policySummary: `Pivot ${aggregate}; chiavi e intestazioni ${caseSensitive ? "sensibili" : "non sensibili"} alle maiuscole; i NULL formano gruppi/intestazioni esplicite; ${nullPolicySummary(nullPolicy)}; aggregazioni numeriche ignorano NULL e rifiutano testo non numerico.`,
+    engineVersion: TABLE_ENGINE_VERSION,
+  };
 }
 
 export function csvTableToJson(text: string, options: { headerPolicy?: "preserve" | "unique"; pretty?: boolean } = {}): CsvToJsonResult {

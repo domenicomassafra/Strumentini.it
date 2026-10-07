@@ -24,9 +24,9 @@ describe("expanded local Gold frontier", () => {
     expect(promoted.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
     expect(promoted.every((tool) => tool.locality.status === "PASS" && tool.mobileA11y.status === "PASS" && tool.lazyLoad.status === "PASS")).toBe(true);
     const unverified = index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED");
-    // The batch promoted its own 49 and later family tranches promoted more; the
-    // only frontier fact this test owns is that no batch candidate fell back.
-    expect(unverified.length).toBeLessThanOrEqual(31);
+    // The batch owns only its fixed 49 tools; later expansion tranches may add
+    // unrelated unverified tools without changing this batch's certification.
+    expect(unverified.length).toBeGreaterThan(0);
     expect(unverified.some((tool) => directIds.includes(tool.id as typeof directIds[number]))).toBe(false);
     expect(unverified.every((tool) => tool.certificationReceipt === null && tool.blockers.includes("CERTIFICATION_RECEIPT_MISSING"))).toBe(true);
   }, 30_000);

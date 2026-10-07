@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "tools": [
+    "ai-code-fence-bundle",
+    "file-size-analyzer"
+  ],
+  "routesChecked": 2,
+  "keyboard": "submit exercised with Enter",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "externalTaskRequests": 0,
+  "nonGetTaskRequests": 0,
+  "taskContentLeaks": 0,
+  "runtimeErrors": 0,
+  "network": "zero external, non-GET or task-body requests after operation start",
+  "results": [
+    {
+      "toolId": "ai-code-fence-bundle",
+      "status": "PASS",
+      "keyboardSubmit": true,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    },
+    {
+      "toolId": "file-size-analyzer",
+      "status": "PASS",
+      "keyboardSubmit": true,
+      "externalTaskRequests": 0,
+      "nonGetTaskRequests": 0,
+      "taskContentLeaks": 0,
+      "runtimeErrors": 0,
+      "horizontalOverflow": false
+    }
+  ]
+}

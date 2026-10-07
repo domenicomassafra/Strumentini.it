@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 3,
+  "ticket": 115,
+  "datasetId": "italy-administrative-geography",
+  "checkedAt": "2026-10-07",
+  "scope": "Fresh official re-evaluation of current, historical/suppressed Italian municipalities, the four-character Agenzia code needed by Codice Fiscale, and foreign-state codes. The pack remains fail-closed because the official bulk sources still contain explicit code gaps and the foreign historical bulk starts only in 1990.",
+  "artifacts": [
+    {
+      "authority": "ISTAT",
+      "title": "Elenco dei comuni italiani - aggiornato al 21 febbraio 2026",
+      "url": "https://www.istat.it/storage/codici-unita-amministrative/Elenco-comuni-italiani.xlsx",
+      "path": "quality/reference-data/italy/artifacts/115-administrative-geography/istat-elenco-comuni-2026-02-21.xlsx",
+      "sha256": "sha256:83842076860450f7e482daecea6b7a769f5f93d0bf5b0d48802b44896d7a26d5",
+      "mediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "effectiveCoverage": "current municipalities as published 2026-02-21",
+      "sufficiency": "PARTIAL"
+    },
+    {
+      "authority": "ISTAT",
+      "title": "Variazioni amministrative e territoriali dei comuni - anni 1991-2025",
+      "url": "https://www.istat.it/wp-content/uploads/2024/09/Variazioni-amministrative-e-territoriali-dei-comuni-Anni-1991-2025.xlsx",
+      "path": "quality/reference-data/italy/artifacts/115-administrative-geography/istat-variazioni-comuni-1991-2025.xlsx",
+      "sha256": "sha256:d12c49b636d9baa09088b9a8a2a1f94e688276f162b92ecd03d72e4294b67a32",
+      "mediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "effectiveCoverage": "aggregate administrative variations 1991-2025",
+      "sufficiency": "PARTIAL"
+    }
+  ],
+  "liveOfficialBulkChecks": [
+    {
+      "authority": "ISTAT / SITUAS",
+      "title": "Elenco comuni soppressi e non ricostituiti",
+      "dataUrl": "https://situas-servizi.istat.it/publish/reportspooljson?pfun=128&pdata=17/03/1861",
+      "metadataUrl": "https://situas-servizi.istat.it/publish/anagrafica_report_metadato_web?pfun=128&pdata=17/03/1861",
+      "observedDataSha256": "sha256:33242ea1db0dee2e1fc5179b4c0c8757e3be0888d4111088d9865b2ef39c29d7",
+      "observedMetadataSha256": "sha256:9dacc63986576592d06daa6f023003fd787c68b7a540e7a4fb1ea1caf12171b7",
+      "observedRows": 2637,
+      "observedDistinctMunicipalityKeys": 2449,
+      "codeField": "COD_CATASTO",
+      "codeAuthority": "Agenzia delle Entrate",
+      "missingCodeRows": 18,
+      "missingCodeDistinctMunicipalities": 16,
+      "missingCodeValues": ["ND"],
+      "effectiveCoverage": "suppressed/non-reconstituted municipalities or municipalities ceded to a foreign state from 1861 through the check date",
+      "sufficiency": "PARTIAL",
+      "reason": "The official metadata explicitly says COD_CATASTO is N.D. when unavailable. The live bulk contains 18 such rows spanning 16 distinct (PRO_COM_T, COMUNE) pairs, so it does not prove a complete historical/suppressed Comune-to-four-character-code mapping."
+    },
+    {
+      "authority": "ISTAT / SITUAS",
+      "title": "Storico Paesi esteri",
+      "dataUrl": "https://situas-servizi.istat.it/publish/reportspooljson?pfun=469&pdata=01/01/1990",
+      "metadataUrl": "https://situas-servizi.istat.it/publish/anagrafica_report_metadato_web?pfun=469&pdata=01/01/1990",
+      "observedDataSha256": "sha256:9f6076b40e2146cbb452428ec032b0bd8ece696b733a979c1649e4645e98e154",
+      "observedMetadataSha256": "sha256:4ef1a5e64aec0cae7680cc203aa9cdb508a8d550e3dffa3b2bc9f7b35b2d74c7",
+      "observedRows": 262,
+      "codeField": "COD_AT",
+      "codeAuthority": "Agenzia delle Entrate",
+      "rowsWithCode": 239,
+      "rowsWithoutCode": 23,
+      "historicalRowsWithoutCode": ["Germania Ovest", "Yemen del Nord"],
+      "effectiveCoverage": "foreign states and territories active or suppressed from 1990 onward",
+      "sufficiency": "PARTIAL",
+      "reason": "The official report is explicitly scoped from 1 January 1990 rather than the complete historical fiscal namespace, and COD_AT is empty when the Agenzia code is unavailable or unassigned."
+    },
+    {
+      "authority": "Agenzia delle Entrate",
+      "title": "Archivio Comuni e Stati Esteri - Elenco Situazioni Attuali / point searches",
+      "url": "https://arcom.agenziaentrate.gov.it/CitizenArCom/InitForm.do?ric=report",
+      "observedPageSha256": "sha256:a2b22b1ff43c3b36018633524dc015105179ae468d707779aeb62eaec4b0cf24",
+      "sufficiency": "INSUFFICIENT",
+      "reason": "ARCOM officially supports point searches for suppressed municipalities and foreign states, but the downloadable report menu exposes current-situation lists and requires a CAPTCHA. No reproducible versioned bulk historical/suppressed export was identified."
+    }
+  ],
+  "missingSuppressedMunicipalityCodes": [
+    { "istatCode": "027810", "name": "Oriago", "year": 1868 },
+    { "istatCode": "012891", "name": "Solbiate sull'Arno", "year": 1869 },
+    { "istatCode": "003809", "name": "Arizzano", "year": 1911 },
+    { "istatCode": "702802", "name": "Occisla-Clanzo", "year": 1923 },
+    { "istatCode": "701806", "name": "Monte Chilovi", "year": 1924 },
+    { "istatCode": "012845", "name": "Cugliate", "year": 1928 },
+    { "istatCode": "012846", "name": "Cuveglio in Valle", "year": 1928 },
+    { "istatCode": "016828", "name": "Filago", "year": 1928 },
+    { "istatCode": "095805", "name": "Gonnosnò", "year": 1928 },
+    { "istatCode": "095814", "name": "Ruinas", "year": 1928 },
+    { "istatCode": "095809", "name": "Siamanna", "year": 1928 },
+    { "istatCode": "091805", "name": "Tortolì", "year": 1928 },
+    { "istatCode": "001813", "name": "Campiglia Soana", "year": 1929 },
+    { "istatCode": "001815", "name": "Caravino", "year": 1929 },
+    { "istatCode": "021868", "name": "Prato di Venosta/Prad", "year": 1929 },
+    { "istatCode": "021090", "name": "Senale/Unsere Liebe Frau im Walde", "year": 1974 }
+  ],
+  "observedCoverage": {
+    "currentMunicipalities": "The pinned current ISTAT workbook exposes current stable territorial identifiers and the four-character alphanumeric municipality code, but it is a current-municipality snapshot.",
+    "historicalMunicipalities": "SITUAS report 128 is now a public official bulk list of suppressed/non-reconstituted municipalities from 1861 and exposes COD_CATASTO sourced from Agenzia delle Entrate. It returns 2,637 rows, but 18 rows spanning 16 distinct suppressed municipality identities still carry COD_CATASTO=ND.",
+    "foreignStates": "SITUAS report 469 is now a public official bulk historical foreign-state/territory list with COD_AT sourced from Agenzia delle Entrate, but its declared coverage begins on 1 January 1990. Of 262 rows, 239 have COD_AT and 23 do not; the historical entities Germania Ovest and Yemen del Nord are among the rows without a code.",
+    "belfiore": "Official bulk coverage is materially improved but still incomplete: 16 distinct suppressed municipalities in SITUAS report 128 have COD_CATASTO=ND, and no second authoritative versioned bulk source was found that fills those values without inference."
+  },
+  "authoritativeCandidates": [
+    {
+      "authority": "ISTAT",
+      "title": "Codici dei comuni, delle province e delle regioni / SITUAS",
+      "url": "https://www.istat.it/classificazione/codici-dei-comuni-delle-province-e-delle-regioni/",
+      "sufficiency": "INSUFFICIENT",
+      "reason": "The current list is complete for current municipalities, while the suppressed SITUAS bulk still declares unavailable COD_CATASTO values for 16 distinct historical municipality identities."
+    },
+    {
+      "authority": "ISTAT / SITUAS",
+      "title": "Elenco comuni soppressi e non ricostituiti (report 128)",
+      "url": "https://situas-servizi.istat.it/publish/reportspooljson?pfun=128&pdata=17/03/1861",
+      "sufficiency": "INSUFFICIENT",
+      "reason": "Machine-readable official bulk exists and includes Agenzia-sourced COD_CATASTO, but 18 rows / 16 distinct municipalities are explicitly ND."
+    },
+    {
+      "authority": "ISTAT / SITUAS",
+      "title": "Storico Paesi esteri (report 469)",
+      "url": "https://situas-servizi.istat.it/publish/reportspooljson?pfun=469&pdata=01/01/1990",
+      "sufficiency": "INSUFFICIENT",
+      "reason": "Machine-readable official bulk exists and includes Agenzia-sourced COD_AT, but its declared historical coverage starts in 1990 and some historical rows have no COD_AT."
+    },
+    {
+      "authority": "Agenzia delle Entrate",
+      "title": "Archivio Comuni e Stati Esteri (ARCOM)",
+      "url": "https://arcom.agenziaentrate.gov.it/CitizenArCom/",
+      "sufficiency": "INSUFFICIENT",
+      "reason": "The official service supports point searches, including suppressed entities, but no exact versioned bulk historical/suppressed artifact with reproducible complete coverage was found; current report exports are CAPTCHA-gated."
+    }
+  ],
+  "decision": "BLOCKED",
+  "reason": "Official public bulk coverage improved substantially: SITUAS now exposes suppressed municipalities with Agenzia-sourced COD_CATASTO and foreign states with Agenzia-sourced COD_AT. Ticket 115 still cannot be promoted because 16 distinct suppressed municipalities have COD_CATASTO=ND, the foreign historical bulk is explicitly scoped only from 1990, and ARCOM does not expose a reproducible complete historical/suppressed bulk export that closes those gaps. No missing code is inferred from names, successor entities, point queries or secondary datasets."
+}

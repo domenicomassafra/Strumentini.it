@@ -6,13 +6,12 @@
 
 **Constraints:** Do not duplicate an existing text tool under a new name when an alias/mode suffices; language metrics explain limits rather than grading prose as objectively good/bad.
 
-**Blocked by:** 01.
+**Blocked by:** 187, 188, 189, 190, 309.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Existing case/whitespace/list/text tools gain modes/aliases where appropriate instead of duplicate routes.
-- [ ] Gulpease result shows score interpretation and the concrete sentences driving difficulty indicators.
-- [ ] Encoding/reflow transforms show before→after/change counts and remain reversible where claimed.
+- [x] Existing text-writing/shared seams were extended with modes/aliases where appropriate; only distinct jobs received new canonical routes, while syllabification was refused rather than duplicated with an undefended rule engine.
+- [x] Ticket 187 reports Gulpease score interpretation plus the concrete sentence-level indicators used to explain difficult passages, without grading prose as objectively good/bad.
+- [x] Tickets 188–189 expose before→after/change information for mojibake repair and PDF-copy reflow; reversible claims are limited to transforms that actually preserve enough information to restore source semantics.
 
-**Verification:** Italian language fixtures, mojibake corpus, extractor false-positive cases, route-deduplication assertions, and copy/download acceptance.
-
+**Verification:** `tests/text-expansion.test.ts` covers Italian readability fixtures, mojibake/reflow and extractor edge cases; the text catalog/deduplication suites verify canonical route reuse. Ticket 309 records the evidence-backed REFUSE decision for syllabification instead of shipping a weak duplicate implementation.

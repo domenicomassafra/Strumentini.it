@@ -14,7 +14,7 @@ export function finish(result) {
     userAgent: navigator.userAgent,
     crossOriginIsolated: self.crossOriginIsolated === true,
   };
-  window.__STRUMENTIUTILI_SPIKE_RESULT__ = payload;
+  window.__STRUMENTINI_SPIKE_RESULT__ = payload;
   const out = document.querySelector("#result");
   if (out) out.textContent = JSON.stringify(payload, null, 2);
   document.documentElement.dataset.spikeState = "complete";
@@ -22,7 +22,7 @@ export function finish(result) {
 
 export function fail(error) {
   const message = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-  window.__STRUMENTIUTILI_SPIKE_RESULT__ = { ok: false, error: message };
+  window.__STRUMENTINI_SPIKE_RESULT__ = { ok: false, error: message };
   const out = document.querySelector("#result");
   if (out) out.textContent = message;
   document.documentElement.dataset.spikeState = "failed";

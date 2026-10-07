@@ -35,6 +35,20 @@
   "nonGetTaskRequests": 0,
   "taskContentLeaks": 0,
   "runtimeConsoleErrors": 0,
+  "exceptionalStates": {
+    "largeMultiPage": {
+      "inputBytes": 4195447,
+      "pageCount": 3,
+      "status": "PASS"
+    },
+    "malformedError": {
+      "status": "PASS"
+    },
+    "cancellation": {
+      "status": "PASS",
+      "outputProduced": false
+    }
+  },
   "staticEnvironmentFailures": [
     "http://127.0.0.1:18148/api/auth/session"
   ],
@@ -65,8 +79,8 @@
   "results": [
     {
       "toolId": "pdf-merge",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -75,8 +89,8 @@
     },
     {
       "toolId": "pdf-split",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -85,8 +99,8 @@
     },
     {
       "toolId": "pdf-page-reorder",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -95,8 +109,8 @@
     },
     {
       "toolId": "pdf-rotate",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -105,8 +119,8 @@
     },
     {
       "toolId": "pdf-page-delete-extract",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -115,8 +129,8 @@
     },
     {
       "toolId": "images-to-pdf",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 11,
+      "taskRequestCount": 13,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -125,8 +139,8 @@
     },
     {
       "toolId": "pdf-to-images",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 11,
+      "taskRequestCount": 12,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -135,8 +149,8 @@
     },
     {
       "toolId": "pdf-text-extraction",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -145,8 +159,8 @@
     },
     {
       "toolId": "pdf-metadata-inspector",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -155,8 +169,8 @@
     },
     {
       "toolId": "pdf-metadata-remover",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -165,8 +179,8 @@
     },
     {
       "toolId": "pdf-page-size-inspector",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -175,8 +189,8 @@
     },
     {
       "toolId": "pdf-page-count-verifier",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -185,8 +199,8 @@
     },
     {
       "toolId": "pdf-password-check-remove",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -195,8 +209,8 @@
     },
     {
       "toolId": "pdf-flatten",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -205,8 +219,8 @@
     },
     {
       "toolId": "pdf-form-inspector",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -215,8 +229,8 @@
     },
     {
       "toolId": "pdf-link-extractor",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -225,8 +239,8 @@
     },
     {
       "toolId": "pdf-image-extractor",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -235,8 +249,8 @@
     },
     {
       "toolId": "pdf-compare-lite",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 3,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -245,8 +259,8 @@
     },
     {
       "toolId": "pdf-compression-lite",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
@@ -255,8 +269,8 @@
     },
     {
       "toolId": "document-handoff-manifest",
-      "lazyScriptCount": 4,
-      "taskRequestCount": 5,
+      "lazyScriptCount": 3,
+      "taskRequestCount": 4,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": {
-    "styles": "preset StrumentiUtili.it per citazioni di pagina; nessuna conformita a guide di stile e dichiarata",
+    "styles": "preset Strumentini.it per citazioni di pagina; nessuna conformita a guide di stile e dichiarata",
     "page_separator": "en dash U+2013 nell'output",
     "accepted_range_forms": ["12-15", "12--15", "12–15", "12—15"],
     "page_prefix": "p. per una sola pagina, pp. per piu pagine; il preset Chicago omette il prefisso",

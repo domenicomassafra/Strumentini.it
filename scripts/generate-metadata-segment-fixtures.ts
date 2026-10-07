@@ -114,7 +114,7 @@ function exifPayload(make: string): Buffer {
 }
 
 function exifChunk(): Buffer {
-  return pngChunk("eXIf", exifPayload("StrumentiUtili"));
+  return pngChunk("eXIf", exifPayload("Strumentini"));
 }
 
 function png(extra: readonly Buffer[]): Buffer {
@@ -153,13 +153,13 @@ function jpeg(metadata: readonly Buffer[]): Buffer {
   ]);
 }
 
-writeFileSync(resolve(outDir, "with-text.png"), png([text("Software", "StrumentiUtili"), time()]));
+writeFileSync(resolve(outDir, "with-text.png"), png([text("Software", "Strumentini"), time()]));
 writeFileSync(resolve(outDir, "with-exif.png"), png([exifChunk(), text("Comment", "synthetic fixture")]));
 writeFileSync(resolve(outDir, "clean.png"), png([]));
 
 const comment = Buffer.from("synthetic fixture", "latin1");
 writeFileSync(resolve(outDir, "exif-app1.jpg"), jpeg([
-  jpegSegment(0xe1, Buffer.concat([Buffer.from("Exif\0\0", "latin1"), exifPayload("StrumentiUtili")])),
+  jpegSegment(0xe1, Buffer.concat([Buffer.from("Exif\0\0", "latin1"), exifPayload("Strumentini")])),
   jpegSegment(0xfe, comment),
 ]));
 

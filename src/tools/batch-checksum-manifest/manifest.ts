@@ -13,6 +13,7 @@ export default {
   engine: "file-privacy",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "text-code", capabilities: ["copy", "download", "retry", "reset", "provenance"] },
   handoff: { emits: [{ type: "structured", format: "sha256-manifest", maxBytes: 2_097_152 }] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-162", fixtureFamilies: ["file-hash"] },
 } as const satisfies ToolManifest;

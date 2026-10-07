@@ -1,18 +1,33 @@
 {
   "schemaVersion": 1,
   "page": "tools/image-resize/index.html",
-  "htmlBytes": 13219,
+  "htmlBytes": 57317,
   "initialAssets": [
-    "GlobalSearch.astro_astro_type_script_index_0_lang.B9bUPZob.js"
+    "GlobalSearch.astro_astro_type_script_index_0_lang.CNarKz99.js",
+    "TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
+    "ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
+    "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js"
   ],
   "implementationChunks": [
     {
-      "file": "ImageResizeTool.C2f_9ZBU.js",
-      "bytes": 5953
+      "file": "ExifRemoverTool.CXs3bZoi.js",
+      "bytes": 2796
     },
     {
-      "file": "module.C_MYuRwA.js",
-      "bytes": 8641
+      "file": "ImageResizeTool.CMcaYPj2.js",
+      "bytes": 9640
+    },
+    {
+      "file": "module.DVFo3_Yx.js",
+      "bytes": 4348
+    },
+    {
+      "file": "module.DjbW-RFL.js",
+      "bytes": 4113
+    },
+    {
+      "file": "operations.2jy4frMQ.js",
+      "bytes": 8298
     }
   ],
   "implementationEager": false

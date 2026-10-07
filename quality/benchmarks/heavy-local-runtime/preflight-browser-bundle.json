@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-06T11:44:20.984Z",
+  "browser": {
+    "engine": "chromium",
+    "version": "153.0.8010.12"
+  },
+  "missingFeature": {
+    "status": "PASS",
+    "evidence": {
+      "capabilities": {
+        "worker": false,
+        "wasm": false,
+        "image-decode": false
+      },
+      "result": {
+        "state": "unsupported",
+        "resourceState": "within-limits",
+        "capabilities": {
+          "worker": false,
+          "wasm": false,
+          "image-decode": false
+        },
+        "requiredCapabilities": [
+          "worker",
+          "wasm",
+          "image-decode"
+        ],
+        "preferredCapabilities": [],
+        "missingRequired": [
+          "worker",
+          "wasm",
+          "image-decode"
+        ],
+        "missingPreferred": [],
+        "limits": {},
+        "input": {},
+        "reasons": [
+          "Required browser capability is unavailable: worker.",
+          "Required browser capability is unavailable: wasm.",
+          "Required browser capability is unavailable: image-decode."
+        ]
+      }
+    }
+  },
+  "lightRouteBundle": {
+    "status": "PASS",
+    "route": "/tools/business-day/",
+    "httpStatus": 200,
+    "identifiedHeavyAssets": [],
+    "requestedHeavyAssets": [],
+    "requestedHeavyBinary": [],
+    "requestedAssets": [
+      "BaseLayout.C-HWFLJJ.css",
+      "BusinessDayTool.DDkfx8xp.js",
+      "GlobalSearch.astro_astro_type_script_index_0_lang.BA3YPTxH.js",
+      "TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
+      "ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
+      "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js",
+      "browser.DS3RFGQK.js",
+      "business-day",
+      "client.BQJ46GI4.js",
+      "events.BpX949VT.js",
+      "hooks.module.BsvH4L0y.js",
+      "inter-latin-ext.woff2",
+      "inter-latin.woff2",
+      "jsxRuntime.module.Bfdc-KV3.js",
+      "manifest.BmmxTcxK.js",
+      "preact.module.Bl7PEaKa.js",
+      "preload-helper.B3nfOi5I.js",
+      "search.fenT6hcj.js",
+      "session",
+      "shared.CgPRMzM0.js",
+      "shared.NcgtqErO.css",
+      "theme.BedJIwSV.js",
+      "tool-icons.KyturOEx.js",
+      "tool-runtime.D51ddkSg.js"
+    ]
+  }
+}

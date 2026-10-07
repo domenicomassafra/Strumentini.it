@@ -60,7 +60,7 @@ const JPEG = Uint8Array.from(Buffer.from(
 ));
 
 function annotatedPdf(): Uint8Array {
-  return new TextEncoder().encode(`%PDF-1.7\n1 0 obj\n<</Type /Catalog /Pages 2 0 R /AcroForm <</Fields [7 0 R]>>/Info 8 0 R>>\nendobj\n2 0 obj\n<</Type /Pages /Kids [3 0 R] /Count 1>>\nendobj\n3 0 obj\n<</Type /Page /Parent 2 0 R /MediaBox [0 0 300 400] /Annots [5 0 R] /Contents 4 0 R>>\nendobj\n4 0 obj\n<</Length 35>>\nstream\nBT /F1 12 Tf 20 300 Td (link page) Tj ET\nendstream\nendobj\n5 0 obj\n<</Type /Annot /Subtype /Link /A <</URI (https://example.test/a)>> >>\nendobj\n6 0 obj\n<</Type /Font /Subtype /Type1 /BaseFont /Helvetica>>\nendobj\n7 0 obj\n<</FT /Tx /T (full_name) /V (Ada) /Ff 0>>\nendobj\n8 0 obj\n<</Title (Annotated fixture) /Author (StrumentiUtili.it)>>\nendobj\ntrailer\n<</Size 9 /Root 1 0 R /Info 8 0 R>>\nstartxref\n0\n%%EOF\n`);
+  return new TextEncoder().encode(`%PDF-1.7\n1 0 obj\n<</Type /Catalog /Pages 2 0 R /AcroForm <</Fields [7 0 R]>>/Info 8 0 R>>\nendobj\n2 0 obj\n<</Type /Pages /Kids [3 0 R] /Count 1>>\nendobj\n3 0 obj\n<</Type /Page /Parent 2 0 R /MediaBox [0 0 300 400] /Annots [5 0 R] /Contents 4 0 R>>\nendobj\n4 0 obj\n<</Length 35>>\nstream\nBT /F1 12 Tf 20 300 Td (link page) Tj ET\nendstream\nendobj\n5 0 obj\n<</Type /Annot /Subtype /Link /A <</URI (https://example.test/a)>> >>\nendobj\n6 0 obj\n<</Type /Font /Subtype /Type1 /BaseFont /Helvetica>>\nendobj\n7 0 obj\n<</FT /Tx /T (full_name) /V (Ada) /Ff 0>>\nendobj\n8 0 obj\n<</Title (Annotated fixture) /Author (Strumentini.it)>>\nendobj\ntrailer\n<</Size 9 /Root 1 0 R /Info 8 0 R>>\nstartxref\n0\n%%EOF\n`);
 }
 
 function asBlob(bytes: Uint8Array): Blob {

@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const doiIsbnNormalizerManifest = {
   id: "doi-isbn-normalizer",
@@ -13,6 +14,7 @@ export const doiIsbnNormalizerManifest = {
   engine: "research-reference",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("doi-isbn-normalizer"),
   gold: {
     maintenanceClass: "E",
     oracleEntryId: "cand-181",

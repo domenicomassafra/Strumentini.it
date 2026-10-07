@@ -52,9 +52,16 @@ function generatorErrorIt(result: Extract<ToolRunResult, { ok: false }>): string
 }
 
 export function QrGeneratorTool() {
+  const [preset, setPreset] = useState<"text" | "wifi">("text");
   const [payload, setPayload] = useState("");
+  const [ssid, setSsid] = useState("");
+  const [password, setPassword] = useState("");
+  const [security, setSecurity] = useState<"WPA" | "WEP" | "nopass">("WPA");
+  const [hidden, setHidden] = useState(false);
   const operation = useToolOperation<QrResult>(
-    async (signal) => toolRuntime.run("qr-generator", { payload }, {}, signal),
+    async (signal) => toolRuntime.run("qr-generator", preset === "wifi"
+      ? { preset, ssid, password, security, hidden }
+      : { preset, payload }, {}, signal),
     { formatError: generatorErrorIt },
   );
 
@@ -62,10 +69,16 @@ export function QrGeneratorTool() {
   const overBy = Math.max(0, used - BYTE_LIMIT);
   const counter: "ok" | "warn" | "error" = overBy > 0 ? "error" : overBy === 0 && used > 0 ? "warn" : "ok";
   const result = operation.result;
+  const downloadNameSeed = preset === "wifi" ? "rete-wifi" : result?.payload ?? "codice-qr";
 
   function reset() {
     operation.reset();
     setPayload("");
+    setSsid("");
+    setPassword("");
+    setSecurity("WPA");
+    setHidden(false);
+    setPreset("text");
   }
 
   return (
@@ -78,25 +91,22 @@ export function QrGeneratorTool() {
         noValidate
       >
         <ToolFormCard>
-          <label class="field">
-            <span>Contenuto da codificare</span>
-            <textarea
-              aria-label="Contenuto da codificare"
-              rows={4}
-              value={payload}
-              placeholder="https://esempio.it/campagna"
-              onInput={(event) => setPayload(event.currentTarget.value)}
-              disabled={operation.isRunning}
-            />
-            <small>
-              <StatusMark kind={counter} label={statusMarkLabel(counter)} />{" "}
-              {used === 0
-                ? `Nessun carattere. Limite: ${BYTE_LIMIT} byte UTF-8.`
-                : overBy > 0
-                  ? `${used} byte UTF-8: supera di ${overBy} il limite di ${BYTE_LIMIT} byte.`
-                  : `${used} byte UTF-8 su ${BYTE_LIMIT} disponibili.`}
-            </small>
-          </label>
+          <label class="field"><span>Tipo di QR</span><select value={preset} onChange={(event) => setPreset(event.currentTarget.value as "text" | "wifi")}><option value="text">Testo o URL</option><option value="wifi">Rete Wi-Fi</option></select></label>
+          {preset === "text" ? (
+            <label class="field">
+              <span>Contenuto da codificare</span>
+              <textarea aria-label="Contenuto da codificare" rows={4} value={payload} placeholder="https://esempio.it/campagna" onInput={(event) => setPayload(event.currentTarget.value)} disabled={operation.isRunning} />
+              <small><StatusMark kind={counter} label={statusMarkLabel(counter)} />{" "}{used === 0 ? `Nessun carattere. Limite: ${BYTE_LIMIT} byte UTF-8.` : overBy > 0 ? `${used} byte UTF-8: supera di ${overBy} il limite di ${BYTE_LIMIT} byte.` : `${used} byte UTF-8 su ${BYTE_LIMIT} disponibili.`}</small>
+            </label>
+          ) : (
+            <>
+              <label class="field"><span>Nome rete (SSID)</span><input type="text" value={ssid} onInput={(event) => setSsid(event.currentTarget.value)} autoComplete="off" /></label>
+              <label class="field"><span>Sicurezza</span><select value={security} onChange={(event) => setSecurity(event.currentTarget.value as "WPA" | "WEP" | "nopass")}><option value="WPA">WPA/WPA2/WPA3</option><option value="WEP">WEP</option><option value="nopass">Nessuna password</option></select></label>
+              {security !== "nopass" && <label class="field"><span>Password Wi-Fi</span><input type="password" value={password} onInput={(event) => setPassword(event.currentTarget.value)} autoComplete="new-password" /></label>}
+              <label class="choice-line"><input type="checkbox" checked={hidden} onChange={(event) => setHidden(event.currentTarget.checked)} /> Rete nascosta</label>
+              <small>SSID e password restano nello stato locale della pagina: non vengono aggiunti all'URL o alla cronologia.</small>
+            </>
+          )}
         </ToolFormCard>
         <InlineError message={operation.error} />
         <ToolActions>
@@ -134,7 +144,7 @@ export function QrGeneratorTool() {
               <button
                 class="button primary"
                 type="button"
-                onClick={() => downloadBlob(svgBlob(result.svg), safeFilename(result.payload, "codice-qr", "svg"))}
+                onClick={() => downloadBlob(svgBlob(result.svg), safeFilename(downloadNameSeed, "codice-qr", "svg"))}
               >
                 {it(CONTROL.download)} SVG
               </button>
@@ -143,7 +153,7 @@ export function QrGeneratorTool() {
                 type="button"
                 onClick={() => {
                   void qrPngBlob(result.matrixRows, result.quietZone)
-                    .then((blob) => downloadBlob(blob, safeFilename(result.payload, "codice-qr", "png")))
+                    .then((blob) => downloadBlob(blob, safeFilename(downloadNameSeed, "codice-qr", "png")))
                     .catch(() => undefined);
                 }}
               >

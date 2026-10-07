@@ -1,14 +1,15 @@
 import type { ComponentChildren } from "preact";
 import { PreviousValue } from "./PreviousValue";
+import { ResultStateCue, type AccessibleResultStatus } from "./ResultAccessibility";
 
 export { GUTTER_PREVIOUS_MS } from "./PreviousValue";
 
-export type GutterState = "idle" | "running" | "success" | "error" | "warning" | "info";
+export type GutterState = AccessibleResultStatus;
 
 /**
  * Maps a shared tool operation status onto the gutter's semantic rule.
- * `cancelled` is a user action, not a failure, so it reads as idle rather
- * than stamping the red error rule on a result nobody asked to lose.
+ * Warning, partial, and cancelled stay explicit so the accessibility cue can
+ * name the state instead of collapsing it into a visually neutral idle state.
  */
 export function gutterStateFor(status: string): GutterState {
   switch (status) {
@@ -16,8 +17,16 @@ export function gutterStateFor(status: string): GutterState {
       return "running";
     case "success":
       return "success";
+    case "warning":
+      return "warning";
+    case "partial":
+      return "partial";
     case "error":
       return "error";
+    case "cancelled":
+      return "cancelled";
+    case "info":
+      return "info";
     default:
       return "idle";
   }
@@ -82,11 +91,10 @@ export function ToolGutter({
     <aside
       class="gutter"
       data-state={state}
-      aria-live="polite"
-      aria-atomic="false"
       aria-busy={busy ? "true" : "false"}
     >
       <p class="gutter-label">{label}</p>
+      <ResultStateCue status={busy && state === "idle" ? "running" : state} atomic={false} />
 
       {hasValue ? (
         <>

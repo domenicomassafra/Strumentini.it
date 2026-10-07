@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { TEXT_RESULT_V2_DECLARATIONS } from "../text-writing/result-v2";
 
 export const markdownPreviewManifest = {
   id: "markdown-preview",
@@ -13,6 +14,7 @@ export const markdownPreviewManifest = {
   engine: "text-writing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: TEXT_RESULT_V2_DECLARATIONS["markdown-preview"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-014", fixtureFamilies: ["markdown-xss", "text-writing-gold"] },
 } as const satisfies ToolManifest;
 

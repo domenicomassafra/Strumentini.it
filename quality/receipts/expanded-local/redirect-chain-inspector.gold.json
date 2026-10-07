@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "redirect-chain-inspector",
   "runtime": {
-    "location": "LOCAL",
-    "network": "forbidden"
+    "location": "REFERENCE",
+    "network": "reference-only"
   },
   "maintenanceClass": "E",
   "engine": "url-marketing",
@@ -34,14 +34,14 @@
   ],
   "browserContract": {
     "assertion": "hopCount|2|example\\.com\\/b",
-    "outputSha256": "dfc0a59cd0c657bce342d70bd1636e086e0367749a4f8104c01ab51ee94a3b1c",
-    "locality": "zero external/non-GET/task-body requests",
+    "outputSha256": "b40f4b4e6da0b75f5b570dfbd568394aa6983e2cc9bbd8235cce87c181a53125",
+    "locality": "local/default browser mode exercised with zero task-time network; optional live reference mode remains explicitly disclosed and separately unit-tested",
     "lazyLoad": "implementation script observed after submit",
     "mobile": "390px without horizontal overflow",
     "accessibility": "no unlabeled interactive form controls"
   },
   "propertyChecks": [
-    "LOCAL/network-forbidden runtime",
+    "REFERENCE/reference-only runtime with zero-network local/default browser acceptance",
     "high-confidence oracle with no open semantic gap",
     "oracle/manifest maintenance class alignment",
     "all declared fixture families resolve from the canonical fixture index",
@@ -49,11 +49,11 @@
     "keyboard/mobile/a11y/locality/lazy browser acceptance"
   ],
   "identities": {
-    "manifestSha256": "8eb58d7a52e424dfb9cd8ea3c7e76b2e92b4acf97b68e5668f4f48f87fc9c34e",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
-    "browserAcceptanceSha256": "cfc46c38986031b3817fa823c76ae6eaa7e31b3d6ce383c16c7f51b6ff614431",
-    "acceptanceScriptSha256": "07cedaf3a275471dd3570ec318862c4716722876adf598f7651423c6b75ab5ac",
+    "manifestSha256": "77e80bd1dc629745523923d59a5b06c4077619bf07f7494dbaeb2b24e5641367",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "browserAcceptanceSha256": "0013bb17ddc8213c484a55674ce2f36eca1acffdfb4dc5dfdaa0053166c8dc6f",
+    "acceptanceScriptSha256": "d383d4babd80b070e8357622cb3753903254ab7afd5c355e346108c11437d851",
     "unitTestsSha256": "8ffb71f5c9d87e24a0e82abcf77530008b2cd16ff420c2af40a4cff611677d93",
     "fixture:url-security:sha256": "498535dca23ff3fe69902dde2024e33f1f5900cd34ccc39b6079e06fb06c0a0e",
     "fixture:query-params:sha256": "45165ac3bf038861444d91b026cedf121b0ba4341c4e02e18b4061c5b9707677"

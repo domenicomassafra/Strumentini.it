@@ -13,6 +13,7 @@ export const socialCharacterLimitManifest = {
   engine: "url-marketing",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "validator", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "D", oracleEntryId: "cand-069", fixtureFamilies: ["word-character-line-count"] },
 } as const satisfies ToolManifest;
 

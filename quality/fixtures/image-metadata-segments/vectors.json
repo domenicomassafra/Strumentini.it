@@ -12,7 +12,7 @@
         {
           "segment": "PNG tEXt",
           "carrier": "text",
-          "bytes": 35
+          "bytes": 32
         },
         {
           "segment": "PNG tIME",
@@ -31,7 +31,7 @@
         {
           "segment": "PNG eXIf",
           "carrier": "exif",
-          "bytes": 52
+          "bytes": 49
         },
         {
           "segment": "PNG tEXt",
@@ -58,7 +58,7 @@
         {
           "segment": "JPEG APP1",
           "carrier": "exif",
-          "bytes": 50
+          "bytes": 47
         },
         {
           "segment": "JPEG COM",

@@ -6,14 +6,13 @@
 
 **Constraints:** Reject path traversal/absolute paths/unsafe overwrite; encryption/password creation or extraction is added only with an audited library; no brute force; large archives are memory-bounded and cancellable.
 
-**Blocked by:** 01, 34.
+**Blocked by:** 222, 223, 224.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] ZIP creator offers store/fast/balanced/max compression and reports per-entry + total savings.
-- [ ] GZIP round-trips bytes and validates integrity where format support allows.
-- [ ] ZIP extraction previews paths/sizes first and refuses traversal/unsafe entries.
-- [ ] 7z/RAR remains `SPIKE/REFUSE` until licensing/mobile/performance evidence is acceptable.
+- [x] Production DEFLATE presets are deliberately **REFUSED** by tickets 222/272 until traversal, expansion-ratio, cancellation/worker and physical-mobile promotion gates are satisfied; the current creator remains truthfully store-only and makes no fake savings claim.
+- [x] Production GZIP is deliberately **REFUSED** by ticket 223 for the same bounded-runtime/mobile reasons; isolated feasibility proves byte round-trip but is not exposed as a product capability.
+- [x] Production ZIP extraction is deliberately **REFUSED** by ticket 224; the existing inspector still previews central-directory paths/sizes and fails closed on traversal/encryption/declared expansion bounds without materializing entries.
+- [x] 7z/RAR remain explicit `REFUSE` decisions under ticket 272 because no approved maintained local codec with acceptable license/safety/mobile evidence is available.
 
-**Verification:** Compression-ratio corpus, exact byte round-trips, zip-slip/path-traversal adversarial fixtures, corrupted archive handling, cancellation/memory receipts.
-
+**Verification:** Closed as a bounded REFUSE umbrella over tickets 222/223/224/272. Their archive corpus covers valid/corrupt ZIP/GZIP, zip-slip/path traversal and large expansion ratios; no refused codec/extractor is advertised in the public catalog.

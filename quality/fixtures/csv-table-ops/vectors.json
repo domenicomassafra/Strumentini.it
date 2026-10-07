@@ -56,5 +56,69 @@
       "expected": "c,a\n,1",
       "filled_missing_cells": 1
     }
+  ],
+  "transform_upgrade": [
+    {
+      "case": "filter-explicit-null-policy",
+      "input": "id,status\n1,NULL\n2,\n3,Active\n4,inactive",
+      "operation": "filter",
+      "column": 1,
+      "operator": "equals",
+      "value": "active",
+      "case_sensitive": false,
+      "null_tokens": ["NULL"],
+      "empty_as_null": true,
+      "expected_ids": ["3"],
+      "expected_output_rows": 1
+    },
+    {
+      "case": "numeric-sort-mixed-values-as-null",
+      "input": "id,value\na,10\nb,NULL\nc,2\nd,oops\ne,",
+      "operation": "sort",
+      "column": 1,
+      "comparator": "numeric",
+      "nulls": "last",
+      "null_tokens": ["NULL"],
+      "empty_as_null": true,
+      "expected_ids": ["c", "a", "b", "d", "e"]
+    },
+    {
+      "case": "group-casefold-null-and-numeric-policy",
+      "input": "team,amount\nA,1\na,2\nNULL,3\n,4",
+      "operation": "group-sum",
+      "group_columns": [0],
+      "aggregate_column": 1,
+      "case_sensitive": false,
+      "null_tokens": ["NULL"],
+      "empty_as_null": true,
+      "expected": "team,count\nA,3\nNULL,7"
+    },
+    {
+      "case": "join-null-never-match",
+      "left": "id,left_value\n1,a\nNULL,n1\n,blank",
+      "right": "id,right_value\n1,x\nNULL,n2\n,y",
+      "operation": "full-join",
+      "left_key_columns": [0],
+      "right_key_columns": [0],
+      "null_tokens": ["NULL"],
+      "empty_as_null": true,
+      "null_key_policy": "never-match",
+      "expected_output_rows": 5,
+      "expected_matched_rows": 1,
+      "expected_unmatched_left_rows": 2,
+      "expected_unmatched_right_rows": 2
+    },
+    {
+      "case": "pivot-casefold-null-groups",
+      "input": "team,quarter,amount\nA,Q1,2\na,q1,3\nNULL,Q2,4\n,Q2,5",
+      "operation": "pivot-sum",
+      "group_columns": [0],
+      "value_header_column": 1,
+      "aggregate_column": 2,
+      "case_sensitive": false,
+      "null_tokens": ["NULL"],
+      "empty_as_null": true,
+      "expected": "team,Q1,Q2\nA,5,\nNULL,,9"
+    }
   ]
 }

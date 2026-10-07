@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "9418f6d684412c1fc8346a54637d766a06c7f2cdcea37ddf6ba6cd24639a17b6",
+  "toolId": "fatturapa-reader",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "R",
+  "oracleEntryId": "cand-255",
+  "fixtureFamilies": [
+    "italy-2026-consumers"
+  ],
+  "boundedScopeGaps": [
+    "This reader maps a bounded human-readable field subset; it does not claim full XSD validation of every optional FatturaPA field."
+  ],
+  "scopePolicy": "Every canonical unresolved oracle gap is matched against a tool-specific bounded-scope policy. Unknown/new gap wording fails certification.",
+  "truthSources": [
+    "fatturapa-v1-4-official",
+    "fixture-policy",
+    "inps-circulars-2026-official",
+    "normattiva-holidays-2026-official"
+  ],
+  "directChecks": [
+    "ordinary FPR12/XSD 1.2.3 fixture exact",
+    "simplified FSM10/XSD 1.0.2 fixture exact"
+  ],
+  "propertyChecks": [
+    "local-only public runtime",
+    "canonical oracle confidence high",
+    "all oracle gaps classified as bounded exclusions",
+    "fixture replay",
+    "real browser locality/mobile acceptance",
+    "route bundle isolated from home initial JS"
+  ],
+  "identities": {
+    "manifestSha256": "37e0fff1ae9291f58cffbefa5db6f9a8e180c3a3cf5a95cf2f357e2056547bb7",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "5c4dde93bb08adbf888b4365dab0313da8bcdb2f65984fb9fec4a8f2d2d2b552",
+    "browserAcceptanceSha256": "85fb947f94f90f95644efc7042581d04a98018d47192521fa7c988644750548d",
+    "bundleIsolationSha256": "f8cc75d37de5f47d79a94a350710156bbf079972838dfdf080685192016e91c2",
+    "unitTestsSha256": "191e50a14479a779334491336202b0d14eecbee56bbbb6551bbae6ec2a07027c",
+    "fixture:italy-2026-consumers:sha256": "be3213387e7f246567ca6177063807dd51dd01269ea99c262bb8c19fb8a3bb78"
+  }
+}

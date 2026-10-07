@@ -6,7 +6,7 @@
 
 **Constraints:** Conversion fidelity is measured per job; no blanket "almost 100% accurate" claim; searchable-text jobs distinguish born-digital PDF from OCR-required scans.
 
-**Blocked by:** 31, 51, 52, 53, 56, 57, 58.
+**Blocked by:** 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260.
 
 **Status:** blocked
 

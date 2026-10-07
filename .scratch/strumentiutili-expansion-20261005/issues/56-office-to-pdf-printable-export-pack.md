@@ -6,7 +6,7 @@
 
 **Constraints:** Rich Office routes are not promoted until font/layout/table/image fidelity is measured; text/markup printable export must be deterministic and not rely on remote rendering.
 
-**Blocked by:** 23, 34, 54, 55.
+**Blocked by:** 256, 257, 258, 259.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] Output reports pages, page size and any layout warnings.
 
 **Verification:** Visual/fidelity corpus, PDF structural validation, page/layout snapshots, font fallback cases, and genuine mobile acceptance for supported sizes.
-

@@ -13,6 +13,7 @@ export const invoiceNumberGeneratorManifest = {
   engine: "business-math",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: { class: "text-code", capabilities: ["copy", "reset", "provenance"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-117", fixtureFamilies: ["business-math"] },
 } as const satisfies ToolManifest;
 

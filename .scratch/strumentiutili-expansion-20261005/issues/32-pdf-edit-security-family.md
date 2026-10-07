@@ -6,7 +6,7 @@
 
 **Constraints:** Drawn signature placement is not described as a qualified digital signature; redaction must remove/invalidate underlying content in the exported PDF, not just cover it visually.
 
-**Blocked by:** 01, 05, 34.
+**Blocked by:** 237, 238, 239, 240, 241, 242, 243, 244, 245, 319, 320.
 
 **Status:** blocked
 
@@ -15,4 +15,3 @@
 - [ ] Redaction has post-export extraction/byte inspection proving hidden text is not recoverable through normal PDF extraction.
 
 **Verification:** Real PDF fixture matrix including forms/images/text/encryption; post-process parsing; browser/mobile page interaction acceptance.
-

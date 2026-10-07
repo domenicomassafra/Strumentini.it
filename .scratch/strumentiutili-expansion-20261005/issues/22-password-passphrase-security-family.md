@@ -6,13 +6,13 @@
 
 **Constraints:** Use Web Crypto randomness; never upload generated secrets; strength labels must not promise resistance or reuse breached-password data without an explicit network mode.
 
-**Blocked by:** 01 — Result System v2 primitives.
+**Blocked by:** 159, 160.
 
-**Status:** blocked
+**Status:** completed
 
-- [ ] Generators use rejection sampling or equivalent unbiased selection.
-- [ ] Passphrase wordlist provenance/version is documented.
-- [ ] Strength output explains length/pattern observations and limitations.
-- [ ] Copy/reveal controls avoid accidental persistence in URLs/history.
+- [x] Ticket 159 uses WebCrypto-backed rejection sampling for bounded password/PIN/passphrase selection rather than modulo-biased sampling.
+- [x] The Italian passphrase mode exposes the bundled word-list identity/version/provenance instead of treating its vocabulary as implicit.
+- [x] Ticket 160 reports deterministic length/pattern observations and explicit estimator limitations without breach-database or absolute-security claims.
+- [x] Secrets remain local component/runtime state; the routes do not serialize generated values into URL/history/telemetry, and browser controls expose copy/reveal without adding persistence.
 
-**Verification:** Randomness-path unit tests, constraint/property tests, privacy/network assertions and browser acceptance including clipboard behavior.
+**Verification:** `tests/password-security-tools.test.ts` passes the generator/estimator vectors and property constraints; the tool manifests remain LOCAL/network-forbidden and focused browser/privacy checks in the lane cover clipboard/zero-network behavior.

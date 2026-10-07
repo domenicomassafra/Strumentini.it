@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { IMAGE_RESULT_DECLARATIONS } from "../image-result-declarations";
 
 export const aspect_ratio_calculatorManifest = {
   id: "aspect-ratio-calculator",
@@ -13,6 +14,7 @@ export const aspect_ratio_calculatorManifest = {
   engine: "image-visual",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: IMAGE_RESULT_DECLARATIONS["aspect-ratio-calculator"],
   gold: { maintenanceClass: "E", oracleEntryId: "cand-145", fixtureFamilies: ["image-metadata", "mime-file-signatures"] },
 } as const satisfies ToolManifest;
 

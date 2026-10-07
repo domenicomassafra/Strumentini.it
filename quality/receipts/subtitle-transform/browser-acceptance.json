@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "route": "/tools/subtitle-srt-vtt-transform/",
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "horizontalOverflow": false
+  },
+  "roundTripSurface": "PASS",
+  "completeSubtitleDownload": "PASS",
+  "transcriptDownload": "PASS",
+  "negativeOffsetRefuseAndClamp": "PASS",
+  "malformedTimingLocation": "PASS",
+  "network": "same-origin GET assets only after task start; no task-content request body"
+}

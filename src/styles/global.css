@@ -1,5 +1,5 @@
 /* ============================================================================
-   StrumentiUtili.it — the single token sheet and base element vocabulary.
+   Strumentini.it — the single token sheet and base element vocabulary.
 
    One `:root` authority. Every surface reads these tokens; a second spacing,
    colour, or type system is a defect.
@@ -202,7 +202,7 @@
    Explicit, never automatic. The light world is the product, and a machine
    that happens to prefer dark must not be shown a different site from the one
    that was designed; dark is a choice a person makes, stored under
-   `strumentiutili:theme:v1` and resolved by the inline boot script before the
+   `strumentini:theme:v1` and resolved by the inline boot script before the
    first paint. */
 
 /* `<html data-theme="light">` is simply the absence of this block: the `:root`
@@ -691,6 +691,13 @@ kbd {
   font-variant-numeric: inherit;
 }
 
+.result-panel[data-state="running"] { border-inline-start: 3px solid var(--info); }
+.result-panel[data-state="success"] { border-inline-start: 3px solid var(--success); }
+.result-panel[data-state="warning"],
+.result-panel[data-state="partial"] { border-inline-start: 3px solid var(--warning); }
+.result-panel[data-state="error"] { border-inline-start: 3px solid var(--danger); }
+.result-panel[data-state="cancelled"] { border-inline-start: 3px solid var(--border-strong); }
+
 .result-value {
   display: block;
   margin: var(--space-3) 0 var(--space-2);
@@ -733,7 +740,12 @@ kbd {
 }
 .assumptions dd { min-width: 0; margin: var(--space-1) 0 0; overflow-wrap: anywhere; }
 
-.provenance { color: var(--text-faint); font-size: var(--font-size-xs); }
+.provenance {
+  min-width: 0;
+  color: var(--text-faint);
+  font-size: var(--font-size-xs);
+  overflow-wrap: anywhere;
+}
 
 /* --- The running result column ------------------------------------------ */
 

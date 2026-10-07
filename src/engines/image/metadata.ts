@@ -45,6 +45,22 @@ export interface MetadataInventory {
   readonly complete: boolean;
 }
 
+export interface MetadataGroup {
+  readonly carrier: MetadataCarrier;
+  readonly labelIt: string;
+  readonly class: "privacy" | "descriptive" | "color";
+  readonly segments: readonly string[];
+  readonly count: number;
+  readonly bytes: number;
+}
+
+export interface MetadataInventoryDiff {
+  readonly before: readonly MetadataGroup[];
+  readonly after: readonly MetadataGroup[];
+  readonly removed: readonly MetadataGroup[];
+  readonly retained: readonly MetadataGroup[];
+}
+
 const JPEG_SEGMENTS: Readonly<Record<number, { readonly carrier: MetadataCarrier; readonly segment: string }>> = {
   0xe1: { carrier: "exif", segment: "JPEG APP1" },
   0xed: { carrier: "iptc", segment: "JPEG APP13" },
@@ -191,6 +207,39 @@ export function scanImageMetadata(bytes: Uint8Array): MetadataInventory {
   if (isJpeg(bytes)) return scanJpeg(bytes);
   if (isWebp(bytes)) return scanWebp(bytes);
   return { format: "unknown", segments: [], bytesTotal: 0, privacySegmentCount: 0, privacyBytes: 0, complete: false };
+}
+
+function metadataClass(carrier: MetadataCarrier): MetadataGroup["class"] {
+  if (PRIVACY_BEARING_CARRIERS.includes(carrier)) return "privacy";
+  if (carrier === "icc-profile") return "color";
+  return "descriptive";
+}
+
+export function groupImageMetadata(inventory: MetadataInventory): readonly MetadataGroup[] {
+  const carriers = [...new Set(inventory.segments.map((entry) => entry.carrier))].toSorted();
+  return carriers.map((carrier) => {
+    const segments = inventory.segments.filter((entry) => entry.carrier === carrier);
+    return {
+      carrier,
+      labelIt: METADATA_CARRIER_IT[carrier],
+      class: metadataClass(carrier),
+      segments: segments.map((entry) => entry.segment),
+      count: segments.length,
+      bytes: segments.reduce((sum, entry) => sum + entry.bytes, 0),
+    };
+  });
+}
+
+export function diffImageMetadata(beforeInventory: MetadataInventory, afterInventory: MetadataInventory): MetadataInventoryDiff {
+  const before = groupImageMetadata(beforeInventory);
+  const after = groupImageMetadata(afterInventory);
+  const afterCarriers = new Set(after.map((group) => group.carrier));
+  return {
+    before,
+    after,
+    removed: before.filter((group) => !afterCarriers.has(group.carrier)),
+    retained: after,
+  };
 }
 
 export function describeMetadataIt(inventory: MetadataInventory): string {

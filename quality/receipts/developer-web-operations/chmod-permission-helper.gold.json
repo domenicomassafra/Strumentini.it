@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/developer-web-operations/chmod-permission-helper.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "chmod-permission-helper",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-203",
+  "fixtureFamilies": [
+    "developer-network-numeric",
+    "developer-web-gold"
+  ],
+  "fixtureReplayCount": 1,
+  "truthSources": [
+    "fixture-policy",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "developer-network-numeric",
+      "path": "quality/fixtures/developer-network-numeric/vectors.json"
+    },
+    {
+      "id": "developer-web-gold",
+      "path": "quality/fixtures/developer-web-gold/vectors.json"
+    }
+  ],
+  "propertyChecks": [
+    "oracle confidence is high and every unresolved-gap string matches this tool's explicitly reviewed bounded-scope pattern",
+    "manifest maintenance class matches oracle registry",
+    "fixture/property replay passes through the public tool module",
+    "per-tool browser action produces semantic domain output",
+    "task execution has zero unexpected external/non-GET/body-bearing requests",
+    "task execution leaves local/session storage and visible URL unchanged",
+    "390px viewport has no horizontal overflow and exercised controls have accessible names",
+    "built route component is absent from home HTML, proving the tool implementation is not in the home eager surface",
+    "focused semantic/refusal tests are bound by identity"
+  ],
+  "identities": {
+    "manifestSha256": "0cecd7e8520ce12a058400ab543ed5c3fee99d2f558319f9a39e9318fd323201",
+    "moduleSha256": "9261c1741c00a5a5219e0e67a189073b9f59833d5ba3f6867bd18b98eba57f91",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "95ec130bfdb0cdbed0833ae1dfeb61f1d2e4195f322b987ae2a66fccf43dc1e3",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "1c36ecdc984b227d2332a75bf29ee09493373f10cc00b801f829435e4aa544dd",
+    "fixture:developer-network-numeric:sha256": "f57421c05327f36596dd06ce70d794f96e1e19dd90ee7a28cc54eb165759d583",
+    "fixture:developer-web-gold:sha256": "5d9fdd3746a9cba8783c65a89e44e7f720e5acf6192f7cc3932e71451f314a82"
+  }
+}

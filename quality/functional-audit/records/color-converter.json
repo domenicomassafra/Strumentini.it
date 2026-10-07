@@ -1,0 +1,32 @@
+{
+  "toolId": "color-converter",
+  "category": "image-visual",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Convert a hexadecimal color to normalized hexadecimal, RGB and HSL values locally with explicit channel rounding.",
+  "observedFunctionality": "The current engine parses the color locally and returns deterministic HEX/RGB/HSL values. Unit tests execute the conversion for #336699 and the Gold/browser evidence records the same tool-specific output on the public route.",
+  "rationale": "No missing behavior required by the declared color-conversion job was found. Tickets 298-317 concern additional image editing/export workflows rather than this scalar color conversion contract and therefore remain additive, not blockers for this audit record.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/expanded-local/color-converter.gold.json",
+      "claim": "Gold receipt binds color-converter to verified oracle/fixture identities and a real-route #336699 assertion."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/image-visual-tools.test.ts",
+      "claim": "Executable image/visual tests call convertColorLocal and assert #336699 converts to RGB 51/102/153."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/expanded-local/browser-acceptance.json",
+      "claim": "Expanded-local browser acceptance includes color-converter and verifies its submitted output on the real route without task-content network leakage."
+    },
+    {
+      "kind": "source-contract",
+      "ref": "src/engines/image/visual-tools.ts",
+      "claim": "convertColorLocal is the current production conversion seam used by this module; its contract is color conversion only, not image-file manipulation."
+    }
+  ],
+  "childTickets": []
+}

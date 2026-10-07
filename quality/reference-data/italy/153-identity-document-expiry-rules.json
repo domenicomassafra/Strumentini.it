@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "italian-identity-document-expiry",
+  "version": "2026-10-06.1",
+  "checkedAt": "2026-10-06",
+  "scope": [
+    "CIE standard",
+    "CIE temporary fingerprint-exemption document",
+    "ordinary Italian passport"
+  ],
+  "sources": [
+    {
+      "authority": "Ministero dell'Interno — Carta di Identità Elettronica",
+      "title": "Cos'è la carta — Validità e costo",
+      "url": "https://www.cartaidentita.interno.gov.it/la-carta/"
+    },
+    {
+      "authority": "Polizia di Stato — Questura di Matera",
+      "title": "Rilascio Passaporti",
+      "url": "https://questure.poliziadistato.it/it/Matera/articolo/5730dd56519d7672957443"
+    }
+  ],
+  "rules": {
+    "cie": {
+      "under3": "first birthday after 3 years from issue",
+      "age3To17": "first birthday after 5 years from issue",
+      "adult": "first birthday after 9 years from issue",
+      "temporaryFingerprintException": "12 months from issue"
+    },
+    "passport": {
+      "under3": "3 years from issue",
+      "age3To17": "5 years from issue",
+      "adult": "10 years from issue"
+    }
+  },
+  "limitations": [
+    "This is an expiry-date calculation, not verification that a document is authentic, active, accepted for travel, or otherwise legally usable.",
+    "Unsupported document types are refused.",
+    "Leap-day birthdays or issue dates are refused where the cited sources do not state the civil-date convention needed to resolve the boundary without an assumption."
+  ]
+}

@@ -1,4 +1,5 @@
 import type { ToolManifest } from "../../catalog/manifest";
+import { researchResultV2Declaration } from "../research-result-v2";
 
 export const dateSourceNormalizerManifest = {
   id: "date-source-normalizer",
@@ -13,6 +14,7 @@ export const dateSourceNormalizerManifest = {
   engine: "research-knowledge",
   runtime: { location: "LOCAL", network: "forbidden" },
   profileFields: [],
+  result: researchResultV2Declaration("date-source-normalizer"),
   gold: { maintenanceClass: "E", oracleEntryId: "cand-193", fixtureFamilies: ["research-date-normalization"] },
 } as const satisfies ToolManifest;
 

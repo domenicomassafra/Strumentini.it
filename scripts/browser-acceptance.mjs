@@ -38,8 +38,9 @@ try {
 
   taskStarted = true;
   await page.getByRole("button", { name: "Calcola" }).click();
-  await page.getByRole("alert").waitFor();
-  if (!(await page.getByRole("alert").innerText()).includes("Controlla le date")) {
+  const formAlert = page.locator("form").getByRole("alert");
+  await formAlert.waitFor();
+  if (!(await formAlert.innerText()).includes("Controlla le date")) {
     throw new Error("Invalid input did not produce the normalized recoverable error");
   }
   if (jsAfterAction.length === 0) {
@@ -65,7 +66,7 @@ try {
     throw new Error(`Unexpected external requests after task start: ${JSON.stringify(externalRequests)}`);
   }
 
-  await page.getByRole("button", { name: /^(?:Reset|Reimposta)$/u }).click();
+  await page.locator("form").getByRole("button", { name: /^(?:Reset|Reimposta)$/u }).click();
   await page.getByText("Il risultato apparirà qui.").waitFor();
   if ((await page.getByLabel("Data iniziale").inputValue()) !== "") {
     throw new Error("Reset did not clear the operation state");

@@ -126,9 +126,15 @@
     },
     {
       "toolId": "regex-tester",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 4,
-      "horizontalOverflow": false
+      "lazyScriptCount": 6,
+      "taskRequestCount": 7,
+      "horizontalOverflow": false,
+      "regexIsolation": {
+        "status": "PASS",
+        "timeoutObserved": true,
+        "workerRequestObserved": true,
+        "recoveredAfterTimeout": true
+      }
     },
     {
       "toolId": "cron-explainer",

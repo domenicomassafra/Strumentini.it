@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../../../../../src/layouts/BaseLayout.astro";
+import DirectoryHero from "../../../../../src/components/catalog/DirectoryHero.astro";
+import CatalogDirectory from "../../../../../src/components/catalog/CatalogDirectory.astro";
+import { catalog } from "../../../../../src/generated/catalog";
+import { qualityIndex } from "../../../../../src/generated/quality";
+import { groups } from "../../../../../src/catalog/groups";
+import { goldToolIds } from "../../../../../src/onboarding/quality";
+import type { ToolSummary } from "../../../../../src/catalog/manifest";
+
+const SYNTHETIC_COUNT = 64;
+const FIXTURE_QUERY = "fixture scala";
+const realVerifiedIds = goldToolIds(qualityIndex);
+const groupSeeds = groups.map((group) => {
+  const seed = catalog.find((tool) => group.memberCategories.includes(tool.category));
+  if (!seed) throw new Error(`Expanded-directory fixture has no catalog seed for group ${group.slug}`);
+  return seed;
+});
+
+const syntheticTools: ToolSummary[] = Array.from({ length: SYNTHETIC_COUNT }, (_, index) => {
+  const source = groupSeeds[index % groupSeeds.length]!;
+  const serial = String(index + 1).padStart(3, "0");
+  return {
+    ...source,
+    id: `fixture-expanded-${serial}`,
+    route: `/tools/fixture-expanded-${serial}`,
+    name: `Fixture scala espansa ${serial}`,
+    summary: `Voce sintetica deterministica ${serial} per provare directory, filtri, gruppi e paginazione oltre 200 strumenti.`,
+    aliases: [`fixture scala ${serial}`],
+    jobs: [`Verificare la scalabilità del catalogo sintetico ${serial}`],
+    engine: `fixture-expanded-${source.engine}`,
+    gold: {
+      ...source.gold,
+      oracleEntryId: `fixture-expanded-${serial}`,
+      fixtureFamilies: ["expanded-directory-scalability"],
+    },
+  };
+});
+
+const tools: readonly ToolSummary[] = [...catalog, ...syntheticTools];
+if (tools.length <= 200) throw new Error(`Expanded-directory fixture must exceed 200 tools; got ${tools.length}`);
+
+const verifiedIds = new Set(realVerifiedIds);
+for (let index = 0; index < syntheticTools.length; index += 1) {
+  if (index % 3 === 0) verifiedIds.add(syntheticTools[index]!.id);
+}
+
+const fixtureContract = JSON.stringify({
+  baseCount: catalog.length,
+  syntheticCount: syntheticTools.length,
+  totalCount: tools.length,
+  fixtureQuery: FIXTURE_QUERY,
+  verifiedCount: tools.filter((tool) => verifiedIds.has(tool.id)).length,
+}).replace(/</gu, "\\u003c");
+---
+
+<BaseLayout
+  title="Fixture catalogo espanso"
+  description="Fixture test-only per il gate di scalabilità della directory."
+  noindex
+>
+  <DirectoryHero total={tools.length} verified={tools.filter((tool) => verifiedIds.has(tool.id)).length} />
+  <CatalogDirectory tools={tools} verifiedIds={verifiedIds} />
+  <script type="application/json" data-expanded-directory-fixture set:html={fixtureContract}></script>
+</BaseLayout>

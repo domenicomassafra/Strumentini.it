@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://strumentini.it/schemas/original-200-functional-audit.json",
+  "title": "Strumentini.it original-200 functional audit record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "toolId",
+    "category",
+    "ownerTicket",
+    "decision",
+    "expectedFunctionality",
+    "observedFunctionality",
+    "rationale",
+    "evidence",
+    "childTickets"
+  ],
+  "properties": {
+    "toolId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "category": { "type": "string", "minLength": 1 },
+    "ownerTicket": { "type": "string", "minLength": 1 },
+    "decision": { "enum": ["UPGRADED", "ALREADY_COMPLETE", "REFUSED"] },
+    "expectedFunctionality": { "type": "string", "minLength": 1 },
+    "observedFunctionality": { "type": "string", "minLength": 1 },
+    "rationale": { "type": "string", "minLength": 1 },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "ref", "claim"],
+        "properties": {
+          "kind": {
+            "enum": ["unit-test", "browser-acceptance", "oracle", "benchmark", "source-contract", "quality-receipt"]
+          },
+          "ref": { "type": "string", "minLength": 1 },
+          "claim": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "childTickets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^\\.scratch/strumentiutili-expansion-20261005/issues/[0-9]+-[a-z0-9-]+\\.md$"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "decision": { "const": "UPGRADED" } }, "required": ["decision"] },
+      "then": {
+        "properties": {
+          "childTickets": { "minItems": 1 },
+          "evidence": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "decision": { "enum": ["ALREADY_COMPLETE", "REFUSED"] } },
+        "required": ["decision"]
+      },
+      "then": {
+        "properties": {
+          "rationale": { "minLength": 1 },
+          "evidence": { "minItems": 1 }
+        }
+      }
+    }
+  ]
+}

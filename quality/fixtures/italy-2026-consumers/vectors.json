@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "artifacts": [
+    { "path": "quality/fixtures/italy-2026-consumers/fatturapa-ordinary-anonymized.xml" },
+    { "path": "quality/fixtures/italy-2026-consumers/fatturapa-simplified-anonymized.xml" }
+  ],
+  "inpsArtigianiCommercianti": [
+    { "id": "artisan-below-minimum", "profile": "artigiano", "incomeEur": 10000, "seniority": "before-1996", "expectedContributionEur": 4521.36 },
+    { "id": "artisan-first-band-edge", "profile": "artigiano", "incomeEur": 56224, "seniority": "before-1996", "expectedContributionEur": 13501.20 },
+    { "id": "merchant-first-band-edge", "profile": "commerciante", "incomeEur": 56224, "seniority": "from-1996", "expectedContributionEur": 13771.08 }
+  ],
+  "gestioneSeparata": [
+    { "id": "professional-low-income", "profile": "professional-no-other-mandatory-pension-coverage", "incomeEur": 10000, "expectedContributionEur": 2607.00, "belowFullYearCreditMinimum": true },
+    { "id": "professional-other-coverage-at-credit-threshold", "profile": "professional-pensioner-or-other-mandatory-pension-coverage", "incomeEur": 18808, "expectedContributionEur": 4513.92, "belowFullYearCreditMinimum": false }
+  ],
+  "bridges": [
+    { "id": "easter-monday-four-leave-days", "workweek": ["MON", "TUE", "WED", "THU", "FRI"], "leaveDayBudget": 4, "expectedStart": "2026-04-04", "expectedEnd": "2026-04-12", "expectedDaysOff": 9, "expectedLeaveDates": ["2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10"] },
+    { "id": "custom-workweek-republic-day", "workweek": ["TUE", "WED", "THU", "FRI", "SAT"], "leaveDayBudget": 0, "expectedStart": "2026-05-31", "expectedEnd": "2026-06-02", "expectedDaysOff": 3 }
+  ],
+  "fatturaPa": {
+    "ordinaryExpected": { "format": "FPR12", "xsdVersion": "1.2.3", "number": "DEMO-1", "documentTotal": "122.00", "representedGrandTotal": "122.00" },
+    "simplifiedExpected": { "format": "FSM10", "xsdVersion": "1.0.2", "number": "S-1" },
+    "hostileXmlPolicy": "DTD and ENTITY declarations are rejected and no external entity is resolved"
+  }
+}

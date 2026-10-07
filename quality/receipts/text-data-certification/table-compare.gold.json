@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "status": "GOLD",
+  "goldEligible": true,
+  "receiptPath": "quality/receipts/text-data-certification/table-compare.gold.json",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+  "toolId": "table-compare",
+  "runtime": {
+    "location": "LOCAL",
+    "network": "forbidden"
+  },
+  "maintenanceClass": "E",
+  "oracleEntryId": "cand-230",
+  "fixtureFamilies": [
+    "csv-rfc4180",
+    "csv-advanced-ops"
+  ],
+  "exactVectors": 1,
+  "boundedOracleGaps": [
+    "Ambiguous duplicate keys require the user to choose a more specific key; the tool intentionally does not guess pairings."
+  ],
+  "truthSources": [
+    "fixture-policy",
+    "rfc4180",
+    "strumentiutili-quality"
+  ],
+  "resolvedFixtures": [
+    {
+      "id": "csv-rfc4180",
+      "path": "quality/fixtures/csv-rfc4180/vectors.json"
+    },
+    {
+      "id": "csv-advanced-ops",
+      "path": "quality/fixtures/csv-advanced-ops/vectors.json"
+    }
+  ],
+  "focusedTests": [
+    "tests/table-advanced-operations.test.ts"
+  ],
+  "propertyChecks": [
+    "LOCAL runtime with network forbidden",
+    "high-confidence oracle and exact explicit bounded-gap policy",
+    "manifest maintenance class matches oracle",
+    "fixture replay through the public tool module",
+    "per-tool semantic browser assertion at 390px",
+    "zero external/non-GET/task-body requests after browser task start",
+    "keyboard submit and accessible form controls",
+    "focused semantic/refusal-boundary tests bound by content identity"
+  ],
+  "identities": {
+    "manifestSha256": "83fdf7d456c656a30e7dd1e8da5144b7b1eead728802b1b2383fb2d39a0216e9",
+    "moduleSha256": "5a48c7acee6e0261827e934d7cef8b96edce4f4b69ad8404408ba7f6f2153d66",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "browserAcceptanceSha256": "89dba2afc0d8803540b7a25f0cfadaa22ef331110124676591c9812c7c2f372c",
+    "browserAcceptanceSourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
+    "focusedTestsSha256": "4996b84abfa1a8d72e4601605646b28dcebd10e8a9d3e08a36b191e722465aa4",
+    "fixture:csv-rfc4180:sha256": "6f6f74846f47fd99866d6c8b024cf1a8af33f4d92a015ae0af2e09a539111765",
+    "fixture:csv-advanced-ops:sha256": "a26a13e0ea7ca282b0d37d22fd5547ac39860bb1703a2e480c4b292c154801da"
+  }
+}

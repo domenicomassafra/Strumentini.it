@@ -87,6 +87,8 @@ async function certify(options: {
       engineSha256: sha(engineText),
       fixtureSha256: sha(fixtureText),
       rfcFixtureSha256: sha(rfcText),
+      "fixture:csv-table-ops:sha256": sha(fixtureText),
+      "fixture:csv-rfc4180:sha256": sha(rfcText),
       fixtureIndexSha256: sha(indexText),
       oracleRegistrySha256: sha(registryText),
     },

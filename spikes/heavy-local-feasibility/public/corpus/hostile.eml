@@ -1,0 +1,7 @@
+From: attacker@example.invalid
+To: victim@example.invalid
+Subject: hostile feasibility fixture
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<!doctype html><html><body><script>globalThis.__HOSTILE_EXECUTED__=true</script><img src="https://example.invalid/tracker.png"><iframe src="https://example.invalid/frame"></iframe></body></html>

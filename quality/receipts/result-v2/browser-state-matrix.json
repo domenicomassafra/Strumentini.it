@@ -1,0 +1,457 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-06T09:56:48.326Z",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "classes": [
+    "calculator",
+    "validator",
+    "text-code",
+    "table",
+    "file",
+    "image",
+    "pdf",
+    "batch",
+    "reference-network"
+  ],
+  "sampleCount": 54,
+  "consoleErrors": [],
+  "pageErrors": [],
+  "networkRequests": [],
+  "samples": [
+    {
+      "resultClass": "calculator",
+      "state": "running",
+      "visibleCue": "Stato: In elaborazione",
+      "polite": "Elaborazione in corso.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "calculator",
+      "state": "success",
+      "visibleCue": "Stato: Completato",
+      "polite": "Operazione completata. Il risultato è disponibile.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "calculator",
+      "state": "warning",
+      "visibleCue": "Stato: Completato con avviso",
+      "polite": "Operazione completata con un avviso. Controlla i dettagli.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "calculator",
+      "state": "partial",
+      "visibleCue": "Stato: Risultato parziale",
+      "polite": "Risultato parziale disponibile. Controlla cosa è stato completato.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "calculator",
+      "state": "error",
+      "visibleCue": "Stato: Errore",
+      "polite": "",
+      "assertive": "Operazione non riuscita. Controlla l'errore e riprova.",
+      "width390": true
+    },
+    {
+      "resultClass": "calculator",
+      "state": "cancelled",
+      "visibleCue": "Stato: Annullata",
+      "polite": "Operazione annullata. Puoi riprovare.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "validator",
+      "state": "running",
+      "visibleCue": "Stato: In elaborazione",
+      "polite": "Elaborazione in corso.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "validator",
+      "state": "success",
+      "visibleCue": "Stato: Completato",
+      "polite": "Operazione completata. Il risultato è disponibile.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "validator",
+      "state": "warning",
+      "visibleCue": "Stato: Completato con avviso",
+      "polite": "Operazione completata con un avviso. Controlla i dettagli.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "validator",
+      "state": "partial",
+      "visibleCue": "Stato: Risultato parziale",
+      "polite": "Risultato parziale disponibile. Controlla cosa è stato completato.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "validator",
+      "state": "error",
+      "visibleCue": "Stato: Errore",
+      "polite": "",
+      "assertive": "Operazione non riuscita. Controlla l'errore e riprova.",
+      "width390": true
+    },
+    {
+      "resultClass": "validator",
+      "state": "cancelled",
+      "visibleCue": "Stato: Annullata",
+      "polite": "Operazione annullata. Puoi riprovare.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "text-code",
+      "state": "running",
+      "visibleCue": "Stato: In elaborazione",
+      "polite": "Elaborazione in corso.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "text-code",
+      "state": "success",
+      "visibleCue": "Stato: Completato",
+      "polite": "Operazione completata. Il risultato è disponibile.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "text-code",
+      "state": "warning",
+      "visibleCue": "Stato: Completato con avviso",
+      "polite": "Operazione completata con un avviso. Controlla i dettagli.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "text-code",
+      "state": "partial",
+      "visibleCue": "Stato: Risultato parziale",
+      "polite": "Risultato parziale disponibile. Controlla cosa è stato completato.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "text-code",
+      "state": "error",
+      "visibleCue": "Stato: Errore",
+      "polite": "",
+      "assertive": "Operazione non riuscita. Controlla l'errore e riprova.",
+      "width390": true
+    },
+    {
+      "resultClass": "text-code",
+      "state": "cancelled",
+      "visibleCue": "Stato: Annullata",
+      "polite": "Operazione annullata. Puoi riprovare.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "table",
+      "state": "running",
+      "visibleCue": "Stato: In elaborazione",
+      "polite": "Elaborazione in corso.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "table",
+      "state": "success",
+      "visibleCue": "Stato: Completato",
+      "polite": "Operazione completata. Il risultato è disponibile.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "table",
+      "state": "warning",
+      "visibleCue": "Stato: Completato con avviso",
+      "polite": "Operazione completata con un avviso. Controlla i dettagli.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "table",
+      "state": "partial",
+      "visibleCue": "Stato: Risultato parziale",
+      "polite": "Risultato parziale disponibile. Controlla cosa è stato completato.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "table",
+      "state": "error",
+      "visibleCue": "Stato: Errore",
+      "polite": "",
+      "assertive": "Operazione non riuscita. Controlla l'errore e riprova.",
+      "width390": true
+    },
+    {
+      "resultClass": "table",
+      "state": "cancelled",
+      "visibleCue": "Stato: Annullata",
+      "polite": "Operazione annullata. Puoi riprovare.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "file",
+      "state": "running",
+      "visibleCue": "Stato: In elaborazione",
+      "polite": "Elaborazione in corso.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "file",
+      "state": "success",
+      "visibleCue": "Stato: Completato",
+      "polite": "Operazione completata. Il risultato è disponibile.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "file",
+      "state": "warning",
+      "visibleCue": "Stato: Completato con avviso",
+      "polite": "Operazione completata con un avviso. Controlla i dettagli.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "file",
+      "state": "partial",
+      "visibleCue": "Stato: Risultato parziale",
+      "polite": "Risultato parziale disponibile. Controlla cosa è stato completato.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "file",
+      "state": "error",
+      "visibleCue": "Stato: Errore",
+      "polite": "",
+      "assertive": "Operazione non riuscita. Controlla l'errore e riprova.",
+      "width390": true
+    },
+    {
+      "resultClass": "file",
+      "state": "cancelled",
+      "visibleCue": "Stato: Annullata",
+      "polite": "Operazione annullata. Puoi riprovare.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "image",
+      "state": "running",
+      "visibleCue": "Stato: In elaborazione",
+      "polite": "Elaborazione in corso.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "image",
+      "state": "success",
+      "visibleCue": "Stato: Completato",
+      "polite": "Operazione completata. Il risultato è disponibile.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "image",
+      "state": "warning",
+      "visibleCue": "Stato: Completato con avviso",
+      "polite": "Operazione completata con un avviso. Controlla i dettagli.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "image",
+      "state": "partial",
+      "visibleCue": "Stato: Risultato parziale",
+      "polite": "Risultato parziale disponibile. Controlla cosa è stato completato.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "image",
+      "state": "error",
+      "visibleCue": "Stato: Errore",
+      "polite": "",
+      "assertive": "Operazione non riuscita. Controlla l'errore e riprova.",
+      "width390": true
+    },
+    {
+      "resultClass": "image",
+      "state": "cancelled",
+      "visibleCue": "Stato: Annullata",
+      "polite": "Operazione annullata. Puoi riprovare.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "pdf",
+      "state": "running",
+      "visibleCue": "Stato: In elaborazione",
+      "polite": "Elaborazione in corso.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "pdf",
+      "state": "success",
+      "visibleCue": "Stato: Completato",
+      "polite": "Operazione completata. Il risultato è disponibile.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "pdf",
+      "state": "warning",
+      "visibleCue": "Stato: Completato con avviso",
+      "polite": "Operazione completata con un avviso. Controlla i dettagli.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "pdf",
+      "state": "partial",
+      "visibleCue": "Stato: Risultato parziale",
+      "polite": "Risultato parziale disponibile. Controlla cosa è stato completato.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "pdf",
+      "state": "error",
+      "visibleCue": "Stato: Errore",
+      "polite": "",
+      "assertive": "Operazione non riuscita. Controlla l'errore e riprova.",
+      "width390": true
+    },
+    {
+      "resultClass": "pdf",
+      "state": "cancelled",
+      "visibleCue": "Stato: Annullata",
+      "polite": "Operazione annullata. Puoi riprovare.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "batch",
+      "state": "running",
+      "visibleCue": "Stato: In elaborazione",
+      "polite": "Elaborazione in corso.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "batch",
+      "state": "success",
+      "visibleCue": "Stato: Completato",
+      "polite": "Operazione completata. Il risultato è disponibile.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "batch",
+      "state": "warning",
+      "visibleCue": "Stato: Completato con avviso",
+      "polite": "Operazione completata con un avviso. Controlla i dettagli.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "batch",
+      "state": "partial",
+      "visibleCue": "Stato: Risultato parziale",
+      "polite": "Risultato parziale disponibile. Controlla cosa è stato completato.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "batch",
+      "state": "error",
+      "visibleCue": "Stato: Errore",
+      "polite": "",
+      "assertive": "Operazione non riuscita. Controlla l'errore e riprova.",
+      "width390": true
+    },
+    {
+      "resultClass": "batch",
+      "state": "cancelled",
+      "visibleCue": "Stato: Annullata",
+      "polite": "Operazione annullata. Puoi riprovare.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "reference-network",
+      "state": "running",
+      "visibleCue": "Stato: In elaborazione",
+      "polite": "Elaborazione in corso.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "reference-network",
+      "state": "success",
+      "visibleCue": "Stato: Completato",
+      "polite": "Operazione completata. Il risultato è disponibile.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "reference-network",
+      "state": "warning",
+      "visibleCue": "Stato: Completato con avviso",
+      "polite": "Operazione completata con un avviso. Controlla i dettagli.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "reference-network",
+      "state": "partial",
+      "visibleCue": "Stato: Risultato parziale",
+      "polite": "Risultato parziale disponibile. Controlla cosa è stato completato.",
+      "assertive": "",
+      "width390": true
+    },
+    {
+      "resultClass": "reference-network",
+      "state": "error",
+      "visibleCue": "Stato: Errore",
+      "polite": "",
+      "assertive": "Operazione non riuscita. Controlla l'errore e riprova.",
+      "width390": true
+    },
+    {
+      "resultClass": "reference-network",
+      "state": "cancelled",
+      "visibleCue": "Stato: Annullata",
+      "polite": "Operazione annullata. Puoi riprovare.",
+      "assertive": "",
+      "width390": true
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "65bf1827c2eb59254029f7c09b02d1d8feac820e",
-  "sourceFingerprint": "64b64e37769334922de2150dbdd21743687cff135579bc33149595f867837d9d",
+  "revision": "9bb5c1b489a728d434a38612f822ed39636feed5",
+  "sourceFingerprint": "ea0364f0e602a3b2717fa35c0259d2ce871fb98c25f1bc1d6d399cde8ef5b70f",
   "toolId": "discount-impact",
   "runtime": {
     "location": "LOCAL",
@@ -32,12 +32,12 @@
     }
   ],
   "identities": {
-    "manifestSha256": "3dce9216c3c656c52156f58c474c64240bd50ab53090cf2b62063b9730ea8f48",
-    "engineSha256": "05c077073c50bc085c0e213339a5c83fca12f3084fc71e15515e50fab3f1e163",
-    "fixtureIndexSha256": "07b6c0166230e9fc6e673cddb7e1e02c9db1b7ba5a48b32bbc8de9087b5f934d",
-    "oracleRegistrySha256": "589ca04413c1ae378d12b4f044e5cf7b7d717f3495bb5a19aeff45ee7fca56c6",
+    "manifestSha256": "259136573852017bb57d4457e1a51c3359c85c77ae9ff80d1c4edaee1b53208e",
+    "engineSha256": "f6f84d886af36bfa02e54ea81b5a5e5c20de84362ec9f053d5d872f8257aefcd",
+    "fixtureIndexSha256": "edd7842f2fdca905a21d20675fe92185f7905c7d86441827fe503169de4e3d48",
+    "oracleRegistrySha256": "767f0488295514ce057b2d2ebc965ec62fa924ba8a2839035586fcc893fc3a3c",
     "browserAcceptanceSha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
-    "unitTestsSha256": "ef539ff3626658c91b4c3127f9bf947c06faa1eb8b725fdadc9e30f386d559bd",
+    "unitTestsSha256": "4f77f401ee04fa397ce7d42ead81c5fa69320e1a8841e73a58d08747ef901f4e",
     "fixture:percentage-math:sha256": "ebcb801c832825b51b3795855bf022ac6d07d1e0c9d25addbccae600d0651e6a"
   }
 }

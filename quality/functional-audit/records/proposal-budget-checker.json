@@ -1,0 +1,32 @@
+{
+  "toolId": "proposal-budget-checker",
+  "category": "business-math",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Verifica se il prezzo copre ore di lavoro, costi, imprevisti e margine desiderato. Public job: Usa Controlla il margine di un preventivo.",
+  "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/business-math/proposal-budget-checker.gold.json; executable tests/business-tools.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/business-math/browser-acceptance.json verifies the real route interaction/locality contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Broader backlog enhancements remain additive work and are not treated as proof that this existing narrow route is functionally incomplete.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/business-math/proposal-budget-checker.gold.json",
+      "claim": "Tool-specific Gold receipt binds proposal-budget-checker to exact fixtures, current source identities and functional acceptance."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/business-tools.test.ts",
+      "claim": "Executable tests exercise the engine/module behavior used by proposal-budget-checker, including relevant edge, invalid-input or transformation semantics."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/business-math/browser-acceptance.json",
+      "claim": "Browser acceptance covers the real proposal-budget-checker route or its explicit functional workflow, including submit/locality and the relevant mobile/preview/handoff behavior."
+    },
+    {
+      "kind": "oracle",
+      "ref": "quality/oracles/registry.json",
+      "claim": "Canonical oracle registry entry cand-114, referenced by the Gold receipt, is the declared truth authority for proposal-budget-checker."
+    }
+  ],
+  "childTickets": []
+}

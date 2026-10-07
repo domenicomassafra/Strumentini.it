@@ -26,7 +26,7 @@ interface Props {
   noindex?: boolean;
 }
 
-const { title, description, image = "/og-image.png", imageAlt = "StrumentiUtili.it", type = "website", noindex = false } = Astro.props;
+const { title, description, image = "/og-image.png", imageAlt = "Strumentini.it", type = "website", noindex = false } = Astro.props;
 const pathname = normalizeDiscoveryPath(Astro.url.pathname);
 const configuredSite = Astro.site?.href ?? import.meta.env.PUBLIC_SITE_URL;
 const canonicalUrl = resolveDiscoveryUrl(pathname, configuredSite);
@@ -76,8 +76,8 @@ const darkThemeColor = darkBlock === undefined ? themeColor : tokenValue(darkBlo
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={imageUrl} />
     <meta property="og:image:alt" content={imageAlt} />
-    <meta property="og:site_name" content="StrumentiUtili.it" />
-    <meta name="application-name" content="StrumentiUtili.it" />
+    <meta property="og:site_name" content="Strumentini.it" />
+    <meta name="application-name" content="Strumentini.it" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />

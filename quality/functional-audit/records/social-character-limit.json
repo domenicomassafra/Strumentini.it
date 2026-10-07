@@ -1,0 +1,37 @@
+{
+  "toolId": "social-character-limit",
+  "category": "marketing",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Conta punti di codice Unicode rispetto a un limite dichiarato mostrando caratteri rimanenti o eccedenti. Public jobs: Usa Controllo limite caratteri social.",
+  "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/marketing-media/social-character-limit.gold.json, executable functional tests in tests/url-marketing-tools.test.ts, and real-route browser acceptance in quality/receipts/marketing-media/browser-acceptance.json. Broader additive work is already owned by .scratch/strumentiutili-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md, .scratch/strumentiutili-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "rationale": "No correctness or required-option gap was found in the currently declared public job. Broader additive work is already owned by .scratch/strumentiutili-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md, .scratch/strumentiutili-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/marketing-media/social-character-limit.gold.json",
+      "claim": "Tool-specific Gold receipt binds social-character-limit to its current fixtures/oracle and functional acceptance."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/url-marketing-tools.test.ts",
+      "claim": "Executable tests cover the engine/module behavior used by social-character-limit, including relevant edge or invalid-input handling."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/marketing-media/browser-acceptance.json",
+      "claim": "Committed browser acceptance names social-character-limit and exercises the real route with locality/mobile/accessibility or equivalent route-functional checks."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md",
+      "claim": "Existing targeted backlog owns additive functionality beyond social-character-limit's current narrow public job; it is not counted as already shipped by this audit."
+    },
+    {
+      "kind": "source-contract",
+      "ref": ".scratch/strumentiutili-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md",
+      "claim": "Existing targeted backlog owns additive functionality beyond social-character-limit's current narrow public job; it is not counted as already shipped by this audit."
+    }
+  ],
+  "childTickets": []
+}

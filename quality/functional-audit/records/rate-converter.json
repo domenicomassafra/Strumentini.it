@@ -1,0 +1,32 @@
+{
+  "toolId": "rate-converter",
+  "category": "client-work-math",
+  "ownerTicket": ".scratch/strumentiutili-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
+  "decision": "ALREADY_COMPLETE",
+  "expectedFunctionality": "Converte una tariffa tra ora, giornata e progetto usando le ore di lavoro che definisci. Public job: Usa Converti tariffa oraria, giornaliera e a progetto.",
+  "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/client-time-math/rate-converter.gold.json; executable tests/client-time-math-engine.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/client-time-math/browser-acceptance.json verifies the real route interaction/locality contract.",
+  "rationale": "No missing behavior required by the current declared public job was found. Broader backlog enhancements remain additive work and are not treated as proof that this existing narrow route is functionally incomplete.",
+  "evidence": [
+    {
+      "kind": "quality-receipt",
+      "ref": "quality/receipts/client-time-math/rate-converter.gold.json",
+      "claim": "Tool-specific Gold receipt binds rate-converter to exact fixtures, current source identities and functional acceptance."
+    },
+    {
+      "kind": "unit-test",
+      "ref": "tests/client-time-math-engine.test.ts",
+      "claim": "Executable tests exercise the engine/module behavior used by rate-converter, including relevant edge, invalid-input or transformation semantics."
+    },
+    {
+      "kind": "browser-acceptance",
+      "ref": "quality/receipts/client-time-math/browser-acceptance.json",
+      "claim": "Browser acceptance covers the real rate-converter route or its explicit functional workflow, including submit/locality and the relevant mobile/preview/handoff behavior."
+    },
+    {
+      "kind": "oracle",
+      "ref": "quality/oracles/registry.json",
+      "claim": "Canonical oracle registry entry cand-101, referenced by the Gold receipt, is the declared truth authority for rate-converter."
+    }
+  ],
+  "childTickets": []
+}

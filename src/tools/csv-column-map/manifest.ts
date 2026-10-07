@@ -17,6 +17,7 @@ export const csvColumnMapManifest = {
     accepts: [{ type: "table", format: "csv", maxBytes: 10 * 1024 * 1024, acceptsRaggedRows: true }],
     emits: [{ type: "table", format: "csv" }],
   },
+  result: { class: "table", capabilities: ["copy", "download", "handoff", "reset"] },
   gold: { maintenanceClass: "E", oracleEntryId: "cand-027", fixtureFamilies: ["csv-rfc4180", "csv-table-ops"] },
 } as const satisfies ToolManifest;
 

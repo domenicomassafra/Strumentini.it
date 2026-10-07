@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "oracle": {
+    "name": "Zotero RIS and BibTeX translator cross-check",
+    "independence": "The expected semantics come from Zotero's maintained import/export translators and their checked-in test cases, not from StrumentiUtili.it output.",
+    "repository": "https://github.com/zotero/translators",
+    "commit": "3d1c78530f42892328e08741b7cac8474ff687b8",
+    "license": "AGPL-3.0-or-later",
+    "files": [
+      {
+        "path": "RIS.js",
+        "sha256": "1011694cf9459553ae019fe09c4bbb0b27ad57d739f22bd25cba0ca64d624554",
+        "last_updated": "2026-01-05 18:52:35"
+      },
+      {
+        "path": "BibTeX.js",
+        "sha256": "2a99c1591f62ed3c52f85343ed6234d0318f458ab173efd2ef18549bd6ae7680",
+        "last_updated": "2026-08-03 15:56:33"
+      }
+    ],
+    "documentation": [
+      "https://www.zotero.org/support/dev/translators",
+      "https://www.zotero.org/support/dev/translators/testing",
+      "https://www.zotero.org/support/dev/data_formats",
+      "https://www.zotero.org/support/kb/importing_standardized_formats",
+      "https://www.zotero.org/support/kb/field_mappings",
+      "https://www.refman.com/support/risformat_intro.asp"
+    ],
+    "selection_policy": "Synthetic probes below are minimized from independently maintained Zotero test expectations. They do not copy implementation output and intentionally include cases capable of falsifying this converter."
+  },
+  "ris_to_bibtex": [
+    {
+      "id": "mixed-a1-au-creators-preserve-source-order",
+      "source_evidence": {
+        "translator": "RIS.js",
+        "test_index_zero_based": 8,
+        "fact": "A1 followed by AU creators are all imported as authors in source order."
+      },
+      "input": "TY  - JOUR\nTI  - Mixed creator aliases\nA1  - Alpha, Alice\nAU  - Beta, Bob\nAU  - Gamma, Grace\nER  - \n",
+      "expected": {
+        "type": "article",
+        "fields": {
+          "title": "Mixed creator aliases",
+          "author": "Alpha, Alice and Beta, Bob and Gamma, Grace"
+        },
+        "warning_codes": []
+      }
+    },
+    {
+      "id": "deprecated-y1-never-overrides-da",
+      "source_evidence": {
+        "translator": "RIS.js",
+        "test_index_zero_based": 7,
+        "fact": "Y1 is deprecated for the date field and must not override DA when DA is present."
+      },
+      "input": "TY  - JOUR\nTI  - Date precedence\nDA  - 1950/01/01\nY1  - 1900/01/01\nER  - \n",
+      "expected": {
+        "type": "article",
+        "fields": {
+          "title": "Date precedence",
+          "year": "1950"
+        }
+      }
+    },
+    {
+      "id": "book-t2-is-series-not-journal",
+      "source_evidence": {
+        "translator": "RIS.js",
+        "test_index_zero_based": 6,
+        "fact": "For a BOOK record the secondary title represented by T2 is imported as the book series, not a journal title."
+      },
+      "input": "TY  - BOOK\nAU  - Writer, Wendy\nT1  - Example Book\nT2  - Example Series\nPY  - 2009\nPB  - Example Press\nER  - \n",
+      "expected": {
+        "type": "book",
+        "fields": {
+          "author": "Writer, Wendy",
+          "title": "Example Book",
+          "series": "Example Series",
+          "year": "2009",
+          "publisher": "Example Press"
+        },
+        "forbidden_fields": [
+          "journal"
+        ]
+      }
+    },
+    {
+      "id": "full-ris-date-to-bibtex-year-is-explicitly-lossy",
+      "source_evidence": {
+        "translator": "RIS.js",
+        "test_index_zero_based": 7,
+        "fact": "RIS date input can carry month/day precision; the converter's declared BibTeX mapping retains only the year."
+      },
+      "input": "TY  - JOUR\nTI  - Date precision loss\nDA  - 1950/02/03\nER  - \n",
+      "expected": {
+        "type": "article",
+        "fields": {
+          "title": "Date precision loss",
+          "year": "1950"
+        },
+        "require_loss_warning": true
+      }
+    }
+  ],
+  "bibtex_to_ris": [
+    {
+      "id": "article-core-fields-map-to-journal",
+      "source_evidence": {
+        "translator": "BibTeX.js",
+        "test_index_zero_based": 4,
+        "fact": "A standard BibTeX article imports as a journal article with title, author, year, journal, volume, issue and pages."
+      },
+      "input": "@article{sample, title={Article Title}, volume={107}, number={29}, journal={Example Journal}, author={Oliveira, Ana}, year={2009}, pages={29}}",
+      "expected": {
+        "type": "JOUR",
+        "fields": {
+          "TI": ["Article Title"],
+          "VL": ["107"],
+          "IS": ["29"],
+          "JO": ["Example Journal"],
+          "AU": ["Oliveira, Ana"],
+          "PY": ["2009"],
+          "SP": ["29"]
+        },
+        "unknown_fields": [],
+        "warning_codes": []
+      }
+    },
+    {
+      "id": "standard-inbook-maps-to-chapter",
+      "source_evidence": {
+        "translator": "BibTeX.js",
+        "test_index_zero_based": 12,
+        "fact": "BibTeX @inbook imports as a book section; the RIS translator exports a book section as TY CHAP."
+      },
+      "input": "@inbook{chapter, title={Chapter Title}, author={Smith, Jane}, doi={10.12345/example}}",
+      "expected": {
+        "type": "CHAP",
+        "fields": {
+          "TI": ["Chapter Title"],
+          "AU": ["Smith, Jane"],
+          "DO": ["10.12345/example"]
+        },
+        "unknown_fields": [],
+        "warning_codes": []
+      }
+    },
+    {
+      "id": "unsupported-bibtex-fields-are-reported",
+      "source_evidence": {
+        "translator": "BibTeX.js",
+        "test_index_zero_based": 7,
+        "fact": "BibTeX can carry URL-adjacent metadata that has no direct mapping in the converter's declared RIS subset."
+      },
+      "input": "@misc{web, title={Public Resource}, url={https://example.org/}, urldate={2012-07-27}, howpublished={https://example.org/}}",
+      "expected": {
+        "type": "GEN",
+        "fields": {
+          "TI": ["Public Resource"],
+          "UR": ["https://example.org/"]
+        },
+        "unknown_fields": [
+          "howpublished",
+          "urldate"
+        ],
+        "warning_codes": [
+          "BIBTEX_FIELD_UNMAPPED"
+        ]
+      }
+    }
+  ]
+}
