@@ -11936,6 +11936,22 @@
       "cross_check": {"usable": true, "implementation": "independent Python ZIP + Office real reopen + decoded PNG pixel parity", "role": "specific DOCX/PPTX/XLSX corpus, not arbitrary Office layout rendering or Gold certification"},
       "confidence": "medium",
       "unresolved_gaps": ["NO GOLD RECEIPT: runtime and public route require separate release/certification gates", "real physical Office app editing and cross-browser media codecs unverified", "advanced OOXML media and all unsupported raster/vector codecs refused"]
+    },
+    {
+      "id": "cand-264",
+      "candidate": "Local visible PDF CropBox and deterministic page-size normalization",
+      "tool_family": "pdf",
+      "maintenance_class": "H",
+      "truth_sources": ["iso-pdf2", "fixture-policy"],
+      "standard_or_official_example": "Mixed-size synthetic vector/text PDFs with nonzero CropBox and 90/180/270 degree page rotations, normalized to A4 and visual crop insets.",
+      "invariants": ["CropBox changes visibility only, not original source stream bytes", "MediaBox unchanged for visual crop", "page normalization uses balanced q/cm/Q wrappers and centers visible orientation without cropping", "selected page count and unselected pages unchanged", "invalid ranges and unsupported geometry fail closed"],
+      "adversarial_cases": ["inverted/duplicate/out-of-range page selections", "crop all content outside visible box", "CropBox with nonzero origins", "mixed MediaBox and rotated display geometry", "no-scale center smaller than page", "unsupported UserUnit", "aborted generation"],
+      "expected_output_strategy": "Focused parser/source-stream byte-equality tests and downloaded PDF rendered independently via PDF.js, comparing visible crop clipping or normalized ink coordinates.",
+      "security_privacy_edges": ["LOCAL only, no upload", "crop hides not redacts or deletes", "no rasterization or OCR", "25MiB and 200-page input caps"],
+      "portability_browser_edges": ["bounded four-thumbnail PDF.js preview", "390px desktop browser test only", "no real-device/physical-memory certification"],
+      "cross_check": { "usable": true, "implementation": "original stream byte-for-byte comparison and independent source/output PDF.js image render", "role": "bounded fixture proof not global PDF semantics or Gold" },
+      "confidence": "medium",
+      "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED no Gold receipt", "full browser/device matrix and rotated visual corpus remain external gates", "complex interactive PDFs are not guaranteed by page cloning"]
     }
   ]
 }

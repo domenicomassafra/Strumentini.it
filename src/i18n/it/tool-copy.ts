@@ -688,6 +688,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     summary: "Sovrapponi testo o JPEG RGB visibili alle pagine PDF selezionate, con opacità, rotazione, scala e posizione. Non elimina dati.",
     searchTerms: ["watermark pdf", "filigrana pdf", "sovrapporre testo pdf"],
   },
+  "pdf-crop-normalize": {
+    name: "Ritaglia PDF e uniforma le dimensioni",
+    summary: "Ritaglia visivamente le pagine senza cancellare contenuti oppure adatta e centra pagine di dimensioni diverse in A4, Letter o formato libero.",
+    searchTerms: ["ritaglia pdf", "crop pdf", "uniforma dimensioni pagine pdf", "adatta pdf ad A4"],
+  },
   "pdf-page-delete-extract": {
     name: "Elimina o estrai pagine PDF",
     summary: "Elimina o estrae pagine indicate esplicitamente da un PDF locale usando numerazione a partire da uno.",

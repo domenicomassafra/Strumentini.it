@@ -3218,6 +3218,25 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
+    "toolId": "pdf-crop-normalize",
+    "engine": "pdf",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "PdfCropNormalizeTool",
+      "source": "src/components/tools/pdf/PdfCropNormalizeTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "pdf",
+      "capabilities": [
+        "download",
+        "reset",
+        "retry"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "pdf-flatten",
     "engine": "pdf",
     "rendererSeam": {
