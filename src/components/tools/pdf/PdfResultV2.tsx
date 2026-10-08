@@ -551,16 +551,23 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
     const totalBytes = result.artifacts.reduce((total, output) => total + output.artifact.byteLength, 0);
     const totalPages = result.artifacts.reduce((total, output) => total + (output.pageCount ?? 0), 0);
     const jpegAnalysis = toolId === "pdf-compression-lite" && typeof result.raw.analysis === "object" && result.raw.analysis !== null
-      && (result.raw.analysis as PdfResultRecord).profile === "jpeg-rgb-reencode" ? result.raw.analysis as PdfResultRecord : null;
+      && ["jpeg-rgb-reencode", "scan-flate-to-jpeg"].includes(String((result.raw.analysis as PdfResultRecord).profile)) ? result.raw.analysis as PdfResultRecord : null;
+    const scanMode = jpegAnalysis?.profile === "scan-flate-to-jpeg";
     const rows = [
       { label: "File prodotti", value: String(result.artifacts.length) },
       { label: "Dimensione risultati", value: formatBytes(totalBytes) },
       ...(totalPages > 0 ? [{ label: "Pagine prodotte", value: String(totalPages) }] : []),
       { label: "Verifica artifact", value: result.artifacts.every(({ artifact }) => artifact.download.ready) ? "Firma/contenitore coerenti" : "Almeno un file non ha superato la verifica" },
       ...(jpegAnalysis === null ? [] : [
-        { label: "JPEG effettivamente ricodificati", value: String(jpegAnalysis.touched) },
-        { label: "JPEG/immagini lasciati invariati", value: String(jpegAnalysis.skipped) },
+        { label: scanMode ? "Immagini Flate ricodificate" : "JPEG effettivamente ricodificati", value: String(jpegAnalysis.touched) },
+        { label: scanMode ? "Immagini lasciate invariate" : "JPEG/immagini lasciati invariati", value: String(jpegAnalysis.skipped) },
         { label: "Byte risparmiati", value: String(jpegAnalysis.savedBytes) },
+        ...(scanMode ? [
+          { label: "Lato massimo richiesto", value: `${jpegAnalysis.maxLongestEdgePx} pixel` },
+          { label: "Downsample applicato", value: jpegAnalysis.downsampleApplied ? "Sì" : "No" },
+          { label: "Grigio applicato", value: jpegAnalysis.grayscaleApplied ? "Sì" : "No" },
+          { label: "Originale consigliato", value: jpegAnalysis.recommendOriginal ? "Sì" : "No" },
+        ] : []),
         { label: "Equivalenza visiva", value: "Non certificata: JPEG con perdita" },
       ]),
       ...factRows(result.raw),

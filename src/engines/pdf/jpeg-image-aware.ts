@@ -52,7 +52,7 @@ function guard(signal?: AbortSignal): void {
   if (signal?.aborted) throw new DOMException("PDF JPEG recompression cancelled", "AbortError");
 }
 
-function samePageGeometry(a: PdfInspection, b: PdfInspection): boolean {
+export function samePageGeometry(a: PdfInspection, b: PdfInspection): boolean {
   return a.pageCount === b.pageCount && a.pages.every((page, index) =>
     page.width === b.pages[index]?.width && page.height === b.pages[index]?.height && page.rotation === b.pages[index]?.rotation);
 }
@@ -73,7 +73,7 @@ function safeCandidate(object: PdfObject): string | null {
   return null;
 }
 
-function topLevelPageImageIds(documentModel: PdfDocumentModel): Set<number> {
+export function topLevelPageImageIds(documentModel: PdfDocumentModel): Set<number> {
   const referenced = new Set<number>();
   for (const page of documentModel.pages) {
     const value = page.object.value;
@@ -106,7 +106,7 @@ function pageContentStreams(model: PdfDocumentModel): readonly (readonly Uint8Ar
   });
 }
 
-function samePageContentBytes(a: PdfDocumentModel, b: PdfDocumentModel): boolean {
+export function samePageContentBytes(a: PdfDocumentModel, b: PdfDocumentModel): boolean {
   const source = pageContentStreams(a);
   const output = pageContentStreams(b);
   return source.length === output.length && source.every((streams, pageIndex) => {
