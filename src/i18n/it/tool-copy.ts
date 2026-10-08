@@ -673,6 +673,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Conta e verifica pagine PDF",
     summary: "Conta le pagine del PDF e, se inserisci un numero atteso, verifica che corrisponda.",
   },
+  "pdf-page-numbers": {
+    name: "Numerare le pagine PDF",
+    summary: "Aggiungi numeri a pagine PDF scelte, con intervalli, offset, font, dimensione, margini e anteprima locale sulle pagine reali.",
+    searchTerms: ["numero pagine pdf", "numerare pdf", "aggiungere numerazione pdf"],
+  },
   "pdf-page-delete-extract": {
     name: "Elimina o estrai pagine PDF",
     summary: "Elimina o estrae pagine indicate esplicitamente da un PDF locale usando numerazione a partire da uno.",

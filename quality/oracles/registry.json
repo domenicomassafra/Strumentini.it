@@ -11888,6 +11888,22 @@
         "No Gold certification for all desktop/mobile browsers or physical cameras.",
         "No transcoding/export occurs; encoder ability to reach target size is unknown."
       ]
+    },
+    {
+      "id": "cand-261",
+      "candidate": "Local PDF page numbering overlay with strict ranges and placement",
+      "tool_family": "pdf",
+      "maintenance_class": "H",
+      "truth_sources": ["iso-pdf2", "fixture-policy"],
+      "standard_or_official_example": "Synthetic PDF corpus with mixed sizes, CropBox offsets and 90-degree rotation. Printed labels are drawn using standard PDF fonts in distinct content streams.",
+      "invariants": ["original page Contents streams remain byte-for-byte identical", "page count, original page geometry and rotation remain unchanged", "invalid, duplicate and reversed ranges fail closed", "preview uses actual source PDF thumbnail and same positions as the PDF overlay"],
+      "adversarial_cases": ["mixed MediaBox and CropBox offsets", "90/180/270 degree page rotation", "font and margin too large for page", "out-of-range and duplicate page selection", "encrypted or invalid PDF", "aborted generation"],
+      "expected_output_strategy": "Tests/pdf-page-numbers-238.test.ts provides parse/rebuild and invalid-input corpus; browser acceptance should download and rerender the output PDF and compare source pixels outside each overlay. Release/Gold certification still pending.",
+      "security_privacy_edges": ["LOCAL only, no upload", "at most 200 pages and 25 MiB source PDF", "no injection in numeric-only label streams", "no mutation of input bytes"],
+      "portability_browser_edges": ["390px preview with four bounded PDF.js thumbnails", "canvas worker released on source change", "real physical-device performance and complex PDF corpus not yet certified"],
+      "cross_check": { "usable": true, "implementation": "independent PDF.js browser raster comparison plus parser byte equality check on original Contents", "role": "sample-specific output and placement validation, not universal PDF compliance" },
+      "confidence": "medium",
+      "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED pending independent mixed-document and device acceptance", "Unbalanced inherited graphics state and complex font/resource dictionaries have not been exhaustively certified.", "No Gold receipt has been issued."]
     }
   ]
 }
