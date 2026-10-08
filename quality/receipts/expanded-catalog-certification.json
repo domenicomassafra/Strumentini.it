@@ -9102,7 +9102,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -9113,7 +9113,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -9124,7 +9124,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -9146,7 +9146,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -15677,7 +15677,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -15688,7 +15688,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -15699,7 +15699,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -15721,7 +15721,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -21515,7 +21515,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -21526,7 +21526,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -21537,7 +21537,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -21559,7 +21559,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -21652,7 +21652,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -21663,7 +21663,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -21674,7 +21674,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -21696,7 +21696,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -21914,7 +21914,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -21925,7 +21925,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -21936,7 +21936,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -21958,7 +21958,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -22050,7 +22050,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22061,7 +22061,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22072,7 +22072,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22094,7 +22094,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -22201,7 +22201,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22212,7 +22212,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22223,7 +22223,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22245,7 +22245,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -22337,7 +22337,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22348,7 +22348,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22359,7 +22359,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22381,7 +22381,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -22406,7 +22406,7 @@
         },
         "module": {
           "path": "src/tools/pdf-merge/module.ts",
-          "sha256": "914cc142ebee3a251f4e0b2a90d260c4601aa622e9895aebaf6652070078f660"
+          "sha256": "28770b70f0adc07efb190b9119ddf2cee71117ea01349221433f3bd1774ad55d"
         },
         "page": {
           "path": "src/pages/tools/pdf-merge.astro",
@@ -22414,7 +22414,8 @@
         },
         "testFiles": [
           "tests/pdf-catalog.test.ts",
-          "tests/pdf-document-tools.test.ts"
+          "tests/pdf-document-tools.test.ts",
+          "tests/pdf-visual-merge.test.ts"
         ]
       },
       "oracle": {
@@ -22474,7 +22475,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22485,7 +22486,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22496,7 +22497,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22518,7 +22519,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -22610,7 +22611,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22621,7 +22622,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22632,7 +22633,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22654,7 +22655,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -22748,7 +22749,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22759,7 +22760,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22770,7 +22771,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -22792,7 +22793,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -23151,7 +23152,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23162,7 +23163,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23173,7 +23174,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23195,7 +23196,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -23288,7 +23289,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23299,7 +23300,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23310,7 +23311,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23332,7 +23333,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -23425,7 +23426,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23436,7 +23437,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23447,7 +23448,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23469,7 +23470,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -23561,7 +23562,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23572,7 +23573,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23583,7 +23584,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23605,7 +23606,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -23698,7 +23699,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23709,7 +23710,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23720,7 +23721,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23742,7 +23743,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -23835,7 +23836,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23846,7 +23847,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23857,7 +23858,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23879,7 +23880,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -23972,7 +23973,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23983,7 +23984,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -23994,7 +23995,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -24016,7 +24017,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -24108,7 +24109,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -24119,7 +24120,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -24130,7 +24131,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -24152,7 +24153,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],
@@ -24260,7 +24261,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -24271,7 +24272,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -24282,7 +24283,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/pdf/browser-acceptance.json",
-            "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+            "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
             "status": "PASS"
           }
         ]
@@ -24304,7 +24305,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/pdf/browser-acceptance.json",
-          "sha256": "c79026e060cf627b1e82f012439bc3709fe89d45e5a6be9c43a26cadb1244a15",
+          "sha256": "7cd92fe91dd30506f0e2e9a6c99ba5993ca78357a25d9c876ff01e85a83b383c",
           "status": "PASS"
         }
       ],

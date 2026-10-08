@@ -1,7 +1,8 @@
 import { chromium, firefox, webkit } from "@playwright/test";
 import { spawn } from "node:child_process";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { createSimplePdf } from "../src/engines/pdf";
+import { createSimplePdf, extractPdfText, inspectPdfBytes } from "../src/engines/pdf";
 
 const root = resolve(import.meta.dirname, "..");
 const port = Number(process.env.STRUMENTINI_PDF_THUMBNAILS_PORT ?? 18480);
@@ -64,6 +65,17 @@ try {
       const order = await page.getByLabel("Nuovo ordine delle pagine").inputValue();
       if (order !== "200") throw new Error(`page identity not bound to authoritative order input: ${order}`);
       assertions++;
+      await page.getByRole("button", { name: "Seleziona pagina 199" }).click();
+      if (await page.getByLabel("Nuovo ordine delle pagine").inputValue() !== "200, 199") throw new Error("appending page lost stable identity");
+      await page.getByRole("button", { name: "Sposta pagina 199 in alto" }).focus();
+      await page.keyboard.press("Space");
+      if (await page.getByLabel("Nuovo ordine delle pagine").inputValue() !== "199, 200") throw new Error("keyboard move reordered wrong page");
+      await page.getByRole("button", { name: "Annulla ultimo spostamento" }).click();
+      if (await page.getByLabel("Nuovo ordine delle pagine").inputValue() !== "200, 199") throw new Error("undo did not restore page order");
+      assertions++;
+      await page.locator('[data-pdf-visual-order] li').first().dragTo(page.locator('[data-pdf-visual-order] li').nth(1));
+      if (await page.getByLabel("Nuovo ordine delle pagine").inputValue() !== "199, 200") throw new Error("drag move lost page identity");
+      assertions++;
       await page.getByRole("button", { name: "Chiudi miniature pagine" }).click();
       await page.waitForFunction(() => {
         const registry = (window as unknown as { __thumbUrls: { created: Set<string>; revoked: Set<string> } }).__thumbUrls;
@@ -101,13 +113,45 @@ try {
       if (!(await broken.locator('form button[type="submit"]').first().isEnabled())) throw new Error("preview failure disabled canonical PDF workflow");
       assertions++;
       await broken.close();
-      console.log(`${name}: PASS 200-page lazy window, keyboard navigation, resource revocation, rotation, failure isolation and mobile layout`);
+
+      const merged = await context.newPage();
+      await merged.goto(`${origin}/tools/pdf-merge/`, { waitUntil: "networkidle" });
+      await merged.locator('form input[type="file"]').first().setInputFiles([
+        { name: "first.pdf", mimeType: "application/pdf", buffer: Buffer.from(createSimplePdf(["FIRST"])) },
+        { name: "second.pdf", mimeType: "application/pdf", buffer: Buffer.from(createSimplePdf(["SECOND", "THIRD"])) },
+      ]);
+      await merged.locator("[data-pdf-source-count]").getByText("3 pagine totali", { exact: false }).waitFor({ timeout: 20000 });
+      if (await merged.locator("[data-pdf-merge-organizer] li").count() !== 2) throw new Error("source file rows missing");
+      assertions++;
+      await merged.getByRole("button", { name: "Sposta file 2 su" }).focus();
+      await merged.keyboard.press("Space");
+      if (!(await merged.locator("[data-pdf-merge-organizer] li").first().innerText()).includes("second.pdf")) throw new Error("keyboard did not reorder merged file sources");
+      await merged.getByRole("button", { name: "Ripristina ordine file precedente" }).click();
+      if (!(await merged.locator("[data-pdf-merge-organizer] li").first().innerText()).includes("first.pdf")) throw new Error("merge source undo failed");
+      assertions++;
+      await merged.getByRole("button", { name: "Anteprima file 1" }).click();
+      await merged.locator('[data-pdf-page="1"][data-thumb-state="ready"] img').waitFor({ timeout: 30000 });
+      if (await merged.locator("[data-pdf-page]").count() !== 1) throw new Error("merge source preview rendered wrong page count");
+      await merged.locator('form button[type="submit"]').first().click();
+      await merged.locator(".gutter[data-state='success']").waitFor({ timeout: 30000 });
+      const download = merged.waitForEvent("download");
+      await merged.getByRole("link", { name: "Scarica merged.pdf" }).click();
+      const mergedBytes = new Uint8Array(await readFile(await (await download).path()));
+      if (inspectPdfBytes(mergedBytes).pageCount !== 3) throw new Error("downloaded merged PDF page total inconsistent");
+      const mergedPages = await extractPdfText(mergedBytes);
+      if (mergedPages.length !== 3 || !mergedPages[0]?.text.includes("FIRST") ||
+          !mergedPages[1]?.text.includes("SECOND") || !mergedPages[2]?.text.includes("THIRD")) {
+        throw new Error("actual downloaded merged PDF does not preserve selected source order");
+      }
+      assertions++;
+      await merged.close();
+      console.log(`${name}: PASS bounded PDF thumbnails, undo/keyboard reorder, mixed-file merge source inventory and verified output`);
     } finally {
       await context.close();
       await browser.close();
     }
   }
-  console.log(`ticket 215 PDF thumbnail acceptance PASS: ${assertions}/21`);
+  console.log(`tickets 215/216 PDF thumbnail, page-order and merge acceptance PASS: ${assertions}/36`);
 } finally {
   server.kill("SIGTERM");
 }

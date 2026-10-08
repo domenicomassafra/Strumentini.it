@@ -1,6 +1,6 @@
 # Strumentini.it — Current Project Status
 
-Date: **2026-10-07**
+Date: **2026-10-08**
 
 This is the short, live map of the repository. It exists so old worker waves, ticket ledgers and handoffs cannot be mistaken for the current project state.
 
@@ -11,7 +11,7 @@ This is the short, live map of the repository. It exists so old worker waves, ti
 - The retired catalogue/workbench/a11y implementation is deleted: `src/pages/library.astro`, `src/library/**`, `src/components/library/**`, the retired Workbench UI, the old accessibility wrapper layer, `scripts/build-catalog.ts`, `scripts/lib/catalog-compiler.ts`, and their obsolete tests.
 - The replacement shell/catalog/account implementation is tracked: `src/catalog/{groups,projections}.ts`, `src/components/{home,catalog,account,icons}/**`, the new shell, public routes, `worker/**`, self-hosted Inter fonts, expanded-local evidence and matching acceptance tests.
 - Throwaway debug scripts and screenshots are gone. `design/references/redesign-20261003/` is intentional retained design provenance, not working-tree debris.
-- Git hygiene rechecked on 2026-10-07: remote branches: only `main`; worktrees: one primary worktree; stashes: none. The temporary `.cf-rename-strumentini` release/dry-run workspace was verified superseded by current `main` and removed.
+- Git hygiene rechecked on 2026-10-08: the functional changes from PR #1 were merged to `main` as `c011a86`; subsequent developer export and bounded visual PDF tranches are committed directly to `main`. There is one active Strumentini worktree and no active stash. The temporary `.cf-rename-strumentini` release/dry-run workspace was previously removed.
 - Archive tags: three, all prefixed `archive/2026-09-24-` and explicitly closed historical references, not active work (`performance-wip`, `a11y-wip`, `browser-acceptance-wip`). Their relevant performance/search/browser behavior is already represented by the current projection, lazy-loading and acceptance architecture; retired Library/Workbench deltas are not a queue.
 - One module from the previous homepage keeps its name and is still live: `src/components/workbench/last-value.ts`, the Workbench gutter seam that stores one short rendered scalar per tool in `localStorage` and is read by the homepage recent list, `/preferiti/` and `/risorse/`. The widget that rendered the gutter is gone; the seam is not.
 - `docs/history/WIP-CLOSURE-2026-10-03.md` and `docs/history/2026-09-24-catalog-performance-wip-receipt.json` are provenance, not queues.
@@ -45,7 +45,7 @@ Machine authority: `quality/receipts/expanded-catalog-certification.json`, gener
 
 The expansion frontier is now much smaller than the implementation wave that produced the 259-tool catalog, but release truth remains evidence-driven: a completed implementation ticket is not a Gold promotion by itself.
 
-Current integrated machine snapshot: `npm test` passes **1,091/1,091 tests across 133 files**; `npm run check` reports **0 errors / 0 warnings** (16 TypeScript deprecation hints in tests); `npm run build` emits **279 pages** and `scripts/inspect-build.ts` passes; `npm audit --omit=dev --audit-level=high` reports **0 vulnerabilities**. `npm run certification:check` passes with **259 tool(s), output current** after the final receipt refresh.
+Current integrated machine snapshot (2026-10-08, ticket 216): `npm test` passes **1,108/1,108 tests across 139 files**; `npm run check` reports **0 errors / 0 warnings** (16 TypeScript deprecation hints in tests); `npm run build` emits **279 pages** and `scripts/inspect-build.ts` passes; the previous production-dependency audit reported **0 vulnerabilities**. `npm run certification:check` passes with **259 tool(s), output current** after regenerating the index. The ticket-215/216 PDF browser acceptance passes **36/36 across Chromium/Firefox/WebKit**, existing 20-route PDF acceptance passes, and Cloudflare dry-run passes. Ticket DAG now has **241 completed / 86 blocked**, including 31 open dependency-ready candidates. The raw-format export milestone for ticket 59 remains partial, not closed.
 
 ## Release status
 
@@ -55,10 +55,10 @@ Remaining release blockers are evidence/infrastructure boundaries, not hidden im
 
 1. `image-resize` remains Partial until real iOS Safari and Android Chrome device receipts exist;
 2. `microphone-recorder` remains Partial until genuine physical capture/permission evidence exists;
-3. the clean `2af6e8c` / `2c38b13c…` build is live on `Strumentini.it` as Worker version `7e974054…`; Chromium/Firefox/WebKit smoke, representative byte identity, auth/D1 smoke, a real rollback to previous known-good version `a38c668c…`, page-hash reversion, and restore to `7e974054…` all passed. The rollback gate is current for this source;
+3. the earlier clean `2af6e8c` / `2c38b13c…` build remains live on `Strumentini.it` as Worker version `7e974054…`; Chromium/Firefox/WebKit smoke, representative byte identity, auth/D1 smoke, a real rollback to previous known-good version `a38c668c…`, page-hash reversion, and restore to `7e974054…` passed **for that deployed source**. The rollback gate is **not current for the newer main source**;
 4. ticket 283 is complete: the Strumentini.it custom-domain release, live smoke, rollback and restore are all proven. No unrelated external domain is part of the product release gate.
 
-The deployed production release, 257 Gold receipts, browser-performance matrix and rollback evidence are all bound to source fingerprint `2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb`. Do not synthesize physical-device receipts; the only per-tool non-Gold boundaries remain the genuine device requirements for `image-resize` and `microphone-recorder`.
+The deployed production release, original 257 Gold receipts, previous browser-performance matrix and rollback evidence are bound to source fingerprint `2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb`. **Newer main source changes deliberately stale that fingerprint**. The independent release validator currently blocks a new deploy for stale Gold/browser/rollback receipts and absent physical Android/iOS resize evidence (six blockers after commit, zero compiler errors). Refresh each source-bound authority with actual new acceptance evidence before Cloudflare promotion; do not rewrite hashes or synthesize physical-device receipts.
 
 ## Design system and brand
 

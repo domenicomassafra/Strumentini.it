@@ -2,7 +2,7 @@
 
 Current stage: **257/259 Gold + final physical/infrastructure closure**.
 
-Checkpoint 2026-10-07: 259 tools exist; **257 are Gold** and only `image-resize` plus `microphone-recorder` remain **Partial** for genuine physical-device evidence. `password-strength-estimator` and `xml-formatter-validator` now have bounded high-confidence oracle evidence and Gold receipts. The integrated suite is green at **1,091 tests / 133 files**; `astro check` reports **0 errors / 0 warnings** (16 deprecation hints in tests), and the static build emits **279 pages** with build inspection PASS.
+Checkpoint 2026-10-08: 259 tools exist; **257 are Gold** and only `image-resize` plus `microphone-recorder` remain **Partial** for genuine physical-device evidence. `password-strength-estimator` and `xml-formatter-validator` retain bounded high-confidence oracle evidence and Gold receipts tied to their certified source. The integrated suite is green at **1,108 tests / 139 files**; `astro check` reports **0 errors / 0 warnings** (16 deprecated test-matcher hints), and the static build emits **279 pages** with inspection PASS. Tickets **48, 210, 211, 215, 216** are implemented and integrated, while ticket 59 has new native-format export but remains open. The 327-ticket DAG is **241 completed / 86 open**.
 
 ## P0 — preserve the quality contract
 
@@ -41,7 +41,7 @@ Migration principles:
 
 ## P4 — release and distribution
 
-- keep whole-tree browser-performance evidence current whenever source changes (the 2026-10-07 final refresh matches the integrated source fingerprint);
+- keep whole-tree browser-performance evidence current whenever source changes (the 2026-10-07 refresh matched the *earlier deployed release* and is now stale against newer main; fresh evidence is required before the next deploy);
 - keep rollback evidence bound to a real deploy → rollback → smoke → restore exercise; the 2026-10-08 `2af6e8c` / `2c38b13c…` production cycle is verified, including the `strumentini-auth` D1 cutover;
 - add and verify outer Cloudflare WAF rate limiting on the active zone;
 - configure the real Google Web Client ID and confirm Workers Paid before relying on password auth at production load;
@@ -49,7 +49,7 @@ Migration principles:
 
 ## P5 — continue the expansion backlog selectively
 
-The expansion plan in `docs/10-tool-expansion-result-system-v2.md` has already been materialized into the 327-ticket DAG in `.scratch/strumentini-expansion-20261005/`. At the current checkpoint 235 tickets are completed and 92 remain blocked by explicit dependencies, source evidence, unsupported fidelity paths or physical-device requirements. Treat the validator's current frontier as the queue; do not restart the old seed wave.
+The expansion plan in `docs/10-tool-expansion-result-system-v2.md` has already been materialized into the 327-ticket DAG in `.scratch/strumentini-expansion-20261005/`. At the current checkpoint **241 tickets are completed and 86 remain open** due to dependencies, source evidence, unsupported fidelity paths, outstanding acceptance work or physical-device requirements; 31 currently have all declared dependencies met but are not automatically releasable. Treat the validator's current frontier as the queue; do not restart the old seed wave.
 
 - keep Result System v2 and functional-audit coverage complete as the catalog evolves;
 - cover all 13 current CalcolaTutto jobs via add/upgrade/covered mappings;

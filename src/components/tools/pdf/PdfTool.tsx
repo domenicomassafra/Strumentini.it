@@ -6,6 +6,8 @@ import type { PdfResultToolId } from "../../../tools/pdf-result-declarations";
 import { CONTROL, it, ToolResultPanel } from "../shared";
 import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
 import { PdfThumbnailPicker } from "./PdfThumbnailPicker";
+import { PdfVisualOrder } from "./PdfVisualOrder";
+import { PdfMergeOrganizer } from "./PdfMergeOrganizer";
 
 export type PdfToolId = PdfResultToolId;
 
@@ -76,6 +78,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [files, setFiles] = useState<File[]>([]);
   const [pages, setPages] = useState("");
   const [order, setOrder] = useState("");
+  const [orderHistory, setOrderHistory] = useState<string[]>([]);
   const [groups, setGroups] = useState("");
   const [rotation, setRotation] = useState("90");
   const [deleteMode, setDeleteMode] = useState<"delete" | "extract">("extract");
@@ -132,6 +135,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
       });
     }
     setResult(null);
+    setOrderHistory([]);
     setShowThumbnails(false);
     setError("");
     setStatus("idle");
@@ -228,6 +232,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setFiles([]);
     setPages("");
     setOrder("");
+    setOrderHistory([]);
     setGroups("");
     setRotation("90");
     setDeleteMode("extract");
@@ -256,6 +261,18 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   }
 
   const isWorking = status === "working";
+  function updateVisualOrder(next: readonly number[]) {
+    setOrderHistory((history) => [...history, order].slice(-20));
+    setOrder(next.join(", "));
+    setResult(null);
+  }
+  function undoVisualOrder() {
+    const last = orderHistory.at(-1);
+    if (last === undefined) return;
+    setOrder(last);
+    setOrderHistory((history) => history.slice(0, -1));
+    setResult(null);
+  }
   const gutterState = isWorking
     ? "running"
     : result !== null
@@ -286,9 +303,12 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
           </label>
         )}
         {files.length > 0 && <p class="file-note" role="status">{files.map((file) => `${file.name} · ${(file.size / 1024).toFixed(1)} KiB`).join(" · ")}</p>}
+        {toolId === "pdf-merge" && files.length > 0 && (
+          <PdfMergeOrganizer files={files} onChange={(reordered) => { setFiles(reordered); setResult(null); }} />
+        )}
         {optionMode === "pages" && <label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3, 5" disabled={isWorking} /></label>}
         {optionMode === "groups" && <label class="field"><span>Gruppi di pagine</span><input value={groups} onInput={(event) => setGroups(event.currentTarget.value)} placeholder="1-2; 3-4" disabled={isWorking} /></label>}
-        {optionMode === "order" && <label class="field"><span>Nuovo ordine delle pagine</span><input value={order} onInput={(event) => setOrder(event.currentTarget.value)} placeholder="3, 1, 2" disabled={isWorking} /></label>}
+        {optionMode === "order" && <label class="field"><span>Nuovo ordine delle pagine</span><input value={order} onInput={(event) => { setOrder(event.currentTarget.value); setOrderHistory([]); }} placeholder="3, 1, 2" disabled={isWorking} /></label>}
         {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 2" disabled={isWorking} /></label><label class="field"><span>Rotazione</span><select value={rotation} onChange={(event) => setRotation(event.currentTarget.value)} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
         {optionMode === "delete-extract" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3" disabled={isWorking} /></label><label class="field"><span>Operazione</span><select value={deleteMode} onChange={(event) => setDeleteMode(event.currentTarget.value as "delete" | "extract")} disabled={isWorking}><option value="extract">Estrai le pagine selezionate</option><option value="delete">Elimina le pagine selezionate</option></select></label></div>}
         {optionMode === "password" && <label class="field"><span>Modalità</span><select value={passwordMode} onChange={(event) => setPasswordMode(event.currentTarget.value as "check" | "remove")} disabled={isWorking}><option value="check">Controlla soltanto la cifratura</option><option value="remove">Crea una copia sicura se il PDF non è cifrato</option></select></label>}
@@ -302,10 +322,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
                 previewRotation={optionMode === "rotation" ? Number(rotation) as 0 | 90 | 180 | 270 : 0}
                 onPickPage={(page) => {
                   if (optionMode === "order") {
-                    setOrder((current) => {
-                      const chosen = parseNumbers(current);
-                      return (chosen.includes(page) ? chosen.filter((value) => value !== page) : [...chosen, page]).join(", ");
-                    });
+                    const chosen = parseNumbers(order);
+                    updateVisualOrder(chosen.includes(page) ? chosen.filter((value) => value !== page) : [...chosen, page]);
                   } else {
                     setPages((current) => {
                       const chosen = parseNumbers(current);
@@ -319,6 +337,11 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             )}
             {optionMode === "order" ? <small>Seleziona ogni pagina una sola volta nell'ordine desiderato. Il motore rifiuta sequenze incomplete.</small> : <small>Le pagine selezionate mostrano la rotazione scelta; clicca di nuovo per deselezionarle.</small>}
           </div>
+        )}
+        {optionMode === "order" && !isWorking && parseNumbers(order).length > 0 && (
+          new Set(parseNumbers(order)).size !== parseNumbers(order).length
+            ? <p role="alert">L'ordine contiene numeri di pagina duplicati. Correggili prima di utilizzare l'organizzatore visuale.</p>
+            : <PdfVisualOrder order={parseNumbers(order)} onChange={updateVisualOrder} undo={undoVisualOrder} canUndo={orderHistory.length > 0} />
         )}
         {optionMode === "text-extraction" && (
           <div class="field-grid">

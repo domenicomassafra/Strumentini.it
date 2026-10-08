@@ -6,7 +6,7 @@ type Thumbnail = { page: number; state: "loading" | "ready" | "error"; url?: str
 export interface PdfThumbnailPickerProps {
   readonly file: File;
   readonly selectedPages: readonly number[];
-  readonly onPickPage: (page: number) => void;
+  readonly onPickPage?: (page: number) => void;
   readonly previewRotation?: 0 | 90 | 180 | 270;
 }
 
@@ -88,7 +88,7 @@ export function PdfThumbnailPicker({ file, selectedPages, onPickPage, previewRot
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 132px), 1fr))", gap: "0.75rem" }}>
             {images.map((thumb) => (
               <div key={thumb.page} data-pdf-page={thumb.page} data-thumb-state={thumb.state}>
-                <button type="button" aria-pressed={selectedPages.includes(thumb.page)} onClick={() => onPickPage(thumb.page)} aria-label={`Seleziona pagina ${thumb.page}`}>
+                <button type="button" disabled={onPickPage === undefined} aria-pressed={selectedPages.includes(thumb.page)} onClick={() => onPickPage?.(thumb.page)} aria-label={onPickPage === undefined ? `Anteprima pagina ${thumb.page}` : `Seleziona pagina ${thumb.page}`}>
                   {thumb.state === "ready" && thumb.url ? <img src={thumb.url} alt={`Anteprima pagina ${thumb.page}`} style={{ width: "100%", maxHeight: "208px", objectFit: "contain" }} /> : null}
                   {thumb.state === "loading" ? <span>Caricamento…</span> : null}
                   {thumb.state === "error" ? <span>Anteprima non disponibile: {thumb.message}</span> : null}

@@ -14,7 +14,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
-- **216 — Visual PDF merge reorder and rotate organizer**
 - **217 — Visual PDF split delete and extract selector**
 - **218 — Image-aware and scan PDF compression profiles**
 - **221 — PDF structural text and visual comparison**
@@ -42,7 +41,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **319 — PDF form inspector and flatten upgrade**
 - **320 — PDF password tool capability upgrade**
 
-Exactly **32** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
+Exactly **31** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
 
 ## Key decomposition rules
 
@@ -274,7 +273,7 @@ Exactly **32** incomplete tickets currently have every declared blocker complete
 | 213 | completed | Direct-manipulation image transform workspace | 078, 097 |
 | 214 | completed | Destructive screenshot image redaction | 103, 213 |
 | 215 | completed (bounded PDF.js preview, session cleanup, browser acceptance) | Bounded lazy PDF page-thumbnail renderer | 078, 100, 269 |
-| 216 | blocked | Visual PDF merge reorder and rotate organizer | 215 |
+| 216 | completed (shared thumbnails, page/file reorder, undo, merge verification) | Visual PDF merge reorder and rotate organizer | 215 |
 | 217 | blocked | Visual PDF split delete and extract selector | 215, 222 |
 | 218 | blocked | Image-aware and scan PDF compression profiles | 098, 100, 103, 269 |
 | 219 | blocked | PDF target-size solver and batch compressor | 079, 218, 222 |

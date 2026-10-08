@@ -129,7 +129,7 @@
     },
     {
       "toolId": "images-to-pdf",
-      "lazyScriptCount": 11,
+      "lazyScriptCount": 10,
       "taskRequestCount": 12,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
@@ -139,8 +139,8 @@
     },
     {
       "toolId": "pdf-to-images",
-      "lazyScriptCount": 11,
-      "taskRequestCount": 12,
+      "lazyScriptCount": 10,
+      "taskRequestCount": 11,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
