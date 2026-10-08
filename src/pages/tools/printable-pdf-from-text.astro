@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { PrintablePdfTool } from "../../components/tools/PrintablePdfTool";
+import "../../components/tools/tool-surface.css";
+---
+
+<BaseLayout title="Da TXT, Markdown, HTML e CSV a PDF" description="Trasforma documenti di testo e tabelle CSV in PDF stampabili nel browser, con paginazione e anteprima reale." noindex>
+  <main class="printable-page">
+    <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / PDF da testo</nav>
+    <h1>Da TXT, Markdown, HTML e CSV a PDF</h1>
+    <p>Impagina localmente testo e tabelle con dimensioni A4/Letter, margini, orientamento, righe a capo e numerazione pagine. Anteprima PDF.js prima del download.</p>
+    <PrintablePdfTool client:load />
+  </main>
+</BaseLayout>
+
+<style>
+  .printable-page { max-width: 1120px; margin: 0 auto; padding: 32px 20px 72px; }
+  .printable-page > p { max-width: 72ch; color: var(--text-muted); }
+  .printable-page :global(.printable-tool) { display: grid; gap: 24px; }
+  .printable-page :global(.printable-tool form) { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: start; gap: 24px; }
+  .printable-page :global(.printable-card) { padding: clamp(16px, 3vw, 28px); border: 1px solid var(--border); border-radius: 18px; background: var(--surface); min-width: 0; }
+  .printable-page :global(.printable-card h2) { margin-top: 0; }
+  .printable-page :global(.printable-fields) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .printable-page :global(.field) { display: grid; gap: 6px; margin-bottom: 14px; }
+  .printable-page :global(.field input), .printable-page :global(.field select), .printable-page :global(.field textarea) { width: 100%; max-width: 100%; box-sizing: border-box; }
+  .printable-page :global(.field textarea) { font-family: monospace; min-width: 0; }
+  .printable-page :global(.printable-check) { display: flex; align-items: center; gap: 8px; margin: 10px 0; }
+  .printable-page :global(.printable-note) { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+  .printable-page :global(.printable-actions) { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+  .printable-page :global(.printable-error) { color: var(--danger, #ac2525); padding: 12px; border: 1px solid currentColor; border-radius: 8px; }
+  .printable-page :global(.printable-metrics) { display: flex; gap: 24px; flex-wrap: wrap; }
+  .printable-page :global(.printable-metrics dt) { color: var(--text-muted); font-size: 0.85rem; }
+  .printable-page :global(.printable-metrics dd) { margin: 0; font-weight: 700; }
+  .printable-page :global(.printable-preview) { margin: 24px 0; max-width: 550px; }
+  .printable-page :global(.printable-preview img) { max-width: 100%; border: 1px solid var(--border); }
+  .printable-page :global(.printable-preview figcaption) { color: var(--text-muted); }
+  @media (max-width: 520px) { .printable-page :global(.printable-fields) { grid-template-columns: 1fr; } }
+</style>
