@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 250 / 77 |
+| All / completed / open | 327 / 251 / 76 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 27 |
-| Ready for assignment (feasibility still to prove) | 19 |
-| Waiting on other tickets | 50 |
+| DAG-ready (all numeric dependencies closed) | 28 |
+| Ready for assignment (feasibility still to prove) | 20 |
+| Waiting on other tickets | 48 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 1 |
@@ -21,8 +21,9 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (19)
+## Ready for assignment (feasibility still to prove) (20)
 
+- #037 — Video inspect/subtitle utilities
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #059 — JSON/XML/CSS/HTML/SVG minimizer pack
 - #212 — HEIC AVIF and GIF directional image implementations
@@ -41,9 +42,9 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #256 — TXT Markdown HTML and CSV to printable PDF
 - #264 — OOXML embedded-media compression core
 - #266 — File-size analyzer OOXML and media adapters
-- #305 — Exact video frame extraction and webcam test
+- #308 — Video AI context contact-sheet export
 
-## Waiting on other tickets (50)
+## Waiting on other tickets (48)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -59,7 +60,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #033 — PDF conversion/productivity family (awaiting #249, #250, #251, #254, #255, #256)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #036 — Audio file-processing family (awaiting #231)
-- #037 — Video inspect/subtitle utilities (awaiting #305)
 - #038 — Video transform family (awaiting #234, #306, #308)
 - #040 — Italy utilities beyond CalcolaTutto (awaiting #152)
 - #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #033, #035, #036, #037, #038, #040, #065, #066)
@@ -94,7 +94,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #265 — File-size analyzer PDF adapter (awaiting #218)
 - #279 — Image-resize Gold promotion gate (awaiting #277, #278)
 - #306 — Video to GIF conversion (awaiting #234)
-- #308 — Video AI context contact-sheet export (awaiting #305)
 
 ## Waiting on official sources (2)
 

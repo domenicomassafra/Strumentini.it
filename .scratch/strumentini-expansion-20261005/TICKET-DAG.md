@@ -9,6 +9,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 
 ## Current dependency frontier
 
+- **037 — Video inspect/subtitle utilities**
 - **047 — JPEG/PNG/WebP/SVG compression engines**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
@@ -35,9 +36,9 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
-- **305 — Exact video frame extraction and webcam test**
+- **308 — Video AI context contact-sheet export**
 
-Exactly **27** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **28** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -90,7 +91,7 @@ Exactly **27** incomplete tickets currently have every declared numeric blocker 
 | 034 | completed | Heavy local media/OCR/Office feasibility refresh | — |
 | 035 | blocked | Audio capture/playback utilities | 229, 303, 304 |
 | 036 | blocked | Audio file-processing family | 230, 231 |
-| 037 | blocked | Video inspect/subtitle utilities | 232, 233, 305 |
+| 037 | ready-for-agent | Video inspect/subtitle utilities | 232, 233, 305 |
 | 038 | blocked | Video transform family | 234, 306, 307, 308 |
 | 039 | completed | AI-era deterministic helper family | 054, 165, 183, 184, 185, 186, 189 |
 | 040 | blocked | Italy utilities beyond CalcolaTutto | 152, 150 |
@@ -358,10 +359,10 @@ Exactly **27** incomplete tickets currently have every declared numeric blocker 
 | 302 | completed | Document image perspective straighten | 213 |
 | 303 | completed | Tone metronome and noise generator | 070 |
 | 304 | completed | Browser text-to-speech Italian controls | 070 |
-| 305 | ready-for-agent | Exact video frame extraction and webcam test | 232, 274 |
+| 305 | completed — browser-supported local frame-at-time preview and opt-in webcam test (NOT frame-exact guarantee or physical camera certification) | Exact video frame extraction and webcam test | 232, 274 |
 | 306 | blocked | Video to GIF conversion | 234 |
 | 307 | completed | Audio loudness and LUFS analysis | 273 |
-| 308 | blocked | Video AI context contact-sheet export | 232, 305 |
+| 308 | ready-for-agent | Video AI context contact-sheet export | 232, 305 |
 | 309 | completed | Italian syllabification feasibility spike | — |
 | 310 | completed | CSS px rem em conversion helper | 070 |
 | 311 | completed | Astronomy and location-dependent date feasibility | 007 |

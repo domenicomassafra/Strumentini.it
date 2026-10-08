@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "generatedBy": "scripts/build-certification-index.ts",
-  "expectedCatalogToolCount": 261,
-  "catalogToolCount": 261,
+  "expectedCatalogToolCount": 262,
+  "catalogToolCount": 262,
   "authorities": {
     "oracleRegistry": {
       "path": "quality/oracles/registry.json",
-      "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92"
+      "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b"
     },
     "fixtureIndex": {
       "path": "quality/fixtures/index.json",
@@ -21,8 +21,8 @@
     "oracle": {
       "status": "PASS",
       "path": "quality/oracles/registry.json",
-      "entryCount": 261,
-      "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92"
+      "entryCount": 262,
+      "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b"
     },
     "fixtures": {
       "status": "PASS",
@@ -32,7 +32,7 @@
     },
     "privacy": {
       "status": "DECLARED",
-      "declaredLocalTools": 259,
+      "declaredLocalTools": 260,
       "networkPolicy": "forbidden",
       "evidence": [
         {
@@ -54,7 +54,7 @@
         }
       ],
       "gaps": [
-        "Per-tool browser/network evidence exists for the certified frontier, not all 261 expanded routes."
+        "Per-tool browser/network evidence exists for the certified frontier, not all 262 expanded routes."
       ]
     },
     "mobileA11y": {
@@ -119,15 +119,15 @@
     "statusCounts": {
       "GOLD": 257,
       "PARTIAL": 2,
-      "IMPLEMENTED_UNVERIFIED": 2
+      "IMPLEMENTED_UNVERIFIED": 3
     },
     "certificationGoldCount": 257,
     "releaseEligibleGoldCount": 257,
-    "releaseBlockedCount": 4,
+    "releaseBlockedCount": 5,
     "physicalDevicePassCount": 0,
-    "oracleBoundCount": 261,
-    "fixtureBoundCount": 261,
-    "localDeclarationCount": 259
+    "oracleBoundCount": 262,
+    "fixtureBoundCount": 262,
+    "localDeclarationCount": 260
   },
   "tools": [
     {
@@ -174,7 +174,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -312,7 +312,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -450,7 +450,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -582,7 +582,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -717,7 +717,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -852,7 +852,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -985,7 +985,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -1115,7 +1115,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -1248,7 +1248,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -1379,7 +1379,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -1503,7 +1503,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -1626,7 +1626,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -1758,7 +1758,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -1882,7 +1882,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -2009,7 +2009,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -2134,7 +2134,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -2255,7 +2255,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -2387,7 +2387,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -2529,7 +2529,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -2666,7 +2666,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -2800,7 +2800,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -2929,7 +2929,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -3061,7 +3061,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -3186,7 +3186,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -3319,7 +3319,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -3442,7 +3442,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -3575,7 +3575,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -3709,7 +3709,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -3835,7 +3835,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -3984,7 +3984,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -4107,7 +4107,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -4244,7 +4244,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -4379,7 +4379,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -4515,7 +4515,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -4651,7 +4651,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -4790,7 +4790,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -4922,7 +4922,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -5062,7 +5062,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -5197,7 +5197,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -5319,7 +5319,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -5441,7 +5441,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -5574,7 +5574,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -5705,7 +5705,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -5829,7 +5829,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -5967,7 +5967,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -6108,7 +6108,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -6248,7 +6248,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -6397,7 +6397,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -6532,7 +6532,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -6671,7 +6671,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -6820,7 +6820,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -6970,7 +6970,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -7119,7 +7119,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -7268,7 +7268,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -7417,7 +7417,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -7566,7 +7566,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -7714,7 +7714,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -7852,7 +7852,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -8001,7 +8001,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -8138,7 +8138,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -8275,7 +8275,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -8400,7 +8400,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -8537,7 +8537,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -8663,7 +8663,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -8801,7 +8801,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -8936,7 +8936,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -9059,7 +9059,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -9198,7 +9198,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -9338,7 +9338,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -9463,7 +9463,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -9586,7 +9586,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -9711,7 +9711,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -9845,7 +9845,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -9980,7 +9980,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -10104,7 +10104,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -10244,7 +10244,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -10380,7 +10380,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -10504,7 +10504,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -10635,7 +10635,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -10760,7 +10760,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -10896,7 +10896,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -11019,7 +11019,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -11149,7 +11149,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -11299,7 +11299,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -11424,7 +11424,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -11552,7 +11552,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -11688,7 +11688,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -11826,7 +11826,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -11959,7 +11959,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -12096,7 +12096,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -12225,7 +12225,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -12363,7 +12363,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -12487,7 +12487,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -12620,7 +12620,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -12764,7 +12764,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -12887,7 +12887,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -13012,7 +13012,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -13135,7 +13135,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -13258,7 +13258,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -13383,7 +13383,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -13517,7 +13517,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -13652,7 +13652,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -13785,7 +13785,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -13920,7 +13920,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -14055,7 +14055,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -14182,7 +14182,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -14320,7 +14320,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -14458,7 +14458,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -14598,7 +14598,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -14735,7 +14735,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -14875,7 +14875,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -15014,7 +15014,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -15155,7 +15155,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -15292,7 +15292,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -15431,7 +15431,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -15621,7 +15621,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -15771,7 +15771,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -15895,7 +15895,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -16020,7 +16020,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -16153,7 +16153,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -16276,7 +16276,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -16400,7 +16400,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -16524,7 +16524,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -16649,7 +16649,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -16774,7 +16774,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -16907,7 +16907,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -17039,7 +17039,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -17181,7 +17181,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -17325,7 +17325,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -17473,7 +17473,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -17616,7 +17616,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -17758,7 +17758,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -17893,7 +17893,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -18021,7 +18021,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -18154,7 +18154,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -18278,7 +18278,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -18421,7 +18421,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -18555,7 +18555,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -18704,7 +18704,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -18838,7 +18838,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -18973,7 +18973,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -19110,7 +19110,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -19243,7 +19243,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -19380,7 +19380,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -19514,7 +19514,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -19650,7 +19650,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -19786,7 +19786,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -19917,7 +19917,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -20055,7 +20055,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -20192,7 +20192,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -20331,7 +20331,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -20456,7 +20456,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -20579,7 +20579,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -20704,7 +20704,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -20839,7 +20839,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -20976,7 +20976,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -21102,7 +21102,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -21228,7 +21228,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -21351,7 +21351,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -21475,7 +21475,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -21612,7 +21612,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -21748,7 +21748,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -21875,7 +21875,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -22013,7 +22013,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -22149,7 +22149,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -22300,7 +22300,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -22438,7 +22438,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -22575,7 +22575,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -22712,7 +22712,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -22850,7 +22850,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -22991,7 +22991,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -23116,7 +23116,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -23253,7 +23253,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -23389,7 +23389,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -23498,7 +23498,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -23635,7 +23635,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -23772,7 +23772,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -23910,7 +23910,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -24048,7 +24048,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -24185,7 +24185,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -24322,7 +24322,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -24474,7 +24474,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -24575,6 +24575,114 @@
       "coverageGaps": []
     },
     {
+      "id": "pdf-watermark",
+      "route": "/tools/pdf-watermark",
+      "name": "PDF Watermark Overlay",
+      "category": "documents",
+      "engine": "pdf",
+      "maintenanceClass": "H",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "certificationReceipt": null,
+      "releaseGate": "BLOCKED",
+      "goldEligible": false,
+      "implementation": {
+        "manifest": {
+          "path": "src/tools/pdf-watermark/manifest.ts",
+          "sha256": "3fe271747c9bc1485d901a8c9c611066edd4afb07b761bf8c07e832afdc1e33b"
+        },
+        "module": {
+          "path": "src/tools/pdf-watermark/module.ts",
+          "sha256": "7d767542b894defa0709289157ed6f66ec9a93ef03fe1bd10b970910756e3cf5"
+        },
+        "page": {
+          "path": "src/pages/tools/pdf-watermark.astro",
+          "sha256": "c80ba7c4744b0ebf20fd83b372649e70456d85554343d7dc3268f4fce871f8fc"
+        },
+        "testFiles": [
+          "tests/pdf-catalog.test.ts",
+          "tests/pdf-document-tools.test.ts"
+        ]
+      },
+      "oracle": {
+        "entryId": "cand-262",
+        "candidate": "Visible PDF watermark text overlay with opacity, rotation, scale and page range",
+        "maintenanceClass": "H",
+        "truthSources": [
+          "iso-pdf2",
+          "fixture-policy"
+        ],
+        "status": "BOUND",
+        "evidence": [
+          {
+            "dimension": "oracle",
+            "path": "quality/oracles/registry.json",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
+            "status": "PASS"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "id": "pdf-gold",
+          "path": "quality/fixtures/pdf-gold/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "strumentini-quality",
+            "fixture-policy",
+            "iso-pdf2"
+          ],
+          "status": "BOUND"
+        },
+        {
+          "id": "pdf-signature",
+          "path": "quality/fixtures/pdf-signature/vectors.json",
+          "provenance": "hand-worked",
+          "truthSources": [
+            "iso-pdf2"
+          ],
+          "status": "BOUND"
+        }
+      ],
+      "privacy": {
+        "status": "DECLARED",
+        "privacyClass": "LOCAL",
+        "location": "LOCAL",
+        "network": "forbidden",
+        "capabilities": [
+          "file-read",
+          "file-write"
+        ]
+      },
+      "locality": {
+        "status": "UNVERIFIED",
+        "evidence": []
+      },
+      "mobileA11y": {
+        "status": "UNVERIFIED",
+        "evidence": []
+      },
+      "lazyLoad": {
+        "status": "UNVERIFIED",
+        "evidence": []
+      },
+      "physicalDevice": {
+        "status": "NOT_OBSERVED",
+        "required": false,
+        "iosSafari": "NOT_OBSERVED",
+        "androidChrome": "NOT_OBSERVED",
+        "evidence": []
+      },
+      "evidence": [],
+      "blockers": [
+        "CERTIFICATION_RECEIPT_MISSING"
+      ],
+      "coverageGaps": [
+        "LAZY_LOAD_EVIDENCE_UNVERIFIED",
+        "LOCALITY_EVIDENCE_UNVERIFIED",
+        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
+      ]
+    },
+    {
       "id": "percentage-helper",
       "route": "/tools/percentage-helper",
       "name": "Calcolatore percentuali",
@@ -24616,7 +24724,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -24740,7 +24848,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -24877,7 +24985,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -25005,7 +25113,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -25133,7 +25241,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -25258,7 +25366,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -25381,7 +25489,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -25507,7 +25615,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -25642,7 +25750,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -25766,7 +25874,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -25891,7 +25999,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -26027,7 +26135,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -26160,7 +26268,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -26298,7 +26406,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -26422,7 +26530,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -26551,7 +26659,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -26680,7 +26788,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -26808,7 +26916,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -26944,7 +27052,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -27082,7 +27190,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -27217,7 +27325,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -27342,7 +27450,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -27465,7 +27573,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -27599,7 +27707,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -27735,7 +27843,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -27866,7 +27974,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -27993,7 +28101,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -28131,7 +28239,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -28254,7 +28362,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -28386,7 +28494,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -28521,7 +28629,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -28644,7 +28752,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -28769,7 +28877,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -28907,7 +29015,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -29041,7 +29149,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -29167,7 +29275,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -29295,7 +29403,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -29431,7 +29539,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -29564,7 +29672,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -29687,7 +29795,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -29811,7 +29919,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -29933,7 +30041,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -30058,7 +30166,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -30191,7 +30299,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -30328,7 +30436,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -30475,7 +30583,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -30602,7 +30710,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -30743,7 +30851,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -30870,7 +30978,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -31003,7 +31111,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -31128,7 +31236,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -31265,7 +31373,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -31407,7 +31515,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -31536,7 +31644,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -31666,7 +31774,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -31805,7 +31913,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -31944,7 +32052,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -32076,7 +32184,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -32210,7 +32318,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -32342,7 +32450,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -32474,7 +32582,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -32606,7 +32714,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -32738,7 +32846,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -32859,7 +32967,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -32997,7 +33105,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -33129,7 +33237,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -33262,7 +33370,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -33389,7 +33497,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -33487,7 +33595,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -33624,7 +33732,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -33762,7 +33870,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -33896,7 +34004,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -34031,7 +34139,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -34170,7 +34278,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -34298,7 +34406,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -34431,7 +34539,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -34564,7 +34672,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -34701,7 +34809,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]
@@ -34825,7 +34933,7 @@
           {
             "dimension": "oracle",
             "path": "quality/oracles/registry.json",
-            "sha256": "fd9cddd9afd5048c684c3fb67448e7a7fc0d0d086e0d8293f7137ca6232bde92",
+            "sha256": "b5f8145ce2baca33b69a70623371df355e30801ce79643116c2616937e0b0b0b",
             "status": "PASS"
           }
         ]

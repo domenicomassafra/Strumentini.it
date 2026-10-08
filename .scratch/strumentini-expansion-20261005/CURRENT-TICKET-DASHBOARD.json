@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 250,
+    "completed": 251,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 232,
-    "open": 77,
-    "readyDAG": 27,
-    "ready-for-agent": 19,
-    "dependency-blocked": 50,
+    "completedWithoutExplicitRefusal": 233,
+    "open": 76,
+    "readyDAG": 28,
+    "ready-for-agent": 20,
+    "dependency-blocked": 48,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 1,
@@ -254,6 +254,7 @@
       302,
       303,
       304,
+      305,
       307,
       309,
       310,
@@ -276,6 +277,7 @@
       327
     ],
     "ready-for-agent": [
+      37,
       47,
       59,
       212,
@@ -294,7 +296,7 @@
       256,
       264,
       266,
-      305
+      308
     ],
     "dependency-blocked": [
       8,
@@ -311,7 +313,6 @@
       33,
       35,
       36,
-      37,
       38,
       40,
       45,
@@ -345,8 +346,7 @@
       255,
       265,
       279,
-      306,
-      308
+      306
     ],
     "external-source-blocked": [
       115,
@@ -796,12 +796,10 @@
     {
       "id": 37,
       "title": "Video inspect/subtitle utilities",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        305
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -3587,9 +3585,9 @@
     {
       "id": 305,
       "title": "Exact video frame extraction and webcam test",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed — browser-supported local frame-at-time preview and opt-in webcam test (NOT frame-exact guarantee or physical camera certification)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3619,12 +3617,10 @@
     {
       "id": 308,
       "title": "Video AI context contact-sheet export",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        305
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },

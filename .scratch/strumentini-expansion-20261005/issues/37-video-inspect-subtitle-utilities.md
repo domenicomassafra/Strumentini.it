@@ -8,7 +8,7 @@
 
 **Blocked by:** 232, 233, 305.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 - [ ] Inspector reports actual stream/container facts and variable-frame-rate status when detectable.
 - [ ] Subtitle tools preserve cue ordering/text and report overlaps/reading-rate issues precisely.
