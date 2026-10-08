@@ -56,11 +56,13 @@ import {
 } from "./writer";
 import { inflatePdfStream } from "./inflate";
 import { redactUrl, redactUrlCredentials } from "../url-marketing";
+import { validatePdfMergePagePlan, type PdfMergePageRef } from "./merge-page-plan";
 
 export * from "./types";
 export { buildPdfFromJpegs, buildPdfFromPages, createSimplePdf, parseJpeg };
 export { inflatePdfStream } from "./inflate";
 export type { EmbeddedJpeg, PdfBuildPage, PdfImagePageLayoutOptions };
+export type { PdfMergePageRef } from "./merge-page-plan";
 
 export type PdfErrorCode =
   | "INVALID_INPUT"
@@ -921,9 +923,13 @@ export async function mutatePdf(input: PdfInput, request: PdfMutationRequest, si
 }
 
 export async function mergePdfs(inputs: readonly PdfInput[], signal?: AbortSignal): Promise<PdfArtifact> {
+  return mergePdfsWithPagePlan(inputs, undefined, signal);
+}
+
+export async function mergePdfsWithPagePlan(inputs: readonly PdfInput[], pagePlan?: readonly PdfMergePageRef[], signal?: AbortSignal): Promise<PdfArtifact> {
   if (inputs.length < 2) throw new PdfError("INVALID_INPUT", "Choose at least two PDF files to merge.");
   if (inputs.length > PDF_LIMITS.maxFiles) throw new PdfError("PDF_LIMIT", "Too many files were selected.");
-  const pages: PdfBuildPage[] = [];
+  const documents: PdfDocumentModel[] = [];
   let totalInputBytes = 0;
   for (const input of inputs) {
     abortIfNeeded(signal);
@@ -933,9 +939,36 @@ export async function mergePdfs(inputs: readonly PdfInput[], signal?: AbortSigna
     const document = parseDocument(bytes);
     const capability = capabilityReport(document, "mutate-pages");
     if (!capability.available) throw new PdfError("UNSUPPORTED_CAPABILITY", capability.reason ?? "PDF mutation is unavailable.");
-    pages.push(...document.pages.map((page) => ({ document, page })));
+    documents.push(document);
   }
-  if (pages.length > PDF_LIMITS.maxPages) throw new PdfError("PDF_LIMIT", "Merged document exceeds the local page limit.");
+  const counts = documents.map((document) => document.pages.length);
+  const totalPages = counts.reduce((sum, count) => sum + count, 0);
+  if (totalPages > PDF_LIMITS.maxPages) throw new PdfError("PDF_LIMIT", "Merged document exceeds the local page limit.");
+  if (counts.some((count) => count < 1)) throw new PdfError("INVALID_INPUT", "Cannot merge a PDF without pages.");
+  const refs = pagePlan === undefined ? undefined : validatePdfMergePagePlan(counts, pagePlan);
+  const pages: PdfBuildPage[] = [];
+  if (refs === undefined) {
+    for (const document of documents) pages.push(...document.pages.map((page) => ({ document, page })));
+  } else {
+    for (const ref of refs) {
+      abortIfNeeded(signal);
+      const document = documents[ref.fileIndex]!;
+      const page = document.pages[ref.page - 1]!;
+      if (ref.rotation === undefined || ref.rotation === 0) {
+        pages.push({ document, page });
+        continue;
+      }
+      if (page.object.value.kind !== "dict") throw new PdfError("MALFORMED_PDF", "Page is not a dictionary.");
+      const originalRotation = pageRotation(page);
+      const absoluteRotation = (originalRotation + ref.rotation) % 360;
+      const entries = new Map(page.object.value.entries);
+      entries.set("Rotate", pdfNumber(absoluteRotation));
+      pages.push({
+        document,
+        page: { ...page, object: { ...page.object, value: { ...page.object.value, entries } } },
+      });
+    }
+  }
   const bytes = buildPdfFromPages(pages, { stripMetadata: true, flatten: true });
   return outputArtifact(bytes, "merged.pdf", pages.length);
 }

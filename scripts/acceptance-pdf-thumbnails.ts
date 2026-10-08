@@ -98,6 +98,18 @@ try {
       if (await rotated.locator('[data-pdf-page="2"] button').getAttribute("aria-pressed") !== "true") throw new Error("rotation selection is not accessible");
       if (await rotated.getByLabel("Pagine", { exact: true }).inputValue() !== "2") throw new Error("rotation selection did not reach authoritative pages input");
       assertions++;
+      await rotated.getByLabel("Pagine", { exact: true }).fill("1-2");
+      await rotated.getByRole("button", { name: "Inverti pagine da ruotare" }).click();
+      if (await rotated.getByLabel("Pagine", { exact: true }).inputValue() !== "3") throw new Error("rotation inverse range did not preserve page identities");
+      await rotated.locator('form button[type="submit"]').first().click();
+      await rotated.locator(".gutter[data-state='success']").waitFor({ timeout: 30000 });
+      const rotatedDownload = rotated.waitForEvent("download");
+      await rotated.getByRole("link", { name: /Scarica .*rotated\.pdf/u }).click();
+      const rotatedBytes = new Uint8Array(await readFile(await (await rotatedDownload).path()));
+      if (inspectPdfBytes(rotatedBytes).pages.map((page) => page.rotation).join(",") !== "0,0,90") {
+        throw new Error("downloaded PDF did not preserve selected rotation/inversion");
+      }
+      assertions++;
       await rotated.close();
 
       const broken = await context.newPage();
@@ -144,6 +156,57 @@ try {
         throw new Error("actual downloaded merged PDF does not preserve selected source order");
       }
       assertions++;
+      // Interleave page identities across two source files, rotate one, exclude
+      // one, undo keyboard/drag edits, then inspect the downloaded binary PDF.
+      await merged.getByRole("button", { name: "Personalizza ordine pagine" }).click();
+      if (await merged.locator("[data-merge-page-order] li").count() !== 3) throw new Error("mixed file plan was not seeded");
+      await merged.getByRole("button", { name: "Sposta File 2, pagina 2 su" }).focus();
+      await merged.keyboard.press("Space");
+      await merged.getByRole("button", { name: "Sposta File 2, pagina 2 su" }).click();
+      const identities = await merged.locator("[data-merge-page-order] li").evaluateAll(
+        (nodes) => nodes.map((node) => node.getAttribute("data-source-page")));
+      if (identities.join(",") !== "1:2,0:1,1:1") throw new Error(`cross-file keyboard order lost identity: ${identities}`);
+      assertions++;
+      await merged.getByRole("button", { name: "Ruota File 2, pagina 2" }).click();
+      await merged.getByRole("button", { name: "Escludi File 2, pagina 1" }).click();
+      if (await merged.locator("[data-merge-page-order] li").count() !== 2) throw new Error("excluded page still in mixed plan");
+      await merged.locator('[data-merge-page-order] [data-source-page="0:1"]').dragTo(
+        merged.locator('[data-merge-page-order] [data-source-page="1:2"]'));
+      const draggedOrder = await merged.locator("[data-merge-page-order] li").evaluateAll(
+        (nodes) => nodes.map((node) => node.getAttribute("data-source-page")));
+      if (draggedOrder.join(",") !== "0:1,1:2") throw new Error("drag move misidentified cross-file pages");
+      await merged.getByRole("button", { name: "Ripristina modifica pagina" }).click();
+      const restoredOrder = await merged.locator("[data-merge-page-order] li").evaluateAll(
+        (nodes) => nodes.map((node) => node.getAttribute("data-source-page")));
+      if (restoredOrder.join(",") !== "1:2,0:1") throw new Error("mixed page undo did not restore exact order");
+      assertions++;
+      await merged.getByRole("button", { name: "Sposta file 2 su" }).click();
+      const remappedOrder = await merged.locator("[data-merge-page-order] li").evaluateAll(
+        (nodes) => nodes.map((node) => node.getAttribute("data-source-page")));
+      if (remappedOrder.join(",") !== "0:2,1:1") throw new Error("custom page plan lost file identity when source order changed");
+      await merged.getByRole("button", { name: "Ripristina ordine file precedente" }).click();
+      const originalIdentity = await merged.locator("[data-merge-page-order] li").evaluateAll(
+        (nodes) => nodes.map((node) => node.getAttribute("data-source-page")));
+      if (originalIdentity.join(",") !== "1:2,0:1") throw new Error("source-file undo failed to restore page identity");
+      assertions++;
+      await merged.getByRole("button", { name: "Anteprima file 2" }).click();
+      await merged.locator('[data-pdf-page="1"][data-thumb-state="ready"] img').waitFor({ timeout: 30000 });
+      await merged.getByRole("button", { name: "Seleziona pagina 1" }).click();
+      if (await merged.locator("[data-merge-page-order] li").count() !== 3) throw new Error("thumbnail did not restore excluded page");
+      await merged.getByRole("button", { name: "Seleziona pagina 1" }).click();
+      if (await merged.locator("[data-merge-page-order] li").count() !== 2) throw new Error("thumbnail did not remove restored page");
+      assertions++;
+      await merged.locator('form button[type="submit"]').first().click();
+      await merged.locator(".gutter[data-state='success']").waitFor({ timeout: 30000 });
+      const mixedDownloadTask = merged.waitForEvent("download");
+      await merged.getByRole("link", { name: "Scarica merged.pdf" }).click();
+      const mixedBytes = new Uint8Array(await readFile(await (await mixedDownloadTask).path()));
+      const mixedInspection = inspectPdfBytes(mixedBytes);
+      if (mixedInspection.pageCount !== 2 || mixedInspection.pages[0]?.rotation !== 90 ||
+          mixedInspection.pages[1]?.rotation !== 0) throw new Error("mixed PDF page count or rotation differs from plan");
+      const mixedText = (await extractPdfText(mixedBytes)).map((page) => page.text);
+      if (mixedText.join(",") !== "THIRD,FIRST") throw new Error(`mixed PDF output page order differs: ${mixedText}`);
+      assertions++;
       await merged.close();
       console.log(`${name}: PASS bounded PDF thumbnails, undo/keyboard reorder, mixed-file merge source inventory and verified output`);
     } finally {
@@ -151,7 +214,7 @@ try {
       await browser.close();
     }
   }
-  console.log(`tickets 215/216 PDF thumbnail, page-order and merge acceptance PASS: ${assertions}/36`);
+  console.log(`tickets 52/215/216 PDF thumbnail, page-order and merge acceptance PASS: ${assertions}/54`);
 } finally {
   server.kill("SIGTERM");
 }

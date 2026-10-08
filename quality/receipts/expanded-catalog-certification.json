@@ -22406,7 +22406,7 @@
         },
         "module": {
           "path": "src/tools/pdf-merge/module.ts",
-          "sha256": "28770b70f0adc07efb190b9119ddf2cee71117ea01349221433f3bd1774ad55d"
+          "sha256": "fb38fdefc64e64b6e6963c1e43510c67f3f1cfbac5a6b7b7bd85de2f79251741"
         },
         "page": {
           "path": "src/pages/tools/pdf-merge.astro",
@@ -22415,6 +22415,7 @@
         "testFiles": [
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts",
+          "tests/pdf-merge-page-plan.test.ts",
           "tests/pdf-visual-merge.test.ts"
         ]
       },
@@ -23769,7 +23770,7 @@
         },
         "module": {
           "path": "src/tools/pdf-rotate/module.ts",
-          "sha256": "1756d1d8b959fc77ba0d6b67d434a4ccab8b4fbee2f99274540b2310a34b67e0"
+          "sha256": "8b5032d05c2b0e785daafe50c16085c287821517b8fea29e9481059a6636280c"
         },
         "page": {
           "path": "src/pages/tools/pdf-rotate.astro",
@@ -23777,7 +23778,8 @@
         },
         "testFiles": [
           "tests/pdf-catalog.test.ts",
-          "tests/pdf-document-tools.test.ts"
+          "tests/pdf-document-tools.test.ts",
+          "tests/pdf-visual-rotation-selection.test.ts"
         ]
       },
       "oracle": {

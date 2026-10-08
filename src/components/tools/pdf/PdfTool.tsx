@@ -9,6 +9,7 @@ import { PdfThumbnailPicker } from "./PdfThumbnailPicker";
 import { PdfVisualOrder } from "./PdfVisualOrder";
 import { PdfMergeOrganizer } from "./PdfMergeOrganizer";
 import { parsePdfPageGroups, parsePdfPageSelection } from "../../../engines/pdf/page-selection";
+import type { PdfMergePageRef } from "../../../engines/pdf/merge-page-plan";
 
 export type PdfToolId = PdfResultToolId;
 
@@ -67,6 +68,7 @@ function parseIndexedRotations(value: string): Record<number, 0 | 90 | 180 | 270
 
 export function PdfTool({ toolId, title: _title, description: _description, actionLabel: _actionLabel, inputMode = "single", optionMode = "none", accept = "application/pdf,.pdf" }: PdfToolProps) {
   const [files, setFiles] = useState<File[]>([]);
+  const [mergePagePlan, setMergePagePlan] = useState<readonly PdfMergePageRef[] | null>(null);
   const [pages, setPages] = useState("");
   const [order, setOrder] = useState("");
   const [orderHistory, setOrderHistory] = useState<string[]>([]);
@@ -128,6 +130,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
       });
     }
     setResult(null);
+    setMergePagePlan(null);
     setOrderHistory([]);
     setShowThumbnails(false);
     setSelectionPageCount(0);
@@ -164,11 +167,11 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         caseSensitive,
       };
     }
-    if (inputMode === "multi") return { files };
+    if (inputMode === "multi") return { files, ...(toolId === "pdf-merge" && mergePagePlan !== null ? { pagePlan: mergePagePlan } : {}) };
     if (optionMode === "pages") return { file: files[0], pages: parseNumbers(pages), ...(toolId === "pdf-page-delete-extract" ? { mode: deleteMode } : {}) };
     if (optionMode === "groups") return { file: files[0], groups };
     if (optionMode === "order") return { file: files[0], order: parseNumbers(order) };
-    if (optionMode === "rotation") return { file: files[0], rotations: Object.fromEntries(parseNumbers(pages).map((page) => [page, Number(rotation)])) };
+    if (optionMode === "rotation") return { file: files[0], pages, rotation: Number(rotation) };
     if (optionMode === "delete-extract") return { file: files[0], pages, mode: deleteMode };
     if (optionMode === "password") return { file: files[0], mode: passwordMode };
     if (optionMode === "text-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), mode: textExtractionMode };
@@ -227,6 +230,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     controller.current?.abort();
     controller.current = null;
     setFiles([]);
+    setMergePagePlan(null);
     setPages("");
     setOrder("");
     setOrderHistory([]);
@@ -287,6 +291,17 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     }
   }
   const visibleSelectedPages = [...new Set(selectionGroups.flat())];
+  let rotationPages: number[] = [];
+  let rotationError = "";
+  if (optionMode === "rotation" && selectionPageCount > 0 && pages.trim() !== "") {
+    try {
+      rotationPages = parsePdfPageSelection(pages, selectionPageCount);
+    } catch (caught) {
+      rotationError = caught instanceof Error ? caught.message : "Selezione pagine non valida";
+    }
+  } else if (optionMode === "rotation") {
+    rotationPages = parseNumbers(pages);
+  }
   function chooseVisualSelection(page: number) {
     if (selectionError !== "") return;
     const chosen = selectionGroups.length > 0 ? selectionGroups.map((group) => [...group]) : [[]];
@@ -336,12 +351,25 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         )}
         {files.length > 0 && <p class="file-note" role="status">{files.map((file) => `${file.name} · ${(file.size / 1024).toFixed(1)} KiB`).join(" · ")}</p>}
         {toolId === "pdf-merge" && files.length > 0 && (
-          <PdfMergeOrganizer files={files} onChange={(reordered) => { setFiles(reordered); setResult(null); }} />
+          <PdfMergeOrganizer files={files} onChange={(reordered) => { setFiles(reordered); setResult(null); }}
+            pagePlan={mergePagePlan} onPlanChange={(plan) => { setMergePagePlan(plan); setResult(null); }}
+            disabled={isWorking} />
         )}
         {optionMode === "pages" && <label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3, 5" disabled={isWorking} /></label>}
         {optionMode === "groups" && <label class="field"><span>Gruppi di pagine</span><input value={groups} onInput={(event) => { setGroups(event.currentTarget.value); setResult(null); }} placeholder="1-2; 3-4" disabled={isWorking} /></label>}
         {optionMode === "order" && <label class="field"><span>Nuovo ordine delle pagine</span><input value={order} onInput={(event) => { setOrder(event.currentTarget.value); setOrderHistory([]); }} placeholder="3, 1, 2" disabled={isWorking} /></label>}
-        {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 2" disabled={isWorking} /></label><label class="field"><span>Rotazione</span><select value={rotation} onChange={(event) => setRotation(event.currentTarget.value)} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
+        {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => { setPages(event.currentTarget.value); setResult(null); }} placeholder="1-3, 5" disabled={isWorking} /></label><label class="field"><span>Rotazione</span><select value={rotation} onChange={(event) => { setRotation(event.currentTarget.value); setResult(null); }} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
+        {optionMode === "rotation" && files[0] !== undefined && (
+          <div class="actions" data-pdf-rotation-helpers>
+            <button type="button" disabled={isWorking} onClick={() => { setPages("tutte"); setResult(null); }}>Seleziona tutte le pagine</button>
+            <button type="button" disabled={isWorking || selectionPageCount < 1} onClick={() => {
+              const selected = new Set(rotationPages);
+              const inverse = Array.from({ length: selectionPageCount }, (_, index) => index + 1).filter((page) => !selected.has(page));
+              setPages(inverse.join(", ")); setResult(null);
+            }}>Inverti pagine da ruotare</button>
+            {rotationError !== "" && <p role="alert">{rotationError}</p>}
+          </div>
+        )}
         {optionMode === "delete-extract" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => { setPages(event.currentTarget.value); setResult(null); }} placeholder="1, 3" disabled={isWorking} /></label><label class="field"><span>Operazione</span><select value={deleteMode} onChange={(event) => { setDeleteMode(event.currentTarget.value as "delete" | "extract"); setResult(null); }} disabled={isWorking}><option value="extract">Estrai le pagine selezionate</option><option value="delete">Elimina le pagine selezionate</option></select></label></div>}
         {isPageSelector && files[0] !== undefined && (
           <section class="field" aria-label="Selettore pagine PDF" data-pdf-page-selection>
@@ -401,18 +429,16 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             {showThumbnails && (
               <PdfThumbnailPicker
                 file={files[0]}
-                selectedPages={parseNumbers(optionMode === "order" ? order : pages)}
+                selectedPages={optionMode === "order" ? parseNumbers(order) : rotationPages}
                 previewRotation={optionMode === "rotation" ? Number(rotation) as 0 | 90 | 180 | 270 : 0}
+                {...(optionMode === "rotation" ? { onPageCount: (count: number) => setSelectionPageCount(count) } : {})}
                 onPickPage={(page) => {
                   if (optionMode === "order") {
                     const chosen = parseNumbers(order);
                     updateVisualOrder(chosen.includes(page) ? chosen.filter((value) => value !== page) : [...chosen, page]);
                   } else {
-                    setPages((current) => {
-                      const chosen = parseNumbers(current);
-                      const next = chosen.includes(page) ? chosen.filter((value) => value !== page) : [...chosen, page].sort((a, b) => a - b);
-                      return next.join(", ");
-                    });
+                    const next = rotationPages.includes(page) ? rotationPages.filter((value) => value !== page) : [...rotationPages, page].sort((a, b) => a - b);
+                    setPages(next.join(", "));
                   }
                   setResult(null);
                 }}

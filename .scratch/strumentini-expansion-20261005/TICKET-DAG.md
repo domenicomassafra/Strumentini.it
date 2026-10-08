@@ -10,7 +10,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 ## Current dependency frontier
 
 - **047 — JPEG/PNG/WebP/SVG compression engines**
-- **052 — Visual PDF page organizer for existing page tools**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
@@ -41,7 +40,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **319 — PDF form inspector and flatten upgrade**
 - **320 — PDF password tool capability upgrade**
 
-Exactly **31** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
+Exactly **30** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
 
 ## Key decomposition rules
 
@@ -109,7 +108,7 @@ Exactly **31** incomplete tickets currently have every declared blocker complete
 | 049 | blocked | Image conversion matrix + HEIC/AVIF/GIF | 212, 312, 313 |
 | 050 | completed | Upgrade existing image-tool functionality | 213, 314, 315, 316, 317 |
 | 051 | blocked | True PDF compression profiles + target size | 218, 219 |
-| 052 | blocked | Visual PDF page organizer for existing page tools | 215, 216, 217 |
+| 052 | completed (cross-file page order/rotate/exclude, source-safe preview, verified output) | Visual PDF page organizer for existing page tools | 215, 216, 217 |
 | 053 | blocked | Upgrade existing PDF inspect/extract/compare tools | 220, 221, 242, 318, 319, 320 |
 | 054 | completed | TXT/Markdown/HTML conversion core | 081 |
 | 055 | completed (bounded semantic pack; not pixel-faithful Word rendering) | DOCX semantic conversion pack | — |

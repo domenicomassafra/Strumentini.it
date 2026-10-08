@@ -8,10 +8,11 @@ export interface PdfThumbnailPickerProps {
   readonly selectedPages: readonly number[];
   readonly onPickPage?: (page: number) => void;
   readonly previewRotation?: 0 | 90 | 180 | 270;
+  readonly pageRotations?: Readonly<Record<number, 0 | 90 | 180 | 270>>;
   readonly onPageCount?: (pageCount: number) => void;
 }
 
-export function PdfThumbnailPicker({ file, selectedPages, onPickPage, previewRotation = 0, onPageCount }: PdfThumbnailPickerProps) {
+export function PdfThumbnailPicker({ file, selectedPages, onPickPage, previewRotation = 0, pageRotations, onPageCount }: PdfThumbnailPickerProps) {
   const [session, setSession] = useState<PdfThumbnailSession | null>(null);
   const [pageCount, setPageCount] = useState(0);
   const [start, setStart] = useState(1);
@@ -52,7 +53,8 @@ export function PdfThumbnailPicker({ file, selectedPages, onPickPage, previewRot
       for (const page of pageNumbers) {
         if (controller.signal.aborted) return;
         try {
-          const blob = await session.renderPage(page, selectedPages.includes(page) ? previewRotation : 0, controller.signal);
+          const blob = await session.renderPage(page,
+            selectedPages.includes(page) ? pageRotations?.[page] ?? previewRotation : 0, controller.signal);
           if (controller.signal.aborted) return;
           const url = URL.createObjectURL(blob);
           urls.push(url);
@@ -69,7 +71,7 @@ export function PdfThumbnailPicker({ file, selectedPages, onPickPage, previewRot
       controller.abort();
       for (const url of urls) URL.revokeObjectURL(url);
     };
-  }, [session, pageCount, start, previewRotation, selectedPages.join(",")]);
+  }, [session, pageCount, start, previewRotation, selectedPages.join(","), JSON.stringify(pageRotations ?? {})]);
 
   return (
     <section aria-label="Anteprime PDF a caricamento limitato" data-pdf-thumbnails data-window-size={PDF_THUMBNAIL_WINDOW}>
