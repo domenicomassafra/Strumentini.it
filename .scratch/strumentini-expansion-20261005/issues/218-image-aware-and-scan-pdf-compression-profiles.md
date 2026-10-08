@@ -17,3 +17,5 @@
 - [ ] Output growth produces warning/keep-original recommendation.
 
 **Verification:** Text/vector/image/scan corpus, render+extract comparison, size/perf/mobile checks.
+
+**2026-10-08 bounded implementation (NOT ticket completion):** The existing structural-only compressor now reports the recognized embedded Image XObject dimensions, encoded byte lengths and filter names, explicitly counts `touched=0` and `skipped=N`, and records source/result byte deltas with a keep-original recommendation for zero savings or growth. It rejects requests for `image-aware`, `scan`, or grayscale instead of falsely claiming image recompression or rasterizing text/vector content. Output page count and geometry are inspected before/after, with limited non-semantic text/image metadata equality flags and explicit visual/extracted-text NOT_VERIFIED. `src/engines/pdf/compression-profile.ts` plus `tests/pdf-compression-profile-218.test.ts` are the relevant evidence. Actual image-aware downsample/recompression, verified text/vector parity, current-build browser/physical-mobile performance remain OPEN; the module must not be presented as a completed scan compression profile.

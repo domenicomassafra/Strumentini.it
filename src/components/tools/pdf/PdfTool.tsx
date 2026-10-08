@@ -185,10 +185,11 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     if (optionMode === "pdf-to-markdown") return { file: files[0] };
     if (optionMode === "pdf-to-images") return {
       file: files[0],
-      ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }),
+      ...(pages.trim() === "" ? {} : { pages: pages.trim() }),
       mime: pdfImageMime,
       scale: Number(pdfImageScale),
       quality: Number(imageQuality),
+      background: imageBackground,
     };
     return { file: files[0] };
   }
@@ -528,13 +529,14 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         {optionMode === "pdf-to-images" && (
           <>
             <div class="field-grid">
-              <label class="field"><span>Pagine (facoltativo)</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 1, 3, 5 · vuoto = tutte" disabled={isWorking} /></label>
+              <label class="field"><span>Pagine (facoltativo)</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 1-3, 5 · vuoto = tutte" disabled={isWorking} /><small>Intervalli e pagine singole nell'ordine indicato; pagine non valide o ripetute vengono rifiutate.</small></label>
               <label class="field"><span>Formato uscita</span><select value={pdfImageMime} onChange={(event) => setPdfImageMime(event.currentTarget.value as "image/jpeg" | "image/png" | "image/webp")} disabled={isWorking}><option value="image/png">PNG</option><option value="image/jpeg">JPG/JPEG</option><option value="image/webp">WebP</option></select></label>
             </div>
             <div class="field-grid">
               <label class="field"><span>Scala render</span><input type="number" min="0.5" max="4" step="0.25" value={pdfImageScale} onInput={(event) => setPdfImageScale(event.currentTarget.value)} disabled={isWorking} /><small>1× ≈ 72 DPI, 2× ≈ 144 DPI, 4× ≈ 288 DPI.</small></label>
               <label class="field"><span>Qualità JPG/WebP</span><input type="number" min="0.1" max="1" step="0.01" value={imageQuality} onInput={(event) => setImageQuality(event.currentTarget.value)} disabled={isWorking} /><small>Ignorata per PNG. Ogni pagina viene renderizzata realmente, non vengono estratti soltanto gli oggetti JPEG.</small></label>
             </div>
+            <label class="field"><span>Sfondo raster</span><input type="color" value={imageBackground} onInput={(event) => setImageBackground(event.currentTarget.value)} disabled={isWorking} /><small>Lo sfondo scelto viene applicato soltanto alle pagine renderizzate in immagine; il PDF sorgente non cambia.</small></label>
           </>
         )}
         {optionMode === "multi-search" && (

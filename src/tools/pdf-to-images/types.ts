@@ -7,6 +7,7 @@ export type PdfToImagesOutput = PdfArtifactOutput & {
   readonly scale: number;
   readonly effectiveDpi: number;
   readonly quality: number | null;
+  readonly background: string;
   readonly renderer: "pdfjs-local-lazy";
   readonly renderedImageCount: number;
   readonly zipIncluded: boolean;
