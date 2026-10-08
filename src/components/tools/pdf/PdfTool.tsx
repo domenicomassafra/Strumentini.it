@@ -530,7 +530,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
           <>
             <div class="field-grid">
               <label class="field"><span>Pagine (facoltativo)</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 1-3, 5 · vuoto = tutte" disabled={isWorking} /><small>Intervalli e pagine singole nell'ordine indicato; pagine non valide o ripetute vengono rifiutate.</small></label>
-              <label class="field"><span>Formato uscita</span><select value={pdfImageMime} onChange={(event) => setPdfImageMime(event.currentTarget.value as "image/jpeg" | "image/png" | "image/webp")} disabled={isWorking}><option value="image/png">PNG</option><option value="image/jpeg">JPG/JPEG</option><option value="image/webp">WebP</option></select></label>
+              <label class="field"><span>Formato uscita</span><select value={pdfImageMime} onChange={(event) => setPdfImageMime(event.currentTarget.value as "image/jpeg" | "image/png" | "image/webp")} disabled={isWorking}><option value="image/png">PNG</option><option value="image/jpeg">JPG/JPEG</option><option value="image/webp">WebP</option></select><small>WebP richiede il supporto del browser; in assenza viene rifiutato, senza creare un PNG con estensione WebP.</small></label>
             </div>
             <div class="field-grid">
               <label class="field"><span>Scala render</span><input type="number" min="0.5" max="4" step="0.25" value={pdfImageScale} onInput={(event) => setPdfImageScale(event.currentTarget.value)} disabled={isWorking} /><small>1× ≈ 72 DPI, 2× ≈ 144 DPI, 4× ≈ 288 DPI.</small></label>

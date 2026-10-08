@@ -24,6 +24,7 @@ const RULES: ReadonlyArray<readonly [RegExp, string]> = [
   [/INVALID_ENCODING/u, "La codifica selezionata non è supportata. Prova UTF-8 o una delle codifiche disponibili."],
   [/REGEX_TOO_LARGE|REGEX_COMPLEXITY|INVALID_REGEX/u, "L'espressione regolare non è valida oppure è troppo complessa per essere eseguita in sicurezza."],
   [/INVALID_PDF_SIGNATURE/u, "Il file selezionato non sembra essere un PDF valido."],
+  [/PDF_WEBP_UNSUPPORTED_BROWSER/u, "Questo browser non può esportare pagine PDF in WebP. Seleziona PNG o JPG: il PDF originale non è stato modificato."],
   [/MALFORMED_PDF/u, "Il PDF sembra danneggiato o usa una struttura che non può essere letta correttamente."],
   [/UNSUPPORTED_CAPABILITY|UNSUPPORTED_.*PDF|PDF.*UNSUPPORTED/u, "Questo file usa una funzione che lo strumento non supporta ancora. Il file originale non è stato modificato."],
   [/PDF.*ENCRYPT|PASSWORD/u, "Il PDF è cifrato o protetto. Questo strumento non tenta di aggirare protezioni o password."],

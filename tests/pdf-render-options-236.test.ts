@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { normalizePdfRenderOptions, selectedPdfRasterPages } from "../src/engines/pdf/render";
+import { friendlyToolErrorIt } from "../src/i18n/it/errors";
 
 describe("236 — PDF raster export input contract", () => {
   it("supports true page intervals and preserves explicit order", () => {
@@ -27,5 +28,10 @@ describe("236 — PDF raster export input contract", () => {
       expect(() => normalizePdfRenderOptions({ scale })).toThrow(/scale/u);
     for (const quality of [0, 0.01, 1.01, Infinity, NaN])
       expect(() => normalizePdfRenderOptions({ quality })).toThrow(/quality/u);
+  });
+
+  it("makes unavailable native WebP encoding actionable instead of naming an unverified artifact", () => {
+    expect(friendlyToolErrorIt("PDF_WEBP_UNSUPPORTED_BROWSER: This browser cannot encode WebP locally."))
+      .toContain("Seleziona PNG o JPG");
   });
 });

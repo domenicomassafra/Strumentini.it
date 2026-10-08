@@ -67,6 +67,11 @@ export async function renderPdfPagesLocal(input: Blob, options: PdfPageRenderOpt
   abortIfNeeded(signal);
   if (String.fromCharCode(...bytes.subarray(0, 5)) !== "%PDF-") throw new Error("INVALID_PDF_SIGNATURE: File does not start with a PDF signature.");
   const normalized = normalizePdfRenderOptions(options);
+  // Canvas implementations may silently encode PNG when asked for WebP.
+  // Reject that unsupported target before PDF.js work or downloadable artifacts.
+  if (normalized.mime === "image/webp" && !makeCanvas(1, 1).toDataURL("image/webp").startsWith("data:image/webp")) {
+    throw new Error("PDF_WEBP_UNSUPPORTED_BROWSER: This browser cannot encode WebP images locally.");
+  }
   const pdfjs = await pdfJs();
   abortIfNeeded(signal);
   const loadingTask = pdfjs.getDocument({ data: bytes });
