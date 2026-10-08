@@ -20,6 +20,7 @@ const origin = `http://127.0.0.1:${port}`;
 const screenshotDir = process.env.STRUMENTINI_PDF_NUMBERS_SCREENSHOT_DIR ?? "/tmp";
 const screenshotPreview = resolve(screenshotDir, "str238-numbering-preview.png");
 const screenshotRendered = resolve(screenshotDir, "str238-numbered-p2.png");
+const screenshotTopCenter = resolve(screenshotDir, "str238-numbered-top-center-p2.png");
 const fixture = Buffer.from(createSimplePdf(["SOURCE-ONE", "SOURCE-TWO", "SOURCE-THREE", "SOURCE-FOUR"], { width: 320, height: 440 }));
 
 function assert(condition: unknown, message: string): asserts condition {
@@ -112,7 +113,7 @@ try {
   await page.getByLabel("Pagine da numerare").fill("2-3");
   await page.getByLabel("Numero iniziale").fill("10");
   await page.getByLabel("Offset numerazione").fill("3");
-  await page.getByLabel("Posizione").selectOption("bottom-right");
+  await page.locator('select:has(option[value="bottom-right"])').selectOption("bottom-right");
   await page.locator('select:has(option[value="Courier"])').selectOption("Courier");
   await page.getByLabel("Dimensione font (pt)").fill("20");
   await page.getByLabel("Margine (pt)").fill("18");
@@ -135,6 +136,15 @@ try {
   const text = await extractPdfText(numbered);
   assert(text[0]?.text.includes("SOURCE-ONE") && text[1]?.text.includes("SOURCE-TWO") && text[2]?.text.includes("SOURCE-THREE"), "Original text lost");
 
+  // Second independent actual exported layout: top-center on the same pages.
+  await page.locator('select:has(option[value="top-center"])').selectOption("top-center");
+  assert(await page.locator('[data-number-overlay-page="2"] text').textContent() === "13", "Top-center preview label changed");
+  await page.getByRole("button", { name: "Applica numerazione" }).click();
+  await page.locator('.result-panel[data-state="success"]').waitFor({ timeout: 30_000 });
+  const numberedTopCenter = await download(page, "Scarica PDF numerato");
+  assert(originalStreams(numberedTopCenter)[1]![0]!.every((byte, i) => byte === sourceContents[1]![0]![i]),
+    "Top-center run modified original contents");
+
   await page.goto(`${origin}/tools/pdf-to-images/`, { waitUntil: "networkidle" });
   const differences: Record<number, { count: number; box: [number, number, number, number] | null }> = {};
   for (const pageNumber of [1, 2, 3]) {
@@ -143,6 +153,13 @@ try {
     differences[pageNumber] = await pixelDiff(originalPng, numberedPng);
     if (pageNumber === 2) await writeFile(screenshotRendered, Buffer.from(numberedPng));
   }
+  const originalTopCenterPng = await rasterPage(page, fixture, 2);
+  const renderedTopCenterPng = await rasterPage(page, numberedTopCenter, 2);
+  const topCenter = await pixelDiff(originalTopCenterPng, renderedTopCenterPng);
+  await writeFile(screenshotTopCenter, Buffer.from(renderedTopCenterPng));
+  assert(topCenter.count >= 15 && topCenter.box !== null, "Top-center output number not visibly rendered");
+  assert(topCenter.box[0] >= 125 && topCenter.box[2] <= 185 && topCenter.box[1] >= 14 && topCenter.box[3] <= 60,
+    `Top-center rendered placement outside expected area: ${topCenter.box}`);
   assert(differences[1]!.count === 0, `Unselected page visually changed: ${JSON.stringify(differences[1])}`);
   for (const p of [2, 3]) {
     const result = differences[p]!;
@@ -153,7 +170,8 @@ try {
   assert(failures.length === 0, `Unexpected network/browser issues: ${failures.join(" | ")}`);
   console.log(JSON.stringify({ status: "PASS", browser: "desktop Chromium at 390x844", physicalDeviceTested: false,
     pages: after.pageCount, numbered: [2, 3], labels: [13, 14], sourceBytes: fixture.length,
-    outputBytes: numbered.byteLength, pixelDiff: differences, screenshotPreview, screenshotRendered, offsite: 0 }, null, 2));
+    outputBytes: numbered.byteLength, pixelDiff: differences, topCenterPixelDiff: topCenter,
+    screenshotPreview, screenshotRendered, screenshotTopCenter, offsite: 0 }, null, 2));
   await context.close();
 } finally {
   await browser?.close();
