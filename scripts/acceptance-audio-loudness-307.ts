@@ -1,5 +1,5 @@
-/** Desktop Chromium, built static output, offline fixture. NOT physical-device or broadcast Gold. */
-import { chromium } from "@playwright/test";
+/** Three desktop engines, built static output, offline fixture. NOT physical-device or broadcast Gold. */
+import { chromium, firefox, webkit } from "@playwright/test";
 import { spawn } from "node:child_process";
 
 const port = 18496;
@@ -25,7 +25,8 @@ function sineWav(): Buffer {
 }
 
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { stdio: "ignore" });
-let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
+const fixture = sineWav();
+const results: Array<{ browser: string; measuredLufs: number }> = [];
 try {
   let started = false;
   for (let tries = 0; tries < 100; tries += 1) {
@@ -33,7 +34,9 @@ try {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   if (!started) throw new Error("Audio generator built route not accessible");
-  browser = await chromium.launch({ headless: true });
+  for (const [name, engine] of [["Chromium", chromium], ["Firefox", firefox], ["WebKit", webkit]] as const) {
+  const browser = await engine.launch({ headless: true });
+  try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
   const violations: string[] = [];
   page.on("pageerror", (error) => violations.push(`JS: ${error.message}`));
@@ -45,7 +48,6 @@ try {
   const section = page.locator("[data-audio-loudness-307]");
   await section.waitFor();
   const input = section.locator('input[type="file"]');
-  const fixture = sineWav();
   await input.setInputFiles({ name: "997hz-20dbfs.wav", mimeType: "audio/wav", buffer: fixture });
   if (await section.locator("[data-loudness-results]").count() !== 0) throw new Error("Unexpected eager analysis");
   await section.getByRole("button", { name: "Analizza localmente" }).click();
@@ -59,10 +61,12 @@ try {
   if (!resultText.includes("48000 Hz")) throw new Error("Sample rate not disclosed");
   if (!await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 2)) throw new Error("Mobile viewport overflow");
   if (violations.length !== 0) throw new Error(violations.join(" | "));
-  console.log(JSON.stringify({ status: "PASS", tool: "audio-loudness-307", actualLufs: lufs, expectedLufs: -23.01,
-    sampleRate: 48000, channels: 1, durationSeconds: 4, browser: "desktop-Chromium", viewport: [390, 844],
+  results.push({ browser: name, measuredLufs: lufs });
+  } finally { await browser.close(); }
+  }
+  console.log(JSON.stringify({ status: "PASS", tool: "audio-loudness-307", results, expectedLufs: -23.01,
+    sampleRate: 48000, channels: 1, durationSeconds: 4, viewport: [390, 844],
     outputControls: "local-only", offsiteRequests: 0, physicalDevice: false }));
 } finally {
-  await browser?.close();
   server.kill("SIGTERM");
 }
