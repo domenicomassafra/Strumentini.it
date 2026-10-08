@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import sharp from "sharp";
 import { extractPdfText, inspectPdfBytes } from "../src/engines/pdf";
 import { recompressPdfEmbeddedJpegs } from "../src/engines/pdf/jpeg-image-aware";
-import { pdfArray, pdfDict, pdfName, pdfNumber, pdfReference } from "../src/engines/pdf/parser";
+import { pdfArray, pdfDict, pdfName, pdfNumber, nameValue } from "../src/engines/pdf/parser";
 import { PdfBuilder } from "../src/engines/pdf/writer";
 
 const WIDTH = 320;
@@ -91,8 +91,7 @@ describe("218 — real bounded JPEG Image XObject recompression and source safet
     // The JPEG is genuinely lossy, but decoded pixels remain close.
     const { parsePdf } = await import("../src/engines/pdf/parser");
     const findJpeg = (bytes: Uint8Array) => [...parsePdf(bytes).objects.values()]
-      .find((object) => object.value.kind === "stream" && object.value.dictionary.entries.get("Subtype")?.kind === "name"
-        && object.value.dictionary.entries.get("Subtype")?.value === "Image")!.value;
+      .find((object) => object.value.kind === "stream" && nameValue(object.value.dictionary.entries.get("Subtype")) === "Image")!.value;
     const first = findJpeg(source);
     const second = findJpeg(result.artifact.bytes);
     if (first.kind !== "stream" || second.kind !== "stream") throw new Error("No embedded JPEG stream");

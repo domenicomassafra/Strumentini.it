@@ -58,6 +58,7 @@
     "acceptance:pdf-comparison": "tsx scripts/acceptance-pdf-comparison.ts",
     "acceptance:pdf-form-flatten": "tsx scripts/acceptance-pdf-form-flatten.ts",
     "acceptance:pdf-export-compression": "tsx scripts/acceptance-pdf-export-compression.ts",
+    "acceptance:pdf-image-aware": "tsx scripts/acceptance-pdf-image-aware-218.ts",
     "acceptance:image-resize:physical:serve": "npm run build && tsx scripts/generate-image-resize-physical-fixtures.ts && node scripts/serve-image-resize-physical.mjs",
     "acceptance:image-resize:physical:record": "tsx scripts/record-image-resize-physical.ts",
     "gold:image-resize": "tsx scripts/gold/image-resize-certify.ts",

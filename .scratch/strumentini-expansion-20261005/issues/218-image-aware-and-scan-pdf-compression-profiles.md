@@ -1,5 +1,7 @@
 # 218 — Image-aware and scan PDF compression profiles
 
+**Current static-build acceptance, 2026-10-08 (partial, ticket remains OPEN):** `npm run acceptance:pdf-image-aware` PASS on Chromium desktop headless at 390×844: source PDF 108865 B; output in explicit JPEG mode 25082 B; source JPEG 108030 B, re-encoded JPEG 24263 B; one JPEG touched, zero skipped. Downloaded PDF was reparsed; sample vector text and page geometry retained; original structural-only mode preserved embedded JPEG bytes exactly; decoded JPEG RGB mean per-channel difference 21.46 (lossy, not exact pixel parity). No offsite requests. Source: `scripts/acceptance-pdf-image-aware-218.ts`, log `/tmp/str-go-pdf-browser.log`; **no physical-device, mixed-scan, multi-browser, PNG/JBIG2 or Gold claim**.
+
 **What to build:** Keep current structural optimizer truthful and add separate image-aware/scan profiles with embedded-image inventory, DPI/downsample/recompression and optional user-chosen grayscale while retaining text/vector content.
 
 **Traces to:** US-EXP-04, US-EXP-10; AC-04.1, AC-04.2, AC-06.1

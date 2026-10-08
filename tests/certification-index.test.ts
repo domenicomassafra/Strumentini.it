@@ -8,10 +8,19 @@ import {
 
 const outputPath = new URL("../quality/receipts/expanded-catalog-certification.json", import.meta.url);
 
+// These assertions examine the same immutable checkout, not a sequence of
+// filesystem mutations. Reuse one actual authoritative build to avoid four
+// full receipt/fixture rescans when the fleet is under heavy I/O load.
+let indexPromise: ReturnType<typeof buildCertificationIndex> | undefined;
+function currentCertificationIndex(): ReturnType<typeof buildCertificationIndex> {
+  indexPromise ??= buildCertificationIndex();
+  return indexPromise;
+}
+
 describe("expanded catalog certification index", () => {
   it("binds every current implementation to oracle and fixture authorities", async () => {
     const registry = JSON.parse(await readFile(new URL("../quality/oracles/registry.json", import.meta.url), "utf8")) as { entry_count: number };
-    const index = await buildCertificationIndex();
+    const index = await currentCertificationIndex();
     expect(index.expectedCatalogToolCount).toBe(registry.entry_count);
     expect(index.catalogToolCount).toBe(registry.entry_count);
     expect(index.tools).toHaveLength(registry.entry_count);
@@ -42,7 +51,7 @@ describe("expanded catalog certification index", () => {
   }, 30_000);
 
   it("preserves the certified frontier and exposes unresolved evidence", async () => {
-    const index = await buildCertificationIndex();
+    const index = await currentCertificationIndex();
     expect(index.summary.statusCounts).toEqual({
       GOLD: index.tools.filter((tool) => tool.status === "GOLD").length,
       PARTIAL: index.tools.filter((tool) => tool.status === "PARTIAL").length,
@@ -145,7 +154,7 @@ describe("expanded catalog certification index", () => {
   }, 30_000);
 
   it("fails closed when certification claims omit required evidence", async () => {
-    const index = await buildCertificationIndex();
+    const index = await currentCertificationIndex();
     const forged = structuredClone(index);
     const first = forged.tools.find((tool) => tool.status === "GOLD") as unknown as { certificationReceipt: string | null } | undefined;
     if (first === undefined) throw new Error("certification fixture has no Gold tool");
@@ -164,7 +173,7 @@ describe("expanded catalog certification index", () => {
   }, 30_000);
 
   it("keeps the committed generated index current", async () => {
-    const index = await buildCertificationIndex();
+    const index = await currentCertificationIndex();
     const committed = await readFile(outputPath, "utf8");
     expect(committed).toBe(renderCertificationIndex(index));
   }, 30_000);
