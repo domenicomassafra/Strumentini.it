@@ -1,0 +1,213 @@
+{
+  "ticket": 264,
+  "scope": "bounded-office-embedded-raster-media",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "browserViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "notPhysicalDevice": true,
+  "checks": 33,
+  "outcome": "PASS",
+  "offsiteRequests": 0,
+  "documents": [
+    {
+      "kind": "docx",
+      "beforeBytes": 200848,
+      "afterBytes": 74753,
+      "browserSha256": "497275fba9784a802424103fa43cc62e73668d19ebab5824b32d5d0b127e9cd0",
+      "browserMime": "docx",
+      "independentReopen": "REOPEN_OK .docx ZIP CRC+XML+relationships+office structure",
+      "result": {
+        "outcome": "optimized",
+        "changedCount": 2,
+        "skippedCount": 0,
+        "savedBytes": 126095,
+        "mediaSavedBytes": 472707,
+        "fidelityWarning": "APPROVED LOSSY: JPEG recompression or image resizing changes image pixels; editable Office XML and relationship targets are preserved, but visual fidelity is not guaranteed.",
+        "verification": {
+          "samePartNames": true,
+          "allNonMediaBytesIdentical": true,
+          "relationshipBytesIdentical": true,
+          "contentTypesBytesIdentical": true,
+          "structuralCountsIdentical": true,
+          "changedMediaOriginalMimePreserved": true,
+          "pngDecodedPixelsIdenticalUnlessResizeApproved": true,
+          "independentUnzipReopen": true
+        },
+        "parts": [
+          {
+            "path": "word/media/image1.png",
+            "type": "png",
+            "beforeBytes": 353258,
+            "status": "changed",
+            "afterBytes": 11783,
+            "savedBytes": 341475,
+            "originalDimensions": {
+              "mime": "image/png",
+              "width": 420,
+              "height": 280
+            },
+            "outputDimensions": {
+              "width": 420,
+              "height": 280
+            },
+            "fidelity": "decoded-rgba-identical"
+          },
+          {
+            "path": "word/media/image2.jpg",
+            "type": "jpeg",
+            "beforeBytes": 157713,
+            "status": "changed",
+            "afterBytes": 26481,
+            "savedBytes": 131232,
+            "originalDimensions": {
+              "mime": "image/jpeg",
+              "width": 420,
+              "height": 280
+            },
+            "outputDimensions": {
+              "width": 420,
+              "height": 280
+            },
+            "fidelity": "approved-lossy-recode-or-resize"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "pptx",
+      "beforeBytes": 192206,
+      "afterBytes": 66832,
+      "browserSha256": "f4ceaa177c54a248d6d8d6b6dc15caf36a0ef2a6f08aa1e21a2507f3eb7ffef3",
+      "browserMime": "pptx",
+      "independentReopen": "REOPEN_OK .pptx ZIP CRC+XML+relationships+office structure",
+      "result": {
+        "outcome": "optimized",
+        "changedCount": 2,
+        "skippedCount": 0,
+        "savedBytes": 125374,
+        "mediaSavedBytes": 472707,
+        "fidelityWarning": "APPROVED LOSSY: JPEG recompression or image resizing changes image pixels; editable Office XML and relationship targets are preserved, but visual fidelity is not guaranteed.",
+        "verification": {
+          "samePartNames": true,
+          "allNonMediaBytesIdentical": true,
+          "relationshipBytesIdentical": true,
+          "contentTypesBytesIdentical": true,
+          "structuralCountsIdentical": true,
+          "changedMediaOriginalMimePreserved": true,
+          "pngDecodedPixelsIdenticalUnlessResizeApproved": true,
+          "independentUnzipReopen": true
+        },
+        "parts": [
+          {
+            "path": "ppt/media/image1.png",
+            "type": "png",
+            "beforeBytes": 353258,
+            "status": "changed",
+            "afterBytes": 11783,
+            "savedBytes": 341475,
+            "originalDimensions": {
+              "mime": "image/png",
+              "width": 420,
+              "height": 280
+            },
+            "outputDimensions": {
+              "width": 420,
+              "height": 280
+            },
+            "fidelity": "decoded-rgba-identical"
+          },
+          {
+            "path": "ppt/media/image2.jpg",
+            "type": "jpeg",
+            "beforeBytes": 157713,
+            "status": "changed",
+            "afterBytes": 26481,
+            "savedBytes": 131232,
+            "originalDimensions": {
+              "mime": "image/jpeg",
+              "width": 420,
+              "height": 280
+            },
+            "outputDimensions": {
+              "width": 420,
+              "height": 280
+            },
+            "fidelity": "approved-lossy-recode-or-resize"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "xlsx",
+      "beforeBytes": 170476,
+      "afterBytes": 44705,
+      "browserSha256": "80dc6e2c13f0ab7353240a017490df49dd6672b9ffd024d68d161e7b97777001",
+      "browserMime": "xlsx",
+      "independentReopen": "REOPEN_OK .xlsx ZIP CRC+XML+relationships+office structure",
+      "result": {
+        "outcome": "optimized",
+        "changedCount": 2,
+        "skippedCount": 0,
+        "savedBytes": 125771,
+        "mediaSavedBytes": 472707,
+        "fidelityWarning": "APPROVED LOSSY: JPEG recompression or image resizing changes image pixels; editable Office XML and relationship targets are preserved, but visual fidelity is not guaranteed.",
+        "verification": {
+          "samePartNames": true,
+          "allNonMediaBytesIdentical": true,
+          "relationshipBytesIdentical": true,
+          "contentTypesBytesIdentical": true,
+          "structuralCountsIdentical": true,
+          "changedMediaOriginalMimePreserved": true,
+          "pngDecodedPixelsIdenticalUnlessResizeApproved": true,
+          "independentUnzipReopen": true
+        },
+        "parts": [
+          {
+            "path": "xl/media/image1.png",
+            "type": "png",
+            "beforeBytes": 353258,
+            "status": "changed",
+            "afterBytes": 11783,
+            "savedBytes": 341475,
+            "originalDimensions": {
+              "mime": "image/png",
+              "width": 420,
+              "height": 280
+            },
+            "outputDimensions": {
+              "width": 420,
+              "height": 280
+            },
+            "fidelity": "decoded-rgba-identical"
+          },
+          {
+            "path": "xl/media/image2.jpeg",
+            "type": "jpeg",
+            "beforeBytes": 157713,
+            "status": "changed",
+            "afterBytes": 26481,
+            "savedBytes": 131232,
+            "originalDimensions": {
+              "mime": "image/jpeg",
+              "width": 420,
+              "height": 280
+            },
+            "outputDimensions": {
+              "width": 420,
+              "height": 280
+            },
+            "fidelity": "approved-lossy-recode-or-resize"
+          }
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "No public UI integration; core browser engine only",
+    "JPEG opt-in lossy; PNG decode RGBA equivalence only",
+    "No unsupported SVG/GIF/EMF/vector/embedded object codec"
+  ]
+}
