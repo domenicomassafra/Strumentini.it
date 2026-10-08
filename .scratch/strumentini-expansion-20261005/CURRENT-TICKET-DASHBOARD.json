@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 249,
+    "completed": 250,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 231,
-    "open": 78,
-    "readyDAG": 25,
-    "ready-for-agent": 17,
-    "dependency-blocked": 53,
+    "completedWithoutExplicitRefusal": 232,
+    "open": 77,
+    "readyDAG": 27,
+    "ready-for-agent": 19,
+    "dependency-blocked": 50,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 1,
@@ -205,6 +205,7 @@
       227,
       228,
       230,
+      232,
       233,
       238,
       242,
@@ -280,7 +281,7 @@
       212,
       218,
       231,
-      232,
+      234,
       236,
       237,
       239,
@@ -291,7 +292,9 @@
       250,
       254,
       256,
-      264
+      264,
+      266,
+      305
     ],
     "dependency-blocked": [
       8,
@@ -335,16 +338,13 @@
       152,
       158,
       219,
-      234,
       235,
       247,
       249,
       251,
       255,
       265,
-      266,
       279,
-      305,
       306,
       308
     ],
@@ -800,7 +800,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        232,
         305
       ],
       "gateReason": null,
@@ -2843,9 +2842,9 @@
     {
       "id": 232,
       "title": "Video inspector and target-size calculator",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed — bounded local MP4 metadata inspection / mathematical bitrate planner only (NOT Gold, NOT transcoding)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -2863,12 +2862,10 @@
     {
       "id": 234,
       "title": "Video transform worker core",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        232
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -3197,12 +3194,10 @@
     {
       "id": 266,
       "title": "File-size analyzer OOXML and media adapters",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        232
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -3592,12 +3587,10 @@
     {
       "id": 305,
       "title": "Exact video frame extraction and webcam test",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        232
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -3630,7 +3623,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        232,
         305
       ],
       "gateReason": null,

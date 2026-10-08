@@ -2,6 +2,17 @@
 
 Four baseline and three new tiny MP4s were created from FFmpeg `lavfi` on 2026-10-08, not captured on a physical mobile device. They test limited ISO BMFF extraction, not production codec/device acceptance.
 
+Two additional reproducible tiny *extension* files in `extension/` cover codec/container cases previously absent from the initial seven-file reference family:
+
+```sh
+ffmpeg -hide_banner -nostdin -loglevel error -y -threads 1 -f lavfi -i 'color=c=yellow:s=64x48:r=5:d=1' -an -c:v libx264 -threads 1 -preset ultrafast -pix_fmt yuv420p -movflags +empty_moov+default_base_moof+frag_keyframe extension/video-fragmented.mp4
+ffmpeg -hide_banner -nostdin -loglevel error -y -threads 1 -f lavfi -i 'color=c=purple:s=64x48:r=5:d=1' -an -c:v libx265 -threads 1 -preset ultrafast -x265-params 'pools=1:frame-threads=1:log-level=error' -tag:v hvc1 -pix_fmt yuv420p extension/video-hevc-hvc1.mp4
+ffprobe -v error -show_entries format=duration,size:stream=codec_type,codec_name,codec_tag_string,width,height -of json extension/video-hevc-hvc1.mp4
+ffprobe -v error -show_entries format=duration,size:stream=codec_type,codec_name,codec_tag_string,width,height -of json extension/video-fragmented.mp4
+```
+
+Measured locally with FFprobe: HEVC `hvc1`, one 64×48 stream, 1.000000 s, 3440 bytes; fragmented AVC `avc1`, one 64×48 stream, 1.000000 s according to FFprobe, 1640 bytes. **The bounded inspector intentionally reports unknown duration for the fragmented MP4** because its `moov` does not certify the complete fragment timeline; do not promote FFprobe's full-sample duration to a `moov`-only claim. The extension is independently checked by `tests/video-hevc-fragment-232.test.ts`; it is not a physical camera or full decoder acceptance corpus. This extension does not mutate preexisting fixture family registry or historical Gold receipt identities.
+
 ```sh
 ffmpeg -hide_banner -nostdin -loglevel error -y -f lavfi -i 'color=c=blue:s=64x48:r=12:d=1.25' -an -c:v libx264 -preset ultrafast -pix_fmt yuv420p video-12fps.mp4
 ffmpeg -hide_banner -nostdin -loglevel error -y -f lavfi -i 'color=c=red:s=80x60:r=10:d=1.2' -f lavfi -i 'anullsrc=r=48000:cl=mono' -t 1.2 -c:v libx264 -preset ultrafast -pix_fmt yuv420p -c:a aac -b:a 64k -movflags +faststart video-plus-audio.mp4

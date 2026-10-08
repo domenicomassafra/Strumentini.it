@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 249 / 78 |
+| All / completed / open | 327 / 250 / 77 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 25 |
-| Ready for assignment (feasibility still to prove) | 17 |
-| Waiting on other tickets | 53 |
+| DAG-ready (all numeric dependencies closed) | 27 |
+| Ready for assignment (feasibility still to prove) | 19 |
+| Waiting on other tickets | 50 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 1 |
@@ -21,14 +21,14 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (17)
+## Ready for assignment (feasibility still to prove) (19)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #059 — JSON/XML/CSS/HTML/SVG minimizer pack
 - #212 — HEIC AVIF and GIF directional image implementations
 - #218 — Image-aware and scan PDF compression profiles
 - #231 — Audio timeline edits and deterministic DSP
-- #232 — Video inspector and target-size calculator
+- #234 — Video transform worker core
 - #236 — Advanced PDF to image export
 - #237 — True PDF redaction with post-export proof
 - #239 — PDF watermark and overlay placement
@@ -40,8 +40,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #254 — PDF tables to XLSX
 - #256 — TXT Markdown HTML and CSV to printable PDF
 - #264 — OOXML embedded-media compression core
+- #266 — File-size analyzer OOXML and media adapters
+- #305 — Exact video frame extraction and webcam test
 
-## Waiting on other tickets (53)
+## Waiting on other tickets (50)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -57,7 +59,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #033 — PDF conversion/productivity family (awaiting #249, #250, #251, #254, #255, #256)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #036 — Audio file-processing family (awaiting #231)
-- #037 — Video inspect/subtitle utilities (awaiting #232, #305)
+- #037 — Video inspect/subtitle utilities (awaiting #305)
 - #038 — Video transform family (awaiting #234, #306, #308)
 - #040 — Italy utilities beyond CalcolaTutto (awaiting #152)
 - #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #033, #035, #036, #037, #038, #040, #065, #066)
@@ -84,18 +86,15 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #152 — Italian invoice stamp-duty reference helper (awaiting #117)
 - #158 — Italy source freshness and annual rollover gate (awaiting #115, #117)
 - #219 — PDF target-size solver and batch compressor (awaiting #218)
-- #234 — Video transform worker core (awaiting #232)
 - #235 — Advanced Images to PDF composition (awaiting #212)
 - #247 — Scanned PDF OCR and searchable text layer (awaiting #246)
 - #249 — Split PDF by maximum output size (awaiting #218)
 - #251 — PDF booklet and front-back interleave (awaiting #250)
 - #255 — PDF to PPTX page-as-slide baseline (awaiting #236)
 - #265 — File-size analyzer PDF adapter (awaiting #218)
-- #266 — File-size analyzer OOXML and media adapters (awaiting #232)
 - #279 — Image-resize Gold promotion gate (awaiting #277, #278)
-- #305 — Exact video frame extraction and webcam test (awaiting #232)
 - #306 — Video to GIF conversion (awaiting #234)
-- #308 — Video AI context contact-sheet export (awaiting #232, #305)
+- #308 — Video AI context contact-sheet export (awaiting #305)
 
 ## Waiting on official sources (2)
 

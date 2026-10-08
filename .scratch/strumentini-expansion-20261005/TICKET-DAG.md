@@ -18,7 +18,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **218 — Image-aware and scan PDF compression profiles**
 - **229 — Microphone test and local recorder**
 - **231 — Audio timeline edits and deterministic DSP**
-- **232 — Video inspector and target-size calculator**
+- **234 — Video transform worker core**
 - **236 — Advanced PDF to image export**
 - **237 — True PDF redaction with post-export proof**
 - **239 — PDF watermark and overlay placement**
@@ -30,12 +30,14 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **254 — PDF tables to XLSX**
 - **256 — TXT Markdown HTML and CSV to printable PDF**
 - **264 — OOXML embedded-media compression core**
+- **266 — File-size analyzer OOXML and media adapters**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
+- **305 — Exact video frame extraction and webcam test**
 
-Exactly **25** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **27** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -283,9 +285,9 @@ Exactly **25** incomplete tickets currently have every declared numeric blocker 
 | 229 | blocked (physical iOS/Android acceptance pending) | Microphone test and local recorder | — |
 | 230 | completed | Audio transcode compress and target bitrate size | 100, 103, 206, 273 |
 | 231 | ready-for-agent | Audio timeline edits and deterministic DSP | 230 |
-| 232 | ready-for-agent | Video inspector and target-size calculator | 100, 206, 274 |
+| 232 | completed — bounded local MP4 metadata inspection / mathematical bitrate planner only (NOT Gold, NOT transcoding) | Video inspector and target-size calculator | 100, 206, 274 |
 | 233 | completed | SRT VTT transform transcript and readability | 077 |
-| 234 | blocked | Video transform worker core | 100, 103, 206, 232, 274 |
+| 234 | ready-for-agent | Video transform worker core | 100, 103, 206, 232, 274 |
 | 235 | blocked | Advanced Images to PDF composition | 098, 103, 212 |
 | 236 | ready-for-agent | Advanced PDF to image export | 098, 103, 215, 269 |
 | 237 | ready-for-agent | True PDF redaction with post-export proof | 215, 269 |
@@ -317,7 +319,7 @@ Exactly **25** incomplete tickets currently have every declared numeric blocker 
 | 263 | completed | EPUB local reader and text export | 103, 275 |
 | 264 | ready-for-agent | OOXML embedded-media compression core | 207, 208, 225 |
 | 265 | blocked | File-size analyzer PDF adapter | 218, 228 |
-| 266 | blocked | File-size analyzer OOXML and media adapters | 225, 228, 230, 232 |
+| 266 | ready-for-agent | File-size analyzer OOXML and media adapters | 225, 228, 230, 232 |
 | 267 | completed | P7M CMS parser feasibility spike | — |
 | 268 | completed | Image codec and SVG optimizer feasibility spike | — |
 | 269 | completed | Advanced PDF renderer and mutation feasibility spike | — |
@@ -356,7 +358,7 @@ Exactly **25** incomplete tickets currently have every declared numeric blocker 
 | 302 | completed | Document image perspective straighten | 213 |
 | 303 | completed | Tone metronome and noise generator | 070 |
 | 304 | completed | Browser text-to-speech Italian controls | 070 |
-| 305 | blocked | Exact video frame extraction and webcam test | 232, 274 |
+| 305 | ready-for-agent | Exact video frame extraction and webcam test | 232, 274 |
 | 306 | blocked | Video to GIF conversion | 234 |
 | 307 | completed | Audio loudness and LUFS analysis | 273 |
 | 308 | blocked | Video AI context contact-sheet export | 232, 305 |

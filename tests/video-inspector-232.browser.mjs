@@ -109,6 +109,29 @@ try {
   assert.match(await page.locator("[data-video-inspection]").innerText(), /Delta di decodifica costanti \(stts\); CFR non provato/u);
   checks += 2;
 
+  // Additional real ISO BMFF bytes, generated independently with FFmpeg and
+  // re-probed by ffprobe in video-hevc-fragment-232.test.ts. No audio/video
+  // decode is claimed by this read-only inspector.
+  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/extension/video-hevc-hvc1.mp4"));
+  await page.getByRole("button", { name: "Analizza metadati" }).click();
+  await page.locator("[data-video-inspection]").waitFor();
+  const hevc = await page.locator("[data-video-inspection]").innerText();
+  assert.match(hevc, /hvc1/u);
+  assert.match(hevc, /64 × 48/u);
+  assert.match(hevc, /Sconosciuto \/ Sconosciuto/u);
+  assert.equal(await page.locator("[data-video-duration]").inputValue(), "1");
+  checks += 4;
+
+  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/extension/video-fragmented.mp4"));
+  await page.getByRole("button", { name: "Analizza metadati" }).click();
+  await page.locator("[data-video-inspection]").waitFor();
+  const fragmented = await page.locator("[data-video-inspection]").innerText();
+  assert.match(fragmented, /MP4 frammentato[\s\S]*?Sì/u);
+  assert.match(fragmented, /durata totale non certificata/u);
+  assert.equal(await page.locator("[data-video-duration]").inputValue(), "");
+  assert.match(fragmented, /Sconosciuto \/ Sconosciuto/u);
+  checks += 4;
+
   const bounded = await page.evaluate(() => window.__videoSliceAudit);
   assert(bounded.calls >= 4, "Actual File.slice must be invoked on MP4 samples");
   assert(bounded.maxBytes <= 8 * 1024 * 1024, "MP4 metadata reads stay capped at 8 MiB");
