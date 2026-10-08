@@ -21846,7 +21846,7 @@
         },
         "module": {
           "path": "src/tools/pdf-flatten/module.ts",
-          "sha256": "ff1e365c12ac912c043570003add95056cb607e4fc7865dccbe656395ae14fd3"
+          "sha256": "af541f56abb87144b325cea466e6ac376eefc84e46e519351399aba0c937f68b"
         },
         "page": {
           "path": "src/pages/tools/pdf-flatten.astro",
@@ -21854,7 +21854,8 @@
         },
         "testFiles": [
           "tests/pdf-catalog.test.ts",
-          "tests/pdf-document-tools.test.ts"
+          "tests/pdf-document-tools.test.ts",
+          "tests/pdf-form-flatten-audit.test.ts"
         ]
       },
       "oracle": {
@@ -21983,7 +21984,7 @@
         },
         "module": {
           "path": "src/tools/pdf-form-inspector/module.ts",
-          "sha256": "c63be6bd8cefcf7a103c2a7e5ae6f32a2cdd34337e21afc03cbad7991079a866"
+          "sha256": "6b405ba53ca56a47b1feb721dbd33abca5d75cb8f045e4d42d5fc783a156c780"
         },
         "page": {
           "path": "src/pages/tools/pdf-form-inspector.astro",
@@ -21991,7 +21992,8 @@
         },
         "testFiles": [
           "tests/pdf-catalog.test.ts",
-          "tests/pdf-document-tools.test.ts"
+          "tests/pdf-document-tools.test.ts",
+          "tests/pdf-form-flatten-audit.test.ts"
         ]
       },
       "oracle": {

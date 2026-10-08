@@ -58,12 +58,14 @@ import { inflatePdfStream } from "./inflate";
 import { redactUrl, redactUrlCredentials } from "../url-marketing";
 import { validatePdfMergePagePlan, type PdfMergePageRef } from "./merge-page-plan";
 import { alignPdfEvidence } from "./compare-alignment";
+import { auditPdfFormAnnotations, type PdfFormAnnotationAudit } from "./form-annotation-audit";
 
 export * from "./types";
 export { buildPdfFromJpegs, buildPdfFromPages, createSimplePdf, parseJpeg };
 export { inflatePdfStream } from "./inflate";
 export type { EmbeddedJpeg, PdfBuildPage, PdfImagePageLayoutOptions };
 export type { PdfMergePageRef } from "./merge-page-plan";
+export type { PdfFormAnnotationAudit, PdfAnnotationProvenance, PdfFieldProvenance } from "./form-annotation-audit";
 
 export type PdfErrorCode =
   | "INVALID_INPUT"
@@ -162,6 +164,18 @@ function parseDocument(bytes: Uint8Array): PdfDocumentModel {
 }
 
 function capabilityReport(document: PdfDocumentModel, capability: PdfCapability): PdfCapabilityReport {
+  if (capability === "flatten") {
+    if (document.encrypted) return { capability, available: false, reason: "Encrypted PDFs cannot be flattened." };
+    try {
+      const audit = auditPdfFormAnnotations(document);
+      if (audit.unsafeAppearance) return {
+        capability, available: false,
+        reason: `Visible annotation appearance cannot be painted with the local flatten writer: ${audit.blockers.join("; ")}`,
+      };
+    } catch {
+      return { capability, available: false, reason: "Form/annotation graph could not be verified safely." };
+    }
+  }
   if (capability === "mutate-pages" && document.encrypted) {
     return { capability, available: false, reason: "Encrypted PDFs are inspectable but are not mutated or password-cracked." };
   }
@@ -427,8 +441,14 @@ function collectForms(document: PdfDocumentModel): PdfFormField[] {
     const name = [prefix, partial].filter((part): part is string => typeof part === "string" && part.length > 0).join(".");
     const kids = arrayOrNull(document, dictionary.entries.get("Kids"));
     if (kids !== null && kids.items.length > 0) {
-      for (const kid of kids.items) visit(kid, name, depth + 1);
-      return;
+      const fieldKids = kids.items.filter((kid) =>
+        nameValue(dictionaryOrNull(document, kid)?.entries.get("Subtype")) !== "Widget");
+      if (fieldKids.length > 0) {
+        for (const kid of fieldKids) visit(kid, name, depth + 1);
+        return;
+      }
+      // Terminal AcroForm fields often list their /Widget appearance nodes
+      // as /Kids; these are not additional logical fields.
     }
     const fieldType = nameValue(dictionary.entries.get("FT")) ?? "unknown";
     const fieldValue = valueToText(resolveReference(document, dictionary.entries.get("V")));
@@ -490,6 +510,83 @@ export function inspectPdfBytes(bytes: Uint8Array): PdfInspection {
 export async function inspectPdf(input: PdfInput, signal?: AbortSignal): Promise<PdfInspection> {
   abortIfNeeded(signal);
   return inspectPdfBytes(await readInput(input, signal));
+}
+
+export async function inspectPdfFormAnnotations(input: PdfInput, signal?: AbortSignal): Promise<{
+  readonly inspection: PdfInspection;
+  readonly audit: PdfFormAnnotationAudit;
+}> {
+  const bytes = await readInput(input, signal);
+  abortIfNeeded(signal);
+  const document = parseDocument(bytes);
+  return { inspection: inspectPdfBytes(bytes), audit: auditPdfFormAnnotations(document) };
+}
+
+export interface PdfFlattenVerification {
+  readonly before: PdfFormAnnotationAudit;
+  readonly after: PdfFormAnnotationAudit;
+  readonly pageCount: { readonly before: number; readonly after: number; readonly stable: boolean };
+  readonly contentTextStable: boolean;
+  readonly geometryStable: boolean;
+  readonly imageCountStable: boolean;
+  readonly allPageHooksRemoved: boolean;
+  readonly visualSafety: "no-visible-annotation-to-paint";
+  readonly renderComparison: "not-performed-in-module";
+  readonly capabilities: {
+    readonly before: readonly PdfCapabilityReport[];
+    readonly after: readonly PdfCapabilityReport[];
+  };
+}
+
+/**
+ * The current local writer strips annotations, it does NOT paint their appearance
+ * streams. Therefore only non-visible annotations and detached non-rendered form
+ * dictionaries can safely use this conversion. All visible widgets/links/notes
+ * fail closed instead of silently disappearing from the result.
+ */
+export async function flattenPdfVerified(input: PdfInput, filename?: string, signal?: AbortSignal): Promise<{
+  readonly artifact: PdfArtifact;
+  readonly verification: PdfFlattenVerification;
+}> {
+  const bytes = await readInput(input, signal);
+  abortIfNeeded(signal);
+  const beforeDocument = parseDocument(bytes);
+  const before = auditPdfFormAnnotations(beforeDocument);
+  if (beforeDocument.encrypted) throw new PdfError("UNSUPPORTED_CAPABILITY", "Il PDF è cifrato; appiattimento senza bypass non disponibile.");
+  if (before.unsafeAppearance) throw new PdfError("UNSUPPORTED_CAPABILITY",
+    `Non è possibile conservare la grafica delle annotazioni con questo flatten: ${before.blockers.join("; ")}. Nessun PDF prodotto.`);
+  const inspectedBefore = inspectPdfBytes(bytes);
+  const originalText = await extractPdfText(bytes, signal);
+  const [artifact] = await mutatePdf(bytes, { kind: "flatten", ...(filename === undefined ? {} : { filename }) }, signal);
+  if (artifact === undefined) throw new PdfError("WRITE_FAILURE", "Nessun risultato flatten");
+  abortIfNeeded(signal);
+  const afterDocument = parseDocument(artifact.bytes);
+  const after = auditPdfFormAnnotations(afterDocument);
+  const inspectedAfter = inspectPdfBytes(artifact.bytes);
+  const finalText = await extractPdfText(artifact.bytes, signal);
+  const geometry = (inspection: PdfInspection) => inspection.pages.map((page) => [page.width, page.height, page.rotation]);
+  const pageCount = {
+    before: inspectedBefore.pageCount, after: inspectedAfter.pageCount,
+    stable: inspectedBefore.pageCount === inspectedAfter.pageCount,
+  };
+  const contentTextStable = originalText.length === finalText.length && originalText.every(
+    (page, index) => page.text === finalText[index]?.text && page.truncated === finalText[index]?.truncated);
+  const geometryStable = JSON.stringify(geometry(inspectedBefore)) === JSON.stringify(geometry(inspectedAfter));
+  const imageCountStable = inspectedBefore.pages.every(
+    (page, index) => page.imageCount === inspectedAfter.pages[index]?.imageCount);
+  const allPageHooksRemoved = after.fieldCount === 0 && after.annotationCount === 0
+    && inspectedAfter.forms.length === 0 && inspectedAfter.pages.every((page) => !page.hasWidget && page.annotationCount === 0);
+  if (!pageCount.stable || !contentTextStable || !geometryStable || !imageCountStable || !allPageHooksRemoved) {
+    throw new PdfError("WRITE_FAILURE", "PDF_FLATTEN_VERIFICATION_FAILED: modifiche ai contenuti non previste o hook residui");
+  }
+  return {
+    artifact, verification: {
+      before, after, pageCount, contentTextStable, geometryStable, imageCountStable, allPageHooksRemoved,
+      visualSafety: "no-visible-annotation-to-paint",
+      renderComparison: "not-performed-in-module",
+      capabilities: { before: preflightPdf(beforeDocument), after: preflightPdf(afterDocument) },
+    },
+  };
 }
 
 export async function preflightPdfInput(input: PdfInput, capability?: PdfCapability, signal?: AbortSignal): Promise<PdfCapabilityReport[]> {

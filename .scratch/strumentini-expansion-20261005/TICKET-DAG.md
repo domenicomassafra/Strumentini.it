@@ -36,10 +36,9 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 - **307 — Audio loudness and LUFS analysis**
 - **313 — SVG to raster and PDF export**
-- **319 — PDF form inspector and flatten upgrade**
 - **320 — PDF password tool capability upgrade**
 
-Exactly **29** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
+Exactly **28** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
 
 ## Key decomposition rules
 
@@ -374,7 +373,7 @@ Exactly **29** incomplete tickets currently have every declared blocker complete
 | 316 | completed | Image compare slider overlay and diff upgrade | 097 |
 | 317 | completed | Contact sheet favicon and platform export upgrades | 097, 222 |
 | 318 | completed | PDF metadata inspect remove upgrade | 098, 103 |
-| 319 | blocked | PDF form inspector and flatten upgrade | 098, 215, 269 |
+| 319 | completed (safe hidden-annotation subset, before/after inventory and rendered visual regression) | PDF form inspector and flatten upgrade | 098, 215, 269 |
 | 320 | blocked | PDF password tool capability upgrade | 242 |
 | 321 | completed | UTM builder parser cleaner round-trip and bulk | 099 |
 | 322 | completed | Meta OpenGraph and social preview preset upgrade | 099 |

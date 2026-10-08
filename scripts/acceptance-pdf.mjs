@@ -25,6 +25,7 @@ const simple3 = await readFile(resolve(fixtureDir, "simple-3page.pdf"));
 const simple2 = await readFile(resolve(fixtureDir, "simple-2page.pdf"));
 const simple2changed = await readFile(resolve(fixtureDir, "simple-2page-changed.pdf"));
 const annotated = await readFile(resolve(fixtureDir, "annotated.pdf"));
+const hiddenWidget = await readFile(resolve(fixtureDir, "hidden-widget-form.pdf"));
 const jpegPdf = await readFile(resolve(fixtureDir, "jpeg-1page.pdf"));
 const encrypted = await readFile(resolve(fixtureDir, "encrypted-mark.pdf"));
 const tinyJpg = await readFile(resolve(fixtureDir, "tiny.jpg"));
@@ -66,7 +67,7 @@ const cases = [
   { id: "pdf-page-size-inspector", button: "Analizza dimensioni pagine", setup: fileOnly(annotated), expect: /Pagina 1[\s\S]*300 × 400/u },
   { id: "pdf-page-count-verifier", button: "Verifica numero pagine", setup: fileOnly(annotated), expect: /numero_pagine[\s\S]*1/u },
   { id: "pdf-password-check-remove", button: "Controlla cifratura", setup: fileOnly(encrypted, "encrypted.pdf"), expect: /PDF cifrato[\s\S]*cifrato[\s\S]*Sì/u },
-  { id: "pdf-flatten", button: "Appiattisci PDF", setup: fileOnly(annotated), expect: /file_generati/u },
+  { id: "pdf-flatten", button: "Appiattisci PDF", setup: fileOnly(hiddenWidget), expect: /file_generati/u },
   { id: "pdf-form-inspector", button: "Analizza moduli", setup: fileOnly(annotated), expect: /full_name/u },
   { id: "pdf-link-extractor", button: "Estrai collegamenti", setup: fileOnly(annotated), expect: /example\.test/u },
   { id: "pdf-image-extractor", button: "Estrai immagini", setup: fileOnly(jpegPdf), expect: /file_generati/u },

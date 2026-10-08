@@ -12,6 +12,8 @@ import { parsePdfPageGroups, parsePdfPageSelection } from "../../../engines/pdf/
 import type { PdfMergePageRef } from "../../../engines/pdf/merge-page-plan";
 import type { PdfCompareResult } from "../../../engines/pdf";
 import { PdfVisualCompare } from "./PdfVisualCompare";
+import { PdfFormAuditDetails } from "./PdfFormAuditDetails";
+import type { PdfFormAnnotationAudit, PdfFlattenVerification } from "../../../engines/pdf";
 
 export type PdfToolId = PdfResultToolId;
 
@@ -342,6 +344,10 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const comparison = result !== null && toolId === "pdf-compare-lite" && result.raw.comparison !== null
     && typeof result.raw.comparison === "object" && "alignment" in result.raw.comparison
     ? result.raw.comparison as unknown as PdfCompareResult : null;
+  const formsAudit = toolId === "pdf-form-inspector" && result !== null && result.raw.audit
+    ? result.raw.audit as unknown as PdfFormAnnotationAudit : undefined;
+  const flattenVerification = toolId === "pdf-flatten" && result !== null && result.raw.verification
+    ? result.raw.verification as unknown as PdfFlattenVerification : undefined;
   return (
     <form class="tool-operation" onSubmit={submit} noValidate>
       <section class="tool-form-card">
@@ -567,6 +573,11 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
               onReset={reset}
               onRetry={execute}
             />
+            {(formsAudit !== undefined || flattenVerification !== undefined) && (
+              <PdfFormAuditDetails
+                {...(formsAudit === undefined ? {} : { audit: formsAudit })}
+                {...(flattenVerification === undefined ? {} : { verification: flattenVerification })} />
+            )}
             {comparison !== null && files[0] !== undefined && files[1] !== undefined && (
               <section class="field" aria-label="Analisi PDF per livelli" data-pdf-compare-layers>
                 <strong>Allineamento delle pagine</strong>

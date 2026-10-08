@@ -148,9 +148,10 @@ describe("PDF and document tool tranche", () => {
     const file = asBlob(source);
     const stripped = await invoke<{ artifacts: readonly { bytes: Uint8Array }[] }>(metadataRemover, { file });
     expect(inspectPdfBytes(stripped.artifacts[0]!.bytes).metadata.title).toBeNull();
-    const flattened = await invoke<{ artifacts: readonly { bytes: Uint8Array }[] }>(flatten, { file: asBlob(annotatedPdf()) });
+    await expect(invoke(flatten, { file: asBlob(annotatedPdf()) })).rejects.toThrow(/Non è possibile conservare/u);
+    const flattened = await invoke<{ artifacts: readonly { bytes: Uint8Array }[] }>(flatten, { file });
     const flatInspection = inspectPdfBytes(flattened.artifacts[0]!.bytes);
-    expect(flatInspection.links).toHaveLength(0);
+    expect(flatInspection.pageCount).toBe(2);
     const compressed = await invoke<{ artifactCount: number }>(compression, { file });
     expect(compressed.artifactCount).toBe(1);
     const comparison = await invoke<{ summary: string }>(compare, { first: file, second: asBlob(createSimplePdf(["alpha", "changed"])) });
