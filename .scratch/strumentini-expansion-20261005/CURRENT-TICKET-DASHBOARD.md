@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 246 / 81 |
+| All / completed / open | 327 / 247 / 80 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 28 |
-| Ready for assignment (feasibility still to prove) | 20 |
+| DAG-ready (all numeric dependencies closed) | 27 |
+| Ready for assignment (feasibility still to prove) | 19 |
 | Waiting on other tickets | 53 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (20)
+## Ready for assignment (feasibility still to prove) (19)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #059 — JSON/XML/CSS/HTML/SVG minimizer pack
@@ -41,7 +41,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #254 — PDF tables to XLSX
 - #256 — TXT Markdown HTML and CSV to printable PDF
 - #264 — OOXML embedded-media compression core
-- #307 — Audio loudness and LUFS analysis
 - #313 — SVG to raster and PDF export
 
 ## Waiting on other tickets (53)
@@ -61,7 +60,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #036 — Audio file-processing family (awaiting #231)
 - #037 — Video inspect/subtitle utilities (awaiting #232, #305)
-- #038 — Video transform family (awaiting #234, #306, #307, #308)
+- #038 — Video transform family (awaiting #234, #306, #308)
 - #040 — Italy utilities beyond CalcolaTutto (awaiting #152)
 - #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #033, #035, #036, #037, #038, #040, #065, #066)
 - #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)

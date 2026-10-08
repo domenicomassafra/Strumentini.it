@@ -35,10 +35,9 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
-- **307 — Audio loudness and LUFS analysis**
 - **313 — SVG to raster and PDF export**
 
-Exactly **28** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **27** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -361,7 +360,7 @@ Exactly **28** incomplete tickets currently have every declared numeric blocker 
 | 304 | completed | Browser text-to-speech Italian controls | 070 |
 | 305 | blocked | Exact video frame extraction and webcam test | 232, 274 |
 | 306 | blocked | Video to GIF conversion | 234 |
-| 307 | ready-for-agent | Audio loudness and LUFS analysis | 273 |
+| 307 | completed | Audio loudness and LUFS analysis | 273 |
 | 308 | blocked | Video AI context contact-sheet export | 232, 305 |
 | 309 | completed | Italian syllabification feasibility spike | — |
 | 310 | completed | CSS px rem em conversion helper | 070 |

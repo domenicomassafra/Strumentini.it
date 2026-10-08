@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 327,
-    "completed": 246,
+    "completed": 247,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 228,
-    "open": 81,
-    "readyDAG": 28,
-    "ready-for-agent": 20,
+    "completedWithoutExplicitRefusal": 229,
+    "open": 80,
+    "readyDAG": 27,
+    "ready-for-agent": 19,
     "dependency-blocked": 53,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -252,6 +252,7 @@
       302,
       303,
       304,
+      307,
       309,
       310,
       311,
@@ -290,7 +291,6 @@
       254,
       256,
       264,
-      307,
       313
     ],
     "dependency-blocked": [
@@ -816,7 +816,6 @@
       "unresolvedDependencies": [
         234,
         306,
-        307,
         308
       ],
       "gateReason": null,
@@ -3619,9 +3618,9 @@
     {
       "id": 307,
       "title": "Audio loudness and LUFS analysis",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
