@@ -73,6 +73,12 @@ try {
   const png = await sharp(archive["contact-sheet.png"]).metadata();
   assert.deepEqual([png.width, png.height], [640, 460]);
   checks += 3;
+  // An invalid export replaces the previous result rather than leaving a stale downloadable ZIP.
+  await panel.getByRole("spinbutton", { name: "Fotogrammi (2–8)" }).fill("9");
+  await panel.getByRole("button", { name: "Genera contact sheet e ZIP" }).click();
+  await panel.locator("[data-contact-status]").getByText(/VIDEO_CONTACT_COUNT/).waitFor({ timeout: 10_000 });
+  assert.equal(await panel.locator("[data-contact-result]").count(), 0);
+  checks += 2;
   assert.deepEqual(errors, []);
   assert.deepEqual(offsite, []);
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2));
