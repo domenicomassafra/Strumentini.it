@@ -3,6 +3,7 @@ import { access, readFile, readdir, stat } from "node:fs/promises";
 import { isAbsolute, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { ToolManifest } from "../catalog/manifest";
+import { oracleAppendOnlyIdentities } from "./oracle-append-only";
 
 export const CERTIFICATION_SCHEMA_VERSION = 1;
 
@@ -165,6 +166,7 @@ interface AuthorityData {
   readonly registry: JsonRecord;
   readonly registryText: string;
   readonly registrySha256: string;
+  readonly appendOnlyOracleIdentities: ReadonlyMap<string, ReadonlySet<string>>;
   readonly fixtures: JsonRecord;
   readonly fixturesText: string;
   readonly fixturesSha256: string;
@@ -1001,6 +1003,7 @@ async function loadAuthorities(root: string): Promise<AuthorityData> {
     registry: registryFile.value,
     registryText: registryFile.text,
     registrySha256: sha256(registryFile.text),
+    appendOnlyOracleIdentities: oracleAppendOnlyIdentities(registryFile.text),
     fixtures: fixturesFile.value,
     fixturesText: fixturesFile.text,
     fixturesSha256: sha256(fixturesFile.text),
@@ -1306,7 +1309,12 @@ function evidenceForTool(
     if (!receiptHasFixtures) blockers.push("RECEIPT_FIXTURE_BINDING_MISSING");
     if (receipt.runtime !== undefined && (receipt.runtime.location !== tool.runtime.location || receipt.runtime.network !== tool.runtime.network)) blockers.push("RECEIPT_RUNTIME_MISMATCH");
     if (receipt.identities.manifestSha256 !== undefined && receipt.identities.manifestSha256 !== tool.manifestFingerprint.sha256) blockers.push("RECEIPT_MANIFEST_IDENTITY_STALE");
-    if (receipt.identities.oracleRegistrySha256 !== undefined && receipt.identities.oracleRegistrySha256 !== authorities.registrySha256) blockers.push("RECEIPT_ORACLE_IDENTITY_STALE");
+    const coveredOracleIds = receipt.identities.oracleRegistrySha256 === undefined
+      ? undefined : authorities.appendOnlyOracleIdentities.get(receipt.identities.oracleRegistrySha256);
+    if (receipt.identities.oracleRegistrySha256 !== undefined
+      && (coveredOracleIds === undefined || receipt.oracleEntryIds.some((id) => !coveredOracleIds.has(id)))) {
+      blockers.push("RECEIPT_ORACLE_IDENTITY_STALE");
+    }
     let hasGranularFixtureIdentityForEveryBinding = true;
     for (const family of receipt.fixtureFamilies) {
       const expectedSha256 = receipt.fixtureIdentities[family];

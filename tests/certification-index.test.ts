@@ -48,14 +48,15 @@ describe("expanded catalog certification index", () => {
       PARTIAL: index.tools.filter((tool) => tool.status === "PARTIAL").length,
       IMPLEMENTED_UNVERIFIED: index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").length,
     });
-    // Registered but not yet certified tools must not inherit Gold from an
-    // earlier 259-tool catalog. New authorities also invalidate source-bound
-    // release eligibility of older receipts until their gates are renewed.
+    // A newly registered tool may not inherit Gold from an earlier catalog;
+    // exact append-only oracle lineage may independently preserve the historic
+    // receipts but never weakens the unverified tool's release gate.
     expect(index.summary.statusCounts).toEqual({ GOLD: 257, PARTIAL: 2, IMPLEMENTED_UNVERIFIED: 1 });
     expect(index.catalogToolCount).toBe(260);
     expect(index.summary.certificationGoldCount).toBe(index.tools.filter((tool) => tool.status === "GOLD").length);
     expect(index.summary.releaseEligibleGoldCount).toBe(index.tools.filter((tool) => tool.goldEligible).length);
     expect(index.summary.releaseEligibleGoldCount).toBeLessThanOrEqual(index.summary.certificationGoldCount);
+    expect(index.summary.releaseEligibleGoldCount).toBe(257);
     expect(index.summary.physicalDevicePassCount).toBe(0);
     expect(index.global.physicalDevice).toMatchObject({
       status: "EXTERNAL",
