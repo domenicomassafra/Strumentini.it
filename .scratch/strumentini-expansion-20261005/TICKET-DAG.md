@@ -13,7 +13,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
-- **210 — Image target-size search engine**
 - **212 — HEIC AVIF and GIF directional image implementations**
 - **215 — Bounded lazy PDF page-thumbnail renderer**
 - **218 — Image-aware and scan PDF compression profiles**
@@ -32,7 +31,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **313 — SVG to raster and PDF export**
 - **320 — PDF password tool capability upgrade**
 
-Exactly **22** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
+Exactly **21** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
 
 ## Key decomposition rules
 
@@ -96,7 +95,7 @@ Exactly **22** incomplete tickets currently have every declared blocker complete
 | 045 | blocked | Expanded catalog IA and job-route discovery | 018, 019, 020, 021, 022, 023, 024, 025, 026, 027, 028, 029, 030, 031, 032, 033, 035, 036, 037, 038, 039, 040, 041, 042, 043, 044, 065, 066, 104, 105, 106, 107 |
 | 046 | blocked | Full expansion certification + release integration | 006, 018, 045, 065, 066, 111, 112, 113, 114, 158, 206, 276, 279, 280, 281 |
 | 047 | blocked | JPEG/PNG/WebP/SVG compression engines | 207, 208, 209 |
-| 048 | blocked | Target-size + batch image compression | 210, 211 |
+| 048 | completed (bounded browser-native formats; physical gates separate) | Target-size + batch image compression | 210, 211 |
 | 049 | blocked | Image conversion matrix + HEIC/AVIF/GIF | 212, 312, 313 |
 | 050 | completed | Upgrade existing image-tool functionality | 213, 314, 315, 316, 317 |
 | 051 | blocked | True PDF compression profiles + target size | 218, 219 |
@@ -258,8 +257,8 @@ Exactly **22** incomplete tickets currently have every declared blocker complete
 | 207 | completed | JPEG and WebP format-aware compression adapters | 100, 103, 268 |
 | 208 | completed | PNG lossless and palette compression modes | 100, 103, 268 |
 | 209 | completed | Safe SVG optimizer and preview | 103, 268 |
-| 210 | blocked | Image target-size search engine | 207, 208 |
-| 211 | blocked | Mixed-image batch compression queue | 079, 207, 208, 210, 222 |
+| 210 | completed (bounded browser-native solver) | Image target-size search engine | 207, 208 |
+| 211 | completed (sequential queue with verified ZIP) | Mixed-image batch compression queue | 079, 207, 208, 210, 222 |
 | 212 | blocked | HEIC AVIF and GIF directional image implementations | 103, 206, 268 |
 | 213 | completed | Direct-manipulation image transform workspace | 078, 097 |
 | 214 | completed | Destructive screenshot image redaction | 103, 213 |

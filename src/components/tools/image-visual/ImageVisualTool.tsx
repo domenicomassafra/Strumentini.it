@@ -29,9 +29,14 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [secondNumberValue, setSecondNumberValue] = useState("1");
   const [mime, setMime] = useState("image/png");
   const [quality, setQuality] = useState("0.85");
+  const [targetKiB, setTargetKiB] = useState("");
+  const [targetUnit, setTargetUnit] = useState<"KiB" | "MiB">("KiB");
+  const [minimumQuality, setMinimumQuality] = useState("0.45");
+  const [allowResize, setAllowResize] = useState(false);
+  const [batchMode, setBatchMode] = useState(false);
   const [colorMode, setColorMode] = useState("convert");
   const operation = useToolOperation<PreparedImageResult>(async (signal) => {
-    const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode);
+    const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit);
     const run = await toolRuntime.run(toolId, input, {}, signal);
     if (!run.ok) return run;
     return { ok: true, tool: run.tool, value: await prepareImageResult(run.value), defaults: run.defaults };
@@ -59,6 +64,11 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     setSecondNumberValue("1");
     setMime("image/png");
     setQuality("0.85");
+    setTargetKiB("");
+    setTargetUnit("KiB");
+    setMinimumQuality("0.45");
+    setAllowResize(false);
+    setBatchMode(false);
     setColorMode("convert");
     clearResult();
   }
@@ -81,10 +91,21 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   return (
     <ToolOperation busy={operation.isRunning}>
       <form onSubmit={submit} noValidate>
+        {toolId === "image-compression" && (
+          <label class="field">
+            <input type="checkbox" checked={batchMode} onChange={(event) => {
+              setBatchMode(event.currentTarget.checked);
+              setFile(null);
+              setFiles([]);
+              operation.reset();
+            }} disabled={operation.isRunning} />
+            <span>Comprimi più immagini in coda (massimo 8, JPEG/PNG/WebP)</span>
+          </label>
+        )}
         {needsFile(toolId) && (
           <label class="field">
             <span>{needsMultipleFiles(toolId) ? "Immagini" : "Immagine"}</span>
-            <input type="file" accept={toolId === "image-format-conversion" ? "image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,image/gif,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.gif" : "image/jpeg,image/png,image/webp"} multiple={needsMultipleFiles(toolId)} onChange={needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
+            <input type="file" accept={toolId === "image-format-conversion" ? "image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,image/gif,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.gif" : "image/jpeg,image/png,image/webp"} multiple={batchMode || needsMultipleFiles(toolId)} onChange={batchMode || needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
             <small>File elaborati in locale, senza caricamenti né elaborazione remota alternativa.</small>
           </label>
         )}
@@ -121,9 +142,38 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
           </label>
         )}
         {needsText(toolId) && <label class="field"><span>Valore</span><input value={value} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
-        {needsOutputFormat(toolId) && <label class="field"><span>Formato di uscita</span><select value={mime} onChange={(event) => setMime(event.currentTarget.value)} disabled={operation.isRunning}><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select></label>}
+        {needsOutputFormat(toolId) && !(toolId === "image-compression" && batchMode) && <label class="field"><span>Formato di uscita</span><select value={mime} onChange={(event) => setMime(event.currentTarget.value)} disabled={operation.isRunning}><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select></label>}
+        {toolId === "image-compression" && batchMode && <p class="file-note">Ogni immagine conserva il proprio formato riconosciuto dalla firma del file. Un errore non blocca le altre immagini; i risultati validi si scaricano anche insieme in ZIP. Elaborazione una per volta, massimo 80 MiB complessivi.</p>}
         {toolId === "image-format-conversion" && mime === "image/jpeg" && <label class="field"><span>Sfondo per trasparenza → JPEG</span><input type="color" value={/^#[0-9a-f]{6}$/iu.test(value) ? value : "#ffffff"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /><small>Obbligatorio quando l'immagine contiene alpha. Il JPEG non supporta trasparenza: i pixel trasparenti vengono compositati su questo colore.</small></label>}
         {needsQuality(toolId) && <label class="field"><span>Qualità, se supportata</span><input type="number" min="0.1" max="1" step="0.01" value={quality} onInput={(event) => setQuality(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
+        {toolId === "image-compression" && (
+          <fieldset class="field" data-target-image-compression>
+            <legend>Dimensione obiettivo (facoltativa)</legend>
+            <label class="field">
+              <span>Dimensione massima, in {targetUnit}</span>
+              <input type="number" min={targetUnit === "KiB" ? "1" : "0.01"} max={targetUnit === "KiB" ? "40960" : "40"} step={targetUnit === "KiB" ? "1" : "0.01"} value={targetKiB} onInput={(event) => { setTargetKiB(event.currentTarget.value); operation.reset(); }} placeholder={targetUnit === "KiB" ? "Ad es. 200" : "Ad es. 1,5"} disabled={operation.isRunning} />
+            </label>
+            <label class="field"><span>Unità obiettivo</span>
+              <select value={targetUnit} onChange={(event) => { setTargetUnit(event.currentTarget.value === "MiB" ? "MiB" : "KiB"); setTargetKiB(""); operation.reset(); }} disabled={operation.isRunning}>
+                <option value="KiB">KiB (1024 byte)</option>
+                <option value="MiB">MiB (1024 KiB)</option>
+              </select>
+            </label>
+            {targetKiB.trim() !== "" && (
+              <>
+                <label class="field">
+                  <span>Qualità minima JPEG/WebP</span>
+                  <input type="number" min="0.1" max="0.92" step="0.01" value={minimumQuality} onInput={(event) => { setMinimumQuality(event.currentTarget.value); operation.reset(); }} disabled={operation.isRunning || (!batchMode && mime === "image/png")} />
+                </label>
+                <label class="field">
+                  <input type="checkbox" checked={allowResize} onChange={(event) => { setAllowResize(event.currentTarget.checked); operation.reset(); }} disabled={operation.isRunning} />
+                  <span>Consenti anche la riduzione delle dimensioni in pixel (scelta separata)</span>
+                </label>
+                <small>Si misurano i byte dei file effettivamente codificati, con tentativi limitati e annullabili. Se il limite è impossibile, il risultato indica che non è stato raggiunto. La qualità del PNG non è regolabile con il codec browser; WebP è usato solo se il browser produce davvero WebP.</small>
+              </>
+            )}
+          </fieldset>
+        )}
         {toolId === "image-format-conversion" && <p class="file-note">Input: JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF e GIF. HEIC/HEIF usa un decoder locale lazy; AVIF usa il decoder locale del browser; per GIF viene convertito esplicitamente solo il primo frame. Output: PNG, JPEG o WebP. PNG non aggiunge perdita ai pixel RGBA decodificati; JPEG/WebP sono ricodifiche lossy alla qualità scelta. I metadati container non vengono conservati.</p>}
         <InlineError message={operation.error === "" ? "" : "L'operazione non è riuscita. Controlla i file e i parametri inseriti."} />
         <ToolActions>
@@ -138,14 +188,18 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   );
 }
 
-function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: File | null, files: File[], value: string, secondValue: string, numberValue: string, secondNumberValue: string, mime: string, quality: string, colorMode: string): unknown {
+function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: File | null, files: File[], value: string, secondValue: string, numberValue: string, secondNumberValue: string, mime: string, quality: string, colorMode: string, targetKiB: string, minimumQuality: string, allowResize: boolean, batchMode: boolean, targetUnit: "KiB" | "MiB"): unknown {
   const qualityNumber = Number(quality);
   const primary = file ?? files[0];
   switch (toolId) {
     case "color-blindness-image-simulation": return { file: primary, mode: colorMode === "deuteranopia" || colorMode === "tritanopia" ? colorMode : "protanopia" };
     case "image-crop": return { file: primary, x: 0, y: 0, width: Number(numberValue), height: Number(secondNumberValue), mime, quality: qualityNumber };
     case "image-format-conversion": return { file: primary, mime, quality: qualityNumber, ...(mime === "image/jpeg" ? { background: value || "#ffffff" } : {}) };
-    case "image-compression": return { file: primary, mime, quality: qualityNumber };
+    case "image-compression": return {
+      ...(batchMode ? { files } : { file: primary, mime }),
+      quality: qualityNumber,
+      ...(targetKiB.trim() === "" ? {} : { targetKiB: Number(targetKiB) * (targetUnit === "MiB" ? 1024 : 1), minQuality: Number(minimumQuality), allowResize }),
+    };
     case "aspect-ratio-calculator": return { width: Number(numberValue), height: Number(secondNumberValue) };
     case "platform-size-presets": return { presetId: value || "instagram-square", width: Number(numberValue), height: Number(secondNumberValue) };
     case "image-metadata-viewer": return primary ?? null;

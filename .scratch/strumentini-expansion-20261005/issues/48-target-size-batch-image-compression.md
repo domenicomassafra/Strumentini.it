@@ -8,10 +8,12 @@
 
 **Blocked by:** 210, 211.
 
-**Status:** blocked
+**Status:** completed (bounded JPEG/PNG/WebP route; advanced codec and physical gates separate)
 
-- [ ] User can target KB/MB and choose whether dimension reduction is allowed after quality reduction reaches its floor.
-- [ ] Batch result shows original/result bytes and saved percentage per file plus totals.
-- [ ] Files that cannot hit the target remain downloadable as best-effort only after an explicit warning, never as successful target hits.
+- [x] User can target KB/MB and choose whether dimension reduction is allowed after quality reduction reaches its floor.
+- [x] Batch result shows original/result bytes and saved percentage per file plus totals.
+- [x] Files that cannot hit the target remain downloadable as best-effort only after an explicit warning, never as successful target hits.
 
 **Verification:** Target boundary tests, mixed-format batch corpus, failure isolation, ZIP integrity, and memory/cancellation acceptance.
+
+**Implementation proof (2026-10-08):** The existing `image-compression` route now exposes KiB/MiB targets, explicit quality floor, independently permitted pixel downscale and a sequential batch mode. The shared result renders per-file original/output byte counts and savings, aggregates, failure/target warnings and a verified ZIP download. Tickets 210/211 carry the engine tests, and Chromium/Firefox/WebKit browser acceptance includes downloads and ZIP reopening. This scope does not silently promote advanced JPEG/WebP codecs, PNG lossless/palette optimization, SVG optimization or absent physical-device evidence.
