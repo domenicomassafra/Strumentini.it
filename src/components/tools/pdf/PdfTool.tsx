@@ -5,6 +5,7 @@ import { friendlyToolErrorIt } from "../../../i18n/it/errors";
 import type { PdfResultToolId } from "../../../tools/pdf-result-declarations";
 import { CONTROL, it, ToolResultPanel } from "../shared";
 import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
+import { PdfThumbnailPicker } from "./PdfThumbnailPicker";
 
 export type PdfToolId = PdfResultToolId;
 
@@ -97,6 +98,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [pdfCompositionMode, setPdfCompositionMode] = useState<"pages" | "contact-sheet">("pages");
   const [contactSheetColumns, setContactSheetColumns] = useState("3");
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+  const [showThumbnails, setShowThumbnails] = useState(false);
   const [result, setResult] = useState<PreparedPdfResult | null>(null);
   const [error, setError] = useState("");
   const [status, setStatus] = useState<"idle" | "working" | "done">("idle");
@@ -130,6 +132,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
       });
     }
     setResult(null);
+    setShowThumbnails(false);
     setError("");
     setStatus("idle");
   }
@@ -240,6 +243,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setPdfImageMime("image/png");
     setPdfImageScale("2");
     setImageRotations("");
+    setShowThumbnails(false);
     setPdfPageSize("original");
     setPdfPageOrientation("auto");
     setPdfImageFit("contain");
@@ -288,6 +292,34 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 2" disabled={isWorking} /></label><label class="field"><span>Rotazione</span><select value={rotation} onChange={(event) => setRotation(event.currentTarget.value)} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
         {optionMode === "delete-extract" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3" disabled={isWorking} /></label><label class="field"><span>Operazione</span><select value={deleteMode} onChange={(event) => setDeleteMode(event.currentTarget.value as "delete" | "extract")} disabled={isWorking}><option value="extract">Estrai le pagine selezionate</option><option value="delete">Elimina le pagine selezionate</option></select></label></div>}
         {optionMode === "password" && <label class="field"><span>Modalità</span><select value={passwordMode} onChange={(event) => setPasswordMode(event.currentTarget.value as "check" | "remove")} disabled={isWorking}><option value="check">Controlla soltanto la cifratura</option><option value="remove">Crea una copia sicura se il PDF non è cifrato</option></select></label>}
+        {(optionMode === "order" || optionMode === "rotation") && files[0] !== undefined && (
+          <div class="field" data-pdf-preview-toggle>
+            <button type="button" onClick={() => setShowThumbnails((current) => !current)} disabled={isWorking}>{showThumbnails ? "Chiudi miniature pagine" : "Apri miniature pagine (facoltativo)"}</button>
+            {showThumbnails && (
+              <PdfThumbnailPicker
+                file={files[0]}
+                selectedPages={parseNumbers(optionMode === "order" ? order : pages)}
+                previewRotation={optionMode === "rotation" ? Number(rotation) as 0 | 90 | 180 | 270 : 0}
+                onPickPage={(page) => {
+                  if (optionMode === "order") {
+                    setOrder((current) => {
+                      const chosen = parseNumbers(current);
+                      return (chosen.includes(page) ? chosen.filter((value) => value !== page) : [...chosen, page]).join(", ");
+                    });
+                  } else {
+                    setPages((current) => {
+                      const chosen = parseNumbers(current);
+                      const next = chosen.includes(page) ? chosen.filter((value) => value !== page) : [...chosen, page].sort((a, b) => a - b);
+                      return next.join(", ");
+                    });
+                  }
+                  setResult(null);
+                }}
+              />
+            )}
+            {optionMode === "order" ? <small>Seleziona ogni pagina una sola volta nell'ordine desiderato. Il motore rifiuta sequenze incomplete.</small> : <small>Le pagine selezionate mostrano la rotazione scelta; clicca di nuovo per deselezionarle.</small>}
+          </div>
+        )}
         {optionMode === "text-extraction" && (
           <div class="field-grid">
             <label class="field"><span>Pagine (facoltativo)</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 1, 3, 5 · vuoto = tutte" disabled={isWorking} /></label>

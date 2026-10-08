@@ -14,12 +14,22 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
-- **215 — Bounded lazy PDF page-thumbnail renderer**
+- **216 — Visual PDF merge reorder and rotate organizer**
+- **217 — Visual PDF split delete and extract selector**
 - **218 — Image-aware and scan PDF compression profiles**
+- **221 — PDF structural text and visual comparison**
 - **229 — Microphone test and local recorder**
 - **231 — Audio timeline edits and deterministic DSP**
 - **232 — Video inspector and target-size calculator**
+- **236 — Advanced PDF to image export**
+- **237 — True PDF redaction with post-export proof**
+- **238 — PDF page numbers placement and ranges**
+- **239 — PDF watermark and overlay placement**
+- **240 — PDF crop and page-size normalization**
+- **241 — PDF signature placement**
+- **243 — PDF fill annotate and write overlays**
 - **246 — Local image OCR**
+- **250 — PDF n-up pages per sheet**
 - **254 — PDF tables to XLSX**
 - **256 — TXT Markdown HTML and CSV to printable PDF**
 - **264 — OOXML embedded-media compression core**
@@ -29,9 +39,10 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 - **307 — Audio loudness and LUFS analysis**
 - **313 — SVG to raster and PDF export**
+- **319 — PDF form inspector and flatten upgrade**
 - **320 — PDF password tool capability upgrade**
 
-Exactly **21** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
+Exactly **32** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
 
 ## Key decomposition rules
 
@@ -262,7 +273,7 @@ Exactly **21** incomplete tickets currently have every declared blocker complete
 | 212 | blocked | HEIC AVIF and GIF directional image implementations | 103, 206, 268 |
 | 213 | completed | Direct-manipulation image transform workspace | 078, 097 |
 | 214 | completed | Destructive screenshot image redaction | 103, 213 |
-| 215 | blocked | Bounded lazy PDF page-thumbnail renderer | 078, 100, 269 |
+| 215 | completed (bounded PDF.js preview, session cleanup, browser acceptance) | Bounded lazy PDF page-thumbnail renderer | 078, 100, 269 |
 | 216 | blocked | Visual PDF merge reorder and rotate organizer | 215 |
 | 217 | blocked | Visual PDF split delete and extract selector | 215, 222 |
 | 218 | blocked | Image-aware and scan PDF compression profiles | 098, 100, 103, 269 |
