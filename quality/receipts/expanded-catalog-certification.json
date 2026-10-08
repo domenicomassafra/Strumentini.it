@@ -14572,7 +14572,7 @@
         },
         "module": {
           "path": "src/tools/image-compression/module.ts",
-          "sha256": "069b357d062e10cc9e7b1b84caeb36a54fbec143980c4e4da68a02e34fec32e3"
+          "sha256": "3ce204cec8d1e1c5ef967c1f5ca1ac1345f0d51bc21088aaa1f6b94a010c744c"
         },
         "page": {
           "path": "src/pages/tools/image-compression.astro",

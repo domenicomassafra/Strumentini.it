@@ -24,11 +24,13 @@ export interface VerifiedImageOutput {
   readonly artifact: OutputArtifactDescriptor;
   readonly width?: number;
   readonly height?: number;
+  readonly sourceIndex?: number;
 }
 
 export interface PreparedImageResult {
   readonly raw: ImageResultValue;
   readonly artifacts: readonly VerifiedImageOutput[];
+  readonly zip?: { readonly blob: Blob; readonly artifact: OutputArtifactDescriptor };
 }
 
 interface ImageResultV2Props {
@@ -45,6 +47,7 @@ interface BlobCandidate {
   readonly declaredMime: string;
   readonly width?: number;
   readonly height?: number;
+  readonly sourceIndex?: number;
 }
 
 function asRecord(value: unknown): ImageResultValue | null {
@@ -77,6 +80,7 @@ function candidateFor(record: ImageResultValue, fallback: ImageResultValue): Blo
     declaredMime,
     ...(width === undefined ? {} : { width }),
     ...(height === undefined ? {} : { height }),
+    ...(numberField(record.sourceIndex) === undefined ? {} : { sourceIndex: numberField(record.sourceIndex)! }),
   };
 }
 
@@ -114,9 +118,19 @@ export async function prepareImageResult(value: unknown): Promise<PreparedImageR
       artifact: verification.artifact,
       ...(candidate.width === undefined ? {} : { width: candidate.width }),
       ...(candidate.height === undefined ? {} : { height: candidate.height }),
+      ...(candidate.sourceIndex === undefined ? {} : { sourceIndex: candidate.sourceIndex }),
     };
   }));
-  return { raw, artifacts };
+  let zip: PreparedImageResult["zip"];
+  if (raw.zipBlob instanceof Blob && raw.zipFilename === "immagini-compresse.zip") {
+    const verification = await verifyGeneratedArtifact({
+      kind: "file", name: raw.zipFilename, declaredMime: "application/zip",
+      bytes: new Uint8Array(await raw.zipBlob.arrayBuffer()),
+      fidelity: { fidelity: "structural", statement: "Archivio locale con voci ispezionate e verificate individualmente." },
+    });
+    if (verification.success) zip = { blob: raw.zipBlob, artifact: verification.artifact };
+  }
+  return { raw, artifacts, ...(zip === undefined ? {} : { zip }) };
 }
 
 function formatBytes(bytes: number): string {
@@ -283,7 +297,7 @@ function workspaceFor(toolId: ImageResultToolId, outputs: readonly VerifiedImage
   const fallbackBytes = sourceFiles.reduce((total, file) => total + file.size, 0);
   const fallbackName = sourceFiles.length === 1 ? sourceFiles[0]?.name ?? "Input locale" : `${sourceFiles.length} immagini locali`;
   return createFileResultWorkspace(outputs.map((output, index) => {
-    const source = sourceFiles[index] ?? sourceFiles[0];
+    const source = sourceFiles[output.sourceIndex ?? index] ?? sourceFiles[0];
     return createFileResultItem({
       id: `${toolId}-${index + 1}`,
       source: {
@@ -314,6 +328,28 @@ function imageMetrics(output: VerifiedImageOutput | undefined, sourceFiles: read
 }
 
 function semanticImageRows(toolId: ImageResultToolId, raw: ImageResultValue): readonly { label: string; value: ComponentChildren }[] {
+  if (toolId === "image-compression" && Array.isArray(raw.items)) {
+    return [
+      { label: "File elaborati", value: String(numberField(raw.processedCount) ?? 0) },
+      { label: "File riusciti", value: String(raw.items.length) },
+      { label: "File con errore", value: String(Array.isArray(raw.failures) ? raw.failures.length : 0) },
+      { label: "Byte originali riusciti", value: formatBytes(numberField(raw.successfulOriginalBytes) ?? 0) },
+      { label: "Byte risultati", value: formatBytes(numberField(raw.outputBytes) ?? 0) },
+      { label: "Risparmio sugli output riusciti", value: `${raw.savedPercent ?? 0}%` },
+      { label: "Obiettivi non raggiunti", value: String(numberField(raw.countMissingTarget) ?? 0) },
+      { label: "Lavori in parallelo", value: "1 (sequenziale e limitato)" },
+    ];
+  }
+  if (toolId === "image-compression" && raw.targetBytes !== undefined) {
+    return [
+      { label: "Obiettivo", value: formatBytes(numberField(raw.targetBytes) ?? 0) },
+      { label: "Limite rispettato", value: raw.targetMet === true ? "Sì: dimensione effettiva verificata" : "No: restituito il tentativo più piccolo" },
+      ...(numberField(raw.targetAttempts) === undefined ? [] : [{ label: "Tentativi", value: String(raw.targetAttempts) }]),
+      ...(numberField(raw.chosenQuality) === undefined ? [] : [{ label: "Qualità selezionata", value: String(raw.chosenQuality) }]),
+      { label: "Risoluzione ridotta", value: raw.resizedForTarget === true ? "Sì, autorizzata" : "No" },
+      ...(raw.targetMet === true ? [] : [{ label: "Motivo del limite", value: raw.targetReason === "png-no-quality-control" ? "Il PNG non espone un controllo di qualità per ridurre i byte." : "Raggiunto il minimo di qualità/dimensioni consentito dalle opzioni scelte." }]),
+    ];
+  }
   if (toolId === "color-blindness-image-simulation") {
     return [
       ...(stringField(raw.modeLabel) === undefined ? [] : [{ label: "Modalità scelta", value: stringField(raw.modeLabel)! }]),
@@ -420,6 +456,33 @@ export function ImageResultV2({ toolId, result, sourceFiles = [], onReset, onRet
       : undefined;
     return (
       <div data-result-class="image">
+        {toolId === "image-compression" && Array.isArray(result.raw.items) && (
+          <>
+            {(Array.isArray(result.raw.failures) && result.raw.failures.length > 0) || numberField(result.raw.countMissingTarget)! > 0
+              ? <ResultInterpretation state="warning">Risultato parziale: alcuni file non sono stati elaborati o non hanno raggiunto la dimensione obiettivo. Verifica le singole righe; il ZIP contiene soltanto i risultati prodotti.</ResultInterpretation>
+              : null}
+            {Array.isArray(result.raw.failures) && result.raw.failures.length > 0 && (
+              <div data-batch-failures><strong>File non elaborati</strong>
+                <ul>{result.raw.failures.map((failure, index) => {
+                  const record = asRecord(failure);
+                  return <li key={index}>{stringField(record?.name) ?? "File"}: {stringField(record?.message) ?? "Errore"}</li>;
+                })}</ul>
+              </div>
+            )}
+            <div data-image-batch-details><strong>Risparmio per immagine riuscita</strong>
+              <ul>{result.raw.items.map((item, index) => {
+                const record = asRecord(item);
+                const before = numberField(record?.originalBytes);
+                const blob = record?.blob;
+                const after = blob instanceof Blob ? blob.size : undefined;
+                const percent = before !== undefined && before > 0 && after !== undefined
+                  ? `${((before - after) * 100 / before).toFixed(1).replace(".", ",")}%`
+                  : "Non misurabile";
+                return <li key={index}>{stringField(record?.filename) ?? "Risultato"}: {before ?? "?"} → {after ?? "?"} byte ({percent}){record?.targetMet === false ? " · obiettivo non raggiunto" : ""}</li>;
+              })}</ul>
+            </div>
+          </>
+        )}
         {toolId === "exif-remover" && result.raw.metadataFree === true
           ? <ResultInterpretation state="success">Verificato sul file prodotto: nessun segmento Exif, XMP, IPTC o commento identificativo.</ResultInterpretation>
           : null}
@@ -431,6 +494,7 @@ export function ImageResultV2({ toolId, result, sourceFiles = [], onReset, onRet
           : <VisualPreview output={primary ?? result.artifacts[0]} />}
         <div data-result-slot="media-metrics"><ResultBreakdown label="Dati del file prodotto" rows={metrics} /></div>
         <div data-result-slot="file-workspace">
+          {result.zip?.artifact.download.ready === true && <DownloadLink blob={result.zip.blob} filename={result.zip.artifact.download.filename}>Scarica tutte le immagini riuscite (ZIP)</DownloadLink>}
           <FileResultWorkspace
             workspace={workspace}
             actionsFor={(item) => {

@@ -29,6 +29,7 @@ import {
   assertOutputMime,
   bitmapCanvas,
   decodeImage,
+  encodeCanvas,
   extensionForMime,
   get2d,
   imageDataFromFile,
@@ -37,6 +38,7 @@ import {
   readHeader,
   validateObject,
   validateQuality,
+  verifyOutput,
   type ImageDataResult,
   type OutputMime,
 } from "./operations";
@@ -47,6 +49,7 @@ import {
 } from "./transform-workspace";
 import { createZip, inspectZip } from "../file-privacy";
 import { decodePortableImage } from "./portable-decode";
+import { findImageTargetSize, parseImageTarget } from "./target-size";
 
 export interface TransformInput {
   readonly file: Blob;
@@ -309,13 +312,58 @@ export async function convertImageFormatLocal(input: unknown, signal?: AbortSign
   }
 }
 
-export async function compressImageLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<ImageOutput> {
+export interface ImageCompressionOutput extends ImageOutput {
+  readonly targetBytes?: number;
+  readonly targetMet?: boolean;
+  readonly targetAttempts?: number;
+  readonly targetReason?: "met" | "quality-floor" | "png-no-quality-control";
+  readonly chosenQuality?: number;
+  readonly resizedForTarget?: boolean;
+}
+
+export async function compressImageLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<ImageCompressionOutput> {
   const value = validateObject(input);
   const file = asFile(value.file);
   const quality = validateQuality(value.quality ?? 0.72);
   const mime = assertOutputMime(value.mime ?? "image/jpeg");
   const decoded = await decodeImage(file, signal, progress);
   try {
+    if (value.targetKiB !== undefined) {
+      parseImageTarget(value.targetKiB);
+      const result = await findImageTargetSize(
+        {
+          mime,
+          targetKiB: value.targetKiB as number,
+          minQuality: value.minQuality === undefined ? 0.45 : validateQuality(value.minQuality, 0.1, 0.92),
+          allowResize: value.allowResize === true,
+        },
+        async (scale, trialQuality) => {
+          abortIfNeeded(signal);
+          const width = Math.max(1, Math.round(decoded.width * scale));
+          const height = Math.max(1, Math.round(decoded.height * scale));
+          const canvas = bitmapCanvas(decoded.bitmap, width, height);
+          try {
+            return await encodeCanvas(canvas, mime, trialQuality, signal, progress);
+          } finally {
+            canvas.width = 0;
+            canvas.height = 0;
+          }
+        },
+        signal,
+      );
+      const width = Math.max(1, Math.round(decoded.width * result.scale));
+      const height = Math.max(1, Math.round(decoded.height * result.scale));
+      await verifyOutput(result.blob, mime, width, height, signal, progress);
+      return {
+        blob: result.blob,
+        filename: outputName(file, "target", mime),
+        inputMime: inspectImageHeader(new Uint8Array(await file.blob.slice(0, 2 * 1024 * 1024).arrayBuffer())).mime,
+        outputMime: mime, width, height, estimatedBytesSaved: file.size - result.blob.size,
+        targetBytes: result.targetBytes, targetMet: result.meetsTarget,
+        targetAttempts: result.attempts, targetReason: result.reason,
+        chosenQuality: result.quality, resizedForTarget: width !== decoded.width || height !== decoded.height,
+      };
+    }
     const canvas = bitmapCanvas(decoded.bitmap);
     const blob = await outputBlob(canvas, mime, quality, decoded.width, decoded.height, signal, progress);
     return { blob, filename: outputName(file, "compressed", mime), inputMime: inspectImageHeader(new Uint8Array(await file.blob.slice(0, 2 * 1024 * 1024).arrayBuffer())).mime, outputMime: mime, width: decoded.width, height: decoded.height, estimatedBytesSaved: file.size - blob.size };
