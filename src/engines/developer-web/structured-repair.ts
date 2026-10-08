@@ -661,7 +661,19 @@ function effectiveXmlSpace(element: XmlElement, inherited: boolean): boolean {
 }
 
 function elementHasSensitiveText(element: XmlElement): boolean {
-  return element.children.some((child) => child.kind === "cdata" || (child.kind === "text" && child.value.trim() !== ""));
+  // XML cannot assume that inter-element spaces are ignorable when nested
+  // descendants carry text. For example SVG <text><tspan>A</tspan> <tspan>B</tspan>
+  // must retain the space even though the parent has no nonblank direct text.
+  // The XML parser already caps depth/nodes, so this bounded recursive check
+  // can conservatively protect each text-bearing ancestor.
+  // SVG text containers may intentionally contain only whitespace, even if
+  // all nested tspans are empty. Treat their text nodes as content regardless
+  // of the non-whitespace test. Preserving other XML <text> tags is safer too.
+  const localName = element.name.slice(element.name.lastIndexOf(":") + 1);
+  if (localName === "text" || localName === "tspan" || localName === "textPath") return true;
+  return element.children.some((child) => child.kind === "cdata"
+    || (child.kind === "text" && child.value.trim() !== "")
+    || (child.kind === "element" && elementHasSensitiveText(child)));
 }
 
 function serializeXmlNodeCompact(node: XmlNode, inheritedPreserve = false): string {
@@ -716,9 +728,15 @@ export function xmlOperation(input: string, mode = "prettify", indent = 2): Deve
     mode,
     rootName: document.root.name,
     externalEntities: "disabled",
-    whitespacePolicy: "Whitespace-only nodes are removed only outside mixed content and xml:space=preserve; sensitive text is preserved byte-for-byte.",
+    whitespacePolicy: "Preserves whitespace-only nodes in text/CDATA-bearing subtrees and under xml:space=preserve; may discard whitespace-only nodes in element-only subtrees and outside the document root. XML schema-specific whitespace significance is not inferred.",
   };
   if (mode === "validate") return base;
   const output = serializeXmlDocument(document, mode, indent);
-  return { ...base, output, inputBytes: new TextEncoder().encode(input).length, outputBytes: new TextEncoder().encode(output).length };
+  const inputBytes = new TextEncoder().encode(input).byteLength;
+  const outputBytes = new TextEncoder().encode(output).byteLength;
+  return {
+    ...base, output, inputBytes, outputBytes,
+    savedBytes: inputBytes - outputBytes,
+    savedPercent: inputBytes === 0 ? 0 : Math.round(((inputBytes - outputBytes) / inputBytes) * 10_000) / 100,
+  };
 }
