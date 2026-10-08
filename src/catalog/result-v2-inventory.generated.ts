@@ -3575,6 +3575,25 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
+    "toolId": "pdf-watermark",
+    "engine": "pdf",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "PdfWatermarkTool",
+      "source": "src/components/tools/pdf/PdfWatermarkTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "pdf",
+      "capabilities": [
+        "download",
+        "reset",
+        "retry"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "percentage-helper",
     "engine": "business-math",
     "rendererSeam": {

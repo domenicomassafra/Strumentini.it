@@ -11904,6 +11904,22 @@
       "cross_check": { "usable": true, "implementation": "independent PDF.js browser raster comparison plus parser byte equality check on original Contents", "role": "sample-specific output and placement validation, not universal PDF compliance" },
       "confidence": "medium",
       "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED pending independent mixed-document and device acceptance", "Unbalanced inherited graphics state and complex font/resource dictionaries have not been exhaustively certified.", "No Gold receipt has been issued."]
+    },
+    {
+      "id": "cand-262",
+      "candidate": "Visible PDF watermark text overlay with opacity, rotation, scale and page range",
+      "tool_family": "pdf",
+      "maintenance_class": "H",
+      "truth_sources": ["iso-pdf2", "fixture-policy"],
+      "standard_or_official_example": "Synthetic vector PDF with text watermark applied to selected pages using separate ExtGState opacity and content streams.",
+      "invariants": ["source Contents stream bytes remain identical", "selected page count and source geometry remain stable", "transparency explicitly encoded in ExtGState and rendered", "watermark clearly states it is not privacy redaction", "strict invalid range or oversized geometry rejected"],
+      "adversarial_cases": ["reversed, repeated, out-of-range page indexes", "nonprintable strings and PDF literal escape", "alpha 0/1.01", "rotation outside -180..180", "oversized angled text", "90-degree source page rotation", "pre-aborted signal"],
+      "expected_output_strategy": "Vitest reparse source/content/overlay; Playwright downloads actual PDF and independently rerenders original/result through PDF.js, checks untouched pages and bounded overlay pixel difference.",
+      "security_privacy_edges": ["LOCAL, network forbidden", "visible overlay is not redaction", "ASCII text escaped as PDF literal", "source bytes not modified"],
+      "portability_browser_edges": ["desktop browser with 390px viewport thumbnail matrix", "bounded four-thumbnail PDF.js session", "no physical-device memory certification"],
+      "cross_check": { "usable": true, "implementation": "independent PDF.js render of downloaded result plus source stream byte equality tests", "role": "bounded sample visual verification, not broad PDF semantic parity" },
+      "confidence": "medium",
+      "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED; no Gold receipt", "image watermark not implemented", "no arbitrary complex font/CropBox/device/browser matrix certification"]
     }
   ]
 }

@@ -678,6 +678,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     summary: "Aggiungi numeri a pagine PDF scelte, con intervalli, offset, font, dimensione, margini e anteprima locale sulle pagine reali.",
     searchTerms: ["numero pagine pdf", "numerare pdf", "aggiungere numerazione pdf"],
   },
+  "pdf-watermark": {
+    name: "Aggiungere una filigrana PDF",
+    summary: "Sovrapponi testo visibile alle pagine selezionate di un PDF con opacità, rotazione, scala e posizione. Non elimina dati né esegue redazione.",
+    searchTerms: ["watermark pdf", "filigrana pdf", "sovrapporre testo pdf"],
+  },
   "pdf-page-delete-extract": {
     name: "Elimina o estrai pagine PDF",
     summary: "Elimina o estrae pagine indicate esplicitamente da un PDF locale usando numerazione a partire da uno.",
