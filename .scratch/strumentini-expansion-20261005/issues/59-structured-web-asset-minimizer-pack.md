@@ -8,7 +8,7 @@
 
 **Blocked by:** 168, 191, 192, 193, 209.
 
-**Status:** blocked (raw formatted-file copy/download and UTF-8 byte-delta implemented; CSS/HTML prettify and SVG optimizer still absent)
+**Status:** ready-for-agent
 
 - [x] JSON/XML/CSS/HTML show input/output bytes and saved percentage where minification reduces size.
 - [ ] Prettify and minify are two explicit modes with stable output.

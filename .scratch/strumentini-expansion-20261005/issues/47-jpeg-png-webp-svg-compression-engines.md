@@ -8,7 +8,7 @@
 
 **Blocked by:** 207, 208, 209.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 - [ ] JPEG has normal/high-compression presets plus expert controls only when the codec exposes them reliably.
 - [ ] PNG distinguishes pixel-lossless optimization from palette/color-lossy compression and verifies transparency.

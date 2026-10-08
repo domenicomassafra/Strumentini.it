@@ -8,7 +8,7 @@
 
 **Blocked by:** 215, 269.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 **Suggested skills:** pdf → security-audit → code-tdd → qa-browser
 

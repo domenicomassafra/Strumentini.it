@@ -789,6 +789,7 @@
           "capabilities": [
             "copy",
             "download",
+            "handoff",
             "reset",
             "provenance"
           ]
@@ -829,6 +830,7 @@
           "capabilities": [
             "copy",
             "download",
+            "handoff",
             "reset",
             "provenance"
           ]
@@ -2832,6 +2834,7 @@
           "capabilities": [
             "copy",
             "download",
+            "handoff",
             "reset",
             "provenance"
           ]
@@ -6598,6 +6601,7 @@
           "capabilities": [
             "copy",
             "download",
+            "handoff",
             "reset",
             "provenance"
           ]
@@ -6715,8 +6719,8 @@
       "decision": "ALREADY_COMPLETE",
       "manifestRef": "src/tools/redirect-chain-inspector/manifest.ts",
       "runtime": {
-        "location": "LOCAL",
-        "network": "forbidden"
+        "location": "REFERENCE",
+        "network": "reference-only"
       },
       "result": {
         "ref": "src/tools/redirect-chain-inspector/manifest.ts#result",
@@ -6769,6 +6773,7 @@
           "capabilities": [
             "copy",
             "download",
+            "handoff",
             "reset",
             "provenance"
           ]

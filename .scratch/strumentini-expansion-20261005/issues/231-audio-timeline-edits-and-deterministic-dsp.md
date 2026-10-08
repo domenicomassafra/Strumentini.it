@@ -8,7 +8,7 @@
 
 **Blocked by:** 230 — Audio transcode compress and target bitrate size.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 **Suggested skills:** code-module-design → code-tdd → qa-browser → browser-performance-benchmark
 

@@ -8,7 +8,7 @@
 
 **Blocked by:** 273 — Audio codec and DSP feasibility spike.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 **Suggested skills:** research-primary-sources → code-module-design → code-tdd
 

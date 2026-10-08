@@ -1,0 +1,3835 @@
+{
+  "schemaVersion": 1,
+  "definitions": {
+    "readyDAG": "Open tickets with all numeric dependencies completed; not proof of feasibility",
+    "readyForAgent": "Assignable to investigate or implement; NOT a demonstrated passing capability",
+    "externalSourceBlocked": "Missing official or complete primary-source evidence",
+    "externalDeviceBlocked": "Missing real physical-device acceptance",
+    "capabilityBlocked": "A prerequisite was closed with refusal; no validated engine exists",
+    "closedWithRefusal": "Completed administratively after explicit refusal; not a shipped capability"
+  },
+  "totals": {
+    "all": 327,
+    "completed": 245,
+    "completedWithRefusal": 17,
+    "completedWithoutExplicitRefusal": 228,
+    "open": 82,
+    "readyDAG": 28,
+    "ready-for-agent": 20,
+    "dependency-blocked": 54,
+    "external-source-blocked": 2,
+    "external-device-blocked": 5,
+    "capability-blocked": 1,
+    "storedStatusMismatches": 0
+  },
+  "groups": {
+    "completed": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      9,
+      10,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22,
+      23,
+      25,
+      26,
+      27,
+      29,
+      30,
+      34,
+      39,
+      41,
+      42,
+      43,
+      44,
+      48,
+      50,
+      52,
+      54,
+      55,
+      60,
+      61,
+      63,
+      64,
+      67,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      116,
+      118,
+      119,
+      120,
+      123,
+      124,
+      125,
+      129,
+      131,
+      132,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      153,
+      154,
+      155,
+      156,
+      157,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199,
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      213,
+      214,
+      215,
+      216,
+      217,
+      220,
+      221,
+      222,
+      223,
+      224,
+      225,
+      226,
+      227,
+      228,
+      230,
+      233,
+      242,
+      244,
+      245,
+      248,
+      252,
+      253,
+      257,
+      258,
+      259,
+      260,
+      261,
+      262,
+      263,
+      267,
+      268,
+      269,
+      270,
+      271,
+      272,
+      273,
+      274,
+      275,
+      276,
+      282,
+      283,
+      284,
+      285,
+      286,
+      287,
+      288,
+      289,
+      290,
+      291,
+      292,
+      293,
+      294,
+      295,
+      296,
+      297,
+      298,
+      299,
+      300,
+      301,
+      302,
+      303,
+      304,
+      309,
+      310,
+      311,
+      312,
+      314,
+      315,
+      316,
+      317,
+      318,
+      319,
+      321,
+      322,
+      323,
+      324,
+      325,
+      326,
+      327
+    ],
+    "ready-for-agent": [
+      47,
+      59,
+      212,
+      218,
+      231,
+      232,
+      236,
+      237,
+      238,
+      239,
+      240,
+      241,
+      243,
+      246,
+      250,
+      254,
+      256,
+      264,
+      307,
+      313
+    ],
+    "dependency-blocked": [
+      8,
+      11,
+      12,
+      13,
+      14,
+      15,
+      18,
+      24,
+      28,
+      31,
+      32,
+      33,
+      35,
+      36,
+      37,
+      38,
+      40,
+      45,
+      46,
+      49,
+      51,
+      53,
+      56,
+      57,
+      58,
+      62,
+      65,
+      66,
+      68,
+      69,
+      121,
+      122,
+      126,
+      127,
+      128,
+      130,
+      133,
+      134,
+      135,
+      152,
+      158,
+      219,
+      234,
+      235,
+      247,
+      249,
+      251,
+      255,
+      265,
+      266,
+      279,
+      305,
+      306,
+      308
+    ],
+    "external-source-blocked": [
+      115,
+      117
+    ],
+    "external-device-blocked": [
+      229,
+      277,
+      278,
+      280,
+      281
+    ],
+    "capability-blocked": [
+      320
+    ]
+  },
+  "refusedClosures": [
+    150,
+    207,
+    208,
+    209,
+    222,
+    223,
+    224,
+    230,
+    242,
+    244,
+    245,
+    253,
+    257,
+    258,
+    259,
+    262,
+    263
+  ],
+  "storedStatusMismatches": [],
+  "tickets": [
+    {
+      "id": 1,
+      "title": "Expand Result System v2 primitives",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 2,
+      "title": "Migrate calculator/date/marketing results",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 3,
+      "title": "Migrate text/research/developer results",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 4,
+      "title": "Migrate table/CSV results",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 5,
+      "title": "Migrate file/image/PDF/URL results",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 6,
+      "title": "Close Result v2 at 200/200 coverage",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 7,
+      "title": "Versioned Italy reference-data framework",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 8,
+      "title": "Codice Fiscale generate/decode",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        121,
+        122
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 9,
+      "title": "IBAN validation and Italian coordinates",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 10,
+      "title": "Partita IVA checksum + opt-in VIES",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 11,
+      "title": "Upgrade IVA + percentage calculator",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        126
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 12,
+      "title": "IRPEF annual calculator",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        127,
+        128
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 13,
+      "title": "Stipendio netto annual calculator",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        130
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 14,
+      "title": "Regime forfettario annual calculator",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        133
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 15,
+      "title": "TFR calculator",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        134,
+        135
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 16,
+      "title": "Mutuo + amortization calculator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 17,
+      "title": "Connection/device information tool",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 18,
+      "title": "Close CalcolaTutto 13/13 parity",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        8,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 19,
+      "title": "Universal unit-conversion family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 20,
+      "title": "Everyday math calculator family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 21,
+      "title": "Personal-finance calculator family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 22,
+      "title": "Password/passphrase/security family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 23,
+      "title": "Spreadsheet interchange family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 24,
+      "title": "Office/Markdown productivity family",
+      "storedStatus": "blocked (accepted/refused non-rendering Office matrix integrated; PDF-print and embedded-media compression remain unresolved)",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        56,
+        264
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 25,
+      "title": "Developer repair/schema family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 26,
+      "title": "Structured-data bulk/SQL family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 27,
+      "title": "Network/developer diagnostics family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 28,
+      "title": "Image format + target-compression family",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        47,
+        49
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 29,
+      "title": "Image edit/composition family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 30,
+      "title": "Screenshot/document privacy family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 31,
+      "title": "OCR and document-scan family",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        246,
+        247
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 32,
+      "title": "PDF edit/security family",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        237,
+        238,
+        239,
+        240,
+        241,
+        243,
+        320
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 33,
+      "title": "PDF conversion/productivity family",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        249,
+        250,
+        251,
+        254,
+        255,
+        256
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 34,
+      "title": "Heavy local media/OCR/Office feasibility refresh",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 35,
+      "title": "Audio capture/playback utilities",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        229
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 36,
+      "title": "Audio file-processing family",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        231
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 37,
+      "title": "Video inspect/subtitle utilities",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        232,
+        305
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 38,
+      "title": "Video transform family",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        234,
+        306,
+        307,
+        308
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 39,
+      "title": "AI-era deterministic helper family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 40,
+      "title": "Italy utilities beyond CalcolaTutto",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        152
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 41,
+      "title": "Italian text/language long-tail family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 42,
+      "title": "Design/CSS/web-helper family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 43,
+      "title": "Date/time everyday utility family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 44,
+      "title": "Lightweight generators/productivity family",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 45,
+      "title": "Expanded catalog IA and job-route discovery",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        18,
+        24,
+        28,
+        31,
+        32,
+        33,
+        35,
+        36,
+        37,
+        38,
+        40,
+        65,
+        66
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 46,
+      "title": "Full expansion certification + release integration",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        18,
+        45,
+        65,
+        66,
+        158,
+        279,
+        280,
+        281
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 47,
+      "title": "JPEG/PNG/WebP/SVG compression engines",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 48,
+      "title": "Target-size + batch image compression",
+      "storedStatus": "completed (bounded JPEG/PNG/WebP route; advanced codec and physical gates separate)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 49,
+      "title": "Image conversion matrix + HEIC/AVIF/GIF",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        212,
+        313
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 50,
+      "title": "Upgrade existing image-tool functionality",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 51,
+      "title": "True PDF compression profiles + target size",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        218,
+        219
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 52,
+      "title": "Visual PDF page organizer for existing page tools",
+      "storedStatus": "completed (bounded cross-source page composition with safe per-page mutation and browser verification)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 53,
+      "title": "Upgrade existing PDF inspect/extract/compare tools",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        320
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 54,
+      "title": "TXT/Markdown/HTML conversion core",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 55,
+      "title": "DOCX semantic conversion pack",
+      "storedStatus": "completed (bounded semantic pack; not pixel-faithful Word rendering)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 56,
+      "title": "Office-to-PDF and printable export pack",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        256
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 57,
+      "title": "PDF-to-editable/structured conversion pack",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        254,
+        255
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 58,
+      "title": "PDF↔image directional conversion pack",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        235,
+        236
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 59,
+      "title": "JSON/XML/CSS/HTML/SVG minimizer pack",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 60,
+      "title": "Upgrade existing CSV/table functionality",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 61,
+      "title": "Upgrade existing text/developer functionality",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 62,
+      "title": "Upgrade existing business/date functionality",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        126,
+        127,
+        128,
+        130,
+        133,
+        134,
+        135
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 63,
+      "title": "Upgrade existing marketing/URL functionality",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 64,
+      "title": "Upgrade existing file/archive/research functionality",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 65,
+      "title": "Format-operation matrix coverage gate",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        47,
+        49,
+        51,
+        53,
+        56,
+        57,
+        58,
+        59,
+        68
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 66,
+      "title": "Existing 200 functional-upgrade coverage gate",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        53,
+        62
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 67,
+      "title": "ZIP/GZIP/archive compression + safe extraction",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 68,
+      "title": "DOCX/PPTX/XLSX OOXML compressor",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        264
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 69,
+      "title": "Cross-format file-size analyzer",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        265,
+        266
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 70,
+      "title": "Result declaration in Tool Manifest",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 71,
+      "title": "Generated Result v2 inventory projection",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 72,
+      "title": "Result operation state model with partial and warning",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 73,
+      "title": "Accessible result announcements and focus recovery",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 74,
+      "title": "Answer explanation and provenance result primitives",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 75,
+      "title": "Explicit Result v2 action contract",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 76,
+      "title": "Typed output artifact descriptor and download truth",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 77,
+      "title": "Bounded large-output preview primitive",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 78,
+      "title": "Shared file result row and workspace shell",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 79,
+      "title": "Batch result and isolated-failure primitive",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 80,
+      "title": "Reference and network provenance state primitive",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 81,
+      "title": "Semantic result-class conformance harness",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 82,
+      "title": "Renderer-seam migration ledger for all 200 tools",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 83,
+      "title": "Legacy raw-result primary-output detector",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 84,
+      "title": "Result v2 style-governance gate",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 85,
+      "title": "Italian result localization and formatting contract",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 86,
+      "title": "Primary-answer and action-semantics exemplar",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 87,
+      "title": "Cancellation retry and stale-run browser acceptance",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 88,
+      "title": "Migrate BusinessMathTool renderer to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 89,
+      "title": "Migrate date-time shared renderers to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 90,
+      "title": "Migrate calculator and marketing bespoke results to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 91,
+      "title": "Migrate DeveloperWebTool renderer to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 92,
+      "title": "Migrate TextWriting and list renderers to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 93,
+      "title": "Migrate research and reference renderers to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 94,
+      "title": "Migrate TableWorkbench shared path to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 95,
+      "title": "Migrate bespoke CSV and data renderers to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 96,
+      "title": "Migrate file privacy shared renderers to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 97,
+      "title": "Migrate image shared renderers to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 98,
+      "title": "Migrate PdfTool and document renderers to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 99,
+      "title": "Migrate URL marketing QR and bespoke results to Result v2",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 100,
+      "title": "Browser capability and resource preflight contract",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 101,
+      "title": "Heavy local-job worker cancellation and memory runtime",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 102,
+      "title": "Binary file image and bytes handoff envelope",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 103,
+      "title": "Generated artifact signature and fidelity verifier",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 104,
+      "title": "Canonical job identity and duplicate-route policy",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 105,
+      "title": "Italian search-intent regression corpus",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 106,
+      "title": "Expanded directory and category scalability UX gate",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 107,
+      "title": "Related-tool and handoff graph policy",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 108,
+      "title": "Machine-readable format-operation classification schema",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 109,
+      "title": "Format fidelity and claim evidence records",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 110,
+      "title": "Original-200 functional-audit record schema",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 111,
+      "title": "Result-state browser certification matrix",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 112,
+      "title": "Result-v2 accessibility certification gate",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 113,
+      "title": "Result performance regression baseline",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 114,
+      "title": "Result privacy and network evidence gate",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 115,
+      "title": "Italian administrative geography source pack",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "external-source-blocked",
+      "unresolvedDependencies": [],
+      "gateReason": "Official historical municipality/foreign-state code coverage incomplete",
+      "closedWithRefusal": false
+    },
+    {
+      "id": 116,
+      "title": "Italian public-holiday authoritative source pack",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 117,
+      "title": "Italian fiscal annual source snapshots",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "external-source-blocked",
+      "unresolvedDependencies": [],
+      "gateReason": "No complete official annual IVA/IRPEF/forfettario source set for one tax year",
+      "closedWithRefusal": false
+    },
+    {
+      "id": 118,
+      "title": "INPS annual contribution source snapshots",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 119,
+      "title": "FatturaPA technical-spec and XSD source pack",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 120,
+      "title": "CAP to Comune source feasibility decision",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 121,
+      "title": "Codice Fiscale formal validate and generate engine",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        115
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 122,
+      "title": "Codice Fiscale decode and omocodia ambiguity",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        121
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 123,
+      "title": "Partita IVA local formal validator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 124,
+      "title": "Opt-in VIES authoritative verification",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 125,
+      "title": "Percentage helper complete human modes",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 126,
+      "title": "IVA add and scorporo with versioned presets",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        117
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 127,
+      "title": "IRPEF national annual core",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        117
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 128,
+      "title": "IRPEF supported deductions and addizionali tranche",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        127
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 129,
+      "title": "Employee social-contribution model v1",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 130,
+      "title": "Stipendio netto annual v1",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        128
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 131,
+      "title": "INPS artigiani and commercianti contribution calculator",
+      "storedStatus": "completed — bounded 2026 public calculator",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 132,
+      "title": "Gestione Separata contribution calculator",
+      "storedStatus": "completed — bounded 2026 public calculator",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 133,
+      "title": "Regime forfettario annual v1",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        117
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 134,
+      "title": "TFR accrual and ISTAT-backed revaluation",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        117
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 135,
+      "title": "TFR indicative taxation layer",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        127,
+        134
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 136,
+      "title": "Unit engine tranche 1 basic dimensions",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 137,
+      "title": "Unit engine tranche 2 engineering dimensions",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 138,
+      "title": "Digital storage and download-time calculator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 139,
+      "title": "Battery vehicle and power conversion helpers",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 140,
+      "title": "Reference-size conversion helpers",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 141,
+      "title": "Safe scientific expression calculator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 142,
+      "title": "Exact fractions and integer toolkit",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 143,
+      "title": "Descriptive statistics grades and completion",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 144,
+      "title": "Geometry equation and motion helpers",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 145,
+      "title": "Interest and savings-goal calculators",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 146,
+      "title": "Generic loan and installment scenarios",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 147,
+      "title": "Everyday cost calculator bundle",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 148,
+      "title": "FatturaPA single-invoice local reader",
+      "storedStatus": "completed — local public reader",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 149,
+      "title": "FatturaPA batch to table export",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 150,
+      "title": "P7M extraction and inspection",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 151,
+      "title": "Ponti and ferie optimizer",
+      "storedStatus": "completed — authoritative 2026 public optimizer",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 152,
+      "title": "Italian invoice stamp-duty reference helper",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        117
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 153,
+      "title": "Italian identity-document expiry helper",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 154,
+      "title": "Calendar convenience modes on existing date engine",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 155,
+      "title": "World clock and live deadline surface",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 156,
+      "title": "Timer stopwatch and Pomodoro resilient clock",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 157,
+      "title": "CAP to Comune lookup",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 158,
+      "title": "Italy source freshness and annual rollover gate",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        115,
+        117
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 159,
+      "title": "Secure password PIN and Italian passphrase generators",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 160,
+      "title": "Explainable password-strength estimator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 161,
+      "title": "CSV XLSX and Markdown-table interchange",
+      "storedStatus": "completed (bounded local parse/write core; public catalog handoff remains an integration concern of the spreadsheet-family umbrella)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 162,
+      "title": "VCF viewer and CSV export",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 163,
+      "title": "Office metadata cleanup with reinspection",
+      "storedStatus": "completed (bounded OOXML metadata parts only)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 164,
+      "title": "Structured developer diagnostic envelope",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 165,
+      "title": "Deterministic JSON repair with ordered edit log",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 166,
+      "title": "Structural JSON diff",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 167,
+      "title": "JSON to TypeScript and JSON Schema inference",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 168,
+      "title": "XML validate format and minify core",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 169,
+      "title": "Representable XML to JSON CSV and XLSX mappings",
+      "storedStatus": "completed (bounded engine mapping; no standalone public route added in this tranche)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 170,
+      "title": "CSV to SQL dialect generator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 171,
+      "title": "Streaming huge CSV splitter",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 172,
+      "title": "Table compare by explicit keys and columns",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 173,
+      "title": "IPv4 and IPv6 CIDR calculator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 174,
+      "title": "Base 2 through 36 converter",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 175,
+      "title": "chmod Unix permission helper",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 176,
+      "title": "Keyboard event diagnostic",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 177,
+      "title": "X509 and CSR local inspector",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 178,
+      "title": "Regex execution isolation and hard timeout",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 179,
+      "title": "UUIDv7 RFC 9562 conformance repair",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 180,
+      "title": "JWT temporal-claim interpretation",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 181,
+      "title": "Timezone-aware cron next-runs",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 182,
+      "title": "Base64 text file and base64url modes",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 183,
+      "title": "AI response code fences to named files ZIP",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 184,
+      "title": "Reversible semantic text chunker",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 185,
+      "title": "Fact-sensitive original versus AI diff",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 186,
+      "title": "Stable-placeholder anonymize and restore",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 187,
+      "title": "Italian Gulpease readability",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 188,
+      "title": "Mojibake repair with disclosed transforms",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 189,
+      "title": "PDF-copy text reflow",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 190,
+      "title": "Phone link hashtag and mention extractor",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 191,
+      "title": "JSON formatter minify and size-delta mode",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 192,
+      "title": "Parser-backed CSS minifier",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 193,
+      "title": "Semantic HTML minifier",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 194,
+      "title": "Existing CSV cleanup and profiler upgrades",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 195,
+      "title": "Existing CSV transform-route upgrades",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 196,
+      "title": "Existing text and developer remainder upgrades",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 197,
+      "title": "File folder manifest and checksum workflow upgrades",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 198,
+      "title": "Research bibliography and source export handoffs",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 199,
+      "title": "CSS gradient shadow and radius generator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 200,
+      "title": "Color harmonies tints shades and named-colors upgrade",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 201,
+      "title": "Color-blindness image simulation",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 202,
+      "title": "Sitemap XML generator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 203,
+      "title": "WiFi QR preset on existing QR generator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 204,
+      "title": "EAN-13 and Code-128 barcode generator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 205,
+      "title": "Secure random picker team splitter and coupon-code modes",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 206,
+      "title": "Heavy local-job mobile and performance acceptance gate",
+      "storedStatus": "completed (gate contract complete; no heavy path promoted without physical evidence)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 207,
+      "title": "JPEG and WebP format-aware compression adapters",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 208,
+      "title": "PNG lossless and palette compression modes",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 209,
+      "title": "Safe SVG optimizer and preview",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 210,
+      "title": "Image target-size search engine",
+      "storedStatus": "completed (bounded browser-native target solver; physical-device promotion separately gated)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 211,
+      "title": "Mixed-image batch compression queue",
+      "storedStatus": "completed (bounded sequential queue; real-device promotion separately gated)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 212,
+      "title": "HEIC AVIF and GIF directional image implementations",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 213,
+      "title": "Direct-manipulation image transform workspace",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 214,
+      "title": "Destructive screenshot image redaction",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 215,
+      "title": "Bounded lazy PDF page-thumbnail renderer",
+      "storedStatus": "completed (bounded on-demand browser PDF.js preview; physical-device evidence remains separate)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 216,
+      "title": "Visual PDF merge reorder and rotate organizer",
+      "storedStatus": "completed (bounded visual preview and existing verified PDF core; production/physical device promotion separately gated)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 217,
+      "title": "Visual PDF split delete and extract selector",
+      "storedStatus": "completed (strict shared grammar, bounded visual selection and independently verified multi-PDF ZIP)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 218,
+      "title": "Image-aware and scan PDF compression profiles",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 219,
+      "title": "PDF target-size solver and batch compressor",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        218
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 220,
+      "title": "Page-scoped PDF text and embedded-image extraction",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 221,
+      "title": "PDF structural text and visual comparison",
+      "storedStatus": "completed (explicit page alignment, bounded structural/text layers and user-triggered rendered visual diff)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 222,
+      "title": "Real ZIP DEFLATE compression tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 223,
+      "title": "GZIP single-file compress and decompress",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 224,
+      "title": "Safe ZIP extraction with bomb and path defenses",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 225,
+      "title": "OOXML package analyzer and safe DEFLATE rebuild",
+      "storedStatus": "completed (bounded OOXML-only analyze/rebuild core)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 226,
+      "title": "DOCX to Markdown HTML and TXT semantic extraction",
+      "storedStatus": "completed (bounded semantic extraction; not layout rendering)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 227,
+      "title": "TXT Markdown and HTML to DOCX generation",
+      "storedStatus": "completed (bounded simple-style semantic DOCX generation)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 228,
+      "title": "Cross-format file-size analyzer core",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 229,
+      "title": "Microphone test and local recorder",
+      "storedStatus": "blocked (physical iOS/Android acceptance pending)",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "external-device-blocked",
+      "unresolvedDependencies": [],
+      "gateReason": "Real physical microphone capture/permission proof missing",
+      "closedWithRefusal": false
+    },
+    {
+      "id": 230,
+      "title": "Audio transcode compress and target bitrate size",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 231,
+      "title": "Audio timeline edits and deterministic DSP",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 232,
+      "title": "Video inspector and target-size calculator",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 233,
+      "title": "SRT VTT transform transcript and readability",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 234,
+      "title": "Video transform worker core",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        232
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 235,
+      "title": "Advanced Images to PDF composition",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        212
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 236,
+      "title": "Advanced PDF to image export",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 237,
+      "title": "True PDF redaction with post-export proof",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 238,
+      "title": "PDF page numbers placement and ranges",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 239,
+      "title": "PDF watermark and overlay placement",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 240,
+      "title": "PDF crop and page-size normalization",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 241,
+      "title": "PDF signature placement",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 242,
+      "title": "PDF protect encrypt and legitimate unlock",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 243,
+      "title": "PDF fill annotate and write overlays",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 244,
+      "title": "PDF repair and tolerant recovery",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 245,
+      "title": "PDF A conversion decision and implementation",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 246,
+      "title": "Local image OCR",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 247,
+      "title": "Scanned PDF OCR and searchable text layer",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        246
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 248,
+      "title": "Search text across multiple PDFs",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 249,
+      "title": "Split PDF by maximum output size",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        218
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 250,
+      "title": "PDF n-up pages per sheet",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 251,
+      "title": "PDF booklet and front-back interleave",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        250
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 252,
+      "title": "PDF to Markdown semantic export",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 253,
+      "title": "PDF to DOCX semantic reconstruction",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 254,
+      "title": "PDF tables to XLSX",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 255,
+      "title": "PDF to PPTX page-as-slide baseline",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        236
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 256,
+      "title": "TXT Markdown HTML and CSV to printable PDF",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 257,
+      "title": "DOCX to PDF fidelity-gated conversion",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 258,
+      "title": "XLSX to PDF fidelity-gated conversion",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 259,
+      "title": "PPTX to PDF fidelity-gated conversion",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 260,
+      "title": "PPTX image export and text outline",
+      "storedStatus": "completed (bounded text outline + media inventory; raster export refused downstream of 270)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 261,
+      "title": "Office viewer and structure inspector",
+      "storedStatus": "completed (read-only semantic/structure inspector; no faithful rendering)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 262,
+      "title": "EML and MSG local message viewer",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 263,
+      "title": "EPUB local reader and text export",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": true
+    },
+    {
+      "id": 264,
+      "title": "OOXML embedded-media compression core",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 265,
+      "title": "File-size analyzer PDF adapter",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        218
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 266,
+      "title": "File-size analyzer OOXML and media adapters",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        232
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 267,
+      "title": "P7M CMS parser feasibility spike",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 268,
+      "title": "Image codec and SVG optimizer feasibility spike",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 269,
+      "title": "Advanced PDF renderer and mutation feasibility spike",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 270,
+      "title": "Office spreadsheet parser writer and renderer feasibility spike",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 271,
+      "title": "OCR engine feasibility spike",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 272,
+      "title": "Archive codec feasibility spike",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 273,
+      "title": "Audio codec and DSP feasibility spike",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 274,
+      "title": "Video codec and media-processing feasibility spike",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 275,
+      "title": "EML MSG and EPUB parser feasibility spike",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 276,
+      "title": "RIS BibTeX converter authoritative oracle closure",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 277,
+      "title": "Physical Android Chrome image-resize acceptance",
+      "storedStatus": "blocked — physical Android target/tooling unavailable",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "external-device-blocked",
+      "unresolvedDependencies": [],
+      "gateReason": "Physical Android Chrome target and evidence missing",
+      "closedWithRefusal": false
+    },
+    {
+      "id": 278,
+      "title": "Physical iOS Safari image-resize acceptance",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "external-device-blocked",
+      "unresolvedDependencies": [],
+      "gateReason": "Physical iOS Safari Web Inspector/picker acceptance missing",
+      "closedWithRefusal": false
+    },
+    {
+      "id": 279,
+      "title": "Image-resize Gold promotion gate",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        277,
+        278
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 280,
+      "title": "Physical Android heavy-tool web acceptance lane",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "external-device-blocked",
+      "unresolvedDependencies": [],
+      "gateReason": "Physical Android heavy-tool acceptance evidence missing",
+      "closedWithRefusal": false
+    },
+    {
+      "id": 281,
+      "title": "Physical iOS Safari heavy-tool web acceptance lane",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "external-device-blocked",
+      "unresolvedDependencies": [],
+      "gateReason": "Physical iOS Safari heavy-tool acceptance evidence missing",
+      "closedWithRefusal": false
+    },
+    {
+      "id": 282,
+      "title": "Strumentini.it Cloudflare custom-domain cutover runbook",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 283,
+      "title": "Custom-domain post-cutover smoke and rollback certification",
+      "storedStatus": "completed — Strumentini.it build, live smoke, rollback and restore are certified",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 284,
+      "title": "Existing business-math 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 285,
+      "title": "Existing client-work-math 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 286,
+      "title": "Existing data 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 287,
+      "title": "Existing date-time 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 288,
+      "title": "Existing developer 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 289,
+      "title": "Existing documents 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 290,
+      "title": "Existing files 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 291,
+      "title": "Existing files-assets 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 292,
+      "title": "Existing image-visual 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 293,
+      "title": "Existing marketing 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 294,
+      "title": "Existing research 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 295,
+      "title": "Existing text 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 296,
+      "title": "Existing web-operations 200-audit tranche",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 297,
+      "title": "Original-200 functional audit 200 of 200 consolidation",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 298,
+      "title": "Image text watermark and overlay composition",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 299,
+      "title": "Image combine grid stack and social slicing",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 300,
+      "title": "Image Base64 local encode decode mode",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 301,
+      "title": "Screenshot stitching with overlap correction",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 302,
+      "title": "Document image perspective straighten",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 303,
+      "title": "Tone metronome and noise generator",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 304,
+      "title": "Browser text-to-speech Italian controls",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 305,
+      "title": "Exact video frame extraction and webcam test",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        232
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 306,
+      "title": "Video to GIF conversion",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        234
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 307,
+      "title": "Audio loudness and LUFS analysis",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 308,
+      "title": "Video AI context contact-sheet export",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        232,
+        305
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 309,
+      "title": "Italian syllabification feasibility spike",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 310,
+      "title": "CSS px rem em conversion helper",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 311,
+      "title": "Astronomy and location-dependent date feasibility",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 312,
+      "title": "Common JPG PNG WebP conversion matrix",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 313,
+      "title": "SVG to raster and PDF export",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 314,
+      "title": "Image resize functional upgrade",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 315,
+      "title": "Image metadata and EXIF before-after upgrade",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 316,
+      "title": "Image compare slider overlay and diff upgrade",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 317,
+      "title": "Contact sheet favicon and platform export upgrades",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 318,
+      "title": "PDF metadata inspect remove upgrade",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 319,
+      "title": "PDF form inspector and flatten upgrade",
+      "storedStatus": "completed (verified safe subset; visible appearances explicitly unsupported)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 320,
+      "title": "PDF password tool capability upgrade",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "capability-blocked",
+      "unresolvedDependencies": [],
+      "gateReason": "Ticket 242 closed REFUSED; no approved password-supplied PDF decrypt engine",
+      "closedWithRefusal": false
+    },
+    {
+      "id": 321,
+      "title": "UTM builder parser cleaner round-trip and bulk",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 322,
+      "title": "Meta OpenGraph and social preview preset upgrade",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 323,
+      "title": "URL normalize compare and bulk transform upgrade",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 324,
+      "title": "Redirect chain and live network diagnostic upgrade",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 325,
+      "title": "Robots canonical campaign and naming helper upgrades",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 326,
+      "title": "File privacy secret and metadata-risk upgrades",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 327,
+      "title": "Research dedupe identity and citation export audit",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    }
+  ]
+}

@@ -49,7 +49,7 @@ Migration principles:
 
 ## P5 — continue the expansion backlog selectively
 
-The expansion plan in `docs/10-tool-expansion-result-system-v2.md` has already been materialized into the 327-ticket DAG in `.scratch/strumentini-expansion-20261005/`. At the current checkpoint **245 tickets are completed and 82 remain open** due to dependencies, source evidence, unsupported fidelity paths, outstanding acceptance work or physical-device requirements; 28 currently have all declared dependencies met but are not automatically releasable. Treat the validator's current frontier as the queue; do not restart the old seed wave.
+The expansion plan in `docs/10-tool-expansion-result-system-v2.md` has already been materialized into the 327-ticket DAG in `.scratch/strumentini-expansion-20261005/`. At the current checkpoint **245 tickets are completed (17 explicit refusals), 82 open**: 20 ready-for-agent candidates, 54 dependency-blocked, 2 official-source-blocked, 5 physical-device-blocked and 1 capability-blocked. Of the 28 numerically dependency-ready tickets, eight are still gated by non-DAG evidence. The generated `CURRENT-TICKET-DASHBOARD.md` is the execution queue and must pass `npm run tickets:check`; numeric readiness does not mean an engine is approved or a release is ready. Prioritize #232 then #234/#305/#266, #218 then #219/#249/#265, #236 then #255, plus official source #117 only when independently complete and pinned. Never interpret the refusal at #242 as a usable PDF decrypt capability for #320; do not restart the old seed wave.
 
 - keep Result System v2 and functional-audit coverage complete as the catalog evolves;
 - cover all 13 current CalcolaTutto jobs via add/upgrade/covered mappings;

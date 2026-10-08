@@ -8,7 +8,7 @@
 
 **Blocked by:** 54, 103, 269.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 **Suggested skills:** pdf → design-impeccable → code-module-design → code-tdd
 

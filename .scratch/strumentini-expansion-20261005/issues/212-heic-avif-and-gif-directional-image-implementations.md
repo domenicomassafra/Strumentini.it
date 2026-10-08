@@ -8,7 +8,7 @@
 
 **Blocked by:** 103, 206, 268.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 **Suggested skills:** code-module-design → code-tdd → qa-browser → browser-performance-benchmark
 
