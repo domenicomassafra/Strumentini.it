@@ -78,8 +78,11 @@ export async function openPdfThumbnailSession(file: File, signal?: AbortSignal):
         const scale = Math.min(1, PDF_THUMBNAIL_MAX_WIDTH / original.width, PDF_THUMBNAIL_MAX_HEIGHT / original.height);
         const viewport = page.getViewport({ scale, rotation: (page.rotate + rotation) % 360 });
         canvas = document.createElement("canvas");
-        canvas.width = Math.max(1, Math.ceil(viewport.width));
-        canvas.height = Math.max(1, Math.ceil(viewport.height));
+        // Floating-point viewport dimensions can land a fraction above the cap;
+        // ceil() alone then emits an extra pixel (177x209), contradicting the
+        // published 176x208 limit and defeating bounded pixel comparisons.
+        canvas.width = Math.max(1, Math.min(PDF_THUMBNAIL_MAX_WIDTH, Math.ceil(viewport.width)));
+        canvas.height = Math.max(1, Math.min(PDF_THUMBNAIL_MAX_HEIGHT, Math.ceil(viewport.height)));
         const ctx = canvas.getContext("2d");
         if (ctx === null) throw new Error("UNSUPPORTED_CANVAS: Il browser non può creare l'anteprima");
         const task = page.render({ canvas, canvasContext: ctx, viewport, background: "rgb(255,255,255)" });

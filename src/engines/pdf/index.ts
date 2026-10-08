@@ -57,6 +57,7 @@ import {
 import { inflatePdfStream } from "./inflate";
 import { redactUrl, redactUrlCredentials } from "../url-marketing";
 import { validatePdfMergePagePlan, type PdfMergePageRef } from "./merge-page-plan";
+import { alignPdfEvidence } from "./compare-alignment";
 
 export * from "./types";
 export { buildPdfFromJpegs, buildPdfFromPages, createSimplePdf, parseJpeg };
@@ -1139,11 +1140,38 @@ export async function comparePdfs(first: PdfInput, second: PdfInput, signal?: Ab
   }
   const leftText = await extractPdfText(first, signal);
   const rightText = await extractPdfText(second, signal);
-  const textChangedPages = leftText.filter((page, index) => page.text !== rightText[index]?.text).map((page) => page.page);
-  const summary = left.pageCount === right.pageCount && samePageGeometry && textChangedPages.length === 0
-    ? "The bounded page geometry and extracted text match."
-    : `Compared ${left.pageCount} and ${right.pageCount} pages; ${changedPages.length} geometry and ${textChangedPages.length} text differences found.`;
-  return { first: left, second: right, samePageCount: left.pageCount === right.pageCount, samePageGeometry, changedPages, textChangedPages, summary };
+  abortIfNeeded(signal);
+  const evidence = (inspection: PdfInspection, extracted: typeof leftText) => inspection.pages.map((page, index) => ({
+    page: index + 1, text: extracted[index]?.text ?? "", truncated: extracted[index]?.truncated ?? true,
+    width: page.width, height: page.height, rotation: page.rotation,
+    imageCount: page.imageCount, annotationCount: page.annotationCount,
+  }));
+  const alignment = alignPdfEvidence(evidence(left, leftText), evidence(right, rightText));
+  const matched = alignment.entries.filter((entry) => entry.firstPage !== null && entry.secondPage !== null);
+  const structureChanged = matched.filter((entry) => entry.geometryChanged || entry.resourceCountChanged)
+    .map((entry) => ({ firstPage: entry.firstPage!, secondPage: entry.secondPage! }));
+  const textChanged = matched.filter((entry) => entry.textChanged)
+    .map((entry) => ({ firstPage: entry.firstPage!, secondPage: entry.secondPage! }));
+  const partial = alignment.ambiguousEmptyText;
+  const differences = alignment.addedPages.length + alignment.removedPages.length
+    + alignment.reorderedPairs.length + alignment.modifiedPairs.length;
+  const textChangedPages = textChanged.map((item) => item.firstPage);
+  const summary = differences === 0
+    ? `Compared ${left.pageCount} and ${right.pageCount} pages: bounded geometry and extracted text match. Visual appearance NOT checked.`
+    : `Compared ${left.pageCount} and ${right.pageCount} pages; ${differences} page alignment/content differences found (added ${alignment.addedPages.length}, removed ${alignment.removedPages.length}, reordered ${alignment.reorderedPairs.length}, modified ${alignment.modifiedPairs.length}). Visual appearance NOT checked.`;
+  return {
+    first: left, second: right, samePageCount: left.pageCount === right.pageCount,
+    samePageGeometry, changedPages, textChangedPages, summary,
+    alignment,
+    structure: { status: structureChanged.length > 0 || alignment.addedPages.length > 0 || alignment.removedPages.length > 0
+      ? "changed" : partial ? "partial" : "bounded-counts-match",
+      changedPairs: structureChanged, scope: "page-geometry-rotation-image-and-annotation-counts-only" },
+    text: { status: textChanged.length > 0 || alignment.addedPages.length > 0 || alignment.removedPages.length > 0
+      ? "changed" : partial ? "partial" : "extracted-match",
+      changedPairs: textChanged, truncatedOrTextlessPages: partial, scope: "extractable-text-not-reading-order-or-ocr" },
+    visual: { status: "not-rendered", confidence: "unknown",
+      note: "L'uguaglianza di testo e geometria NON prova uguaglianza visiva. Avvia esplicitamente il confronto locale delle miniature." },
+  };
 }
 
 export async function checkPdfPassword(input: PdfInput, signal?: AbortSignal): Promise<{ encrypted: boolean; inspected: PdfInspection }> {

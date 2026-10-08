@@ -15,7 +15,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
 - **218 — Image-aware and scan PDF compression profiles**
-- **221 — PDF structural text and visual comparison**
 - **229 — Microphone test and local recorder**
 - **231 — Audio timeline edits and deterministic DSP**
 - **232 — Video inspector and target-size calculator**
@@ -40,7 +39,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **319 — PDF form inspector and flatten upgrade**
 - **320 — PDF password tool capability upgrade**
 
-Exactly **30** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
+Exactly **29** incomplete tickets currently have every declared blocker completed. Stored ticket status may lag this derived scheduling frontier until the ticket is actively claimed.
 
 ## Key decomposition rules
 
@@ -277,7 +276,7 @@ Exactly **30** incomplete tickets currently have every declared blocker complete
 | 218 | blocked | Image-aware and scan PDF compression profiles | 098, 100, 103, 269 |
 | 219 | blocked | PDF target-size solver and batch compressor | 079, 218, 222 |
 | 220 | completed | Page-scoped PDF text and embedded-image extraction | 098 |
-| 221 | blocked | PDF structural text and visual comparison | 215, 220 |
+| 221 | completed (source-scoped page alignment, bounded text/structure and rendered pixel diff) | PDF structural text and visual comparison | 215, 220 |
 | 222 | completed | Real ZIP DEFLATE compression tranche | 103, 272 |
 | 223 | completed | GZIP single-file compress and decompress | 103, 272 |
 | 224 | completed | Safe ZIP extraction with bomb and path defenses | 222 |

@@ -1,0 +1,12 @@
+# STR-221 — layered PDF comparison, 2026-10-08
+
+## Source and acceptance
+
+- Parser: `src/engines/pdf/compare-alignment.ts` with bounded edit-distance alignment and safe unique-page move detection. Addition/removal/reorder/content-edit are distinct, and empty-text duplicates explicitly weaken confidence. Scanned pages are not inferred equivalent through OCR.
+- Structural comparison checks per-page geometry, rotation, image count and annotation count. These are **bounded observations**; matching values are *not* byte-for-byte object-graph equality. Text mode compares real extracted text, not reconstructed layout or OCR. For every successful backend compare, `comparison.visual` remains `{status:"not-rendered",confidence:"unknown"}` until the user explicitly triggers the visual workflow.
+- User-triggered visual workflow: `src/components/tools/pdf/PdfVisualCompare.tsx`, rendering using existing strict `openPdfThumbnailSession` at 176×208 maximum, one page pair at a time with sequential PDF.js worker teardown, comparing decoded RGBA via `src/engines/pdf/visual-diff.ts` and a red-pixel overlay image. All Blob object URLs, canvases and bitmap resources are cleaned up. A match is only a *sampled miniature match*, never a full-document equivalence claim. Unrenderable/unreadable pages and non-comparable dimensions produce a partial state.
+- Shared thumbnail off-by-one fix clamps the final canvas dimensions to max 176×208 after floating-point viewport rounding.
+- `tests/pdf-compare-alignment.test.ts`: insertion, removal, moved unique pages, actual changed content, empty-text/duplicate ambiguity, identical extracted text not implying a visual-equality claim, and embedded-image resource-count changes.
+- `tests/pdf-visual-diff.test.ts`: equal pixels, different pixels with precise red overlay and out-of-bounds/different-render-dimension partial states.
+- `npm run acceptance:pdf-comparison`: **24/24 passed in Chromium, Firefox and WebKit** with a 390px viewport and no network upload. Cases: two PDF page streams with *identical extracted text but different drawing coordinates* are visually different; identical rendered miniatures only get a qualified sampled-match; incompatible geometry and deliberately failed local preview reads produce partial; reordered and inserted pages are not mislabeled content changes. PDF.js stays unrequested until explicit visual intent.
+- Source-bound Gold/browser/rollback/physical-device release gates are not replaced by this narrow acceptance.

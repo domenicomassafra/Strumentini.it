@@ -285,6 +285,23 @@ export interface PdfCompareResult {
   readonly changedPages: readonly number[];
   readonly textChangedPages: readonly number[];
   readonly summary: string;
+  readonly alignment: import("./compare-alignment").PdfAlignmentSummary;
+  readonly structure: {
+    readonly status: "bounded-counts-match" | "changed" | "partial";
+    readonly changedPairs: readonly { firstPage: number; secondPage: number }[];
+    readonly scope: "page-geometry-rotation-image-and-annotation-counts-only";
+  };
+  readonly text: {
+    readonly status: "extracted-match" | "changed" | "partial";
+    readonly changedPairs: readonly { firstPage: number; secondPage: number }[];
+    readonly truncatedOrTextlessPages: boolean;
+    readonly scope: "extractable-text-not-reading-order-or-ocr";
+  };
+  readonly visual: {
+    readonly status: "not-rendered";
+    readonly confidence: "unknown";
+    readonly note: string;
+  };
 }
 
 export interface PdfManifestEntry {

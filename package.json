@@ -52,6 +52,7 @@
     "acceptance:developer-transform-download": "node scripts/acceptance-developer-transform-download.mjs",
     "acceptance:pdf-thumbnails": "tsx scripts/acceptance-pdf-thumbnails.ts",
     "acceptance:pdf-page-selection": "tsx scripts/acceptance-pdf-page-selection.ts",
+    "acceptance:pdf-comparison": "tsx scripts/acceptance-pdf-comparison.ts",
     "acceptance:image-resize:physical:serve": "npm run build && tsx scripts/generate-image-resize-physical-fixtures.ts && node scripts/serve-image-resize-physical.mjs",
     "acceptance:image-resize:physical:record": "tsx scripts/record-image-resize-physical.ts",
     "gold:image-resize": "tsx scripts/gold/image-resize-certify.ts",

@@ -10,6 +10,8 @@ import { PdfVisualOrder } from "./PdfVisualOrder";
 import { PdfMergeOrganizer } from "./PdfMergeOrganizer";
 import { parsePdfPageGroups, parsePdfPageSelection } from "../../../engines/pdf/page-selection";
 import type { PdfMergePageRef } from "../../../engines/pdf/merge-page-plan";
+import type { PdfCompareResult } from "../../../engines/pdf";
+import { PdfVisualCompare } from "./PdfVisualCompare";
 
 export type PdfToolId = PdfResultToolId;
 
@@ -95,6 +97,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [contactSheetColumns, setContactSheetColumns] = useState("3");
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [showThumbnails, setShowThumbnails] = useState(false);
+  const [showVisualCompare, setShowVisualCompare] = useState(false);
   const [selectionPageCount, setSelectionPageCount] = useState(0);
   const [activeSelectionGroup, setActiveSelectionGroup] = useState(0);
   const [result, setResult] = useState<PreparedPdfResult | null>(null);
@@ -130,6 +133,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
       });
     }
     setResult(null);
+    setShowVisualCompare(false);
     setMergePagePlan(null);
     setOrderHistory([]);
     setShowThumbnails(false);
@@ -190,6 +194,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   async function execute() {
     setError("");
     setResult(null);
+    setShowVisualCompare(false);
     if (inputMode === "pair" && files.length < 2) {
       setError("Scegli due file PDF locali.");
       return;
@@ -250,6 +255,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setPdfImageScale("2");
     setImageRotations("");
     setShowThumbnails(false);
+    setShowVisualCompare(false);
     setSelectionPageCount(0);
     setActiveSelectionGroup(0);
     setPdfPageSize("original");
@@ -333,6 +339,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const publicTitle = publicCopy?.name ?? toolId;
   const publicDescription = publicCopy?.summary ?? "";
   const actionLabel = PDF_ACTION_IT[toolId];
+  const comparison = result !== null && toolId === "pdf-compare-lite" && result.raw.comparison !== null
+    && typeof result.raw.comparison === "object" && "alignment" in result.raw.comparison
+    ? result.raw.comparison as unknown as PdfCompareResult : null;
   return (
     <form class="tool-operation" onSubmit={submit} noValidate>
       <section class="tool-form-card">
@@ -550,13 +559,48 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         busy={isWorking}
       >
         {result === null ? undefined : (
-          <PdfResultV2
-            toolId={toolId}
-            result={result}
-            sourceFiles={files}
-            onReset={reset}
-            onRetry={execute}
-          />
+          <>
+            <PdfResultV2
+              toolId={toolId}
+              result={result}
+              sourceFiles={files}
+              onReset={reset}
+              onRetry={execute}
+            />
+            {comparison !== null && files[0] !== undefined && files[1] !== undefined && (
+              <section class="field" aria-label="Analisi PDF per livelli" data-pdf-compare-layers>
+                <strong>Allineamento delle pagine</strong>
+                <p class="file-note" data-compare-page-summary>
+                  Aggiunte {comparison.alignment.addedPages.length} · Rimosse {comparison.alignment.removedPages.length} ·
+                  Riordinate {comparison.alignment.reorderedPairs.length} · Modificate {comparison.alignment.modifiedPairs.length} ·
+                  Coppie invariate nei controlli limitati {comparison.alignment.unchangedPairs.length}
+                </p>
+                <ol class="status-list" data-pdf-compare-alignment>
+                  {comparison.alignment.entries.slice(0, 40).map((entry, index) => (
+                    <li key={index}>
+                      {entry.kind === "added" ? "Aggiunta" : entry.kind === "removed" ? "Rimossa" : entry.kind === "reordered" ? "Spostata" : entry.kind === "modified" ? "Modificata" : "Invariata nei controlli limitati"}:
+                      {entry.firstPage === null ? " —" : ` PDF A pagina ${entry.firstPage}`}
+                      {entry.secondPage === null ? " —" : ` → PDF B pagina ${entry.secondPage}`}
+                      {entry.geometryChanged ? " · geometria" : ""}
+                      {entry.textChanged ? " · testo" : ""}
+                      {entry.resourceCountChanged ? " · conteggi risorse" : ""}
+                    </li>
+                  ))}
+                </ol>
+                {comparison.alignment.entries.length > 40 && <small>Prime 40 corrispondenze mostrate su {comparison.alignment.entries.length}; il risultato copiabile include tutte le pagine.</small>}
+                <strong>Struttura e testo</strong>
+                <p class="file-note" data-compare-text-summary>
+                  Struttura: {comparison.structure.status} ({comparison.structure.changedPairs.length} coppie differenti per geometria/conteggi risorse).
+                  Testo estratto: {comparison.text.status} ({comparison.text.changedPairs.length} coppie differenti).
+                </p>
+                <p class="file-note">La struttura confronta geometria, rotazione e conteggi di immagini/annotazioni, non l'identità dei byte di ogni oggetto. Il testo estratto non ricostruisce OCR o impaginazione e non certifica l'uguaglianza visiva.</p>
+                <button type="button" onClick={() => setShowVisualCompare((shown) => !shown)}>
+                  {showVisualCompare ? "Chiudi confronto visivo" : "Apri confronto visivo delle miniature (facoltativo)"}
+                </button>
+                {showVisualCompare && <PdfVisualCompare first={files[0]} second={files[1]} comparison={comparison} />}
+              </section>
+            )}
+          </>
         )}
       </ToolResultPanel>
     </form>
