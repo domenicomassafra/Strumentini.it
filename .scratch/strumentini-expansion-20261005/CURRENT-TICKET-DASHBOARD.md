@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 254 / 73 |
+| All / completed / open | 327 / 256 / 71 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 26 |
-| Ready for assignment (feasibility still to prove) | 18 |
+| DAG-ready (all numeric dependencies closed) | 24 |
+| Ready for assignment (feasibility still to prove) | 16 |
 | Waiting on other tickets | 47 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,19 +21,17 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (18)
+## Ready for assignment (feasibility still to prove) (16)
 
 - #037 — Video inspect/subtitle utilities
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #059 — JSON/XML/CSS/HTML/SVG minimizer pack
-- #068 — DOCX/PPTX/XLSX OOXML compressor
 - #212 — HEIC AVIF and GIF directional image implementations
 - #218 — Image-aware and scan PDF compression profiles
 - #231 — Audio timeline edits and deterministic DSP
 - #234 — Video transform worker core
 - #236 — Advanced PDF to image export
 - #237 — True PDF redaction with post-export proof
-- #240 — PDF crop and page-size normalization
 - #241 — PDF signature placement
 - #243 — PDF fill annotate and write overlays
 - #246 — Local image OCR
@@ -54,7 +52,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #024 — Office/Markdown productivity family (awaiting #056)
 - #028 — Image format + target-compression family (awaiting #047, #049)
 - #031 — OCR and document-scan family (awaiting #246, #247)
-- #032 — PDF edit/security family (awaiting #237, #240, #241, #243)
+- #032 — PDF edit/security family (awaiting #237, #241, #243)
 - #033 — PDF conversion/productivity family (awaiting #249, #250, #251, #254, #255, #256)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #036 — Audio file-processing family (awaiting #231)
@@ -68,7 +66,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #057 — PDF-to-editable/structured conversion pack (awaiting #254, #255)
 - #058 — PDF↔image directional conversion pack (awaiting #235, #236)
 - #062 — Upgrade existing business/date functionality (awaiting #126, #127, #128, #130, #133, #134, #135)
-- #065 — Format-operation matrix coverage gate (awaiting #047, #049, #051, #053, #056, #057, #058, #059, #068)
+- #065 — Format-operation matrix coverage gate (awaiting #047, #049, #051, #053, #056, #057, #058, #059)
 - #066 — Existing 200 functional-upgrade coverage gate (awaiting #053, #062)
 - #069 — Cross-format file-size analyzer (awaiting #265)
 - #121 — Codice Fiscale formal validate and generate engine (awaiting #115)

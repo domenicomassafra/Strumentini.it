@@ -13,7 +13,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **047 — JPEG/PNG/WebP/SVG compression engines**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
-- **068 — DOCX/PPTX/XLSX OOXML compressor**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
@@ -23,7 +22,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **234 — Video transform worker core**
 - **236 — Advanced PDF to image export**
 - **237 — True PDF redaction with post-export proof**
-- **240 — PDF crop and page-size normalization**
 - **241 — PDF signature placement**
 - **243 — PDF fill annotate and write overlays**
 - **246 — Local image OCR**
@@ -36,7 +34,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 - **308 — Video AI context contact-sheet export**
 
-Exactly **26** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **24** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -120,7 +118,7 @@ Exactly **26** incomplete tickets currently have every declared numeric blocker 
 | 065 | blocked | Format-operation matrix coverage gate | 047, 048, 049, 051, 052, 053, 054, 055, 056, 057, 058, 059, 067, 068, 108, 109 |
 | 066 | blocked | Existing 200 functional-upgrade coverage gate | 050, 053, 060, 061, 062, 063, 064, 110, 297 |
 | 067 | completed | ZIP/GZIP/archive compression + safe extraction | 222, 223, 224 |
-| 068 | ready-for-agent | DOCX/PPTX/XLSX OOXML compressor | 225, 264 |
+| 068 | completed | DOCX/PPTX/XLSX OOXML compressor | 225, 264 |
 | 069 | blocked | Cross-format file-size analyzer | 228, 265, 266 |
 | 070 | completed | Result declaration in Tool Manifest | — |
 | 071 | completed | Generated Result v2 inventory projection | 070 |
@@ -292,7 +290,7 @@ Exactly **26** incomplete tickets currently have every declared numeric blocker 
 | 237 | ready-for-agent | True PDF redaction with post-export proof | 215, 269 |
 | 238 | completed | PDF page numbers placement and ranges | 215, 269 |
 | 239 | completed | PDF watermark and overlay placement | 215, 269 |
-| 240 | ready-for-agent | PDF crop and page-size normalization | 215, 269 |
+| 240 | completed | PDF crop and page-size normalization | 215, 269 |
 | 241 | ready-for-agent | PDF signature placement | 215, 269 |
 | 242 | completed | PDF protect encrypt and legitimate unlock | 103, 269 |
 | 243 | ready-for-agent | PDF fill annotate and write overlays | 215, 269 |

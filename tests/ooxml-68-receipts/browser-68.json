@@ -23,16 +23,16 @@
       "resultBytes": 87929,
       "savedBytes": 113280,
       "savingsPercent": 56.3,
-      "sha256": "e131fb45eae6fbe9a74a674506df82c507b7ef1ade6df1043a531b80633cb32d",
+      "sha256": "3704e04996ec1dbee03f1d5e73f4a56451d2a8d380bcda59641fa1132e841baa",
       "independentReopen": "OOXML68_REOPEN_OK .docx: charts/tables/fonts/links XML byte-identical, ZIP CRC valid",
       "chromiumDesktopEmulatedMobileViewportHeapBytes": {
         "before": {
-          "JSHeapUsedSize": 3140996,
-          "JSHeapTotalSize": 6160384
+          "JSHeapUsedSize": 3091580,
+          "JSHeapTotalSize": 5898240
         },
         "after": {
-          "JSHeapUsedSize": 5825220,
-          "JSHeapTotalSize": 8257536
+          "JSHeapUsedSize": 5812840,
+          "JSHeapTotalSize": 8781824
         }
       }
     },
@@ -45,16 +45,16 @@
       "resultBytes": 76226,
       "savedBytes": 122369,
       "savingsPercent": 61.62,
-      "sha256": "5b61a44fc1f1e5e33cf8147e39048cb19f73e10dde0a984a6eb0b8f348110067",
+      "sha256": "281611807ab52184a8c9e551fa912d1ea387f994b06d09a0ab32b37b0ad4cab1",
       "independentReopen": "OOXML68_REOPEN_OK .pptx: charts/tables/fonts/links XML byte-identical, ZIP CRC valid",
       "chromiumDesktopEmulatedMobileViewportHeapBytes": {
         "before": {
-          "JSHeapUsedSize": 6775524,
+          "JSHeapUsedSize": 6777552,
           "JSHeapTotalSize": 10223616
         },
         "after": {
-          "JSHeapUsedSize": 7412840,
-          "JSHeapTotalSize": 12320768
+          "JSHeapUsedSize": 7409452,
+          "JSHeapTotalSize": 11534336
         }
       }
     },
@@ -67,16 +67,16 @@
       "resultBytes": 25863,
       "savedBytes": 145835,
       "savingsPercent": 84.94,
-      "sha256": "1dd1e3149128ee4918ec61dcdfe639ed8a63e14ea1ce1dc4dd5e1651685459a2",
+      "sha256": "12bb2cf208f3ddffb5d91306518f9af77f1f86fbe84c00a4dcae9f34ac9a97ba",
       "independentReopen": "OOXML68_REOPEN_OK .xlsx: charts/tables/fonts/links XML byte-identical, ZIP CRC valid",
       "chromiumDesktopEmulatedMobileViewportHeapBytes": {
         "before": {
-          "JSHeapUsedSize": 9656176,
+          "JSHeapUsedSize": 9653576,
           "JSHeapTotalSize": 13500416
         },
         "after": {
-          "JSHeapUsedSize": 11036660,
-          "JSHeapTotalSize": 14811136
+          "JSHeapUsedSize": 11084484,
+          "JSHeapTotalSize": 15073280
         }
       }
     }

@@ -25,7 +25,7 @@ describe("expanded local Gold frontier", () => {
     expect(promoted.every((tool) => tool.releaseGate === (tool.goldEligible ? "PASS" : "BLOCKED"))).toBe(true);
     expect(promoted.every((tool) => tool.locality.status === "PASS" && tool.mobileA11y.status === "PASS" && tool.lazyLoad.status === "PASS")).toBe(true);
     const unverified = index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED");
-    expect(unverified.map((tool) => tool.id)).toEqual(["ooxml-media-compression", "pdf-page-numbers", "pdf-watermark", "video-inspector"]);
+    expect(unverified.map((tool) => tool.id)).toEqual(["ooxml-media-compression", "pdf-crop-normalize", "pdf-page-numbers", "pdf-watermark", "video-inspector"]);
     expect(unverified.every((tool) => !tool.goldEligible && tool.releaseGate === "BLOCKED")).toBe(true);
   }, 30_000);
 

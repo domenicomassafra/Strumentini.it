@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 327,
-    "completed": 254,
+    "completed": 256,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 236,
-    "open": 73,
-    "readyDAG": 26,
-    "ready-for-agent": 18,
+    "completedWithoutExplicitRefusal": 238,
+    "open": 71,
+    "readyDAG": 24,
+    "ready-for-agent": 16,
     "dependency-blocked": 47,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -61,6 +61,7 @@
       63,
       64,
       67,
+      68,
       70,
       71,
       72,
@@ -209,6 +210,7 @@
       233,
       238,
       239,
+      240,
       242,
       244,
       245,
@@ -283,14 +285,12 @@
       37,
       47,
       59,
-      68,
       212,
       218,
       231,
       234,
       236,
       237,
-      240,
       241,
       243,
       246,
@@ -733,7 +733,6 @@
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
         237,
-        240,
         241,
         243
       ],
@@ -1135,8 +1134,7 @@
         56,
         57,
         58,
-        59,
-        68
+        59
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -1167,9 +1165,9 @@
     {
       "id": 68,
       "title": "DOCX/PPTX/XLSX OOXML compressor",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -2917,9 +2915,9 @@
     {
       "id": 240,
       "title": "PDF crop and page-size normalization",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false

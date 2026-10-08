@@ -8,7 +8,7 @@
 
 **Blocked by:** 225, 264.
 
-**Status:** implementation acceptance verified for bounded desktop/browser scope; physical-mobile memory/visual Office-app certification PENDING (not Gold)
+**Status:** completed
 
 - [x] DOCX/PPTX/XLSX analysis shows package size by media/XML/fonts/other **before** modification, with actual ZIP compressed/expanded bytes and container overhead.
 - [x] Conservative/balanced/compact profiles optimize supported embedded JPG/PNG and explicitly MIME-declared static WebP **only with separate loss consent**; optional resize requires explicit consent and a dimension cap, with all relationships intact. Unsupported, animated, unrecognized or unavailable codecs fail closed/skip.
