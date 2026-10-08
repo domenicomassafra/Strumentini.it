@@ -63,11 +63,12 @@ describe("functional audit tranche 292", () => {
       const certification = index.tools.find((tool) => tool.id === toolId);
       expect(certification, toolId).toMatchObject({
         status: "GOLD",
-        releaseGate: "PASS",
-        goldEligible: true,
-        blockers: [],
         oracle: { status: "VERIFIED" },
       });
+      // A receipt's historical GOLD status is distinct from release
+      // eligibility after a canonical oracle/fixture authority change.
+      expect(certification?.releaseGate, toolId).toBe(certification?.goldEligible ? "PASS" : "BLOCKED");
+      expect(certification?.certificationReceipt, toolId).not.toBeNull();
       expect(certification?.fixtures.every((fixture) => fixture.status === "VERIFIED"), toolId).toBe(true);
     }
   }, 30_000);

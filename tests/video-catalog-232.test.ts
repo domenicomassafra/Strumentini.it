@@ -28,7 +28,7 @@ describe("STR-232 — public catalog registration", () => {
     const { toolLoaders } = await import("../src/generated/tool-loaders");
     const loader = toolLoaders["video-inspector"];
     expect(loader).toBeTypeOf("function");
-    expect((await loader()).default.run).toBeTypeOf("function");
+    expect((await loader!()).default.run).toBeTypeOf("function");
     expect(resultV2Inventory.find((entry) => entry.toolId === "video-inspector")).toMatchObject({
       engine: "video",
       rendererSeam: { component: "VideoInspectorTool", kind: "bespoke" },

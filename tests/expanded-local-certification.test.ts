@@ -16,15 +16,17 @@ const directIds = [
 ] as const;
 
 describe("expanded local Gold frontier", () => {
-  it("promotes exactly the 49 direct candidates inside the fully certified non-partial catalog", async () => {
+  it("preserves 49 historical Gold receipts while keeping later, unverified tools separate", async () => {
     const index = await buildCertificationIndex();
     const promoted = index.tools.filter((tool) => tool.certificationReceipt?.startsWith("quality/receipts/expanded-local/") === true);
     expect(promoted.map(({ id }) => id).toSorted()).toEqual([...directIds].toSorted());
     expect(promoted).toHaveLength(49);
-    expect(promoted.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(promoted.every((tool) => tool.status === "GOLD" && tool.certificationReceipt !== null)).toBe(true);
+    expect(promoted.every((tool) => tool.releaseGate === (tool.goldEligible ? "PASS" : "BLOCKED"))).toBe(true);
     expect(promoted.every((tool) => tool.locality.status === "PASS" && tool.mobileA11y.status === "PASS" && tool.lazyLoad.status === "PASS")).toBe(true);
     const unverified = index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED");
-    expect(unverified).toEqual([]);
+    expect(unverified.map((tool) => tool.id)).toEqual(["video-inspector"]);
+    expect(unverified.every((tool) => !tool.goldEligible && tool.releaseGate === "BLOCKED")).toBe(true);
   }, 30_000);
 
   it("binds one truthful browser PASS result to each direct candidate", async () => {

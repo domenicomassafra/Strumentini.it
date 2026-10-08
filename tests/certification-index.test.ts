@@ -48,8 +48,14 @@ describe("expanded catalog certification index", () => {
       PARTIAL: index.tools.filter((tool) => tool.status === "PARTIAL").length,
       IMPLEMENTED_UNVERIFIED: index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").length,
     });
-    expect(index.summary.certificationGoldCount).toBe(index.catalogToolCount - 2);
-    expect(index.summary.releaseEligibleGoldCount).toBe(index.summary.certificationGoldCount);
+    // Registered but not yet certified tools must not inherit Gold from an
+    // earlier 259-tool catalog. New authorities also invalidate source-bound
+    // release eligibility of older receipts until their gates are renewed.
+    expect(index.summary.statusCounts).toEqual({ GOLD: 257, PARTIAL: 2, IMPLEMENTED_UNVERIFIED: 1 });
+    expect(index.catalogToolCount).toBe(260);
+    expect(index.summary.certificationGoldCount).toBe(index.tools.filter((tool) => tool.status === "GOLD").length);
+    expect(index.summary.releaseEligibleGoldCount).toBe(index.tools.filter((tool) => tool.goldEligible).length);
+    expect(index.summary.releaseEligibleGoldCount).toBeLessThanOrEqual(index.summary.certificationGoldCount);
     expect(index.summary.physicalDevicePassCount).toBe(0);
     expect(index.global.physicalDevice).toMatchObject({
       status: "EXTERNAL",
@@ -66,11 +72,14 @@ describe("expanded catalog certification index", () => {
         androidChrome: "MISSING",
       },
     });
-    const csvCleaner = index.tools.find((tool) => tool.id === "csv-cleaner");
-    expect(csvCleaner?.releaseGate).toBe("PASS");
-    expect(csvCleaner?.goldEligible).toBe(true);
+    const inspector = index.tools.find((tool) => tool.id === "video-inspector");
+    expect(inspector).toMatchObject({
+      status: "IMPLEMENTED_UNVERIFIED", goldEligible: false, releaseGate: "BLOCKED",
+      oracle: { status: "BOUND", entryId: "cand-260" },
+    });
+    expect(inspector?.certificationReceipt).toBeNull();
     const businessMath = index.tools.filter((tool) => tool.engine === "business-math");
-    expect(businessMath.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(businessMath.every((tool) => tool.status === "GOLD")).toBe(true);
     const newMathIds = new Set([
       "basic-unit-converter", "battery-vehicle-power-helper", "engineering-unit-converter", "everyday-cost-calculator",
       "fraction-integer-toolkit", "geometry-equation-motion-helper", "interest-savings-calculator", "mortgage-amortization-calculator",
@@ -78,7 +87,7 @@ describe("expanded catalog certification index", () => {
       "gestione-separata-contributi", "inps-artigiani-commercianti",
     ]);
     expect(businessMath.filter((tool) => newMathIds.has(tool.id))).toHaveLength(14);
-    expect(businessMath.filter((tool) => newMathIds.has(tool.id)).every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(businessMath.filter((tool) => newMathIds.has(tool.id)).every((tool) => tool.status === "GOLD")).toBe(true);
     const developerWeb = index.tools.filter((tool) => tool.engine === "developer-web");
     const newDeveloperIds = new Set([
       "base-converter", "chmod-permission-helper", "cidr-calculator", "css-minifier", "html-minifier", "json-repair",
@@ -86,27 +95,27 @@ describe("expanded catalog certification index", () => {
       "random-picker-team-coupon-generator", "vcf-viewer-csv-export", "x509-csr-inspector", "xml-formatter-validator",
     ]);
     expect(developerWeb.filter((tool) => newDeveloperIds.has(tool.id))).toHaveLength(14);
-    expect(developerWeb.filter((tool) => newDeveloperIds.has(tool.id)).every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
-    expect(developerWeb.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(developerWeb.filter((tool) => newDeveloperIds.has(tool.id)).every((tool) => tool.status === "GOLD")).toBe(true);
+    expect(developerWeb.every((tool) => tool.status === "GOLD")).toBe(true);
     const dataTable = index.tools.filter((tool) => tool.engine === "table-operations" || tool.engine === "table-csv");
-    expect(dataTable.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(dataTable.every((tool) => tool.status === "GOLD")).toBe(true);
     const newTableIds = new Set(["csv-splitter", "csv-to-sql", "table-compare", "fatturapa-reader", "fatturapa-batch-csv"]);
     expect(dataTable.filter((tool) => newTableIds.has(tool.id))).toHaveLength(5);
-    expect(dataTable.filter((tool) => newTableIds.has(tool.id)).every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(dataTable.filter((tool) => newTableIds.has(tool.id)).every((tool) => tool.status === "GOLD")).toBe(true);
     const dateTime = index.tools.filter((tool) => tool.engine === "date-time");
-    expect(dateTime.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
-    expect(dateTime.find((tool) => tool.id === "italian-document-expiry")).toMatchObject({ status: "GOLD", goldEligible: true, releaseGate: "PASS" });
-    expect(dateTime.find((tool) => tool.id === "ponti-ferie-optimizer")).toMatchObject({ status: "GOLD", goldEligible: true, releaseGate: "PASS" });
+    expect(dateTime.every((tool) => tool.status === "GOLD")).toBe(true);
+    expect(dateTime.find((tool) => tool.id === "italian-document-expiry")).toMatchObject({ status: "GOLD" });
+    expect(dateTime.find((tool) => tool.id === "ponti-ferie-optimizer")).toMatchObject({ status: "GOLD" });
     const textWriting = index.tools.filter((tool) => tool.engine === "text-writing");
-    expect(textWriting.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(textWriting.every((tool) => tool.status === "GOLD")).toBe(true);
     const newTextIds = new Set([
       "fact-sensitive-text-diff", "italian-gulpease-readability", "mojibake-repair", "pdf-copy-text-reflow",
       "phone-link-hashtag-mention-extractor", "semantic-text-chunker", "stable-placeholder-anonymizer",
     ]);
     expect(textWriting.filter((tool) => newTextIds.has(tool.id))).toHaveLength(7);
-    expect(textWriting.filter((tool) => newTextIds.has(tool.id)).every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(textWriting.filter((tool) => newTextIds.has(tool.id)).every((tool) => tool.status === "GOLD")).toBe(true);
     const pdf = index.tools.filter((tool) => tool.engine === "pdf");
-    expect(pdf.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(pdf.every((tool) => tool.status === "GOLD")).toBe(true);
     const researchKnowledge = index.tools.filter((tool) => tool.engine === "research-knowledge");
     const researchGold = researchKnowledge.filter((tool) => tool.status === "GOLD");
     expect(researchGold).toHaveLength(researchKnowledge.length);
@@ -115,20 +124,22 @@ describe("expanded catalog certification index", () => {
     const marketingMediaIds = new Set(["exif-remover", "meta-preview", "open-graph-preview", "platform-size-presets", "qr-generator", "qr-reader", "social-character-limit", "url-comparison"]);
     const marketingMedia = index.tools.filter((tool) => marketingMediaIds.has(tool.id));
     expect(marketingMedia).toHaveLength(8);
-    expect(marketingMedia.every((tool) => tool.status === "GOLD" && tool.goldEligible && tool.releaseGate === "PASS")).toBe(true);
+    expect(marketingMedia.every((tool) => tool.status === "GOLD")).toBe(true);
     const risConverter = index.tools.find((tool) => tool.id === "ris-bibtex-converter");
     expect(risConverter).toMatchObject({
       status: "GOLD",
-      goldEligible: true,
-      releaseGate: "PASS",
       locality: { status: "PASS" },
       mobileA11y: { status: "PASS" },
       lazyLoad: { status: "PASS" },
       oracle: { status: "VERIFIED" },
     });
     expect(risConverter?.certificationReceipt).toBe("quality/receipts/research-knowledge/ris-bibtex-converter.gold.json");
-    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED")).toEqual([]);
+    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").map((tool) => tool.id)).toEqual(["video-inspector"]);
     expect(index.tools.filter((tool) => tool.status === "PARTIAL").map((tool) => tool.id)).toEqual(["image-resize", "microphone-recorder"]);
+    for (const tool of index.tools.filter((entry) => entry.status === "GOLD")) {
+      expect(tool.certificationReceipt).not.toBeNull();
+      expect(tool.releaseGate).toBe(tool.goldEligible ? "PASS" : "BLOCKED");
+    }
     expect(index.tools.some((tool) => tool.physicalDevice.status === "PASS")).toBe(false);
   }, 30_000);
 

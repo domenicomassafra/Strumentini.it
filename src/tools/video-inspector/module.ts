@@ -3,7 +3,6 @@ import { inspectMp4Local } from "../../engines/video/mp4-inspection";
 import { planVideoTargetSize, type VideoTargetSizeInput } from "../../engines/video/target-size";
 
 type InspectorRuntimeInput =
-  | Blob
   | { readonly operation: "inspect"; readonly file: Blob }
   | ({ readonly operation: "target-size" } & VideoTargetSizeInput);
 

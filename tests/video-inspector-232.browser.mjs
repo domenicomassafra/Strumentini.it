@@ -47,7 +47,7 @@ try {
   });
   const response = await page.goto(`${origin}/tools/video-inspector/`, { waitUntil: "networkidle" });
   assert.equal(response?.status(), 200, "Inspector static route exists");
-  await page.getByRole("heading", { name: "Ispeziona MP4 e calcola il bitrate" }).waitFor();
+  await page.getByRole("heading", { level: 1, name: "Ispeziona MP4 e calcola il bitrate", exact: true }).waitFor();
   assert.equal(await page.locator("input[type=file]").count(), 1);
   checks += 2;
 
