@@ -693,6 +693,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     summary: "Ritaglia visivamente le pagine senza cancellare contenuti oppure adatta e centra pagine di dimensioni diverse in A4, Letter o formato libero.",
     searchTerms: ["ritaglia pdf", "crop pdf", "uniforma dimensioni pagine pdf", "adatta pdf ad A4"],
   },
+  "pdf-n-up": {
+    name: "Metti più pagine PDF su un foglio",
+    summary: "Disponi più pagine PDF su ogni foglio con ordine e margini dichiarati, anteprima e download locale. Il risultato appiattito non conserva il testo selezionabile.",
+    searchTerms: ["pdf 2 pagine su un foglio", "pdf quattro pagine su A4", "pdf n up", "impaginazione pdf"],
+  },
   "pdf-page-delete-extract": {
     name: "Elimina o estrai pagine PDF",
     summary: "Elimina o estrae pagine indicate esplicitamente da un PDF locale usando numerazione a partire da uno.",
@@ -704,6 +709,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "pdf-page-size-inspector": {
     name: "Vedi dimensioni delle pagine PDF",
     summary: "Mostra larghezza, altezza e rotazione di ogni pagina del PDF.",
+  },
+  "printable-pdf-from-text": {
+    name: "Converti testo, Markdown, HTML e CSV in PDF",
+    summary: "Impagina file testuali e tabelle in un PDF stampabile con margini e pagine verificati. I caratteri fuori dalla codifica supportata vengono segnalati, non sostituiti.",
+    searchTerms: ["testo in pdf", "markdown in pdf", "html in pdf", "csv in pdf", "crea pdf da testo"],
   },
   "pdf-password-check-remove": {
     name: "Controlla se un PDF è protetto",
