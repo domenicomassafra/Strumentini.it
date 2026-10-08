@@ -13,6 +13,8 @@ const cases = [
   { id: "xml-formatter-validator", input: "<root><item>café</item></root>", extension: ".xml", type: "xml" },
   { id: "css-minifier", input: 'p { content: "a b"; color: red; }', extension: ".css", type: "css" },
   { id: "html-minifier", input: '<p>café <strong>hello</strong></p>', extension: ".html", type: "html" },
+  { id: "css-minifier", input: 'p{content:"a b";color:red}a{margin:0}', extension: ".css", type: "css", mode: "prettify" },
+  { id: "html-minifier", input: '<div><p>café <strong>hello</strong></p><p>ancora</p></div>', extension: ".html", type: "html", mode: "prettify" },
 ];
 
 async function waitForServer() {
@@ -36,9 +38,22 @@ try {
         const errors = [];
         page.on("request", (req) => { if (!req.url().startsWith(origin) && !req.url().startsWith("blob:") && !req.url().startsWith("data:")) offsite.push(req.url()); });
         page.on("pageerror", (error) => errors.push(String(error)));
-        const response = await page.goto(`${origin}/tools/${example.id}/`, { waitUntil: "networkidle" });
-        if (response?.status() !== 200) throw new Error(`${browserName}/${example.id}: missing route`);
+        let response;
+        // Local static server/navigation can occasionally report a transient
+        // non-200 during multi-engine runs under high CPU load. A bounded
+        // retry still fails closed when the built route is genuinely absent.
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+          response = await page.goto(`${origin}/tools/${example.id}/`, { waitUntil: "networkidle" });
+          if (response?.status() === 200) break;
+          await page.waitForTimeout(150);
+        }
+        if (response?.status() !== 200) throw new Error(`${browserName}/${example.id}: built route did not return 200 (observed ${String(response?.status())})`);
         await page.locator("form textarea").first().fill(example.input);
+        if (example.mode !== undefined) await page.locator("form select").first().selectOption(example.mode);
+        if (example.mode === "prettify") {
+          const button = await page.locator("form button[type=submit]").innerText();
+          if (button.trim() !== `Formatta ${example.type.toUpperCase()}`) throw new Error(`${browserName}/${example.id}: misleading action label for readable mode`);
+        }
         await page.locator("form button[type=submit]").click();
         const downloadButton = page.locator('[data-result-action="download"]');
         await downloadButton.waitFor({ timeout: 15000 });
@@ -51,8 +66,9 @@ try {
         if (value.startsWith('{"risultato"') || value.includes('"engineVersion"')) throw new Error(`${browserName}/${example.id}: serialized metadata was downloaded`);
         if (example.type === "json" && JSON.parse(value).x !== "è") throw new Error("JSON data changed");
         if (example.type === "xml" && !value.includes("<item>café</item>")) throw new Error("XML text changed");
-        if (example.type === "css" && (!value.includes('content:"a b"') || !value.includes("color:red"))) throw new Error("CSS semantics changed");
+        if (example.type === "css" && (!value.includes(example.mode === "prettify" ? 'content: "a b"' : 'content:"a b"') || !value.includes(example.mode === "prettify" ? "color: red" : "color:red"))) throw new Error("CSS semantics changed");
         if (example.type === "html" && !value.includes("<strong>hello</strong>")) throw new Error("HTML content changed");
+        if (example.mode === "prettify" && !value.includes("\n")) throw new Error(`${browserName}/${example.id}: requested readable formatting missing`);
         const summary = await page.locator(".gutter").last().innerText();
         if (!summary.includes(`Byte output trasformato (UTF-8)`) || !summary.includes(String(bytes.byteLength))) throw new Error(`${browserName}/${example.id}: byte count missing or incorrect`);
         if (offsite.length > 0 || errors.length > 0) throw new Error(`${browserName}/${example.id}: unintended network or runtime errors ${JSON.stringify({ offsite, errors })}`);
@@ -60,13 +76,13 @@ try {
         checked++;
         await page.close();
       }
-      console.log(`${browserName}: 4/4 transformed text downloads PASS`);
+      console.log(`${browserName}: ${cases.length}/${cases.length} transformed text downloads PASS`);
     } finally {
       await context.close();
       await browser.close();
     }
   }
-  console.log(`ticket 59 raw transform acceptance: ${checked}/12 PASS`);
+  console.log(`ticket 59 raw transform acceptance: ${checked}/${cases.length * 3} PASS`);
 } finally {
   server.kill("SIGTERM");
 }

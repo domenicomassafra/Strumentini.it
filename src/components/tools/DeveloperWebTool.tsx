@@ -83,8 +83,8 @@ const DEVELOPER_WEB_CONFIGS_RAW: Readonly<Record<DeveloperWebToolId, DeveloperWe
   "json-structural-diff": { id: "json-structural-diff", title: "Structural JSON Diff", eyebrow: "Structural differences", submitLabel: "Compare JSON", placeholder: "Compare two JSON values by stable paths.", fields: [area("leftJson", "JSON before", '{"items":[1,2],"active":true}', 8), area("rightJson", "JSON after", '{"items":[2,1],"active":"yes"}', 8)] },
   "json-type-schema-inference": { id: "json-type-schema-inference", title: "JSON to TypeScript & Schema", eyebrow: "Inferred contract", submitLabel: "Infer types", placeholder: "Infer a reproducible TypeScript type and JSON Schema from one example.", fields: [area("json", "JSON", '{"name":"Ada","tags":["local","safe"],"meta":{"__proto__":"data"}}', 10), text("typeName", "Root type name", "Root"), select("mode", "Output", ["both", "typescript", "json-schema"], "both")] },
   "xml-formatter-validator": { id: "xml-formatter-validator", title: "XML Validator, Formatter & Minifier", eyebrow: "XML result", submitLabel: "Process XML", placeholder: "Validate, format or minify XML locally without DTD/entity resolution.", fields: [area("text", "XML", '<root><item xml:space="preserve">  keep  </item><empty/></root>', 10), select("mode", "Operation", ["prettify", "minify", "validate"], "prettify"), number("indent", "Indent spaces", "2")] },
-  "css-minifier": { id: "css-minifier", title: "Parser-backed CSS Minifier", eyebrow: "CSS minified", submitLabel: "Minify CSS", placeholder: "Enter CSS to parse and serialize compactly.", fields: [area("text", "CSS", '/* comment */\n.card { color: red; content: "a b"; --gap: 1rem  2rem; }', 10)] },
-  "html-minifier": { id: "html-minifier", title: "Semantic HTML Minifier", eyebrow: "HTML minified", submitLabel: "Minify HTML", placeholder: "Enter HTML to parse and serialize with semantic whitespace rules.", fields: [area("text", "HTML", '<div>\n  <p>Hello <strong>world</strong>.</p>\n  <pre>  keep\n  this </pre>\n</div>', 10), select("mode", "Operation", ["safe", "advanced"], "safe")] },
+  "css-minifier": { id: "css-minifier", title: "Parser-backed CSS Minifier", eyebrow: "CSS minified", submitLabel: "Minify CSS", placeholder: "Enter CSS to parse and serialize compactly.", fields: [area("text", "CSS", '/* comment */\n.card { color: red; content: "a b"; --gap: 1rem  2rem; }', 10), select("mode", "Operation", ["minify", "prettify"], "minify")] },
+  "html-minifier": { id: "html-minifier", title: "Semantic HTML Minifier", eyebrow: "HTML minified", submitLabel: "Minify HTML", placeholder: "Enter HTML to parse and serialize with semantic whitespace rules.", fields: [area("text", "HTML", '<div>\n  <p>Hello <strong>world</strong>.</p>\n  <pre>  keep\n  this </pre>\n</div>', 10), select("mode", "Operation", ["safe", "advanced", "prettify"], "safe")] },
 };
 
 const FIELD_LABEL_IT: Readonly<Record<string, string>> = {
@@ -468,6 +468,8 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
   }
 
   const gutterState = gutterStateFor(operation.status);
+  const readableSourceMode = (config.id === "css-minifier" || config.id === "html-minifier") && values.mode === "prettify";
+  const sourceFormatLabel = config.id === "css-minifier" ? "CSS" : "HTML";
   const serializedResult = useMemo(
     () => operation.result === null ? "" : resultText(operation.result),
     [operation.result],
@@ -562,7 +564,7 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
     <ToolSurface
       gutter={
         <ToolGutter
-          label={config.eyebrow}
+          label={readableSourceMode ? `${sourceFormatLabel} formattato` : config.eyebrow}
           state={gutterState}
           placeholder={operation.isRunning ? it(CONTROL.gutterRunning) : it(CONTROL.gutterIdle)}
           busy={operation.isRunning}
@@ -645,7 +647,7 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
         </div>
         <InlineError message={operation.error} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{config.submitLabel}</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{readableSourceMode ? `Formatta ${sourceFormatLabel}` : config.submitLabel}</ToolSubmitButton>
           <ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton>
         </ToolActions>
       </form>

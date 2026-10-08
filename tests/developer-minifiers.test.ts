@@ -26,6 +26,20 @@ describe("tickets 192-193 parser-backed minifiers", () => {
     expect(cssMinifyOperation(result.output).output).toBe(result.output);
   });
 
+  it("formats CSS readably through the AST, with stable output and preserved token semantics", () => {
+    const input = '@media screen and (min-width: 20em){.x{content:"a  b";--my-space:1rem  2rem;color:red}.y{margin:0}}';
+    const formatted = cssMinifyOperation(input, "prettify");
+    expect(formatted.output).toContain("@media screen and (min-width:20em) {");
+    expect(formatted.output).toContain(".x {");
+    expect(formatted.output).toContain('content: "a  b"');
+    expect(formatted.output).toContain("--my-space: 1rem 2rem");
+    expect(cssMinifyOperation(formatted.output, "prettify").output).toBe(formatted.output);
+    expect(cssMinifyOperation(formatted.output, "minify").output).toBe(cssMinifyOperation(input, "minify").output);
+    expect(formatted.mode).toBe("prettify");
+    expect(cssMinifyOperation("a{color:red}", "minify").output).toBe("a{color:red}");
+    expect(() => cssMinifyOperation("a{}", "bad" as "minify")).toThrow(/INVALID_MODE/u);
+  });
+
   it("refuses malformed CSS with a structured location and no optimized artifact", () => {
     for (const input of ["a { color: red", "a { color:; }", "a { color: red; broken ??? }"]) {
       try {
@@ -59,6 +73,22 @@ describe("tickets 192-193 parser-backed minifiers", () => {
     expect(conditional.output).toContain("<!--[if IE]>x<![endif]-->");
     expect(conditional.output).not.toContain("ordinary");
     expect(conditional.warnings).toHaveLength(1);
+  });
+
+  it("offers a separate readable HTML mode only for block-only structure, preserving mixed and sensitive text", () => {
+    const input = '<section><p>A <strong>B</strong> C</p><p>D</p></section>';
+    const readable = htmlMinifyOperation(input, "prettify");
+    expect(readable.output).toBe('<section>\n  <p>A <strong>B</strong> C</p>\n  <p>D</p>\n</section>');
+    expect(htmlMinifyOperation(readable.output, "prettify").output).toBe(readable.output);
+    expect(readable.warnings.join(" ")).toMatch(/spazi e a-capo/u);
+    expect(readable.whitespacePolicy).toMatch(/CSS whitespace selectors/u);
+    const sensitive = '<div><span>Hello <strong>world</strong>!</span><pre>  keep\n  this </pre><script>var x="a  b";</script></div>';
+    const parsed = htmlMinifyOperation(sensitive, "prettify");
+    expect(parsed.output).toContain('Hello <strong>world</strong>!');
+    expect(parsed.output).toContain('<pre>  keep\n  this </pre>');
+    expect(parsed.output).toContain('<script>var x="a  b";</script>');
+    expect(textContent(parseFragment(parsed.output))).toBe(textContent(parseFragment(sensitive)));
+    expect(() => htmlMinifyOperation("<div/>", "unsupported")).toThrow(/INVALID_MODE/u);
   });
 
   it("refuses HTML parse errors and runs both tools through the shared developer seam", async () => {

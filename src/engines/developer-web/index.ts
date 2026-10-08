@@ -187,7 +187,7 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
   if (toolId === "json-structural-diff") return jsonStructuralDiffOperation(stringField(value, "leftJson", "left", "before"), stringField(value, "rightJson", "right", "after"));
   if (toolId === "json-type-schema-inference") return jsonInferenceOperation(stringField(value, "json", "text", "input"), optionalStringField(value, "typeName", "name") ?? "Root", optionalStringField(value, "mode", "output") ?? "both");
   if (toolId === "xml-formatter-validator") return xmlOperation(stringField(value, "text", "xml", "input"), optionalStringField(value, "mode", "operation") ?? "prettify", optionalNumberField(value, "indent", "spaces") ?? 2);
-  if (toolId === "css-minifier") return cssMinifyOperation(stringField(value, "text", "css", "input"));
+  if (toolId === "css-minifier") return cssMinifyOperation(stringField(value, "text", "css", "input"), (optionalStringField(value, "mode", "operation") ?? "minify") as "minify" | "prettify");
   if (toolId === "html-minifier") return htmlMinifyOperation(stringField(value, "text", "html", "input"), optionalStringField(value, "mode", "operation") ?? "safe");
   return invalid("UNKNOWN_TOOL", `Unknown developer/web tool: ${String(toolId)}.`);
 }

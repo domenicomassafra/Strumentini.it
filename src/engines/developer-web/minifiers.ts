@@ -45,7 +45,7 @@ function validateCssDelimiters(css: string): void {
   if (opening !== undefined) invalid("INVALID_CSS", "Unclosed CSS delimiter.", lineColumnAt(css, opening.offset));
 }
 
-export function cssMinifyOperation(css: string) {
+function parsedCss(css: string) {
   assertInputSize(css);
   validateCssDelimiters(css);
   let ast: ReturnType<typeof cssTree.parse>;
@@ -73,18 +73,56 @@ export function cssMinifyOperation(css: string) {
       ...(invalidNode.offset === undefined ? {} : { character: invalidNode.offset }),
     });
   }
-  const output = cssTree.generate(ast);
+  if (ast.type !== "StyleSheet") invalid("INVALID_CSS", "Expected a parsed CSS stylesheet.");
+  return ast;
+}
+
+/** Format only syntax understood by css-tree; do not regex-rewrite CSS strings. */
+function prettyCssNode(node: cssTree.CssNode, level: number): string {
+  if (node.type !== "Rule" && node.type !== "Atrule") return cssTree.generate(node);
+  const indent = "  ".repeat(level);
+  const prefix = node.type === "Rule"
+    ? cssTree.generate(node.prelude)
+    : `@${node.name}${node.prelude === null ? "" : ` ${cssTree.generate(node.prelude)}`}`;
+  if (node.block === null || node.block === undefined) return cssTree.generate(node);
+  const children = node.block.children.toArray();
+  if (children.length === 0) return `${prefix} {}`;
+  const body = children.map((child) => {
+    let line: string;
+    if (child.type === "Rule" || child.type === "Atrule") {
+      line = prettyCssNode(child, level + 1);
+    } else if (child.type === "Declaration") {
+      // Split at the syntax node's leading property separator, never in a
+      // quoted value or a custom-property value's opaque token sequence.
+      const declaration = cssTree.generate(child);
+      const separator = declaration.indexOf(":");
+      line = `${declaration.slice(0, separator + 1)} ${declaration.slice(separator + 1).replace(/;$/u, "")};`;
+    } else {
+      line = cssTree.generate(child);
+    }
+    return `${indent}  ${line}`;
+  }).join("\n");
+  return `${prefix} {\n${body}\n${indent}}`;
+}
+
+export function cssMinifyOperation(css: string, mode: "minify" | "prettify" = "minify") {
+  if (mode !== "minify" && mode !== "prettify") invalid("INVALID_MODE", "CSS mode must be minify or prettify.");
+  const ast = parsedCss(css);
+  const output = mode === "prettify" ? ast.children.toArray().map((node) => prettyCssNode(node, 0)).join("\n") : cssTree.generate(ast);
   const inputBytes = utf8Bytes(css);
   const outputBytes = utf8Bytes(output);
   return withVersion({
     valid: true,
     output,
+    mode,
     inputBytes,
     outputBytes,
     savedBytes: inputBytes - outputBytes,
     savedPercent: inputBytes === 0 ? 0 : Math.round(((inputBytes - outputBytes) / inputBytes) * 10_000) / 100,
     parser: `css-tree ${cssTree.version}`,
-    semantics: "AST parse/serialize removes representation-only whitespace/comments while preserving strings, escapes and custom-property token content.",
+    semantics: mode === "minify"
+      ? "AST parse/serialize removes representation-only whitespace/comments while preserving strings, escapes and custom-property token content."
+      : "AST-based readable indentation preserves CSS tokens, strings and custom properties; formatting is not CSS optimization or minification.",
   });
 }
 
@@ -142,6 +180,38 @@ function minifyHtmlTree(node: HtmlNode, mode: "safe" | "advanced", warnings: Set
   });
 }
 
+/**
+ * Pretty-print only structural block containers without non-whitespace text,
+ * comments, or unknown inline children. Do not insert formatting whitespace
+ * inside mixed content, pre, textarea, script, style or foreign content.
+ * Changes to whitespace-only text nodes are disclosed to callers.
+ */
+function prettifyHtmlTree(node: HtmlNode, level: number): boolean {
+  if (isSensitiveContext(node) || node.tagName === "svg" || node.tagName === "math" || node.tagName === "template") return false;
+  const children = node.childNodes;
+  if (children === undefined) return false;
+  let changed = false;
+  const fragmentRoot = node.nodeName === "#document-fragment" || node.nodeName === "#document";
+  for (const child of children) {
+    if (prettifyHtmlTree(child, level + (fragmentRoot ? 0 : 1))) changed = true;
+  }
+  const structural = node.tagName !== undefined && new Set([
+    "html", "head", "body", "div", "ul", "ol", "table", "tbody", "thead", "tfoot", "section", "article", "main", "header", "footer", "nav", "aside",
+  ]).has(node.tagName);
+  if (!structural) return changed;
+  if (!children.every((child) => isBlockNode(child) || (child.nodeName === "#text" && /^\s*$/u.test(child.value ?? "")))) return changed;
+  const blocks = children.filter(isBlockNode);
+  if (blocks.length === 0) return changed;
+  const indent = (depth: number): HtmlNode => ({ nodeName: "#text", value: `\n${"  ".repeat(depth)}`, parentNode: node });
+  node.childNodes = [indent(level + 1)];
+  for (let i = 0; i < blocks.length; i += 1) {
+    node.childNodes.push(blocks[i]!);
+    if (i < blocks.length - 1) node.childNodes.push(indent(level + 1));
+  }
+  node.childNodes.push(indent(level));
+  return true;
+}
+
 function parseErrorDiagnostic(error: ParserError) {
   return {
     ...(error.startLine === undefined ? {} : { line: error.startLine }),
@@ -153,7 +223,7 @@ function parseErrorDiagnostic(error: ParserError) {
 
 export function htmlMinifyOperation(html: string, mode: string = "safe") {
   assertInputSize(html);
-  if (mode !== "safe" && mode !== "advanced") invalid("INVALID_MODE", "HTML mode must be safe or advanced.");
+  if (mode !== "safe" && mode !== "advanced" && mode !== "prettify") invalid("INVALID_MODE", "HTML mode must be safe, advanced or prettify.");
   const errors: ParserError[] = [];
   const looksLikeDocument = /<!doctype\s|<html(?:\s|>)/iu.test(html);
   const document = looksLikeDocument
@@ -164,7 +234,13 @@ export function htmlMinifyOperation(html: string, mode: string = "safe") {
     invalid("INVALID_HTML", `HTML parser reported ${first.code}.`, parseErrorDiagnostic(first));
   }
   const warnings = new Set<string>();
-  minifyHtmlTree(document as unknown as HtmlNode, mode, warnings);
+  if (mode === "prettify") {
+    if (prettifyHtmlTree(document as unknown as HtmlNode, 0)) {
+      warnings.add("La formattazione introduce solo spazi e a-capo tra elementi di blocco strutturali; CSS e codice che osservano nodi di testo/spazi potrebbero comportarsi diversamente. Verifica il risultato.");
+    }
+  } else {
+    minifyHtmlTree(document as unknown as HtmlNode, mode, warnings);
+  }
   const output = serialize(document);
   const inputBytes = utf8Bytes(html);
   const outputBytes = utf8Bytes(output);
@@ -178,9 +254,11 @@ export function htmlMinifyOperation(html: string, mode: string = "safe") {
     savedPercent: inputBytes === 0 ? 0 : Math.round(((inputBytes - outputBytes) / inputBytes) * 10_000) / 100,
     warnings: [...warnings],
     parser: "parse5",
-    whitespacePolicy: mode === "safe"
-      ? "Preserve every HTML text node exactly as parsed; only ordinary comments are removed. pre/textarea/script/style are untouched."
-      : "Preserve all non-whitespace text and sensitive elements; remove additional whitespace-only nodes adjacent to block elements.",
+    whitespacePolicy: mode === "prettify"
+      ? "Indent only block-only containers: whitespace-only nodes between blocks may be replaced. Preserve mixed text and pre/textarea/script/style/foreign markup; CSS whitespace selectors may be affected."
+      : mode === "safe"
+        ? "Preserve every HTML text node exactly as parsed; only ordinary comments are removed. pre/textarea/script/style are untouched."
+        : "Preserve all non-whitespace text and sensitive elements; remove additional whitespace-only nodes adjacent to block elements.",
     scriptStylePolicy: "script and style contents are parsed as HTML raw-text elements and are never regex-rewritten by this minifier.",
   });
 }
