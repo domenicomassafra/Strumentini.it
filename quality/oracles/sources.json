@@ -1051,6 +1051,18 @@
       "checked_at": "2026-10-06"
     },
     {
+      "id": "ffprobe-local-reference",
+      "source_class": "independent-implementation",
+      "authority": "FFmpeg FFprobe command-line utility",
+      "locator": "quality/fixtures/video-inspection/README.md; FFprobe observations independently checked on four synthetic MP4 fixture files",
+      "supports": [
+        "local MP4 container duration, stream count, stream codecs and dimensions",
+        "positive and negative display-matrix rotations",
+        "independent spot checks for the bounded MP4 metadata parser"
+      ],
+      "checked_at": "2026-10-08"
+    },
+    {
       "id": "normattiva-holidays-2026-official",
       "source_class": "official-primary",
       "authority": "Normattiva",

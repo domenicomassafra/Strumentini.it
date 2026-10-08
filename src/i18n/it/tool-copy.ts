@@ -454,6 +454,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Ridimensiona immagine",
     summary: "Ridimensiona o ritaglia JPEG, PNG e WebP in locale producendo un JPEG o WebP entro limiti definiti.",
   },
+  "video-inspector": {
+    name: "Ispeziona MP4 e calcola il bitrate",
+    summary: "Legge in locale i metadati MP4 disponibili e calcola un budget teorico di bitrate per una dimensione obiettivo, senza convertire il video.",
+    searchTerms: ["metadati video", "codec mp4", "dimensione video mb", "rotazione mp4", "video bitrate"],
+  },
   "images-to-pdf": {
     name: "Immagini in PDF",
     summary: "Trasforma JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF o il primo frame GIF in PDF con ordine, rotazioni, A4/Letter/originale, margini e contain/cover.",

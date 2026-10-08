@@ -4876,6 +4876,25 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md"
   },
   {
+    "toolId": "video-inspector",
+    "engine": "video",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "VideoInspectorTool",
+      "source": "src/components/tools/video/VideoInspectorTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "file",
+      "capabilities": [
+        "reset",
+        "retry",
+        "provenance"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/232-video-inspector-and-target-size-calculator.md"
+  },
+  {
     "toolId": "vocabulary-frequency-analyzer",
     "engine": "research-knowledge",
     "rendererSeam": {

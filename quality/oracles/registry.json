@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 259,
+  "entry_count": 260,
   "entries": [
     {
       "id": "cand-001",
@@ -11843,6 +11843,51 @@
       "cross_check": {"usable": true, "implementation": "batch tests reuse exact single-reader fixtures and independent CSV row assertions", "role": "per-file isolation and export completeness cross-check"},
       "confidence": "high",
       "unresolved_gaps": ["Simplified invoices have no ordinary DatiRiepilogo/document-total reconciliation path, so those rows report reconciliation unavailable rather than inventing one."]
+    },
+    {
+      "id": "cand-260",
+      "candidate": "Local MP4 container inspector and target-size bitrate calculator",
+      "tool_family": "video",
+      "maintenance_class": "H",
+      "truth_sources": ["ffprobe-local-reference", "strumentini-quality", "fixture-policy"],
+      "standard_or_official_example": "Four synthetic FFmpeg MP4s in quality/fixtures/video-inspection, independently inspected using FFprobe. They cover H.264 video, AAC audio, finite movie duration, track dimensions and positive/negative display rotation.",
+      "invariants": [
+        "at most 8 MiB of a moov atom read from local Blob slices; mdat payload skipped",
+        "the parser never infers FPS, CFR/VFR, audio/video stream bitrate or codec decodability",
+        "declared container-average throughput is not presented as stream bitrate",
+        "fragmented movie total duration and uninterpretable rotation remain unknown",
+        "decimal MB and binary MiB remain separate in target-size calculations",
+        "missing audio bitrate remains unknown rather than silently assumed zero"
+      ],
+      "adversarial_cases": [
+        "invalid ftyp or corrupted atom sizes",
+        "missing or oversized moov metadata",
+        "MP4 with audio and video tracks",
+        "quarter-turn display rotation in both directions",
+        "missing duration and unsupported fragments",
+        "impossible audio or overhead budget"
+      ],
+      "expected_output_strategy": "Compare synthetic MP4 movie/track metadata with independent FFprobe observations recorded in quality/fixtures/video-inspection/vectors.json; independently verify budget arithmetic and explicit unknown outputs. This is a partial oracle corpus, not a Gold receipt.",
+      "security_privacy_edges": [
+        "local browser File/Blob API, no upload, no transcoder and no network",
+        "AbortSignal cancellation and limited MP4 moov allocation"
+      ],
+      "portability_browser_edges": [
+        "Blob slice and DataView browser support",
+        "390px mobile layout and no FFmpeg/transcoder chunk in inspector bundle",
+        "browser codec decoding or physical-device compatibility not claimed"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "FFprobe on the four real synthetic MP4 fixture binaries plus exact standalone bitrate arithmetic tests",
+        "role": "independent bounded metadata spot-check; not complete real-device or VFR coverage"
+      },
+      "confidence": "medium",
+      "unresolved_gaps": [
+        "No independently checked diverse physical-device HEVC/VFR/fragments corpus.",
+        "No Gold certification for all desktop/mobile browsers or physical cameras.",
+        "No transcoding/export occurs; encoder ability to reach target size is unknown."
+      ]
     }
   ]
 }

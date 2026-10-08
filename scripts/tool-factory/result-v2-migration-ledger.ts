@@ -14,6 +14,11 @@ export interface ResultV2MigrationTicket {
 }
 
 export const RESULT_V2_MIGRATION_TICKETS = {
+  videoInspector: {
+    id: 232,
+    title: "Video inspector and target-size calculator",
+    path: ".scratch/strumentini-expansion-20261005/issues/232-video-inspector-and-target-size-calculator.md",
+  },
   businessMathShared: {
     id: 88,
     title: "Migrate BusinessMathTool renderer to Result v2",
@@ -147,6 +152,11 @@ export const RESULT_V2_MIGRATION_OWNER_RULES: readonly MigrationOwnerRule[] = [
   {
     ticket: RESULT_V2_MIGRATION_TICKETS.urlMarketingQrBespoke,
     matches: ({ summary }) => TICKET_99_ENGINES.has(summary.engine),
+  },
+  {
+    ticket: RESULT_V2_MIGRATION_TICKETS.videoInspector,
+    matches: ({ summary, seam }) => summary.id === "video-inspector"
+      && summary.engine === "video" && seam.component === "VideoInspectorTool",
   },
 ] as const;
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-10-04",
-  "family_count": 95,
+  "family_count": 96,
   "families": [
     {
       "id": "archive-checksum-manifest",
@@ -2303,6 +2303,30 @@
         "INPS minimum first-band ceiling and profile boundaries",
         "Gestione Separata credit-threshold versus contribution-floor distinction",
         "fixed movable and custom-workweek 2026 bridge cases"
+      ]
+    },
+    {
+      "id": "video-inspection-mp4",
+      "candidate_families": [
+        "Local MP4 metadata inspection and target-size bitrate planning"
+      ],
+      "path": "quality/fixtures/video-inspection/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Four binary MP4 files generated with FFmpeg lavfi on 2026-10-08 for Strumentini.it; no third-party recordings or personal footage."
+      },
+      "truth_sources": [
+        "ffprobe-local-reference",
+        "strumentini-quality",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "real synthetic MP4 file with moov after mdat",
+        "H.264 video track with AAC audio track",
+        "positive and negative display rotation from independent FFprobe",
+        "bounded metadata inspection and missing FPS/CFR/VFR claims",
+        "MB/MiB bitrate math with explicit unknown audio and overhead"
       ]
     },
     {

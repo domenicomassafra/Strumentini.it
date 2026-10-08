@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "provenance": "Synthetic FFmpeg lavfi files generated for Strumentini.it on 2026-10-08; these are actual local MP4 containers, not device recordings.",
+  "independent_reference": "FFprobe -v error -show_entries format=duration:stream=index,codec_type,codec_name,width,height:stream_side_data=rotation -of compact FILE",
+  "files": [
+    {
+      "path": "quality/fixtures/video-inspection/video-12fps.mp4",
+      "duration_seconds": 1.25,
+      "video_tracks": 1,
+      "audio_tracks": 0,
+      "codec": "h264",
+      "dimensions": [64, 48],
+      "frame_rate_claim": "unknown"
+    },
+    {
+      "path": "quality/fixtures/video-inspection/video-plus-audio.mp4",
+      "duration_seconds": 1.2,
+      "video_tracks": 1,
+      "audio_tracks": 1,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "dimensions": [80, 60],
+      "frame_rate_claim": "unknown"
+    },
+    {
+      "path": "quality/fixtures/video-inspection/video-rotated.mp4",
+      "duration_seconds": 1.25,
+      "video_tracks": 1,
+      "audio_tracks": 0,
+      "rotation_degrees_ffprobe": 90,
+      "frame_rate_claim": "unknown"
+    },
+    {
+      "path": "quality/fixtures/video-inspection/video-rotated-minus90.mp4",
+      "duration_seconds": 1.25,
+      "video_tracks": 1,
+      "audio_tracks": 0,
+      "rotation_degrees_ffprobe": -90,
+      "frame_rate_claim": "unknown"
+    }
+  ],
+  "limitations": [
+    "FFprobe reports presentation timing, but the bounded web inspector does not claim measured FPS or CFR/VFR.",
+    "Synthetic H.264/AAC fixtures are not representative of physical-camera, mobile HEVC, fragmented MP4, or variable-frame-rate acceptance.",
+    "The size-to-bitrate calculator is a mathematical plan, not a real encoder/transcoder acceptance."
+  ]
+}
