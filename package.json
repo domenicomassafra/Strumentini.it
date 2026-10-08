@@ -49,6 +49,7 @@
     "acceptance:browser-performance": "node scripts/acceptance/browser-performance-matrix.mjs",
     "acceptance:expanded-local": "node scripts/acceptance-expanded-local.mjs",
     "acceptance:image-target-size": "node scripts/acceptance-image-target-size.mjs",
+    "acceptance:developer-transform-download": "node scripts/acceptance-developer-transform-download.mjs",
     "acceptance:image-resize:physical:serve": "npm run build && tsx scripts/generate-image-resize-physical-fixtures.ts && node scripts/serve-image-resize-physical.mjs",
     "acceptance:image-resize:physical:record": "tsx scripts/record-image-resize-physical.ts",
     "gold:image-resize": "tsx scripts/gold/image-resize-certify.ts",

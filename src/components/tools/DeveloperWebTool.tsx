@@ -1,6 +1,7 @@
 import { useMemo, useState } from "preact/hooks";
 import { createBoundedTextPreview } from "../../runtime/bounded-preview";
 import { createOutputArtifactDescriptor } from "../../runtime/output-artifact";
+import { developerTransformDownload } from "../../runtime/developer-transform-download";
 import { resolveResultActions } from "../../runtime/result-actions";
 import { toolRuntime } from "../../runtime/tool-runtime";
 import {
@@ -471,6 +472,10 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
     () => operation.result === null ? "" : resultText(operation.result),
     [operation.result],
   );
+  const transformed = useMemo(
+    () => developerTransformDownload(config.id, operation.result, values.text ?? ""),
+    [config.id, operation.result, values.text],
+  );
   const artifact = useMemo(() => operation.result === null
     ? null
     : createOutputArtifactDescriptor({
@@ -490,6 +495,20 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
     () => artifact === null ? null : createBoundedTextPreview(artifact, 80, "code"),
     [artifact],
   );
+  const transformArtifact = useMemo(
+    () => transformed === null ? null : createOutputArtifactDescriptor({
+      kind: transformed.kind,
+      name: transformed.filename,
+      mime: transformed.mime,
+      bytes: new TextEncoder().encode(transformed.output),
+      verification: {
+        state: "verified",
+        verifiedMime: transformed.mime,
+        method: "Parser-backed developer formatter/minifier completed without validation errors",
+      },
+      fidelity: "structural",
+      fidelityNote: "Output testuale ottenuto dal parser locale. Minificazione e formattazione possono variare i byte anche quando preservano il sottoinsieme semantico dichiarato.",
+    }), [transformed]);
   const declaration = developerResultDeclaration(config.id);
   const permissionRows = config.id === "chmod-permission-helper" ? chmodPermissionRows(operation.result) : null;
   const reusableText = operation.result === null ? null : reusableResultText(operation.result);
@@ -500,32 +519,34 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
         declaration,
         primary: "copy",
         hasCopyPayload: serializedResult !== "",
-        artifact,
+        artifact: transformArtifact ?? artifact,
         reuseReady: reusableText !== null && reusableField !== undefined,
         retryReady: declaration.class === "validator",
         resetReady: true,
       });
 
   async function copyResult() {
-    if (serializedResult === "" || navigator.clipboard === undefined) {
+    const copyPayload = transformed?.output ?? serializedResult;
+    if (copyPayload === "" || navigator.clipboard === undefined) {
       setActionStatus("Gli appunti non sono disponibili; seleziona l'anteprima e copia manualmente.");
       return;
     }
     try {
-      await navigator.clipboard.writeText(serializedResult);
-      setActionStatus("Risultato completo copiato.");
+      await navigator.clipboard.writeText(copyPayload);
+      setActionStatus(transformed === null ? "Risultato completo copiato." : "Testo trasformato copiato.");
     } catch {
       setActionStatus("L'accesso agli appunti è stato bloccato; seleziona e copia manualmente.");
     }
   }
 
   function downloadResult() {
-    if (artifact === null || !artifact.download.ready) return;
-    const blob = new Blob([artifact.bytes.slice().buffer], { type: artifact.mime });
+    const downloadArtifact = transformArtifact ?? artifact;
+    if (downloadArtifact === null || !downloadArtifact.download.ready) return;
+    const blob = new Blob([downloadArtifact.bytes.slice().buffer], { type: downloadArtifact.mime });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = artifact.name;
+    anchor.download = downloadArtifact.name;
     anchor.click();
     URL.revokeObjectURL(url);
   }
@@ -579,9 +600,15 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
                     rows={[
                       { label: "Caratteri serializzati", value: String(serializedResult.length) },
                       { label: "Byte completi", value: String(artifact.byteLength) },
+                      ...(transformed === null ? [] : [
+                        { label: "Byte ingresso (UTF-8)", value: String(transformed.inputBytes) },
+                        { label: "Byte output trasformato (UTF-8)", value: String(transformed.outputBytes) },
+                        { label: "Byte risparmiati (se positivi)", value: String(Math.max(0, transformed.savedBytes)) },
+                        { label: "Risparmio % (se positivo)", value: String(Math.max(0, transformed.savedPercent)) + "%" },
+                      ]),
                     ]}
                   />
-                  <ResultProvenance>Elaborazione locale deterministica; il download usa il risultato completo.</ResultProvenance>
+                  <ResultProvenance>{transformed === null ? "Elaborazione locale deterministica; il download usa il risultato completo." : "Testo trasformato localmente con parser: copia e download producono il contenuto originale del risultato, non il riepilogo JSON. Valori in byte UTF-8 misurati sull'output."}</ResultProvenance>
                 </>
               )}
               <ResultActions
