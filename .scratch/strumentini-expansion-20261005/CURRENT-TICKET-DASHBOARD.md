@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 253 / 74 |
+| All / completed / open | 327 / 254 / 73 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 27 |
-| Ready for assignment (feasibility still to prove) | 19 |
+| DAG-ready (all numeric dependencies closed) | 26 |
+| Ready for assignment (feasibility still to prove) | 18 |
 | Waiting on other tickets | 47 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (19)
+## Ready for assignment (feasibility still to prove) (18)
 
 - #037 — Video inspect/subtitle utilities
 - #047 — JPEG/PNG/WebP/SVG compression engines
@@ -40,7 +40,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #250 — PDF n-up pages per sheet
 - #254 — PDF tables to XLSX
 - #256 — TXT Markdown HTML and CSV to printable PDF
-- #266 — File-size analyzer OOXML and media adapters
 - #308 — Video AI context contact-sheet export
 
 ## Waiting on other tickets (47)
@@ -71,7 +70,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #062 — Upgrade existing business/date functionality (awaiting #126, #127, #128, #130, #133, #134, #135)
 - #065 — Format-operation matrix coverage gate (awaiting #047, #049, #051, #053, #056, #057, #058, #059, #068)
 - #066 — Existing 200 functional-upgrade coverage gate (awaiting #053, #062)
-- #069 — Cross-format file-size analyzer (awaiting #265, #266)
+- #069 — Cross-format file-size analyzer (awaiting #265)
 - #121 — Codice Fiscale formal validate and generate engine (awaiting #115)
 - #122 — Codice Fiscale decode and omocodia ambiguity (awaiting #121)
 - #126 — IVA add and scorporo with versioned presets (awaiting #117)

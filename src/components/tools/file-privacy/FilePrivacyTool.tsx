@@ -132,7 +132,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
   }
 
   const showFilePicker = operationNeedsFiles(operation) || operationUsesDiff(operation) || operationUsesNames(operation);
-  const showSingleFilePicker = operation === "zip-contents-inspector" || operation === "archive-checksum-manifest";
+  const showSingleFilePicker = operation === "zip-contents-inspector" || operation === "archive-checksum-manifest" || operation === "file-size-analyzer";
   const showPastedText = operation === "secret-token-pattern-scanner" || operation === "ai-code-fence-bundle";
   const showNames = operationUsesNames(operation);
   const showExpected = operation === "checksum-verifier";

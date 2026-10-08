@@ -30,14 +30,13 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **250 — PDF n-up pages per sheet**
 - **254 — PDF tables to XLSX**
 - **256 — TXT Markdown HTML and CSV to printable PDF**
-- **266 — File-size analyzer OOXML and media adapters**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 - **308 — Video AI context contact-sheet export**
 
-Exactly **27** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **26** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -319,7 +318,7 @@ Exactly **27** incomplete tickets currently have every declared numeric blocker 
 | 263 | completed | EPUB local reader and text export | 103, 275 |
 | 264 | completed — bounded OOXML media core and user-facing browser route; Gold certification separate | OOXML embedded-media compression core | 207, 208, 225 |
 | 265 | blocked | File-size analyzer PDF adapter | 218, 228 |
-| 266 | ready-for-agent | File-size analyzer OOXML and media adapters | 225, 228, 230, 232 |
+| 266 | completed | File-size analyzer OOXML and media adapters | 225, 228, 230, 232 |
 | 267 | completed | P7M CMS parser feasibility spike | — |
 | 268 | completed | Image codec and SVG optimizer feasibility spike | — |
 | 269 | completed | Advanced PDF renderer and mutation feasibility spike | — |

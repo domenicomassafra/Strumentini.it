@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 327,
-    "completed": 253,
+    "completed": 254,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 235,
-    "open": 74,
-    "readyDAG": 27,
-    "ready-for-agent": 19,
+    "completedWithoutExplicitRefusal": 236,
+    "open": 73,
+    "readyDAG": 26,
+    "ready-for-agent": 18,
     "dependency-blocked": 47,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -223,6 +223,7 @@
       262,
       263,
       264,
+      266,
       267,
       268,
       269,
@@ -296,7 +297,6 @@
       250,
       254,
       256,
-      266,
       308
     ],
     "dependency-blocked": [
@@ -1181,8 +1181,7 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        265,
-        266
+        265
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3188,9 +3187,9 @@
     {
       "id": 266,
       "title": "File-size analyzer OOXML and media adapters",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false

@@ -361,7 +361,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "file-size-analyzer": {
     name: "Analizzatore dimensione file",
-    summary: "Analizza localmente dimensioni/encoding/metadati delle immagini o voci/metodi ZIP, senza inventare risparmi prima di una prova reale.",
+    summary: "Misura file immagine, ZIP, Office, MP4 e WAV in locale. Riporta solo byte e metadati verificati, non risparmi ipotetici.",
     searchTerms: ["perché file pesa tanto", "analizza dimensione file", "immagine pesante", "zip pesante", "file grande"],
   },
   "filename-sanitizer": {

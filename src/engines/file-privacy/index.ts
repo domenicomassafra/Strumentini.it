@@ -244,6 +244,7 @@ function extensionMatches(path: string, mime: string): boolean {
     "application/zip": [".zip"],
     "application/gzip": [".gz"],
     "audio/mpeg": [".mp3"],
+    "audio/wav": [".wav", ".wave"],
     "video/mp4": [".mp4"],
     "text/plain": [".txt", ".md", ".csv", ".json", ".log"],
     "text/xml": [".xml", ".svg"],
@@ -289,6 +290,10 @@ export async function detectFileSignature(file: File, signal?: AbortSignal): Pro
   } else if (bytes.length >= 12 && textDecoder.decode(bytes.slice(4, 8)) === "ftyp") {
     detectedMime = "video/mp4";
     label = "ISO-BMFF ftyp box";
+    confidence = "medium";
+  } else if (bytes.length >= 12 && textDecoder.decode(bytes.slice(0, 4)) === "RIFF" && textDecoder.decode(bytes.slice(8, 12)) === "WAVE") {
+    detectedMime = "audio/wav";
+    label = "RIFF PCM WAVE candidate";
     confidence = "medium";
   }
   const declared = file.type || "application/octet-stream";
@@ -597,6 +602,39 @@ export async function analyzeFileSize(input: unknown, signal?: AbortSignal): Pro
     estimatedSavingsBytes: null,
     estimatePolicy: "No savings estimate is emitted before an actual transform/compression run.",
   };
+
+  // #266: prefer strict package/video facts to filename claims, never turn
+  // unknown bitrate/FPS or a declared OOXML container into a saving estimate.
+  if (detectedMime === "application/zip" && [".docx", ".pptx", ".xlsx"].includes(extensionOf(file.name))) {
+    const { inspectOfficePackageSize, MAX_OFFICE_BYTES_266 } = await import("./size-adapters");
+    const bytes = await readBytes(file, signal, MAX_OFFICE_BYTES_266);
+    const office = inspectOfficePackageSize(bytes); // strict package signature/ZIP safety and macro refusal
+    if (`.${office.format}` !== extensionOf(file.name)) fail("UNSUPPORTED_INPUT", "File extension does not match inspected Office package kind");
+    return { ...common, kind: "office", office,
+      evidence: [`${office.entryCount} OOXML ZIP entries`, `${office.groups.media.compressedMemberBytes} bytes media compressi`,
+        `${office.groups.xml.compressedMemberBytes} bytes XML compressi`, `${office.zipOverheadBytes} bytes ZIP overhead`],
+      nextActions: ["ooxml-media-compression"], recommendedOptimizer: "ooxml-media-compression",
+      note: "Gruppi ricavati dai byte compressi reali della directory OOXML. Un ottimizzatore locale esiste, ma il risparmio resta sconosciuto finché non viene eseguito." };
+  }
+
+  if (detectedMime === "video/mp4") {
+    const { inspectVideoContainerSize } = await import("./size-adapters");
+    const video = await inspectVideoContainerSize(file, signal);
+    return { ...common, kind: "video", video, nextActions: [], recommendedOptimizer: null,
+      evidence: [`${video.videoTracks} video track(s), ${video.audioTracks} audio track(s) dichiarate`,
+        video.durationSeconds === null ? "Durata MP4 non provata" : `${video.durationSeconds} secondi (header moov)`,
+        "Bitrate flussi e FPS non misurati"],
+      note: "Metadati MP4 limitati, senza leggere il payload video, senza decodifica e senza convertitore approvato: nessuna promessa di ottimizzazione." };
+  }
+
+  if (detectedMime === "audio/wav") {
+    const { inspectPcmWaveSize } = await import("./size-adapters");
+    const audio = await inspectPcmWaveSize(file, signal);
+    return { ...common, kind: "audio", audio, nextActions: [], recommendedOptimizer: null,
+      evidence: [audio.codec === "PCM" ? `PCM ${audio.sampleRateHz} Hz · ${audio.channels} canali` : "Codifica/durata non verificabili",
+        audio.durationSeconds === null ? "Durata sconosciuta" : `${audio.durationSeconds} secondi da campioni PCM`],
+      note: "Header PCM WAVE verificati quando supportati. Formati non PCM e ottimizzazioni audio non sono dichiarati supportati." };
+  }
 
   if (detectedMime === "image/png" || detectedMime === "image/jpeg" || detectedMime === "image/webp") {
     const prefix = new Uint8Array(await file.slice(0, Math.min(file.size, 2 * 1024 * 1024)).arrayBuffer());
