@@ -49,6 +49,7 @@ import {
 } from "./transform-workspace";
 import { createZip, inspectZip } from "../file-privacy";
 import { decodePortableImage } from "./portable-decode";
+import { inspectGifBlob, type GifStructure } from "./gif-structure";
 import { findImageTargetSize, parseImageTarget } from "./target-size";
 
 export interface TransformInput {
@@ -84,6 +85,8 @@ export interface ImageConversionOutput extends ImageOutput {
   readonly inputKind: "jpeg" | "png" | "webp" | "gif" | "avif" | "heic" | "heif";
   readonly framePolicy: "single-image" | "first-frame-only";
   readonly decoder: "browser" | "libheif-wasm";
+  /** Measured source-GIF timing facts; output still contains only the first frame. */
+  readonly gifSource?: GifStructure;
 }
 
 export const MACHADO_CVD_MATRICES = {
@@ -272,14 +275,28 @@ export async function convertImageFormatLocal(input: unknown, signal?: AbortSign
   const file = asFile(value.file);
   const mime = assertOutputMime(value.mime);
   const quality = validateQuality(value.quality ?? 0.92);
+  // Inspect GIF frame boundaries before decoding: a still export must never imply
+  // that the source animation or its frame delays survive conversion.
+  const header = new Uint8Array(await file.blob.slice(0, 6).arrayBuffer());
+  abortIfNeeded(signal);
+  const gifSignature = String.fromCharCode(...header) === "GIF87a" || String.fromCharCode(...header) === "GIF89a";
+  const gifSource = gifSignature || /\.gif$/iu.test(file.name) || file.type === "image/gif"
+    ? await inspectGifBlob(file.blob, signal)
+    : undefined;
   const decoded = await decodePortableImage(file, signal, progress);
   try {
+    if (decoded.kind === "gif" && gifSource === undefined) {
+      throw new ImageVisualError("INVALID_GIF", "GIF input requires an identifiable GIF container");
+    }
+    if (gifSource !== undefined && (decoded.kind !== "gif" || gifSource.width !== decoded.width || gifSource.height !== decoded.height)) {
+      throw new ImageVisualError("INVALID_GIF", "GIF container and decoded image dimensions differ");
+    }
     const prepared = conversionCanvas(decoded.bitmap, mime, value.background);
     const canvas = prepared.canvas;
     const blob = await outputBlob(canvas, mime, quality, decoded.width, decoded.height, signal, progress);
     const lossy = mime === "image/jpeg" || mime === "image/webp";
     const sourceNote = decoded.framePolicy === "first-frame-only"
-      ? " Animated GIF input is intentionally converted from the first decoded frame only."
+      ? ` GIF input has ${gifSource?.frameCount ?? "unknown"} source frame(s), with ${gifSource?.totalDelayCentiseconds ?? "unknown"} centiseconds of declared delays. Only its first decoded frame is exported; animation and frame timings are lost. Short delays may be clamped by GIF players.`
       : decoded.decoder === "libheif-wasm"
         ? " HEIC/HEIF is decoded locally with the lazy libheif/WASM path before re-encoding."
         : decoded.kind === "avif"
@@ -306,6 +323,7 @@ export async function convertImageFormatLocal(input: unknown, signal?: AbortSign
       inputKind: decoded.kind,
       framePolicy: decoded.framePolicy,
       decoder: decoded.decoder,
+      ...(gifSource === undefined ? {} : { gifSource }),
     };
   } finally {
     decoded.bitmap.close();

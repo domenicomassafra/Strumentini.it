@@ -401,11 +401,15 @@ function semanticImageRows(toolId: ImageResultToolId, raw: ImageResultValue): re
     ];
   }
   if (toolId === "image-format-conversion") {
+    const gifSource = asRecord(raw.gifSource);
     return [
       ...(raw.rasterBackedPdf === true ? [{ label: "PDF", value: "Raster JPEG incorporato, non vettoriale" }] : []),
       ...(stringField(raw.inputKind) === undefined ? [] : [{ label: "Formato ingresso rilevato", value: stringField(raw.inputKind)!.toUpperCase() }]),
       ...(stringField(raw.decoder) === undefined ? [] : [{ label: "Decoder", value: stringField(raw.decoder) === "libheif-wasm" ? "libheif/WASM locale (lazy)" : "decoder locale del browser" }]),
       ...(stringField(raw.framePolicy) === undefined ? [] : [{ label: "Frame", value: stringField(raw.framePolicy) === "first-frame-only" ? "solo primo frame" : "immagine singola" }]),
+      ...(typeof gifSource?.frameCount === "number"
+        ? [{ label: "GIF originale", value: `${gifSource.frameCount} frame · ${typeof gifSource.totalDelayCentiseconds === "number" ? gifSource.totalDelayCentiseconds : "?"} centesimi di secondo dichiarati · animazione non esportata` }]
+        : []),
       ...(stringField(raw.alphaPolicy) === undefined ? [] : [{ label: "Alpha", value: stringField(raw.alphaPolicy)! }]),
       ...(stringField(raw.background) === undefined ? [] : [{ label: "Sfondo JPEG", value: stringField(raw.background)! }]),
       { label: "Perdita", value: raw.lossy === true ? "ricodifica lossy" : "pixel RGBA decodificati ricodificati senza perdita" },
