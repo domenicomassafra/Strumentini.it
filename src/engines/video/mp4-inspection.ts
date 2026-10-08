@@ -22,7 +22,8 @@ export interface Mp4TrackInspection {
   readonly quarterTurnDegrees: 0 | 90 | 180 | 270 | null;
   readonly frameRate: null;
   readonly frameRateMode: "unknown";
-  readonly decodeTiming: "variable-sample-deltas-observed" | "not-proven";
+  /** Decode-time stts evidence only. Neither constant nor varying decode deltas prove presentation CFR/VFR. */
+  readonly decodeTiming: "constant-sample-deltas-observed" | "variable-sample-deltas-observed" | "not-proven";
 }
 
 export interface Mp4Inspection {
@@ -169,15 +170,27 @@ function trackData(bytes: Uint8Array, trak: Box): Mp4TrackInspection {
   const codecFourCc = stsd && stsd.payload + 16 <= stsd.end && u32(bytes, stsd.payload + 4) > 0
     ? fourcc(bytes, stsd.payload + 12) : null;
   const stts = first(tables, "stts");
-  let varyingDelta = false;
-  if (stts && stts.payload + 8 <= stts.end) {
+  let decodeTiming: Mp4TrackInspection["decodeTiming"] = "not-proven";
+  if (kind === "video" && stts && stts.payload + 8 <= stts.end) {
     const count = u32(bytes, stts.payload + 4);
     if (count > 10_000 || stts.payload + 8 + count * 8 > stts.end) fail("Invalid or excessive decode-time entries");
     let previous: number | null = null;
+    let totalSamples = 0;
+    let validRuns = count > 0;
+    let varyingDelta = false;
     for (let i = 0; i < count; i += 1) {
+      const sampleCount = u32(bytes, stts.payload + 8 + i * 8);
       const delta = u32(bytes, stts.payload + 8 + i * 8 + 4);
+      // A zero-length/zero-duration run provides no reliable timing evidence.
+      // Even valid stts decode deltas cannot prove presentation CFR/VFR:
+      // composition offsets, edits and other timing transforms may apply.
+      if (sampleCount === 0 || delta === 0) validRuns = false;
+      totalSamples += sampleCount;
       if (previous !== null && previous !== delta) varyingDelta = true;
       previous = delta;
+    }
+    if (validRuns && totalSamples >= 2) {
+      decodeTiming = varyingDelta ? "variable-sample-deltas-observed" : "constant-sample-deltas-observed";
     }
   }
   return {
@@ -186,7 +199,7 @@ function trackData(bytes: Uint8Array, trak: Box): Mp4TrackInspection {
     codecFourCc,
     frameRate: null,
     frameRateMode: "unknown",
-    decodeTiming: varyingDelta ? "variable-sample-deltas-observed" : "not-proven",
+    decodeTiming,
   };
 }
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { Mp4Inspection, Mp4TrackInspection } from "../src/engines/video/mp4-inspection";
 import {
   UNKNOWN_VIDEO_VALUE, formatContainerRate, formatFrameRate, formatPlanRate,
-  formatTrackResolution, formatVideoDuration, formatVideoRotation, planDescription,
+  formatTrackResolution, formatVideoDecodeTiming, formatVideoDuration, formatVideoRotation, planDescription,
 } from "../src/components/tools/video/video-presentation";
 import { planVideoTargetSize } from "../src/engines/video/target-size";
 
@@ -15,6 +15,7 @@ const unknownTrack: Mp4TrackInspection = {
 describe("232 — video output labels stay truthful", () => {
   it("never synthesizes fps, resolution, rotation or duration from missing MP4 atoms", () => {
     expect(formatFrameRate(unknownTrack)).toBe(UNKNOWN_VIDEO_VALUE);
+    expect(formatVideoDecodeTiming(unknownTrack)).toBe(UNKNOWN_VIDEO_VALUE);
     expect(formatVideoRotation(unknownTrack.quarterTurnDegrees)).toBe(UNKNOWN_VIDEO_VALUE);
     expect(formatTrackResolution(unknownTrack)).toBe(UNKNOWN_VIDEO_VALUE);
     expect(formatVideoDuration(null)).toBe(UNKNOWN_VIDEO_VALUE);
@@ -43,5 +44,12 @@ describe("232 — video output labels stay truthful", () => {
     expect(formatPlanRate(plan.totalStreamBitrateBps)).toContain("800");
     expect(formatPlanRate(plan.videoBitrateBps)).toBe(UNKNOWN_VIDEO_VALUE);
     expect(planDescription(plan)).toContain("sconosciuto");
+  });
+
+  it("expresses decode-time evidence without upgrading it to CFR/VFR", () => {
+    expect(formatVideoDecodeTiming({ ...unknownTrack, decodeTiming: "constant-sample-deltas-observed" }))
+      .toMatch(/costanti.*CFR non provato/u);
+    expect(formatVideoDecodeTiming({ ...unknownTrack, decodeTiming: "variable-sample-deltas-observed" }))
+      .toMatch(/variabili.*VFR non provato/u);
   });
 });

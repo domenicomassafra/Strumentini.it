@@ -39,6 +39,19 @@ try {
 
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await page.addInitScript(() => {
+    const slice = Blob.prototype.slice;
+    window.__videoSliceAudit = { maxBytes: 0, totalBytes: 0, calls: 0 };
+    Blob.prototype.slice = function (start, end, contentType) {
+      if (this instanceof File && /\.mp4$/iu.test(this.name)) {
+        const bytes = Math.max(0, Math.min(end ?? this.size, this.size) - Math.max(start ?? 0, 0));
+        window.__videoSliceAudit.maxBytes = Math.max(window.__videoSliceAudit.maxBytes, bytes);
+        window.__videoSliceAudit.totalBytes += bytes;
+        window.__videoSliceAudit.calls++;
+      }
+      return slice.call(this, start, end, contentType);
+    };
+  });
   const external = [];
   const suspiciousMediaChunks = [];
   page.on("request", (request) => {
@@ -69,6 +82,38 @@ try {
   assert.match(await page.locator("[data-video-budget]").innerText(), /8\.?000 kbit\/s/u);
   assert.match(await page.locator("[data-video-plan]").innerText(), /Sconosciuto/u);
   checks += 2;
+
+  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-vfr.mp4"));
+  await page.getByRole("button", { name: "Analizza metadati" }).click();
+  await page.locator("[data-video-inspection]").waitFor();
+  const variable = await page.locator("[data-video-inspection]").innerText();
+  assert.match(variable, /Delta di decodifica variabili \(stts\); VFR non provato/u);
+  assert.match(variable, /Sconosciuto \/ Sconosciuto/u);
+  assert(Math.abs(Number(await page.locator("[data-video-duration]").inputValue()) - 2.916667) < 0.001);
+  checks += 3;
+
+  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-multistream.mp4"));
+  await page.getByRole("button", { name: "Analizza metadati" }).click();
+  await page.locator("[data-video-inspection]").waitFor();
+  const multiple = await page.locator("[data-video-inspection]").innerText();
+  assert.match(multiple, /2 video, 1 audio/u);
+  assert.match(multiple, /64 × 48/u);
+  assert.match(multiple, /80 × 60/u);
+  assert.equal(await page.locator("[data-video-inspection] tbody tr").count(), 3);
+  checks += 4;
+
+  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-hour-sparse.mp4"));
+  await page.getByRole("button", { name: "Analizza metadati" }).click();
+  await page.locator("[data-video-inspection]").waitFor();
+  assert.equal(await page.locator("[data-video-duration]").inputValue(), "3600");
+  assert.match(await page.locator("[data-video-inspection]").innerText(), /Delta di decodifica costanti \(stts\); CFR non provato/u);
+  checks += 2;
+
+  const bounded = await page.evaluate(() => window.__videoSliceAudit);
+  assert(bounded.calls >= 4, "Actual File.slice must be invoked on MP4 samples");
+  assert(bounded.maxBytes <= 8 * 1024 * 1024, "MP4 metadata reads stay capped at 8 MiB");
+  assert(bounded.totalBytes < 1024 * 1024, "Aggregate browser metadata reads do not scale with one-hour duration");
+  checks += 3;
 
   // Selecting a new invalid file must clear stale verified results, and fail closed.
   await page.locator("input[type=file]").setInputFiles({

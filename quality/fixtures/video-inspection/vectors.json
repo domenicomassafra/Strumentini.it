@@ -37,11 +37,47 @@
       "audio_tracks": 0,
       "rotation_degrees_ffprobe": -90,
       "frame_rate_claim": "unknown"
+    },
+    {
+      "path": "quality/fixtures/video-inspection/video-vfr.mp4",
+      "duration_seconds": 2.916667,
+      "video_tracks": 1,
+      "audio_tracks": 0,
+      "video_codec": "h264",
+      "dimensions": [64, 48],
+      "video_packets": 24,
+      "packet_duration_values_ffprobe_seconds": [0.083333, 0.166667, 0.25],
+      "decode_timing_evidence": "variable-sample-deltas-observed",
+      "frame_rate_claim": "unknown"
+    },
+    {
+      "path": "quality/fixtures/video-inspection/video-multistream.mp4",
+      "duration_seconds": 2,
+      "video_tracks": 2,
+      "audio_tracks": 1,
+      "video_codecs": ["h264", "h264"],
+      "audio_codec": "aac",
+      "video_dimensions": [[64, 48], [80, 60]],
+      "video_packets": [24, 12],
+      "frame_rate_claim": "unknown"
+    },
+    {
+      "path": "quality/fixtures/video-inspection/video-hour-sparse.mp4",
+      "duration_seconds": 3600,
+      "video_tracks": 1,
+      "audio_tracks": 0,
+      "video_codec": "h264",
+      "dimensions": [64, 48],
+      "video_packets": 4,
+      "packet_duration_values_ffprobe_seconds": [900],
+      "decode_timing_evidence": "constant-sample-deltas-observed",
+      "frame_rate_claim": "unknown"
     }
   ],
   "limitations": [
     "FFprobe reports presentation timing, but the bounded web inspector does not claim measured FPS or CFR/VFR.",
-    "Synthetic H.264/AAC fixtures are not representative of physical-camera, mobile HEVC, fragmented MP4, or variable-frame-rate acceptance.",
+    "VFR fixture demonstrates varied packet durations and stts decode deltas; composition offsets, edits and other presentation metadata mean stts alone cannot prove global CFR/VFR on arbitrary MP4.",
+    "Synthetic H.264/AAC fixtures are not representative of physical-camera, mobile HEVC, fragmented MP4 or arbitrary real-world VFR recordings.",
     "The size-to-bitrate calculator is a mathematical plan, not a real encoder/transcoder acceptance."
   ]
 }

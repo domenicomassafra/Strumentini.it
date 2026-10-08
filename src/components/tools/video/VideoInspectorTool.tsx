@@ -7,7 +7,7 @@ import {
 } from "../shared";
 import {
   UNKNOWN_VIDEO_VALUE, formatContainerRate, formatFrameRate, formatPlanRate,
-  formatTrackResolution, formatVideoDuration, formatVideoNumber, formatVideoRotation,
+  formatTrackResolution, formatVideoDecodeTiming, formatVideoDuration, formatVideoNumber, formatVideoRotation,
   planDescription,
 } from "./video-presentation";
 import "./video-inspector.css";
@@ -222,7 +222,7 @@ export function VideoInspectorTool() {
               <h3 class="video-tool-minor-title">Tracce ({inspection.tracks.length})</h3>
               <div class="video-tool-table-wrap">
                 <table class="video-tool-table">
-                  <thead><tr><th scope="col">Tipo / ID</th><th scope="col">Codec FourCC</th><th scope="col">Risoluzione</th><th scope="col">Rotazione</th><th scope="col">FPS / CFR-VFR</th></tr></thead>
+                  <thead><tr><th scope="col">Tipo / ID</th><th scope="col">Codec FourCC</th><th scope="col">Risoluzione</th><th scope="col">Rotazione</th><th scope="col">FPS / CFR-VFR</th><th scope="col">Tempi decodifica osservati</th></tr></thead>
                   <tbody>{inspection.tracks.map((track, index) => (
                     <tr key={index}>
                       <th scope="row">{track.kind} / {track.id ?? UNKNOWN_VIDEO_VALUE}</th>
@@ -230,6 +230,7 @@ export function VideoInspectorTool() {
                       <td>{formatTrackResolution(track)}</td>
                       <td>{formatVideoRotation(track.quarterTurnDegrees)}</td>
                       <td>{formatFrameRate(track)} / {track.frameRateMode === "unknown" ? UNKNOWN_VIDEO_VALUE : track.frameRateMode}</td>
+                      <td>{formatVideoDecodeTiming(track)}</td>
                     </tr>
                   ))}</tbody>
                 </table>

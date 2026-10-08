@@ -27,6 +27,17 @@ export function formatFrameRate(track: Mp4TrackInspection): string {
   return track.frameRate === null ? UNKNOWN_VIDEO_VALUE : formatVideoNumber(track.frameRate);
 }
 
+export function formatVideoDecodeTiming(track: Mp4TrackInspection): string {
+  switch (track.decodeTiming) {
+    case "constant-sample-deltas-observed":
+      return "Delta di decodifica costanti (stts); CFR non provato";
+    case "variable-sample-deltas-observed":
+      return "Delta di decodifica variabili (stts); VFR non provato";
+    default:
+      return UNKNOWN_VIDEO_VALUE;
+  }
+}
+
 export function formatContainerRate(inspection: Mp4Inspection): string {
   const bits = inspection.averageContainerBitrateBps;
   return bits === null ? UNKNOWN_VIDEO_VALUE : `${formatVideoNumber(bits / 1_000_000, 3)} Mbit/s (intero file)`;
