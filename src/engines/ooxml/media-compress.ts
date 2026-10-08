@@ -1,5 +1,6 @@
 import { analyzeOoxmlPackage, OOXML_PACKAGE_LIMITS, OoxmlPackageError, type OoxmlPackageAnalysis } from "./package";
 import { inspectImageHeader } from "../image/format";
+import { compareOoxmlZipGroups, summarizeOoxmlZipGroups, type OoxmlZipGroupBreakdown, type OoxmlZipGroupDifference } from "./compression-groups";
 import type { Zippable } from "fflate";
 
 /**
@@ -9,20 +10,28 @@ import type { Zippable } from "fflate";
  * resizing are explicitly opt-in; PNG no-resize is verified pixel-for-pixel.
  */
 export interface OoxmlMediaCompressionOptions {
+  readonly profile?: OoxmlCompressionProfile;
   readonly approveLossyJpeg?: boolean;
+  readonly approveLossyWebp?: boolean;
   readonly jpegQuality?: number;
   readonly approveResize?: boolean;
   readonly maxDimension?: number;
   readonly maxMedia?: number;
   readonly signal?: AbortSignal;
 }
+export type OoxmlCompressionProfile = "conservative" | "balanced" | "compact";
+export const OOXML_COMPRESSION_PROFILE_DEFAULT_JPEG_QUALITY: Readonly<Record<OoxmlCompressionProfile, number>> = {
+  conservative: 0.85,
+  balanced: 0.72,
+  compact: 0.55,
+};
 export type OoxmlMediaSkipReason =
   | "unsupported-media" | "unrecognized-content-type" | "codec-unavailable"
-  | "lossy-approval-required" | "pixel-limit" | "not-smaller"
+  | "lossy-approval-required" | "webp-approval-required" | "pixel-limit" | "not-smaller"
   | "package-not-smaller" | "max-media-budget";
 export interface OoxmlMediaPartResult {
   readonly path: string;
-  readonly type: "png" | "jpeg" | "unsupported";
+  readonly type: "png" | "jpeg" | "webp" | "unsupported";
   readonly status: "changed" | "skipped";
   readonly beforeBytes: number;
   readonly afterBytes: number;
@@ -37,6 +46,10 @@ export interface OoxmlMediaCompressionResult {
   readonly filenameSuffix: "-media-compressed";
   readonly input: OoxmlPackageAnalysis;
   readonly output: OoxmlPackageAnalysis;
+  readonly profile: OoxmlCompressionProfile;
+  readonly zipGroupsBefore: OoxmlZipGroupBreakdown;
+  readonly zipGroupsAfter: OoxmlZipGroupBreakdown;
+  readonly zipGroupsDifference: readonly OoxmlZipGroupDifference[];
   readonly changedCount: number;
   readonly skippedCount: number;
   readonly mediaCount: number;
@@ -59,7 +72,7 @@ export interface OoxmlMediaCompressionResult {
   };
 }
 export interface OoxmlMediaCodec {
-  (source: Uint8Array, mime: "image/png" | "image/jpeg",
+  (source: Uint8Array, mime: "image/png" | "image/jpeg" | "image/webp",
    options: { readonly targetWidth: number; readonly targetHeight: number; readonly jpegQuality: number; readonly verifyLosslessPng: boolean; readonly signal?: AbortSignal }): Promise<Uint8Array | null>;
 }
 
@@ -75,6 +88,28 @@ const same = (a: Uint8Array, b: Uint8Array) => a.byteLength === b.byteLength && 
 const exactBuffer = (bytes: Uint8Array): ArrayBuffer => Uint8Array.from(bytes).buffer;
 const error = (message: string): never => { throw new OoxmlPackageError("REBUILD_VERIFICATION_FAILED", message); };
 const abort = (signal?: AbortSignal): void => { if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError"); };
+
+/** Canvas only preserves one image frame. Reject animated PNG/WebP instead of
+ * silently flattening embedded Office media or claiming a faithful recompress. */
+function isAnimatedRaster(bytes: Uint8Array, mime: "image/png" | "image/jpeg" | "image/webp"): boolean {
+  if (mime === "image/webp") {
+    return bytes.byteLength >= 30
+      && String.fromCharCode(...bytes.subarray(12, 16)) === "VP8X"
+      && (bytes[20]! & 0x02) !== 0;
+  }
+  if (mime !== "image/png") return false;
+  let cursor = 8;
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  while (cursor + 12 <= bytes.byteLength) {
+    const size = view.getUint32(cursor, false);
+    if (size > bytes.byteLength - cursor - 12) return true;
+    const chunk = String.fromCharCode(...bytes.subarray(cursor + 4, cursor + 8));
+    if (chunk === "acTL") return true;
+    if (chunk === "IDAT" || chunk === "IEND") break;
+    cursor += 12 + size;
+  }
+  return false;
+}
 
 function contentTypeMap(bytes: Uint8Array): { extensions: Map<string, string>; overrides: Map<string, string> } {
   const xml = utf8.decode(bytes);
@@ -102,23 +137,25 @@ function contentTypeMap(bytes: Uint8Array): { extensions: Map<string, string>; o
   return { extensions, overrides };
 }
 
-function kindAndMime(path: string, types: ReturnType<typeof contentTypeMap>): { type: "png" | "jpeg"; mime: "image/png" | "image/jpeg" } | null {
-  if (!/^(?:word|ppt|xl)\/media\/[^/]+\.(?:png|jpe?g)$/iu.test(path)) return null;
+function kindAndMime(path: string, types: ReturnType<typeof contentTypeMap>): { type: "png" | "jpeg" | "webp"; mime: "image/png" | "image/jpeg" | "image/webp" } | null {
+  if (!/^(?:word|ppt|xl)\/media\/[^/]+\.(?:png|jpe?g|webp)$/iu.test(path)) return null;
   const extension = path.split(".").at(-1)!.toLowerCase();
-  const mime = extension === "png" ? "image/png" : "image/jpeg";
+  const mime = extension === "png" ? "image/png" : extension === "webp" ? "image/webp" : "image/jpeg";
   const claimed = types.overrides.get("/" + path) ?? types.extensions.get(extension);
   if (claimed !== mime) return null;
-  return { type: extension === "png" ? "png" : "jpeg", mime };
+  return { type: extension === "png" ? "png" : extension === "webp" ? "webp" : "jpeg", mime };
 }
 
 function validatedOptions(options: OoxmlMediaCompressionOptions) {
-  const quality = options.jpegQuality ?? 0.72;
+  const profile = options.profile ?? "balanced";
+  if (!Object.hasOwn(OOXML_COMPRESSION_PROFILE_DEFAULT_JPEG_QUALITY, profile)) error("Unknown Office compression profile.");
+  const quality = options.jpegQuality ?? OOXML_COMPRESSION_PROFILE_DEFAULT_JPEG_QUALITY[profile];
   if (!Number.isFinite(quality) || quality < 0.35 || quality > 0.9) error("JPEG quality must be finite and between 0.35 and 0.90.");
   if (options.approveResize === true && (!Number.isInteger(options.maxDimension) || (options.maxDimension ?? 0) < 32 || (options.maxDimension ?? 0) > MEDIA_BUDGET.maxDimension)) {
     error("Approved resizing requires an explicit maximum dimension between 32 and 4096.");
   }
   if (options.maxMedia !== undefined && (!Number.isInteger(options.maxMedia) || options.maxMedia < 1 || options.maxMedia > MEDIA_BUDGET.maxMediaCount)) error("maxMedia must be between 1 and 16.");
-  return { quality, maxMedia: options.maxMedia ?? MEDIA_BUDGET.maxMediaCount };
+  return { profile, quality, maxMedia: options.maxMedia ?? MEDIA_BUDGET.maxMediaCount };
 }
 
 /**
@@ -204,7 +241,7 @@ export async function compressOoxmlEmbeddedMedia(
   const source = normalize(input);
   abort(options.signal);
   const analysis = analyzeOoxmlPackage(source); // hard preflight before unzip
-  const { quality, maxMedia } = validatedOptions(options);
+  const { profile, quality, maxMedia } = validatedOptions(options);
   const { unzipSync, zipSync } = await import("fflate");
   const members: Record<string, Uint8Array> = (() => {
     try { return unzipSync(source); } catch { return error("OOXML preflight passed but members could not be expanded."); }
@@ -227,16 +264,18 @@ export async function compressOoxmlEmbeddedMedia(
     const skip = (reason: OoxmlMediaSkipReason, dimensions?: { width: number; height: number }): void => {
       parts.push({ ...base, status: "skipped", afterBytes: before.byteLength, savedBytes: 0, fidelity: "untouched", skipReason: reason, ...(dimensions ? { originalDimensions: dimensions, outputDimensions: dimensions } : {}) });
     };
-    if (!declared) { skip(/\.(?:png|jpe?g)$/iu.test(path) ? "unrecognized-content-type" : "unsupported-media"); continue; }
+    if (!declared) { skip(/\.(?:png|jpe?g|webp)$/iu.test(path) ? "unrecognized-content-type" : "unsupported-media"); continue; }
     if (++attempted > maxMedia) { skip("max-media-budget"); continue; }
     if (before.byteLength > MEDIA_BUDGET.maxImageBytes) { skip("pixel-limit"); continue; }
     let header: ReturnType<typeof inspectImageHeader>;
     try { header = inspectImageHeader(before); } catch { skip("unsupported-media"); continue; }
+    if (isAnimatedRaster(before, declared.mime)) { skip("unsupported-media", header); continue; }
     if (header.mime !== declared.mime || header.width > MEDIA_BUDGET.maxDimension || header.height > MEDIA_BUDGET.maxDimension || header.width * header.height > remainingPixels) {
       skip("pixel-limit"); continue;
     }
     remainingPixels -= header.width * header.height;
     if (declared.type === "jpeg" && options.approveLossyJpeg !== true) { skip("lossy-approval-required", header); continue; }
+    if (declared.type === "webp" && options.approveLossyWebp !== true) { skip("webp-approval-required", header); continue; }
     const ratio = options.approveResize === true && options.maxDimension !== undefined
       ? Math.min(1, options.maxDimension / Math.max(header.width, header.height))
       : 1;
@@ -277,8 +316,12 @@ export async function compressOoxmlEmbeddedMedia(
     const reopened = unzipSync(out);
     outputVerification(members, reopened, analysis, output, finalChanged);
     const savings = source.byteLength - out.byteLength;
+    const zipGroupsBefore = summarizeOoxmlZipGroups(analysis, source.byteLength);
+    const zipGroupsAfter = summarizeOoxmlZipGroups(output, out.byteLength);
+    const zipGroupsDifference = compareOoxmlZipGroups(zipGroupsBefore, zipGroupsAfter);
     return {
       bytes: exactBuffer(out), filenameSuffix: "-media-compressed", input: analysis, output,
+      profile, zipGroupsBefore, zipGroupsAfter, zipGroupsDifference,
       changedCount: finalParts.filter((part) => part.status === "changed").length,
       skippedCount: finalParts.filter((part) => part.status === "skipped").length,
       mediaCount: mediaPaths.length, inputByteLength: source.byteLength, byteLength: out.byteLength,

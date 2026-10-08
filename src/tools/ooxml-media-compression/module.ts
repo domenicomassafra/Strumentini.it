@@ -20,7 +20,12 @@ const module: ToolModule = {
     if (!/^[^/\\]{1,160}\.(?:docx|pptx|xlsx)$/iu.test(filename)) throw new OoxmlPackageError("INVALID_INPUT", "Il file deve avere estensione DOCX, PPTX o XLSX.");
     const ext = filename.slice(filename.lastIndexOf(".") + 1).toLowerCase() as keyof typeof MIMES;
     const approveLossyJpeg = req.approveLossyJpeg === true;
+    const approveLossyWebp = req.approveLossyWebp === true;
     const approveResize = req.approveResize === true;
+    const profile = req.profile ?? "balanced";
+    if (profile !== "conservative" && profile !== "balanced" && profile !== "compact") {
+      throw new OoxmlPackageError("INVALID_INPUT", "Profilo OOXML non riconosciuto.");
+    }
     const quality = req.jpegQuality;
     const maxDimension = req.maxDimension;
     if (typeof quality !== "number" || !Number.isFinite(quality) || quality < 0.35 || quality > 0.9) {
@@ -35,6 +40,8 @@ const module: ToolModule = {
     }
     const result = await compressOoxmlEmbeddedMedia(source, {
       approveLossyJpeg,
+      approveLossyWebp,
+      profile,
       jpegQuality: quality,
       approveResize,
       ...(approveResize ? { maxDimension: maxDimension as number } : {}),

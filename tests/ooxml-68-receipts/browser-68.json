@@ -1,0 +1,90 @@
+{
+  "ticket": 68,
+  "result": "PASS",
+  "checks": 67,
+  "route": "/tools/ooxml-media-compression/",
+  "browser": "Playwright Chromium desktop, headless",
+  "browserVersion": "153.0.8010.12",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "device": "DESKTOP mobile viewport emulation; not a physical mobile device",
+  "memory": "CDP point-in-time JS heap snapshots only; no physical RAM, peak memory, or device thermal proof",
+  "externalRequests": 0,
+  "pageErrors": 0,
+  "artifacts": [
+    {
+      "fileType": "docx",
+      "profile": "conservative",
+      "jpegApproval": true,
+      "resizeApproval": false,
+      "sourceBytes": 201209,
+      "resultBytes": 87929,
+      "savedBytes": 113280,
+      "savingsPercent": 56.3,
+      "sha256": "e131fb45eae6fbe9a74a674506df82c507b7ef1ade6df1043a531b80633cb32d",
+      "independentReopen": "OOXML68_REOPEN_OK .docx: charts/tables/fonts/links XML byte-identical, ZIP CRC valid",
+      "chromiumDesktopEmulatedMobileViewportHeapBytes": {
+        "before": {
+          "JSHeapUsedSize": 3140996,
+          "JSHeapTotalSize": 6160384
+        },
+        "after": {
+          "JSHeapUsedSize": 5825220,
+          "JSHeapTotalSize": 8257536
+        }
+      }
+    },
+    {
+      "fileType": "pptx",
+      "profile": "balanced",
+      "jpegApproval": true,
+      "resizeApproval": false,
+      "sourceBytes": 198595,
+      "resultBytes": 76226,
+      "savedBytes": 122369,
+      "savingsPercent": 61.62,
+      "sha256": "5b61a44fc1f1e5e33cf8147e39048cb19f73e10dde0a984a6eb0b8f348110067",
+      "independentReopen": "OOXML68_REOPEN_OK .pptx: charts/tables/fonts/links XML byte-identical, ZIP CRC valid",
+      "chromiumDesktopEmulatedMobileViewportHeapBytes": {
+        "before": {
+          "JSHeapUsedSize": 6775524,
+          "JSHeapTotalSize": 10223616
+        },
+        "after": {
+          "JSHeapUsedSize": 7412840,
+          "JSHeapTotalSize": 12320768
+        }
+      }
+    },
+    {
+      "fileType": "xlsx",
+      "profile": "compact",
+      "jpegApproval": true,
+      "resizeApproval": true,
+      "sourceBytes": 171698,
+      "resultBytes": 25863,
+      "savedBytes": 145835,
+      "savingsPercent": 84.94,
+      "sha256": "1dd1e3149128ee4918ec61dcdfe639ed8a63e14ea1ce1dc4dd5e1651685459a2",
+      "independentReopen": "OOXML68_REOPEN_OK .xlsx: charts/tables/fonts/links XML byte-identical, ZIP CRC valid",
+      "chromiumDesktopEmulatedMobileViewportHeapBytes": {
+        "before": {
+          "JSHeapUsedSize": 9656176,
+          "JSHeapTotalSize": 13500416
+        },
+        "after": {
+          "JSHeapUsedSize": 11036660,
+          "JSHeapTotalSize": 14811136
+        }
+      }
+    }
+  ],
+  "noGoldClaim": true,
+  "gaps": [
+    "No real iOS/Android physical-memory trace",
+    "No physical Office application rendering/diff",
+    "No all-browser/WebP encoder certification"
+  ]
+}
