@@ -17,3 +17,5 @@
 - [ ] Inspector route proves transcoder chunk is absent.
 
 **Verification:** CFR/VFR/rotation/multistream corpus and independent probe comparison.
+
+**Implementation slice (2026-10-08, NOT closure):** `src/engines/video/target-size.ts` now calculates a bounded, explicit decimal-MB/binary-MiB budget from duration, subtracting audio/overhead **only if the caller supplies those estimates**, never pretending to infer an audio track, real encoder bitrate or compression outcome. Dedicated positive/negative tests live in `tests/video-target-size.test.ts`. Inspector UI/route, real local container/codec probe, CFR/VFR/rotation/multistream corpus and independent browser/transcoder-laziness proof remain **not implemented/NOT_RUN**, so status stays `ready-for-agent` and this is not a Gold or release result.
