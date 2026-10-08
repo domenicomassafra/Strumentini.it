@@ -21584,7 +21584,7 @@
         },
         "module": {
           "path": "src/tools/pdf-compression-lite/module.ts",
-          "sha256": "795a76044c62299447f50d612babb1553a89016e0f9b746ef0ef7936de5b6f71"
+          "sha256": "4c11e45545e205a74967a17d272ea8c54f2c3860f1bf94504aecf00078a9fc2e"
         },
         "page": {
           "path": "src/pages/tools/pdf-compression-lite.astro",
@@ -21592,6 +21592,7 @@
         },
         "testFiles": [
           "tests/pdf-catalog.test.ts",
+          "tests/pdf-compression-profile-218.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
       },
@@ -24185,7 +24186,7 @@
         },
         "module": {
           "path": "src/tools/pdf-to-images/module.ts",
-          "sha256": "ecad1e434d54a66e3782f75334b2bc6ed7e89538160d2add0bffb5318bdeed33"
+          "sha256": "afb8ca09cf2247e8188e9eae12a647fcf1a04c434a87e239a8ffe9dffacb759e"
         },
         "page": {
           "path": "src/pages/tools/pdf-to-images.astro",

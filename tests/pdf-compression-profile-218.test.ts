@@ -57,4 +57,12 @@ describe("218 — structural PDF compression analysis must not imply image recom
     await compression.run({ file: source }, { defaults: {} });
     expect(new Uint8Array(await source.arrayBuffer())).toEqual(original);
   });
+
+  it("fails early on the local size cap and honors a pre-aborted signal", async () => {
+    const huge = new Blob([new Uint8Array(25 * 1024 * 1024 + 1)], { type: "application/pdf" });
+    await expect(compression.run({ file: huge }, { defaults: {} })).rejects.toThrow(/PDF_LIMIT/u);
+    const controller = new AbortController();
+    controller.abort();
+    await expect(compression.run({ file: fixture("jpeg-1page.pdf") }, { defaults: {} }, controller.signal)).rejects.toThrow();
+  });
 });
