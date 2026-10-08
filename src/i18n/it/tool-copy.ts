@@ -680,7 +680,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "pdf-watermark": {
     name: "Aggiungere una filigrana PDF",
-    summary: "Sovrapponi testo visibile alle pagine selezionate di un PDF con opacità, rotazione, scala e posizione. Non elimina dati né esegue redazione.",
+    summary: "Sovrapponi testo o JPEG RGB visibili alle pagine PDF selezionate, con opacità, rotazione, scala e posizione. Non elimina dati.",
     searchTerms: ["watermark pdf", "filigrana pdf", "sovrapporre testo pdf"],
   },
   "pdf-page-delete-extract": {

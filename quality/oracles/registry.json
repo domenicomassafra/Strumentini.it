@@ -11907,11 +11907,11 @@
     },
     {
       "id": "cand-262",
-      "candidate": "Visible PDF watermark text overlay with opacity, rotation, scale and page range",
+      "candidate": "Visible PDF watermark text and bounded JPEG image overlay with opacity, rotation, scale and page range",
       "tool_family": "pdf",
       "maintenance_class": "H",
       "truth_sources": ["iso-pdf2", "fixture-policy"],
-      "standard_or_official_example": "Synthetic vector PDF with text watermark applied to selected pages using separate ExtGState opacity and content streams.",
+      "standard_or_official_example": "Synthetic vector PDF with text or baseline RGB JPEG watermark applied to selected pages using separate ExtGState opacity and content streams.",
       "invariants": ["source Contents stream bytes remain identical", "selected page count and source geometry remain stable", "transparency explicitly encoded in ExtGState and rendered", "watermark clearly states it is not privacy redaction", "strict invalid range or oversized geometry rejected"],
       "adversarial_cases": ["reversed, repeated, out-of-range page indexes", "nonprintable strings and PDF literal escape", "alpha 0/1.01", "rotation outside -180..180", "oversized angled text", "90-degree source page rotation", "pre-aborted signal"],
       "expected_output_strategy": "Vitest reparse source/content/overlay; Playwright downloads actual PDF and independently rerenders original/result through PDF.js, checks untouched pages and bounded overlay pixel difference.",
@@ -11919,7 +11919,7 @@
       "portability_browser_edges": ["desktop browser with 390px viewport thumbnail matrix", "bounded four-thumbnail PDF.js session", "no physical-device memory certification"],
       "cross_check": { "usable": true, "implementation": "independent PDF.js render of downloaded result plus source stream byte equality tests", "role": "bounded sample visual verification, not broad PDF semantic parity" },
       "confidence": "medium",
-      "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED; no Gold receipt", "image watermark not implemented", "no arbitrary complex font/CropBox/device/browser matrix certification"]
+      "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED; no Gold receipt", "PNG, CMYK, progressive JPEG and alpha masks not supported as image watermarks", "no arbitrary complex font/CropBox/device/browser matrix certification"]
     }
   ]
 }

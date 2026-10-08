@@ -18,6 +18,7 @@ const origin = `http://127.0.0.1:${port}`;
 const fixture = Buffer.from(createSimplePdf(["SOURCE-A", "SOURCE-B", "SOURCE-C", "SOURCE-D"], { width: 440, height: 600 }));
 const screenshotPreview = "/tmp/str239-watermark-preview.png";
 const screenshotRendered = "/tmp/str239-watermark-page2.png";
+const screenshotJpeg = "/tmp/str239-watermark-jpeg-page2.png";
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
@@ -134,6 +135,33 @@ try {
     const text = await extractPdfText(pdf);
     assert(text[0]?.text.includes("SOURCE-A") && text[1]?.text.includes("SOURCE-B") && text[2]?.text.includes("SOURCE-C"), "Source PDF text lost");
 
+    // Independently exercise the optional real baseline RGB JPEG Image XObject.
+    const jpeg = new Uint8Array(await sharp({ create: {
+      width: 96, height: 64, channels: 3, background: { r: 12, g: 40, b: 180 },
+    } }).jpeg({ quality: 85 }).toBuffer());
+    await page.locator('select:has(option[value="jpeg"])').selectOption("jpeg");
+    await page.locator('input[type="file"][accept*="image/jpeg"]').setInputFiles({
+      name: "opaque-blue.jpg", mimeType: "image/jpeg", buffer: Buffer.from(jpeg),
+    });
+    await page.locator('[data-watermark-overlay-page="2"] image').waitFor({ timeout: 25_000 });
+    assert(await page.locator('[data-watermark-overlay-page="1"]').count() === 0, "Unselected JPEG preview changed");
+    await page.getByRole("button", { name: "Applica filigrana" }).click();
+    await page.locator('.result-panel[data-state="success"]').waitFor({ timeout: 30_000 });
+    const jpegOutput = await download(page, "Scarica PDF con filigrana");
+    const afterImage = inspectPdfBytes(jpegOutput);
+    assert(afterImage.pageCount === 4, "JPEG watermark PDF page count changed");
+    const sourceOriginals = contents(fixture), jpegContents = contents(jpegOutput);
+    assert(JSON.stringify(jpegContents.map((c) => c.length)) === "[1,2,2,1]", "JPEG page overlay not isolated");
+    sourceOriginals.forEach((streams, pageNumber) => {
+      assert(Buffer.from(streams[0]!).equals(Buffer.from(jpegContents[pageNumber]![0]!)), `JPEG output mutated page ${pageNumber + 1}`);
+    });
+    const embedded = [...parsePdf(jpegOutput).objects.values()].filter((object) => {
+      const value = object.value;
+      return value.kind === "stream" && nameValue(value.dictionary.entries.get("Subtype")) === "Image";
+    });
+    assert(embedded.length === 2 && embedded.every((object) => object.value.kind === "stream" &&
+      Buffer.from(object.value.bytes).equals(Buffer.from(jpeg))), "JPEG bytes not embedded unchanged");
+
     await page.goto(`${origin}/tools/pdf-to-images/`, { waitUntil: "networkidle" });
     const rasterBefore1 = await raster(page, fixture, 1), rasterAfter1 = await raster(page, pdf, 1);
     const rasterBefore2 = await raster(page, fixture, 2), rasterAfter2 = await raster(page, pdf, 2);
@@ -143,11 +171,18 @@ try {
     assert(marked.count >= 70 && marked.box !== null, "Watermark has no real visible pixels");
     assert(marked.box[0] >= 120 && marked.box[2] <= 325 && marked.box[1] >= 190 && marked.box[3] <= 410,
       `Watermark rendered outside expected center region: ${JSON.stringify(marked)}`);
+    const imageRaster = await raster(page, jpegOutput, 2);
+    const markedJpeg = await diff(rasterBefore2, imageRaster);
+    assert(markedJpeg.count >= 1500 && markedJpeg.box !== null, "Real JPEG watermark has no painted pixels");
+    assert(markedJpeg.box[0] >= 135 && markedJpeg.box[2] <= 305 && markedJpeg.box[1] >= 230 && markedJpeg.box[3] <= 380,
+      `JPEG watermark outside center area: ${JSON.stringify(markedJpeg)}`);
     await writeFile(screenshotRendered, Buffer.from(rasterAfter2));
+    await writeFile(screenshotJpeg, Buffer.from(imageRaster));
     assert(errors.length === 0, `Browser errors or network requests: ${errors.join(" | ")}`);
     console.log(JSON.stringify({ status: "PASS", browser: "desktop Chromium", viewport: [390, 844], physicalDeviceTested: false,
       sourceBytes: fixture.length, outputBytes: pdf.length, selected: [2, 3], opacity: 0.45,
-      untouched, marked, screenshots: [screenshotPreview, screenshotRendered], offsite: errors.length }, null, 2));
+      untouched, marked, embeddedJpegBytes: jpeg.length, jpegOutputBytes: jpegOutput.length, markedJpeg,
+      screenshots: [screenshotPreview, screenshotRendered, screenshotJpeg], offsite: errors.length }, null, 2));
   } finally { await context.close(); }
 } finally {
   await browser?.close();

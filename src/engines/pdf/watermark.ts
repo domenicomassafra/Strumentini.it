@@ -5,6 +5,7 @@ import {
   type PdfStream, type PdfValue,
 } from "./parser";
 import { buildPdfFromPages } from "./writer";
+import { parseJpeg } from "./writer";
 import { PDF_LIMITS, type PdfArtifact } from "./types";
 
 export type PdfWatermarkPosition = "top-left" | "top-center" | "top-right" |
@@ -231,4 +232,160 @@ export function watermarkPdf(bytes: Uint8Array, options: PdfWatermarkOptions, si
   const artifactBytes = Uint8Array.from(output);
   return { artifact: { bytes: artifactBytes, blob: new Blob([artifactBytes], { type: "application/pdf" }), mime: "application/pdf",
     filename: "pdf-filigranato.pdf", pageCount: verified.pages.length }, plan };
+}
+
+/** Optional JPEG watermark, deliberately strict: RGB8 baseline/JFIF-like only. */
+export interface PdfImageWatermarkOptions extends Omit<PdfWatermarkOptions, "text"> {
+  readonly image: Uint8Array;
+}
+
+export interface PdfImageWatermarkPlacement extends Omit<PdfWatermarkPlacement, "text" | "fontSize" | "textWidth"> {
+  readonly width: number;
+  readonly height: number;
+}
+
+export interface PdfImageWatermarkPlan extends Omit<PdfWatermarkPlan, "placements"> {
+  readonly placements: readonly PdfImageWatermarkPlacement[];
+  readonly imageWidth: number;
+  readonly imageHeight: number;
+}
+
+function parseBaselineRgbJpeg(bytes: Uint8Array): { width: number; height: number } {
+  if (!(bytes instanceof Uint8Array) || bytes.byteLength < 32 || bytes.byteLength > 2 * 1024 * 1024 || bytes[0] !== 0xff || bytes[1] !== 0xd8) {
+    throw new Error("INVALID_INPUT: Seleziona JPEG locale entro 2 MiB");
+  }
+  let offset = 2;
+  let accepted = false;
+  while (offset + 4 < bytes.length) {
+    if (bytes[offset] !== 0xff) throw new Error("INVALID_INPUT: Segmenti JPEG non validi");
+    const marker = bytes[offset + 1]!;
+    if (marker === 0xda || marker === 0xd9) break;
+    if (marker === 0xff) { offset++; continue; }
+    if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) { offset += 2; continue; }
+    const size = bytes[offset + 2]! * 256 + bytes[offset + 3]!;
+    if (size < 2 || offset + 2 + size > bytes.length) throw new Error("INVALID_INPUT: Segmento JPEG troncato");
+    if (marker === 0xc0) {
+      if (size < 17 || bytes[offset + 4] !== 8 || bytes[offset + 9] !== 3) {
+        throw new Error("UNSUPPORTED_CAPABILITY: Solo JPEG RGB baseline 8-bit a 3 componenti");
+      }
+      accepted = true;
+    } else if ((marker >= 0xc1 && marker <= 0xcf) && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+      throw new Error("UNSUPPORTED_CAPABILITY: JPEG non-baseline o CMYK non supportato");
+    }
+    offset += size + 2;
+  }
+  const parsed = parseJpeg(bytes);
+  if (!accepted || parsed === null || parsed.width * parsed.height > 4_000_000 || parsed.width > 4000 || parsed.height > 4000) {
+    throw new Error("UNSUPPORTED_CAPABILITY: JPEG RGB baseline non verificabile o troppo grande");
+  }
+  return { width: parsed.width, height: parsed.height };
+}
+
+export function planPdfImageWatermark(source: Uint8Array, supplied: PdfImageWatermarkOptions): PdfImageWatermarkPlan {
+  const image = parseBaselineRgbJpeg(supplied.image);
+  const opt = checkedOptions({ ...supplied, text: "JPEG" });
+  if (!(source instanceof Uint8Array) || source.length < 8 || source.length > PDF_LIMITS.maxBytes) throw new Error("PDF_LIMIT: PDF fuori limite");
+  const doc = parsePdf(source);
+  if (doc.encrypted || doc.pages.length === 0) throw new Error("UNSUPPORTED_CAPABILITY: PDF cifrato o senza pagine");
+  const pages = parsePdfPageSelection(opt.pages, doc.pages.length).sort((a, b) => a - b);
+  const placements = pages.map((page): PdfImageWatermarkPlacement => {
+    const { crop, pageRotation, width: pageWidth, height: pageHeight } = geometry(doc, doc.pages[page - 1]!);
+    const width = 140 * opt.scale;
+    const height = width * image.height / image.width;
+    const theta = -opt.rotation * Math.PI / 180;
+    const cos = Math.cos(theta), sin = Math.sin(theta);
+    const boxWidth = Math.abs(width * cos) + Math.abs(height * sin);
+    const boxHeight = Math.abs(width * sin) + Math.abs(height * cos);
+    if (boxWidth + 2 * opt.margin > pageWidth || boxHeight + 2 * opt.margin > pageHeight) {
+      throw new Error(`INVALID_INPUT: Filigrana JPEG troppo grande o ruotata per pagina ${page}`);
+    }
+    const horizontal = opt.position.endsWith("left") ? "left" : opt.position.endsWith("right") ? "right" : "center";
+    const vertical = opt.position.startsWith("top") ? "top" : opt.position.startsWith("bottom") ? "bottom" : "center";
+    const x = horizontal === "left" ? opt.margin + boxWidth / 2 : horizontal === "right" ? pageWidth - opt.margin - boxWidth / 2 : pageWidth / 2;
+    const y = vertical === "top" ? pageHeight - opt.margin - boxHeight / 2 : vertical === "bottom" ? opt.margin + boxHeight / 2 : pageHeight / 2;
+    const bx = x - cos * width / 2 + sin * height / 2;
+    const by = y - sin * width / 2 - cos * height / 2;
+    const w = crop[2] - crop[0], h = crop[3] - crop[1];
+    const [a, b, c, d, e, f] = pageRotation === 0 ? [1, 0, 0, 1, crop[0], crop[1]]
+      : pageRotation === 90 ? [0, 1, -1, 0, crop[0] + w, crop[1]]
+        : pageRotation === 180 ? [-1, 0, 0, -1, crop[0] + w, crop[1] + h]
+          : [0, -1, 1, 0, crop[0], crop[1] + h];
+    const matrix: readonly [number, number, number, number, number, number] = [
+      width * (a * cos + c * sin), width * (b * cos + d * sin),
+      height * (-a * sin + c * cos), height * (-b * sin + d * cos),
+      a * bx + c * by + e, b * bx + d * by + f,
+    ];
+    return { page, displayWidth: pageWidth, displayHeight: pageHeight, pageRotation, x, y, width, height,
+      angle: opt.rotation, opacity: opt.opacity, position: opt.position, matrix };
+  });
+  return { pageCount: doc.pages.length, selectedPages: pages, placements,
+    imageWidth: image.width, imageHeight: image.height, note: "VISIBLE_OVERLAY_NOT_REDACTION" };
+}
+
+export function watermarkPdfJpeg(source: Uint8Array, options: PdfImageWatermarkOptions, signal?: AbortSignal): { artifact: PdfArtifact; plan: PdfImageWatermarkPlan } {
+  if (signal?.aborted) throw new DOMException("Operazione annullata", "AbortError");
+  const plan = planPdfImageWatermark(source, options);
+  const original = parsePdf(source);
+  const objects = new Map(original.objects);
+  let nextId = Math.max(...objects.keys()) + 1;
+  const imageId = nextId++, gsId = nextId++;
+  objects.set(imageId, { id: imageId, generation: 0, value: { kind: "stream", dictionary: pdfDict({
+    Type: pdfName("XObject"), Subtype: pdfName("Image"), Width: pdfNumber(plan.imageWidth), Height: pdfNumber(plan.imageHeight),
+    ColorSpace: pdfName("DeviceRGB"), BitsPerComponent: pdfNumber(8), Filter: pdfName("DCTDecode"),
+  }), bytes: options.image.slice() } });
+  objects.set(gsId, { id: gsId, generation: 0,
+    value: pdfDict({ Type: pdfName("ExtGState"), CA: pdfNumber(plan.placements[0]!.opacity), ca: pdfNumber(plan.placements[0]!.opacity), BM: pdfName("Normal") }) });
+  const selected = new Map(plan.placements.map((p) => [p.page, p]));
+  const pages = original.pages.map((node, index): PdfPageNode => {
+    const place = selected.get(index + 1);
+    if (place === undefined) return node;
+    if (signal?.aborted) throw new DOMException("Operazione annullata", "AbortError");
+    const value = node.object.value;
+    if (value.kind !== "dict") throw new Error("UNSUPPORTED_CAPABILITY: Pagina non valida");
+    const resourceValue = value.entries.get("Resources") ?? node.inherited.Resources;
+    const resources = resourceValue === undefined ? pdfDict({}) : dictionaryOrNull(original, resourceValue);
+    if (resources === null) throw new Error("UNSUPPORTED_CAPABILITY: Resources non valido");
+    const xo = resources.entries.get("XObject") === undefined ? pdfDict({}) : dictionaryOrNull(original, resources.entries.get("XObject"));
+    const gs = resources.entries.get("ExtGState") === undefined ? pdfDict({}) : dictionaryOrNull(original, resources.entries.get("ExtGState"));
+    if (xo === null || gs === null || xo.entries.has("WM239I") || gs.entries.has("WM239G")) {
+      throw new Error("UNSUPPORTED_CAPABILITY: Risorsa JPEG o ExtGState in conflitto");
+    }
+    const augmentedResources: PdfDictionary = { kind: "dict", entries: new Map([...resources.entries,
+      ["XObject", { kind: "dict", entries: new Map([...xo.entries, ["WM239I", pdfReference(imageId)]]) }],
+      ["ExtGState", { kind: "dict", entries: new Map([...gs.entries, ["WM239G", pdfReference(gsId)]]) }],
+    ]) };
+    const overlayId = nextId++;
+    objects.set(overlayId, { id: overlayId, generation: 0,
+      value: { kind: "stream", dictionary: pdfDict({}), bytes: new TextEncoder().encode(
+        `q\n/WM239G gs\n${place.matrix.map((n) => Number(n.toFixed(5))).join(" ")} cm\n/WM239I Do\nQ\n`) } });
+    const next: PdfDictionary = { kind: "dict", entries: new Map([...value.entries,
+      ["Contents", pdfArray([...pageContents(original, node), pdfReference(overlayId)])],
+      ["Resources", augmentedResources],
+    ]) };
+    return { object: { ...node.object, value: next }, inherited: node.inherited };
+  });
+  const model: PdfDocumentModel = { ...original, objects, pages };
+  const resultBytes = buildPdfFromPages(pages.map((page) => ({ document: model, page })), { flatten: false, stripMetadata: false, compress: false });
+  if (signal?.aborted) throw new DOMException("Operazione annullata", "AbortError");
+  const verified = parsePdf(resultBytes);
+  if (verified.pages.length !== original.pages.length) throw new Error("PDF_OUTPUT_MISMATCH: Pagine modificate");
+  for (let p = 0; p < original.pages.length; p++) {
+    const a = pageContents(original, original.pages[p]!);
+    const b = pageContents(verified, verified.pages[p]!);
+    if (b.length !== a.length + (selected.has(p + 1) ? 1 : 0)) throw new Error("PDF_OUTPUT_MISMATCH: Conteggio stream incoerente");
+    for (let i = 0; i < a.length; i++) {
+      const before = resolveReference(original, a[i]);
+      const after = resolveReference(verified, b[i]);
+      if (before?.kind !== "stream" || after?.kind !== "stream" || before.bytes.length !== after.bytes.length ||
+        before.bytes.some((v, j) => v !== after.bytes[j])) throw new Error(`PDF_OUTPUT_MISMATCH: Stream ${p + 1} modificato`);
+    }
+    const beforeGeometry = geometry(original, original.pages[p]!);
+    const afterGeometry = geometry(verified, verified.pages[p]!);
+    if (beforeGeometry.width !== afterGeometry.width || beforeGeometry.height !== afterGeometry.height || beforeGeometry.pageRotation !== afterGeometry.pageRotation) {
+      throw new Error("PDF_OUTPUT_MISMATCH: Geometria modificata");
+    }
+  }
+  const bytes = Uint8Array.from(resultBytes);
+  return { artifact: { bytes, blob: new Blob([bytes], { type: "application/pdf" }), mime: "application/pdf",
+    filename: "pdf-filigranato-jpeg.pdf", pageCount: verified.pages.length }, plan };
 }

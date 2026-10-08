@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
+import sharp from "sharp";
 import { buildPdfFromPages, createSimplePdf, extractPdfText, inspectPdfBytes } from "../src/engines/pdf";
-import { planPdfWatermark, watermarkPdf, type PdfWatermarkPosition } from "../src/engines/pdf/watermark";
+import { planPdfWatermark, watermarkPdf, planPdfImageWatermark, watermarkPdfJpeg, type PdfWatermarkPosition } from "../src/engines/pdf/watermark";
 import { nameValue, parsePdf, pdfArray, pdfNumber, resolveReference, type PdfPageNode } from "../src/engines/pdf/parser";
 
 const fixture = () => createSimplePdf(["ALPHA-VECTOR", "BETA-VECTOR", "GAMMA-VECTOR", "DELTA-VECTOR"], { width: 440, height: 600 });
@@ -96,5 +97,46 @@ describe("239 PDF watermark: text, opacity, geometry and original streams", () =
     })).toThrow(/troppo grande/iu);
     const controller = new AbortController(); controller.abort();
     expect(() => watermarkPdf(fixture(), { pages: "*", text: "DRAFT" }, controller.signal)).toThrow();
+  });
+
+  it("embeds real RGB JPEG image XObject with opacity while preserving page streams", async () => {
+    const raw = Buffer.alloc(96 * 64 * 3);
+    for (let i = 0; i < raw.length; i += 3) {
+      raw[i] = (i / 3) % 255;
+      raw[i + 1] = 150;
+      raw[i + 2] = 60;
+    }
+    const jpeg = new Uint8Array(await sharp(raw, { raw: { width: 96, height: 64, channels: 3 } }).jpeg({ quality: 85 }).toBuffer());
+    const source = fixture(), clone = source.slice();
+    const options = { image: jpeg, pages: "2-3", opacity: 0.4, rotation: 25, scale: 1, position: "center" as const };
+    const plan = planPdfImageWatermark(source, options);
+    expect(plan.selectedPages).toEqual([2, 3]);
+    expect(plan.imageWidth).toBe(96);
+    expect(plan.imageHeight).toBe(64);
+    const { artifact } = watermarkPdfJpeg(source, options);
+    expect(source).toEqual(clone);
+    expect(artifact.bytes.slice(0, 5)).toEqual(new TextEncoder().encode("%PDF-"));
+    expect(inspectPdfBytes(artifact.bytes).pageCount).toBe(4);
+    const originals = contents(source), result = contents(artifact.bytes);
+    expect(result.map((page) => page.length)).toEqual([1, 2, 2, 1]);
+    originals.forEach((original, i) => expect(result[i]![0]).toEqual(original[0]));
+    expect(new TextDecoder().decode(result[1]![1])).toContain("/WM239I Do");
+    const model = parsePdf(artifact.bytes);
+    const images = [...model.objects.values()].filter((value) => value.value.kind === "stream" &&
+      value.value.dictionary.entries.get("Subtype")?.kind === "name" &&
+      (value.value.dictionary.entries.get("Subtype") as { value: string }).value === "Image");
+    // Per-page writer safely clones independently referenced image objects,
+    // rather than claiming unsupported global deduplication.
+    expect(images).toHaveLength(2);
+    for (const { value } of images) {
+      if (value.kind !== "stream") throw new Error("Expected JPEG stream");
+      expect(value.bytes).toEqual(jpeg);
+    }
+  });
+
+  it("refuses PNG masquerading as JPEG and oversized or malformed source JPEG", () => {
+    for (const image of [new Uint8Array([137, 80, 78, 71]), new Uint8Array(100), new Uint8Array(2 * 1024 * 1024 + 1)]) {
+      expect(() => watermarkPdfJpeg(fixture(), { image, pages: "1" })).toThrow();
+    }
   });
 });

@@ -4,7 +4,7 @@ export const pdfWatermarkManifest = {
   id: "pdf-watermark",
   route: "/tools/pdf-watermark",
   name: "PDF Watermark Overlay",
-  summary: "Add a visible translucent text watermark to chosen PDF pages, with opacity, rotation, scale and a real-page preview. Not redaction.",
+  summary: "Add a visible translucent text or bounded RGB JPEG watermark to chosen PDF pages, with rotation, scale and local preview. Not redaction.",
   aliases: ["watermark pdf", "pdf overlay watermark", "filigrana pdf"],
   jobs: ["overlay watermark text on pdf pages", "mark pdf as draft or copy", "rotate a visible pdf watermark"],
   category: "documents",

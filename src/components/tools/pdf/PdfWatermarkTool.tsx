@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "preact/hooks";
-import { planPdfWatermark, watermarkPdf, type PdfWatermarkPosition } from "../../../engines/pdf/watermark";
+import { planPdfWatermark, watermarkPdf, planPdfImageWatermark, watermarkPdfJpeg, type PdfWatermarkPosition } from "../../../engines/pdf/watermark";
 import { openPdfThumbnailSession, pdfThumbnailWindow, type PdfThumbnailSession } from "../../../engines/pdf/thumbnails";
 
 const POSITIONS: readonly { value: PdfWatermarkPosition; label: string }[] = [
@@ -12,6 +12,10 @@ const POSITIONS: readonly { value: PdfWatermarkPosition; label: string }[] = [
 type Thumbnail = { page: number; url: string };
 
 export function PdfWatermarkTool() {
+  const [mode, setMode] = useState<"text" | "jpeg">("text");
+  const [jpegFile, setJpegFile] = useState<File | null>(null);
+  const [jpegBytes, setJpegBytes] = useState<Uint8Array | null>(null);
+  const [jpegPreviewUrl, setJpegPreviewUrl] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [source, setSource] = useState<Uint8Array | null>(null);
   const [pages, setPages] = useState("*");
@@ -33,11 +37,14 @@ export function PdfWatermarkTool() {
 
   const options = { pages, text, opacity: Number(opacity), rotation: Number(rotation), scale: Number(scale),
     margin: Number(margin), position };
+  const imageOptions = { pages, image: jpegBytes!, opacity: Number(opacity), rotation: Number(rotation),
+    scale: Number(scale), margin: Number(margin), position };
   const calculated = useMemo(() => {
     if (source === null) return { plan: null, error: "" };
-    try { return { plan: planPdfWatermark(source, options), error: "" }; }
+    if (mode === "jpeg" && jpegBytes === null) return { plan: null, error: "Seleziona un'immagine JPEG per la filigrana" };
+    try { return { plan: mode === "jpeg" ? planPdfImageWatermark(source, imageOptions) : planPdfWatermark(source, options), error: "" }; }
     catch (error) { return { plan: null, error: error instanceof Error ? error.message : "Anteprima non valida" }; }
-  }, [source, pages, text, opacity, rotation, scale, margin, position]);
+  }, [source, mode, jpegBytes, pages, text, opacity, rotation, scale, margin, position]);
   const plan = calculated.plan;
 
   useEffect(() => {
@@ -48,6 +55,16 @@ export function PdfWatermarkTool() {
     }, (error) => { if (alive) setLoadError(error instanceof Error ? error.message : "Impossibile leggere PDF"); });
     return () => { alive = false; };
   }, [file]);
+
+  useEffect(() => {
+    if (jpegFile === null) { setJpegBytes(null); setJpegPreviewUrl(""); return; }
+    let alive = true;
+    const url = URL.createObjectURL(jpegFile);
+    setJpegPreviewUrl(url);
+    void jpegFile.arrayBuffer().then((bytes) => { if (alive) setJpegBytes(new Uint8Array(bytes)); },
+      (error) => { if (alive) setLoadError(error instanceof Error ? error.message : "JPEG non leggibile"); });
+    return () => { alive = false; URL.revokeObjectURL(url); };
+  }, [jpegFile]);
 
   useEffect(() => {
     if (file === null || source === null) { setSession(null); return; }
@@ -109,7 +126,7 @@ export function PdfWatermarkTool() {
     setWriting(true);
     try {
       await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-      setResult(watermarkPdf(source, options).artifact.blob);
+      setResult(mode === "jpeg" ? watermarkPdfJpeg(source, imageOptions).artifact.blob : watermarkPdf(source, options).artifact.blob);
     } catch (error) {
       setWriteError(error instanceof Error ? error.message : "Filigrana non creata");
     } finally { setWriting(false); }
@@ -122,9 +139,15 @@ export function PdfWatermarkTool() {
         <strong>La filigrana è una sovrapposizione visibile, NON una censura o redazione dei dati.</strong>{" "}
         Non nasconde né elimina il testo originale: informazioni riservate restano recuperabili nel PDF.
       </p>
-      <p class="file-note">Supporto attuale: testo ASCII. Filigrane immagine non ancora implementate; nessun caricamento al server.</p>
+      <p class="file-note">Filigrana con testo ASCII oppure JPEG RGB baseline incorporato. Nessun caricamento al server; PNG, CMYK e JPEG progressivi sono rifiutati.</p>
+      <label class="field"><span>Tipo di filigrana</span><select value={mode} onChange={(event) => update(setMode, event.currentTarget.value as "text" | "jpeg")} disabled={writing}>
+        <option value="text">Testo</option><option value="jpeg">Immagine JPEG</option>
+      </select></label>
       <div class="field-grid">
-        <label class="field"><span>Testo filigrana</span><input value={text} maxLength={48} onInput={(event) => update(setText, event.currentTarget.value)} disabled={writing} /><small>1–48 caratteri ASCII stampabili.</small></label>
+        {mode === "text" ? <label class="field"><span>Testo filigrana</span><input value={text} maxLength={48} onInput={(event) => update(setText, event.currentTarget.value)} disabled={writing} /><small>1–48 caratteri ASCII stampabili.</small></label>
+          : <label class="field"><span>JPEG filigrana</span><input type="file" accept="image/jpeg,.jpg,.jpeg" onChange={(event) => {
+            setJpegBytes(null); update(setJpegFile, (event.currentTarget as HTMLInputElement).files?.[0] ?? null);
+          }} disabled={writing} /><small>JPEG RGB baseline a 8 bit, fino a 2 MiB/4 megapixel.</small></label>}
         <label class="field"><span>Pagine</span><input value={pages} onInput={(event) => update(setPages, event.currentTarget.value)} disabled={writing} /><small>* tutte; 2-4,6 sottoinsieme. Rifiuta duplicati.</small></label>
         <label class="field"><span>Posizione</span><select value={position} onChange={(event) => update(setPosition, event.currentTarget.value as PdfWatermarkPosition)} disabled={writing}>
           {POSITIONS.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
@@ -139,7 +162,7 @@ export function PdfWatermarkTool() {
       {loadError || calculated.error ? <p role="alert">{loadError || calculated.error}</p> : null}
       {plan !== null ? (
         <section aria-label="Anteprima watermark sulla geometria reale" data-watermark-plan>
-          <p role="status">{plan.selectedPages.length} pagine su {plan.pageCount}, filigrana {text} — overlay visibile, non redazione.</p>
+          <p role="status">{plan.selectedPages.length} pagine su {plan.pageCount}, filigrana {mode === "jpeg" ? "JPEG" : text} — overlay visibile, non redazione.</p>
           <div class="actions" aria-label="Navigazione miniature">
             <button type="button" disabled={start === 1} onClick={() => setStart((n) => Math.max(1, n - 4))}>Precedenti</button>
             <label>Da pagina <input type="number" min="1" max={plan.pageCount} value={start} onInput={(event) => {
@@ -155,11 +178,14 @@ export function PdfWatermarkTool() {
               return <div key={page} data-watermark-preview-page={page}>
                 <div style={{ position: "relative", width: "100%", maxWidth: "176px", aspectRatio: wm ? `${wm.displayWidth}/${wm.displayHeight}` : "440/600" }}>
                   {thumb ? <img src={thumb.url} alt={`Anteprima PDF originale pagina ${page}`} style={{ width: "100%", height: "100%", display: "block", objectFit: "contain" }} /> : <span>Caricamento pagina {page}…</span>}
-                  {thumb && wm ? <svg data-watermark-overlay-page={page} viewBox={`0 0 ${wm.displayWidth} ${wm.displayHeight}`} preserveAspectRatio="none" aria-label={`Filigrana ${wm.text} a pagina ${page}`}
+                  {thumb && wm ? <svg data-watermark-overlay-page={page} viewBox={`0 0 ${wm.displayWidth} ${wm.displayHeight}`} preserveAspectRatio="none" aria-label={`Filigrana a pagina ${page}`}
                     style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
-                    <text x={wm.x} y={wm.displayHeight - wm.y} textAnchor="middle" dominantBaseline="central"
+                    {"text" in wm ? <text x={wm.x} y={wm.displayHeight - wm.y} textAnchor="middle" dominantBaseline="central"
                       transform={`rotate(${wm.angle} ${wm.x} ${wm.displayHeight - wm.y})`} fontFamily="Helvetica, Arial, sans-serif"
                       fontSize={wm.fontSize} opacity={wm.opacity} fill="#808080">{wm.text}</text>
+                      : jpegPreviewUrl ? <image href={jpegPreviewUrl} x={wm.x - wm.width / 2} y={wm.displayHeight - wm.y - wm.height / 2}
+                        width={wm.width} height={wm.height} opacity={wm.opacity}
+                        transform={`rotate(${wm.angle} ${wm.x} ${wm.displayHeight - wm.y})`} /> : null}
                   </svg> : null}
                 </div><p class="file-note">Pagina {page}{wm ? ` · filigrana ${wm.position} (${wm.angle}°)` : " · invariata"}</p>
               </div>;
