@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import type { ImageVisualToolId } from "../../../engines/image/visual";
+import { isSvgInput } from "../../../engines/image/svg-export";
 import {
   gutterStateFor,
   InlineError,
@@ -28,6 +29,11 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [numberValue, setNumberValue] = useState("1");
   const [secondNumberValue, setSecondNumberValue] = useState("1");
   const [mime, setMime] = useState("image/png");
+  const [svgWidth, setSvgWidth] = useState("160");
+  const [svgHeight, setSvgHeight] = useState("120");
+  const [svgScale, setSvgScale] = useState("1");
+  const [svgBackground, setSvgBackground] = useState("#ffffff");
+  const [svgTransparent, setSvgTransparent] = useState(true);
   const [quality, setQuality] = useState("0.85");
   const [targetKiB, setTargetKiB] = useState("");
   const [targetUnit, setTargetUnit] = useState<"KiB" | "MiB">("KiB");
@@ -36,7 +42,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [batchMode, setBatchMode] = useState(false);
   const [colorMode, setColorMode] = useState("convert");
   const operation = useToolOperation<PreparedImageResult>(async (signal) => {
-    const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit);
+    const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent);
     const run = await toolRuntime.run(toolId, input, {}, signal);
     if (!run.ok) return run;
     return { ok: true, tool: run.tool, value: await prepareImageResult(run.value), defaults: run.defaults };
@@ -63,6 +69,11 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     setNumberValue("1");
     setSecondNumberValue("1");
     setMime("image/png");
+    setSvgWidth("160");
+    setSvgHeight("120");
+    setSvgScale("1");
+    setSvgBackground("#ffffff");
+    setSvgTransparent(true);
     setQuality("0.85");
     setTargetKiB("");
     setTargetUnit("KiB");
@@ -76,6 +87,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   function chooseFile(event: Event) {
     const selected = event.currentTarget instanceof HTMLInputElement ? event.currentTarget.files?.[0] ?? null : null;
     setFile(selected);
+    if (!isSvgInput(selected) && mime === "application/pdf") setMime("image/png");
     operation.reset();
   }
 
@@ -86,6 +98,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   }
 
   const sourceFiles = [file, secondFile, ...files].filter((item): item is File => item !== null);
+  const svgSelected = toolId === "image-format-conversion" && isSvgInput(file);
   const colorVisionMode = colorMode === "deuteranopia" || colorMode === "tritanopia" ? colorMode : "protanopia";
 
   return (
@@ -105,7 +118,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
         {needsFile(toolId) && (
           <label class="field">
             <span>{needsMultipleFiles(toolId) ? "Immagini" : "Immagine"}</span>
-            <input type="file" accept={toolId === "image-format-conversion" ? "image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,image/gif,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.gif" : "image/jpeg,image/png,image/webp"} multiple={batchMode || needsMultipleFiles(toolId)} onChange={batchMode || needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
+            <input type="file" accept={toolId === "image-format-conversion" ? "image/svg+xml,image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,image/gif,.svg,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.gif" : "image/jpeg,image/png,image/webp"} multiple={batchMode || needsMultipleFiles(toolId)} onChange={batchMode || needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
             <small>File elaborati in locale, senza caricamenti né elaborazione remota alternativa.</small>
           </label>
         )}
@@ -142,9 +155,26 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
           </label>
         )}
         {needsText(toolId) && <label class="field"><span>Valore</span><input value={value} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
-        {needsOutputFormat(toolId) && !(toolId === "image-compression" && batchMode) && <label class="field"><span>Formato di uscita</span><select value={mime} onChange={(event) => setMime(event.currentTarget.value)} disabled={operation.isRunning}><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select></label>}
+        {needsOutputFormat(toolId) && !(toolId === "image-compression" && batchMode) && <label class="field"><span>Formato di uscita</span><select value={mime} onChange={(event) => { setMime(event.currentTarget.value); clearResult(); }} disabled={operation.isRunning}><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option>{svgSelected && <option value="application/pdf">PDF raster (non vettoriale)</option>}</select></label>}
+        {svgSelected && (
+          <fieldset class="field" data-svg-export-options>
+            <legend>SVG → immagine o PDF raster (modalità sperimentale, non Gold)</legend>
+            <div class="field-grid">
+              <label class="field"><span>Larghezza viewport SVG (px)</span><input type="number" min="1" max="8192" step="1" value={svgWidth} onInput={(event) => { setSvgWidth(event.currentTarget.value); clearResult(); }} disabled={operation.isRunning} /></label>
+              <label class="field"><span>Altezza viewport SVG (px)</span><input type="number" min="1" max="8192" step="1" value={svgHeight} onInput={(event) => { setSvgHeight(event.currentTarget.value); clearResult(); }} disabled={operation.isRunning} /></label>
+              <label class="field"><span>Scala raster (0,1–4)</span><input type="number" min="0.1" max="4" step="0.1" value={svgScale} onInput={(event) => { setSvgScale(event.currentTarget.value); clearResult(); }} disabled={operation.isRunning} /></label>
+            </div>
+            {(mime === "image/png" || mime === "image/webp") && (
+              <label class="field"><input type="checkbox" checked={svgTransparent} onChange={(event) => { setSvgTransparent(event.currentTarget.checked); clearResult(); }} disabled={operation.isRunning} /> <span>Conserva lo sfondo trasparente</span></label>
+            )}
+            {(!svgTransparent || mime === "image/jpeg" || mime === "application/pdf") && (
+              <label class="field"><span>Colore di sfondo esplicito per rasterizzazione</span><input type="color" value={svgBackground} onInput={(event) => { setSvgBackground(event.currentTarget.value); clearResult(); }} disabled={operation.isRunning} /></label>
+            )}
+            <small>Solo elementi SVG statici semplici: niente script, stili CSS, entità, font esterni, riferimenti URL, animazioni o foreignObject. Qualsiasi SVG non riconosciuto viene rifiutato. Il PDF incorpora una fotografia raster JPEG dei pixel: NON conserva i tracciati vettoriali e NON vettorializza immagini.</small>
+          </fieldset>
+        )}
         {toolId === "image-compression" && batchMode && <p class="file-note">Ogni immagine conserva il proprio formato riconosciuto dalla firma del file. Un errore non blocca le altre immagini; i risultati validi si scaricano anche insieme in ZIP. Elaborazione una per volta, massimo 80 MiB complessivi.</p>}
-        {toolId === "image-format-conversion" && mime === "image/jpeg" && <label class="field"><span>Sfondo per trasparenza → JPEG</span><input type="color" value={/^#[0-9a-f]{6}$/iu.test(value) ? value : "#ffffff"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /><small>Obbligatorio quando l'immagine contiene alpha. Il JPEG non supporta trasparenza: i pixel trasparenti vengono compositati su questo colore.</small></label>}
+        {toolId === "image-format-conversion" && !svgSelected && mime === "image/jpeg" && <label class="field"><span>Sfondo per trasparenza → JPEG</span><input type="color" value={/^#[0-9a-f]{6}$/iu.test(value) ? value : "#ffffff"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /><small>Obbligatorio quando l'immagine contiene alpha. Il JPEG non supporta trasparenza: i pixel trasparenti vengono compositati su questo colore.</small></label>}
         {needsQuality(toolId) && <label class="field"><span>Qualità, se supportata</span><input type="number" min="0.1" max="1" step="0.01" value={quality} onInput={(event) => setQuality(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
         {toolId === "image-compression" && (
           <fieldset class="field" data-target-image-compression>
@@ -174,7 +204,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
             )}
           </fieldset>
         )}
-        {toolId === "image-format-conversion" && <p class="file-note">Input: JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF e GIF. HEIC/HEIF usa un decoder locale lazy; AVIF usa il decoder locale del browser; per GIF viene convertito esplicitamente solo il primo frame. Output: PNG, JPEG o WebP. PNG non aggiunge perdita ai pixel RGBA decodificati; JPEG/WebP sono ricodifiche lossy alla qualità scelta. I metadati container non vengono conservati.</p>}
+        {toolId === "image-format-conversion" && <p class="file-note">Input: SVG statico con policy restrittiva, JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF e GIF. SVG produce PNG/JPEG/WebP o PDF raster-backed, NON un PDF vettoriale. HEIC/HEIF usa un decoder locale lazy; per GIF viene convertito solo il primo frame. I metadati container non vengono conservati. La modalità SVG è in validazione (Partial), non certificata Gold.</p>}
         <InlineError message={operation.error === "" ? "" : "L'operazione non è riuscita. Controlla i file e i parametri inseriti."} />
         <ToolActions>
           <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Esegui in locale</ToolSubmitButton>
@@ -188,13 +218,15 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   );
 }
 
-function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: File | null, files: File[], value: string, secondValue: string, numberValue: string, secondNumberValue: string, mime: string, quality: string, colorMode: string, targetKiB: string, minimumQuality: string, allowResize: boolean, batchMode: boolean, targetUnit: "KiB" | "MiB"): unknown {
+function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: File | null, files: File[], value: string, secondValue: string, numberValue: string, secondNumberValue: string, mime: string, quality: string, colorMode: string, targetKiB: string, minimumQuality: string, allowResize: boolean, batchMode: boolean, targetUnit: "KiB" | "MiB", svgWidth: string, svgHeight: string, svgScale: string, svgBackground: string, svgTransparent: boolean): unknown {
   const qualityNumber = Number(quality);
   const primary = file ?? files[0];
   switch (toolId) {
     case "color-blindness-image-simulation": return { file: primary, mode: colorMode === "deuteranopia" || colorMode === "tritanopia" ? colorMode : "protanopia" };
     case "image-crop": return { file: primary, x: 0, y: 0, width: Number(numberValue), height: Number(secondNumberValue), mime, quality: qualityNumber };
-    case "image-format-conversion": return { file: primary, mime, quality: qualityNumber, ...(mime === "image/jpeg" ? { background: value || "#ffffff" } : {}) };
+    case "image-format-conversion": return isSvgInput(primary)
+      ? { file: primary, mime, quality: qualityNumber, width: Number(svgWidth), height: Number(svgHeight), scale: Number(svgScale), background: svgTransparent && mime !== "image/jpeg" && mime !== "application/pdf" ? "transparent" : svgBackground }
+      : { file: primary, mime, quality: qualityNumber, ...(mime === "image/jpeg" ? { background: value || "#ffffff" } : {}) };
     case "image-compression": return {
       ...(batchMode ? { files } : { file: primary, mime }),
       quality: qualityNumber,

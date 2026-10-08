@@ -104,7 +104,7 @@ export async function prepareImageResult(value: unknown): Promise<PreparedImageR
   const artifacts = await Promise.all(collectBlobCandidates(raw).map(async (candidate): Promise<VerifiedImageOutput> => {
     const bytes = new Uint8Array(await candidate.blob.arrayBuffer());
     const verification = await verifyGeneratedArtifact({
-      kind: "image",
+      kind: candidate.declaredMime === "application/pdf" ? "pdf" : "image",
       name: candidate.filename,
       declaredMime: candidate.declaredMime,
       bytes,
@@ -244,6 +244,9 @@ function VisualPreview({ output }: { readonly output: VerifiedImageOutput | unde
   if (output === undefined) return null;
   if (!output.artifact.download.ready) {
     return <ResultInterpretation state="error">Il file prodotto non supera la verifica indipendente di firma/contenitore e non viene offerto come risultato scaricabile.</ResultInterpretation>;
+  }
+  if (output.blob.type === "application/pdf") {
+    return <ResultInterpretation state="warning">PDF generato da un'immagine raster JPEG. I tracciati e il testo SVG NON sono vettoriali nel PDF: scarica il file dalla sezione risultati.</ResultInterpretation>;
   }
   return (
     <figure data-result-slot="visual-preview" aria-label="Anteprima del file immagine prodotto">
@@ -399,6 +402,7 @@ function semanticImageRows(toolId: ImageResultToolId, raw: ImageResultValue): re
   }
   if (toolId === "image-format-conversion") {
     return [
+      ...(raw.rasterBackedPdf === true ? [{ label: "PDF", value: "Raster JPEG incorporato, non vettoriale" }] : []),
       ...(stringField(raw.inputKind) === undefined ? [] : [{ label: "Formato ingresso rilevato", value: stringField(raw.inputKind)!.toUpperCase() }]),
       ...(stringField(raw.decoder) === undefined ? [] : [{ label: "Decoder", value: stringField(raw.decoder) === "libheif-wasm" ? "libheif/WASM locale (lazy)" : "decoder locale del browser" }]),
       ...(stringField(raw.framePolicy) === undefined ? [] : [{ label: "Frame", value: stringField(raw.framePolicy) === "first-frame-only" ? "solo primo frame" : "immagine singola" }]),
