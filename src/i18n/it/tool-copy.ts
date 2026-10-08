@@ -591,6 +591,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Rimuovi note duplicate",
     summary: "Elimina note di ricerca duplicate normalizzando spazi e maiuscole/minuscole.",
   },
+  "ooxml-media-compression": {
+    name: "Comprimi immagini dentro DOCX, PPTX e XLSX",
+    summary: "Ottimizza PNG incorporati nei file Office conservando XML e collegamenti. JPEG con perdita e ridimensionamento richiedono autorizzazione separata; report e download verificati in locale.",
+    searchTerms: ["ridurre dimensione docx", "comprimi immagini word", "comprimi pptx", "comprimi immagini excel", "office ottimizzazione immagini"],
+  },
   "open-graph-preview": {
     name: "Anteprima Open Graph",
     summary: "Estrae tag Open Graph e Twitter Card da HTML incollato senza recuperarlo dalla rete né eseguirlo.",

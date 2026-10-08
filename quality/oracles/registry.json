@@ -11920,6 +11920,22 @@
       "cross_check": { "usable": true, "implementation": "independent PDF.js render of downloaded result plus source stream byte equality tests", "role": "bounded sample visual verification, not broad PDF semantic parity" },
       "confidence": "medium",
       "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED; no Gold receipt", "PNG, CMYK, progressive JPEG and alpha masks not supported as image watermarks", "no arbitrary complex font/CropBox/device/browser matrix certification"]
+    },
+    {
+      "id": "cand-263",
+      "candidate": "Bounded OOXML embedded PNG and consent-approved JPEG media compression inside editable DOCX PPTX XLSX",
+      "tool_family": "office",
+      "maintenance_class": "H",
+      "truth_sources": ["fixture-policy"],
+      "standard_or_official_example": "Actual editable DOCX/PPTX/XLSX produced by python-docx, python-pptx and XlsxWriter, each with an embedded PNG and JPEG. Browser-generated output files independently opened using Python zipfile and Office libraries.",
+      "invariants": ["all non-media members and Office XML/relationships remain byte-identical", "only matching PNG/JPEG part MIME and extension are re-encoded", "JPEG lossy transformation requires explicit approval", "resizing requires a separate explicit approval", "final package and output media are reanalyzed; output is smaller than input"],
+      "adversarial_cases": ["macro-enabled encrypted and path-traversal ZIPs", "ambiguous MIME and corrupted image signatures", "high expansion ratio and oversized image/pixel limits", "codec unavailable or output not smaller", "pre-aborted operation", "missing consent for JPEG/resize"],
+      "expected_output_strategy": "tests/ooxml-media-264.test.ts plus tests/ooxml-media-264.browser.mjs: downloaded genuine DOCX/PPTX/XLSX independently reopened and compared using Python zipfile, python-docx and python-pptx; validate UI consent and output download separately.",
+      "security_privacy_edges": ["LOCAL only, no HTTP upload or external relationship resolution", "OOXML package preflight 20 MiB and 2,048 entries", "media max 16 candidates, 8 MiB each, 12 million decode pixels total", "no edits to executable XML, links or unsupported vector media"],
+      "portability_browser_edges": ["desktop Chromium 390-pixel browser acceptance", "no real-device or cross-browser codec matrix", "browser image encoder capability may differ"],
+      "cross_check": {"usable": true, "implementation": "independent Python ZIP + Office real reopen + decoded PNG pixel parity", "role": "specific DOCX/PPTX/XLSX corpus, not arbitrary Office layout rendering or Gold certification"},
+      "confidence": "medium",
+      "unresolved_gaps": ["NO GOLD RECEIPT: runtime and public route require separate release/certification gates", "real physical Office app editing and cross-browser media codecs unverified", "advanced OOXML media and all unsupported raster/vector codecs refused"]
     }
   ]
 }

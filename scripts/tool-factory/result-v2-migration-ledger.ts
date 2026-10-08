@@ -147,7 +147,7 @@ export const RESULT_V2_MIGRATION_OWNER_RULES: readonly MigrationOwnerRule[] = [
   },
   {
     ticket: RESULT_V2_MIGRATION_TICKETS.pdfDocument,
-    matches: ({ summary }) => summary.engine === "pdf",
+    matches: ({ summary }) => summary.engine === "pdf" || (summary.id === "ooxml-media-compression" && summary.engine === "ooxml"),
   },
   {
     ticket: RESULT_V2_MIGRATION_TICKETS.urlMarketingQrBespoke,

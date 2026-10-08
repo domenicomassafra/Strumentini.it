@@ -107,6 +107,31 @@ describe("264 — bounded OOXML embedded media compression", () => {
     await expect(compressOoxmlEmbeddedMedia(bytes, { maxMedia: 20 }, codec)).rejects.toBeInstanceOf(OoxmlPackageError);
   });
 
+  it("allows raster downsizing only after explicit resize approval and verifies bounds", async () => {
+    const input = await fixture("pptx");
+    const result = await compressOoxmlEmbeddedMedia(input, {
+      approveResize: true, maxDimension: 160, approveLossyJpeg: true, jpegQuality: 0.65,
+    }, codec);
+    expect(result.outcome).toBe("optimized");
+    expect(result.changedCount).toBe(2);
+    expect(result.parts.filter((p) => p.status === "changed")).toEqual(expect.arrayContaining([
+      expect.objectContaining({ originalDimensions: expect.objectContaining({ width: 420, height: 280 }), outputDimensions: { width: 160, height: 107 }, fidelity: "approved-lossy-recode-or-resize" }),
+    ]));
+    expect(result.fidelityWarning).toMatch(/APPROVED LOSSY/u);
+    changed(input, new Uint8Array(result.bytes));
+  });
+
+  it("refuses media with ambiguous content type rather than rewriting its extension", async () => {
+    const original = await fixture("docx");
+    const archive = unzipSync(original);
+    const types = new TextDecoder().decode(archive["[Content_Types].xml"]!);
+    const modified = types.replace('Extension="png" ContentType="image/png"', 'Extension="png" ContentType="image/gif"');
+    expect(modified).not.toBe(types);
+    archive["[Content_Types].xml"] = new TextEncoder().encode(modified);
+    const output = await compressOoxmlEmbeddedMedia(zipSync(archive), { approveLossyJpeg: true }, codec);
+    expect(output.parts.find((p) => p.type === "unsupported")).toMatchObject({ status: "skipped", skipReason: "unrecognized-content-type" });
+  });
+
   it("honors abort before decoding and return, without issuing partial package", async () => {
     const bytes = await fixture("pptx");
     const controller = new AbortController();

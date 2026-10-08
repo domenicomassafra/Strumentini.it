@@ -3020,6 +3020,27 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md"
   },
   {
+    "toolId": "ooxml-media-compression",
+    "engine": "ooxml",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "OoxmlMediaCompressionTool",
+      "source": "src/components/tools/office/OoxmlMediaCompressionTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "file",
+      "capabilities": [
+        "download",
+        "retry",
+        "reset",
+        "provenance",
+        "before-after"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "open-graph-preview",
     "engine": "url-marketing",
     "rendererSeam": {
