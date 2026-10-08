@@ -229,7 +229,18 @@ export async function exportSvgLocal(input: SvgExportOptions, signal?: AbortSign
     abortIfNeeded(signal);
     const pdf = input.mime === "application/pdf";
     const rasterMime = pdf ? "image/jpeg" : input.mime;
-    const raster = await outputBlob(canvas, rasterMime, quality, width, height, signal);
+    let raster: Blob;
+    try {
+      raster = await outputBlob(canvas, rasterMime, quality, width, height, signal);
+    } catch (error) {
+      // WebKit may silently encode PNG for a canvas.toBlob("image/webp")
+      // request. Never rename that fallback .webp or expose it as a success.
+      if (rasterMime === "image/webp" && error instanceof ImageVisualError
+        && error.code === "OUTPUT_VALIDATION_FAILED") {
+        throw new ImageVisualError("WEBP_ENCODER_UNAVAILABLE", "Questo browser non codifica WebP: scegli PNG, JPEG o PDF raster.");
+      }
+      throw error;
+    }
     const blob = pdf ? jpegPdf(new Uint8Array(await raster.arrayBuffer()), width, height) : raster;
     abortIfNeeded(signal);
     if (pdf) {

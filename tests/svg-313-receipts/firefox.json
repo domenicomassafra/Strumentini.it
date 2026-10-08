@@ -1,0 +1,85 @@
+{
+  "ticket": 313,
+  "scope": "bounded-static-svg-subset",
+  "browserEngine": "firefox",
+  "browserVersion": "155.0",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "deviceClass": "desktop-headless-viewport-emulation",
+  "checks": 44,
+  "result": "PASS",
+  "exports": [
+    {
+      "mime": "image/png",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.png",
+      "bytes": 3034,
+      "sha256": "281ba43b69cdd478a778ea790a3ea1aa1cc8fe3cc2638104bb8815e24c57181a"
+    },
+    {
+      "mime": "image/jpeg",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.jpg",
+      "bytes": 4571,
+      "sha256": "6f628fe0654327608421b31c5e51d498a9d8f7281a838e2687fd83e8276fc1eb"
+    },
+    {
+      "mime": "image/webp",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.webp",
+      "bytes": 1566,
+      "sha256": "8cbe39e08c35f09aa782f9fbc9a1be0820a5740cbee380078a6afc3f80a651ed"
+    },
+    {
+      "mime": "application/pdf",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.pdf",
+      "bytes": 5248,
+      "sha256": "a478983f2a9b7a4461cba12d55a4965806c9f6a3b33233b02b583a6f8baa0b22"
+    }
+  ],
+  "webpCapability": {
+    "nativeCanvasEncodedMime": "image/webp",
+    "supportsActualWebpOutput": true,
+    "fallbackPolicy": "reject without download; never relabel PNG as WebP"
+  },
+  "pdf": "single-page JPEG /DCTDecode PDF.js-reopened",
+  "security": {
+    "hostileSvgFilesRejected": 13,
+    "offsiteRequests": 0,
+    "pageErrors": 0
+  },
+  "pixelChecks": {
+    "pngSize": [
+      300,
+      200
+    ],
+    "opaqueRed": [
+      255,
+      0,
+      0,
+      255
+    ],
+    "opaqueBlue": [
+      0,
+      0,
+      255,
+      255
+    ],
+    "transparentPixel": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "jpegBackground": "#00ff00"
+  },
+  "screenshot": "firefox-png-result.png",
+  "limitations": [
+    "not a physical-device test",
+    "not arbitrary/advanced SVG support",
+    "not a Gold certification"
+  ]
+}

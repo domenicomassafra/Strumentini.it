@@ -1,0 +1,85 @@
+{
+  "ticket": 313,
+  "scope": "bounded-static-svg-subset",
+  "browserEngine": "webkit",
+  "browserVersion": "26.6",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "deviceClass": "desktop-headless-viewport-emulation",
+  "checks": 44,
+  "result": "PASS",
+  "exports": [
+    {
+      "mime": "image/png",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.png",
+      "bytes": 4076,
+      "sha256": "9b73d9507dd7c617ff30a826a64ddb9e226fd618249931c27c81d7732c3e215b"
+    },
+    {
+      "mime": "image/jpeg",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.jpg",
+      "bytes": 6102,
+      "sha256": "73888e0c512d875eefadf20aa91f489509c57c92ac8bf635a57b0baa0c0367ee"
+    },
+    {
+      "mime": "image/webp",
+      "outcome": "EXPECTED_REJECTED_UNSUPPORTED_ENCODER",
+      "nativeCanvasReturnedMime": "image/png",
+      "downloadOffered": false
+    },
+    {
+      "mime": "application/pdf",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.pdf",
+      "bytes": 6779,
+      "sha256": "9f25b53703b89b100e76bdc69b1ff926a10aed8130eac7bc5c7d855aa730ba9e"
+    }
+  ],
+  "webpCapability": {
+    "nativeCanvasEncodedMime": "image/png",
+    "supportsActualWebpOutput": false,
+    "fallbackPolicy": "reject without download; never relabel PNG as WebP"
+  },
+  "pdf": "single-page JPEG /DCTDecode PDF.js-reopened",
+  "security": {
+    "hostileSvgFilesRejected": 13,
+    "offsiteRequests": 0,
+    "pageErrors": 0
+  },
+  "pixelChecks": {
+    "pngSize": [
+      300,
+      200
+    ],
+    "opaqueRed": [
+      255,
+      0,
+      0,
+      255
+    ],
+    "opaqueBlue": [
+      0,
+      0,
+      255,
+      255
+    ],
+    "transparentPixel": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "jpegBackground": "#00ff00"
+  },
+  "screenshot": "webkit-png-result.png",
+  "limitations": [
+    "not a physical-device test",
+    "not arbitrary/advanced SVG support",
+    "not a Gold certification",
+    "WebP export unavailable in this browser; expected refusal is tested, not a WebP success"
+  ]
+}

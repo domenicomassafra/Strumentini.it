@@ -1,0 +1,85 @@
+{
+  "ticket": 313,
+  "scope": "bounded-static-svg-subset",
+  "browserEngine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "deviceClass": "desktop-headless-viewport-emulation",
+  "checks": 44,
+  "result": "PASS",
+  "exports": [
+    {
+      "mime": "image/png",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.png",
+      "bytes": 4109,
+      "sha256": "4ce55a2c98d0efa90ed19f84a0d48eeeb397b53776f09773560e8441bcaff952"
+    },
+    {
+      "mime": "image/jpeg",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.jpg",
+      "bytes": 3987,
+      "sha256": "f6cba4ac692b67183b8a9f4326db530f2cb81e4f32fac986ec0a2c0042e3dc9f"
+    },
+    {
+      "mime": "image/webp",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.webp",
+      "bytes": 2192,
+      "sha256": "577864b92bbef889a1d2ba7408da9bfb177fed3493dbdb167b2bb501ede8bc19"
+    },
+    {
+      "mime": "application/pdf",
+      "outcome": "VERIFIED_DOWNLOAD",
+      "filename": "svg-313-safe-svg-raster.pdf",
+      "bytes": 4664,
+      "sha256": "b37fc9aa750ba2f5c8cb6fd88dbe2c8fd793a7a6b81d28f883c825454ea1e1ca"
+    }
+  ],
+  "webpCapability": {
+    "nativeCanvasEncodedMime": "image/webp",
+    "supportsActualWebpOutput": true,
+    "fallbackPolicy": "reject without download; never relabel PNG as WebP"
+  },
+  "pdf": "single-page JPEG /DCTDecode PDF.js-reopened",
+  "security": {
+    "hostileSvgFilesRejected": 13,
+    "offsiteRequests": 0,
+    "pageErrors": 0
+  },
+  "pixelChecks": {
+    "pngSize": [
+      300,
+      200
+    ],
+    "opaqueRed": [
+      255,
+      0,
+      0,
+      255
+    ],
+    "opaqueBlue": [
+      0,
+      0,
+      255,
+      255
+    ],
+    "transparentPixel": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "jpegBackground": "#00ff00"
+  },
+  "screenshot": "chromium-png-result.png",
+  "limitations": [
+    "not a physical-device test",
+    "not arbitrary/advanced SVG support",
+    "not a Gold certification"
+  ]
+}
