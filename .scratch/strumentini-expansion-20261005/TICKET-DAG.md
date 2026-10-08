@@ -21,7 +21,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **232 — Video inspector and target-size calculator**
 - **236 — Advanced PDF to image export**
 - **237 — True PDF redaction with post-export proof**
-- **238 — PDF page numbers placement and ranges**
 - **239 — PDF watermark and overlay placement**
 - **240 — PDF crop and page-size normalization**
 - **241 — PDF signature placement**
@@ -35,9 +34,8 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
-- **313 — SVG to raster and PDF export**
 
-Exactly **27** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **25** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -291,7 +289,7 @@ Exactly **27** incomplete tickets currently have every declared numeric blocker 
 | 235 | blocked | Advanced Images to PDF composition | 098, 103, 212 |
 | 236 | ready-for-agent | Advanced PDF to image export | 098, 103, 215, 269 |
 | 237 | ready-for-agent | True PDF redaction with post-export proof | 215, 269 |
-| 238 | ready-for-agent | PDF page numbers placement and ranges | 215, 269 |
+| 238 | completed | PDF page numbers placement and ranges | 215, 269 |
 | 239 | ready-for-agent | PDF watermark and overlay placement | 215, 269 |
 | 240 | ready-for-agent | PDF crop and page-size normalization | 215, 269 |
 | 241 | ready-for-agent | PDF signature placement | 215, 269 |
@@ -366,7 +364,7 @@ Exactly **27** incomplete tickets currently have every declared numeric blocker 
 | 310 | completed | CSS px rem em conversion helper | 070 |
 | 311 | completed | Astronomy and location-dependent date feasibility | 007 |
 | 312 | completed | Common JPG PNG WebP conversion matrix | 097, 103, 104 |
-| 313 | ready-for-agent | SVG to raster and PDF export | 209, 103, 269 |
+| 313 | completed — **bounded static SVG subset only** (browser codec capability-gated; **not Gold**) | SVG to raster and PDF export | 209, 103, 269 |
 | 314 | completed | Image resize functional upgrade | 097, 103 |
 | 315 | completed | Image metadata and EXIF before-after upgrade | 097, 103 |
 | 316 | completed | Image compare slider overlay and diff upgrade | 097 |

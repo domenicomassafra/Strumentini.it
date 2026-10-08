@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 247 / 80 |
+| All / completed / open | 327 / 249 / 78 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 27 |
-| Ready for assignment (feasibility still to prove) | 19 |
+| DAG-ready (all numeric dependencies closed) | 25 |
+| Ready for assignment (feasibility still to prove) | 17 |
 | Waiting on other tickets | 53 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (19)
+## Ready for assignment (feasibility still to prove) (17)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #059 — JSON/XML/CSS/HTML/SVG minimizer pack
@@ -31,7 +31,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #232 — Video inspector and target-size calculator
 - #236 — Advanced PDF to image export
 - #237 — True PDF redaction with post-export proof
-- #238 — PDF page numbers placement and ranges
 - #239 — PDF watermark and overlay placement
 - #240 — PDF crop and page-size normalization
 - #241 — PDF signature placement
@@ -41,7 +40,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #254 — PDF tables to XLSX
 - #256 — TXT Markdown HTML and CSV to printable PDF
 - #264 — OOXML embedded-media compression core
-- #313 — SVG to raster and PDF export
 
 ## Waiting on other tickets (53)
 
@@ -55,7 +53,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #024 — Office/Markdown productivity family (awaiting #056, #264)
 - #028 — Image format + target-compression family (awaiting #047, #049)
 - #031 — OCR and document-scan family (awaiting #246, #247)
-- #032 — PDF edit/security family (awaiting #237, #238, #239, #240, #241, #243)
+- #032 — PDF edit/security family (awaiting #237, #239, #240, #241, #243)
 - #033 — PDF conversion/productivity family (awaiting #249, #250, #251, #254, #255, #256)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #036 — Audio file-processing family (awaiting #231)
@@ -64,7 +62,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #040 — Italy utilities beyond CalcolaTutto (awaiting #152)
 - #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #033, #035, #036, #037, #038, #040, #065, #066)
 - #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)
-- #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212, #313)
+- #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212)
 - #051 — True PDF compression profiles + target size (awaiting #218, #219)
 - #056 — Office-to-PDF and printable export pack (awaiting #256)
 - #057 — PDF-to-editable/structured conversion pack (awaiting #254, #255)

@@ -60,8 +60,8 @@ describe("expanded catalog certification index", () => {
     // A newly registered tool may not inherit Gold from an earlier catalog;
     // exact append-only oracle lineage may independently preserve the historic
     // receipts but never weakens the unverified tool's release gate.
-    expect(index.summary.statusCounts).toEqual({ GOLD: 257, PARTIAL: 2, IMPLEMENTED_UNVERIFIED: 1 });
-    expect(index.catalogToolCount).toBe(260);
+    expect(index.summary.statusCounts).toEqual({ GOLD: 257, PARTIAL: 2, IMPLEMENTED_UNVERIFIED: 2 });
+    expect(index.catalogToolCount).toBe(261);
     expect(index.summary.certificationGoldCount).toBe(index.tools.filter((tool) => tool.status === "GOLD").length);
     expect(index.summary.releaseEligibleGoldCount).toBe(index.tools.filter((tool) => tool.goldEligible).length);
     expect(index.summary.releaseEligibleGoldCount).toBeLessThanOrEqual(index.summary.certificationGoldCount);
@@ -88,6 +88,12 @@ describe("expanded catalog certification index", () => {
       oracle: { status: "BOUND", entryId: "cand-260" },
     });
     expect(inspector?.certificationReceipt).toBeNull();
+    const numbering = index.tools.find((tool) => tool.id === "pdf-page-numbers");
+    expect(numbering).toMatchObject({
+      status: "IMPLEMENTED_UNVERIFIED", goldEligible: false, releaseGate: "BLOCKED",
+      oracle: { status: "BOUND", entryId: "cand-261" },
+    });
+    expect(numbering?.certificationReceipt).toBeNull();
     const businessMath = index.tools.filter((tool) => tool.engine === "business-math");
     expect(businessMath.every((tool) => tool.status === "GOLD")).toBe(true);
     const newMathIds = new Set([
@@ -125,7 +131,10 @@ describe("expanded catalog certification index", () => {
     expect(textWriting.filter((tool) => newTextIds.has(tool.id))).toHaveLength(7);
     expect(textWriting.filter((tool) => newTextIds.has(tool.id)).every((tool) => tool.status === "GOLD")).toBe(true);
     const pdf = index.tools.filter((tool) => tool.engine === "pdf");
-    expect(pdf.every((tool) => tool.status === "GOLD")).toBe(true);
+    expect(pdf.filter((tool) => tool.id !== "pdf-page-numbers").every((tool) => tool.status === "GOLD")).toBe(true);
+    expect(pdf.find((tool) => tool.id === "pdf-page-numbers")).toMatchObject({
+      status: "IMPLEMENTED_UNVERIFIED", goldEligible: false, releaseGate: "BLOCKED",
+    });
     const researchKnowledge = index.tools.filter((tool) => tool.engine === "research-knowledge");
     const researchGold = researchKnowledge.filter((tool) => tool.status === "GOLD");
     expect(researchGold).toHaveLength(researchKnowledge.length);
@@ -144,7 +153,7 @@ describe("expanded catalog certification index", () => {
       oracle: { status: "VERIFIED" },
     });
     expect(risConverter?.certificationReceipt).toBe("quality/receipts/research-knowledge/ris-bibtex-converter.gold.json");
-    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").map((tool) => tool.id)).toEqual(["video-inspector"]);
+    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").map((tool) => tool.id)).toEqual(["pdf-page-numbers", "video-inspector"]);
     expect(index.tools.filter((tool) => tool.status === "PARTIAL").map((tool) => tool.id)).toEqual(["image-resize", "microphone-recorder"]);
     for (const tool of index.tools.filter((entry) => entry.status === "GOLD")) {
       expect(tool.certificationReceipt).not.toBeNull();

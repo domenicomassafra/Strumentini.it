@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 327,
-    "completed": 247,
+    "completed": 249,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 229,
-    "open": 80,
-    "readyDAG": 27,
-    "ready-for-agent": 19,
+    "completedWithoutExplicitRefusal": 231,
+    "open": 78,
+    "readyDAG": 25,
+    "ready-for-agent": 17,
     "dependency-blocked": 53,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -206,6 +206,7 @@
       228,
       230,
       233,
+      238,
       242,
       244,
       245,
@@ -257,6 +258,7 @@
       310,
       311,
       312,
+      313,
       314,
       315,
       316,
@@ -281,7 +283,6 @@
       232,
       236,
       237,
-      238,
       239,
       240,
       241,
@@ -290,8 +291,7 @@
       250,
       254,
       256,
-      264,
-      313
+      264
     ],
     "dependency-blocked": [
       8,
@@ -734,7 +734,6 @@
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
         237,
-        238,
         239,
         240,
         241,
@@ -953,8 +952,7 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        212,
-        313
+        212
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -2909,9 +2907,9 @@
     {
       "id": 238,
       "title": "PDF page numbers placement and ranges",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3681,9 +3679,9 @@
     {
       "id": 313,
       "title": "SVG to raster and PDF export",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed — **bounded static SVG subset only** (browser codec capability-gated; **not Gold**)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
