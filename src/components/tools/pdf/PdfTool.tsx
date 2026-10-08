@@ -90,6 +90,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [imageQuality, setImageQuality] = useState("0.92");
   const [pdfImageMime, setPdfImageMime] = useState<"image/jpeg" | "image/png" | "image/webp">("image/png");
   const [pdfImageScale, setPdfImageScale] = useState("2");
+  const [compressionProfile, setCompressionProfile] = useState<"structural-only" | "jpeg-rgb-reencode">("structural-only");
+  const [compressionJpegQuality, setCompressionJpegQuality] = useState("0.6");
   const [imageRotations, setImageRotations] = useState("");
   const [pdfPageSize, setPdfPageSize] = useState<"original" | "a4" | "letter">("original");
   const [pdfPageOrientation, setPdfPageOrientation] = useState<"auto" | "portrait" | "landscape">("auto");
@@ -210,6 +212,22 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     controller.current = abortController;
     setStatus("working");
     try {
+      if (toolId === "pdf-compression-lite" && compressionProfile === "jpeg-rgb-reencode") {
+        const { recompressPdfEmbeddedJpegs } = await import("../../../engines/pdf/jpeg-image-aware");
+        const source = files[0];
+        if (source === undefined) throw new Error("INVALID_INPUT: Scegli un PDF da ottimizzare.");
+        const optimized = await recompressPdfEmbeddedJpegs(new Uint8Array(await source.arrayBuffer()),
+          { quality: Number(compressionJpegQuality) }, abortController.signal);
+        const prepared = await preparePdfResult(toolId, {
+          artifacts: [optimized.artifact], artifactCount: 1,
+          policy: "Ricodifica con perdita dei soli JPEG RGB 8 bit incorporati e verificabili. Testo e vettori conservati nei controlli locali; resa visiva non identica pixel per pixel.",
+          analysis: optimized.analysis,
+        });
+        if (abortController.signal.aborted) throw new DOMException("Operation cancelled", "AbortError");
+        setResult(prepared);
+        setStatus("done");
+        return;
+      }
       const run = await toolRuntime.run(toolId, buildInput(), {}, abortController.signal);
       if (!run.ok) {
         if (run.code === "CANCELLED") throw new DOMException(run.message, "AbortError");
@@ -256,6 +274,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setImageQuality("0.92");
     setPdfImageMime("image/png");
     setPdfImageScale("2");
+    setCompressionProfile("structural-only");
+    setCompressionJpegQuality("0.6");
     setImageRotations("");
     setShowThumbnails(false);
     setShowVisualCompare(false);
@@ -538,6 +558,25 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             </div>
             <label class="field"><span>Sfondo raster</span><input type="color" value={imageBackground} onInput={(event) => setImageBackground(event.currentTarget.value)} disabled={isWorking} /><small>Lo sfondo scelto viene applicato soltanto alle pagine renderizzate in immagine; il PDF sorgente non cambia.</small></label>
           </>
+        )}
+        {toolId === "pdf-compression-lite" && (
+          <section class="field" aria-label="Profilo di compressione PDF">
+            <label class="field"><span>Profilo di compressione</span>
+              <select value={compressionProfile} onChange={(event) => setCompressionProfile(event.currentTarget.value as "structural-only" | "jpeg-rgb-reencode")} disabled={isWorking}>
+                <option value="structural-only">Pulizia strutturale (predefinita)</option>
+                <option value="jpeg-rgb-reencode">Ricodifica JPEG incorporati (con perdita)</option>
+              </select>
+            </label>
+            {compressionProfile === "jpeg-rgb-reencode" && (
+              <>
+                <label class="field"><span>Qualità JPEG (0,35–0,85)</span>
+                  <input type="number" min="0.35" max="0.85" step="0.05" value={compressionJpegQuality}
+                    onInput={(event) => setCompressionJpegQuality(event.currentTarget.value)} disabled={isWorking} />
+                </label>
+                <p class="file-note">Solo JPEG RGB 8 bit con filtro DCT unico e risorse immagine dirette: nessun downsample, grigio, PNG o JBIG2. Maschere, colori speciali e filtri multipli vengono saltati. La compressione JPEG è con perdita; il testo e i vettori vengono copiati senza rasterizzarli.</p>
+              </>
+            )}
+          </section>
         )}
         {optionMode === "multi-search" && (
           <>

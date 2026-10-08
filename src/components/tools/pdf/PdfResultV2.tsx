@@ -550,11 +550,19 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
     });
     const totalBytes = result.artifacts.reduce((total, output) => total + output.artifact.byteLength, 0);
     const totalPages = result.artifacts.reduce((total, output) => total + (output.pageCount ?? 0), 0);
+    const jpegAnalysis = toolId === "pdf-compression-lite" && typeof result.raw.analysis === "object" && result.raw.analysis !== null
+      && (result.raw.analysis as PdfResultRecord).profile === "jpeg-rgb-reencode" ? result.raw.analysis as PdfResultRecord : null;
     const rows = [
       { label: "File prodotti", value: String(result.artifacts.length) },
       { label: "Dimensione risultati", value: formatBytes(totalBytes) },
       ...(totalPages > 0 ? [{ label: "Pagine prodotte", value: String(totalPages) }] : []),
       { label: "Verifica artifact", value: result.artifacts.every(({ artifact }) => artifact.download.ready) ? "Firma/contenitore coerenti" : "Almeno un file non ha superato la verifica" },
+      ...(jpegAnalysis === null ? [] : [
+        { label: "JPEG effettivamente ricodificati", value: String(jpegAnalysis.touched) },
+        { label: "JPEG/immagini lasciati invariati", value: String(jpegAnalysis.skipped) },
+        { label: "Byte risparmiati", value: String(jpegAnalysis.savedBytes) },
+        { label: "Equivalenza visiva", value: "Non certificata: JPEG con perdita" },
+      ]),
       ...factRows(result.raw),
     ].slice(0, 14);
     return (

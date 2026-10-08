@@ -28,6 +28,8 @@ export interface PdfBuildOptions {
   readonly flatten?: boolean;
   readonly compress?: boolean;
   readonly preserveInfo?: boolean;
+  /** Original indirect Image XObject id -> verified replacement DCT/JPEG bytes. */
+  readonly jpegReplacements?: ReadonlyMap<number, Uint8Array>;
 }
 
 interface CloneState {
@@ -109,7 +111,12 @@ function cloneSourceReference(reference: PdfValue & { kind: "ref" }, state: Clon
     state.mapped.delete(reference.id);
     return null;
   }
-  state.pending.set(targetReference.id, { id: targetReference.id, generation: 0, value: cloned });
+  const jpegBytes = state.options.jpegReplacements?.get(reference.id);
+  if (jpegBytes !== undefined && (cloned.kind !== "stream" || nameValue(cloned.dictionary.entries.get("Subtype")) !== "Image")) {
+    throw new Error("PDF_OUTPUT_MISMATCH: JPEG replacement target is not an image stream");
+  }
+  state.pending.set(targetReference.id, { id: targetReference.id, generation: 0,
+    value: jpegBytes === undefined ? cloned : { ...cloned as PdfStream, bytes: jpegBytes.slice() } });
   return targetReference;
 }
 

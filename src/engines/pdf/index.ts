@@ -63,6 +63,8 @@ import { auditPdfFormAnnotations, type PdfFormAnnotationAudit } from "./form-ann
 export * from "./types";
 export { buildPdfFromJpegs, buildPdfFromPages, createSimplePdf, parseJpeg };
 export { inflatePdfStream } from "./inflate";
+export { recompressPdfEmbeddedJpegs } from "./jpeg-image-aware";
+export type { PdfJpegImageAwareOptions, PdfJpegImageAwareResult, PdfJpegImageDecision } from "./jpeg-image-aware";
 export type { EmbeddedJpeg, PdfBuildPage, PdfImagePageLayoutOptions };
 export type { PdfMergePageRef } from "./merge-page-plan";
 export type { PdfFormAnnotationAudit, PdfAnnotationProvenance, PdfFieldProvenance } from "./form-annotation-audit";
