@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { VideoInspectorTool } from "../../components/tools/video/VideoInspectorTool";
+import "../../components/tools/tool-surface.css";
+---
+
+<BaseLayout title="Ispeziona MP4 e calcola dimensione video" description="Leggi i metadati MP4 in locale e calcola il budget teorico di bitrate per una dimensione video, senza conversione." noindex>
+  <main class="container video-inspector-page" data-video-inspector-route>
+    <nav aria-label="Percorso" class="video-inspector-nav"><a href="/strumenti/">Tutti gli strumenti</a> / Video</nav>
+    <header class="video-inspector-header">
+      <h1>Ispeziona MP4 e calcola il bitrate</h1>
+      <p>Leggi le informazioni dichiarate dal file e stima il bitrate necessario per un peso obiettivo. Tutto nel browser, senza caricare né convertire il video.</p>
+      <p class="video-inspector-limits">Supporto attuale: contenitori MP4 con intestazioni <code>ftyp</code> e metadati <code>moov</code> entro 8 MiB. FPS e CFR/VFR non sono determinati da questa analisi.</p>
+    </header>
+    <VideoInspectorTool client:load />
+  </main>
+</BaseLayout>
+
+<style>
+  .video-inspector-page { padding-block: var(--space-8) var(--space-12); }
+  .video-inspector-nav { margin-bottom: var(--space-5); color: var(--text-muted); font-size: var(--font-size-sm); }
+  .video-inspector-header { max-width: 52rem; margin-bottom: var(--space-8); }
+  .video-inspector-header h1 { margin-bottom: var(--space-4); }
+  .video-inspector-header p { color: var(--text-muted); line-height: 1.6; }
+  .video-inspector-limits { font-size: var(--font-size-sm); }
+</style>
