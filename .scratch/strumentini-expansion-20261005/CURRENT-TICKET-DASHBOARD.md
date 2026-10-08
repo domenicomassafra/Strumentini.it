@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 256 / 71 |
+| All / completed / open | 327 / 257 / 70 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 24 |
-| Ready for assignment (feasibility still to prove) | 16 |
+| DAG-ready (all numeric dependencies closed) | 23 |
+| Ready for assignment (feasibility still to prove) | 15 |
 | Waiting on other tickets | 47 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (16)
+## Ready for assignment (feasibility still to prove) (15)
 
 - #037 — Video inspect/subtitle utilities
 - #047 — JPEG/PNG/WebP/SVG compression engines
@@ -38,7 +38,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #250 — PDF n-up pages per sheet
 - #254 — PDF tables to XLSX
 - #256 — TXT Markdown HTML and CSV to printable PDF
-- #308 — Video AI context contact-sheet export
 
 ## Waiting on other tickets (47)
 
@@ -56,7 +55,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #033 — PDF conversion/productivity family (awaiting #249, #250, #251, #254, #255, #256)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #036 — Audio file-processing family (awaiting #231)
-- #038 — Video transform family (awaiting #234, #306, #308)
+- #038 — Video transform family (awaiting #234, #306)
 - #040 — Italy utilities beyond CalcolaTutto (awaiting #152)
 - #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #033, #035, #036, #037, #038, #040, #065, #066)
 - #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)

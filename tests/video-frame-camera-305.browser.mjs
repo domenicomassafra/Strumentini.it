@@ -71,7 +71,7 @@ try {
   checks++;
 
   for (const [seconds, color] of [["0.25", "red"], ["1.5", "green"]]) {
-    await panel.locator('input[type="number"]').fill(seconds);
+    await panel.getByRole("spinbutton", { name: "Timestamp richiesto, secondi" }).fill(seconds);
     await panel.getByRole("button", { name: "Estrai fotogramma PNG" }).click();
     await panel.locator("[data-frame-result]").waitFor({ timeout: 15_000 });
     const result = await panel.locator("[data-frame-result]").innerText();
@@ -86,7 +86,7 @@ try {
     else assert(g > 60 && g > r * 1.7 && g > b * 1.7, `Expected green: ${r},${g},${b}`);
     checks += 4;
   }
-  await panel.locator('input[type="number"]').fill("2");
+  await panel.getByRole("spinbutton", { name: "Timestamp richiesto, secondi" }).fill("2");
   await panel.getByRole("button", { name: "Estrai fotogramma PNG" }).click();
   await panel.locator("[data-frame-status]").getByText(/VIDEO_FRAME_RANGE/u).waitFor();
   assert.equal(await panel.locator("[data-frame-result]").count(), 0);

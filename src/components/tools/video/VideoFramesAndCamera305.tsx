@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { VideoFrame305Result } from "../../../engines/video/frame-extract-305";
+import { VideoContactSheet308 } from "./VideoContactSheet308";
 
 /** Opt-in local frame extraction and camera test. No upload, recorder or webcam auto-start. */
 export function VideoFramesAndCamera305() {
@@ -152,7 +153,8 @@ export function VideoFramesAndCamera305() {
       </p>
       <img src={resultUrl.current} alt="Fotogramma locale estratto" style={{ display: "block", maxWidth: "100%", maxHeight: "260px" }} />
       <a href={resultUrl.current} download="fotogramma-locale.png">Scarica fotogramma PNG</a>
-    </section>}
+      </section>}
+    {loaded && file && fileVideo.current && <VideoContactSheet308 video={fileVideo.current} file={file} />}
     <h3>Prova webcam (senza registrazione)</h3>
     <p class="file-note">Il permesso è richiesto solo premendo Attiva. La camera viene rilasciata con Disattiva, alla revoca del permesso o all'uscita dalla pagina.</p>
     <div class="actions">

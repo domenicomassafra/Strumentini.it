@@ -32,9 +32,8 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
-- **308 — Video AI context contact-sheet export**
 
-Exactly **24** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **23** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -358,7 +357,7 @@ Exactly **24** incomplete tickets currently have every declared numeric blocker 
 | 305 | completed — browser-supported local frame-at-time preview and opt-in webcam test (NOT frame-exact guarantee or physical camera certification) | Exact video frame extraction and webcam test | 232, 274 |
 | 306 | blocked | Video to GIF conversion | 234 |
 | 307 | completed | Audio loudness and LUFS analysis | 273 |
-| 308 | ready-for-agent | Video AI context contact-sheet export | 232, 305 |
+| 308 | completed | Video AI context contact-sheet export | 232, 305 |
 | 309 | completed | Italian syllabification feasibility spike | — |
 | 310 | completed | CSS px rem em conversion helper | 070 |
 | 311 | completed | Astronomy and location-dependent date feasibility | 007 |

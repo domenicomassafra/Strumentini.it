@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 327,
-    "completed": 256,
+    "completed": 257,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 238,
-    "open": 71,
-    "readyDAG": 24,
-    "ready-for-agent": 16,
+    "completedWithoutExplicitRefusal": 239,
+    "open": 70,
+    "readyDAG": 23,
+    "ready-for-agent": 15,
     "dependency-blocked": 47,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -261,6 +261,7 @@
       304,
       305,
       307,
+      308,
       309,
       310,
       311,
@@ -296,8 +297,7 @@
       246,
       250,
       254,
-      256,
-      308
+      256
     ],
     "dependency-blocked": [
       8,
@@ -808,8 +808,7 @@
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
         234,
-        306,
-        308
+        306
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3610,9 +3609,9 @@
     {
       "id": 308,
       "title": "Video AI context contact-sheet export",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
