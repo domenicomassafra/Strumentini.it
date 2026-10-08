@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 251,
+    "completed": 253,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 233,
-    "open": 76,
-    "readyDAG": 28,
-    "ready-for-agent": 20,
-    "dependency-blocked": 48,
+    "completedWithoutExplicitRefusal": 235,
+    "open": 74,
+    "readyDAG": 27,
+    "ready-for-agent": 19,
+    "dependency-blocked": 47,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 1,
@@ -208,6 +208,7 @@
       232,
       233,
       238,
+      239,
       242,
       244,
       245,
@@ -221,6 +222,7 @@
       261,
       262,
       263,
+      264,
       267,
       268,
       269,
@@ -280,13 +282,13 @@
       37,
       47,
       59,
+      68,
       212,
       218,
       231,
       234,
       236,
       237,
-      239,
       240,
       241,
       243,
@@ -294,7 +296,6 @@
       250,
       254,
       256,
-      264,
       266,
       308
     ],
@@ -325,7 +326,6 @@
       62,
       65,
       66,
-      68,
       69,
       121,
       122,
@@ -644,8 +644,7 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        56,
-        264
+        56
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -734,7 +733,6 @@
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
         237,
-        239,
         240,
         241,
         243
@@ -1169,12 +1167,10 @@
     {
       "id": 68,
       "title": "DOCX/PPTX/XLSX OOXML compressor",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        264
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -2912,9 +2908,9 @@
     {
       "id": 239,
       "title": "PDF watermark and overlay placement",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3170,9 +3166,9 @@
     {
       "id": 264,
       "title": "OOXML embedded-media compression core",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed — bounded OOXML media core and user-facing browser route; Gold certification separate",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false

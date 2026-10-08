@@ -18,9 +18,12 @@ function digest(value: string): string {
 export function oracleAppendOnlyIdentities(currentText: string): ReadonlyMap<string, ReadonlySet<string>> {
   const identities = new Map<string, ReadonlySet<string>>();
   let text = currentText;
-  // Keep an intentionally small lineage window. An older registry needs a
-  // separately reviewed authority snapshot rather than unbounded CPU work.
-  for (let removed = 0; removed < 4; removed += 1) {
+  // Bounded 12-version append-only window: new verified tools may extend the
+  // registry without invalidating historic receipts whose *exact original
+  // bytes* can still be reconstructed. This does NOT whitelist old hashes or
+  // permit changes to any historical entry. Beyond the window an explicitly
+  // reviewed, byte-grounded authority snapshot would be needed.
+  for (let removed = 0; removed < 12; removed += 1) {
     let parsed: unknown;
     try { parsed = JSON.parse(text) as unknown; } catch { break; }
     if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) break;

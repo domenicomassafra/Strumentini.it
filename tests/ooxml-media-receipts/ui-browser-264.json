@@ -15,7 +15,7 @@
       "inputBytes": 200848,
       "outputBytes": 74753,
       "savedBytes": 126095,
-      "sha256": "032fc38e0a0ac035387c1e9eebc36fc1fcc2c3a4b6cf576d1beebf515a3db377",
+      "sha256": "5bf9d006fbf9a068c1d95d19cd06dcf5e43d9d1f4c1686eb1ee3a860eb875461",
       "independentOfficeReopen": "REOPEN_OK .docx ZIP CRC+XML+relationships+office structure"
     },
     {
@@ -24,7 +24,7 @@
       "inputBytes": 192206,
       "outputBytes": 66832,
       "savedBytes": 125374,
-      "sha256": "f0742b8b42b4cc69e35d785780e9dc03444ed8a93777da652906fa0d7216916f",
+      "sha256": "36744eef1a42f629c1d32ccb201e15ca5679a0fcac7a439d0da2f4b70974047c",
       "independentOfficeReopen": "REOPEN_OK .pptx ZIP CRC+XML+relationships+office structure"
     },
     {
@@ -33,7 +33,7 @@
       "inputBytes": 170476,
       "outputBytes": 44705,
       "savedBytes": 125771,
-      "sha256": "2bc972dec83f9f66adf13e5eee59b8501d06431045a3fe02e8a95f3a6e558ac8",
+      "sha256": "4c87fc69c132941eae4b3278ff026711b5d3c0d3e34dab8e28e7e116070dda30",
       "independentOfficeReopen": "REOPEN_OK .xlsx ZIP CRC+XML+relationships+office structure"
     }
   ],

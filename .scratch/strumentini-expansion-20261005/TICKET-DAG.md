@@ -13,6 +13,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **047 — JPEG/PNG/WebP/SVG compression engines**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
+- **068 — DOCX/PPTX/XLSX OOXML compressor**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
@@ -22,7 +23,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **234 — Video transform worker core**
 - **236 — Advanced PDF to image export**
 - **237 — True PDF redaction with post-export proof**
-- **239 — PDF watermark and overlay placement**
 - **240 — PDF crop and page-size normalization**
 - **241 — PDF signature placement**
 - **243 — PDF fill annotate and write overlays**
@@ -30,7 +30,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **250 — PDF n-up pages per sheet**
 - **254 — PDF tables to XLSX**
 - **256 — TXT Markdown HTML and CSV to printable PDF**
-- **264 — OOXML embedded-media compression core**
 - **266 — File-size analyzer OOXML and media adapters**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
@@ -38,7 +37,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 - **308 — Video AI context contact-sheet export**
 
-Exactly **28** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **27** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -122,7 +121,7 @@ Exactly **28** incomplete tickets currently have every declared numeric blocker 
 | 065 | blocked | Format-operation matrix coverage gate | 047, 048, 049, 051, 052, 053, 054, 055, 056, 057, 058, 059, 067, 068, 108, 109 |
 | 066 | blocked | Existing 200 functional-upgrade coverage gate | 050, 053, 060, 061, 062, 063, 064, 110, 297 |
 | 067 | completed | ZIP/GZIP/archive compression + safe extraction | 222, 223, 224 |
-| 068 | blocked | DOCX/PPTX/XLSX OOXML compressor | 225, 264 |
+| 068 | ready-for-agent | DOCX/PPTX/XLSX OOXML compressor | 225, 264 |
 | 069 | blocked | Cross-format file-size analyzer | 228, 265, 266 |
 | 070 | completed | Result declaration in Tool Manifest | — |
 | 071 | completed | Generated Result v2 inventory projection | 070 |
@@ -293,7 +292,7 @@ Exactly **28** incomplete tickets currently have every declared numeric blocker 
 | 236 | ready-for-agent | Advanced PDF to image export | 098, 103, 215, 269 |
 | 237 | ready-for-agent | True PDF redaction with post-export proof | 215, 269 |
 | 238 | completed | PDF page numbers placement and ranges | 215, 269 |
-| 239 | ready-for-agent | PDF watermark and overlay placement | 215, 269 |
+| 239 | completed | PDF watermark and overlay placement | 215, 269 |
 | 240 | ready-for-agent | PDF crop and page-size normalization | 215, 269 |
 | 241 | ready-for-agent | PDF signature placement | 215, 269 |
 | 242 | completed | PDF protect encrypt and legitimate unlock | 103, 269 |
@@ -318,7 +317,7 @@ Exactly **28** incomplete tickets currently have every declared numeric blocker 
 | 261 | completed (read-only semantic/structure inspector; no faithful rendering) | Office viewer and structure inspector | — |
 | 262 | completed | EML and MSG local message viewer | 103, 275 |
 | 263 | completed | EPUB local reader and text export | 103, 275 |
-| 264 | ready-for-agent | OOXML embedded-media compression core | 207, 208, 225 |
+| 264 | completed — bounded OOXML media core and user-facing browser route; Gold certification separate | OOXML embedded-media compression core | 207, 208, 225 |
 | 265 | blocked | File-size analyzer PDF adapter | 218, 228 |
 | 266 | ready-for-agent | File-size analyzer OOXML and media adapters | 225, 228, 230, 232 |
 | 267 | completed | P7M CMS parser feasibility spike | — |

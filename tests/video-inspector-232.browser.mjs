@@ -61,10 +61,10 @@ try {
   const response = await page.goto(`${origin}/tools/video-inspector/`, { waitUntil: "networkidle" });
   assert.equal(response?.status(), 200, "Inspector static route exists");
   await page.getByRole("heading", { level: 1, name: "Ispeziona MP4 e calcola il bitrate", exact: true }).waitFor();
-  assert.equal(await page.locator("input[type=file]").count(), 1);
+  assert.equal(await page.locator('form[aria-label="Analisi metadati MP4"] input[type=file]').count(), 1);
   checks += 2;
 
-  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-plus-audio.mp4"));
+  await page.locator('form[aria-label="Analisi metadati MP4"] input[type=file]').setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-plus-audio.mp4"));
   await page.getByRole("button", { name: "Analizza metadati" }).click();
   await page.locator("[data-video-inspection]").waitFor();
   const inspected = await page.locator("[data-video-inspection]").innerText();
@@ -83,7 +83,7 @@ try {
   assert.match(await page.locator("[data-video-plan]").innerText(), /Sconosciuto/u);
   checks += 2;
 
-  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-vfr.mp4"));
+  await page.locator('form[aria-label="Analisi metadati MP4"] input[type=file]').setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-vfr.mp4"));
   await page.getByRole("button", { name: "Analizza metadati" }).click();
   await page.locator("[data-video-inspection]").waitFor();
   const variable = await page.locator("[data-video-inspection]").innerText();
@@ -92,7 +92,7 @@ try {
   assert(Math.abs(Number(await page.locator("[data-video-duration]").inputValue()) - 2.916667) < 0.001);
   checks += 3;
 
-  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-multistream.mp4"));
+  await page.locator('form[aria-label="Analisi metadati MP4"] input[type=file]').setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-multistream.mp4"));
   await page.getByRole("button", { name: "Analizza metadati" }).click();
   await page.locator("[data-video-inspection]").waitFor();
   const multiple = await page.locator("[data-video-inspection]").innerText();
@@ -102,7 +102,7 @@ try {
   assert.equal(await page.locator("[data-video-inspection] tbody tr").count(), 3);
   checks += 4;
 
-  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-hour-sparse.mp4"));
+  await page.locator('form[aria-label="Analisi metadati MP4"] input[type=file]').setInputFiles(resolve(root, "quality/fixtures/video-inspection/video-hour-sparse.mp4"));
   await page.getByRole("button", { name: "Analizza metadati" }).click();
   await page.locator("[data-video-inspection]").waitFor();
   assert.equal(await page.locator("[data-video-duration]").inputValue(), "3600");
@@ -112,7 +112,7 @@ try {
   // Additional real ISO BMFF bytes, generated independently with FFmpeg and
   // re-probed by ffprobe in video-hevc-fragment-232.test.ts. No audio/video
   // decode is claimed by this read-only inspector.
-  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/extension/video-hevc-hvc1.mp4"));
+  await page.locator('form[aria-label="Analisi metadati MP4"] input[type=file]').setInputFiles(resolve(root, "quality/fixtures/video-inspection/extension/video-hevc-hvc1.mp4"));
   await page.getByRole("button", { name: "Analizza metadati" }).click();
   await page.locator("[data-video-inspection]").waitFor();
   const hevc = await page.locator("[data-video-inspection]").innerText();
@@ -122,7 +122,7 @@ try {
   assert.equal(await page.locator("[data-video-duration]").inputValue(), "1");
   checks += 4;
 
-  await page.locator("input[type=file]").setInputFiles(resolve(root, "quality/fixtures/video-inspection/extension/video-fragmented.mp4"));
+  await page.locator('form[aria-label="Analisi metadati MP4"] input[type=file]').setInputFiles(resolve(root, "quality/fixtures/video-inspection/extension/video-fragmented.mp4"));
   await page.getByRole("button", { name: "Analizza metadati" }).click();
   await page.locator("[data-video-inspection]").waitFor();
   const fragmented = await page.locator("[data-video-inspection]").innerText();
@@ -139,7 +139,7 @@ try {
   checks += 3;
 
   // Selecting a new invalid file must clear stale verified results, and fail closed.
-  await page.locator("input[type=file]").setInputFiles({
+  await page.locator('form[aria-label="Analisi metadati MP4"] input[type=file]').setInputFiles({
     name: "not-a-video.mp4", mimeType: "video/mp4", buffer: Buffer.from("%PDF-1.7\n"),
   });
   assert.equal(await page.locator("[data-video-inspection]").count(), 0);

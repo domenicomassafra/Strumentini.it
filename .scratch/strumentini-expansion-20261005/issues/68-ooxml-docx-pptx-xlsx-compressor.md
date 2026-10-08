@@ -8,7 +8,7 @@
 
 **Blocked by:** 225, 264.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 - [ ] DOCX/PPTX/XLSX analysis shows package size by media/XML/fonts/other before modification.
 - [ ] Compression profiles can optimize embedded JPG/PNG/WebP-compatible media and optionally cap oversized image dimensions while keeping relationships intact.

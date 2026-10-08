@@ -593,7 +593,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "ooxml-media-compression": {
     name: "Comprimi immagini dentro DOCX, PPTX e XLSX",
-    summary: "Ottimizza PNG incorporati nei file Office conservando XML e collegamenti. JPEG con perdita e ridimensionamento richiedono autorizzazione separata; report e download verificati in locale.",
+    summary: "Comprimi immagini nei file DOCX, PPTX e XLSX senza alterarne XML o collegamenti. JPEG e ridimensionamento solo con consenso esplicito.",
     searchTerms: ["ridurre dimensione docx", "comprimi immagini word", "comprimi pptx", "comprimi immagini excel", "office ottimizzazione immagini"],
   },
   "open-graph-preview": {
