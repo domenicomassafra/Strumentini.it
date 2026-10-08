@@ -1,0 +1,28 @@
+# Strumentini.it — sprint 2026-10-09, video contact sheet e corsie parallele
+
+## Autorità / baseline
+
+Repository `/Users/domenico/Code/Strumentini.it`, baseline verificata `749fe44cca206b7bfe804acfa1822134cb1bbb81` su `main` pulito e sincronizzato. Handoff precedente: `IMPLEMENTATION-CHECKPOINT-2026-10-09-264-TOOLS.md` (257 Gold storici, 264 tool nel catalogo, 256 ticket completati su 327 e 71 aperti all'avvio). NON confondere i 18 completati per REFUSAL con funzionalità implementate; nessun nuovo Gold/deploy autorizzato.
+
+## #308 — completato con prove concrete (prime)
+
+`#308` ora `Status: completed` con 3/3 acceptance functional marcate, issue `issues/308-video-ai-context-contact-sheet-export.md`. Integrazione nella pagina **esistente** `/tools/video-inspector/`, senza creare nuovo tool/catalog/oracle. File nuovi `src/engines/video/contact-sheet-308.ts`, `src/components/tools/video/VideoContactSheet308.tsx`, `tests/video-contact-sheet-308.test.ts`, `tests/video-contact-sheet-308.browser.mjs`; riusa `VideoFramesAndCamera305.tsx`. Due commit main locali: `4d4b287` (funzione + dashboard), `9b0ff30` (test negativo UI/issue evidence).
+
+- Sorgente MP4 non frammentata fino a 50 MiB; verifica metadata con inspector #232, durata nota, durata decodificata dal browser coerente; 2–8 timestamp equispaziati entro durata.
+- Frame reali decodificati dal browser, `requestVideoFrameCallback` richiesto e `mediaTime` presentato entro **160 ms** dal seek; in caso di prova temporale mancante o fuori tolleranza, **nessun ZIP** e fail closed.
+- Contact sheet PNG locale con etichette temporali verificate; ZIP STORE comprende contact-sheet.png, frame-NN.png e manifest.json. Manifest source SHA256, source facts MP4, SHA256 fotogrammi, requested/presented seconds, `generatedInterpretation: null`. ZIP central directory re-ispezionato e nessuna chiamata AI/upload.
+- Browser Chromium desktop 390px: `node tests/video-contact-sheet-308.browser.mjs` **28/28 PASS**, video red/green reale 2s, verifica colori/fotogrammi/range, hash source e PNG, ZIP indipendentemente riaperto, fail closed count invalido e download stale eliminato, zero POST/offsite/page errors. Regressione `node tests/video-frame-camera-305.browser.mjs` **27/27 PASS** con fixture video e webcam MOCK (non fisica).
+- Unit focalizzati `npx vitest run tests/video-contact-sheet-308.test.ts tests/video-frame-305.test.ts --maxWorkers=1 --fileParallelism=false`: **6/6 PASS**; `npx tsc --noEmit`: PASS. `npm run build`: **PASS** con 284 pagine, sul main contenente #308; `npm run check` **0 errori, 0 warning, 17 hints** su 1744 file.
+- `npm run tickets:sync` + `npm run tickets:check`: **327 totale, 257 completed, 70 open, 15 ready, 47 dependency, 2 official sources, 5 physical devices, 1 capability; zero status mismatch.** `npm run certification:check`: 264 tools, storico Gold invariato.
+- Evidenza non ancora acquisita: iOS/Android reali, decoder codec diversi, equivalenza frame-perfect, matrice browser/termica/memoria, nuove ricevute Gold. **Non attribuirle**.
+
+## Due corsie agent attivate
+
+Run agent `1bf067b6-dcc1-4852-a3d9-4dd5c4d2a2aa`, worker-1 su `#218` PDF (worktree `/Users/domenico/Code/Strumentini-wt-218`) e worker-2 `#212` immagini direzionali (worktree `/Users/domenico/Code/Strumentini-wt-232`). Worktree indipendenti: preservare sempre `node_modules`, `.vitest`, harness e altri untracked. Worker-1 aveva implementato subset scan Flate JPEG e riportato 15/15 test, con browser/check ancora da concludere. Worker-2 ha consegnato `8ab5e1e`, **già cherry-picked in main come `e67b74d`**: parser GIF bounded (frame/delay/transparency/disposal), first-frame export dichiarato lossy-per-animation, corpus GIF 4 frame, 5/5 test, Chromium 390px reale PASS con PNG riaperto/no offsite. **#212 rimane OPEN**, manca HEIC reale orientato iPhone, encoding animato o AVIF non approved, prove device. Il worker aveva usato status fuori schema `in-progress — ...`; prime ha ripristinato `**Status:** ready-for-agent` e `npm run tickets:sync`/`check` sono PASS **257/70**, zero mismatch. Subito riattivato worker-2 sulla nuova corsia `#250` PDF n-up, owner file nuovi indipendenti da #218. Non considerare `#250` concluso prima della consegna e dei test.
+
+## Priorità integrazione
+
+1. Ricevere SHA worker e prove targeted/browser. Cherry-pick selettivi sul main solo se commit veramente nuovo, niente riscritture di storico e niente dati cancellati. Se #218/#212 non provano tutte le AC lasciare `ready-for-agent` e aggiornare solo progresso.
+2. Una suite globale dopo l'integrazione: `npm test -- --maxWorkers=2 --fileParallelism=false --testTimeout=120000`, `npm run check`, `npm run build`, `npm run certification:check`, `npm run tickets:check` e browser relativi. Non spingere Gold/physical-certificate fittizi.
+3. Aggiornare dashboard, DAG, issue e questo handoff col conteggio conclusivo, test e HEAD. Push a origin/main solo dopo QA verde e verificare SHA remoto. Nessun deploy.
+4. Priorità successivi `#250` PDF n-up, `#246` OCR, `#256` text/markup→PDF, `#234` worker video capability-gated, oltre a `#218/#212` se ancora open. Il #231 audio timeline non va scambiato con codec autorizzati: #230 fu chiuso per REFUSAL e nessun transcoder approvato.

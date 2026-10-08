@@ -8,7 +8,9 @@
 
 **Blocked by:** 103, 206, 268.
 
-**Status:** in-progress — GIF still-frame disclosure verified; HEIC/iPhone and physical mobile acceptance pending
+**Status:** ready-for-agent
+
+**Progress:** GIF still-frame disclosure verified; HEIC/iPhone and physical mobile acceptance pending (ticket remains open).
 
 **Suggested skills:** code-module-design → code-tdd → qa-browser → browser-performance-benchmark
 
