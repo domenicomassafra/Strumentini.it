@@ -23643,7 +23643,8 @@
         },
         "testFiles": [
           "tests/pdf-catalog.test.ts",
-          "tests/pdf-document-tools.test.ts"
+          "tests/pdf-document-tools.test.ts",
+          "tests/pdf-password-capability.test.ts"
         ]
       },
       "oracle": {

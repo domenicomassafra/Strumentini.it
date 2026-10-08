@@ -10,6 +10,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 ## Current dependency frontier
 
 - **047 — JPEG/PNG/WebP/SVG compression engines**
+- **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
@@ -36,7 +37,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 - **307 — Audio loudness and LUFS analysis**
 - **313 — SVG to raster and PDF export**
-- **320 — PDF password tool capability upgrade**
 
 Exactly **28** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
@@ -374,7 +374,7 @@ Exactly **28** incomplete tickets currently have every declared numeric blocker 
 | 317 | completed | Contact sheet favicon and platform export upgrades | 097, 222 |
 | 318 | completed | PDF metadata inspect remove upgrade | 098, 103 |
 | 319 | completed (verified safe subset; visible appearances explicitly unsupported) | PDF form inspector and flatten upgrade | 098, 215, 269 |
-| 320 | blocked | PDF password tool capability upgrade | 242 |
+| 320 | completed | PDF password tool capability upgrade | 242 |
 | 321 | completed | UTM builder parser cleaner round-trip and bulk | 099 |
 | 322 | completed | Meta OpenGraph and social preview preset upgrade | 099 |
 | 323 | completed | URL normalize compare and bulk transform upgrade | 099 |

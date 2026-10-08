@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 245 / 82 |
-| Closed with explicit refusal (NOT shipped) | 17 |
+| All / completed / open | 327 / 246 / 81 |
+| Closed with explicit refusal (NOT shipped) | 18 |
 | DAG-ready (all numeric dependencies closed) | 28 |
 | Ready for assignment (feasibility still to prove) | 20 |
-| Waiting on other tickets | 54 |
+| Waiting on other tickets | 53 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 1 |
@@ -19,7 +19,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 ## Closed with explicit REFUSAL
 
-#150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
+#150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
 ## Ready for assignment (feasibility still to prove) (20)
 
@@ -44,7 +44,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #307 — Audio loudness and LUFS analysis
 - #313 — SVG to raster and PDF export
 
-## Waiting on other tickets (54)
+## Waiting on other tickets (53)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -56,7 +56,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #024 — Office/Markdown productivity family (awaiting #056, #264)
 - #028 — Image format + target-compression family (awaiting #047, #049)
 - #031 — OCR and document-scan family (awaiting #246, #247)
-- #032 — PDF edit/security family (awaiting #237, #238, #239, #240, #241, #243, #320)
+- #032 — PDF edit/security family (awaiting #237, #238, #239, #240, #241, #243)
 - #033 — PDF conversion/productivity family (awaiting #249, #250, #251, #254, #255, #256)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #036 — Audio file-processing family (awaiting #231)
@@ -67,7 +67,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)
 - #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212, #313)
 - #051 — True PDF compression profiles + target size (awaiting #218, #219)
-- #053 — Upgrade existing PDF inspect/extract/compare tools (awaiting #320)
 - #056 — Office-to-PDF and printable export pack (awaiting #256)
 - #057 — PDF-to-editable/structured conversion pack (awaiting #254, #255)
 - #058 — PDF↔image directional conversion pack (awaiting #235, #236)
@@ -116,7 +115,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 ## Blocked by unapproved capability (1)
 
-- #320 — PDF password tool capability upgrade — Ticket 242 closed REFUSED; no approved password-supplied PDF decrypt engine
+- #053 — Upgrade existing PDF inspect/extract/compare tools — Ticket 320 closed REFUSED; PDF password-supplied decrypt acceptance remains unfulfilled
 
 ## Integrity and release boundary
 

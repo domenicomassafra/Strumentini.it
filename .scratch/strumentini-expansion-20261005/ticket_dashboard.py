@@ -35,6 +35,7 @@ EXTERNAL_DEVICE = {
 }
 CAPABILITY_GATES = {
     320: "Ticket 242 closed REFUSED; no approved password-supplied PDF decrypt engine",
+    53: "Ticket 320 closed REFUSED; PDF password-supplied decrypt acceptance remains unfulfilled",
 }
 
 

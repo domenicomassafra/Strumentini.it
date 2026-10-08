@@ -8,12 +8,12 @@
 
 **Blocked by:** 242 — PDF protect encrypt and legitimate unlock.
 
-**Status:** blocked
+**Status:** completed
 
 **Suggested skills:** pdf → security-audit → code-tdd
 
-- [ ] Existing route accepts valid supplied password only when supported.
-- [ ] Wrong/unsupported encryption states are precise.
-- [ ] No bypass/cracking semantics are introduced.
+- [x] **REFUSED for production implementation:** the approved decrypt capability demanded from ticket 242 does not exist. No password-supplied removal is implemented or claimed.
+- [x] The existing route clearly rejects encrypted files (`UNSUPPORTED_CAPABILITY`) even when a password is passed; it cannot distinguish a wrong password without a decrypt engine, and never claims to have tested it.
+- [x] No bypass/cracking semantics are introduced. An unencrypted PDF may only be copied, not "unlocked".
 
-**Verification:** Encrypted fixtures covering supported/unsupported/wrong-password cases.
+**Verification:** Closed with explicit refusal downstream of #242/#269, not an implemented decrypt upgrade. `tests/pdf-password-capability.test.ts` checks the existing *marker-only* encrypted fixture, all supplied-password states, no exported artifact/no mutation, and unencrypted copy. The marker fixture does **not** establish an independent actually encrypted password-protected PDF corpus or a valid/wrong-password decrypt path. Reopen only with an independently verifiable approved engine, encrypted real fixture corpus and authorization-safe browser/device acceptance.

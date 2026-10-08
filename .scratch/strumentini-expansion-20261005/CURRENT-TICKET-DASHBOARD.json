@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 245,
-    "completedWithRefusal": 17,
+    "completed": 246,
+    "completedWithRefusal": 18,
     "completedWithoutExplicitRefusal": 228,
-    "open": 82,
+    "open": 81,
     "readyDAG": 28,
     "ready-for-agent": 20,
-    "dependency-blocked": 54,
+    "dependency-blocked": 53,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 1,
@@ -262,6 +262,7 @@
       317,
       318,
       319,
+      320,
       321,
       322,
       323,
@@ -314,7 +315,6 @@
       46,
       49,
       51,
-      53,
       56,
       57,
       58,
@@ -360,7 +360,7 @@
       281
     ],
     "capability-blocked": [
-      320
+      53
     ]
   },
   "refusedClosures": [
@@ -380,7 +380,8 @@
     258,
     259,
     262,
-    263
+    263,
+    320
   ],
   "storedStatusMismatches": [],
   "tickets": [
@@ -737,8 +738,7 @@
         239,
         240,
         241,
-        243,
-        320
+        243
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -998,11 +998,9 @@
       "title": "Upgrade existing PDF inspect/extract/compare tools",
       "storedStatus": "blocked",
       "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        320
-      ],
-      "gateReason": null,
+      "executionCategory": "capability-blocked",
+      "unresolvedDependencies": [],
+      "gateReason": "Ticket 320 closed REFUSED; PDF password-supplied decrypt acceptance remains unfulfilled",
       "closedWithRefusal": false
     },
     {
@@ -3754,12 +3752,12 @@
     {
       "id": 320,
       "title": "PDF password tool capability upgrade",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "capability-blocked",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": "Ticket 242 closed REFUSED; no approved password-supplied PDF decrypt engine",
-      "closedWithRefusal": false
+      "closedWithRefusal": true
     },
     {
       "id": 321,

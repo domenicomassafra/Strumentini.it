@@ -17,3 +17,5 @@
 - [ ] Password removal accepts a supplied valid password when the engine/library supports it and clearly refuses unsupported encryption.
 
 **Verification:** Encrypted/forms/annotations/images/text corpus, post-output inspection, extraction byte checks, compare fixtures, and no-bypass security tests.
+
+**Capability boundary (2026-10-08):** Dependency #320 was closed as **REFUSED**, not implemented. The existing PDF password tool checks encryption markers and can create a copy of an already unencrypted PDF; it does **not** accept password-supplied decrypt, verify wrong/correct passwords or remove encryption. This parent may pursue the supported page-scoped/text/image/form/compare functionality but must not claim the refused password acceptance as completed or expose a pretend decrypt mode. The fifth acceptance checkbox above remains unfulfilled unless an independently approved engine is introduced.
