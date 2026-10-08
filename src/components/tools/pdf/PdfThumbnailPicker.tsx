@@ -8,9 +8,10 @@ export interface PdfThumbnailPickerProps {
   readonly selectedPages: readonly number[];
   readonly onPickPage?: (page: number) => void;
   readonly previewRotation?: 0 | 90 | 180 | 270;
+  readonly onPageCount?: (pageCount: number) => void;
 }
 
-export function PdfThumbnailPicker({ file, selectedPages, onPickPage, previewRotation = 0 }: PdfThumbnailPickerProps) {
+export function PdfThumbnailPicker({ file, selectedPages, onPickPage, previewRotation = 0, onPageCount }: PdfThumbnailPickerProps) {
   const [session, setSession] = useState<PdfThumbnailSession | null>(null);
   const [pageCount, setPageCount] = useState(0);
   const [start, setStart] = useState(1);
@@ -30,6 +31,7 @@ export function PdfThumbnailPicker({ file, selectedPages, onPickPage, previewRot
       if (disposed) { void value.close(); return; }
       setSession(value);
       setPageCount(value.pageCount);
+      onPageCount?.(value.pageCount);
     }, (reason) => {
       if (!disposed) setError(reason instanceof Error ? reason.message : "Impossibile leggere il PDF selezionato");
     });

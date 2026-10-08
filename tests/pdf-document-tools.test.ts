@@ -118,7 +118,7 @@ describe("PDF and document tool tranche", () => {
     const rotated = await invoke<{ artifacts: readonly { bytes: Uint8Array }[] }>(pageRotate, { file, rotations: { 1: 90 } });
     expect(inspectPdfBytes(rotated.artifacts[0]!.bytes).pages[0]?.rotation).toBe(90);
     const split = await invoke<{ artifacts: readonly { bytes: Uint8Array }[] }>(pageSplit, { file, groups: [[1], [2, 3]] });
-    expect(split.artifacts).toHaveLength(2);
+    expect(split.artifacts).toHaveLength(3); // two verified PDF parts plus reopened ZIP bundle
     const deleted = await invoke<{ artifacts: readonly { bytes: Uint8Array }[] }>(pageDeleteExtract, { file, pages: [2], mode: "delete" });
     expect(inspectPdfBytes(deleted.artifacts[0]!.bytes).pageCount).toBe(2);
     const merged = await mergePdfs([source, source]);

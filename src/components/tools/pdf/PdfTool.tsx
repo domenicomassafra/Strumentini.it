@@ -8,6 +8,7 @@ import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResu
 import { PdfThumbnailPicker } from "./PdfThumbnailPicker";
 import { PdfVisualOrder } from "./PdfVisualOrder";
 import { PdfMergeOrganizer } from "./PdfMergeOrganizer";
+import { parsePdfPageGroups, parsePdfPageSelection } from "../../../engines/pdf/page-selection";
 
 export type PdfToolId = PdfResultToolId;
 
@@ -53,16 +54,6 @@ function parseNumbers(value: string): number[] {
   return value.split(/[\s,;]+/u).filter(Boolean).map(Number).filter((item) => Number.isInteger(item) && item > 0);
 }
 
-function parseGroups(value: string): number[][] {
-  return value.split(";").map((part) => part.split(/[\s,]+/u).filter(Boolean).flatMap((item) => {
-    const range = /^(\d+)\s*-\s*(\d+)$/u.exec(item);
-    if (range === null) return [Number(item)];
-    const start = Number(range[1]);
-    const end = Number(range[2]);
-    return start <= end ? Array.from({ length: end - start + 1 }, (_, index) => start + index) : [];
-  })).filter((group) => group.length > 0);
-}
-
 function parseIndexedRotations(value: string): Record<number, 0 | 90 | 180 | 270> {
   const result: Record<number, 0 | 90 | 180 | 270> = {};
   if (value.trim() === "") return result;
@@ -102,6 +93,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [contactSheetColumns, setContactSheetColumns] = useState("3");
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [showThumbnails, setShowThumbnails] = useState(false);
+  const [selectionPageCount, setSelectionPageCount] = useState(0);
+  const [activeSelectionGroup, setActiveSelectionGroup] = useState(0);
   const [result, setResult] = useState<PreparedPdfResult | null>(null);
   const [error, setError] = useState("");
   const [status, setStatus] = useState<"idle" | "working" | "done">("idle");
@@ -137,6 +130,10 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setResult(null);
     setOrderHistory([]);
     setShowThumbnails(false);
+    setSelectionPageCount(0);
+    setActiveSelectionGroup(0);
+    if (optionMode === "groups") setGroups("");
+    if (optionMode === "delete-extract") setPages("");
     setError("");
     setStatus("idle");
   }
@@ -169,10 +166,10 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     }
     if (inputMode === "multi") return { files };
     if (optionMode === "pages") return { file: files[0], pages: parseNumbers(pages), ...(toolId === "pdf-page-delete-extract" ? { mode: deleteMode } : {}) };
-    if (optionMode === "groups") return { file: files[0], groups: parseGroups(groups) };
+    if (optionMode === "groups") return { file: files[0], groups };
     if (optionMode === "order") return { file: files[0], order: parseNumbers(order) };
     if (optionMode === "rotation") return { file: files[0], rotations: Object.fromEntries(parseNumbers(pages).map((page) => [page, Number(rotation)])) };
-    if (optionMode === "delete-extract") return { file: files[0], pages: parseNumbers(pages), mode: deleteMode };
+    if (optionMode === "delete-extract") return { file: files[0], pages, mode: deleteMode };
     if (optionMode === "password") return { file: files[0], mode: passwordMode };
     if (optionMode === "text-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), mode: textExtractionMode };
     if (optionMode === "image-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), dedupe: imageDedupe };
@@ -249,6 +246,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setPdfImageScale("2");
     setImageRotations("");
     setShowThumbnails(false);
+    setSelectionPageCount(0);
+    setActiveSelectionGroup(0);
     setPdfPageSize("original");
     setPdfPageOrientation("auto");
     setPdfImageFit("contain");
@@ -271,6 +270,39 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     if (last === undefined) return;
     setOrder(last);
     setOrderHistory((history) => history.slice(0, -1));
+    setResult(null);
+  }
+  const isPageSelector = optionMode === "groups" || optionMode === "delete-extract";
+  let selectionGroups: number[][] = [];
+  let selectionError = "";
+  if (isPageSelector && selectionPageCount > 0) {
+    try {
+      selectionGroups = (optionMode === "groups" ? groups : pages).trim() === ""
+        ? []
+        : optionMode === "groups"
+          ? parsePdfPageGroups(groups, selectionPageCount)
+          : [parsePdfPageSelection(pages, selectionPageCount)];
+    } catch (caught) {
+      selectionError = caught instanceof Error ? caught.message : "Selezione pagine non valida";
+    }
+  }
+  const visibleSelectedPages = [...new Set(selectionGroups.flat())];
+  function chooseVisualSelection(page: number) {
+    if (selectionError !== "") return;
+    const chosen = selectionGroups.length > 0 ? selectionGroups.map((group) => [...group]) : [[]];
+    const groupIndex = Math.max(0, Math.min(activeSelectionGroup, chosen.length - 1));
+    const current = chosen[groupIndex]!;
+    const position = current.indexOf(page);
+    if (position >= 0) current.splice(position, 1);
+    else current.push(page);
+    current.sort((a, b) => a - b);
+    if (optionMode === "groups") {
+      // Preserve all other groups while editing just the selected group.
+      setGroups(chosen.filter((group) => group.length > 0).map((group) => group.join(", ")).join("; "));
+      setActiveSelectionGroup(Math.max(0, Math.min(groupIndex, chosen.filter((group) => group.length > 0).length - 1)));
+    } else {
+      setPages(current.join(", "));
+    }
     setResult(null);
   }
   const gutterState = isWorking
@@ -307,10 +339,61 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
           <PdfMergeOrganizer files={files} onChange={(reordered) => { setFiles(reordered); setResult(null); }} />
         )}
         {optionMode === "pages" && <label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3, 5" disabled={isWorking} /></label>}
-        {optionMode === "groups" && <label class="field"><span>Gruppi di pagine</span><input value={groups} onInput={(event) => setGroups(event.currentTarget.value)} placeholder="1-2; 3-4" disabled={isWorking} /></label>}
+        {optionMode === "groups" && <label class="field"><span>Gruppi di pagine</span><input value={groups} onInput={(event) => { setGroups(event.currentTarget.value); setResult(null); }} placeholder="1-2; 3-4" disabled={isWorking} /></label>}
         {optionMode === "order" && <label class="field"><span>Nuovo ordine delle pagine</span><input value={order} onInput={(event) => { setOrder(event.currentTarget.value); setOrderHistory([]); }} placeholder="3, 1, 2" disabled={isWorking} /></label>}
         {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 2" disabled={isWorking} /></label><label class="field"><span>Rotazione</span><select value={rotation} onChange={(event) => setRotation(event.currentTarget.value)} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
-        {optionMode === "delete-extract" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3" disabled={isWorking} /></label><label class="field"><span>Operazione</span><select value={deleteMode} onChange={(event) => setDeleteMode(event.currentTarget.value as "delete" | "extract")} disabled={isWorking}><option value="extract">Estrai le pagine selezionate</option><option value="delete">Elimina le pagine selezionate</option></select></label></div>}
+        {optionMode === "delete-extract" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => { setPages(event.currentTarget.value); setResult(null); }} placeholder="1, 3" disabled={isWorking} /></label><label class="field"><span>Operazione</span><select value={deleteMode} onChange={(event) => { setDeleteMode(event.currentTarget.value as "delete" | "extract"); setResult(null); }} disabled={isWorking}><option value="extract">Estrai le pagine selezionate</option><option value="delete">Elimina le pagine selezionate</option></select></label></div>}
+        {isPageSelector && files[0] !== undefined && (
+          <section class="field" aria-label="Selettore pagine PDF" data-pdf-page-selection>
+            <div class="actions">
+              <button type="button" disabled={isWorking || (optionMode === "delete-extract" && deleteMode === "delete")} onClick={() => {
+                if (optionMode === "groups") setGroups("tutte"); else setPages("tutte");
+                setResult(null);
+              }}>Tutte le pagine</button>
+              <button type="button" disabled={isWorking} onClick={() => {
+                if (optionMode === "groups") setGroups("blocchi:2"); else setPages("ogni:2");
+                setResult(null);
+              }}>
+                {optionMode === "groups" ? "Blocchi da 2 pagine" : "Ogni 2ª pagina"}
+              </button>
+              {optionMode === "delete-extract" && selectionPageCount > 0 && (
+                <button type="button" disabled={isWorking || visibleSelectedPages.length === selectionPageCount} onClick={() => {
+                  const selected = new Set(visibleSelectedPages);
+                  setPages(Array.from({ length: selectionPageCount }, (_, index) => index + 1).filter((page) => !selected.has(page)).join(", "));
+                  setResult(null);
+                }}>Inverti selezione</button>
+              )}
+              <button type="button" disabled={isWorking} onClick={() => setShowThumbnails((previous) => !previous)}>
+                {showThumbnails ? "Chiudi selezione miniature" : "Seleziona con miniature (facoltativo)"}
+              </button>
+            </div>
+            <small>{optionMode === "groups" ? 'Un gruppo per PDF, separato da punto e virgola: "1-2; 3-5", "blocchi:2" o "tutte".' : 'Seleziona "1-3, 5", "ogni:2" (pagine 2,4,6…) o "tutte".'}</small>
+            {selectionError !== "" && <p role="alert" data-pdf-selection-error>{selectionError}</p>}
+            {selectionPageCount > 0 && selectionError === "" && selectionGroups.length > 0 && (
+              <div data-pdf-selection-preview aria-live="polite">
+                <p class="file-note">{selectionPageCount} pagine originali · {visibleSelectedPages.length} pagine selezionate</p>
+                {optionMode === "groups" && (
+                  <>
+                    <p class="file-note">{selectionGroups.length} PDF previsti · suffissi: {selectionGroups.slice(0, 8).map((_, index) => `-part-${String(index + 1).padStart(2, "0")}.pdf`).join(", ")}{selectionGroups.length > 8 ? "…" : ""}{selectionGroups.length > 1 ? " · ZIP pdf-divisi.zip con tutte le parti" : ""}</p>
+                    <label class="field"><span>Gruppo da modificare nelle miniature</span>
+                      <select aria-label="Gruppo da modificare" value={Math.min(activeSelectionGroup, selectionGroups.length - 1)}
+                        onChange={(event) => setActiveSelectionGroup(Number(event.currentTarget.value))} disabled={isWorking}>
+                        {selectionGroups.map((group, index) => <option key={index} value={index}>Parte {index + 1} — {group.join(", ")}</option>)}
+                      </select>
+                    </label>
+                  </>
+                )}
+                {optionMode === "delete-extract" && <p class="file-note">{deleteMode === "delete" ? selectionPageCount - visibleSelectedPages.length : visibleSelectedPages.length} pagine nel risultato PDF.</p>}
+              </div>
+            )}
+            {showThumbnails && (
+              <PdfThumbnailPicker file={files[0]} selectedPages={visibleSelectedPages}
+                onPageCount={(count) => setSelectionPageCount(count)}
+                {...(selectionError !== "" || isWorking ? {} : { onPickPage: chooseVisualSelection })}
+              />
+            )}
+          </section>
+        )}
         {optionMode === "password" && <label class="field"><span>Modalità</span><select value={passwordMode} onChange={(event) => setPasswordMode(event.currentTarget.value as "check" | "remove")} disabled={isWorking}><option value="check">Controlla soltanto la cifratura</option><option value="remove">Crea una copia sicura se il PDF non è cifrato</option></select></label>}
         {(optionMode === "order" || optionMode === "rotation") && files[0] !== undefined && (
           <div class="field" data-pdf-preview-toggle>

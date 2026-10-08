@@ -2,7 +2,7 @@
 
 Current stage: **257/259 Gold + final physical/infrastructure closure**.
 
-Checkpoint 2026-10-08: 259 tools exist; **257 are Gold** and only `image-resize` plus `microphone-recorder` remain **Partial** for genuine physical-device evidence. `password-strength-estimator` and `xml-formatter-validator` retain bounded high-confidence oracle evidence and Gold receipts tied to their certified source. The integrated suite is green at **1,108 tests / 139 files**; `astro check` reports **0 errors / 0 warnings** (16 deprecated test-matcher hints), and the static build emits **279 pages** with inspection PASS. Tickets **48, 210, 211, 215, 216** are implemented and integrated, while ticket 59 has new native-format export but remains open. The 327-ticket DAG is **241 completed / 86 open**.
+Checkpoint 2026-10-08: 259 tools exist; **257 are Gold** and only `image-resize` plus `microphone-recorder` remain **Partial** for genuine physical-device evidence. `password-strength-estimator` and `xml-formatter-validator` retain bounded high-confidence oracle evidence and Gold receipts tied to their certified source. The integrated suite is green at **1,115 tests / 141 files**; `astro check` reports **0 errors / 0 warnings** (16 deprecated test-matcher hints), and the static build emits **279 pages** with inspection PASS. Tickets **48, 210, 211, 215, 216, 217** are implemented and integrated, while ticket 59 has new native-format export but remains open. The 327-ticket DAG is **242 completed / 85 open**, 31 at the declared dependency frontier. Ticket 52 is now dependency-ready but must not be called complete without cross-file page-level merging and shared rotate/delete helpers.
 
 ## P0 — preserve the quality contract
 
@@ -49,7 +49,7 @@ Migration principles:
 
 ## P5 — continue the expansion backlog selectively
 
-The expansion plan in `docs/10-tool-expansion-result-system-v2.md` has already been materialized into the 327-ticket DAG in `.scratch/strumentini-expansion-20261005/`. At the current checkpoint **241 tickets are completed and 86 remain open** due to dependencies, source evidence, unsupported fidelity paths, outstanding acceptance work or physical-device requirements; 31 currently have all declared dependencies met but are not automatically releasable. Treat the validator's current frontier as the queue; do not restart the old seed wave.
+The expansion plan in `docs/10-tool-expansion-result-system-v2.md` has already been materialized into the 327-ticket DAG in `.scratch/strumentini-expansion-20261005/`. At the current checkpoint **242 tickets are completed and 85 remain open** due to dependencies, source evidence, unsupported fidelity paths, outstanding acceptance work or physical-device requirements; 31 currently have all declared dependencies met but are not automatically releasable. Treat the validator's current frontier as the queue; do not restart the old seed wave.
 
 - keep Result System v2 and functional-audit coverage complete as the catalog evolves;
 - cover all 13 current CalcolaTutto jobs via add/upgrade/covered mappings;

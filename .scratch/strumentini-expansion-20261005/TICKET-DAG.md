@@ -10,11 +10,11 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 ## Current dependency frontier
 
 - **047 — JPEG/PNG/WebP/SVG compression engines**
+- **052 — Visual PDF page organizer for existing page tools**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
-- **217 — Visual PDF split delete and extract selector**
 - **218 — Image-aware and scan PDF compression profiles**
 - **221 — PDF structural text and visual comparison**
 - **229 — Microphone test and local recorder**
@@ -274,7 +274,7 @@ Exactly **31** incomplete tickets currently have every declared blocker complete
 | 214 | completed | Destructive screenshot image redaction | 103, 213 |
 | 215 | completed (bounded PDF.js preview, session cleanup, browser acceptance) | Bounded lazy PDF page-thumbnail renderer | 078, 100, 269 |
 | 216 | completed (shared thumbnails, page/file reorder, undo, merge verification) | Visual PDF merge reorder and rotate organizer | 215 |
-| 217 | blocked | Visual PDF split delete and extract selector | 215, 222 |
+| 217 | completed (strict range parser, keyboard thumbnails, verified ZIP and PDF outputs) | Visual PDF split delete and extract selector | 215, 222 |
 | 218 | blocked | Image-aware and scan PDF compression profiles | 098, 100, 103, 269 |
 | 219 | blocked | PDF target-size solver and batch compressor | 079, 218, 222 |
 | 220 | completed | Page-scoped PDF text and embedded-image extraction | 098 |

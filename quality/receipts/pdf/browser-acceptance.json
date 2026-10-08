@@ -89,8 +89,8 @@
     },
     {
       "toolId": "pdf-split",
-      "lazyScriptCount": 3,
-      "taskRequestCount": 4,
+      "lazyScriptCount": 6,
+      "taskRequestCount": 7,
       "horizontalOverflow": false,
       "unlabeledControls": 0,
       "staticEnvironmentFailures": [
