@@ -7,6 +7,8 @@
 const MAX_MOOV_BYTES = 8 * 1024 * 1024;
 const MAX_TOP_BOXES = 2_048;
 const MAX_NESTED_BOXES = 10_000;
+const MAX_TIMED_SAMPLES = 100_000;
+const MAX_PRESENTATION_SAMPLES_PER_FILE = 200_000;
 
 type Box = { readonly type: string; readonly start: number; readonly end: number; readonly payload: number };
 
@@ -20,9 +22,10 @@ export interface Mp4TrackInspection {
   readonly height: number | null;
   readonly matrix: readonly [number, number, number, number] | null;
   readonly quarterTurnDegrees: 0 | 90 | 180 | 270 | null;
-  readonly frameRate: null;
-  readonly frameRateMode: "unknown";
-  /** Decode-time stts evidence only. Neither constant nor varying decode deltas prove presentation CFR/VFR. */
+  /** FPS only for a proven constant presentation cadence. Never an estimated VFR average. */
+  readonly frameRate: number | null;
+  readonly frameRateMode: "cfr" | "vfr" | "unknown";
+  /** Decode-time stts evidence only; this field is not a presentation-rate conclusion. */
   readonly decodeTiming: "constant-sample-deltas-observed" | "variable-sample-deltas-observed" | "not-proven";
 }
 
@@ -112,6 +115,174 @@ function movieDuration(bytes: Uint8Array, mvhd: Box | undefined): number | null 
   return Number.isFinite(duration) && duration > 0 ? duration : null;
 }
 
+function timescaleOf(bytes: Uint8Array, box: Box | undefined): number | null {
+  if (!box || box.payload + 4 > box.end) return null;
+  const version = bytes[box.payload];
+  if (version !== 0 && version !== 1) return null;
+  const offset = box.payload + (version === 1 ? 20 : 12);
+  if (offset + 4 > box.end) return null;
+  const scale = u32(bytes, offset);
+  return scale > 0 ? scale : null;
+}
+
+function fullBoxFlagsZero(bytes: Uint8Array, box: Box): boolean {
+  return box.payload + 4 <= box.end
+    && bytes[box.payload + 1] === 0
+    && bytes[box.payload + 2] === 0
+    && bytes[box.payload + 3] === 0;
+}
+
+/**
+ * A single unit-rate edit at media_time=0 is an identity mapping, rather than
+ * a cut/shift. FFmpeg writes this explicit identity elst in the pinned CFR/VFR
+ * corpus. Anything else (including an empty edit) stays unknown.
+ */
+function identityEdit(bytes: Uint8Array, trak: readonly Box[], movieScale: number | null, mediaScale: number, decodeDuration: number): boolean {
+  const edtsBoxes = trak.filter((item) => item.type === "edts");
+  if (edtsBoxes.length === 0) return true;
+  if (edtsBoxes.length !== 1 || movieScale === null) return false;
+  const edits = children(bytes, edtsBoxes[0]!.payload, edtsBoxes[0]!.end);
+  if (edits.length !== 1 || edits[0]!.type !== "elst") return false;
+  const box = edits[0]!;
+  const version = bytes[box.payload];
+  const entryWidth = version === 0 ? 12 : version === 1 ? 20 : 0;
+  if (!entryWidth || !fullBoxFlagsZero(bytes, box) || box.payload + 8 + entryWidth !== box.end
+    || u32(bytes, box.payload + 4) !== 1) return false;
+  const entry = box.payload + 8;
+  const longDuration = version === 1 ? view(bytes).getBigUint64(entry, false) : 0n;
+  if (longDuration > BigInt(Number.MAX_SAFE_INTEGER)) return false;
+  const duration = version === 0 ? u32(bytes, entry) : Number(longDuration);
+  const timeOffset = entry + (version === 0 ? 4 : 8);
+  const mediaTime = version === 0 ? view(bytes).getInt32(timeOffset, false) : view(bytes).getBigInt64(timeOffset, false);
+  const rate = timeOffset + (version === 0 ? 4 : 8);
+  if (duration === 0 || mediaTime !== (version === 0 ? 0 : 0n)
+    || view(bytes).getInt16(rate, false) !== 1 || view(bytes).getInt16(rate + 2, false) !== 0) return false;
+  // Movie-timescale rounding is unavoidable at a real muxer's output.
+  return Math.abs(duration / movieScale - decodeDuration / mediaScale)
+    <= 1 / movieScale + 1 / mediaScale;
+}
+
+function verifiedSampleCount(bytes: Uint8Array, tables: readonly Box[], count: number, fileBytes: number): boolean {
+  const stsd = tables.filter((item) => item.type === "stsd");
+  const stsz = tables.filter((item) => item.type === "stsz");
+  const stsc = tables.filter((item) => item.type === "stsc");
+  const offsets = tables.filter((item) => item.type === "stco" || item.type === "co64");
+  if (stsd.length !== 1 || stsz.length !== 1 || stsc.length !== 1 || offsets.length !== 1) return false;
+  const descriptions = stsd[0]!;
+  if (!fullBoxFlagsZero(bytes, descriptions) || descriptions.payload + 8 > descriptions.end) return false;
+  const descriptionCount = u32(bytes, descriptions.payload + 4);
+  if (descriptionCount < 1 || descriptionCount > 1_000) return false;
+  const sizes = stsz[0]!;
+  if (!fullBoxFlagsZero(bytes, sizes) || sizes.payload + 12 > sizes.end
+    || u32(bytes, sizes.payload + 8) !== count) return false;
+  const defaultSize = u32(bytes, sizes.payload + 4);
+  if (defaultSize === 0 && sizes.payload + 12 + count * 4 !== sizes.end) return false;
+  if (defaultSize !== 0 && sizes.payload + 12 !== sizes.end) return false;
+  const chunkBox = offsets[0]!;
+  const chunkWidth = chunkBox.type === "co64" ? 8 : 4;
+  if (!fullBoxFlagsZero(bytes, chunkBox) || chunkBox.payload + 8 > chunkBox.end) return false;
+  const chunks = u32(bytes, chunkBox.payload + 4);
+  if (chunks === 0 || chunks > MAX_TIMED_SAMPLES || chunkBox.payload + 8 + chunks * chunkWidth !== chunkBox.end) return false;
+  for (let chunk = 0; chunk < chunks; chunk += 1) {
+    const offset = chunkBox.payload + 8 + chunk * chunkWidth;
+    const rawOffset = chunkWidth === 4 ? BigInt(u32(bytes, offset)) : view(bytes).getBigUint64(offset, false);
+    if (rawOffset === 0n || rawOffset >= BigInt(fileBytes)) return false;
+  }
+  const sampleToChunk = stsc[0]!;
+  if (!fullBoxFlagsZero(bytes, sampleToChunk) || sampleToChunk.payload + 8 > sampleToChunk.end) return false;
+  const entries = u32(bytes, sampleToChunk.payload + 4);
+  if (entries === 0 || entries > MAX_NESTED_BOXES || sampleToChunk.payload + 8 + entries * 12 !== sampleToChunk.end) return false;
+  let assigned = 0;
+  for (let i = 0; i < entries; i += 1) {
+    const offset = sampleToChunk.payload + 8 + i * 12;
+    const firstChunk = u32(bytes, offset);
+    const samplesPerChunk = u32(bytes, offset + 4);
+    const description = u32(bytes, offset + 8);
+    const nextChunk = i + 1 < entries ? u32(bytes, offset + 12) : chunks + 1;
+    if ((i === 0 && firstChunk !== 1) || firstChunk < 1 || nextChunk <= firstChunk
+      || nextChunk > chunks + 1 || samplesPerChunk === 0 || description === 0 || description > descriptionCount) return false;
+    assigned += (nextChunk - firstChunk) * samplesPerChunk;
+    if (assigned > MAX_TIMED_SAMPLES) return false;
+  }
+  return assigned === count;
+}
+
+/** Inspect PTS, not DTS. Composition offsets can compensate or introduce VFR. */
+function presentationCadence(
+  bytes: Uint8Array, trak: readonly Box[], media: readonly Box[], tables: readonly Box[], movieScale: number | null, fileBytes: number,
+  budget: { remaining: number },
+): { mode: Mp4TrackInspection["frameRateMode"]; fps: number | null } {
+  const unknown = { mode: "unknown", fps: null } as const;
+  const stts = tables.filter((item) => item.type === "stts");
+  const ctts = tables.filter((item) => item.type === "ctts");
+  if (stts.length !== 1 || ctts.length > 1) return unknown;
+  const scale = timescaleOf(bytes, first(media, "mdhd"));
+  if (scale === null) return unknown;
+  const decode = stts[0]!;
+  if (bytes[decode.payload] !== 0 || !fullBoxFlagsZero(bytes, decode)
+    || decode.payload + 8 > decode.end) return unknown;
+  const count = u32(bytes, decode.payload + 4);
+  if (count < 1 || count > MAX_NESTED_BOXES || decode.payload + 8 + count * 8 !== decode.end) return unknown;
+  const decodeTimes: number[] = [];
+  let timestamp = 0;
+  for (let i = 0; i < count; i += 1) {
+    const at = decode.payload + 8 + i * 8;
+    const samples = u32(bytes, at);
+    const delta = u32(bytes, at + 4);
+    if (samples === 0 || delta === 0 || samples > MAX_TIMED_SAMPLES - decodeTimes.length
+      || samples > budget.remaining - decodeTimes.length) return unknown;
+    for (let j = 0; j < samples; j += 1) {
+      decodeTimes.push(timestamp);
+      timestamp += delta;
+    }
+  }
+  // Bound aggregate CPU/memory work across every track, not just one sample
+  // table. Even repeated tiny metadata boxes cannot force unbounded expansion.
+  budget.remaining -= decodeTimes.length;
+  if (decodeTimes.length < 3 || !Number.isSafeInteger(timestamp)
+    || !verifiedSampleCount(bytes, tables, decodeTimes.length, fileBytes)
+    || !identityEdit(bytes, trak, movieScale, scale, timestamp)) return unknown;
+  if (ctts.length > 0) {
+    const compose = ctts[0]!;
+    const version = bytes[compose.payload];
+    if ((version !== 0 && version !== 1) || !fullBoxFlagsZero(bytes, compose)
+      || compose.payload + 8 > compose.end) return unknown;
+    const entries = u32(bytes, compose.payload + 4);
+    if (entries < 1 || entries > MAX_NESTED_BOXES || compose.payload + 8 + entries * 8 !== compose.end) return unknown;
+    let sampleIndex = 0;
+    for (let i = 0; i < entries; i += 1) {
+      const at = compose.payload + 8 + i * 8;
+      const samples = u32(bytes, at);
+      const offset = version === 0 ? u32(bytes, at + 4) : view(bytes).getInt32(at + 4, false);
+      // Negative offsets can involve an external edit origin; conservatively unknown.
+      if (samples === 0 || offset < 0 || samples > decodeTimes.length - sampleIndex) return unknown;
+      for (let j = 0; j < samples; j += 1) decodeTimes[sampleIndex + j]! += offset;
+      sampleIndex += samples;
+    }
+    if (sampleIndex !== decodeTimes.length) return unknown;
+  }
+  decodeTimes.sort((a, b) => a - b);
+  if (decodeTimes[0] !== 0 || decodeTimes.at(-1)! >= timestamp || !decodeTimes.every(Number.isSafeInteger)) return unknown;
+  const firstStep = decodeTimes[1]! - decodeTimes[0]!;
+  if (firstStep <= 0) return unknown;
+  let varying = false;
+  let smallestStep = firstStep;
+  let largestStep = firstStep;
+  for (let i = 2; i < decodeTimes.length; i += 1) {
+    const step = decodeTimes[i]! - decodeTimes[i - 1]!;
+    if (step <= 0) return unknown;
+    if (step !== firstStep) varying = true;
+    smallestStep = Math.min(smallestStep, step);
+    largestStep = Math.max(largestStep, step);
+  }
+  // Very sparse/time-lapse or >240 fps samples are outside the demonstrated
+  // ordinary frame cadence policy; do not imply an authoritative FPS.
+  if (smallestStep <= 0 || scale / smallestStep > 240 || scale / largestStep < 1) return unknown;
+  const fps = scale / firstStep;
+  if (!Number.isFinite(fps) || fps < 1 || fps > 240) return unknown;
+  return varying ? { mode: "vfr", fps: null } : { mode: "cfr", fps };
+}
+
 type TrackHeader = { id: number | null; width: number | null; height: number | null; matrix: Mp4TrackInspection["matrix"]; quarterTurnDegrees: Mp4TrackInspection["quarterTurnDegrees"] };
 
 function closeTo(value: number, target: number): boolean { return Math.abs(value - target) <= 1 / 65536; }
@@ -154,7 +325,10 @@ function trackHeader(bytes: Uint8Array, tkhd?: Box): TrackHeader {
   };
 }
 
-function trackData(bytes: Uint8Array, trak: Box): Mp4TrackInspection {
+function trackData(
+  bytes: Uint8Array, trak: Box, movieScale: number | null, fragmented: boolean, fileBytes: number,
+  budget: { remaining: number },
+): Mp4TrackInspection {
   const data = children(bytes, trak.payload, trak.end);
   const headerData = trackHeader(bytes, first(data, "tkhd"));
   const mdia = first(data, "mdia");
@@ -193,12 +367,15 @@ function trackData(bytes: Uint8Array, trak: Box): Mp4TrackInspection {
       decodeTiming = varyingDelta ? "variable-sample-deltas-observed" : "constant-sample-deltas-observed";
     }
   }
+  const presentation = kind === "video" && !fragmented
+    ? presentationCadence(bytes, data, media, tables, movieScale, fileBytes, budget)
+    : { mode: "unknown" as const, fps: null };
   return {
     ...headerData,
     kind,
     codecFourCc,
-    frameRate: null,
-    frameRateMode: "unknown",
+    frameRate: presentation.fps,
+    frameRateMode: presentation.mode,
     decodeTiming,
   };
 }
@@ -214,6 +391,7 @@ export async function inspectMp4Local(input: Blob, signal?: AbortSignal): Promis
   let cursor = 0;
   let brand: string | null = null;
   let movie: Uint8Array | null = null;
+  let hasMovieFragments = false;
   for (let count = 0; count < MAX_TOP_BOXES && cursor < input.size; count += 1) {
     const prefix = await readSlice(cursor, Math.min(16, input.size - cursor));
     if (prefix.length < 8) fail("Truncated top-level box header");
@@ -228,23 +406,28 @@ export async function inspectMp4Local(input: Blob, signal?: AbortSignal): Promis
       if (size < 16) fail("Truncated ftyp brand");
       brand = fourcc(await readSlice(cursor + headerSize, 4), 0);
     }
+    if (type === "moof") hasMovieFragments = true;
     if (type === "moov") {
+      if (movie !== null) fail("Multiple movie metadata boxes are ambiguous");
       if (size > MAX_MOOV_BYTES) fail("Movie metadata exceeds the local 8 MiB budget");
       movie = await readSlice(cursor, size);
-      break;
     }
     cursor += size;
   }
+  if (cursor !== input.size) fail("Too many top-level boxes to establish complete fragment metadata");
   if (!brand || !movie) fail("Unsupported MP4: ftyp or bounded moov metadata not found");
   const moov = header(movie, 0, movie.length);
   const nested = children(movie, moov.payload, moov.end);
-  const fragmented = first(nested, "mvex") !== undefined;
+  const fragmented = hasMovieFragments || first(nested, "mvex") !== undefined;
   const durationSeconds = fragmented ? null : movieDuration(movie, first(nested, "mvhd"));
-  const tracks = nested.filter((box) => box.type === "trak").map((box) => trackData(movie, box));
+  const movieScale = timescaleOf(movie, first(nested, "mvhd"));
+  const presentationBudget = { remaining: MAX_PRESENTATION_SAMPLES_PER_FILE };
+  const tracks = nested.filter((box) => box.type === "trak")
+    .map((box) => trackData(movie, box, movieScale, fragmented, input.size, presentationBudget));
   if (tracks.length === 0) fail("No MP4 track metadata found");
   const warnings = [
     "Bitrate calcolato sull'intero contenitore, NON misurato sui flussi audio/video.",
-    "FPS e classificazione CFR/VFR restano sconosciuti: stts e la sola durata non provano la cadenza di presentazione.",
+    "CFR/VFR restano sconosciuti per timing, offset, edit effettivi o frammenti ambigui. Quando verificabili, FPS/CFR/VFR derivano da PTS dei sample tables stts+ctts coerenti, non dalla sola stts o dalla durata.",
     "Il parser supporta metadati ISO BMFF limitati, non valida decodificabilità, audio udibile o byte di ogni campione.",
   ];
   if (fragmented) warnings.push("MP4 frammentato: durata totale non certificata dai soli metadati moov.");

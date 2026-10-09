@@ -24,15 +24,16 @@ export function formatTrackResolution(track: Mp4TrackInspection): string {
 }
 
 export function formatFrameRate(track: Mp4TrackInspection): string {
-  return track.frameRate === null ? UNKNOWN_VIDEO_VALUE : formatVideoNumber(track.frameRate);
+  if (track.frameRateMode === "vfr") return "Intervalli PTS variabili (VFR); FPS medio non misurato";
+  return track.frameRate === null ? UNKNOWN_VIDEO_VALUE : `${formatVideoNumber(track.frameRate, 3)} fps (PTS verificati, CFR)`;
 }
 
 export function formatVideoDecodeTiming(track: Mp4TrackInspection): string {
   switch (track.decodeTiming) {
     case "constant-sample-deltas-observed":
-      return "Delta di decodifica costanti (stts); CFR non provato";
+      return "Delta di decodifica costanti (stts); CFR non provato dalla sola stts";
     case "variable-sample-deltas-observed":
-      return "Delta di decodifica variabili (stts); VFR non provato";
+      return "Delta di decodifica variabili (stts); VFR non provato dalla sola stts";
     default:
       return UNKNOWN_VIDEO_VALUE;
   }
