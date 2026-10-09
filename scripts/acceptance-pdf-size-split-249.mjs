@@ -9,9 +9,10 @@ import { unzipSync } from 'fflate';
 import { inspectPdfBytes } from '../src/engines/pdf/index.ts';
 
 const root = resolve(import.meta.dirname, '..');
+const builtSite = process.env.PDF249_DIST ?? resolve(root, 'dist');
 const port = 18470;
-const origin = `http://127.0.0.1:${port}`;
-const server = spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', 'dist'],
+const origin = process.env.PDF249_ORIGIN ?? `http://127.0.0.1:${port}`;
+const server = process.env.PDF249_ORIGIN ? null : spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', builtSite],
   { cwd: root, stdio: 'ignore' });
 let browser;
 try {
@@ -54,7 +55,8 @@ try {
   await page.locator('form input[type=file]').first().setInputFiles({ name: 'impossible.pdf', mimeType: 'application/pdf', buffer: impossible });
   await page.locator('form button[type=submit]').first().click();
   await page.locator('.result-panel[data-state="error"]').waitFor({ timeout: 60_000 });
-  assert((await page.getByRole('alert').allInnerTexts()).join(' ').includes('1'), 'Single-page impossible threshold should identify page');
+  const refusalText = (await page.getByRole('alert').allInnerTexts()).join(' ');
+  assert(refusalText.includes('1'), `Single-page impossible threshold should identify page; actual=${JSON.stringify(refusalText)}`);
   assert.equal(await page.getByRole('link', { name: 'Scarica pdf-divisi.zip', exact: true }).count(), 0, 'Stale ZIP remained downloadable after refusal');
   assert.deepEqual(badNetwork, [], 'No external requests/POST');
   assert.deepEqual(pageErrors, [], 'No uncaught JS errors');
@@ -62,5 +64,5 @@ try {
   console.log(`PDF_SIZE_SPLIT_249_CHROMIUM_PASS ZIP_PARTS=${parts.length} RECONSTRUCTED_PAGES=${totalPages} LIMIT=1024 BYTE_EXACT no-offsite`);
 } finally {
   await browser?.close();
-  server.kill('SIGTERM');
+  server?.kill('SIGTERM');
 }

@@ -44,6 +44,12 @@ function looksLikeMachineError(value: string): boolean {
 
 export function friendlyToolErrorIt(value: unknown): string {
   const raw = normalizedErrorText(value);
+  // Preserve the measured, actionable single-page impossibility instead of
+  // hiding its exact page/byte evidence behind a generic machine-error label.
+  const singlePage = /^PDF_SINGLE_PAGE_TOO_LARGE: Page ([1-9]\d*) needs ([1-9]\d*) bytes; requested ceiling ([1-9]\d*)\./u.exec(raw);
+  if (singlePage !== null) {
+    return `La pagina ${singlePage[1]} richiede da sola ${singlePage[2]} byte, oltre il limite di ${singlePage[3]} byte. Aumenta il limite oppure rimuovi quella pagina: nessun PDF parziale è stato generato.`;
+  }
   const upper = raw.toUpperCase();
   for (const [pattern, message] of RULES) {
     if (pattern.test(upper)) return message;

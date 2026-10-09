@@ -10,6 +10,8 @@
 
 **Status:** blocked
 
+**2026-10-10 independently compiled static-route acceptance:** After code integration, the canonical `/tools/codice-fiscale/` HTML and linked JS/CSS assets were generated under the detached clean HEAD and served from `dist` (although the *complete* sitewide build subsequently stopped because the Mac was under extraordinary external load). A browser spec bug originally imported `/src/*.ts` modules only available in dev: fixed `tests/codice-fiscale-public-08.browser.mjs` to use independent precomputed valid control-character fixtures `RSSMRA80A01H50MM` and `RSSMRA80A01Z999Y` so **actual compiled static** can run. GREEN `CF08_TEST_BASE_URL=http://127.0.0.1:4368 node tests/codice-fiscale-public-08.browser.mjs`: **10 real Chromium E2E groups PASS** at 390px including 200 route, noindex, source-proven generation, invalid/refused date and country, century/omocodia decode, clipboard, actual downloaded UTF-8 `.txt`, unknown-place refusal, zero offsite/PII uploads, no errors/overflow. `#115` historical/country code and birth-date valid intervals are still missing, so #008 remains blocked; this **does not** assert complete Codice Fiscale coverage or Gold.
+
 - [x] Generate, validate, and decode modes are distinct and user-facing in a single locally served canonical route; the generated candidate is strictly bounded and clearly non-official.
 - [x] Check character and date/sex/month rules have focused deterministic fixtures grounded in DM Finanze 23 dicembre 1976, artt. 3–7, through source-only #121/#122.
 - [x] Municipality/foreign-code candidate dataset carries #115 snapshot source/version and explicit geographic/time coverage limits.

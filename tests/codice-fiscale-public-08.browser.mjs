@@ -79,10 +79,9 @@ try {
   mark("valid formal check, explicit century ambiguity, local clipboard and actual .txt download");
 
   await page.locator('[data-cf-mode="decode"]').click();
-  const omocode = await page.evaluate(async () => {
-    const { codiceFiscaleChecksum121 } = await import("/src/engines/italy/codice-fiscale-121.ts");
-    return "RSSMRA80A01H50M" + codiceFiscaleChecksum121("RSSMRA80A01H50M");
-  });
+  // Prechecked independent fixed vectors. Do NOT import source TypeScript from
+  // the browser: the deployed compiled static site has no /src/ path.
+  const omocode = "RSSMRA80A01H50MM";
   await page.locator("#cf08-code").fill(omocode);
   await page.locator("[data-cf-submit]").click();
   assert.match(await page.locator("[data-cf-ambiguity]").innerText(), /posizione 15: M→1/u);
@@ -90,10 +89,7 @@ try {
   assert.match(await page.locator("[data-cf-ambiguity]").innerText(), /versione 115-situas/u);
   mark("decode omocodia + candidate from versioned ISTAT + no age/identity inference");
 
-  const missing = await page.evaluate(async () => {
-    const { codiceFiscaleChecksum121 } = await import("/src/engines/italy/codice-fiscale-121.ts");
-    return "RSSMRA80A01Z999" + codiceFiscaleChecksum121("RSSMRA80A01Z999");
-  });
+  const missing = "RSSMRA80A01Z999Y";
   await page.locator("#cf08-code").fill(missing);
   await page.locator("[data-cf-submit]").click();
   assert.match(await page.locator("[data-cf-export-blocked]").innerText(), /Esportazione disabilitata/u);
