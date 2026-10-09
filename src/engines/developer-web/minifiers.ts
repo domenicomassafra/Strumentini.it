@@ -158,14 +158,33 @@ function conditionalComment(node: HtmlNode): boolean {
   return node.nodeName === "#comment" && /\[if\s|\[endif\]/iu.test(node.data ?? "");
 }
 
+/** HTML comments can be live template/rendering delimiters. Never discard a
+ * known directive in the opt-in advanced mode; preserve ALL comments in safe.
+ * Unknown comment-based template grammars still require caller review. */
+function functionalComment(node: HtmlNode): boolean {
+  if (conditionalComment(node)) return true;
+  const value = (node.data ?? "").trim();
+  return /^(?:\/?ko(?:\s|:|$)|\/?ng[A-Za-z0-9_-]*(?:\s|:|$)|#|\/?\$|[!?@]|astro(?:\s|:|-|$)|prettier-ignore(?:\s|$)|\{\{|\{%|<%)/iu.test(value);
+}
+
+function isForeignHtmlContext(node: HtmlNode | null | undefined): boolean {
+  let current = node;
+  while (current !== null && current !== undefined) {
+    if (current.tagName === "svg" || current.tagName === "math" || current.tagName === "template") return true;
+    current = current.parentNode;
+  }
+  return false;
+}
+
 function minifyHtmlTree(node: HtmlNode, mode: "safe" | "advanced", warnings: Set<string>): void {
   const children = node.childNodes;
   if (children === undefined) return;
   for (const child of [...children]) minifyHtmlTree(child, mode, warnings);
   node.childNodes = children.filter((child, index, siblings) => {
     if (child.nodeName === "#comment") {
-      if (conditionalComment(child)) {
-        warnings.add("Commento condizionale conservato perché la sua semantica dipende dal consumer.");
+      if (mode === "safe" || isForeignHtmlContext(child.parentNode)) return true;
+      if (functionalComment(child)) {
+        warnings.add("Direttiva in un commento HTML conservata: marker condizionali, template/SSR e riferimenti esterni non sono commenti decorativi.");
         return true;
       }
       return false;
@@ -257,8 +276,11 @@ export function htmlMinifyOperation(html: string, mode: string = "safe") {
     whitespacePolicy: mode === "prettify"
       ? "Indent only block-only containers: whitespace-only nodes between blocks may be replaced. Preserve mixed text and pre/textarea/script/style/foreign markup; CSS whitespace selectors may be affected."
       : mode === "safe"
-        ? "Preserve every HTML text node exactly as parsed; only ordinary comments are removed. pre/textarea/script/style are untouched."
+        ? "Preserve every HTML text and comment node as parsed; pre/textarea/script/style and foreign markup are untouched. Parser serialization can still normalize source markup."
         : "Preserve all non-whitespace text and sensitive elements; remove additional whitespace-only nodes adjacent to block elements.",
+    commentPolicy: mode === "advanced"
+      ? "Remove ordinary HTML comments (lossy for unknown comment-based frameworks), preserve known template/SSR/SSI/conditional directives and comments within foreign markup; review consumer semantics."
+      : "Preserve all comments from the parser tree; no scripts or embedded references are executed during serialization.",
     scriptStylePolicy: "script and style contents are parsed as HTML raw-text elements and are never regex-rewritten by this minifier.",
   });
 }
