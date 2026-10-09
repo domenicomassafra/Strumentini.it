@@ -1,4 +1,4 @@
-import { dictionaryOrNull, nameValue, type PdfDocumentModel, type PdfDictionary, type PdfValue } from "./parser";
+import { dictionaryOrNull, nameValue, type PdfDocumentModel, type PdfValue } from "./parser";
 
 /**
  * Narrow #218 gate for page-level visual contexts that are outside our tested
