@@ -123,7 +123,18 @@ export async function extractAudioWav234(source: File, range: VideoAudioRange234
   validateAudioSource234(source, inspected);
   cancelled(signal);
   const context = new AudioContext({ sampleRate: 48_000 });
-  const onAbort = () => { void context.close().catch(() => undefined); };
+  // Abort can arrive while close() is still pending. Reuse exactly one close
+  // operation so the abort path and finally never race to close the same
+  // AudioContext twice (observed on real Firefox/WebKit browser acceptance).
+  let closing: Promise<void> | null = null;
+  const closeContext = (): Promise<void> => {
+    if (closing !== null) return closing;
+    if (context.state === "closed") return Promise.resolve();
+    try { closing = context.close().catch(() => undefined); }
+    catch { closing = Promise.resolve(); }
+    return closing;
+  };
+  const onAbort = () => { void closeContext(); };
   signal?.addEventListener("abort", onAbort, { once: true });
   try {
     const bytes = await source.arrayBuffer();
@@ -151,6 +162,6 @@ export async function extractAudioWav234(source: File, range: VideoAudioRange234
     };
   } finally {
     signal?.removeEventListener("abort", onAbort);
-    if (context.state !== "closed") await context.close().catch(() => undefined);
+    await closeContext();
   }
 }

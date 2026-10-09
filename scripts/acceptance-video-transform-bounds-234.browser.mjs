@@ -249,7 +249,11 @@ try {
       }, null, { timeout: 6000 });
       state = await page.evaluate(() => ({ ...window.__video234Lifecycle }));
       assert(state.workerConstructed >= 5, "Retry did not create and finish another real WAV Worker");
-      checks += 1;
+      // Every AudioContext may be closed exactly once, even when AbortSignal
+      // and a finally block race while the browser's close() is still pending.
+      assert.equal(state.audioCloseAttempts, state.audioContexts,
+        `AudioContext.close called more than once: ${JSON.stringify(state)}`);
+      checks += 2;
 
       // No hidden MediaRecorder/FFmpeg fallback: absence of the local Worker
       // must fail closed and revoke the preceding downloadable WAV.
