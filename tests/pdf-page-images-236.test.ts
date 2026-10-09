@@ -162,7 +162,7 @@ describe("#236 bounded independent PDF.js PDF-page raster to image/ZIP", () => {
     expect(result.files).toHaveLength(8);
     expect(result.zip?.entryNames).toEqual(selected.map((page) => `page-${String(page).padStart(3, "0")}.png`));
     const payload = result.files.map((file) => ({ filename: file.filename, mime: file.mime, bytes: file.bytes }));
-    expect(pythonReopenImages({ items: payload, archive: result.zip?.bytes, expectedWidth: 96,
+    expect(pythonReopenImages({ items: payload, archive: result.zip!.bytes, expectedWidth: 96,
       expectedHeight: 72 })).toContain("PYTHON_PILLOW_ZIPFILE_INDEPENDENT_ROUNDTRIP_PASS images 8");
     expect(result.outputBytes).toBe(result.files.reduce((sum, item) => sum + item.bytes.length, 0));
     expect(result.zip!.bytes.length).toBeLessThan(20 * 1024 * 1024);
