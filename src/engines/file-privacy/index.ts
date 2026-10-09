@@ -603,6 +603,17 @@ export async function analyzeFileSize(input: unknown, signal?: AbortSignal): Pro
     estimatePolicy: "No savings estimate is emitted before an actual transform/compression run.",
   };
 
+  if (detectedMime === "application/pdf") {
+    const { inspectPdfSize265 } = await import("../pdf/size-adapter-265");
+    const { PDF_LIMITS } = await import("../pdf/types");
+    const pdf = inspectPdfSize265(await readBytes(file, signal, PDF_LIMITS.maxBytes), signal);
+    return { ...common, kind: "pdf", pdf,
+      evidence: [`${pdf.pageCount} pagine`, `${pdf.encodedStreamBytes} byte di stream codificati`,
+        `${pdf.imageStreamBytes} byte di Image XObject`, `${pdf.structuralRemainderBytes} byte di strutture e altri dati`],
+      nextActions: ["pdf-compression-lite"], recommendedOptimizer: "pdf-compression-lite",
+      note: "Contributi misurati sui payload degli stream PDF identificati. Nessuna stima di risparmio o diagnosi certa di testo/scansione per pagine complesse; il compressore effettua verifiche e può conservare l'originale." };
+  }
+
   // #266: prefer strict package/video facts to filename claims, never turn
   // unknown bitrate/FPS or a declared OOXML container into a saving estimate.
   if (detectedMime === "application/zip" && [".docx", ".pptx", ".xlsx"].includes(extensionOf(file.name))) {
