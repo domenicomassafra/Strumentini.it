@@ -23,6 +23,23 @@ async function collectHtmlFiles(directory: string): Promise<string[]> {
 
 const htmlFiles = await collectHtmlFiles(dist);
 const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html: await readFile(path, "utf8") })));
+// An explicitly scoped, non-catalog experiment may be pre-rendered only while
+// noindex/nofollow, invisible to search/sitemap and visibly bounded. This is
+// NOT a tool promotion or an open-ended allowance for stray public routes.
+const previewOnlyPaths = ["tools/codice-fiscale/index.html"] as const;
+for (const previewPath of previewOnlyPaths) {
+  const route = `/${previewPath.replace(/\/index\.html$/u, "")}`;
+  if (catalog.some((tool) => tool.route.replace(/\/+$/u, "") === route.replace(/\/+$/u, "")) ||
+      publicIndexPaths.some((path) => path.replace(/\/+$/u, "") === route.replace(/\/+$/u, ""))) {
+    throw new Error(`Unreviewed preview route promoted into index/catalog: ${previewPath}`);
+  }
+  const preview = htmlPages.find(({ path }) => relative(dist, path).replaceAll("\\", "/") === previewPath)?.html;
+  if (preview === undefined || !/<meta name="robots" content="noindex, nofollow"\s*\/?\s*>/u.test(preview) ||
+      !preview.includes('data-cf-canonical-route="/tools/codice-fiscale/"') ||
+      !preview.includes("copertura geografica") && !preview.includes("Copertura geografica")) {
+    throw new Error(`Expected source-limited, noindex-only preview missing or unsafe: ${previewPath}`);
+  }
+}
 // The catalogue, the indexable routes the sitemap advertises, the content pages
 // that are deliberately left out of the sitemap (the per-group category islands
 // and the account/utility pages) and the legacy /library redirects that keep
@@ -36,6 +53,7 @@ const expectedPaths = new Set([
   "preferiti/index.html",
   ...groups.map((group) => `categorie/${group.slug}/index.html`),
   "library/index.html",
+  ...previewOnlyPaths,
 ]);
 const actualPaths = new Set(htmlFiles.map((path) => relative(dist, path).replaceAll("\\", "/")));
 const unexpectedPages = [...actualPaths].filter((path) => !expectedPaths.has(path)).sort();
@@ -80,6 +98,9 @@ const indexablePaths = [...publicIndexPaths, ...groups.map((group) => `/categori
   .map((route) => route === "/" ? "/" : `${route.replace(/\/+$/u, "")}/`)
   .sort();
 const sitemapPaths = sitemapLocations.map((location) => decodeURIComponent(new URL(location, "https://build.invalid").pathname)).sort();
+if (sitemapPaths.some((path) => previewOnlyPaths.some((preview) => path === `/${preview.replace(/index\.html$/u, "")}`))) {
+  throw new Error("Noindex preview leaked into public sitemap discovery");
+}
 if (indexablePaths.length !== new Set(indexablePaths).size) throw new Error("Indexable routes are not unique");
 if (sitemapPaths.length !== indexablePaths.length || sitemapPaths.some((path, index) => path !== indexablePaths[index])) {
   throw new Error("Sitemap does not contain one unique entry per indexable page");
