@@ -1,5 +1,5 @@
 import { inspectPdfBytes } from "./index";
-import { parsePdf, type PdfDocumentModel } from "./parser";
+import { parsePdf } from "./parser";
 import { buildPdfFromPages } from "./writer";
 import { PDF_LIMITS, type PdfArtifact } from "./types";
 
