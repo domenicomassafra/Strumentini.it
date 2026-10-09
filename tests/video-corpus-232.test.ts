@@ -20,6 +20,18 @@ const vectors = JSON.parse(readFileSync(resolve(fixtureDir, "vectors.json"), "ut
   }[];
 };
 const named = new Map(vectors.files.map((entry) => [basename(entry.path), entry]));
+// New #037 PTS validation extends the original #232 "unknown"-only scope.
+// Keep immutable historic fixture facts; additionally assert source-specific
+// cadence independently established by real FFprobe and adversarial ctts tests.
+const presentationExpectations: Readonly<Record<string, readonly (readonly ["cfr" | "vfr" | "unknown", number | null])[]>> = {
+  "video-12fps.mp4": [["cfr", 12]],
+  "video-plus-audio.mp4": [["cfr", 10], ["unknown", null]],
+  "video-rotated.mp4": [["cfr", 12]],
+  "video-rotated-minus90.mp4": [["cfr", 12]],
+  "video-vfr.mp4": [["vfr", null]],
+  "video-multistream.mp4": [["cfr", 12], ["cfr", 6], ["unknown", null]],
+  "video-hour-sparse.mp4": [["unknown", null]],
+};
 const video = (name: string) => {
   const bytes = readFileSync(resolve(fixtureDir, name));
   return new Blob([new Uint8Array(bytes)], { type: "video/mp4" });
@@ -42,10 +54,8 @@ describe("STR-232 — independently referenced ISO BMFF corpus", () => {
     expect(metadata.durationSeconds).toBeCloseTo(expected!.duration_seconds, 3);
     expect(metadata.videoTracks).toBe(expected!.video_tracks);
     expect(metadata.audioTracks).toBe(expected!.audio_tracks);
-    for (const track of metadata.tracks) {
-      expect(track.frameRate).toBeNull();
-      expect(track.frameRateMode).toBe("unknown");
-    }
+    expect(metadata.tracks.map((track) => [track.frameRateMode, track.frameRate]))
+      .toEqual(presentationExpectations[name]);
     const evidence = expected!.decode_timing_evidence;
     if (evidence) expect(metadata.tracks.find((track) => track.kind === "video")?.decodeTiming).toBe(evidence);
     if (expected!.video_dimensions) {
@@ -55,7 +65,7 @@ describe("STR-232 — independently referenced ISO BMFF corpus", () => {
     }
   });
 
-  it("distinguishes varying decode deltas from constant decode deltas without claiming CFR/VFR", async () => {
+  it("distinguishes decode evidence from proven presentation cadence and sparse unknowns", async () => {
     const vfr = await inspectMp4Local(video("video-vfr.mp4"));
     const cfr = await inspectMp4Local(video("video-12fps.mp4"));
     const hour = await inspectMp4Local(video("video-hour-sparse.mp4"));
@@ -64,7 +74,8 @@ describe("STR-232 — independently referenced ISO BMFF corpus", () => {
     expect(hour.tracks[0]?.decodeTiming).toBe("constant-sample-deltas-observed");
     expect(hour.durationSeconds).toBe(3600);
     expect(hour.tracks[0]?.frameRate).toBeNull();
-    expect([vfr, cfr, hour].every((entry) => entry.tracks[0]?.frameRateMode === "unknown")).toBe(true);
+    expect([vfr, cfr, hour].map((entry) => [entry.tracks[0]?.frameRateMode, entry.tracks[0]?.frameRate]))
+      .toEqual([["vfr", null], ["cfr", 12], ["unknown", null]]);
   });
 
   it.skipIf(!ffprobeAvailable)("reprobes all seven fixture streams using the independent FFprobe binary", () => {

@@ -8,15 +8,15 @@ function fixture(name: string): Blob {
 }
 
 describe("232 — bounded, truthful MP4 container inspection", () => {
-  it("inspects a real H.264 file with moov after mdat, without pretending fps is proven", async () => {
+  it("inspects a real H.264 file with moov after mdat, proving FPS only from complete presentation timing", async () => {
     const source = fixture("video-12fps.mp4");
     const info = await inspectMp4Local(source);
     expect(info.container).toBe("iso-bmff-mp4");
     expect(info.bytes).toBe(source.size);
     expect(info).toMatchObject({ totalTracks: 1, videoTracks: 1, audioTracks: 0, durationSeconds: 1.25, containsMovieFragments: false });
-    expect(info.tracks[0]).toMatchObject({ kind: "video", codecFourCc: "avc1", width: 64, height: 48, quarterTurnDegrees: 0, frameRate: null, frameRateMode: "unknown" });
+    expect(info.tracks[0]).toMatchObject({ kind: "video", codecFourCc: "avc1", width: 64, height: 48, quarterTurnDegrees: 0, frameRate: 12, frameRateMode: "cfr" });
     expect(info.averageContainerBitrateBps).toBe(Math.round(source.size * 8 / 1.25));
-    expect(info.warnings.join(" ")).toMatch(/CFR\/VFR restano sconosciuti/u);
+    expect(info.warnings.join(" ")).toMatch(/CFR\/VFR restano sconosciuti per timing/u);
   });
 
   it("exposes both video and audio tracks rather than guessing from filename or MIME", async () => {
@@ -25,7 +25,8 @@ describe("232 — bounded, truthful MP4 container inspection", () => {
     expect(info).toMatchObject({ totalTracks: 2, videoTracks: 1, audioTracks: 1 });
     expect(info.tracks.find((track) => track.kind === "video")).toMatchObject({ codecFourCc: "avc1", width: 80, height: 60 });
     expect(info.tracks.find((track) => track.kind === "audio")?.codecFourCc).toBe("mp4a");
-    expect(info.tracks.every((track) => track.frameRate === null && track.frameRateMode === "unknown")).toBe(true);
+    expect(info.tracks.find((track) => track.kind === "video")).toMatchObject({ frameRate: 10, frameRateMode: "cfr" });
+    expect(info.tracks.find((track) => track.kind === "audio")).toMatchObject({ frameRate: null, frameRateMode: "unknown" });
   });
 
   it("interprets a real QuickTime display-matrix quarter-turn and retains raw values", async () => {
