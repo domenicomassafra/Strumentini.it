@@ -8,7 +8,7 @@ import type { PdfSplitOutput } from "./types";
 const module: ToolModule = {
   async run(value, _context, signal): Promise<PdfSplitOutput> {
     if (typeof value !== "object" || value === null) throw new Error("INVALID_INPUT: Scegli un PDF da dividere");
-    const candidate = value as { file?: unknown; groups?: unknown };
+    const candidate = value as { file?: unknown; groups?: unknown; maxPartKiB?: unknown };
     // Avoid the legacy array-only mutationInput on the new strict expression grammar.
     const file = candidate.file;
     if (!(file instanceof Blob) || file.size > PDF_LIMITS.maxBytes || file.size < 5) throw new Error("PDF_LIMIT: PDF locale non valido");
@@ -16,18 +16,35 @@ const module: ToolModule = {
     const original = new Uint8Array(await file.arrayBuffer());
     const source = inspectPdfBytes(original);
     if (source.encrypted || source.pageCount < 1) throw new Error("UNSUPPORTED_CAPABILITY: PDF cifrato o privo di pagine");
+    const sizeMode = candidate.maxPartKiB !== undefined;
+    if (sizeMode && candidate.groups !== undefined) throw new Error("INVALID_INPUT: Manual page groups cannot be combined with size limit mode");
+    const maxPartBytes = sizeMode ? Number(candidate.maxPartKiB) * 1024 : null;
+    if (sizeMode && (typeof candidate.maxPartKiB !== "number" || !Number.isInteger(candidate.maxPartKiB) ||
+      candidate.maxPartKiB < 1 || candidate.maxPartKiB > 20480)) {
+      throw new Error("INVALID_INPUT: Specify a whole KiB ceiling from 1 to 20480");
+    }
     const groups = candidate.groups === undefined
       ? [Array.from({ length: source.pageCount }, (_, index) => index + 1)]
       : typeof candidate.groups === "string"
         ? parsePdfPageGroups(candidate.groups, source.pageCount)
         : strictPdfGroups(candidate.groups as readonly number[][], source.pageCount);
     const filename = "name" in file && typeof file.name === "string" ? file.name : "document.pdf";
-    const outputs = await mutatePdf(file, { kind: "split", filename, groups }, signal);
-    if (outputs.length !== groups.length) throw new Error("PDF_VERIFICATION_FAILED: Numero parti PDF non coerente");
+    const outputs = sizeMode
+      ? (await import("../../engines/pdf/size-split-249")).splitPdfBySize249(original, maxPartBytes!, signal).artifacts
+      : await mutatePdf(file, { kind: "split", filename, groups }, signal);
+    const actualGroups = sizeMode ? outputs.map((artifact) => {
+      const match = /^pdf-part-\d{3}-pages-(\d+)-(\d+)\.pdf$/u.exec(artifact.filename);
+      if (!match) throw new Error("PDF_VERIFICATION_FAILED: Size split filename is not a valid page-span contract");
+      const start = Number(match[1]), end = Number(match[2]);
+      return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+    }) : groups;
+    if (outputs.length !== actualGroups.length) throw new Error("PDF_VERIFICATION_FAILED: Numero parti PDF non coerente");
     const verified = outputs.map((artifact, index) => {
       const pages = inspectPdfBytes(artifact.bytes).pageCount;
-      if (pages !== groups[index]!.length) throw new Error("PDF_VERIFICATION_FAILED: Una parte PDF contiene pagine inattese");
-      return { filename: artifact.filename, pages: groups[index]!, pageCount: pages, byteLength: artifact.bytes.byteLength };
+      if (pages !== actualGroups[index]!.length || sizeMode && artifact.bytes.length > maxPartBytes!) {
+        throw new Error("PDF_VERIFICATION_FAILED: Part size/page count is not verified");
+      }
+      return { filename: artifact.filename, pages: actualGroups[index]!, pageCount: pages, byteLength: artifact.bytes.byteLength };
     });
     const artifacts = [...outputs];
     let zipIncluded = false;
@@ -57,7 +74,9 @@ const module: ToolModule = {
       zipIncluded = true;
       zipEntries = outputs.length;
     }
-    return { ...resultArtifacts(artifacts), operation: "split", groups, verified, sourcePageCount: source.pageCount, zipIncluded, zipEntries };
+    return { ...resultArtifacts(artifacts), operation: "split", groups: actualGroups, verified,
+      ...(sizeMode ? { exactPartLimitBytes: maxPartBytes, sizeBased: true, allPartsWithinLimit: true } : {}),
+      sourcePageCount: source.pageCount, zipIncluded, zipEntries };
   },
 };
 

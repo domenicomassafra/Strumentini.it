@@ -77,6 +77,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [order, setOrder] = useState("");
   const [orderHistory, setOrderHistory] = useState<string[]>([]);
   const [groups, setGroups] = useState("");
+  const [pdfSplitMode, setPdfSplitMode] = useState<"manual" | "size-limit">("manual");
+  const [pdfSplitMaxKiB, setPdfSplitMaxKiB] = useState("1024");
   const [rotation, setRotation] = useState("90");
   const [deleteMode, setDeleteMode] = useState<"delete" | "extract">("extract");
   const [passwordMode, setPasswordMode] = useState<"check" | "remove">("check");
@@ -182,7 +184,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     }
     if (inputMode === "multi") return { files, ...(toolId === "pdf-merge" && mergePagePlan !== null ? { pagePlan: mergePagePlan } : {}) };
     if (optionMode === "pages") return { file: files[0], pages: parseNumbers(pages), ...(toolId === "pdf-page-delete-extract" ? { mode: deleteMode } : {}) };
-    if (optionMode === "groups") return { file: files[0], groups };
+    if (optionMode === "groups") return toolId === "pdf-split" && pdfSplitMode === "size-limit"
+      ? { file: files[0], maxPartKiB: Number(pdfSplitMaxKiB) }
+      : { file: files[0], groups };
     if (optionMode === "order") return { file: files[0], order: parseNumbers(order) };
     if (optionMode === "rotation") return { file: files[0], pages, rotation: Number(rotation) };
     if (optionMode === "delete-extract") return { file: files[0], pages, mode: deleteMode };
@@ -347,7 +351,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setOrderHistory((history) => history.slice(0, -1));
     setResult(null);
   }
-  const isPageSelector = optionMode === "groups" || optionMode === "delete-extract";
+  const isPageSelector = optionMode === "delete-extract" || optionMode === "groups" && !(toolId === "pdf-split" && pdfSplitMode === "size-limit");
   let selectionGroups: number[][] = [];
   let selectionError = "";
   if (isPageSelector && selectionPageCount > 0) {
@@ -435,7 +439,21 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             disabled={isWorking} />
         )}
         {optionMode === "pages" && <label class="field"><span>Pagine</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="1, 3, 5" disabled={isWorking} /></label>}
-        {optionMode === "groups" && <label class="field"><span>Gruppi di pagine</span><input value={groups} onInput={(event) => { setGroups(event.currentTarget.value); setResult(null); }} placeholder="1-2; 3-4" disabled={isWorking} /></label>}
+        {optionMode === "groups" && toolId === "pdf-split" && <label class="field"><span>Metodo divisione PDF</span>
+          <select value={pdfSplitMode} onChange={(event) => { setPdfSplitMode(event.currentTarget.value as "manual" | "size-limit"); setResult(null); }} disabled={isWorking}>
+            <option value="manual">Gruppi di pagine manuali</option>
+            <option value="size-limit">Massimo byte per parte (misura reale)</option>
+          </select>
+        </label>}
+        {optionMode === "groups" && pdfSplitMode === "size-limit" && toolId === "pdf-split" ? (
+          <label class="field"><span>Dimensione massima di ciascun PDF (KiB)</span>
+            <input type="number" min="1" max="20480" step="1" value={pdfSplitMaxKiB}
+              onInput={(event) => { setPdfSplitMaxKiB(event.currentTarget.value); setResult(null); }} disabled={isWorking} />
+            <small>Ogni PDF viene ricostruito e misurato sui byte effettivi. Se persino una pagina supera il limite, l'operazione viene rifiutata indicando pagina e dimensione minima rilevata: non vengono omesse pagine per rispettare il limite.</small>
+          </label>
+        ) : optionMode === "groups" ? (
+          <label class="field"><span>Gruppi di pagine</span><input value={groups} onInput={(event) => { setGroups(event.currentTarget.value); setResult(null); }} placeholder="1-2; 3-4" disabled={isWorking} /></label>
+        ) : null}
         {optionMode === "order" && <label class="field"><span>Nuovo ordine delle pagine</span><input value={order} onInput={(event) => { setOrder(event.currentTarget.value); setOrderHistory([]); }} placeholder="3, 1, 2" disabled={isWorking} /></label>}
         {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => { setPages(event.currentTarget.value); setResult(null); }} placeholder="1-3, 5" disabled={isWorking} /></label><label class="field"><span>Rotazione</span><select value={rotation} onChange={(event) => { setRotation(event.currentTarget.value); setResult(null); }} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
         {optionMode === "rotation" && files[0] !== undefined && (
