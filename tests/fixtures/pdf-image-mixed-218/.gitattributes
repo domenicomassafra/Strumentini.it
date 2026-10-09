@@ -1,0 +1,2 @@
+# PDF files have fixed-width xref records ending in significant space bytes.
+*.pdf binary
