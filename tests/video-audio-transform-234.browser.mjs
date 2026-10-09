@@ -1,6 +1,7 @@
 // Independent real browser proof (desktop Chromium, NOT physical iOS/Android).
 // node tests/video-audio-transform-234.browser.mjs
-// Starts local Astro dev only, avoiding full-site build or shared generated artifacts.
+// By default starts local Astro dev; VIDEO234_BASE points to a pre-built static server
+// when another project owns the local Astro dev process.
 import { spawn } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -9,10 +10,9 @@ import { chromium } from "@playwright/test";
 
 const root = resolve(import.meta.dirname, "..");
 const port = 18476;
-const origin = `http://127.0.0.1:${port}`;
-const server = spawn(resolve(root, "node_modules/.bin/astro"), ["dev", "--host", "127.0.0.1", "--port", String(port)], {
-  cwd: root, stdio: "ignore",
-});
+const origin = process.env.VIDEO234_BASE ?? `http://127.0.0.1:${port}`;
+const server = process.env.VIDEO234_BASE ? null : spawn(resolve(root, "node_modules/.bin/astro"),
+  ["dev", "--host", "127.0.0.1", "--port", String(port)], { cwd: root, stdio: "ignore" });
 let browser;
 let checks = 0;
 
@@ -55,7 +55,7 @@ function inspectWav(bytes, expectedHz) {
 try {
   let started = false;
   for (let attempt = 0; attempt < 120; attempt++) {
-    if (server.exitCode !== null) throw new Error(`Dev server exited ${server.exitCode}`);
+    if (server && server.exitCode !== null) throw new Error(`Dev server exited ${server.exitCode}`);
     try { if ((await fetch(`${origin}/tools/video-inspector/`)).ok) { started = true; break; } }
     catch { /* not yet listening */ }
     await new Promise((resolve) => setTimeout(resolve, 250));
@@ -113,5 +113,5 @@ try {
   console.log(`#234 audio WAV: PASS ${checks} checks; ${JSON.stringify(results)}; refusals, no offsite, mobile viewport. Desktop Chromium only.`);
 } finally {
   if (browser) await browser.close();
-  server.kill("SIGTERM");
+  server?.kill("SIGTERM");
 }

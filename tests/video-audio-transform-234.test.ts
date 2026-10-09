@@ -71,7 +71,7 @@ describe("#234 — actual browser capability gate and refusal", () => {
     expect(pcm.length).toBeGreaterThanOrEqual(96_000);
     expect(pcm.length).toBeLessThanOrEqual(97_024);
 
-    for (const [startFrame, expectedHz] of [[12_000, 440], [60_000, 880]]) {
+    for (const [startFrame, expectedHz] of [[12_000, 440], [60_000, 880]] as const) {
       const frames = 24_000;
       const bytes = writeWav234({ kind: "write", channels: [pcm.slice(startFrame, startFrame + frames)], sampleRate: 48_000, frames });
       expect(() => verifyWav234(bytes, 48_000, 1, frames)).not.toThrow();
