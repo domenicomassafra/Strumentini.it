@@ -3,6 +3,7 @@ import { samePageContentBytes, samePageGeometry, topLevelPageImageIds } from "./
 import { dictionaryOrNull, dictionaryWith, nameValue, numberValue, parsePdf, pdfName, pdfNumber, type PdfObject } from "./parser";
 import { buildPdfFromPages, parseJpeg } from "./writer";
 import { PDF_LIMITS, type PdfArtifact } from "./types";
+import { pdfImageCompositingRisk218 } from "./image-aware-safety-218";
 
 const MAX_CANDIDATES = 24;
 const MAX_PIXELS = 8_000_000;
@@ -65,30 +66,34 @@ interface Raster { readonly pixels: Uint8Array; readonly width: number; readonly
 
 /** Native streaming decompression, capped BEFORE allocation of complete raster bytes. */
 async function inflateBounded(bytes: Uint8Array, maxBytes: number, signal?: AbortSignal): Promise<Uint8Array> {
+  checkAbort(signal);
   if (typeof DecompressionStream === "undefined") throw new Error("UNSUPPORTED_CAPABILITY: Native Flate decompression unavailable");
   const reader = new Blob([Uint8Array.from(bytes)]).stream().pipeThrough(new DecompressionStream("deflate")).getReader();
-  const chunks: Uint8Array[] = [];
+  // Expected dimensions bound this single decode buffer. The old approach
+  // retained every decompressed chunk and allocated a second full copy at
+  // completion, doubling peak live raster buffers on large scans.
+  const decoded = new Uint8Array(maxBytes);
   let length = 0;
+  const abortReader = () => { void reader.cancel("PDF scan cancelled").catch(() => undefined); };
+  signal?.addEventListener("abort", abortReader, { once: true });
   try {
     while (true) {
       checkAbort(signal);
       const { done, value } = await reader.read();
+      checkAbort(signal);
       if (done) break;
+      if (value.length > maxBytes - length) {
+        throw new Error("PDF_LIMIT: Flate image expanded beyond predicted raster dimensions");
+      }
+      decoded.set(value, length);
       length += value.length;
-      if (length > maxBytes) throw new Error("PDF_LIMIT: Flate image expanded beyond predicted raster dimensions");
-      chunks.push(value);
     }
   } finally {
+    signal?.removeEventListener("abort", abortReader);
     await reader.cancel().catch(() => undefined);
     reader.releaseLock();
   }
-  const decoded = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) {
-    decoded.set(chunk, offset);
-    offset += chunk.length;
-  }
-  return decoded;
+  return decoded.subarray(0, length);
 }
 
 function eligibility(object: PdfObject, model: ReturnType<typeof parsePdf>): string | null {
@@ -161,48 +166,59 @@ async function encodeRaster(raster: Raster, quality: number, maxEdge: number, gr
   if (typeof document === "undefined") throw new Error("UNSUPPORTED_CAPABILITY: Local canvas JPEG encoder unavailable");
   checkAbort(signal);
   const canvas = document.createElement("canvas");
-  canvas.width = raster.width;
-  canvas.height = raster.height;
-  const context = canvas.getContext("2d", { alpha: false });
-  if (context === null) throw new Error("UNSUPPORTED_CAPABILITY: 2D canvas unavailable");
-  const frame = context.createImageData(raster.width, raster.height);
-  for (let i = 0; i < raster.width * raster.height; i += 1) {
-    const offset = i * 4;
-    const start = i * raster.channels;
-    const r = raster.pixels[start]!;
-    const g = raster.channels === 1 ? r : raster.pixels[start + 1]!;
-    const b = raster.channels === 1 ? r : raster.pixels[start + 2]!;
-    const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-    frame.data[offset] = grayscale ? gray : r;
-    frame.data[offset + 1] = grayscale ? gray : g;
-    frame.data[offset + 2] = grayscale ? gray : b;
-    frame.data[offset + 3] = 255;
+  let target: HTMLCanvasElement | undefined;
+  try {
+    canvas.width = raster.width;
+    canvas.height = raster.height;
+    const context = canvas.getContext("2d", { alpha: false });
+    if (context === null) throw new Error("UNSUPPORTED_CAPABILITY: 2D canvas unavailable");
+    const frame = context.createImageData(raster.width, raster.height);
+    for (let i = 0; i < raster.width * raster.height; i += 1) {
+      if ((i & 32767) === 0) checkAbort(signal);
+      const offset = i * 4;
+      const start = i * raster.channels;
+      const r = raster.pixels[start]!;
+      const g = raster.channels === 1 ? r : raster.pixels[start + 1]!;
+      const b = raster.channels === 1 ? r : raster.pixels[start + 2]!;
+      const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+      frame.data[offset] = grayscale ? gray : r;
+      frame.data[offset + 1] = grayscale ? gray : g;
+      frame.data[offset + 2] = grayscale ? gray : b;
+      frame.data[offset + 3] = 255;
+    }
+    context.putImageData(frame, 0, 0);
+    const scale = Math.min(1, maxEdge / Math.max(raster.width, raster.height));
+    const width = Math.max(1, Math.floor(raster.width * scale));
+    const height = Math.max(1, Math.floor(raster.height * scale));
+    target = scale < 1 ? document.createElement("canvas") : canvas;
+    if (target !== canvas) {
+      target.width = width;
+      target.height = height;
+      const targetContext = target.getContext("2d", { alpha: false });
+      if (targetContext === null) throw new Error("UNSUPPORTED_CAPABILITY: Downsample canvas unavailable");
+      targetContext.imageSmoothingEnabled = true;
+      targetContext.imageSmoothingQuality = "high";
+      targetContext.drawImage(canvas, 0, 0, width, height);
+    }
+    checkAbort(signal);
+    const completedTarget = target;
+    if (completedTarget === undefined) throw new Error("UNSUPPORTED_CAPABILITY: No JPEG target canvas");
+    const blob = await new Promise<Blob>((resolve, reject) => completedTarget.toBlob((value) => {
+      if (value === null || value.type !== "image/jpeg") reject(new Error("UNSUPPORTED_CAPABILITY: JPEG encoder returned no JPEG"));
+      else resolve(value);
+    }, "image/jpeg", quality));
+    if (blob.size > MAX_IMAGE_BYTES) throw new Error("PDF_LIMIT: Encoded scan image exceeds byte cap");
+    checkAbort(signal);
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    const parsed = parseJpeg(bytes);
+    if (parsed?.width !== width || parsed.height !== height) throw new Error("PDF_OUTPUT_MISMATCH: Encoded scan image has wrong dimensions");
+    return { bytes, width, height };
+  } finally {
+    // Resizing releases the previous pixel backing store. 1×1 is portable:
+    // some native Canvas implementations reset 0×0 to the large 350×150 default.
+    if (target && target !== canvas) target.width = target.height = 1;
+    canvas.width = canvas.height = 1;
   }
-  context.putImageData(frame, 0, 0);
-  const scale = Math.min(1, maxEdge / Math.max(raster.width, raster.height));
-  const width = Math.max(1, Math.floor(raster.width * scale));
-  const height = Math.max(1, Math.floor(raster.height * scale));
-  const target = scale < 1 ? document.createElement("canvas") : canvas;
-  if (target !== canvas) {
-    target.width = width;
-    target.height = height;
-    const targetContext = target.getContext("2d", { alpha: false });
-    if (targetContext === null) throw new Error("UNSUPPORTED_CAPABILITY: Downsample canvas unavailable");
-    targetContext.imageSmoothingEnabled = true;
-    targetContext.imageSmoothingQuality = "high";
-    targetContext.drawImage(canvas, 0, 0, width, height);
-  }
-  checkAbort(signal);
-  const blob = await new Promise<Blob>((resolve, reject) => target.toBlob((value) => {
-    if (value === null || value.type !== "image/jpeg") reject(new Error("UNSUPPORTED_CAPABILITY: JPEG encoder returned no JPEG"));
-    else resolve(value);
-  }, "image/jpeg", quality));
-  if (blob.size > MAX_IMAGE_BYTES) throw new Error("PDF_LIMIT: Encoded scan image exceeds byte cap");
-  checkAbort(signal);
-  const bytes = new Uint8Array(await blob.arrayBuffer());
-  const parsed = parseJpeg(bytes);
-  if (parsed?.width !== width || parsed.height !== height) throw new Error("PDF_OUTPUT_MISMATCH: Encoded scan image has wrong dimensions");
-  return { bytes, width, height };
 }
 
 /** Explicit opt-in lossy conversion for narrowly recognized lossless Flate raster scans. */
@@ -226,6 +242,7 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
   const candidates = [...model.objects.values()].filter((object) => object.value.kind === "stream" && nameValue(object.value.dictionary.entries.get("Subtype")) === "Image");
   if (candidates.length > PDF_LIMITS.maxImages) throw new Error("PDF_LIMIT: Too many images in scan PDF");
   const referenced = topLevelPageImageIds(model);
+  const compositingRisk = pdfImageCompositingRisk218(model);
   const inventory: PdfScanImageDecision[] = [];
   let transformed = 0;
   for (const object of candidates) {
@@ -235,8 +252,8 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
     const width = numberValue(stream.dictionary.entries.get("Width"));
     const height = numberValue(stream.dictionary.entries.get("Height"));
     const base = { sourceObject: object.id, width, height, outputWidth: width, outputHeight: height, beforeBytes: stream.bytes.length, afterBytes: stream.bytes.length };
-    const reason = inventory.length >= MAX_CANDIDATES ? "image-count-beyond-local-reencode-cap" :
-      !referenced.has(object.id) ? "not-top-level-page-image-resource" : eligibility(object, model);
+    const reason = compositingRisk ?? (inventory.length >= MAX_CANDIDATES ? "image-count-beyond-local-reencode-cap" :
+      !referenced.has(object.id) ? "not-top-level-page-image-resource" : eligibility(object, model));
     if (reason !== null) {
       inventory.push({ ...base, action: "unchanged", reason });
       continue;

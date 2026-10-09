@@ -2,6 +2,7 @@ import { inspectPdfBytes, extractPdfText } from "./index";
 import { dictionaryOrNull, nameValue, numberValue, parsePdf, resolveReference, type PdfDocumentModel, type PdfObject, type PdfValue } from "./parser";
 import { buildPdfFromPages, parseJpeg } from "./writer";
 import { PDF_LIMITS, type PdfArtifact, type PdfInspection } from "./types";
+import { pdfImageCompositingRisk218 } from "./image-aware-safety-218";
 
 const MAX_CANDIDATES = 24;
 const MAX_DECODE_PIXELS = 8_000_000;
@@ -174,6 +175,7 @@ export async function recompressPdfEmbeddedJpegs(source: Uint8Array, options: Pd
   const imageObjects = [...model.objects.values()].filter((object) =>
     object.value.kind === "stream" && nameValue(object.value.dictionary.entries.get("Subtype")) === "Image");
   const referencedImageIds = topLevelPageImageIds(model);
+  const compositingRisk = pdfImageCompositingRisk218(model);
   if (imageObjects.length > PDF_LIMITS.maxImages) throw new Error("PDF_LIMIT: Too many embedded image XObjects");
   const selected = imageObjects.slice(0, MAX_CANDIDATES);
   const replacements = new Map<number, Uint8Array>();
@@ -185,7 +187,7 @@ export async function recompressPdfEmbeddedJpegs(source: Uint8Array, options: Pd
     const width = numberValue(stream.dictionary.entries.get("Width"));
     const height = numberValue(stream.dictionary.entries.get("Height"));
     const base = { sourceObject: object.id, width, height, beforeBytes: stream.bytes.byteLength };
-    const reason = !referencedImageIds.has(object.id) ? "not-top-level-page-image-resource" : safeCandidate(object);
+    const reason = compositingRisk ?? (!referencedImageIds.has(object.id) ? "not-top-level-page-image-resource" : safeCandidate(object));
     if (reason !== null) {
       inventory.push({ ...base, afterBytes: stream.bytes.byteLength, action: "unchanged", reason });
       continue;
