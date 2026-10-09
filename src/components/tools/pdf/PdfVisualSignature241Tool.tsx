@@ -5,6 +5,7 @@ import { planVisualSignature241, type VisualSignature241Plan } from "../../../en
 
 type Ready241 = { readonly blob: Blob; readonly filename: string; readonly plan: VisualSignature241Plan; readonly preview: Blob };
 type Loaded241 = { readonly bytes: Uint8Array; readonly pages: number };
+type OriginalPreview241 = { readonly blob: Blob; readonly file: File; readonly document: Loaded241; readonly page: string };
 
 const message241 = (reason: unknown) => reason instanceof Error ? reason.message : "Operazione PDF non riuscita";
 const number241 = (raw: string) => raw.trim() !== "" && Number.isFinite(Number(raw)) ? Number(raw) : NaN;
@@ -20,7 +21,7 @@ export function PdfVisualSignature241Tool() {
   const [y, setY] = useState("48");
   const [width, setWidth] = useState("160");
   const [height, setHeight] = useState("60");
-  const [originalPreview, setOriginalPreview] = useState<Blob | null>(null);
+  const [originalPreview, setOriginalPreview] = useState<OriginalPreview241 | null>(null);
   const [previewProblem, setPreviewProblem] = useState("");
   const [fileProblem, setFileProblem] = useState("");
   const [result, setResult] = useState<Ready241 | null>(null);
@@ -92,19 +93,20 @@ export function PdfVisualSignature241Tool() {
     void (async () => {
       session = await openPdfThumbnailSession(source, signal.signal);
       const image = await session.renderPage(Number(page), 0, signal.signal);
-      if (active) setOriginalPreview(image);
+      if (active) setOriginalPreview({ blob: image, file: source, document, page });
     })().catch((reason) => { if (active) setPreviewProblem(`Anteprima originale: ${message241(reason)}`); })
       .finally(() => { void session?.close(); });
     return () => { active = false; signal.abort(); void session?.close(); };
   }, [source, document, page]);
 
-  const [originalUrl, setOriginalUrl] = useState("");
+  const [originalUrl, setOriginalUrl] = useState<{ preview: OriginalPreview241; url: string } | null>(null);
+  const [loadedOriginalUrl, setLoadedOriginalUrl] = useState("");
   const [finalUrl, setFinalUrl] = useState("");
   const [downloadUrl, setDownloadUrl] = useState("");
   useEffect(() => {
-    if (!originalPreview) { setOriginalUrl(""); return; }
-    const url = URL.createObjectURL(originalPreview);
-    setOriginalUrl(url);
+    if (!originalPreview) { setOriginalUrl(null); return; }
+    const url = URL.createObjectURL(originalPreview.blob);
+    setOriginalUrl({ preview: originalPreview, url });
     return () => { URL.revokeObjectURL(url); };
   }, [originalPreview]);
   useEffect(() => {
@@ -116,10 +118,17 @@ export function PdfVisualSignature241Tool() {
   }, [result]);
   useEffect(() => () => { generation.current += 1; controller.current?.abort(); }, []);
 
+  // Effect cleanup alone is too late: a new file/page can render with the old
+  // thumbnail URL for a frame. Never make that stale image an approval surface.
+  const currentPreview = originalPreview !== null && originalPreview.file === source
+    && originalPreview.document === document && originalPreview.page === page;
+  const currentOriginalUrl = currentPreview && originalUrl?.preview === originalPreview ? originalUrl.url : "";
+  const previewReady = currentOriginalUrl !== "" && loadedOriginalUrl === currentOriginalUrl;
+
   async function generate(event: Event) {
     event.preventDefault();
     invalidate();
-    if (!document || !png || !validation.plan) return;
+    if (!document || !png || !validation.plan || !previewReady) return;
     const current = generation.current;
     const abort = new AbortController();
     controller.current = abort;
@@ -187,10 +196,13 @@ export function PdfVisualSignature241Tool() {
     </>}
     {validation.error && <p role="alert" data-241-validation>{validation.error}</p>}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))", gap: "1.25rem", margin: "1rem 0", minWidth: 0 }}>
-      {originalUrl && <figure style={{ margin: 0, minWidth: 0 }}>
+      {currentOriginalUrl && <figure style={{ margin: 0, minWidth: 0 }}>
         <figcaption><strong>Originale</strong> — pagina {page}, anteprima locale PDF.js</figcaption>
         <div style={{ position: "relative", width: "fit-content", maxWidth: "100%" }}>
-          <img data-241-original src={originalUrl} alt={`PDF originale, pagina ${page}`} style={{ display: "block", width: "auto", maxWidth: "100%", border: "1px solid #889" }} />
+          <img data-241-original src={currentOriginalUrl} alt={`PDF originale, pagina ${page}`}
+            onLoad={() => setLoadedOriginalUrl(currentOriginalUrl)}
+            onError={() => { setLoadedOriginalUrl(""); setPreviewProblem("Anteprima originale: immagine non caricabile"); }}
+            style={{ display: "block", width: "auto", maxWidth: "100%", border: "1px solid #889" }} />
           {selected && position && <div data-241-area aria-hidden="true" style={{ position: "absolute", pointerEvents: "none",
             boxSizing: "border-box", border: "2px solid #d65a24", background: "rgba(255,142,36,.2)",
             left: `${options.rect[0] / position[0] * 100}%`,
@@ -206,8 +218,9 @@ export function PdfVisualSignature241Tool() {
     </div>
     {previewProblem && <p role="alert">{previewProblem}</p>}
     {processProblem && <p role="alert">{processProblem}</p>}
+    {document && !previewReady && !previewProblem && <p role="status">Caricamento anteprima originale della pagina selezionata…</p>}
     <div class="actions" style={{ display: "flex", gap: ".75rem", flexWrap: "wrap" }}>
-      <button type="submit" class="primary" disabled={!validation.plan || working || Boolean(previewProblem)}>
+      <button type="submit" class="primary" disabled={!validation.plan || !previewReady || working || Boolean(previewProblem)}>
         {working ? "Verifica PDF in corso…" : "Applica immagine visiva e verifica output"}
       </button>
       {working && <button type="button" data-241-cancel onClick={() => { invalidate(); setProcessProblem("Operazione annullata: nessun PDF pubblicato."); }}>Annulla</button>}

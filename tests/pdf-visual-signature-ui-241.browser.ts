@@ -87,14 +87,60 @@ try {
   check(await page.locator("[data-241-download]").count() === 0, "No download before evidence");
   check(!(await page.getByRole("button", { name: /Applica immagine visiva/u }).isEnabled()), "No submit without files");
 
+  // Force the independent original-page renderer to stay pending after both
+  // files have validated. A placement cannot be approved before it is visible.
+  const holdNextPreview = `(() => {
+    window.__pdf241PendingPreview = false;
+    window.__pdf241ReleasePreview = undefined;
+    const original = HTMLCanvasElement.prototype.toBlob;
+    let first = true;
+    HTMLCanvasElement.prototype.toBlob = function (callback, type, quality) {
+      if (!first) return original.call(this, callback, type, quality);
+      first = false;
+      const canvas = this;
+      Object.assign(window, {
+        __pdf241PendingPreview: true,
+        __pdf241ReleasePreview: () => {
+          HTMLCanvasElement.prototype.toBlob = original;
+          original.call(canvas, callback, type, quality);
+        },
+      });
+    };
+  })()`;
+  await page.evaluate(holdNextPreview);
+
   const sourceFile = { name: "unsigned-241.pdf", mimeType: "application/pdf", buffer: Buffer.from(source) };
   const pngFile = { name: "sig-visible-241.png", mimeType: "image/png", buffer: png };
   await page.locator("[data-241-source]").setInputFiles(sourceFile);
   try { await page.getByRole("combobox", { name: "Pagina della firma" }).waitFor({ timeout: 8_000 }); }
   catch (reason) { console.error("Debug #241", { errors, html: (await page.locator("[data-pdf-visual-signature-241]").innerText()).slice(0, 900) }); throw reason; }
   await page.locator("[data-241-png]").setInputFiles(pngFile);
+  try {
+    await page.waitForFunction(() => Boolean((window as Window & { __pdf241PendingPreview?: boolean }).__pdf241PendingPreview), undefined, { timeout: 10_000 });
+  } catch (reason) {
+    console.error("#241 delayed preview diagnostic", { errors, missing,
+      content: (await page.locator("[data-pdf-visual-signature-241]").innerText()).slice(0, 1100),
+      original: await page.locator("[data-241-original]").count() });
+    throw reason;
+  }
+  await page.waitForTimeout(300);
+  check(!(await page.getByRole("button", { name: /Applica immagine visiva/u }).isEnabled()),
+    "Preview of selected source must finish before applying a visible signature");
+  await page.evaluate(() => (window as Window & { __pdf241ReleasePreview?: () => void }).__pdf241ReleasePreview?.());
   await page.locator("[data-241-original]").waitFor();
+  await page.waitForFunction(() => {
+    const image = document.querySelector<HTMLImageElement>("[data-241-original]");
+    const submit = document.querySelector<HTMLButtonElement>("[data-pdf-visual-signature-241] button[type=submit]");
+    return Boolean(image?.complete && image.naturalWidth > 0 && submit && !submit.disabled);
+  });
+  await page.evaluate(holdNextPreview);
   await page.getByRole("combobox", { name: "Pagina della firma" }).selectOption("2");
+  await page.waitForFunction(() => Boolean((window as Window & { __pdf241PendingPreview?: boolean }).__pdf241PendingPreview), undefined, { timeout: 10_000 });
+  check(await page.locator("[data-241-original]").count() === 0,
+    "Changing page hides old-page PDF.js thumbnail while the new page renders");
+  check(!(await page.getByRole("button", { name: /Applica immagine visiva/u }).isEnabled()),
+    "Changing page requires its own preview; the previous page cannot authorize placement");
+  await page.evaluate(() => (window as Window & { __pdf241ReleasePreview?: () => void }).__pdf241ReleasePreview?.());
   await page.getByRole("spinbutton", { name: "X da sinistra (pt)" }).fill("100");
   await page.getByRole("spinbutton", { name: "Y dal basso (pt)" }).fill("100");
   await page.getByRole("spinbutton", { name: "Larghezza (pt)" }).fill("100");
