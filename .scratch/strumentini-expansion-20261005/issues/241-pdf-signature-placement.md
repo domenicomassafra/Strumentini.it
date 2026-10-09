@@ -73,7 +73,7 @@ No public route/manifest is enabled and #241 remains `ready-for-agent` (OPEN).
 
 **2026-10-09 isolated worker #241 UI tranche (candidate; keep status `ready-for-agent`):**
 Added `src/components/tools/pdf/PdfVisualSignature241Tool.tsx` and
-`src/pages/tools/pdf-visual-signature.astro` (fallback `BaseLayout noindex`),
+an isolated fallback Astro route (later moved to `src/pages/tools/pdf-visual-signature/[...route].astro`, `BaseLayout noindex`),
 plus `tests/pdf-visual-signature-ui-241.browser.ts` and isolated
 `tests/astro-visual-signature-241.config.mjs` (worktree symlink read allowance).
 The browser UI accepts local simple unsigned PDF + PNG RGB/RGBA, chooses a
@@ -111,3 +111,5 @@ human, physical cancellation-under-load, document-wide visual diff or legal
 signature certification. PRIME must review security, register the manifest/copy
 and run built-bundle plus physical/device acceptance before closing #241 or
 promoting Gold. The generated PDF is never an authenticated digital signature.
+
+**PRIME build-gate correction 2026-10-09 17:19:** The first integrated static-page version correctly failed `scripts/inspect-build.ts`: `Unexpected HTML page set ... tools/pdf-visual-signature/index.html` because the source-only candidate is absent from the approved catalog. The Astro candidate was moved to a dynamic development-only route `src/pages/tools/pdf-visual-signature/[...route].astro`: `getStaticPaths` returns its local preview path only in dev and returns **zero pages for production builds**. The actual Chromium development UI test reran **36/36 PASS**, `npm run check` **0 errors / 0 warnings** and `npm run build` **289 pages PASS** with unchanged public route inventory, no stray #241 HTML, no sitemap entry, and no catalog or Gold changes. This temporary development availability is **not** a production release or permission to advertise signing; ticket stays OPEN for the same physical/browser/human acceptance gates.

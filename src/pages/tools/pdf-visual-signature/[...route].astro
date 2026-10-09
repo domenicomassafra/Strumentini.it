@@ -1,7 +1,12 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { PdfVisualSignature241Tool } from "../../components/tools/pdf/PdfVisualSignature241Tool";
-import "../../components/tools/tool-surface.css";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { PdfVisualSignature241Tool } from "../../../components/tools/pdf/PdfVisualSignature241Tool";
+import "../../../components/tools/tool-surface.css";
+// Candidate development route only: Astro emits zero static paths during a
+// production build until this feature passes release and physical acceptance.
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { route: undefined } }] : [];
+}
 ---
 
 <BaseLayout title="Firma grafica VISIVA su PDF (non digitale)" description="Posiziona un'immagine PNG su un PDF semplice senza firma, con anteprima locale e verifica del PDF finale. Nessuna firma digitale o crittografica." noindex>
