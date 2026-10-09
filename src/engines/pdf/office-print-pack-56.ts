@@ -230,8 +230,13 @@ export async function exportOfficePrintable56(file: PrintableOfficeFile56, optio
   if (content.byteLength !== file.size) fail("PDF56_INPUT_CHANGED", "Dimensione file cambiata durante la lettura.");
   const source = decodeText56(new Uint8Array(content));
   aborted(signal);
-  const artifact = await generatePrintable56({ kind, source, pageSize: options.pageSize, orientation: options.orientation,
-    marginPt: options.marginPt, fontPt: options.fontPt, pageNumbers: options.pageNumbers }, signal);
+  const artifact = await generatePrintable56({ kind, source,
+    ...(options.pageSize !== undefined ? { pageSize: options.pageSize } : {}),
+    ...(options.orientation !== undefined ? { orientation: options.orientation } : {}),
+    ...(options.marginPt !== undefined ? { marginPt: options.marginPt } : {}),
+    ...(options.fontPt !== undefined ? { fontPt: options.fontPt } : {}),
+    ...(options.pageNumbers !== undefined ? { pageNumbers: options.pageNumbers } : {}),
+  }, signal);
   aborted(signal);
   const verification = await verifyPrintedPdf56(artifact, signal, options.verifyEveryPage !== false);
   aborted(signal);

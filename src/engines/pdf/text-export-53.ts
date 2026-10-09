@@ -23,8 +23,11 @@ function basename(value: string): string {
 }
 
 function fence(text: string): string {
-  const runs = [...text.matchAll(/`+/gu)].map(([value]) => value.length);
-  return "`".repeat(Math.max(3, ...runs.map((value) => value + 1)));
+  // No unbounded argument-spread of an attacker-controlled array of matches.
+  // A PDF with hundreds of thousands of short backtick runs is still bounded.
+  let length = 3;
+  for (const match of text.matchAll(/`+/gu)) length = Math.max(length, match[0].length + 1);
+  return "`".repeat(length);
 }
 
 export async function exportScopedPdfText53(
@@ -36,7 +39,10 @@ export async function exportScopedPdfText53(
   if (typeof options.sourceName !== "string" || options.sourceName.length > 200 || !options.sourceName.trim()) {
     throw new Error("PDF53_SOURCE_NAME_INVALID");
   }
-  const result = await extractPdfTextScoped(source, { pages: options.pages, mode: options.mode }, signal);
+  const result = await extractPdfTextScoped(source, {
+    ...(options.pages !== undefined ? { pages: options.pages } : {}),
+    ...(options.mode !== undefined ? { mode: options.mode } : {}),
+  }, signal);
   if (result.truncated) throw new Error("PDF53_TEXT_TRUNCATED: Nessun download parziale dichiarato completo.");
   if (!result.pages.some((page) => page.text.trim().length > 0)) {
     throw new Error("PDF53_NO_TEXT_OCR_UNAVAILABLE: Nessun testo PDF estraibile; nessun OCR simulato.");

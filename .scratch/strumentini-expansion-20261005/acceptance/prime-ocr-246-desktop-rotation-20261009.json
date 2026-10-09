@@ -1,0 +1,55 @@
+{
+  "status": "DESKTOP_SPIKE_PASS_SOURCE_ONLY",
+  "productionPromotion": "REFUSED_271_PHYSICAL_MOBILE_AND_TOTAL_MEMORY_UNPROVEN",
+  "model": "@tesseract.js-data/ita@1.0.0",
+  "testedCases": 6,
+  "exactCases": 4,
+  "browser": "NOT_RUN",
+  "physicalIosSafari": "NOT_RUN",
+  "physicalAndroidChrome": "NOT_RUN",
+  "inFlightCancellation": "NOT_RUN",
+  "results": [
+    {
+      "case": "source-printed",
+      "size": 14305,
+      "confidence": 94,
+      "exact": true,
+      "text": "Fattura numero 12345 - Totale euro 678,90"
+    },
+    {
+      "case": "grayscale",
+      "size": 13087,
+      "confidence": 94,
+      "exact": true,
+      "text": "Fattura numero 12345 - Totale euro 678,90"
+    },
+    {
+      "case": "rotate-90-uncorrected",
+      "size": 20504,
+      "confidence": 51,
+      "exact": false,
+      "text": "7 =} = = pat] I” Cc 3 DM = (e) —b N Ww + n I —| o [= MD M Cc = (e) (e2) | £ [<e) (e)"
+    },
+    {
+      "case": "rotate-180-uncorrected",
+      "size": 12991,
+      "confidence": 28,
+      "exact": false,
+      "text": "068/19 0.1na alB1O 1 - ShEgZI 01aLUNU BINHBY"
+    },
+    {
+      "case": "rotate-90-explicitly-corrected",
+      "size": 13087,
+      "confidence": 94,
+      "exact": true,
+      "text": "Fattura numero 12345 - Totale euro 678,90"
+    },
+    {
+      "case": "rotate-180-explicitly-corrected",
+      "size": 13087,
+      "confidence": 94,
+      "exact": true,
+      "text": "Fattura numero 12345 - Totale euro 678,90"
+    }
+  ]
+}
