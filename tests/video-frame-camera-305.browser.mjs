@@ -114,6 +114,55 @@ try {
   assert((await page.evaluate(() => window.__testCamera.stopCount)) >= 1);
   checks += 3;
 
+  // Regression: browser preview play() can remain pending after getUserMedia
+  // resolves. An explicit stop must invalidate a late play() completion.
+  await page.evaluate(() => {
+    const original = HTMLMediaElement.prototype.play;
+    window.__cameraPlayRace = { resolve: null, held: false, rejectNext: false };
+    HTMLMediaElement.prototype.play = function (...args) {
+      if (this.getAttribute("aria-label") === "Anteprima webcam locale") {
+        if (window.__cameraPlayRace.rejectNext) {
+          window.__cameraPlayRace.rejectNext = false;
+          return Promise.reject(new DOMException("Playback refused", "NotAllowedError"));
+        }
+        if (!window.__cameraPlayRace.held) {
+          window.__cameraPlayRace.held = true;
+          return new Promise(resolve => { window.__cameraPlayRace.resolve = resolve; });
+        }
+      }
+      return original.apply(this, args);
+    };
+  });
+  await panel.getByRole("button", { name: "Attiva camera", exact: true }).click();
+  await page.waitForFunction(() => typeof window.__cameraPlayRace.resolve === "function");
+  assert((await panel.locator("[data-camera-status]").innerText()).includes("corso"));
+  await panel.getByRole("button", { name: "Disattiva camera" }).click();
+  await panel.locator("[data-camera-status]").getByText(/tracce locali rilasciate/u).waitFor();
+  await page.evaluate(() => window.__cameraPlayRace.resolve());
+  await page.waitForTimeout(100);
+  assert.match(await panel.locator("[data-camera-status]").innerText(), /tracce locali rilasciate/u,
+    "Stopped preview was revived by stale play() resolution");
+  assert(await panel.getByRole("button", { name: "Attiva camera", exact: true }).isEnabled(),
+    "Late play() must not re-disable the start button");
+  assert.equal(await panel.getByLabel("Anteprima webcam locale").evaluate(video => video.srcObject), null);
+  checks += 4;
+  await panel.getByRole("button", { name: "Attiva camera", exact: true }).click();
+  await panel.locator("[data-camera-status]").getByText(/Camera attiva localmente/u).waitFor();
+  await panel.getByRole("button", { name: "Disattiva camera" }).click();
+  await panel.locator("[data-camera-status]").getByText(/tracce locali rilasciate/u).waitFor();
+  checks += 2;
+  // Permission alone is insufficient: playback rejection must never be
+  // reported as an active, visible preview, and allocated tracks must stop.
+  await page.evaluate(() => { window.__cameraPlayRace.rejectNext = true; });
+  const beforeRejectedStopCount = await page.evaluate(() => window.__testCamera.stopCount);
+  await panel.getByRole("button", { name: "Attiva camera", exact: true }).click();
+  await panel.locator("[data-camera-status]").getByText(/NotAllowedError/u).waitFor();
+  assert(await panel.getByRole("button", { name: "Attiva camera", exact: true }).isEnabled());
+  assert((await page.evaluate(() => window.__testCamera.stopCount)) > beforeRejectedStopCount,
+    "Preview playback refusal must release all local tracks");
+  assert.equal(await panel.getByLabel("Anteprima webcam locale").evaluate(video => video.srcObject), null);
+  checks += 4;
+
   assert.deepEqual(external, []);
   assert.deepEqual(errors, []);
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2));

@@ -122,8 +122,12 @@ export function VideoFramesAndCamera305() {
       }, { once: true });
       if (cameraVideo.current) {
         cameraVideo.current.srcObject = stream;
-        await cameraVideo.current.play().catch(() => undefined);
+        // Playback can finish AFTER the user has stopped the camera or the
+        // component unmounted. Never revive a stale camera request; rejected
+        // preview playback is a refusal, not a truthful "camera active" state.
+        await cameraVideo.current.play();
       }
+      if (version !== cameraVersion.current || cameraStream.current !== stream) return;
       setCameraActive(true);
       setCameraStatus("Camera attiva localmente; nessun video registrato o inviato.");
     } catch (error) {
