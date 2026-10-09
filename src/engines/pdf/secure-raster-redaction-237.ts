@@ -78,6 +78,12 @@ export function assertSupportedSource237(source: Uint8Array): number {
   if (new TextDecoder("ascii").decode(source.subarray(0, 5)) !== "%PDF-") refuse("Firma PDF assente.");
   const model = parsePdf(source);
   if (model.encrypted) refuse("PDF cifrato non supportato.");
+  // This security-sensitive path must not interpret one revision while PDF.js
+  // displays another. Classic incremental/hybrid xrefs and linearized sources
+  // need separate independent corpus review before admission.
+  if (model.linearized || model.trailer.entries.has("Prev") || model.trailer.entries.has("XRefStm")) {
+    refuse("Revisioni incrementali, xref ibridi o PDF linearizzati non supportati.");
+  }
   if (model.pages.length < 1 || model.pages.length > MAX_PAGES) refuse("Numero pagine fuori limite (1–4).");
   if (model.root === null || model.objects.size > 1000) refuse("Modello PDF non supportato.");
   // A small compressed image stream can expand to enormous memory BEFORE the

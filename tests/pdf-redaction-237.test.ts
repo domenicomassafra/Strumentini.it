@@ -38,6 +38,13 @@ describe("#237 security-first raster-only PDF redaction", () => {
     expect(() => validateRedactionPlan237(5, selected)).toThrow(/REDACTION_REFUSED/u);
     expect(() => validateRedactionPlan237(2, [])).toThrow(/REDACTION_REFUSED/u);
   });
+  it.each(["Prev", "XRefStm"] as const)("refuses a source trailer with %s revision ambiguity", (key) => {
+    const clean = new TextDecoder("latin1").decode(redactionCasePdf237());
+    expect(clean).toContain("trailer\n<<");
+    const hostile = new TextEncoder().encode(clean.replace("trailer\n<<", `trailer\n<</${key} 123 `));
+    expect(() => assertSupportedSource237(hostile))
+      .toThrow(/REDACTION_REFUSED: Revisioni incrementali/u);
+  });
 
   it.each([
     [{ page: 0, left: 0, top: 0, width: 1, height: 1 }],

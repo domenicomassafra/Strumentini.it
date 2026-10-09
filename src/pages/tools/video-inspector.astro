@@ -5,7 +5,7 @@ import { VideoInspectorTool } from "../../components/tools/video/VideoInspectorT
 
 <ItalianToolPage toolId="video-inspector">
   <section class="video-inspector-intro" data-video-inspector-route>
-    <p>Supporto attuale: file MP4 con intestazioni <code>ftyp</code> e metadati <code>moov</code> entro 8 MiB. FPS e CFR/VFR non sono determinati da questa analisi.</p>
+    <p>Supporto attuale: file MP4 con intestazioni <code>ftyp</code> e metadati <code>moov</code> entro 8 MiB. Quando sono disponibili campioni temporali verificabili, mostriamo gli FPS osservati e la classificazione CFR/VFR; negli altri casi il dato resta sconosciuto.</p>
   </section>
   <VideoInspectorTool client:load />
 </ItalianToolPage>
