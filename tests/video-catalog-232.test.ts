@@ -14,7 +14,7 @@ function videoFixture(): Blob {
 
 describe("STR-232 — public catalog registration", () => {
   it("registers an indexed LOCAL tool with an actual runtime loader and Italian copy", async () => {
-    expect(catalog).toHaveLength(266);
+    expect(catalog).toHaveLength(267);
     const entries = catalog.filter((tool) => tool.id === "video-inspector");
     expect(entries).toHaveLength(1);
     expect(entries[0]).toMatchObject({
@@ -41,7 +41,7 @@ describe("STR-232 — public catalog registration", () => {
     const oracle = JSON.parse(readFileSync(new URL("../quality/oracles/registry.json", import.meta.url), "utf8"));
     const index = JSON.parse(readFileSync(new URL("../quality/fixtures/index.json", import.meta.url), "utf8"));
     const vectors = JSON.parse(readFileSync(new URL("../quality/fixtures/video-inspection/vectors.json", import.meta.url), "utf8"));
-    expect(oracle.entry_count).toBe(266);
+    expect(oracle.entry_count).toBe(267);
     expect(oracle.entries.find((entry: { id: string }) => entry.id === "cand-260")).toMatchObject({
       confidence: "medium",
       unresolved_gaps: expect.arrayContaining([expect.stringContaining("HEVC/VFR")]),

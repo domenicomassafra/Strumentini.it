@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 327,
-    "completed": 259,
+    "completed": 260,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 241,
-    "open": 68,
-    "readyDAG": 23,
-    "ready-for-agent": 15,
+    "completedWithoutExplicitRefusal": 242,
+    "open": 67,
+    "readyDAG": 22,
+    "ready-for-agent": 14,
     "dependency-blocked": 45,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -216,6 +216,7 @@
       245,
       248,
       250,
+      251,
       252,
       253,
       256,
@@ -298,7 +299,6 @@
       241,
       243,
       246,
-      251,
       254
     ],
     "dependency-blocked": [
@@ -747,7 +747,6 @@
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
         249,
-        251,
         254,
         255
       ],
@@ -3024,9 +3023,9 @@
     {
       "id": 251,
       "title": "PDF booklet and front-back interleave",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false

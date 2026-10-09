@@ -693,6 +693,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     summary: "Ritaglia visivamente le pagine senza cancellare contenuti oppure adatta e centra pagine di dimensioni diverse in A4, Letter o formato libero.",
     searchTerms: ["ritaglia pdf", "crop pdf", "uniforma dimensioni pagine pdf", "adatta pdf ad A4"],
   },
+  "pdf-booklet-interleave": {
+    name: "Crea booklet PDF e intercala fronte/retro",
+    summary: "Prepara pagine PDF per opuscoli piegati o intercala scansioni fronte/retro. Ordine, duplex e pagine bianche sono dichiarati prima del download.",
+    searchTerms: ["booklet pdf", "opuscolo piegato pdf", "intercala fronte retro pdf", "stampa duplex pdf"],
+  },
   "pdf-n-up": {
     name: "Metti più pagine PDF su un foglio",
     summary: "Disponi più pagine PDF su ogni foglio con ordine e margini dichiarati, anteprima e download locale. Il risultato appiattito non conserva il testo selezionabile.",

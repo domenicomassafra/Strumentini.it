@@ -26,14 +26,13 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **241 — PDF signature placement**
 - **243 — PDF fill annotate and write overlays**
 - **246 — Local image OCR**
-- **251 — PDF booklet and front-back interleave**
 - **254 — PDF tables to XLSX**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **23** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **22** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -300,7 +299,7 @@ Exactly **23** incomplete tickets currently have every declared numeric blocker 
 | 248 | completed | Search text across multiple PDFs | 079, 220 |
 | 249 | blocked | Split PDF by maximum output size | 217, 218 |
 | 250 | completed | PDF n-up pages per sheet | 215, 269 |
-| 251 | ready-for-agent | PDF booklet and front-back interleave | 215, 250 |
+| 251 | completed | PDF booklet and front-back interleave | 215, 250 |
 | 252 | completed | PDF to Markdown semantic export | 220, 054 |
 | 253 | completed | PDF to DOCX semantic reconstruction | 220, 225, 226, 269 |
 | 254 | ready-for-agent | PDF tables to XLSX | 161, 220, 269 |

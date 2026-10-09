@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 266,
+  "entry_count": 267,
   "entries": [
     {
       "id": "cand-001",
@@ -11984,6 +11984,22 @@
       "cross_check": { "usable": true, "implementation": "reparse generated PDF and independently render actual first-page PNG via PDF.js", "role": "bounded source/layout verification, not complete page-break corpus or real-device approval" },
       "confidence": "medium",
       "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED; no Gold receipt", "long text/table and multilingual full-page visual matrix pending", "physical browser/device and accessibility certification not provided"]
+    },
+    {
+      "id": "cand-267",
+      "candidate": "Local PDF booklet imposition and front-back interleaving with explicit duplex and blank padding",
+      "tool_family": "pdf",
+      "maintenance_class": "H",
+      "truth_sources": ["iso-pdf2", "fixture-policy"],
+      "standard_or_official_example": "Synthetic five-page numbered color PDF imposed as folded booklet on four front/back faces, with three true blank slots; separately three front and two back vector PDFs interleaved using reverse scan order and one white page.",
+      "invariants": ["booklet source pages are placed exactly once in outside-in folded order, with four-page signature padding", "the physical duplex flip edge, sheet/face and back 180-degree compensation are explicit in the preview", "unequal front/back lengths fail unless the caller explicitly chooses blank-page insertion", "downloaded output pages have the declared count, geometry, order and verified white padding"],
+      "adversarial_cases": ["five source pages requiring three booklet blanks", "duplex short-edge versus long-edge rotation", "unequal front/back scan lengths, reverse scan order and explicit padding", "annotated PDF rejection", "corrupt or encrypted source and cancellation", "actual PDF.js page render of both rasterized and vector-cloned output"],
+      "expected_output_strategy": "tests/pdf-booklet-interleave-251.test.ts verifies all source page permutations, mismatch policy and vector output, while scripts/acceptance-pdf-booklet-interleave-251.ts downloads real booklet/interleave PDFs and independently renders and checks all output pages using PDF.js and Sharp. No physical printer or Gold certification.",
+      "security_privacy_edges": ["LOCAL only, no network upload or remote rasterizer", "25 MiB input cap and 32 logical pages per file", "interactive/annotated inputs rejected instead of silently dropping actions", "booklet rasterization and loss of text selection disclosed"],
+      "portability_browser_edges": ["Chromium desktop at 390px preview, not physical printer or iOS/Android", "duplex direction conventions and automatic driver rotation vary by hardware"],
+      "cross_check": { "usable": true, "implementation": "independent PDF parser and PDF.js raster PNG/Sharp color and white blank checks over all output pages", "role": "bounded demonstration of booklet page/order/padding, not assurance for all duplex printer drivers" },
+      "confidence": "medium",
+      "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED; no Gold receipt", "physical duplex printer feed/flip and mobile memory acceptance not performed", "booklet vectors and selectable text intentionally rasterized, while interleave preserves bounded text streams"]
     }
   ]
 }

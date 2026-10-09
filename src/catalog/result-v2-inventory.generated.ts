@@ -3158,6 +3158,25 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
   },
   {
+    "toolId": "pdf-booklet-interleave",
+    "engine": "pdf",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "PdfBookletInterleave251Tool",
+      "source": "src/components/tools/pdf/PdfBookletInterleave251Tool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "pdf",
+      "capabilities": [
+        "download",
+        "reset",
+        "retry"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "pdf-compare-lite",
     "engine": "pdf",
     "rendererSeam": {
