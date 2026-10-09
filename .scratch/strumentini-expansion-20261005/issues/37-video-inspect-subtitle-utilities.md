@@ -1,5 +1,23 @@
 # 37 — Video inspect/subtitle utilities
 
+**2026-10-09 PRIME subtitle numeric-safety RED→GREEN (partial #037, no Gold):**
+The accepted SRT/WebVTT parser in `src/engines/text-writing/subtitles.ts`
+could previously admit timestamps with 310-digit hours as `Infinity`, and
+finite timestamps or scaled outputs beyond JavaScript's exact integer
+millisecond range. This could produce invalid exported timing rather than a
+bounded refusal. New `tests/subtitle-timecode-bounds-037.test.ts` reproduced
+**3 RED / 1 PASS** before the fix. Source timestamps now require safe,
+nonnegative integer milliseconds, and rescale/offset results are checked for
+safe integers before serialization. The UI explains `INVALID_SUBTITLE_TIME_RANGE`
+in Italian. Focused tests with legacy subtitle coverage **14/14 PASS**;
+`node scripts/acceptance-subtitle-transform.mjs` **PASS** on real desktop
+Chromium at 390×844 after testing huge timing refusal, unsafe rescale refusal,
+absence of stale downloadable results and successful valid retry, alongside
+existing VTT/transcript downloads and local-only network checks. The updated
+browser receipt is `quality/receipts/subtitle-transform/browser-acceptance.json`.
+This does not certify a physical phone or settle unrelated video/camera scope:
+**#037 remains OPEN/ready-for-agent**.
+
 **What to build:** Add local video inspection (codec/container/fps/rotation/bitrate/duration), bitrate↔target-size calculation, subtitle readability checks, SRT/VTT→clean transcript, subtitle offset/rescale + SRT↔VTT, exact-frame extraction, and webcam test.
 
 **Traces to:** US-EXP-06, US-EXP-10; AC-06.1, AC-10.1; DEC-EXP-01, DEC-EXP-05, DEC-EXP-06; C-EXP-04, C-EXP-05, C-EXP-08

@@ -53,6 +53,7 @@ function formatSubtitleError(message: string): string {
     INVALID_SUBTITLE_TOO_MANY_CUES: "Il file supera il limite locale di 50.000 cue.",
     INVALID_SUBTITLE_NEGATIVE_OFFSET: "L'offset produrrebbe un tempo negativo e la policy scelta è 'rifiuta'.",
     INVALID_SUBTITLE_RESCALE_COLLAPSE: "Il fattore di scala riduce un cue a meno di 1 ms.",
+    INVALID_SUBTITLE_TIME_RANGE: "La trasformazione supera l'intervallo di millisecondi rappresentabili esattamente.",
     INVALID_SUBTITLE_OFFSET_RANGE: "L'offset deve essere un numero intero di millisecondi tra -24h e +24h.",
     INVALID_SUBTITLE_SCALE_RANGE: "Il fattore di scala deve essere compreso tra 0,01 e 100.",
     INVALID_SUBTITLE_READING_SPEED_RANGE: "La soglia di lettura deve essere compresa tra 1 e 100 caratteri al secondo.",

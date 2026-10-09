@@ -12,5 +12,6 @@
   "transcriptDownload": "PASS",
   "negativeOffsetRefuseAndClamp": "PASS",
   "malformedTimingLocation": "PASS",
+  "safeIntegerTimecodesAndRetry": "PASS",
   "network": "same-origin GET assets only after task start; no task-content request body"
 }

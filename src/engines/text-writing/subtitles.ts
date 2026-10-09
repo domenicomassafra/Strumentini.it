@@ -97,20 +97,26 @@ function assertInputBounds(text: string): void {
   if (new TextEncoder().encode(text).byteLength > SUBTITLE_MAX_INPUT_BYTES) invalid("INPUT_TOO_LARGE");
 }
 
+/** Millisecond timestamps must remain exact integers after decimal parsing. */
+function timestampMilliseconds(hours: string, minutes: string, seconds: string, millis: string): number | null {
+  const result = (((Number(hours) * 60 + Number(minutes)) * 60 + Number(seconds)) * 1000) + Number(millis);
+  return Number.isSafeInteger(result) && result >= 0 ? result : null;
+}
+
 function parseSrtTimestamp(value: string): number | null {
   const match = /^(\d{2,}):([0-5]\d):([0-5]\d),(\d{3})$/u.exec(value);
   if (match === null) return null;
-  return (((Number(match[1]) * 60 + Number(match[2])) * 60 + Number(match[3])) * 1000) + Number(match[4]);
+  return timestampMilliseconds(match[1]!, match[2]!, match[3]!, match[4]!);
 }
 
 function parseVttTimestamp(value: string): number | null {
   const hours = /^(\d{2,}):([0-5]\d):([0-5]\d)\.(\d{3})$/u.exec(value);
   if (hours !== null) {
-    return (((Number(hours[1]) * 60 + Number(hours[2])) * 60 + Number(hours[3])) * 1000) + Number(hours[4]);
+    return timestampMilliseconds(hours[1]!, hours[2]!, hours[3]!, hours[4]!);
   }
   const minutes = /^([0-5]\d):([0-5]\d)\.(\d{3})$/u.exec(value);
   if (minutes === null) return null;
-  return ((Number(minutes[1]) * 60 + Number(minutes[2])) * 1000) + Number(minutes[3]);
+  return timestampMilliseconds("0", minutes[1]!, minutes[2]!, minutes[3]!);
 }
 
 function parseTimingLine(value: string, format: SubtitleFormat, line: number, cue: number): { startMs: number; endMs: number } {
@@ -253,9 +259,15 @@ function transformCues(
   const transformed = cues.map((cue) => {
     let startMs = Math.round(cue.startMs * scale);
     let endMs = Math.round(cue.endMs * scale);
+    if (!Number.isSafeInteger(startMs) || !Number.isSafeInteger(endMs)) {
+      invalid("TIME_RANGE", cue.sourceTimingLine, cue.sourceCue);
+    }
     if (endMs <= startMs) invalid("RESCALE_COLLAPSE", cue.sourceTimingLine, cue.sourceCue);
     startMs += offsetMs;
     endMs += offsetMs;
+    if (!Number.isSafeInteger(startMs) || !Number.isSafeInteger(endMs)) {
+      invalid("TIME_RANGE", cue.sourceTimingLine, cue.sourceCue);
+    }
     if (startMs < 0) {
       if (negativePolicy === "refuse") invalid("NEGATIVE_OFFSET", cue.sourceTimingLine, cue.sourceCue);
       const correction = -startMs;

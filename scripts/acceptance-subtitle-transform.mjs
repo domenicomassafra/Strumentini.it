@@ -86,6 +86,27 @@ Perché l’accento resta.
   await page.getByRole("button", { name: "Elabora sottotitoli", exact: true }).click();
   await page.getByText(/cue 1, riga 2/u).waitFor();
 
+  await page.getByLabel("Offset · millisecondi").fill("0");
+  await source.fill(`1\n00:00:00,000 --> ${"9".repeat(310)}:00:00,000\nTesto\n`);
+  await page.getByRole("button", { name: "Elabora sottotitoli", exact: true }).click();
+  await page.getByText(/La riga di timing non rispetta il formato supportato/u).waitFor();
+  if (await page.locator('.result-panel[data-state="success"] [data-result-slot="selectable-output"]').count()) {
+    throw new Error("overflowed timing exposed a stale downloadable output");
+  }
+
+  await source.fill("1\n00:00:00,000 --> 2000000000:00:00,000\nTesto\n");
+  await page.getByLabel("Scala timing").fill("2");
+  await page.getByRole("button", { name: "Elabora sottotitoli", exact: true }).click();
+  await page.getByText(/intervallo di millisecondi rappresentabili esattamente/u).waitFor();
+
+  await page.getByLabel("Scala timing").fill("1");
+  await source.fill("1\n00:00:01,000 --> 00:00:02,000\nRiprova valida\n");
+  await page.getByRole("button", { name: "Elabora sottotitoli", exact: true }).click();
+  await page.locator('.result-panel[data-state="success"] [data-result-slot="selectable-output"]').waitFor();
+  if (!(await page.locator('[data-result-slot="selectable-output"]').innerText()).includes("Riprova valida")) {
+    throw new Error("valid retry after timestamp refusal did not restore subtitle output");
+  }
+
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   if (overflow) throw new Error("subtitle editor horizontally overflows at 390px");
   const unsafeRequests = taskRequests.filter((request) => !request.url.startsWith(origin) || request.method !== "GET" || (request.postData ?? "") !== "");
@@ -101,13 +122,14 @@ Perché l’accento resta.
     transcriptDownload: "PASS",
     negativeOffsetRefuseAndClamp: "PASS",
     malformedTimingLocation: "PASS",
+    safeIntegerTimecodesAndRetry: "PASS",
     network: "same-origin GET assets only after task start; no task-content request body",
   };
   const receiptDir = resolve(root, "quality/receipts/subtitle-transform");
   await mkdir(receiptDir, { recursive: true });
   await writeFile(resolve(receiptDir, "browser-acceptance.json"), `${JSON.stringify(receipt, null, 2)}\n`);
   await browser.close();
-  console.log("subtitle transform browser acceptance PASS: 390px, complete VTT/transcript downloads, offset policies, precise malformed timing, LOCAL network contract");
+  console.log("subtitle transform browser acceptance PASS: 390px, VTT/transcript downloads, offset policies, overflow timecode refusal/retry, LOCAL network contract");
 } finally {
   server?.kill("SIGTERM");
 }
