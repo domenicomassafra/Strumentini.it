@@ -71,7 +71,8 @@ try {
   assert.match(inspected, /avc1/u);
   assert.match(inspected, /mp4a/u);
   assert.match(inspected, /80 × 60/u);
-  assert.match(inspected, /Sconosciuto \/ Sconosciuto/u);
+  assert.match(inspected, /10 fps \(PTS verificati, CFR\) \/ cfr/u);
+  assert.match(inspected, /mp4a[\s\S]*?Sconosciuto \/ Sconosciuto/u);
   assert.equal(await page.locator("[data-video-duration]").inputValue(), "1.2");
   checks += 5;
 
@@ -88,7 +89,7 @@ try {
   await page.locator("[data-video-inspection]").waitFor();
   const variable = await page.locator("[data-video-inspection]").innerText();
   assert.match(variable, /Delta di decodifica variabili \(stts\); VFR non provato/u);
-  assert.match(variable, /Sconosciuto \/ Sconosciuto/u);
+  assert.match(variable, /Intervalli PTS variabili \(VFR\); FPS medio non misurato \/ vfr/u);
   assert(Math.abs(Number(await page.locator("[data-video-duration]").inputValue()) - 2.916667) < 0.001);
   checks += 3;
 
