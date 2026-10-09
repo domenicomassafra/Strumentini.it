@@ -44,6 +44,10 @@ const FORBIDDEN = new Set([
   "Encrypt", "Annots", "AcroForm", "XFA", "Names", "OpenAction", "AA",
   "A", "JS", "JavaScript", "EmbeddedFiles", "Filespec", "AF", "RichMedia",
   "Launch", "URI", "OCProperties", "OC", "Collection", "Metadata", "3D",
+  // Cryptographic/certification dictionaries can exist outside /AcroForm.
+  // Never rasterize an already signed source or silently discard signatures.
+  "Perms", "DocMDP", "FieldMDP", "ByteRange", "SigFlags", "FT", "DSS", "VRI",
+  "TransformMethod", "Reference", "Prop_Build",
 ]);
 
 function refuse(reason: string): never { throw new Error(`REDACTION_REFUSED: ${reason}`); }
@@ -97,6 +101,12 @@ export function assertSupportedSource237(source: Uint8Array): number {
     }
     const dictionary = value.kind === "dict" ? value : value.kind === "stream" ? value.dictionary : null;
     if (dictionary === null) return;
+    for (const nameKey of ["Type", "Subtype", "FT"]) {
+      const name = dictionary.entries.get(nameKey);
+      if (name?.kind === "name" && (name.value === "Sig" || name.value === "DocTimeStamp")) {
+        refuse("Sorgente firmata o certificata non supportata.");
+      }
+    }
     const subtype = dictionary.entries.get("Subtype");
     if (subtype?.kind === "name" && subtype.value === "Image") {
       const width = numberFrom(dictionary.entries.get("Width"));

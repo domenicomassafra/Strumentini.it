@@ -76,7 +76,7 @@ describe("#237 independent adversarial PDF corpus: actual xref and fail-closed p
     expect(result).toContain("pypdf-valid 10");
   });
 
-  it.fails("SECURITY GAP: rejects orphan /ByteRange and /DocMDP without AcroForm (prime must fix)", () => {
+  it("rejects orphan /ByteRange and /DocMDP without AcroForm", () => {
     expect(() => assertSupportedSource237(read("orphan-signature-no-acroform-237.pdf")))
       .toThrow(/REDACTION_REFUSED/u);
   });
