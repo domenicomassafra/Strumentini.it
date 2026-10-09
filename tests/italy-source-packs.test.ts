@@ -21,7 +21,7 @@ describe("Italy source-pack decisions 115-120", () => {
     expect(decisions.map(({ ticket }) => ticket)).toEqual([115, 116, 117, 118, 119, 120]);
     expect(decisions.every(({ decisionVersion, checkedAt, evidenceSnapshot, freshness }) =>
       decisionVersion.length > 0
-      && /^2026-10-0[67]$/u.test(checkedAt)
+      && /^2026-10-0[679]$/u.test(checkedAt)
       && evidenceSnapshot.sha256.startsWith("sha256:")
       && freshness.reviewTrigger.length > 20,
     )).toBe(true);
@@ -81,6 +81,8 @@ describe("Italy source-pack decisions 115-120", () => {
 
     const evidence = JSON.parse(await readFile(resolve(root, decision.evidenceSnapshot.path), "utf8")) as {
       artifacts: Array<{ sufficiency: string }>;
+      frozenOfficialBulkArtifacts: Array<{ path: string; sha256: string; rows: number; rowsWithCode: number; rowsWithoutCode: number }>;
+      normalizedLocalPack: { path: string; sha256: string; builder: string; currentMunicipalityRows: number };
       liveOfficialBulkChecks: Array<{
         title: string;
         sufficiency: string;
@@ -95,6 +97,15 @@ describe("Italy source-pack decisions 115-120", () => {
     };
     expect(evidence.artifacts).toHaveLength(2);
     expect(evidence.artifacts.every(({ sufficiency }) => sufficiency === "PARTIAL")).toBe(true);
+    expect(evidence.frozenOfficialBulkArtifacts.map(({ rows, rowsWithCode, rowsWithoutCode }) => ({ rows, rowsWithCode, rowsWithoutCode })))
+      .toEqual([{ rows: 2637, rowsWithCode: 2619, rowsWithoutCode: 18 }, { rows: 262, rowsWithCode: 239, rowsWithoutCode: 23 }]);
+    for (const { path, sha256: expectedSha } of evidence.frozenOfficialBulkArtifacts) {
+      expect(sha256(await readFile(resolve(root, path)))).toBe(expectedSha);
+    }
+    expect(evidence.normalizedLocalPack).toMatchObject({
+      builder: "scripts/build-italy-geography-115.mjs", currentMunicipalityRows: 7894,
+    });
+    expect(sha256(await readFile(resolve(root, evidence.normalizedLocalPack.path)))).toBe(evidence.normalizedLocalPack.sha256);
     expect(evidence.liveOfficialBulkChecks).toEqual(expect.arrayContaining([
       expect.objectContaining({
         title: "Elenco comuni soppressi e non ricostituiti",

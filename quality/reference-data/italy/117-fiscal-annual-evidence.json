@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "ticket": 117,
   "datasetId": "italy-fiscal-annual",
-  "checkedAt": "2026-10-06",
+  "checkedAt": "2026-10-09",
   "scope": "Annual official fiscal source snapshots for IVA, national IRPEF and regime forfettario. Values are populated only when one tax year is covered by publication-specific official artifacts for every required subpack.",
   "requiredSubpacks": [
     "iva-rates",
@@ -26,6 +26,69 @@
     }
   ],
   "publicationSpecificArtifacts": [],
+  "verifiedPartialSubpacks": [
+    {
+      "name": "irpef-national-brackets",
+      "taxYear": 2025,
+      "effectiveFrom": "2025-01-01",
+      "effectiveTo": "2025-12-31",
+      "scope": "Gross national IRPEF brackets only; no regional or local addizionali, credits, detractions, exemptions or special tax treatments",
+      "bands": [{ "upToEuro": 28000, "ratePercent": 23 }, { "upToEuro": 50000, "ratePercent": 35 }, { "upToEuro": null, "ratePercent": 43 }],
+      "sources": ["normattiva-207-2024-original"],
+      "complete117": false
+    },
+    {
+      "name": "irpef-national-brackets",
+      "taxYear": 2026,
+      "effectiveFrom": "2026-01-01",
+      "effectiveTo": "2026-12-31",
+      "scope": "Gross national IRPEF bracket modification based on the exact 2026 law; unmodified brackets inherited from article 11 as amended in 2025",
+      "bands": [{ "upToEuro": 28000, "ratePercent": 23 }, { "upToEuro": 50000, "ratePercent": 33 }, { "upToEuro": null, "ratePercent": 43 }],
+      "sources": ["normattiva-207-2024-original", "normattiva-199-2025-consolidated"],
+      "complete117": false
+    }
+  ],
+  "relatedButOutside117": [{
+    "ticket": 152,
+    "kind": "agency-2024-reference",
+    "source": "agenzia-bollo-fatture-2024",
+    "scope": "Archived Agenzia Elenco B information: 77.47 EUR exclusive threshold, 2 EUR indicated stamp, only a single ordinary invoice line with verified N2.2/N3.6/N4 and explicit no-special-exemption declaration",
+    "cannotBeUsedAs2026FiscalPack": true
+  }],
+  "artifacts": [
+    {
+      "id": "normattiva-207-2024-original",
+      "authority": "Normattiva",
+      "title": "Legge 30 dicembre 2024 n. 207, IRPEF art. 1 comma 2, original text",
+      "url": "https://www.normattiva.it/eli/stato/LEGGE/2024/12/30/207/ORIGINAL",
+      "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/normattiva-legge-207-2024-original.html",
+      "sha256": "sha256:6c0ea88f5ea8abd7f2c709d94804095dd0a175ed9f4921a5a9b0e2e35a2517b5",
+      "classification": "SUFFICIENT_FOR_2025_IRPEF_SUBSET_ONLY"
+    },
+    {
+      "id": "normattiva-199-2025-consolidated",
+      "authority": "Normattiva",
+      "title": "Legge 30 dicembre 2025 n. 199, art. 1 comma 3, 35 to 33 percent IRPEF amendment",
+      "url": "https://www.normattiva.it/eli/stato/LEGGE/2025/12/30/199/CONSOLIDATED",
+      "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/normattiva-legge-199-2025-consolidated.html",
+      "sha256": "sha256:5ac25beddb71144367f68f3262f8da33fae195c7ce969421d04c5f69c8078f85",
+      "classification": "SUFFICIENT_FOR_2026_IRPEF_MIDDLE_BAND_AMENDMENT_ONLY"
+    },
+    {
+      "id": "agenzia-bollo-fatture-2024",
+      "authority": "Agenzia delle Entrate",
+      "title": "L'imposta di bollo sulle fatture elettroniche, archived 2024 guide",
+      "url": "https://www1.agenziaentrate.gov.it/web_app_entrate/bollo_fatture_2024.html",
+      "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/agenzia-bollo-fatture-2024.html",
+      "sha256": "sha256:d7f16c2012be8234ee59609578c21984295e1dfdfa50109bd54d419fcbb5ea8f",
+      "classification": "RELATED_TO_152_ARCHIVED_REFERENCE_ONLY"
+    }
+  ],
+  "missingPrimaryEvidence": [
+    "Single-tax-year official IVA schedules/rates with legal effective intervals, including reduced classes and eligibility scope, are not pinned for 2025 or 2026.",
+    "Single-tax-year official forfettario Annex 4 ATECO-to-coefficient table, eligibility/thresholds and 5%/15% scope are not pinned together for 2025 or 2026.",
+    "No complete single-year IVA + IRPEF + forfettario triad is pinned; individual IRPEF excerpt correctness does not promote ticket 117."
+  ],
   "decision": "BLOCKED",
-  "reason": "No single tax year has a complete pinned official artifact set for IVA rates, national IRPEF brackets and forfettario coefficients/rules. Current Redditi PF 2026 material concerns tax year 2025 for IRPEF, so no 2026 fiscal constants are promoted."
+  "reason": "Official 2025 and 2026 national gross IRPEF bracket excerpts are hash-pinned to relevant budget laws, and the related 2024 Agenzia invoice-stamp guide is pinned separately. The annual triad remains incomplete because exact-year official IVA and forfettario source sets are missing. Redditi PF 2026 itself concerns tax year 2025; partial IRPEF 2026 figures derive instead from Law 199/2025. No complete annual pack is promoted."
 }

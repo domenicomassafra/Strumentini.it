@@ -17,3 +17,5 @@
 - [ ] Result separates computed/reference outcome from legal certification.
 
 **Verification:** Boundary/value fixtures from the sourced rule set.
+
+**2026-10-09 isolated archival candidate, ticket still blocked by #117:** Hash-pinned November 2024 Agenzia delle Entrate guide in `quality/reference-data/italy/artifacts/117-fiscal-annual/agenzia-bollo-fatture-2024.html`. `src/engines/italy/invoice-stamp-reference-152.ts` evaluates only a 2024 **single ordinary invoice line**, user-declared no-special-exemption, and N2.2/N3.6/N4 as reference outcomes: >€77.47 implies €2, equality implies €0. All newer years, mixed/other document contexts and undeclared exemptions yield `OUT_OF_SCOPE`, not an assumed tax determination. `tests/italy-fiscal-official-subsets-117.test.ts` checks exact source hash and boundaries. There is no public UI or independent current-year legal coverage, so #152 is not closed.

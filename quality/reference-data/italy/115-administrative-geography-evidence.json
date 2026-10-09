@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "ticket": 115,
   "datasetId": "italy-administrative-geography",
-  "checkedAt": "2026-10-07",
-  "scope": "Fresh official re-evaluation of current, historical/suppressed Italian municipalities, the four-character Agenzia code needed by Codice Fiscale, and foreign-state codes. The pack remains fail-closed because the official bulk sources still contain explicit code gaps and the foreign historical bulk starts only in 1990.",
+  "checkedAt": "2026-10-09",
+  "scope": "Frozen reproducible official snapshots for current and historical/suppressed Italian municipalities, the four-character Agenzia code needed by Codice Fiscale, and foreign-state codes. The partial local lookup retains suppressed identities and unavailable-code records; it must never imply complete historical birth-date validity. The pack remains fail-closed for a fully supported Codice Fiscale geography dependency because the official bulk sources contain explicit code gaps and the foreign historical bulk starts only in 1990.",
   "artifacts": [
     {
       "authority": "ISTAT",
@@ -26,6 +26,41 @@
       "sufficiency": "PARTIAL"
     }
   ],
+  "frozenOfficialBulkArtifacts": [
+    {
+      "authority": "ISTAT / SITUAS",
+      "title": "Elenco comuni soppressi e non ricostituiti (report 128)",
+      "url": "https://situas-servizi.istat.it/publish/reportspooljson?pfun=128&pdata=17/03/1861",
+      "path": "quality/reference-data/italy/artifacts/115-administrative-geography/istat-situas-128-suppressed-2026-10-09.json",
+      "sha256": "sha256:33242ea1db0dee2e1fc5179b4c0c8757e3be0888d4111088d9865b2ef39c29d7",
+      "rows": 2637,
+      "rowsWithCode": 2619,
+      "rowsWithoutCode": 18,
+      "distinctMunicipalitiesWithoutCode": 16,
+      "effectiveCoverage": "suppression events since 1861-03-17; does not prove each municipality's entire lifespan"
+    },
+    {
+      "authority": "ISTAT / SITUAS",
+      "title": "Storico Paesi esteri (report 469)",
+      "url": "https://situas-servizi.istat.it/publish/reportspooljson?pfun=469&pdata=01/01/1990",
+      "path": "quality/reference-data/italy/artifacts/115-administrative-geography/istat-situas-469-foreign-2026-10-09.json",
+      "sha256": "sha256:9f6076b40e2146cbb452428ec032b0bd8ece696b733a979c1649e4645e98e154",
+      "rows": 262,
+      "rowsWithCode": 239,
+      "rowsWithoutCode": 23,
+      "effectiveCoverage": "foreign states/territories from 1990-01-01, no per-row effective dates; one coded row has nonbreaking trailing whitespace normalized on import"
+    }
+  ],
+  "normalizedLocalPack": {
+    "version": "115-situas-2026-10-09.1",
+    "path": "src/reference-data/italy/geography-115.snapshot.json",
+    "sha256": "sha256:e27fef71ad8d34689202c3bc6818f5586589d5222565cf11c0a1ffa81a4be1af",
+    "builder": "scripts/build-italy-geography-115.mjs",
+    "currentMunicipalityRows": 7894,
+    "suppressedEventRows": 2637,
+    "foreignRows": 262,
+    "limitations": "Source-derived codes are lookup candidates. For suppressed entities the change event is not a complete date-validity interval; foreign rows expose no per-row validity periods. Never infer unavailable ND values from a successor or infer birth-date validity."
+  },
   "liveOfficialBulkChecks": [
     {
       "authority": "ISTAT / SITUAS",

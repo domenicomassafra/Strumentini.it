@@ -55,11 +55,11 @@ export const ITALY_SOURCE_PACK_DECISIONS = Object.freeze([
     datasetId: "italy-administrative-geography",
     domain: "administrative",
     status: "BLOCKED",
-    decisionVersion: "115-evidence-2026-10-07.3",
-    checkedAt: "2026-10-07",
+    decisionVersion: "115-evidence-2026-10-09.4",
+    checkedAt: "2026-10-09",
     evidenceSnapshot: {
       path: "quality/reference-data/italy/115-administrative-geography-evidence.json",
-      sha256: "sha256:a6d1bdda49f646f3f1d819e81e6aee396585c81fc6013f66baae4ff37c01c65e",
+      sha256: "sha256:d6deeedd4c7c02af9870a884c3f8414b7e11ea6c2a0738f1548caf0dc31e96ca",
     },
     freshness: {
       mode: "source-change",
@@ -81,7 +81,7 @@ export const ITALY_SOURCE_PACK_DECISIONS = Object.freeze([
         title: "Elenco comuni soppressi e non ricostituiti (report 128)",
         url: "https://situas-servizi.istat.it/publish/reportspooljson?pfun=128&pdata=17/03/1861",
         sufficiency: "INSUFFICIENT",
-        limitation: "The official bulk exposes Agenzia-sourced COD_CATASTO for suppressed municipalities from 1861, but 18 rows spanning 16 distinct municipality identities are explicitly ND.",
+        limitation: "Pinned official bulk exposes Agenzia-sourced COD_CATASTO for 2,619 suppressed events from 1861, but 18 rows spanning 16 distinct municipality identities are explicitly ND and source rows do not prove full life intervals.",
       },
       {
         type: "official-authority",
@@ -89,7 +89,7 @@ export const ITALY_SOURCE_PACK_DECISIONS = Object.freeze([
         title: "Storico Paesi esteri (report 469)",
         url: "https://situas-servizi.istat.it/publish/reportspooljson?pfun=469&pdata=01/01/1990",
         sufficiency: "INSUFFICIENT",
-        limitation: "The official bulk exposes Agenzia COD_AT, but its declared historical scope begins in 1990 and some historical rows remain uncoded.",
+        limitation: "Pinned official bulk exposes Agenzia COD_AT for 239 of 262 rows, but historical scope begins in 1990, 23 rows have no code, and no per-row temporal validity is supplied.",
       },
       {
         type: "official-authority",
@@ -100,7 +100,7 @@ export const ITALY_SOURCE_PACK_DECISIONS = Object.freeze([
         limitation: "ARCOM provides authoritative point queries, including suppressed entities, but no reproducible complete historical/suppressed bulk export was identified to close the remaining official code gaps.",
       },
     ],
-    reason: "Official SITUAS bulk coverage now includes Agenzia-sourced COD_CATASTO for suppressed municipalities and COD_AT for foreign states, but 16 distinct suppressed municipalities remain COD_CATASTO=ND, the foreign-state history starts only in 1990, and some historical foreign rows are uncoded; ticket 115 therefore remains fail-closed BLOCKED.",
+    reason: "Versioned ISTAT current 7,894 municipalities and frozen SITUAS suppressed (2,637 events) / foreign (262 rows) bulk now have reproducible local snapshots and a partial lookup that preserves historical identity. But 16 distinct suppressed municipalities remain COD_CATASTO=ND, 23 foreign rows are uncoded, foreign history starts in 1990, and neither historical report establishes full birth-date validity; #115 remains fail-closed BLOCKED for full Codice Fiscale geography.",
   },
   {
     ticket: 116,
@@ -156,11 +156,11 @@ export const ITALY_SOURCE_PACK_DECISIONS = Object.freeze([
     datasetId: "italy-fiscal-annual",
     domain: "fiscal",
     status: "BLOCKED",
-    decisionVersion: "117-evidence-2026-10-06.2",
-    checkedAt: CHECKED_AT,
+    decisionVersion: "117-evidence-2026-10-09.3",
+    checkedAt: "2026-10-09",
     evidenceSnapshot: {
       path: "quality/reference-data/italy/117-fiscal-annual-evidence.json",
-      sha256: "sha256:c74a976222a220b7cd1aa1d4c9f4d1df6086327788b3b01ae6457969c78e4126",
+      sha256: "sha256:a09daaeec0e67aba05eee44134906e7848ab413e48275549e387bb9d9467e574",
     },
     freshness: {
       mode: "annual-rollover",
@@ -184,8 +184,24 @@ export const ITALY_SOURCE_PACK_DECISIONS = Object.freeze([
         sufficiency: "INSUFFICIENT",
         limitation: "The page documents the forfettario declaration workflow but does not pin the complete IVA/IRPEF/forfettario rule set for tax year 2026.",
       },
+      {
+        type: "official-authority",
+        authority: "Normattiva",
+        title: "Legge 30 dicembre 2024, n. 207 - national gross IRPEF 2025 brackets",
+        url: "https://www.normattiva.it/eli/stato/LEGGE/2024/12/30/207/ORIGINAL",
+        sufficiency: "INSUFFICIENT",
+        limitation: "Hash-pinned 2025 gross national IRPEF brackets support a narrow subpack; the matching IVA and forfettario 2025 subpacks are not pinned for ticket 117.",
+      },
+      {
+        type: "official-authority",
+        authority: "Normattiva",
+        title: "Legge 30 dicembre 2025, n. 199 - 2026 second national IRPEF band amendment",
+        url: "https://www.normattiva.it/eli/stato/LEGGE/2025/12/30/199/CONSOLIDATED",
+        sufficiency: "INSUFFICIENT",
+        limitation: "Hash-pinned 2026 change from 35% to 33% supports national gross IRPEF together with Law 207/2024, but does not complete the annual IVA/IRPEF/forfettario triad.",
+      },
     ],
-    reason: "No tax year has a complete publication-specific official artifact set for IVA, national IRPEF and forfettario; current Redditi PF 2026 material concerns tax year 2025 for IRPEF, so no 2026 values are promoted.",
+    reason: "National gross IRPEF 2025/2026 excerpts are independently hash-pinned to the relevant budget laws, and a 2024 Agenzia invoice-stamp reference is separately archived. No single tax year yet has the complete official IVA + IRPEF + forfettario evidence set, so the annual fiscal pack remains BLOCKED.",
   },
   {
     ticket: 118,

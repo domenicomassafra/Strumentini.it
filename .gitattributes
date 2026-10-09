@@ -1,0 +1,2 @@
+# Hash-pinned, verbatim official HTML snapshots; preserve raw source bytes and CRLF.
+quality/reference-data/italy/artifacts/117-fiscal-annual/*.html -text -diff
