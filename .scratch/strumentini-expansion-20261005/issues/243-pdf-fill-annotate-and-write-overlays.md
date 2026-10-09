@@ -6,7 +6,9 @@
 
 **Constraints:** C-EXP-01, C-EXP-04, C-EXP-05, C-EXP-08; local-first, explicit fidelity limits, verified output, lazy heavy dependencies.
 
-**Dependencies:** existing PDF parser, safe page-content cloning and local PDF.js thumbnail. Earlier #215/#269 blockers do not prevent the verified flattened-only subset.
+**Blocked by:** 215, 269.
+
+**Dependencies note:** existing PDF parser, safe page-content cloning and local PDF.js thumbnail. Earlier #215/#269 blockers do not prevent the verified flattened-only subset.
 
 **Status:** completed
 

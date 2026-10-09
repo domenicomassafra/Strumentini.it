@@ -1,19 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
 import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
-import { catalog } from "../../generated/catalog";
 import { PdfFillOverlays243Tool } from "../../components/tools/pdf/PdfFillOverlays243Tool";
 import "../../components/tools/tool-surface.css";
-const registered = catalog.some((entry) => entry.id === "pdf-fill-overlays");
 ---
-{registered ? (
-  <ItalianToolPage toolId="pdf-fill-overlays"><PdfFillOverlays243Tool client:load /></ItalianToolPage>
-) : (
-  <BaseLayout title="Scrivi e compila su PDF (appiattito)" description="Aggiungi testo, evidenzia o compila soltanto moduli PDF testuali semplici, con output visivo appiattito verificato." noindex>
-    <main style="max-width:1060px;margin:2rem auto;padding:0 1rem">
-      <h1>Scrivi, evidenzia e compila su PDF</h1>
-      <p>Solo operazioni local-first verificabili, senza simulare firme, campi avanzati o annotazioni modificabili.</p>
-      <PdfFillOverlays243Tool client:load />
-    </main>
-  </BaseLayout>
-)}
+<ItalianToolPage toolId="pdf-fill-overlays">
+  <PdfFillOverlays243Tool client:load />
+</ItalianToolPage>

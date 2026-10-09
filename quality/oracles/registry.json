@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 268,
+  "entry_count": 269,
   "entries": [
     {
       "id": "cand-001",
@@ -12016,6 +12016,22 @@
       "cross_check": { "usable": true, "implementation": "actual PDF.js line/text operators followed by an independent XLSX reader and ZIP formula-node inspection", "role": "bounded specific 3×3 preview/export proof, not general PDF table reconstruction" },
       "confidence": "medium",
       "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED: no Gold receipt", "independent more varied real-world PDF table and cross-browser corpus needed", "physical-device and complex spreadsheet fidelity not certified"]
+    },
+    {
+      "id": "cand-269",
+      "candidate": "Bounded local PDF text overlays, highlights and simple AcroForm /Tx filling, always flattened",
+      "tool_family": "pdf",
+      "maintenance_class": "H",
+      "truth_sources": ["iso-pdf2", "fixture-policy"],
+      "standard_or_official_example": "ASCII text stamped on an unannotated PDF, translucent highlight and one single terminal /Tx widget filled then flattened into page drawing operators.",
+      "invariants": ["source page count and existing content stream bytes are preserved", "only simple validated text fields with one terminal widget are filled", "all written text and highlights are visible on PDF.js independent render", "export has no remaining interactive annotation or AcroForm", "overlay is NOT redaction and cannot remove underlying source content"],
+      "adversarial_cases": ["signed, encrypted and action-bearing PDF refusal", "XFA, choice, button, signature and complex widget refusal", "rotated, unusual CropBox or out-of-page placement refusal", "multiline or unsupported Unicode text refusal", "visible output download and independent PDF.js reopen", "stale result cleared after invalid input"],
+      "expected_output_strategy": "tests/pdf-fill-overlays-243.test.ts reparses and checks form removal and content-stream fidelity; scripts/acceptance-pdf-fill-overlays-243.ts downloads actual browser PDFs and independently reopens text, annotations and highlight RGB via PDF.js.",
+      "security_privacy_edges": ["LOCAL only and no offsite upload", "8 MiB input and 24-page maximum, ASCII text capped at 70", "unsupported PDF features fail closed", "underlying source bytes remain available: not secure redaction"],
+      "portability_browser_edges": ["Chromium 390px emulation is not physical-device verification", "no editable annotation or signature semantics", "complex PDF corpus and cross-browser matrix remain unverified"],
+      "cross_check": { "usable": true, "implementation": "independent PDF.js text extraction, annotation count and screenshot pixel sampling plus source byte comparison", "role": "bounded subset acceptance, not general PDF editing or Gold certification" },
+      "confidence": "medium",
+      "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED, no Gold receipt", "general editable annotations and form fields remain unsupported", "physical iOS/Android and larger independent PDF corpus not verified"]
     }
   ]
 }

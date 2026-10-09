@@ -24,14 +24,13 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **236 — Advanced PDF to image export**
 - **237 — True PDF redaction with post-export proof**
 - **241 — PDF signature placement**
-- **243 — PDF fill annotate and write overlays**
 - **246 — Local image OCR**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **21** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **20** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -290,7 +289,7 @@ Exactly **21** incomplete tickets currently have every declared numeric blocker 
 | 240 | completed | PDF crop and page-size normalization | 215, 269 |
 | 241 | ready-for-agent | PDF signature placement | 215, 269 |
 | 242 | completed | PDF protect encrypt and legitimate unlock | 103, 269 |
-| 243 | ready-for-agent | PDF fill annotate and write overlays | 215, 269 |
+| 243 | completed | PDF fill annotate and write overlays | 215, 269 |
 | 244 | completed | PDF repair and tolerant recovery | 103, 269 |
 | 245 | completed | PDF A conversion decision and implementation | 206, 269 |
 | 246 | ready-for-agent | Local image OCR | 100, 103, 206, 271 |

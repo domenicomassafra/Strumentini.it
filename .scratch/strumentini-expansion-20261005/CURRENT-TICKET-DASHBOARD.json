@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 327,
-    "completed": 261,
+    "completed": 262,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 243,
-    "open": 66,
-    "readyDAG": 21,
-    "ready-for-agent": 13,
+    "completedWithoutExplicitRefusal": 244,
+    "open": 65,
+    "readyDAG": 20,
+    "ready-for-agent": 12,
     "dependency-blocked": 45,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -212,6 +212,7 @@
       239,
       240,
       242,
+      243,
       244,
       245,
       248,
@@ -298,7 +299,6 @@
       236,
       237,
       241,
-      243,
       246
     ],
     "dependency-blocked": [
@@ -733,8 +733,7 @@
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
         237,
-        241,
-        243
+        241
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -2937,9 +2936,9 @@
     {
       "id": 243,
       "title": "PDF fill annotate and write overlays",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
