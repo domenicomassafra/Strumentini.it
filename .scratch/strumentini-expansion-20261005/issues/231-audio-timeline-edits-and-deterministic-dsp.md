@@ -8,7 +8,9 @@
 
 **Blocked by:** 230 — Audio transcode compress and target bitrate size.
 
-**Status:** in-progress — isolated PCM16 WAV DSP subset implemented; full ticket remains open
+**Status:** ready-for-agent
+
+**Partial implementation:** isolated PCM16 WAV DSP subset delivered; full ticket remains open.
 
 **Suggested skills:** code-module-design → code-tdd → qa-browser → browser-performance-benchmark
 
