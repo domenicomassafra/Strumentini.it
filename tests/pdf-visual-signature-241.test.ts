@@ -155,7 +155,7 @@ describe("#241 bounded visible-appearance PNG overlays without cryptographic sig
 
   it("rejects CRC corruption, misleading type, unsupported palette/gray/ICC metadata and oversized images", async () => {
     const png = await pngFixture(4);
-    const corrupted = png.slice(); corrupted[corrupted.length - 8] ^= 0x01;
+    const corrupted = png.slice(); corrupted[corrupted.length - 8] = (corrupted[corrupted.length - 8] ?? 0) ^ 0x01;
     expect(() => decodeSignaturePng241(corrupted)).toThrow(/PDF241_PNG_CRC/u);
     expect(() => decodeSignaturePng241(new Uint8Array([0xff, 0xd8, 0xff]))).toThrow(/PDF241_PNG_UNSUPPORTED/u);
     // Recalculate PNG IHDR CRC so refusal is the unsupported grayscale type,

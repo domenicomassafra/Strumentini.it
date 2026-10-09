@@ -101,6 +101,7 @@ describe("#059 next acceptance: HTML functional comments and real structured cor
     const sourceTree = parseXmlDocument(source);
     for (const mode of ["minify", "prettify"] as const) {
       const result = xmlOperation(source, mode);
+      if (typeof result.output !== "string") throw new Error("XML formatter returned non-text output");
       const tree = parseXmlDocument(result.output);
       expect(tree.root.name).toBe(sourceTree.root.name);
       expect(tree.root.children).toEqual(sourceTree.root.children);
@@ -114,6 +115,7 @@ describe("#059 next acceptance: HTML functional comments and real structured cor
   it("discloses JSON duplicate-key lossiness and stable Unicode byte accounting", () => {
     const source = '{ "caffè": "☕", "x": 1, "x": 2 }';
     const transformed = jsonFormatterOperation(source, 2, false, "minify");
+    if (typeof transformed.formatted !== "string") throw new Error("JSON formatter returned non-text output");
     expect(transformed.duplicateKeys).toEqual(["x"]);
     expect(transformed.warnings).toHaveLength(1);
     expect(transformed.formatted).toBe('{"caffè":"☕","x":2}');
