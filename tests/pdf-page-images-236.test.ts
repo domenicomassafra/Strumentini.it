@@ -5,6 +5,8 @@ import { createCanvas } from "@napi-rs/canvas";
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
 import { unzipSync } from "fflate";
+import { pdfArray, pdfDict, pdfName, pdfNumber } from "../src/engines/pdf/parser";
+import { PdfBuilder } from "../src/engines/pdf/writer";
 import {
   browserPdfImageCapability236,
   exportPdfPageImages236,
@@ -15,6 +17,33 @@ import {
 const bytes = (name: string): Uint8Array => new Uint8Array(readFileSync(new URL("../quality/fixtures/pdf-gold/" + name, import.meta.url)));
 const blob = (data: Uint8Array): Blob => new Blob([new Uint8Array(data)], { type: "application/pdf" });
 const hash = (input: Uint8Array): string => createHash("sha256").update(input).digest("hex");
+
+/** True 200-page PDF byte corpus, one independently painted background each.
+ * The exporter is allowed to render only a user-selected <=8 page subset. */
+function twoHundredPagePdf236(): Uint8Array {
+  const builder = new PdfBuilder();
+  const root = builder.reserve();
+  const pages = builder.reserve();
+  const font = builder.putAuto(pdfDict({ Type: pdfName("Font"), Subtype: pdfName("Type1"), BaseFont: pdfName("Helvetica") }));
+  const kids = [];
+  for (let number = 1; number <= 200; number++) {
+    const page = builder.reserve();
+    kids.push(page);
+    const red = ((number * 19) % 220 + 15) / 255;
+    const green = ((number * 37) % 220 + 15) / 255;
+    const blue = ((number * 53) % 220 + 15) / 255;
+    const stream = builder.putAuto({ kind: "stream", dictionary: pdfDict({}), bytes: new TextEncoder().encode(
+      `${red.toFixed(5)} ${green.toFixed(5)} ${blue.toFixed(5)} rg 0 0 96 72 re f\n1 1 1 rg BT /F1 9 Tf 5 28 Td (PAGE ${number}) Tj ET\n`,
+    ) });
+    builder.put(page, pdfDict({ Type: pdfName("Page"), Parent: pages,
+      MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(96), pdfNumber(72)]),
+      Contents: stream, Resources: pdfDict({ Font: pdfDict({ F1: font }) }),
+    }));
+  }
+  builder.put(pages, pdfDict({ Type: pdfName("Pages"), Kids: pdfArray(kids), Count: pdfNumber(200) }));
+  builder.put(root, pdfDict({ Type: pdfName("Catalog"), Pages: pages }));
+  return builder.build(root, null);
+}
 
 /** Standalone stdlib zipfile and Pillow decoders, independent of fflate/sharp. */
 function pythonReopenImages(payload: {
@@ -113,6 +142,55 @@ function realNodeHost(options: { onRender?: (page: number) => void; onClose?: ()
 }
 
 describe("#236 bounded independent PDF.js PDF-page raster to image/ZIP", () => {
+  it("renders only 8 explicitly selected pages from a real 200-page PDF, independently reopens all PNGs and ZIP", async () => {
+    const source = blob(twoHundredPagePdf236());
+    expect(source.size).toBeLessThan(PDF_IMAGES_236_MAX_INPUT_BYTES);
+    const rendered: number[] = [];
+    let cleaned = 0;
+    let closed = 0;
+    const selected = [200, 1, 25, 50, 75, 100, 150, 175];
+    const started = performance.now();
+    const result = await exportPdfPageImages236(source,
+      { pages: selected, mime: "image/png", scale: 1, background: "#ffffff", zip: true },
+      undefined, realNodeHost({ onRender: (page) => rendered.push(page),
+        onCleanup: () => cleaned++, onClose: () => closed++ }));
+    expect(result).toMatchObject({ pageCount: 200, selectedPages: selected,
+      failures: [], totalPixels: 96 * 72 * selected.length, fidelity: "raster-visual-only" });
+    expect(rendered).toEqual(selected);
+    expect(cleaned).toBe(8);
+    expect(closed).toBe(1);
+    expect(result.files).toHaveLength(8);
+    expect(result.zip?.entryNames).toEqual(selected.map((page) => `page-${String(page).padStart(3, "0")}.png`));
+    const payload = result.files.map((file) => ({ filename: file.filename, mime: file.mime, bytes: file.bytes }));
+    expect(pythonReopenImages({ items: payload, archive: result.zip?.bytes, expectedWidth: 96,
+      expectedHeight: 72 })).toContain("PYTHON_PILLOW_ZIPFILE_INDEPENDENT_ROUNDTRIP_PASS images 8");
+    expect(result.outputBytes).toBe(result.files.reduce((sum, item) => sum + item.bytes.length, 0));
+    expect(result.zip!.bytes.length).toBeLessThan(20 * 1024 * 1024);
+    console.info(`PDF_236_200_PAGE_BOUNDED_PROOF source_pages=200 rendered=${rendered.length} archive=${result.zip!.bytes.length} bytes elapsed_host_ms=${Math.round(performance.now()-started)} physical_mobile=NOT_RUN`);
+  }, 35_000);
+
+  it("refuses an unbounded 200-page default or 9-page request before rendering, and cancels a running subset without ZIP", async () => {
+    const source = blob(twoHundredPagePdf236());
+    let rendered = 0;
+    let closed = 0;
+    let cleaned = 0;
+    const host = realNodeHost({ onRender: () => rendered++, onClose: () => closed++, onCleanup: () => cleaned++ });
+    await expect(exportPdfPageImages236(source, {}, undefined, host)).rejects.toThrow(/PAGE_LIMIT.*1–8/u);
+    await expect(exportPdfPageImages236(source, { pages: "1-9" }, undefined, host)).rejects.toThrow(/PAGE_LIMIT.*1–8/u);
+    expect(rendered).toBe(0);
+    expect(cleaned).toBe(0);
+    expect(closed).toBe(2);
+    const controller = new AbortController();
+    const cancellingHost = realNodeHost({ onRender: () => {
+      rendered++;
+      if (rendered === 3) controller.abort();
+    }, onClose: () => closed++, onCleanup: () => cleaned++ });
+    await expect(exportPdfPageImages236(source, { pages: "200,199,198,197", zip: true },
+      controller.signal, cancellingHost)).rejects.toMatchObject({ name: "AbortError" });
+    expect(rendered).toBe(3);
+    expect(cleaned).toBe(3);
+    expect(closed).toBe(3);
+  }, 35_000);
   it("renders selected pages in requested order, verified dimensions/content, true PNG signatures and exact ZIP byte identity", async () => {
     const closings: number[] = [];
     const cleanups: number[] = [];
