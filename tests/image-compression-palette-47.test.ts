@@ -22,13 +22,13 @@ function chunk(name: string, payload: Uint8Array): Uint8Array {
   view.setUint32(bytes.length - 4, crc32(bytes.subarray(4, bytes.length - 4)), false);
   return bytes;
 }
-function concat(parts: readonly Uint8Array[]): Uint8Array {
+function concat(parts: readonly Uint8Array[]): Uint8Array<ArrayBuffer> {
   const result = new Uint8Array(parts.reduce((n, part) => n + part.length, 0));
   let offset = 0;
   for (const part of parts) { result.set(part, offset); offset += part.length; }
   return result;
 }
-function indexedOrGray(width: number, height: number, type: 0 | 3 | 4, bits: 1 | 2 | 4 | 8, transparency: boolean): Uint8Array {
+function indexedOrGray(width: number, height: number, type: 0 | 3 | 4, bits: 1 | 2 | 4 | 8, transparency: boolean): Uint8Array<ArrayBuffer> {
   const channels = type === 4 ? 2 : 1;
   const ihdr = new Uint8Array(13);
   const view = new DataView(ihdr.buffer);
