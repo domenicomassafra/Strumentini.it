@@ -1,0 +1,3 @@
+# Genuine PDF binary fixtures must retain 20-byte classic xref rows as authored.
+# Mark as binary so Git does not treat required padding as text whitespace.
+*.pdf binary
