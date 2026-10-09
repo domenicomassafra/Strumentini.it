@@ -16,7 +16,7 @@ export const pdfTablesToXlsxManifest = {
   profileFields: [],
   result: { class: "file", capabilities: ["download", "reset", "retry"] },
   handoff: { emits: [{ type: "file", format: "xlsx" }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-268", fixtureFamilies: ["pdf-gold", "xlsx-signature"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-268", fixtureFamilies: ["pdf-gold", "pdf-signature"] },
 } as const satisfies ToolManifest;
 
 export default pdfTablesToXlsxManifest;

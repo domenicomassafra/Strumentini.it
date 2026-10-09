@@ -1,21 +1,8 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
 import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
-import { catalog } from "../../generated/catalog";
 import { PdfTableXlsx254Tool } from "../../components/tools/pdf/PdfTableXlsx254Tool";
 import "../../components/tools/tool-surface.css";
-const registered = catalog.some((entry) => entry.id === "pdf-tables-to-xlsx");
 ---
-{registered ? (
-  <ItalianToolPage toolId="pdf-tables-to-xlsx">
-    <PdfTableXlsx254Tool client:load />
-  </ItalianToolPage>
-) : (
-  <BaseLayout title="Tabelle PDF in XLSX (griglie verificate)" description="Esporta griglie PDF tracciate e selezionate esplicitamente in XLSX verificati, con provenienza e nessun OCR." noindex>
-    <main style="max-width:1100px;margin:2rem auto;padding:0 1rem">
-      <h1>Tabelle PDF in XLSX — griglie verificabili</h1>
-      <p>Seleziona un rettangolo con celle delimitate da righe visibili e controlla l'anteprima prima di scaricare.</p>
-      <PdfTableXlsx254Tool client:load />
-    </main>
-  </BaseLayout>
-)}
+<ItalianToolPage toolId="pdf-tables-to-xlsx">
+  <PdfTableXlsx254Tool client:load />
+</ItalianToolPage>

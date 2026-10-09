@@ -26,13 +26,12 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **241 — PDF signature placement**
 - **243 — PDF fill annotate and write overlays**
 - **246 — Local image OCR**
-- **254 — PDF tables to XLSX**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **22** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **21** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -302,7 +301,7 @@ Exactly **22** incomplete tickets currently have every declared numeric blocker 
 | 251 | completed | PDF booklet and front-back interleave | 215, 250 |
 | 252 | completed | PDF to Markdown semantic export | 220, 054 |
 | 253 | completed | PDF to DOCX semantic reconstruction | 220, 225, 226, 269 |
-| 254 | ready-for-agent | PDF tables to XLSX | 161, 220, 269 |
+| 254 | completed | PDF tables to XLSX | 161, 220, 269 |
 | 255 | blocked | PDF to PPTX page-as-slide baseline | 225, 236, 270 |
 | 256 | completed | TXT Markdown HTML and CSV to printable PDF | 054, 103, 269 |
 | 257 | completed | DOCX to PDF fidelity-gated conversion | 206, 226, 270 |

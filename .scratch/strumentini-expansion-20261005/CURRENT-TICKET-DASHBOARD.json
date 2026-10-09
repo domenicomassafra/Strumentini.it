@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 327,
-    "completed": 260,
+    "completed": 261,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 242,
-    "open": 67,
-    "readyDAG": 22,
-    "ready-for-agent": 14,
+    "completedWithoutExplicitRefusal": 243,
+    "open": 66,
+    "readyDAG": 21,
+    "ready-for-agent": 13,
     "dependency-blocked": 45,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -219,6 +219,7 @@
       251,
       252,
       253,
+      254,
       256,
       257,
       258,
@@ -298,8 +299,7 @@
       237,
       241,
       243,
-      246,
-      254
+      246
     ],
     "dependency-blocked": [
       8,
@@ -747,7 +747,6 @@
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
         249,
-        254,
         255
       ],
       "gateReason": null,
@@ -1027,7 +1026,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        254,
         255
       ],
       "gateReason": null,
@@ -3053,9 +3051,9 @@
     {
       "id": 254,
       "title": "PDF tables to XLSX",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 267,
+  "entry_count": 268,
   "entries": [
     {
       "id": "cand-001",
@@ -12000,6 +12000,22 @@
       "cross_check": { "usable": true, "implementation": "independent PDF parser and PDF.js raster PNG/Sharp color and white blank checks over all output pages", "role": "bounded demonstration of booklet page/order/padding, not assurance for all duplex printer drivers" },
       "confidence": "medium",
       "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED; no Gold receipt", "physical duplex printer feed/flip and mobile memory acceptance not performed", "booklet vectors and selectable text intentionally rasterized, while interleave preserves bounded text streams"]
+    },
+    {
+      "id": "cand-268",
+      "candidate": "Bounded PDF ruled-grid extraction into provenance-rich XLSX with ambiguity refusal",
+      "tool_family": "pdf",
+      "maintenance_class": "H",
+      "truth_sources": ["iso-pdf2", "fixture-policy"],
+      "standard_or_official_example": "Synthetic one-page PDF containing a visibly stroked 3×3 rectilinear grid with selectable text, leading-zero identifiers and formula-like literals; output independently reopened as an XLSX workbook.",
+      "invariants": ["user explicitly selects one source page and bounded rectangle and sees a cell preview before export", "each row and column separator must be a real complete stroke and each cell must have exactly one unambiguous selectable text fragment", "XLSX retains source filename, SHA-256, page, rectangle and exact cell text values", "formula-like input is stored only as inert string and leading zeros are not inferred as numbers"],
+      "adversarial_cases": ["unruled text that visually resembles a grid", "partial or missing horizontal/vertical borders", "rotated, empty and multi-fragment cells", "wrong page or invalid selection rectangle", "leading-zero identifiers and spreadsheet formula injection", "oversized source or output"],
+      "expected_output_strategy": "tests/pdf-table-xlsx-254.test.ts independently reopens real generated XLSX via read-excel-file, checks all values/provenance and absence of OOXML formula nodes; scripts/acceptance-pdf-table-xlsx-254.ts verifies source PDF preview, selected grid, downloaded workbook and fail-closed non-tabular input using Chromium.",
+      "security_privacy_edges": ["LOCAL-only PDF.js parse and spreadsheet conversion, no OCR or upload", "8MiB/12-page input, single 12-column/120-row grid, 2MiB output caps", "refuse ambiguous visual PDFs instead of guessing cells", "write all cells as text to neutralize formula injection"],
+      "portability_browser_edges": ["desktop Chromium 390px evidence, no physical iOS/Android acceptance", "complex transforms, unruled grids, OCR, merged/multiline/blank cells and rich workbook formulas not supported"],
+      "cross_check": { "usable": true, "implementation": "actual PDF.js line/text operators followed by an independent XLSX reader and ZIP formula-node inspection", "role": "bounded specific 3×3 preview/export proof, not general PDF table reconstruction" },
+      "confidence": "medium",
+      "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED: no Gold receipt", "independent more varied real-world PDF table and cross-browser corpus needed", "physical-device and complex spreadsheet fidelity not certified"]
     }
   ]
 }

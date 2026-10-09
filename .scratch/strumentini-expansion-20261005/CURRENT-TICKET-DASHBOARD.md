@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 260 / 67 |
+| All / completed / open | 327 / 261 / 66 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 22 |
-| Ready for assignment (feasibility still to prove) | 14 |
+| DAG-ready (all numeric dependencies closed) | 21 |
+| Ready for assignment (feasibility still to prove) | 13 |
 | Waiting on other tickets | 45 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (14)
+## Ready for assignment (feasibility still to prove) (13)
 
 - #037 — Video inspect/subtitle utilities
 - #047 — JPEG/PNG/WebP/SVG compression engines
@@ -36,7 +36,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #241 — PDF signature placement
 - #243 — PDF fill annotate and write overlays
 - #246 — Local image OCR
-- #254 — PDF tables to XLSX
 
 ## Waiting on other tickets (45)
 
@@ -51,7 +50,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #028 — Image format + target-compression family (awaiting #047, #049)
 - #031 — OCR and document-scan family (awaiting #246, #247)
 - #032 — PDF edit/security family (awaiting #237, #241, #243)
-- #033 — PDF conversion/productivity family (awaiting #249, #254, #255)
+- #033 — PDF conversion/productivity family (awaiting #249, #255)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #036 — Audio file-processing family (awaiting #231)
 - #038 — Video transform family (awaiting #234, #306)
@@ -60,7 +59,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)
 - #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212)
 - #051 — True PDF compression profiles + target size (awaiting #218, #219)
-- #057 — PDF-to-editable/structured conversion pack (awaiting #254, #255)
+- #057 — PDF-to-editable/structured conversion pack (awaiting #255)
 - #058 — PDF↔image directional conversion pack (awaiting #235, #236)
 - #062 — Upgrade existing business/date functionality (awaiting #126, #127, #128, #130, #133, #134, #135)
 - #065 — Format-operation matrix coverage gate (awaiting #047, #049, #051, #053, #056, #057, #058, #059)

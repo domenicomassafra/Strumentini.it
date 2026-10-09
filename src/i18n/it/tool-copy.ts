@@ -698,6 +698,11 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     summary: "Prepara pagine PDF per opuscoli piegati o intercala scansioni fronte/retro. Ordine, duplex e pagine bianche sono dichiarati prima del download.",
     searchTerms: ["booklet pdf", "opuscolo piegato pdf", "intercala fronte retro pdf", "stampa duplex pdf"],
   },
+  "pdf-tables-to-xlsx": {
+    name: "Estrai tabelle PDF in Excel",
+    summary: "Seleziona una griglia PDF con linee reali, controlla le celle e scarica un XLSX con provenienza verificata. Non usa OCR e rifiuta tabelle ambigue.",
+    searchTerms: ["pdf tabella excel", "pdf a xlsx", "esporta tabella pdf", "estrai griglia da pdf"],
+  },
   "pdf-n-up": {
     name: "Metti più pagine PDF su un foglio",
     summary: "Disponi più pagine PDF su ogni foglio con ordine e margini dichiarati, anteprima e download locale. Il risultato appiattito non conserva il testo selezionabile.",

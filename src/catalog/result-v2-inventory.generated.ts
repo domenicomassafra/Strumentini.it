@@ -3597,6 +3597,25 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
+    "toolId": "pdf-tables-to-xlsx",
+    "engine": "pdf",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "PdfTableXlsx254Tool",
+      "source": "src/components/tools/pdf/PdfTableXlsx254Tool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "file",
+      "capabilities": [
+        "download",
+        "reset",
+        "retry"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "pdf-text-extraction",
     "engine": "pdf",
     "rendererSeam": {
