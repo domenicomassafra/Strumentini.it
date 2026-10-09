@@ -1,0 +1,27 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CodiceFiscaleTool } from "../../components/tools/codice-fiscale/CodiceFiscaleTool";
+---
+
+<BaseLayout
+  title="Codice fiscale: genera, verifica e decodifica (copertura limitata)"
+  description="Codice fiscale: controllo formale, decodifica omocodia e generazione locale solo per date/comuni dimostrati da ISTAT. Non è una verifica anagrafica ufficiale."
+  noindex
+>
+  <main class="cf08-page" data-cf-canonical-route="/tools/codice-fiscale/">
+    <nav aria-label="Percorso" class="cf08-breadcrumb"><a href="/">Home</a> / <a href="/strumenti/">Strumenti</a> / Codice fiscale</nav>
+    <header>
+      <h1>Codice fiscale: genera, verifica e decodifica</h1>
+      <p>Tre operazioni nel browser, con limiti storici dichiarati. La generazione non sostituisce l'attribuzione dell'Agenzia delle Entrate.</p>
+    </header>
+    <CodiceFiscaleTool client:load />
+  </main>
+</BaseLayout>
+
+<style>
+  .cf08-page { width: min(1160px,calc(100% - 32px)); margin: 0 auto; padding: 32px 0 72px; display: grid; gap: 24px; min-width: 0; }
+  .cf08-page h1 { font-size: clamp(1.6rem,4vw,2.6rem); margin: 0 0 12px; }
+  .cf08-page header p { max-width: 72ch; margin: 0; color: var(--text-muted); }
+  .cf08-breadcrumb { color: var(--text-muted); font-size: var(--font-size-sm); }
+  .cf08-breadcrumb a { color: inherit; }
+</style>

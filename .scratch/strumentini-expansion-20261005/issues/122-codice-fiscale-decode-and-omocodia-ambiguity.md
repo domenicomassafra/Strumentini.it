@@ -12,8 +12,10 @@
 
 **Suggested skills:** research-primary-sources → code-tdd → inclusive-design
 
-- [ ] Decode reports only facts encoded/formally derivable.
-- [ ] Omocodia substitutions remain explicit candidates/ambiguity.
-- [ ] Historical municipality mappings retain source/version context.
+- [x] Decoder exposes only encoded/formally derivable tokens, sex/month/day, year suffix, and 1900/2000 century hypotheses (never personal identity).
+- [x] Seven permitted omocodia substitution slots are decoded explicitly; canonical formal code is distinguished from the potentially allocated omocode.
+- [x] Available historical municipality candidates preserve exact #115 original source/version, ISTAT identifier, change event, and temporal uncertainty; missing codes remain absent.
 
 **Verification:** Omocode-position, impossible-date and historical-municipality cases.
+
+**2026-10-10 dependency-first #122 implementation, source-only:** `src/engines/italy/codice-fiscale-122.ts` decodes fully formal #121 validated 16-character personal codes without asserting identity or uniqueness. All 128 legal seven-position omocodia masks roundtrip through the official checksum to the canonical formal code, recording each position/digit/letter; illegal positions refuse. Year encodes only two digits, so 1900/2000 candidates and Gregorian leap-date filtering are explicit rather than guessing birth century. Offline reverse lookups enumerate candidate names and ISTAT IDs from source-bound #115 current/suppressed/foreign tables, preserving provenance, version and event history; every historical/foreign match is marked **NOT_PROVEN_FOR_BIRTH_DATE**, unknown Belfiore codes as `UNKNOWN_CODE`. New Vitest and real Chromium source-only proof are in `tests/codice-fiscale-121-122.test.ts` and `tests/codice-fiscale-121-122.browser.mjs`; no outbound requests. The 3 technical checklist bullets are satisfied **for source-proven partial records**; full production readiness remains blocked by #121 geography temporal validity and #115 gaps, and there is no UI or route. No ticket state/dependency edits.
