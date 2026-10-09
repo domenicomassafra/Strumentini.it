@@ -72,7 +72,9 @@ export function measureSimpleImageDpi218(model: PdfDocumentModel, signal?: Abort
       if (placements.length >= MAX_PAINTS) return unknown("image-paint-budget-exceeded");
       const [a, b, c, d, e, f] = match.slice(1, 7).map(Number);
       if (![a, b, c, d, e, f].every(Number.isFinite) ||
-          Math.max(...[a, b, c, d, e, f].map(Math.abs)) > 1e7) return unknown("invalid-image-ctm");
+          Math.max(...[a, b, c, d, e, f].map((value) => Math.abs(value ?? Number.NaN))) > 1e7) {
+        return unknown("invalid-image-ctm");
+      }
       const widthPoints = Math.hypot(a!, b!) * unit;
       const heightPoints = Math.hypot(c!, d!) * unit;
       const dot = a! * c! + b! * d!;
