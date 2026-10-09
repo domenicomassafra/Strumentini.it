@@ -623,7 +623,17 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         {toolId === "pdf-compression-lite" && (
           <section class="field" aria-label="Profilo di compressione PDF">
             <label class="field"><span>Profilo di compressione</span>
-              <select value={compressionProfile} onChange={(event) => { setCompressionProfile(event.currentTarget.value as "structural-only" | "jpeg-rgb-reencode" | "scan-flate-to-jpeg" | "target-best-effort"); setResult(null); setFiles([]); }} disabled={isWorking}>
+              <select value={compressionProfile} onChange={(event) => {
+                const next = event.currentTarget.value as "structural-only" | "jpeg-rgb-reencode" | "scan-flate-to-jpeg" | "target-best-effort";
+                setCompressionProfile(next);
+                setResult(null);
+                // A compression profile is an option on the already-selected
+                // document, not an instruction to discard it. When leaving
+                // batch mode, only the first PDF is eligible for single-file
+                // profiles, and the visible file list reflects that choice.
+                if (next !== "target-best-effort") setFiles((current) => current.slice(0, 1));
+                setError("");
+              }} disabled={isWorking}>
                 <option value="structural-only">Pulizia strutturale (predefinita)</option>
                 <option value="jpeg-rgb-reencode">Ricodifica JPEG incorporati (con perdita)</option>
                 <option value="scan-flate-to-jpeg">Scansioni Flate/PNG incorporati (con perdita)</option>
