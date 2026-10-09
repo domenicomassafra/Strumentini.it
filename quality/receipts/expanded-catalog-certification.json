@@ -30955,7 +30955,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/subtitle-transform/browser-acceptance.json",
-            "sha256": "3c5dbc396ef2431cacc2135e708b388869e233dd218c38541646e46eb3585ec0",
+            "sha256": "09a480cdc624e1eea2524e7e17ee5ee34f7929f78af54dace33729bdbfa0cd08",
             "status": "PASS"
           }
         ]
@@ -30966,7 +30966,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/subtitle-transform/browser-acceptance.json",
-            "sha256": "3c5dbc396ef2431cacc2135e708b388869e233dd218c38541646e46eb3585ec0",
+            "sha256": "09a480cdc624e1eea2524e7e17ee5ee34f7929f78af54dace33729bdbfa0cd08",
             "status": "PASS"
           }
         ]
@@ -30999,7 +30999,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/subtitle-transform/browser-acceptance.json",
-          "sha256": "3c5dbc396ef2431cacc2135e708b388869e233dd218c38541646e46eb3585ec0",
+          "sha256": "09a480cdc624e1eea2524e7e17ee5ee34f7929f78af54dace33729bdbfa0cd08",
           "status": "PASS"
         },
         {
