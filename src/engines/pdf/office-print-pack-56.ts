@@ -175,9 +175,16 @@ async function generatePrintable56(request: PrintablePdfOptions, signal?: AbortS
  */
 async function verifyPrintedPdf56(result: PrintablePdfResult, signal?: AbortSignal, verifyEveryPage = true): Promise<OfficePrintResult56["documentVerification"]> {
   aborted(signal);
-  const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  if (typeof window !== "undefined") {
+    // PDF.js legacy has no automatic workerSrc when Vite bundles its ESM
+    // entrypoint. Without a local worker URL, every browser export fails at
+    // the independent post-export verification gate.
+    const worker = await import("pdfjs-dist/legacy/build/pdf.worker.mjs?url");
+    pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
+  }
   aborted(signal);
-  const task = getDocument({ data: result.bytes.slice(), useSystemFonts: true, disableFontFace: true,
+  const task = pdfjs.getDocument({ data: result.bytes.slice(), useSystemFonts: true, disableFontFace: true,
     stopAtErrors: true });
   const onAbort = () => { void task.destroy(); };
   signal?.addEventListener("abort", onAbort, { once: true });

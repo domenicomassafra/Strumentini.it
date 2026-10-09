@@ -59,6 +59,7 @@
     "acceptance:pdf-form-flatten": "tsx scripts/acceptance-pdf-form-flatten.ts",
     "acceptance:pdf-export-compression": "tsx scripts/acceptance-pdf-export-compression.ts",
     "acceptance:pdf-image-aware": "tsx scripts/acceptance-pdf-image-aware-218.ts",
+    "acceptance:office-print": "node scripts/acceptance-office-print-56.browser.mjs",
     "acceptance:audio-loudness": "tsx scripts/acceptance-audio-loudness-307.ts",
     "acceptance:image-resize:physical:serve": "npm run build && tsx scripts/generate-image-resize-physical-fixtures.ts && node scripts/serve-image-resize-physical.mjs",
     "acceptance:image-resize:physical:record": "tsx scripts/record-image-resize-physical.ts",
