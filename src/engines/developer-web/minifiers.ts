@@ -285,7 +285,7 @@ export function htmlMinifyOperation(html: string, mode: string = "safe") {
         ? "Preserve every HTML text and comment node as parsed; pre/textarea/script/style and foreign markup are untouched. Parser serialization can still normalize source markup."
         : "Preserve all non-whitespace text and sensitive elements; remove additional whitespace-only nodes adjacent to block elements.",
     commentPolicy: mode === "advanced"
-      ? "Remove plain prose HTML comments (lossy for unrecognised plain-word framework markers); preserve known and structured unknown template/SSR/SSI/conditional directives and comments within foreign markup; review consumer semantics."
+      ? "Remove plain prose HTML comments (lossy for unknown plain-word framework markers); preserve known and structured unknown template/SSR/SSI/conditional directives and comments within foreign markup; review consumer semantics."
       : "Preserve all comments from the parser tree; no scripts or embedded references are executed during serialization.",
     scriptStylePolicy: "script and style contents are parsed as HTML raw-text elements and are never regex-rewritten by this minifier.",
   });
