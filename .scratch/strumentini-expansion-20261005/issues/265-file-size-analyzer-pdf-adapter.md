@@ -44,3 +44,15 @@ This is not evidence of arbitrary scan/text classification, in-the-wild
 performance, physical iOS/Android behavior or a completed #218 dependency.
 The canonical **Status stays blocked** until upstream gate #218 and remaining
 acceptance are genuinely satisfied, despite this independently useful slice.
+
+**Independent clean-HEAD verification #265:** On detached source HEAD `1c30d45`,
+`npm run check` **1851 files, zero errors/warnings, 21 existing hints** and
+`npm run build` **289 pages PASS**, 648 JS assets, 7,144-byte route JS.
+`node tests/pdf-size-265.browser.mjs` loads the actual compiled public
+file-size-analyzer route under Chromium desktop at 390×844 with a genuine
+checked-in JPEG-image PDF; sees real `encodedStreamBytes`, Image XObject
+bytes, structural remainder, unknown future savings, existing compatible
+optimizer, zero offsite/POST and zero JS exceptions:
+`PDF_SIZE_265_CHROMIUM_PASS checks=11`. Dev-only #241 and unsafe #237 public
+PDF routes are both absent. This is browser desktop evidence only, not mobile
+device acceptance. New #265 + existing #266 focused tests **12/12 PASS**.
