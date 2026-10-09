@@ -564,6 +564,9 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
         { label: "Byte risparmiati", value: String(jpegAnalysis.savedBytes) },
         ...(scanMode ? [
           { label: "Lato massimo richiesto", value: `${jpegAnalysis.maxLongestEdgePx} pixel` },
+          { label: "DPI di posizionamento", value: jpegAnalysis.dpiCoverage === "verified-simple-uncompressed-paints"
+            ? "Stimati solo per disegni Image XObject semplici; non usati per ricampionare"
+            : "Non verificabili: nessuna stima inventata" },
           { label: "Downsample applicato", value: jpegAnalysis.downsampleApplied ? "Sì" : "No" },
           { label: "Grigio applicato", value: jpegAnalysis.grayscaleApplied ? "Sì" : "No" },
           { label: "Originale consigliato", value: jpegAnalysis.recommendOriginal ? "Sì" : "No" },

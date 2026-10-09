@@ -33,7 +33,7 @@ function pngSubPredictor(raw: Uint8Array): Uint8Array {
   return encoded;
 }
 
-function pdfWithScan(raw: Uint8Array, options: { predictor?: number; mask?: boolean; filter?: string; width?: number; height?: number; color?: "DeviceRGB" | "DeviceGray"; secondMasked?: boolean } = {}): Uint8Array {
+function pdfWithScan(raw: Uint8Array, options: { predictor?: number; mask?: boolean; filter?: string; width?: number; height?: number; color?: "DeviceRGB" | "DeviceGray"; secondMasked?: boolean; simplePaintOnly?: boolean } = {}): Uint8Array {
   const width = options.width ?? WIDTH;
   const height = options.height ?? HEIGHT;
   const builder = new PdfBuilder();
@@ -52,7 +52,7 @@ function pdfWithScan(raw: Uint8Array, options: { predictor?: number; mask?: bool
     SMask: pdfName("ProtectedMask"),
   }), bytes: new Uint8Array(deflateSync(raw)) }) : null;
   const contents = builder.putAuto({ kind: "stream", dictionary: pdfDict({}), bytes: new TextEncoder().encode(
-    "q 480 0 0 360 0 0 cm /Im0 Do Q\nBT /F1 18 Tf 12 375 Td (VECTOR-TEXT-ALIVE) Tj ET\n") });
+    "q 480 0 0 360 0 0 cm /Im0 Do Q\n" + (options.simplePaintOnly ? "" : "BT /F1 18 Tf 12 375 Td (VECTOR-TEXT-ALIVE) Tj ET\n")) });
   builder.put(page, pdfDict({ Type: pdfName("Page"), Parent: pages,
     MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(480), pdfNumber(400)]),
     Resources: pdfDict({ Font: pdfDict({ F1: font }), XObject: pdfDict({ Im0: image, ...(masked ? { Im1: masked } : {}) }) }), Contents: contents }));
@@ -104,6 +104,21 @@ function firstImage(bytes: Uint8Array) {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("#218 scan-mode real Flate-to-JPEG profiles", () => {
+  it("exposes source-backed x/y placement DPI only for strict simple image paints, without applying a DPI policy", async () => {
+    installCanvas();
+    const simple = await recompressPdfScannedImages(pdfWithScan(rawRaster(), { simplePaintOnly: true }),
+      { maxLongestEdgePx: 320 });
+    expect(simple.analysis).toMatchObject({ dpiCoverage: "verified-simple-uncompressed-paints",
+      dpiUsedForDownsample: false, downsampleApplied: true });
+    expect(simple.analysis.inventory[0]?.placementDpi).toMatchObject([{
+      pageNumber: 1, pixelWidth: 480, pixelHeight: 360, xDpi: 72, yDpi: 72,
+    }]);
+    const mixedText = await recompressPdfScannedImages(pdfWithScan(rawRaster()), { maxLongestEdgePx: 320 });
+    expect(mixedText.analysis.dpiCoverage).toBe("unknown");
+    expect(mixedText.analysis.dpiUsedForDownsample).toBe(false);
+    expect(mixedText.analysis.inventory[0]?.placementDpi).toBeNull();
+    expect(mixedText.analysis.warnings.join(" ")).toMatch(/DPI.*non verificati/u);
+  });
   it("converts actual RGB Flate scan with PNG Sub row predictor, downsamples and keeps vector page bytes/text", async () => {
     installCanvas();
     const source = pdfWithScan(pngSubPredictor(rawRaster()), { predictor: 15 });

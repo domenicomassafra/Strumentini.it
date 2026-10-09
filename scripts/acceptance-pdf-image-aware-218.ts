@@ -31,7 +31,7 @@ for (let y = 0; y < height; y += 1) {
   }
 }
 
-function createFixture(jpeg: Uint8Array, filter: "DCTDecode" | "FlateDecode" = "DCTDecode"): Uint8Array {
+function createFixture(jpeg: Uint8Array, filter: "DCTDecode" | "FlateDecode" = "DCTDecode", withVectorText = true): Uint8Array {
   const builder = new PdfBuilder();
   const rootReference = builder.reserve();
   const pagesReference = builder.reserve();
@@ -42,7 +42,8 @@ function createFixture(jpeg: Uint8Array, filter: "DCTDecode" | "FlateDecode" = "
     ColorSpace: pdfName("DeviceRGB"), BitsPerComponent: pdfNumber(8), Filter: pdfName(filter),
   }), bytes: jpeg });
   const contents = builder.putAuto({ kind: "stream", dictionary: pdfDict({}), bytes: new TextEncoder().encode(
-    "q 320 0 0 240 0 0 cm /Im0 Do Q\nBT /F1 18 Tf 12 260 Td (BROWSER-VECTOR-TEXT) Tj ET\n") });
+    "q 320 0 0 240 0 0 cm /Im0 Do Q\n" +
+    (withVectorText ? "BT /F1 18 Tf 12 260 Td (BROWSER-VECTOR-TEXT) Tj ET\n" : "")) });
   builder.put(pageReference, pdfDict({ Type: pdfName("Page"), Parent: pagesReference,
     MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(320), pdfNumber(300)]),
     Resources: pdfDict({ Font: pdfDict({ F1: font }), XObject: pdfDict({ Im0: image }) }), Contents: contents }));
@@ -189,8 +190,23 @@ try {
     const scanSummary = await page.locator('[data-result-slot="operation-summary"]').innerText();
     assert(/Immagini Flate ricodificate\s*1/u.test(scanSummary) &&
       /Downsample applicato\s*Sì/u.test(scanSummary) &&
-      /Grigio applicato\s*Sì/u.test(scanSummary),
+      /Grigio applicato\s*Sì/u.test(scanSummary) &&
+      /DPI di posizionamento\s*Non verificabili/u.test(scanSummary),
       `Scan inventory and effective settings not displayed: ${scanSummary}`);
+    // Independent simple single-image page can legitimately disclose bounded
+    // placement DPI; the preceding vector/text PDF must remain UNKNOWN.
+    const simpleScanPdf = createFixture(new Uint8Array(deflateSync(rgb)), "FlateDecode", false);
+    await page.locator('form input[type="file"]').first().setInputFiles({
+      name: "simple-image-72dpi.pdf", mimeType: "application/pdf", buffer: Buffer.from(simpleScanPdf),
+    });
+    await page.locator('form button[type="submit"]').first().click();
+    await resultPanel.waitFor({ timeout: 45000 });
+    assert(await resultPanel.getAttribute("data-state") === "success", "Simple image DPI scan operation failed");
+    const simpleScanSummary = await page.locator('[data-result-slot="operation-summary"]').innerText();
+    assert(/DPI di posizionamento\s*Stimati solo per disegni Image XObject semplici/u.test(simpleScanSummary),
+      `Actual simple image placement DPI not disclosed: ${simpleScanSummary}`);
+    const simpleScanOutput = await download(page);
+    assert(simpleScanOutput.length < simpleScanPdf.length, "Simple scan was not converted to smaller actual JPEG PDF");
     // Independent real PDF.js page render of the downloaded source/output:
     // keep the vector/text page rendered, while lossy grayscale visibly differs.
     await page.goto(`${origin}/tools/pdf-to-images/`, { waitUntil: "networkidle" });

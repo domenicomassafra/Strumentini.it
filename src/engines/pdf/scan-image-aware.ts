@@ -4,6 +4,7 @@ import { dictionaryOrNull, dictionaryWith, nameValue, numberValue, parsePdf, pdf
 import { buildPdfFromPages, parseJpeg } from "./writer";
 import { PDF_LIMITS, type PdfArtifact } from "./types";
 import { pdfImageCompositingRisk218 } from "./image-aware-safety-218";
+import { measureSimpleImageDpi218, type VerifiedImagePlacement218 } from "./placement-dpi-218";
 
 const MAX_CANDIDATES = 24;
 const MAX_PIXELS = 8_000_000;
@@ -31,6 +32,8 @@ export interface PdfScanImageDecision {
   readonly afterBytes: number;
   readonly action: "recompressed" | "unchanged";
   readonly reason: string;
+  /** Verified only for complete simple uncompressed image paint programs; otherwise null. */
+  readonly placementDpi: readonly VerifiedImagePlacement218[] | null;
 }
 
 export interface PdfScanCompressionResult {
@@ -40,6 +43,9 @@ export interface PdfScanCompressionResult {
     readonly quality: number;
     readonly maxLongestEdgePx: number;
     readonly grayscaleRequested: boolean;
+    /** DPI are diagnostic only: the actual limit still uses explicit source pixel edges. */
+    readonly dpiCoverage: "verified-simple-uncompressed-paints" | "unknown";
+    readonly dpiUsedForDownsample: false;
     readonly grayscaleApplied: boolean;
     readonly downsampleApplied: boolean;
     readonly originalBytes: number;
@@ -239,6 +245,7 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
     throw new Error("UNSUPPORTED_CAPABILITY: Scan PDFs with forms or annotations are not covered by preservation checks");
   }
   const model = parsePdf(source.slice());
+  const placementDpi = measureSimpleImageDpi218(model, signal);
   const candidates = [...model.objects.values()].filter((object) => object.value.kind === "stream" && nameValue(object.value.dictionary.entries.get("Subtype")) === "Image");
   if (candidates.length > PDF_LIMITS.maxImages) throw new Error("PDF_LIMIT: Too many images in scan PDF");
   const referenced = topLevelPageImageIds(model);
@@ -251,7 +258,10 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
     if (stream.kind !== "stream") continue;
     const width = numberValue(stream.dictionary.entries.get("Width"));
     const height = numberValue(stream.dictionary.entries.get("Height"));
-    const base = { sourceObject: object.id, width, height, outputWidth: width, outputHeight: height, beforeBytes: stream.bytes.length, afterBytes: stream.bytes.length };
+    const base = { sourceObject: object.id, width, height, outputWidth: width, outputHeight: height,
+      beforeBytes: stream.bytes.length, afterBytes: stream.bytes.length,
+      placementDpi: placementDpi.coverage === "verified-simple-uncompressed-paints"
+        ? placementDpi.placements.filter((placement) => placement.objectId === object.id) : null };
     const reason = compositingRisk ?? (inventory.length >= MAX_CANDIDATES ? "image-count-beyond-local-reencode-cap" :
       !referenced.has(object.id) ? "not-top-level-page-image-resource" : eligibility(object, model));
     if (reason !== null) {
@@ -301,6 +311,8 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
       reason: grew ? "whole-pdf-result-not-smaller" : "no-effective-recompression" } : item);
   const touched = effective ? transformed : 0;
   const warnings = [
+    ...(placementDpi.coverage === "unknown" ? ["DPI di posizionamento non verificati: contenuti PDF complessi, filtrati o non coperti. Nessun DPI presunto o usato per il downsample."] :
+      ["DPI calcolati soltanto per disegni Image XObject diretti, non filtrati e geometricamente semplici; il ricampionamento usa comunque il limite in pixel richiesto."]),
     ...(grew && transformed > 0 ? ["Il PDF ottimizzato sarebbe uguale o più grande: conservato l'originale."] : []),
     ...(candidates.length > touched ? ["Alcune immagini non erano idonee o non offrivano risparmio: consultare i motivi per oggetto."] : []),
   ];
@@ -309,6 +321,7 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
     artifact: { bytes: artifactBytes, blob: new Blob([artifactBytes], { type: "application/pdf" }), mime: "application/pdf",
       filename: effective ? "scan-image-aware.pdf" : "scan-original.pdf", pageCount: before.pageCount },
     analysis: { profile: "scan-flate-to-jpeg", quality, maxLongestEdgePx, grayscaleRequested: grayscale,
+      dpiCoverage: placementDpi.coverage, dpiUsedForDownsample: false,
       grayscaleApplied: effective && grayscale, downsampleApplied: effective && finalInventory.some((item) => item.action === "recompressed" && item.outputWidth !== item.width),
       originalBytes: source.length, outputBytes: artifactBytes.length, savedBytes: source.length - artifactBytes.length,
       recommendOriginal: !effective, candidates: candidates.length, touched, skipped: candidates.length - touched,
