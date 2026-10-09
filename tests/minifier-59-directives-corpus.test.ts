@@ -26,6 +26,10 @@ const htmlDirectives = [
   { name: "Angular template markers", markup: "<!--ngIf: visible--><span>Qui</span><!--/ng-->" },
   { name: "Astro hydration comments", markup: "<!--astro:component--><section>Render</section>" },
   { name: "IE conditional", markup: "<!--[if IE]>supporto<![endif]--><span>Altro</span>" },
+  { name: "unknown namespaced hydration marker", markup: "<!--hydrate:123--><i>Carica</i><!--/hydrate:123-->" },
+  { name: "unknown hyphenated island marker", markup: "<!--island-boundary--><span>Client</span><!--/island-boundary-->" },
+  { name: "unknown slash/path namespaced marker", markup: "<!--widget/stream:stage-0--><p>Dato</p><!--/widget/stream:stage-0-->" },
+  { name: "unknown framework structured skip marker", markup: "<!--vite:skip next--><div>Statico</div>" },
 ];
 
 describe("#059 next acceptance: HTML functional comments and real structured corpora", () => {
@@ -51,6 +55,18 @@ describe("#059 next acceptance: HTML functional comments and real structured cor
     expect(advanced.commentPolicy).toMatch(/lossy/u);
     expect(advanced.savedBytes).toBe(utf8(input) - utf8(advanced.output));
     expect(htmlMinifyOperation(advanced.output, "advanced").output).toBe(advanced.output);
+  });
+
+  it("advanced removes only plain prose comments, not unknown structured markers adjacent to prose", () => {
+    const source = "<article><!-- ordinary user note --><!--unknown-framework:start--><p>È pronto</p><!--/unknown-framework:end--><!-- plain note --></article>";
+    const result = htmlMinifyOperation(source, "advanced");
+    expect(result.output).toBe("<article><!--unknown-framework:start--><p>È pronto</p><!--/unknown-framework:end--></article>");
+    expect(result.warnings.join(" ")).toMatch(/Direttiva/u);
+    expect(result.commentPolicy).toContain("structured unknown");
+    expect(result.savedBytes).toBe(utf8(source) - utf8(result.output));
+    expect(htmlMinifyOperation(result.output, "advanced").output).toBe(result.output);
+    const safe = htmlMinifyOperation(source, "safe");
+    expect(fragmentTree(safe.output)).toEqual(fragmentTree(source));
   });
 
   it("leaves comments in foreign SVG/MathML subtree intact in advanced HTML, but never optimizes SVG", () => {

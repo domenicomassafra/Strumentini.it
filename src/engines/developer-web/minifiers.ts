@@ -159,12 +159,18 @@ function conditionalComment(node: HtmlNode): boolean {
 }
 
 /** HTML comments can be live template/rendering delimiters. Never discard a
- * known directive in the opt-in advanced mode; preserve ALL comments in safe.
- * Unknown comment-based template grammars still require caller review. */
+ * known or *structured unknown* directive in advanced mode. Plain prose
+ * comments remain deliberately lossy there; safe preserves every comment. */
 function functionalComment(node: HtmlNode): boolean {
   if (conditionalComment(node)) return true;
   const value = (node.data ?? "").trim();
-  return /^(?:\/?ko(?:\s|:|$)|\/?ng[A-Za-z0-9_-]*(?:\s|:|$)|\/?wp:[A-Za-z0-9_/-]+(?:\s|$)|\/?svelte-[A-Za-z0-9_-]+(?:\s|$)|#|\/?\$|[!?@]|astro(?:\s|:|-|$)|prettier-ignore(?:\s|$)|\{\{|\{%|<%)/iu.test(value);
+  if (/^(?:\/?ko(?:\s|:|$)|\/?ng[A-Za-z0-9_-]*(?:\s|:|$)|\/?wp:[A-Za-z0-9_/-]+(?:\s|$)|\/?svelte-[A-Za-z0-9_-]+(?:\s|$)|#|\/?\$|[!?@]|astro(?:\s|:|-|$)|prettier-ignore(?:\s|$)|\{\{|\{%|<%)/iu.test(value)) return true;
+  // A framework need not be in our allowlist. Preserve syntactically shaped
+  // marker tokens, including matching `/...` closers and namespace separators
+  // (e.g. `hydrate:123`, `island-boundary`, `/island-boundary`). Treat this as
+  // a *conservative heuristic*, not proof of every unknown comment grammar.
+  const first = value.split(/\s/u, 1)[0] ?? "";
+  return /^\/?[A-Za-z][A-Za-z0-9_.:/-]*$/u.test(first) && /[:./-]/u.test(first);
 }
 
 function isForeignHtmlContext(node: HtmlNode | null | undefined): boolean {
@@ -279,7 +285,7 @@ export function htmlMinifyOperation(html: string, mode: string = "safe") {
         ? "Preserve every HTML text and comment node as parsed; pre/textarea/script/style and foreign markup are untouched. Parser serialization can still normalize source markup."
         : "Preserve all non-whitespace text and sensitive elements; remove additional whitespace-only nodes adjacent to block elements.",
     commentPolicy: mode === "advanced"
-      ? "Remove ordinary HTML comments (lossy for unknown comment-based frameworks), preserve known template/SSR/SSI/conditional directives and comments within foreign markup; review consumer semantics."
+      ? "Remove plain prose HTML comments (lossy for unrecognised plain-word framework markers); preserve known and structured unknown template/SSR/SSI/conditional directives and comments within foreign markup; review consumer semantics."
       : "Preserve all comments from the parser tree; no scripts or embedded references are executed during serialization.",
     scriptStylePolicy: "script and style contents are parsed as HTML raw-text elements and are never regex-rewritten by this minifier.",
   });

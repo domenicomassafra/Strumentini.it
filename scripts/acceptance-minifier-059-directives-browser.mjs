@@ -55,6 +55,7 @@ const cases = [
   { name: "known directives advanced", route: "html-minifier", mode: "advanced", source: directiveInput, type: "html", ext: ".html" },
   { name: "known directives safe", route: "html-minifier", mode: "safe", source: directiveInput, type: "html", ext: ".html" },
   { name: "unknown directive safe", route: "html-minifier", mode: "safe", source: unknownInput, type: "html", ext: ".html" },
+  { name: "unknown structured directive advanced", route: "html-minifier", mode: "advanced", source: unknownInput, type: "html", ext: ".html" },
   { name: "nested CSS", route: "css-minifier", mode: "minify", source: cssInput, type: "css", ext: ".css" },
   { name: "Unicode JSON", route: "json-formatter", mode: "minify", source: jsonInput, type: "json", ext: ".json" },
 ];
