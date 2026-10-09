@@ -9,6 +9,7 @@ const root = resolve(import.meta.dirname, "..");
 const cases = [
   { file: "spikes/heavy-local-feasibility/public/corpus/sample-animated.gif", animated: true, frames: 4, width: 64, height: 64 },
   { file: "quality/fixtures/image-format-matrix/source.gif", animated: false, frames: 1, width: 2, height: 2 },
+  { file: "quality/fixtures/image-format-matrix/interlaced-8x8.gif", animated: false, frames: 1, width: 8, height: 8, interlaced: true },
 ];
 const examples = await Promise.all(cases.map(async entry => ({
   ...entry, base64: (await readFile(resolve(root, entry.file))).toString("base64"),
@@ -83,8 +84,9 @@ try {
         assert.equal(proof.framePolicy, "first-frame-only");
         assert.equal(proof.refusedWithoutConsent, entry.animated);
         assert.equal(proof.abortRefused, true);
+        if (entry.interlaced) assert.deepEqual(proof.delays, [12]);
         if (entry.animated) assert.deepEqual(proof.delays, [25, 25, 25, 25]);
-        checks += entry.animated ? 8 : 7;
+        checks += entry.animated || entry.interlaced ? 8 : 7;
         console.log(`${engine.name()} ${entry.animated ? "animated" : "still"} GIF first frame: pixels/alpha=${proof.firstPixelParity}, ${entry.frames} source frame(s) PASS`);
       }
       const avifProbe = await page.evaluate(async encoded => {

@@ -85,6 +85,7 @@ interface FirstImage {
   readonly transparentIndex: number | null;
   readonly minimumCodeBits: number;
   readonly compressed: Uint8Array;
+  readonly interlaced: boolean;
 }
 
 function firstFrameData(gif: Uint8Array, width: number, height: number, signal?: AbortSignal): FirstImage {
@@ -120,8 +121,8 @@ function firstFrameData(gif: Uint8Array, width: number, height: number, signal?:
     const frameHeight = u16(gif, at + 6);
     const packed = gif[at + 8]!;
     at += 9;
-    if (left !== 0 || top !== 0 || frameWidth !== width || frameHeight !== height || (packed & 0x40)) {
-      refuse("UNSUPPORTED_GIF_FRAME", "Only full-canvas, non-interlaced first GIF frames are supported");
+    if (left !== 0 || top !== 0 || frameWidth !== width || frameHeight !== height) {
+      refuse("UNSUPPORTED_GIF_FRAME", "Only full-canvas first GIF frames are supported");
     }
     const paletteEntries = (packed & 0x80) ? 1 << ((packed & 7) + 1) : 0;
     const paletteSize = paletteEntries * 3;
@@ -146,7 +147,8 @@ function firstFrameData(gif: Uint8Array, width: number, height: number, signal?:
       if (total > GIF_212_MAX_BYTES) refuse("GIF_LIMIT", "First frame LZW data exceeds local limit");
       at += count;
     }
-    return { width, height, palette, transparentIndex, minimumCodeBits, compressed: concat(blocks) };
+    return { width, height, palette, transparentIndex, minimumCodeBits, compressed: concat(blocks),
+      interlaced: (packed & 0x40) !== 0 };
   }
   return refuse("MALFORMED_GIF", "First frame not found");
 }
@@ -205,7 +207,20 @@ function decodeLzw(frame: FirstImage, signal?: AbortSignal): Uint8Array {
     previous = word;
   }
   if (!endFound || written !== expected) refuse("INVALID_GIF_LZW", "Truncated or incomplete LZW pixel stream");
-  return result;
+  if (!frame.interlaced) return result;
+  // GIF interlacing transmits rows in four passes. Reorder the actual decoded
+  // indices; toggling the interlace bit without reordering is NOT sufficient.
+  const rows = new Uint8Array(expected);
+  let received = 0;
+  for (const [start, stride] of [[0, 8], [4, 8], [2, 4], [1, 2]] as const) {
+    for (let y = start; y < frame.height; y += stride) {
+      if ((received & 31) === 0) cancelled(signal);
+      rows.set(result.subarray(received * frame.width, (received + 1) * frame.width), y * frame.width);
+      received++;
+    }
+  }
+  if (received !== frame.height) refuse("INVALID_GIF_LZW", "Interlace row pass count disagrees with frame size");
+  return rows;
 }
 
 export interface GifFirstFrame212 {

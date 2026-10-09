@@ -1,14 +1,33 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
+import sharp from "sharp";
 import { gifFirstFrameToPng212, probeAvifDecode212, probeHeicDecode212 } from "../src/engines/image/directional-212";
 
 const still = (): Uint8Array => new Uint8Array(readFileSync(new URL("../quality/fixtures/image-format-matrix/source.gif", import.meta.url)));
 const animated = (): Uint8Array => new Uint8Array(readFileSync(new URL("../spikes/heavy-local-feasibility/public/corpus/sample-animated.gif", import.meta.url)));
 const avif = (): Uint8Array => new Uint8Array(readFileSync(new URL("../quality/fixtures/image-format-matrix/source.avif", import.meta.url)));
+const interlaced = (): Uint8Array => new Uint8Array(readFileSync(new URL("../quality/fixtures/image-format-matrix/interlaced-8x8.gif", import.meta.url)));
 const blob = (bytes: Uint8Array): Blob => new Blob([new Uint8Array(bytes)], { type: "application/octet-stream" });
 const pngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
 
 describe("#212 isolated directional GIF first-frame conversion and AVIF/HEIC fail-closed probes", () => {
+  it("reorders real GIF four-pass interlaced rows and preserves independent pixel/alpha parity", async () => {
+    const source = interlaced();
+    expect(source[13 + 256 * 3 + 8 + 9]).toBe(0x40); // descriptor packed interlace flag
+    const output = await gifFirstFrameToPng212(blob(source));
+    expect(output).toMatchObject({ width: 8, height: 8, frameCount: 1, frameDelaysCentiseconds: [12],
+      transparentFrameCount: 1, animationDiscarded: false, framePolicy: "first-frame-only" });
+    const expected = await sharp(source).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const actual = await sharp(output.png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    expect(expected.info).toMatchObject({ width: 8, height: 8, channels: 4 });
+    expect(actual.data).toEqual(expected.data);
+    // An otherwise identical GIF with the interlace flag cleared is a valid
+    // *different* image: checks meaningful deinterlacing, not flag acceptance.
+    const falselySequential = source.slice();
+    falselySequential[13 + 256 * 3 + 8 + 9] = 0;
+    const unshuffled = await gifFirstFrameToPng212(blob(falselySequential));
+    expect(await sharp(unshuffled.png).ensureAlpha().raw().toBuffer()).not.toEqual(expected.data);
+  });
   it("creates a real signed PNG from the transparent still GIF without an animation loss flag", async () => {
     const source = still();
     const result = await gifFirstFrameToPng212(blob(source));

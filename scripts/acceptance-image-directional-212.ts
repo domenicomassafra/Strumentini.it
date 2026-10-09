@@ -11,10 +11,11 @@ import { gifFirstFrameToPng212, probeHeicDecode212, probeAvifDecode212 } from ".
 const independentPillow = String.raw`
 from PIL import Image
 import os, sys, json
-animated, animated_png, still, still_png = sys.argv[1:5]
+animated, animated_png, still, still_png, interlaced, interlaced_png = sys.argv[1:7]
 for original_path, png_path, count, durations in (
     (animated, animated_png, 4, [250, 250, 250, 250]),
     (still, still_png, 1, [0]),
+    (interlaced, interlaced_png, 1, [120]),
 ):
     with Image.open(original_path) as gif:
         assert gif.format == "GIF" and gif.n_frames == count
@@ -46,6 +47,7 @@ const root = new URL("../", import.meta.url);
 const originals = [
   new URL("spikes/heavy-local-feasibility/public/corpus/sample-animated.gif", root),
   new URL("quality/fixtures/image-format-matrix/source.gif", root),
+  new URL("quality/fixtures/image-format-matrix/interlaced-8x8.gif", root),
 ];
 const temp = mkdtempSync(join(tmpdir(), "image-212-"));
 try {
@@ -66,7 +68,8 @@ try {
     outputPaths.push(outputPath);
   }
   process.stdout.write(execFileSync("python3", ["-c", independentPillow,
-    sourcePaths[0]!, outputPaths[0]!, sourcePaths[1]!, outputPaths[1]!], { encoding: "utf8" }));
+    sourcePaths[0]!, outputPaths[0]!, sourcePaths[1]!, outputPaths[1]!,
+    sourcePaths[2]!, outputPaths[2]!], { encoding: "utf8" }));
   const avif = new Uint8Array(readFileSync(new URL("quality/fixtures/image-format-matrix/source.avif", root)));
   // Independent desktop decoder verifies the stored AVIF corpus item. This
   // deliberately does NOT stand in for a browser or physical mobile proof.
