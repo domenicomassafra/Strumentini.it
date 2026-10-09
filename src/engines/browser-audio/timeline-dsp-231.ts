@@ -110,7 +110,7 @@ function analyze(
   if (settings.silence !== undefined && settings.silence.minimumFrames > timeline.outputFrames) {
     fail("AUDIO_231_INVALID_SILENCE", "minimumFrames exceeds the entire edited timeline");
   }
-  const rendered = renderAudioTimeline231(sources, edits, { signal });
+  const rendered = renderAudioTimeline231(sources, edits, signal === undefined ? {} : { signal });
   const input = rendered.wav;
   const data = new DataView(input.buffer, input.byteOffset, input.byteLength);
   const channels = timeline.channelCount;
