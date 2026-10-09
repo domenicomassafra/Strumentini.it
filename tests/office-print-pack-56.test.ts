@@ -167,6 +167,30 @@ describe("#056 Office-printable pack: explicit fidelity refusal and independent 
     await expect(job).rejects.toMatchObject({ name: "AbortError" });
   });
 
+  it("rejects abort promptly even when the file read never settles", async () => {
+    let notifyRead!: () => void;
+    const started = new Promise<void>((resolve) => { notifyRead = resolve; });
+    const neverFinishes = new Promise<ArrayBuffer>(() => {});
+    const file: PrintableOfficeFile56 = { name: "stalled.txt", type: "text/plain", size: 5,
+      arrayBuffer: () => { notifyRead(); return neverFinishes; } };
+    const controller = new AbortController();
+    const pending = exportOfficePrintable56(file, {}, controller.signal);
+    await started;
+    controller.abort();
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const outcome = await Promise.race([
+        pending.then(() => "unexpected-success", (error: unknown) =>
+          error instanceof Error && error.name === "AbortError" ? "aborted" : "unexpected-error"),
+        new Promise<string>((resolve) => { timer = setTimeout(() => resolve("stalled"), 100); }),
+      ]);
+      expect(outcome).toBe("aborted");
+    } finally {
+      if (timer !== undefined) clearTimeout(timer);
+    }
+  });
+
   it("terminates a browser Worker on mid-layout cancel and never returns partial bytes", async () => {
     class FakeWorker {
       static current: FakeWorker | null = null;

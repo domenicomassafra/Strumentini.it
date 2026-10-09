@@ -77,6 +77,25 @@ function aborted(signal?: AbortSignal): void {
   if (signal?.aborted) throw new DOMException("Esportazione PDF annullata: nessun output parziale.", "AbortError");
 }
 
+/** File.arrayBuffer() has no cancellation argument. Stop awaiting a stalled read
+ * as soon as the caller aborts; any late file result is discarded.
+ */
+async function readFile56(file: PrintableOfficeFile56, signal?: AbortSignal): Promise<ArrayBuffer> {
+  aborted(signal);
+  if (!signal) return file.arrayBuffer();
+  let onAbort: (() => void) | undefined;
+  const cancellation = new Promise<never>((_resolve, reject) => {
+    onAbort = () => reject(new DOMException("Esportazione PDF annullata: nessun output parziale.", "AbortError"));
+    signal.addEventListener("abort", onAbort, { once: true });
+  });
+  try {
+    aborted(signal);
+    return await Promise.race([file.arrayBuffer(), cancellation]);
+  } finally {
+    if (onAbort) signal.removeEventListener("abort", onAbort);
+  }
+}
+
 /** Never trusts MIME, extension or magic independently. Refusal happens before reading Office payloads. */
 export function preflightOfficePrint56(file: PrintableOfficeFile56): PrintableSourceKind {
   if (!file || typeof file.name !== "string" || typeof file.type !== "string"
@@ -232,7 +251,7 @@ async function verifyPrintedPdf56(result: PrintablePdfResult, signal?: AbortSign
 export async function exportOfficePrintable56(file: PrintableOfficeFile56, options: OfficePrintOptions56 = {}, signal?: AbortSignal): Promise<OfficePrintResult56> {
   aborted(signal);
   const kind = preflightOfficePrint56(file);
-  const content = await file.arrayBuffer();
+  const content = await readFile56(file, signal);
   aborted(signal);
   if (content.byteLength !== file.size) fail("PDF56_INPUT_CHANGED", "Dimensione file cambiata durante la lettura.");
   const source = decodeText56(new Uint8Array(content));
