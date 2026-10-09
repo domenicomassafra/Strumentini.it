@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "viewport": "390x844",
+  "browser": "Chromium headless",
+  "supportedField": "AcroForm /Tx Ragione",
+  "formFlattenedPdfJs": {
+    "items": 3,
+    "annotations": 0,
+    "operations": 15
+  },
+  "overlayFlattenedPdfJs": {
+    "items": 3,
+    "annotations": 0,
+    "operations": 15
+  },
+  "keyboardAndPointerPlacement": true,
+  "outputPreviewDecoded": true,
+  "highlightRasterRGB": [
+    255,
+    242,
+    166
+  ],
+  "highlightAnnotations": 0,
+  "unsupportedGlyphRejected": true,
+  "staleDownloadAbsent": true,
+  "offsiteRequests": 0
+}

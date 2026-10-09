@@ -1,0 +1,1 @@
+#234 audio WAV: PASS 39 checks; [{"frequency":440,"rms":0.08835749641568998,"bytes":48044},{"frequency":880,"rms":0.08827876419511346,"bytes":48044}]; refusals, no offsite, mobile viewport. Desktop Chromium only.
