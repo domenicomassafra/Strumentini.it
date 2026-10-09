@@ -70,3 +70,44 @@ claim. This proves visible placement and soft-mask appearance on a real renderer
 it does NOT prove signature authenticity, cross-engine/browser parity, user-facing
 placement UI, physical-device performance, or safe handling of arbitrary PDFs.
 No public route/manifest is enabled and #241 remains `ready-for-agent` (OPEN).
+
+**2026-10-09 isolated worker #241 UI tranche (candidate; keep status `ready-for-agent`):**
+Added `src/components/tools/pdf/PdfVisualSignature241Tool.tsx` and
+`src/pages/tools/pdf-visual-signature.astro` (fallback `BaseLayout noindex`),
+plus `tests/pdf-visual-signature-ui-241.browser.ts` and isolated
+`tests/astro-visual-signature-241.config.mjs` (worktree symlink read allowance).
+The browser UI accepts local simple unsigned PDF + PNG RGB/RGBA, chooses a
+1-indexed page, and exposes keyboard/numeric `x/y/width/height` in visible
+CropBox-relative **bottom-left PDF points**, with positioned outline overlay
+on an independent PDF.js-rendered source preview. It clearly calls the operation
+**firma grafica VISIVA (NON digitale)**, never cryptographic signing. A link to
+download is shown **only after** the existing writer checks its output,
+`inspectPdfBytes` reopens it, and a separate lazy PDF.js session verifies the
+page count and successfully renders the selected output page. Changing input,
+selection or geometry invalidates previous download state; reset clears both
+file pickers and previews, with cancellation through AbortController and
+generation-token guards around asynchronous work. No engine, shared catalog,
+manifest, registry or other production route was edited.
+
+**Real browser acceptance (isolated Astro/Vite, Chromium desktop viewport
+390×844): 36/36 checks PASS** via
+`./node_modules/.bin/tsx tests/pdf-visual-signature-ui-241.browser.ts`.
+Test uploads a genuine three-page PDF and real 16×8 RGBA PNG, places red
+opaque/green transparent pixels at `[100,100,200,160]` on page 2, checks
+original overlay, downloaded NON-digitale filename, and independently renders
+downloaded output with native PDF.js canvas. The red region is present on page
+2, transparent half leaves the white PDF background, and pages 1 and 3 remain
+visibly unchanged at the sampled pixel. The browser refuses an invalid
+oversized rectangle, an existing `/Perms /DocMDP` certification reference,
+a `/ByteRange` signature marker and an `/AcroForm` PDF: no downloadable output.
+Reset removes controls/results; no offsite requests, no JS page exceptions,
+no horizontal overflow at 390 px. The isolated Vite shell's local
+`/api/auth/session` probe responds 404, as expected without an auth backend;
+the acceptance specifically permits only that unrelated local response.
+Existing engine Vitest **7/7 PASS**; `astro check` **0 errors / 0 warnings
+(21 pre-existing hints)**. This is development-server UI validation, **not**
+production build/real iOS, Android, Safari, Firefox, screen-reader, keyboard-only
+human, physical cancellation-under-load, document-wide visual diff or legal
+signature certification. PRIME must review security, register the manifest/copy
+and run built-bundle plus physical/device acceptance before closing #241 or
+promoting Gold. The generated PDF is never an authenticated digital signature.

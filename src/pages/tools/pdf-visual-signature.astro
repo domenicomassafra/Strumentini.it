@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { PdfVisualSignature241Tool } from "../../components/tools/pdf/PdfVisualSignature241Tool";
+import "../../components/tools/tool-surface.css";
+---
+
+<BaseLayout title="Firma grafica VISIVA su PDF (non digitale)" description="Posiziona un'immagine PNG su un PDF semplice senza firma, con anteprima locale e verifica del PDF finale. Nessuna firma digitale o crittografica." noindex>
+  <main data-241-route style="max-width: 1024px; min-width: 0; margin: 0 auto; padding: clamp(1rem, 3vw, 2rem)">
+    <header>
+      <h1>Inserisci una firma grafica visiva nel PDF</h1>
+      <p>Funzione sperimentale: solo immagine visibile su PDF non firmati. Verifica sempre il documento finale.</p>
+    </header>
+    <PdfVisualSignature241Tool client:load />
+  </main>
+</BaseLayout>
