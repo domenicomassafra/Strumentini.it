@@ -26,6 +26,42 @@
     }
   ],
   "publicationSpecificArtifacts": [],
+  "livePrimaryRecheck2026_10_10": {
+    "observedAt": "2026-10-10",
+    "targetTaxYear": 2025,
+    "status": "INCOMPLETE_YEAR_SPECIFIC_LEGAL_SCOPE",
+    "vat": {
+      "authority": "Normattiva",
+      "law": "D.P.R. 633/1972",
+      "asOf": "2025-12-31",
+      "artifactId": "normattiva-dpr633-iva-2025",
+      "outcome": "Complete rate applicability cannot be certified from the landed whole-act HTML: article 16 and Table A are linked via server-side article/image endpoints and the attempted article/Table A requests returned HTTP 500. European Commission Access2Markets VAT page was captured but country-specific legal detail loads separately via dynamic content. No transaction-class preset is promoted."
+    },
+    "forfettario": {
+      "authority": "Normattiva",
+      "asOf": "2025-12-31",
+      "law190ArtifactId": "normattiva-law190-forfettario-2025",
+      "transitionArtifactId": "normattiva-dlgs81-ateco-2025",
+      "verifiedStatutorySubset": {
+        "priorYearReceiptsCeilingEuro": 85000,
+        "userDeclaredOrdinarySubstituteTaxPercent": 15,
+        "userDeclaredEligibleStartupTaxPercent": 5,
+        "coefficientLookupVersion": "ATECO 2007 pending new approved ATECO 2025 coefficients"
+      },
+      "coefficients": {
+        "authority": "Gazzetta Ufficiale",
+        "law": "Legge 145/2018, art. 1 comma 10, Allegato 2 (replaces Legge 190/2014 Allegato 4)",
+        "artifactId": "gu-law145-2018-supplement-annex2",
+        "verifiedPdfPageNumber": 218,
+        "verifiedSubset": [{ "group": "69-70 ATECO2007 professioni", "coefficientPercent": 78 }]
+      },
+      "outcome": "Law 190/2014 section 54 and 64/65 proves 85k prior receipts and declared 15%/5% rules; Legislative Decree 81/2025 continues ATECO2007 coefficient lookup; independent official Gazzetta Law145/2018 Annex2 PDF page 218 visibly proves the full 9-row replacement table, with only ATECO2007 group 69–70 (78%) enabled in the standalone #133 engine. Paid mandatory contributions are user-provided 2025 amounts, no 2025 INPS contribution rate inferred or 2026 INPS pack reused. This is a strict source-backed arithmetic subset, not the complete fiscal pack or a certified legal eligibility decision."
+    },
+    "downstream": {
+      "126": "Only custom user-supplied IVA rate engine safe; statutory preset blocked for every year and rate class",
+      "133": "Source-backed 2025 group ATECO2007 69–70 (78%) subset computes gross income, user-paid mandatory contribution deduction, declared 5% or 15% tax and estimated cash after tax. Full INPS 2025 profile engine and other complete eligibility/ATECO routing are not supported"
+    }
+  },
   "verifiedPartialSubpacks": [
     {
       "name": "irpef-national-brackets",
@@ -82,11 +118,56 @@
       "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/agenzia-bollo-fatture-2024.html",
       "sha256": "sha256:d7f16c2012be8234ee59609578c21984295e1dfdfa50109bd54d419fcbb5ea8f",
       "classification": "RELATED_TO_152_ARCHIVED_REFERENCE_ONLY"
+    },
+    {
+      "id": "normattiva-dpr633-iva-2025",
+      "authority": "Normattiva",
+      "title": "D.P.R. 633/1972 consolidated as at 2025-12-31; VAT article 16/Table A remain server-side links",
+      "url": "https://www.normattiva.it/eli/id/1972/11/11/072U0633/CONSOLIDATED/20251231",
+      "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/normattiva-dpr633-iva-2025.html",
+      "sha256": "sha256:e0d1c0911e892555be201c30c77e60cc650307a15a0210a4dc46302bd75b476e",
+      "classification": "INCOMPLETE_LEGAL_APPLICABILITY_TABLE_A_NOT_READABLE"
+    },
+    {
+      "id": "normattiva-law190-forfettario-2025",
+      "authority": "Normattiva",
+      "title": "Legge 190/2014 consolidated as at 2025-12-31; 85k ceiling and 5/15 percent tax regimes, Annex 4 graphical",
+      "url": "https://www.normattiva.it/eli/id/2014/12/29/14G00203/CONSOLIDATED/20251231",
+      "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/normattiva-law190-forfettario-2025.html",
+      "sha256": "sha256:b84353f1f5ab45376c8101ca0fc1ce8c0558ec3a7bd68e11ec2cab8973fffbfb",
+      "classification": "SUFFICIENT_FOR_STATUTORY_PREFLIGHT_ONLY_ANNEX4_MISSING"
+    },
+    {
+      "id": "normattiva-dlgs81-ateco-2025",
+      "authority": "Normattiva",
+      "title": "D.Lgs. 81/2025 article 1, transitional ATECO 2007 coefficient requirement, consolidated 2025-12-31",
+      "url": "https://www.normattiva.it/eli/id/2025/06/12/25G00090/CONSOLIDATED/20251231",
+      "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/normattiva-dlgs81-ateco-2025.html",
+      "sha256": "sha256:0ea7d51d7ee21c85445ae7be493eb2225ee38bd7b5c5d7e3fd0b2eec149c5669",
+      "classification": "SUFFICIENT_FOR_2025_ATECO_VERSION_TRANSITION_ONLY"
+    },
+    {
+      "id": "ec-access2markets-vat-reference-2026-10-10",
+      "authority": "European Commission / Access2Markets",
+      "title": "EU VAT information landing page captured 2026-10-10; country-specific information dynamically injected",
+      "url": "https://trade.ec.europa.eu/access-to-markets/en/content/value-added-tax-1",
+      "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/ec-access2markets-vat-reference-2026-10-10.html",
+      "sha256": "sha256:8e425eb5fc0bf5b05b54f8248ff71fa37b1afd3a12fd127c14bff519dcfed191",
+      "classification": "INSUFFICIENT_VAT_YEAR_AND_TRANSACTION_SCOPE_DYNAMIC_DETAILS"
+    },
+    {
+      "id": "gu-law145-2018-supplement-annex2",
+      "authority": "Gazzetta Ufficiale",
+      "title": "Legge 145/2018, Allegato 2 replacing Legge 190/2014 Allegato 4 ATECO2007 coefficients, PDF page 218",
+      "url": "https://www.gazzettaufficiale.it/eli/gu/2018/12/31/302/so/62/sg/pdf",
+      "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/gu-law145-2018-supplement-annex2.pdf",
+      "sha256": "sha256:19e507421ba6fb7f856d5c3bee3dcbf53bf3efc9a22114562951d11932bbd142",
+      "classification": "OFFICIAL_FULL_NINE_ROW_ATECO2007_COEFFICIENT_TABLE_2025_SUBSET_GROUP_69_70_VERIFIED"
     }
   ],
   "missingPrimaryEvidence": [
-    "Single-tax-year official IVA schedules/rates with legal effective intervals, including reduced classes and eligibility scope, are not pinned for 2025 or 2026.",
-    "Single-tax-year official forfettario Annex 4 ATECO-to-coefficient table, eligibility/thresholds and 5%/15% scope are not pinned together for 2025 or 2026.",
+    "2025 Normattiva D.P.R. 633/1972 consolidated landing page is pinned but its article 16 and Tabella A are served via an article endpoint that returned HTTP 500. Full item-by-item ordinary/reduced rate eligibility and year-specific source-to-rate mapping are not reproducibly pinned; no official preset available.",
+    "2025 Forfettario law/ATECO coefficient source is now available through the 2018 official Gazzetta Annex2 PDF (page 218), but only group 69–70 is implemented and the 2025 INPS contribution-profile reconciliation, complete eligibility, all groups and public UX are NOT verified. This does not close #133 AC or turn a user-declared eligibility assumption into a legal certification.",
     "No complete single-year IVA + IRPEF + forfettario triad is pinned; individual IRPEF excerpt correctness does not promote ticket 117."
   ],
   "decision": "BLOCKED",

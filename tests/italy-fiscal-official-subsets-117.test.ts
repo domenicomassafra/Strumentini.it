@@ -7,6 +7,8 @@ import {
 } from "../src/reference-data/italy/fiscal-annual-117";
 import { calculateNationalGrossIrpef127 } from "../src/engines/italy/irpef-national-127";
 import { getInvoiceStampReference152 } from "../src/engines/italy/invoice-stamp-reference-152";
+import { getItalySourcePackDecision } from "../src/reference-data/italy/source-packs";
+import { FORFETTARIO_2025_SOURCE_133 } from "../src/engines/italy/forfettario-133";
 
 const root = resolve(import.meta.dirname, "..");
 const sourceText = async (source: { readonly artifactPath: string; readonly sha256: string }) => {
@@ -16,6 +18,34 @@ const sourceText = async (source: { readonly artifactPath: string; readonly sha2
 };
 
 describe("#117 official independent excerpts remain narrower than a complete annual fiscal pack", () => {
+  it("hash-pins 2025 IVA whole-act landing and forfettario statute but forbids complete-pack promotion", async () => {
+    const fiscal = getItalySourcePackDecision(117);
+    expect(fiscal.status).toBe("BLOCKED");
+    expect(fiscal.officialSources).toEqual([]);
+    const evidenceText = await readFile(resolve(root, fiscal.evidenceSnapshot.path));
+    expect(`sha256:${createHash("sha256").update(evidenceText).digest("hex")}`).toBe(fiscal.evidenceSnapshot.sha256);
+    const evidence = JSON.parse(evidenceText.toString("utf8")) as {
+      livePrimaryRecheck2026_10_10: { targetTaxYear: number; status: string };
+      publicationSpecificArtifacts: unknown[];
+      artifacts: Array<{ id: string; path: string; sha256: string }>;
+    };
+    expect(evidence.livePrimaryRecheck2026_10_10).toMatchObject({ targetTaxYear: 2025, status: "INCOMPLETE_YEAR_SPECIFIC_LEGAL_SCOPE" });
+    expect(evidence.publicationSpecificArtifacts).toEqual([]);
+    const artifact = async (id: string) => {
+      const record = evidence.artifacts.find((item) => item.id === id);
+      expect(record).toBeDefined();
+      return sourceText({ artifactPath: record!.path, sha256: record!.sha256 });
+    };
+    const [vat, law, transition, eu] = await Promise.all([
+      artifact("normattiva-dpr633-iva-2025"), artifact("normattiva-law190-forfettario-2025"),
+      artifact("normattiva-dlgs81-ateco-2025"), artifact("ec-access2markets-vat-reference-2026-10-10"),
+    ]);
+    expect(vat).toContain("Tabella A");
+    expect(law).toMatch(/euro 85\.000/iu);
+    expect(transition).toMatch(/ATECO 2007/iu);
+    expect(eu).toContain('data-inject-content="taxes"');
+    expect(FORFETTARIO_2025_SOURCE_133.atecoCoefficientVersion).toBe("ATECO2007");
+  });
   it("hash-binds 2025 national IRPEF bands to the 2024 budget law and 2026 rate change to the 2025 law", async () => {
     expect(VERIFIED_IRPEF_EXCERPTS_117.map((pack) => pack.taxYear)).toEqual([2025, 2026]);
     const [original, change] = await Promise.all([

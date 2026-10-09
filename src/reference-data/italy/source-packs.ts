@@ -160,7 +160,7 @@ export const ITALY_SOURCE_PACK_DECISIONS = Object.freeze([
     checkedAt: "2026-10-09",
     evidenceSnapshot: {
       path: "quality/reference-data/italy/117-fiscal-annual-evidence.json",
-      sha256: "sha256:a09daaeec0e67aba05eee44134906e7848ab413e48275549e387bb9d9467e574",
+      sha256: "sha256:6e2cbf5f9fafdb031f63cc7e92a0f1bd609052eeec2d481b1d5fbee14c19bdb8",
     },
     freshness: {
       mode: "annual-rollover",
@@ -200,8 +200,32 @@ export const ITALY_SOURCE_PACK_DECISIONS = Object.freeze([
         sufficiency: "INSUFFICIENT",
         limitation: "Hash-pinned 2026 change from 35% to 33% supports national gross IRPEF together with Law 207/2024, but does not complete the annual IVA/IRPEF/forfettario triad.",
       },
+      {
+        type: "official-authority",
+        authority: "Normattiva",
+        title: "D.P.R. 633/1972 consolidated at 31 December 2025 - IVA article 16 and Table A",
+        url: "https://www.normattiva.it/eli/id/1972/11/11/072U0633/CONSOLIDATED/20251231",
+        sufficiency: "INSUFFICIENT",
+        limitation: "The exact whole-act landing HTML is pinned, but the server returns HTTP 500 for the separately linked article 16 and graphical Table A; rate applicability per transaction is not independently captured.",
+      },
+      {
+        type: "official-authority",
+        authority: "Normattiva",
+        title: "Legge 190/2014 and D.Lgs. 81/2025 consolidated at 31 December 2025 - forfettario annual threshold and ATECO2007 transition",
+        url: "https://www.normattiva.it/eli/id/2014/12/29/14G00203/CONSOLIDATED/20251231",
+        sufficiency: "INSUFFICIENT",
+        limitation: "Official 85k prior-year receipts and 5%/15% declared regimes and D.Lgs. 81/2025 ATECO2007 transition are captured. Gazzetta Law145/2018 Annex2 is also pinned; only group 69–70 coefficient path is implemented and 2025 INPS/eligibility/other groups remain unsupported.",
+      },
+      {
+        type: "official-authority",
+        authority: "Gazzetta Ufficiale",
+        title: "Legge 145/2018 Allegato 2, replacement Allegato 4 to Legge 190/2014, coefficients ATECO 2007",
+        url: "https://www.gazzettaufficiale.it/eli/gu/2018/12/31/302/so/62/sg/pdf",
+        sufficiency: "INSUFFICIENT",
+        limitation: "Exact original supplement PDF is SHA-pinned and page 218 proves nine sector coefficients, including 69–70 at 78%; #133 exposes only this bounded subset. #117 still lacks complete IVA legal rate applicability and all downstream release acceptance.",
+      },
     ],
-    reason: "National gross IRPEF 2025/2026 excerpts are independently hash-pinned to the relevant budget laws, and a 2024 Agenzia invoice-stamp reference is separately archived. No single tax year yet has the complete official IVA + IRPEF + forfettario evidence set, so the annual fiscal pack remains BLOCKED.",
+    reason: "National gross IRPEF 2025/2026 is hash-pinned. The 2025-12-31 legal recheck pinned D.P.R. 633/1972, Law190/2014, D.Lgs.81/2025 plus Gazzetta Law145/2018 Annex2 official ATECO2007 coefficient table (2025 group 69–70 at 78%). Yet 2025 IVA article16/Tabella A transaction eligibility cannot be independently retrieved; #126 only allows user-supplied arithmetic and #133 only a strict 2025 sector subset with user-declared already-paid contributions. Complete #117 annual fiscal pack remains BLOCKED.",
   },
   {
     ticket: 118,
