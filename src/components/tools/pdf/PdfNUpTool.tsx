@@ -49,22 +49,28 @@ export function PdfNUpTool() {
   }, [file]);
 
   useEffect(() => {
-    if (!result) { setDownloadUrl(""); setResultPreview(""); return; }
+    if (!result) { setDownloadUrl(""); return; }
     const url = URL.createObjectURL(result);
     setDownloadUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [result]);
+  useEffect(() => {
+    if (!result) { setResultPreview(""); return; }
     let live = true;
     let close: () => Promise<void> = async () => {};
+    let previewUrl = "";
+    setResultPreview("");
+    setResultPreviewError("");
     void (async () => {
       const session = await openPdfThumbnailSession(new File([result], "pdf-n-up-raster.pdf", { type: "application/pdf" }));
       close = () => session.close();
       try {
-        const png = await session.renderPage(1);
-        if (live) setResultPreview(URL.createObjectURL(png));
+        const png = await session.renderPage(Math.min(shownSheet, session.pageCount));
+        if (live) { previewUrl = URL.createObjectURL(png); setResultPreview(previewUrl); }
       } finally { await session.close(); }
     })().catch((exception) => { if (live) setResultPreviewError(exception instanceof Error ? exception.message : "Anteprima non disponibile"); });
-    return () => { live = false; void close(); URL.revokeObjectURL(url); };
-  }, [result]);
-  useEffect(() => () => { if (resultPreview) URL.revokeObjectURL(resultPreview); }, [resultPreview]);
+    return () => { live = false; void close(); if (previewUrl) URL.revokeObjectURL(previewUrl); };
+  }, [result, shownSheet]);
 
   function changed<T>(setter: (value: T) => void, value: T) {
     setter(value); setError(""); setResult(null); setResultPreviewError("");
@@ -118,10 +124,10 @@ export function PdfNUpTool() {
       <div class="actions"><button type="button" disabled={shownSheet <= 1} onClick={() => setShownSheet((n) => n - 1)}>Foglio precedente</button>
         <span>Foglio {Math.min(shownSheet, plan.sheetCount)} di {plan.sheetCount}</span>
         <button type="button" disabled={shownSheet >= plan.sheetCount} onClick={() => setShownSheet((n) => n + 1)}>Foglio successivo</button></div>
-      <svg data-nup-sheet viewBox={`0 0 ${plan.sheetWidth} ${plan.sheetHeight}`} role="img" aria-label="Posizioni esatte delle pagine sorgenti nel foglio" style={{ display: "block", background: "#fff", color: "#222", width: "min(100%, 400px)", border: "1px solid #aaa", margin: "1rem auto" }}>
+      <svg data-nup-sheet viewBox={`0 0 ${plan.sheetWidth} ${plan.sheetHeight}`} role="img" aria-label="Posizioni esatte delle pagine sorgenti nel foglio" style={{ display: "block", background: "var(--surface)", color: "var(--text)", width: "min(100%, 400px)", border: "1px solid var(--border)", margin: "1rem auto" }}>
         {sheet.cells.map((cell) => <g key={cell.slot} data-nup-slot={cell.slot} data-source-page={cell.sourcePage ?? "blank"}>
-          <rect x={cell.x} y={plan.sheetHeight - cell.y - cell.height} width={cell.width} height={cell.height} fill={cell.sourcePage === null ? "#f1f1f1" : "#e6edf8"} stroke="#64748b" strokeWidth="1.5" />
-          <text x={cell.x + cell.width / 2} y={plan.sheetHeight - cell.y - cell.height / 2} textAnchor="middle" fontSize={Math.min(20, cell.height / 5)} fill="#222">{cell.sourcePage === null ? "VUOTA" : `PAG. ${cell.sourcePage}`}</text>
+          <rect x={cell.x} y={plan.sheetHeight - cell.y - cell.height} width={cell.width} height={cell.height} fill={cell.sourcePage === null ? "var(--surface-muted)" : "var(--brand-soft)"} stroke="var(--border-strong)" strokeWidth="1.5" />
+          <text x={cell.x + cell.width / 2} y={plan.sheetHeight - cell.y - cell.height / 2} textAnchor="middle" fontSize={Math.min(20, cell.height / 5)} fill="var(--text)">{cell.sourcePage === null ? "VUOTA" : `PAG. ${cell.sourcePage}`}</text>
         </g>)}
       </svg>
       <p class="file-note" data-nup-mapping>{sheet.cells.map((cell) => `Slot ${cell.slot}: ${cell.sourcePage === null ? "vuoto (padding)" : `pagina ${cell.sourcePage}`}`).join(" · ")}</p>
@@ -130,7 +136,7 @@ export function PdfNUpTool() {
     {downloadUrl ? <section class="result-panel" data-state="success" data-nup-result>
       <p role="status">PDF n-up generato: {plan?.sheetCount} fogli con MediaBox, immagini JPEG e firma ricontrollati.</p>
       {resultPreviewError ? <p role="alert">{resultPreviewError}</p> : null}
-      {resultPreview ? <img data-nup-result-preview src={resultPreview} alt="Prima pagina del PDF prodotto, riaperta e renderizzata con PDF.js" style={{ maxWidth: "min(100%, 320px)", display: "block" }} /> : null}
+      {resultPreview ? <img data-nup-result-preview src={resultPreview} alt={`Foglio ${Math.min(shownSheet, plan?.sheetCount ?? 1)} del PDF prodotto, riaperto e renderizzato con PDF.js`} style={{ maxWidth: "min(100%, 320px)", display: "block" }} /> : null}
       <a href={downloadUrl} download="pdf-n-up-raster.pdf">Scarica PDF n-up</a>
     </section> : null}
   </form>;

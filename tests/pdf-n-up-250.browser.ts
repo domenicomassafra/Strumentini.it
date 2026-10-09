@@ -1,8 +1,8 @@
 import { chromium } from "@playwright/test";
 import { spawn } from "node:child_process";
-import { readFile, realpath, unlink, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { parsePdf, pdfArray, pdfDict, pdfName, pdfNumber, pdfReference } from "../src/engines/pdf/parser";
+import { parsePdf, pdfArray, pdfDict, pdfName, pdfNumber } from "../src/engines/pdf/parser";
 import { PdfBuilder } from "../src/engines/pdf/writer";
 import { planPdfNUp, verifyPdfNUp } from "../src/engines/pdf/n-up";
 
@@ -37,10 +37,8 @@ function assert(condition: unknown, detail: string): asserts condition {
 const fixture = numberedPdf();
 const source = parsePdf(fixture);
 assert(source.pages.length === 5, "Numerated PDF fixture generation failed");
-const dependencyDir = await realpath(resolve(root, "node_modules"));
-const temporaryConfig = resolve(root, ".scratch", `pdf-250-${process.pid}.config.mjs`);
-await writeFile(temporaryConfig, `import base from "../astro.config.mjs";\nexport default { ...base, vite: { ...base.vite, server: { fs: { allow: [${JSON.stringify(root)}, ${JSON.stringify(dependencyDir)}] } } } };\n`);
-const server = spawn(resolve(root, "node_modules/.bin/astro"), ["dev", "--host", "127.0.0.1", "--port", String(port), "--config", `.scratch/pdf-250-${process.pid}.config.mjs`], { cwd: root, stdio: ["ignore", "pipe", "pipe"] });
+// Test the integrated production build, avoiding a second Astro dev instance.
+const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: ["ignore", "pipe", "pipe"] });
 let serverOutput = "";
 for (const stream of [server.stdout, server.stderr]) stream.on("data", (chunk) => { serverOutput = (serverOutput + String(chunk)).slice(-5000); });
 let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
@@ -83,46 +81,55 @@ try {
     const plan = planPdfNUp(5, { mode: "4-up", paper: "a4", orientation: "landscape", margin: 18, gap: 12, order: "row-major" });
     verifyPdfNUp(output, plan);
     assert(parsePdf(output).pages.length === 2, "Expected exactly two imposed sheets");
-    const raster = await page.evaluate(async ({ bytes, geometry, colors }) => {
-      const { openPdfThumbnailSession } = await import("/src/engines/pdf/thumbnails.ts");
-      const session = await openPdfThumbnailSession(new File([Uint8Array.from(bytes)], "nup-output.pdf", { type: "application/pdf" }));
-      try {
-        const readings = [];
-        for (let sheetNumber = 1; sheetNumber <= session.pageCount; sheetNumber++) {
-          const png = await session.renderPage(sheetNumber);
-          const bitmap = await createImageBitmap(png);
-          const canvas = document.createElement("canvas");
-          canvas.width = bitmap.width;
-          canvas.height = bitmap.height;
-          const ctx = canvas.getContext("2d", { willReadFrequently: true });
-          ctx.drawImage(bitmap, 0, 0);
-          const sheet = geometry[sheetNumber - 1];
-          readings.push(sheet.cells.map((cell) => {
-            const cx = Math.max(0, Math.min(canvas.width - 1, Math.floor((cell.x + cell.width * 0.88) / sheet.width * canvas.width)));
-            const cy = Math.max(0, Math.min(canvas.height - 1, Math.floor((sheet.height - cell.y - cell.height * 0.16) / sheet.height * canvas.height)));
-            return { expectedPage: cell.sourcePage, pixel: Array.from(ctx.getImageData(cx, cy, 1, 1).data).slice(0, 3) };
-          }));
-          bitmap.close();
-          canvas.width = 0;
-          canvas.height = 0;
-        }
-        return { readings, colors };
-      } finally { await session.close(); }
-    }, { bytes: Array.from(output), colors: fixtureColors, geometry: plan.sheets.map((sheet) => ({ width: plan.sheetWidth, height: plan.sheetHeight, cells: sheet.cells })) });
-    for (const cells of raster.readings) {
+    // The UI rereads the exported PDF with independent PDF.js, rather than
+    // reusing the writer's JPEG sheet canvas. Inspect its actual rendered PNG
+    // one page at a time, including every blank slot on the final page.
+    const readings: Array<Array<{expectedPage: number | null; pixel: number[]}>> = [[], []];
+    for (const sheetNumber of [2, 1]) {
+      if (sheetNumber === 1) {
+        const oldPreviewUrl = await page.locator("[data-nup-result-preview]").getAttribute("src");
+        await page.getByRole("button", { name: "Foglio precedente" }).click();
+        await page.waitForFunction((previous) => {
+          const preview = document.querySelector<HTMLImageElement>("[data-nup-result-preview]");
+          return !!preview && preview.getAttribute("src") !== previous && preview.alt.startsWith("Foglio 1 ");
+        }, oldPreviewUrl, { timeout: 20000 });
+      }
+      const img = page.locator(`[data-nup-result-preview][alt^="Foglio ${sheetNumber} "]`);
+      await img.waitFor({ timeout: 20000 });
+      const geometry = { width: plan.sheetWidth, height: plan.sheetHeight, cells: plan.sheets[sheetNumber - 1]!.cells };
+      readings[sheetNumber - 1] = await img.evaluate(async (element, sheet) => {
+        const image = element as HTMLImageElement;
+        await image.decode();
+        const canvas = document.createElement("canvas");
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        if (!context) throw new Error("PDF.js rendered preview canvas not available");
+        context.drawImage(image, 0, 0);
+        const samples = sheet.cells.map((cell) => {
+          // Center of the fitted page, not an edge of its letterboxed cell.
+          const cx = Math.max(0, Math.min(canvas.width - 1, Math.floor((cell.x + cell.width * 0.5) / sheet.width * canvas.width)));
+          const cy = Math.max(0, Math.min(canvas.height - 1, Math.floor((sheet.height - cell.y - cell.height * 0.5) / sheet.height * canvas.height)));
+          return { expectedPage: cell.sourcePage, pixel: Array.from(context.getImageData(cx, cy, 1, 1).data).slice(0, 3) };
+        });
+        canvas.width = 0;
+        canvas.height = 0;
+        return samples;
+      }, geometry);
+    }
+    for (const cells of readings) {
       for (const cell of cells) {
         const wanted = cell.expectedPage === null ? [255, 255, 255] : fixtureColors[cell.expectedPage - 1]!;
-        const difference = Math.max(...wanted.map((value, index) => Math.abs(value - cell.pixel[index])));
+        const difference = Math.max(...wanted.map((value, index) => Math.abs(value - (cell.pixel[index] ?? 0))));
         assert(difference <= 22, `Page order, rendered color or blank padding differ: ${JSON.stringify({ cell, wanted, difference })}`);
       }
     }
     assert(errors.length === 0, `Browser errors: ${errors.join("; ")}`);
     console.log(JSON.stringify({ status: "PASS", fixture: "5 numbered colored source PDF pages", viewport: "390x844",
-      sourcePages: 5, outputSheets: plan.sheetCount, padding: plan.blankSlots, renderedCellColors: raster.readings,
+      sourcePages: 5, outputSheets: plan.sheetCount, padding: plan.blankSlots, renderedCellColors: readings,
       mediaBox: [plan.sheetWidth, plan.sheetHeight], outputBytes: output.length, noExternalRequests: true }));
   } finally { await context.close(); }
 } finally {
   await browser?.close();
   server.kill("SIGTERM");
-  await unlink(temporaryConfig);
 }

@@ -19,7 +19,8 @@ import { resolve } from "node:path";
 import { chromium, type Browser, type Page } from "@playwright/test";
 import { unzipSync } from "fflate";
 import sharp from "sharp";
-import { getDocument, type TextItem } from "pdfjs-dist/legacy/build/pdf.mjs";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
+import type { TextItem } from "pdfjs-dist/types/src/display/api";
 
 const project = resolve(import.meta.dirname, "..");
 const port = Number(process.env.STRUMENTINI_PRINTABLE_AC2_PORT ?? 18527);
@@ -140,7 +141,7 @@ async function inspectAllPdfText(bytes: Uint8Array, fixture: Fixture): Promise<S
     const combined: string[] = [];
     const expectedSize = fixture.size === "letter" ? [612, 792] : [595.28, 841.89];
     const [width, height] = fixture.orientation === "landscape" ?
-      [expectedSize[1]!, expectedSize[0]!] : expectedSize;
+      [expectedSize[1]!, expectedSize[0]!] : [expectedSize[0]!, expectedSize[1]!];
     let totalRuns = 0;
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
       const page = await pdf.getPage(pageNumber);

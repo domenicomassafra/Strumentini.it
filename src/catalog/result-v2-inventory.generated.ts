@@ -3387,6 +3387,25 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
+    "toolId": "pdf-n-up",
+    "engine": "pdf",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "PdfNUpTool",
+      "source": "src/components/tools/pdf/PdfNUpTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "pdf",
+      "capabilities": [
+        "download",
+        "reset",
+        "retry"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "pdf-page-citation-helper",
     "engine": "research-knowledge",
     "rendererSeam": {
@@ -3727,6 +3746,25 @@ export const resultV2Inventory = [
       ]
     },
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+  },
+  {
+    "toolId": "printable-pdf-from-text",
+    "engine": "pdf",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "PrintablePdfTool",
+      "source": "src/components/tools/PrintablePdfTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "pdf",
+      "capabilities": [
+        "download",
+        "reset",
+        "retry"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
     "toolId": "project-profitability",

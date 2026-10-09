@@ -16,7 +16,7 @@ export const printablePdfFromTextManifest = {
   profileFields: [],
   result: { class: "pdf", capabilities: ["download", "reset", "retry"] },
   handoff: { emits: [{ type: "file", format: "pdf" }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-256", fixtureFamilies: ["printable-text-pdf"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-266", fixtureFamilies: ["pdf-gold", "pdf-signature"] },
 } as const satisfies ToolManifest;
 
 export default printablePdfFromTextManifest;

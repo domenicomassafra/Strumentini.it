@@ -1,17 +1,15 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PrintablePdfTool } from "../../components/tools/PrintablePdfTool";
 import "../../components/tools/tool-surface.css";
 ---
 
-<BaseLayout title="Da TXT, Markdown, HTML e CSV a PDF" description="Trasforma documenti di testo e tabelle CSV in PDF stampabili nel browser, con paginazione e anteprima reale." noindex>
+<ItalianToolPage toolId="printable-pdf-from-text">
   <main class="printable-page">
-    <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / PDF da testo</nav>
-    <h1>Da TXT, Markdown, HTML e CSV a PDF</h1>
     <p>Impagina localmente testo e tabelle con dimensioni A4/Letter, margini, orientamento, righe a capo e numerazione pagine. Anteprima PDF.js prima del download.</p>
     <PrintablePdfTool client:load />
   </main>
-</BaseLayout>
+</ItalianToolPage>
 
 <style>
   .printable-page { max-width: 1120px; margin: 0 auto; padding: 32px 20px 72px; }
@@ -27,7 +25,7 @@ import "../../components/tools/tool-surface.css";
   .printable-page :global(.printable-check) { display: flex; align-items: center; gap: 8px; margin: 10px 0; }
   .printable-page :global(.printable-note) { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
   .printable-page :global(.printable-actions) { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
-  .printable-page :global(.printable-error) { color: var(--danger, #ac2525); padding: 12px; border: 1px solid currentColor; border-radius: 8px; }
+  .printable-page :global(.printable-error) { color: var(--danger); padding: 12px; border: 1px solid currentColor; border-radius: 8px; }
   .printable-page :global(.printable-metrics) { display: flex; gap: 24px; flex-wrap: wrap; }
   .printable-page :global(.printable-metrics dt) { color: var(--text-muted); font-size: 0.85rem; }
   .printable-page :global(.printable-metrics dd) { margin: 0; font-weight: 700; }

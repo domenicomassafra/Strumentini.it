@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 264,
+  "entry_count": 266,
   "entries": [
     {
       "id": "cand-001",
@@ -11952,6 +11952,38 @@
       "cross_check": { "usable": true, "implementation": "original stream byte-for-byte comparison and independent source/output PDF.js image render", "role": "bounded fixture proof not global PDF semantics or Gold" },
       "confidence": "medium",
       "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED no Gold receipt", "full browser/device matrix and rotated visual corpus remain external gates", "complex interactive PDFs are not guaranteed by page cloning"]
+    },
+    {
+      "id": "cand-265",
+      "candidate": "Local PDF n-up raster imposition with explicit page order and blank padding",
+      "tool_family": "pdf",
+      "maintenance_class": "H",
+      "truth_sources": ["iso-pdf2", "fixture-policy"],
+      "standard_or_official_example": "Synthetic five-page numbered vector PDF with distinct per-page fill colors, imposed as 4-up across two landscape A4 sheets.",
+      "invariants": ["source page to sheet slot mapping is deterministic and previewable", "last-sheet unused slots are blank and source order remains explicit", "output sheet MediaBox and embedded JPEG dimensions can be reparsed", "rasterization loses selectable text, vectors and links; user is warned"],
+      "adversarial_cases": ["invalid row/column/grid and page-range geometry", "annotated input rejected", "encrypted/oversized source", "last sheet with blank padding", "aborted or unsupported browser rasterization"],
+      "expected_output_strategy": "tests/pdf-n-up-250.test.ts checks row/column mapping, padding and page geometry; tests/pdf-n-up-250.browser.ts downloads the PDF and independently checks PDF.js raster pixels for numbered colors and white blanks. Gold/cross-browser certification pending.",
+      "security_privacy_edges": ["LOCAL browser only, no upload", "bounded 25 MiB source, 64 pages and up to 8 slots per sheet", "annotation-bearing pages rejected rather than silently flattened"],
+      "portability_browser_edges": ["Chromium desktop 390px viewport is not physical device acceptance", "PDF.js JPEG re-encode and memory limits vary by browser"],
+      "cross_check": { "usable": true, "implementation": "independent PDF parser MediaBox/JPEG reparse and PDF.js rendered source/result pixel samples", "role": "bounded color/position/padding verification, not selectable-text preservation or universal PDF fidelity" },
+      "confidence": "medium",
+      "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED; no Gold receipt", "complex PDF semantics and real-device raster fidelity not certified", "original links/text/vectors are intentionally lost"]
+    },
+    {
+      "id": "cand-266",
+      "candidate": "Local printable PDF from bounded plain text Markdown HTML or CSV",
+      "tool_family": "pdf",
+      "maintenance_class": "H",
+      "truth_sources": ["iso-pdf2", "fixture-policy"],
+      "standard_or_official_example": "Synthetic bounded TXT/Markdown/HTML/CSV with quoted cells, repeated table headers and Italian WinAnsi characters, printed to A4 or Letter.",
+      "invariants": ["input is never fetched or executed as HTML", "output PDF page count and MediaBox match the deterministic layout plan", "CSV repeated table headers and rows do not silently disappear", "unsupported Unicode code points fail closed rather than being replaced"],
+      "adversarial_cases": ["quoted multiline CSV", "long wrapped rows crossing page boundaries", "HTML scripts or remote resource references", "Unicode outside Courier WinAnsi", "malformed or oversized input", "aborted generation"],
+      "expected_output_strategy": "tests/printable-pdf-256.test.ts verifies bounded pagination and format parsing; scripts/acceptance-printable-pdf-256.ts uses real Chromium downloads and PDF.js previews for representative multipage TXT/CSV and inert HTML. Complete multilingual and visual-page matrix still pending.",
+      "security_privacy_edges": ["LOCAL only, no offsite requests or HTML execution", "512KiB text limit and 80 page output cap", "no invisible unsupported glyph substitution"],
+      "portability_browser_edges": ["390px desktop Chromium fixture only", "Courier WinAnsi is not a full Unicode or complex HTML/CSS print renderer"],
+      "cross_check": { "usable": true, "implementation": "reparse generated PDF and independently render actual first-page PNG via PDF.js", "role": "bounded source/layout verification, not complete page-break corpus or real-device approval" },
+      "confidence": "medium",
+      "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED; no Gold receipt", "long text/table and multilingual full-page visual matrix pending", "physical browser/device and accessibility certification not provided"]
     }
   ]
 }

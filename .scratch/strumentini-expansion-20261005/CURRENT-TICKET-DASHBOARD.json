@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 257,
+    "completed": 259,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 239,
-    "open": 70,
+    "completedWithoutExplicitRefusal": 241,
+    "open": 68,
     "readyDAG": 23,
     "ready-for-agent": 15,
-    "dependency-blocked": 47,
+    "dependency-blocked": 45,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 1,
@@ -215,8 +215,10 @@
       244,
       245,
       248,
+      250,
       252,
       253,
+      256,
       257,
       258,
       259,
@@ -285,6 +287,7 @@
     "ready-for-agent": [
       37,
       47,
+      56,
       59,
       212,
       218,
@@ -295,9 +298,8 @@
       241,
       243,
       246,
-      250,
-      254,
-      256
+      251,
+      254
     ],
     "dependency-blocked": [
       8,
@@ -320,7 +322,6 @@
       46,
       49,
       51,
-      56,
       57,
       58,
       62,
@@ -342,7 +343,6 @@
       235,
       247,
       249,
-      251,
       255,
       265,
       279,
@@ -747,11 +747,9 @@
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
         249,
-        250,
         251,
         254,
-        255,
-        256
+        255
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -1016,12 +1014,10 @@
     {
       "id": 56,
       "title": "Office-to-PDF and printable export pack",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        256
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -3018,9 +3014,9 @@
     {
       "id": 250,
       "title": "PDF n-up pages per sheet",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3028,12 +3024,10 @@
     {
       "id": 251,
       "title": "PDF booklet and front-back interleave",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        250
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -3082,9 +3076,9 @@
     {
       "id": 256,
       "title": "TXT Markdown HTML and CSV to printable PDF",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false

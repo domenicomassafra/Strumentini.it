@@ -8,7 +8,7 @@
 
 **Blocked by:** 256, 257, 258, 259.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 - [ ] TXT/MD/HTML/CSV→PDF share a print-layout engine with format-specific content mapping.
 - [ ] DOCX/XLSX/PPTX→PDF each have a fidelity corpus and unsupported-feature list before public claims.

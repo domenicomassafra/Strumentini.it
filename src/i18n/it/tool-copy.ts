@@ -712,7 +712,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "printable-pdf-from-text": {
     name: "Converti testo, Markdown, HTML e CSV in PDF",
-    summary: "Impagina file testuali e tabelle in un PDF stampabile con margini e pagine verificati. I caratteri fuori dalla codifica supportata vengono segnalati, non sostituiti.",
+    summary: "Impagina testo e tabelle in PDF con margini e pagine verificati. I caratteri non supportati vengono segnalati, mai sostituiti di nascosto.",
     searchTerms: ["testo in pdf", "markdown in pdf", "html in pdf", "csv in pdf", "crea pdf da testo"],
   },
   "pdf-password-check-remove": {

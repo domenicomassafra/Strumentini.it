@@ -12,6 +12,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **037 — Video inspect/subtitle utilities**
 - **047 — JPEG/PNG/WebP/SVG compression engines**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
+- **056 — Office-to-PDF and printable export pack**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
@@ -25,9 +26,8 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **241 — PDF signature placement**
 - **243 — PDF fill annotate and write overlays**
 - **246 — Local image OCR**
-- **250 — PDF n-up pages per sheet**
+- **251 — PDF booklet and front-back interleave**
 - **254 — PDF tables to XLSX**
-- **256 — TXT Markdown HTML and CSV to printable PDF**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
@@ -105,7 +105,7 @@ Exactly **23** incomplete tickets currently have every declared numeric blocker 
 | 053 | blocked | Upgrade existing PDF inspect/extract/compare tools | 220, 221, 242, 318, 319, 320 |
 | 054 | completed | TXT/Markdown/HTML conversion core | 081 |
 | 055 | completed (bounded semantic pack; not pixel-faithful Word rendering) | DOCX semantic conversion pack | — |
-| 056 | blocked | Office-to-PDF and printable export pack | 256, 257, 258, 259 |
+| 056 | ready-for-agent | Office-to-PDF and printable export pack | 256, 257, 258, 259 |
 | 057 | blocked | PDF-to-editable/structured conversion pack | 252, 253, 254, 255 |
 | 058 | blocked | PDF↔image directional conversion pack | 235, 236 |
 | 059 | ready-for-agent | JSON/XML/CSS/HTML/SVG minimizer pack | 168, 191, 192, 193, 209 |
@@ -299,13 +299,13 @@ Exactly **23** incomplete tickets currently have every declared numeric blocker 
 | 247 | blocked | Scanned PDF OCR and searchable text layer | 215, 246 |
 | 248 | completed | Search text across multiple PDFs | 079, 220 |
 | 249 | blocked | Split PDF by maximum output size | 217, 218 |
-| 250 | ready-for-agent | PDF n-up pages per sheet | 215, 269 |
-| 251 | blocked | PDF booklet and front-back interleave | 215, 250 |
+| 250 | completed | PDF n-up pages per sheet | 215, 269 |
+| 251 | ready-for-agent | PDF booklet and front-back interleave | 215, 250 |
 | 252 | completed | PDF to Markdown semantic export | 220, 054 |
 | 253 | completed | PDF to DOCX semantic reconstruction | 220, 225, 226, 269 |
 | 254 | ready-for-agent | PDF tables to XLSX | 161, 220, 269 |
 | 255 | blocked | PDF to PPTX page-as-slide baseline | 225, 236, 270 |
-| 256 | ready-for-agent | TXT Markdown HTML and CSV to printable PDF | 054, 103, 269 |
+| 256 | completed | TXT Markdown HTML and CSV to printable PDF | 054, 103, 269 |
 | 257 | completed | DOCX to PDF fidelity-gated conversion | 206, 226, 270 |
 | 258 | completed | XLSX to PDF fidelity-gated conversion | 161, 206, 270 |
 | 259 | completed | PPTX to PDF fidelity-gated conversion | 206, 225, 270 |

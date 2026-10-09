@@ -1,11 +1,10 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PdfNUpTool } from "../../components/tools/pdf/PdfNUpTool";
 import "../../components/tools/tool-surface.css";
 ---
-<BaseLayout title="PDF n-up — 2, 4 o più pagine per foglio" description="Impagina localmente pagine PDF in fogli A4, Letter o personalizzati, con mappa e padding verificabili.">
+<ItalianToolPage toolId="pdf-n-up">
   <main style="max-width: 1100px; margin: 2rem auto; padding: 0 1rem;">
-    <header><h1>PDF n-up: pagine per foglio</h1><p>2-up, 4-up e griglie personalizzate, con anteprima delle posizioni e fogli stampabili.</p></header>
     <PdfNUpTool client:load />
   </main>
-</BaseLayout>
+</ItalianToolPage>
