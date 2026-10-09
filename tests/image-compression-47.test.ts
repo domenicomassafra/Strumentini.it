@@ -140,7 +140,10 @@ describe("#047 verified PNG lossless subset and fail-closed codec matrix", () =>
     badColor[25] = 3;
     const validCRC = crc32(badColor.subarray(12, 29));
     new DataView(badColor.buffer).setUint32(29, validCRC, false);
-    await expect(compressPngLossless47(blob(badColor))).rejects.toThrow(/UNSUPPORTED_VARIANT/);
+    // Indexed color is now accepted only with a valid preceding PLTE. Rewriting
+    // an RGB IHDR to indexed without adding the palette is malformed, not an
+    // unsupported color capability.
+    await expect(compressPngLossless47(blob(badColor))).rejects.toThrow(/PNG_47_MALFORMED/);
   });
 
   it("caps memory and dimensions before inflate; aborts before and during parsing", async () => {

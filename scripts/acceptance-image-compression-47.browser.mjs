@@ -4,6 +4,10 @@ import { resolve } from "node:path";
 import { createServer } from "vite";
 import { chromium, firefox, webkit } from "@playwright/test";
 import sharp from "sharp";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 const width = 160;
 const height = 112;
@@ -24,6 +28,37 @@ const examples = await Promise.all([false, true].map(async (withAlpha) => {
     .png({ compressionLevel: 0, palette: false }).toBuffer();
   return { name: withAlpha ? "RGBA" : "RGB", original, pixels, channels };
 }));
+const corpusDir = mkdtempSync(join(tmpdir(), "image-47-browser-corpus-"));
+execFileSync("python3", ["-c", String.raw`
+from PIL import Image
+import os,sys
+folder=sys.argv[1]
+w,h=83,47
+palette=[]
+for i in range(16): palette.extend([(i*19)%256, (i*37)%256, (i*53)%256])
+for kind in ('indexed-alpha-4bit','gray-1bit','gray-alpha-8bit'):
+    if kind == 'indexed-alpha-4bit':
+        img=Image.new('P',(w,h))
+        img.putpalette(palette + [0] * (768-len(palette)))
+        img.putdata([(x+3*y)%16 for y in range(h) for x in range(w)])
+        img.save(os.path.join(folder,kind+'.png'), format='PNG', bits=4,
+                 transparency=bytes((i * 17 for i in range(16))),compress_level=0)
+    elif kind == 'gray-1bit':
+        img=Image.new('1',(w,h))
+        img.putdata([((x//3+y//2)&1)*255 for y in range(h) for x in range(w)])
+        img.save(os.path.join(folder,kind+'.png'),format='PNG',compress_level=0)
+    else:
+        img=Image.new('LA',(w,h))
+        img.putdata([((x*7+y*5)%256,(x*11+y*3)%256) for y in range(h) for x in range(w)])
+        img.save(os.path.join(folder,kind+'.png'),format='PNG',compress_level=0)
+`, corpusDir]);
+for (const [name, type, depth] of [["indexed-alpha-4bit", 3, 4], ["gray-1bit", 0, 1], ["gray-alpha-8bit", 4, 8]]) {
+  const original = readFileSync(join(corpusDir, `${name}.png`));
+  assert.equal(original[25], type);
+  assert.equal(original[24], depth);
+  examples.push({ name, original, pixels: null, channels: null,
+    expectedRGBA: await sharp(original).ensureAlpha().raw().toBuffer() });
+}
 
 const vite = await createServer({
   configFile: false,
@@ -89,13 +124,20 @@ try {
         const exported = Buffer.from(browserProof.base64, "base64");
         const independentlyDecoded = await sharp(exported).raw().toBuffer({ resolveWithObject: true });
         assert.equal(browserProof.exactCanvasPixels, true);
-        assert.deepEqual([...browserProof.dimensions, browserProof.hasAlphaChannel ? 4 : 3], [width, height, entry.channels]);
+        assert.deepEqual(browserProof.dimensions, entry.pixels === null ? [83, 47] : [width, height]);
+        if (entry.pixels !== null) assert.equal(browserProof.hasAlphaChannel ? 4 : 3, entry.channels);
         assert.equal(browserProof.proof, "exact-filtered-scanlines");
         assert.equal(browserProof.abortRefused, true);
         assert(exported.length < entry.original.length);
         assert.equal(browserProof.savedBytes, entry.original.length - exported.length);
-        assert.equal(independentlyDecoded.info.channels, entry.channels);
-        assert.deepEqual(independentlyDecoded.data, entry.pixels);
+        if (entry.pixels !== null) {
+          assert.equal(independentlyDecoded.info.channels, entry.channels);
+          assert.deepEqual(independentlyDecoded.data, entry.pixels);
+        } else {
+          assert.deepEqual(await sharp(exported).ensureAlpha().raw().toBuffer(), entry.expectedRGBA);
+          assert.equal(exported[24], entry.original[24]);
+          assert.equal(exported[25], entry.original[25]);
+        }
         checks += 8;
         console.log(`${engine.name()} ${entry.name}: ${entry.original.length}→${exported.length} bytes; exact browser pixels + Sharp raw PASS`);
       }
@@ -107,4 +149,5 @@ try {
   console.log(`PASS #047 browser actual PNG recompression ${checks}/${checks} assertions; no physical mobile claimed`);
 } finally {
   await vite.close();
+  rmSync(corpusDir, { recursive: true, force: true });
 }

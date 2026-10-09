@@ -1,6 +1,6 @@
 /** Ticket #047: isolated, bounded PNG IDAT recompression (no pixel transformations).
  *
- * Explicitly refuses palette/interlaced/APNG/unknown critical PNG chunks and all
+ * Explicitly refuses interlaced/APNG/unknown critical PNG chunks and all
  * unapproved JPEG/WebP advanced codec settings or SVG optimization (#209/#268).
  * No production route is registered; callers must honour these capability gates.
  */
@@ -22,7 +22,7 @@ export function probeImageCompression47(): Readonly<Record<ImageCompressionForma
   return {
     "image/png": {
       mode: "verified-png-idat-lossless", supported: true,
-      reason: "PNG RGB/RGBA 8-bit noninterlaced with exact filtered-scanline and ancillary chunk preservation; no palette, color reduction or pixel changes",
+      reason: "PNG grayscale/indexed (1,2,4,8 bit) and gray+alpha/RGB/RGBA (8 bit), noninterlaced; exact filtered scanlines and palette/transparency/ancillary chunk preservation; no palette reduction or color changes",
     },
     "image/jpeg": {
       mode: "refused", supported: false,
@@ -46,6 +46,11 @@ export interface PngLosslessResult47 {
   readonly width: number;
   readonly height: number;
   readonly hasAlphaChannel: boolean;
+  /** PNG color type as stored in the IHDR; indexed tRNS does not add a color channel. */
+  readonly colorType: 0 | 2 | 3 | 4 | 6;
+  readonly bitDepth: 1 | 2 | 4 | 8;
+  /** Explicit tRNS chunk, distinct from a native PNG alpha channel. */
+  readonly hasTrnsChunk: boolean;
   readonly originalBytes: number;
   readonly outputBytes: number;
   readonly savedBytes: number;
@@ -67,6 +72,9 @@ interface PngParts {
   readonly width: number;
   readonly height: number;
   readonly hasAlphaChannel: boolean;
+  readonly colorType: 0 | 2 | 3 | 4 | 6;
+  readonly bitDepth: 1 | 2 | 4 | 8;
+  readonly hasTrnsChunk: boolean;
   readonly chunks: readonly Chunk[];
   readonly idat: Uint8Array;
   readonly expectedScanlineBytes: number;
@@ -112,6 +120,11 @@ function parsePng47(bytes: Uint8Array, signal?: AbortSignal): PngParts {
   let width = 0;
   let height = 0;
   let hasAlphaChannel = false;
+  let colorType: 0 | 2 | 3 | 4 | 6 = 2;
+  let bitDepth: 1 | 2 | 4 | 8 = 8;
+  let paletteColors = 0;
+  let seenPalette = false;
+  let hasTrnsChunk = false;
   let expectedScanlineBytes = 0;
   let idatBytes = 0;
 
@@ -147,13 +160,19 @@ function parsePng47(bytes: Uint8Array, signal?: AbortSignal): PngParts {
       if (width < 1 || height < 1 || width * height > PNG_47_MAX_PIXELS || width > 8192 || height > 8192) {
         fail("PIXEL_LIMIT", "PNG dimensions exceed local 1-million-pixel ceiling");
       }
-      if (depth !== 8 || (color !== 2 && color !== 6) || compression !== 0 || filter !== 0 || interlace !== 0) {
-        fail("UNSUPPORTED_VARIANT", "Only noninterlaced 8-bit RGB/RGBA PNG is supported");
+      const channels = color === 0 || color === 3 ? 1 : color === 4 ? 2 : color === 2 ? 3 : color === 6 ? 4 : 0;
+      if (channels === 0 || ![1, 2, 4, 8].includes(depth) ||
+          ((color === 2 || color === 4 || color === 6) && depth !== 8) ||
+          compression !== 0 || filter !== 0 || interlace !== 0) {
+        fail("UNSUPPORTED_VARIANT", "Only noninterlaced grayscale/indexed <=8bit and 8-bit RGB/RGBA/grayscale+alpha PNG are supported");
       }
-      hasAlphaChannel = color === 6;
-      expectedScanlineBytes = height * (1 + width * (hasAlphaChannel ? 4 : 3));
+      colorType = color as 0 | 2 | 3 | 4 | 6;
+      bitDepth = depth as 1 | 2 | 4 | 8;
+      hasAlphaChannel = color === 4 || color === 6;
+      expectedScanlineBytes = height * (1 + Math.ceil(width * channels * depth / 8));
       if (expectedScanlineBytes > PNG_47_MAX_SCANLINE_BYTES) fail("PIXEL_LIMIT", "Decoded scanline buffer too large");
     } else if (name === "IDAT") {
+      if (colorType === 3 && !seenPalette) fail("MALFORMED", "Indexed PNG requires a palette before IDAT");
       if (endedIDAT) fail("UNSUPPORTED_VARIANT", "Nonconsecutive IDAT chunks are refused");
       seenIDAT = true;
       idatBytes += length;
@@ -162,6 +181,13 @@ function parsePng47(bytes: Uint8Array, signal?: AbortSignal): PngParts {
     } else if (name === "IEND") {
       if (!seenIDAT || length !== 0 || end !== bytes.length) fail("MALFORMED", "IEND must terminate PNG");
       seenIEND = true;
+    } else if (name === "tRNS") {
+      if (seenIDAT || hasTrnsChunk || colorType === 4 || colorType === 6 ||
+          (colorType === 3 && (!seenPalette || length < 1 || length > paletteColors)) ||
+          (colorType === 0 && length !== 2) || (colorType === 2 && length !== 6)) {
+        fail("MALFORMED", "PNG tRNS transparency chunk invalid for its color model or position");
+      }
+      hasTrnsChunk = true;
     } else {
       if (name === "acTL" || name === "fcTL" || name === "fdAT") fail("UNSUPPORTED_VARIANT", "APNG animation is not supported");
       if (nameBytes[0]! < 97) {
@@ -170,6 +196,12 @@ function parsePng47(bytes: Uint8Array, signal?: AbortSignal): PngParts {
         if (seenIDAT || length === 0 || length % 3 !== 0 || length > 768) {
           fail("MALFORMED", "Unexpected PLTE location or size");
         }
+        if (seenPalette || colorType === 0 || colorType === 4 ||
+            (colorType === 3 && length / 3 > 1 << bitDepth)) {
+          fail("MALFORMED", "Palette is duplicate, forbidden or larger than indexed bit depth");
+        }
+        seenPalette = true;
+        paletteColors = length / 3;
       }
       if (seenIDAT) endedIDAT = true;
     }
@@ -180,10 +212,11 @@ function parsePng47(bytes: Uint8Array, signal?: AbortSignal): PngParts {
   const idat = new Uint8Array(idatBytes);
   let at = 0;
   for (const chunk of idatSlices) { idat.set(chunk, at); at += chunk.length; }
-  return { width, height, hasAlphaChannel, chunks, idat, expectedScanlineBytes };
+  return { width, height, hasAlphaChannel, colorType, bitDepth, hasTrnsChunk,
+    chunks, idat, expectedScanlineBytes };
 }
 
-function inflateBounded47(compressed: Uint8Array, expected: number, width: number, height: number, channels: number, signal?: AbortSignal): Uint8Array {
+function inflateBounded47(compressed: Uint8Array, expected: number, rowBytes: number, height: number, signal?: AbortSignal): Uint8Array {
   running(signal);
   const result = new Uint8Array(expected);
   let written = 0;
@@ -207,7 +240,7 @@ function inflateBounded47(compressed: Uint8Array, expected: number, width: numbe
     fail("INVALID_ZLIB", "IDAT zlib stream could not be decoded");
   }
   if (!finished || written !== expected) fail("MALFORMED", "IDAT bytes do not match PNG scanline dimensions");
-  const stride = 1 + width * channels;
+  const stride = 1 + rowBytes;
   for (let row = 0; row < height; row++) {
     if ((row & 127) === 0) running(signal);
     if (result[row * stride]! > 4) fail("MALFORMED", "Invalid PNG scanline filter");
@@ -239,9 +272,9 @@ export async function compressPngLossless47(input: Blob, signal?: AbortSignal): 
   const source = new Uint8Array(await input.arrayBuffer());
   running(signal);
   const parsed = parsePng47(source, signal);
-  const channels = parsed.hasAlphaChannel ? 4 : 3;
+  const rowBytes = parsed.expectedScanlineBytes / parsed.height - 1;
   const originalPixels = inflateBounded47(parsed.idat, parsed.expectedScanlineBytes,
-    parsed.width, parsed.height, channels, signal);
+    rowBytes, parsed.height, signal);
   running(signal);
   const recompressed = zlibSync(originalPixels, { level: 9 });
   running(signal);
@@ -266,7 +299,7 @@ export async function compressPngLossless47(input: Blob, signal?: AbortSignal): 
     if (pointer !== candidate.length) fail("INTERNAL", "Output size does not reconcile");
     const verified = parsePng47(candidate, signal);
     const candidatePixels = inflateBounded47(verified.idat, verified.expectedScanlineBytes,
-      verified.width, verified.height, channels, signal);
+      rowBytes, verified.height, signal);
     if (candidatePixels.length !== originalPixels.length || candidatePixels.some((byte, i) => byte !== originalPixels[i])) {
       fail("VERIFICATION", "Lossless scanline identity could not be proven");
     }
@@ -280,9 +313,10 @@ export async function compressPngLossless47(input: Blob, signal?: AbortSignal): 
     blob: new Blob([new Uint8Array(output)], { type: "image/png" }),
     inputMime: "image/png", outputMime: "image/png",
     width: parsed.width, height: parsed.height, hasAlphaChannel: parsed.hasAlphaChannel,
+    colorType: parsed.colorType, bitDepth: parsed.bitDepth, hasTrnsChunk: parsed.hasTrnsChunk,
     originalBytes, outputBytes, savedBytes,
     savedPercent: Number((100 * savedBytes / originalBytes).toFixed(2)),
     keptOriginal: output === source, pixelVerification: "exact-filtered-scanlines",
-    note: "PNG IDAT lossless recompression only: exact filtered scanlines and metadata chunks; no palette reduction, dithering, resampling, chromatic/color-profile transforms, APNG or SVG optimization.",
+    note: "PNG IDAT lossless recompression only: exact filtered scanlines, indexed palette and tRNS transparency and metadata chunks; no palette reduction, dithering, resampling, chromatic/color-profile transforms, APNG or SVG optimization.",
   };
 }
