@@ -75,7 +75,7 @@ describe("#059 real-world structured minimizer corpus and adversarial refusal", 
     assertSizeAccounting(source, first.output, first);
   });
 
-  it("advanced HTML preserves recognized renderer delimiters but loses unrecognized block directives", () => {
+  it("advanced HTML preserves known React, Gutenberg and Svelte template delimiters", () => {
     const recognized = "<article><!--ko if: show--><!--$--><p>A</p><!--/$--><!--/ko--></article>";
     const advanced = htmlMinifyOperation(recognized, "advanced");
     expect(htmlDom(advanced.output)).toEqual(htmlDom(recognized));
@@ -84,11 +84,12 @@ describe("#059 real-world structured minimizer corpus and adversarial refusal", 
     const safeUnknown = htmlMinifyOperation(unknownDirective059, "safe");
     expect(htmlDom(safeUnknown.output)).toEqual(htmlDom(unknownDirective059));
     const advancedUnknown = htmlMinifyOperation(unknownDirective059, "advanced");
-    expect(htmlDom(advancedUnknown.output)).not.toEqual(htmlDom(unknownDirective059));
-    expect(advancedUnknown.output).not.toContain("wp:paragraph");
-    expect(advancedUnknown.output).not.toContain("svelte-h0");
+    expect(htmlDom(advancedUnknown.output)).toEqual(htmlDom(unknownDirective059));
+    expect(advancedUnknown.output).toContain("wp:paragraph");
+    expect(advancedUnknown.output).toContain("svelte-h0");
+    expect(htmlMinifyOperation(advancedUnknown.output, "advanced").output).toBe(advancedUnknown.output);
     expect(advancedUnknown.commentPolicy).toMatch(/lossy for unknown/u);
-    // This proves a real remaining gap; it is not a success claim for advanced.
+    // Other unknown comment-based grammars remain intentionally lossy in advanced.
   });
 
   it.each(css059)("CSS parser roundtrip and deterministic formatted output: $name", ({ source, requiredTokens }) => {

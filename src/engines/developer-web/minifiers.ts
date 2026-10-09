@@ -164,7 +164,7 @@ function conditionalComment(node: HtmlNode): boolean {
 function functionalComment(node: HtmlNode): boolean {
   if (conditionalComment(node)) return true;
   const value = (node.data ?? "").trim();
-  return /^(?:\/?ko(?:\s|:|$)|\/?ng[A-Za-z0-9_-]*(?:\s|:|$)|#|\/?\$|[!?@]|astro(?:\s|:|-|$)|prettier-ignore(?:\s|$)|\{\{|\{%|<%)/iu.test(value);
+  return /^(?:\/?ko(?:\s|:|$)|\/?ng[A-Za-z0-9_-]*(?:\s|:|$)|\/?wp:[A-Za-z0-9_/-]+(?:\s|$)|\/?svelte-[A-Za-z0-9_-]+(?:\s|$)|#|\/?\$|[!?@]|astro(?:\s|:|-|$)|prettier-ignore(?:\s|$)|\{\{|\{%|<%)/iu.test(value);
 }
 
 function isForeignHtmlContext(node: HtmlNode | null | undefined): boolean {
