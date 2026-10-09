@@ -17,3 +17,44 @@
 - [ ] Placed appearance/page/order survive independent render/reopen.
 
 **Verification:** Signature placement corpus and visual/reopen verification.
+
+**Worker subset (2026-10-09, local candidate; status remains `ready-for-agent`):**
+`src/engines/pdf/visual-signature-241.ts` implements a strictly bounded, **visible image overlay**
+for simple unsigned PDFs. It does not create an `/FT /Sig` field, sign any byte range,
+use certificates, or assert legal/cryptographic validity. The output filename and plan
+explicitly say `VISIBLE_IMAGE_ONLY_NO_CRYPTOGRAPHIC_SIGNATURE` / `NON-digitale`.
+No public manifest, registration, catalog, copy, frontend preview, or production route
+has been added pending PRIME security review.
+
+The caller supplies a 1-indexed page range and `rect: [x0,y0,x1,y1]` in visible
+CropBox-relative **display-space PDF points** (origin bottom left, taking `/Rotate`
+0/90/180/270 into account). Every selected rect is checked against that page's
+actual bounds; out-of-bounds placement refuses. The engine embeds a CRC-validated,
+noninterlaced PNG RGB8 or RGBA8 (max 2 MiB, 262144 pixels); RGB rows are decoded
+through filters 0–4 and bounded inflate, FlateDecode XObjects use `/DeviceRGB`,
+and RGBA produces a grayscale `/SMask` preserving transparency. `pHYs` density is
+ignored because placement is explicit PDF points; unknown profile/gamma/palette/
+animation/ancillary chunks refuse rather than silently altering color semantics.
+This is a **painted page-content overlay**, not a signature widget or annotation
+with `/Rect`; the `rect` is part of the audited placement plan.
+
+Safety gate rejects encrypted, linearized, incremental, certified/signed or
+form-bearing files (`/ByteRange`, `/DocMDP`, `/FT /Sig`, `/AcroForm`, `/Perms`,
+etc.), annotations/actions and unsupported catalog/page structures. The writer
+wraps each original selected page content stream between `q`/`Q`, then paints the
+image inside a separate `q`/`Q`; original source stream bytes, page order, page
+count and CropBox/Rotate are rechecked after output. Caller cancellation refuses
+publication. The input is **rewritten** (byte identity not preserved); PDFs with
+complex structure or signatures are refused rather than invalidating signed bytes.
+
+**Automated proof:** `tests/pdf-visual-signature-241.test.ts` exercises synthetic
+three-page PDF source/output, RGB/RGBA CRC and exact pixel/alpha data, soft-mask
+reopen, page selection, rotated CropBox, corrupt/spoofed PNG and bounded inflate,
+signed/form/annotation refusals, cancellation, original stream equality. Independent
+PDF.js reopens the generated output, verifies all source texts and image-paint
+operator only on the selected page. No browser run, cross-engine pixel rendering,
+physical device acceptance or user-facing placement preview has yet been proved.
+Existing #215 renderer remains independent; #269 did not approve an external editor.
+Therefore all original #241 ACs are **not** marked satisfied and status must stay
+`ready-for-agent`. The pending gate is actual rendered appearance parity plus
+security review before production wiring.
