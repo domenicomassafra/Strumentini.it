@@ -553,10 +553,18 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
     const jpegAnalysis = toolId === "pdf-compression-lite" && typeof result.raw.analysis === "object" && result.raw.analysis !== null
       && ["jpeg-rgb-reencode", "scan-flate-to-jpeg"].includes(String((result.raw.analysis as PdfResultRecord).profile)) ? result.raw.analysis as PdfResultRecord : null;
     const scanMode = jpegAnalysis?.profile === "scan-flate-to-jpeg";
+    const targetMode = toolId === "pdf-compression-lite" && result.raw.profile === "target-best-effort";
     const rows = [
       { label: "File prodotti", value: String(result.artifacts.length) },
       { label: "Dimensione risultati", value: formatBytes(totalBytes) },
       ...(totalPages > 0 ? [{ label: "Pagine prodotte", value: String(totalPages) }] : []),
+      ...(targetMode ? [
+        { label: "Soglia per PDF", value: `${result.raw.targetBytes} byte` },
+        { label: "PDF sotto limite", value: String(result.raw.metTargetFiles) },
+        { label: "PDF oltre il limite", value: String(result.raw.notMetFiles) },
+        { label: "File non elaborabili", value: String(result.raw.refusedFiles) },
+        { label: "ZIP include", value: Array.isArray(result.raw.zipIncludes) ? String(result.raw.zipIncludes.length) + " file verificati" : "Nessuno" },
+      ] : []),
       { label: "Verifica artifact", value: result.artifacts.every(({ artifact }) => artifact.download.ready) ? "Firma/contenitore coerenti" : "Almeno un file non ha superato la verifica" },
       ...(jpegAnalysis === null ? [] : [
         { label: scanMode ? "Immagini Flate ricodificate" : "JPEG effettivamente ricodificati", value: String(jpegAnalysis.touched) },
@@ -580,6 +588,10 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
       <div data-result-class={declaration.class}>
         {declaration.class === "pdf" ? <PdfPagePreview outputs={result.artifacts} /> : null}
         {declaration.class === "pdf" ? <div data-result-slot="operation-summary"><ResultBreakdown label="Riepilogo operazione" rows={rows} /></div> : null}
+        {targetMode ? <ResultInterpretation state={result.raw.allMet === true ? "success" : "warning"}>
+          {result.raw.allMet === true ? "Ogni PDF elaborato rispetta la soglia esatta sui byte del file finale." :
+            "Almeno un file non ha raggiunto la soglia o non è stato elaborato. Controlla lo stato individuale nel report tecnico; i PDF best-effort non sono indicati come sotto limite."}
+        </ResultInterpretation> : null}
         {declaration.class === "file" ? <ResultBreakdown label="Riepilogo estrazione" rows={rows} /> : null}
         <div data-result-slot="file-workspace">
           <FileResultWorkspace

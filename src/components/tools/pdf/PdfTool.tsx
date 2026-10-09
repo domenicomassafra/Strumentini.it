@@ -90,8 +90,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [imageQuality, setImageQuality] = useState("0.92");
   const [pdfImageMime, setPdfImageMime] = useState<"image/jpeg" | "image/png" | "image/webp">("image/png");
   const [pdfImageScale, setPdfImageScale] = useState("2");
-  const [compressionProfile, setCompressionProfile] = useState<"structural-only" | "jpeg-rgb-reencode" | "scan-flate-to-jpeg">("structural-only");
+  const [compressionProfile, setCompressionProfile] = useState<"structural-only" | "jpeg-rgb-reencode" | "scan-flate-to-jpeg" | "target-best-effort">("structural-only");
   const [compressionJpegQuality, setCompressionJpegQuality] = useState("0.6");
+  const [pdfTargetKiB, setPdfTargetKiB] = useState("300");
   const [scanMaxEdge, setScanMaxEdge] = useState("1600");
   const [scanResizePolicy, setScanResizePolicy] = useState<"pixel-edge" | "verified-dpi">("pixel-edge");
   const [scanTargetDpi, setScanTargetDpi] = useState("150");
@@ -130,7 +131,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   function choose(event: Event, index = 0) {
     const input = event.currentTarget as HTMLInputElement;
     const selected = input.files === null ? [] : [...input.files];
-    if (inputMode === "multi") {
+    if (inputMode === "multi" || toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort") {
       setFiles(selected);
     } else {
       setFiles((current) => {
@@ -216,6 +217,24 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     controller.current = abortController;
     setStatus("working");
     try {
+      if (toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort") {
+        const { runPdfTargetBatch219 } = await import("../../../engines/pdf/target-batch-219");
+        const targetBytes = Number(pdfTargetKiB) * 1024;
+        const batch = await runPdfTargetBatch219(files, targetBytes, abortController.signal);
+        const prepared = await preparePdfResult(toolId, {
+          artifacts: batch.artifacts, artifactCount: batch.artifacts.length,
+          profile: "target-best-effort", targetBytes: batch.targetBytes,
+          attemptedFiles: batch.attemptedFiles, metTargetFiles: batch.metTargetFiles,
+          notMetFiles: batch.notMetFiles, refusedFiles: batch.refusedFiles,
+          allMet: batch.allMet, zipIncludes: batch.zipIncludes,
+          reports: batch.reports.map(({ artifact: _artifact, ...report }) => report), note: batch.note,
+          policy: "Il tetto è riuscito solo se il PDF finale verifica <= i byte richiesti. JPEG/Flate con perdita e limiti espliciti; ZIP con soli file sotto tetto, gli altri disponibili individualmente.",
+        });
+        if (abortController.signal.aborted) throw new DOMException("Operation cancelled", "AbortError");
+        setResult(prepared);
+        setStatus("done");
+        return;
+      }
       if (toolId === "pdf-compression-lite" && compressionProfile === "jpeg-rgb-reencode") {
         const { recompressPdfEmbeddedJpegs } = await import("../../../engines/pdf/jpeg-image-aware");
         const source = files[0];
@@ -404,7 +423,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         ) : (
           <label class="field">
             <span>{inputMode === "multi" ? "File" : publicTitle}</span>
-            <input type="file" accept={accept} multiple={inputMode === "multi"} onChange={(event) => choose(event)} disabled={isWorking} />
+            <input type="file" accept={accept} multiple={inputMode === "multi" || toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort"}
+              onChange={(event) => choose(event)} disabled={isWorking} />
             <small>Elaborazione su questo dispositivo, senza caricamenti né elaborazione remota alternativa.</small>
           </label>
         )}
@@ -585,13 +605,23 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         {toolId === "pdf-compression-lite" && (
           <section class="field" aria-label="Profilo di compressione PDF">
             <label class="field"><span>Profilo di compressione</span>
-              <select value={compressionProfile} onChange={(event) => setCompressionProfile(event.currentTarget.value as "structural-only" | "jpeg-rgb-reencode" | "scan-flate-to-jpeg")} disabled={isWorking}>
+              <select value={compressionProfile} onChange={(event) => { setCompressionProfile(event.currentTarget.value as "structural-only" | "jpeg-rgb-reencode" | "scan-flate-to-jpeg" | "target-best-effort"); setResult(null); setFiles([]); }} disabled={isWorking}>
                 <option value="structural-only">Pulizia strutturale (predefinita)</option>
                 <option value="jpeg-rgb-reencode">Ricodifica JPEG incorporati (con perdita)</option>
                 <option value="scan-flate-to-jpeg">Scansioni Flate/PNG incorporati (con perdita)</option>
+                <option value="target-best-effort">Sotto un limite KiB (tentativi e batch locale, senza garanzia)</option>
               </select>
             </label>
-            {compressionProfile !== "structural-only" && (
+            {compressionProfile === "target-best-effort" && (
+              <>
+                <label class="field"><span>Dimensione massima PDF in KiB (1–8192)</span>
+                  <input type="number" min="1" max="8192" step="1" value={pdfTargetKiB}
+                    onInput={(event) => setPdfTargetKiB(event.currentTarget.value)} disabled={isWorking} />
+                </label>
+                <p class="file-note">Carica 1–4 PDF (massimo 8 MiB ciascuno, 20 MiB complessivi). I tentativi ricomprimono JPEG/Flate dai sorgenti, controllano i byte PDF finali e si fermano quando il limite è realmente rispettato. Non viene promessa la dimensione richiesta. I PDF non raggiunti rimangono disponibili come best effort; lo ZIP contiene solo i PDF verificati sotto il limite. I singoli file con errori non bloccano gli altri.</p>
+              </>
+            )}
+            {compressionProfile !== "structural-only" && compressionProfile !== "target-best-effort" && (
               <>
                 <label class="field"><span>Qualità JPEG (0,35–0,85)</span>
                   <input type="number" min="0.35" max="0.85" step="0.05" value={compressionJpegQuality}
