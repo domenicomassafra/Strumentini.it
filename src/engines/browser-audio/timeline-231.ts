@@ -118,6 +118,19 @@ function parsePcm16Wav(bytes: Uint8Array, signal?: AbortSignal): Source {
   return { bytes, dataStart, frames, rate, channels };
 }
 
+/** Strict read-only header/chunk inspection, shared by the opt-in #231 UI Worker.
+ * The renderer still independently validates every source on execution. */
+export function inspectAudioPcm16Source231(bytes: Uint8Array, signal?: AbortSignal): {
+  readonly frames: number;
+  readonly sampleRate: number;
+  readonly channels: 1 | 2;
+  readonly durationSeconds: number;
+} {
+  const source = parsePcm16Wav(bytes, signal);
+  return { frames: source.frames, sampleRate: source.rate, channels: source.channels,
+    durationSeconds: source.frames / source.rate };
+}
+
 function prepare(sources: readonly Uint8Array[], edits: readonly AudioTimelineEdit231[], signal?: AbortSignal): {
   readonly parsed: readonly Source[];
   readonly plan: AudioTimelinePlan231;

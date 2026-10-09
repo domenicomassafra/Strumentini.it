@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { bpmFromTapTimes, generateNoiseSamples, validateAudioGeneratorSettings, type NoiseKind } from "../../engines/browser-audio";
 import { AudioLoudnessPanel307 } from "./audio/AudioLoudnessPanel307";
+import { AudioTimelinePanel231 } from "./audio/AudioTimelinePanel231";
 
 type Mode = "tone" | "metronome" | "noise";
 
@@ -137,5 +138,6 @@ export function AudioGeneratorTool() {
     </div>
     <p role="status" aria-live="polite">{status}</p>
     <AudioLoudnessPanel307 />
+    <AudioTimelinePanel231 />
   </div>;
 }
