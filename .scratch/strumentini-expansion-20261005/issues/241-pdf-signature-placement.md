@@ -58,3 +58,15 @@ Existing #215 renderer remains independent; #269 did not approve an external edi
 Therefore all original #241 ACs are **not** marked satisfied and status must stay
 `ready-for-agent`. The pending gate is actual rendered appearance parity plus
 security review before production wiring.
+
+**PRIME independent raster acceptance (2026-10-09, DESKTOP NODE ONLY):**
+`scripts/acceptance-pdf-visual-signature-241.ts` now constructs a source three-page PDF,
+produces an actual signed-looking-but-**NOT digitally signed** output with an RGBA PNG,
+and asks **independent PDF.js** to render the source and all output pages onto native
+`@napi-rs/canvas` pixels. The actual painted page-2 region has RGBA `[230,12,32,255]`;
+the transparent bottom region is `[255,255,255,255]` (white original background),
+and pages 1 and 3 remain white at the same sample location. **PASS**, no browser/mobile
+claim. This proves visible placement and soft-mask appearance on a real renderer;
+it does NOT prove signature authenticity, cross-engine/browser parity, user-facing
+placement UI, physical-device performance, or safe handling of arbitrary PDFs.
+No public route/manifest is enabled and #241 remains `ready-for-agent` (OPEN).
