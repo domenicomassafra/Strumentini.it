@@ -11,7 +11,9 @@
 **Status:** ready-for-agent
 
 - [ ] Inspector reports actual stream/container facts and variable-frame-rate status when detectable.
-- [ ] Subtitle tools preserve cue ordering/text and report overlaps/reading-rate issues precisely.
-- [ ] Frame extraction exports the real decoded frame at the chosen timestamp with disclosed seek precision.
+- [x] Subtitle tools preserve cue ordering/text and report overlaps/reading-rate issues precisely for the bounded SRT/VTT contract verified by #233.
+- [x] Frame extraction exports the real decoded frame at the chosen timestamp with disclosed seek precision (not frame-exact equivalence) as verified by #305/#308.
 
 **Verification:** Media/subtitle fixture corpus, timecode boundary tests, VFR cases, permission tests for webcam, and mobile playback/seek acceptance.
+
+**2026-10-09 cross-ticket acceptance audit (partial, not completed):** #233 `tests/subtitle-transform.test.ts` covers real SRT/VTT fixtures, SRT↔VTT roundtrip, cue order/text preservation, offset+scale, configurable CPS and source-labelled overlap diagnostics, Unicode combining sequences and fail-closed unsupported cue settings/blocks. #305 `node tests/video-frame-camera-305.browser.mjs` passed **27 browser checks** on a real two-color local MP4 with actual decoded red/green PNG frame pixels, requested-vs-presented timestamps, permission mock camera and zero offsite; #308 `node tests/video-contact-sheet-308.browser.mjs` passed **28 browser checks**, including ZIP PNG hashes and presented-frame callback tolerance limited to **160 ms**. These are *not* a frame-perfect/physical camera or device certification. **AC1 remains unchecked**: `src/engines/video/mp4-inspection.ts` conservatively reports `frameRateMode: "unknown"` because sample decode deltas in `stts` alone do not prove the presentation cadence under `ctts` and edits. VFR presentation inference requires validated combined-sample timing evidence, independent FFprobe corpus and unsupported-movie-fragment handling. No fake FPS/VFR truth, no Gold, no status promotion while AC1 and physical-mobile acceptance remain outstanding.
