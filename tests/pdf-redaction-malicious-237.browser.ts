@@ -39,7 +39,7 @@ async function independentlyRender(bytes: Uint8Array, pageNumber: number) {
     const page = await document.getPage(pageNumber);
     const viewport = page.getViewport({ scale: 1 });
     const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
-    await page.render({ canvas, canvasContext: canvas.getContext("2d") as never, viewport }).promise;
+    await page.render({ canvas: canvas as never, canvasContext: canvas.getContext("2d") as never, viewport }).promise;
     const text = (await page.getTextContent()).items.map((entry) => "str" in entry ? entry.str : "").join("");
     const ops = await page.getOperatorList();
     const result = { width: canvas.width, height: canvas.height, text, ops: ops.fnArray.length,

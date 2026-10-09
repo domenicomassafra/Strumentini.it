@@ -4,7 +4,7 @@
  */
 import { PdfBuilder } from "../../src/engines/pdf/writer";
 import {
-  pdfArray, pdfDict, pdfName, pdfNumber, pdfReference, pdfString,
+  pdfArray, pdfDict, pdfName, pdfNumber, pdfString,
 } from "../../src/engines/pdf/parser";
 
 const encode = (value: string) => new TextEncoder().encode(value);
