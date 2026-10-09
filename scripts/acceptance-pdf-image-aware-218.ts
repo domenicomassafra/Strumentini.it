@@ -203,10 +203,33 @@ try {
     await resultPanel.waitFor({ timeout: 45000 });
     assert(await resultPanel.getAttribute("data-state") === "success", "Simple image DPI scan operation failed");
     const simpleScanSummary = await page.locator('[data-result-slot="operation-summary"]').innerText();
-    assert(/DPI di posizionamento\s*Stimati solo per disegni Image XObject semplici/u.test(simpleScanSummary),
+    assert(/DPI di posizionamento\s*Verificati; nessuna riduzione DPI applicata/u.test(simpleScanSummary),
       `Actual simple image placement DPI not disclosed: ${simpleScanSummary}`);
     const simpleScanOutput = await download(page);
     assert(simpleScanOutput.length < simpleScanPdf.length, "Simple scan was not converted to smaller actual JPEG PDF");
+    // NEW actual, explicitly selected print-DPI mode. 320px painted at 320pt
+    // is 72 DPI, so 36 DPI must physically yield a 160x120 JPEG (not 256).
+    await page.getByLabel("Politica di ricampionamento").selectOption("verified-dpi");
+    await page.getByLabel("DPI massimi di posizionamento (36–600)").fill("36");
+    await page.locator('form button[type="submit"]').first().click();
+    await resultPanel.waitFor({ timeout: 45_000 });
+    assert(await resultPanel.getAttribute("data-state") === "success", "Verified-DPI source-backed compression refused eligible image page");
+    const actualDpiResult = await download(page);
+    const dpiStream = getJpeg(actualDpiResult);
+    const decodedDpi = await sharp(Buffer.from(dpiStream)).metadata();
+    assert(decodedDpi.width === 160 && decodedDpi.height === 120, `Actual 36 DPI was not used to resize: ${decodedDpi.width}x${decodedDpi.height}`);
+    const dpiSummary = await page.locator('[data-result-slot="operation-summary"]').innerText();
+    assert(/DPI effettivi richiesti\s*36 DPI/u.test(dpiSummary) && /DPI di posizionamento\s*Verificati e applicati/u.test(dpiSummary),
+      `Actual DPI policy not shown to user: ${dpiSummary}`);
+    // A mixed text/vector source cannot be assigned a made-up page DPI: fail
+    // closed with no stale downloadable PDF from the previous good operation.
+    await page.locator('form input[type="file"]').first().setInputFiles({
+      name: "mixed-vector-unverified-DPI.pdf", mimeType: "application/pdf", buffer: Buffer.from(scanPdf),
+    });
+    await page.locator('form button[type="submit"]').first().click();
+    await resultPanel.waitFor({ timeout: 45_000 });
+    assert(await resultPanel.getAttribute("data-state") === "error", "Unverified text/vector PDF must refuse actual-DPI mode");
+    assert(await page.getByRole("link", { name: /Scarica .*\.pdf/u }).count() === 0, "Stale verified-DPI download remained after refusal");
     // Independent real PDF.js page render of the downloaded source/output:
     // keep the vector/text page rendered, while lossy grayscale visibly differs.
     await page.goto(`${origin}/tools/pdf-to-images/`, { waitUntil: "networkidle" });

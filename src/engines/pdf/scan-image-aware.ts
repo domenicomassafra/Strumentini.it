@@ -18,6 +18,9 @@ export interface PdfScanCompressionOptions {
   readonly quality?: number;
   /** Explicit image-pixel downsample cap; not a claim about effective page DPI. */
   readonly maxLongestEdgePx?: number;
+  /** Optional real placement-based output DPI. Mutually exclusive with pixel edge cap.
+   * This mode refuses all documents whose complete image placements cannot be verified. */
+  readonly targetDpi?: number;
   /** Grayscale image pixels encoded into a DeviceRGB JPEG (three equal channels). */
   readonly grayscale?: boolean;
 }
@@ -34,6 +37,7 @@ export interface PdfScanImageDecision {
   readonly reason: string;
   /** Verified only for complete simple uncompressed image paint programs; otherwise null. */
   readonly placementDpi: readonly VerifiedImagePlacement218[] | null;
+  readonly outputPlacementDpi: readonly { readonly pageNumber: number; readonly xDpi: number; readonly yDpi: number }[] | null;
 }
 
 export interface PdfScanCompressionResult {
@@ -41,11 +45,12 @@ export interface PdfScanCompressionResult {
   readonly analysis: {
     readonly profile: "scan-flate-to-jpeg";
     readonly quality: number;
-    readonly maxLongestEdgePx: number;
+    readonly maxLongestEdgePx: number | null;
+    readonly targetDpi: number | null;
     readonly grayscaleRequested: boolean;
-    /** DPI are diagnostic only: the actual limit still uses explicit source pixel edges. */
+    /** DPI are always measurement-backed; applied to resize only with explicit targetDpi. */
     readonly dpiCoverage: "verified-simple-uncompressed-paints" | "unknown";
-    readonly dpiUsedForDownsample: false;
+    readonly dpiUsedForDownsample: boolean;
     readonly grayscaleApplied: boolean;
     readonly downsampleApplied: boolean;
     readonly originalBytes: number;
@@ -230,10 +235,13 @@ async function encodeRaster(raster: Raster, quality: number, maxEdge: number, gr
 /** Explicit opt-in lossy conversion for narrowly recognized lossless Flate raster scans. */
 export async function recompressPdfScannedImages(source: Uint8Array, options: PdfScanCompressionOptions = {}, signal?: AbortSignal): Promise<PdfScanCompressionResult> {
   const quality = options.quality ?? 0.6;
-  const maxLongestEdgePx = options.maxLongestEdgePx ?? 1600;
+  const targetDpi = options.targetDpi ?? null;
+  const maxLongestEdgePx = targetDpi === null ? options.maxLongestEdgePx ?? 1600 : null;
   const grayscale = options.grayscale ?? false;
   if (!Number.isFinite(quality) || quality < 0.35 || quality > 0.85 ||
-      !Number.isInteger(maxLongestEdgePx) || maxLongestEdgePx < 256 || maxLongestEdgePx > 4096 || typeof grayscale !== "boolean") {
+      (targetDpi !== null && (!Number.isInteger(targetDpi) || targetDpi < 36 || targetDpi > 600 || options.maxLongestEdgePx !== undefined)) ||
+      (maxLongestEdgePx !== null && (!Number.isInteger(maxLongestEdgePx) || maxLongestEdgePx < 256 || maxLongestEdgePx > 4096)) ||
+      typeof grayscale !== "boolean") {
     throw new Error("INVALID_INPUT: Scan quality, grayscale or pixel edge limit is out of bounds");
   }
   if (!(source instanceof Uint8Array) || source.length < 8 || source.length > PDF_LIMITS.maxBytes) throw new Error("PDF_LIMIT: Invalid PDF input length");
@@ -246,6 +254,9 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
   }
   const model = parsePdf(source.slice());
   const placementDpi = measureSimpleImageDpi218(model, signal);
+  if (targetDpi !== null && placementDpi.coverage !== "verified-simple-uncompressed-paints") {
+    throw new Error("UNSUPPORTED_CAPABILITY: Target-DPI compression needs a fully verified simple-image PDF placement model; no guessed DPI.");
+  }
   const candidates = [...model.objects.values()].filter((object) => object.value.kind === "stream" && nameValue(object.value.dictionary.entries.get("Subtype")) === "Image");
   if (candidates.length > PDF_LIMITS.maxImages) throw new Error("PDF_LIMIT: Too many images in scan PDF");
   const referenced = topLevelPageImageIds(model);
@@ -261,16 +272,24 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
     const base = { sourceObject: object.id, width, height, outputWidth: width, outputHeight: height,
       beforeBytes: stream.bytes.length, afterBytes: stream.bytes.length,
       placementDpi: placementDpi.coverage === "verified-simple-uncompressed-paints"
-        ? placementDpi.placements.filter((placement) => placement.objectId === object.id) : null };
+        ? placementDpi.placements.filter((placement) => placement.objectId === object.id) : null,
+      outputPlacementDpi: null };
     const reason = compositingRisk ?? (inventory.length >= MAX_CANDIDATES ? "image-count-beyond-local-reencode-cap" :
-      !referenced.has(object.id) ? "not-top-level-page-image-resource" : eligibility(object, model));
+      !referenced.has(object.id) ? "not-top-level-page-image-resource" :
+      targetDpi !== null && (base.placementDpi === null || base.placementDpi.length === 0) ? "image-placement-dpi-unverified" : eligibility(object, model));
     if (reason !== null) {
       inventory.push({ ...base, action: "unchanged", reason });
       continue;
     }
     try {
       const raster = await decodeFlateRaster(object, model, signal);
-      const encoded = await encodeRaster(raster, quality, maxLongestEdgePx, grayscale, signal);
+      // An embedded Image XObject may be painted multiple times at different
+      // physical sizes. Preserve the highest requested sampling density across
+      // EVERY known paint (never select an average or the first occurrence).
+      const scale = targetDpi === null ? null : Math.min(1, Math.max(...base.placementDpi!.map((placement) =>
+        Math.max(targetDpi / placement.xDpi, targetDpi / placement.yDpi))));
+      const effectiveEdge = scale === null ? maxLongestEdgePx! : Math.max(1, Math.floor(Math.max(raster.width, raster.height) * scale));
+      const encoded = await encodeRaster(raster, quality, effectiveEdge, grayscale, signal);
       if (encoded.bytes.length + MIN_SAVINGS >= stream.bytes.length) {
         inventory.push({ ...base, action: "unchanged", reason: "scan-jpeg-not-meaningfully-smaller" });
         continue;
@@ -284,7 +303,10 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
       object.value = { kind: "stream", dictionary: replacement, bytes: encoded.bytes };
       transformed += 1;
       inventory.push({ ...base, action: "recompressed", afterBytes: encoded.bytes.length,
-        outputWidth: encoded.width, outputHeight: encoded.height, reason: "flate-raster-to-lossy-rgb-jpeg" });
+        outputWidth: encoded.width, outputHeight: encoded.height,
+        outputPlacementDpi: base.placementDpi?.map((placement) => ({ pageNumber: placement.pageNumber,
+          xDpi: placement.xDpi * encoded.width / raster.width, yDpi: placement.yDpi * encoded.height / raster.height })) ?? null,
+        reason: targetDpi === null ? "flate-raster-to-lossy-rgb-jpeg" : "flate-raster-to-jpeg-with-verified-placement-dpi-limit" });
     } catch (error) {
       checkAbort(signal);
       if (error instanceof Error && /^PDF_OUTPUT_MISMATCH|^PDF_LIMIT/u.test(error.message)) throw error;
@@ -308,11 +330,14 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
   const finalBytes = effective ? output : source.slice();
   const finalInventory = effective ? inventory : inventory.map((item) => item.action === "recompressed"
     ? { ...item, action: "unchanged" as const, afterBytes: item.beforeBytes, outputWidth: item.width, outputHeight: item.height,
+      outputPlacementDpi: item.placementDpi?.map((placement) => ({ pageNumber: placement.pageNumber,
+        xDpi: placement.xDpi, yDpi: placement.yDpi })) ?? null,
       reason: grew ? "whole-pdf-result-not-smaller" : "no-effective-recompression" } : item);
   const touched = effective ? transformed : 0;
   const warnings = [
-    ...(placementDpi.coverage === "unknown" ? ["DPI di posizionamento non verificati: contenuti PDF complessi, filtrati o non coperti. Nessun DPI presunto o usato per il downsample."] :
-      ["DPI calcolati soltanto per disegni Image XObject diretti, non filtrati e geometricamente semplici; il ricampionamento usa comunque il limite in pixel richiesto."]),
+    ...(targetDpi !== null ? [`Obiettivo ${targetDpi} DPI usato soltanto per disegni Image XObject diretti verificati; un'immagine riusata mantiene il dettaglio richiesto dal disegno più esigente. Nessun upsample.`] :
+      placementDpi.coverage === "unknown" ? ["DPI di posizionamento non verificati: contenuti PDF complessi, filtrati o non coperti. Nessun DPI presunto o usato per il downsample."] :
+        ["DPI calcolati soltanto per disegni Image XObject diretti, non filtrati e geometricamente semplici; il ricampionamento usa comunque il limite in pixel richiesto."]),
     ...(grew && transformed > 0 ? ["Il PDF ottimizzato sarebbe uguale o più grande: conservato l'originale."] : []),
     ...(candidates.length > touched ? ["Alcune immagini non erano idonee o non offrivano risparmio: consultare i motivi per oggetto."] : []),
   ];
@@ -320,8 +345,9 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
   return {
     artifact: { bytes: artifactBytes, blob: new Blob([artifactBytes], { type: "application/pdf" }), mime: "application/pdf",
       filename: effective ? "scan-image-aware.pdf" : "scan-original.pdf", pageCount: before.pageCount },
-    analysis: { profile: "scan-flate-to-jpeg", quality, maxLongestEdgePx, grayscaleRequested: grayscale,
-      dpiCoverage: placementDpi.coverage, dpiUsedForDownsample: false,
+    analysis: { profile: "scan-flate-to-jpeg", quality, maxLongestEdgePx, targetDpi, grayscaleRequested: grayscale,
+      dpiCoverage: placementDpi.coverage,
+      dpiUsedForDownsample: targetDpi !== null && effective && finalInventory.some((item) => item.action === "recompressed" && item.outputWidth !== item.width),
       grayscaleApplied: effective && grayscale, downsampleApplied: effective && finalInventory.some((item) => item.action === "recompressed" && item.outputWidth !== item.width),
       originalBytes: source.length, outputBytes: artifactBytes.length, savedBytes: source.length - artifactBytes.length,
       recommendOriginal: !effective, candidates: candidates.length, touched, skipped: candidates.length - touched,

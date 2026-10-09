@@ -563,9 +563,10 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
         { label: scanMode ? "Immagini lasciate invariate" : "JPEG/immagini lasciati invariati", value: String(jpegAnalysis.skipped) },
         { label: "Byte risparmiati", value: String(jpegAnalysis.savedBytes) },
         ...(scanMode ? [
-          { label: "Lato massimo richiesto", value: `${jpegAnalysis.maxLongestEdgePx} pixel` },
+          { label: jpegAnalysis.targetDpi === null || jpegAnalysis.targetDpi === undefined ? "Lato massimo richiesto" : "DPI effettivi richiesti", value: jpegAnalysis.targetDpi === null || jpegAnalysis.targetDpi === undefined
+            ? `${jpegAnalysis.maxLongestEdgePx} pixel` : `${jpegAnalysis.targetDpi} DPI` },
           { label: "DPI di posizionamento", value: jpegAnalysis.dpiCoverage === "verified-simple-uncompressed-paints"
-            ? "Stimati solo per disegni Image XObject semplici; non usati per ricampionare"
+            ? jpegAnalysis.dpiUsedForDownsample ? "Verificati e applicati ai raster idonei" : "Verificati; nessuna riduzione DPI applicata"
             : "Non verificabili: nessuna stima inventata" },
           { label: "Downsample applicato", value: jpegAnalysis.downsampleApplied ? "Sì" : "No" },
           { label: "Grigio applicato", value: jpegAnalysis.grayscaleApplied ? "Sì" : "No" },

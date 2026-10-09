@@ -33,7 +33,7 @@ function pngSubPredictor(raw: Uint8Array): Uint8Array {
   return encoded;
 }
 
-function pdfWithScan(raw: Uint8Array, options: { predictor?: number; mask?: boolean; filter?: string; width?: number; height?: number; color?: "DeviceRGB" | "DeviceGray"; secondMasked?: boolean; simplePaintOnly?: boolean } = {}): Uint8Array {
+function pdfWithScan(raw: Uint8Array, options: { predictor?: number; mask?: boolean; filter?: string; width?: number; height?: number; color?: "DeviceRGB" | "DeviceGray"; secondMasked?: boolean; simplePaintOnly?: boolean; secondPaint?: boolean } = {}): Uint8Array {
   const width = options.width ?? WIDTH;
   const height = options.height ?? HEIGHT;
   const builder = new PdfBuilder();
@@ -52,7 +52,8 @@ function pdfWithScan(raw: Uint8Array, options: { predictor?: number; mask?: bool
     SMask: pdfName("ProtectedMask"),
   }), bytes: new Uint8Array(deflateSync(raw)) }) : null;
   const contents = builder.putAuto({ kind: "stream", dictionary: pdfDict({}), bytes: new TextEncoder().encode(
-    "q 480 0 0 360 0 0 cm /Im0 Do Q\n" + (options.simplePaintOnly ? "" : "BT /F1 18 Tf 12 375 Td (VECTOR-TEXT-ALIVE) Tj ET\n")) });
+    "q 480 0 0 360 0 0 cm /Im0 Do Q\n" + (options.secondPaint ? "q 240 0 0 180 0 0 cm /Im0 Do Q\n" : "") +
+    (options.simplePaintOnly ? "" : "BT /F1 18 Tf 12 375 Td (VECTOR-TEXT-ALIVE) Tj ET\n")) });
   builder.put(page, pdfDict({ Type: pdfName("Page"), Parent: pages,
     MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(480), pdfNumber(400)]),
     Resources: pdfDict({ Font: pdfDict({ F1: font }), XObject: pdfDict({ Im0: image, ...(masked ? { Im1: masked } : {}) }) }), Contents: contents }));
@@ -104,6 +105,36 @@ function firstImage(bytes: Uint8Array) {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("#218 scan-mode real Flate-to-JPEG profiles", () => {
+  it("uses verified printed-image DPI to choose actual JPEG dimensions, not a synthetic pixel edge", async () => {
+    installCanvas();
+    const source = pdfWithScan(rawRaster(), { simplePaintOnly: true });
+    const output = await recompressPdfScannedImages(source, { targetDpi: 36 });
+    expect(output.analysis).toMatchObject({ targetDpi: 36, dpiCoverage: "verified-simple-uncompressed-paints",
+      dpiUsedForDownsample: true, downsampleApplied: true, touched: 1 });
+    expect(output.analysis.inventory[0]).toMatchObject({ width: 480, height: 360, outputWidth: 240, outputHeight: 180 });
+    const jpeg = firstImage(output.artifact.bytes);
+    expect(await sharp(Buffer.from(jpeg.bytes)).metadata()).toMatchObject({ width: 240, height: 180 });
+    expect((await recompressPdfScannedImages(source, { targetDpi: 150 })).analysis).toMatchObject({
+      targetDpi: 150, downsampleApplied: false, dpiUsedForDownsample: false });
+  });
+
+  it("retains native pixel dimensions when one repeated paint has lower effective DPI", async () => {
+    installCanvas();
+    const source = pdfWithScan(rawRaster(), { simplePaintOnly: true, secondPaint: true });
+    const output = await recompressPdfScannedImages(source, { targetDpi: 72 });
+    expect(output.analysis).toMatchObject({ dpiUsedForDownsample: false, downsampleApplied: false });
+    expect(output.analysis.inventory[0]).toMatchObject({ outputWidth: 480, outputHeight: 360 });
+    expect(output.analysis.inventory[0]?.placementDpi).toHaveLength(2);
+  });
+
+  it("refuses unproven DPI policies on mixed vector pages and contradictory simultaneous limits", async () => {
+    installCanvas();
+    const mixed = pdfWithScan(rawRaster());
+    await expect(recompressPdfScannedImages(mixed, { targetDpi: 120 })).rejects.toThrow(/UNSUPPORTED_CAPABILITY/u);
+    await expect(recompressPdfScannedImages(mixed, { targetDpi: 120, maxLongestEdgePx: 1000 })).rejects.toThrow(/INVALID_INPUT/u);
+    await expect(recompressPdfScannedImages(mixed, { targetDpi: 0 })).rejects.toThrow(/INVALID_INPUT/u);
+    await expect(recompressPdfScannedImages(mixed, { targetDpi: Number.NaN })).rejects.toThrow(/INVALID_INPUT/u);
+  });
   it("exposes source-backed x/y placement DPI only for strict simple image paints, without applying a DPI policy", async () => {
     installCanvas();
     const simple = await recompressPdfScannedImages(pdfWithScan(rawRaster(), { simplePaintOnly: true }),

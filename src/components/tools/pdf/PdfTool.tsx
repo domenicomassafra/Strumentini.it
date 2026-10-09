@@ -93,6 +93,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [compressionProfile, setCompressionProfile] = useState<"structural-only" | "jpeg-rgb-reencode" | "scan-flate-to-jpeg">("structural-only");
   const [compressionJpegQuality, setCompressionJpegQuality] = useState("0.6");
   const [scanMaxEdge, setScanMaxEdge] = useState("1600");
+  const [scanResizePolicy, setScanResizePolicy] = useState<"pixel-edge" | "verified-dpi">("pixel-edge");
+  const [scanTargetDpi, setScanTargetDpi] = useState("150");
   const [scanGrayscale, setScanGrayscale] = useState(false);
   const [imageRotations, setImageRotations] = useState("");
   const [pdfPageSize, setPdfPageSize] = useState<"original" | "a4" | "letter">("original");
@@ -235,7 +237,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         const source = files[0];
         if (source === undefined) throw new Error("INVALID_INPUT: Scegli un PDF da ottimizzare.");
         const optimized = await recompressPdfScannedImages(new Uint8Array(await source.arrayBuffer()), {
-          quality: Number(compressionJpegQuality), maxLongestEdgePx: Number(scanMaxEdge), grayscale: scanGrayscale,
+          quality: Number(compressionJpegQuality),
+          ...(scanResizePolicy === "verified-dpi" ? { targetDpi: Number(scanTargetDpi) } : { maxLongestEdgePx: Number(scanMaxEdge) }),
+          grayscale: scanGrayscale,
         }, abortController.signal);
         const prepared = await preparePdfResult(toolId, {
           artifacts: [optimized.artifact], artifactCount: 1,
@@ -595,13 +599,27 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
                 </label>
                 {compressionProfile === "scan-flate-to-jpeg" ? (
                   <>
-                    <label class="field"><span>Lato lungo massimo dell'immagine (pixel)</span>
-                      <input type="number" min="256" max="4096" step="1" value={scanMaxEdge}
-                        onInput={(event) => setScanMaxEdge(event.currentTarget.value)} disabled={isWorking} />
+                    <label class="field"><span>Politica di ricampionamento</span>
+                      <select value={scanResizePolicy} onChange={(event) => setScanResizePolicy(event.currentTarget.value as "pixel-edge" | "verified-dpi")} disabled={isWorking}>
+                        <option value="pixel-edge">Limite in pixel (compatibile con pagine complesse)</option>
+                        <option value="verified-dpi">DPI effettivi certificati solo su immagini semplici</option>
+                      </select>
                     </label>
+                    {scanResizePolicy === "verified-dpi" ? (
+                      <label class="field"><span>DPI massimi di posizionamento (36–600)</span>
+                        <input type="number" min="36" max="600" step="1" value={scanTargetDpi}
+                          onInput={(event) => setScanTargetDpi(event.currentTarget.value)} disabled={isWorking} />
+                        <small>Se i DPI non sono ricavabili da tutti i contenuti pagina, il PDF viene rifiutato senza produrre un file. Le immagini ripetute mantengono la risoluzione necessaria al disegno più grande.</small>
+                      </label>
+                    ) : (
+                      <label class="field"><span>Lato lungo massimo dell'immagine (pixel)</span>
+                        <input type="number" min="256" max="4096" step="1" value={scanMaxEdge}
+                          onInput={(event) => setScanMaxEdge(event.currentTarget.value)} disabled={isWorking} />
+                      </label>
+                    )}
                     <label class="field"><input type="checkbox" checked={scanGrayscale}
                       onChange={(event) => setScanGrayscale(event.currentTarget.checked)} disabled={isWorking} /> Converti le immagini idonee in grigio</label>
-                    <p class="file-note">Solo immagini Flate RGB/grigie a 8 bit, senza maschere. Riduce i pixel se superiori al limite scelto: non stima i DPI di stampa. Converte a JPEG con perdita; non modifica testo, vettori, JPEG esistenti, PNG con filtri non riconosciuti o JBIG2. Se cresce, restituisce l'originale.</p>
+                    <p class="file-note">Solo immagini Flate RGB/grigie a 8 bit, senza maschere. La modalità DPI usa misure effettive verificate e rifiuta PDF con layout complessi; la modalità pixel conserva i limiti dichiarati e non inventa i DPI. JPEG con perdita; testo, vettori e JPEG esistenti non vengono rasterizzati. Se cresce, restituisce l'originale.</p>
                   </>
                 ) : <p class="file-note">Solo JPEG RGB 8 bit con filtro DCT unico e risorse immagine dirette: nessun downsample, grigio, PNG o JBIG2. Maschere, colori speciali e filtri multipli vengono saltati. La compressione JPEG è con perdita; il testo e i vettori vengono copiati senza rasterizzarli.</p>}
               </>
