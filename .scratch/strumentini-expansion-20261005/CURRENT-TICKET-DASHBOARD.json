@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 280,
+    "completed": 282,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 263,
-    "open": 47,
-    "readyDAG": 13,
-    "ready-for-agent": 6,
-    "dependency-blocked": 34,
+    "completedWithoutExplicitRefusal": 265,
+    "open": 45,
+    "readyDAG": 12,
+    "ready-for-agent": 5,
+    "dependency-blocked": 33,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 0,
@@ -68,6 +68,7 @@
       61,
       63,
       64,
+      66,
       67,
       68,
       69,
@@ -225,6 +226,7 @@
       238,
       239,
       240,
+      241,
       242,
       243,
       244,
@@ -310,7 +312,6 @@
       56,
       212,
       237,
-      241,
       246
     ],
     "dependency-blocked": [
@@ -333,7 +334,6 @@
       58,
       62,
       65,
-      66,
       121,
       122,
       126,
@@ -730,8 +730,7 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        237,
-        241
+        237
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -874,8 +873,7 @@
         32,
         35,
         40,
-        65,
-        66
+        65
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -890,7 +888,6 @@
         18,
         45,
         65,
-        66,
         158,
         279,
         280,
@@ -1109,9 +1106,9 @@
     {
       "id": 66,
       "title": "Existing 200 functional-upgrade coverage gate",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [
         62
       ],
@@ -2887,9 +2884,9 @@
     {
       "id": 241,
       "title": "PDF signature placement",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false

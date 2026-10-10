@@ -16,14 +16,13 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **212 — HEIC AVIF and GIF directional image implementations**
 - **229 — Microphone test and local recorder**
 - **237 — True PDF redaction with post-export proof**
-- **241 — PDF signature placement**
 - **246 — Local image OCR**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **13** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **12** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -105,7 +104,7 @@ Exactly **13** incomplete tickets currently have every declared numeric blocker 
 | 063 | completed | Upgrade existing marketing/URL functionality | 321, 322, 323, 324, 325 |
 | 064 | completed | Upgrade existing file/archive/research functionality | 197, 198, 222, 223, 224, 326, 327 |
 | 065 | blocked | Format-operation matrix coverage gate | 047, 048, 049, 051, 052, 053, 054, 055, 056, 057, 058, 059, 067, 068, 108, 109 |
-| 066 | blocked | Existing 200 functional-upgrade coverage gate | 050, 053, 060, 061, 062, 063, 064, 110, 297 |
+| 066 | completed | Existing 200 functional-upgrade coverage gate | 050, 053, 060, 061, 062, 063, 064, 110, 297 |
 | 067 | completed | ZIP/GZIP/archive compression + safe extraction | 222, 223, 224 |
 | 068 | completed | DOCX/PPTX/XLSX OOXML compressor | 225, 264 |
 | 069 | completed | Cross-format file-size analyzer | 228, 265, 266 |
@@ -280,7 +279,7 @@ Exactly **13** incomplete tickets currently have every declared numeric blocker 
 | 238 | completed | PDF page numbers placement and ranges | 215, 269 |
 | 239 | completed | PDF watermark and overlay placement | 215, 269 |
 | 240 | completed | PDF crop and page-size normalization | 215, 269 |
-| 241 | ready-for-agent | PDF signature placement | 215, 269 |
+| 241 | completed | PDF signature placement | 215, 269 |
 | 242 | completed | PDF protect encrypt and legitimate unlock | 103, 269 |
 | 243 | completed | PDF fill annotate and write overlays | 215, 269 |
 | 244 | completed | PDF repair and tolerant recovery | 103, 269 |

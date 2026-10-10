@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 280 / 47 |
+| All / completed / open | 327 / 282 / 45 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 13 |
-| Ready for assignment (feasibility still to prove) | 6 |
-| Waiting on other tickets | 34 |
+| DAG-ready (all numeric dependencies closed) | 12 |
+| Ready for assignment (feasibility still to prove) | 5 |
+| Waiting on other tickets | 33 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 0 |
@@ -21,16 +21,15 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (6)
+## Ready for assignment (feasibility still to prove) (5)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
 - #212 — HEIC AVIF and GIF directional image implementations
 - #237 — True PDF redaction with post-export proof
-- #241 — PDF signature placement
 - #246 — Local image OCR
 
-## Waiting on other tickets (34)
+## Waiting on other tickets (33)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -42,16 +41,15 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #024 — Office/Markdown productivity family (awaiting #056)
 - #028 — Image format + target-compression family (awaiting #047, #049)
 - #031 — OCR and document-scan family (awaiting #246, #247)
-- #032 — PDF edit/security family (awaiting #237, #241)
+- #032 — PDF edit/security family (awaiting #237)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #040 — Italy utilities beyond CalcolaTutto (awaiting #152)
-- #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #035, #040, #065, #066)
-- #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)
+- #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #035, #040, #065)
+- #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #158, #279, #280, #281)
 - #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212)
 - #058 — PDF↔image directional conversion pack (awaiting #235)
 - #062 — Upgrade existing business/date functionality (awaiting #126, #127, #128, #130, #133, #134, #135)
 - #065 — Format-operation matrix coverage gate (awaiting #047, #049, #056, #058)
-- #066 — Existing 200 functional-upgrade coverage gate (awaiting #062)
 - #121 — Codice Fiscale formal validate and generate engine (awaiting #115)
 - #122 — Codice Fiscale decode and omocodia ambiguity (awaiting #121)
 - #126 — IVA add and scorporo with versioned presets (awaiting #117)
