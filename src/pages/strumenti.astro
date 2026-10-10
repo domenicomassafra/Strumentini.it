@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DirectoryHero from "../components/catalog/DirectoryHero.astro";
+import JobRoutes from "../components/catalog/JobRoutes.astro";
 import CatalogDirectory from "../components/catalog/CatalogDirectory.astro";
 import DirectoryBand from "../components/catalog/DirectoryBand.astro";
 import { catalog } from "../generated/catalog";
@@ -21,6 +22,7 @@ const verifiedCount = catalog.filter((tool) => verifiedIds.has(tool.id)).length;
   description={`Il catalogo completo: ${catalog.length} strumenti online gratuiti per PDF, immagini, CSV, testo, date e lavoro d'ufficio, con filtri per categoria, tipo di ingresso e stato della verifica.`}
 >
   <DirectoryHero total={catalog.length} verified={verifiedCount} />
+  <JobRoutes />
   <CatalogDirectory tools={catalog} verifiedIds={verifiedIds} />
   <DirectoryBand />
 </BaseLayout>

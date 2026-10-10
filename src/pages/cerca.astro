@@ -112,6 +112,8 @@ const indexPayload = {
 
     <ul class="tool-grid search-results" data-search-results></ul>
 
+    <button class="search-show-more" type="button" data-search-more hidden>Mostra altri strumenti</button>
+
     <p class="search-nothing" data-search-nothing hidden>
       Nessuno strumento corrisponde a questa ricerca. Prova con una parola più semplice,
       oppure <a href="/strumenti/">sfoglia tutti gli strumenti</a>.
@@ -169,6 +171,8 @@ const indexPayload = {
     let activeCategory: string | null = null;
     let engine: ReturnType<typeof createSearch> | undefined;
     let engineLoad: Promise<ReturnType<typeof createSearch>> | undefined;
+    const SEARCH_PAGE_SIZE = 12;
+    let visibleCount = SEARCH_PAGE_SIZE;
 
     function loadEngine(): Promise<ReturnType<typeof createSearch>> {
       if (engine !== undefined) return Promise.resolve(engine);
@@ -251,10 +255,10 @@ const indexPayload = {
       const base = input?.value.trim() ?? "";
       const pills = new Set<string>();
       const related = base === ""
-        ? ["unisci PDF", "comprimi immagine", "pulisci CSV", "conta parole", "converti data", "genera QR code"]
+        ? ["unisci PDF", "converti HEIC", "togli EXIF foto", "pulisci CSV", "scadenza passaporto", "trascrizione sottotitoli"]
         : closeIntents.length > 0
           ? closeIntents
-        : [base, `comprimi ${base}`, `converti ${base}`, `estrai ${base}`, `pulisci ${base}`];
+          : [];
       for (const pill of related) pills.add(pill);
       suggestions.innerHTML = [...pills].slice(0, 6)
         .map((pill) => `<button type="button" class="search-chip" data-search-reuse="${escapeHtml(pill)}">${escapeHtml(pill)}</button>`)
@@ -290,7 +294,12 @@ const indexPayload = {
               ? "Abbiamo trovato 1 strumento che può aiutarti."
               : `Abbiamo trovato ${rows.length} strumenti che possono aiutarti.`;
       }
-      if (results !== null) results.innerHTML = rows.map(row).join("");
+      if (results !== null) results.innerHTML = rows.slice(0, visibleCount).map(row).join("");
+      const showMore = page?.querySelector<HTMLButtonElement>("[data-search-more]");
+      if (showMore !== null && showMore !== undefined) {
+        showMore.hidden = rows.length <= visibleCount;
+        showMore.textContent = `Mostra altri strumenti (${Math.min(SEARCH_PAGE_SIZE, Math.max(0, rows.length - visibleCount))} di ${rows.length - visibleCount} rimanenti)`;
+      }
       if (nothing !== null) nothing.hidden = !(query !== "" && rows.length === 0);
       if (toolbar !== null) toolbar.hidden = hits.length === 0;
       paintFilters();
@@ -299,6 +308,7 @@ const indexPayload = {
 
     async function run(query: string, remember: boolean): Promise<void> {
       if (input !== null && input.value !== query) input.value = query;
+      visibleCount = SEARCH_PAGE_SIZE;
       if (query === "") {
         hits = [];
         closeIntents = [];
@@ -309,6 +319,7 @@ const indexPayload = {
       }
       const search = await loadEngine();
       const result = search.query(query, undefined, 60);
+      if ((input?.value.trim() ?? "") !== query) return;
       hits = result.hits;
       closeIntents = result.closeIntents;
       if (remember) writeRecent(query);
@@ -328,12 +339,14 @@ const indexPayload = {
       const category = event.target.closest<HTMLElement>("[data-search-category]");
       if (category !== null) {
         activeCategory = category.dataset.searchCategory ?? null;
+        visibleCount = SEARCH_PAGE_SIZE;
         paint();
         return;
       }
       const filter = event.target.closest<HTMLElement>("[data-search-filter]");
       if (filter !== null) {
         activeCategory = (filter.dataset.searchFilter ?? "") === "" ? null : filter.dataset.searchFilter ?? null;
+        visibleCount = SEARCH_PAGE_SIZE;
         paint();
       }
     });
@@ -366,6 +379,10 @@ const indexPayload = {
     });
 
     sortSelect?.addEventListener("change", paint);
+    page?.querySelector("[data-search-more]")?.addEventListener("click", () => {
+      visibleCount += SEARCH_PAGE_SIZE;
+      paint();
+    });
 
     paintRecent();
     paintSuggestions();
@@ -557,6 +574,9 @@ const indexPayload = {
   }
 
   .search-results { margin: 0; }
+  .search-show-more { display: block; width: min(100%, 22rem); min-height: var(--control-height-touch); margin: var(--space-6) auto 0; padding: var(--space-3) var(--space-5); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface); color: var(--text); font-weight: var(--font-weight-semibold); }
+  .search-show-more[hidden] { display: none; }
+  .search-show-more:hover { border-color: var(--brand); color: var(--brand); }
   :global(.search-row-glyph) { width: 22px; height: 22px; }
 
   .search-nothing { margin: var(--space-8) 0 0; color: var(--text-muted); }

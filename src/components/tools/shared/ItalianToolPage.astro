@@ -10,6 +10,7 @@ import { qualityIndex } from "../../../generated/quality";
 import { goldToolIds } from "../../../onboarding/quality";
 import { groupForCategory, toneForCategory } from "../../../catalog/groups";
 import { relatedToolsFor } from "../../../runtime/related-tool-graph";
+import { nextJobSteps } from "../../../catalog/job-routes";
 import "../tool-surface.css";
 
 interface Props {
@@ -31,6 +32,7 @@ const tone = toneForCategory(tool.category);
 const verified = goldToolIds(qualityIndex).has(tool.id);
 
 const related = relatedToolsFor(tool.id, catalog, handoffCatalog);
+const nextSteps = nextJobSteps(tool.id);
 
 const networkCopy = tool.runtime.network === "forbidden"
   ? "Accesso alla rete vietato dal contratto dello strumento."
@@ -198,6 +200,27 @@ const headerArtGlyph = toolIconSvg(tool, "tool-heading-art-glyph");
         </li>
       </ul>
     </section>
+
+    {nextSteps.length > 0 && (
+      <section class="section" aria-labelledby={`prossimi-${tool.id}`}>
+        <div class="section-head">
+          <div>
+            <h2 class="section-title" id={`prossimi-${tool.id}`}>Continua l'attività</h2>
+            <p class="section-sub">Questi link aprono lo strumento successivo. Salva o copia il risultato e seleziona nuovamente il file, oppure incolla il testo richiesto. I link non trasferiscono automaticamente dati.</p>
+          </div>
+        </div>
+        <ul class="tool-grid">
+          {nextSteps.map(({ route, next }) => (
+            <li class="tool-card tool-card-card">
+              <div class="tool-card-body">
+                <h3 class="tool-card-name"><a href={next.route}>{next.name} →</a></h3>
+                <p class="tool-card-summary">{route.title}: {next.summary}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
 
     {related.length > 0 && (
       <section class="section" aria-labelledby={`correlati-${tool.id}`}>

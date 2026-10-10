@@ -342,6 +342,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "exif-remover": {
     name: "Rimuovi metadati EXIF",
     summary: "Mostra i gruppi di metadati prima e dopo, ricrea un PNG pulito e reinspeziona metadati e pixel RGBA prima di dichiararlo riuscito.",
+    searchTerms: ["togli exif foto", "rimuovi geolocalizzazione foto", "rimuovi metadati foto", "pulisci dati exif"],
   },
   "favicon-app-icon-size-generator": {
     name: "Crea favicon e icone app",
@@ -440,7 +441,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "image-format-conversion": {
     name: "Converti formato immagine",
     summary: "Converte JPEG, PNG e WebP in locale, verifica firma e decode e richiede uno sfondo esplicito quando l'alpha deve diventare JPEG.",
-    searchTerms: ["converti jpg png", "jpg in png", "png in jpg", "webp in jpg", "converti immagine"],
+    searchTerms: ["converti jpg png", "jpg in png", "png in jpg", "webp in jpg", "converti immagine", "converti heic", "foto iphone heic jpg"],
   },
   "image-metadata-viewer": {
     name: "Vedi informazioni di un'immagine",
@@ -941,6 +942,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "tsv-to-csv": {
     name: "Converti TSV in CSV",
     summary: "Converte valori separati da tabulazioni in un CSV normalizzato, incluse celle tra virgolette.",
+    searchTerms: ["tsv csv", "tabulazioni in csv", "converti testo tabulato csv"],
   },
   "unicode-normalizer": {
     name: "Normalizzatore Unicode",

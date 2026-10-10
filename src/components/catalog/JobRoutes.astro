@@ -1,0 +1,67 @@
+---
+import { discoveryTopics, jobRoutes, visualSignatureRoute } from "../../catalog/job-routes";
+---
+
+<section class="job-routes" aria-labelledby="job-routes-title">
+  <div class="job-topics" aria-label="Attività per argomento">
+    {discoveryTopics.map((topic) => (
+      <div class="job-topic">
+        <h2>{topic.title}</h2>
+        <ul>
+          {topic.tools.map((tool) => (
+            <li><a href={tool.route}>{tool.name} <span aria-hidden="true">→</span></a></li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+  <div class="job-routes-heading">
+    <div>
+      <h2 id="job-routes-title">Da dove cominciare</h2>
+      <p>Scegli l'attività: ogni passaggio apre uno strumento reale del catalogo.</p>
+    </div>
+    <a href="/cerca/">Cerca per attività o tipo di file <span aria-hidden="true">→</span></a>
+  </div>
+  <ul class="job-routes-grid">
+    {jobRoutes.map((route) => (
+      <li class="job-route">
+        <h3>{route.title}</h3>
+        <p>{route.description}</p>
+        <ol aria-label={`Passaggi: ${route.title}`}>
+          {route.tools.map((tool) => (
+            <li><a href={tool.route}>{tool.name} <span aria-hidden="true">→</span></a></li>
+          ))}
+        </ol>
+      </li>
+    ))}
+  </ul>
+  <p class="job-routes-note">I passaggi sono link di navigazione: salva o copia il risultato e riseleziona il file o incolla il testo nella pagina successiva. Nessun dato viene trasferito automaticamente da questi link.</p>
+  <p class="job-routes-note">Devi aggiungere un segno di firma visibile a un PDF? <a href={visualSignatureRoute}>Apri la firma grafica visiva</a> nello strumento PDF esistente. Non è una firma digitale e non certifica l'identità del firmatario.</p>
+</section>
+
+<style>
+  .job-routes { width: min(calc(100% - var(--container-gutter) * 2), var(--container-max)); margin: var(--space-4) auto var(--space-8); min-width: 0; }
+  .job-topics { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); margin-bottom: var(--space-8); }
+  .job-topic { min-width: 0; padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-subtle); }
+  .job-topic h2 { margin: 0 0 var(--space-2); font-size: var(--font-size-body); }
+  .job-topic ul { margin: 0; padding: 0; list-style: none; }
+  .job-topic li { margin-top: var(--space-1); }
+  .job-topic a { color: var(--brand); font-size: var(--font-size-sm); overflow-wrap: anywhere; }
+  .job-routes-heading { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-5); }
+  .job-routes-heading h2 { margin: 0; font-size: var(--font-size-h2); }
+  .job-routes-heading p { margin: var(--space-2) 0 0; color: var(--text-muted); }
+  .job-routes-heading > a { color: var(--brand); font-weight: var(--font-weight-semibold); }
+  .job-routes-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); padding: 0; margin: 0; list-style: none; }
+  .job-route { min-width: 0; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); padding: var(--space-5); }
+  .job-route h3 { margin: 0; font-size: var(--font-size-h3); }
+  .job-route > p { margin: var(--space-2) 0 var(--space-4); color: var(--text-muted); font-size: var(--font-size-sm); }
+  .job-route ol { margin: 0; padding-left: var(--space-5); }
+  .job-route ol li { margin-block: var(--space-2); padding-left: var(--space-1); }
+  .job-route ol li a { color: var(--brand); font-weight: var(--font-weight-medium); overflow-wrap: anywhere; }
+  .job-route a:hover { text-decoration: underline; }
+  .job-routes-note { margin: var(--space-4) 0 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+  .job-routes-note a { color: var(--brand); font-weight: var(--font-weight-semibold); }
+  @media (min-width: 700px) { .job-routes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 700px) { .job-topics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .job-topics { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+</style>
