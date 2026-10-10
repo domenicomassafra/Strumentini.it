@@ -20,6 +20,7 @@ import {
 import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
 import { publicIndexPaths } from "../src/seo/public-discovery";
 import { groups } from "../src/catalog/groups";
+import { narrowUncataloguedToolPreviews } from "../src/release/preview-boundary";
 
 const execFileAsync = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
@@ -225,6 +226,16 @@ async function main(): Promise<void> {
   const distExists = await pathExists(distRoot);
   const distFiles = distExists ? (await walk(distRoot)).map((path) => relative(distRoot, path).replaceAll("\\", "/")) : [];
   const metadata = distExists ? await loadMetadata(catalog, site) : { surfaces: [] };
+  // Exclude only exact audited, build-proven experimental routes. Each
+  // exception is verified against source, compiled HTML and sitemap. If a
+  // guard changes or another unindexed route appears, validation fails closed.
+  const scopedPreviews = narrowUncataloguedToolPreviews({
+    toolPageFiles, staticFiles: distFiles, catalogRoutes: catalog.map((entry) => entry.route),
+    codiceFiscaleSource: await readFile(resolve(root, "src/pages/tools/codice-fiscale.astro"), "utf8").catch(() => ""),
+    codiceFiscaleHtml: await readFile(resolve(distRoot, "tools/codice-fiscale/index.html"), "utf8").catch(() => ""),
+    signatureSource: await readFile(resolve(root, "src/pages/tools/pdf-visual-signature/[...route].astro"), "utf8").catch(() => ""),
+    sitemapXml: await readFile(resolve(distRoot, "sitemap.xml"), "utf8").catch(() => ""),
+  });
   const rollbackPath = resolve(receiptDirectory, "rollback.json");
   const existingRollback = await readJson(rollbackPath);
   const rollbackReceipt = isVerifiedRollback(existingRollback) ? existingRollback : createUnprovenRollbackReceipt(revision, sourceFingerprint);
@@ -233,14 +244,14 @@ async function main(): Promise<void> {
     expectedToolCount,
     catalog,
     manifestFiles,
-    toolPageFiles,
+    toolPageFiles: scopedPreviews.toolPageFiles,
     cloudflareConfig: await readFile(resolve(root, "wrangler.jsonc"), "utf8"),
     siteUrl,
     publicSources: await loadPublicSources(),
     metadataSurfaces: metadata.surfaces,
     ...(metadata.sitemap === undefined ? {} : { sitemap: metadata.sitemap }),
     ...(metadata.robots === undefined ? {} : { robots: metadata.robots }),
-    staticAssets: { distExists, files: distFiles, toolIds: catalog.map((entry) => entry.id) } satisfies StaticAssetSurface,
+    staticAssets: { distExists, files: scopedPreviews.staticFiles, toolIds: catalog.map((entry) => entry.id) } satisfies StaticAssetSurface,
     rollbackReceipt,
     goldReceipts: await loadGoldReceipts(),
     evidence: { browser, physicalDeviceReceipts: await loadPhysicalReceipts() },
