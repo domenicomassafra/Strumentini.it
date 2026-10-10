@@ -8,7 +8,7 @@
 
 **Blocked by:** 230, 231.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 - [ ] Convert/trim/merge share one file timeline/export workspace where technically sensible.
 - [ ] Output exposes codec/container, duration, sample rate/bitrate where known, and before→after size.

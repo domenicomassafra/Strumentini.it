@@ -1,5 +1,7 @@
 # 231 — Audio timeline edits and deterministic DSP
 
+**2026-10-10 FUNCTIONAL ACCEPTANCE COMPLETED (strict local WAV PCM16 contract):** All three acceptance criteria below are satisfied by the existing **public** `audio-generator` opt-in `AudioTimelinePanel231`, the bounded disposable Web Worker, and verified PCM16 DSP. The UI accepts one or two mono/stereo 8–48kHz 16-bit WAV sources, frame-bounded ordered trims/merge, linear gain, peak normalization, silence-run removal, speed 0.5×–2× **with pitch change explicitly disclosed**, visible waveform from *actual processed samples*, audio playback, real WAV download, cancellation, unsupported-codec and output-cap refusals. File limits 12 MiB/source, 24 MiB combined, at most 60s output are enforced; no MP3/AAC/general codec, LUFS or pitch-preserving claim. On deployed-equivalent source `cdb6bb8` (the subsequent main HEAD only added release documentation and ticket statuses), 5 targeted Vitest suites **57/57 PASS**. Real static-site browser acceptance `AUDIO231_BROWSERS=chromium,firefox,webkit node scripts/acceptance-audio-timeline-ui-231.browser.mjs` **129/129 PASS**, downloaded PCM16 WAV independently reopened by `ffprobe` and sample analysis (2000 frames, 876 Hz measured output, explicit speed/pitch effect), workers constructed/terminated and stale downloads revoked, zero offsite. Near-limit stress `node scripts/acceptance-audio-timeline-stress-231.browser.mjs` **PASS**, genuine stereo 48kHz × 60s, 11,520,044 bytes, output exact 11,520,044 bytes, confirmed cancellation/no partial output and oversized candidate refusal. The source-only optional RMS/de-click polish adapter is **not** claimed as UI-integrated; ticket functional contract instead uses the proven public peak normalization and silence controls. **Physical Android/iPhone device QA and Gold receipts remain NOT_RUN** and are tracked in distinct #280/#281; these desktop browser tests are NOT physical-device evidence. No arbitrary codec or unsupported DSP promises. Older partial/NOT_RUN notes below are historical superseded evidence.
+
 **What to build:** Add trim, ordered merge, speed, volume/normalization and silence-removal on one bounded decoded-audio timeline with previewable parameters.
 
 **Traces to:** US-EXP-06; AC-06.1
@@ -8,7 +10,7 @@
 
 **Blocked by:** 230 — Audio transcode compress and target bitrate size.
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Partial implementation:** isolated PCM16 WAV DSP subset delivered; full ticket remains open.
 

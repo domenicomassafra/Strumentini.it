@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 269 / 58 |
+| All / completed / open | 327 / 270 / 57 |
 | Closed with explicit refusal (NOT shipped) | 18 |
 | DAG-ready (all numeric dependencies closed) | 19 |
 | Ready for assignment (feasibility still to prove) | 11 |
-| Waiting on other tickets | 39 |
+| Waiting on other tickets | 38 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 1 |
@@ -23,19 +23,19 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 ## Ready for assignment (feasibility still to prove) (11)
 
+- #036 — Audio file-processing family
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
 - #059 — JSON/XML/CSS/HTML/SVG minimizer pack
 - #069 — Cross-format file-size analyzer
 - #212 — HEIC AVIF and GIF directional image implementations
-- #231 — Audio timeline edits and deterministic DSP
 - #234 — Video transform worker core
 - #237 — True PDF redaction with post-export proof
 - #241 — PDF signature placement
 - #246 — Local image OCR
 - #255 — PDF to PPTX page-as-slide baseline
 
-## Waiting on other tickets (39)
+## Waiting on other tickets (38)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -50,7 +50,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #032 — PDF edit/security family (awaiting #237, #241)
 - #033 — PDF conversion/productivity family (awaiting #255)
 - #035 — Audio capture/playback utilities (awaiting #229)
-- #036 — Audio file-processing family (awaiting #231)
 - #038 — Video transform family (awaiting #234, #306)
 - #040 — Italy utilities beyond CalcolaTutto (awaiting #152)
 - #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #033, #035, #036, #038, #040, #065, #066)

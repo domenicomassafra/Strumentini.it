@@ -9,6 +9,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 
 ## Current dependency frontier
 
+- **036 — Audio file-processing family**
 - **047 — JPEG/PNG/WebP/SVG compression engines**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **056 — Office-to-PDF and printable export pack**
@@ -18,7 +19,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
 - **229 — Microphone test and local recorder**
-- **231 — Audio timeline edits and deterministic DSP**
 - **234 — Video transform worker core**
 - **237 — True PDF redaction with post-export proof**
 - **241 — PDF signature placement**
@@ -81,7 +81,7 @@ Exactly **19** incomplete tickets currently have every declared numeric blocker 
 | 033 | blocked | PDF conversion/productivity family | 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260 |
 | 034 | completed | Heavy local media/OCR/Office feasibility refresh | — |
 | 035 | blocked | Audio capture/playback utilities | 229, 303, 304 |
-| 036 | blocked | Audio file-processing family | 230, 231 |
+| 036 | ready-for-agent | Audio file-processing family | 230, 231 |
 | 037 | completed | Video inspect/subtitle utilities | 232, 233, 305 |
 | 038 | blocked | Video transform family | 234, 306, 307, 308 |
 | 039 | completed | AI-era deterministic helper family | 054, 165, 183, 184, 185, 186, 189 |
@@ -276,7 +276,7 @@ Exactly **19** incomplete tickets currently have every declared numeric blocker 
 | 228 | completed | Cross-format file-size analyzer core | 097, 222 |
 | 229 | blocked (physical iOS/Android acceptance pending) | Microphone test and local recorder | — |
 | 230 | completed | Audio transcode compress and target bitrate size | 100, 103, 206, 273 |
-| 231 | ready-for-agent | Audio timeline edits and deterministic DSP | 230 |
+| 231 | completed | Audio timeline edits and deterministic DSP | 230 |
 | 232 | completed — bounded local MP4 metadata inspection / mathematical bitrate planner only (NOT Gold, NOT transcoding) | Video inspector and target-size calculator | 100, 206, 274 |
 | 233 | completed | SRT VTT transform transcript and readability | 077 |
 | 234 | ready-for-agent | Video transform worker core | 100, 103, 206, 232, 274 |
