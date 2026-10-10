@@ -1,5 +1,5 @@
 /**
- * A very narrow exception for two independently-audited noncatalog tool pages.
+ * A very narrow exception for audited noncatalog or dev-only tool pages.
  * It does NOT promote either page, waive release evidence, or forgive another
  * source/static page. If a guard disappears the existing release validator
  * sees the original paths and correctly fails with unindexed/extra page errors.
@@ -12,6 +12,7 @@ export function narrowUncataloguedToolPreviews(input: {
   readonly codiceFiscaleHtml: string;
   readonly ocrSource?: string;
   readonly ocrHtml?: string;
+  readonly pdfOcr247Source?: string;
   readonly signatureSource: string;
   readonly sitemapXml: string;
 }): { readonly toolPageFiles: string[]; readonly staticFiles: string[]; readonly safePreviewNames: string[] } {
@@ -61,6 +62,25 @@ export function narrowUncataloguedToolPreviews(input: {
   if (sigGuard) {
     toolPageFiles.splice(toolPageFiles.indexOf(sigSourcePath), 1);
     safePreviewNames.push("pdf-visual-signature");
+  }
+  // The PDF OCR #247 experiment must be absent from every production build.
+  // Exclude its SOURCE route from the catalog page count ONLY when its
+  // getStaticPaths still returns zero outside Astro DEV and all public
+  // discovery/output surfaces remain absent. Never count a deployed preview
+  // as a certificated product, nor silently forgive another unknown page.
+  const pdfOcrSourcePath = "src/pages/tools/pdf-scansionato-ocr-247/[...route].astro";
+  const pdfOcrStaticPath = "tools/pdf-scansionato-ocr-247/index.html";
+  const pdfOcr247Source = input.pdfOcr247Source ?? "";
+  const pdfOcr247Guard = toolPageFiles.includes(pdfOcrSourcePath) &&
+    !staticFiles.includes(pdfOcrStaticPath) &&
+    !inCatalog("/tools/pdf-scansionato-ocr-247") &&
+    /export\s+function\s+getStaticPaths\s*\(\s*\)\s*\{\s*return\s+import\.meta\.env\.DEV\s*\?\s*\[\{[\s\S]*?\]\s*:\s*\[\]\s*;?\s*\}/u.test(pdfOcr247Source) &&
+    /<BaseLayout\b[\s\S]*?\bnoindex\s*>/u.test(pdfOcr247Source) &&
+    pdfOcr247Source.includes('data-ocr247-preview="experimental-local-only"') &&
+    !input.sitemapXml.includes("/tools/pdf-scansionato-ocr-247/");
+  if (pdfOcr247Guard) {
+    toolPageFiles.splice(toolPageFiles.indexOf(pdfOcrSourcePath), 1);
+    safePreviewNames.push("pdf-scansionato-ocr-247");
   }
   return { toolPageFiles, staticFiles, safePreviewNames };
 }
