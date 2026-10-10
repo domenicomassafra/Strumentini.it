@@ -36,6 +36,7 @@ try {
   assert.equal((await page.goto(`${origin}/tools/pdf-to-images/`, { waitUntil: "networkidle" })).status(), 200);
   const panel = page.locator("[data-pdf-pptx-255]");
   await panel.waitFor({ timeout: 15_000 });
+  await page.locator('[data-pdf-pptx-255-hydrated="true"]').waitFor({ timeout: 45_000 });
   assert.match(await panel.innerText(), /non ricostruzione modificabile/u);
   checks++;
   await panel.locator('input[type="file"]').setInputFiles(resolve(root, "quality/fixtures/pdf-gold/simple-3page.pdf"));

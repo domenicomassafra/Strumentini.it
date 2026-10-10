@@ -6,6 +6,7 @@ import type { PdfPptx255Result } from "../../../engines/pdf/pdf-to-pptx-255";
  * The browser receives neither user PDF nor rendered pages over the network.
  */
 export function PdfToPptx255Tool() {
+  const [hydrated, setHydrated] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [pages, setPages] = useState("");
   const [scale, setScale] = useState("1.5");
@@ -35,10 +36,15 @@ export function PdfToPptx255Tool() {
     setStatus("Conversione annullata: nessun PPTX incompleto disponibile.");
   }
 
-  useEffect(() => () => {
-    generation.current++;
-    abortRef.current?.abort();
-    for (const url of urls.current) URL.revokeObjectURL(url);
+  useEffect(() => {
+    // Astro renders the initial island before Preact installs event handlers.
+    // Do not let early interactions look successful while their events vanish.
+    setHydrated(true);
+    return () => {
+      generation.current++;
+      abortRef.current?.abort();
+      for (const url of urls.current) URL.revokeObjectURL(url);
+    };
   }, []);
 
   async function convert(event: Event) {
@@ -80,14 +86,14 @@ export function PdfToPptx255Tool() {
     }
   }
 
-  return <section class="tool-surface" data-pdf-pptx-255 style={{ marginTop: "2rem" }}>
+  return <section class="tool-surface" data-pdf-pptx-255 data-pdf-pptx-255-hydrated={hydrated ? "true" : "false"} style={{ marginTop: "2rem" }}>
     <h2>PDF → PowerPoint (una pagina come immagine per slide)</h2>
     <p class="file-note"><strong>Conversione visiva pagina per slide, non ricostruzione modificabile.</strong>
       Ogni pagina selezionata diventa un'unica immagine PNG nella slide; testi, elementi e grafici PDF non diventano modificabili separatamente.
       La presentazione usa slide 4:3 con margini bianchi se la pagina ha proporzioni diverse. L'elaborazione è locale.</p>
     <form onSubmit={event => void convert(event)}>
       <label class="field"><span>PDF sorgente (massimo 8 MiB)</span>
-        <input type="file" accept=".pdf,application/pdf" disabled={busy} onChange={event => {
+        <input type="file" accept=".pdf,application/pdf" disabled={busy || !hydrated} onChange={event => {
           cancel();
           setFile(event.currentTarget.files?.[0] ?? null);
           setStatus("Seleziona massimo 8 pagine dal PDF, poi converti in PowerPoint.");
@@ -105,7 +111,7 @@ export function PdfToPptx255Tool() {
           </select></label>
       </div>
       <div class="actions">
-        <button type="submit" class="primary" disabled={!file || busy}>{busy ? "Creo il PPTX..." : "Converti PDF in PPTX"}</button>
+        <button type="submit" class="primary" disabled={!file || busy || !hydrated}>{busy ? "Creo il PPTX..." : "Converti PDF in PPTX"}</button>
         <button type="button" disabled={!busy} onClick={cancel}>Annulla</button>
       </div>
     </form>
