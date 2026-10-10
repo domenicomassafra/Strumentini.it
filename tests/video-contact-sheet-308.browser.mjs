@@ -11,8 +11,8 @@ import sharp from "sharp";
 
 const root = resolve(import.meta.dirname, "..");
 const port = 18440;
-const origin = `http://127.0.0.1:${port}`;
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
+const origin = process.env.VIDEO38_BASE ?? `http://127.0.0.1:${port}`;
+const server = process.env.VIDEO38_BASE ? null : spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
 let browser;
 let checks = 0;
 try {
@@ -86,5 +86,5 @@ try {
   console.log(`#308 contact sheet: PASS ${checks} checks; real MP4 decoded, verified presented timestamps, ZIP/manifest/png re-opened, no offsite`);
 } finally {
   if (browser) await browser.close();
-  server.kill("SIGTERM");
+  server?.kill("SIGTERM");
 }

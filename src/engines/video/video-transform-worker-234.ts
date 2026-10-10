@@ -17,7 +17,9 @@ type Options = {
 type WorkerRequest = Options | { readonly kind: "probe"; readonly width: number; readonly height: number; readonly sourceKind: "mp4" | "webm" };
 type WorkerResult =
   | { kind: "capability"; supported: boolean; reason: string }
-  | { kind: "done"; bytes: ArrayBuffer; start: number; end: number }
+  | { kind: "done"; bytes: ArrayBuffer; start: number; end: number;
+      originalWidth: number; originalHeight: number; originalVideoCodec: "avc" | "vp8";
+      originalAudioCodec: "aac" | "opus"; originalDuration: number }
   | { kind: "progress"; progress: number; processedTime: number }
   | { kind: "error"; message: string };
 
@@ -102,7 +104,10 @@ async function run(data: WorkerRequest) {
     if (!(bytes instanceof ArrayBuffer) || bytes.byteLength < 128 || bytes.byteLength > 18 * 1024 * 1024) {
       throw new Error("VIDEO_234_OUTPUT_LIMIT: MP4 codificato nullo o superiore a 18 MiB.");
     }
-    self.postMessage({ kind: "done", bytes, start: data.start, end } satisfies WorkerResult, { transfer: [bytes] });
+    self.postMessage({
+      kind: "done", bytes, start: data.start, end, originalWidth, originalHeight,
+      originalVideoCodec: expectedVideo, originalAudioCodec: expectedAudio, originalDuration: duration,
+    } satisfies WorkerResult, { transfer: [bytes] });
   } catch (error) {
     if (conversion) await conversion.cancel().catch(() => undefined);
     throw error;

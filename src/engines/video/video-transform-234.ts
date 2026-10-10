@@ -27,6 +27,14 @@ export interface VideoTransformResult234 {
   readonly outputAudioCodec: "mp4a";
   readonly sourceBytes: number;
   readonly videoBitrateBps: number;
+  /** Measured from the actual input by the worker before converting. */
+  readonly sourceWidth: number;
+  readonly sourceHeight: number;
+  readonly sourceVideoCodec: "avc" | "vp8";
+  readonly sourceAudioCodec: "aac" | "opus";
+  readonly sourceDurationSeconds: number;
+  /** Measured container bitrate, not a claim about H.264 track rate control. */
+  readonly actualTotalBitrateBps: number;
 }
 
 type WorkerResponse =
@@ -139,7 +147,9 @@ export async function transformVideoMp4Local234(file: File, options: VideoTransf
     }
   }
   aborted(signal);
-  const response = await runWorker<{ kind: "done"; bytes: ArrayBuffer; start: number; end: number }>({
+  const response = await runWorker<{ kind: "done"; bytes: ArrayBuffer; start: number; end: number;
+    originalWidth: number; originalHeight: number; originalVideoCodec: "avc" | "vp8";
+    originalAudioCodec: "aac" | "opus"; originalDuration: number }>({
     kind: "convert", source: file, start: options.start, end,
     width: options.width, height: options.height, videoBitrateBps: options.videoBitrateBps, sourceKind,
   }, "done", signal, onProgress);
@@ -154,6 +164,12 @@ export async function transformVideoMp4Local234(file: File, options: VideoTransf
   const video = output.tracks.find(track => track.kind === "video");
   const audio = output.tracks.find(track => track.kind === "audio");
   const expectedDuration = response.end - options.start;
+  if (response.originalWidth < 2 || response.originalHeight < 2 ||
+    !Number.isFinite(response.originalDuration) || response.originalDuration <= 0 ||
+    !["avc", "vp8"].includes(response.originalVideoCodec) ||
+    !["aac", "opus"].includes(response.originalAudioCodec)) {
+    throw new Error("VIDEO_38_SOURCE_VERIFY: Parametri video/audio di origine non verificabili.");
+  }
   if (output.containsMovieFragments || output.totalTracks !== 2 || output.videoTracks !== 1 || output.audioTracks !== 1
     || video?.codecFourCc !== "avc1" || audio?.codecFourCc !== "mp4a"
     || video.width !== options.width || video.height !== options.height || output.durationSeconds === null
@@ -162,5 +178,10 @@ export async function transformVideoMp4Local234(file: File, options: VideoTransf
   }
   return { blob, bytes: response.bytes.byteLength, width: options.width, height: options.height,
     start: options.start, end: response.end, duration: output.durationSeconds, videoBitrateBps: options.videoBitrateBps,
-    sourceBytes: file.size, outputVideoCodec: "avc1", outputAudioCodec: "mp4a" };
+    sourceBytes: file.size, outputVideoCodec: "avc1", outputAudioCodec: "mp4a",
+    sourceWidth: response.originalWidth, sourceHeight: response.originalHeight,
+    sourceVideoCodec: response.originalVideoCodec, sourceAudioCodec: response.originalAudioCodec,
+    sourceDurationSeconds: response.originalDuration,
+    actualTotalBitrateBps: Math.round(response.bytes.byteLength * 8 / output.durationSeconds),
+  };
 }

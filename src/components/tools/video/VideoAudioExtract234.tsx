@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { VideoAudioResult234 } from "../../../engines/video/audio-extract-234";
 
-/** #234 capability-gated slice: only proven browser MP4/mp4a decode -> PCM16 WAV.
- * This does not offer MP4 remux, video trim, video reencoding or compression. */
+/** #234 independent audio-only extraction/trim. The adjacent video transform
+ * worker performs A/V-synchronized MP4 remux/reencoding as a separate action. */
 export function VideoAudioExtract234({ file }: { readonly file: File | null }) {
   const [begin, setBegin] = useState("0");
   const [end, setEnd] = useState("");
-  const [status, setStatus] = useState("Solo estrazione locale mp4a→WAV; nessun encoder video disponibile.");
+  const [status, setStatus] = useState("Estrazione audio mp4a→WAV disponibile in locale.");
   const [busy, setBusy] = useState(false);
   const [output, setOutput] = useState<VideoAudioResult234 | null>(null);
   const [outputUrl, setOutputUrl] = useState("");
@@ -29,7 +29,7 @@ export function VideoAudioExtract234({ file }: { readonly file: File | null }) {
     clearOutput();
     setBegin("0");
     setEnd("");
-    setStatus("Solo estrazione locale mp4a→WAV; nessun encoder video disponibile.");
+    setStatus("Estrazione audio mp4a→WAV disponibile in locale.");
     return () => {
       generation.current++;
       pending.current?.abort();
@@ -78,7 +78,7 @@ export function VideoAudioExtract234({ file }: { readonly file: File | null }) {
   return <section class="tool-surface" data-video-audio-234 aria-label="Estrazione audio dal video">
     <h3>Estrai audio MP4 (mp4a) in WAV (sperimentale)</h3>
     <p class="file-note">Usa il video locale selezionato sopra. Sono ammessi soltanto MP4/M4V con una traccia video e una singola traccia audio mp4a, fino a 12 MiB e 60 s; il WAV finale non supera 16 MiB. Il profilo audio concreto deve essere decodificabile dal browser e può essere ricampionato a 48 kHz; il WAV PCM16 è senza compressione e può essere più grande dell'originale. Nessun invio in rete.</p>
-    <p class="file-note">Il taglio qui riguarda soltanto l'audio dopo la decodifica (precisione al campione nel WAV risultante). Sincronizzazione con un video nuovo, taglio/compressione del video e conversione in MP4 sono ancora non disponibili: manca un encoder/muxer video verificato.</p>
+    <p class="file-note">Il taglio WAV riguarda soltanto l'audio dopo la decodifica, con precisione al campione. Per un MP4 ricodificato con audio e video sincronizzati usa il pannello «Comprimi, taglia e converti video» sottostante, che verifica l'encoder WebCodecs del browser prima di procedere. Il WAV estratto rimane un file audio separato.</p>
     <div class="field-grid">
       <label class="field"><span>Inizio audio (secondi)</span><input type="number" min="0" step="0.001" value={begin} disabled={busy} onInput={(event) => { setBegin(event.currentTarget.value); clearOutput(); }} /></label>
       <label class="field"><span>Fine audio (secondi, vuoto = tutta la traccia)</span><input type="number" min="0.05" step="0.001" value={end} disabled={busy} onInput={(event) => { setEnd(event.currentTarget.value); clearOutput(); }} /></label>

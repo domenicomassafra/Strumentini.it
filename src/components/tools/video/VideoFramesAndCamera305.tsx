@@ -163,7 +163,7 @@ export function VideoFramesAndCamera305() {
       </section>}
     {loaded && file && fileVideo.current && <VideoContactSheet308 video={fileVideo.current} file={file} />}
     <VideoAudioExtract234 file={file} />
-    <VideoTransform234 file={file} />
+    <VideoTransform234 file={file} durationSeconds={loaded ? fileVideo.current?.duration ?? null : null} />
     <VideoGif306 file={file} />
     <h3>Prova webcam (senza registrazione)</h3>
     <p class="file-note">Il permesso è richiesto solo premendo Attiva. La camera viene rilasciata con Disattiva, alla revoca del permesso o all'uscita dalla pagina.</p>
