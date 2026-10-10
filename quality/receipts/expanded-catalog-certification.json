@@ -122,8 +122,8 @@
       "IMPLEMENTED_UNVERIFIED": 10
     },
     "certificationGoldCount": 257,
-    "releaseEligibleGoldCount": 257,
-    "releaseBlockedCount": 12,
+    "releaseEligibleGoldCount": 256,
+    "releaseBlockedCount": 13,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 269,
     "fixtureBoundCount": 269,
@@ -24277,16 +24277,16 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-password-check-remove.gold.json",
-      "releaseGate": "PASS",
-      "goldEligible": true,
+      "releaseGate": "BLOCKED",
+      "goldEligible": false,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-password-check-remove/manifest.ts",
-          "sha256": "e1bb419f26cbe0cb24a2979e54d929dd988fef681c1b73f07e8e03d6ed3c4ba0"
+          "sha256": "e98ed3ebb8e9231bab139078b8643944a6286ddbca62da8517d336f972b312ff"
         },
         "module": {
           "path": "src/tools/pdf-password-check-remove/module.ts",
-          "sha256": "23d69f65941bd61a264acb0266515cbb609c6c9bd52ea239fd826db33c4fe961"
+          "sha256": "e2eeabdfc3577007bd7eb9932ec3076ce3e004b25970cddd808704f05a3b5ef5"
         },
         "page": {
           "path": "src/pages/tools/pdf-password-check-remove.astro",
@@ -24403,7 +24403,9 @@
           "status": "PASS"
         }
       ],
-      "blockers": [],
+      "blockers": [
+        "RECEIPT_MANIFEST_IDENTITY_STALE"
+      ],
       "coverageGaps": []
     },
     {
