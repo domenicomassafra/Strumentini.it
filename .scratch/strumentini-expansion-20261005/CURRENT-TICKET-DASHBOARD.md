@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 268 / 59 |
+| All / completed / open | 327 / 269 / 58 |
 | Closed with explicit refusal (NOT shipped) | 18 |
 | DAG-ready (all numeric dependencies closed) | 19 |
 | Ready for assignment (feasibility still to prove) | 11 |
-| Waiting on other tickets | 40 |
+| Waiting on other tickets | 39 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 1 |
@@ -30,12 +30,12 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #212 — HEIC AVIF and GIF directional image implementations
 - #231 — Audio timeline edits and deterministic DSP
 - #234 — Video transform worker core
-- #236 — Advanced PDF to image export
 - #237 — True PDF redaction with post-export proof
 - #241 — PDF signature placement
 - #246 — Local image OCR
+- #255 — PDF to PPTX page-as-slide baseline
 
-## Waiting on other tickets (40)
+## Waiting on other tickets (39)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -57,7 +57,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)
 - #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212)
 - #057 — PDF-to-editable/structured conversion pack (awaiting #255)
-- #058 — PDF↔image directional conversion pack (awaiting #235, #236)
+- #058 — PDF↔image directional conversion pack (awaiting #235)
 - #062 — Upgrade existing business/date functionality (awaiting #126, #127, #128, #130, #133, #134, #135)
 - #065 — Format-operation matrix coverage gate (awaiting #047, #049, #053, #056, #057, #058, #059)
 - #066 — Existing 200 functional-upgrade coverage gate (awaiting #053, #062)
@@ -74,7 +74,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #158 — Italy source freshness and annual rollover gate (awaiting #115, #117)
 - #235 — Advanced Images to PDF composition (awaiting #212)
 - #247 — Scanned PDF OCR and searchable text layer (awaiting #246)
-- #255 — PDF to PPTX page-as-slide baseline (awaiting #236)
 - #279 — Image-resize Gold promotion gate (awaiting #277, #278)
 - #306 — Video to GIF conversion (awaiting #234)
 

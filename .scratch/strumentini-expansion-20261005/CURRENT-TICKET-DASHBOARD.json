@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 268,
+    "completed": 269,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 250,
-    "open": 59,
+    "completedWithoutExplicitRefusal": 251,
+    "open": 58,
     "readyDAG": 19,
     "ready-for-agent": 11,
-    "dependency-blocked": 40,
+    "dependency-blocked": 39,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 1,
@@ -212,6 +212,7 @@
       230,
       232,
       233,
+      236,
       238,
       239,
       240,
@@ -301,10 +302,10 @@
       212,
       231,
       234,
-      236,
       237,
       241,
-      246
+      246,
+      255
     ],
     "dependency-blocked": [
       8,
@@ -344,7 +345,6 @@
       158,
       235,
       247,
-      255,
       279,
       306
     ],
@@ -1032,8 +1032,7 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        235,
-        236
+        235
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -2856,9 +2855,9 @@
     {
       "id": 236,
       "title": "Advanced PDF to image export",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3048,12 +3047,10 @@
     {
       "id": 255,
       "title": "PDF to PPTX page-as-slide baseline",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        236
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },

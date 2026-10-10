@@ -20,10 +20,10 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **229 — Microphone test and local recorder**
 - **231 — Audio timeline edits and deterministic DSP**
 - **234 — Video transform worker core**
-- **236 — Advanced PDF to image export**
 - **237 — True PDF redaction with post-export proof**
 - **241 — PDF signature placement**
 - **246 — Local image OCR**
+- **255 — PDF to PPTX page-as-slide baseline**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
@@ -281,7 +281,7 @@ Exactly **19** incomplete tickets currently have every declared numeric blocker 
 | 233 | completed | SRT VTT transform transcript and readability | 077 |
 | 234 | ready-for-agent | Video transform worker core | 100, 103, 206, 232, 274 |
 | 235 | blocked | Advanced Images to PDF composition | 098, 103, 212 |
-| 236 | ready-for-agent | Advanced PDF to image export | 098, 103, 215, 269 |
+| 236 | completed | Advanced PDF to image export | 098, 103, 215, 269 |
 | 237 | ready-for-agent | True PDF redaction with post-export proof | 215, 269 |
 | 238 | completed | PDF page numbers placement and ranges | 215, 269 |
 | 239 | completed | PDF watermark and overlay placement | 215, 269 |
@@ -300,7 +300,7 @@ Exactly **19** incomplete tickets currently have every declared numeric blocker 
 | 252 | completed | PDF to Markdown semantic export | 220, 054 |
 | 253 | completed | PDF to DOCX semantic reconstruction | 220, 225, 226, 269 |
 | 254 | completed | PDF tables to XLSX | 161, 220, 269 |
-| 255 | blocked | PDF to PPTX page-as-slide baseline | 225, 236, 270 |
+| 255 | ready-for-agent | PDF to PPTX page-as-slide baseline | 225, 236, 270 |
 | 256 | completed | TXT Markdown HTML and CSV to printable PDF | 054, 103, 269 |
 | 257 | completed | DOCX to PDF fidelity-gated conversion | 206, 226, 270 |
 | 258 | completed | XLSX to PDF fidelity-gated conversion | 161, 206, 270 |
