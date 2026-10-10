@@ -1,0 +1,59 @@
+{
+  "ticket": 247,
+  "date": "2026-10-10",
+  "status": "LOCAL_EXPERIMENTAL_PASS",
+  "browser": "chromium",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "realOcrEngine": "tesseract.js@7.0.0 same-origin",
+  "fixtureSha256": "1bfc71b54560679f6b6d0e8f978201b2ca27fdfcd84d47ef9344d41db0a2f27b",
+  "accepted": [
+    {
+      "source": "scanned.pdf",
+      "pageCount": 1,
+      "searched": [
+        "Fattura",
+        "numero",
+        "12345",
+        "678,90"
+      ],
+      "pixelsChangedPercent": 0,
+      "maxChannelDifference": 0,
+      "digitalDuplicate": false
+    },
+    {
+      "source": "mixed.pdf",
+      "pageCount": 2,
+      "searched": [
+        "Fattura",
+        "numero",
+        "12345",
+        "678,90"
+      ],
+      "pixelsChangedPercent": 0,
+      "maxChannelDifference": 0,
+      "digitalDuplicate": false
+    }
+  ],
+  "refused": [
+    "interactive preflight before model",
+    "born-digital-only",
+    "rotated raster unreliable OCR"
+  ],
+  "cancelled": "active Tesseract worker closed before result",
+  "visualTolerance": {
+    "changedPixelRatio": 0.0005,
+    "maxChannelDifference": 3
+  },
+  "offsiteRequests": 0,
+  "pageErrors": 0,
+  "horizontalOverflow": false,
+  "limitations": [
+    "Desktop browser mobile viewport, not physical mobile",
+    "Peak native/WASM process memory unmeasured",
+    "Italian upright printed invoice fixture only",
+    "#246/#271 production approval still open"
+  ]
+}

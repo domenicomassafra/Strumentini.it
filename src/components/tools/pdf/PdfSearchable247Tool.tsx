@@ -1,4 +1,4 @@
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import type { PdfSearchableResult247 } from "../../../engines/pdf/ocr-searchable-247.browser";
 
 /** Direct, noindex experimental route. #246/#271 still block product promotion. */
@@ -8,6 +8,7 @@ export function PdfSearchable247Tool() {
   const [status, setStatus] = useState("Scegli un PDF locale entro 8 MiB, massimo 3 pagine.");
   const [result, setResult] = useState<PdfSearchableResult247 | null>(null);
   const current = useRef<AbortController | null>(null);
+  useEffect(() => () => current.current?.abort(), []);
 
   const cancel = () => {
     current.current?.abort();
@@ -74,7 +75,7 @@ export function PdfSearchable247Tool() {
       </li>)}</ul>
       <button type="button" onClick={download}>Scarica PDF OCR verificato</button>
     </div>}
-    <p>Prototipo italiano per testo stampato orientato correttamente. I PDF firmati, cifrati, ruotati o complessi sono rifiutati se la conversione non è verificabile. Le pagine con testo digitale preesistente vengono conservate e non ricevono OCR, anche quando contengono immagini con scritte. Il punteggio OCR non prova l'esattezza del testo riconosciuto.</p>
+    <p>Prototipo italiano per testo stampato orientato correttamente. Il livello OCR è creato soltanto se Tesseract restituisce coordinate valide, confidenza pagina almeno 75/100 e confidenza di ciascuna parola almeno 45/100; anche questi indicatori sono non calibrati e il testo potrebbe essere sbagliato. I PDF firmati, cifrati, ruotati o complessi vengono rifiutati. Le pagine con testo digitale preesistente vengono conservate e non ricevono OCR, anche quando contengono immagini con scritte.</p>
     <p>Il file resta nel browser: PDF.js, worker Tesseract e modello italiano sono caricati localmente su richiesta. La verifica su iOS Safari e Android Chrome fisici e le misure di memoria WASM/native necessarie all'approvazione (#271) restano aperte.</p>
   </section>;
 }

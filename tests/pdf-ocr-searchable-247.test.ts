@@ -2,8 +2,8 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
-import { addInvisibleOcrLayer247, type OcrPage247 } from "../src/engines/pdf/ocr-searchable-247";
-import { nameValue, parsePdf } from "../src/engines/pdf/parser";
+import { addInvisibleOcrLayer247, preflightScannedPdfSource247, type OcrPage247 } from "../src/engines/pdf/ocr-searchable-247";
+import { nameValue, parsePdf, pdfNumber } from "../src/engines/pdf/parser";
 import { buildPdfFromJpegs, buildPdfFromPages, createSimplePdf, parseJpeg } from "../src/engines/pdf/writer";
 
 const scan: OcrPage247 = {
@@ -44,11 +44,24 @@ describe("#247 bounded PDF text overlay, original streams and strict refusal", (
     try {
       const document = await task.promise;
       const page = await document.getPage(1);
-      const text = (await page.getTextContent()).items.map((item) => "str" in item ? item.str : "").join(" ");
+      const items = (await page.getTextContent()).items;
+      const text = items.map((item) => "str" in item ? item.str : "").join(" ");
       expect(text).toContain("Fattura");
       expect(text).toContain("12345");
       expect(text).toContain("€");
       expect(text).not.toContain("scan.jpg");
+      // Independent PDF.js placement: the source scan's first measured word
+      // occupies image pixels [40..185, 50..99] at native 1280x240 resolution.
+      const first = items.find((item) => "str" in item && item.str.trim() === "Fattura");
+      expect(first && "str" in first).toBeTruthy();
+      if (!first || !("str" in first)) throw new Error("OCR247_TEXT_NOT_SELECTABLE");
+      const viewport = page.getViewport({ scale: 1 });
+      const sx = viewport.width / scan.imageWidth, sy = viewport.height / scan.imageHeight;
+      expect(Math.abs(first.transform[4]! - 40 * sx)).toBeLessThan(5);
+      const actualTop = viewport.height - first.transform[5]! - first.height;
+      expect(Math.abs(actualTop - 50 * sy)).toBeLessThan(16);
+      expect(first.width).toBeGreaterThan((185 - 40) * sx * 0.65);
+      expect(first.width).toBeLessThan((185 - 40) * sx * 1.5);
     } finally { await task.destroy(); }
   });
 
@@ -81,6 +94,20 @@ describe("#247 bounded PDF text overlay, original streams and strict refusal", (
     ] }])).toThrow(/OCR247_INVALID_WORD_COORDINATES/u);
     expect(() => addInvisibleOcrLayer247(source, [scan, scan])).toThrow(/OCR247_INVALID_PAGE_SELECTION/u);
     expect(() => addInvisibleOcrLayer247(source, [{ ...scan, words: [{ ...scan.words[0]!, text: "漢字" }] }])).toThrow(/OCR247_UNSUPPORTED_GLYPH/u);
+    expect(() => addInvisibleOcrLayer247(source, [{ ...scan, words: [{ ...scan.words[0]!, confidence: 25 }] }]))
+      .toThrow(/OCR247_INVALID_WORD_COORDINATES/u);
+    expect(preflightScannedPdfSource247(source).pageCount).toBe(1);
+    const interactive = new Uint8Array(await readFile(resolve("quality/fixtures/pdf-gold/annotated.pdf")));
+    expect(() => preflightScannedPdfSource247(interactive)).toThrow(/OCR247_UNSUPPORTED_INTERACTIVE/u);
+    const rotatedInput = parsePdf(createSimplePdf(["text"], { width: 350, height: 400 }));
+    const page = rotatedInput.pages[0]!;
+    if (page.object.value.kind !== "dict") throw new Error("expected fixture page dictionary");
+    const rotatedPage = { ...page, object: { ...page.object, value: {
+      ...page.object.value, entries: new Map([...page.object.value.entries, ["Rotate", pdfNumber(90)] as const]),
+    } } } as typeof page;
+    const rotated = buildPdfFromPages([{ document: rotatedInput, page: rotatedPage }]);
+    expect(() => preflightScannedPdfSource247(rotated))
+      .toThrow(/OCR247_UNSUPPORTED_GEOMETRY/u);
     const signal = new AbortController(); signal.abort();
     expect(() => addInvisibleOcrLayer247(source, [scan], signal.signal)).toThrowError(expect.objectContaining({ name: "AbortError" }));
   });

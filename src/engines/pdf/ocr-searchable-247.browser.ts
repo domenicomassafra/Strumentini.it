@@ -1,5 +1,6 @@
 import { OCR_LOCAL_ASSETS_246 } from "../ocr/local-italian-246";
-import { addInvisibleOcrLayer247, type OcrPage247, type OcrWord247 } from "./ocr-searchable-247";
+import { detectHeavyJobCapabilities, preflightHeavyLocalJob } from "../../runtime/heavy-preflight";
+import { addInvisibleOcrLayer247, OCR_247_CONFIDENCE_FLOOR, preflightScannedPdfSource247, type OcrPage247, type OcrWord247 } from "./ocr-searchable-247";
 
 /** #247 experimental limit, not #246/#271 production promotion. */
 export const OCR_PDF_LIMITS_247 = {
@@ -9,6 +10,8 @@ export const OCR_PDF_LIMITS_247 = {
   maxPixelsPerPage: 2_000_000,
   maxRenderedPngBytes: 5 * 1024 * 1024,
   maxWordsPerPage: 450,
+  minWordConfidence: OCR_247_CONFIDENCE_FLOOR,
+  minPageConfidence: 75,
   maxJobMs: 120_000,
   maxDifferentPixelRatio: 0.0005,
   maxChannelDifference: 3,
@@ -60,15 +63,20 @@ async function recognizeWords247(image: Blob, signal: AbortSignal | undefined, t
   const cancelError = () => new DOMException("PDF OCR annullato", "AbortError");
   let worker: TesseractWorker | null = null;
   let pending: Promise<TesseractWorker> | null = null;
+  let termination: Promise<unknown> | null = null;
   let timer: ReturnType<typeof setTimeout> | null = null;
   let stopReason: Error | null = null;
   let stopReject: (error: Error) => void = () => undefined;
   const stopping = new Promise<never>((_resolve, reject) => { stopReject = reject; });
+  const stopWorker = (target: TesseractWorker) => {
+    termination ??= Promise.resolve().then(() => target.terminate());
+    return termination;
+  };
   const stop = (error: Error) => {
     if (stopReason) return;
     stopReason = error;
     stopReject(error);
-    if (worker) void worker.terminate().catch(() => undefined);
+    if (worker) void stopWorker(worker).catch(() => undefined);
   };
   const onAbort = () => stop(cancelError());
   signal?.addEventListener("abort", onAbort, { once: true });
@@ -85,7 +93,7 @@ async function recognizeWords247(image: Blob, signal: AbortSignal | undefined, t
       langPath: local(OCR_LOCAL_ASSETS_246.languageUrl),
       gzip: true, cacheMethod: "none", workerBlobURL: false,
     });
-    void pending.then((created) => { if (stopReason) void created.terminate().catch(() => undefined); }).catch(() => undefined);
+    void pending.then((created) => { if (stopReason) void stopWorker(created).catch(() => undefined); }).catch(() => undefined);
     worker = await Promise.race([pending, stopping]);
     if (stopReason) throw stopReason;
     const recognized = await Promise.race([worker.recognize(image, {}, { text: true, blocks: true }), stopping]);
@@ -98,13 +106,17 @@ async function recognizeWords247(image: Blob, signal: AbortSignal | undefined, t
       throw new Error("OCR247_UNRELIABLE_RESULT: numero parole o testo non valido");
     }
     const confidence = recognized.data.confidence;
+    if (!Number.isFinite(confidence) || confidence < OCR_PDF_LIMITS_247.minPageConfidence || confidence > 100 ||
+      words.some((word) => !Number.isFinite(word.confidence) || word.confidence < OCR_PDF_LIMITS_247.minWordConfidence || word.confidence > 100)) {
+      throw new Error("OCR247_LOW_CONFIDENCE: verifica la scansione e migliora la qualità prima di creare testo ricercabile");
+    }
     return { text: recognized.data.text.trim(), words: words.map((word) => ({
       text: word.text.trim(), bbox: word.bbox, confidence: word.confidence,
     })), confidence: Number.isFinite(confidence) && confidence >= 0 && confidence <= 100 ? confidence : null };
   } finally {
     signal?.removeEventListener("abort", onAbort);
     if (timer) clearTimeout(timer);
-    if (worker) await worker.terminate().catch(() => undefined);
+    if (worker) await stopWorker(worker).catch(() => undefined);
     // A worker resolving after cancellation is terminated by the pending handler.
   }
 }
@@ -121,10 +133,12 @@ async function renderPixels247(page: import("pdfjs-dist").PDFPageProxy, scale: n
   const task = page.render({ canvas, canvasContext: context, viewport, background: "#ffffff" });
   const cancel = () => task.cancel();
   signal?.addEventListener("abort", cancel, { once: true });
-  try { await task.promise; }
+  try {
+    await task.promise;
+    aborted(signal);
+    return { canvas, pixels: context.getImageData(0, 0, width, height).data, width, height };
+  } catch (error) { canvas.width = 0; canvas.height = 0; throw error; }
   finally { signal?.removeEventListener("abort", cancel); }
-  aborted(signal);
-  return { canvas, pixels: context.getImageData(0, 0, width, height).data, width, height };
 }
 
 function pixelDifference247(before: Uint8ClampedArray, after: Uint8ClampedArray) {
@@ -147,9 +161,15 @@ export async function makeSearchableScannedPdf247(input: File, signal?: AbortSig
   aborted(signal);
   if (!(input instanceof File) || input.size < 8 || input.size > OCR_PDF_LIMITS_247.maxInputBytes ||
     !input.name.toLowerCase().endsWith(".pdf")) throw new Error("OCR247_INPUT_LIMIT: PDF locale massimo 8 MiB");
+  const preflight = preflightHeavyLocalJob({
+    capabilities: { worker: "required", wasm: "required", "image-decode": "required" },
+    limits: { hardInputBytes: OCR_PDF_LIMITS_247.maxInputBytes },
+  }, { inputBytes: input.size }, detectHeavyJobCapabilities());
+  if (preflight.state !== "supported") throw new Error("OCR247_BROWSER_CAPABILITY_REFUSED: " + preflight.reasons.join("; "));
   const bytes = new Uint8Array(await input.arrayBuffer());
   aborted(signal);
   if (new TextDecoder("latin1").decode(bytes.subarray(0, 5)) !== "%PDF-") throw new Error("OCR247_INVALID_SIGNATURE");
+  preflightScannedPdfSource247(bytes);
   const [{ default: workerUrl }, pdfjs] = await Promise.all([
     import("pdfjs-dist/build/pdf.worker.mjs?url"), import("pdfjs-dist"),
   ]);
@@ -162,31 +182,35 @@ export async function makeSearchableScannedPdf247(input: File, signal?: AbortSig
     aborted(signal);
     if (original.numPages < 1 || original.numPages > OCR_PDF_LIMITS_247.maxPages) throw new Error("OCR247_PAGE_LIMIT: massimo 3 pagine");
     const scanned: OcrPage247[] = [];
-    const originals: { pixels: Uint8ClampedArray; width: number; height: number; text: string; scale: number }[] = [];
+    // Keep only geometry after OCR: holding 3 RGBA pages while Tesseract loads
+    // retains up to 24 MiB unnecessarily. Re-render source on demand for QA.
+    const originals: { width: number; height: number; text: string; scale: number }[] = [];
     const states: PdfSearchablePage247[] = [];
     for (let pageNumber = 1; pageNumber <= original.numPages; pageNumber += 1) {
       aborted(signal);
       const page = await original.getPage(pageNumber);
-      const contents = await page.getTextContent();
-      const existing = contents.items.map((item) => "str" in item ? item.str : "").join(" ").trim();
-      const plain = page.getViewport({ scale: 1 });
-      const scale = Math.min(2, Math.sqrt(OCR_PDF_LIMITS_247.maxPixelsPerPage / (Math.ceil(plain.width) * Math.ceil(plain.height))));
-      const rendered = await renderPixels247(page, scale, signal);
-      originals.push({ pixels: rendered.pixels, width: rendered.width, height: rendered.height, text: existing, scale });
-      if (existing) {
-        states.push({ page: pageNumber, state: "DIGITAL_TEXT_PRESERVED", text: existing, confidence: null,
-          wordCount: 0, differentPixelsRatio: 0, maxChannelDifference: 0 });
-      } else {
-        if (scanned.length >= OCR_PDF_LIMITS_247.maxScannedPages) throw new Error("OCR247_SCAN_LIMIT: massimo 2 pagine scansite");
-        const png = await new Promise<Blob>((resolve, reject) => rendered.canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("OCR247_PNG_ENCODING_FAILED")), "image/png"));
-        if (png.size < 33 || png.size > OCR_PDF_LIMITS_247.maxRenderedPngBytes) throw new Error("OCR247_RENDERED_PNG_LIMIT");
-        const result = await recognizeWords247(png, signal, OCR_PDF_LIMITS_247.maxJobMs);
-        scanned.push({ page: pageNumber, imageWidth: rendered.width, imageHeight: rendered.height, words: result.words });
-        states.push({ page: pageNumber, state: "OCR_ADDED", text: result.text, confidence: result.confidence,
-          wordCount: result.words.length, differentPixelsRatio: 0, maxChannelDifference: 0 });
-      }
-      rendered.canvas.width = 0; rendered.canvas.height = 0;
-      page.cleanup();
+      try {
+        const contents = await page.getTextContent();
+        const existing = contents.items.map((item) => "str" in item ? item.str : "").join(" ").trim();
+        const plain = page.getViewport({ scale: 1 });
+        const scale = Math.min(2, Math.sqrt(OCR_PDF_LIMITS_247.maxPixelsPerPage / (Math.ceil(plain.width) * Math.ceil(plain.height))));
+        const rendered = await renderPixels247(page, scale, signal);
+        try {
+          originals.push({ width: rendered.width, height: rendered.height, text: existing, scale });
+          if (existing) {
+            states.push({ page: pageNumber, state: "DIGITAL_TEXT_PRESERVED", text: existing, confidence: null,
+              wordCount: 0, differentPixelsRatio: 0, maxChannelDifference: 0 });
+          } else {
+            if (scanned.length >= OCR_PDF_LIMITS_247.maxScannedPages) throw new Error("OCR247_SCAN_LIMIT: massimo 2 pagine scansite");
+            const png = await new Promise<Blob>((resolve, reject) => rendered.canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("OCR247_PNG_ENCODING_FAILED")), "image/png"));
+            if (png.size < 33 || png.size > OCR_PDF_LIMITS_247.maxRenderedPngBytes) throw new Error("OCR247_RENDERED_PNG_LIMIT");
+            const result = await recognizeWords247(png, signal, OCR_PDF_LIMITS_247.maxJobMs);
+            scanned.push({ page: pageNumber, imageWidth: rendered.width, imageHeight: rendered.height, words: result.words });
+            states.push({ page: pageNumber, state: "OCR_ADDED", text: result.text, confidence: result.confidence,
+              wordCount: result.words.length, differentPixelsRatio: 0, maxChannelDifference: 0 });
+          }
+        } finally { rendered.canvas.width = 0; rendered.canvas.height = 0; }
+      } finally { page.cleanup(); }
     }
     if (!scanned.length) throw new Error("OCR247_ALREADY_SEARCHABLE: tutte le pagine contengono già testo selezionabile");
     const output = addInvisibleOcrLayer247(bytes, scanned, signal);
@@ -211,15 +235,23 @@ export async function makeSearchableScannedPdf247(input: File, signal?: AbortSig
           throw new Error(`OCR247_EXISTING_DIGITAL_TEXT_CHANGED: pagina ${pageNumber}`);
         }
         const base = originals[pageNumber - 1]!;
-        const next = await renderPixels247(page, base.scale, signal);
-        if (next.width !== base.width || next.height !== base.height) throw new Error("OCR247_RENDER_DIMENSIONS_CHANGED");
-        const diff = pixelDifference247(base.pixels, next.pixels);
-        if (diff.ratio > OCR_PDF_LIMITS_247.maxDifferentPixelRatio || diff.max > OCR_PDF_LIMITS_247.maxChannelDifference) {
-          throw new Error(`OCR247_VISUAL_TOLERANCE_FAILED: pagina ${pageNumber} ratio=${diff.ratio} delta=${diff.max}`);
-        }
-        next.canvas.width = 0; next.canvas.height = 0;
-        verified.push({ ...state, differentPixelsRatio: diff.ratio, maxChannelDifference: diff.max });
-        page.cleanup();
+        const originalPage = await original.getPage(pageNumber);
+        try {
+          const reference = await renderPixels247(originalPage, base.scale, signal);
+          try {
+            const next = await renderPixels247(page, base.scale, signal);
+            try {
+              if (next.width !== base.width || next.height !== base.height || reference.width !== base.width || reference.height !== base.height) {
+                throw new Error("OCR247_RENDER_DIMENSIONS_CHANGED");
+              }
+              const diff = pixelDifference247(reference.pixels, next.pixels);
+              if (diff.ratio > OCR_PDF_LIMITS_247.maxDifferentPixelRatio || diff.max > OCR_PDF_LIMITS_247.maxChannelDifference) {
+                throw new Error(`OCR247_VISUAL_TOLERANCE_FAILED: pagina ${pageNumber} ratio=${diff.ratio} delta=${diff.max}`);
+              }
+              verified.push({ ...state, differentPixelsRatio: diff.ratio, maxChannelDifference: diff.max });
+            } finally { next.canvas.width = 0; next.canvas.height = 0; }
+          } finally { reference.canvas.width = 0; reference.canvas.height = 0; }
+        } finally { originalPage.cleanup(); page.cleanup(); }
       }
       return { bytes: output, filename: input.name.replace(/\.pdf$/iu, "") + "-ocr-sperimentale.pdf", pages: verified,
         engine: "tesseract.js@7.0.0 + pdfjs-dist@6",

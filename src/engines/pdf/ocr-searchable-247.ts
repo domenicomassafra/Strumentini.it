@@ -22,6 +22,8 @@ const MAX_SOURCE_BYTES = 8 * 1024 * 1024;
 const MAX_PAGES = 3;
 const MAX_WORDS = 450;
 const MAX_WORD_CHARS = 90;
+/** Tesseract confidence is uncalibrated; this only rejects obviously uncertain runs. */
+export const OCR_247_CONFIDENCE_FLOOR = 45;
 const windows1252: Record<number, number> = {
   0x20ac: 0x80, 0x201a: 0x82, 0x0192: 0x83, 0x201e: 0x84,
   0x2026: 0x85, 0x2020: 0x86, 0x2021: 0x87, 0x02c6: 0x88,
@@ -81,7 +83,7 @@ function invisibleOverlay(page: OcrPage247, width: number, height: number): Uint
     const { x0, y0, x1, y1 } = word.bbox;
     if (typeof word.text !== "string" || !word.text.trim() || word.text.length > MAX_WORD_CHARS ||
       word.text.includes("\n") || word.text.includes("\r") ||
-      !Number.isFinite(word.confidence) || word.confidence < 0 || word.confidence > 100 ||
+      !Number.isFinite(word.confidence) || word.confidence < OCR_247_CONFIDENCE_FLOOR || word.confidence > 100 ||
       ![x0, y0, x1, y1].every(Number.isFinite) || x0 < 0 || y0 < 0 || x1 > page.imageWidth || y1 > page.imageHeight ||
       x1 <= x0 || y1 <= y0) throw new Error("OCR247_INVALID_WORD_COORDINATES");
     // Put an explicit separator into the hidden text stream: PDF.js otherwise
@@ -101,15 +103,33 @@ function invisibleOverlay(page: OcrPage247, width: number, height: number): Uint
   return new TextEncoder().encode(lines.join("\n") + "\n");
 }
 
-export function addInvisibleOcrLayer247(sourceBytes: Uint8Array, scannedPages: readonly OcrPage247[], signal?: AbortSignal): Uint8Array {
-  const running = () => { if (signal?.aborted) throw new DOMException("OCR PDF annullato", "AbortError"); };
-  running();
+function parseSafeOcrSource247(sourceBytes: Uint8Array): PdfDocumentModel {
   if (!(sourceBytes instanceof Uint8Array) || sourceBytes.byteLength < 8 || sourceBytes.byteLength > MAX_SOURCE_BYTES) throw new Error("OCR247_INPUT_LIMIT");
   const source = parsePdf(sourceBytes);
   if (source.encrypted || source.pages.length < 1 || source.pages.length > MAX_PAGES ||
     source.text.includes("/ByteRange") || source.text.includes("/DocMDP")) throw new Error("OCR247_UNSUPPORTED_DOCUMENT");
   const root = source.root ? dictionaryOrNull(source, source.root) : null;
   if (!root || ["AA", "OpenAction", "Names", "Perms", "AcroForm"].some((key) => root.entries.has(key))) throw new Error("OCR247_UNSUPPORTED_INTERACTIVE_DOCUMENT");
+  for (const node of source.pages) {
+    const dict = node.object.value;
+    if (dict.kind !== "dict" || ["Annots", "AA", "A", "PresSteps"].some((key) => dict.entries.has(key))) {
+      throw new Error("OCR247_UNSUPPORTED_INTERACTIVE_PAGE");
+    }
+    pageGeometry(source, node);
+    contents(source, node);
+  }
+  return source;
+}
+
+/** Cheap refusal before opening OCR WASM or allocating scanned-page raster buffers. */
+export function preflightScannedPdfSource247(bytes: Uint8Array): { readonly pageCount: number } {
+  return { pageCount: parseSafeOcrSource247(bytes).pages.length };
+}
+
+export function addInvisibleOcrLayer247(sourceBytes: Uint8Array, scannedPages: readonly OcrPage247[], signal?: AbortSignal): Uint8Array {
+  const running = () => { if (signal?.aborted) throw new DOMException("OCR PDF annullato", "AbortError"); };
+  running();
+  const source = parseSafeOcrSource247(sourceBytes);
   if (scannedPages.length < 1 || scannedPages.length > source.pages.length ||
     new Set(scannedPages.map((p) => p.page)).size !== scannedPages.length) throw new Error("OCR247_INVALID_PAGE_SELECTION");
   const overlays = new Map(scannedPages.map((p) => [p.page, p]));
@@ -123,9 +143,7 @@ export function addInvisibleOcrLayer247(sourceBytes: Uint8Array, scannedPages: r
   const updated = source.pages.map((node, index): PdfPageNode => {
     running();
     const original = node.object.value;
-    if (original.kind !== "dict" || ["Annots", "AA", "A", "PresSteps"].some((key) => original.entries.has(key))) {
-      throw new Error("OCR247_UNSUPPORTED_INTERACTIVE_PAGE");
-    }
+    if (original.kind !== "dict") throw new Error("OCR247_UNSUPPORTED_PAGE");
     const page = overlays.get(index + 1);
     if (!page) return node;
     const geometry = pageGeometry(source, node);
@@ -149,6 +167,7 @@ export function addInvisibleOcrLayer247(sourceBytes: Uint8Array, scannedPages: r
   });
   running();
   const reopened = parsePdf(output);
+  if (output.byteLength > 16 * 1024 * 1024) throw new Error("OCR247_OUTPUT_LIMIT: PDF risultato oltre 16 MiB");
   if (reopened.pages.length !== source.pages.length) throw new Error("OCR247_OUTPUT_PAGE_COUNT_MISMATCH");
   for (const [index, original] of source.pages.entries()) {
     running();
