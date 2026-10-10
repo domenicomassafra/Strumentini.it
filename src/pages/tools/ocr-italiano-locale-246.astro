@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { LocalItalianOcr246Tool } from "../../components/tools/ocr246/LocalItalianOcr246Tool";
+---
+<BaseLayout
+  title="OCR immagini in italiano – sperimentale, solo nel browser"
+  description="Prova tecnica OCR italiano: estrazione locale da PNG, nessun caricamento remoto. Esperimento non ancora certificato su dispositivi fisici."
+  noindex
+>
+  <main class="ocr246-page" data-ocr246-preview="experimental-local-only">
+    <nav aria-label="Percorso"><a href="/">Home</a> / OCR sperimentale</nav>
+    <h1>OCR italiano locale – anteprima sperimentale</h1>
+    <p>Estrai testo stampato da un PNG. Il file rimane nel browser e la confidenza è soltanto un punteggio del motore.</p>
+    <LocalItalianOcr246Tool client:load />
+  </main>
+</BaseLayout>
+
+<style>
+  .ocr246-page { margin: 0 auto; padding: 2rem 1rem 4rem; max-width: 950px; display: grid; gap: 1rem; min-width: 0; }
+  .ocr246-page h1 { font-size: clamp(1.5rem, 4vw, 2.4rem); margin: 0; }
+  .ocr246-page > p { max-width: 75ch; }
+  :global(.ocr246) { display: grid; gap: 1rem; min-width: 0; }
+  :global(.ocr246-label) { font-weight: 600; }
+  :global(.ocr246-controls) { display: flex; flex-wrap: wrap; gap: .75rem; }
+  :global(.ocr246 button) { border: 1px solid var(--line, #888); border-radius: .65rem; padding: .7rem 1rem; cursor: pointer; }
+  :global(.ocr246 button:disabled) { cursor: default; opacity: .5; }
+  :global(.ocr246-output textarea) { width: 100%; padding: .75rem; min-height: 8rem; font: inherit; box-sizing: border-box; }
+  :global(.ocr246-note) { line-height: 1.6; max-width: 75ch; opacity: .85; }
+  :global(.ocr246-status) { overflow-wrap: anywhere; }
+</style>

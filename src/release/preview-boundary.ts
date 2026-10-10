@@ -10,6 +10,8 @@ export function narrowUncataloguedToolPreviews(input: {
   readonly catalogRoutes: readonly string[];
   readonly codiceFiscaleSource: string;
   readonly codiceFiscaleHtml: string;
+  readonly ocrSource?: string;
+  readonly ocrHtml?: string;
   readonly signatureSource: string;
   readonly sitemapXml: string;
 }): { readonly toolPageFiles: string[]; readonly staticFiles: string[]; readonly safePreviewNames: string[] } {
@@ -33,6 +35,23 @@ export function narrowUncataloguedToolPreviews(input: {
     toolPageFiles.splice(toolPageFiles.indexOf(cfSourcePath), 1);
     staticFiles.splice(staticFiles.indexOf(cfStaticPath), 1);
     safePreviewNames.push("codice-fiscale");
+  }
+  const ocrSourcePath = "src/pages/tools/ocr-italiano-locale-246.astro";
+  const ocrStaticPath = "tools/ocr-italiano-locale-246/index.html";
+  const ocrSource = input.ocrSource ?? "";
+  const ocrHtml = input.ocrHtml ?? "";
+  const ocrGuard = toolPageFiles.includes(ocrSourcePath) && staticFiles.includes(ocrStaticPath) &&
+    !inCatalog("/tools/ocr-italiano-locale-246") &&
+    /<BaseLayout\b[\s\S]*?\bnoindex\s*>/u.test(ocrSource) &&
+    ocrSource.includes('data-ocr246-preview="experimental-local-only"') &&
+    /<meta\s+name="robots"\s+content="noindex, nofollow"\s*\/?\s*>/u.test(ocrHtml) &&
+    ocrHtml.includes('data-ocr246-preview="experimental-local-only"') &&
+    ocrHtml.toLowerCase().includes("sperimentale") &&
+    !input.sitemapXml.includes("/tools/ocr-italiano-locale-246/");
+  if (ocrGuard) {
+    toolPageFiles.splice(toolPageFiles.indexOf(ocrSourcePath), 1);
+    staticFiles.splice(staticFiles.indexOf(ocrStaticPath), 1);
+    safePreviewNames.push("ocr-italiano-locale-246");
   }
   const sigGuard = toolPageFiles.includes(sigSourcePath) && !staticFiles.includes(sigStaticPath) &&
     !inCatalog("/tools/pdf-visual-signature") &&

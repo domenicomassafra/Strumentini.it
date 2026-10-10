@@ -4,6 +4,8 @@ import { narrowUncataloguedToolPreviews } from "../src/release/preview-boundary"
 const cfSource = '<BaseLayout title="CF" noindex><main data-cf-canonical-route="/tools/codice-fiscale/"></main></BaseLayout>';
 const cfHtml = '<meta name="robots" content="noindex, nofollow"/><main data-cf-canonical-route="/tools/codice-fiscale/">Copertura geografica limitata</main>';
 const signatureSource = 'export function getStaticPaths() { return import.meta.env.DEV ? [{ params: { route: undefined } }] : []; }\n<BaseLayout noindex><p>Development-only</p></BaseLayout>';
+const ocrSource = '<BaseLayout title="OCR" noindex><main data-ocr246-preview="experimental-local-only">OCR italiano sperimentale</main></BaseLayout>';
+const ocrHtml = '<meta name="robots" content="noindex, nofollow"/><main data-ocr246-preview="experimental-local-only">OCR italiano sperimentale</main>';
 const allPages = ["src/pages/tools/pdf-visual-signature/[...route].astro", "src/pages/tools/codice-fiscale.astro", "src/pages/tools/public-tool.astro"];
 const allStatic = ["tools/codice-fiscale/index.html", "tools/public-tool/index.html"];
 const options = { toolPageFiles: allPages, staticFiles: allStatic,
@@ -47,5 +49,28 @@ describe("noncatalog preview release boundary", () => {
     });
     expect(result.toolPageFiles).toContain("src/pages/tools/mystery.astro");
     expect(result.staticFiles).toContain("tools/mystery/index.html");
+  });
+
+  it("allows only the exact noindex local OCR preview, never a public catalogue/sitemap promotion", () => {
+    const withOcr = { ...options,
+      toolPageFiles: [...allPages, "src/pages/tools/ocr-italiano-locale-246.astro"],
+      staticFiles: [...allStatic, "tools/ocr-italiano-locale-246/index.html"], ocrSource, ocrHtml,
+    };
+    const accepted = narrowUncataloguedToolPreviews(withOcr);
+    expect(accepted.safePreviewNames).toContain("ocr-italiano-locale-246");
+    expect(accepted.toolPageFiles).not.toContain("src/pages/tools/ocr-italiano-locale-246.astro");
+    for (const override of [
+      { ocrSource: ocrSource.replace("noindex", "") },
+      { ocrSource: ocrSource.replace("experimental-local-only", "live") },
+      { ocrHtml: ocrHtml.replace("noindex, nofollow", "index, follow") },
+      { ocrHtml: ocrHtml.replace("experimental-local-only", "live") },
+      { ocrHtml: ocrHtml.replace("sperimentale", "") },
+      { sitemapXml: withOcr.sitemapXml + "<loc>https://strumentini.it/tools/ocr-italiano-locale-246/</loc>" },
+      { catalogRoutes: [...withOcr.catalogRoutes, "/tools/ocr-italiano-locale-246"] },
+    ]) {
+      const denied = narrowUncataloguedToolPreviews({ ...withOcr, ...override });
+      expect(denied.toolPageFiles).toContain("src/pages/tools/ocr-italiano-locale-246.astro");
+      expect(denied.staticFiles).toContain("tools/ocr-italiano-locale-246/index.html");
+    }
   });
 });

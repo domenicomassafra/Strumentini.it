@@ -4,3 +4,6 @@ quality/reference-data/italy/artifacts/117-fiscal-annual/*.html -text -diff
 # whitespace: SHA256 evidence must refer to the original authoritative bytes.
 quality/reference-data/italy/artifacts/115-administrative-geography/anpr-archivio-comuni-2023-10-03.csv -text -diff
 quality/reference-data/italy/artifacts/115-administrative-geography/anpr-archivio-comuni-legenda-2019-v001.md -text -diff
+# Third-party OCR runtime/core/model and bundled license notices are verbatim,
+# SHA-256-pinned upstream artifacts. Never normalize minified JS/newlines.
+public/ocr-246/** -text -diff

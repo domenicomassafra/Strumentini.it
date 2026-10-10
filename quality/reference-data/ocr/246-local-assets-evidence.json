@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "ticket": 246,
+  "status": "EXPERIMENTAL_SOURCE_ONLY_NOT_PRODUCTION_271",
+  "referenceDate": "2026-10-10",
+  "licensePolicy": {
+    "tesseract.js@7.0.0": "Apache-2.0",
+    "tesseract.js-core@7.0.0": "Apache-2.0",
+    "@tesseract.js-data/ita@1.0.0": "MIT (npm package metadata); parent naptha/tessdata gh-pages repository Apache-2.0; both license texts included",
+    "bundle-third-party": "See tesseract.min.js.LICENSE.txt and worker.min.js.LICENSE.txt"
+  },
+  "donorSource": "spikes/heavy-local-feasibility/node_modules/",
+  "staticAssetsBytes": 27421073,
+  "staticAssetsMiB": 26.15,
+  "inclusion": "static public/ocr-246 only; imported lazily from separate noindex direct route, no app-shared package lock or catalog",
+  "artifacts": [
+    {
+      "path": "public/ocr-246/core/tesseract-core-APACHE-2.0.LICENSE",
+      "bytes": 11358,
+      "sha256": "sha256:c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    },
+    {
+      "path": "public/ocr-246/core/tesseract-core-lstm.wasm",
+      "bytes": 2855361,
+      "sha256": "sha256:66b17df6e20c5329a17ffa9c202a47eaa3e32500b253d4c7f38e7f2bc01457c3"
+    },
+    {
+      "path": "public/ocr-246/core/tesseract-core-lstm.wasm.js",
+      "bytes": 3896484,
+      "sha256": "sha256:eef5f8b2f8e20e150680b20adaec4a60babafee3adbe8a94583c81fee46e8680"
+    },
+    {
+      "path": "public/ocr-246/core/tesseract-core-relaxedsimd-lstm.wasm",
+      "bytes": 2862266,
+      "sha256": "sha256:7985c92d4c64e7267d24cadffe1b2a1da6bf8aa55fdcaf953fe94fe122a24545"
+    },
+    {
+      "path": "public/ocr-246/core/tesseract-core-relaxedsimd-lstm.wasm.js",
+      "bytes": 3905767,
+      "sha256": "sha256:861a536cf9ef8e63cb644d57bab39c388f37f7d6b6f60024b741c5f6b39a59b3"
+    },
+    {
+      "path": "public/ocr-246/core/tesseract-core-simd-lstm.wasm",
+      "bytes": 2857601,
+      "sha256": "sha256:34e8d50cac216427d86bf397d610fdd9f49492539bbcdfbfccc4eda20c810bea"
+    },
+    {
+      "path": "public/ocr-246/core/tesseract-core-simd-lstm.wasm.js",
+      "bytes": 3899472,
+      "sha256": "sha256:c58b46a4c796c0b8afccf77591d5b875b6896b45d402bbce8caa6f5362447b38"
+    },
+    {
+      "path": "public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE",
+      "bytes": 1078,
+      "sha256": "sha256:b05785f9f18e6716bab63424b11454513b9943a222595b70411009202fc592b5"
+    },
+    {
+      "path": "public/ocr-246/lang/UPSTREAM-APACHE-2.0.LICENSE",
+      "bytes": 11357,
+      "sha256": "sha256:c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "public/ocr-246/lang/ita.traineddata.gz",
+      "bytes": 6933830,
+      "sha256": "sha256:21c1bfde62571d76b923e270bb2cde583ccc18fa8bfd83454c021b28d8b5cb5a"
+    },
+    {
+      "path": "public/ocr-246/vendor/tesseract-js-APACHE-2.0.LICENSE",
+      "bytes": 11357,
+      "sha256": "sha256:b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+    },
+    {
+      "path": "public/ocr-246/vendor/tesseract.esm.min.js",
+      "bytes": 63220,
+      "sha256": "sha256:64871d76c75609fd5413b88a8171e2ef40deedd77d5875ba23df104b2d05eb29"
+    },
+    {
+      "path": "public/ocr-246/vendor/tesseract.min.js.LICENSE.txt",
+      "bytes": 149,
+      "sha256": "sha256:cdf963ced7d25a0f98901a547647b4d6e2dbe0197fd78c87a059a87b0e542fe2"
+    },
+    {
+      "path": "public/ocr-246/vendor/worker.min.js",
+      "bytes": 111307,
+      "sha256": "sha256:576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d"
+    },
+    {
+      "path": "public/ocr-246/vendor/worker.min.js.LICENSE.txt",
+      "bytes": 466,
+      "sha256": "sha256:45f54171aeaa1d10c0c1a66f374b7bba1f02472b1487fbe892eec04f840002ac"
+    }
+  ],
+  "browserObserved": {
+    "fixture": "spikes/heavy-local-feasibility/public/corpus/ocr-it.png",
+    "sha256": "sha256:1bfc71b54560679f6b6d0e8f978201b2ca27fdfcd84d47ef9344d41db0a2f27b",
+    "expectedText": "Fattura numero 12345 - Totale euro 678,90",
+    "testedBrowser": "Chromium local 390px desktop",
+    "requestsOffsite": 0,
+    "textMatchedExactly": true,
+    "actualDownloadTxt": true,
+    "mobilePhysicalIOSAndroid": "NOT_TESTED",
+    "rawRotation90And180": "KNOWN_INACCURATE_FROM_PRIOR_DESKTOP_SPIKE"
+  },
+  "productionGate": "BLOCKED_BY_271"
+}

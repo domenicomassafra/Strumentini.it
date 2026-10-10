@@ -26,7 +26,7 @@ const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html:
 // An explicitly scoped, non-catalog experiment may be pre-rendered only while
 // noindex/nofollow, invisible to search/sitemap and visibly bounded. This is
 // NOT a tool promotion or an open-ended allowance for stray public routes.
-const previewOnlyPaths = ["tools/codice-fiscale/index.html"] as const;
+const previewOnlyPaths = ["tools/codice-fiscale/index.html", "tools/ocr-italiano-locale-246/index.html"] as const;
 for (const previewPath of previewOnlyPaths) {
   const route = `/${previewPath.replace(/\/index\.html$/u, "")}`;
   if (catalog.some((tool) => tool.route.replace(/\/+$/u, "") === route.replace(/\/+$/u, "")) ||
@@ -34,9 +34,13 @@ for (const previewPath of previewOnlyPaths) {
     throw new Error(`Unreviewed preview route promoted into index/catalog: ${previewPath}`);
   }
   const preview = htmlPages.find(({ path }) => relative(dist, path).replaceAll("\\", "/") === previewPath)?.html;
-  if (preview === undefined || !/<meta name="robots" content="noindex, nofollow"\s*\/?\s*>/u.test(preview) ||
-      !preview.includes('data-cf-canonical-route="/tools/codice-fiscale/"') ||
-      !preview.includes("copertura geografica") && !preview.includes("Copertura geografica")) {
+  const sourceSafe = previewPath === "tools/codice-fiscale/index.html"
+    ? preview?.includes('data-cf-canonical-route="/tools/codice-fiscale/"') &&
+      (preview.includes("copertura geografica") || preview.includes("Copertura geografica"))
+    : preview?.includes('data-ocr246-preview="experimental-local-only"') &&
+      preview.toLowerCase().includes("sperimentale") &&
+      preview.toLowerCase().includes("browser");
+  if (preview === undefined || !/<meta name="robots" content="noindex, nofollow"\s*\/?\s*>/u.test(preview) || !sourceSafe) {
     throw new Error(`Expected source-limited, noindex-only preview missing or unsafe: ${previewPath}`);
   }
 }

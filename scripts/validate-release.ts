@@ -233,6 +233,8 @@ async function main(): Promise<void> {
     toolPageFiles, staticFiles: distFiles, catalogRoutes: catalog.map((entry) => entry.route),
     codiceFiscaleSource: await readFile(resolve(root, "src/pages/tools/codice-fiscale.astro"), "utf8").catch(() => ""),
     codiceFiscaleHtml: await readFile(resolve(distRoot, "tools/codice-fiscale/index.html"), "utf8").catch(() => ""),
+    ocrSource: await readFile(resolve(root, "src/pages/tools/ocr-italiano-locale-246.astro"), "utf8").catch(() => ""),
+    ocrHtml: await readFile(resolve(distRoot, "tools/ocr-italiano-locale-246/index.html"), "utf8").catch(() => ""),
     signatureSource: await readFile(resolve(root, "src/pages/tools/pdf-visual-signature/[...route].astro"), "utf8").catch(() => ""),
     sitemapXml: await readFile(resolve(distRoot, "sitemap.xml"), "utf8").catch(() => ""),
   });
