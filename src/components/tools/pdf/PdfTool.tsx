@@ -82,6 +82,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [rotation, setRotation] = useState("90");
   const [deleteMode, setDeleteMode] = useState<"delete" | "extract">("extract");
   const [passwordMode, setPasswordMode] = useState<"check" | "remove">("check");
+  const [pdfPassword, setPdfPassword] = useState("");
   const [textExtractionMode, setTextExtractionMode] = useState<"content-order" | "operator-lines">("content-order");
   const [imageDedupe, setImageDedupe] = useState(true);
   const [query, setQuery] = useState("");
@@ -192,7 +193,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     if (optionMode === "order") return { file: files[0], order: parseNumbers(order) };
     if (optionMode === "rotation") return { file: files[0], pages, rotation: Number(rotation) };
     if (optionMode === "delete-extract") return { file: files[0], pages, mode: deleteMode };
-    if (optionMode === "password") return { file: files[0], mode: passwordMode };
+    if (optionMode === "password") return { file: files[0], mode: passwordMode, ...(passwordMode === "remove" && pdfPassword.length > 0 ? { password: pdfPassword } : {}) };
     if (optionMode === "text-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), mode: textExtractionMode };
     if (optionMode === "image-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), dedupe: imageDedupe };
     if (optionMode === "pdf-to-markdown") return { file: files[0] };
@@ -291,6 +292,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         : friendlyToolErrorIt(caught));
       setStatus("idle");
     } finally {
+      if (optionMode === "password") setPdfPassword("");
       if (controller.current === abortController) controller.current = null;
     }
   }
@@ -312,6 +314,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setRotation("90");
     setDeleteMode("extract");
     setPasswordMode("check");
+    setPdfPassword("");
     setTextExtractionMode("content-order");
     setImageDedupe(true);
     setQuery("");
@@ -414,7 +417,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const publicCopy = TOOL_COPY_IT[toolId];
   const publicTitle = publicCopy?.name ?? toolId;
   const publicDescription = publicCopy?.summary ?? "";
-  const actionLabel = PDF_ACTION_IT[toolId];
+  const actionLabel = optionMode === "password" && passwordMode === "remove" ? "Crea PDF senza cifratura" : PDF_ACTION_IT[toolId];
   const comparison = result !== null && toolId === "pdf-compare-lite" && result.raw.comparison !== null
     && typeof result.raw.comparison === "object" && "alignment" in result.raw.comparison
     ? result.raw.comparison as unknown as PdfCompareResult : null;
@@ -526,7 +529,10 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             )}
           </section>
         )}
-        {optionMode === "password" && <label class="field"><span>Modalità</span><select value={passwordMode} onChange={(event) => setPasswordMode(event.currentTarget.value as "check" | "remove")} disabled={isWorking}><option value="check">Controlla soltanto la cifratura</option><option value="remove">Crea una copia sicura se il PDF non è cifrato</option></select></label>}
+        {optionMode === "password" && <>
+          <label class="field"><span>Modalità</span><select value={passwordMode} onChange={(event) => { setPasswordMode(event.currentTarget.value as "check" | "remove"); setPdfPassword(""); setResult(null); }} disabled={isWorking}><option value="check">Controlla soltanto la cifratura</option><option value="remove">Crea una copia PDF senza cifratura</option></select></label>
+          {passwordMode === "remove" && <label class="field"><span>Password del PDF (se protetto)</span><input type="password" autoComplete="off" maxLength={256} value={pdfPassword} onInput={(event) => { setPdfPassword(event.currentTarget.value); setResult(null); }} disabled={isWorking} aria-label="Password per sbloccare il PDF" /><small>Inserisci la password autorizzata del PDF cifrato. Senza password viene copiata solo una sorgente già non cifrata. Elaborazione locale in Worker, nessuna password inviata o salvata.</small></label>}
+        </>}
         {(optionMode === "order" || optionMode === "rotation") && files[0] !== undefined && (
           <div class="field" data-pdf-preview-toggle>
             <button type="button" onClick={() => setShowThumbnails((current) => !current)} disabled={isWorking}>{showThumbnails ? "Chiudi miniature pagine" : "Apri miniature pagine (facoltativo)"}</button>

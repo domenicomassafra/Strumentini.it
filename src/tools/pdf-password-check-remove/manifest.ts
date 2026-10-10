@@ -5,7 +5,7 @@ export const pdfPasswordCheckManifest = {
   id: "pdf-password-check-remove",
   route: "/tools/pdf-password-check-remove",
   name: "PDF Password Check / Remove",
-  summary: "Check whether a PDF declares encryption and produce a safe local copy only when no bypass is needed.",
+  summary: "Check PDF encryption; create an unencrypted copy only if already plain or supplied with a valid password. No bypass or guessing.",
   aliases: ["pdf password check", "remove pdf password", "pdf encryption check"],
   jobs: ["check pdf encryption", "remove pdf password when permitted", "inspect pdf password protection"],
   category: "documents",

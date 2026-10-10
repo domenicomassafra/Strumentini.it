@@ -149,7 +149,10 @@ function textArtifact(name: string, text: string, mime: "text/plain" | "text/mar
 
 export async function preparePdfResult(_toolId: PdfResultToolId, value: unknown): Promise<PreparedPdfResult> {
   const raw = asRecord(value);
-  const artifacts = await Promise.all(artifactList(raw).map(async (source): Promise<VerifiedPdfOutput> => {
+  const artifactSource = _toolId === "pdf-password-check-remove" && typeof raw.artifact === "object" && raw.artifact !== null
+    ? asRecord(raw.artifact)
+    : raw;
+  const artifacts = await Promise.all(artifactList(artifactSource).map(async (source): Promise<VerifiedPdfOutput> => {
     const pdf = source.mime === "application/pdf";
     const verification = await verifyGeneratedArtifact({
       kind: pdf ? "pdf" : "file",
@@ -536,13 +539,17 @@ function downloadText(artifact: OutputArtifactDescriptor): void {
 export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: PdfResultV2Props) {
   const [actionStatus, setActionStatus] = useState("");
   const declaration = PDF_ALL_RESULT_DECLARATIONS[toolId];
+  const fileMode = toolId === "pdf-password-check-remove" && result.artifacts.length > 0;
+  const displayDeclaration = fileMode
+    ? { class: "pdf" as const, capabilities: ["download", "retry", "reset"] as const }
+    : declaration;
   const serialized = useMemo(() => serializedResult(result.raw), [result.raw]);
 
-  if (declaration.class === "pdf" || declaration.class === "file") {
+  if (displayDeclaration.class === "pdf" || displayDeclaration.class === "file") {
     const primary = result.artifacts.length === 1 ? result.artifacts[0] : undefined;
     const workspace = workspaceFor(toolId, result.artifacts, sourceFiles);
     const actions = resolveResultActions({
-      declaration,
+      declaration: displayDeclaration,
       primary: primary?.artifact.download.ready === true ? "download" : null,
       ...(primary === undefined ? {} : { artifact: primary.artifact }),
       retryReady: onRetry !== undefined,
@@ -585,14 +592,14 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
       ...factRows(result.raw),
     ].slice(0, 14);
     return (
-      <div data-result-class={declaration.class}>
-        {declaration.class === "pdf" ? <PdfPagePreview outputs={result.artifacts} /> : null}
-        {declaration.class === "pdf" ? <div data-result-slot="operation-summary"><ResultBreakdown label="Riepilogo operazione" rows={rows} /></div> : null}
+      <div data-result-class={displayDeclaration.class}>
+        {displayDeclaration.class === "pdf" ? <PdfPagePreview outputs={result.artifacts} /> : null}
+        {displayDeclaration.class === "pdf" ? <div data-result-slot="operation-summary"><ResultBreakdown label="Riepilogo operazione" rows={rows} /></div> : null}
         {targetMode ? <ResultInterpretation state={result.raw.allMet === true ? "success" : "warning"}>
           {result.raw.allMet === true ? "Ogni PDF elaborato rispetta la soglia esatta sui byte del file finale." :
             "Almeno un file non ha raggiunto la soglia o non è stato elaborato. Controlla lo stato individuale nel report tecnico; i PDF best-effort non sono indicati come sotto limite."}
         </ResultInterpretation> : null}
-        {declaration.class === "file" ? <ResultBreakdown label="Riepilogo estrazione" rows={rows} /> : null}
+        {displayDeclaration.class === "file" ? <ResultBreakdown label="Riepilogo estrazione" rows={rows} /> : null}
         <div data-result-slot="file-workspace">
           <FileResultWorkspace
             workspace={workspace}
