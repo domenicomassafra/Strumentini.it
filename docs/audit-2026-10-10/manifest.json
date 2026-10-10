@@ -7,6 +7,11 @@
   "appMutations": false,
   "files": [
     {
+      "path": ".gitattributes",
+      "bytes": 131,
+      "sha256": "f014319e5189c2d97fcb39f7d48be6eb72a9d5ddf758bcbab0f2b4fa61f45d26"
+    },
+    {
       "path": "1440-csv.csv",
       "bytes": 53,
       "sha256": "fb7aa740b659dde98649f4434f55a929cd1906e27d227fc2a2ffa3e36a430943"
@@ -58,8 +63,8 @@
     },
     {
       "path": "catalog-review.csv",
-      "bytes": 37523,
-      "sha256": "61b023aefdcd862df50b99e2648d4307f719348198cd47210c49e77ea5c5b5c4"
+      "bytes": 37253,
+      "sha256": "0743efd80c50458e54b5c5a14ba140237043e61d48747a988d659c2fa13072ca"
     },
     {
       "path": "catalog-stats.json",

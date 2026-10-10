@@ -1,5 +1,13 @@
 # Strumentini.it — pending verificati e sessione di grilling per il prossimo agente
 
+## Sessione attiva — rivalutazione indipendente consegnata
+
+Il nuovo [audit indipendente](AUDIT-INDIPENDENTE-STRUMENTINI-2026-10-10.md), con [prove](audit-2026-10-10/README.md) e [triage dei 43 originali](audit-2026-10-10/ticket-triage.md), è il checkpoint della fase A. Non modifica authority di prodotto/design, ticket o produzione. Il mandato complessivo resta aperto; nuovo sviluppo non autorizzato.
+
+**Fase B avviata con `plan-grill-with-docs`, `plan-grilling`, `plan-domain-modeling`. Stato PENDING-OWNER, round 1:** Q1 obiettivo dominante e successo; Q2 persone/lavori realmente osservati e accesso alla validazione; Q3 budget di tempo/denaro e soglia stop; Q4 vincoli e promesse irrinunciabili. Sono le quattro radici indipendenti dell'albero nella sezione 12 dell'audit. Nessuna risposta dell'owner è stata ricevuta o inferita. Dopo le risposte aggiornare qui la frontier; creare glossario `CONTEXT.md` solo per termini effettivamente risolti e ADR solo per trade-off significativi confermati. Non creare un'altra coda di ticket.
+
+I dati sotto restano il registro storico del checkpoint precedente. Nuovi riscontri: account Turnstile bloccato nel browser controllato, recenti non alimentati dagli usi, contrasto testo account insufficiente, OCR #246 accessibile noindex fuori catalogo, iPhone fisico collegato ma acceptance NOT_RUN. Il redesign completo è già deciso; direzione, tre alternative concrete e approvazione di implementazione sono ancora pending.
+
 > **Punto d'ingresso aggiornato:** `docs/HANDOFF-FINALE-RIVALUTAZIONE-E-GRILLING-2026-10-10.md` è il documento finale locale e versionato che collega questo backlog al mandato strategico/UX. I 43 ticket originali rimangono OPEN finché non sono soddisfatti i rispettivi criteri o una decisione esplicita li de-scopa.
 
 **Documento operativo unico da utilizzare in una nuova chat** con `docs/HANDOFF-2026-10-10-RELEASE-INTERMEDIA.md`; aggiornato dopo commit sorgente `95be886`, Cloudflare 100% sulla versione associata e rimozione di 14 worktree/16 branch datati. **Non continuare il lavoro senza una scelta del proprietario sull'obiettivo del prodotto.**
