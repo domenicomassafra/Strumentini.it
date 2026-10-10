@@ -1,0 +1,69 @@
+[
+  {
+    "full_name": "jamsinclair/jSquash",
+    "pushed_at": "2026-01-05T10:05:43Z",
+    "archived": false,
+    "default_branch": "main",
+    "license": "Apache-2.0"
+  },
+  {
+    "repo": "google/squoosh",
+    "error": "gh: Not Found (HTTP 404)\n"
+  },
+  {
+    "full_name": "Rhgx/libre-convert",
+    "pushed_at": "2026-10-09T09:03:18Z",
+    "archived": false,
+    "default_branch": "main",
+    "license": "MIT"
+  },
+  {
+    "full_name": "strukturag/libheif",
+    "pushed_at": "2026-10-10T00:30:49Z",
+    "archived": false,
+    "default_branch": "master",
+    "license": "NOASSERTION"
+  },
+  {
+    "full_name": "hoppergee/heic-to",
+    "pushed_at": "2026-10-01T10:42:54Z",
+    "archived": false,
+    "default_branch": "main",
+    "license": "NOASSERTION"
+  },
+  {
+    "full_name": "svg/svgo",
+    "pushed_at": "2026-08-27T14:58:51Z",
+    "archived": false,
+    "default_branch": "main",
+    "license": "MIT"
+  },
+  {
+    "full_name": "ArtifexSoftware/mupdf.js",
+    "pushed_at": "2026-07-01T15:17:26Z",
+    "archived": false,
+    "default_branch": "master",
+    "license": "AGPL-3.0"
+  },
+  {
+    "full_name": "mozilla/pdf.js",
+    "pushed_at": "2026-10-10T06:08:08Z",
+    "archived": false,
+    "default_branch": "master",
+    "license": "Apache-2.0"
+  },
+  {
+    "full_name": "fayazara/pdfstudio",
+    "pushed_at": "2026-07-11T08:55:22Z",
+    "archived": false,
+    "default_branch": "main",
+    "license": "Apache-2.0"
+  },
+  {
+    "full_name": "adobe/spectrum-web-components",
+    "pushed_at": "2026-10-09T18:54:45Z",
+    "archived": false,
+    "default_branch": "main",
+    "license": "Apache-2.0"
+  }
+]

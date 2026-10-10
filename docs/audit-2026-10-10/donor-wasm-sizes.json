@@ -1,0 +1,85 @@
+[
+  {
+    "name": "@jsquash/jpeg",
+    "version": "1.6.0",
+    "tarballBytes": 157933,
+    "wasm": [
+      {
+        "path": "package/codec/dec/mozjpeg_dec.wasm",
+        "bytes": 166470
+      },
+      {
+        "path": "package/codec/enc/mozjpeg_enc.wasm",
+        "bytes": 251524
+      }
+    ],
+    "licenseFiles": [
+      "package/LICENSE",
+      "package/codec/LICENSE.codec.md"
+    ]
+  },
+  {
+    "name": "@jsquash/webp",
+    "version": "1.5.0",
+    "tarballBytes": 335509,
+    "wasm": [
+      {
+        "path": "package/codec/dec/webp_dec.wasm",
+        "bytes": 137960
+      },
+      {
+        "path": "package/codec/enc/webp_enc_simd.wasm",
+        "bytes": 345584
+      },
+      {
+        "path": "package/codec/enc/webp_enc.wasm",
+        "bytes": 281261
+      }
+    ],
+    "licenseFiles": [
+      "package/LICENSE",
+      "package/codec/LICENSE.codec.md"
+    ]
+  },
+  {
+    "name": "@jsquash/avif",
+    "version": "2.1.1",
+    "tarballBytes": 2654320,
+    "wasm": [
+      {
+        "path": "package/codec/dec/avif_dec.wasm",
+        "bytes": 1170930
+      },
+      {
+        "path": "package/codec/enc/avif_enc_mt.wasm",
+        "bytes": 3534665
+      },
+      {
+        "path": "package/codec/enc/avif_enc.wasm",
+        "bytes": 3485872
+      }
+    ],
+    "licenseFiles": [
+      "package/LICENSE"
+    ]
+  },
+  {
+    "name": "@jsquash/oxipng",
+    "version": "2.3.0",
+    "tarballBytes": 192200,
+    "wasm": [
+      {
+        "path": "package/codec/pkg-parallel/squoosh_oxipng_bg.wasm",
+        "bytes": 236042
+      },
+      {
+        "path": "package/codec/pkg/squoosh_oxipng_bg.wasm",
+        "bytes": 164172
+      }
+    ],
+    "licenseFiles": [
+      "package/LICENSE",
+      "package/codec/LICENSE.codec.md"
+    ]
+  }
+]

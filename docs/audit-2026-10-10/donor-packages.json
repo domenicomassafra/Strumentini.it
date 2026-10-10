@@ -1,0 +1,192 @@
+[
+  {
+    "name": "@jsquash/jpeg",
+    "version": "1.6.0",
+    "license": "Apache-2.0",
+    "dist": {
+      "shasum": "45474ce6d5b6165740d135c7bdf36dee9ba8618e",
+      "tarball": "https://registry.npmjs.org/@jsquash/jpeg/-/jpeg-1.6.0.tgz",
+      "fileCount": 23,
+      "integrity": "sha512-zwN46Awh1VM6gXlIcALwb5WzqK5H2e6+Awcs1QP8AvS8ohsK/sbE4esvmH4jhlhW7+CgiUUww66vg0aTnlSIMA==",
+      "signatures": [
+        {
+          "sig": "MEYCIQCITkTOkIjZu738PpJKe0JpmPOznhjFt3Z9FN4+fIMdfwIhALiTw2uyhsNe1PcbmrPEG3X8MHoOxCqeNUcbn1xTgSUh",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 530668
+    },
+    "dependencies": null
+  },
+  {
+    "name": "@jsquash/webp",
+    "version": "1.5.0",
+    "license": "Apache-2.0",
+    "dist": {
+      "shasum": "1e8ce357cde2decf4f880a8c436f8f1529cd3f48",
+      "tarball": "https://registry.npmjs.org/@jsquash/webp/-/webp-1.5.0.tgz",
+      "fileCount": 30,
+      "integrity": "sha512-KggLoj2MnRSfIqTeKe1EmbljTX2vuV7mh79k89PCL1pyqiDULcPM1L47twxXt0hkb68F70bXiL31MxsuoZtKFw==",
+      "signatures": [
+        {
+          "sig": "MEQCIDzKA1Hkat2hm2PDL7FwAMn4q0TsaT4Fn4M40GvR12SdAiB+Az2B9at4mjXXJMPdRquqsB4Bt0XObcTPcErXm1R5/g==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 914811
+    },
+    "dependencies": {
+      "wasm-feature-detect": "^1.2.11"
+    }
+  },
+  {
+    "name": "@jsquash/avif",
+    "version": "2.1.1",
+    "license": "Apache-2.0",
+    "dist": {
+      "shasum": "600c77158363220e2f0dc4f6f72ece7e604231bf",
+      "tarball": "https://registry.npmjs.org/@jsquash/avif/-/avif-2.1.1.tgz",
+      "fileCount": 28,
+      "integrity": "sha512-LMRxd0fMgfCLtobDh0/sFYJMMiRJTNYSEEWvRDKXlAeZ08t3gI5V+1thIT0XjXJ+SVG7Zug9B0XPyx0Ti5VRNA==",
+      "signatures": [
+        {
+          "sig": "MEQCIBZbqoUGOurolFIHi+tb3PI3lI2ANRb5ODsyLdw0Yzn/AiB7dF1QjjhVOAlw/6SxrWx7EQcf6mc9KlmAhoiwSQP7Hw==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 8360482
+    },
+    "dependencies": {
+      "wasm-feature-detect": "^1.2.11"
+    }
+  },
+  {
+    "name": "@jsquash/oxipng",
+    "version": "2.3.0",
+    "license": "Apache-2.0",
+    "dist": {
+      "shasum": "49095dd5b7d71ead94e4e80d627b7f0f453493ef",
+      "tarball": "https://registry.npmjs.org/@jsquash/oxipng/-/oxipng-2.3.0.tgz",
+      "fileCount": 26,
+      "integrity": "sha512-aQ8wiEp6ztlTMXc+RMt/CG8crU3mEHDU+h+JYkIi6ctMhlh8+Ltj5XwQFfBuyzKYrp8NxaFW80Dp824bqjr+zA==",
+      "signatures": [
+        {
+          "sig": "MEUCIEWjitdILt0JeGEbxdsohCIr0f5/JVisVKOiVfHicpskAiEA+Kp03yweH0skDRhEcEh44SvpwNgwt0VMPHK0a22hgiQ=",
+          "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA"
+        }
+      ],
+      "unpackedSize": 452392
+    },
+    "dependencies": {
+      "wasm-feature-detect": "^1.2.11"
+    }
+  },
+  {
+    "name": "heic-to",
+    "version": "1.6.5",
+    "license": "LGPL-3.0",
+    "dist": {
+      "shasum": "ee550d49df221c0f620b3b2691ad25ab70ddc01b",
+      "tarball": "https://registry.npmjs.org/heic-to/-/heic-to-1.6.5.tgz",
+      "fileCount": 31,
+      "integrity": "sha512-xPH6gvrzSRIFo/GyzYbr+DZX1JoQliw1oJBT1PCduR0ruDVs1DjlAdU1m5Thed2ZXBoLqYMCd5UXiJteRl3BNQ==",
+      "signatures": [
+        {
+          "sig": "MEUCIFpuPuMTdGHFQc0Qw8yA7u61HNihnf/8TgpWE9RIe2GeAiEA2HGkq1UTQS3HsCfkxdV7Fs6fqlu0J55bSONmwZRdPPw=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEQCIGKnBU7QcZbR617WhqRf5MMxRysrLOn1ppektHlLO/ckAiAQQoXgiDvH5RCbmXXRxu0dyJEYt8J+anxiKD4Kw7I/Sg==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 25919608
+    },
+    "dependencies": null
+  },
+  {
+    "name": "svgo",
+    "version": "4.1.0",
+    "license": "MIT",
+    "dist": {
+      "shasum": "c977eb69640ef232a5e8236a5a327ed8c9d52853",
+      "tarball": "https://registry.npmjs.org/svgo/-/svgo-4.1.0.tgz",
+      "fileCount": 154,
+      "integrity": "sha512-bkxnTg1kSU0guhIBmibA6UUhrQmPVA1XsQLN+ylCd+UWzbnLkySOcXpyk1mrl05f+pcaCx2eHb+sp6BgMZWX+Q==",
+      "signatures": [
+        {
+          "sig": "MEUCIFQlgviqHYS7AOyKGUa4sHP1bnh/UHusVx+y2kax6WziAiEA97NxVFNFg1dES8kYnNbgkLa9cQLsi9mCWDlqOjdaE+g=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQDElfhcfSdt+TJdNZjnMz6qdSf0rjAmSCkN5Hvamn8D3gIhAP36WIKRCD274DtYNWUj7UcxPWUSDN+syztbJMgiDmS+",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/svgo@4.1.0",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 1494938
+    },
+    "dependencies": {
+      "sax": "1.6.1",
+      "csso": "^5.0.5",
+      "css-tree": "^3.0.1",
+      "css-what": "^7.0.0",
+      "commander": "^11.1.0",
+      "css-select": "^6.0.0",
+      "picocolors": "^1.1.1"
+    }
+  },
+  {
+    "name": "pdfjs-dist",
+    "version": "6.4.299",
+    "license": "Apache-2.0",
+    "dist": {
+      "shasum": "4a46f5146ac6505564c1a5d472900be4df8bf628",
+      "tarball": "https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-6.4.299.tgz",
+      "fileCount": 554,
+      "integrity": "sha512-AVl138zALtfaAPvADulE0PZThbYzCBS79nL4pOSL/6Sm/4AH5A21BD9VHt97OlCuzJuCpmeZtAtkinisF4Vb1g==",
+      "signatures": [
+        {
+          "sig": "MEUCIANFOtvvvNGmxlVa6Y9QCzq37pTxqJ158DtYT7YLMpwDAiEAoiTHdJrCono0hv72HNRa7TL6/cK0rLKKsStkjlNtWSQ=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQDh61X2sPdS5BlBMRK+soD+Xde+4PMDdwVWIB0xMy1W5QIhAMBAYDXPhYnoShHZTMrVgSn8t8R/YYIdNFnTyk6eYJ6Y",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/pdfjs-dist@6.4.299",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 34913648
+    },
+    "dependencies": null
+  },
+  {
+    "name": "mupdf",
+    "version": "1.28.1",
+    "license": "AGPL-3.0-or-later",
+    "dist": {
+      "shasum": "c66d2714bafa1f5c14e076504ed43d5e07bbb3e7",
+      "tarball": "https://registry.npmjs.org/mupdf/-/mupdf-1.28.1.tgz",
+      "fileCount": 11,
+      "integrity": "sha512-Gi11Ow2G1SlrXKJNZBL1eAIGFVih5+4ZKqjptamTVaj/5hnlrcVrVbyb7lHE2lfFKdxZPyv9ZtfOOq7XgjzEig==",
+      "signatures": [
+        {
+          "sig": "MEQCIAIDQHLGPpVmxVm2yHGwxS2sVgygPYvPDgZtvC15FeREAiAIacjTd7sU0qxKm7p8qASRht75TudBUUt23tNuZe2tvw==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 14324000
+    },
+    "dependencies": null
+  }
+]

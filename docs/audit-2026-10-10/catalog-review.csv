@@ -1,0 +1,270 @@
+id,name,engine,category_internal,runtime,profile_fields,review_class,risk_flag,partial_flag,proof_in_this_audit
+add-subtract-days,Aggiungi o sottrai giorni,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+age-date-anniversary,Calcola età e prossimo anniversario,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+ai-code-fence-bundle,Blocchi di codice AI → file ZIP,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+archive-checksum-manifest,Checksum di un archivio,file-privacy,files,LOCAL,,sovrapposizione-da-rivedere,False,False,inventario-non-certificazione
+aspect-ratio-calculator,Calcola proporzioni immagine,image-visual,image-visual,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+audio-generator,"Generatore di tono, metronomo e rumore",browser-audio,media,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+barcode-generator,Crea barcode EAN-13 e Code 128,barcode-linear-v1,marketing,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+base-converter,Convertitore di base 2–36,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+base64-codec,Codifica e decodifica Base64,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+basic-unit-converter,Convertitore di unità di base,business-math,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+batch-checksum-manifest,Checksum di più file,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+batch-rename-preview,Anteprima rinomina multipla,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+battery-vehicle-power-helper,"Batteria, consumi auto e potenza",business-math,business-math,LOCAL,,accessorio,False,False,inventario-non-certificazione
+bibtex-deduplicator,Rimuovi duplicati BibTeX,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+bibtex-formatter,Formatta BibTeX,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+break-even,Quando vai in pareggio,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+browser-text-to-speech,Sintesi vocale del browser,browser-audio,media,LOCAL,locale,commodity-utile,False,False,inventario-non-certificazione
+bulk-domain-extractor,Estrai domini da una lista,url-marketing,web-operations,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+business-day,Conta giorni lavorativi,date-time,date-time,LOCAL,"workweek,locale",commodity-utile,False,False,inventario-non-certificazione
+calendar-date-list-generator,Crea una lista di date,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+campaign-name,Crea nome campagna,campaign-url,marketing,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+canonical-url-helper,Crea URL canonico,url-marketing,web-operations,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+capacity-planner,Quante ore puoi davvero vendere,business-math,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+case-converter,Cambia maiuscole e stile del testo,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+checksum-verifier,Verifica integrità dei file,file-privacy,files,LOCAL,,sovrapposizione-da-rivedere,False,False,inventario-non-certificazione
+chmod-permission-helper,Convertitore permessi chmod,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+cidr-calculator,Calcolatore CIDR IPv4 e IPv6,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+citation-deduplicator,Rimuovi citazioni duplicate,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+citation-key-generator,Crea chiavi per citazioni,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+clean-zip-creator,Creatore ZIP pulito,file-privacy,files,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+client-handoff-index-generator,Indice dei file da consegnare,file-privacy,files,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+color-blindness-image-simulation,Simula il daltonismo su un'immagine,image,files-assets,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+color-converter,"Converti HEX, RGB e HSL",image-visual,image-visual,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+color-picker,Selettore colore,image-visual,image-visual,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+column-type-profiler,Riconosci i tipi delle colonne,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+connection-device-info,Informazioni browser e dispositivo,browser-diagnostics,developer,REFERENCE,,commodity-utile,False,False,inventario-non-certificazione
+contact-sheet-generator,Crea un foglio di anteprime immagini,image,files-assets,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+contrast-checker,Controlla contrasto colori,image-visual,image-visual,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+conversion-rate-scenario,Simula un nuovo tasso di conversione,marketing-math,marketing,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+cpa-cpc-cpm-calculator,"Calcola CPA, CPC o CPM",marketing-math,marketing,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+cron-explainer,Spiega una regola cron,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+cron-next-run,Prossime esecuzioni di una cron,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+css-design-helper,"Genera gradiente, ombra e raggio CSS",design-css,developer,LOCAL,,accessorio,False,False,inventario-non-certificazione
+css-minifier,Minifica CSS con parser,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+csv-cleaner,Pulisci un CSV,table-csv,data,LOCAL,,core-candidato,False,False,output-riaperto
+csv-column-map,Mappa e riordina colonne CSV,table-csv,data,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+csv-column-selector,Scegli e riordina colonne CSV,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+csv-column-to-list,Colonna CSV in elenco,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+csv-dedupe,Rimuovi righe duplicate dal CSV,table-csv,data,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+csv-delimiter-detector,Trova il separatore di un CSV,table-operations,data,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+csv-encoding-fixer,Correggi la codifica di un CSV,table-operations,data,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+csv-filter,Filtra righe di un CSV,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+csv-group-count,Raggruppa e conta righe CSV,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+csv-join,Unisci due CSV,table-operations,data,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+csv-pivot-lite,Crea una tabella pivot da CSV,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+csv-sort,Ordina righe di un CSV,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+csv-splitter,Dividi un CSV grande,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+csv-to-json,Converti CSV in JSON,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+csv-to-sql,Converti CSV in SQL,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+csv-viewer,Apri e controlla un CSV,table-operations,data,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+currency-scenario,Converti valuta con un cambio manuale,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+date-difference,Differenza tra due date e orari,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+date-source-normalizer,Uniforma le date delle fonti,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+deadline-countdown,Quanto manca alla scadenza,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+decimal-hours-converter,Converti ore e minuti in ore decimali,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+discount-impact,Impatto dello sconto,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+document-handoff-manifest,Indice dei documenti da consegnare,pdf,documents,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+doi-isbn-normalizer,Pulisci e verifica DOI e ISBN,research-reference,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+doi-link-builder,Trasforma un DOI in link,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+doi-normalizer,Pulisci e verifica un DOI,research-knowledge,research,LOCAL,,sovrapposizione-da-rivedere,False,False,inventario-non-certificazione
+domain-frequency-counter,Conta le fonti per dominio,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+domain-subdomain-grouper,Raggruppa URL per dominio,url-marketing,web-operations,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+dominant-color-extractor,Trova il colore dominante,image,files-assets,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+duplicate-file-finder,Trova file duplicati,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+duplicate-row-profiler,Trova righe duplicate,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+duration-calculator,Calcola durata tra due date e orari,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+effective-hourly-rate,Quanto guadagni davvero all'ora,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+email-domain-extractor,Estrai email e domini dal testo,url-marketing,web-operations,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+engineering-unit-converter,Convertitore di unità tecniche,business-math,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+epoch-batch-converter,Converti timestamp Unix in blocco,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+everyday-cost-calculator,Calcola costi quotidiani,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+evidence-table-builder,Crea tabella delle fonti,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+exif-remover,Rimuovi metadati EXIF,image,files-assets,LOCAL,,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+fact-sensitive-text-diff,"Trova cambi a numeri, date e link nei testi",text-writing,text,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+fatturapa-batch-csv,FatturaPA batch in CSV,table-csv,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+fatturapa-reader,Leggi una FatturaPA XML,table-csv,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+favicon-app-icon-size-generator,Crea favicon e icone app,image,files-assets,LOCAL,,accessorio,False,False,inventario-non-certificazione
+file-hash,Hash file e verifica checksum,file-hash,files,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+file-list-diff,Confronto elenchi di file,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+file-signature-detector,Controlla il vero tipo di un file,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+file-size-analyzer,Analizzatore dimensione file,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+filename-sanitizer,Pulizia nomi file,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+find-replace-preview,Anteprima trova e sostituisci,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+folder-compare,Confronto cartelle,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+folder-inventory,Inventario cartella,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+folder-size-type-summary,Riepilogo contenuto cartella,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+fraction-integer-toolkit,Frazioni e interi esatti,business-math,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+geometry-equation-motion-helper,"Geometria, equazioni e moto",business-math,business-math,LOCAL,,accessorio,False,False,inventario-non-certificazione
+gestione-separata-contributi,Contributi Gestione Separata 2026,business-math,business-math,LOCAL,,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+hash-generator,Calcola hash di un testo,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+hmac-generator,Calcola HMAC,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+html-entity-codec,Codifica e decodifica entità HTML,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+html-minifier,Minifica HTML preservando la semantica,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+http-status-reference,Significato dei codici HTTP,developer-web,developer,LOCAL,,accessorio,False,False,inventario-non-certificazione
+iban-validator,Verifica IBAN,research-reference,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+ics-event-builder,Crea file calendario ICS,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+ics-viewer,Apri e controlla un file ICS,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+image-compare-slider,Confronto immagini,image,files-assets,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+image-compression,Compressione immagine,image,files-assets,LOCAL,,core-candidato,False,True,output-riaperto
+image-crop,Ritaglia e modifica immagine,image,files-assets,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+image-dimensions-batch-inspector,Controlla dimensioni di più immagini,image,files-assets,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+image-format-conversion,Converti formato immagine,image,files-assets,LOCAL,,incompleto-accettazione,False,True,inventario-non-certificazione
+image-metadata-viewer,Vedi informazioni di un'immagine,image,files-assets,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+image-rename-batch-preview,Anteprima rinomina multipla immagini,image,files-assets,LOCAL,,sovrapposizione-da-rivedere,False,False,inventario-non-certificazione
+image-resize,Ridimensiona immagine,image,files-assets,LOCAL,,core-candidato,False,True,inventario-non-certificazione
+images-to-pdf,Immagini in PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+inps-artigiani-commercianti,Contributi INPS artigiani e commercianti 2026,business-math,business-math,LOCAL,,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+interest-savings-calculator,Interessi e obiettivo di risparmio,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+invisible-character-detector,Trova caratteri invisibili,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+invoice-math-validator,Controlla i calcoli di una fattura,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+invoice-number-generator,Crea numero fattura,business-math,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+isbn-validator-converter,Validatore e convertitore ISBN,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+italian-document-expiry,Calcola scadenza CIE o passaporto,date-time,date-time,LOCAL,"timezone,locale",pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+italian-gulpease-readability,Calcola indice Gulpease,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+json-formatter,Formattatore e validatore JSON,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+json-path-playground,Prova percorsi JSONPath,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+json-repair,Ripara JSON senza indovinare,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+json-structural-diff,Confronta la struttura di due JSON,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+json-to-csv,Converti JSON in CSV,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+json-type-schema-inference,Da JSON a TypeScript e JSON Schema,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+json-yaml-converter,Convertitore JSON e YAML,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+jwt-inspector,Analizzatore JWT,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+keyboard-event-diagnostic,Diagnostica eventi tastiera,browser-diagnostics,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+language-aware-text-statistics,Statistiche del testo e lingua,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+late-payment-interest,Calcola interessi di mora,business-math,business-math,LOCAL,currency,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+line-deduplicator,Rimuovi righe duplicate,text-writing,text,LOCAL,,sovrapposizione-da-rivedere,False,False,inventario-non-certificazione
+line-sorter,Ordina righe di testo,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+list-compare,Confronta e deduplica liste,text-list,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+list-difference,Differenza tra liste,text-writing,text,LOCAL,,sovrapposizione-da-rivedere,False,False,inventario-non-certificazione
+list-intersection,Intersezione tra liste,text-writing,text,LOCAL,,sovrapposizione-da-rivedere,False,False,inventario-non-certificazione
+lorem-sample-data-generator,Crea dati di esempio,text-writing,text,LOCAL,,accessorio,False,False,inventario-non-certificazione
+margin-markup,Calcola margine e ricarico,client-time-math,client-work-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+markdown-preview,Anteprima Markdown,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+markdown-table-formatter,Formatta tabella Markdown,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+meeting-time-planner,Trova un orario comune per una riunione,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+meta-preview,Anteprima titolo e descrizione meta,url-marketing,marketing,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+metadata-risk-inspector,Controlla metadati prima di condividere,file-privacy,files,LOCAL,,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+microphone-recorder,Test microfono e registratore locale,browser-audio,media,LOCAL,,incompleto-accettazione,False,True,inventario-non-certificazione
+mime-type-lookup,Trova il tipo MIME di un file,developer-web,developer,LOCAL,,accessorio,False,False,inventario-non-certificazione
+missing-value-profiler,Trova celle vuote,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+mojibake-repair,Ripara testo con codifica errata,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+mortgage-amortization-calculator,Mutuo e ammortamento alla francese,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+notes-deduplicator,Rimuovi note duplicate,research-knowledge,research,LOCAL,,sovrapposizione-da-rivedere,False,False,inventario-non-certificazione
+ooxml-media-compression,"Comprimi immagini dentro DOCX, PPTX e XLSX",ooxml,documents,LOCAL,,incompleto-accettazione,False,True,inventario-non-certificazione
+open-graph-preview,Anteprima Open Graph,url-marketing,marketing,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+palette-extractor,Estrai palette da un'immagine,image,files-assets,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+partita-iva-validator,Verifica Partita IVA italiana,research-reference,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+password-pin-passphrase-generator,"Genera password, PIN e passphrase italiane",developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+password-strength-estimator,Stima la robustezza di una password,developer-web,developer,LOCAL,,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+payment-fee-gross-up,Calcola il lordo per ottenere un netto,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+pdf-booklet-interleave,Crea booklet PDF e intercala fronte/retro,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-compare-lite,Confronta due PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-compression-lite,Alleggerisci un PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-copy-text-reflow,Ricompone testo copiato da PDF,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-crop-normalize,Ritaglia PDF e uniforma le dimensioni,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-fill-overlays,"Scrivi, evidenzia e compila PDF (appiattito)",pdf,documents,LOCAL,,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+pdf-flatten,Rimuovi elementi interattivi dal PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-form-inspector,Vedi i campi di un modulo PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-image-extractor,Estrai immagini JPEG da PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-link-extractor,Estrai link da PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-merge,Unisci PDF,pdf,documents,LOCAL,,core-candidato,False,False,output-riaperto
+pdf-metadata-inspector,Vedi metadati PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-metadata-remover,Rimuovi metadati PDF,pdf,documents,LOCAL,,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+pdf-multi-text-search,Cerca testo in più PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-n-up,Metti più pagine PDF su un foglio,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-page-citation-helper,Crea citazione di una pagina PDF,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-page-count-verifier,Conta e verifica pagine PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-page-delete-extract,Elimina o estrai pagine PDF,pdf,documents,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+pdf-page-numbers,Numerare le pagine PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-page-reorder,Riordina pagine PDF,pdf,documents,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+pdf-page-size-inspector,Vedi dimensioni delle pagine PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-password-check-remove,Controlla e sblocca PDF con password,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-rotate,Ruota PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-split,Dividi PDF,pdf,documents,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+pdf-tables-to-xlsx,Estrai tabelle PDF in Excel,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-text-extraction,Estrai testo da PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-to-images,PDF in immagini,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-to-markdown,Converti PDF in Markdown,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+pdf-watermark,Aggiungere una filigrana PDF,pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+percentage-helper,Calcola IVA e percentuali,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+perceptual-duplicate-finder,Trova immagini quasi duplicate,image,files-assets,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+phone-link-hashtag-mention-extractor,"Estrai telefoni, link, hashtag e mention",text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+platform-size-presets,Dimensioni immagini per social e app,image-visual,image-visual,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+ponti-ferie-optimizer,Ponti e ferie 2026,date-time,date-time,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+printable-pdf-from-text,"Converti testo, Markdown, HTML e CSV in PDF",pdf,documents,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+project-profitability,Quanto rende un progetto,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+proposal-budget-checker,Controlla il margine di un preventivo,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+public-holiday-lookup,Trova festività pubbliche,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+qr-generator,Crea QR code,qr-local,marketing,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+qr-reader,Leggi QR code,qr-local,marketing,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+quarter-date-mapper,Trova trimestre e relative date,date-time,date-time,LOCAL,"timezone,locale",accessorio,False,False,inventario-non-certificazione
+query-string-editor,Modifica i parametri di un URL,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+quick-chart,Crea un grafico da una tabella,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+quote-counter,Conteggio parole e caratteri,research-knowledge,research,LOCAL,,sovrapposizione-da-rivedere,False,False,inventario-non-certificazione
+random-picker-team-coupon-generator,"Genera numeri, estrazioni, team e coupon casuali",developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+rate-converter,"Converti tariffa oraria, giornaliera e a progetto",client-time-math,client-work-math,LOCAL,"currency,hoursPerDay",commodity-utile,False,False,inventario-non-certificazione
+reading-list-deduplicator,Rimuovi duplicati dalla lista di lettura,research-knowledge,research,LOCAL,,sovrapposizione-da-rivedere,False,False,inventario-non-certificazione
+reading-time-estimator,Stima tempo di lettura,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+recurring-date-generator,Crea date ricorrenti,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+redirect-chain-inspector,Controlla una catena di redirect,url-marketing,web-operations,REFERENCE,,commodity-utile,False,False,inventario-non-certificazione
+reference-list-sorter,Ordina riferimenti bibliografici,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+reference-size-converter,"Formati carta, scale e dimensioni TV",business-math,business-math,LOCAL,,accessorio,False,False,inventario-non-certificazione
+regex-tester,Prova una regex,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+research-pack-manifest,Indice verificabile di un pacchetto di ricerca,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+research-url-cleaner,Pulizia URL di ricerca,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+retainer-capacity,Quanti clienti continuativi puoi seguire,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+ris-bibtex-converter,Convertitore RIS e BibTeX,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+roas-calculator,Calcolatore ROAS,marketing-math,marketing,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+robots-directive-helper,Assistente direttive robots.txt,url-marketing,web-operations,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+safe-share-checklist,Controlla i file prima di condividerli,file-privacy,files,LOCAL,,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+scientific-calculator,Calcolatrice scientifica,business-math,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+scope-creep-cost,Costo extra fuori preventivo,business-math,business-math,LOCAL,currency,commodity-utile,False,False,inventario-non-certificazione
+screenshot-border-background-helper,Bordo e sfondo per screenshot,image,files-assets,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+secret-token-pattern-scanner,Ricerca pattern di segreti e token,file-privacy,files,LOCAL,,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+semantic-text-chunker,Dividi testo in chunk reversibili,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+sitemap-xml-generator,Genera sitemap.xml,url-marketing,web-operations,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+slug-generator,Generatore slug,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+smart-quote-normalizer,Normalizzatore virgolette tipografiche,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+social-character-limit,Controllo limite caratteri social,url-marketing,marketing,LOCAL,,accessorio,False,False,inventario-non-certificazione
+stable-placeholder-anonymizer,Anonimizza e ripristina con segnaposto,text-writing,text,LOCAL,,pericoloso-da-promettere-in-assoluto,True,False,inventario-non-certificazione
+statistics-grade-calculator,"Statistiche, medie e completamento",business-math,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+storage-download-calculator,Spazio digitale e tempo di download,business-math,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+subtitle-srt-vtt-transform,"Converti SRT e WebVTT, correggi timing e crea trascrizioni",text-writing,media,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+table-compare,Confronta due tabelle CSV,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+table-transpose,Scambia righe e colonne,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+target-income-rate,Tariffa necessaria per il tuo reddito obiettivo,business-math,business-math,LOCAL,"currency,hoursPerDay",commodity-utile,False,False,inventario-non-certificazione
+text-diff,Confronto testi,text-list,text,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+text-markup-converter,"Converti TXT, Markdown e HTML",text-markup-conversion,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+text-to-csv-rows,Testo in righe CSV,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+timeline-sorter,Ordinamento cronologia,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+timesheet-totaler,Somma le ore del timesheet,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+timezone-converter,Converti tra fusi orari,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+timezone-overlap,Trova ore comuni tra due fusi orari,client-time-math,date-time,LOCAL,"timezone,workingHours",commodity-utile,False,False,inventario-non-certificazione
+toml-formatter,Formattatore e validatore TOML,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+tracking-cleaner,Rimuovi parametri di tracciamento,campaign-url,marketing,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+tsv-to-csv,Converti TSV in CSV,table-operations,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+unicode-normalizer,Normalizzatore Unicode,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+unix-timestamp,Convertitore timestamp Unix,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+url-bulk-normalizer,Pulisci e uniforma più URL,url-marketing,web-operations,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+url-codec,Codifica e decodifica URL,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+url-comparison,Confronto URL,url-marketing,web-operations,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+user-agent-parser,Analizzatore User-Agent,developer-web,developer,LOCAL,,accessorio,False,False,inventario-non-certificazione
+utilization-calculator,Percentuale di ore fatturabili,business-math,business-math,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+utm-builder,Crea URL con UTM,campaign-url,marketing,LOCAL,,core-candidato,False,False,output-riaperto
+utm-parser,Leggi i parametri UTM,url-marketing,marketing,LOCAL,,core-candidato,False,False,inventario-non-certificazione
+uuid-generator,Generatore UUID,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+vcf-viewer-csv-export,Apri VCF e vCard ed esporta in CSV,developer-web,data,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+video-inspector,Ispeziona MP4 e calcola il bitrate,video,media,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+vocabulary-frequency-analyzer,Parole più usate nel testo,research-knowledge,research,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+week-number-converter,Trova numero settimana,date-time,date-time,LOCAL,"timezone,locale",accessorio,False,False,inventario-non-certificazione
+whitespace-normalizer,Normalizzatore spazi,text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+word-character-line-counter,"Contatore parole, caratteri e righe",text-writing,text,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+working-hours,Calcola ore lavorate,date-time,date-time,LOCAL,"timezone,locale",commodity-utile,False,False,inventario-non-certificazione
+x509-csr-inspector,Ispeziona certificati X.509 e CSR,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+xml-formatter-validator,"Valida, formatta e minifica XML",developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+yaml-formatter,Formattatore e validatore YAML,developer-web,developer,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+zero-byte-orphan-finder,Ricerca file vuoti e riferimenti mancanti,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+zip-contents-inspector,Analisi contenuto ZIP,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione
+zip-creator,Creatore ZIP,file-privacy,files,LOCAL,,commodity-utile,False,False,inventario-non-certificazione

@@ -1,0 +1,73 @@
+{
+  "observedAtUTC": "2026-10-10T19:09:34.456035+00:00",
+  "commands": [
+    {
+      "argv": [
+        "npm",
+        "run",
+        "tickets:check"
+      ],
+      "exitCode": 0,
+      "stdout": "\n> strumentini-it@0.0.0 tickets:check\n> python3 .scratch/strumentini-expansion-20261005/ticket_dashboard.py --check\n\nPASS ticket dashboard {\"all\": 327, \"capability-blocked\": 0, \"completed\": 284, \"completedWithRefusal\": 17, \"completedWithoutExplicitRefusal\": 267, \"dependency-blocked\": 31, \"external-device-blocked\": 5, \"external-source-blocked\": 2, \"open\": 43, \"ready-for-agent\": 5, \"readyDAG\": 12, \"storedStatusMismatches\": 0}\nGit HEAD d0947cc (not a release/deploy claim)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "npx",
+        "tsx",
+        "scripts/validate-release.ts",
+        "--no-write-receipt"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"status\": \"BLOCKED\",\n  \"expectedToolCount\": 269,\n  \"catalogToolCount\": 269,\n  \"manifestCount\": 269,\n  \"toolPageCount\": 269,\n  \"counts\": {\n    \"errors\": 0,\n    \"blockers\": 8,\n    \"warnings\": 0\n  },\n  \"checks\": {\n    \"toolSurface\": \"PASS\",\n    \"cloudflareStaticAssets\": \"PASS\",\n    \"publicSiteUrl\": \"PASS\",\n    \"publicMetadata\": \"PASS\",\n    \"staticAssets\": \"PASS\",\n    \"truthfulClaims\": \"PASS\",\n    \"gold\": \"BLOCKED\",\n    \"browserEvidence\": \"BLOCKED\",\n    \"physicalDeviceEvidence\": \"BLOCKED\",\n    \"rollback\": \"BLOCKED\"\n  },\n  \"receipt\": null,\n  \"findings\": [\n    {\n      \"code\": \"BROWSER_EVIDENCE_SOURCE_STALE\",\n      \"severity\": \"blocker\",\n      \"message\": \"browser evidence targets different source content\",\n      \"path\": \"quality/receipts/browser-performance/fresh-browser-matrix.json\"\n    },\n    {\n      \"code\": \"GOLD_RECEIPT_MISSING\",\n      \"severity\": \"blocker\",\n      \"message\": \"10 tool(s) have no certification receipt\",\n      \"path\": \"quality/receipts\"\n    },\n    {\n      \"code\": \"GOLD_RECEIPT_NOT_GOLD\",\n      \"severity\": \"blocker\",\n      \"message\": \"2 tool receipt(s) are not Gold\",\n      \"path\": \"quality/receipts\"\n    },\n    {\n      \"code\": \"GOLD_RECEIPT_SOURCE_STALE\",\n      \"severity\": \"blocker\",\n      \"message\": \"259 tool receipt(s) target different source content\",\n      \"path\": \"quality/receipts\"\n    },\n    {\n      \"code\": \"PHYSICAL_DEVICE_EVIDENCE_MISSING\",\n      \"severity\": \"blocker\",\n      \"message\": \"android-chrome physical receipt is required\",\n      \"path\": \"quality/receipts/image-resize\"\n    },\n    {\n      \"code\": \"PHYSICAL_DEVICE_EVIDENCE_MISSING\",\n      \"severity\": \"blocker\",\n      \"message\": \"ios-safari physical receipt is required\",\n      \"path\": \"quality/receipts/image-resize\"\n    },\n    {\n      \"code\": \"ROLLBACK_SOURCE_STALE\",\n      \"severity\": \"blocker\",\n      \"message\": \"verified rollback receipt targets different source content\",\n      \"path\": \"quality/receipts/release/rollback.json\"\n    },\n    {\n      \"code\": \"WORKTREE_DIRTY\",\n      \"severity\": \"blocker\",\n      \"message\": \"release receipt was generated from a dirty working tree\",\n      \"path\": \"git\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "npx",
+        "wrangler",
+        "deployments",
+        "status",
+        "--name",
+        "strumentini",
+        "--json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"id\": \"c93c632d-6044-4f55-aa51-45fb06a0720a\",\n  \"source\": \"wrangler\",\n  \"strategy\": \"percentage\",\n  \"annotations\": {\n    \"workers/message\": \"\",\n    \"workers/triggered_by\": \"deployment\"\n  },\n  \"versions\": [\n    {\n      \"version_id\": \"6a1a5eaf-1091-45a7-a7c8-635c321877be\",\n      \"percentage\": 100\n    }\n  ],\n  \"created_on\": \"2026-10-10T17:48:02.836909Z\"\n}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "npx",
+        "wrangler",
+        "d1",
+        "info",
+        "strumentini-auth",
+        "--json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"uuid\": \"3351c8bf-31fc-4716-9d92-2b07c4d8fd2a\",\n  \"name\": \"strumentini-auth\",\n  \"created_at\": \"2026-10-07T23:21:51.748Z\",\n  \"num_tables\": 5,\n  \"running_in_region\": \"EEUR\",\n  \"read_replication\": {\n    \"mode\": \"disabled\"\n  },\n  \"jurisdiction\": null,\n  \"database_size\": 73728,\n  \"read_queries_24h\": 0,\n  \"write_queries_24h\": 0,\n  \"rows_read_24h\": 0,\n  \"rows_written_24h\": 0\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "exitCode": 0,
+      "stdout": "?? docs/AUDIT-INDIPENDENTE-STRUMENTINI-2026-10-10.md\n?? docs/audit-2026-10-10/\n",
+      "stderr": ""
+    }
+  ]
+}

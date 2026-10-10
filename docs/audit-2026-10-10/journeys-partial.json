@@ -1,0 +1,17 @@
+{
+  "search": {
+    "text": "Cerca uno strumento\nCerca per attività, strumento, ingresso o categoria\nLIBRERIA\nUnisci PDF\nCombina più PDF locali in un unico documento senza caricarne le pagine su un server.\n↑↓ naviga\nInvio apri\nEsc chiudi",
+    "focused": "global-search-input"
+  },
+  "searchZero": "Cerca uno strumento\nCerca per attività, strumento, ingresso o categoria\nNessuno strumento corrispondente\n\nMantieni “strumentononesistentexxyy” e prova un'intenzione vicina del catalogo, oppure apri tutti gli strumenti con la stessa ricerca.\n\nApri tutti gli strumenti\n↑↓ naviga\nInvio apri\nEsc chiudi",
+  "escapeFocus": "",
+  "utmInitial": "Home\nMarketing e URL\nCrea URL con UTM\nCrea URL con UTM\n\nAggiunge parametri UTM a un URL di campagna senza modificare il resto dell'indirizzo.\n\nGratis, senza limiti\nSenza registrazione\nVerificato\nURL di destinazione\nModalità bulk: applica gli stessi valori UTM a ogni URL e isola gli errori per riga\nSorgente\nMezzo\nCampagna\nCrea URL\nReimposta\n\nRISULTATO\n\nL'URL della campagna apparirà qui.\n\nVeloce\n\nIl risultato si calcola nel tuo browser, senza attese di caricamento.\n\nRiservato\n\nNessun file e nessun dato inserito viene inviato a un server.\n\nFunziona ovunque\n\nDesktop, tablet e smartphone: basta il browser, senza installare nulla.\n\n100% gratuito\n\nNessun limite di utilizzo e nessuna registrazione obbligatoria.\n\nCome funziona\n\nTre passaggi, nessuna configurazione obbligatoria.\n\n01\nPrepara l'ingresso\n\nInserisci i dati o apri i file: URL, Testo.\n\n02\nRegola le opzioni\n\nScegli solo ciò che serve; i valori predefiniti sono già sensati.\n\n03\nLeggi il risultato\n\nIl valore prodotto resta nella colonna del risultato, pronto da copiare o scaricare.\n\nPerché usare Crea URL con UTM\n\nAggiunge parametri UTM a un URL di campagna senza modificare il resto dell'indirizzo. Il risultato è deterministico e il contratto di esecuzione è dichiarato: accesso alla rete vietato dal contratto dello strumento.\n\nServe un account per usare questo strumento?\nI miei file vengono caricati su un server?\nIl risultato è sempre lo stesso a parità di ingresso?\nCosa succede se l'ingresso non è valido?\nCategoria: Marketing e campagne\nIngressi dichiarati: URL, Testo\nAccesso alla rete vietato dal contratto dello strumento.\nCertificato: il risultato è verificato contro un oracolo e delle fixture registrate.\nStrumenti correlati\n\nStrumenti collegati da ingressi, output o attività dichiarate.\n\nVedi tutta la categoria\nCrea URL canonico\n\nCostruisce l'URL canonico assoluto e il relativo tag link a partire dall'URL della pagina.\n\nURL e web\n→\nCrea QR code\n\nCrea un QR code SVG da testo o URL direttamente nel browser.\n\nMarketing e campagne\n→\nModifica i parametri di un URL\n\nAggiunge, rimuove, modifica e riordina i parametri della query di un URL.\n\nCodice e sviluppo\n→\nPulizia URL di ricerca\n\nRimuove parametri comuni di tracciamento e ordina le chiavi della query negli URL di ricerca.\n\nRicerca e fonti\n→\nServe un altro strumento?\n\nTutti i 269 strumenti sono gratuiti, senza registrazione e funzionano nel browser.\n\nEsplora tutti gli strumenti\n→",
+  "utmLabels": [
+    "Cerca per attività, strumento, ingresso o categoria",
+    "URL di destinazione",
+    " Modalità bulk: applica gli stessi valori UTM a ogni URL e isola gli errori per riga",
+    "Sorgente",
+    "Mezzo",
+    "Campagna"
+  ]
+}
