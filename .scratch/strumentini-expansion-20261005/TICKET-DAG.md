@@ -9,10 +9,12 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 
 ## Current dependency frontier
 
+- **033 — PDF conversion/productivity family**
 - **036 — Audio file-processing family**
 - **047 — JPEG/PNG/WebP/SVG compression engines**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **056 — Office-to-PDF and printable export pack**
+- **057 — PDF-to-editable/structured conversion pack**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
 - **069 — Cross-format file-size analyzer**
 - **115 — Italian administrative geography source pack**
@@ -23,13 +25,12 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **237 — True PDF redaction with post-export proof**
 - **241 — PDF signature placement**
 - **246 — Local image OCR**
-- **255 — PDF to PPTX page-as-slide baseline**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **19** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **20** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -78,7 +79,7 @@ Exactly **19** incomplete tickets currently have every declared numeric blocker 
 | 030 | completed | Screenshot/document privacy family | 214, 301, 302 |
 | 031 | blocked | OCR and document-scan family | 246, 247 |
 | 032 | blocked | PDF edit/security family | 237, 238, 239, 240, 241, 242, 243, 244, 245, 319, 320 |
-| 033 | blocked | PDF conversion/productivity family | 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260 |
+| 033 | ready-for-agent | PDF conversion/productivity family | 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260 |
 | 034 | completed | Heavy local media/OCR/Office feasibility refresh | — |
 | 035 | blocked | Audio capture/playback utilities | 229, 303, 304 |
 | 036 | ready-for-agent | Audio file-processing family | 230, 231 |
@@ -102,7 +103,7 @@ Exactly **19** incomplete tickets currently have every declared numeric blocker 
 | 054 | completed | TXT/Markdown/HTML conversion core | 081 |
 | 055 | completed (bounded semantic pack; not pixel-faithful Word rendering) | DOCX semantic conversion pack | — |
 | 056 | ready-for-agent | Office-to-PDF and printable export pack | 256, 257, 258, 259 |
-| 057 | blocked | PDF-to-editable/structured conversion pack | 252, 253, 254, 255 |
+| 057 | ready-for-agent | PDF-to-editable/structured conversion pack | 252, 253, 254, 255 |
 | 058 | blocked | PDF↔image directional conversion pack | 235, 236 |
 | 059 | ready-for-agent | JSON/XML/CSS/HTML/SVG minimizer pack | 168, 191, 192, 193, 209 |
 | 060 | completed | Upgrade existing CSV/table functionality | 172, 194, 195 |
@@ -300,7 +301,7 @@ Exactly **19** incomplete tickets currently have every declared numeric blocker 
 | 252 | completed | PDF to Markdown semantic export | 220, 054 |
 | 253 | completed | PDF to DOCX semantic reconstruction | 220, 225, 226, 269 |
 | 254 | completed | PDF tables to XLSX | 161, 220, 269 |
-| 255 | ready-for-agent | PDF to PPTX page-as-slide baseline | 225, 236, 270 |
+| 255 | completed | PDF to PPTX page-as-slide baseline | 225, 236, 270 |
 | 256 | completed | TXT Markdown HTML and CSV to printable PDF | 054, 103, 269 |
 | 257 | completed | DOCX to PDF fidelity-gated conversion | 206, 226, 270 |
 | 258 | completed | XLSX to PDF fidelity-gated conversion | 161, 206, 270 |

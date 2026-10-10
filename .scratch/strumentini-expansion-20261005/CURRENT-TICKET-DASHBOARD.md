@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 270 / 57 |
+| All / completed / open | 327 / 271 / 56 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 19 |
-| Ready for assignment (feasibility still to prove) | 11 |
-| Waiting on other tickets | 38 |
+| DAG-ready (all numeric dependencies closed) | 20 |
+| Ready for assignment (feasibility still to prove) | 12 |
+| Waiting on other tickets | 36 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 1 |
@@ -21,11 +21,13 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (11)
+## Ready for assignment (feasibility still to prove) (12)
 
+- #033 — PDF conversion/productivity family
 - #036 — Audio file-processing family
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
+- #057 — PDF-to-editable/structured conversion pack
 - #059 — JSON/XML/CSS/HTML/SVG minimizer pack
 - #069 — Cross-format file-size analyzer
 - #212 — HEIC AVIF and GIF directional image implementations
@@ -33,9 +35,8 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #237 — True PDF redaction with post-export proof
 - #241 — PDF signature placement
 - #246 — Local image OCR
-- #255 — PDF to PPTX page-as-slide baseline
 
-## Waiting on other tickets (38)
+## Waiting on other tickets (36)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -48,14 +49,12 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #028 — Image format + target-compression family (awaiting #047, #049)
 - #031 — OCR and document-scan family (awaiting #246, #247)
 - #032 — PDF edit/security family (awaiting #237, #241)
-- #033 — PDF conversion/productivity family (awaiting #255)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #038 — Video transform family (awaiting #234, #306)
 - #040 — Italy utilities beyond CalcolaTutto (awaiting #152)
 - #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #033, #035, #036, #038, #040, #065, #066)
 - #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)
 - #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212)
-- #057 — PDF-to-editable/structured conversion pack (awaiting #255)
 - #058 — PDF↔image directional conversion pack (awaiting #235)
 - #062 — Upgrade existing business/date functionality (awaiting #126, #127, #128, #130, #133, #134, #135)
 - #065 — Format-operation matrix coverage gate (awaiting #047, #049, #053, #056, #057, #058, #059)

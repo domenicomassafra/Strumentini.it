@@ -8,7 +8,7 @@
 
 **Blocked by:** 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 - [ ] Multi-PDF search returns file/page/context and isolates unreadable/encrypted failures.
 - [ ] Split-by-size guarantees each produced part respects the requested ceiling or explains why impossible.

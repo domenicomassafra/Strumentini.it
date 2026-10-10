@@ -8,7 +8,7 @@
 
 **Blocked by:** 252, 253, 254, 255.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 - [ ] PDF→MD/DOCX includes page provenance and structure-loss warnings.
 - [ ] PDF→XLSX operates on detected/selected tables and previews extracted grids before export.

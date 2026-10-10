@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 270,
+    "completed": 271,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 252,
-    "open": 57,
-    "readyDAG": 19,
-    "ready-for-agent": 11,
-    "dependency-blocked": 38,
+    "completedWithoutExplicitRefusal": 253,
+    "open": 56,
+    "readyDAG": 20,
+    "ready-for-agent": 12,
+    "dependency-blocked": 36,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 1,
@@ -228,6 +228,7 @@
       252,
       253,
       254,
+      255,
       256,
       257,
       258,
@@ -296,17 +297,18 @@
       327
     ],
     "ready-for-agent": [
+      33,
       36,
       47,
       56,
+      57,
       59,
       69,
       212,
       234,
       237,
       241,
-      246,
-      255
+      246
     ],
     "dependency-blocked": [
       8,
@@ -320,14 +322,12 @@
       28,
       31,
       32,
-      33,
       35,
       38,
       40,
       45,
       46,
       49,
-      57,
       58,
       62,
       65,
@@ -741,12 +741,10 @@
     {
       "id": 33,
       "title": "PDF conversion/productivity family",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        255
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -1014,12 +1012,10 @@
     {
       "id": 57,
       "title": "PDF-to-editable/structured conversion pack",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        255
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -3045,9 +3041,9 @@
     {
       "id": 255,
       "title": "PDF to PPTX page-as-slide baseline",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
