@@ -1,6 +1,7 @@
 import { access, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { catalog } from "../src/generated/catalog";
+import { validateOriginal200FunctionalEvidence } from "./functional-audit-evidence-66";
 import {
   functionalAuditAssignmentIndexSchema,
   functionalAuditInventorySchema,
@@ -88,6 +89,13 @@ for (const entry of recordFiles.toSorted((left, right) => left.name.localeCompar
 }
 const recordReport = validateFunctionalAuditRecords(originalAuditCatalog, assignments, rawRecords, requireComplete);
 if (!recordReport.ok) throw new Error(recordReport.issues.join("\n"));
+if (requireComplete) {
+  const functionalProof = await validateOriginal200FunctionalEvidence(originalAuditCatalog, recordReport.records, {
+    readJson: async (ref) => JSON.parse(await readFile(resolve(root, ref), "utf8")) as unknown,
+    readText: async (ref) => readFile(resolve(root, ref), "utf8"),
+  });
+  if (!functionalProof.ok) throw new Error(functionalProof.issues.join("\n"));
+}
 
 const fixtureIndex = JSON.parse(await readFile(resolve(root, "quality/fixtures/index.json"), "utf8")) as {
   readonly families: ReadonlyArray<{ readonly id: string; readonly path: string }>;

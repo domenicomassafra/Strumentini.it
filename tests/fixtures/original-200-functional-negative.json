@@ -1,0 +1,10 @@
+[
+  { "id": "other-tool-gold", "toolId": "regex-tester", "mutation": "wrong-tool", "expectedIssue": "quality receipt toolId mismatch" },
+  { "id": "unverified-upgrade-gold", "toolId": "uuid-generator", "mutation": "partial-receipt", "expectedIssue": "functional decision must match canonical Gold/Partial receipt" },
+  { "id": "different-functional-fixtures", "toolId": "ris-bibtex-converter", "mutation": "wrong-fixtures", "expectedIssue": "receipt fixtures differ" },
+  { "id": "browser-route-dropped", "toolId": "regex-tester", "mutation": "missing-browser-route", "expectedIssue": "browser PASS receipt does not identify" },
+  { "id": "visual-only-claimed-upgrade", "toolId": "regex-tester", "mutation": "visual-only", "expectedIssue": "UPGRADED requires a non-visual executable test or independent oracle" },
+  { "id": "implementation-ticket-unfinished", "toolId": "uuid-generator", "mutation": "unfinished-child", "expectedIssue": "upgraded implementation ticket is not verified complete" },
+  { "id": "refusal-wrongly-promoted", "toolId": "image-resize", "mutation": "promote-refusal", "expectedIssue": "functional decision must match canonical Gold/Partial receipt" },
+  { "id": "fake-nonexistent-receipt", "toolId": "uuid-generator", "mutation": "missing-receipt", "expectedIssue": "exactly one tool-specific quality receipt is required" }
+]
