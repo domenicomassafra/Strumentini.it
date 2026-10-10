@@ -1,8 +1,9 @@
 /**
- * #133 narrow 2025 source-backed ATECO2007 69/70 forfettario projection.
- * Other coefficients still fail closed. Paid INPS is a user-verified amount,
+ * #133 2025 source-backed ATECO2007 official nine-row coefficient projection.
+ * Code groups NOT named by the printed table still fail closed. Paid INPS is a user-verified amount,
  * not an invented 2025 INPS contribution-rate or eligibility calculation.
  */
+import { getVerifiedForfettarioCoefficients117 } from "../../reference-data/italy/fiscal-annual-117";
 export interface ForfettarioPreflight133 {
   readonly taxYear: number;
   readonly priorYearReceiptsCents: number;
@@ -19,7 +20,7 @@ export const FORFETTARIO_2025_SOURCE_133 = Object.freeze({
   effectiveTo: "2025-12-31",
   annualPriorReceiptsLimitCents: 8_500_000,
   atecoCoefficientVersion: "ATECO2007",
-  status: "NARROW_ATECO2007_69_70_COEFFICIENT_78_ONLY" as const,
+  status: "OFFICIAL_2025_ATECO2007_NINE_ROW_COEFFICIENT_TABLE_ONLY" as const,
   sources: [
     {
       authority: "Normattiva",
@@ -43,8 +44,23 @@ export const FORFETTARIO_2025_SOURCE_133 = Object.freeze({
   ] as const,
 });
 
-const verifiedCoefficient133 = (atecoCode: string): 78 | null =>
-  /^(?:69|70)(?:\.|$)/u.test(atecoCode) ? 78 : null;
+/** ATECO2007 group matches use exact dot-delimited boundaries. An unlisted
+ * branch cannot inherit a sector coefficient: 46 and 47 alone are ambiguous.
+ * The 9 rows are sourced independently from #117's pinned official Annex2.
+ */
+export function getForfettarioAteco2007Coefficient133(atecoCode: string) {
+  if (typeof atecoCode !== "string" || !/^\d{2}(?:\.\d{1,2}){0,2}$/u.test(atecoCode)) return null;
+  const rows = getVerifiedForfettarioCoefficients117(2025).rows.filter((row) => row.prefixes.some((prefix) =>
+    atecoCode === prefix || atecoCode.startsWith(`${prefix}.`)
+    // Partial 46.x/47.x branches are ATECO2007 section prefixes, so 46.19
+    // belongs to 46.1, but 46.10 does not belong to 46.2 (no overmatching).
+    || (prefix.length === 4 && atecoCode.length > 4 && atecoCode.startsWith(prefix) && /^[0-9.]$/u.test(atecoCode[4]!))));
+  if (rows.length > 1) throw new Error("FORF133_AMBIGUOUS_SOURCE_TABLE: overlapping official Annex2 rows");
+  if (rows.length !== 1) return null;
+  const row = rows[0]!;
+  return { atecoVersion: "ATECO2007" as const, sourceTableRow: row.sourceTableRow,
+    sectorLabel: row.sectorLabel, coefficientPercent: row.coefficientPercent };
+}
 
 const roundPercent133 = (cents: number, percent: number): number =>
   Number((BigInt(cents) * BigInt(percent) + 50n) / 100n);
@@ -70,6 +86,7 @@ export function inspectForfettario133(input: ForfettarioPreflight133) {
   if (input.declaredRate !== "standard-15" && input.declaredRate !== "startup-5") {
     throw new Error("FORF133_INVALID_TAX_RATE");
   }
+  const coefficient = getForfettarioAteco2007Coefficient133(input.atecoCode);
   return {
     taxYear: FORFETTARIO_2025_SOURCE_133.taxYear,
     annualPriorReceiptsLimitCents: FORFETTARIO_2025_SOURCE_133.annualPriorReceiptsLimitCents,
@@ -77,12 +94,14 @@ export function inspectForfettario133(input: ForfettarioPreflight133) {
     declaredRatePercent: input.declaredRate === "standard-15" ? 15 : 5,
     atecoCode: input.atecoCode,
     atecoVersion: "ATECO2007" as const,
-    coefficientPercent: verifiedCoefficient133(input.atecoCode),
+    coefficientPercent: coefficient?.coefficientPercent ?? null,
+    coefficientTableRow: coefficient?.sourceTableRow ?? null,
+    coefficientSector: coefficient?.sectorLabel ?? null,
     status: input.priorYearReceiptsCents > FORFETTARIO_2025_SOURCE_133.annualPriorReceiptsLimitCents
-      ? "OUT_OF_SCOPE_LIMIT" as const : verifiedCoefficient133(input.atecoCode) === null
+      ? "OUT_OF_SCOPE_LIMIT" as const : coefficient === null
         ? "BLOCKED_OFFICIAL_COEFFICIENT" as const : "SOURCE_BACKED_COEFFICIENT_READY" as const,
     sources: FORFETTARIO_2025_SOURCE_133.sources,
-    limitation: "Only 2025 ATECO2007 69/70 coefficient (78%) is pinned to Gazzetta Ufficiale Law145/2018 Annex2. Other exclusions remain user-declared; INPS contribution computations from other years must not be reused.",
+    limitation: "Nine ATECO2007 coefficient rows pinned to Gazzetta Ufficiale Law145/2018 Annex2; rows not listed are rejected. Applicable regime/legal exclusions remain user-declared; 2025 INPS contribution computations are not verified and cannot be inferred from other years.",
   };
 }
 
@@ -109,6 +128,7 @@ export function calculateForfettario133(input: ForfettarioPreflight133 & {
   return {
     taxYear: 2025 as const, atecoVersion: "ATECO2007" as const, atecoCode: preflight.atecoCode,
     yearReceiptsCents: revenue, coefficientPercent: preflight.coefficientPercent,
+    coefficientTableRow: preflight.coefficientTableRow, coefficientSector: preflight.coefficientSector,
     grossForfettarioIncomeCents: income, paidMandatoryContributionsCents: contributions,
     contributionOrigin: "USER_DECLARED_ALREADY_PAID" as const,
     taxableIncomeCents: taxable, declaredTaxRatePercent: preflight.declaredRatePercent,

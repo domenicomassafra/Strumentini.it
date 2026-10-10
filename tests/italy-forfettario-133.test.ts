@@ -36,7 +36,7 @@ describe("#133 source-bound forfettario preflight and unverified coefficient rej
 
   it("keeps 85k previous-year eligibility boundary separate from verified coefficient acquisition", () => {
     const base = { taxYear: 2025, priorYearReceiptsCents: 8_500_000, atecoVersion: "ATECO2007",
-      atecoCode: "62.01.00", declaredRate: "startup-5", declaresEligible: true,
+      atecoCode: "47.83.00", declaredRate: "startup-5", declaresEligible: true,
       declaresStartupFivePercentRequirements: true } as const;
     expect(inspectForfettario133(base)).toMatchObject({ revenueThresholdSatisfied: true,
       status: "BLOCKED_OFFICIAL_COEFFICIENT", declaredRatePercent: 5 });
@@ -84,7 +84,7 @@ describe("#133 source-bound forfettario preflight and unverified coefficient rej
     const input = { taxYear: 2025, priorYearReceiptsCents: 6_000_000, atecoVersion: "ATECO2007",
       atecoCode: "69.10.10", declaredRate: "standard-15", declaresEligible: true,
       yearReceiptsCents: 1_000_000, paidMandatoryContributionsCents: 0 } as const;
-    expect(() => calculateForfettario133({ ...input, atecoCode: "62.01.00" })).toThrow(/FORF133_OFFICIAL_COEFFICIENT_MISSING/u);
+    expect(() => calculateForfettario133({ ...input, atecoCode: "47.83.00" })).toThrow(/FORF133_OFFICIAL_COEFFICIENT_MISSING/u);
     expect(() => calculateForfettario133({ ...input, userProvidedCoefficientPercent: 78 })).toThrow(/FORF133_USER_COEFFICIENT_REFUSED/u);
     expect(() => calculateForfettario133({ ...input, paidMandatoryContributionsCents: -1 })).toThrow(/FORF133_INVALID_CONTRIBUTIONS/u);
     expect(() => calculateForfettario133({ ...input, paidMandatoryContributionsCents: 800_000 })).toThrow(/FORF133_OUT_OF_SCOPE_CONTRIBUTIONS/u);
