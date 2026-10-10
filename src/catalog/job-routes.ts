@@ -6,7 +6,7 @@ const routeDefinitions = [
   {
     id: "immagini-da-condividere",
     title: "Prepara un'immagine da condividere",
-    description: "Converti HEIC/HEIF quando serve, comprimi in un formato supportato e controlla i metadati EXIF.",
+    description: "Verifica se il browser supporta HEIC/HEIF, converti solo i file compatibili, poi comprimi e controlla i metadati EXIF. Compatibilità con foto reali da iPhone non certificata.",
     toolIds: ["image-format-conversion", "image-compression", "exif-remover"],
   },
   {
