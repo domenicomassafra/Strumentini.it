@@ -537,7 +537,11 @@ export function formatYaml(value: unknown, indent = 2): string {
 
 export function yamlFormatterOperation(input: string, indent = 2): DeveloperWebResult {
   const parsed = parseYaml(input);
-  return { valid: true, formatted: formatYaml(parsed.value, indent), value: parsed.value, warnings: parsed.warnings } as DeveloperWebResult;
+  const formatted = formatYaml(parsed.value, indent);
+  const inputBytes = new TextEncoder().encode(input).byteLength;
+  const outputBytes = new TextEncoder().encode(formatted).byteLength;
+  return { valid: true, formatted, value: parsed.value, warnings: parsed.warnings, inputBytes, outputBytes,
+    savedBytes: inputBytes - outputBytes, savedPercent: inputBytes === 0 ? 0 : Number((100 * (inputBytes - outputBytes) / inputBytes).toFixed(2)) } as DeveloperWebResult;
 }
 
 export function jsonYamlConverterOperation(input: string, direction: string, indent = 2): DeveloperWebResult {
@@ -756,7 +760,11 @@ export function formatToml(value: JsonRecord): string {
 
 export function tomlFormatterOperation(input: string): DeveloperWebResult {
   const parsed = parseToml(input);
-  return { valid: true, formatted: formatToml(parsed.value), value: parsed.value, warnings: parsed.warnings } as DeveloperWebResult;
+  const formatted = formatToml(parsed.value);
+  const inputBytes = new TextEncoder().encode(input).byteLength;
+  const outputBytes = new TextEncoder().encode(formatted).byteLength;
+  return { valid: true, formatted, value: parsed.value, warnings: parsed.warnings, inputBytes, outputBytes,
+    savedBytes: inputBytes - outputBytes, savedPercent: inputBytes === 0 ? 0 : Number((100 * (inputBytes - outputBytes) / inputBytes).toFixed(2)) } as DeveloperWebResult;
 }
 
 interface JsonPathToken {

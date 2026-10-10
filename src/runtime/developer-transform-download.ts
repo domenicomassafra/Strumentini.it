@@ -2,6 +2,8 @@ import type { OutputArtifactKind } from "./output-artifact";
 
 const DOWNLOADS = {
   "json-formatter": { extension: "json", mime: "application/json", kind: "structured" },
+  "yaml-formatter": { extension: "yaml", mime: "application/yaml", kind: "file" },
+  "toml-formatter": { extension: "toml", mime: "application/toml", kind: "file" },
   "xml-formatter-validator": { extension: "xml", mime: "application/xml", kind: "file" },
   "css-minifier": { extension: "css", mime: "text/css", kind: "text" },
   "html-minifier": { extension: "html", mime: "text/html", kind: "text" },
@@ -28,7 +30,7 @@ export function developerTransformDownload(
   if (definition === undefined || typeof result !== "object" || result === null || Array.isArray(result)) return null;
   const record = result as Record<string, unknown>;
   if (record.valid !== true) return null;
-  const output = id === "json-formatter" ? record.formatted : record.output;
+  const output = id === "json-formatter" || id === "yaml-formatter" || id === "toml-formatter" ? record.formatted : record.output;
   if (typeof output !== "string") return null;
   const encoder = new TextEncoder();
   const inputBytes = encoder.encode(input).byteLength;

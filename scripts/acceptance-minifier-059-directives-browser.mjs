@@ -32,7 +32,7 @@ assert(new Set(requested).size === requested.length, "Duplicate browser selectio
 // Relevant deployed bundle must contain the integrated Gutenberg/Svelte fix.
 // A stale dist is a hard failure even if older code could pass weaker cases.
 async function requireCurrentBundle() {
-  for (const route of ["html-minifier", "css-minifier", "json-formatter"]) {
+  for (const route of ["html-minifier", "css-minifier", "json-formatter", "yaml-formatter", "toml-formatter"]) {
     assert(existsSync(join(dist, "tools", route, "index.html")), `Static build missing public route ${route}: ${dist}`);
   }
   const assets = join(dist, "_astro");
@@ -51,6 +51,8 @@ const directiveInput = '<article><!-- wp:paragraph {"style":"special"} --><p>Caf
 const unknownInput = '<article><!-- unknown-framework:start --><p>È presente ☕</p><!-- unknown-framework:end --></article>';
 const cssInput = '@layer components { @media (width >= 20em) { .item::before { content:"Caffè  ☕"; background:url("data:image/svg+xml,%3Csvg%3E%3C/svg%3E"); } } }';
 const jsonInput = '{ "caffè":"☕", "html":"<template>  A </template>", "__proto__":{"literal":true}, "count":2 }';
+const yamlInput = 'name: "Caffè ☕"\nactive: true\n';
+const tomlInput = 'name = "Caffè ☕"\nactive = true\n';
 const cases = [
   { name: "known directives advanced", route: "html-minifier", mode: "advanced", source: directiveInput, type: "html", ext: ".html" },
   { name: "known directives safe", route: "html-minifier", mode: "safe", source: directiveInput, type: "html", ext: ".html" },
@@ -58,6 +60,8 @@ const cases = [
   { name: "unknown structured directive advanced", route: "html-minifier", mode: "advanced", source: unknownInput, type: "html", ext: ".html" },
   { name: "nested CSS", route: "css-minifier", mode: "minify", source: cssInput, type: "css", ext: ".css" },
   { name: "Unicode JSON", route: "json-formatter", mode: "minify", source: jsonInput, type: "json", ext: ".json" },
+  { name: "Unicode YAML", route: "yaml-formatter", source: yamlInput, type: "yaml", ext: ".yaml" },
+  { name: "Unicode TOML", route: "toml-formatter", source: tomlInput, type: "toml", ext: ".toml" },
 ];
 
 /** Preserve all text/comment nodes, attributes and template.content. */
@@ -95,6 +99,11 @@ function checkDownloaded(example, value, bytes) {
     assert.equal(after, before, "Downloaded CSS parser canonical AST changed");
     assert(value.includes('"Caffè  ☕"'), "CSS string whitespace or UTF-8 changed");
     assert(value.includes("data:image/svg+xml"), "CSS data URI dropped");
+    return;
+  }
+  if (example.type === "yaml" || example.type === "toml") {
+    assert(value.includes("Caffè ☕") && value.includes("active"), `${example.name}: Unicode or data keys lost`);
+    assert(value.includes(example.type === "yaml" ? "name:" : "name ="), `${example.name}: file content has wrong format`);
     return;
   }
   assert.deepEqual(JSON.parse(value), JSON.parse(example.source), "Downloaded JSON value changed");
@@ -137,7 +146,7 @@ try {
           const response = await page.goto(`${origin}/tools/${example.route}/`, { waitUntil: "networkidle" });
           assert.equal(response?.status(), 200, `${browserName}/${example.name}: public route unavailable`);
           await page.locator("form textarea").first().fill(example.source);
-          await page.locator("form select").first().selectOption(example.mode);
+          if (example.mode !== undefined) await page.locator("form select").first().selectOption(example.mode);
           await page.locator('form button[type="submit"]').click();
           const action = page.locator('[data-result-action="download"]');
           await action.waitFor({ timeout: 15000 });
@@ -152,6 +161,21 @@ try {
           const inputBytes = new TextEncoder().encode(example.source).byteLength;
           assert(gutter.includes("Byte ingresso (UTF-8)") && gutter.includes(String(inputBytes)), `${browserName}/${example.name}: input byte count absent`);
           assert(gutter.includes("Byte output trasformato (UTF-8)") && gutter.includes(String(bytes.byteLength)), `${browserName}/${example.name}: output byte count absent`);
+          // An edit must invalidate the old artifact and its byte comparison,
+          // otherwise the download and savings are attributed to a different input.
+          await page.locator("form textarea").first().fill(`\n${example.source}`);
+          assert.equal(await action.count(), 0, `${browserName}/${example.name}: stale download remained after editing input`);
+          const afterInputEdit = await page.locator(".gutter").last().innerText();
+          assert(!afterInputEdit.includes("Byte output trasformato (UTF-8)"), `${browserName}/${example.name}: stale byte comparison after editing input`);
+          await page.locator('form button[type="submit"]').click();
+          await action.waitFor({ timeout: 15000 });
+          const updatedGutter = await page.locator(".gutter").last().innerText();
+          assert(updatedGutter.includes(String(new TextEncoder().encode(`\n${example.source}`).byteLength)), `${browserName}/${example.name}: rerun did not use edited input`);
+          if (example.mode !== undefined) {
+            const nextMode = example.mode === "minify" ? "prettify" : example.mode === "prettify" ? "minify" : example.mode === "safe" ? "advanced" : "safe";
+            await page.locator("form select").first().selectOption(nextMode);
+            assert.equal(await action.count(), 0, `${browserName}/${example.name}: stale download remained after mode change`);
+          }
           assert.deepEqual(offsite, [], `${browserName}/${example.name}: unexpected offsite request`);
           assert.deepEqual(pageErrors, [], `${browserName}/${example.name}: uncaught browser error`);
           const layout = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));

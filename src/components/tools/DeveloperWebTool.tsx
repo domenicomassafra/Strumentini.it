@@ -453,6 +453,11 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
   const fieldIds = useMemo(() => Object.fromEntries(config.fields.map((field) => [field.key, `${config.id}-${field.key}`])), [config]);
 
   function update(key: string, value: string) {
+    // Every result belongs to the exact input + selected operation that
+    // produced it. Invalidate and abort an in-flight run before either changes;
+    // retaining it would offer a stale download with misleading byte savings.
+    operation.reset();
+    setActionStatus("");
     setValues((current) => ({ ...current, [key]: value }));
   }
 
