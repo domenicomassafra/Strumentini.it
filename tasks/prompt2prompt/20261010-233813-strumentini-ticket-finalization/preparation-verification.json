@@ -1,0 +1,26 @@
+{
+  "scope": "prompt/handoff validation only; not implementation, release or Gold",
+  "status": "PASS",
+  "checks": {
+    "single_launch_prompt": true,
+    "no_precreated_response": true,
+    "all_owner_decisions_embedded": true,
+    "complete_handoff_embedded": true,
+    "four_native_roles_defined": true,
+    "mobile_advanced_not_desktop_only": true,
+    "planning_only_explicit": true,
+    "original_43_embedded": true,
+    "terminal_response_path_correct": true,
+    "all_historical_hashes_match": true,
+    "required_context_paths_exist": true,
+    "exactly_one_october_launch_id": true,
+    "new_document_whitespace_clean": true
+  },
+  "promptBytes": 51606,
+  "handoffBytes": 15064,
+  "baselineHead": "9a3d0e2f9fe1439af2ebbdc4103d51c8c414b122",
+  "nextAgentStatus": "PREPARED_NOT_LAUNCHED",
+  "ownerDecisionCount": 20,
+  "openOriginalCountEmbedded": 43,
+  "historicalResponseCount": 16
+}

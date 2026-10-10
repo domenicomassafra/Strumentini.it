@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "launchState": "PREPARED_NOT_LAUNCHED",
+  "scope": "owner-launched planning-only coordinator with four Chat On Steroids native specialists",
+  "prompt": "tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/lane-01-coordinator/001-strumentini-ticket-finalization.prompt.md",
+  "responseExpected": "tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/lane-01-coordinator/001-strumentini-ticket-finalization.response.md",
+  "artifacts": [
+    {
+      "path": "tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/lane-01-coordinator/001-strumentini-ticket-finalization.prompt.md",
+      "bytes": 51606,
+      "sha256": "ff7c3ac12613561eab49b818e6df9a0579daffa103146633d074ec5060c98e76"
+    },
+    {
+      "path": "docs/HANDOFF-DECISIONI-E-TICKET-STRUMENTINI-2026-10-10.md",
+      "bytes": 15064,
+      "sha256": "a4268892191c599a6e01a54c1cde46188c4fb60570d6a9148349921fbddbde17"
+    },
+    {
+      "path": "tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/COORDINATOR.md",
+      "bytes": 3920,
+      "sha256": "0ccc60e772d34c9712330470ce674ba0093b647f6cb0fe8dcce184cbd9a2d8d9"
+    },
+    {
+      "path": "tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/HISTORICAL-RESPONSES.md",
+      "bytes": 6835,
+      "sha256": "a449a2a0c648522528ba367debaa691160f8a36c157e256de01d5f4a1b73d7b6"
+    },
+    {
+      "path": "tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/historical-responses.json",
+      "bytes": 8950,
+      "sha256": "700105e5efc6532b94225333c3d0d14b030a2b4f7f730f08f6f0bdd09805b527"
+    },
+    {
+      "path": "tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/preparation-verification.json",
+      "bytes": 895,
+      "sha256": "3b94e69e5e780559247d19fb159d926e8f6bff5ff55927ccaf625c7854b1a749"
+    },
+    {
+      "path": "CONTEXT.md",
+      "bytes": 2625,
+      "sha256": "9751e2357f282f585f49fa84dd86d1ab1027f8f10915a84d0c2b2112130258dc"
+    },
+    {
+      "path": "docs/PENDING-GRILLING-2026-10-10.md",
+      "bytes": 21875,
+      "sha256": "786bc55b8e539190c5ce1fa9e9b1c25c1c30fdf8d1dec762b3663fb1b66c8f52"
+    },
+    {
+      "path": "tasks/prompt2prompt/README.md",
+      "bytes": 1143,
+      "sha256": "710f0174acd9322bedd13cee2ce46f2ae4c23058fe4e19858579cd884194f060"
+    }
+  ]
+}
