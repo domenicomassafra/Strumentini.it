@@ -1,5 +1,7 @@
 # PROMPT CANONICO — Nuova chat Strumentini.it: audit totale → grilling → redesign completo
 
+> **Per chi avvia la nuova chat:** leggi prima `docs/HANDOFF-FINALE-RIVALUTAZIONE-E-GRILLING-2026-10-10.md`. Contiene anche il prompt d'avvio rapido, la rivalutazione preliminare criticabile, l'anomalia API documentata e la verifica Git/cloud live del checkpoint più recente. Questo documento rimane il mandato operativo integrale.
+
 > **Destinazione:** incollare il testo di questo documento in una NUOVA CHAT con accesso al repository e agli strumenti di analisi. È il mandato operativo aggiornato del proprietario. Questo file prevale sui prompt brevi nel vecchio handoff in caso di divergenze, ma **non** abroga le condizioni di sicurezza, le prove di rilascio e le decisioni effettivamente documentate.
 
 ---

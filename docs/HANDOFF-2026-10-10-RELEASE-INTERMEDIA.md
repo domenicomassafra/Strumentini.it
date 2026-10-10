@@ -1,5 +1,7 @@
 # Strumentini.it — MEGA HANDOFF / RELEASE INTERMEDIA
 
+> **Aggiornamento del 10 ottobre, ore 20:30:** per il nuovo agente iniziare dal documento più recente **`docs/HANDOFF-FINALE-RIVALUTAZIONE-E-GRILLING-2026-10-10.md`**, che contiene check Git/Cloudflare aggiornati, diagnosi indipendente, backlog, donor, percorso di skill grilling e redesign. Il presente rimane un registro tecnico supplementare.
+
 **Snapshot:** 2026-10-10 (Europe/Rome). **Destinatari:** release owner, nuovo agente tecnico e revisore strategico.
 
 **Repository:** `/Users/domenico/Code/Strumentini.it`; GitHub `domenicomassafra/strumentini-it`; ramo canonico `main`.
