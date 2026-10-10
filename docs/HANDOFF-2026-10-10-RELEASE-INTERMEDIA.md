@@ -5,6 +5,8 @@
 **Repository:** `/Users/domenico/Code/Strumentini.it`; GitHub `domenicomassafra/strumentini-it`; ramo canonico `main`.
 **Scopo:** fermare la lavorazione corrente, consegnare un prodotto utilizzabile nel perimetro già certificato, consentire un *grilling* serio su direzione, architettura, dipendenze, donor e costi. **Non è un certificato di nuova release in produzione.**
 
+**Nuova decisione del proprietario (10/10, dopo il consolidamento):** l'interfaccia attuale è giudicata troppo basilare/generica, quindi **il redesign completo è un obiettivo obbligatorio del prossimo ciclo**, non semplicemente una possibilità da suggerire. L'ordine è vincolante: **audit reale e autonomo del prodotto → valutazione critica → skill `plan-grill-with-docs`/`plan-grilling` con decisioni → design consultation e nuova direzione approvata → implementazione end-to-end e QA → eventuale rollout sicuro**. Non saltare l'audit, non chiedere all'utente fatti reperibili dalla repo. Prompt completo da usare nella nuova chat: **`docs/PROMPT-NUOVA-CHAT-STRUMENTINI-AUDIT-GRILLING-REDESIGN-2026-10-10.md`**. Sono superate le istruzioni più brevi e il vecchio invito a fare semplicemente una domanda alla volta.
+
 ## 1. Dieci righe per decidere subito
 
 1. Il progetto funziona: sito Astro statico/client-side, catalogo e moltissime utility già operative; non serve riscriverlo né aprire altre decine di ticket per pubblicare il perimetro sicuro.

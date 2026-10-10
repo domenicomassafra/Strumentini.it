@@ -2,6 +2,8 @@
 
 **Documento operativo unico da utilizzare in una nuova chat** con `docs/HANDOFF-2026-10-10-RELEASE-INTERMEDIA.md`; aggiornato dopo commit sorgente `95be886`, Cloudflare 100% sulla versione associata e rimozione di 14 worktree/16 branch datati. **Non continuare il lavoro senza una scelta del proprietario sull'obiettivo del prodotto.**
 
+**MANDATO AGGIORNATO, 10 ottobre — questo è il registro pending, NON il prompt completo.** Il proprietario ha richiesto una revisione iniziale **integrale e autonoma** (prodotto, concorrenza, costi, codice, design esistente, sito live, 43 ticket), poi una sessione **DStack `plan-grill-with-docs` / `plan-grilling`** con decision tree e raccomandazioni, e **un redesign end-to-end certo** nella roadmap, da realizzare una volta approvata la direzione. Ha definito il visual corrente troppo basic e generico/"AI slop": l'agente dovrà verificare le cause e sostituire il sistema visivo, non fare un restyling cosmetico. **Il prompt completo canonico da incollare nella nuova chat è `docs/PROMPT-NUOVA-CHAT-STRUMENTINI-AUDIT-GRILLING-REDESIGN-2026-10-10.md`.** Usare questo insieme ai quattro documenti d'handoff e a `PRODUCT.md`, `DESIGN.md`, `design/WORLD.md`. Il vecchio prompt breve in fondo a questa pagina è superato.
+
 ## Stato fotografato
 
 | Misura | Verificato | Significato |
@@ -36,7 +38,9 @@
 
 **Da sospendere deliberatamente:** estensioni al catalogo senza domanda misurata; implementazione manuale di JPEG/WebP encoder, Office rich renderer, compatibilità con tutti i PDF ostili; completamento delle 31 dipendenze prima di una validazione del prodotto. **Da non sospendere:** bug sicurezza, regressioni già live, diritti sui file, limiti memoria e privacy.
 
-## Grilling: domande da fare una per volta nella nuova chat
+## Grilling: banca di temi e domande, NON una sequenza rigida
+
+**La skill DStack `plan-grilling` richiede la `frontier` completa di domande già affrontabili ad ogni round**: domande numerate, raccomandazione su ciascuna, poi attesa delle risposte e aggiornamento dell'albero. Non imporre "una domanda per round" come da precedenti prompt; non interrogare il proprietario prima dell'audit fattuale completo. Questi esempi sono spunti, non un questionario da inviare tutto in un solo turno.
 
 1. Quale singola persona usa Strumentini.it ogni settimana, e quale azione completa meglio che su tool concorrenti? Hai prove o solo ipotesi?
 2. Se domani mantenessimo **solo 20 tool**, quali terreste e perché? Quali 249 toglierebbe il primo utente senza sentirne la mancanza?
@@ -71,6 +75,8 @@ Riferimenti controllati il 10/10/2026; **non sono già integrati né approvati c
 
 **Verifica:** `git status -sb`, `git worktree list`, `git branch -avv`, `git ls-remote --heads origin`, `npm run tickets:check`, `npm run check`, `npm test -- --maxWorkers=2 --fileParallelism=false --testTimeout=120000`, `npm run build`, `npx tsx scripts/validate-release.ts --no-write-receipt`, `wrangler deployments status --name strumentini --json`. Non lanciare di nuovo tutto senza un cambiamento reale.
 
-**Prompt da incollare in una nuova chat:**
+**Prompt da incollare in una nuova chat:** utilizzare **il documento integrale**, senza riassumerlo:
 
-> Agisci come revisore CEO, product manager e release auditor di Strumentini.it. Non iniziare nuovi ticket e non editare codice. Leggi i 4 documenti dell'handoff ottobre 10 elencati nel prontuario e verifica Git/live source. Fai una sessione di GRILLING interattiva, una domanda alla volta, per stabilire se il nostro target e il prodotto hanno senso. Sfida scope, economia, SEO, privacy, funnel e decisione build-vs-donor. Analizza originali #047/#056/#212/#237/#246, le fonti #115/#117 e l'hardware #229/#277/#278/#280/#281. Proponi massimo cinque risultati misurabili per due settimane, motivando quali 43 ticket resteranno sospesi e perché; non dire Gold o DONE senza nuove prove. Sii critico e usa il sito reale, senza generare altre decine di microticket.
+`docs/PROMPT-NUOVA-CHAT-STRUMENTINI-AUDIT-GRILLING-REDESIGN-2026-10-10.md`
+
+È intenzionalmente lungo: vincola audit preliminare, real user journeys, 43 originali e donor, applicazione fedele delle skill di grilling, decisioni con ADR, e **redesign completo** approvato e poi realizzato con il corretto flusso design/QA/release. Se la nuova chat ha accesso al filesystem, leggere direttamente quel documento. Altrimenti copiarne **tutto** il contenuto come messaggio iniziale.

@@ -28,3 +28,11 @@ Adaptive role-aware utility workspace for knowledge workers, with independent kn
 Decision status: PROMOTED TO SEPARATE REPOSITORY FOR PRODUCT RESEARCH.
 
 This promotion does not mean product-market fit or direct novelty has been proven.
+
+## 2026-10-10 — Revisione strategica e redesign completo richiesti
+
+**Decisione del proprietario, non implementazione:** dopo il rilascio intermedio del codice `95be886` (documentazione GitHub `de2b1bc`), il proprietario giudica l'attuale interfaccia troppo generica, basilare e simile a un template AI, e ha richiesto **un redesign completo del prodotto**. È una decisione di *direzione*: **non è stata ancora scelta** l'identità visiva, il nuovo layout, la struttura informativa, il target dominante o una roadmap definitiva. Non riscrivere la design authority corrente come se fossero già stati approvati nuovi colori o mockup.
+
+**Sequenza richiesta:** prima audit indipendente completo di repository, prodotto live, utenti/posizionamento, backlog, dipendenze, tecnologia, donor/fork, UX/UI; poi grilling tramite skill pubblica DStack `plan-grill-with-docs` (con `plan-grilling` e `plan-domain-modeling`) in round di decisioni con raccomandazioni; dopo conferma della direzione, *design-consultation* per la nuova visual authority e *design-impeccable* per un redesign veramente end-to-end, senza regressioni o pubblicazioni non autorizzate. L'obbligo del redesign non equivale a un'autorizzazione a deployare arbitrariamente concept non ancora approvati.
+
+**Fonte operativa:** `docs/PROMPT-NUOVA-CHAT-STRUMENTINI-AUDIT-GRILLING-REDESIGN-2026-10-10.md`. I prompt più brevi nei vecchi documenti sono superati da questo. Il back-end Cloudflare live e i 43 originali aperti restano separati dalla scelta di nuova UI.
