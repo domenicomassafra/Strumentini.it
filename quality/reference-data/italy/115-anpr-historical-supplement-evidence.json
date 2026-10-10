@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "ticket": 115,
+  "status": "PARTIAL_SUPPLEMENT_ONLY",
+  "checkedAt": "2026-10-10",
+  "authority": "Ministero dell'Interno - ANPR (Italia open government repository)",
+  "source": "https://github.com/italia/anpr/tree/ada00dea2b9266f797c72a315db21d68bc64244b/src/archivi",
+  "sourceCommit": "ada00dea2b9266f797c72a315db21d68bc64244b",
+  "lastRepoCommitAt": "2023-10-03",
+  "license": "CC BY 4.0",
+  "artifacts": [
+    {
+      "title": "ANPR archivio storico comuni, 19352 versioned rows",
+      "url": "https://raw.githubusercontent.com/italia/anpr/ada00dea2b9266f797c72a315db21d68bc64244b/src/archivi/ANPR_archivio_comuni.csv",
+      "path": "quality/reference-data/italy/artifacts/115-administrative-geography/anpr-archivio-comuni-2023-10-03.csv",
+      "sha256": "sha256:c86791d240f35861a662db78ba4d48978b844a47b5204a38117fe39c4341edb0"
+    },
+    {
+      "title": "ANPR archivio storico comuni: legenda v001 (2019-05-23)",
+      "url": "https://raw.githubusercontent.com/italia/anpr/ada00dea2b9266f797c72a315db21d68bc64244b/src/archivi/ANPR_archivio_comuni_legenda.md",
+      "path": "quality/reference-data/italy/artifacts/115-administrative-geography/anpr-archivio-comuni-legenda-2019-v001.md",
+      "sha256": "sha256:70f12753ac0569627c1a4264cd658ba1ec4c6f89e60268a4d6391e7b03d3bd4a"
+    }
+  ],
+  "normalizedSupplement": {
+    "path": "src/reference-data/italy/geography-115-anpr-history.snapshot.json",
+    "sha256": "sha256:ea7cb7a8f3057c5e2e4e3076ac7272b068878aad67a111f352c0263d5229e669",
+    "builder": "scripts/build-anpr-historical-115.mjs",
+    "rows": 19352,
+    "meaning": "Archival ANPR administrative record intervals, not independent proof of fiscal-code assignment to an individual or coverage after 2023-10-03."
+  },
+  "exactIstatCrossCheckOfOriginalSuppressedNd": {
+    "originalDistinctMissing": 16,
+    "supplementHasDistinctOfficialBelfiore": 1,
+    "supplementStillNd": 13,
+    "supplementAbsent": 2,
+    "confirmedCode": {
+      "istatCode": "016828",
+      "name": "Filago",
+      "belfiore": "D588",
+      "administrativeValidFrom": "1861-03-17",
+      "administrativeValidTo": "1928-01-25",
+      "sourceRecord": "ANPR ID 11225",
+      "important": "SITUAS report128 itself remains ND; the original snapshot is not overwritten. Exact separate ANPR record is presented as supplemental evidence."
+    },
+    "absentIstatCodes": ["012891", "027810"]
+  },
+  "foreignHistoricalStateCodes": {
+    "source": "ISTAT SITUAS report469",
+    "missingInOriginal": 23,
+    "recoveredByThisMunicipalityOnlySupplement": 0,
+    "restriction": "ANPR municipal CSV contains no foreign-state CODAT temporal history; no mapping by name or successor jurisdiction is permissible."
+  },
+  "conclusion": "NOT READY. New exact-ID ANPR evidence resolves one of 16 suppressed ND codes and improves historical administrative interval coverage to its archived 2023-10-03 upper bound. It does not remove the other 15 municipal code gaps, missing 23 foreign-state codes, pre-1990 foreign chronology, or certify complete municipality lifespan/CF issuance. The original 115 source-pack remains BLOCKED."
+}
