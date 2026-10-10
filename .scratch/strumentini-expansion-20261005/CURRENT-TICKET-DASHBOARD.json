@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 283,
+    "completed": 284,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 266,
-    "open": 44,
+    "completedWithoutExplicitRefusal": 267,
+    "open": 43,
     "readyDAG": 12,
     "ready-for-agent": 5,
-    "dependency-blocked": 32,
+    "dependency-blocked": 31,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 0,
@@ -69,6 +69,7 @@
       61,
       63,
       64,
+      65,
       66,
       67,
       68,
@@ -333,7 +334,6 @@
       49,
       58,
       62,
-      65,
       121,
       122,
       126,
@@ -872,8 +872,7 @@
         31,
         32,
         35,
-        40,
-        65
+        40
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -886,7 +885,6 @@
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
         18,
-        65,
         158,
         279,
         280,
@@ -1090,9 +1088,9 @@
     {
       "id": 65,
       "title": "Format-operation matrix coverage gate",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [
         47,
         49,

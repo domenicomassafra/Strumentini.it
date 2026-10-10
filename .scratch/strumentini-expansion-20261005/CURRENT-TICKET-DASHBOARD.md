@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 283 / 44 |
+| All / completed / open | 327 / 284 / 43 |
 | Closed with explicit refusal (NOT shipped) | 17 |
 | DAG-ready (all numeric dependencies closed) | 12 |
 | Ready for assignment (feasibility still to prove) | 5 |
-| Waiting on other tickets | 32 |
+| Waiting on other tickets | 31 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 0 |
@@ -29,7 +29,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #237 — True PDF redaction with post-export proof
 - #246 — Local image OCR
 
-## Waiting on other tickets (32)
+## Waiting on other tickets (31)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -44,11 +44,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #032 — PDF edit/security family (awaiting #237)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #040 — Italy utilities beyond CalcolaTutto (awaiting #152)
-- #046 — Full expansion certification + release integration (awaiting #018, #065, #158, #279, #280, #281)
+- #046 — Full expansion certification + release integration (awaiting #018, #158, #279, #280, #281)
 - #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212)
 - #058 — PDF↔image directional conversion pack (awaiting #235)
 - #062 — Upgrade existing business/date functionality (awaiting #126, #127, #128, #130, #133, #134, #135)
-- #065 — Format-operation matrix coverage gate (awaiting #047, #049, #056, #058)
 - #121 — Codice Fiscale formal validate and generate engine (awaiting #115)
 - #122 — Codice Fiscale decode and omocodia ambiguity (awaiting #121)
 - #126 — IVA add and scorporo with versioned presets (awaiting #117)

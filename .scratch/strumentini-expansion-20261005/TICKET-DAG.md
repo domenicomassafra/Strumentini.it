@@ -103,7 +103,7 @@ Exactly **12** incomplete tickets currently have every declared numeric blocker 
 | 062 | blocked | Upgrade existing business/date functionality | 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 154, 155, 156 |
 | 063 | completed | Upgrade existing marketing/URL functionality | 321, 322, 323, 324, 325 |
 | 064 | completed | Upgrade existing file/archive/research functionality | 197, 198, 222, 223, 224, 326, 327 |
-| 065 | blocked | Format-operation matrix coverage gate | 047, 048, 049, 051, 052, 053, 054, 055, 056, 057, 058, 059, 067, 068, 108, 109 |
+| 065 | completed | Format-operation matrix coverage gate | 047, 048, 049, 051, 052, 053, 054, 055, 056, 057, 058, 059, 067, 068, 108, 109 |
 | 066 | completed | Existing 200 functional-upgrade coverage gate | 050, 053, 060, 061, 062, 063, 064, 110, 297 |
 | 067 | completed | ZIP/GZIP/archive compression + safe extraction | 222, 223, 224 |
 | 068 | completed | DOCX/PPTX/XLSX OOXML compressor | 225, 264 |
