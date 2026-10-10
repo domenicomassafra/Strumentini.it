@@ -52,3 +52,5 @@ bounded: no universal compressor/target guarantee, cross-browser/physical
 device memory or final #218 full-capability promotion. Numeric predecessor
 #218 remains OPEN: keep #219 `blocked`, do not falsely close by bypassing
 DAG or claiming Gold.
+
+**2026-10-10 post-sync cancellation fix:** Real RED in `tests/pdf-target-batch-219.test.ts`: when a browser `File.arrayBuffer()` promise never settles, aborting the batch previously left `runPdfTargetBatch219` indefinitely waiting (`expected "aborted", received "stalled"`). The narrowly scoped `readLocalFile219` races that read with the caller's `AbortSignal`, detaches its listener reliably, discards late reads, and prevents publishing partial reports/ZIP after cancellation. This **does not physically cancel underlying browser I/O**. Test GREEN after fix; #218/#219/#249 focused **17/17 PASS**. Broader memory/device acceptance and complete parent #218 remain blocked, so #219 stays OPEN.

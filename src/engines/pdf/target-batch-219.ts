@@ -34,6 +34,27 @@ function abortIfNeeded(signal?: AbortSignal): void {
   if (signal?.aborted) throw new DOMException("Compression target batch cancelled", "AbortError");
 }
 
+/** Browser File.arrayBuffer() has no AbortSignal parameter. Stop awaiting a
+ * stalled read immediately when cancelled, ignore its eventual late result,
+ * and always detach the listener. This does not physically stop browser I/O.
+ */
+async function readLocalFile219(file: File, signal?: AbortSignal): Promise<ArrayBuffer> {
+  abortIfNeeded(signal);
+  if (!signal) return file.arrayBuffer();
+  const activeSignal = signal;
+  let onAbort: (() => void) | undefined;
+  const cancelled = new Promise<never>((_resolve, reject) => {
+    onAbort = () => reject(new DOMException("Compression target batch cancelled", "AbortError"));
+    activeSignal.addEventListener("abort", onAbort, { once: true });
+  });
+  try {
+    abortIfNeeded(activeSignal);
+    return await Promise.race([file.arrayBuffer(), cancelled]);
+  } finally {
+    if (onAbort) activeSignal.removeEventListener("abort", onAbort);
+  }
+}
+
 function sourceFilename(name: string, index: number, met: boolean): string {
   const base = name.normalize("NFKC").replaceAll(/[^A-Za-z0-9_.-]/gu, "_").replace(/\.pdf$/iu, "").slice(0, 72) || "source";
   return `${String(index + 1).padStart(2, "0")}-${base}-${met ? "under-target" : "best-effort"}.pdf`;
@@ -140,7 +161,7 @@ export async function runPdfTargetBatch219(files: readonly File[], targetBytes: 
   for (const [index, file] of files.entries()) {
     abortIfNeeded(signal);
     try {
-      const source = new Uint8Array(await file.arrayBuffer());
+      const source = new Uint8Array(await readLocalFile219(file, signal));
       abortIfNeeded(signal);
       const report = await solvePdfTarget219(source, targetBytes, index, file.name, signal);
       reports.push(report);

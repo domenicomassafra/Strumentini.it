@@ -52,4 +52,20 @@ describe("#219 real measured target and isolated PDF batch", () => {
     await expect(runPdfTargetBatch219([new File([Uint8Array.from(pdf)], "valid.pdf")], 1024 * 512, aborted.signal))
       .rejects.toMatchObject({ name: "AbortError" });
   });
+
+  it("settles AbortSignal even if the browser's File.arrayBuffer read never resolves", async () => {
+    const stalled = new File([Uint8Array.from(pdf)], "stalled.pdf", { type: "application/pdf" });
+    let started = false;
+    Object.defineProperty(stalled, "arrayBuffer", { value: () => {
+      started = true;
+      return new Promise<ArrayBuffer>(() => {});
+    } });
+    const controller = new AbortController();
+    const result = runPdfTargetBatch219([stalled], 8192, controller.signal)
+      .then(() => "resolved", (error: unknown) => error instanceof DOMException && error.name === "AbortError" ? "aborted" : "wrong-error");
+    expect(started).toBe(true);
+    controller.abort();
+    const outcome = await Promise.race([result, new Promise<string>((resolve) => setTimeout(() => resolve("stalled"), 80))]);
+    expect(outcome).toBe("aborted");
+  });
 });
