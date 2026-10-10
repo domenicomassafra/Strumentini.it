@@ -331,6 +331,14 @@ function imageMetrics(output: VerifiedImageOutput | undefined, sourceFiles: read
 }
 
 function semanticImageRows(toolId: ImageResultToolId, raw: ImageResultValue): readonly { label: string; value: ComponentChildren }[] {
+  if (toolId === "image-compression" && raw.compressionMode === "png-idat-lossless") {
+    return [
+      { label: "Modalità", value: "PNG IDAT senza perdita, non interlacciato (RGB/RGBA, grigi o palette supportati)" },
+      { label: "Pixel", value: raw.pixelVerification === "exact-filtered-scanlines" ? "Byte delle scanline verificati identici" : "Verifica non disponibile" },
+      { label: "Output", value: raw.keptOriginal === true ? "Originale verificato conservato (già più piccolo)" : "Flusso IDAT ricompresso e verificato" },
+      { label: "Risparmio reale", value: formatBytes(numberField(raw.estimatedBytesSaved) ?? 0) },
+    ];
+  }
   if (toolId === "image-compression" && Array.isArray(raw.items)) {
     return [
       { label: "File elaborati", value: String(numberField(raw.processedCount) ?? 0) },

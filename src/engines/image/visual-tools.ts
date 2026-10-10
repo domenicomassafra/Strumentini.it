@@ -51,6 +51,7 @@ import { createZip, inspectZip } from "../file-privacy";
 import { decodePortableImage } from "./portable-decode";
 import { inspectGifBlob, type GifStructure } from "./gif-structure";
 import { findImageTargetSize, parseImageTarget } from "./target-size";
+import { compressPngLossless47 } from "./png-lossless-47";
 
 export interface TransformInput {
   readonly file: Blob;
@@ -331,6 +332,9 @@ export async function convertImageFormatLocal(input: unknown, signal?: AbortSign
 }
 
 export interface ImageCompressionOutput extends ImageOutput {
+  readonly compressionMode?: "png-idat-lossless";
+  readonly pixelVerification?: "exact-filtered-scanlines";
+  readonly keptOriginal?: boolean;
   readonly targetBytes?: number;
   readonly targetMet?: boolean;
   readonly targetAttempts?: number;
@@ -342,6 +346,24 @@ export interface ImageCompressionOutput extends ImageOutput {
 export async function compressImageLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<ImageCompressionOutput> {
   const value = validateObject(input);
   const file = asFile(value.file);
+  if (value.pngLossless === true) {
+    // This strict opt-in operation preserves original scanlines and PNG
+    // metadata bytes, and must never silently fall back to Canvas re-encoding.
+    if (value.mime !== "image/png" || value.targetKiB !== undefined || value.allowResize === true) {
+      throw new ImageVisualError("INVALID_INPUT", "PNG senza perdita: solo output PNG, senza target o ridimensionamento");
+    }
+    progress?.({ phase: "encode", label: "Ricompattazione IDAT senza perdita" });
+    const result = await compressPngLossless47(file.blob, signal);
+    abortIfNeeded(signal);
+    return {
+      blob: result.blob, filename: outputName(file, "idat-lossless", "image/png"),
+      inputMime: "image/png", outputMime: "image/png",
+      width: result.width, height: result.height,
+      estimatedBytesSaved: result.savedBytes,
+      compressionMode: "png-idat-lossless", pixelVerification: result.pixelVerification,
+      keptOriginal: result.keptOriginal,
+    };
+  }
   const quality = validateQuality(value.quality ?? 0.72);
   const mime = assertOutputMime(value.mime ?? "image/jpeg");
   const decoded = await decodeImage(file, signal, progress);
