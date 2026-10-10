@@ -16,3 +16,9 @@
 - [ ] Mobile result states explain the answer before the formula.
 
 **Verification:** Exact arithmetic vectors including zero/negative/rounding boundaries, VAT preset fixtures, route/browser acceptance at 390px, and no regression of existing percentage helpers.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #398.
+
+**Next actionable AC:** All percentage modes have distinct labels, examples, formulas and reversible inputs.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

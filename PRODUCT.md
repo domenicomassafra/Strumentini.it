@@ -1,3 +1,7 @@
+> **OWNER-ALIGNED PLANNING NOTICE (2026-10-10):** 2026-10-10 forward scope: the live catalog has 269 manifests; the historic 200-tool floor below is not a count limit or permission to remove 69 tools. The owner has expanded the intended audience to everyday/weekly computer work, retained an entirely searchable catalog with curated front door, embraced two distinct Italian tax journeys, and confirmed mobile base+advanced ambition. Ads or donations are possibilities for later decision, not currently activated nor a reversal of no advertising/tracking in the present product. Explicit file opt-in local storage/temporary session output and a strictly consented possible zero-additional-cost server feasibility are in scope for planning; the historic account still syncs favorites IDs only. Full redesign is confirmed but exact visual choice is PENDING, so former familiar blue/white is no longer future design approval. Authority: docs/HANDOFF-DECISIONI-E-TICKET-STRUMENTINI-2026-10-10.md, docs/PRODUCT-SPEC-2026-10-10-EXPANSION.md, ROADMAP.md.
+
+---
+
 # Product
 
 <!-- impeccable:product-schema 1 -->

@@ -15,3 +15,9 @@
 - [ ] Business calculators show scenario tables/schedules and export when that helps a decision.
 
 **Verification:** Existing Gold plus scenario/timezone/DST/calendar boundary fixtures and generated route coverage.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #396, #398, #399.
+
+**Next actionable AC:** Every existing business/date route gets a concrete mode/assumption/output audit.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

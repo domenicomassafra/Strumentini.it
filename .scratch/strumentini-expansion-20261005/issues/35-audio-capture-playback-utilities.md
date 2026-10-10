@@ -15,3 +15,9 @@
 - [ ] TTS lists actual browser voices rather than promising unavailable voices.
 
 **Verification:** Media-permission browser tests, generated-audio frequency/timing checks, local-only network assertion, and mobile permission acceptance.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #403, #411.
+
+**Next actionable AC:** Mic/recorder permission and denial states are accessible and recoverable.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

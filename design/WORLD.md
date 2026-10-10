@@ -1,3 +1,7 @@
+> **OWNER-ALIGNED PLANNING NOTICE (2026-10-10):** 2026-10-10 design status: this file remains the CURRENT implementation/token reference, because design-system tests compare its palette to CSS. The earlier familiar expected version is NOT owner-approved as the next design. New direction awaits #351 three complete alternatives and #352 dated explicit owner choice. Preserve present table and style sync until a gated full redesign, not a cosmetic palette swap.
+
+---
+
 # WORLD — the visual world of Strumentini.it
 
 Status: **canonical design authority.** Every worker reads this before writing code.

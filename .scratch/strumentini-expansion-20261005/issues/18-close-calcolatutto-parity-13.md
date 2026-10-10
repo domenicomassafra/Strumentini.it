@@ -16,3 +16,8 @@
 
 **Verification:** CI parity gate fails on any missing/mismatched row and links each row to a passing route-level acceptance scenario.
 
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #396, #397, #402.
+
+**Next actionable AC:** Report contains exactly 13 named source jobs with route/status/evidence mapping.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

@@ -1,3 +1,7 @@
+> **OWNER-ALIGNED PLANNING NOTICE (2026-10-10):** 2026-10-10 current planning scope: public product remains Strumentini.it with an owner signature, catalog 269 fully searchable, curated front entrance, wide everyday computer-work audience, authentic useful results rather than quantity badges. Monetization/advertising/donations are OPTIONAL exploration, not a deployed policy, tracking permission or mandatory business revenue stream; never claim usage figures or PMF without new actual cohort evidence. Revised authority: docs/HANDOFF-DECISIONI-E-TICKET-STRUMENTINI-2026-10-10.md.
+
+---
+
 # Strumentini.it — Canonical Product Marketing Context
 
 Status: implementation and launch-messaging authority for the first validation build

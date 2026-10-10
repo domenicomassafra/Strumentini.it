@@ -18,3 +18,9 @@
 **Verification:** Official-format/rule fixtures, real anonymized/synthetic FatturaPA/P7M corpus, dataset version tests, and local-file privacy assertions.
 
 **Progress (2026-10-06):** The implementable/approved children are reconciled: FatturaPA single and batch routes are local, oracle-bound and browser-tested; ponti/ferie is source-versioned and browser-tested; document expiry is complete; P7M remains a deliberate production REFUSE after its heavy-feasibility gate; CAP↔Comune remains a deliberate source REFUSE. Ticket 152 is still genuinely blocked by fiscal source-pack 117, so umbrella 40 remains `blocked` even though its four explicit acceptance bullets now have terminal truthful outcomes. No bollo rules, legal conclusion, CAP dataset or vehicle-registration estimate were invented to force closure.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #396, #397.
+
+**Next actionable AC:** Verify the original outstanding requirements and dated source evidence before closing. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

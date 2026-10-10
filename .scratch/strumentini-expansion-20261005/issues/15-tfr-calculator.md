@@ -16,3 +16,9 @@
 - [ ] Missing historical information produces a scoped partial state.
 
 **Verification:** Reference-year fixtures, revaluation boundary tests, reproducible sample cases, partial-state acceptance and mobile/browser coverage.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #401.
+
+**Next actionable AC:** Accrued gross TFR and revaluation are separate result lines.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

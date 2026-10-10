@@ -17,3 +17,9 @@
 - [ ] Static historical tools are not forced to query live networks.
 
 **Verification:** Synthetic stale snapshot sabotage and current source-index report.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #402, #409.
+
+**Next actionable AC:** Every annual/time-varying Italy dataset has owner, latest supported version and checked date.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

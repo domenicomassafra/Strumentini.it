@@ -9,14 +9,14 @@
     "closedWithRefusal": "Completed administratively after explicit refusal; not a shipped capability"
   },
   "totals": {
-    "all": 327,
+    "all": 424,
     "completed": 284,
     "completedWithRefusal": 17,
     "completedWithoutExplicitRefusal": 267,
-    "open": 43,
-    "readyDAG": 12,
-    "ready-for-agent": 5,
-    "dependency-blocked": 31,
+    "open": 140,
+    "readyDAG": 41,
+    "ready-for-agent": 34,
+    "dependency-blocked": 99,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 0,
@@ -314,7 +314,36 @@
       56,
       212,
       237,
-      246
+      246,
+      328,
+      329,
+      330,
+      331,
+      333,
+      337,
+      338,
+      346,
+      347,
+      348,
+      350,
+      351,
+      363,
+      365,
+      366,
+      367,
+      368,
+      369,
+      370,
+      371,
+      378,
+      394,
+      396,
+      397,
+      404,
+      406,
+      407,
+      408,
+      413
     ],
     "dependency-blocked": [
       8,
@@ -347,7 +376,75 @@
       158,
       235,
       247,
-      279
+      279,
+      332,
+      334,
+      335,
+      336,
+      339,
+      340,
+      341,
+      342,
+      343,
+      344,
+      345,
+      349,
+      352,
+      353,
+      354,
+      355,
+      356,
+      357,
+      358,
+      359,
+      360,
+      361,
+      362,
+      364,
+      372,
+      373,
+      374,
+      375,
+      376,
+      377,
+      379,
+      380,
+      381,
+      382,
+      383,
+      384,
+      385,
+      386,
+      387,
+      388,
+      389,
+      390,
+      391,
+      392,
+      393,
+      395,
+      398,
+      399,
+      400,
+      401,
+      402,
+      403,
+      405,
+      409,
+      410,
+      411,
+      412,
+      414,
+      415,
+      416,
+      417,
+      418,
+      419,
+      420,
+      421,
+      422,
+      423,
+      424
     ],
     "external-source-blocked": [
       115,
@@ -3750,6 +3847,1164 @@
       "expectedLifecycle": "completed",
       "executionCategory": "completed",
       "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 328,
+      "title": "P0 Account Turnstile login reale",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 329,
+      "title": "P0 Contrasto accesso e errori WCAG",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 330,
+      "title": "P0 Recenti realmente alimentati",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 331,
+      "title": "P0 Correggere promesse di file/account",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 332,
+      "title": "Sync preferiti con rimozioni e conflitti",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        328,
+        330
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 333,
+      "title": "P0 Riconoscimento formato locale",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 334,
+      "title": "Ingresso file-first drag/select",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        333
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 335,
+      "title": "Suggerire solo operazioni file compatibili",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        333
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 336,
+      "title": "Picker iPhone Android e touch equivalente",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        333
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 337,
+      "title": "Typed handoff per catene di tool",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 338,
+      "title": "Preview risultato con fatti verificati",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 339,
+      "title": "Scarica manuale e auto opt-in",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        338
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 340,
+      "title": "Cronologia in-session e cancella task",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        337,
+        338
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 341,
+      "title": "Salvataggio locale file volontario",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        338
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 342,
+      "title": "Quote e eviction file locali",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        341
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 343,
+      "title": "Esporta importa elimina configurazione",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        330
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 344,
+      "title": "Area personale con suggerimenti spiegabili",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        330,
+        335
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 345,
+      "title": "Navigazione stabile da task e file",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        330,
+        334
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 346,
+      "title": "P0 Eventi telemetria privacy-safe",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 347,
+      "title": "P0 Badge Gold fingerprint frontend backend",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 348,
+      "title": "Server opt-in gratis feasibility",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 349,
+      "title": "File server opt-in TTL delete prova",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        348
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 350,
+      "title": "P0 Accessibilità AA di base e advanced",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 351,
+      "title": "Tre direzioni redesign non cosmetiche",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 352,
+      "title": "Selezione owner direzione visuale",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        351
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 353,
+      "title": "IA e design system dopo scelta",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        352
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 354,
+      "title": "Redesign home file-first search-first",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        333,
+        352,
+        353
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 355,
+      "title": "Redesign catalogo ricerca categorie",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        352,
+        353
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 356,
+      "title": "Redesign wrapper e input famiglia",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        352,
+        353
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 357,
+      "title": "Redesign risultati e next-action",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        337,
+        338,
+        352,
+        353
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 358,
+      "title": "Redesign area settings onboarding",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        330,
+        352,
+        353
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 359,
+      "title": "Redesign risorse privacy ed errori",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        352,
+        353
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 360,
+      "title": "Motion utile opt-out reduced-motion",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        352,
+        353
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 361,
+      "title": "Sound design opt-in OFF default",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        352,
+        353
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 362,
+      "title": "Device fisici mobile file-result-share",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        336,
+        337
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 363,
+      "title": "Budget memoria mobile editor reali",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 364,
+      "title": "Canary e rollback design per tranche",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        353,
+        354,
+        355,
+        356,
+        357,
+        358,
+        359
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 365,
+      "title": "Autore e selezione editoriale veritiera",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 366,
+      "title": "Licenze e provenance donor pinning",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 367,
+      "title": "Codec immagini local vs donor",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 368,
+      "title": "Office rich DOCX XLSX PPTX donor spike",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 369,
+      "title": "Motore PDF editor proprietary-safe confronto",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 370,
+      "title": "Spreadsheet CSV Excel donor fidelity",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 371,
+      "title": "OCR multilingual donor and quality study",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 372,
+      "title": "Editor PDF page workspace",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        369
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 373,
+      "title": "PDF editing testo originale font e layout",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        369,
+        372
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 374,
+      "title": "PDF annotazioni highlighter comments",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        372
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 375,
+      "title": "PDF immagini oggetti posizionati",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        372
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 376,
+      "title": "PDF form input edit e flatten",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        372
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 377,
+      "title": "PDF OCR searchable scansioni",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        247,
+        371
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 378,
+      "title": "True redaction security independent gate",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 379,
+      "title": "PDF progetto history e undo",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        372
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 380,
+      "title": "PDF editor export source-bound",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        373,
+        374,
+        375,
+        376,
+        379
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 381,
+      "title": "Image editor canvas e layers",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        363,
+        367
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 382,
+      "title": "Image editor masks selections crop",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        381
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 383,
+      "title": "Image editor color resize adjustment",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        381
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 384,
+      "title": "Image editor text shapes composite",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        381,
+        382
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 385,
+      "title": "Image editor undo project save",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        381,
+        382,
+        383,
+        384
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 386,
+      "title": "Image editor mobile memory QA",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        363,
+        385
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 387,
+      "title": "CSV XLSX import export fidelity",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        370
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 388,
+      "title": "Table cleaning sort filter transforms",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        387
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 389,
+      "title": "Excel workbook editing cells formulas",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        370,
+        387
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 390,
+      "title": "Data compare join split merge",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        387
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 391,
+      "title": "Data automation pipeline local typed",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        337,
+        388,
+        390
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 392,
+      "title": "Rich Office fidelity corpus and go-no-go",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        368
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 393,
+      "title": "Image codecs multi-frame orientation metadata",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        212,
+        367
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 394,
+      "title": "Metadata stripping with after-export forensic inspection",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 395,
+      "title": "OCR language confidence and user correction",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        246,
+        371
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 396,
+      "title": "Two Italian tax journeys privati PIVA",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 397,
+      "title": "Official annual tax source inventory",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 398,
+      "title": "Versioned IVA and IRPEF examples",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        117,
+        397
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 399,
+      "title": "Net salary and employee contribution model",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        128,
+        398
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 400,
+      "title": "Forfettario partita IVA calculations",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        117,
+        397
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 401,
+      "title": "TFR accrual revaluation and indicative scope",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        134,
+        398
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 402,
+      "title": "Fiscal rollover source expiry and blocking",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        115,
+        117,
+        397
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 403,
+      "title": "Physical microphone and audio media continuation",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        229
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 404,
+      "title": "Change scoped CI and cumulative release validation",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 405,
+      "title": "Release scope gates and rollback drill",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        347,
+        404
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 406,
+      "title": "Independent PDF redaction attack corpus",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 407,
+      "title": "Hostile parsers and archive resource safety",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 408,
+      "title": "Independent output consumer proofs by family",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 409,
+      "title": "Tax-year review ownership and retrospective versions",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        397,
+        402
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 410,
+      "title": "Batch file operations safe collision and cancel",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        337
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 411,
+      "title": "Audio video large file mobile progress and cancel",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        363
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 412,
+      "title": "Editor project schema and forward-safe migrations",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        341,
+        379,
+        385
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 413,
+      "title": "Curated catalog with all routes preserved",
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 414,
+      "title": "Commercial engine vendor proposal and license gate",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        366
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 415,
+      "title": "Per-tool base claim proof and certification coverage",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        408
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 416,
+      "title": "Safe ZIP GZIP archive compression and extraction",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        407
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 417,
+      "title": "PDF password encrypt decrypt legitimate unlock engine study",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        369
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 418,
+      "title": "PDF repair tolerant recovery bounded and independently proved",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        369
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 419,
+      "title": "PDF/A compliant export independent validator decision",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        369
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 420,
+      "title": "PDF to editable DOCX semantic reconstruction feasibility",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        369,
+        368
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 421,
+      "title": "EML MSG offline viewer and safe attachment handling",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        407
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 422,
+      "title": "EPUB offline reader and text export safety",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        407
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 423,
+      "title": "P7M legally scoped verification and extraction feasibility",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        366,
+        407
+      ],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 424,
+      "title": "Audio transcode target bitrate and compression feasibility",
+      "storedStatus": "blocked",
+      "expectedLifecycle": "blocked",
+      "executionCategory": "dependency-blocked",
+      "unresolvedDependencies": [
+        363
+      ],
       "gateReason": null,
       "closedWithRefusal": false
     }

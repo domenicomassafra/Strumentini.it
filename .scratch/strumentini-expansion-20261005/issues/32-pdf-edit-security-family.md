@@ -15,3 +15,9 @@
 - [ ] Redaction has post-export extraction/byte inspection proving hidden text is not recoverable through normal PDF extraction.
 
 **Verification:** Real PDF fixture matrix including forms/images/text/encryption; post-process parsing; browser/mobile page interaction acceptance.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #372, #378, #406.
+
+**Next actionable AC:** Page thumbnails support selecting placement/range for page numbers/watermark/signature/redaction.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

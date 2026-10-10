@@ -15,3 +15,9 @@
 - [ ] Searchable PDF output is verified to contain selectable/searchable text without destroying page appearance beyond accepted tolerance.
 
 **Verification:** Real scan/photo corpus, OCR accuracy/error fixtures, PDF text-layer inspection, bundle/lazy-load receipt, and physical mobile acceptance.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #371, #377, #395.
+
+**Next actionable AC:** Italian OCR path works locally with explicit language/quality state.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

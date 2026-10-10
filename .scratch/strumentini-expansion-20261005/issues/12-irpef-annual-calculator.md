@@ -16,3 +16,9 @@
 - [ ] Result exposes gross tax, supported deductions/additions and final modeled tax.
 
 **Verification:** Official-source fixture set around every threshold, deterministic formula tests, source metadata tests, Italian browser acceptance, and stale-year fail-closed proof.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #398.
+
+**Next actionable AC:** Tax year is explicit and only supported versions are selectable.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

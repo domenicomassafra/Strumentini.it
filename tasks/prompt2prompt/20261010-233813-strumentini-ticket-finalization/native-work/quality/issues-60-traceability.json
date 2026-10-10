@@ -1,0 +1,2581 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-10-10",
+  "source_head": "fbfc9f1",
+  "authority": "Original issues, not audit triage",
+  "scope": "43 open and 17 historical refusal originals; current issue contents hashed at collection",
+  "counts": {
+    "all_originals": 327,
+    "selected": 60,
+    "open": 43,
+    "refusal": 17,
+    "source": 2,
+    "physical": 5,
+    "ready": 5,
+    "dependency": 31
+  },
+  "entries": [
+    {
+      "id": 8,
+      "path": ".scratch/strumentini-expansion-20261005/issues/08-codice-fiscale-generate-decode.md",
+      "sha256": "1b095d00091e19deb063fcb61809db675051f4290196876a88a99659328b3476",
+      "bytes": 6587,
+      "title": "Codice Fiscale generate/decode",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "Generate, validate, and decode modes are distinct and user-facing in a single locally served canonical route; the generated candidate is strictly bounded and clearly non-official."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "Check character and date/sex/month rules have focused deterministic fixtures grounded in DM Finanze 23 dicembre 1976, artt. 3–7, through source-only #121/#122."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Municipality/foreign-code candidate dataset carries #115 snapshot source/version and explicit geographic/time coverage limits."
+        },
+        {
+          "line": 18,
+          "checked": true,
+          "text": "Omocodia ambiguity is exposed as exact legal substitutions and possible century interpretations in the source-only decoding result, without assignment claims."
+        }
+      ],
+      "ac_checked_count": 4,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "121, 122.",
+      "dashboard_unresolved_dependencies": [
+        121,
+        122
+      ],
+      "original_verification": "Official-rule vector suite plus browser tests showing no identifier leaves the device and clear result limitations.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.1, AC-02.2, AC-07.1; DEC-EXP-02, DEC-EXP-04; C-EXP-03, C-EXP-05, C-EXP-06",
+      "dates_mentioned": [
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 independent ANPR archival lane:** A government ANPR supplemental CSV with actual municipality-level date intervals now safely recovers *Filago* `016828`/`D588` for its 1861–1928 source-reported administrative interval and improves historical reverse-code cand",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #008"
+    },
+    {
+      "id": 11,
+      "path": ".scratch/strumentini-expansion-20261005/issues/11-upgrade-iva-percentage-calculator.md",
+      "sha256": "0058b0c02314a8ca38b8d1a16d73b46f1e17e902490444fea9bbdc1a633de624",
+      "bytes": 1177,
+      "title": "Upgrade IVA + percentage calculator",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "All percentage modes have distinct labels, examples, formulas and reversible inputs."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "IVA add/scorporo exposes imponibile, aliquota, IVA and totale with source/year context."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Existing percentage routes either migrate or redirect without duplicate low-value pages."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Mobile result states explain the answer before the formula."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 4,
+      "original_blocked_by": "125, 126.",
+      "dashboard_unresolved_dependencies": [
+        126
+      ],
+      "original_verification": "Exact arithmetic vectors including zero/negative/rounding boundaries, VAT preset fixtures, route/browser acceptance at 390px, and no regression of existing percentage helpers.",
+      "original_trace_to": "US-EXP-02, US-EXP-03; AC-02.1, AC-03.2; DEC-EXP-01, DEC-EXP-03; C-EXP-03, C-EXP-06",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #011"
+    },
+    {
+      "id": 12,
+      "path": ".scratch/strumentini-expansion-20261005/issues/12-irpef-annual-calculator.md",
+      "sha256": "d4d1501b81b55d07e9c0c75176564f3189c46cd453d87796ca15c188eb6f8a60",
+      "bytes": 1097,
+      "title": "IRPEF annual calculator",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "Tax year is explicit and only supported versions are selectable."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "Each bracket boundary has a line-item calculation and provenance."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Unsupported deductions/addizionali produce scoped warnings rather than silent omission."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Result exposes gross tax, supported deductions/additions and final modeled tax."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 4,
+      "original_blocked_by": "127, 128.",
+      "dashboard_unresolved_dependencies": [
+        127,
+        128
+      ],
+      "original_verification": "Official-source fixture set around every threshold, deterministic formula tests, source metadata tests, Italian browser acceptance, and stale-year fail-closed proof.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.1, AC-02.2, AC-07.1; DEC-EXP-04; C-EXP-03, C-EXP-06",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #012"
+    },
+    {
+      "id": 13,
+      "path": ".scratch/strumentini-expansion-20261005/issues/13-stipendio-netto-annual-calculator.md",
+      "sha256": "0b101a2bb8071510643e1a9a42324f45f08f658a6b19ddf6018906fbcc28b9fe",
+      "bytes": 1119,
+      "title": "Stipendio netto annual calculator",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "Inputs state year, RAL, payment months and supported employment/contribution assumptions."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "Result shows annual net, indicative monthly net and each modeled deduction."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Scope gaps are visible next to the answer, not buried in help copy."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Changing payment months changes presentation, not annual tax logic."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 4,
+      "original_blocked_by": "130.",
+      "dashboard_unresolved_dependencies": [
+        130
+      ],
+      "original_verification": "Cross-check fixtures against hand-worked cases and official annual rules, boundary tests, deterministic monthly/annual reconciliation and mobile browser acceptance.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.1, AC-02.2, AC-03.2, AC-07.1; DEC-EXP-04; C-EXP-06",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #013"
+    },
+    {
+      "id": 14,
+      "path": ".scratch/strumentini-expansion-20261005/issues/14-regime-forfettario-annual-calculator.md",
+      "sha256": "95248a61e07447fcd2e9dd9375cf28f3b7ef0560c457de1d7e3cb4cc54903dc9",
+      "bytes": 1031,
+      "title": "Regime forfettario annual calculator",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "Activity/coefficient data is versioned and source-linked."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "5% startup mode is presented as a user-declared eligibility assumption."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "INPS calculation scope and exclusions are visible in the result."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Every intermediate amount is reproducible from displayed inputs/rates."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 4,
+      "original_blocked_by": "133.",
+      "dashboard_unresolved_dependencies": [
+        133
+      ],
+      "original_verification": "Boundary fixtures for coefficients/rates, source-version tests, hand-worked examples, stale-year behavior and browser acceptance with Italian money formatting.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.1, AC-02.2, AC-07.1; DEC-EXP-04; C-EXP-06",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #014"
+    },
+    {
+      "id": 15,
+      "path": ".scratch/strumentini-expansion-20261005/issues/15-tfr-calculator.md",
+      "sha256": "f26ccc68e15d02db5b2bf88e532e3c04ab9de67e0b14f9e084c2357ddcd63f5f",
+      "bytes": 963,
+      "title": "TFR calculator",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "Accrued gross TFR and revaluation are separate result lines."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "Historical/year assumptions are visible and reproducible."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Indicative taxation is clearly distinguished from employer/authority settlement."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Missing historical information produces a scoped partial state."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 4,
+      "original_blocked_by": "134, 135.",
+      "dashboard_unresolved_dependencies": [
+        134,
+        135
+      ],
+      "original_verification": "Reference-year fixtures, revaluation boundary tests, reproducible sample cases, partial-state acceptance and mobile/browser coverage.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.1, AC-02.2, AC-07.1; DEC-EXP-04; C-EXP-06",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #015"
+    },
+    {
+      "id": 18,
+      "path": ".scratch/strumentini-expansion-20261005/issues/18-close-calcolatutto-parity-13.md",
+      "sha256": "5dc621c15f5598dcac654bb55f6915e5506a8435c7a3c059f946b3ce7e826536",
+      "bytes": 1048,
+      "title": "Close CalcolaTutto 13/13 parity",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "Report contains exactly 13 named source jobs with route/status/evidence mapping."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "Base64 and color-converter upgraded results are explicitly checked, not assumed."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "No row is `missing`, `todo`, or backed only by prose."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "06, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17.",
+      "dashboard_unresolved_dependencies": [
+        8,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "original_verification": "CI parity gate fails on any missing/mismatched row and links each row to a passing route-level acceptance scenario.",
+      "original_trace_to": "US-EXP-02; AC-02.1, AC-02.2; DEC-EXP-01, DEC-EXP-07; C-EXP-01, C-EXP-03, C-EXP-06",
+      "dates_mentioned": [
+        "2026-10-05"
+      ],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #018"
+    },
+    {
+      "id": 24,
+      "path": ".scratch/strumentini-expansion-20261005/issues/24-office-markdown-productivity-family.md",
+      "sha256": "13cd9868598c67be3200a49096a43d8959fd7a46958fb9350a4a7cfc364cb514",
+      "bytes": 2599,
+      "title": "Office/Markdown productivity family",
+      "status_literal": "blocked (accepted/refused non-rendering Office matrix integrated; PDF-print and embedded-media compression remain unresolved)",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Detailed DOCX/Markdown/PDF conversion logic is consumed from tickets 55/56 rather than reimplemented here. (DOCX/Markdown is complete via 55; ticket 56 is still blocked.)"
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "Each remaining accepted viewer/metadata format has a declared supported-feature matrix."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Heavy dependencies load only on relevant routes after explicit file selection/action."
+        },
+        {
+          "line": 18,
+          "checked": true,
+          "text": "Metadata cleanup reports what was removed and re-inspects output."
+        },
+        {
+          "line": 19,
+          "checked": true,
+          "text": "Unsupported document features survive where possible or trigger a clear warning."
+        }
+      ],
+      "ac_checked_count": 4,
+      "ac_unchecked_count": 1,
+      "original_blocked_by": "56, 264.",
+      "dashboard_unresolved_dependencies": [
+        56
+      ],
+      "original_verification": "Representative DOCX/ODT/PPTX/ODP fixtures, output re-open tests, dependency/bundle gate and mobile memory acceptance.",
+      "original_trace_to": "US-EXP-04; AC-04.1, AC-04.2, AC-06.1; DEC-EXP-05; C-EXP-05, C-EXP-08",
+      "dates_mentioned": [
+        "2026-10-07"
+      ],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #024"
+    },
+    {
+      "id": 28,
+      "path": ".scratch/strumentini-expansion-20261005/issues/28-image-format-target-compression-family.md",
+      "sha256": "4e12945a36e6ee75165a133c071ae20caa94a8a90a412f28cdf13ceef13d55be",
+      "bytes": 1097,
+      "title": "Image format + target-compression family",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "HEIC and each accepted output format inherit real-device/browser fixture evidence from the detailed codec tickets."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "Target-size and codec-specific routes share one file workspace, result vocabulary and handoff graph."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Job-specific routes reuse the detailed engines without duplicate encoding logic."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "47, 48, 49.",
+      "dashboard_unresolved_dependencies": [
+        47,
+        49
+      ],
+      "original_verification": "Real image corpus, byte-size assertions, perceptual/format checks, cancellation, and iOS/Android browser acceptance before Gold.",
+      "original_trace_to": "US-EXP-04, US-EXP-10; AC-04.1, AC-06.1, AC-10.1; DEC-EXP-01, DEC-EXP-05, DEC-EXP-06; C-EXP-05, C-EXP-08",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #028"
+    },
+    {
+      "id": 31,
+      "path": ".scratch/strumentini-expansion-20261005/issues/31-ocr-document-scan-family.md",
+      "sha256": "c3cb953e1cca076b03de9bc5ef5d070d21601ccc370b7a1b8eb44a2bd2b21fc0",
+      "bytes": 1052,
+      "title": "OCR and document-scan family",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "Italian OCR path works locally with explicit language/quality state."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "Page/image text is copyable/downloadable with page provenance."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Searchable PDF output is verified to contain selectable/searchable text without destroying page appearance beyond accepted tolerance."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "246, 247.",
+      "dashboard_unresolved_dependencies": [
+        246,
+        247
+      ],
+      "original_verification": "Real scan/photo corpus, OCR accuracy/error fixtures, PDF text-layer inspection, bundle/lazy-load receipt, and physical mobile acceptance.",
+      "original_trace_to": "US-EXP-04, US-EXP-06, US-EXP-09; AC-04.1, AC-06.1; DEC-EXP-02, DEC-EXP-05, DEC-EXP-06; C-EXP-05, C-EXP-08",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #031"
+    },
+    {
+      "id": 32,
+      "path": ".scratch/strumentini-expansion-20261005/issues/32-pdf-edit-security-family.md",
+      "sha256": "bb7bfbe6a5b25193480b95c8b79a137d09e440e2119c419b6d62711fec9a26d0",
+      "bytes": 1185,
+      "title": "PDF edit/security family",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "Page thumbnails support selecting placement/range for page numbers/watermark/signature/redaction."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "Protect/unlock modes make password/permission semantics explicit."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Redaction has post-export extraction/byte inspection proving hidden text is not recoverable through normal PDF extraction."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "237, 238, 239, 240, 241, 242, 243, 244, 245, 319, 320.",
+      "dashboard_unresolved_dependencies": [
+        237
+      ],
+      "original_verification": "Real PDF fixture matrix including forms/images/text/encryption; post-process parsing; browser/mobile page interaction acceptance.",
+      "original_trace_to": "US-EXP-04, US-EXP-09; AC-04.1, AC-04.2, AC-06.1; DEC-EXP-02, DEC-EXP-05, DEC-EXP-06; C-EXP-05, C-EXP-08",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #032"
+    },
+    {
+      "id": 35,
+      "path": ".scratch/strumentini-expansion-20261005/issues/35-audio-capture-playback-utilities.md",
+      "sha256": "4971b9c71f86d21a4fb51e5e601e5bcbe6f19b5549425755752457005474faae",
+      "bytes": 1048,
+      "title": "Audio capture/playback utilities",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "Mic/recorder permission and denial states are accessible and recoverable."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "Tone/metronome/noise timing and stop controls remain reliable when the tab changes state within documented browser limits."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "TTS lists actual browser voices rather than promising unavailable voices."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "229, 303, 304.",
+      "dashboard_unresolved_dependencies": [
+        229
+      ],
+      "original_verification": "Media-permission browser tests, generated-audio frequency/timing checks, local-only network assertion, and mobile permission acceptance.",
+      "original_trace_to": "US-EXP-06, US-EXP-10; AC-06.1, AC-10.1; DEC-EXP-01, DEC-EXP-06; C-EXP-04, C-EXP-05",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #035"
+    },
+    {
+      "id": 40,
+      "path": ".scratch/strumentini-expansion-20261005/issues/40-italy-utilities-beyond-calcolatutto.md",
+      "sha256": "277418594dd4b8dc63a854650ca758bba49293bb470cfb89b5a3002e3b467aa0",
+      "bytes": 2503,
+      "title": "Italy utilities beyond CalcolaTutto",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": true,
+          "text": "FatturaPA reader/table export covers documented invoice fields and isolates malformed files."
+        },
+        {
+          "line": 14,
+          "checked": true,
+          "text": "CAP/comune and document-expiry branches expose versioned provenance: document expiry is implemented from official rules, while CAP↔Comune is explicitly REFUSED by the versioned source-feasibility decision instead of being replaced with scraped data."
+        },
+        {
+          "line": 15,
+          "checked": true,
+          "text": "Ponti/ferie works as deterministic calendar optimization with explicit holiday set."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "No vehicle-registration/targa estimator is exposed because no maintainable bounded source was approved in this program."
+        }
+      ],
+      "ac_checked_count": 4,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "152 only — the invoice stamp-duty helper still lacks the complete versioned fiscal source pack required by ticket 117. Tickets 148/149/151/153 are complete; 150 and 157 are terminal documented REFUSE outcomes under their own feasibility/source gates.",
+      "dashboard_unresolved_dependencies": [
+        152
+      ],
+      "original_verification": "Official-format/rule fixtures, real anonymized/synthetic FatturaPA/P7M corpus, dataset version tests, and local-file privacy assertions.",
+      "original_trace_to": "US-EXP-07, US-EXP-09, US-EXP-10; AC-07.1, AC-09.1, AC-10.1; DEC-EXP-02, DEC-EXP-04, DEC-EXP-06; C-EXP-03, C-EXP-05, C-EXP-06, C-EXP-08",
+      "dates_mentioned": [
+        "2026-10-06"
+      ],
+      "latest_dated_note_heading": "Progress (2026-10-06):** The implementable/approved children are reconciled: FatturaPA single and batch routes are local, oracle-bound and browser-tested; ponti/ferie is source-versioned and browser-tested; document expiry is complete; P7M remains a deliberate production REFUSE a",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #040"
+    },
+    {
+      "id": 46,
+      "path": ".scratch/strumentini-expansion-20261005/issues/46-full-expansion-certification-release-integration.md",
+      "sha256": "6d1bb0077c60a5b994ea90b773a14f755023ffd361d284044cbc05dfd2c8c982",
+      "bytes": 1730,
+      "title": "Full expansion certification + release integration",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "Original catalog has 200/200 Result v2 coverage proof."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "CalcolaTutto parity report is 13/13 with route-level evidence."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Every new accepted route has oracle/fixtures, maintenance class, runtime/network declaration and browser acceptance."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Heavy routes have measured bundle/runtime/memory and genuine mobile evidence where required."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Full test/check/build/catalog/certification/release validation remains green except only explicitly documented external blockers that pre-existed or are honestly newly discovered."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 5,
+      "original_blocked_by": "06, 18, 45, 65, 66, 111, 112, 113, 114, 158, 206, 276, 279, 280, 281.",
+      "dashboard_unresolved_dependencies": [
+        18,
+        158,
+        279,
+        280,
+        281
+      ],
+      "original_verification": "Run the full repository validation suite plus generated expansion coverage/parity/privacy/performance reports; manually inspect a representative result from every semantic result class on desktop and 390px mobile.",
+      "original_trace_to": "US-EXP-01, US-EXP-02, US-EXP-03, US-EXP-04, US-EXP-05, US-EXP-06, US-EXP-07, US-EXP-08, US-EXP-09, US-EXP-10; AC-01.1, AC-02.1, AC-06.1, AC-09.1, AC-10.1; DEC-EXP-06, DEC-EXP-07, DEC-EXP-08; C-EXP-01, C-EXP-02, C-EXP-04, C-EXP-05, C-EXP-08",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #046"
+    },
+    {
+      "id": 47,
+      "path": ".scratch/strumentini-expansion-20261005/issues/47-jpeg-png-webp-svg-compression-engines.md",
+      "sha256": "16f640eac1967cec08d266886270c91319d15292cddaea9df3eee3b1af88614d",
+      "bytes": 20700,
+      "title": "JPEG/PNG/WebP/SVG compression engines",
+      "status_literal": "ready-for-agent",
+      "lifecycle_dashboard": "ready-for-agent",
+      "category_quality": "ready",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "JPEG has normal/high-compression presets plus expert controls only when the codec exposes them reliably."
+        },
+        {
+          "line": 14,
+          "checked": true,
+          "text": "PNG distinguishes pixel-lossless optimization from palette/color-lossy compression and verifies transparency."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "WebP distinguishes lossy/lossless and exposes alpha/effort controls only when supported by the chosen codec."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "SVG optimization shows raw and gzip byte reduction, visual original-vs-optimized preview, multipass/precision settings and unsafe/aggressive changes separately."
+        }
+      ],
+      "ac_checked_count": 1,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "207, 208, 209.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Real corpus per format, byte/pixel/vector-render comparisons, malformed input cases, bundle/runtime/mobile receipts, and output-signature verification.",
+      "original_trace_to": "US-EXP-04, US-EXP-09, US-EXP-10; AC-04.1, AC-04.2, AC-06.1, AC-10.1; DEC-EXP-01, DEC-EXP-02, DEC-EXP-05, DEC-EXP-06; C-EXP-05, C-EXP-08",
+      "dates_mentioned": [
+        "2026-10-09",
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 PRIME integration follow-up (open):** The new real PNG palette codec is now wired **opt-in** into the existing public `image-compression` engine (`src/engines/image/visual-tools.ts`), UI (`ImageVisualTool.tsx`) and `ImageResultV2.tsx`; distinct controls for e",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #047"
+    },
+    {
+      "id": 49,
+      "path": ".scratch/strumentini-expansion-20261005/issues/49-image-conversion-matrix-heic-avif-gif.md",
+      "sha256": "f5b0a973500ff0b30e6c296256e0586f953529a8653ab2b5f7bf5c3c7ec51bc9",
+      "bytes": 2090,
+      "title": "Image conversion matrix + HEIC/AVIF/GIF",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": true,
+          "text": "Each accepted direction has an explicit input/output fidelity contract and verified signature."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "HEIC from real iPhone samples is covered on physical iOS/Android/desktop where the promoted path claims support."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "SVG raster export requires size/scale/background controls and keeps vector optimization as a separate job."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "Animated GIF behavior is distinct from extracting a still frame."
+        }
+      ],
+      "ac_checked_count": 2,
+      "ac_unchecked_count": 2,
+      "original_blocked_by": "212, 312, 313.",
+      "dashboard_unresolved_dependencies": [
+        212
+      ],
+      "original_verification": "Directional codec matrix tests, real HEIC/AVIF/GIF/SVG fixtures, alpha/orientation/color cases, physical-device evidence where required.",
+      "original_trace_to": "US-EXP-04, US-EXP-10; AC-04.1, AC-06.1, AC-10.1; DEC-EXP-01, DEC-EXP-05, DEC-EXP-06; C-EXP-04, C-EXP-05, C-EXP-08",
+      "dates_mentioned": [
+        "2026-10-07"
+      ],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #049"
+    },
+    {
+      "id": 56,
+      "path": ".scratch/strumentini-expansion-20261005/issues/56-office-to-pdf-printable-export-pack.md",
+      "sha256": "dd55a95cb94615ec7e0c3b8f6a42cbd5edb69c41c499f6e80f886916c6b7415c",
+      "bytes": 9485,
+      "title": "Office-to-PDF and printable export pack",
+      "status_literal": "ready-for-agent",
+      "lifecycle_dashboard": "ready-for-agent",
+      "category_quality": "ready",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": true,
+          "text": "TXT/MD/HTML/CSV→PDF share a print-layout engine with format-specific content mapping (completed downstream #256; new bounded file-input gate tested here)."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "DOCX/XLSX/PPTX→PDF each have a fidelity corpus and unsupported-feature list before public claims."
+        },
+        {
+          "line": 15,
+          "checked": true,
+          "text": "Output reports pages, page size and any layout warnings for the accepted printable text/markup subset."
+        }
+      ],
+      "ac_checked_count": 2,
+      "ac_unchecked_count": 1,
+      "original_blocked_by": "256, 257, 258, 259.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Visual/fidelity corpus, PDF structural validation, page/layout snapshots, font fallback cases, and genuine mobile acceptance for supported sizes.",
+      "original_trace_to": "US-EXP-04, US-EXP-10; AC-04.1, AC-06.1, AC-10.1; DEC-EXP-01, DEC-EXP-05, DEC-EXP-06; C-EXP-03, C-EXP-05, C-EXP-08",
+      "dates_mentioned": [
+        "2026-10-09",
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 actual OOXML source-fidelity challenge corpus (conditional REFUSE, still OPEN):** `tests/office-print-corpus-56.test.ts` now opens three **existing, tracked, editable** packages under `tests/ooxml-68-corpus/complex.{docx,xlsx,pptx}`. They were created by real",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #056"
+    },
+    {
+      "id": 58,
+      "path": ".scratch/strumentini-expansion-20261005/issues/58-pdf-image-directional-conversion-pack.md",
+      "sha256": "dbad316f094ef9e6d555a263435cc72158a07683facf02f6b49d0566339c81ad",
+      "bytes": 4324,
+      "title": "PDF↔image directional conversion pack",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": true,
+          "text": "Images→PDF supports reorder/rotate, A4/Letter/original page, margins, orientation and fit/fill."
+        },
+        {
+          "line": 14,
+          "checked": true,
+          "text": "PDF→images supports page range, JPG/PNG/WebP, scale/DPI and quality with one-file-per-page naming."
+        },
+        {
+          "line": 15,
+          "checked": true,
+          "text": "Batch/multi-page results download cleanly as ZIP with total pages/bytes."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "235, 236.",
+      "dashboard_unresolved_dependencies": [
+        235
+      ],
+      "original_verification": "Mixed-image and multi-page PDF fixtures, page dimension/render checks, ZIP integrity and route-specific acceptance.",
+      "original_trace_to": "US-EXP-04, US-EXP-10; AC-04.1, AC-10.1; DEC-EXP-01, DEC-EXP-06; C-EXP-04, C-EXP-05",
+      "dates_mentioned": [
+        "2026-10-07",
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 independent worker-7 recheck — STILL BLOCKED, NOT DONE:** The three original AC checkboxes are functionally demonstrated for bounded supported inputs on desktop; #236 is now `completed`, so it is **not** an ongoing functional blocker. Live, read-only Chromium",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #058"
+    },
+    {
+      "id": 62,
+      "path": ".scratch/strumentini-expansion-20261005/issues/62-upgrade-existing-business-date-functionality.md",
+      "sha256": "27c552fc7742671da229ba48daa03f766a08766cd17792f3156f26382178d3fd",
+      "bytes": 1195,
+      "title": "Upgrade existing business/date functionality",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 13,
+          "checked": false,
+          "text": "Every existing business/date route gets a concrete mode/assumption/output audit."
+        },
+        {
+          "line": 14,
+          "checked": false,
+          "text": "Date tools support practical inclusive/exclusive, business-calendar and timezone choices where relevant."
+        },
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Business calculators show scenario tables/schedules and export when that helps a decision."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 154, 155, 156.",
+      "dashboard_unresolved_dependencies": [
+        126,
+        127,
+        128,
+        130,
+        133,
+        134,
+        135
+      ],
+      "original_verification": "Existing Gold plus scenario/timezone/DST/calendar boundary fixtures and generated route coverage.",
+      "original_trace_to": "US-EXP-01, US-EXP-03; AC-01.1, AC-03.2; DEC-EXP-01, DEC-EXP-03, DEC-EXP-06; C-EXP-03, C-EXP-04, C-EXP-09",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #062"
+    },
+    {
+      "id": 115,
+      "path": ".scratch/strumentini-expansion-20261005/issues/115-italian-administrative-geography-source-pack.md",
+      "sha256": "1d83ae127bf1e269354c8d35b6fdddb72dfd630a4a6b8d1d736a2a80d8b70537",
+      "bytes": 8938,
+      "title": "Italian administrative geography source pack",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "source",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "Every pinned partial snapshot records authority, source URL, checkedAt and effective coverage."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "Historical/suppressed municipality source rows preserve their own ISTAT identity, dated change events, source row and nullable `COD_CATASTO`; related successor codes stay distinct and are never substituted."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Snapshot hash/version is test-addressable."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "Official SITUAS bulk coverage now exists for suppressed municipalities and foreign states, but it still contains explicit code gaps: 16 distinct suppressed municipalities have `COD_CATASTO=ND`, and the foreign-state history is scoped only from 1990 with historical rows lacking `COD_AT`. ARCOM does not expose a reproducible complete historical/suppressed bulk export. Ticket 07 is complete.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Known current, historical, suppressed and foreign-state fixtures plus snapshot hash.",
+      "original_trace_to": "US-EXP-07; AC-07.1; DEC-EXP-04",
+      "dates_mentioned": [
+        "2023-10-03",
+        "2025-01-01",
+        "2026-01-01",
+        "2026-02-21",
+        "2026-10-07",
+        "2026-10-09",
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 independent additional primary SITUAS day-exact source (not full #115 closure):** Retrieved official metadata for **three true historical `COD_CATASTO`-bearing snapshots**: `pfun=51` valid 1861-03-17..1927-01-11, `pfun=50` valid 1927-01-12..1947-12-31, `pfun=",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #115"
+    },
+    {
+      "id": 117,
+      "path": ".scratch/strumentini-expansion-20261005/issues/117-italian-fiscal-annual-source-snapshots.md",
+      "sha256": "6d338df214c8d6247ab1c52a72091d1eb761b702770010c5a1c399fb3e8c5567",
+      "bytes": 11496,
+      "title": "Italian fiscal annual source snapshots",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "source",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Each annual rule pack has identifiable taxYear/effective dates and source links."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Brackets/rates/coefficients can be loaded independently by fixtures."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Unsupported year never reuses latest values silently."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "A complete publication-specific official artifact set for one tax year covering IVA, national IRPEF and forfettario is not pinned. Ticket 07 is complete.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Source snapshot/hash plus bracket/rate boundary loader tests.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.2, AC-07.1; DEC-EXP-04",
+      "dates_mentioned": [
+        "2025-12-13",
+        "2025-12-31",
+        "2026-10-07",
+        "2026-10-09",
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 official IVA FULL-PDF source breakthrough — STRICT 19-DAY PARTIAL WINDOW, not complete 2025:** The previous header-only failure above was overcome for **one specific historical version**, without modifying shared pack evidence. The MEF/DEF official tax-docume",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #117"
+    },
+    {
+      "id": 121,
+      "path": ".scratch/strumentini-expansion-20261005/issues/121-codice-fiscale-formal-validate-and-generate-engine.md",
+      "sha256": "9f776a9fffa812b5f76e5c94716fa28410445b0550fd554d2ec9247bcb35da99",
+      "bytes": 3382,
+      "title": "Codice Fiscale formal validate and generate engine",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "Checksum and encoded date/sex/month rules are deterministic for the supported formal 16-character schema."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Birth municipality/foreign state resolves through versioned source data."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Malformed/impossible inputs return precise reason and no identity claim in the standalone engine."
+        }
+      ],
+      "ac_checked_count": 2,
+      "ac_unchecked_count": 1,
+      "original_blocked_by": "70, 115.",
+      "dashboard_unresolved_dependencies": [
+        115
+      ],
+      "original_verification": "Checksum parity, leap-day, foreign-birth and malformed fixture corpus.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.1, AC-07.1",
+      "dates_mentioned": [
+        "2026-02-21",
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 ANPR supplementary source-only evidence:** New separate `src/engines/italy/codice-fiscale-121-anpr.ts` provides `verifyCodiceFiscaleBirthPlace121` for exact-ISTAT/date administrative evidence from the 2023 official ANPR archive. Filago `016828` on 1928-01-25 ",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #121"
+    },
+    {
+      "id": 122,
+      "path": ".scratch/strumentini-expansion-20261005/issues/122-codice-fiscale-decode-and-omocodia-ambiguity.md",
+      "sha256": "16f6a596b57eda7c333119f1324c7dd9100a5fba5f57323218c9a4d73ce46e42",
+      "bytes": 3052,
+      "title": "Codice Fiscale decode and omocodia ambiguity",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "Decoder exposes only encoded/formally derivable tokens, sex/month/day, year suffix, and 1900/2000 century hypotheses (never personal identity)."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "Seven permitted omocodia substitution slots are decoded explicitly; canonical formal code is distinguished from the potentially allocated omocode."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Available historical municipality candidates preserve exact #115 original source/version, ISTAT identifier, change event, and temporal uncertainty; missing codes remain absent."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "121 — Codice Fiscale formal validate and generate engine.",
+      "dashboard_unresolved_dependencies": [
+        121
+      ],
+      "original_verification": "Omocode-position, impossible-date and historical-municipality cases.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.1",
+      "dates_mentioned": [
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 supplemental historical candidate decoder:** `src/engines/italy/codice-fiscale-122-anpr.ts` uses existing formal decode and appends *date-scoped* ANPR municipality candidates for each remaining 1900/2000 birth-century hypothesis, with exact ISTAT ID, original",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #122"
+    },
+    {
+      "id": 126,
+      "path": ".scratch/strumentini-expansion-20261005/issues/126-iva-add-and-scorporo-with-versioned-presets.md",
+      "sha256": "e53b996a6208a7c3f45dccbd8ce2ae53daea0538c6c35b7634902dd061eb5adc",
+      "bytes": 2813,
+      "title": "IVA add and scorporo with versioned presets",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Preset rates link to version/year source metadata."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Add↔scorporo round-trip follows documented rounding policy."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Custom rate is visibly user-supplied, not sourced preset."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "117, 125.",
+      "dashboard_unresolved_dependencies": [
+        117
+      ],
+      "original_verification": "Preset snapshot, cent rounding and round-trip fixtures.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.2, AC-07.1",
+      "dates_mentioned": [
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 additional provenance audit:** The official Italian tax-documentation portal exposes D.P.R. 633/1972 article 16 (ordinary 22% from 01/10/2013) and a long multi-version Table A. However, the live `executePrintArticolo.do` PDF for Table A was independently fetc",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #126"
+    },
+    {
+      "id": 127,
+      "path": ".scratch/strumentini-expansion-20261005/issues/127-irpef-national-annual-core.md",
+      "sha256": "19e6f778115f2cd73d290d9574d72ee4a7bdd88790548edddb31d97269e2d657",
+      "bytes": 1387,
+      "title": "IRPEF national annual core",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Each bracket contribution is visible and sums to gross tax."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Every threshold edge is covered plus/minus one cent."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Unsupported/stale year fails rather than falling forward."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "117, 74.",
+      "dashboard_unresolved_dependencies": [
+        117
+      ],
+      "original_verification": "Independent hand calculations around every bracket boundary.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.2, AC-07.1",
+      "dates_mentioned": [
+        "2026-10-09"
+      ],
+      "latest_dated_note_heading": "2026-10-09 isolated candidate, ticket still blocked by #117:** `src/engines/italy/irpef-national-127.ts` now computes only national gross IRPEF from explicitly supplied taxable euro cents for source-verified 2025/2026 brackets. Law 207/2024 and Law 199/2025 bytes are SH",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #127"
+    },
+    {
+      "id": 128,
+      "path": ".scratch/strumentini-expansion-20261005/issues/128-irpef-supported-deductions-and-addizionali-tranche.md",
+      "sha256": "1630eb9e7b53632f6d3a83b96c16fb57d1c8cff4b51ce3b22a2fdef1a8141ac5",
+      "bytes": 920,
+      "title": "IRPEF supported deductions and addizionali tranche",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Coverage matrix states supported deduction/locality/year combinations."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Missing locality data yields partial state with national tax still intact."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Each added component has independent source metadata and breakdown."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "127 — IRPEF national annual core.",
+      "dashboard_unresolved_dependencies": [
+        127
+      ],
+      "original_verification": "Supported/unsupported locality-year matrix and boundary fixtures.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.2, AC-07.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #128"
+    },
+    {
+      "id": 130,
+      "path": ".scratch/strumentini-expansion-20261005/issues/130-stipendio-netto-annual-v1.md",
+      "sha256": "83190fd404b683acfc31972169b2df53561b3bc467dceee62685bf4faac89176",
+      "bytes": 870,
+      "title": "Stipendio netto annual v1",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Annual components reconcile to displayed net."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "12/13/14 installment display cannot alter annual tax result."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Contract/region/profile assumptions are visible in result."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "128, 129.",
+      "dashboard_unresolved_dependencies": [
+        128
+      ],
+      "original_verification": "Hand-worked annual case plus payment-month reconciliation fixtures.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.2, AC-03.2",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #130"
+    },
+    {
+      "id": 133,
+      "path": ".scratch/strumentini-expansion-20261005/issues/133-regime-forfettario-annual-v1.md",
+      "sha256": "26e46f6770986f5434772dce456e3c1ced4936d475f1dedb0ade91d89a4baac3",
+      "bytes": 4301,
+      "title": "Regime forfettario annual v1",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "The complete **nine-row** ATECO2007 coefficient lookup for tax year 2025 is independently loaded from a versioned and source-hash-verified annual pack; unsupported activities fail closed."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "User must declare 5% eligibility; tool never decides legal eligibility silently."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Contribution path is one of the explicitly supported INPS profiles."
+        }
+      ],
+      "ac_checked_count": 1,
+      "ac_unchecked_count": 2,
+      "original_blocked_by": "117, 131, 132.",
+      "dashboard_unresolved_dependencies": [
+        117
+      ],
+      "original_verification": "Coefficient/rate boundaries and current official-source scenarios.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.2, AC-07.1",
+      "dates_mentioned": [
+        "2025-12-31",
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 original-acceptance expansion, independently RED→GREEN:** Source-verification established the entire Gazzetta Ufficiale 2018 Annex2 page 218 nine-row schedule (40%, 40%, 40%, 54%, 86%, 62%, 40%, 78%, 67%) and `src/reference-data/italy/fiscal-annual-117.ts` no",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #133"
+    },
+    {
+      "id": 134,
+      "path": ".scratch/strumentini-expansion-20261005/issues/134-tfr-accrual-and-istat-backed-revaluation.md",
+      "sha256": "11750c17c9e445935edbae63fe09f3d31e61d0ade9ebfcca5edd864e3bf58b20",
+      "bytes": 826,
+      "title": "TFR accrual and ISTAT-backed revaluation",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Accrual and revaluation are separate visible components."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Missing required historical index returns partial state."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Monthly/year boundaries follow the declared model."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "117 — Italian fiscal annual source snapshots.",
+      "dashboard_unresolved_dependencies": [
+        117
+      ],
+      "original_verification": "Worked accrual, year-boundary and missing-index fixtures.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.2, AC-07.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #134"
+    },
+    {
+      "id": 135,
+      "path": ".scratch/strumentini-expansion-20261005/issues/135-tfr-indicative-taxation-layer.md",
+      "sha256": "9f030ebb24452c4384efef0815efa57083cfaeee608887fed8cb3a1c1f49b022",
+      "bytes": 780,
+      "title": "TFR indicative taxation layer",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Tax estimate is separable from gross TFR calculation."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Insufficient history returns partial/warning rather than fabricated rate."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Result labels it indicative with assumptions."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "127, 134.",
+      "dashboard_unresolved_dependencies": [
+        127,
+        134
+      ],
+      "original_verification": "Independent sample plus insufficient-history cases.",
+      "original_trace_to": "US-EXP-02, US-EXP-07; AC-02.2",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #135"
+    },
+    {
+      "id": 150,
+      "path": ".scratch/strumentini-expansion-20261005/issues/150-p7m-extraction-and-inspection.md",
+      "sha256": "298a1ea6d507d390dd5b9f1be4fc890996bd9bcc101875b42c737f72a64ea407",
+      "bytes": 1501,
+      "title": "P7M extraction and inspection",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 267 proved byte-identical payload extraction and certificate-subject inspection in the isolated `pkijs@3.4.1` / `asn1js@3.0.10` spike, but explicitly refused production promotion because physical-mobile/full-memory evidence is absent."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "The spike exercises valid SignedData, deterministic corrupt input and a valid unsupported non-SignedData envelope with explicit failure behavior; no production route is exposed while the feasibility gate is REFUSE."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Spike evidence records `trustChainStatus: NOT_EVALUATED`; no certificate trust/revocation claim is promoted."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "100, 103, 267.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 267. Evidence remains in `quality/benchmarks/heavy-local-feasibility/ticket-decisions-267-275.json` and `research/lanes/12-heavy-feasibility-ticket-decisions-267-275.md`; reopen only after the missing physical-mobile/full-memory promotion evidence exists.",
+      "original_trace_to": "US-EXP-07, US-EXP-09; AC-09.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #150"
+    },
+    {
+      "id": 152,
+      "path": ".scratch/strumentini-expansion-20261005/issues/152-italian-invoice-stamp-duty-reference-helper.md",
+      "sha256": "ace01fa311c74576919cdcf4031259ab8015d4514cb9cbdc86de7bc980a1e36e",
+      "bytes": 1614,
+      "title": "Italian invoice stamp-duty reference helper",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Rule version/source and assumptions are visible."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Unsupported invoice situations return out-of-scope rather than advice."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Result separates computed/reference outcome from legal certification."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "117 — Italian fiscal annual source snapshots.",
+      "dashboard_unresolved_dependencies": [
+        117
+      ],
+      "original_verification": "Boundary/value fixtures from the sourced rule set.",
+      "original_trace_to": "US-EXP-07; AC-07.1",
+      "dates_mentioned": [
+        "2026-10-09"
+      ],
+      "latest_dated_note_heading": "2026-10-09 isolated archival candidate, ticket still blocked by #117:** Hash-pinned November 2024 Agenzia delle Entrate guide in `quality/reference-data/italy/artifacts/117-fiscal-annual/agenzia-bollo-fatture-2024.html`. `src/engines/italy/invoice-stamp-reference-152.ts",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #152"
+    },
+    {
+      "id": 158,
+      "path": ".scratch/strumentini-expansion-20261005/issues/158-italy-source-freshness-and-annual-rollover-gate.md",
+      "sha256": "911d710e8b0984805f113e83e80a4af69afe387e38588d3bb7814b7ad4f4abf0",
+      "bytes": 951,
+      "title": "Italy source freshness and annual rollover gate",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Every annual/time-varying Italy dataset has owner, latest supported version and checked date."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Expired review condition fails or blocks affected current-year claims."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Static historical tools are not forced to query live networks."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "115, 116, 117, 118, 119.",
+      "dashboard_unresolved_dependencies": [
+        115,
+        117
+      ],
+      "original_verification": "Synthetic stale snapshot sabotage and current source-index report.",
+      "original_trace_to": "US-EXP-07; AC-07.1; DEC-EXP-04, DEC-EXP-06",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #158"
+    },
+    {
+      "id": 207,
+      "path": ".scratch/strumentini-expansion-20261005/issues/207-jpeg-and-webp-format-aware-compression-adapters.md",
+      "sha256": "9d6be7da30c533599603ea8e62c64e3be06b7f6cc8db87a4b573532f22e1c5c0",
+      "bytes": 1322,
+      "title": "JPEG and WebP format-aware compression adapters",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 268 records `jpegWebpAdvancedCodecControls=REFUSE_NO_VETTED_UNIFORM_CODEC_PATH`; no advanced JPEG/WebP codec controls are exposed as if uniformly supported."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "The feasibility corpus records actual native encoded type/bytes where browser-native paths were measured, without promoting those measurements into a cross-browser codec contract."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No route claims successful compression or size reduction from an unapproved codec path; existing bounded image behavior remains unchanged."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "100, 103, 268.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 268. Reopen only after a vetted uniform JPEG/WebP codec path passes the declared quality/performance/mobile promotion gate.",
+      "original_trace_to": "US-EXP-04, US-EXP-10; AC-04.1, AC-06.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #207"
+    },
+    {
+      "id": 208,
+      "path": ".scratch/strumentini-expansion-20261005/issues/208-png-lossless-and-palette-compression-modes.md",
+      "sha256": "5f5311e3ea9157591a0aad6d8167af162f1f721e07bff52a5dd7a81dae3789af",
+      "bytes": 1195,
+      "title": "PNG lossless and palette compression modes",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 268 records `pngOptimization=REFUSE_NO_VETTED_OPTIMIZER`; no PNG optimizer/palette mode is promoted without a vetted implementation."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "Because the optimizer path is refused, no lossy palette/dither controls or visual-delta claims are exposed."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Existing PNG behavior is not relabelled with a generic JPEG-style quality control or claimed as lossless optimization."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "100, 103, 268.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 268. Reopen only after a vetted PNG optimizer proves pixel-lossless and palette-mode semantics on the required corpus.",
+      "original_trace_to": "US-EXP-04, US-EXP-10; AC-04.1, AC-04.2, AC-06.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #208"
+    },
+    {
+      "id": 209,
+      "path": ".scratch/strumentini-expansion-20261005/issues/209-safe-svg-optimizer-and-preview.md",
+      "sha256": "c4b4f70da54b3cda48f9fe2e7974c6d33f170df982f6143dec9ca8bb1c0a11e3",
+      "bytes": 1175,
+      "title": "Safe SVG optimizer and preview",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 268 records `svgOptimization=REFUSE_NO_BROWSER_NATIVE_OPTIMIZER`; no optimizer is shipped merely to satisfy the format matrix."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "No SVG optimizer preview executes or resolves script/external content while the optimizer capability is refused."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No aggressive transform is exposed or implied without an approved parser/optimizer and semantic/render corpus."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "103, 268.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 268. Reopen only after an approved SVG optimizer passes semantic/render and hostile-reference acceptance.",
+      "original_trace_to": "US-EXP-04, US-EXP-05, US-EXP-09; AC-04.2, AC-05.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #209"
+    },
+    {
+      "id": 212,
+      "path": ".scratch/strumentini-expansion-20261005/issues/212-heic-avif-and-gif-directional-image-implementations.md",
+      "sha256": "e76ccbf62a17e8418ce5a4314ca8351be9c1f7417b5f02daa84f4cb7e34265bf",
+      "bytes": 11154,
+      "title": "HEIC AVIF and GIF directional image implementations",
+      "status_literal": "ready-for-agent",
+      "lifecycle_dashboard": "ready-for-agent",
+      "category_quality": "ready",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Only ACCEPTED directions from feasibility matrix become routes/modes."
+        },
+        {
+          "line": 18,
+          "checked": false,
+          "text": "HEIC real-iPhone and animated GIF fixtures keep orientation/timing/transparency within declared limits."
+        },
+        {
+          "line": 19,
+          "checked": true,
+          "text": "Static-frame extraction is distinct from animated conversion."
+        }
+      ],
+      "ac_checked_count": 1,
+      "ac_unchecked_count": 2,
+      "original_blocked_by": "103, 206, 268.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Real corpus, signature/decode, animation timing and physical mobile receipts.",
+      "original_trace_to": "US-EXP-04, US-EXP-06, US-EXP-10; AC-06.1, AC-10.1",
+      "dates_mentioned": [
+        "2026-10-09",
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 worker-3 bounded GIF geometry tranche (OPEN, partial evidence):** The isolated `src/engines/image/directional-212.ts` first-frame-only LZW→RGBA→PNG engine now handles genuine **transparent partial first-frame rectangles**, including 4-pass interlaced frames, ",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #212"
+    },
+    {
+      "id": 222,
+      "path": ".scratch/strumentini-expansion-20261005/issues/222-real-zip-deflate-compression-tranche.md",
+      "sha256": "7060e67791c768b350ac96e95b5279e6a021829d0df01ba8d829f1b79a7c5de6",
+      "bytes": 1871,
+      "title": "Real ZIP DEFLATE compression tranche",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production promotion:** ticket 272 proved `fflate@0.8.3` can round-trip valid ZIP/GZIP fixtures but also records unresolved path-traversal, expansion-ratio and physical-mobile/cancellation evidence; therefore no DEFLATE mode is exposed until that gate is reopened and passes."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "The existing canonical ZIP creator remains store-only and does not claim compression savings for incompressible inputs."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No synchronous DEFLATE codec is promoted without the shared terminable runtime plus per-entry/cumulative expanded-byte and expansion-ratio limits required by ticket 272."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "103, 272.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 272. Evidence: `quality/benchmarks/heavy-local-feasibility/ticket-decisions-267-275.json` and `research/lanes/12-heavy-feasibility-ticket-decisions-267-275.md`; reopen only after the documented safety/mobile promotion conditions are satisfied.",
+      "original_trace_to": "US-EXP-04, US-EXP-09; AC-04.1, AC-04.2",
+      "dates_mentioned": [
+        "2026-10-07"
+      ],
+      "latest_dated_note_heading": "2026-10-07 scoped refresh:** ticket 225 now uses `fflate@0.8.3` only behind an OOXML-specific central-directory preflight, strict entry/expanded-byte/ratio limits and the shared terminable Worker runtime. That narrower proof does **not** promote generic ZIP fast/balance",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #222"
+    },
+    {
+      "id": 223,
+      "path": ".scratch/strumentini-expansion-20261005/issues/223-gzip-single-file-compress-and-decompress.md",
+      "sha256": "5da18f42f98f59a007bdc03e3ad627741867e216a4dc3fd0d6543b7d5da2fb50",
+      "bytes": 1325,
+      "title": "GZIP single-file compress and decompress",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production promotion:** ticket 272 exercises valid/corrupt GZIP fixtures with `fflate@0.8.3` but refuses promotion because bounded expansion, cancellation ownership and physical-mobile cost are not yet certified."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "The feasibility corpus proves byte-equal valid decompression, but that result remains isolated evidence rather than a production route while the promotion gate is REFUSE."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No GZIP output/download claim is exposed in the product until the accepted implementation can return verified filename/type/integrity under the shared bounded runtime."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "103, 272.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 272 using the heavy-local archive corpus and machine-readable decision receipt. Reopen only after the ticket-272 promotion requirements are satisfied.",
+      "original_trace_to": "US-EXP-04, US-EXP-10; AC-04.1, AC-04.2",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #223"
+    },
+    {
+      "id": 224,
+      "path": ".scratch/strumentini-expansion-20261005/issues/224-safe-zip-extraction-with-bomb-and-path-defenses.md",
+      "sha256": "82f68c4ca9781ee9cb004ddb1cac04b068cfe603b4e988a3be293315d822cbd4",
+      "bytes": 1599,
+      "title": "Safe ZIP extraction with bomb and path defenses",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production extraction:** tickets 222/272 refuse promotion of the local DEFLATE path until central/local consistency, expansion-ratio, cancellation/worker ownership and physical-mobile evidence are certified; no extractor materializes compressed entry bytes while that gate is REFUSE."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "The existing ZIP inspector already fails closed on central-directory bounds, path traversal, encrypted flags, entry-count and declared cumulative-uncompressed limits before any content extraction."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Because materialization itself is refused, duplicate-output overwrite/collision risk is not silently accepted; reopening requires an explicit collision policy before extraction is exposed."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "222 — Real ZIP DEFLATE compression tranche.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of tickets 222/272. Existing file-privacy tests cover ZIP-slip/path traversal and declared zip-bomb bounds; the heavy-local feasibility corpus records the remaining codec/cancellation/mobile promotion blockers.",
+      "original_trace_to": "US-EXP-04, US-EXP-09; AC-04.1, AC-04.2, AC-06.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #224"
+    },
+    {
+      "id": 229,
+      "path": ".scratch/strumentini-expansion-20261005/issues/229-microphone-test-and-local-recorder.md",
+      "sha256": "cb69b8b9ccf0dad3150055b483794d4eac9a8481775b3b68c6c1bced22ad06f5",
+      "bytes": 2414,
+      "title": "Microphone test and local recorder",
+      "status_literal": "blocked (physical iOS/Android acceptance pending)",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "physical",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "No permission prompt before explicit user action."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "Deny/revoke/unsupported states recover."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Recorded duration/type/size are derived from actual Blob/media support."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "Genuine physical-device acceptance. The host still has no verifiable Android target/tooling, and the paired iPhone is currently unavailable; the last reachable iOS attempt also had Web Inspector disabled. WebDriver mock media cannot substitute for live microphone permission/capture evidence.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "`tests/browser-audio-utilities.test.ts` is 6/6 PASS and `scripts/acceptance-microphone-recorder.mjs` passes explicit permission, deny→retry, revoke→retry, runtime MIME, pause/resume/stop, actual Blob type/bytes, local download, zero external requests, unsupported recovery and 390 px overflow checks. `npx astro build` emits `/tools/microphone-recorder/`. A bounded physical iOS attempt was run on iPhone 14 Pro Max `00008120-0006384E14D8201E`, iOS 26.6.2 build 23G90, Safari/safaridriver 26.6.2 (21624.5.1.11.3). safaridriver found the exact physical device but refused the session because Web Inspector is disabled; `devicectl` proved the phone fetched the route over LAN but cannot drive the real page/native permission UI through its exposed CLI. safaridriver also documents that WebDriver sessions replace live media capture with mock capture devices, so a WebDriver mic run would not satisfy the physical permission/live-microphone requirement even after enabling Web Inspector. See `evidence/ticket229-physical-ios-attempt-20261006.md`. On the 2026-10-07 recheck the phone remains paired but reports `State=unavailable` with last connection on 2026-10-06 at 22:19; `adb` is still absent from PATH and the common Homebrew locations. No physical PASS receipt was created; physical permission/record/download/no-crash remains blocked.",
+      "original_trace_to": "US-EXP-06, US-EXP-10; AC-06.1",
+      "dates_mentioned": [
+        "2026-10-06",
+        "2026-10-07"
+      ],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #229"
+    },
+    {
+      "id": 230,
+      "path": ".scratch/strumentini-expansion-20261005/issues/230-audio-transcode-compress-and-target-bitrate-size.md",
+      "sha256": "d19aee09b7097d4e10826eb0f5b5e540f0eec21468c09f6f19f0f7c8563a1a9c",
+      "bytes": 1257,
+      "title": "Audio transcode compress and target bitrate size",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 273 refuses the available ffmpeg/lame baselines and keeps WebCodecs codec support capability-gated rather than approving a production transcode matrix."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "No production UI advertises an unapproved codec/container or presents a target-size estimate as measured output bytes."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No transcode worker/output is promoted until an accepted codec path can prove termination/resource release and independent decode."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "100, 103, 206, 273.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 273. Reopen when an approved codec/container subset satisfies the worker, decode and promotion evidence declared by the feasibility gate.",
+      "original_trace_to": "US-EXP-06, US-EXP-10; AC-06.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #230"
+    },
+    {
+      "id": 235,
+      "path": ".scratch/strumentini-expansion-20261005/issues/235-advanced-images-to-pdf-composition.md",
+      "sha256": "83067f9d536967ccfa80685db0501aafdc961950eef8f6912d5e2aec2336272a",
+      "bytes": 1553,
+      "title": "Advanced Images to PDF composition",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "Preview shows crop/fit effect before export."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "HEIC input appears only when its decode path is approved."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Page geometry/order and final PDF type are verified."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "98, 103, 212.",
+      "dashboard_unresolved_dependencies": [
+        212
+      ],
+      "original_verification": "Mixed-aspect fixture, page geometry render review and mobile ordering.",
+      "original_trace_to": "US-EXP-04, US-EXP-10; AC-04.1",
+      "dates_mentioned": [
+        "2026-10-07"
+      ],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #235"
+    },
+    {
+      "id": 237,
+      "path": ".scratch/strumentini-expansion-20261005/issues/237-true-pdf-redaction-with-post-export-proof.md",
+      "sha256": "7c0405f92a0ceef14632bab104a739666c36d5ee36215e45e26df1187a2726ce",
+      "bytes": 11153,
+      "title": "True PDF redaction with post-export proof",
+      "status_literal": "ready-for-agent",
+      "lifecycle_dashboard": "ready-for-agent",
+      "category_quality": "ready",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Post-export text/image/object inspection proves supported redacted content absent."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Visual result matches selected regions."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Unsupported content model returns refusal/warning, never fake success."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "215, 269.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Recoverability adversarial corpus, post-redaction extraction and rendered review.",
+      "original_trace_to": "US-EXP-04, US-EXP-09; AC-04.2",
+      "dates_mentioned": [
+        "2026-10-09",
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 PRIME real UI -> forensic follow-up (later than worker's previous note; still OPEN):** New independent compatibility failure uncovered and fixed. The fresh image-only output was readable by PDF.js, `pypdf` and `pdfminer.six`, yet **macOS PDFKit/CoreGraphics c",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #237"
+    },
+    {
+      "id": 242,
+      "path": ".scratch/strumentini-expansion-20261005/issues/242-pdf-protect-encrypt-and-legitimate-unlock.md",
+      "sha256": "5cf7cf5aa37368f4d173636d10cf3baf8944f2943dbed335e2e2151f91f42938",
+      "bytes": 1170,
+      "title": "PDF protect encrypt and legitimate unlock",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 269 records `encryption=REFUSE_UNPROVEN`; no protect/unlock route is exposed without an approved encryption path."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "Unsupported encryption remains explicitly unsupported rather than being guessed or bypassed."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No encrypted output success claim is made without an independently reopenable fixture and proven password/permission semantics."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "103, 269.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 269. Reopen only after an approved encryption/decryption implementation passes wrong/correct-password and independent-reopen evidence.",
+      "original_trace_to": "US-EXP-04, US-EXP-09; AC-04.2",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #242"
+    },
+    {
+      "id": 244,
+      "path": ".scratch/strumentini-expansion-20261005/issues/244-pdf-repair-and-tolerant-recovery.md",
+      "sha256": "5b5a8652f35425c09621ce751ebe8c614a251bfe5559757ade5ee92d64a62453",
+      "bytes": 1158,
+      "title": "PDF repair and tolerant recovery",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 269 records `repair=REFUSE_UNPROVEN`; no generic repair capability is exposed from the bounded mutation/render spikes."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "No repaired-output success is reported without an independently reopenable result and concrete recovery report."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Unrecoverable/corrupt input remains a failure boundary; no destructive overwrite path is introduced."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "103, 269.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 269. Reopen only after a bounded repair implementation proves recoverable/truncated/corrupt fixtures and independent reopen.",
+      "original_trace_to": "US-EXP-04, US-EXP-09; AC-04.2",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #244"
+    },
+    {
+      "id": 245,
+      "path": ".scratch/strumentini-expansion-20261005/issues/245-pdf-a-conversion-decision-and-implementation.md",
+      "sha256": "9cb95e49ffd6fc360847ce0b16169268c5ec6b6ab3ef2a7cf7bd0af25b9a4e31",
+      "bytes": 1135,
+      "title": "PDF A conversion decision and implementation",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 269 records `pdfA=REFUSE_UNPROVEN`; no PDF/A profile is claimed from the current bounded PDF stack."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "No output is labelled PDF/A without an approved conversion path plus independent formal conformance validation."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Font/color/transparency limitations therefore remain an explicit reason for refusal rather than an implicit fidelity promise."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "206, 269.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 269. Reopen only with an approved PDF/A-capable path and independent profile-validation evidence.",
+      "original_trace_to": "US-EXP-04, US-EXP-06; AC-06.1, AC-09.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #245"
+    },
+    {
+      "id": 246,
+      "path": ".scratch/strumentini-expansion-20261005/issues/246-local-image-ocr.md",
+      "sha256": "c75227bcf4a1800895ed83452200f421573962cdf66d1c37cd5506118e11baa6",
+      "bytes": 11832,
+      "title": "Local image OCR",
+      "status_literal": "ready-for-agent",
+      "lifecycle_dashboard": "ready-for-agent",
+      "category_quality": "ready",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Italian OCR is an explicit supported language when accepted."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Confidence is shown only if engine provides meaningful confidence."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Large/unsupported images fail preflight rather than crash."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "100, 103, 206, 271.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Printed/scanned/rotated image corpus, accuracy fixtures and physical mobile/perf receipts.",
+      "original_trace_to": "US-EXP-04, US-EXP-06, US-EXP-09; AC-06.1",
+      "dates_mentioned": [
+        "2026-10-09",
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 explicit orientation correction, genuine desktop browser (still OPEN):** Added a narrowly scoped manual 0°/90°/180°/270° clockwise correction selector to the existing **unlisted, noindex** local Italian OCR experiment. The source engine verifies the original ",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #246"
+    },
+    {
+      "id": 247,
+      "path": ".scratch/strumentini-expansion-20261005/issues/247-scanned-pdf-ocr-and-searchable-text-layer.md",
+      "sha256": "5742f90e3bdd1a81d99e15ec8ed6e3ff00afb99447dced9bb4c301cfb72a1838",
+      "bytes": 8491,
+      "title": "Scanned PDF OCR and searchable text layer",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Output contains selectable/searchable text on OCRed pages."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Visual page rendering remains within documented tolerance."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Mixed born-digital/scanned pages do not duplicate existing text silently."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "215, 246.",
+      "dashboard_unresolved_dependencies": [
+        246
+      ],
+      "original_verification": "Mixed PDF corpus, text search/extraction, rendered comparison and mobile/perf.",
+      "original_trace_to": "US-EXP-04, US-EXP-06; AC-04.2, AC-06.1",
+      "dates_mentioned": [
+        "2026-10-10"
+      ],
+      "latest_dated_note_heading": "2026-10-10 release-boundary correction (not #247 promotion):** The real `scripts/validate-release.ts --no-write-receipt` initially reported 2 errors (`TOOL_PAGE_COUNT_MISMATCH`, `UNINDEXED_TOOL_PAGE`) because it counted the existing DEV-only, non-prerendered `/tools/pdf",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #247"
+    },
+    {
+      "id": 253,
+      "path": ".scratch/strumentini-expansion-20261005/issues/253-pdf-to-docx-semantic-reconstruction.md",
+      "sha256": "27772a85fbd889fb2f1b953c5f3baa341caa09b5ea8f07284728b1ae7d1ff027",
+      "bytes": 1139,
+      "title": "PDF to DOCX semantic reconstruction",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 269 records `richConversion=REFUSE_UNPROVEN`; the existing PDF extraction and DOCX package seams do not establish a PDF→DOCX reconstruction fidelity contract."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "No generated DOCX or layout-loss report is exposed without evidence supporting the semantic mappings."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No scanned-input/OCR fallback is claimed while the rich-conversion path is refused."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "220, 225, 226, 269.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 269. Reopen only after a bounded reconstruction path passes semantic fidelity and independent DOCX reopen checks.",
+      "original_trace_to": "US-EXP-04, US-EXP-10; AC-04.1, AC-06.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #253"
+    },
+    {
+      "id": 257,
+      "path": ".scratch/strumentini-expansion-20261005/issues/257-docx-to-pdf-fidelity-gated-conversion.md",
+      "sha256": "dcaf891334568e1207f75543bacb22513d20637907ae8326259565460cebc622",
+      "bytes": 1072,
+      "title": "DOCX to PDF fidelity-gated conversion",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 270 records `faithfulOfficeRender=REFUSE_UNPROVEN`; the bounded DOCX semantic/preview paths are explicitly non-fidelity renderers."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "Unsupported Word layout/fonts/fields/macros remain unsupported rather than being hidden behind a PDF fidelity claim."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No cloud conversion/upload fallback is introduced."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "206, 226, 270.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 270. Reopen only after an approved local renderer passes the fidelity corpus and promotion gate.",
+      "original_trace_to": "US-EXP-04, US-EXP-06; AC-06.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #257"
+    },
+    {
+      "id": 258,
+      "path": ".scratch/strumentini-expansion-20261005/issues/258-xlsx-to-pdf-fidelity-gated-conversion.md",
+      "sha256": "a088a12a08550b7963001706c581c9e39c9722c9adeedc168755e611aade2612",
+      "bytes": 1123,
+      "title": "XLSX to PDF fidelity-gated conversion",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 270 keeps faithful Office rendering at `REFUSE_UNPROVEN`; the bounded XLSX parse/write seam does not authorize spreadsheet print rendering."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "No sheet/range print-layout UI or unsupported-formatting promise is exposed without an approved renderer."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No PDF page-count/layout success claim is made without independent render verification."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "161, 206, 270.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 270. Reopen only after an approved local spreadsheet renderer passes workbook fidelity and print-geometry acceptance.",
+      "original_trace_to": "US-EXP-04, US-EXP-06; AC-06.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #258"
+    },
+    {
+      "id": 259,
+      "path": ".scratch/strumentini-expansion-20261005/issues/259-pptx-to-pdf-fidelity-gated-conversion.md",
+      "sha256": "55b21d1435a2bb5f110afadde1a2f82faafc6e9dcb5f0b6d0ef9fba755c6b6cb",
+      "bytes": 1055,
+      "title": "PPTX to PDF fidelity-gated conversion",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 270 records faithful Office rendering as `REFUSE_UNPROVEN`; no approved PPTX→PDF renderer exists."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "Unsupported fonts/media/effects therefore remain unsupported instead of being represented as faithful static output."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No hidden cloud rendering is used."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "206, 225, 270.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 270. Reopen only after an approved local renderer passes the presentation fidelity corpus and promotion gate.",
+      "original_trace_to": "US-EXP-04, US-EXP-06; AC-06.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #259"
+    },
+    {
+      "id": 262,
+      "path": ".scratch/strumentini-expansion-20261005/issues/262-eml-and-msg-local-message-viewer.md",
+      "sha256": "ba9681d9dbe05779d370d642444197012cfdf7192e6b4b8f7928afd4e40686ea",
+      "bytes": 1370,
+      "title": "EML and MSG local message viewer",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 275 independently refuses EML and MSG because no approved local parser with proven fidelity/security/mobile cost exists; no partial parser is exposed as if headers/body/attachments were reliable."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "The hostile EML feasibility fixture proves script/remote-resource markers are detected before render and records zero external requests across the desktop browser matrix."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "MSG has only a deliberately invalid CFB-signature fixture, so proprietary/encrypted/semantic MSG parsing remains explicitly unsupported rather than guessed."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "103, 275.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 275. Evidence remains in the heavy-local feasibility receipt/report; reopen only when an approved parser and hostile-content/mobile evidence satisfy the feasibility gate.",
+      "original_trace_to": "US-EXP-04, US-EXP-09",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #262"
+    },
+    {
+      "id": 263,
+      "path": ".scratch/strumentini-expansion-20261005/issues/263-epub-local-reader-and-text-export.md",
+      "sha256": "7b03eaea80fc7786e644c95c023cac882a1b9b661b970f7d225ff8c6faa8927e",
+      "bytes": 1218,
+      "title": "EPUB local reader and text export",
+      "status_literal": "completed",
+      "lifecycle_dashboard": "completed",
+      "category_quality": "historical_refusal",
+      "refusal": true,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": true,
+          "text": "**REFUSED for production implementation:** ticket 275 independently refuses EPUB because no approved parser with proven spine/navigation fidelity, sanitization and mobile/resource cost is installed."
+        },
+        {
+          "line": 16,
+          "checked": true,
+          "text": "The hostile EPUB feasibility fixture contains script and remote-resource references and is rejected before render/resource resolution with zero external requests in the browser matrix."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "No lossy text export is offered without a parser that can first prove spine order and declare structure/image/style loss truthfully."
+        }
+      ],
+      "ac_checked_count": 3,
+      "ac_unchecked_count": 0,
+      "original_blocked_by": "103, 275.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Closed as a refusal downstream of ticket 275. Reopen only after the parser/security/mobile promotion gate is satisfied.",
+      "original_trace_to": "US-EXP-04, US-EXP-09",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #263"
+    },
+    {
+      "id": 277,
+      "path": ".scratch/strumentini-expansion-20261005/issues/277-physical-android-chrome-image-resize-acceptance.md",
+      "sha256": "924b51c880a32427bc12c7be8456977300445b5cbc47bed048f168af78dbede2",
+      "bytes": 1411,
+      "title": "Physical Android Chrome image-resize acceptance",
+      "status_literal": "blocked — physical Android target/tooling unavailable",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "physical",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Receipt identifies real device/browser/build fingerprint."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Resize interaction, output dimensions/type/bytes and download are verified on-device."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "No desktop emulation result is promoted as physical evidence."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "No verifiable physical Android Chrome target is currently reachable from this host; `adb` is not installed/exposed in PATH or the common Homebrew locations.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Physical Android Chrome run with screenshots/console/output artifact receipt.",
+      "original_trace_to": "AC-09.1; DEC-EXP-06",
+      "dates_mentioned": [
+        "2026-10-07"
+      ],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #277"
+    },
+    {
+      "id": 278,
+      "path": ".scratch/strumentini-expansion-20261005/issues/278-physical-ios-safari-image-resize-acceptance.md",
+      "sha256": "7a0c2e68c3e5e1a1c8c4532661c3ac81750ac9f6f03110c16a8f8cb011451b92",
+      "bytes": 3551,
+      "title": "Physical iOS Safari image-resize acceptance",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "physical",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Receipt identifies physical iOS/Safari/build fingerprint."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "File picker/resize/download and output facts are verified on-device."
+        },
+        {
+          "line": 17,
+          "checked": true,
+          "text": "Failure/limitation remains a blocker rather than being masked by desktop WebKit."
+        }
+      ],
+      "ac_checked_count": 1,
+      "ac_unchecked_count": 2,
+      "original_blocked_by": "The paired physical iPhone is available again, but SafariDriver cannot create a physical Safari session because Web Inspector is disabled on the device. Web Inspector must be enabled before the real Files/Photos picker, resize and download boundary can be exercised.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Physical iOS Safari run with screenshots/console/output artifact receipt.",
+      "original_trace_to": "AC-09.1; DEC-EXP-06",
+      "dates_mentioned": [
+        "2026-10-06",
+        "2026-10-07"
+      ],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #278"
+    },
+    {
+      "id": 279,
+      "path": ".scratch/strumentini-expansion-20261005/issues/279-image-resize-gold-promotion-gate.md",
+      "sha256": "5e9e049788d0b9c98e5bd1526dea84cccdd2c43790f1a52f2c0ad4e6ab8b6c26",
+      "bytes": 1171,
+      "title": "Image-resize Gold promotion gate",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "dependency",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "All required receipts reference compatible/current source fingerprint."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Any physical failure keeps status Partial."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Promotion updates certification artifacts without bypass flags."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "277, 278.",
+      "dashboard_unresolved_dependencies": [
+        277,
+        278
+      ],
+      "original_verification": "Certification validator plus fresh image-resize receipt consistency check.",
+      "original_trace_to": "AC-09.1; DEC-EXP-06",
+      "dates_mentioned": [
+        "2026-10-07"
+      ],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #279"
+    },
+    {
+      "id": 280,
+      "path": ".scratch/strumentini-expansion-20261005/issues/280-physical-android-heavy-tool-web-acceptance-lane.md",
+      "sha256": "e1435aeae952125005e333b7f207a0c7e10516781b8168e04b2d17db9e84a6c0",
+      "bytes": 864,
+      "title": "Physical Android heavy-tool web acceptance lane",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "physical",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Lane records device/browser/build and exact route/input class."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "OOM/unsupported state is recoverable and captured as failure/limit."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Receipt schema can be consumed by heavy-route promotion gates."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "206 — Heavy local-job mobile and performance acceptance gate.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Representative accepted heavy route on real Android plus artifact verification.",
+      "original_trace_to": "US-EXP-06; AC-06.1, AC-09.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #280"
+    },
+    {
+      "id": 281,
+      "path": ".scratch/strumentini-expansion-20261005/issues/281-physical-ios-safari-heavy-tool-web-acceptance-lane.md",
+      "sha256": "7e45f520e5e086c5526c7ab7ddff28010318023f5d26757fb150ef2aa744a294",
+      "bytes": 923,
+      "title": "Physical iOS Safari heavy-tool web acceptance lane",
+      "status_literal": "blocked",
+      "lifecycle_dashboard": "blocked",
+      "category_quality": "physical",
+      "refusal": false,
+      "original_ac": [
+        {
+          "line": 15,
+          "checked": false,
+          "text": "Lane uses physical iOS Safari and records current build fingerprint."
+        },
+        {
+          "line": 16,
+          "checked": false,
+          "text": "Safari resource/Blob/download constraints are measured per representative route."
+        },
+        {
+          "line": 17,
+          "checked": false,
+          "text": "Unsupported behavior remains an explicit limitation, not a desktop WebKit substitution."
+        }
+      ],
+      "ac_checked_count": 0,
+      "ac_unchecked_count": 3,
+      "original_blocked_by": "206 — Heavy local-job mobile and performance acceptance gate.",
+      "dashboard_unresolved_dependencies": [],
+      "original_verification": "Representative accepted heavy route on real iOS Safari with artifact/console evidence.",
+      "original_trace_to": "US-EXP-06; AC-06.1, AC-09.1",
+      "dates_mentioned": [],
+      "latest_dated_note_heading": "",
+      "evidence_verified_this_planning_run": "NO; documentary source bodies read and hashed, historical assertions retained only",
+      "disposition_document": "ORIGINAL-ISSUE-DISPOSITIONS.md",
+      "recommendation_source": "ORIGINAL-ISSUE-DISPOSITIONS.md: #281"
+    }
+  ]
+}

@@ -15,3 +15,9 @@
 - [ ] Job-specific routes reuse the detailed engines without duplicate encoding logic.
 
 **Verification:** Real image corpus, byte-size assertions, perceptual/format checks, cancellation, and iOS/Android browser acceptance before Gold.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #367, #393.
+
+**Next actionable AC:** HEIC and each accepted output format inherit real-device/browser fixture evidence from the detailed codec tickets.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

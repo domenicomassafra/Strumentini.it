@@ -17,3 +17,9 @@
 - [ ] Monthly/year boundaries follow the declared model.
 
 **Verification:** Worked accrual, year-boundary and missing-index fixtures.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #401.
+
+**Next actionable AC:** Accrual and revaluation are separate visible components.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

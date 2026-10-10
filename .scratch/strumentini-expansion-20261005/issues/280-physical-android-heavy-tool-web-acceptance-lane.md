@@ -17,3 +17,9 @@
 - [ ] Receipt schema can be consumed by heavy-route promotion gates.
 
 **Verification:** Representative accepted heavy route on real Android plus artifact verification.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #362, #363.
+
+**Next actionable AC:** Lane records device/browser/build and exact route/input class.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

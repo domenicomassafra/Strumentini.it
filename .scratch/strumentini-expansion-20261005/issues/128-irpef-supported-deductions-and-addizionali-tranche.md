@@ -17,3 +17,9 @@
 - [ ] Each added component has independent source metadata and breakdown.
 
 **Verification:** Supported/unsupported locality-year matrix and boundary fixtures.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #398, #399.
+
+**Next actionable AC:** Coverage matrix states supported deduction/locality/year combinations.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

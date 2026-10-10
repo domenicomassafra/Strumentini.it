@@ -27,3 +27,9 @@
 **Why this remains open:** No WebDriver page command reached Image Resize, so the real Files/Photos picker, 16 MP resize, actual download, reopened artifact dimensions/type/bytes and no-crash/mobile-layout checks remain unobserved. WebDriver `Send Keys` or page-side blob inspection alone would not be counted as proof of the native picker/download boundary. No `quality/receipts/image-resize/ios-safari-physical.json` PASS receipt was created.
 
 **Ticket 229 note:** `safaridriver(1)` states that live media capture is disabled for WebDriver and replaced by mock capture devices/streams. This path therefore cannot prove physical microphone permission/capture acceptance for ticket 229.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #362.
+
+**Next actionable AC:** Receipt identifies physical iOS/Safari/build fingerprint.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

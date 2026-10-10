@@ -16,3 +16,9 @@
 - [ ] Every intermediate amount is reproducible from displayed inputs/rates.
 
 **Verification:** Boundary fixtures for coefficients/rates, source-version tests, hand-worked examples, stale-year behavior and browser acceptance with Italian money formatting.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #400.
+
+**Next actionable AC:** Activity/coefficient data is versioned and source-linked.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

@@ -3,7 +3,7 @@
 Status: **future implementation queue; ticket planning only**
 Origin: `docs/10-tool-expansion-result-system-v2.md` + `docs/11-format-operation-matrix.md`
 Generated from issue metadata; refresh with `python3 .scratch/strumentini-expansion-20261005/ticket_dashboard.py --write`.
-Coverage: **327 tickets, IDs 01–327, continuous, acyclic**
+Coverage: **424 tickets, IDs 01–424, continuous, acyclic**
 
 This DAG is the scheduling authority. Parent tickets that depend on targeted children are integration/closure gates; implement the children first. Skill routing lives in `SKILL-ROUTING.md`, and tickets 70–327 also carry ticket-specific `Suggested skills`.
 
@@ -21,8 +21,37 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
+- **328 — P0 Account Turnstile login reale**
+- **329 — P0 Contrasto accesso e errori WCAG**
+- **330 — P0 Recenti realmente alimentati**
+- **331 — P0 Correggere promesse di file/account**
+- **333 — P0 Riconoscimento formato locale**
+- **337 — Typed handoff per catene di tool**
+- **338 — Preview risultato con fatti verificati**
+- **346 — P0 Eventi telemetria privacy-safe**
+- **347 — P0 Badge Gold fingerprint frontend backend**
+- **348 — Server opt-in gratis feasibility**
+- **350 — P0 Accessibilità AA di base e advanced**
+- **351 — Tre direzioni redesign non cosmetiche**
+- **363 — Budget memoria mobile editor reali**
+- **365 — Autore e selezione editoriale veritiera**
+- **366 — Licenze e provenance donor pinning**
+- **367 — Codec immagini local vs donor**
+- **368 — Office rich DOCX XLSX PPTX donor spike**
+- **369 — Motore PDF editor proprietary-safe confronto**
+- **370 — Spreadsheet CSV Excel donor fidelity**
+- **371 — OCR multilingual donor and quality study**
+- **378 — True redaction security independent gate**
+- **394 — Metadata stripping with after-export forensic inspection**
+- **396 — Two Italian tax journeys privati PIVA**
+- **397 — Official annual tax source inventory**
+- **404 — Change scoped CI and cumulative release validation**
+- **406 — Independent PDF redaction attack corpus**
+- **407 — Hostile parsers and archive resource safety**
+- **408 — Independent output consumer proofs by family**
+- **413 — Curated catalog with all routes preserved**
 
-Exactly **12** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **41** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -366,6 +395,103 @@ Exactly **12** incomplete tickets currently have every declared numeric blocker 
 | 325 | completed | Robots canonical campaign and naming helper upgrades | 099, 104 |
 | 326 | completed | File privacy secret and metadata-risk upgrades | 096 |
 | 327 | completed | Research dedupe identity and citation export audit | 093, 198, 276 |
+| 328 | ready-for-agent | P0 Account Turnstile login reale | — |
+| 329 | ready-for-agent | P0 Contrasto accesso e errori WCAG | — |
+| 330 | ready-for-agent | P0 Recenti realmente alimentati | — |
+| 331 | ready-for-agent | P0 Correggere promesse di file/account | — |
+| 332 | blocked | Sync preferiti con rimozioni e conflitti | 328, 330 |
+| 333 | ready-for-agent | P0 Riconoscimento formato locale | — |
+| 334 | blocked | Ingresso file-first drag/select | 333 |
+| 335 | blocked | Suggerire solo operazioni file compatibili | 333 |
+| 336 | blocked | Picker iPhone Android e touch equivalente | 333 |
+| 337 | ready-for-agent | Typed handoff per catene di tool | — |
+| 338 | ready-for-agent | Preview risultato con fatti verificati | — |
+| 339 | blocked | Scarica manuale e auto opt-in | 338 |
+| 340 | blocked | Cronologia in-session e cancella task | 337, 338 |
+| 341 | blocked | Salvataggio locale file volontario | 338 |
+| 342 | blocked | Quote e eviction file locali | 341 |
+| 343 | blocked | Esporta importa elimina configurazione | 330 |
+| 344 | blocked | Area personale con suggerimenti spiegabili | 330, 335 |
+| 345 | blocked | Navigazione stabile da task e file | 330, 334 |
+| 346 | ready-for-agent | P0 Eventi telemetria privacy-safe | — |
+| 347 | ready-for-agent | P0 Badge Gold fingerprint frontend backend | — |
+| 348 | ready-for-agent | Server opt-in gratis feasibility | — |
+| 349 | blocked | File server opt-in TTL delete prova | 348 |
+| 350 | ready-for-agent | P0 Accessibilità AA di base e advanced | — |
+| 351 | ready-for-agent | Tre direzioni redesign non cosmetiche | — |
+| 352 | blocked | Selezione owner direzione visuale | 351 |
+| 353 | blocked | IA e design system dopo scelta | 352 |
+| 354 | blocked | Redesign home file-first search-first | 333, 352, 353 |
+| 355 | blocked | Redesign catalogo ricerca categorie | 352, 353 |
+| 356 | blocked | Redesign wrapper e input famiglia | 352, 353 |
+| 357 | blocked | Redesign risultati e next-action | 337, 338, 352, 353 |
+| 358 | blocked | Redesign area settings onboarding | 330, 352, 353 |
+| 359 | blocked | Redesign risorse privacy ed errori | 352, 353 |
+| 360 | blocked | Motion utile opt-out reduced-motion | 352, 353 |
+| 361 | blocked | Sound design opt-in OFF default | 352, 353 |
+| 362 | blocked | Device fisici mobile file-result-share | 336, 337 |
+| 363 | ready-for-agent | Budget memoria mobile editor reali | — |
+| 364 | blocked | Canary e rollback design per tranche | 353, 354, 355, 356, 357, 358, 359 |
+| 365 | ready-for-agent | Autore e selezione editoriale veritiera | — |
+| 366 | ready-for-agent | Licenze e provenance donor pinning | — |
+| 367 | ready-for-agent | Codec immagini local vs donor | — |
+| 368 | ready-for-agent | Office rich DOCX XLSX PPTX donor spike | — |
+| 369 | ready-for-agent | Motore PDF editor proprietary-safe confronto | — |
+| 370 | ready-for-agent | Spreadsheet CSV Excel donor fidelity | — |
+| 371 | ready-for-agent | OCR multilingual donor and quality study | — |
+| 372 | blocked | Editor PDF page workspace | 369 |
+| 373 | blocked | PDF editing testo originale font e layout | 369, 372 |
+| 374 | blocked | PDF annotazioni highlighter comments | 372 |
+| 375 | blocked | PDF immagini oggetti posizionati | 372 |
+| 376 | blocked | PDF form input edit e flatten | 372 |
+| 377 | blocked | PDF OCR searchable scansioni | 247, 371 |
+| 378 | ready-for-agent | True redaction security independent gate | — |
+| 379 | blocked | PDF progetto history e undo | 372 |
+| 380 | blocked | PDF editor export source-bound | 373, 374, 375, 376, 379 |
+| 381 | blocked | Image editor canvas e layers | 363, 367 |
+| 382 | blocked | Image editor masks selections crop | 381 |
+| 383 | blocked | Image editor color resize adjustment | 381 |
+| 384 | blocked | Image editor text shapes composite | 381, 382 |
+| 385 | blocked | Image editor undo project save | 381, 382, 383, 384 |
+| 386 | blocked | Image editor mobile memory QA | 363, 385 |
+| 387 | blocked | CSV XLSX import export fidelity | 370 |
+| 388 | blocked | Table cleaning sort filter transforms | 387 |
+| 389 | blocked | Excel workbook editing cells formulas | 370, 387 |
+| 390 | blocked | Data compare join split merge | 387 |
+| 391 | blocked | Data automation pipeline local typed | 337, 388, 390 |
+| 392 | blocked | Rich Office fidelity corpus and go-no-go | 368 |
+| 393 | blocked | Image codecs multi-frame orientation metadata | 212, 367 |
+| 394 | ready-for-agent | Metadata stripping with after-export forensic inspection | — |
+| 395 | blocked | OCR language confidence and user correction | 246, 371 |
+| 396 | ready-for-agent | Two Italian tax journeys privati PIVA | — |
+| 397 | ready-for-agent | Official annual tax source inventory | — |
+| 398 | blocked | Versioned IVA and IRPEF examples | 117, 397 |
+| 399 | blocked | Net salary and employee contribution model | 128, 398 |
+| 400 | blocked | Forfettario partita IVA calculations | 117, 397 |
+| 401 | blocked | TFR accrual revaluation and indicative scope | 134, 398 |
+| 402 | blocked | Fiscal rollover source expiry and blocking | 115, 117, 397 |
+| 403 | blocked | Physical microphone and audio media continuation | 229 |
+| 404 | ready-for-agent | Change scoped CI and cumulative release validation | — |
+| 405 | blocked | Release scope gates and rollback drill | 347, 404 |
+| 406 | ready-for-agent | Independent PDF redaction attack corpus | — |
+| 407 | ready-for-agent | Hostile parsers and archive resource safety | — |
+| 408 | ready-for-agent | Independent output consumer proofs by family | — |
+| 409 | blocked | Tax-year review ownership and retrospective versions | 397, 402 |
+| 410 | blocked | Batch file operations safe collision and cancel | 337 |
+| 411 | blocked | Audio video large file mobile progress and cancel | 363 |
+| 412 | blocked | Editor project schema and forward-safe migrations | 341, 379, 385 |
+| 413 | ready-for-agent | Curated catalog with all routes preserved | — |
+| 414 | blocked | Commercial engine vendor proposal and license gate | 366 |
+| 415 | blocked | Per-tool base claim proof and certification coverage | 408 |
+| 416 | blocked | Safe ZIP GZIP archive compression and extraction | 407 |
+| 417 | blocked | PDF password encrypt decrypt legitimate unlock engine study | 369 |
+| 418 | blocked | PDF repair tolerant recovery bounded and independently proved | 369 |
+| 419 | blocked | PDF/A compliant export independent validator decision | 369 |
+| 420 | blocked | PDF to editable DOCX semantic reconstruction feasibility | 369, 368 |
+| 421 | blocked | EML MSG offline viewer and safe attachment handling | 407 |
+| 422 | blocked | EPUB offline reader and text export safety | 407 |
+| 423 | blocked | P7M legally scoped verification and extraction feasibility | 366, 407 |
+| 424 | blocked | Audio transcode target bitrate and compression feasibility | 363 |
 
 ## Validation contract
 

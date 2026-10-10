@@ -17,3 +17,9 @@
 - [ ] Full test/check/build/catalog/certification/release validation remains green except only explicitly documented external blockers that pre-existed or are honestly newly discovered.
 
 **Verification:** Run the full repository validation suite plus generated expansion coverage/parity/privacy/performance reports; manually inspect a representative result from every semantic result class on desktop and 390px mobile.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #347, #404, #405, #415.
+
+**Next actionable AC:** Original catalog has 200/200 Result v2 coverage proof.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

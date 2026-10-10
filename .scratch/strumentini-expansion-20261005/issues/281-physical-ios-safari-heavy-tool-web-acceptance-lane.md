@@ -17,3 +17,9 @@
 - [ ] Unsupported behavior remains an explicit limitation, not a desktop WebKit substitution.
 
 **Verification:** Representative accepted heavy route on real iOS Safari with artifact/console evidence.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #362, #363.
+
+**Next actionable AC:** Lane uses physical iOS Safari and records current build fingerprint.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

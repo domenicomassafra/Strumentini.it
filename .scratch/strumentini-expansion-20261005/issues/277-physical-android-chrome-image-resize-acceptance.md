@@ -19,3 +19,9 @@
 **Verification:** Physical Android Chrome run with screenshots/console/output artifact receipt.
 
 **Device check (2026-10-07, revalidated):** `command -v adb` returns no executable, and neither `/opt/homebrew/bin/adb` nor `/usr/local/bin/adb` exists. There is therefore no verifiable physical Android Chrome target available through the configured local tooling. No emulator or desktop result was substituted, no physical receipt was created, and this ticket remains open.
+
+## 2026-10-10 owner planning reconciliation
+
+**Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #362.
+
+**Next actionable AC:** Receipt identifies real device/browser/build fingerprint.. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.

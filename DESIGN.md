@@ -1,3 +1,7 @@
+> **OWNER-ALIGNED PLANNING NOTICE (2026-10-10):** 2026-10-10 redesign status: this document is a factual baseline of the current implementation only. The owner has withdrawn approval of the generic visual direction for the future. No new palette, font or alternate IA has been chosen. The formal direction gate is #351 three interactions/prototypes then #352 dated owner selection and #353 new authority; #354–364 execute only after this gate. Do not misinterpret existing CSS and routes as a preapproved design proposal.
+
+---
+
 # Strumentini.it — Structural Design
 
 The visual authority is `design/WORLD.md`; this document owns the **structure** —

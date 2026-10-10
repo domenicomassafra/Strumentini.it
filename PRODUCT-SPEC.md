@@ -1,3 +1,7 @@
+> **OWNER-ALIGNED PLANNING NOTICE (2026-10-10):** 2026-10-10 scope update: this document remains the historical first-validation specification for legacy US/AC and current shipped code; the owner-approved future base+advanced product specification is docs/PRODUCT-SPEC-2026-10-10-EXPANSION.md. Its original narrow audience, catalog count=200 and strict no-ads forever are NOT current owner decisions. Original acceptance must not be silently removed or marked complete. Use ROADMAP.md and the single issue archive for future execution.
+
+---
+
 # Strumentini.it — Canonical Product Specification
 
 Status: implementation authority for the first validation build
