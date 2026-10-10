@@ -8,7 +8,7 @@
 
 **Blocked by:** 215, 269.
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** pdf → security-audit → interaction-design → code-tdd → qa-browser
 
@@ -17,6 +17,12 @@
 - [x] Placed appearance/page/order survive independent render/reopen (actual pixels and page order; proof below).
 
 **Verification:** Signature placement corpus and visual/reopen verification.
+
+**2026-10-10 functional closure and public integration (supersedes the earlier candidate-only status):** The three original ACs are now verified end-to-end in the **bounded, explicitly non-cryptographic** use case. Rather than creating a second catalog renderer or an unreviewed public route, the existing public `/tools/pdf-watermark/` renderer mounts `PdfVisualSignature241Tool` as its separate **“Firma grafica visiva su PDF semplice”** section (`#firma-grafica-visiva`). The watermark's own form, output and underlying engine remain independent; the catalog continues to have exactly one renderer per tool, preserves its route inventory, and does not invent a new Gold claim or alter the existing watermark's historical receipt. The separate experimental development-only/noindex `/tools/pdf-visual-signature/` candidate remains excluded from static production builds. The section clearly states that it is **not** a certificate-backed digital, qualified electronic, or authenticated signature. It refuses encrypted, signed/certified, incremental/linearized, form-bearing, annotated, active or structurally unsupported PDFs rather than invalidating their security or silently discarding content.
+
+**Independently verified compiled public release acceptance:** The isolated clean source checkout plus only the two-file scoped #241 integration/test delta passed `npm run check` (**1929 files, 0 errors/0 warnings**) and `npm run build` (**291 pages, `build inspection PASS`, one renderer/catalog entry per page**). A separately served copy of that actual static `dist` passed the full existing real file/browser acceptance in **Chromium 51/51, Firefox 51/51 and WebKit 51/51**, **153/153 checks** at 320, 390 and 1440px CSS viewports. All three browsers selected multiple PDF pages, previewed independent PDF.js page renders, generated actual PNG/text/freehand overlays, downloaded real PDF outputs and independently reopened their pixels in PDF.js (`@napi-rs/canvas`), verified original page order plus only selected pages painted, refused signed/certified/form-bearing sources, cleared stale results after input changes and prevented premature downloads. No task-time offsite requests, unexpected JavaScript errors or horizontal overflow. The public placement canvas is scrolled into view before low-level pointer simulation; unlike the old development-only short page, it is below a separate existing editor. The static server's `GET /api/auth/session` response 404 is the expected **test-server-only** backend omission, not an application failure; the browser assertion bounds 404 to that route. Existing PDF writer focused **8/8 Vitest PASS**, and independent PDF.js rotation/CropBox raster acceptance from earlier work covers 0/90/180/270 rotations.
+
+**Scope and release boundaries:** The writer only overlays up to eight chosen pages of a simple **unsigned** PDF (≤25 MiB, ≤40 pages) using PNG RGB/RGBA ≤2 MiB/262144 pixels or generated text/drawing. It rewrites bytes and preserves/rechecks original page streams and geometry only for supported files. It does **not** sign, certify authenticity, redact, preserve arbitrary PDF semantics, or guarantee legal validity. Physical iOS/Android hardware runs, formal human accessibility/security sign-off and Gold re-certification remain **NOT RUN** and are tracked separately by existing release gates #280/#281; this is a functional ticket closure, not a universal PDF signing/security or Gold pass. Cloudflare promotion is separate and must be confirmed by Wrangler + HTTP/browser smoke; no production claim is inferred from a successful local build alone.
 
 **Worker subset (2026-10-09, local candidate; status remains `ready-for-agent`):**
 `src/engines/pdf/visual-signature-241.ts` implements a strictly bounded, **visible image overlay**

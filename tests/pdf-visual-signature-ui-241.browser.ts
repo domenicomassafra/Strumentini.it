@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { chromium } from "@playwright/test";
+import { chromium, firefox, webkit } from "@playwright/test";
 import sharp from "sharp";
 import { createCanvas } from "@napi-rs/canvas";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
@@ -17,9 +17,12 @@ import { parsePdf, pdfArray, pdfDict, pdfNumber, pdfReference, type PdfValue } f
 
 const root = resolve(import.meta.dirname, "..");
 const port = 18471;
-const origin = `http://127.0.0.1:${port}`;
-const route = `${origin}/tools/pdf-visual-signature/`;
-const server = spawn(resolve(root, "node_modules/.bin/astro"), ["dev", "--host", "127.0.0.1", "--port", String(port),
+const publicOrigin = process.env.PDF241_PUBLIC_ORIGIN?.replace(/\/$/u, "");
+const browserName = process.env.PDF241_BROWSER ?? "chromium";
+if (!["chromium", "firefox", "webkit"].includes(browserName)) throw new Error("PDF241_BROWSER must be chromium, firefox or webkit");
+const origin = publicOrigin ?? `http://127.0.0.1:${port}`;
+const route = `${origin}/tools/${publicOrigin ? "pdf-watermark" : "pdf-visual-signature"}/`;
+const server = publicOrigin ? null : spawn(resolve(root, "node_modules/.bin/astro"), ["dev", "--host", "127.0.0.1", "--port", String(port),
   "--config", "tests/astro-visual-signature-241.config.mjs"], { cwd: root, stdio: "ignore" });
 let browser: Awaited<ReturnType<typeof chromium.launch>> | null = null;
 let checks = 0;
@@ -83,12 +86,12 @@ async function inkDifferenceInPlacement(bytes: Uint8Array, pageNumber: number): 
 try {
   let ready = false;
   for (let attempt = 0; attempt < 100; attempt++) {
-    if (server.exitCode !== null) throw new Error(`Vite/Astro exited with code ${server.exitCode}`);
+    if (server && server.exitCode !== null) throw new Error(`Vite/Astro exited with code ${server.exitCode}`);
     try { ready = (await fetch(route)).ok; if (ready) break; } catch { /* booting */ }
     await new Promise<void>((done) => setTimeout(done, 150));
   }
   check(ready, "Astro isolated route must load");
-  browser = await chromium.launch({ headless: true });
+  browser = await ({ chromium, firefox, webkit }[browserName as "chromium" | "firefox" | "webkit"]).launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
   const offsite: string[] = [], errors: string[] = [], missing: string[] = [];
   page.on("request", (request) => {
@@ -99,14 +102,15 @@ try {
   page.on("console", (message) => {
     // Astro dev has no auth endpoint: shared ShellChrome probes the optional
     // session API and gets an expected local 404. Verify its exact URL below.
-    if (message.type() === "error" && !/^Failed to load resource: the server responded with a status of 404 \(Not Found\)$/u.test(message.text())) {
+    if (message.type() === "error" && !/^Failed to load resource: the server responded with a status of 404 \((?:Not Found|File not found)\)$/u.test(message.text())) {
       errors.push(`console: ${message.text()}`);
     }
   });
   page.on("response", (response) => { if (response.status() >= 400) missing.push(`${response.status()} ${response.url()}`); });
   const response = await page.goto(route, { waitUntil: "networkidle" });
   check(response?.status() === 200, "Candidate route returns 200");
-  check((await page.locator('meta[name="robots"]').getAttribute("content")) === "noindex, nofollow", "Candidate route must be noindex");
+  if (publicOrigin) check(await page.locator("[data-pdf-241-public]").count() === 1, "Compiled public route contains exactly one visual-signature panel");
+  else check((await page.locator('meta[name="robots"]').getAttribute("content")) === "noindex, nofollow", "Candidate route must be noindex");
   check((await page.locator("[data-241-disclosure]").innerText()).includes("Non è una firma digitale"), "No digital signing claim");
   check(await page.locator("[data-241-download]").count() === 0, "No download before evidence");
   check(!(await page.getByRole("button", { name: /Applica firma visiva/u }).isEnabled()), "No submit without files");
@@ -248,6 +252,9 @@ try {
   await page.locator("[data-241-source]").setInputFiles(sourceFile);
   await page.getByRole("combobox", { name: "Modalità della firma visiva" }).selectOption("draw");
   const canvas = page.locator("[data-241-draw]");
+  // The public watermark route has a separate editor above this component;
+  // low-level Playwright mouse movements do not auto-scroll an offscreen canvas.
+  await canvas.scrollIntoViewIfNeeded();
   const box = await canvas.boundingBox();
   assert(box);
   await page.mouse.move(box.x + 30, box.y + 40);
@@ -285,8 +292,8 @@ try {
   check(offsite.length === 0, `No offsite requests: ${offsite.join(", ")}`);
   check(missing.every((value) => value === `404 ${origin}/api/auth/session`), `Unexpected local HTTP failure: ${missing.join(", ")}`);
   check(errors.length === 0, `No browser page errors: ${errors.join(", ")} ; unsuccessful requests: ${missing.join(", ")}`);
-  console.log(`PDF #241 visual-signature isolated Chromium 320/390/1440: PASS (${checks} checks); independent PDF.js output reopened, unsigned PNG/text/drawing overlays; no offsite; NO physical-device acceptance`);
+  console.log(`PDF #241 ${publicOrigin ? "public compiled" : "isolated"} ${browserName} 320/390/1440: PASS (${checks} checks); independent PDF.js output reopened, unsigned PNG/text/drawing overlays; no offsite; NO physical-device acceptance`);
 } finally {
   if (browser) await browser.close();
-  server.kill("SIGTERM");
+  server?.kill("SIGTERM");
 }

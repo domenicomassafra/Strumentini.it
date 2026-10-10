@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { planPdfWatermark, watermarkPdf, planPdfImageWatermark, watermarkPdfJpeg, type PdfWatermarkPosition } from "../../../engines/pdf/watermark";
 import { openPdfThumbnailSession, pdfThumbnailWindow, type PdfThumbnailSession } from "../../../engines/pdf/thumbnails";
+import { PdfVisualSignature241Tool } from "./PdfVisualSignature241Tool";
 
 const POSITIONS: readonly { value: PdfWatermarkPosition; label: string }[] = [
   { value: "top-left", label: "Alto sinistra" }, { value: "top-center", label: "Alto centro" },
@@ -132,7 +133,7 @@ export function PdfWatermarkTool() {
     } finally { setWriting(false); }
   }
 
-  return (
+  return <>
     <form class="tool-operation" data-pdf-watermark onSubmit={(event) => { void submit(event); }}>
       <label class="field"><span>PDF locale</span><input type="file" accept="application/pdf,.pdf" onChange={choose} disabled={writing} /></label>
       <p class="file-note" role="note" data-not-redaction>
@@ -200,5 +201,14 @@ export function PdfWatermarkTool() {
         <p>Overlay visibile: non elimina informazioni dal documento.</p><a href={downloadUrl} download="pdf-filigranato.pdf">Scarica PDF con filigrana</a>
       </div> : null}
     </form>
-  );
+    <section id="firma-grafica-visiva" data-pdf-241-public aria-labelledby="pdf-241-public-heading"
+      style={{ maxWidth: "1024px", margin: "2rem auto", padding: "1.25rem 0", borderTop: "1px solid currentColor" }}>
+      <h2 id="pdf-241-public-heading">Firma grafica visiva su PDF semplice</h2>
+      <p>Inserisci un disegno, un testo o un'immagine PNG su pagine selezionate.
+        <strong> Non è una firma digitale, elettronica qualificata o una certificazione di autenticità.</strong>
+        La funzione accetta soltanto PDF semplici non firmati e senza moduli o annotazioni:
+        documenti con firme, azioni o strutture non sicure vengono rifiutati.</p>
+      <PdfVisualSignature241Tool />
+    </section>
+  </>;
 }
