@@ -33,7 +33,14 @@ try {
   await page.locator('select:has(option[value="target-best-effort"])').selectOption('target-best-effort');
   const input = page.locator('form input[type=file]');
   assert((await input.getAttribute('multiple')) !== null, 'Mode must accept multiple PDFs');
-  await page.getByLabel('Dimensione massima PDF in KiB (1–8192)').fill('400');
+  await page.getByLabel(/Dimensione massima PDF in KiB/u).fill('400');
+  await page.getByLabel('Unità del limite PDF').selectOption('MiB');
+  assert(Number(await page.getByLabel(/Dimensione massima PDF in MiB/u).inputValue()) === 400 / 1024,
+    'KiB->MiB conversion must preserve the byte-exact target without rounding');
+  await page.getByLabel('Unità del limite PDF').selectOption('KiB');
+  assert(Number(await page.getByLabel(/Dimensione massima PDF in KiB/u).inputValue()) === 400,
+    'MiB->KiB conversion must roundtrip without precision loss');
+  await page.getByLabel('Unità del limite PDF').selectOption('MiB');
   const scan = readFileSync(resolve(root, 'tests/fixtures/pdf-image-mixed-218/safe-mixed-218.pdf'));
   const small = readFileSync(resolve(root, 'quality/fixtures/pdf-gold/simple-3page.pdf'));
   await input.setInputFiles([

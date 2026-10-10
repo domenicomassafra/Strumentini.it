@@ -95,6 +95,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [compressionProfile, setCompressionProfile] = useState<"structural-only" | "jpeg-rgb-reencode" | "scan-flate-to-jpeg" | "target-best-effort">("structural-only");
   const [compressionJpegQuality, setCompressionJpegQuality] = useState("0.6");
   const [pdfTargetKiB, setPdfTargetKiB] = useState("300");
+  const [pdfTargetUnit, setPdfTargetUnit] = useState<"KiB" | "MiB">("KiB");
   const [scanMaxEdge, setScanMaxEdge] = useState("1600");
   const [scanResizePolicy, setScanResizePolicy] = useState<"pixel-edge" | "verified-dpi">("pixel-edge");
   const [scanTargetDpi, setScanTargetDpi] = useState("150");
@@ -223,7 +224,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     try {
       if (toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort") {
         const { runPdfTargetBatch219 } = await import("../../../engines/pdf/target-batch-219");
-        const targetBytes = Number(pdfTargetKiB) * 1024;
+        const targetBytes = Math.round(Number(pdfTargetKiB) * (pdfTargetUnit === "MiB" ? 1024 * 1024 : 1024));
         const batch = await runPdfTargetBatch219(files, targetBytes, abortController.signal);
         const prepared = await preparePdfResult(toolId, {
           artifacts: batch.artifacts, artifactCount: batch.artifacts.length,
@@ -637,14 +638,23 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
                 <option value="structural-only">Pulizia strutturale (predefinita)</option>
                 <option value="jpeg-rgb-reencode">Ricodifica JPEG incorporati (con perdita)</option>
                 <option value="scan-flate-to-jpeg">Scansioni Flate/PNG incorporati (con perdita)</option>
-                <option value="target-best-effort">Sotto un limite KiB (tentativi e batch locale, senza garanzia)</option>
+                <option value="target-best-effort">Sotto un limite KiB/MiB (tentativi e batch locale, senza garanzia)</option>
               </select>
             </label>
             {compressionProfile === "target-best-effort" && (
               <>
-                <label class="field"><span>Dimensione massima PDF in KiB (1–8192)</span>
-                  <input type="number" min="1" max="8192" step="1" value={pdfTargetKiB}
+                <label class="field"><span>Dimensione massima PDF in {pdfTargetUnit} (1–8192 KiB, massimo 8 MiB)</span>
+                  <input type="number" min={pdfTargetUnit === "KiB" ? "1" : "0.0009765625"} max={pdfTargetUnit === "KiB" ? "8192" : "8"} step={pdfTargetUnit === "KiB" ? "1" : "any"} value={pdfTargetKiB}
                     onInput={(event) => setPdfTargetKiB(event.currentTarget.value)} disabled={isWorking} />
+                </label>
+                <label class="field"><span>Unità del limite PDF</span>
+                  <select aria-label="Unità del limite PDF" value={pdfTargetUnit} disabled={isWorking}
+                    onChange={(event) => { const unit = event.currentTarget.value as "KiB" | "MiB";
+                      if (unit !== pdfTargetUnit) { const bytes = Number(pdfTargetKiB) * (pdfTargetUnit === "MiB" ? 1024 * 1024 : 1024);
+                        setPdfTargetKiB(Number.isFinite(bytes) ? String(bytes / (unit === "MiB" ? 1024 * 1024 : 1024)) : "");
+                        setPdfTargetUnit(unit); } }}>
+                    <option value="KiB">KiB</option><option value="MiB">MiB</option>
+                  </select>
                 </label>
                 <p class="file-note">Carica 1–4 PDF (massimo 8 MiB ciascuno, 20 MiB complessivi). I tentativi ricomprimono JPEG/Flate dai sorgenti, controllano i byte PDF finali e si fermano quando il limite è realmente rispettato. Non viene promessa la dimensione richiesta. I PDF non raggiunti rimangono disponibili come best effort; lo ZIP contiene solo i PDF verificati sotto il limite. I singoli file con errori non bloccano gli altri.</p>
               </>

@@ -8,7 +8,7 @@
 
 **Blocked by:** 218, 219.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 - [ ] Basic structural optimizer and image-aware compressor are distinct truthful modes/jobs.
 - [ ] Result reports original/result bytes, savings %, pages, image count touched, effective image DPI/quality strategy and warnings.

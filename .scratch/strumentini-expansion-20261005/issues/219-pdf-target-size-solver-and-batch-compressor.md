@@ -1,5 +1,7 @@
 # 219 — PDF target-size solver and batch compressor
 
+**2026-10-10 FUNCTIONAL ACCEPTANCE COMPLETED:** The public `pdf-compression-lite` target mode now accepts **KiB or MiB with byte-exact unit conversion** (without reinterpreting the limit on switching units), builds up to three real JPEG/Flate quality+size candidates per file from the **original** PDF, and marks success only when the final independent PDF reopen/byte measurement is at or below the requested target. Sources with unachievable targets explain what content limits compression and link to actual compatible split/delete actions. A bounded four-PDF queue isolates invalid/unsupported inputs; genuine eligible results remain separately downloadable and a verified ZIP contains only outputs below target. Cancellation races even a suspended browser File.arrayBuffer read and never publishes partial ZIP. Existing safe #218 upstream profile is functionally completed, with exact fail-closed supported scope; arbitrary PDF transformations and physical mobile acceptance are **not** implied. `tests/pdf-target-batch-219.test.ts` **5/5 PASS**, with real `File`/ZIP/byte assertions and cancel regression. Real Chromium compiled-public-route test `scripts/acceptance-pdf-target-batch-219.mjs` independently reopened downloaded ZIP PDFs, confirmed 2/2 below **409,600 bytes**, 1 corrupt PDF isolated, and zero offsite requests: `PDF_TARGET_219_CHROMIUM_PASS source=598519 target=409600 passed=2 refused=1 ZIP=133581 no-offsite`. Browser also switched 400 KiB → 0.390625 MiB → 400 KiB, then submitted in MiB while preserving exact 409,600-byte target. This completes the bounded original functional ACs, **not Gold**, a universal PDF-compression guarantee or real physical iPhone/Android certification (separate #280/#281 remain OPEN).
+
 **What to build:** Add ≤KB/MB best-effort iteration over proven PDF profiles plus a bounded multi-PDF queue with isolated failures and ZIP successes.
 
 **Traces to:** US-EXP-04, US-EXP-10; AC-04.1, AC-06.1
@@ -8,13 +10,13 @@
 
 **Blocked by:** 79, 218, 222.
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** pdf → code-tdd → qa-browser → browser-performance-benchmark
 
-- [ ] Target success comes only from final byte count.
-- [ ] Impossible target names limiting content and suggests valid next actions.
-- [ ] Batch failures isolate and successful outputs remain downloadable.
+- [x] Target success comes only from reopened final output byte count, including KiB/MiB conversion.
+- [x] Impossible target names limiting content and suggests actual compatible actions without false guarantees.
+- [x] Batch failures isolate; verified successful PDFs and accepted-only ZIP remain downloadable and independently reopened.
 
 **Verification:** Target boundary, scan/text-heavy, cancel/memory and ZIP integrity fixtures.
 

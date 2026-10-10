@@ -11,13 +11,13 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 
 - **037 — Video inspect/subtitle utilities**
 - **047 — JPEG/PNG/WebP/SVG compression engines**
+- **051 — True PDF compression profiles + target size**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **056 — Office-to-PDF and printable export pack**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
-- **219 — PDF target-size solver and batch compressor**
 - **229 — Microphone test and local recorder**
 - **231 — Audio timeline edits and deterministic DSP**
 - **234 — Video transform worker core**
@@ -98,7 +98,7 @@ Exactly **21** incomplete tickets currently have every declared numeric blocker 
 | 048 | completed (bounded JPEG/PNG/WebP route; advanced codec and physical gates separate) | Target-size + batch image compression | 210, 211 |
 | 049 | blocked | Image conversion matrix + HEIC/AVIF/GIF | 212, 312, 313 |
 | 050 | completed | Upgrade existing image-tool functionality | 213, 314, 315, 316, 317 |
-| 051 | blocked | True PDF compression profiles + target size | 218, 219 |
+| 051 | ready-for-agent | True PDF compression profiles + target size | 218, 219 |
 | 052 | completed (bounded cross-source page composition with safe per-page mutation and browser verification) | Visual PDF page organizer for existing page tools | 215, 216, 217 |
 | 053 | blocked | Upgrade existing PDF inspect/extract/compare tools | 220, 221, 242, 318, 319, 320 |
 | 054 | completed | TXT/Markdown/HTML conversion core | 081 |
@@ -266,7 +266,7 @@ Exactly **21** incomplete tickets currently have every declared numeric blocker 
 | 216 | completed (bounded visual preview and existing verified PDF core; production/physical device promotion separately gated) | Visual PDF merge reorder and rotate organizer | 215 |
 | 217 | completed (strict shared grammar, bounded visual selection and independently verified multi-PDF ZIP) | Visual PDF split delete and extract selector | 215, 222 |
 | 218 | completed | Image-aware and scan PDF compression profiles | 098, 100, 103, 269 |
-| 219 | ready-for-agent | PDF target-size solver and batch compressor | 079, 218, 222 |
+| 219 | completed | PDF target-size solver and batch compressor | 079, 218, 222 |
 | 220 | completed | Page-scoped PDF text and embedded-image extraction | 098 |
 | 221 | completed (explicit page alignment, bounded structural/text layers and user-triggered rendered visual diff) | PDF structural text and visual comparison | 215, 220 |
 | 222 | completed | Real ZIP DEFLATE compression tranche | 103, 272 |

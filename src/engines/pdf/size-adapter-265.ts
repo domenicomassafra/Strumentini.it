@@ -1,6 +1,33 @@
 import { measureSimpleImageDpi218 } from "./placement-dpi-218";
-import { nameValue, numberValue, parsePdf } from "./parser";
+import { dictionaryOrNull, nameValue, numberValue, parsePdf, type PdfDocumentModel } from "./parser";
 import { PDF_LIMITS } from "./types";
+
+/** Positive text/vector attribution only for provably simple, uncompressed
+ * page streams that paint with an actual font resource and no image-capable
+ * XObject, inline BI image, external graphics state or nested Form. This is a
+ * *candidate* description, not a proof that every page has visible glyphs.
+ */
+function hasSimpleTextVectorOnly265(model: PdfDocumentModel): boolean {
+  if (model.pages.length === 0) return false;
+  for (const page of model.pages) {
+    if (page.object.value.kind !== "dict") return false;
+    const resources = dictionaryOrNull(model,
+      page.object.value.entries.get("Resources") ?? page.inherited.Resources);
+    if (!resources || ["XObject", "Pattern", "Shading", "ExtGState", "Properties"]
+      .some((key) => resources.entries.has(key))) return false;
+    const fonts = dictionaryOrNull(model, resources.entries.get("Font"));
+    if (!fonts || fonts.entries.size === 0) return false;
+    const contents = page.object.value.entries.get("Contents");
+    if (!contents || contents.kind !== "ref") return false;
+    const stream = model.objects.get(contents.id)?.value;
+    if (!stream || stream.kind !== "stream" || stream.dictionary.entries.has("Filter") ||
+      stream.bytes.length > 1024 * 1024 || stream.bytes.some((byte) => byte > 127 || (byte < 32 && ![9, 10, 13].includes(byte)))) return false;
+    const text = new TextDecoder().decode(stream.bytes);
+    if (!/(?:^|\s)BT(?:\s|$)/u.test(text) || !/(?:^|\s)(?:Tj|TJ)(?:\s|$)/u.test(text) ||
+      /(?:^|\s)(?:BI|Do|sh|gs)(?:\s|$)/u.test(text)) return false;
+  }
+  return true;
+}
 
 /** Read-only, measured PDF stream payload breakdown for #265. Never a savings estimate. */
 export function inspectPdfSize265(bytes: Uint8Array, signal?: AbortSignal) {
@@ -40,7 +67,8 @@ export function inspectPdfSize265(bytes: Uint8Array, signal?: AbortSignal) {
         paints[0]!.paintedWidthPt * paints[0]!.paintedHeightPt >= area * 0.75;
     });
   const classification = allPagesCoveredBySingleImage && imageStreamBytes > 0
-    ? "image-only-page-candidate" as const : "unknown" as const;
+    ? "image-only-page-candidate" as const : imageStreamBytes === 0 && hasSimpleTextVectorOnly265(model)
+      ? "text-vector-only-candidate" as const : "unknown" as const;
   if (signal?.aborted) throw new DOMException("PDF size inspection cancelled", "AbortError");
   return {
     pageCount: model.pages.length,
@@ -55,8 +83,10 @@ export function inspectPdfSize265(bytes: Uint8Array, signal?: AbortSignal) {
     imagePlacementCoverage: placement.coverage,
     classificationNote: classification === "unknown"
       ? "Composizione non determinabile con certezza: non si deduce che il PDF sia una scansione o testo/vettoriale."
-      : "Candidato a pagine composte soltanto da immagini: contenuto pagina verificato limitatamente a paint semplici, non codec o fedeltà.",
+      : classification === "text-vector-only-candidate"
+        ? "Candidato testo/vettori: solo pagine con contenuti testuali semplici, font presenti e nessun XObject o immagine inline. Non è una garanzia di fedeltà."
+        : "Candidato a pagine composte soltanto da immagini: contenuto pagina verificato limitatamente a paint semplici, non codec o fedeltà.",
     accounting: "Only actual encoded PDF stream payload byte lengths. Structural remainder includes dictionaries, xref, whitespace and other data; not exact per-object disk footprints. Reused streams counted once.",
-    coverage: "bounded-parser-streams-and-strict-image-only-paints; inline images, complex pages, incremental revisions and arbitrary embedded assets NOT certified",
+    coverage: "bounded-parser-streams-and-strict-image-or-text-paints; inline images, complex pages, incremental revisions and arbitrary embedded assets NOT certified",
   };
 }

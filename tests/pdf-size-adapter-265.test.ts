@@ -3,6 +3,7 @@ import { deflateSync } from "node:zlib";
 import { analyzeFileSize } from "../src/engines/file-privacy";
 import { pdfArray, pdfDict, pdfName, pdfNumber } from "../src/engines/pdf/parser";
 import { PdfBuilder } from "../src/engines/pdf/writer";
+import { createSimplePdf } from "../src/engines/pdf/writer";
 
 function fixture(content: string, image = false) {
   const writer = new PdfBuilder();
@@ -28,6 +29,26 @@ function fixture(content: string, image = false) {
 }
 
 describe("#265 local PDF source-backed size adapter", () => {
+  it("classifies genuine visible text-only PDF pages only when known font/paint structure excludes images", async () => {
+    const bytes = createSimplePdf(["VECTORIAL-CONTENT-265", "SECOND-TEXT-265"], { width: 320, height: 440 });
+    const result = await analyzeFileSize({ files: [new File([Uint8Array.from(bytes)], "text-only.pdf", { type: "application/pdf" })] });
+    expect(result).toMatchObject({ kind: "pdf", estimatedSavingsBytes: null, recommendedOptimizer: "pdf-compression-lite",
+      pdf: { classification: "text-vector-only-candidate", pageCount: 2, imageStreamBytes: 0, imageStreamCount: 0 } });
+    const pdf = result.pdf as { encodedStreamBytes: number; structuralRemainderBytes: number; largestStreams: Array<{ objectId: number }> };
+    expect(pdf.encodedStreamBytes + pdf.structuralRemainderBytes).toBe(bytes.length);
+    expect(pdf.largestStreams.length).toBeGreaterThan(0);
+  });
+
+  it("does not classify inline image paint as image-free text even without Image XObjects", async () => {
+    const original = createSimplePdf(["HAS-TEXT-265"]);
+    // A standalone text-only fixture stays deterministically classifiable; a
+    // mixed source without an eligible resource graph remains conservative.
+    const mixed = fixture("BT /F1 12 Tf (Inline) Tj ET\nBI /W 1 /H 1 ID xxx EI\n");
+    const known = await analyzeFileSize({ files: [new File([Uint8Array.from(original)], "safe.pdf")] });
+    const unknown = await analyzeFileSize({ files: [new File([Uint8Array.from(mixed.bytes)], "mixed.pdf")] });
+    expect(known.pdf).toMatchObject({ classification: "text-vector-only-candidate" });
+    expect(unknown.pdf).toMatchObject({ classification: "unknown" });
+  });
   it("measures exact encoded stream payload contributions for a known full-page image PDF", async () => {
     const input = fixture("q 480 0 0 360 0 0 cm /Im0 Do Q\n", true);
     const file = new File([Uint8Array.from(input.bytes)], "scan.pdf", { type: "application/pdf" });

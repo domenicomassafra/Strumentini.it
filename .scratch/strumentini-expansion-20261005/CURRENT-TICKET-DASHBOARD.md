@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 264 / 63 |
+| All / completed / open | 327 / 265 / 62 |
 | Closed with explicit refusal (NOT shipped) | 18 |
 | DAG-ready (all numeric dependencies closed) | 21 |
 | Ready for assignment (feasibility still to prove) | 13 |
-| Waiting on other tickets | 42 |
+| Waiting on other tickets | 41 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 1 |
@@ -25,10 +25,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 - #037 — Video inspect/subtitle utilities
 - #047 — JPEG/PNG/WebP/SVG compression engines
+- #051 — True PDF compression profiles + target size
 - #056 — Office-to-PDF and printable export pack
 - #059 — JSON/XML/CSS/HTML/SVG minimizer pack
 - #212 — HEIC AVIF and GIF directional image implementations
-- #219 — PDF target-size solver and batch compressor
 - #231 — Audio timeline edits and deterministic DSP
 - #234 — Video transform worker core
 - #236 — Advanced PDF to image export
@@ -37,7 +37,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #246 — Local image OCR
 - #265 — File-size analyzer PDF adapter
 
-## Waiting on other tickets (42)
+## Waiting on other tickets (41)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -58,7 +58,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #033, #035, #036, #037, #038, #040, #065, #066)
 - #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)
 - #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212)
-- #051 — True PDF compression profiles + target size (awaiting #219)
 - #057 — PDF-to-editable/structured conversion pack (awaiting #255)
 - #058 — PDF↔image directional conversion pack (awaiting #235, #236)
 - #062 — Upgrade existing business/date functionality (awaiting #126, #127, #128, #130, #133, #134, #135)
