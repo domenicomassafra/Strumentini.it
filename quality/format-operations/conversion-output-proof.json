@@ -1,0 +1,657 @@
+{
+  "schemaVersion": 1,
+  "gate": "65",
+  "browser": "chromium",
+  "viewport": "390x844",
+  "locality": "zero off-origin requests",
+  "status": "PASS",
+  "directions": [
+    {
+      "id": "convert-jpeg-png",
+      "inputBytes": 821,
+      "outputBytes": 102,
+      "mime": "image/png",
+      "signature": [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "single-image",
+      "alphaPolicy": "opaque-source"
+    },
+    {
+      "id": "convert-jpeg-webp",
+      "inputBytes": 821,
+      "outputBytes": 562,
+      "mime": "image/webp",
+      "signature": [
+        82,
+        73,
+        70,
+        70,
+        42,
+        2,
+        0,
+        0,
+        87,
+        69,
+        66,
+        80
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "single-image",
+      "alphaPolicy": "opaque-source"
+    },
+    {
+      "id": "convert-png-jpeg",
+      "inputBytes": 78,
+      "outputBytes": 808,
+      "mime": "image/jpeg",
+      "signature": [
+        255,
+        216,
+        255,
+        224,
+        0,
+        16,
+        74,
+        70,
+        73,
+        70,
+        0,
+        1
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "single-image",
+      "alphaPolicy": "flattened-on-background"
+    },
+    {
+      "id": "convert-png-webp",
+      "inputBytes": 78,
+      "outputBytes": 588,
+      "mime": "image/webp",
+      "signature": [
+        82,
+        73,
+        70,
+        70,
+        68,
+        2,
+        0,
+        0,
+        87,
+        69,
+        66,
+        80
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "single-image",
+      "alphaPolicy": "preserved"
+    },
+    {
+      "id": "convert-webp-jpeg",
+      "inputBytes": 588,
+      "outputBytes": 805,
+      "mime": "image/jpeg",
+      "signature": [
+        255,
+        216,
+        255,
+        224,
+        0,
+        16,
+        74,
+        70,
+        73,
+        70,
+        0,
+        1
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "single-image",
+      "alphaPolicy": "flattened-on-background"
+    },
+    {
+      "id": "convert-webp-png",
+      "inputBytes": 588,
+      "outputBytes": 101,
+      "mime": "image/png",
+      "signature": [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "single-image",
+      "alphaPolicy": "preserved"
+    },
+    {
+      "id": "convert-avif-jpeg",
+      "inputBytes": 584,
+      "outputBytes": 791,
+      "mime": "image/jpeg",
+      "signature": [
+        255,
+        216,
+        255,
+        224,
+        0,
+        16,
+        74,
+        70,
+        73,
+        70,
+        0,
+        1
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "single-image",
+      "alphaPolicy": "flattened-on-background"
+    },
+    {
+      "id": "convert-avif-png",
+      "inputBytes": 584,
+      "outputBytes": 101,
+      "mime": "image/png",
+      "signature": [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "single-image",
+      "alphaPolicy": "preserved"
+    },
+    {
+      "id": "convert-avif-webp",
+      "inputBytes": 584,
+      "outputBytes": 570,
+      "mime": "image/webp",
+      "signature": [
+        82,
+        73,
+        70,
+        70,
+        50,
+        2,
+        0,
+        0,
+        87,
+        69,
+        66,
+        80
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "single-image",
+      "alphaPolicy": "preserved"
+    },
+    {
+      "id": "convert-heic-jpeg",
+      "inputBytes": 811,
+      "outputBytes": 792,
+      "mime": "image/jpeg",
+      "signature": [
+        255,
+        216,
+        255,
+        224,
+        0,
+        16,
+        74,
+        70,
+        73,
+        70,
+        0,
+        1
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "libheif-wasm",
+      "framePolicy": "single-image",
+      "alphaPolicy": "flattened-on-background"
+    },
+    {
+      "id": "convert-heic-png",
+      "inputBytes": 811,
+      "outputBytes": 102,
+      "mime": "image/png",
+      "signature": [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "libheif-wasm",
+      "framePolicy": "single-image",
+      "alphaPolicy": "preserved"
+    },
+    {
+      "id": "convert-heic-webp",
+      "inputBytes": 811,
+      "outputBytes": 578,
+      "mime": "image/webp",
+      "signature": [
+        82,
+        73,
+        70,
+        70,
+        58,
+        2,
+        0,
+        0,
+        87,
+        69,
+        66,
+        80
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "libheif-wasm",
+      "framePolicy": "single-image",
+      "alphaPolicy": "preserved"
+    },
+    {
+      "id": "convert-gif-static-raster",
+      "inputBytes": 62,
+      "outputBytes": 99,
+      "mime": "image/png",
+      "signature": [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "first-frame-only",
+      "alphaPolicy": "preserved"
+    },
+    {
+      "id": "convert-gif-static-raster",
+      "inputBytes": 62,
+      "outputBytes": 808,
+      "mime": "image/jpeg",
+      "signature": [
+        255,
+        216,
+        255,
+        224,
+        0,
+        16,
+        74,
+        70,
+        73,
+        70,
+        0,
+        1
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "first-frame-only",
+      "alphaPolicy": "flattened-on-background"
+    },
+    {
+      "id": "convert-gif-static-raster",
+      "inputBytes": 62,
+      "outputBytes": 592,
+      "mime": "image/webp",
+      "signature": [
+        82,
+        73,
+        70,
+        70,
+        72,
+        2,
+        0,
+        0,
+        87,
+        69,
+        66,
+        80
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 2,
+        "height": 2
+      },
+      "decoder": "browser",
+      "framePolicy": "first-frame-only",
+      "alphaPolicy": "preserved"
+    },
+    {
+      "id": "convert-jpeg-pdf",
+      "inputBytes": 821,
+      "outputBytes": 1492,
+      "mime": "application/pdf",
+      "signature": [
+        37,
+        80,
+        68,
+        70,
+        45,
+        49,
+        46,
+        55,
+        10,
+        37,
+        195,
+        162
+      ],
+      "reopen": {
+        "method": "PDF parser",
+        "pageCount": 1
+      },
+      "pageCount": 1,
+      "embeddedAs": "original-jpeg",
+      "framePolicy": "single-image",
+      "alphaPolicy": "opaque-source"
+    },
+    {
+      "id": "convert-png-pdf",
+      "inputBytes": 78,
+      "outputBytes": 1479,
+      "mime": "application/pdf",
+      "signature": [
+        37,
+        80,
+        68,
+        70,
+        45,
+        49,
+        46,
+        55,
+        10,
+        37,
+        195,
+        162
+      ],
+      "reopen": {
+        "method": "PDF parser",
+        "pageCount": 1
+      },
+      "pageCount": 1,
+      "embeddedAs": "jpeg-reencode",
+      "framePolicy": "single-image",
+      "alphaPolicy": "flattened-on-background"
+    },
+    {
+      "id": "convert-webp-pdf",
+      "inputBytes": 588,
+      "outputBytes": 1476,
+      "mime": "application/pdf",
+      "signature": [
+        37,
+        80,
+        68,
+        70,
+        45,
+        49,
+        46,
+        55,
+        10,
+        37,
+        195,
+        162
+      ],
+      "reopen": {
+        "method": "PDF parser",
+        "pageCount": 1
+      },
+      "pageCount": 1,
+      "embeddedAs": "jpeg-reencode",
+      "framePolicy": "single-image",
+      "alphaPolicy": "flattened-on-background"
+    },
+    {
+      "id": "convert-avif-pdf",
+      "inputBytes": 584,
+      "outputBytes": 1462,
+      "mime": "application/pdf",
+      "signature": [
+        37,
+        80,
+        68,
+        70,
+        45,
+        49,
+        46,
+        55,
+        10,
+        37,
+        195,
+        162
+      ],
+      "reopen": {
+        "method": "PDF parser",
+        "pageCount": 1
+      },
+      "pageCount": 1,
+      "embeddedAs": "jpeg-reencode",
+      "framePolicy": "single-image",
+      "alphaPolicy": "flattened-on-background"
+    },
+    {
+      "id": "convert-heic-pdf",
+      "inputBytes": 811,
+      "outputBytes": 1463,
+      "mime": "application/pdf",
+      "signature": [
+        37,
+        80,
+        68,
+        70,
+        45,
+        49,
+        46,
+        55,
+        10,
+        37,
+        195,
+        162
+      ],
+      "reopen": {
+        "method": "PDF parser",
+        "pageCount": 1
+      },
+      "pageCount": 1,
+      "embeddedAs": "jpeg-reencode",
+      "framePolicy": "single-image",
+      "alphaPolicy": "flattened-on-background"
+    },
+    {
+      "id": "convert-pdf-jpeg",
+      "inputBytes": 907,
+      "outputBytes": 4425,
+      "mime": "image/jpeg",
+      "signature": [
+        255,
+        216,
+        255,
+        224,
+        0,
+        16,
+        74,
+        70,
+        73,
+        70,
+        0,
+        1
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 612,
+        "height": 792
+      },
+      "renderer": "pdfjs-local-lazy",
+      "selectedPages": [
+        1
+      ]
+    },
+    {
+      "id": "convert-pdf-png",
+      "inputBytes": 907,
+      "outputBytes": 11286,
+      "mime": "image/png",
+      "signature": [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 612,
+        "height": 792
+      },
+      "renderer": "pdfjs-local-lazy",
+      "selectedPages": [
+        1
+      ]
+    },
+    {
+      "id": "convert-pdf-webp",
+      "inputBytes": 907,
+      "outputBytes": 1966,
+      "mime": "image/webp",
+      "signature": [
+        82,
+        73,
+        70,
+        70,
+        166,
+        7,
+        0,
+        0,
+        87,
+        69,
+        66,
+        80
+      ],
+      "reopen": {
+        "method": "browser createImageBitmap",
+        "width": 612,
+        "height": 792
+      },
+      "renderer": "pdfjs-local-lazy",
+      "selectedPages": [
+        1
+      ]
+    }
+  ]
+}

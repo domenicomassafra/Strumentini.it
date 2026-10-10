@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "releaseRestrictions": {
+    "convert-heic-jpeg": "Fixture is synthetic HEIC; authentic iPhone-origin input and physical Safari/Android memory acceptance (#280/#281) are not yet proved.",
+    "convert-heic-png": "Fixture is synthetic HEIC; authentic iPhone-origin input and physical Safari/Android memory acceptance (#280/#281) are not yet proved.",
+    "convert-heic-webp": "Fixture is synthetic HEIC; authentic iPhone-origin input and physical Safari/Android memory acceptance (#280/#281) are not yet proved.",
+    "convert-heic-pdf": "Fixture is synthetic HEIC; authentic iPhone-origin input and physical Safari/Android memory acceptance (#280/#281) are not yet proved."
+  },
+  "implementationEvidence": [
+    {"ids":["compress-png-lossless"],"engine":"src/engines/image/png-lossless-47.ts","route":"image-compression","test":"tests/image-compression-47.test.ts","checks":["actual-bytes","signature","reopen","fidelity"]},
+    {"ids":["optimize-svg"],"engine":"src/engines/developer-web/svg-optimizer-059.ts","route":"xml-formatter-validator","test":"tests/svg-donor-svgo-059.test.ts","checks":["actual-bytes","signature","fidelity"]},
+    {"ids":["compress-image-batch"],"engine":"src/engines/image/batch-compression.ts","route":"image-compression","test":"tests/image-batch-compression.test.ts","checks":["actual-bytes","signature","reopen","fidelity"]},
+    {"ids":["compress-image-target-size"],"engine":"src/engines/image/target-size.ts","route":"image-compression","test":"tests/image-target-size.test.ts","checks":["actual-bytes","target","signature","reopen","fidelity"]},
+    {"ids":["compress-pdf-basic"],"engine":"src/tools/pdf-compression-lite/module.ts","route":"pdf-compression-lite","test":"tests/pdf-compression-profile-218.test.ts","checks":["actual-bytes","signature","reopen","fidelity"]},
+    {"ids":["compress-pdf-images"],"engine":"src/engines/pdf/jpeg-image-aware.ts","route":"pdf-compression-lite","test":"tests/pdf-image-aware-218.test.ts","checks":["actual-bytes","signature","reopen","fidelity"]},
+    {"ids":["compress-pdf-scan"],"engine":"src/engines/pdf/scan-image-aware.ts","route":"pdf-compression-lite","test":"tests/pdf-scan-image-aware-218.test.ts","checks":["actual-bytes","signature","reopen","fidelity"]},
+    {"ids":["compress-pdf-target-size","compress-pdf-batch"],"engine":"src/engines/pdf/target-batch-219.ts","route":"pdf-compression-lite","test":"tests/pdf-target-batch-219.test.ts","checks":["actual-bytes","target","signature","reopen","fidelity"]},
+    {"ids":["compress-docx","compress-pptx","compress-xlsx"],"engine":"src/engines/ooxml/media-compress.ts","route":"ooxml-media-compression","test":"tests/ooxml-media-264.test.ts","checks":["actual-bytes","signature","reopen","fidelity"]},
+    {"ids":["convert-jpeg-png","convert-jpeg-webp","convert-png-jpeg","convert-png-webp","convert-webp-jpeg","convert-webp-png","convert-avif-jpeg","convert-avif-png","convert-avif-webp","convert-heic-jpeg","convert-heic-png","convert-heic-webp","convert-gif-static-raster"],"engine":"src/engines/image/visual-tools.ts","route":"image-format-conversion","test":"scripts/acceptance-conversion-matrix.mjs","checks":["signature","reopen","fidelity"]},
+    {"ids":["convert-heic-pdf","convert-jpeg-pdf","convert-png-pdf","convert-webp-pdf","convert-avif-pdf"],"engine":"src/tools/images-to-pdf/module.ts","route":"images-to-pdf","test":"scripts/acceptance-conversion-matrix.mjs","checks":["signature","reopen","fidelity"]},
+    {"ids":["convert-pdf-jpeg","convert-pdf-png","convert-pdf-webp"],"engine":"src/tools/pdf-to-images/module.ts","route":"pdf-to-images","test":"scripts/acceptance-conversion-matrix.mjs","checks":["signature","reopen","fidelity"]},
+    {"ids":["convert-docx-txt","convert-docx-md","convert-docx-html"],"engine":"src/engines/ooxml/office-semantics.ts","exposure":"engine-only","test":"tests/office-downstream.test.ts","checks":["signature","reopen","fidelity"]},
+    {"ids":["convert-txt-docx","convert-md-docx","convert-html-docx"],"engine":"src/engines/ooxml/office-semantics.ts","exposure":"engine-only","test":"tests/office-downstream.test.ts","checks":["signature","reopen","fidelity"]},
+    {"ids":["convert-xlsx-csv","convert-csv-xlsx"],"engine":"src/engines/table/spreadsheet-interchange.ts","exposure":"engine-only","test":"tests/spreadsheet-interchange.test.ts","checks":["signature","reopen","fidelity"]}
+  ]
+}

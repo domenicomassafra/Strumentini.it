@@ -1,0 +1,780 @@
+{
+  "schemaVersion": 1,
+  "source": "docs/11-format-operation-matrix.md",
+  "total": 63,
+  "counts": {
+    "IMPLEMENTED": 41,
+    "BLOCKED": 16,
+    "REFUSED": 6
+  },
+  "ok": true,
+  "errors": [],
+  "rows": [
+    {
+      "id": "compress-jpeg",
+      "classification": "REFUSED",
+      "source": "docs/11 §3 JPEG/JPG compressor",
+      "fidelity": "The bounded Canvas JPEG quality hint is not a native/expert codec profile with progressive or chroma controls.",
+      "reason": "Ticket 207 explicitly refused the advanced production JPEG compressor; only bounded Canvas lossy compression is separately available."
+    },
+    {
+      "id": "compress-png-lossless",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 PNG compressor lossless",
+      "fidelity": "Pixel values and alpha must remain lossless and output must remain a valid PNG.",
+      "engine": "src/engines/image/png-lossless-47.ts",
+      "route": "/tools/image-compression/",
+      "proof": "tests/image-compression-47.test.ts",
+      "checks": [
+        "actual-bytes",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-png-palette",
+      "classification": "REFUSED",
+      "source": "docs/11 §3 PNG compressor lossy/palette",
+      "fidelity": "PNG indexed-palette lossless IDAT optimization exists, but lossy quantization and dithering are separate unimplemented operations.",
+      "reason": "Ticket 208 explicitly refused lossy palette production controls; donor #47 declares pngPaletteLossy unsupported."
+    },
+    {
+      "id": "compress-webp",
+      "classification": "REFUSED",
+      "source": "docs/11 §3 WebP compressor",
+      "fidelity": "Browser Canvas can produce verified lossy WebP conditionally, but lacks portable WebP lossless, effort and alpha-quality controls.",
+      "reason": "Ticket 207 refused advanced WebP production promotion; WebP lossless/effort donor is unavailable and Safari can reject Canvas WebP."
+    },
+    {
+      "id": "compress-avif",
+      "classification": "BLOCKED",
+      "source": "docs/11 §3 AVIF compressor",
+      "fidelity": "Codec support, decode verification, memory use and mobile behavior must be proven before route promotion.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "reason": "Codec support, decode verification, memory use and mobile behavior must be proven before route promotion."
+    },
+    {
+      "id": "optimize-svg",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 SVG optimizer/compressor",
+      "fidelity": "Preserve vector semantics and viewBox while reporting every optional aggressive transform separately.",
+      "engine": "src/engines/developer-web/svg-optimizer-059.ts",
+      "route": "/tools/xml-formatter-validator/",
+      "proof": "tests/svg-donor-svgo-059.test.ts",
+      "checks": [
+        "actual-bytes",
+        "signature",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "optimize-gif",
+      "classification": "BLOCKED",
+      "source": "docs/11 §3 GIF optimizer",
+      "fidelity": "Animation frame timing, loop behavior and transparency must survive independent decode checks.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "reason": "Animation frame timing, loop behavior and transparency must survive independent decode checks."
+    },
+    {
+      "id": "reduce-heic",
+      "classification": "BLOCKED",
+      "source": "docs/11 §3 HEIC size reduction",
+      "fidelity": "Treat size reduction as an explicit format conversion unless a native HEIC encoder is independently proven.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "reason": "Treat size reduction as an explicit format conversion unless a native HEIC encoder is independently proven."
+    },
+    {
+      "id": "compress-image-batch",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 Batch image compressor",
+      "fidelity": "Each file keeps isolated success/failure evidence and the ZIP contains only verified outputs.",
+      "engine": "src/engines/image/batch-compression.ts",
+      "route": "/tools/image-compression/",
+      "proof": "tests/image-batch-compression.test.ts",
+      "checks": [
+        "actual-bytes",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-image-target-size",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 Image under X KB/MB",
+      "fidelity": "Success is claimed only when the encoded output is at or below the requested byte ceiling.",
+      "engine": "src/engines/image/target-size.ts",
+      "route": "/tools/image-compression/",
+      "proof": "tests/image-target-size.test.ts",
+      "checks": [
+        "actual-bytes",
+        "target",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-pdf-basic",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 PDF basic compressor",
+      "fidelity": "Structural optimization preserves page count and searchable text/vector content and never claims image recompression.",
+      "engine": "src/tools/pdf-compression-lite/module.ts",
+      "route": "/tools/pdf-compression-lite/",
+      "proof": "tests/pdf-compression-profile-218.test.ts",
+      "checks": [
+        "actual-bytes",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-pdf-images",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 PDF image-aware compressor",
+      "fidelity": "Embedded-image changes must preserve document structure and verify page/text survival after export.",
+      "engine": "src/engines/pdf/jpeg-image-aware.ts",
+      "route": "/tools/pdf-compression-lite/",
+      "proof": "tests/pdf-image-aware-218.test.ts",
+      "checks": [
+        "actual-bytes",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-pdf-scan",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 PDF scan compressor",
+      "fidelity": "Scan downsampling/grayscale trade-offs are explicit and readability is checked on representative pages.",
+      "engine": "src/engines/pdf/scan-image-aware.ts",
+      "route": "/tools/pdf-compression-lite/",
+      "proof": "tests/pdf-scan-image-aware-218.test.ts",
+      "checks": [
+        "actual-bytes",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-pdf-target-size",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 PDF under X KB/MB",
+      "fidelity": "Target-size success is based on final bytes; failure explains why the ceiling cannot be met safely.",
+      "engine": "src/engines/pdf/target-batch-219.ts",
+      "route": "/tools/pdf-compression-lite/",
+      "proof": "tests/pdf-target-batch-219.test.ts",
+      "checks": [
+        "actual-bytes",
+        "target",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-pdf-batch",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 Batch PDF compressor",
+      "fidelity": "Each input has independent before/after bytes and failures do not invalidate successful files.",
+      "engine": "src/engines/pdf/target-batch-219.ts",
+      "route": "/tools/pdf-compression-lite/",
+      "proof": "tests/pdf-target-batch-219.test.ts",
+      "checks": [
+        "actual-bytes",
+        "target",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-zip",
+      "classification": "REFUSED",
+      "source": "docs/11 §3 ZIP compressor",
+      "fidelity": "The public ZIP creator uses STORE only; it is not a DEFLATE compression-level tool.",
+      "reason": "Ticket 222 explicitly refused ZIP DEFLATE production promotion pending bounded extraction and cancellation safeguards."
+    },
+    {
+      "id": "compress-gzip",
+      "classification": "REFUSED",
+      "source": "docs/11 §3 GZIP compressor/decompressor",
+      "fidelity": "The production app has no dedicated gzip/gunzip route or verified output contract.",
+      "reason": "Ticket 223 explicitly refused GZIP production promotion pending bounded expansion, cancellation and physical-mobile evidence."
+    },
+    {
+      "id": "inspect-7z-rar",
+      "classification": "BLOCKED",
+      "source": "docs/11 §3 7z/RAR",
+      "fidelity": "Inspection/extraction requires maintained local codecs, acceptable licensing, bounded memory and zip-slip-equivalent defenses.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/272-archive-codec-feasibility-spike.md",
+      "reason": "Inspection/extraction requires maintained local codecs, acceptable licensing, bounded memory and zip-slip-equivalent defenses."
+    },
+    {
+      "id": "compress-docx",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 DOCX compressor",
+      "fidelity": "Rebuilt OOXML must preserve relationships and independently reopen with the same document structure.",
+      "engine": "src/engines/ooxml/media-compress.ts",
+      "route": "/tools/ooxml-media-compression/",
+      "proof": "tests/ooxml-media-264.test.ts",
+      "checks": [
+        "actual-bytes",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-pptx",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 PPTX compressor",
+      "fidelity": "Rebuilt OOXML must preserve slide count, relationships and editable structure.",
+      "engine": "src/engines/ooxml/media-compress.ts",
+      "route": "/tools/ooxml-media-compression/",
+      "proof": "tests/ooxml-media-264.test.ts",
+      "checks": [
+        "actual-bytes",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-xlsx",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §3 XLSX compressor",
+      "fidelity": "Rebuilt OOXML must preserve sheet count, relationships and workbook semantics.",
+      "engine": "src/engines/ooxml/media-compress.ts",
+      "route": "/tools/ooxml-media-compression/",
+      "proof": "tests/ooxml-media-264.test.ts",
+      "checks": [
+        "actual-bytes",
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "compress-audio",
+      "classification": "BLOCKED",
+      "source": "docs/11 §3 Audio compressor",
+      "fidelity": "Codec, bitrate, duration and channel/sample-rate changes require local codec and mobile-memory proof.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/273-audio-codec-and-dsp-feasibility-spike.md",
+      "reason": "Codec, bitrate, duration and channel/sample-rate changes require local codec and mobile-memory proof."
+    },
+    {
+      "id": "compress-video",
+      "classification": "BLOCKED",
+      "source": "docs/11 §3 Video compressor",
+      "fidelity": "Codec/CRF/bitrate/resolution transforms require local codec, cancellation and representative mobile-memory proof.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/274-video-codec-and-media-processing-feasibility-spike.md",
+      "reason": "Codec/CRF/bitrate/resolution transforms require local codec, cancellation and representative mobile-memory proof."
+    },
+    {
+      "id": "convert-jpeg-png",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 JPG/JPEG to PNG",
+      "fidelity": "Decode and re-encode pixels with a valid PNG signature; metadata loss is disclosed.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-jpeg-webp",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 JPG/JPEG to WebP",
+      "fidelity": "Decode and re-encode pixels with a valid WebP signature; quality settings are explicit.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-jpeg-avif",
+      "classification": "BLOCKED",
+      "source": "docs/11 §4 JPG/JPEG to AVIF",
+      "fidelity": "AVIF encode/decode support and mobile resource cost must be measured before promotion.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "reason": "AVIF encode/decode support and mobile resource cost must be measured before promotion."
+    },
+    {
+      "id": "convert-png-jpeg",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 PNG to JPG",
+      "fidelity": "Alpha flattening requires an explicit background and the output must decode as JPEG.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-png-webp",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 PNG to WebP",
+      "fidelity": "Alpha behavior and quality/lossless mode are explicit and output decodes as WebP.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-png-avif",
+      "classification": "BLOCKED",
+      "source": "docs/11 §4 PNG to AVIF",
+      "fidelity": "AVIF encode/decode and alpha handling require capability proof.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "reason": "AVIF encode/decode and alpha handling require capability proof."
+    },
+    {
+      "id": "convert-webp-jpeg",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 WebP to JPG",
+      "fidelity": "Transparency flattening is explicit and output decodes as JPEG.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-webp-png",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 WebP to PNG",
+      "fidelity": "Decoded pixels and alpha are preserved within the source codec's decoded representation.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-webp-avif",
+      "classification": "BLOCKED",
+      "source": "docs/11 §4 WebP to AVIF",
+      "fidelity": "AVIF encode/decode and alpha behavior require capability proof.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "reason": "AVIF encode/decode and alpha behavior require capability proof."
+    },
+    {
+      "id": "convert-avif-jpeg",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 AVIF to JPG",
+      "fidelity": "Browser-local AVIF decode is reopened before a verified lossy JPEG export; source metadata bytes are not preserved.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-avif-png",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 AVIF to PNG",
+      "fidelity": "Browser-local AVIF decode is reopened before verified PNG output; decoded alpha is preserved by the PNG path.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-avif-webp",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 AVIF to WebP",
+      "fidelity": "Browser-local AVIF decode and WebP re-encode are both verified by output signature and decode; quality is explicit.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-heic-jpeg",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 HEIC/HEIF to JPG",
+      "fidelity": "HEIC/HEIF is decoded locally through lazy libheif/WASM and the resulting JPEG is signature/decode/dimension verified with explicit lossy quality.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ],
+      "releaseEligible": false,
+      "releaseReason": "Fixture is synthetic HEIC; authentic iPhone-origin input and physical Safari/Android memory acceptance (#280/#281) are not yet proved."
+    },
+    {
+      "id": "convert-heic-png",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 HEIC/HEIF to PNG",
+      "fidelity": "HEIC/HEIF is decoded locally through lazy libheif/WASM and the PNG output is signature/decode/dimension verified.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ],
+      "releaseEligible": false,
+      "releaseReason": "Fixture is synthetic HEIC; authentic iPhone-origin input and physical Safari/Android memory acceptance (#280/#281) are not yet proved."
+    },
+    {
+      "id": "convert-heic-webp",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 HEIC/HEIF to WebP",
+      "fidelity": "HEIC/HEIF is decoded locally through lazy libheif/WASM; WebP quality/loss is explicit and the output is reopened before success.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ],
+      "releaseEligible": false,
+      "releaseReason": "Fixture is synthetic HEIC; authentic iPhone-origin input and physical Safari/Android memory acceptance (#280/#281) are not yet proved."
+    },
+    {
+      "id": "convert-heic-pdf",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 HEIC/HEIF to PDF",
+      "fidelity": "HEIC/HEIF decode is local and lazy; the decoded frame is converted to verified JPEG before PDF composition, with page layout/rotation/margins explicit and the final PDF reparsed.",
+      "engine": "src/tools/images-to-pdf/module.ts",
+      "route": "/tools/images-to-pdf/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ],
+      "releaseEligible": false,
+      "releaseReason": "Fixture is synthetic HEIC; authentic iPhone-origin input and physical Safari/Android memory acceptance (#280/#281) are not yet proved."
+    },
+    {
+      "id": "convert-gif-static-raster",
+      "classification": "IMPLEMENTED",
+      "source": "ticket 49 GIF static-frame conversion",
+      "fidelity": "This is explicitly first-frame-only conversion; it never claims to preserve GIF animation. Each produced raster format is independently reopened.",
+      "engine": "src/engines/image/visual-tools.ts",
+      "route": "/tools/image-format-conversion/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-jpeg-pdf",
+      "classification": "IMPLEMENTED",
+      "source": "ticket 58 JPG/JPEG to PDF",
+      "fidelity": "Original JPEG bytes are embedded without re-encoding when no pixel transform is needed; page geometry/layout is explicit and the PDF is reparsed.",
+      "engine": "src/tools/images-to-pdf/module.ts",
+      "route": "/tools/images-to-pdf/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-png-pdf",
+      "classification": "IMPLEMENTED",
+      "source": "ticket 58 PNG to PDF",
+      "fidelity": "PNG pixels are locally decoded and converted to JPEG with explicit background/quality before PDF composition; the final PDF is reparsed.",
+      "engine": "src/tools/images-to-pdf/module.ts",
+      "route": "/tools/images-to-pdf/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-webp-pdf",
+      "classification": "IMPLEMENTED",
+      "source": "ticket 58 WebP to PDF",
+      "fidelity": "WebP pixels are locally decoded and converted to JPEG with explicit background/quality before PDF composition; the final PDF is reparsed.",
+      "engine": "src/tools/images-to-pdf/module.ts",
+      "route": "/tools/images-to-pdf/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-avif-pdf",
+      "classification": "IMPLEMENTED",
+      "source": "ticket 58 AVIF to PDF",
+      "fidelity": "AVIF uses the local browser decoder, then verified JPEG composition with explicit page layout; the final PDF is reparsed.",
+      "engine": "src/tools/images-to-pdf/module.ts",
+      "route": "/tools/images-to-pdf/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-pdf-jpeg",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 PDF pages to JPG",
+      "fidelity": "Selected pages are raster-rendered with lazy local PDF.js at explicit scale/DPI and JPEG quality; per-page files and multipage ZIP are verified.",
+      "engine": "src/tools/pdf-to-images/module.ts",
+      "route": "/tools/pdf-to-images/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-pdf-png",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 PDF pages to PNG",
+      "fidelity": "Selected pages are raster-rendered with lazy local PDF.js at explicit scale/DPI; PNG files and multipage ZIP are verified.",
+      "engine": "src/tools/pdf-to-images/module.ts",
+      "route": "/tools/pdf-to-images/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-pdf-webp",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §4 PDF pages to WebP",
+      "fidelity": "Selected pages are raster-rendered with lazy local PDF.js at explicit scale/DPI and WebP quality; per-page files and multipage ZIP are verified.",
+      "engine": "src/tools/pdf-to-images/module.ts",
+      "route": "/tools/pdf-to-images/",
+      "proof": "scripts/acceptance-conversion-matrix.mjs",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-svg-png",
+      "classification": "BLOCKED",
+      "source": "docs/11 §4 SVG to PNG",
+      "fidelity": "Raster dimensions/background and SVG sanitization must be explicit before rendering.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "reason": "Raster dimensions/background and SVG sanitization must be explicit before rendering."
+    },
+    {
+      "id": "convert-svg-jpeg",
+      "classification": "BLOCKED",
+      "source": "docs/11 §4 SVG to JPG",
+      "fidelity": "Raster dimensions/background and SVG sanitization must be explicit before rendering.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "reason": "Raster dimensions/background and SVG sanitization must be explicit before rendering."
+    },
+    {
+      "id": "convert-svg-webp",
+      "classification": "BLOCKED",
+      "source": "docs/11 §4 SVG to WebP",
+      "fidelity": "Raster dimensions/background and SVG sanitization must be explicit before rendering.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "reason": "Raster dimensions/background and SVG sanitization must be explicit before rendering."
+    },
+    {
+      "id": "convert-svg-pdf",
+      "classification": "BLOCKED",
+      "source": "docs/11 §4 SVG to PDF",
+      "fidelity": "Do not promise vector-preserving PDF unless the selected renderer proves vector semantics.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/269-advanced-pdf-renderer-and-mutation-feasibility-spike.md",
+      "reason": "Do not promise vector-preserving PDF unless the selected renderer proves vector semantics."
+    },
+    {
+      "id": "refuse-raster-svg-vectorization",
+      "classification": "REFUSED",
+      "source": "docs/11 §4 JPG/PNG/WebP to SVG",
+      "fidelity": "A raster wrapper is not vectorization.",
+      "reason": "Do not advertise raster-to-SVG as true vector conversion unless a separate tracing engine is intentionally implemented and verified."
+    },
+    {
+      "id": "convert-docx-txt",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §6 DOCX to TXT",
+      "fidelity": "Paragraph/table extraction order is deterministic and unsupported structures are reported.",
+      "engine": "src/engines/ooxml/office-semantics.ts",
+      "exposure": "engine-only",
+      "proof": "tests/office-downstream.test.ts",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-docx-md",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §6 DOCX to MD",
+      "fidelity": "Headings/lists/tables/images map only when semantically recoverable and unsupported constructs are listed.",
+      "engine": "src/engines/ooxml/office-semantics.ts",
+      "exposure": "engine-only",
+      "proof": "tests/office-downstream.test.ts",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-docx-html",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §6 DOCX to HTML",
+      "fidelity": "Semantic blocks and assets are sanitized and unsupported layout constructs are disclosed.",
+      "engine": "src/engines/ooxml/office-semantics.ts",
+      "exposure": "engine-only",
+      "proof": "tests/office-downstream.test.ts",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-docx-pdf",
+      "classification": "BLOCKED",
+      "source": "docs/11 §6 DOCX to PDF",
+      "fidelity": "Layout/font fidelity must pass an independent corpus before claiming document rendering fidelity.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/270-office-spreadsheet-parser-writer-and-renderer-feasibility-spike.md",
+      "reason": "Layout/font fidelity must pass an independent corpus before claiming document rendering fidelity."
+    },
+    {
+      "id": "convert-txt-docx",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §6 TXT to DOCX",
+      "fidelity": "Paragraphs/line breaks are preserved and styling comes only from an explicit template.",
+      "engine": "src/engines/ooxml/office-semantics.ts",
+      "exposure": "engine-only",
+      "proof": "tests/office-downstream.test.ts",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-md-docx",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §6 MD to DOCX",
+      "fidelity": "Supported Markdown constructs map deterministically and unsupported constructs are listed.",
+      "engine": "src/engines/ooxml/office-semantics.ts",
+      "exposure": "engine-only",
+      "proof": "tests/office-downstream.test.ts",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-html-docx",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §6 HTML to DOCX",
+      "fidelity": "Only supported semantic HTML/CSS is mapped; unsupported layout is disclosed.",
+      "engine": "src/engines/ooxml/office-semantics.ts",
+      "exposure": "engine-only",
+      "proof": "tests/office-downstream.test.ts",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-xlsx-csv",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §6 XLSX to CSV",
+      "fidelity": "Sheet selection and cell values/types are explicit; formulas and formatting losses are disclosed.",
+      "engine": "src/engines/table/spreadsheet-interchange.ts",
+      "exposure": "engine-only",
+      "proof": "tests/spreadsheet-interchange.test.ts",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-csv-xlsx",
+      "classification": "IMPLEMENTED",
+      "source": "docs/11 §6 CSV to XLSX",
+      "fidelity": "IDs and leading zeros are preserved unless the user opts into type inference.",
+      "engine": "src/engines/table/spreadsheet-interchange.ts",
+      "exposure": "engine-only",
+      "proof": "tests/spreadsheet-interchange.test.ts",
+      "checks": [
+        "signature",
+        "reopen",
+        "fidelity"
+      ]
+    },
+    {
+      "id": "convert-xlsx-pdf",
+      "classification": "BLOCKED",
+      "source": "docs/11 §6 XLSX to PDF",
+      "fidelity": "Pagination, print areas, fonts and sheet rendering require a fidelity corpus before promotion.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/270-office-spreadsheet-parser-writer-and-renderer-feasibility-spike.md",
+      "reason": "Pagination, print areas, fonts and sheet rendering require a fidelity corpus before promotion."
+    },
+    {
+      "id": "convert-pptx-pdf",
+      "classification": "BLOCKED",
+      "source": "docs/11 §6 PPTX to PDF",
+      "fidelity": "Slide layout, fonts, images and charts require visual fidelity evidence before promotion.",
+      "blocker": ".scratch/strumentini-expansion-20261005/issues/270-office-spreadsheet-parser-writer-and-renderer-feasibility-spike.md",
+      "reason": "Slide layout, fonts, images and charts require visual fidelity evidence before promotion."
+    }
+  ]
+}
