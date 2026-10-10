@@ -655,6 +655,7 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
         {toolId === "pdf-to-markdown" && typeof result.raw.ocrHandoff === "object" && result.raw.ocrHandoff !== null ? (
           <ResultInterpretation state="warning">
             {String((result.raw.ocrHandoff as PdfResultRecord).reason ?? "Il percorso OCR non è disponibile in questa build.")}
+            <p>Per un PDF scansito puoi aprire <a href="/tools/ocr-italiano-locale-246/">OCR italiano locale</a> e selezionare nuovamente il documento. Il passaggio è manuale: questo esportatore non esegue OCR automaticamente.</p>
           </ResultInterpretation>
         ) : null}
         <div data-result-slot="selectable-output"><BoundedTextResultPreview preview={preview} /></div>
