@@ -83,7 +83,7 @@ Exactly **12** incomplete tickets currently have every declared numeric blocker 
 | 042 | completed | Design/CSS/web-helper family | 199, 200, 201, 202, 203, 310 |
 | 043 | completed | Date/time everyday utility family | 154, 155, 156, 311 |
 | 044 | completed | Lightweight generators/productivity family | 204, 205 |
-| 045 | blocked | Expanded catalog IA and job-route discovery | 018, 019, 020, 021, 022, 023, 024, 025, 026, 027, 028, 029, 030, 031, 032, 033, 035, 036, 037, 038, 039, 040, 041, 042, 043, 044, 065, 066, 104, 105, 106, 107 |
+| 045 | completed | Expanded catalog IA and job-route discovery | 018, 019, 020, 021, 022, 023, 024, 025, 026, 027, 028, 029, 030, 031, 032, 033, 035, 036, 037, 038, 039, 040, 041, 042, 043, 044, 065, 066, 104, 105, 106, 107 |
 | 046 | blocked | Full expansion certification + release integration | 006, 018, 045, 065, 066, 111, 112, 113, 114, 158, 206, 276, 279, 280, 281 |
 | 047 | ready-for-agent | JPEG/PNG/WebP/SVG compression engines | 207, 208, 209 |
 | 048 | completed (bounded JPEG/PNG/WebP route; advanced codec and physical gates separate) | Target-size + batch image compression | 210, 211 |
