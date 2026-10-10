@@ -23,7 +23,7 @@ if (!["chromium", "firefox", "webkit"].includes(browserName)) throw new Error("P
 const origin = publicOrigin ?? `http://127.0.0.1:${port}`;
 const route = `${origin}/tools/${publicOrigin ? "pdf-watermark" : "pdf-visual-signature"}/`;
 const server = publicOrigin ? null : spawn(resolve(root, "node_modules/.bin/astro"), ["dev", "--host", "127.0.0.1", "--port", String(port),
-  "--config", "tests/astro-visual-signature-241.config.mjs"], { cwd: root, stdio: "ignore" });
+  "--ignore-lock", "--config", "tests/astro-visual-signature-241.config.mjs"], { cwd: root, stdio: "ignore" });
 let browser: Awaited<ReturnType<typeof chromium.launch>> | null = null;
 let checks = 0;
 const check = (condition: unknown, message: string) => { assert(condition, message); checks += 1; };
@@ -161,6 +161,40 @@ try {
     const submit = document.querySelector<HTMLButtonElement>("[data-pdf-visual-signature-241] button[type=submit]");
     return Boolean(image?.complete && image.naturalWidth > 0 && submit && !submit.disabled);
   });
+  // Hold a REAL newly-created writer Worker before its compute message is
+  // delivered. The user must still be able to cancel, terminate that Worker
+  // and avoid any partial download even when execution is indefinitely stuck.
+  await page.evaluate(`(() => {
+    const originalPost = Worker.prototype.postMessage;
+    const originalTerminate = Worker.prototype.terminate;
+    let intercepted = 0;
+    let terminated = 0;
+    Worker.prototype.postMessage = function (message, transfer) {
+      if (!intercepted && typeof message === "object" && message !== null && "source" in message && "options" in message) {
+        intercepted++;
+        return;
+      }
+      return originalPost.call(this, message, transfer || []);
+    };
+    Worker.prototype.terminate = function () { terminated++; return originalTerminate.call(this); };
+    Object.assign(window, {
+      __pdf241HeldWriter: () => intercepted,
+      __pdf241TerminatedWriter: () => terminated,
+      __pdf241RestoreWorker: () => {
+        Worker.prototype.postMessage = originalPost;
+        Worker.prototype.terminate = originalTerminate;
+      },
+    });
+  })()`);
+  await page.getByRole("button", { name: /Applica firma visiva/u }).click();
+  await page.waitForFunction(() => (window as Window & { __pdf241HeldWriter?: () => number }).__pdf241HeldWriter?.() === 1);
+  check(await page.locator("[data-241-download]").count() === 0, "Held computation cannot publish an unverified PDF");
+  await page.locator("[data-241-cancel]").click();
+  await page.waitForFunction(() => (window as Window & { __pdf241TerminatedWriter?: () => number }).__pdf241TerminatedWriter?.() === 1);
+  check(await page.locator("[data-241-download]").count() === 0, "Cancellation under held Worker prevents output");
+  check(await page.locator("[data-241-cancel]").count() === 0, "Cancellation returns interface to idle");
+  await page.evaluate(() => (window as Window & { __pdf241RestoreWorker?: () => void }).__pdf241RestoreWorker?.());
+  check(await page.getByRole("button", { name: /Applica firma visiva/u }).isEnabled(), "Fresh retry is ready after cancelled Worker");
   await page.evaluate(holdNextPreview);
   await page.getByRole("textbox", { name: "Pagine della firma" }).fill("2,3");
   await page.waitForFunction(() => Boolean((window as Window & { __pdf241PendingPreview?: boolean }).__pdf241PendingPreview), undefined, { timeout: 10_000 });

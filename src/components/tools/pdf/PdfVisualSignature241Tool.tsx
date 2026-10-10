@@ -201,18 +201,21 @@ export function PdfVisualSignature241Tool() {
     controller.current = abort;
     setWorking(true);
     try {
-      // Allow the cancel button and status to paint before bounded synchronous work.
+      // Allow the cancel button and status to paint before the cancellable Worker.
       await new Promise<void>((done) => requestAnimationFrame(() => done()));
       if (abort.signal.aborted) return;
-      const { placeVisualSignature241 } = await import("../../../engines/pdf/visual-signature-241");
-      const written = placeVisualSignature241(document.bytes, { ...options, png }, abort.signal);
-      if (written.plan.capability !== "VISIBLE_IMAGE_ONLY_NO_CRYPTOGRAPHIC_SIGNATURE") throw new Error("Output non autorizzato");
-      const reopened = inspectPdfBytes(written.artifact.bytes);
+      const { writeVisibleSignatureInWorker241 } = await import("../../../engines/pdf/visual-signature-worker-client-241");
+      if (abort.signal.aborted) return;
+      const written = await writeVisibleSignatureInWorker241(document.bytes, { ...options, png }, abort.signal);
+      if (abort.signal.aborted || current !== generation.current) return;
+      const outputBlob = new Blob([written.bytes.slice().buffer], { type: "application/pdf" });
+      const outputFilename = "firma-grafica-visiva-NON-digitale.pdf";
+      const reopened = inspectPdfBytes(written.bytes);
       if (reopened.pageCount !== written.plan.pageCount || reopened.encrypted || reopened.forms.length > 0) {
         throw new Error("PDF241_OUTPUT_VERIFY: verifiche del documento esportato fallite");
       }
       // Download is withheld until independent PDF.js reopen and render of EVERY selected page.
-      const verifiedFile = new File([written.artifact.blob], written.artifact.filename, { type: "application/pdf" });
+      const verifiedFile = new File([outputBlob], outputFilename, { type: "application/pdf" });
       const session = await openPdfThumbnailSession(verifiedFile, abort.signal);
       const previews: { page: number; blob: Blob }[] = [];
       try {
@@ -224,7 +227,7 @@ export function PdfVisualSignature241Tool() {
         }
       } finally { await session.close(); }
       if (abort.signal.aborted || current !== generation.current) return;
-      setResult({ blob: written.artifact.blob, filename: written.artifact.filename, plan: written.plan, previews });
+      setResult({ blob: outputBlob, filename: outputFilename, plan: written.plan, previews });
     } catch (reason) {
       if (current === generation.current && !abort.signal.aborted) setProcessProblem(message241(reason));
     } finally {

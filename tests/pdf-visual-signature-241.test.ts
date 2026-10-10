@@ -152,6 +152,18 @@ describe("#241 bounded visible-appearance PNG overlays without cryptographic sig
     expect(() => placeVisualSignature241(withAnnotations, options)).toThrow(/PDF241_(?:SIGNED_OR_FORM_REFUSED|UNSAFE_SOURCE)/u);
   });
 
+  it("refuses a genuinely encrypted AES-256 PDF without altering its bytes", async () => {
+    const { createPdfToolkit } = await import("../src/engines/pdf/vendor/pdfstudio/index.js");
+    const donor = await createPdfToolkit();
+    const encrypted = await donor.lock(source(), { userPassword: "known-241-fixture", keyLength: 256 });
+    expect(await donor.isEncrypted(encrypted)).toBe(true);
+    const preserved = encrypted.slice();
+    const png = await pngFixture(4);
+    expect(() => placeVisualSignature241(encrypted, { png, pages: "1", rect: [40, 40, 150, 90] }))
+      .toThrow(/PDF241_UNSAFE_SOURCE/u);
+    expect(encrypted).toEqual(preserved);
+  });
+
   it("refuses invalid geometry and original page range; no invisible/clipped appearance", async () => {
     const png = await pngFixture(3), pdf = source();
     for (const rect of [[0, 0, 0, 5], [-1, 2, 10, 20], [0, 0, 320, 100], [10, 10, Number.NaN, 20]]) {
