@@ -9,12 +9,10 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 
 ## Current dependency frontier
 
-- **033 — PDF conversion/productivity family**
-- **036 — Audio file-processing family**
+- **038 — Video transform family**
 - **047 — JPEG/PNG/WebP/SVG compression engines**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **056 — Office-to-PDF and printable export pack**
-- **057 — PDF-to-editable/structured conversion pack**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
@@ -26,9 +24,8 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
-- **306 — Video to GIF conversion**
 
-Exactly **18** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **15** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -77,12 +74,12 @@ Exactly **18** incomplete tickets currently have every declared numeric blocker 
 | 030 | completed | Screenshot/document privacy family | 214, 301, 302 |
 | 031 | blocked | OCR and document-scan family | 246, 247 |
 | 032 | blocked | PDF edit/security family | 237, 238, 239, 240, 241, 242, 243, 244, 245, 319, 320 |
-| 033 | ready-for-agent | PDF conversion/productivity family | 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260 |
+| 033 | completed | PDF conversion/productivity family | 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260 |
 | 034 | completed | Heavy local media/OCR/Office feasibility refresh | — |
 | 035 | blocked | Audio capture/playback utilities | 229, 303, 304 |
-| 036 | ready-for-agent | Audio file-processing family | 230, 231 |
+| 036 | completed | Audio file-processing family | 230, 231 |
 | 037 | completed | Video inspect/subtitle utilities | 232, 233, 305 |
-| 038 | blocked | Video transform family | 234, 306, 307, 308 |
+| 038 | ready-for-agent | Video transform family | 234, 306, 307, 308 |
 | 039 | completed | AI-era deterministic helper family | 054, 165, 183, 184, 185, 186, 189 |
 | 040 | blocked | Italy utilities beyond CalcolaTutto | 152, 150 |
 | 041 | completed | Italian text/language long-tail family | 187, 188, 189, 190, 309 |
@@ -101,7 +98,7 @@ Exactly **18** incomplete tickets currently have every declared numeric blocker 
 | 054 | completed | TXT/Markdown/HTML conversion core | 081 |
 | 055 | completed (bounded semantic pack; not pixel-faithful Word rendering) | DOCX semantic conversion pack | — |
 | 056 | ready-for-agent | Office-to-PDF and printable export pack | 256, 257, 258, 259 |
-| 057 | ready-for-agent | PDF-to-editable/structured conversion pack | 252, 253, 254, 255 |
+| 057 | completed | PDF-to-editable/structured conversion pack | 252, 253, 254, 255 |
 | 058 | blocked | PDF↔image directional conversion pack | 235, 236 |
 | 059 | completed | JSON/XML/CSS/HTML/SVG minimizer pack | 168, 191, 192, 193, 209 |
 | 060 | completed | Upgrade existing CSV/table functionality | 172, 194, 195 |
@@ -350,7 +347,7 @@ Exactly **18** incomplete tickets currently have every declared numeric blocker 
 | 303 | completed | Tone metronome and noise generator | 070 |
 | 304 | completed | Browser text-to-speech Italian controls | 070 |
 | 305 | completed — browser-supported local frame-at-time preview and opt-in webcam test (NOT frame-exact guarantee or physical camera certification) | Exact video frame extraction and webcam test | 232, 274 |
-| 306 | ready-for-agent | Video to GIF conversion | 234 |
+| 306 | completed | Video to GIF conversion | 234 |
 | 307 | completed | Audio loudness and LUFS analysis | 273 |
 | 308 | completed | Video AI context contact-sheet export | 232, 305 |
 | 309 | completed | Italian syllabification feasibility spike | — |

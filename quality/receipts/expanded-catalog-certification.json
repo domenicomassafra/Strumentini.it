@@ -122,8 +122,8 @@
       "IMPLEMENTED_UNVERIFIED": 10
     },
     "certificationGoldCount": 257,
-    "releaseEligibleGoldCount": 256,
-    "releaseBlockedCount": 13,
+    "releaseEligibleGoldCount": 255,
+    "releaseBlockedCount": 14,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 269,
     "fixtureBoundCount": 269,
@@ -813,18 +813,18 @@
     {
       "id": "audio-generator",
       "route": "/tools/audio-generator",
-      "name": "Tone, Metronome & Noise Generator",
+      "name": "Audio Generator & WAV Editor",
       "category": "media",
       "engine": "browser-audio",
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/certification-frontier/audio-generator.gold.json",
-      "releaseGate": "PASS",
-      "goldEligible": true,
+      "releaseGate": "BLOCKED",
+      "goldEligible": false,
       "implementation": {
         "manifest": {
           "path": "src/tools/audio-generator/manifest.ts",
-          "sha256": "4f1f719c47631c870a33a171f55136a319ded4e67895f8a130908c5d211d836b"
+          "sha256": "54e44c87b1afac530fdd9434820ed6a6d608a91ff1911aecff343af6a2c9d8fb"
         },
         "module": {
           "path": "src/tools/audio-generator/module.ts",
@@ -939,7 +939,9 @@
           "status": "PASS"
         }
       ],
-      "blockers": [],
+      "blockers": [
+        "RECEIPT_MANIFEST_IDENTITY_STALE"
+      ],
       "coverageGaps": []
     },
     {

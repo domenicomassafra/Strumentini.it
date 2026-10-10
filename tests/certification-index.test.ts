@@ -65,9 +65,10 @@ describe("expanded catalog certification index", () => {
     expect(index.summary.certificationGoldCount).toBe(index.tools.filter((tool) => tool.status === "GOLD").length);
     expect(index.summary.releaseEligibleGoldCount).toBe(index.tools.filter((tool) => tool.goldEligible).length);
     expect(index.summary.releaseEligibleGoldCount).toBeLessThanOrEqual(index.summary.certificationGoldCount);
-    // #320 changed the password PDF implementation after its historical Gold
-    // receipt. Keep the receipt for audit, but fail closed until re-certified.
-    expect(index.summary.releaseEligibleGoldCount).toBe(256);
+    // #320 and #036 changed previously Gold-certified PDF password/audio
+    // implementations. Historical receipts remain auditable but release gates
+    // must fail closed until those changed implementations are recertified.
+    expect(index.summary.releaseEligibleGoldCount).toBe(255);
     const passwordPdf = index.tools.find((tool) => tool.id === "pdf-password-check-remove");
     expect(passwordPdf).toMatchObject({
       status: "GOLD",
@@ -75,6 +76,13 @@ describe("expanded catalog certification index", () => {
       releaseGate: "BLOCKED",
     });
     expect(passwordPdf?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
+    const audioWav = index.tools.find((tool) => tool.id === "audio-generator");
+    expect(audioWav).toMatchObject({
+      status: "GOLD",
+      goldEligible: false,
+      releaseGate: "BLOCKED",
+    });
+    expect(audioWav?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
     expect(index.summary.physicalDevicePassCount).toBe(0);
     expect(index.global.physicalDevice).toMatchObject({
       status: "EXTERNAL",

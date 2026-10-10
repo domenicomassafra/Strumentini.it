@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 274,
+    "completed": 278,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 257,
-    "open": 53,
-    "readyDAG": 18,
-    "ready-for-agent": 10,
-    "dependency-blocked": 35,
+    "completedWithoutExplicitRefusal": 261,
+    "open": 49,
+    "readyDAG": 15,
+    "ready-for-agent": 7,
+    "dependency-blocked": 34,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 1,
@@ -45,7 +45,9 @@
       27,
       29,
       30,
+      33,
       34,
+      36,
       37,
       39,
       41,
@@ -58,6 +60,7 @@
       52,
       54,
       55,
+      57,
       59,
       60,
       61,
@@ -277,6 +280,7 @@
       303,
       304,
       305,
+      306,
       307,
       308,
       309,
@@ -300,16 +304,13 @@
       327
     ],
     "ready-for-agent": [
-      33,
-      36,
+      38,
       47,
       56,
-      57,
       212,
       237,
       241,
-      246,
-      306
+      246
     ],
     "dependency-blocked": [
       8,
@@ -324,7 +325,6 @@
       31,
       32,
       35,
-      38,
       40,
       45,
       46,
@@ -740,9 +740,9 @@
     {
       "id": 33,
       "title": "PDF conversion/productivity family",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -772,9 +772,9 @@
     {
       "id": 36,
       "title": "Audio file-processing family",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -792,12 +792,10 @@
     {
       "id": 38,
       "title": "Video transform family",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        306
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -875,9 +873,7 @@
         28,
         31,
         32,
-        33,
         35,
-        36,
         38,
         40,
         65,
@@ -1010,9 +1006,9 @@
     {
       "id": 57,
       "title": "PDF-to-editable/structured conversion pack",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -1108,7 +1104,6 @@
         49,
         53,
         56,
-        57,
         58
       ],
       "gateReason": null,
@@ -3551,9 +3546,9 @@
     {
       "id": 306,
       "title": "Video to GIF conversion",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
