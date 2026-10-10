@@ -10,7 +10,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 ## Current dependency frontier
 
 - **047 — JPEG/PNG/WebP/SVG compression engines**
-- **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **056 — Office-to-PDF and printable export pack**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
@@ -24,7 +23,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **14** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **13** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -93,7 +92,7 @@ Exactly **14** incomplete tickets currently have every declared numeric blocker 
 | 050 | completed | Upgrade existing image-tool functionality | 213, 314, 315, 316, 317 |
 | 051 | completed | True PDF compression profiles + target size | 218, 219 |
 | 052 | completed (bounded cross-source page composition with safe per-page mutation and browser verification) | Visual PDF page organizer for existing page tools | 215, 216, 217 |
-| 053 | blocked | Upgrade existing PDF inspect/extract/compare tools | 220, 221, 242, 318, 319, 320 |
+| 053 | completed | Upgrade existing PDF inspect/extract/compare tools | 220, 221, 242, 318, 319, 320 |
 | 054 | completed | TXT/Markdown/HTML conversion core | 081 |
 | 055 | completed (bounded semantic pack; not pixel-faithful Word rendering) | DOCX semantic conversion pack | — |
 | 056 | ready-for-agent | Office-to-PDF and printable export pack | 256, 257, 258, 259 |

@@ -5,14 +5,14 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 279 / 48 |
+| All / completed / open | 327 / 280 / 47 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 14 |
+| DAG-ready (all numeric dependencies closed) | 13 |
 | Ready for assignment (feasibility still to prove) | 6 |
 | Waiting on other tickets | 34 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
-| Blocked by unapproved capability | 1 |
+| Blocked by unapproved capability | 0 |
 | Stored status mismatches | 0 |
 
 `ready-for-agent` means a worker may begin exploration/implementation, **not** that technical acceptance is already proven. External gates are never silently waived. An implemented feature may still be open for unproven acceptance.
@@ -50,8 +50,8 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212)
 - #058 — PDF↔image directional conversion pack (awaiting #235)
 - #062 — Upgrade existing business/date functionality (awaiting #126, #127, #128, #130, #133, #134, #135)
-- #065 — Format-operation matrix coverage gate (awaiting #047, #049, #053, #056, #058)
-- #066 — Existing 200 functional-upgrade coverage gate (awaiting #053, #062)
+- #065 — Format-operation matrix coverage gate (awaiting #047, #049, #056, #058)
+- #066 — Existing 200 functional-upgrade coverage gate (awaiting #062)
 - #121 — Codice Fiscale formal validate and generate engine (awaiting #115)
 - #122 — Codice Fiscale decode and omocodia ambiguity (awaiting #121)
 - #126 — IVA add and scorporo with versioned presets (awaiting #117)
@@ -80,9 +80,8 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #280 — Physical Android heavy-tool web acceptance lane — Physical Android heavy-tool acceptance evidence missing
 - #281 — Physical iOS Safari heavy-tool web acceptance lane — Physical iOS Safari heavy-tool acceptance evidence missing
 
-## Blocked by unapproved capability (1)
+## Blocked by unapproved capability (0)
 
-- #053 — Upgrade existing PDF inspect/extract/compare tools — Ticket 320 closed REFUSED; PDF password-supplied decrypt acceptance remains unfulfilled
 
 ## Integrity and release boundary
 

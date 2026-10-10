@@ -10,16 +10,16 @@
   },
   "totals": {
     "all": 327,
-    "completed": 279,
+    "completed": 280,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 262,
-    "open": 48,
-    "readyDAG": 14,
+    "completedWithoutExplicitRefusal": 263,
+    "open": 47,
+    "readyDAG": 13,
     "ready-for-agent": 6,
     "dependency-blocked": 34,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
-    "capability-blocked": 1,
+    "capability-blocked": 0,
     "storedStatusMismatches": 0
   },
   "groups": {
@@ -59,6 +59,7 @@
       50,
       51,
       52,
+      53,
       54,
       55,
       57,
@@ -359,9 +360,7 @@
       280,
       281
     ],
-    "capability-blocked": [
-      53
-    ]
+    "capability-blocked": []
   },
   "refusedClosures": [
     150,
@@ -965,9 +964,9 @@
     {
       "id": 53,
       "title": "Upgrade existing PDF inspect/extract/compare tools",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "capability-blocked",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": "Ticket 320 closed REFUSED; PDF password-supplied decrypt acceptance remains unfulfilled",
       "closedWithRefusal": false
@@ -1101,7 +1100,6 @@
       "unresolvedDependencies": [
         47,
         49,
-        53,
         56,
         58
       ],
@@ -1115,7 +1113,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        53,
         62
       ],
       "gateReason": null,
