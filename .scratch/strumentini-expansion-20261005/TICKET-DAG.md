@@ -19,7 +19,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
 - **229 — Microphone test and local recorder**
-- **234 — Video transform worker core**
 - **237 — True PDF redaction with post-export proof**
 - **241 — PDF signature placement**
 - **246 — Local image OCR**
@@ -27,6 +26,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
+- **306 — Video to GIF conversion**
 
 Exactly **18** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
@@ -278,7 +278,7 @@ Exactly **18** incomplete tickets currently have every declared numeric blocker 
 | 231 | completed | Audio timeline edits and deterministic DSP | 230 |
 | 232 | completed — bounded local MP4 metadata inspection / mathematical bitrate planner only (NOT Gold, NOT transcoding) | Video inspector and target-size calculator | 100, 206, 274 |
 | 233 | completed | SRT VTT transform transcript and readability | 077 |
-| 234 | ready-for-agent | Video transform worker core | 100, 103, 206, 232, 274 |
+| 234 | completed | Video transform worker core | 100, 103, 206, 232, 274 |
 | 235 | blocked | Advanced Images to PDF composition | 098, 103, 212 |
 | 236 | completed | Advanced PDF to image export | 098, 103, 215, 269 |
 | 237 | ready-for-agent | True PDF redaction with post-export proof | 215, 269 |
@@ -350,7 +350,7 @@ Exactly **18** incomplete tickets currently have every declared numeric blocker 
 | 303 | completed | Tone metronome and noise generator | 070 |
 | 304 | completed | Browser text-to-speech Italian controls | 070 |
 | 305 | completed — browser-supported local frame-at-time preview and opt-in webcam test (NOT frame-exact guarantee or physical camera certification) | Exact video frame extraction and webcam test | 232, 274 |
-| 306 | blocked | Video to GIF conversion | 234 |
+| 306 | ready-for-agent | Video to GIF conversion | 234 |
 | 307 | completed | Audio loudness and LUFS analysis | 273 |
 | 308 | completed | Video AI context contact-sheet export | 232, 305 |
 | 309 | completed | Italian syllabification feasibility spike | — |

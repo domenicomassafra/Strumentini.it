@@ -8,7 +8,7 @@
 
 **Blocked by:** 234 — Video transform worker core.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 **Suggested skills:** code-module-design → code-tdd → qa-browser → browser-performance-benchmark
 

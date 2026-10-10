@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 273,
-    "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 255,
-    "open": 54,
+    "completed": 274,
+    "completedWithRefusal": 17,
+    "completedWithoutExplicitRefusal": 257,
+    "open": 53,
     "readyDAG": 18,
     "ready-for-agent": 10,
-    "dependency-blocked": 36,
+    "dependency-blocked": 35,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 1,
@@ -215,6 +215,7 @@
       231,
       232,
       233,
+      234,
       236,
       238,
       239,
@@ -305,10 +306,10 @@
       56,
       57,
       212,
-      234,
       237,
       241,
-      246
+      246,
+      306
     ],
     "dependency-blocked": [
       8,
@@ -345,8 +346,7 @@
       158,
       235,
       247,
-      279,
-      306
+      279
     ],
     "external-source-blocked": [
       115,
@@ -380,8 +380,7 @@
     258,
     259,
     262,
-    263,
-    320
+    263
   ],
   "storedStatusMismatches": [],
   "tickets": [
@@ -797,7 +796,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        234,
         306
       ],
       "gateReason": null,
@@ -2826,9 +2824,9 @@
     {
       "id": 234,
       "title": "Video transform worker core",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3553,12 +3551,10 @@
     {
       "id": 306,
       "title": "Video to GIF conversion",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        234
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -3700,7 +3696,7 @@
       "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": "Ticket 242 closed REFUSED; no approved password-supplied PDF decrypt engine",
-      "closedWithRefusal": true
+      "closedWithRefusal": false
     },
     {
       "id": 321,
