@@ -25251,6 +25251,7 @@
           "sha256": "c80ba7c4744b0ebf20fd83b372649e70456d85554343d7dc3268f4fce871f8fc"
         },
         "testFiles": [
+          "tests/catalog-job-routes-45.test.ts",
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
