@@ -7,6 +7,7 @@ const signatureSource = 'export function getStaticPaths() { return import.meta.e
 const ocrSource = '<BaseLayout title="OCR" noindex><main data-ocr246-preview="experimental-local-only">OCR italiano sperimentale</main></BaseLayout>';
 const ocrHtml = '<meta name="robots" content="noindex, nofollow"/><main data-ocr246-preview="experimental-local-only">OCR italiano sperimentale</main>';
 const pdfOcr247Source = 'export function getStaticPaths() { return import.meta.env.DEV ? [{ params: { route: undefined } }] : []; }\n<BaseLayout title="PDF OCR" noindex><main data-ocr247-preview="experimental-local-only">PDF OCR sperimentale</main></BaseLayout>';
+const redactionSource = 'export function getStaticPaths() { return import.meta.env.DEV ? [{ params: { route: undefined } }] : []; }\n<BaseLayout title="PDF redaction" noindex><main data-redaction237-preview="experimental-local-only">Redazione sperimentale</main></BaseLayout>';
 const allPages = ["src/pages/tools/pdf-visual-signature/[...route].astro", "src/pages/tools/codice-fiscale.astro", "src/pages/tools/public-tool.astro"];
 const allStatic = ["tools/codice-fiscale/index.html", "tools/public-tool/index.html"];
 const options = { toolPageFiles: allPages, staticFiles: allStatic,
@@ -93,6 +94,26 @@ describe("noncatalog preview release boundary", () => {
       const denied = narrowUncataloguedToolPreviews({ ...selected, ...override });
       expect(denied.toolPageFiles).toContain(sourcePath);
       expect(denied.safePreviewNames).not.toContain("pdf-scansionato-ocr-247");
+    }
+  });
+
+  it("never promotes dev-only secure redaction #237 without tested public security boundary", () => {
+    const source = "src/pages/tools/pdf-true-redaction-237/[...route].astro";
+    const selected = { ...options, toolPageFiles: [...allPages, source], redaction237Source: redactionSource };
+    const accepted = narrowUncataloguedToolPreviews(selected);
+    expect(accepted.safePreviewNames).toContain("pdf-true-redaction-237");
+    expect(accepted.toolPageFiles).not.toContain(source);
+    for (const override of [
+      { redaction237Source: redactionSource.replace("import.meta.env.DEV", "true") },
+      { redaction237Source: redactionSource.replace("noindex", "") },
+      { redaction237Source: redactionSource.replace("experimental-local-only", "public") },
+      { staticFiles: [...allStatic, "tools/pdf-true-redaction-237/index.html"] },
+      { catalogRoutes: [...selected.catalogRoutes, "/tools/pdf-true-redaction-237"] },
+      { sitemapXml: selected.sitemapXml + "<loc>https://strumentini.it/tools/pdf-true-redaction-237/</loc>" },
+    ]) {
+      const rejected = narrowUncataloguedToolPreviews({ ...selected, ...override });
+      expect(rejected.toolPageFiles).toContain(source);
+      expect(rejected.safePreviewNames).not.toContain("pdf-true-redaction-237");
     }
   });
 });

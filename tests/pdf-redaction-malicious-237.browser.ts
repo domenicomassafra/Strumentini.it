@@ -29,6 +29,7 @@ let browser: Awaited<ReturnType<typeof chromium.launch>> | null = null;
 const temp = await mkdtemp(resolve(tmpdir(), "str-237-malicious-"));
 let checks = 0;
 const observed: unknown[] = [];
+const exportedFiles: string[] = [];
 
 function check(condition: unknown, message: string) { assert(condition, message); checks += 1; }
 
@@ -70,10 +71,16 @@ try {
   check(await page.locator("#source237").count() === 1, "Real PDF File input exists");
 
   for (const name of caseNames) {
+    console.log(`Verifying independently reopened redaction: ${name}`);
     const source = new Uint8Array(await readFile(resolve(fixtures, name)));
     await page.locator("#source237").setInputFiles(resolve(fixtures, name));
     const started = performance.now();
-    const generated = await page.evaluate(async (selectedRegions) => window.runMalicious237(selectedRegions), regions);
+    const generated = await page.evaluate(async (selectedRegions) => Promise.race([
+      window.runMalicious237(selectedRegions).catch((error: Error) => {
+        throw new Error(`Browser redaction error: ${error.name}: ${error.message} ${error.stack ?? ""}`);
+      }),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Bounded PDF redaction render timed out")), 35_000)),
+    ]), regions);
     const spentMs = Math.round(performance.now() - started);
     const output = Uint8Array.from(generated.bytes);
     const plan = generated.proof as {
@@ -91,6 +98,7 @@ try {
     const sourcePath = resolve(temp, `source-${name}`), outputPath = resolve(temp, `export-${name}`), planPath = resolve(temp, `plan-${name}.json`);
     await writeFile(sourcePath, source);
     await writeFile(outputPath, output);
+    exportedFiles.push(outputPath);
     await writeFile(planPath, JSON.stringify(plan));
     const forensic = JSON.parse(execFileSync("python3", [
       resolve(root, "tests/fixtures/pdf-redaction-forensics-237.py"), sourcePath, outputPath, planPath,
@@ -113,6 +121,16 @@ try {
     check(outside.some((value) => value > 0), `${name}: non-redacted rendered pixels stay colored`);
     observed.push({ name, elapsedMs: spentMs, sourceBytes: source.length, outputBytes: output.length,
       outputPage: [after.width, after.height], outsideRgb: outside, forensic });
+  }
+
+  // A separately implemented macOS PDF consumer exercises user-facing
+  // copy/search and print-to-PDF/reopen in addition to pypdf/pdfminer/PDF.js.
+  if (process.platform === "darwin") {
+    const native = execFileSync("swift", [
+      resolve(root, "tests/fixtures/pdf-redaction-macos-pdfkit-237.swift"), ...exportedFiles,
+    ], { encoding: "utf8", timeout: 90_000 });
+    check(native.includes(`independent reopen/copy/print: ${exportedFiles.length} pages`),
+      `Native PDFKit/CoreGraphics print/copy/reopen proof: ${native}`);
   }
 
   check(pageErrors.length === 0, `No Chromium JS errors: ${pageErrors.join("; ")}`);

@@ -41,9 +41,10 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [allowResize, setAllowResize] = useState(false);
   const [batchMode, setBatchMode] = useState(false);
   const [pngLossless, setPngLossless] = useState(false);
+  const [pngPalette, setPngPalette] = useState<"off" | "exact" | "lossy">("off");
   const [colorMode, setColorMode] = useState("convert");
   const operation = useToolOperation<PreparedImageResult>(async (signal) => {
-    const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless);
+    const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette);
     const run = await toolRuntime.run(toolId, input, {}, signal);
     if (!run.ok) return run;
     return { ok: true, tool: run.tool, value: await prepareImageResult(run.value), defaults: run.defaults };
@@ -82,6 +83,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     setAllowResize(false);
     setBatchMode(false);
     setPngLossless(false);
+    setPngPalette("off");
     setColorMode("convert");
     clearResult();
   }
@@ -111,6 +113,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
             <input type="checkbox" checked={batchMode} onChange={(event) => {
               setBatchMode(event.currentTarget.checked);
               setPngLossless(false);
+              setPngPalette("off");
               setFile(null);
               setFiles([]);
               operation.reset();
@@ -121,7 +124,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
         {needsFile(toolId) && (
           <label class="field">
             <span>{needsMultipleFiles(toolId) ? "Immagini" : "Immagine"}</span>
-            <input type="file" accept={toolId === "image-format-conversion" ? "image/svg+xml,image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,image/gif,.svg,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.gif" : toolId === "image-compression" && pngLossless ? "image/png,.png" : "image/jpeg,image/png,image/webp"} multiple={batchMode || needsMultipleFiles(toolId)} onChange={batchMode || needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
+            <input type="file" accept={toolId === "image-format-conversion" ? "image/svg+xml,image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,image/gif,.svg,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.gif" : toolId === "image-compression" && (pngLossless || pngPalette !== "off") ? "image/png,.png" : "image/jpeg,image/png,image/webp"} multiple={batchMode || needsMultipleFiles(toolId)} onChange={batchMode || needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
             <small>File elaborati in locale, senza caricamenti né elaborazione remota alternativa.</small>
           </label>
         )}
@@ -158,7 +161,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
           </label>
         )}
         {needsText(toolId) && <label class="field"><span>Valore</span><input value={value} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
-        {needsOutputFormat(toolId) && !(toolId === "image-compression" && (batchMode || pngLossless)) && <label class="field"><span>Formato di uscita</span><select value={mime} onChange={(event) => { setMime(event.currentTarget.value); clearResult(); }} disabled={operation.isRunning}><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option>{svgSelected && <option value="application/pdf">PDF raster (non vettoriale)</option>}</select></label>}
+        {needsOutputFormat(toolId) && !(toolId === "image-compression" && (batchMode || pngLossless || pngPalette !== "off")) && <label class="field"><span>Formato di uscita</span><select value={mime} onChange={(event) => { setMime(event.currentTarget.value); clearResult(); }} disabled={operation.isRunning}><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option>{svgSelected && <option value="application/pdf">PDF raster (non vettoriale)</option>}</select></label>}
         {svgSelected && (
           <fieldset class="field" data-svg-export-options>
             <legend>SVG → immagine o PDF raster (modalità sperimentale, non Gold)</legend>
@@ -181,15 +184,29 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
           <input type="checkbox" checked={pngLossless} disabled={operation.isRunning}
             onChange={(event) => {
               setPngLossless(event.currentTarget.checked);
-              if (event.currentTarget.checked) { setMime("image/png"); setTargetKiB(""); setAllowResize(false); }
+              if (event.currentTarget.checked) { setPngPalette("off"); setMime("image/png"); setTargetKiB(""); setAllowResize(false); }
               clearResult();
             }} />
           <span>PNG senza perdita: comprimi IDAT senza cambiare pixel o metadati (sperimentale)</span>
           <small>Solo PNG non interlacciati (RGB/RGBA 8 bit, grigi o indicizzati 1–8 bit), massimo 4 MiB e un milione di pixel. APNG, PNG a 16 bit e varianti non verificate vengono rifiutati. Se non conviene comprimere, conserva l'originale. Nessuna conversione, target o riduzione di pixel.</small>
         </label>}
+        {toolId === "image-compression" && !batchMode && <label class="field" data-png-palette-47>
+          <span>Palette PNG (modalità distinta dalla ricompressione esatta IDAT)</span>
+          <select value={pngPalette} disabled={operation.isRunning} onChange={(event) => {
+            const selected = event.currentTarget.value;
+            setPngPalette(selected === "exact" || selected === "lossy" ? selected : "off");
+            if (selected === "exact" || selected === "lossy") { setPngLossless(false); setMime("image/png"); setTargetKiB(""); setAllowResize(false); }
+            clearResult();
+          }}>
+            <option value="off">Disattivata</option>
+            <option value="exact">Palette esatta (solo ≤256 colori, pixel identici)</option>
+            <option value="lossy">Palette approssimata (RGB può cambiare; alpha identico)</option>
+          </select>
+          {pngPalette !== "off" && <small>Solo PNG RGB/RGBA 8 bit senza metadati colore non verificati, massimo 4 MiB e 1 milione di pixel. L'approssimazione è esplicita e può variare i canali colore fino a 32 livelli; alpha invariato. File originali conservati se il risultato non riduce i byte. Nessun target di peso o ridimensionamento.</small>}
+        </label>}
         {toolId === "image-format-conversion" && !svgSelected && mime === "image/jpeg" && <label class="field"><span>Sfondo per trasparenza → JPEG</span><input type="color" value={/^#[0-9a-f]{6}$/iu.test(value) ? value : "#ffffff"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /><small>Obbligatorio quando l'immagine contiene alpha. Il JPEG non supporta trasparenza: i pixel trasparenti vengono compositati su questo colore.</small></label>}
-        {needsQuality(toolId) && !(toolId === "image-compression" && pngLossless) && <label class="field"><span>Qualità, se supportata</span><input type="number" min="0.1" max="1" step="0.01" value={quality} onInput={(event) => setQuality(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
-        {toolId === "image-compression" && !pngLossless && (
+        {needsQuality(toolId) && !(toolId === "image-compression" && (pngLossless || pngPalette !== "off")) && <label class="field"><span>Qualità, se supportata</span><input type="number" min="0.1" max="1" step="0.01" value={quality} onInput={(event) => setQuality(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
+        {toolId === "image-compression" && !pngLossless && pngPalette === "off" && (
           <fieldset class="field" data-target-image-compression>
             <legend>Dimensione obiettivo (facoltativa)</legend>
             <label class="field">
@@ -231,7 +248,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   );
 }
 
-function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: File | null, files: File[], value: string, secondValue: string, numberValue: string, secondNumberValue: string, mime: string, quality: string, colorMode: string, targetKiB: string, minimumQuality: string, allowResize: boolean, batchMode: boolean, targetUnit: "KiB" | "MiB", svgWidth: string, svgHeight: string, svgScale: string, svgBackground: string, svgTransparent: boolean, pngLossless: boolean): unknown {
+function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: File | null, files: File[], value: string, secondValue: string, numberValue: string, secondNumberValue: string, mime: string, quality: string, colorMode: string, targetKiB: string, minimumQuality: string, allowResize: boolean, batchMode: boolean, targetUnit: "KiB" | "MiB", svgWidth: string, svgHeight: string, svgScale: string, svgBackground: string, svgTransparent: boolean, pngLossless: boolean, pngPalette: "off" | "exact" | "lossy"): unknown {
   const qualityNumber = Number(quality);
   const primary = file ?? files[0];
   switch (toolId) {
@@ -243,6 +260,7 @@ function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: Fi
     case "image-compression": return {
       ...(batchMode ? { files } : { file: primary, mime }),
       ...(pngLossless && !batchMode ? { pngLossless: true } : {}),
+      ...(pngPalette !== "off" && !batchMode ? { pngPalette } : {}),
       quality: qualityNumber,
       ...(targetKiB.trim() === "" ? {} : { targetKiB: Number(targetKiB) * (targetUnit === "MiB" ? 1024 : 1), minQuality: Number(minimumQuality), allowResize }),
     };

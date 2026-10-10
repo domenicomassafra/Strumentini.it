@@ -52,6 +52,7 @@ import { decodePortableImage } from "./portable-decode";
 import { inspectGifBlob, type GifStructure } from "./gif-structure";
 import { findImageTargetSize, parseImageTarget } from "./target-size";
 import { compressPngLossless47 } from "./png-lossless-47";
+import { quantizePngPalette47 } from "./png-palette-lossy-47";
 
 export interface TransformInput {
   readonly file: Blob;
@@ -332,8 +333,12 @@ export async function convertImageFormatLocal(input: unknown, signal?: AbortSign
 }
 
 export interface ImageCompressionOutput extends ImageOutput {
-  readonly compressionMode?: "png-idat-lossless";
+  readonly compressionMode?: "png-idat-lossless" | "png-palette-exact" | "png-palette-lossy";
   readonly pixelVerification?: "exact-filtered-scanlines";
+  readonly paletteColors?: number;
+  readonly palettePixelPolicy?: "exact" | "lossy-rgb" | "original-unmodified";
+  readonly maxObservedChannelError?: number;
+  readonly alphaVerification?: "exact";
   readonly keptOriginal?: boolean;
   readonly targetBytes?: number;
   readonly targetMet?: boolean;
@@ -346,6 +351,23 @@ export interface ImageCompressionOutput extends ImageOutput {
 export async function compressImageLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<ImageCompressionOutput> {
   const value = validateObject(input);
   const file = asFile(value.file);
+  if (value.pngPalette !== undefined) {
+    if ((value.pngPalette !== "exact" && value.pngPalette !== "lossy") || value.pngLossless === true ||
+      value.mime !== "image/png" || value.targetKiB !== undefined || value.allowResize === true) {
+      throw new ImageVisualError("INVALID_INPUT", "Palette PNG solo con modalità esatta/approssimata, output PNG, senza target o resize");
+    }
+    progress?.({ phase: "encode", label: "Palette PNG indicizzata con alpha preservato" });
+    const output = await quantizePngPalette47(file.blob, { mode: value.pngPalette, ...(signal === undefined ? {} : { signal }) });
+    abortIfNeeded(signal);
+    return {
+      blob: output.blob, filename: outputName(file, `palette-${value.pngPalette}`, "image/png"),
+      inputMime: "image/png", outputMime: "image/png", width: output.width, height: output.height,
+      estimatedBytesSaved: output.savedBytes, keptOriginal: output.keptOriginal,
+      compressionMode: value.pngPalette === "exact" ? "png-palette-exact" : "png-palette-lossy",
+      paletteColors: output.paletteColors, palettePixelPolicy: output.pixelPolicy,
+      maxObservedChannelError: output.maxObservedChannelError, alphaVerification: output.alphaVerification,
+    };
+  }
   if (value.pngLossless === true) {
     // This strict opt-in operation preserves original scanlines and PNG
     // metadata bytes, and must never silently fall back to Canvas re-encoding.

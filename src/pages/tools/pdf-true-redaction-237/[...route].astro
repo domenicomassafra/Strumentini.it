@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { PdfSecureRedaction237Tool } from "../../../components/tools/pdf/PdfSecureRedaction237Tool";
+
+// #237 requires independent security/product acceptance. Never produce a
+// static/public path or tool-catalog entry while that gate remains open.
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { route: undefined } }] : [];
+}
+---
+<BaseLayout title="PDF oscuramento raster — test sperimentale" description="Verifica tecnica locale e non certificata di oscuramento PDF raster" noindex>
+  <main class="redaction237-page" data-redaction237-preview="experimental-local-only">
+    <nav aria-label="Percorso"><a href="/">Home</a> / Anteprima tecnica PDF</nav>
+    <h1>Oscuramento PDF: prova tecnica locale</h1>
+    <p>Modalità sperimentale non disponibile nel catalogo pubblico. La sicurezza viene valutata su un sottoinsieme limitato di PDF e non è ancora certificata su dispositivi mobili reali.</p>
+    <PdfSecureRedaction237Tool client:load />
+  </main>
+</BaseLayout>
+<style>
+  .redaction237-page { max-width: 930px; margin: 0 auto; padding: 2rem 1rem 4rem; display: grid; gap: 1rem; min-width: 0; }
+  :global(.redaction237) { display: grid; gap: 1rem; min-width: 0; }
+  :global(.redaction237-pages) { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 1rem; }
+  :global(.redaction237-pages figure) { margin: 0; min-width: 0; }
+  :global(.redaction237-preview) { position: relative; display: inline-block; max-width: 100%; line-height: 0; border: 1px solid currentColor; }
+  :global(.redaction237-preview img) { max-width: 100%; height: auto; }
+  :global(.redaction237-box) { position: absolute; background: black; pointer-events: none; }
+  :global(.redaction237 button) { cursor: pointer; min-height: 44px; margin: .25rem; }
+  :global(.redaction237 button:disabled) { opacity: .5; cursor: not-allowed; }
+  :global(.redaction237 input) { max-width: 100%; }
+</style>

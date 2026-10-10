@@ -14,6 +14,17 @@ export interface OfficePrintCapability56 {
   readonly reason: string;
 }
 
+/** Explicit, format-specific fidelity refusals grounded in the editable OOXML
+ * source corpus. Seeing a package feature is not proof of pixel/page rendering.
+ * #257–259 may be reconsidered only when an approved local renderer reproduces
+ * its geometry and the full fidelity corpus has independently validated PDFs.
+ */
+const OFFICE_FIDELITY_LIMITS_56: Readonly<Record<"docx" | "xlsx" | "pptx", string>> = {
+  docx: "DOCX: font, tabelle, immagini, paginazione, intestazioni, sezioni e collegamenti non hanno una conversione PDF con fedeltà dimostrata; layout Word non riprodotto.",
+  xlsx: "XLSX: font, formule, grafici, immagini, intervalli, larghezze colonne e impostazioni di stampa non hanno una conversione PDF con fedeltà dimostrata.",
+  pptx: "PPTX: font, grafici, media, geometria delle forme, master, temi ed effetti non hanno una conversione PDF con fedeltà dimostrata.",
+};
+
 export const OFFICE_PRINT_CAPABILITIES_56: readonly OfficePrintCapability56[] = [
   { format: "txt", decision: "PRINTABLE_LOCAL", fidelity: "SEMANTIC_PRINT_ONLY", reason: "Testo UTF-8, caratteri WinAnsi; righe originali, Courier e ritorno a capo." },
   { format: "markdown", decision: "PRINTABLE_LOCAL", fidelity: "SEMANTIC_PRINT_ONLY", reason: "Markdown normalizzato a testo. Tabelle avanzate, immagini, stile e hyperlink visivi non conservati." },
@@ -21,7 +32,9 @@ export const OFFICE_PRINT_CAPABILITIES_56: readonly OfficePrintCapability56[] = 
   { format: "csv", decision: "PRINTABLE_LOCAL", fidelity: "SEMANTIC_PRINT_ONLY", reason: "CSV quote-aware, massimo otto colonne, wrap e intestazione ripetuta; stili e formule assenti." },
   ...(["docx", "xlsx", "pptx", "odt", "ods", "odp", "doc", "xls", "ppt"] as const).map((format) => ({
     format, decision: "REFUSE_FIDELITY" as const, fidelity: "UNPROVEN_OFFICE_LAYOUT" as const,
-    reason: "Nessun renderer Office locale approvato per font, pagine, immagini, grafici e fedeltà geometrica. Nessun server o convertitore remoto.",
+    reason: format in OFFICE_FIDELITY_LIMITS_56
+      ? OFFICE_FIDELITY_LIMITS_56[format as keyof typeof OFFICE_FIDELITY_LIMITS_56]
+      : "Nessun renderer Office locale approvato per font, pagine, immagini, grafici e fedeltà geometrica. Nessun server o convertitore remoto.",
   })),
 ];
 

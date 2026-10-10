@@ -191,6 +191,7 @@ function buildRasterOnly237(pages: readonly { readonly bytes: Uint8Array; readon
     ) });
     return writer.putAuto(pdfDict({
       Type: pdfName("Page"),
+      Parent: pagesRef,
       MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(geometry.pageWidth), pdfNumber(geometry.pageHeight)]),
       Resources: pdfDict({ XObject: pdfDict({ Im0: image }) }),
       Contents: stream,
@@ -252,13 +253,16 @@ export async function verifySecureRedaction237(
   const treeType = tree.entries.get("Type");
   if (treeType?.kind !== "name" || treeType.value !== "Pages") refuse("Tipo albero non valido.");
   const usedObjectIds = new Set([model.root.id, pagesTreeRef.id]);
+  const canonicalPages: { bytes: Uint8Array; geometry: RedactionPage237 }[] = [];
   let verifiedBlackPixels = 0;
   for (let index = 0; index < pages.length; index += 1) {
     check(signal);
     const page = model.pages[index]?.object.value;
     const spec = pages[index]!;
-    if (page?.kind !== "dict" || !exactKeys(page.entries, ["Type", "MediaBox", "Resources", "Contents"])) refuse("Pagina con oggetti nascosti.");
+    if (page?.kind !== "dict" || !exactKeys(page.entries, ["Type", "Parent", "MediaBox", "Resources", "Contents"])) refuse("Pagina con oggetti nascosti.");
     const pageType = page.entries.get("Type");
+    const parent = page.entries.get("Parent");
+    if (parent?.kind !== "ref" || parent.id !== pagesTreeRef.id) refuse("Pagina priva di riferimento Parent valido.");
     const declaredPageRef = pageReferences.items[index];
     if (pageType?.kind !== "name" || pageType.value !== "Page" || declaredPageRef?.kind !== "ref"
       || declaredPageRef.id !== model.pages[index]?.object.id) refuse("Riferimento pagina non valido.");
@@ -300,6 +304,7 @@ export async function verifySecureRedaction237(
       refuse("Stream immagine diverso da raster RGB puro.");
     }
     const rgb = await inflateExact237(image.bytes, spec.pixelWidth * spec.pixelHeight * 3, signal);
+    canonicalPages.push({ bytes: image.bytes, geometry: spec });
     const occupied = new Uint8Array(spec.pixelWidth * spec.pixelHeight);
     for (const region of spec.regions) {
       const b = pixelBounds(region, spec.pixelWidth, spec.pixelHeight);
@@ -316,6 +321,15 @@ export async function verifySecureRedaction237(
   }
   if (usedObjectIds.size !== model.objects.size) refuse("Oggetti orfani o duplicati nel PDF esportato.");
   if (verifiedBlackPixels < 1) refuse("Nessun pixel oscurato.");
+  // The parsed object tree alone does not prove the absence of recoverable
+  // bytes: PDF readers tolerate comments/unknown text between startxref and
+  // %%EOF, where a source secret could remain even after all pixel checks.
+  // Require the ENTIRE exported byte stream to match the canonical fresh
+  // image-only serializer, including xref, whitespace and EOF placement.
+  const canonical = buildRasterOnly237(canonicalPages);
+  if (canonical.length !== output.length || canonical.some((byte, index) => byte !== output[index])) {
+    refuse("Byte estranei recuperabili nel PDF esportato.");
+  }
   return {
     policy: "new-raster-only-lossless-flate-no-source-objects", pageCount: pages.length, pages,
     verifiedBlackPixels, fidelity: "whole-page-rasterized-no-search-text-vectors-links-or-original-metadata",

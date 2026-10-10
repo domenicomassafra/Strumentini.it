@@ -43,6 +43,15 @@ let checks = 0;
 try {
   await ready();
   const { source, rgba } = await makeFixture();
+  const paletteRaw = Buffer.alloc(64 * 48 * 4);
+  for (let i = 0; i < 64 * 48; i++) {
+    const blue = i % 3 === 0;
+    paletteRaw[i * 4] = blue ? 0 : 255;
+    paletteRaw[i * 4 + 1] = 0;
+    paletteRaw[i * 4 + 2] = blue ? 255 : 0;
+    paletteRaw[i * 4 + 3] = i % 7 === 0 ? 0 : 255;
+  }
+  const paletteSource = await sharp(paletteRaw, { raw: { width: 64, height: 48, channels: 4 } }).png({ compressionLevel: 0 }).toBuffer();
   for (const [name, browserType] of Object.entries({ chromium, webkit })) {
     const browser = await browserType.launch({ headless: true });
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
@@ -85,13 +94,48 @@ try {
       assert.deepEqual(jsErrors, []);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 2), false);
       checks += 4;
-      console.log(`${name}: public PNG IDAT opt-in, real download/pixel parity, invalid-file refusal, no offsite/JS/overflow PASS`);
+      // Exercise the NEW public palette control, not just an isolated quantizer.
+      await form.locator('[data-png-palette-47] select').selectOption('exact');
+      assert.equal(await form.locator('[data-png-lossless-47] input[type=checkbox]').isChecked(), false);
+      assert.equal(await form.locator('input[type=file]').getAttribute('accept'), 'image/png,.png');
+      assert.equal(await form.locator('[data-target-image-compression]').count(), 0);
+      await form.locator('input[type=file]').setInputFiles({ name: 'palette.png', mimeType: 'image/png', buffer: paletteSource });
+      await form.getByRole('button', { name: 'Esegui in locale' }).click();
+      await page.getByText('Alpha verificato identico').waitFor({ timeout: 20000 });
+      const paletteDownload = page.waitForEvent('download');
+      await page.locator('[data-result-class="image"] a[download]').first().click();
+      const paletteFile = await paletteDownload;
+      assert.equal(paletteFile.suggestedFilename(), 'palette-palette-exact.png');
+      const paletteOutput = await readFile(await paletteFile.path());
+      assert.deepEqual(await sharp(paletteOutput).ensureAlpha().raw().toBuffer(), paletteRaw);
+      checks += 5;
+      // The opt-in lossy variant must be genuinely exported, with alpha kept
+      // bit-exact and independent observed RGB error bounded by its claim.
+      await form.locator('[data-png-palette-47] select').selectOption('lossy');
+      await form.locator('input[type=file]').setInputFiles({ name: 'palette.png', mimeType: 'image/png', buffer: paletteSource });
+      await form.getByRole('button', { name: 'Esegui in locale' }).click();
+      await page.getByText('Palette approssimata (perdita RGB dichiarata)').waitFor({ timeout: 20000 });
+      const lossyEvent = page.waitForEvent('download');
+      await page.locator('[data-result-class="image"] a[download]').first().click();
+      const lossyDownload = await lossyEvent;
+      assert.equal(lossyDownload.suggestedFilename(), 'palette-palette-lossy.png');
+      const lossyPixels = await sharp(await readFile(await lossyDownload.path())).ensureAlpha().raw().toBuffer();
+      let maxError = 0;
+      for (let i = 0; i < lossyPixels.length; i += 4) {
+        assert.equal(lossyPixels[i + 3], paletteRaw[i + 3], 'alpha changed by lossy mode');
+        for (let j = 0; j < 3; j++) maxError = Math.max(maxError, Math.abs(lossyPixels[i + j] - paletteRaw[i + j]));
+      }
+      assert.ok(maxError <= 32, `lossy RGB error ${maxError} >32`);
+      assert.deepEqual(offsite, []);
+      assert.deepEqual(jsErrors, []);
+      checks += 4;
+      console.log(`${name}: public PNG IDAT + indexed exact/lossy, real downloads, independent pixel/alpha/loss limit, refusal, zero offsite/errors PASS`);
     } finally {
       await context.close();
       await browser.close();
     }
   }
-  console.log(`#047 public PNG opt-in browser PASS: ${checks}/22 checks (Chromium, WebKit at 390px; not a physical-mobile receipt)`);
+  console.log(`#047 public PNG opt-in browser PASS: ${checks}/40 checks (Chromium, WebKit at 390px; not a physical-mobile receipt)`);
 } finally {
   server.kill("SIGTERM");
 }

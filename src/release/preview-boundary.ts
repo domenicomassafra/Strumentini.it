@@ -13,6 +13,7 @@ export function narrowUncataloguedToolPreviews(input: {
   readonly ocrSource?: string;
   readonly ocrHtml?: string;
   readonly pdfOcr247Source?: string;
+  readonly redaction237Source?: string;
   readonly signatureSource: string;
   readonly sitemapXml: string;
 }): { readonly toolPageFiles: string[]; readonly staticFiles: string[]; readonly safePreviewNames: string[] } {
@@ -81,6 +82,20 @@ export function narrowUncataloguedToolPreviews(input: {
   if (pdfOcr247Guard) {
     toolPageFiles.splice(toolPageFiles.indexOf(pdfOcrSourcePath), 1);
     safePreviewNames.push("pdf-scansionato-ocr-247");
+  }
+  const redactionSourcePath = "src/pages/tools/pdf-true-redaction-237/[...route].astro";
+  const redactionStaticPath = "tools/pdf-true-redaction-237/index.html";
+  const redactionSource = input.redaction237Source ?? "";
+  const redactionDevOnly = toolPageFiles.includes(redactionSourcePath) &&
+    !staticFiles.includes(redactionStaticPath) &&
+    !inCatalog("/tools/pdf-true-redaction-237") &&
+    /export\s+function\s+getStaticPaths\s*\(\s*\)\s*\{\s*return\s+import\.meta\.env\.DEV\s*\?\s*\[\{[\s\S]*?\]\s*:\s*\[\]\s*;?\s*\}/u.test(redactionSource) &&
+    /<BaseLayout\b[\s\S]*?\bnoindex\s*>/u.test(redactionSource) &&
+    redactionSource.includes('data-redaction237-preview="experimental-local-only"') &&
+    !input.sitemapXml.includes("/tools/pdf-true-redaction-237/");
+  if (redactionDevOnly) {
+    toolPageFiles.splice(toolPageFiles.indexOf(redactionSourcePath), 1);
+    safePreviewNames.push("pdf-true-redaction-237");
   }
   return { toolPageFiles, staticFiles, safePreviewNames };
 }

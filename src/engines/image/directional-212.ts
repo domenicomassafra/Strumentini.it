@@ -79,6 +79,8 @@ function pngFromRgba(rgba: Uint8Array, width: number, height: number, signal?: A
 }
 
 interface FirstImage {
+  readonly left: number;
+  readonly top: number;
   readonly width: number;
   readonly height: number;
   readonly palette: Uint8Array;
@@ -121,8 +123,14 @@ function firstFrameData(gif: Uint8Array, width: number, height: number, signal?:
     const frameHeight = u16(gif, at + 6);
     const packed = gif[at + 8]!;
     at += 9;
-    if (left !== 0 || top !== 0 || frameWidth !== width || frameHeight !== height) {
-      refuse("UNSUPPORTED_GIF_FRAME", "Only full-canvas first GIF frames are supported");
+    if (!frameWidth || !frameHeight || left + frameWidth > width || top + frameHeight > height) {
+      refuse("UNSUPPORTED_GIF_FRAME", "First GIF frame is outside the logical canvas");
+    }
+    // Transparent first frames can be composed on a transparent canvas without
+    // ambiguity. Opaque partial-frame background rendering varies by decoder;
+    // keep those frames explicitly unsupported until its palette policy is proven.
+    if ((left !== 0 || top !== 0 || frameWidth !== width || frameHeight !== height) && transparentIndex === null) {
+      refuse("UNSUPPORTED_GIF_FRAME", "Opaque partial GIF frames require independently verified background palette compositing");
     }
     const paletteEntries = (packed & 0x80) ? 1 << ((packed & 7) + 1) : 0;
     const paletteSize = paletteEntries * 3;
@@ -147,7 +155,7 @@ function firstFrameData(gif: Uint8Array, width: number, height: number, signal?:
       if (total > GIF_212_MAX_BYTES) refuse("GIF_LIMIT", "First frame LZW data exceeds local limit");
       at += count;
     }
-    return { width, height, palette, transparentIndex, minimumCodeBits, compressed: concat(blocks),
+    return { left, top, width: frameWidth, height: frameHeight, palette, transparentIndex, minimumCodeBits, compressed: concat(blocks),
       interlaced: (packed & 0x40) !== 0 };
   }
   return refuse("MALFORMED_GIF", "First frame not found");
@@ -262,22 +270,25 @@ export async function gifFirstFrameToPng212(
   }
   const frame = firstFrameData(bytes, structure.width, structure.height, options.signal);
   const indexes = decodeLzw(frame, options.signal);
-  const rgba = new Uint8Array(indexes.length * 4);
+  const rgba = new Uint8Array(structure.width * structure.height * 4);
   for (let pixel = 0; pixel < indexes.length; pixel++) {
     if ((pixel & 65535) === 0) cancelled(options.signal);
     const index = indexes[pixel]!;
     const color = index * 3;
     if (color + 2 >= frame.palette.length) refuse("INVALID_GIF_PALETTE", "Decoded index outside active GIF color table");
     if (index === frame.transparentIndex) continue; // Canonical transparent black.
-    rgba[pixel * 4] = frame.palette[color]!;
-    rgba[pixel * 4 + 1] = frame.palette[color + 1]!;
-    rgba[pixel * 4 + 2] = frame.palette[color + 2]!;
-    rgba[pixel * 4 + 3] = 255;
+    const row = Math.floor(pixel / frame.width);
+    const column = pixel % frame.width;
+    const target = ((frame.top + row) * structure.width + frame.left + column) * 4;
+    rgba[target] = frame.palette[color]!;
+    rgba[target + 1] = frame.palette[color + 1]!;
+    rgba[target + 2] = frame.palette[color + 2]!;
+    rgba[target + 3] = 255;
   }
-  const png = pngFromRgba(rgba, frame.width, frame.height, options.signal);
+  const png = pngFromRgba(rgba, structure.width, structure.height, options.signal);
   cancelled(options.signal);
   return {
-    png, width: frame.width, height: frame.height,
+    png, width: structure.width, height: structure.height,
     inputBytes: bytes.length, outputBytes: png.length,
     frameCount: structure.frameCount,
     frameDelaysCentiseconds: structure.frameDelaysCentiseconds,

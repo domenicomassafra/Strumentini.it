@@ -331,6 +331,15 @@ function imageMetrics(output: VerifiedImageOutput | undefined, sourceFiles: read
 }
 
 function semanticImageRows(toolId: ImageResultToolId, raw: ImageResultValue): readonly { label: string; value: ComponentChildren }[] {
+  if (toolId === "image-compression" && (raw.compressionMode === "png-palette-exact" || raw.compressionMode === "png-palette-lossy")) {
+    return [
+      { label: "Modalità", value: raw.compressionMode === "png-palette-exact" ? "Palette esatta, pixel identici" : "Palette approssimata (perdita RGB dichiarata)" },
+      { label: "Trasparenza", value: raw.alphaVerification === "exact" ? "Alpha verificato identico" : "Non verificato" },
+      { label: "Colori palette", value: String(numberField(raw.paletteColors) ?? 0) },
+      { label: "Errore RGB massimo osservato", value: String(numberField(raw.maxObservedChannelError) ?? 0) },
+      { label: "File esportato", value: raw.keptOriginal === true ? "Originale conservato perché non più grande" : "PNG indicizzato, verificato" },
+    ];
+  }
   if (toolId === "image-compression" && raw.compressionMode === "png-idat-lossless") {
     return [
       { label: "Modalità", value: "PNG IDAT senza perdita, non interlacciato (RGB/RGBA, grigi o palette supportati)" },

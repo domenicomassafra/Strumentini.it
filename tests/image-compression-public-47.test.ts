@@ -62,4 +62,26 @@ describe("#047 public compression engine opt-in PNG lossless", () => {
     await expect(compressImageLocal({ file, pngLossless: true, mime: "image/png" }, cancelled.signal))
       .rejects.toMatchObject({ name: "AbortError" });
   });
+
+  it("uses the genuine public compression engine for exact indexed PNG and refuses hidden fallback combinations", async () => {
+    const width = 64, height = 48;
+    const rgba = Buffer.alloc(width * height * 4);
+    for (let i = 0; i < width * height; i++) {
+      rgba[4 * i] = i % 2 === 0 ? 255 : 0;
+      rgba[4 * i + 2] = i % 2 === 0 ? 0 : 255;
+      rgba[4 * i + 3] = i % 3 === 0 ? 0 : 255;
+    }
+    const source = await sharp(rgba, { raw: { width, height, channels: 4 } }).png({ compressionLevel: 0 }).toBuffer();
+    const file = new File([Uint8Array.from(source)], "indexed.png", { type: "image/png" });
+    const output = await compressImageLocal({ file, mime: "image/png", pngPalette: "exact" });
+    expect(output).toMatchObject({ compressionMode: "png-palette-exact", palettePixelPolicy: "exact",
+      alphaVerification: "exact", filename: "indexed-palette-exact.png" });
+    const resultingPixels = await sharp(Buffer.from(await output.blob.arrayBuffer())).ensureAlpha().raw().toBuffer();
+    expect(resultingPixels).toEqual(rgba);
+    expect((await prepareImageResult(output)).artifacts[0]?.artifact.download.ready).toBe(true);
+    for (const extra of [ { pngLossless: true }, { targetKiB: 100 }, { allowResize: true }, { mime: "image/webp" } ]) {
+      await expect(compressImageLocal({ file, mime: "image/png", pngPalette: "exact", ...extra }))
+        .rejects.toThrow(/INVALID_INPUT/);
+    }
+  });
 });

@@ -10,7 +10,50 @@ const interlaced = (): Uint8Array => new Uint8Array(readFileSync(new URL("../qua
 const blob = (bytes: Uint8Array): Blob => new Blob([new Uint8Array(bytes)], { type: "application/octet-stream" });
 const pngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
 
+function shiftedTransparentFirstFrame(source: Uint8Array): Uint8Array {
+  const shifted = source.slice();
+  // Genuine partial GIF geometry: logical 4x3 screen; 2x2 frame at (1,1).
+  shifted.set([4, 0, 3, 0], 6);
+  const descriptor = shifted.indexOf(0x2c, 30);
+  if (descriptor < 0) throw new Error("Expected image descriptor in GIF fixture");
+  shifted.set([1, 0, 1, 0], descriptor + 1);
+  return shifted;
+}
+
+function shiftedInterlacedFirstFrame(): Uint8Array {
+  const shifted = interlaced().slice();
+  shifted.set([10, 0, 10, 0], 6);
+  const descriptor = shifted.indexOf(0x2c, 30);
+  if (descriptor < 0) throw new Error("Expected image descriptor in interlaced GIF fixture");
+  shifted.set([1, 0, 1, 0], descriptor + 1);
+  return shifted;
+}
+
 describe("#212 isolated directional GIF first-frame conversion and AVIF/HEIC fail-closed probes", () => {
+  it("reconstructs a shifted first frame on a larger transparent logical canvas, including outside alpha", async () => {
+    const source = shiftedTransparentFirstFrame(still());
+    const output = await gifFirstFrameToPng212(blob(source));
+    expect(output).toMatchObject({ width: 4, height: 3, frameCount: 1, animationDiscarded: false });
+    const expected = await sharp(source).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const actual = await sharp(output.png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    expect(expected.info).toMatchObject({ width: 4, height: 3, channels: 4 });
+    expect(actual.data).toEqual(expected.data);
+    expect(actual.data.subarray(0, 4)).toEqual(Buffer.from([0, 0, 0, 0]));
+  });
+
+  it("composes shifted interlaced first frames and explicitly refuses ambiguous opaque partial-frame backgrounds", async () => {
+    const shifted = shiftedInterlacedFirstFrame();
+    const result = await gifFirstFrameToPng212(blob(shifted));
+    expect(result).toMatchObject({ width: 10, height: 10, frameDelaysCentiseconds: [12] });
+    const expected = await sharp(shifted).ensureAlpha().raw().toBuffer();
+    expect(await sharp(result.png).ensureAlpha().raw().toBuffer()).toEqual(expected);
+
+    const opaque = shiftedTransparentFirstFrame(still());
+    const control = opaque.indexOf(0x21);
+    expect(control).toBeGreaterThan(0);
+    opaque[control + 3] = opaque[control + 3]! & 0xfe; // remove transparency flag; logical background becomes ambiguous
+    await expect(gifFirstFrameToPng212(blob(opaque))).rejects.toThrow(/UNSUPPORTED_GIF_FRAME/);
+  });
   it("reorders real GIF four-pass interlaced rows and preserves independent pixel/alpha parity", async () => {
     const source = interlaced();
     expect(source[13 + 256 * 3 + 8 + 9]).toBe(0x40); // descriptor packed interlace flag

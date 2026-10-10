@@ -11,11 +11,13 @@ import { gifFirstFrameToPng212, probeHeicDecode212, probeAvifDecode212 } from ".
 const independentPillow = String.raw`
 from PIL import Image
 import os, sys, json
-animated, animated_png, still, still_png, interlaced, interlaced_png = sys.argv[1:7]
+animated, animated_png, still, still_png, interlaced, interlaced_png, partial, partial_png, shifted_interlaced, shifted_interlaced_png = sys.argv[1:11]
 for original_path, png_path, count, durations in (
     (animated, animated_png, 4, [250, 250, 250, 250]),
     (still, still_png, 1, [0]),
     (interlaced, interlaced_png, 1, [120]),
+    (partial, partial_png, 1, [0]),
+    (shifted_interlaced, shifted_interlaced_png, 1, [120]),
 ):
     with Image.open(original_path) as gif:
         assert gif.format == "GIF" and gif.n_frames == count
@@ -45,16 +47,24 @@ for original_path, png_path, count, durations in (
 
 const root = new URL("../", import.meta.url);
 const originals = [
-  new URL("spikes/heavy-local-feasibility/public/corpus/sample-animated.gif", root),
-  new URL("quality/fixtures/image-format-matrix/source.gif", root),
-  new URL("quality/fixtures/image-format-matrix/interlaced-8x8.gif", root),
+  { uri: new URL("spikes/heavy-local-feasibility/public/corpus/sample-animated.gif", root) },
+  { uri: new URL("quality/fixtures/image-format-matrix/source.gif", root) },
+  { uri: new URL("quality/fixtures/image-format-matrix/interlaced-8x8.gif", root) },
+  { uri: new URL("quality/fixtures/image-format-matrix/source.gif", root), logical: [4, 0, 3, 0] },
+  { uri: new URL("quality/fixtures/image-format-matrix/interlaced-8x8.gif", root), logical: [10, 0, 10, 0] },
 ];
 const temp = mkdtempSync(join(tmpdir(), "image-212-"));
 try {
   const sourcePaths: string[] = [];
   const outputPaths: string[] = [];
-  for (const [index, uri] of originals.entries()) {
-    const source = new Uint8Array(readFileSync(uri));
+  for (const [index, fixture] of originals.entries()) {
+    const source = new Uint8Array(readFileSync(fixture.uri));
+    if (fixture.logical) {
+      source.set(fixture.logical, 6);
+      const imageAt = source.indexOf(0x2c, 30);
+      if (imageAt < 0) throw new Error("IMAGE_212_MISSING_DESCRIPTOR");
+      source.set([1, 0, 1, 0], imageAt + 1);
+    }
     const inputPath = join(temp, "source-" + index + ".gif");
     const outputPath = join(temp, "frame0-" + index + ".png");
     writeFileSync(inputPath, source);
@@ -69,7 +79,8 @@ try {
   }
   process.stdout.write(execFileSync("python3", ["-c", independentPillow,
     sourcePaths[0]!, outputPaths[0]!, sourcePaths[1]!, outputPaths[1]!,
-    sourcePaths[2]!, outputPaths[2]!], { encoding: "utf8" }));
+    sourcePaths[2]!, outputPaths[2]!, sourcePaths[3]!, outputPaths[3]!,
+    sourcePaths[4]!, outputPaths[4]!], { encoding: "utf8" }));
   const avif = new Uint8Array(readFileSync(new URL("quality/fixtures/image-format-matrix/source.avif", root)));
   // Independent desktop decoder verifies the stored AVIF corpus item. This
   // deliberately does NOT stand in for a browser or physical mobile proof.

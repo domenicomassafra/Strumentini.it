@@ -92,7 +92,7 @@ describe("#237 security-first raster-only PDF redaction", () => {
       page: 1, pageWidth: 10, pageHeight: 10, pixelWidth: 10, pixelHeight: 10,
       regions: [{ page: 1, left: 0, top: 0, width: 1, height: 0.5 }],
     };
-    async function createRgbOnlyPdf(raster: Uint8Array, withOrphan = false): Promise<Uint8Array> {
+    async function createRgbOnlyPdf(raster: Uint8Array, withOrphan = false, omitParent = false): Promise<Uint8Array> {
       const compressed = new Uint8Array(await new Response(
         new Blob([Uint8Array.from(raster)]).stream().pipeThrough(new CompressionStream("deflate")),
       ).arrayBuffer());
@@ -111,7 +111,7 @@ describe("#237 security-first raster-only PDF redaction", () => {
         bytes: new TextEncoder().encode("q\n10 0 0 10 0 0 cm\n/Im0 Do\nQ\n"),
       });
       const page = writer.putAuto(pdfDict({
-        Type: pdfName("Page"), MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(10), pdfNumber(10)]),
+        Type: pdfName("Page"), ...(!omitParent ? { Parent: pages } : {}), MediaBox: pdfArray([pdfNumber(0), pdfNumber(0), pdfNumber(10), pdfNumber(10)]),
         Resources: pdfDict({ XObject: pdfDict({ Im0: image }) }), Contents: contents,
       }));
       writer.put(pages, pdfDict({ Type: pdfName("Pages"), Kids: pdfArray([page]), Count: pdfNumber(1) }));
@@ -127,6 +127,8 @@ describe("#237 security-first raster-only PDF redaction", () => {
     await expect(verifySecureRedaction237(good, [spec])).resolves.toMatchObject({
       pageCount: 1, verifiedBlackPixels: 50, policy: "new-raster-only-lossless-flate-no-source-objects",
     });
+    await expect(verifySecureRedaction237(await createRgbOnlyPdf(safe, false, true), [spec]))
+      .rejects.toThrow(/REDACTION_REFUSED: Pagina con oggetti nascosti/u);
     const leaked = safe.slice();
     leaked[12 * 3] = 19; // a single top-half redaction pixel has survived
     await expect(verifySecureRedaction237(await createRgbOnlyPdf(leaked), [spec]))
@@ -135,6 +137,17 @@ describe("#237 security-first raster-only PDF redaction", () => {
       .rejects.toThrow(/REDACTION_REFUSED: Struttura PDF/u);
     const hiddenTail = Uint8Array.from([...good, ...new TextEncoder().encode("HIDDEN-AFTER-EOF")]);
     await expect(verifySecureRedaction237(hiddenTail, [spec])).rejects.toThrow(/REDACTION_REFUSED: Byte finali/u);
+    // A PDF reader can ignore bytes inserted between startxref and %%EOF.
+    // The proof must reject recoverable source bytes in this otherwise valid gap.
+    const end = new TextEncoder().encode("%%EOF\n");
+    expect(Array.from(good.subarray(-end.length))).toEqual(Array.from(end));
+    const preEof = Uint8Array.from([
+      ...good.subarray(0, -end.length),
+      ...new TextEncoder().encode("PRIVATE-RECOVERABLE-SOURCE-237\n"),
+      ...end,
+    ]);
+    await expect(verifySecureRedaction237(preEof, [spec]))
+      .rejects.toThrow(/REDACTION_REFUSED: Byte estranei/u);
   });
 
   it("refuses malformed raster and never lets zero-area selection through", () => {
