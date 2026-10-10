@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 327,
-    "completed": 278,
+    "completed": 279,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 261,
-    "open": 49,
-    "readyDAG": 15,
-    "ready-for-agent": 7,
+    "completedWithoutExplicitRefusal": 262,
+    "open": 48,
+    "readyDAG": 14,
+    "ready-for-agent": 6,
     "dependency-blocked": 34,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -49,6 +49,7 @@
       34,
       36,
       37,
+      38,
       39,
       41,
       42,
@@ -304,7 +305,6 @@
       327
     ],
     "ready-for-agent": [
-      38,
       47,
       56,
       212,
@@ -792,9 +792,9 @@
     {
       "id": 38,
       "title": "Video transform family",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -874,7 +874,6 @@
         31,
         32,
         35,
-        38,
         40,
         65,
         66

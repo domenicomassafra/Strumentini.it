@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 278 / 49 |
+| All / completed / open | 327 / 279 / 48 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 15 |
-| Ready for assignment (feasibility still to prove) | 7 |
+| DAG-ready (all numeric dependencies closed) | 14 |
+| Ready for assignment (feasibility still to prove) | 6 |
 | Waiting on other tickets | 34 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,9 +21,8 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (7)
+## Ready for assignment (feasibility still to prove) (6)
 
-- #038 — Video transform family
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
 - #212 — HEIC AVIF and GIF directional image implementations
@@ -46,7 +45,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #032 — PDF edit/security family (awaiting #237, #241)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #040 — Italy utilities beyond CalcolaTutto (awaiting #152)
-- #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #035, #038, #040, #065, #066)
+- #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #035, #040, #065, #066)
 - #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)
 - #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212)
 - #058 — PDF↔image directional conversion pack (awaiting #235)

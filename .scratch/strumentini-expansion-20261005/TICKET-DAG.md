@@ -9,7 +9,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 
 ## Current dependency frontier
 
-- **038 — Video transform family**
 - **047 — JPEG/PNG/WebP/SVG compression engines**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **056 — Office-to-PDF and printable export pack**
@@ -25,7 +24,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **15** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **14** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -79,7 +78,7 @@ Exactly **15** incomplete tickets currently have every declared numeric blocker 
 | 035 | blocked | Audio capture/playback utilities | 229, 303, 304 |
 | 036 | completed | Audio file-processing family | 230, 231 |
 | 037 | completed | Video inspect/subtitle utilities | 232, 233, 305 |
-| 038 | ready-for-agent | Video transform family | 234, 306, 307, 308 |
+| 038 | completed | Video transform family | 234, 306, 307, 308 |
 | 039 | completed | AI-era deterministic helper family | 054, 165, 183, 184, 185, 186, 189 |
 | 040 | blocked | Italy utilities beyond CalcolaTutto | 152, 150 |
 | 041 | completed | Italian text/language long-tail family | 187, 188, 189, 190, 309 |
