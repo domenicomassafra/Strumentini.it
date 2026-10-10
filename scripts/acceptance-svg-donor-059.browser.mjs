@@ -41,6 +41,13 @@ try {
       await page.locator('form textarea').fill(source);
       await page.locator('form select').first().selectOption('svg-minify');
       await page.locator('form button[type=submit]').click();
+      const comparison = page.locator('[data-svg-059-visual-compare]');
+      await comparison.waitFor({ timeout: 25000 });
+      const images = comparison.locator('img');
+      assert.equal(await images.count(), 2, 'Safe SVG must expose original and optimized previews');
+      assert(await images.nth(0).getAttribute('src').then(value => value?.startsWith('data:image/svg+xml;charset=utf-8,')), 'Preview must be local data:image/svg+xml');
+      assert(await images.nth(1).getAttribute('src').then(value => value?.startsWith('data:image/svg+xml;charset=utf-8,')), 'Optimized preview must be local data:image/svg+xml');
+      for (const image of await images.all()) assert(await image.evaluate(element => element.complete && element.naturalWidth === 48 && element.naturalHeight === 24), 'Browser must render both static SVG previews');
       const downloadAction = page.locator('[data-result-action=download]');
       await downloadAction.waitFor({ timeout: 25000 });
       const pending = page.waitForEvent('download');
@@ -55,6 +62,7 @@ try {
       await page.locator('form textarea').fill('<svg><script>alert(1)</script></svg>');
       await page.locator('form button[type=submit]').click();
       await page.getByRole('alert').first().waitFor({ timeout: 25000 });
+      assert.equal(await page.locator('[data-svg-059-visual-compare]').count(), 0, 'Unsafe SVG must revoke preview as well as download');
       assert.equal(await page.locator('[data-result-action=download]').count(), 0, 'Unsafe SVG left a stale downloadable artifact');
       assert.deepEqual(offsite, [], 'Browser made an unauthorized offsite request');
       assert.deepEqual(errors, [], 'Browser unhandled exception');

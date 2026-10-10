@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 327,
-    "completed": 271,
+    "completed": 272,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 253,
-    "open": 56,
-    "readyDAG": 20,
-    "ready-for-agent": 12,
+    "completedWithoutExplicitRefusal": 254,
+    "open": 55,
+    "readyDAG": 19,
+    "ready-for-agent": 11,
     "dependency-blocked": 36,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -58,6 +58,7 @@
       52,
       54,
       55,
+      59,
       60,
       61,
       63,
@@ -302,7 +303,6 @@
       47,
       56,
       57,
-      59,
       69,
       212,
       234,
@@ -1034,9 +1034,9 @@
     {
       "id": 59,
       "title": "JSON/XML/CSS/HTML/SVG minimizer pack",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -1111,8 +1111,7 @@
         53,
         56,
         57,
-        58,
-        59
+        58
       ],
       "gateReason": null,
       "closedWithRefusal": false

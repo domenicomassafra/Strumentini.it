@@ -15,7 +15,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **056 — Office-to-PDF and printable export pack**
 - **057 — PDF-to-editable/structured conversion pack**
-- **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
 - **069 — Cross-format file-size analyzer**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
@@ -30,7 +29,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **20** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **19** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -105,7 +104,7 @@ Exactly **20** incomplete tickets currently have every declared numeric blocker 
 | 056 | ready-for-agent | Office-to-PDF and printable export pack | 256, 257, 258, 259 |
 | 057 | ready-for-agent | PDF-to-editable/structured conversion pack | 252, 253, 254, 255 |
 | 058 | blocked | PDF↔image directional conversion pack | 235, 236 |
-| 059 | ready-for-agent | JSON/XML/CSS/HTML/SVG minimizer pack | 168, 191, 192, 193, 209 |
+| 059 | completed | JSON/XML/CSS/HTML/SVG minimizer pack | 168, 191, 192, 193, 209 |
 | 060 | completed | Upgrade existing CSV/table functionality | 172, 194, 195 |
 | 061 | completed | Upgrade existing text/developer functionality | 164, 178, 179, 180, 181, 182, 196 |
 | 062 | blocked | Upgrade existing business/date functionality | 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 154, 155, 156 |

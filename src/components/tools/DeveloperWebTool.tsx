@@ -483,6 +483,16 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
     () => developerTransformDownload(config.id, operation.result, values.text ?? ""),
     [config.id, operation.result, values.text],
   );
+  // Only a successfully parsed and rejected-of-active-elements static SVG can
+  // ever reach these local image previews. Never render an unvalidated input.
+  const svgVisualPreview = useMemo(() => {
+    if (config.id !== "xml-formatter-validator" || values.mode !== "svg-minify" || transformed === null ||
+      transformed.mime !== "image/svg+xml" || typeof values.text !== "string") return null;
+    return {
+      before: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(values.text)}`,
+      after: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(transformed.output)}`,
+    };
+  }, [config.id, values.mode, values.text, transformed]);
   const artifact = useMemo(() => operation.result === null
     ? null
     : createOutputArtifactDescriptor({
@@ -597,6 +607,13 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
                 />
               )}
               <BoundedTextResultPreview preview={preview} />
+              {svgVisualPreview !== null && <section data-svg-059-visual-compare aria-label="Anteprima SVG originale e ottimizzato">
+                <p>Confronto visivo locale dei soli SVG statici accettati. Le immagini non vengono caricate su server esterni.</p>
+                <div class="field-grid">
+                  <figure><img src={svgVisualPreview.before} alt="SVG originale statico" style={{ width: "100%", maxWidth: "240px", maxHeight: "200px" }} /><figcaption>Originale</figcaption></figure>
+                  <figure><img src={svgVisualPreview.after} alt="SVG statico ottimizzato" style={{ width: "100%", maxWidth: "240px", maxHeight: "200px" }} /><figcaption>Ottimizzato</figcaption></figure>
+                </div>
+              </section>}
               {declaration.class !== "validator" && (
                 <>
                   {permissionRows !== null && (

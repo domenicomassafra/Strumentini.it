@@ -1,4 +1,5 @@
 import { invalid } from "./types";
+import { gzipSync } from "fflate";
 
 /**
  * Donor: SVG Optimizer (SVGO) 4.1.0, MIT, https://github.com/svg/svgo.
@@ -61,10 +62,15 @@ export async function optimizeStaticSvg059(source: string, signal?: AbortSignal)
     // byte-for-byte if there is no real saving.
     const output = encoder.encode(result.data).length < inputBytes ? result.data : source;
     const outputBytes = encoder.encode(output).length;
+    // Real gzip payload sizes measured on the exact input/output UTF-8 bytes;
+    // they are information, not an additional file transform or guaranteed win.
+    const inputGzipBytes = gzipSync(encoder.encode(source), { level: 6 }).byteLength;
+    const outputGzipBytes = gzipSync(encoder.encode(output), { level: 6 }).byteLength;
     return {
       valid: true as const, mode: "svg-minify" as const, output,
       inputBytes, outputBytes, savedBytes: inputBytes - outputBytes,
       savedPercent: Number((100 * (inputBytes - outputBytes) / inputBytes).toFixed(2)),
+      inputGzipBytes, outputGzipBytes, savedGzipBytes: inputGzipBytes - outputGzipBytes,
       donor: "SVGO 4.1.0 (MIT)",
       policy: "Static vector SVG only: comments and metadata removed. Complex, dynamic, embedded-image, linked, scripted or externally referenced SVG refused without output.",
       safety: "NOT_A_GENERAL_SVG_SANITIZER" as const,

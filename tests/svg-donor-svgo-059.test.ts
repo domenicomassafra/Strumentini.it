@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import sharp from "sharp";
+import { gzipSync } from "fflate";
 import { runDeveloperWebTool } from "../src/engines/developer-web";
 import { optimizeStaticSvg059 } from "../src/engines/developer-web/svg-optimizer-059";
 import { developerTransformDownload } from "../src/runtime/developer-transform-download";
@@ -17,6 +18,9 @@ describe("#059 actual SVGO MIT donor for bounded static SVG", () => {
     expect(result).toMatchObject({ valid: true, mode: "svg-minify", donor: "SVGO 4.1.0 (MIT)", safety: "NOT_A_GENERAL_SVG_SANITIZER" });
     expect(result.savedBytes).toBeGreaterThan(30);
     expect(result.outputBytes).toBeLessThan(result.inputBytes);
+    expect(result.inputGzipBytes).toBe(gzipSync(new TextEncoder().encode(source), { level: 6 }).length);
+    expect(result.outputGzipBytes).toBe(gzipSync(new TextEncoder().encode(result.output), { level: 6 }).length);
+    expect(result.savedGzipBytes).toBe(result.inputGzipBytes - result.outputGzipBytes);
     expect(result.output).not.toContain("removable comment");
     expect(result.output).not.toContain("<metadata>");
     const before = await sharp(Buffer.from(source)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
