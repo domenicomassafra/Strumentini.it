@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 262 / 65 |
+| All / completed / open | 327 / 264 / 63 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 20 |
-| Ready for assignment (feasibility still to prove) | 12 |
-| Waiting on other tickets | 45 |
+| DAG-ready (all numeric dependencies closed) | 21 |
+| Ready for assignment (feasibility still to prove) | 13 |
+| Waiting on other tickets | 42 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 1 |
@@ -21,22 +21,23 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (12)
+## Ready for assignment (feasibility still to prove) (13)
 
 - #037 — Video inspect/subtitle utilities
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
 - #059 — JSON/XML/CSS/HTML/SVG minimizer pack
 - #212 — HEIC AVIF and GIF directional image implementations
-- #218 — Image-aware and scan PDF compression profiles
+- #219 — PDF target-size solver and batch compressor
 - #231 — Audio timeline edits and deterministic DSP
 - #234 — Video transform worker core
 - #236 — Advanced PDF to image export
 - #237 — True PDF redaction with post-export proof
 - #241 — PDF signature placement
 - #246 — Local image OCR
+- #265 — File-size analyzer PDF adapter
 
-## Waiting on other tickets (45)
+## Waiting on other tickets (42)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -49,7 +50,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #028 — Image format + target-compression family (awaiting #047, #049)
 - #031 — OCR and document-scan family (awaiting #246, #247)
 - #032 — PDF edit/security family (awaiting #237, #241)
-- #033 — PDF conversion/productivity family (awaiting #249, #255)
+- #033 — PDF conversion/productivity family (awaiting #255)
 - #035 — Audio capture/playback utilities (awaiting #229)
 - #036 — Audio file-processing family (awaiting #231)
 - #038 — Video transform family (awaiting #234, #306)
@@ -57,7 +58,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #045 — Expanded catalog IA and job-route discovery (awaiting #018, #024, #028, #031, #032, #033, #035, #036, #037, #038, #040, #065, #066)
 - #046 — Full expansion certification + release integration (awaiting #018, #045, #065, #066, #158, #279, #280, #281)
 - #049 — Image conversion matrix + HEIC/AVIF/GIF (awaiting #212)
-- #051 — True PDF compression profiles + target size (awaiting #218, #219)
+- #051 — True PDF compression profiles + target size (awaiting #219)
 - #057 — PDF-to-editable/structured conversion pack (awaiting #255)
 - #058 — PDF↔image directional conversion pack (awaiting #235, #236)
 - #062 — Upgrade existing business/date functionality (awaiting #126, #127, #128, #130, #133, #134, #135)
@@ -75,12 +76,9 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #135 — TFR indicative taxation layer (awaiting #127, #134)
 - #152 — Italian invoice stamp-duty reference helper (awaiting #117)
 - #158 — Italy source freshness and annual rollover gate (awaiting #115, #117)
-- #219 — PDF target-size solver and batch compressor (awaiting #218)
 - #235 — Advanced Images to PDF composition (awaiting #212)
 - #247 — Scanned PDF OCR and searchable text layer (awaiting #246)
-- #249 — Split PDF by maximum output size (awaiting #218)
 - #255 — PDF to PPTX page-as-slide baseline (awaiting #236)
-- #265 — File-size analyzer PDF adapter (awaiting #218)
 - #279 — Image-resize Gold promotion gate (awaiting #277, #278)
 - #306 — Video to GIF conversion (awaiting #234)
 

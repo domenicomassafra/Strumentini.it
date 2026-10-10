@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 327,
-    "completed": 262,
+    "completed": 264,
     "completedWithRefusal": 18,
-    "completedWithoutExplicitRefusal": 244,
-    "open": 65,
-    "readyDAG": 20,
-    "ready-for-agent": 12,
-    "dependency-blocked": 45,
+    "completedWithoutExplicitRefusal": 246,
+    "open": 63,
+    "readyDAG": 21,
+    "ready-for-agent": 13,
+    "dependency-blocked": 42,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 1,
@@ -196,6 +196,7 @@
       215,
       216,
       217,
+      218,
       220,
       221,
       222,
@@ -216,6 +217,7 @@
       244,
       245,
       248,
+      249,
       250,
       251,
       252,
@@ -293,13 +295,14 @@
       56,
       59,
       212,
-      218,
+      219,
       231,
       234,
       236,
       237,
       241,
-      246
+      246,
+      265
     ],
     "dependency-blocked": [
       8,
@@ -339,12 +342,9 @@
       135,
       152,
       158,
-      219,
       235,
       247,
-      249,
       255,
-      265,
       279,
       306
     ],
@@ -745,7 +745,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        249,
         255
       ],
       "gateReason": null,
@@ -962,7 +961,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        218,
         219
       ],
       "gateReason": null,
@@ -2682,9 +2680,9 @@
     {
       "id": 218,
       "title": "Image-aware and scan PDF compression profiles",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -2692,12 +2690,10 @@
     {
       "id": 219,
       "title": "PDF target-size solver and batch compressor",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        218
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -2998,12 +2994,10 @@
     {
       "id": 249,
       "title": "Split PDF by maximum output size",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        218
-      ],
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -3162,12 +3156,10 @@
     {
       "id": 265,
       "title": "File-size analyzer PDF adapter",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        218
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },

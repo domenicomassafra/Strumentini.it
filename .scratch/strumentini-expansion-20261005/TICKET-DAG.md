@@ -17,7 +17,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
-- **218 — Image-aware and scan PDF compression profiles**
+- **219 — PDF target-size solver and batch compressor**
 - **229 — Microphone test and local recorder**
 - **231 — Audio timeline edits and deterministic DSP**
 - **234 — Video transform worker core**
@@ -25,12 +25,13 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **237 — True PDF redaction with post-export proof**
 - **241 — PDF signature placement**
 - **246 — Local image OCR**
+- **265 — File-size analyzer PDF adapter**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **20** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **21** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -264,8 +265,8 @@ Exactly **20** incomplete tickets currently have every declared numeric blocker 
 | 215 | completed (bounded on-demand browser PDF.js preview; physical-device evidence remains separate) | Bounded lazy PDF page-thumbnail renderer | 078, 100, 269 |
 | 216 | completed (bounded visual preview and existing verified PDF core; production/physical device promotion separately gated) | Visual PDF merge reorder and rotate organizer | 215 |
 | 217 | completed (strict shared grammar, bounded visual selection and independently verified multi-PDF ZIP) | Visual PDF split delete and extract selector | 215, 222 |
-| 218 | ready-for-agent | Image-aware and scan PDF compression profiles | 098, 100, 103, 269 |
-| 219 | blocked | PDF target-size solver and batch compressor | 079, 218, 222 |
+| 218 | completed | Image-aware and scan PDF compression profiles | 098, 100, 103, 269 |
+| 219 | ready-for-agent | PDF target-size solver and batch compressor | 079, 218, 222 |
 | 220 | completed | Page-scoped PDF text and embedded-image extraction | 098 |
 | 221 | completed (explicit page alignment, bounded structural/text layers and user-triggered rendered visual diff) | PDF structural text and visual comparison | 215, 220 |
 | 222 | completed | Real ZIP DEFLATE compression tranche | 103, 272 |
@@ -295,7 +296,7 @@ Exactly **20** incomplete tickets currently have every declared numeric blocker 
 | 246 | ready-for-agent | Local image OCR | 100, 103, 206, 271 |
 | 247 | blocked | Scanned PDF OCR and searchable text layer | 215, 246 |
 | 248 | completed | Search text across multiple PDFs | 079, 220 |
-| 249 | blocked | Split PDF by maximum output size | 217, 218 |
+| 249 | completed | Split PDF by maximum output size | 217, 218 |
 | 250 | completed | PDF n-up pages per sheet | 215, 269 |
 | 251 | completed | PDF booklet and front-back interleave | 215, 250 |
 | 252 | completed | PDF to Markdown semantic export | 220, 054 |
@@ -311,7 +312,7 @@ Exactly **20** incomplete tickets currently have every declared numeric blocker 
 | 262 | completed | EML and MSG local message viewer | 103, 275 |
 | 263 | completed | EPUB local reader and text export | 103, 275 |
 | 264 | completed — bounded OOXML media core and user-facing browser route; Gold certification separate | OOXML embedded-media compression core | 207, 208, 225 |
-| 265 | blocked | File-size analyzer PDF adapter | 218, 228 |
+| 265 | ready-for-agent | File-size analyzer PDF adapter | 218, 228 |
 | 266 | completed | File-size analyzer OOXML and media adapters | 225, 228, 230, 232 |
 | 267 | completed | P7M CMS parser feasibility spike | — |
 | 268 | completed | Image codec and SVG optimizer feasibility spike | — |

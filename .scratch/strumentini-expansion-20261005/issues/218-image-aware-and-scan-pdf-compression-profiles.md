@@ -1,5 +1,7 @@
 # 218 — Image-aware and scan PDF compression profiles
 
+**2026-10-10 FUNCTIONAL ACCEPTANCE CLOSURE (#218 only; not Gold/physical-device certification):** The *supported* contract is an explicit, bounded, local-only PDF image compression profile, not a universal PDF optimizer. The public `pdf-compression-lite` UI offers distinct structure-only, embedded JPEG, Flate scanned-image and opt-in grayscale/resample/DPI profiles and reports effective bytes, touched/skipped inventories, verified DPI only where the actual simple paint CTMs establish it, and exact keep-original when the candidate grows. It deliberately preserves the original document on unsupported masks/compositing, text/vector/Form resource graphs, malformed/encrypted/signed inputs and browser codec incompatibilities; it does **not** claim to optimize those documents. All accepted output PDFs preserve the original page contents/vector operators byte-for-byte, page count, geometry and independently extracted searchable text; lossy *image pixels* are explicitly disclosed as lossy and sampled with renderer-backed bounds, not claimed pixel-identical. Independent PDF.js/pypdf/Pillow reopens accepted and refused PDFs. The three *functional* ACs below have verified implementations and were proven again on HEAD `3870746`: **55/55** focused Vitest, **real Chromium mixed JPEG/Flate/mask browser harness PASS** (`tests/pdf-mixed-image-masks-218.browser.ts`) including untouched originals for complex inputs and measured output sizes, earlier source-exact clean QA **1718/1718** and built-site PDF export acceptance PASS (source `0452b35`; only newer commit was release documentation). Mobile *physical* acceptance and memory certifications are **not asserted**, remain blocked in distinct #280/#281 and Gold/physical-device release receipts. Broader arbitrary-PDF optimizations are deliberately unsupported, not implied. No additional OCR/JBIG2, arbitrary annotation transparency or vector-raster flattening support is claimed. This closure permits dependents to consume only the verified bounded acceptance contract; they must still pass their own ACs and may not silently broaden inputs.
+
 **Current static-build acceptance, 2026-10-08 (partial, ticket remains OPEN):** `npm run acceptance:pdf-image-aware` PASS on Chromium desktop headless at 390×844: source PDF 108865 B; output in explicit JPEG mode 25082 B; source JPEG 108030 B, re-encoded JPEG 24263 B; one JPEG touched, zero skipped. Downloaded PDF was reparsed; sample vector text and page geometry retained; original structural-only mode preserved embedded JPEG bytes exactly; decoded JPEG RGB mean per-channel difference 21.46 (lossy, not exact pixel parity). No offsite requests. Source: `scripts/acceptance-pdf-image-aware-218.ts`, log `/tmp/str-go-pdf-browser.log`; **no physical-device, mixed-scan, multi-browser, PNG/JBIG2 or Gold claim**.
 
 **What to build:** Keep current structural optimizer truthful and add separate image-aware/scan profiles with embedded-image inventory, DPI/downsample/recompression and optional user-chosen grayscale while retaining text/vector content.
@@ -10,13 +12,13 @@
 
 **Blocked by:** 98, 100, 103, 269.
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** pdf → code-module-design → code-tdd → browser-performance-benchmark
 
 - [x] Reports images touched/skipped and effective settings.
-- [ ] Text/vector extraction stays stable unless an explicit raster mode is chosen.
-- [ ] Output growth produces warning/keep-original recommendation.
+- [x] Text/vector extraction stays stable for accepted PDFs (source page stream bytes preserved and PDF.js/pdfminer text independently verified); unsupported complex documents are refused with original bytes.
+- [x] Output growth produces warning/keep-original recommendation (measured candidate bytes, exact original restored on growth/zero-savings; Chromium browser output verified).
 
 **Verification:** Text/vector/image/scan corpus, render+extract comparison, size/perf/mobile checks.
 

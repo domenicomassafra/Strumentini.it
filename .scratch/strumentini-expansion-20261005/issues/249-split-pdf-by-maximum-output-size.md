@@ -1,5 +1,7 @@
 # 249 — Split PDF by maximum output size
 
+**2026-10-10 FUNCTIONAL ACCEPTANCE COMPLETED:** The published `pdf-split` tool supports a bounded, local-only max-part-size path. It actually builds each candidate PDF from contiguous source pages, independently reparses output, compares **the final byte count** to the user ceiling and refuses a single page that cannot fit while showing the page number, exact required bytes and actionable limit. For eligible documents it emits deterministic ordered `part-NNN` names and a STORE ZIP whose output parts are reopened, each under the ceiling; no compression ratio or impossible size is promised. `tests/pdf-size-split-249.test.ts` **3/3 PASS** exercises exact-byte bounds, impossible-page refusals and reconstructed ordered contents. `scripts/acceptance-pdf-size-split-249.mjs` ran against the **compiled public tool** in real Chromium 390px, printed `PDF_SIZE_SPLIT_249_CHROMIUM_PASS ZIP_PARTS=2 RECONSTRUCTED_PAGES=3 LIMIT=1024 BYTE_EXACT no-offsite`: downloaded actual ZIP, verified each PDF and reconstructed page order, plus bounded failure text. Its previously unresolved #218 dependency now has documented bounded functional completion; this ticket inherits only that safe input contract, with unsupported PDFs refused. This is **functional ticket acceptance**, NOT a Gold cert, universal PDF compatibility or physical-device proof; separate #280/#281 physical/mobile gates remain pending.
+
 **What to build:** Add deterministic page-group splitting toward a requested maximum part size, proving every successful part is ≤ ceiling or explaining why a single page/content unit prevents it.
 
 **Traces to:** US-EXP-04, US-EXP-10; AC-04.1
@@ -8,13 +10,13 @@
 
 **Blocked by:** 217, 218.
 
-**Status:** blocked
+**Status:** completed
 
 **Suggested skills:** pdf → code-module-design → code-tdd
 
-- [ ] Every successful part is measured under requested ceiling.
-- [ ] Impossible single-page case is explicit.
-- [ ] Page order is preserved and part naming/grouping previewed.
+- [x] Every successful part is measured under requested ceiling on the actual regenerated PDF bytes and reopened independently.
+- [x] Impossible single-page case is explicit with exact source page, bytes and requested ceiling, no false output.
+- [x] Page order is preserved and part naming/grouping previewed and verified by actual ZIP extraction and page-order reopening.
 
 **Verification:** Boundary-size corpus and reconstructed page-order verification.
 
