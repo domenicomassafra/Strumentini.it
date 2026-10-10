@@ -53,6 +53,36 @@ function guard(signal?: AbortSignal): void {
   if (signal?.aborted) throw new DOMException("PDF JPEG recompression cancelled", "AbortError");
 }
 
+/** Reject promptly even if a native browser codec promise never settles. */
+function abortableCodec218<T>(pending: Promise<T>, signal?: AbortSignal, disposeLate?: (value: T) => void): Promise<T> {
+  if (!signal) return pending;
+  return new Promise<T>((resolve, reject) => {
+    let finished = false;
+    const onAbort = () => {
+      if (finished) return;
+      finished = true;
+      signal.removeEventListener("abort", onAbort);
+      reject(new DOMException("PDF JPEG recompression cancelled", "AbortError"));
+    };
+    signal.addEventListener("abort", onAbort, { once: true });
+    pending.then((value) => {
+      if (finished) {
+        disposeLate?.(value);
+        return;
+      }
+      finished = true;
+      signal.removeEventListener("abort", onAbort);
+      resolve(value);
+    }, (error: unknown) => {
+      if (finished) return;
+      finished = true;
+      signal.removeEventListener("abort", onAbort);
+      reject(error);
+    });
+    if (signal.aborted) onAbort();
+  });
+}
+
 export function samePageGeometry(a: PdfInspection, b: PdfInspection): boolean {
   return a.pageCount === b.pageCount && a.pages.every((page, index) =>
     page.width === b.pages[index]?.width && page.height === b.pages[index]?.height && page.rotation === b.pages[index]?.rotation);
@@ -71,7 +101,41 @@ function safeCandidate(object: PdfObject): string | null {
   if (value.bytes.byteLength < 1024 || value.bytes.byteLength > MAX_JPEG_BYTES) return "jpeg-size-outside-bounded-reencode";
   const image = parseJpeg(value.bytes);
   if (image === null || image.width !== width || image.height !== height) return "jpeg-header-and-pdf-dimensions-disagree";
+  if (jpegMetadataRequiresOriginal218(value.bytes)) return "jpeg-metadata-orientation-or-color-transform-not-certified";
   return null;
+}
+
+/**
+ * A JPEG XObject is painted with PDF image semantics, not HTML <img> EXIF
+ * auto-orientation. Browsers can apply orientation/profile/Adobe transforms
+ * when createImageBitmap decodes the same bytes. Until we compare PDF-native
+ * pixels against that browser decode, do not silently bake those transforms
+ * into an opt-in lossy rewrite. Preserve the original stream instead.
+ *
+ * The marker walk is deliberately bounded to JPEG headers before SOS, never
+ * scans entropy-coded image data for bytes that resemble APP markers, and
+ * rejects malformed lengths rather than assuming metadata is absent.
+ */
+export function jpegMetadataRequiresOriginal218(bytes: Uint8Array): boolean {
+  if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) return true;
+  let position = 2;
+  while (position < bytes.length) {
+    if (bytes[position++] !== 0xff) return true;
+    while (bytes[position] === 0xff) position++;
+    if (position >= bytes.length) return true;
+    const marker = bytes[position++]!;
+    if (marker === 0xda) return false; // Actual compressed pixels start here.
+    if (marker === 0xd9) return true; // No scan data to transcode.
+    if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) continue;
+    if (position + 2 > bytes.length) return true;
+    const segmentLength = (bytes[position]! << 8) | bytes[position + 1]!;
+    if (segmentLength < 2 || position + segmentLength > bytes.length) return true;
+    // APP0 JFIF is ordinary JPEG pixel metadata. APP1..APP15 may contain
+    // EXIF orientation, XMP, ICC or Adobe color transforms; not certified.
+    if (marker >= 0xe1 && marker <= 0xef) return true;
+    position += segmentLength;
+  }
+  return true;
 }
 
 export function topLevelPageImageIds(documentModel: PdfDocumentModel): Set<number> {
@@ -124,30 +188,32 @@ async function encodeRgbJpeg(bytes: Uint8Array, width: number, height: number, q
     throw new Error("UNSUPPORTED_CAPABILITY: Browser JPEG canvas decode/encode is unavailable.");
   }
   guard(signal);
-  const bitmap = await createImageBitmap(new Blob([Uint8Array.from(bytes)], { type: "image/jpeg" }));
+  const bitmap = await abortableCodec218(createImageBitmap(new Blob([Uint8Array.from(bytes)], { type: "image/jpeg" })),
+    signal, (late) => late.close());
+  const canvas = document.createElement("canvas");
   try {
     guard(signal);
     if (bitmap.width !== width || bitmap.height !== height) throw new Error("PDF_OUTPUT_MISMATCH: JPEG decoder changed image dimensions");
-    const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext("2d", { alpha: false });
     if (context === null) throw new Error("UNSUPPORTED_CAPABILITY: Canvas 2D is unavailable");
     context.drawImage(bitmap, 0, 0);
     guard(signal);
-    const encoded = await new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => {
+    const encoded = await abortableCodec218(new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => {
       if (blob === null || blob.type !== "image/jpeg") reject(new Error("UNSUPPORTED_CAPABILITY: Browser JPEG encoder returned no JPEG"));
       else resolve(blob);
-    }, "image/jpeg", quality));
+    }, "image/jpeg", quality)), signal);
     guard(signal);
     if (encoded.size > MAX_JPEG_BYTES) throw new Error("PDF_LIMIT: Encoder output exceeds JPEG cap");
-    const output = new Uint8Array(await encoded.arrayBuffer());
+    const output = new Uint8Array(await abortableCodec218(encoded.arrayBuffer(), signal));
     guard(signal);
     const parsed = parseJpeg(output);
     if (parsed?.width !== width || parsed.height !== height) throw new Error("PDF_OUTPUT_MISMATCH: Encoded JPEG did not preserve dimensions");
     return output;
   } finally {
     bitmap.close();
+    canvas.width = canvas.height = 1;
   }
 }
 

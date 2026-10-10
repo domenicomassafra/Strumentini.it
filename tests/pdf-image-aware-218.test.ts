@@ -114,6 +114,44 @@ describe("218 — real bounded JPEG Image XObject recompression and source safet
     }
   });
 
+  it("refuses real EXIF-orientated JPEG XObjects rather than baking browser auto-rotation into the PDF", async () => {
+    installImageCodec();
+    const sourceJpeg = new Uint8Array(await sharp(rgbFixture(), { raw: { width: WIDTH, height: HEIGHT, channels: 3 } })
+      .withMetadata({ orientation: 6 }).jpeg({ quality: 100 }).toBuffer());
+    const metadata = await sharp(sourceJpeg).metadata();
+    expect(metadata.orientation).toBe(6);
+    expect(metadata).toMatchObject({ width: WIDTH, height: HEIGHT, format: "jpeg" });
+    const source = pdfWithVectorAndJpeg(sourceJpeg);
+    const result = await recompressPdfEmbeddedJpegs(source, { quality: 0.48 });
+    expect(result.artifact.bytes).toEqual(source);
+    expect(result.analysis).toMatchObject({ touched: 0, skipped: 1, recommendOriginal: true });
+    expect(result.analysis.inventory[0]?.reason).toBe("jpeg-metadata-orientation-or-color-transform-not-certified");
+    expect((await extractPdfText(result.artifact.bytes))[0]?.text).toContain("VECTOR-TEXT-ALIVE");
+  });
+
+  it("aborts while the native JPEG decoder is pending and closes a late bitmap", async () => {
+    const jpeg = new Uint8Array(await sharp(rgbFixture(), { raw: { width: WIDTH, height: HEIGHT, channels: 3 } })
+      .jpeg({ quality: 100 }).toBuffer());
+    let enteredDecode!: () => void;
+    const entered = new Promise<void>((resolve) => { enteredDecode = resolve; });
+    let lateBitmap!: (value: ImageBitmap) => void;
+    let closed = false;
+    vi.stubGlobal("createImageBitmap", () => {
+      enteredDecode();
+      return new Promise<ImageBitmap>((resolve) => { lateBitmap = resolve; });
+    });
+    vi.stubGlobal("document", { createElement: () => { throw new Error("Cancelled decode must not allocate canvas"); } });
+    const abort = new AbortController();
+    const source = pdfWithVectorAndJpeg(jpeg);
+    const job = recompressPdfEmbeddedJpegs(source, {}, abort.signal);
+    await entered;
+    abort.abort();
+    await expect(job).rejects.toMatchObject({ name: "AbortError" });
+    lateBitmap({ close: () => { closed = true; } } as ImageBitmap);
+    await Promise.resolve();
+    expect(closed).toBe(true);
+  });
+
   it("rejects unsafe quality and aborted operations before producing output", async () => {
     const jpeg = new Uint8Array(await sharp(rgbFixture(), { raw: { width: WIDTH, height: HEIGHT, channels: 3 } }).jpeg({ quality: 100 }).toBuffer());
     const pdf = pdfWithVectorAndJpeg(jpeg);
