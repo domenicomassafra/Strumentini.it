@@ -56,6 +56,30 @@ async function sample(bytes: Uint8Array, pageIndex: number, x: number, y: number
   } finally { await loading.destroy(); }
 }
 
+async function inkDifferenceInPlacement(bytes: Uint8Array, pageNumber: number): Promise<number> {
+  const render = async (contents: Uint8Array) => {
+    const loading = getDocument({ data: Uint8Array.from(contents), useSystemFonts: true, disableFontFace: true });
+    try {
+      const document = await loading.promise;
+      const page = await document.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: 1 });
+      const canvas = createCanvas(viewport.width, viewport.height);
+      const context = canvas.getContext("2d");
+      await page.render({ canvasContext: context as never, viewport, canvas: canvas as never }).promise;
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      page.cleanup();
+      return { pixels, width: canvas.width };
+    } finally { await loading.destroy(); }
+  };
+  const original = await render(source), changed = await render(bytes);
+  let painted = 0;
+  for (let y = 292; y < 352; y++) for (let x = 48; x < 208; x++) {
+    const offset = (y * changed.width + x) * 4;
+    if ([0, 1, 2].some((channel) => Math.abs(changed.pixels[offset + channel]! - original.pixels[offset + channel]!) >= 30)) painted++;
+  }
+  return painted;
+}
+
 try {
   let ready = false;
   for (let attempt = 0; attempt < 100; attempt++) {
@@ -85,7 +109,7 @@ try {
   check((await page.locator('meta[name="robots"]').getAttribute("content")) === "noindex, nofollow", "Candidate route must be noindex");
   check((await page.locator("[data-241-disclosure]").innerText()).includes("Non è una firma digitale"), "No digital signing claim");
   check(await page.locator("[data-241-download]").count() === 0, "No download before evidence");
-  check(!(await page.getByRole("button", { name: /Applica immagine visiva/u }).isEnabled()), "No submit without files");
+  check(!(await page.getByRole("button", { name: /Applica firma visiva/u }).isEnabled()), "No submit without files");
 
   // Force the independent original-page renderer to stay pending after both
   // files have validated. A placement cannot be approved before it is visible.
@@ -112,7 +136,7 @@ try {
   const sourceFile = { name: "unsigned-241.pdf", mimeType: "application/pdf", buffer: Buffer.from(source) };
   const pngFile = { name: "sig-visible-241.png", mimeType: "image/png", buffer: png };
   await page.locator("[data-241-source]").setInputFiles(sourceFile);
-  try { await page.getByRole("combobox", { name: "Pagina della firma" }).waitFor({ timeout: 8_000 }); }
+  try { await page.getByRole("textbox", { name: "Pagine della firma" }).waitFor({ timeout: 8_000 }); }
   catch (reason) { console.error("Debug #241", { errors, html: (await page.locator("[data-pdf-visual-signature-241]").innerText()).slice(0, 900) }); throw reason; }
   await page.locator("[data-241-png]").setInputFiles(pngFile);
   try {
@@ -124,7 +148,7 @@ try {
     throw reason;
   }
   await page.waitForTimeout(300);
-  check(!(await page.getByRole("button", { name: /Applica immagine visiva/u }).isEnabled()),
+  check(!(await page.getByRole("button", { name: /Applica firma visiva/u }).isEnabled()),
     "Preview of selected source must finish before applying a visible signature");
   await page.evaluate(() => (window as Window & { __pdf241ReleasePreview?: () => void }).__pdf241ReleasePreview?.());
   await page.locator("[data-241-original]").waitFor();
@@ -134,11 +158,11 @@ try {
     return Boolean(image?.complete && image.naturalWidth > 0 && submit && !submit.disabled);
   });
   await page.evaluate(holdNextPreview);
-  await page.getByRole("combobox", { name: "Pagina della firma" }).selectOption("2");
+  await page.getByRole("textbox", { name: "Pagine della firma" }).fill("2,3");
   await page.waitForFunction(() => Boolean((window as Window & { __pdf241PendingPreview?: boolean }).__pdf241PendingPreview), undefined, { timeout: 10_000 });
   check(await page.locator("[data-241-original]").count() === 0,
     "Changing page hides old-page PDF.js thumbnail while the new page renders");
-  check(!(await page.getByRole("button", { name: /Applica immagine visiva/u }).isEnabled()),
+  check(!(await page.getByRole("button", { name: /Applica firma visiva/u }).isEnabled()),
     "Changing page requires its own preview; the previous page cannot authorize placement");
   await page.evaluate(() => (window as Window & { __pdf241ReleasePreview?: () => void }).__pdf241ReleasePreview?.());
   await page.getByRole("spinbutton", { name: "X da sinistra (pt)" }).fill("100");
@@ -148,10 +172,27 @@ try {
   await page.locator("[data-241-area]").waitFor();
   check(await page.locator("[data-241-original]").count() === 1, "PDF.js original preview exists");
   check(await page.locator("[data-241-area]").count() === 1, "Selected area overlay appears");
+  check((await page.getByRole("combobox", { name: "Pagina di anteprima" }).locator("option").allTextContents()).join("|") === "Pagina 2|Pagina 3", "Both pages exposed in original preview selector");
+  await page.getByRole("combobox", { name: "Pagina di anteprima" }).selectOption("3");
+  await page.waitForFunction(() => {
+    const picture = document.querySelector<HTMLImageElement>("[data-241-original]");
+    const button = document.querySelector<HTMLButtonElement>("[data-pdf-visual-signature-241] button[type=submit]");
+    return picture?.getAttribute("alt") === "PDF originale, pagina 3" && picture.complete && picture.naturalWidth > 0 && !button?.disabled;
+  });
+  check((await page.locator("[data-241-original]").getAttribute("alt")) === "PDF originale, pagina 3",
+    "Multi-page preview can inspect another selected page with a fresh PDF.js source render");
+  await page.getByRole("combobox", { name: "Pagina di anteprima" }).selectOption("2");
+  await page.waitForFunction(() => {
+    const picture = document.querySelector<HTMLImageElement>("[data-241-original]");
+    const button = document.querySelector<HTMLButtonElement>("[data-pdf-visual-signature-241] button[type=submit]");
+    return picture?.getAttribute("alt") === "PDF originale, pagina 2" && picture.complete && picture.naturalWidth > 0 && !button?.disabled;
+  });
   check(await page.locator("[data-241-download]").count() === 0, "No early download on preflight only");
-  await page.getByRole("button", { name: /Applica immagine visiva/u }).click();
+  await page.getByRole("button", { name: /Applica firma visiva/u }).click();
   await page.locator("[data-241-result]").waitFor({ timeout: 20_000 });
-  await page.locator("[data-241-final]").waitFor();
+  await page.locator("[data-241-final]").first().waitFor();
+  check(await page.locator("[data-241-final]").count() === 2, "Every selected page independently reopened and previewed");
+  await page.screenshot({ path: "/tmp/strumentini-241-chromium-390.png", fullPage: true });
   check(await page.locator("[data-241-download]").count() === 1, "Download only after output preview and PDF.js reopen");
   const pendingDownload = page.waitForEvent("download");
   await page.locator("[data-241-download]").click();
@@ -162,23 +203,73 @@ try {
   const outputDoc = parsePdf(output);
   check(!/\/(?:AcroForm|ByteRange|DocMDP|SigFlags|FT\s*\/Sig)\b/u.test(outputDoc.text), "Output has no cryptographic signatures or form fields");
   const opaque = await sample(output, 2, 150, 255), transparent = await sample(output, 2, 150, 285);
-  const unchanged1 = await sample(output, 1, 150, 255), unchanged3 = await sample(output, 3, 150, 255);
+  const unchanged1 = await sample(output, 1, 150, 255), opaque3 = await sample(output, 3, 150, 255);
   check(opaque[0]! >= 210 && opaque[1]! < 45 && opaque[2]! < 65, `PDF.js independent rendered red signature: ${opaque}`);
   check(transparent.slice(0, 3).every((value) => value > 240), `Transparent pixels preserve PDF background: ${transparent}`);
   check(unchanged1.slice(0, 3).every((value) => value > 240), "Page 1 remains untouched");
-  check(unchanged3.slice(0, 3).every((value) => value > 240), "Page 3 remains untouched");
+  check(opaque3[0]! >= 210 && opaque3[1]! < 45 && opaque3[2]! < 65, "Page 3 also contains signature image");
   check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2), "390px viewport has no horizontal overflow");
 
   // Altering geometry must revoke stale success. Out-of-bounds cannot download.
   await page.getByRole("spinbutton", { name: "Larghezza (pt)" }).fill("9999");
   await page.locator("[data-241-validation]").waitFor();
   check(await page.locator("[data-241-download]").count() === 0, "Invalid geometry invalidates previous downloadable result");
-  check(!(await page.getByRole("button", { name: /Applica immagine visiva/u }).isEnabled()), "Out-of-bounds region is blocked");
+  check(!(await page.getByRole("button", { name: /Applica firma visiva/u }).isEnabled()), "Out-of-bounds region is blocked");
   await page.locator("[data-241-reset]").click();
   await page.locator("[data-241-original]").waitFor({ state: "detached" });
   check(await page.locator("[data-241-original]").count() === 0, "Reset clears previews");
   check(await page.locator("[data-241-source]").inputValue() === "", "Reset clears PDF picker");
   check(await page.locator("[data-241-png]").inputValue() === "", "Reset clears PNG picker");
+
+  // Real Chromium responsive viewport, handwritten and raster text modes.
+  await page.setViewportSize({ width: 320, height: 720 });
+  check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2), "320px viewport has no horizontal overflow");
+  await page.locator("[data-241-source]").setInputFiles(sourceFile);
+  await page.getByRole("combobox", { name: "Modalità della firma visiva" }).selectOption("text");
+  await page.locator("[data-241-text]").fill("Mario Rossi");
+  await page.getByRole("textbox", { name: "Pagine della firma" }).fill("1,3");
+  await page.locator("[data-241-original]").waitFor();
+  await page.getByRole("button", { name: /Applica firma visiva/u }).click();
+  await page.locator("[data-241-result]").waitFor({ timeout: 20_000 });
+  check(await page.locator("[data-241-final]").count() === 2, "Text mode independently reopened pages 1 and 3");
+  await page.screenshot({ path: "/tmp/strumentini-241-chromium-320.png", fullPage: true });
+  check(await page.locator("[data-241-download]").count() === 1, "Text mode downloadable on 320px viewport");
+  const textDownloadPending = page.waitForEvent("download");
+  await page.locator("[data-241-download]").click();
+  const textDownload = await textDownloadPending;
+  const textOutput = new Uint8Array(await readFile(await textDownload.path()));
+  const textInk1 = await inkDifferenceInPlacement(textOutput, 1);
+  const textInk3 = await inkDifferenceInPlacement(textOutput, 3);
+  const textInk2 = await inkDifferenceInPlacement(textOutput, 2);
+  check(textInk1 > 50 && textInk3 > 50 && textInk2 === 0,
+    `PDF.js independently confirms text pixels on selected pages only: ${textInk1}/${textInk2}/${textInk3}`);
+  await page.locator("[data-241-reset]").click();
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.locator("[data-241-source]").setInputFiles(sourceFile);
+  await page.getByRole("combobox", { name: "Modalità della firma visiva" }).selectOption("draw");
+  const canvas = page.locator("[data-241-draw]");
+  const box = await canvas.boundingBox();
+  assert(box);
+  await page.mouse.move(box.x + 30, box.y + 40);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 100, box.y + 90, { steps: 10 });
+  await page.mouse.up();
+  await page.locator("[data-241-original]").waitFor();
+  await page.getByRole("button", { name: /Applica firma visiva/u }).click();
+  await page.locator("[data-241-result]").waitFor({ timeout: 20_000 });
+  check(await page.locator("[data-241-download]").count() === 1, "Pointer drawing mode independently verifies and exports PDF");
+  await page.screenshot({ path: "/tmp/strumentini-241-chromium-1440.png", fullPage: true });
+  const drawDownloadPending = page.waitForEvent("download");
+  await page.locator("[data-241-download]").click();
+  const drawDownload = await drawDownloadPending;
+  const drawOutput = new Uint8Array(await readFile(await drawDownload.path()));
+  const drawnInk = await inkDifferenceInPlacement(drawOutput, 1);
+  check(drawnInk > 30, `PDF.js independently confirms drawn signature ink: ${drawnInk}`);
+  await page.locator("[data-241-clear-draw]").click();
+  check(await page.locator("[data-241-download]").count() === 0, "Clearing drawing revokes stale result");
+  check(!(await page.getByRole("button", { name: /Applica firma visiva/u }).isEnabled()), "Blank drawing cannot submit");
+  check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2), "1440px viewport has no horizontal overflow");
+  await page.locator("[data-241-reset]").click();
 
   for (const [label, bytes] of [
     ["signature certification", catalogMutation("Perms", pdfDict({ DocMDP: pdfReference(1) }))],
@@ -194,7 +285,7 @@ try {
   check(offsite.length === 0, `No offsite requests: ${offsite.join(", ")}`);
   check(missing.every((value) => value === `404 ${origin}/api/auth/session`), `Unexpected local HTTP failure: ${missing.join(", ")}`);
   check(errors.length === 0, `No browser page errors: ${errors.join(", ")} ; unsuccessful requests: ${missing.join(", ")}`);
-  console.log(`PDF #241 visual-signature isolated Chromium 390x844: PASS (${checks} checks); independent PDF.js output reopened, unsigned PNG overlay; no offsite; NO physical-device acceptance`);
+  console.log(`PDF #241 visual-signature isolated Chromium 320/390/1440: PASS (${checks} checks); independent PDF.js output reopened, unsigned PNG/text/drawing overlays; no offsite; NO physical-device acceptance`);
 } finally {
   if (browser) await browser.close();
   server.kill("SIGTERM");

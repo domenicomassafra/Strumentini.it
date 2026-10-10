@@ -13,6 +13,9 @@ export default {
   ...base,
   vite: {
     ...base.vite,
+    // Parallel integration lanes may run Vite concurrently in the same repo.
+    // Give this isolated acceptance process its own dependency optimizer cache.
+    cacheDir: "/tmp/strumentini-pdf-visual-signature-241-vite-cache",
     server: { ...base.vite?.server, fs: { allow: [root, dependencies, generated] } },
   },
 };

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import sharp from "sharp";
 import { unzlibSync } from "fflate";
 import { createSimplePdf, buildPdfFromPages } from "../src/engines/pdf/writer";
-import { planVisualSignature241, placeVisualSignature241, decodeSignaturePng241 } from "../src/engines/pdf/visual-signature-241";
+import { planVisualSignature241, placeVisualSignature241, decodeSignaturePng241, encodeSignatureCanvas241 } from "../src/engines/pdf/visual-signature-241";
 import { nameValue, numberValue, parsePdf, pdfArray, pdfDict, pdfName, pdfNumber, pdfReference,
   resolveReference, type PdfPageNode, type PdfValue } from "../src/engines/pdf/parser";
 
@@ -59,6 +59,17 @@ function contentStreams(bytes: Uint8Array) {
 }
 
 describe("#241 bounded visible-appearance PNG overlays without cryptographic signing", () => {
+  it("safely encodes drawn/text canvas pixels to bounded profile-free PNG and preserves transparency", () => {
+    const rgba = new Uint8ClampedArray([10, 20, 30, 255, 230, 111, 9, 0]);
+    const produced = encodeSignatureCanvas241(rgba, 2, 1);
+    const decoded = decodeSignaturePng241(produced);
+    expect(decoded).toMatchObject({ width: 2, height: 1, channels: 4 });
+    expect([...decoded.rgb]).toEqual([10, 20, 30, 230, 111, 9]);
+    expect([...decoded.alpha!]).toEqual([255, 0]);
+    expect(() => encodeSignatureCanvas241(rgba, 2048, 2048)).toThrow(/PDF241_PNG_UNSUPPORTED/u);
+    const invisible = encodeSignatureCanvas241(new Uint8ClampedArray(2 * 1 * 4), 2, 1);
+    expect(() => decodeSignaturePng241(invisible)).toThrow(/totalmente trasparente/u);
+  });
   it.each([3, 4] as const)("reopens RGB%s source + output, proves exact image RGB/alpha independently of image XObject", async (channels) => {
     const png = await pngFixture(channels);
     const image = decodeSignaturePng241(png);

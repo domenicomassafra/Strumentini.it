@@ -46,6 +46,35 @@ const MAX_PIXELS = 512 * 512;
 const MAX_PLACED_PAGES = 8;
 const encoder = new TextEncoder();
 
+/** Bounded RGBA canvas pixels -> plain PNG without platform-dependent color profiles. */
+export function encodeSignatureCanvas241(rgba: Uint8ClampedArray, width: number, height: number): Uint8Array {
+  if (!Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1
+    || width > 1024 || height > 1024 || width * height > MAX_PIXELS || rgba.length !== width * height * 4) {
+    fail("PDF241_PNG_UNSUPPORTED", "Dimensioni del disegno fuori limite");
+  }
+  const pixelBytes = new Uint8Array(height * (width * 4 + 1));
+  for (let y = 0; y < height; y++) pixelBytes.set(rgba.subarray(y * width * 4, (y + 1) * width * 4), y * (width * 4 + 1) + 1);
+  const chunk = (name: string, data: Uint8Array): Uint8Array => {
+    const result = new Uint8Array(data.length + 12);
+    const view = new DataView(result.buffer);
+    view.setUint32(0, data.length);
+    result.set(encoder.encode(name), 4);
+    result.set(data, 8);
+    view.setUint32(result.length - 4, crc32(result, 4, result.length - 4));
+    return result;
+  };
+  const header = new Uint8Array(13);
+  const view = new DataView(header.buffer);
+  view.setUint32(0, width); view.setUint32(4, height);
+  header[8] = 8; header[9] = 6;
+  const chunks = [new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]), chunk("IHDR", header), chunk("IDAT", zlibSync(pixelBytes)), chunk("IEND", new Uint8Array())];
+  const result = new Uint8Array(chunks.reduce((sum, part) => sum + part.length, 0));
+  let offset = 0;
+  for (const part of chunks) { result.set(part, offset); offset += part.length; }
+  if (result.length > MAX_PNG_BYTES) fail("PDF241_PNG_UNSUPPORTED", "Immagine disegno oltre 2 MiB");
+  return result;
+}
+
 function fail(code: string, why: string): never { throw new Error(`${code}: ${why}`); }
 function checkAbort(signal?: AbortSignal): void {
   if (signal?.aborted) throw new DOMException("Firma grafica annullata", "AbortError");
@@ -152,6 +181,9 @@ export function decodeSignaturePng241(png: Uint8Array, signal?: AbortSignal): Pn
   for (let i = 0; i < width * height; i++) {
     rgb.set(rows.subarray(i * channels, i * channels + 3), i * 3);
     if (alpha) alpha[i] = rows[i * channels + 3]!;
+  }
+  if (alpha !== null && !alpha.some((value) => value > 0)) {
+    fail("PDF241_PNG_UNSUPPORTED", "La firma PNG è totalmente trasparente e non sarebbe visibile");
   }
   return { width, height, channels, rgb, alpha };
 }
