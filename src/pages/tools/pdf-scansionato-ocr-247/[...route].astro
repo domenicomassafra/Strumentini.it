@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { PdfSearchable247Tool } from "../../../components/tools/pdf/PdfSearchable247Tool";
+// A real preview in Astro development, zero prerendered production paths.
+// The #246/#271 physical-mobile and native-memory promotion gates remain open.
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { route: undefined } }] : [];
+}
+---
+<BaseLayout
+  title="PDF scansionato OCR italiano – anteprima sperimentale"
+  description="Prova tecnica locale, non certificata su smartphone fisici: aggiungi un livello OCR invisibile ai PDF scansionati preservando la pagina."
+  noindex
+>
+  <main class="ocr247-page" data-ocr247-preview="experimental-local-only">
+    <nav aria-label="Percorso"><a href="/">Home</a> / PDF OCR sperimentale</nav>
+    <h1>PDF scansionato con testo selezionabile</h1>
+    <p>Prova locale e limitata: il testo OCR viene inserito senza rimuovere l'immagine originale. La conversione si scarica solo dopo la riapertura con PDF.js e il confronto visivo delle pagine.</p>
+    <PdfSearchable247Tool client:load />
+  </main>
+</BaseLayout>
+
+<style>
+  .ocr247-page { margin: 0 auto; padding: 2rem 1rem 4rem; max-width: 920px; display: grid; gap: 1rem; min-width: 0; }
+  .ocr247-page h1 { font-size: clamp(1.5rem, 4vw, 2.35rem); margin: 0; }
+  :global(.ocr247) { display: grid; gap: 1rem; min-width: 0; overflow-wrap: anywhere; }
+  :global(.ocr247-actions) { display: flex; flex-wrap: wrap; gap: .75rem; }
+  :global(.ocr247 button) { border: 1px solid var(--line); border-radius: .65rem; padding: .7rem 1rem; cursor: pointer; }
+  :global(.ocr247 button:disabled) { opacity: .5; cursor: default; }
+  :global(.ocr247 input) { width: 100%; max-width: 100%; }
+</style>
