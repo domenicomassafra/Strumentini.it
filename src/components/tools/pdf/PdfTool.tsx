@@ -14,6 +14,8 @@ import type { PdfCompareResult } from "../../../engines/pdf";
 import { PdfVisualCompare } from "./PdfVisualCompare";
 import { PdfFormAuditDetails } from "./PdfFormAuditDetails";
 import type { PdfFormAnnotationAudit, PdfFlattenVerification } from "../../../engines/pdf";
+import { PdfTextExportDownloads53 } from "./PdfTextExportDownloads53";
+import type { PdfTextExportMode53, ScopedPdfTextExport53 } from "../../../engines/pdf/text-export-53";
 
 export type PdfToolId = PdfResultToolId;
 
@@ -83,7 +85,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [deleteMode, setDeleteMode] = useState<"delete" | "extract">("extract");
   const [passwordMode, setPasswordMode] = useState<"check" | "remove">("check");
   const [pdfPassword, setPdfPassword] = useState("");
-  const [textExtractionMode, setTextExtractionMode] = useState<"content-order" | "operator-lines">("content-order");
+  const [textExtractionMode, setTextExtractionMode] = useState<PdfTextExportMode53>("content-order");
+  const [textExports, setTextExports] = useState<{ file: File; pageExpression: string; mode: PdfTextExportMode53; exported: ScopedPdfTextExport53 } | null>(null);
   const [imageDedupe, setImageDedupe] = useState(true);
   const [query, setQuery] = useState("");
   const [contextCharacters, setContextCharacters] = useState("120");
@@ -147,6 +150,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
       });
     }
     setResult(null);
+    setTextExports(null);
     setShowVisualCompare(false);
     setMergePagePlan(null);
     setOrderHistory([]);
@@ -211,6 +215,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   async function execute() {
     setError("");
     setResult(null);
+    setTextExports(null);
     setShowVisualCompare(false);
     if (inputMode === "pair" && files.length < 2) {
       setError("Scegli due file PDF locali.");
@@ -224,6 +229,27 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     controller.current = abortController;
     setStatus("working");
     try {
+      if (toolId === "pdf-text-extraction") {
+        const file = files[0];
+        if (!file) throw new Error("INVALID_INPUT: Scegli un PDF locale");
+        const { exportScopedPdfText53 } = await import("../../../engines/pdf/text-export-53");
+        const { inspectPdfBytes } = await import("../../../engines/pdf");
+        const { parsePdfPageSelection } = await import("../../../engines/pdf/page-selection");
+        const selection = pages.trim() ? parsePdfPageSelection(pages, inspectPdfBytes(new Uint8Array(await file.arrayBuffer())).pageCount) : undefined;
+        const exported = await exportScopedPdfText53(file, {
+          sourceName: file.name, ...(selection ? { pages: selection } : {}), mode: textExtractionMode,
+        }, abortController.signal);
+        if (abortController.signal.aborted) throw new DOMException("Operazione annullata", "AbortError");
+        const decoded = new TextDecoder("utf-8", { fatal: true }).decode(exported.text.bytes);
+        const prepared = await preparePdfResult(toolId, { text: decoded, mode: exported.mode,
+          pages: exported.pages.map((page) => ({ page, text: "" })), selectedPages: exported.pages,
+          truncated: false, note: exported.limitations.join(" ") });
+        if (abortController.signal.aborted) throw new DOMException("Operazione annullata", "AbortError");
+        setTextExports({ file, pageExpression: pages, mode: textExtractionMode, exported });
+        setResult(prepared);
+        setStatus("done");
+        return;
+      }
       if (toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort") {
         const { runPdfTargetBatch219 } = await import("../../../engines/pdf/target-batch-219");
         const targetBytes = Math.round(Number(pdfTargetKiB) * (pdfTargetUnit === "MiB" ? 1024 * 1024 : 1024));
@@ -316,6 +342,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setPasswordMode("check");
     setPdfPassword("");
     setTextExtractionMode("content-order");
+    setTextExports(null);
     setImageDedupe(true);
     setQuery("");
     setContextCharacters("120");
@@ -564,8 +591,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         )}
         {optionMode === "text-extraction" && (
           <div class="field-grid">
-            <label class="field"><span>Pagine (facoltativo)</span><input value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 1, 3, 5 · vuoto = tutte" disabled={isWorking} /></label>
-            <label class="field"><span>Modalità testo</span><select value={textExtractionMode} onChange={(event) => setTextExtractionMode(event.currentTarget.value as "content-order" | "operator-lines")} disabled={isWorking}><option value="content-order">Ordine degli operatori, testo compatto</option><option value="operator-lines">Ordine degli operatori, una stringa per riga</option></select><small>Non viene inventato un ordine visuale: entrambe le modalità seguono l'ordine dei contenuti PDF supportati.</small></label>
+            <label class="field"><span>Pagine (facoltativo)</span><input aria-label="Pagine da estrarre" value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 1, 3-5 · vuoto = tutte" disabled={isWorking} /></label>
+            <label class="field"><span>Modalità testo</span><select aria-label="Modalità estrazione testo" value={textExtractionMode} onChange={(event) => setTextExtractionMode(event.currentTarget.value as PdfTextExportMode53)} disabled={isWorking}><option value="content-order">Ordine degli operatori, testo compatto</option><option value="operator-lines">Ordine degli operatori, una stringa per riga</option><option value="visual-lines">Righe per posizione visiva (PDF.js, semplice)</option></select><small>La modalità visuale ordina per coordinata dall'alto, poi da sinistra. Su colonne/tabelle non determina la corretta lettura semantica; testo ruotato non supportato e rifiutato.</small></label>
           </div>
         )}
         {optionMode === "image-extraction" && (
@@ -758,6 +785,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
               onReset={reset}
               onRetry={execute}
             />
+            {toolId === "pdf-text-extraction" && textExports !== null && textExports.file === files[0]
+              && textExports.pageExpression === pages && textExports.mode === textExtractionMode
+              && <PdfTextExportDownloads53 exported={textExports.exported} />}
             {(formsAudit !== undefined || flattenVerification !== undefined) && (
               <PdfFormAuditDetails
                 {...(formsAudit === undefined ? {} : { audit: formsAudit })}

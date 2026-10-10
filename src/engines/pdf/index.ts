@@ -357,6 +357,7 @@ function metadataFromDocument(document: PdfDocumentModel): PdfMetadata {
     .toSorted((left, right) => left - right);
   const hasXmp = xmpObjectIds.length > 0;
   return {
+    infoObjectId: document.info?.id ?? null,
     title: custom.Title ?? null,
     author: custom.Author ?? null,
     subject: custom.Subject ?? null,
@@ -411,20 +412,33 @@ function redactPdfUri(value: string): string {
 function collectLinks(document: PdfDocumentModel): PdfLink[] {
   const links: PdfLink[] = [];
   const seen = new Set<string>();
-  const pageByObject = new Map<number, number>();
-  document.pages.forEach((page, index) => pageByObject.set(page.object.id, index + 1));
+  const pagesByObject = new Map<number, number[]>();
+  const includePage = (id: number, page: number) => {
+    const known = pagesByObject.get(id) ?? [];
+    if (!known.includes(page)) { known.push(page); pagesByObject.set(id, known); }
+  };
+  document.pages.forEach((page, index) => {
+    includePage(page.object.id, index + 1);
+    if (page.object.value.kind !== "dict") return;
+    const annotations = arrayOrNull(document, page.object.value.entries.get("Annots"));
+    for (const annotation of annotations?.items ?? []) if (annotation.kind === "ref") includePage(annotation.id, index + 1);
+  });
   for (const object of document.objects.values()) {
     if (object.value.kind !== "dict") continue;
-    const page = pageByObject.get(object.id) ?? null;
     const direct = object.value.entries.get("URI");
     const action = dictionaryOrNull(document, object.value.entries.get("A"));
     const uriValue = direct ?? action?.entries.get("URI");
     const rawUri = valueToText(resolveReference(document, uriValue));
     const uri = rawUri === null ? null : redactPdfUri(rawUri);
-    if (uri === null || uri.length === 0 || seen.has(uri)) continue;
-    seen.add(uri);
-    const source = object.value.entries.has("Subtype") && nameValue(object.value.entries.get("Subtype")) === "Link" ? "annotation" : page === null ? "catalog" : "page";
-    links.push({ page, uri, source });
+    if (uri === null || uri.length === 0) continue;
+    const source = nameValue(object.value.entries.get("Subtype")) === "Link" ? "annotation"
+      : object.id === document.root?.id ? "catalog" : "page";
+    for (const page of pagesByObject.get(object.id) ?? [null]) {
+      const key = `${object.id}:${page ?? "catalog"}:${uri}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      links.push({ page, objectId: object.id, uri, source });
+    }
   }
   return links;
 }

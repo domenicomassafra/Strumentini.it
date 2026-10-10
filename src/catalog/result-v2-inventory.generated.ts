@@ -3647,6 +3647,7 @@ export const resultV2Inventory = [
       "class": "text-code",
       "capabilities": [
         "copy",
+        "download",
         "reset"
       ]
     },

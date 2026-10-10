@@ -40,6 +40,7 @@ export interface PdfCapabilityReport {
 }
 
 export interface PdfMetadata {
+  readonly infoObjectId: number | null;
   readonly title: string | null;
   readonly author: string | null;
   readonly subject: string | null;
@@ -93,6 +94,7 @@ export interface PdfInspection {
 
 export interface PdfLink {
   readonly page: number | null;
+  readonly objectId: number;
   readonly uri: string;
   readonly source: "annotation" | "catalog" | "page";
 }

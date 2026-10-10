@@ -344,6 +344,7 @@ function factRows(raw: PdfResultRecord): readonly { label: string; value: Compon
       const unknown = typeof metadata.unknownInfo === "object" && metadata.unknownInfo !== null ? metadata.unknownInfo as PdfResultRecord : {};
       rows.push({ label: "Campi metadata riconosciuti", value: String(Object.keys(recognized).length) });
       rows.push({ label: "Campi Info sconosciuti", value: String(Object.keys(unknown).length) });
+      rows.push({ label: "Oggetto /Info", value: typeof metadata.infoObjectId === "number" ? String(metadata.infoObjectId) : "Diretto/assente" });
       Object.entries(unknown).slice(0, 3).forEach(([key, value]) => rows.push({ label: `Info sconosciuto: ${key}`, value: scalar(value) ?? "valore non testuale" }));
       const xmpObjectIds = Array.isArray(metadata.xmpObjectIds) ? metadata.xmpObjectIds : [];
       rows.push({ label: "Stream XMP /Metadata", value: xmpObjectIds.length === 0 ? "Nessuno" : xmpObjectIds.join(", ") });
@@ -407,7 +408,8 @@ function textPayload(toolId: PdfResultToolId, raw: PdfResultRecord): { text: str
       const record = typeof entry === "object" && entry !== null ? entry as PdfResultRecord : {};
       const page = typeof record.page === "number" ? `Pagina ${record.page}` : "Pagina non specificata";
       const uri = typeof record.uri === "string" ? record.uri : String(entry);
-      return `${index + 1}. ${page} — ${uri}`;
+      const object = typeof record.objectId === "number" ? ` · oggetto ${record.objectId}` : "";
+      return `${index + 1}. ${page}${object} — ${uri}`;
     }).join("\n");
     return { text, filename: "pdf-links.txt", mime: "text/plain", metrics: [{ label: "Collegamenti", value: String(links.length) }, { label: "Pagine", value: typeof raw.pageCount === "number" ? String(raw.pageCount) : "—" }] };
   }

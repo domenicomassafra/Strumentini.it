@@ -20,7 +20,7 @@ export const PDF_RESULT_DECLARATIONS = {
   "pdf-password-check-remove": { class: "validator", capabilities: ["copy", "retry", "reset"] },
   "pdf-rotate": { class: "pdf", capabilities: ["download", "retry", "reset"] },
   "pdf-split": { class: "pdf", capabilities: ["download", "retry", "reset"] },
-  "pdf-text-extraction": { class: "text-code", capabilities: ["copy", "reset"] },
+  "pdf-text-extraction": { class: "text-code", capabilities: ["copy", "download", "reset"] },
   "pdf-to-images": { class: "file", capabilities: ["download", "retry", "reset"] },
 } as const satisfies Readonly<Record<string, ResultDeclaration>>;
 
