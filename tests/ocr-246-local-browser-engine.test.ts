@@ -14,6 +14,7 @@ describe("#246 local Italian OCR actual worker adapter (experimental, no product
     const createWorker = vi.fn(async () => { throw new Error("must not initialize"); });
     const img = await input();
     await expect(recognizeLocalItalianOcr246(img, { language: "eng", createWorker, imageDecoder, capabilities })).rejects.toThrow(/OCR_LANGUAGE_NOT_ACCEPTED/u);
+    await expect(recognizeLocalItalianOcr246(img, { rotateClockwiseDegrees: 45 as 90, createWorker, imageDecoder, capabilities })).rejects.toThrow(/OCR246_INVALID_ROTATION/u);
     await expect(recognizeLocalItalianOcr246(new File([new Uint8Array(IMAGE_OCR_FEASIBILITY.fileHardLimitBytes + 1)], "huge.png", { type: "image/png" }), { createWorker, imageDecoder, capabilities })).rejects.toThrow(/OCR_FILE_LIMIT/u);
     const abort = new AbortController(); abort.abort();
     await expect(recognizeLocalItalianOcr246(img, { signal: abort.signal, createWorker, imageDecoder, capabilities })).rejects.toMatchObject({ name: "AbortError" });
@@ -26,6 +27,7 @@ describe("#246 local Italian OCR actual worker adapter (experimental, no product
     const createWorker = vi.fn(async () => ({ recognize, terminate }));
     const res = await recognizeLocalItalianOcr246(await input(), { createWorker, imageDecoder, capabilities });
     expect(res).toMatchObject({ language: "ita", text: "Fattura numero 12345 - Totale euro 678,90", confidence: 94.37,
+      rotateClockwiseDegrees: 0,
       confidenceOrigin: "TESSERACT_ENGINE_SCORE_NOT_CALIBRATED", image: { name: "fattura.png", width: 1280, height: 240 },
       onDevice: true });
     expect(createWorker).toHaveBeenCalledTimes(1);

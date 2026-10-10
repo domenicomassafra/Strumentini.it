@@ -27,6 +27,8 @@ export interface OcrWorker246 {
 export interface OcrOptions246 {
   readonly language?: string;
   readonly signal?: AbortSignal;
+  /** Explicit user-selected clockwise correction, not automatic orientation detection. */
+  readonly rotateClockwiseDegrees?: 0 | 90 | 180 | 270;
   /** Job clock includes WASM and traineddata initialisation. */
   readonly timeoutMs?: number;
   readonly onProgress?: (status: string, fraction: number) => void;
@@ -42,6 +44,7 @@ export interface OcrResult246 {
   readonly confidence: number | null;
   readonly confidenceOrigin: "TESSERACT_ENGINE_SCORE_NOT_CALIBRATED";
   readonly onDevice: true;
+  readonly rotateClockwiseDegrees: 0 | 90 | 180 | 270;
   readonly image: { readonly name: string; readonly width: number; readonly height: number; readonly bytes: number };
   readonly engine: "tesseract.js@7.0.0";
   readonly source: "UPLOADED_IMAGE_LOCAL_ONLY";
@@ -54,6 +57,41 @@ async function defaultDecoder(image: File): Promise<{ width: number; height: num
   const bitmap = await createImageBitmap(image);
   try { return { width: bitmap.width, height: bitmap.height }; }
   finally { bitmap.close(); }
+}
+
+/** Rotate a bounded, verified PNG on-device without retaining a decoded bitmap. */
+async function rotateForOcr246(image: File, degrees: 90 | 180 | 270, width: number, height: number,
+  signal?: AbortSignal): Promise<File> {
+  if (signal?.aborted) throw cancelledError();
+  const bitmap = await createImageBitmap(image);
+  try {
+    if (signal?.aborted) throw cancelledError();
+    if (bitmap.width !== width || bitmap.height !== height) throw new Error("OCR246_ROTATION_DIMENSION_MISMATCH");
+    const swapped = degrees === 90 || degrees === 270;
+    const canvas = document.createElement("canvas");
+    canvas.width = swapped ? height : width;
+    canvas.height = swapped ? width : height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("OCR246_ROTATION_CANVAS_UNAVAILABLE");
+    if (degrees === 90) ctx.translate(canvas.width, 0);
+    if (degrees === 180) ctx.translate(canvas.width, canvas.height);
+    if (degrees === 270) ctx.translate(0, canvas.height);
+    ctx.rotate(degrees * Math.PI / 180);
+    ctx.drawImage(bitmap, 0, 0);
+    if (signal?.aborted) throw cancelledError();
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((encoded) => encoded?.type === "image/png" && encoded.size > 0
+        ? resolve(encoded) : reject(new Error("OCR246_ROTATION_PNG_ENCODER_UNAVAILABLE")), "image/png");
+    });
+    if (signal?.aborted) throw cancelledError();
+    if (blob.size > IMAGE_OCR_FEASIBILITY.fileHardLimitBytes) throw new Error("OCR246_ROTATED_FILE_LIMIT");
+    const rotated = new File([blob], `ocr-rotation-${degrees}.png`, { type: "image/png" });
+    const inspection = await inspectLocalImageOcr(rotated, "ita", signal);
+    if (inspection.errors.length || inspection.width !== canvas.width || inspection.height !== canvas.height) {
+      throw new Error("OCR246_ROTATED_PNG_VERIFICATION_FAILED");
+    }
+    return rotated;
+  } finally { bitmap.close(); }
 }
 
 /** Browser only: local *static* Tesseract ESM entry is not imported into the app's baseline JS. */
@@ -82,6 +120,10 @@ async function loadSameOriginWorker246(onProgress?: OcrOptions246["onProgress"])
 export async function recognizeLocalItalianOcr246(image: File, options: OcrOptions246 = {}): Promise<OcrResult246> {
   if (!(image instanceof File)) throw new TypeError("OCR246_FILE_REQUIRED");
   if (options.signal?.aborted) throw cancelledError();
+  const rotation = options.rotateClockwiseDegrees ?? 0;
+  if (rotation !== 0 && rotation !== 90 && rotation !== 180 && rotation !== 270) {
+    throw new Error("OCR246_INVALID_ROTATION: choose 0, 90, 180 or 270 degrees");
+  }
   const preflight = await inspectLocalImageOcr(
     image, options.language ?? "ita", options.signal, options.capabilities ?? detectHeavyJobCapabilities(),
   );
@@ -96,6 +138,9 @@ export async function recognizeLocalItalianOcr246(image: File, options: OcrOptio
   if (decoded.width !== preflight.width || decoded.height !== preflight.height) {
     throw new Error("OCR246_DECODE_DIMENSION_MISMATCH");
   }
+  if (options.signal?.aborted) throw cancelledError();
+  const workingImage = rotation === 0 ? image
+    : await rotateForOcr246(image, rotation, decoded.width, decoded.height, options.signal);
   if (options.signal?.aborted) throw cancelledError();
 
   const timeoutMs = options.timeoutMs ?? 90_000;
@@ -127,7 +172,7 @@ export async function recognizeLocalItalianOcr246(image: File, options: OcrOptio
     void pendingWorker.then((worker) => { if (stopped) void stopWorker(worker).catch(() => undefined); }).catch(() => undefined);
     activeWorker = await Promise.race([pendingWorker, stoppedPromise]);
     if (stopped) throw cancelledError();
-    const recognized = await Promise.race([activeWorker.recognize(image), stoppedPromise]);
+    const recognized = await Promise.race([activeWorker.recognize(workingImage), stoppedPromise]);
     if (stopped) throw cancelledError();
     const rawText = recognized.data?.text;
     if (typeof rawText !== "string" || rawText.length > 100_000) throw new Error("OCR246_INVALID_ENGINE_OUTPUT");
@@ -136,6 +181,7 @@ export async function recognizeLocalItalianOcr246(image: File, options: OcrOptio
       ? value : null;
     return {
       language: "ita", text: rawText.trim(), confidence, onDevice: true,
+      rotateClockwiseDegrees: rotation,
       confidenceOrigin: "TESSERACT_ENGINE_SCORE_NOT_CALIBRATED",
       image: { name: image.name, width: decoded.width, height: decoded.height, bytes: image.size },
       engine: "tesseract.js@7.0.0", source: "UPLOADED_IMAGE_LOCAL_ONLY",

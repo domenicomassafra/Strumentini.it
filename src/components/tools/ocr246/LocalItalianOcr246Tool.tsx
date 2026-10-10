@@ -6,6 +6,7 @@ export function LocalItalianOcr246Tool() {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState("Seleziona un'immagine PNG stampata in italiano.");
   const [active, setActive] = useState(false);
+  const [rotation, setRotation] = useState<0 | 90 | 180 | 270>(0);
   const [result, setResult] = useState<OcrResult246 | null>(null);
   const operation = useRef<AbortController | null>(null);
 
@@ -27,6 +28,7 @@ export function LocalItalianOcr246Tool() {
     try {
       const recognized = await recognizeLocalItalianOcr246(file, {
         signal: controller.signal,
+        rotateClockwiseDegrees: rotation,
         onProgress: (phase, progress) => {
           if (operation.current === controller) {
             setStatus(`${phase} (${Math.round(progress * 100)}%)`);
@@ -69,6 +71,20 @@ export function LocalItalianOcr246Tool() {
           setFile(chosen);
           setStatus(chosen ? `Pronto: ${chosen.name}` : "Nessuna immagine selezionata.");
         }} />
+      <label class="ocr246-label" for="ocr246-rotation">Correzione manuale orientamento, in senso orario</label>
+      <select id="ocr246-rotation" value={rotation} disabled={active}
+        onChange={(event) => {
+          const degrees = Number(event.currentTarget.value);
+          if (degrees === 0 || degrees === 90 || degrees === 180 || degrees === 270) {
+            setRotation(degrees);
+            setResult(null);
+          }
+        }}>
+        <option value="0">Nessuna rotazione</option>
+        <option value="90">90° orario</option>
+        <option value="180">180°</option>
+        <option value="270">270° orario</option>
+      </select>
       <div class="ocr246-controls">
         <button type="button" data-ocr-run disabled={!file || active} onClick={() => void recognize()}>
           {active ? "Riconoscimento in corso…" : "Estrai testo in italiano"}
@@ -82,6 +98,7 @@ export function LocalItalianOcr246Tool() {
           <textarea readOnly aria-label="Testo OCR italiano" value={result.text} rows={7} />
           <p>
             Motore: Tesseract.js 7, lingua {result.language}. Origine: {result.image.name}, {result.image.width}×{result.image.height}px.
+            {result.rotateClockwiseDegrees !== 0 ? ` Correzione manuale applicata: ${result.rotateClockwiseDegrees}° in senso orario.` : ""}
           </p>
           <p data-ocr-confidence>
             {result.confidence === null ? "Confidenza: non fornita dal motore." :
@@ -92,7 +109,7 @@ export function LocalItalianOcr246Tool() {
       )}
       <p class="ocr246-note">
         Elaborazione locale in browser, senza invio dell'immagine a servizi esterni. Caricamento differito di WASM e dati italiani dal sito.
-        OCR sperimentale: rotazioni, scansioni difficili e affidabilità su iOS Safari/Android Chrome fisici non sono ancora certificati (#271).
+        La rotazione è scelta da te, non stimata automaticamente: correggi l'orientamento e verifica il testo. Scansioni difficili e affidabilità su iOS Safari/Android Chrome fisici non sono ancora certificati (#271).
         I file HEIC/JPEG/PDF non sono supportati da questa versione.
       </p>
     </section>

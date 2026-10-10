@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { chromium } from "playwright";
+import sharp from "sharp";
 
 const base = process.env.OCR246_TEST_BASE_URL ?? "http://127.0.0.1:4378";
 const expected = "Fattura numero 12345 - Totale euro 678,90";
@@ -45,7 +46,33 @@ try {
   const download = await downloaded;
   assert.equal(download.suggestedFilename(), "ocr-italiano-246.txt");
   assert.equal((await readFile(await download.path(), "utf8")).replace(/\s+/gu, " ").trim(), expected);
-  console.log("#246 BROWSER PASS: real Tesseract Italian OCR exact on SHA-pinned 1280x240 fixture; worker/WASM/ITA assets same origin, lazy load, actual TXT download, 390px responsive, no external HTTP, no JS errors.");
+
+  // Reproduce the independently observed RAW-90 failure input, then correct
+  // orientation only by explicit user choice (270 clockwise); never claim
+  // automatic orientation detection based on Tesseract's confidence score.
+  const rotated = await sharp(await readFile(sample)).rotate(90).png().toBuffer();
+  const rotatedInfo = await sharp(rotated).metadata();
+  assert.equal(rotatedInfo.width, 240);
+  assert.equal(rotatedInfo.height, 1280);
+  await page.locator("#ocr246-file").setInputFiles({ name: "fattura-ruotata-90.png", mimeType: "image/png", buffer: rotated });
+  await page.locator("#ocr246-rotation").selectOption("270");
+  await page.locator("[data-ocr-run]").click();
+  await page.waitForFunction(() => Boolean(document.querySelector("[data-ocr-result]")) ||
+    document.querySelector("[data-ocr-status]")?.textContent?.startsWith("OCR non completato:"), null, { timeout: 95_000 });
+  const rotationStatus = await page.locator("[data-ocr-status]").innerText();
+  assert.equal(await page.locator("[data-ocr-result]").count(), 1,
+    `manual rotation OCR failed: ${rotationStatus}; errors=${runtimeErrors.join("; ")}`);
+  const corrected = (await page.locator('textarea[aria-label="Testo OCR italiano"]').inputValue()).replace(/\s+/gu, " ").trim();
+  assert.equal(corrected, expected, "real browser/Tesseract must recognize the actually corrected raw 90-degree image");
+  assert.match(await page.locator("[data-ocr-result]").innerText(), /Correzione manuale applicata: 270°/u);
+  const rotatedDownloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: /Scarica TXT locale/u }).click();
+  const correctedDownload = await rotatedDownloadPromise;
+  assert.equal((await readFile(await correctedDownload.path(), "utf8")).replace(/\s+/gu, " ").trim(), expected);
+  assert.deepEqual(allRequests.filter((u) => u.startsWith("http") && new URL(u).origin !== route.origin), [],
+    "rotated OCR must not fetch from external origins");
+  assert.deepEqual(runtimeErrors, [], "rotated OCR must not cause JS exceptions");
+  console.log("#246 BROWSER PASS: real Tesseract Italian OCR exact on original and manually corrected RAW-90 invoice; worker/WASM/ITA same origin, lazy load, two actual TXT downloads, 390px responsive, no external HTTP, no JS errors.");
   console.log("#246 OCR ASSET REQUESTS:", allRequests.filter((u) => u.includes("/ocr-246/")).map((u) => new URL(u).pathname).join(", "));
 } finally {
   if (browser) await browser.close();
