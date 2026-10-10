@@ -1,5 +1,7 @@
 # 51 — True PDF compression profiles + target size
 
+**2026-10-10 COMPLETED functional end-to-end acceptance on bounded supported PDF contracts:** The live-facing `pdf-compression-lite` has four distinct operations: structural-only (preserves embedded JPEG originals), RGB/JPEG reencode, Flate RGB scanned-image reencode with explicit pixel-cap or *verified* placement-DPI downsample and opt-in grayscale, plus measured KiB/MiB target size/bounded batch. Image modes now expose three **real wired** quality presets with actual selected encoder parameters: high-quality JPEG .85 / scan 2048px or 300 verified DPI, balanced .60 /1600px or 150 verified DPI, strong .35/960px or 96 verified DPI. Manual edits are shown as **custom** and invalidate prior downloadable output, as do grayscale, resize policy, target limit and units. The user sees actual original/final bytes, savings, pages, touched/skipped image counts, supported DPI/quality parameters and refusal reasons. For targets, output success comes only from final PDF byte count, unachievable sources show limiting content and links to the existing split/remove actions, and batch ZIP includes verified successes without masking per-file errors. Unsupported signed/encrypted/blended/complex PDFs and unverified DPI remain explicitly refused or unchanged: lossless text/vector preservation and no fabricated raster provenance are part of the accepted bounded contract, not a universal optimizer claim. **Independent clean detached source commit `cdb6bb8`**: `npm run check` **1893 files, 0 errors/warnings**, full suite **218/218 suites and 1720/1720 tests PASS**, static build **291 pages PASS**, portable + Cloudflare dry-run PASS. **Real compiled Chromium browser** `npm run acceptance:pdf-image-aware` **PASS**: new preset value mapping and manual/custom checks, separate structural/JPEG/Flate scans with actual PDFs downloaded, independent PDF.js/source text/vector and pixel examination; `tsx scripts/acceptance-pdf-target-batch-219.mjs` **PASS** real 400 KiB/0.390625 MiB limit, source 598519 bytes, two passing PDF ZIP, one corruption isolation and no offsite, and `tests/pdf-size-265.browser.mjs` **15 checks PASS**. Upstream #218/#219 functionally completed. This closes the four functional ACs **only for documented and proved supported inputs**. Physical iPhone/Android, broader scanned-PDF fidelity and Gold certification remain separate *unproven* release/device gates (#280/#281); never advertise them as passed. No unapproved JavaScript JPEG codec or remote PDF file upload.
+
 **What to build:** Turn the current structural `pdf-compression-lite` foundation into a clearly named basic optimizer and add a true PDF compressor with balanced/strong/high-quality profiles, embedded-image downsample/recompression, scan-oriented mode, optional grayscale where chosen, and “under X KB/MB” best-effort targeting.
 
 **Traces to:** US-EXP-04, US-EXP-10; AC-04.1, AC-04.2, AC-06.1, AC-10.1; DEC-EXP-01, DEC-EXP-05, DEC-EXP-06; C-EXP-05, C-EXP-08
@@ -8,11 +10,11 @@
 
 **Blocked by:** 218, 219.
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Basic structural optimizer and image-aware compressor are distinct truthful modes/jobs.
-- [ ] Result reports original/result bytes, savings %, pages, image count touched, effective image DPI/quality strategy and warnings.
-- [ ] Target-size mode either satisfies the requested ceiling or explains the limiting content and offers split/remove-page handoffs.
-- [ ] Batch mode processes multiple PDFs with per-file results and ZIP download.
+- [x] Basic structural optimizer and image-aware compressor are distinct truthful modes/jobs with actual quality profiles and separate download evidence.
+- [x] Result reports original/result bytes, savings %, pages, touched/skipped images, bounded proven DPI/quality strategy and warnings.
+- [x] Target-size mode either satisfies the measured final PDF ceiling or explains limiting content and offers compatible split/remove-page handoffs.
+- [x] Batch mode processes bounded multiple PDFs with isolated results and independently reopened ZIP/PDF download.
 
 **Verification:** Text-heavy, image-heavy, scanned, vector-heavy and already-optimized PDF corpus; extraction/render regression checks; size-target assertions; mobile memory receipt.

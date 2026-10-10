@@ -10,7 +10,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 ## Current dependency frontier
 
 - **047 — JPEG/PNG/WebP/SVG compression engines**
-- **051 — True PDF compression profiles + target size**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **056 — Office-to-PDF and printable export pack**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
@@ -30,7 +29,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **20** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **19** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -97,7 +96,7 @@ Exactly **20** incomplete tickets currently have every declared numeric blocker 
 | 048 | completed (bounded JPEG/PNG/WebP route; advanced codec and physical gates separate) | Target-size + batch image compression | 210, 211 |
 | 049 | blocked | Image conversion matrix + HEIC/AVIF/GIF | 212, 312, 313 |
 | 050 | completed | Upgrade existing image-tool functionality | 213, 314, 315, 316, 317 |
-| 051 | ready-for-agent | True PDF compression profiles + target size | 218, 219 |
+| 051 | completed | True PDF compression profiles + target size | 218, 219 |
 | 052 | completed (bounded cross-source page composition with safe per-page mutation and browser verification) | Visual PDF page organizer for existing page tools | 215, 216, 217 |
 | 053 | blocked | Upgrade existing PDF inspect/extract/compare tools | 220, 221, 242, 318, 319, 320 |
 | 054 | completed | TXT/Markdown/HTML conversion core | 081 |
