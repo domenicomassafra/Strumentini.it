@@ -1,44 +1,26 @@
 ---
 import { catalog } from "../../generated/catalog";
-import { isLocalToolRoute } from "../../catalog/manifest";
-import type { LocalFileFormat } from "../../runtime/file-detection";
+import { fileSuggestions335 } from "./file-suggestions-335";
 
-// Narrow curated routes, still checked against the actual current manifest.
-// Classification recommends a destination; it never validates/opens a file.
-const candidateIds = {
-  pdf: ["pdf-page-count-verifier", "pdf-merge"],
-  png: ["image-compression", "image-resize", "image-format-conversion"],
-  jpeg: ["image-compression", "image-resize", "image-format-conversion"],
-  webp: ["image-compression", "image-resize", "image-format-conversion"],
-  gif: ["image-format-conversion"],
-  zip: ["zip-contents-inspector"],
-} as const satisfies Partial<Record<LocalFileFormat, readonly string[]>>;
-
-const mimeByFormat: Partial<Record<LocalFileFormat, string>> = {
-  pdf: "application/pdf",
-  png: "image/png",
-  jpeg: "image/jpeg",
-  webp: "image/webp",
-  gif: "image/gif",
-  zip: "application/zip",
-};
-
-const suggestions = Object.entries(candidateIds).flatMap(([format, ids]) => {
-  const mime = mimeByFormat[format as LocalFileFormat];
-  return ids.flatMap((id) => {
-    const tool = catalog.find((item) => item.id === id);
-    const inputTypes: readonly string[] = tool?.inputTypes ?? [];
-    return tool !== undefined
-      && isLocalToolRoute(tool.route)
-      && tool.route === "/tools/" + id
-      && tool.runtime.location === "LOCAL"
-      && tool.runtime.network === "forbidden"
-      && mime !== undefined
-      && (inputTypes.includes(mime) || (format === "zip" && inputTypes.includes("zip")))
-      ? [{ format, tool }]
-      : [];
-  });
-});
+// Only actual Astro tool pages count as destinations; catalog entries alone
+// cannot promote a missing route into a recommendation.
+const publishedRoutes = new Set(
+  Object.keys(import.meta.glob("../../pages/tools/*.astro")).map((path) =>
+    "/tools/" + path.split("/").at(-1)!.replace(/\.astro$/u, "")
+  ),
+);
+const mimeByFormat = {
+  pdf: "application/pdf", png: "image/png", jpeg: "image/jpeg",
+  webp: "image/webp", gif: "image/gif", zip: "application/zip",
+} as const;
+const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[]).flatMap((format) =>
+  fileSuggestions335({
+    status: "supported", format, mime: mimeByFormat[format],
+    name: "", bytes: 1, readBytes: 1,
+    method: "bounded-signature-and-container-metadata",
+    note: "candidate only; decoding and content safety are not verified",
+  }, catalog, publishedRoutes),
+);
 ---
 
 <section class="home-file-entry" aria-labelledby="home-file-title" data-home-file-entry>
@@ -63,9 +45,9 @@ const suggestions = Object.entries(candidateIds).flatMap(([format, ids]) => {
   <div class="home-file-result" data-home-file-result hidden>
     <h3>Operazioni disponibili per questo formato</h3>
     <ul class="home-file-actions" data-home-file-actions>
-      {suggestions.map(({ format, tool }) => (
+      {suggestions.map(({ format, route, name }) => (
         <li data-home-file-action-format={format} hidden>
-          <a href={tool.route + "/"}>{tool.name}</a>
+          <a href={route + "/"}>{name}</a>
         </li>
       ))}
     </ul>
@@ -160,8 +142,8 @@ const suggestions = Object.entries(candidateIds).flatMap(([format, ids]) => {
       for (const option of matches) option.hidden = false;
       if (resultPanel) resultPanel.hidden = false;
       if (noActions) noActions.hidden = matches.length > 0;
-      status.textContent = "Formato " + detected.format.toUpperCase() + " riconosciuto localmente per “"
-        + file.name + "”. " + matches.length + (matches.length === 1 ? " strumento possibile." : " strumenti possibili.");
+      status.textContent = "Formato " + detected.format.toUpperCase() + " riconosciuto localmente. "
+        + matches.length + (matches.length === 1 ? " strumento possibile." : " strumenti possibili.");
     } catch {
       if (current !== generation || controller.signal.aborted) return;
       status.textContent = "Controllo locale non disponibile. Nessuna operazione avviata.";

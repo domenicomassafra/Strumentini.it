@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 02 — staged revision protocol
+
+Added non-destructive `worker/migrations/0003_favorite_sync.sql` AFTER existing 0002 Google migration: account favorite revisions, persistent per-tool tombstones, event trigger mirroring historical legacy table, bounded 128 recent event audit records. Source Worker sync GET/POST uses authenticated conditional revision and 409 conflict response; existing GET/PUT/DELETE preserved with safety refusal for resurrecting pre-migration unknown/tombstoned IDs. `src/workbench/membership.ts` now persists an account-scoped baseline in IndexedDB; first login adopts server authority including empty accounts, later disconnected local intents use CAS only if the specific tool was not changed remotely. It does not union stale local lists. Source-focused `tests/favorite-sync-332.test.ts` and local Wrangler/D1 auth acceptance 130/130 passed.
+
+**Release gates still OPEN:** Migrating existing D1 data and verifying `0003` before new Worker code with rollback; independently observed two real devices across offline/reconnect, authenticated schema deployment, bounded cost/abuse and physical browsers. No production DB or credentials touched; this issue remains open until those AC are independently verified.

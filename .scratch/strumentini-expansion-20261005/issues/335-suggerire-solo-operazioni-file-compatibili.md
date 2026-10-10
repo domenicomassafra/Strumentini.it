@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 02 — bounded local evidence
+
+Current manifest+pinned published Astro route suggestions, bounded by detected file format and exact MIME/network-forbidden LOCAL engine/route. `tests/file-suggestions-335.test.ts` 8/8 PASS, real Chromium 320/390/768/1024/1440 file picker/drop PDF/PNG/GIF/ZIP, explicit zero approved CSV and Office route, no network or auto-run. End-user file is still not forwarded from home to destination; separate #337 scope.
+
+**Disposition:** implementation slice demonstrated locally only; do not infer original AC closure, Gold promotion, deployed feature or physical-device pass.

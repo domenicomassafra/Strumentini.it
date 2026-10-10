@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { canOfferPdfPagesHandoff337, receivePdfPagesHandoff337, startPdfPagesHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { TOOL_COPY_IT } from "../../../i18n/it/tool-copy";
@@ -121,11 +122,37 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [result, setResult] = useState<PreparedPdfResult | null>(null);
   const [error, setError] = useState("");
   const [status, setStatus] = useState<"idle" | "working" | "done">("idle");
+  const [handoffMessage, setHandoffMessage] = useState("");
+  const pendingPdfHandoff = useRef<(() => void) | null>(null);
   const controller = useRef<AbortController | null>(null);
 
   useEffect(() => () => {
     controller.current?.abort();
+    pendingPdfHandoff.current?.();
+    pendingPdfHandoff.current = null;
   }, []);
+
+  // #337: the destination consumes ephemeral bytes as a native File. No file
+  // picker, download/reupload, remote request, persistent store or auto-run.
+  useEffect(() => {
+    if (toolId !== "pdf-to-images") return;
+    return receivePdfPagesHandoff337((received) => {
+      if (controller.current !== null) return;
+      setFiles([received]);
+      setResult(null);
+      setTextExports(null);
+      setMergePagePlan(null);
+      setOrderHistory([]);
+      setPages("");
+      setShowThumbnails(false);
+      setShowVisualCompare(false);
+      setSelectionPageCount(0);
+      setActiveSelectionGroup(0);
+      setError("");
+      setStatus("idle");
+      setHandoffMessage(`PDF ricevuto localmente: ${received.name}. Scegli le opzioni e avvia la conversione.`);
+    });
+  }, [toolId]);
 
   useEffect(() => {
     if (optionMode !== "images-to-pdf" || files[0] === undefined) {
@@ -340,6 +367,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   function reset() {
     controller.current?.abort();
     controller.current = null;
+    pendingPdfHandoff.current?.();
+    pendingPdfHandoff.current = null;
+    setHandoffMessage("");
     setFiles([]);
     setMergePagePlan(null);
     setPages("");
@@ -461,6 +491,22 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     ? result.raw.audit as unknown as PdfFormAnnotationAudit : undefined;
   const flattenVerification = toolId === "pdf-flatten" && result !== null && result.raw.verification
     ? result.raw.verification as unknown as PdfFlattenVerification : undefined;
+  const handoffPdf = result?.artifacts.length === 1 ? result.artifacts[0]?.artifact : undefined;
+
+  function sendPdfResultToPages() {
+    if (!canOfferPdfPagesHandoff337(handoffPdf) || controller.current !== null) return;
+    pendingPdfHandoff.current?.();
+    pendingPdfHandoff.current = null;
+    setHandoffMessage("Apertura della conversione PDF in immagini…");
+    const transfer = startPdfPagesHandoff337(handoffPdf, (next) => {
+      if (next === "received") setHandoffMessage("PDF consegnato nella nuova scheda. Nessun download o caricamento eseguito.");
+      if (next === "expired") setHandoffMessage("Passaggio scaduto dopo 30 secondi. Ripeti esplicitamente l'azione se necessario.");
+      if (next === "cancelled") setHandoffMessage("Passaggio interrotto. Non è stato trasferito un nuovo file.");
+      if (next === "unavailable") setHandoffMessage("Destinazione non disponibile: il file resta in questa scheda.");
+    });
+    if (transfer.opened) pendingPdfHandoff.current = transfer.cancel;
+    else setHandoffMessage(transfer.reason);
+  }
   return (
     <form class="tool-operation" onSubmit={submit} noValidate>
       <section class="tool-form-card">
@@ -794,6 +840,14 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
               onReset={reset}
               onRetry={execute}
             />
+            {canOfferPdfPagesHandoff337(handoffPdf) && toolId !== "pdf-to-images" && (
+              <div class="actions" data-pdf-handoff337>
+                <button type="button" onClick={sendPdfResultToPages} disabled={isWorking}>
+                  Usa il PDF prodotto in PDF → immagini
+                </button>
+                <small>Si apre una scheda locale. Il PDF viene ricevuto senza nuovo upload o selezione; avvio della conversione sempre manuale. Passaggio valido 30 secondi, massimo 64 MiB.</small>
+              </div>
+            )}
             {toolId === "pdf-text-extraction" && textExports !== null && textExports.file === files[0]
               && textExports.pageExpression === pages && textExports.mode === textExtractionMode
               && <PdfTextExportDownloads53 exported={textExports.exported} />}
@@ -837,6 +891,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             )}
           </>
         )}
+        {handoffMessage !== "" && <p class="file-note" role="status" aria-live="polite" data-pdf-handoff337-status>{handoffMessage}</p>}
       </ToolResultPanel>
     </form>
   );

@@ -1,79 +1,87 @@
 ---
 /**
- * "Riprendi da dove eri": the tools this browser actually produced a value with,
- * newest first, each with the value it last produced. Real local data only —
- * the section removes itself when this device has no history.
+ * #345: A recent activity is a completed tool ID, not a cached document,
+ * pasted input or last scalar value. The canonical state is the same bounded
+ * IndexedDB list shown in /preferiti/. A deep link reopens a tool, never a blob.
  */
 ---
 
-<section class="section home-recent" data-recent-section hidden>
+<section class="section home-recent" data-recent-section hidden aria-labelledby="home-recent-title">
   <div class="section-head">
     <div>
-      <h2 class="section-title">Riprendi da dove eri</h2>
-      <p class="section-sub">Gli strumenti che hai usato su questo dispositivo, con l'ultimo valore prodotto.</p>
+      <h2 class="section-title" id="home-recent-title">Riprendi da dove eri</h2>
+      <p class="section-sub">Gli strumenti con cui hai completato un'attività su questo dispositivo, senza conservare i contenuti.</p>
     </div>
-    <a class="section-link" href="/preferiti/">Tutti i preferiti</a>
+    <a class="section-link" href="/preferiti/#recenti">Tutte le attività recenti</a>
   </div>
   <ul class="tool-grid home-recent-grid" data-recent-list></ul>
+  <p class="home-recent-warning" role="status" data-recent-warning hidden>
+    La memoria del browser non è disponibile: questi recenti sono temporanei e potrebbero sparire cambiando pagina.
+  </p>
 </section>
 
 <script>
-  import { readLastValues } from "../workbench/last-value";
-  import type { ToolLastValue } from "../workbench/last-value";
-
-  interface CatalogTool { id: string; name: string; summary: string; route: string; category: string }
+  import { loadMembership, subscribeMembership } from "../../workbench/membership";
+  import type { Membership } from "../../workbench/membership";
+  import { selectHomeRecent345 } from "./recent-tools-345";
 
   const section = document.querySelector<HTMLElement>("[data-recent-section]");
-  const list = document.querySelector<HTMLElement>("[data-recent-list]");
+  const list = section?.querySelector<HTMLElement>("[data-recent-list]");
+  const warning = section?.querySelector<HTMLElement>("[data-recent-warning]");
+  let sequence = 0;
 
-  const escapeHtml = (value: string): string => value.replace(/[&<>"']/gu, (character) => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;",
-  })[character] ?? character);
+  // The small workbench projection is deferred; never import the full catalog.
+  const catalog = import("../../generated/workbench-catalog");
 
-  function byNewest(values: Readonly<Record<string, ToolLastValue>>): Array<[string, ToolLastValue]> {
-    return Object.entries(values)
-      .filter(([, record]) => typeof record.at === "string")
-      .sort((a, b) => (a[1].at < b[1].at ? 1 : a[1].at > b[1].at ? -1 : 0))
-      .slice(0, 4);
-  }
-
-  if (section !== null && list !== null) {
-    const recent = byNewest(readLastValues());
-    if (recent.length > 0) {
-      void import("../../generated/workbench-catalog").then(({ workbenchCatalog }) => {
-        const tools = new Map<string, CatalogTool>(
-          (workbenchCatalog as readonly CatalogTool[]).map((tool) => [tool.id, tool]),
-        );
-        const cards = recent.flatMap(([toolId, record]) => {
-          const tool = tools.get(toolId);
-          if (tool === undefined) return [];
-          const unit = record.unit === undefined ? "" : ` ${escapeHtml(record.unit)}`;
-          return `<li class="tool-card tool-card-row">`
-            + `<div class="tool-card-body"><h3 class="tool-card-name"><a href="${escapeHtml(tool.route)}">${escapeHtml(tool.name)}</a></h3>`
-            + `<p class="tool-card-summary">${escapeHtml(tool.summary)}</p></div>`
-            + `<div class="tool-card-foot"><span class="tool-card-category">Ultimo valore</span>`
-            + `<span class="tool-card-value">${escapeHtml(record.value)}${unit}</span></div></li>`;
-        });
-        if (cards.length === 0) return;
-        list.innerHTML = cards.join("");
-        section.hidden = false;
-      });
+  async function render(membership: Membership): Promise<void> {
+    const revision = ++sequence;
+    const { workbenchCatalog } = await catalog;
+    if (revision !== sequence || !list || !section) return;
+    const recent = selectHomeRecent345(membership.recent, workbenchCatalog);
+    const fragment = document.createDocumentFragment();
+    for (const tool of recent) {
+      const item = document.createElement("li");
+      item.className = "tool-card tool-card-row";
+      const body = document.createElement("div");
+      body.className = "tool-card-body";
+      const heading = document.createElement("h3");
+      heading.className = "tool-card-name";
+      const anchor = document.createElement("a");
+      anchor.href = tool.route;
+      anchor.textContent = tool.name;
+      heading.append(anchor);
+      const summary = document.createElement("p");
+      summary.className = "tool-card-summary";
+      summary.textContent = tool.summary;
+      body.append(heading, summary);
+      const footer = document.createElement("div");
+      footer.className = "tool-card-foot";
+      const label = document.createElement("span");
+      label.className = "tool-card-category";
+      label.textContent = tool.category;
+      const action = document.createElement("a");
+      action.className = "home-recent-open";
+      action.href = tool.route;
+      action.textContent = "Apri di nuovo";
+      footer.append(label, action);
+      item.append(body, footer);
+      fragment.append(item);
     }
+    list.replaceChildren(fragment);
+    section.hidden = recent.length === 0;
+    if (warning) warning.hidden = membership.persisted !== false;
   }
+
+  subscribeMembership((membership) => { void render(membership).catch(() => undefined); });
+  void loadMembership().then(render).catch(() => {
+    if (section) section.hidden = true;
+  });
 </script>
 
 <style>
   .home-recent-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-  :global(.tool-card-value) {
-    color: var(--brand);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
-    font-variant-numeric: tabular-nums lining-nums;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  .home-recent-open { color: var(--brand); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
+  .home-recent-warning { font-size: var(--font-size-sm); color: var(--text-muted); margin-top: var(--space-3); }
 
   @media (min-width: 1060px) {
     .home-recent-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }

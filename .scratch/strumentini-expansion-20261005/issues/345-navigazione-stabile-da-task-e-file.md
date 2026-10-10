@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 02 — metadata navigation slice
+
+Replaced home recent cards sourced from cached last scalar values with canonical post-success membership `recent` IDs/time/count. The home links are now resolved only through the current generated workbench catalog and allowlisted `/tools/{id}` routes; no last input/output, filenames, query string, blob or deleted catalog route is promoted. `tests/home-recent-navigation-345.test.ts` (3 checks) and real Chromium `tests/acceptance-home-recent-345.mjs` PASS: persisted IndexedDB, reload, back navigation, sanitized route links, hidden legacy localStorage sentinel and narrow viewport. Source is `src/components/home/{RecentTools.astro,recent-tools-345.ts}`.
+
+**Still open:** Full task/file state recovery across arbitrary history/query paths and expired #337 handoff deep-link behaviour require additional scoped integration acceptance. This note does not check original AC, certify Gold or authorize deployment.

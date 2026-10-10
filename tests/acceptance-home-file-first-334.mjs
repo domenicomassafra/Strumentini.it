@@ -2,6 +2,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { chromium } from "@playwright/test";
+import { strToU8, zipSync } from "fflate";
 
 const base = process.argv[2] ?? "http://127.0.0.1:4934";
 const browser = await chromium.launch({
@@ -11,8 +12,17 @@ const browser = await chromium.launch({
 const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/aRAAAAAASUVORK5CYII=", "base64");
 const pdf = await readFile("quality/fixtures/pdf-gold/simple-2page.pdf");
 const gif = Buffer.from("R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=", "base64");
+const zip = Buffer.from(zipSync({ "file.txt": strToU8("local archive contents") }));
+const docx = Buffer.from(zipSync({
+  "[Content_Types].xml": strToU8('<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'),
+  "_rels/.rels": strToU8('<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>'),
+  "word/document.xml": strToU8("<document/>"),
+}));
 const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
 const page = await context.newPage();
+// Cold Astro dev compilation of the full PDF tool page may exceed Playwright's
+// default 30s navigation timeout on a busy shared workstation.
+page.setDefaultNavigationTimeout(90_000);
 const pageErrors = [];
 page.on("pageerror", (error) => pageErrors.push(error.message));
 const requestsWithFileContents = [];
@@ -69,7 +79,8 @@ try {
       + "; browser errors: " + pageErrors.join(" | "));
   });
   assert.deepEqual((await visibleActions()).map((action) => action.href), [
-    "/tools/pdf-page-count-verifier/", "/tools/pdf-merge/",
+    "/tools/pdf-page-count-verifier/", "/tools/pdf-merge/", "/tools/pdf-compression-lite/",
+    "/tools/pdf-split/", "/tools/pdf-page-reorder/", "/tools/pdf-text-extraction/",
   ]);
   assert.match(await page.locator("[data-home-file-result]").innerText(), /selezionare di nuovo il file/u);
   assert.equal(await page.locator("[data-home-file-picker]").inputValue(), "", "file cleared immediately after local check");
@@ -83,6 +94,7 @@ try {
   await page.locator("[data-home-file-result]:visible").waitFor();
   assert.deepEqual((await visibleActions()).map((action) => action.href), [
     "/tools/image-compression/", "/tools/image-resize/", "/tools/image-format-conversion/",
+    "/tools/exif-remover/", "/tools/image-metadata-viewer/", "/tools/image-crop/",
   ]);
   await page.locator("[data-home-file-reset]").click();
   assert(await page.locator("[data-home-file-result]").isHidden());
@@ -90,7 +102,21 @@ try {
 
   await select(gif, "animazione.gif", "image/gif");
   await page.locator("[data-home-file-result]:visible").waitFor();
-  assert.deepEqual((await visibleActions()).map((action) => action.href), ["/tools/image-format-conversion/"]);
+  assert.deepEqual((await visibleActions()).map((action) => action.href), [
+    "/tools/image-format-conversion/", "/tools/images-to-pdf/",
+  ]);
+
+  await select(zip, "archivio.zip", "application/zip");
+  await page.locator("[data-home-file-result]:visible").waitFor();
+  assert.deepEqual((await visibleActions()).map((action) => action.href), [
+    "/tools/zip-contents-inspector/", "/tools/archive-checksum-manifest/",
+  ]);
+
+  await select(docx, "documento.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+  await page.locator("[data-home-file-result]:visible").waitFor();
+  assert.match(await page.locator("[data-home-file-status]").innerText(), /DOCX riconosciuto localmente/u);
+  assert(await page.locator("[data-home-file-no-actions]").isVisible(), "Office has no approved file-first workflow");
+  assert.deepEqual(await visibleActions(), [], "Office must not show unverified routes");
 
   await select(Buffer.from("colonna,valore\n1," + sentinel), "privato.csv", "text/csv");
   assert.match(await page.locator("[data-home-file-status]").innerText(), /Formato non riconosciuto/u);

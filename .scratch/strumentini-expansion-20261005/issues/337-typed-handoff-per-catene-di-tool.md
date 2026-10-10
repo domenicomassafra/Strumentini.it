@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 02 — narrow PDF handoff
+
+`src/runtime/ephemeral-file-handoff-337.ts` and `src/components/tools/pdf/PdfTool.tsx` now provide one real explicit user-triggered flow: locally verified <=64 MiB PDF result → same-origin popup `/tools/pdf-to-images/`, 30 s sender/receiver expiry, UUID fragment capability, origin+Window source validation, one-shot ACK, native destination File via `setFiles` without reselect, no network transfer/persistence or automatic execution. Existing PDF manifest does not claim generic input handoff; source/destination are narrowly audited and bounded. Focused tests 19/19 PASS. Isolated Chromium `pdf-merge` produced verified merged.pdf 1.9 KiB, recipient populated without picker; zero outbound POST / JS page errors. Browser harness had unrelated dev GET 404 and exited nonzero, so no clean full browser acceptance claim.
+
+**Residual:** generalized PDF/PNG/CSV typed chains and adversarial expiry browser corpus still unproven. No Gold/release promotion or remote provider claim.

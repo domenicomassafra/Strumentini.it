@@ -284,28 +284,122 @@ export async function recordLoginAttempt(
   ]);
 }
 
-/** The caller's favourite tool ids, newest first. */
+export interface FavoriteSyncEntry {
+  readonly toolId: string;
+  readonly installed: boolean;
+  readonly revision: number;
+}
+
+export interface FavoriteSyncSnapshot {
+  readonly revision: number;
+  readonly entries: readonly FavoriteSyncEntry[];
+  readonly tools: readonly string[];
+}
+
+interface FavoriteSyncRow {
+  readonly tool_id: string;
+  readonly installed: number;
+  readonly revision: number;
+}
+
+/** The durable state table carries every tombstone/revision. Keep only the
+ * last 128 audit events per user; AUTOINCREMENT never reuses deleted IDs.
+ * Pages released by SQLite may be reused by later operations.
+ */
+async function pruneFavoriteEvents(db: D1Database, userId: string): Promise<void> {
+  await db.prepare(`
+    DELETE FROM favorite_sync_events
+    WHERE user_id = ?1 AND id < COALESCE((
+      SELECT id FROM favorite_sync_events
+      WHERE user_id = ?1 ORDER BY id DESC LIMIT 1 OFFSET 127
+    ), 0)
+  `).bind(userId).run();
+}
+
+/** Includes tombstones; the client must see deletions as well as additions. */
+export async function listFavoriteSync(db: D1Database, userId: string): Promise<FavoriteSyncSnapshot> {
+  const result = await db.prepare(
+    "SELECT tool_id, installed, revision FROM favorite_sync_state WHERE user_id = ?1 ORDER BY revision DESC LIMIT 2001",
+  ).bind(userId).all<FavoriteSyncRow>();
+  if (result.results.length > 2000) throw new Error("FAVORITE_SYNC_CAP_EXCEEDED");
+  if (result.results.some((row) => !Number.isSafeInteger(row.revision) || row.revision < 1 || (row.installed !== 0 && row.installed !== 1))) {
+    throw new Error("FAVORITE_SYNC_CORRUPT");
+  }
+  return {
+    revision: result.results[0]?.revision ?? 0,
+    entries: result.results.map((row) => ({ toolId: row.tool_id, installed: row.installed === 1, revision: row.revision })),
+    tools: result.results.filter((row) => row.installed === 1).map((row) => row.tool_id),
+  };
+}
+
+/** SQLite conditional INSERT and AFTER INSERT trigger are one atomic mutation.
+ * Another device's newer write to the same tool makes this INSERT a no-op.
+ */
+export async function changeFavoriteIfCurrent(
+  db: D1Database,
+  userId: string,
+  toolId: string,
+  installed: boolean,
+  baseRevision: number,
+  at: string,
+): Promise<boolean> {
+  const row = await db.prepare(`
+    INSERT INTO favorite_sync_events (user_id, tool_id, installed, created_at)
+    SELECT ?1, ?2, ?3, ?4
+    WHERE COALESCE((SELECT revision FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2), 0) <= ?5
+      AND ((SELECT COUNT(*) FROM favorite_sync_state WHERE user_id = ?1) < 2000
+           OR EXISTS (SELECT 1 FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2))
+      AND (?3 = 0 OR (SELECT COUNT(*) FROM favorite_sync_state WHERE user_id = ?1 AND installed = 1) < 500
+           OR EXISTS (SELECT 1 FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2 AND installed = 1))
+    RETURNING id
+  `).bind(userId, toolId, installed ? 1 : 0, at, baseRevision).first<{ id: number }>();
+  if (row !== null) await pruneFavoriteEvents(db, userId);
+  return row !== null;
+}
+
+/** Legacy PUT: pre-migration accounts may have unrecorded deletions. Permit
+ * unknown IDs only for accounts created after the migration (no old history).
+ */
+export async function addFavorite(db: D1Database, userId: string, toolId: string, createdAt: string): Promise<boolean> {
+  await db.prepare(`
+    INSERT INTO favorite_sync_events (user_id, tool_id, installed, created_at)
+    SELECT ?1, ?2, 1, ?3
+    WHERE NOT EXISTS (SELECT 1 FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2)
+      AND NOT EXISTS (SELECT 1 FROM favorite_sync_migrated_accounts WHERE user_id = ?1)
+  `).bind(userId, toolId, createdAt).run();
+  await pruneFavoriteEvents(db, userId);
+  const row = await db.prepare("SELECT installed FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2")
+    .bind(userId, toolId).first<{ installed: number }>();
+  return row?.installed === 1;
+}
+
+/** Legacy DELETE is idempotent; a missing favourite becomes a tombstone. */
+export async function removeFavorite(db: D1Database, userId: string, toolId: string, at = new Date().toISOString()): Promise<void> {
+  await db.prepare(`
+    INSERT INTO favorite_sync_events (user_id, tool_id, installed, created_at)
+    SELECT ?1, ?2, 0, ?3
+    WHERE NOT EXISTS (SELECT 1 FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2 AND installed = 0)
+  `).bind(userId, toolId, at).run();
+  await pruneFavoriteEvents(db, userId);
+}
+
+/** Every present favourite gets a durable tombstone, including bulk clear. */
+export async function clearFavorites(db: D1Database, userId: string, at = new Date().toISOString()): Promise<void> {
+  const current = await listFavoriteSync(db, userId);
+  if (current.tools.length === 0) return;
+  await db.batch([...current.tools.map((toolId) => db.prepare(`
+    INSERT INTO favorite_sync_events (user_id, tool_id, installed, created_at)
+    SELECT ?1, ?2, 0, ?3
+    WHERE EXISTS (SELECT 1 FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2 AND installed = 1)
+  `).bind(userId, toolId, at)), db.prepare(`
+    DELETE FROM favorite_sync_events
+    WHERE user_id = ?1 AND id < COALESCE((
+      SELECT id FROM favorite_sync_events WHERE user_id = ?1 ORDER BY id DESC LIMIT 1 OFFSET 127
+    ), 0)
+  `).bind(userId)]);
+}
+
+/** Legacy shape remains available for consumers of GET /api/favorites. */
 export async function listFavorites(db: D1Database, userId: string): Promise<readonly string[]> {
-  const result = await db
-    .prepare("SELECT tool_id FROM favorites WHERE user_id = ?1 ORDER BY created_at DESC, rowid DESC")
-    .bind(userId)
-    .all<{ readonly tool_id: string }>();
-  return result.results.map((row) => row.tool_id);
-}
-
-/** Idempotent: re-adding an existing favourite keeps the original `created_at`. */
-export async function addFavorite(db: D1Database, userId: string, toolId: string, createdAt: string): Promise<void> {
-  await db
-    .prepare("INSERT INTO favorites (user_id, tool_id, created_at) VALUES (?1, ?2, ?3) ON CONFLICT(user_id, tool_id) DO NOTHING")
-    .bind(userId, toolId, createdAt)
-    .run();
-}
-
-/** Idempotent: removing a favourite that is not there is not an error. */
-export async function removeFavorite(db: D1Database, userId: string, toolId: string): Promise<void> {
-  await db.prepare("DELETE FROM favorites WHERE user_id = ?1 AND tool_id = ?2").bind(userId, toolId).run();
-}
-
-export async function clearFavorites(db: D1Database, userId: string): Promise<void> {
-  await db.prepare("DELETE FROM favorites WHERE user_id = ?1").bind(userId).run();
+  return (await listFavoriteSync(db, userId)).tools;
 }

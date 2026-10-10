@@ -37,3 +37,9 @@
 **Out of scope:** Shipping functionality, buying licenses, changing receipt source fingerprints, broad desktop-only advanced exemptions.
 
 **Execution prompt:** Routed by canonical EXECUTION-PROMPTS.md with gates.
+
+## 2026-10-11 implementation wave 02 — bounded local evidence
+
+Independent offline consumer verifier `scripts/verify-output-consumers-408.ts` reopens real locally generated PDF (pdfjs-dist), PNG (sharp), CSV (independent CSV reader), DOCX (fflate+sax), XLSX (read-excel-file), WAV (strict RIFF PCM16 reader). `tests/output-consumers-408.test.ts` 8/8 PASS, command output six PASS_LOCAL with concrete metadata and SHA-256 per run; hostile wrong-MIME/extension, empty/truncated, ZIP expansion/CRC, malformed CSV fail-closed. Office desktop rendering, physical audio playback, UI download, mobile physical NOT_RUN. No Gold receipt written.
+
+**Disposition:** implementation slice demonstrated locally only; do not infer original AC closure, Gold promotion, deployed feature or physical-device pass.

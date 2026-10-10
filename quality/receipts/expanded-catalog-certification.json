@@ -5951,6 +5951,7 @@
         "testFiles": [
           "tests/catalog-performance.test.ts",
           "tests/csv-table-upgrade-60.test.ts",
+          "tests/home-recent-navigation-345.test.ts",
           "tests/table-expansion.test.ts"
         ]
       },
@@ -22852,6 +22853,8 @@
           "sha256": "215568d96db0d731ad3d21dffec7413999d5767edc28ed9761af664c770ab9d1"
         },
         "testFiles": [
+          "tests/ephemeral-file-handoff-337.test.ts",
+          "tests/home-recent-navigation-345.test.ts",
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts",
           "tests/pdf-merge-page-plan.test.ts",
@@ -24955,6 +24958,7 @@
           "sha256": "cdff0235090d1e9622fabe531d6229c207aa76bfc9c013d963cfbff7db9940ad"
         },
         "testFiles": [
+          "tests/ephemeral-file-handoff-337.test.ts",
           "tests/image-format-matrix.test.ts",
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
@@ -33712,7 +33716,9 @@
           "path": "src/pages/tools/utm-builder.astro",
           "sha256": "88f20dacdf931fbc37cc88812c0532f831f485b421840bfb0baaf47a7f4a96c7"
         },
-        "testFiles": []
+        "testFiles": [
+          "tests/home-recent-navigation-345.test.ts"
+        ]
       },
       "oracle": {
         "entryId": "cand-061",

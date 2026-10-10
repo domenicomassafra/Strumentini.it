@@ -24,6 +24,7 @@ import {
 import type { StoredPassword } from "./auth";
 import {
   addFavorite,
+  changeFavoriteIfCurrent,
   clearFavorites,
   countLoginAttempts,
   createSession,
@@ -36,6 +37,7 @@ import {
   findUserByEmail,
   linkGoogleSubject,
   listFavorites,
+  listFavoriteSync,
   listSessions,
   recordLoginAttempt,
   removeFavorite,
@@ -642,6 +644,42 @@ async function requireSession(context: RouteContext): Promise<AuthSession | Resp
   return auth ?? errorResponse(401, MESSAGES.unauthenticated);
 }
 
+/** Reject cross-origin mutations even when a browser happens to send a cookie. */
+function favoriteMutationOrigin(context: RouteContext): Response | null {
+  const origin = context.request.headers.get("origin");
+  if (origin !== null && origin !== new URL(context.request.url).origin) return errorResponse(403, "Origine non consentita.");
+  if (context.request.headers.get("sec-fetch-site") === "cross-site") return errorResponse(403, "Origine non consentita.");
+  return null;
+}
+
+async function handleFavoriteSyncList(context: RouteContext): Promise<Response> {
+  const auth = await requireSession(context);
+  if (auth instanceof Response) return auth;
+  const snapshot = await listFavoriteSync(context.env.AUTH_DB, auth.user.id);
+  return jsonResponse({ version: 1, account: auth.user.id, ...snapshot }, 200);
+}
+
+/** A stale write on the same tool gets 409 and the authoritative state. */
+async function handleFavoriteSyncChange(context: RouteContext): Promise<Response> {
+  const auth = await requireSession(context);
+  if (auth instanceof Response) return auth;
+  const originError = favoriteMutationOrigin(context);
+  if (originError !== null) return originError;
+  const parsed = await readJsonObject(context.request);
+  if (!parsed.ok) return parsed.response;
+  const { body } = parsed;
+  const toolId = validateToolId(body.toolId);
+  if (!toolId.ok) return errorResponse(400, toolId.message);
+  if (typeof body.installed !== "boolean" || !Number.isSafeInteger(body.baseRevision) || (body.baseRevision as number) < 0) {
+    return errorResponse(400, MESSAGES.invalidBody);
+  }
+  const changed = await changeFavoriteIfCurrent(
+    context.env.AUTH_DB, auth.user.id, toolId.value, body.installed, body.baseRevision as number, nowIso(context.now),
+  );
+  const snapshot = await listFavoriteSync(context.env.AUTH_DB, auth.user.id);
+  return jsonResponse({ version: 1, account: auth.user.id, ...snapshot, applied: changed }, changed ? 200 : 409);
+}
+
 async function handleFavoritesList(context: RouteContext): Promise<Response> {
   const auth = await requireSession(context);
   if (auth instanceof Response) return auth;
@@ -651,24 +689,31 @@ async function handleFavoritesList(context: RouteContext): Promise<Response> {
 async function handleFavoritePut(context: RouteContext): Promise<Response> {
   const auth = await requireSession(context);
   if (auth instanceof Response) return auth;
+  const originError = favoriteMutationOrigin(context);
+  if (originError !== null) return originError;
   const toolId = validateToolId(context.params[0]);
   if (!toolId.ok) return errorResponse(400, toolId.message);
-  await addFavorite(context.env.AUTH_DB, auth.user.id, toolId.value, nowIso(context.now));
+  const added = await addFavorite(context.env.AUTH_DB, auth.user.id, toolId.value, nowIso(context.now));
+  if (!added) return errorResponse(409, "Aggiorna i preferiti: lo strumento è stato rimosso da un altro dispositivo.");
   return noContent();
 }
 
 async function handleFavoriteDelete(context: RouteContext): Promise<Response> {
   const auth = await requireSession(context);
   if (auth instanceof Response) return auth;
+  const originError = favoriteMutationOrigin(context);
+  if (originError !== null) return originError;
   const toolId = validateToolId(context.params[0]);
   if (!toolId.ok) return errorResponse(400, toolId.message);
-  await removeFavorite(context.env.AUTH_DB, auth.user.id, toolId.value);
+  await removeFavorite(context.env.AUTH_DB, auth.user.id, toolId.value, nowIso(context.now));
   return noContent();
 }
 
 async function handleFavoritesClear(context: RouteContext): Promise<Response> {
   const auth = await requireSession(context);
   if (auth instanceof Response) return auth;
+  const originError = favoriteMutationOrigin(context);
+  if (originError !== null) return originError;
   await clearFavorites(context.env.AUTH_DB, auth.user.id);
   return noContent();
 }
@@ -699,6 +744,8 @@ const ROUTES: readonly Route[] = [
   { pattern: "/api/auth/account", method: "DELETE", handle: handleAccountDelete },
   { pattern: "/api/favorites", method: "GET", handle: handleFavoritesList },
   { pattern: "/api/favorites", method: "DELETE", handle: handleFavoritesClear },
+  { pattern: "/api/favorites/sync", method: "GET", handle: handleFavoriteSyncList },
+  { pattern: "/api/favorites/sync", method: "POST", handle: handleFavoriteSyncChange },
   { pattern: "/api/favorites/:toolId", method: "PUT", handle: handleFavoritePut },
   { pattern: "/api/favorites/:toolId", method: "DELETE", handle: handleFavoriteDelete },
   { pattern: "/api/vies/check", method: "POST", handle: handleViesCheck },
