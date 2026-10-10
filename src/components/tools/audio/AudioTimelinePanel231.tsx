@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import type { AudioJob231, AudioJobResult231 } from "../../../engines/browser-audio/timeline-worker-231";
+import type { AudioJob231, AudioJobResult231, AudioPreviewJob036, AudioPreviewResult036 } from "../../../engines/browser-audio/timeline-worker-231";
 
 const INPUT_LIMIT = 12 * 1024 * 1024;
 const TOTAL_LIMIT = 24 * 1024 * 1024;
 const BARS = 192;
 
 /** Owns exactly one disposable Worker and never publishes cancelled output. */
-function executeAudioJob231(job: AudioJob231, signal: AbortSignal): Promise<AudioJobResult231> {
+function executeAudioJob231(job: AudioJob231 | AudioPreviewJob036, signal: AbortSignal): Promise<AudioJobResult231 | AudioPreviewResult036> {
   if (signal.aborted) return Promise.reject(new DOMException("Montaggio annullato", "AbortError"));
   if (typeof Worker === "undefined") return Promise.reject(new Error("AUDIO_231_WORKER_UNSUPPORTED: Web Worker non disponibile."));
   return new Promise((resolve, reject) => {
@@ -15,7 +15,7 @@ function executeAudioJob231(job: AudioJob231, signal: AbortSignal): Promise<Audi
     catch (error) { reject(error); return; }
     let settled = false;
     let watchdog: ReturnType<typeof setTimeout> | undefined;
-    const finish = (error?: Error, result?: AudioJobResult231) => {
+    const finish = (error?: Error, result?: AudioJobResult231 | AudioPreviewResult036) => {
       if (settled) return;
       settled = true;
       if (watchdog !== undefined) clearTimeout(watchdog);
@@ -27,13 +27,17 @@ function executeAudioJob231(job: AudioJob231, signal: AbortSignal): Promise<Audi
     };
     const onAbort = () => finish(new DOMException("Montaggio annullato", "AbortError"));
     signal.addEventListener("abort", onAbort, { once: true });
-    worker.onmessage = (event: MessageEvent<AudioJobResult231 | { kind: "error"; message: string }>) => {
+    worker.onmessage = (event: MessageEvent<AudioJobResult231 | AudioPreviewResult036 | { kind: "error"; message: string }>) => {
       const response = event.data;
       if (response?.kind === "error") { finish(new Error(response.message)); return; }
-      if (response?.kind !== "done" || !(response.wav instanceof ArrayBuffer) ||
-          !response.preview || response.wav.byteLength !== response.preview.outputBytes ||
-          !Array.isArray(response.peaks) || response.peaks.length !== BARS ||
-          response.peaks.some((peak) => !Number.isFinite(peak) || peak < 0 || peak > 1)) {
+      if (!response || response.kind !== (job.kind === "preview" ? "preview" : "done") ||
+          !response.preview || !Number.isFinite(response.preview.durationSeconds) ||
+          !Number.isSafeInteger(response.preview.outputBytes) || response.preview.outputBytes < 46 ||
+          !Array.isArray(response.sourceFormats) || response.sourceFormats.length !== job.sources.length ||
+          (response.kind === "done" && (!(response.wav instanceof ArrayBuffer) ||
+            response.wav.byteLength !== response.preview.outputBytes ||
+            !Array.isArray(response.peaks) || response.peaks.length !== BARS ||
+            response.peaks.some((peak) => !Number.isFinite(peak) || peak < 0 || peak > 1)))) {
         finish(new Error("AUDIO_231_OUTPUT_VERIFY: Output Worker non coerente."));
         return;
       }
@@ -48,7 +52,7 @@ function executeAudioJob231(job: AudioJob231, signal: AbortSignal): Promise<Audi
 }
 
 /**
- * Opt-in WAV PCM16 slice of #231, deliberately not a general audio editor.
+ * Opt-in WAV PCM file processing workspace; #231 remains the bounded DSP.
  * No uploaded files, no decoding by a hosted API, no auto-playback, no Gold.
  */
 export function AudioTimelinePanel231() {
@@ -66,6 +70,7 @@ export function AudioTimelinePanel231() {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("Seleziona uno o due file WAV PCM16, poi avvia il montaggio locale.");
   const [rendered, setRendered] = useState<AudioJobResult231 | null>(null);
+  const [previewed, setPreviewed] = useState<AudioPreviewResult036 | null>(null);
   const [outputUrl, setOutputUrl] = useState("");
   const urlRef = useRef("");
   const pending = useRef<AbortController | null>(null);
@@ -76,6 +81,7 @@ export function AudioTimelinePanel231() {
     urlRef.current = "";
     setOutputUrl("");
     setRendered(null);
+    setPreviewed(null);
   }
   function changeSettings() {
     clearOutput();
@@ -106,7 +112,7 @@ export function AudioTimelinePanel231() {
     if (urlRef.current) URL.revokeObjectURL(urlRef.current);
   }, []);
 
-  async function process() {
+  async function process(mode: "preview" | "render" = "render") {
     if (pending.current || files.length < 1) return;
     clearOutput();
     const controller = new AbortController();
@@ -121,8 +127,8 @@ export function AudioTimelinePanel231() {
       }
       const sources = await Promise.all(files.map((file) => file.arrayBuffer()));
       if (controller.signal.aborted || op !== generation.current) return;
-      const job: AudioJob231 = {
-        kind: "render", sources,
+      const job: AudioJob231 | AudioPreviewJob036 = {
+        kind: mode, sources,
         startSeconds: begin.trim() === "" ? Number.NaN : Number(begin),
         endSeconds: end.trim() === "" ? null : Number(end),
         secondFirst, gain: gain.trim() === "" ? Number.NaN : Number(gain),
@@ -132,14 +138,19 @@ export function AudioTimelinePanel231() {
           ...(normalize ? { normalize: { targetPeakSample: Number(target) } } : {}),
         },
       };
-      setStatus("Montaggio e analisi della waveform in un Worker locale cancellabile…");
+      setStatus(mode === "preview" ? "Anteprima durata/silenzi nel Worker locale cancellabile…" : "Montaggio e analisi della waveform in un Worker locale cancellabile…");
       const result = await executeAudioJob231(job, controller.signal);
       if (controller.signal.aborted || op !== generation.current) return;
+      if (result.kind === "preview") {
+        setPreviewed(result);
+        setStatus("Anteprima tecnica calcolata su campioni reali, senza esportazione. Modifica le soglie e riprova, oppure genera WAV PCM16.");
+        return;
+      }
       const url = URL.createObjectURL(new Blob([result.wav], { type: "audio/wav" }));
       urlRef.current = url;
       setOutputUrl(url);
       setRendered(result);
-      setStatus("WAV PCM16 generato nel Worker: parametri, campioni, durata e waveform verificati.");
+      setStatus("WAV PCM16 generato nel Worker: codec, durata, campioni, dimensione e waveform verificati.");
     } catch (error) {
       if (!controller.signal.aborted && op === generation.current) {
         setStatus(error instanceof Error ? error.message : "AUDIO_231_WORKER_FAILED");
@@ -154,9 +165,9 @@ export function AudioTimelinePanel231() {
     /\.wav$/iu.test(file.name) && file.size >= 44 && file.size <= INPUT_LIMIT) &&
     files.reduce((n, file) => n + file.size, 0) <= TOTAL_LIMIT;
 
-  return <section class="tool-surface" aria-label="Montaggio WAV PCM16 sperimentale" data-audio-timeline-231>
-    <h3>Montaggio WAV PCM16 (sperimentale)</h3>
-    <p class="file-note">Solo file RIFF/WAVE PCM16 mono/stereo, 8–48 kHz, massimo 60 s per sorgente, 12 MiB per file (24 MiB totale). Due sorgenti richiedono stesso campionamento e numero di canali. Taglio sul primo file, concatenazione facoltativa del secondo, gain, picco, silenzi e velocità 0,5–2×. I tagli possono fare click; <strong>cambiare velocità modifica anche l'intonazione</strong>: non è time-stretch con pitch conservato. Nessun MP3/M4A, codec remoto, true-peak o LUFS in questa sezione.</p>
+  return <section id="audio-processing" class="tool-surface" aria-label="Converti taglia e unisci WAV PCM" data-audio-timeline-231>
+    <h3>Converti, taglia e unisci WAV in locale</h3>
+    <p class="file-note">Workspace condiviso: converti WAV PCM 8/16/24/32 bit o IEEE Float32 in WAV PCM16, taglia il primo file e unisci facoltativamente il secondo. Mono/stereo, 8–48 kHz, massimo 60 s per file, 12 MiB a sorgente (24 MiB totale), senza upload. Le due tracce devono avere frequenza e canali uguali. La conversione da 24/32 bit o float a 16 bit comporta quantizzazione; la conversione non ricampiona e non è una compressione con perdita MP3/AAC. Soglie del silenzio, picco, gain e velocità 0,5–2× sono nella stessa esportazione. I tagli possono fare click e <strong>cambiare velocità modifica anche l'intonazione</strong>. Nessun codec remoto, pitch-preserving stretch, true-peak o LUFS nella sezione.</p>
     <label class="field"><span>Uno o due file .wav locali (nessun caricamento sul server)</span>
       <input type="file" accept=".wav,audio/wav,audio/x-wav" multiple disabled={busy} onChange={(event) => choose(Array.from(event.currentTarget.files ?? []))} />
     </label>
@@ -176,11 +187,33 @@ export function AudioTimelinePanel231() {
       </>}
     </div>
     <div class="actions">
+      <button type="button" disabled={!readyFiles || busy} onClick={() => void process("preview")}>Anteprima taglio e silenzi</button>
       <button type="button" disabled={!readyFiles || busy} onClick={() => void process()}>Elabora e mostra waveform</button>
       <button type="button" disabled={!busy} onClick={cancel}>Annulla montaggio</button>
     </div>
     <p role="status" aria-live="polite" data-audio-timeline-status>{status}</p>
+    {previewed !== null && <section data-audio-036-preview aria-label="Anteprima tecnica prima dell'esportazione">
+      <h4>Anteprima locale: nessun WAV ancora creato</h4>
+      <dl>
+        <dt>Durata dopo taglio/unione</dt><dd>{(previewed.preview.sourceTimelineFrames / previewed.preview.timeline.sampleRate).toFixed(3)} s</dd>
+        <dt>Frame silenzio da rimuovere</dt><dd>{previewed.preview.removedFrames} in {previewed.preview.silenceRemoved.length} intervalli</dd>
+        <dt>Durata stimata dai campioni</dt><dd>{previewed.preview.durationSeconds.toFixed(3)} s</dd>
+        <dt>Byte WAV PCM16 previsti</dt><dd>{previewed.preview.outputBytes.toLocaleString("it-IT")} byte (calcolo esatto dei frame)</dd>
+        <dt>Picco previsto</dt><dd>{previewed.preview.outputPeakSample} PCM16</dd>
+      </dl>
+      <p class="file-note">I numeri sono calcolati sui campioni reali della timeline prima di esportare. Per ascoltare e scaricare occorre elaborare il file: l'anteprima non genera un audio fittizio.</p>
+    </section>}
     {rendered !== null && outputUrl !== "" && <section data-audio-timeline-result aria-label="Anteprima WAV realmente elaborato">
+      <h4>Ricevuta audio convertito · WAV RIFF PCM16</h4>
+      <dl data-audio-036-receipt>
+        <dt>Codec/container di uscita</dt><dd>RIFF/WAVE · PCM signed 16-bit LE</dd>
+        <dt>Bitrate PCM di uscita</dt><dd>{rendered.preview.timeline.sampleRate * rendered.preview.timeline.channelCount * 16} bit/s (non compresso)</dd>
+        <dt>Dimensione prima → dopo</dt><dd>{files.reduce((sum, file) => sum + file.size, 0).toLocaleString("it-IT")} byte → {rendered.wav.byteLength.toLocaleString("it-IT")} byte</dd>
+        {rendered.sourceFormats.map((format, i) => <>
+          <dt key={`source-label-${i}`}>Sorgente {i + 1} · codec, durata, bitrate</dt>
+          <dd key={`source-value-${i}`}>{format.sourceEncoding} · {format.sourceDurationSeconds.toFixed(3)} s · {format.sampleRate} Hz · {format.channels} canali · {format.sourceBitrateBps} bit/s</dd>
+        </>)}
+      </dl>
       <dl>
         <dt>Durata montaggio / output</dt><dd>{rendered.preview.sourceTimelineFrames / rendered.preview.timeline.sampleRate} s → {rendered.preview.durationSeconds.toFixed(3)} s</dd>
         <dt>Frequenza / canali</dt><dd>{rendered.preview.timeline.sampleRate} Hz / {rendered.preview.timeline.channelCount}</dd>

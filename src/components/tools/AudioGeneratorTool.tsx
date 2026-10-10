@@ -122,6 +122,7 @@ export function AudioGeneratorTool() {
   }
 
   return <div class="tool-surface" data-audio-generator>
+    <p class="file-note"><a href="#audio-processing">Vai a converti / taglia / unisci WAV</a> · Conversione PCM16 e anteprima dei silenzi interamente nel browser.</p>
     <div class="field-grid">
       <label class="field"><span>Modalità</span><select value={mode} onChange={(event) => { stopAudio(); setMode(event.currentTarget.value as Mode); }}><option value="tone">Tono</option><option value="metronome">Metronomo</option><option value="noise">Rumore</option></select></label>
       {mode === "tone" && <label class="field"><span>Frequenza · 20–20.000 Hz</span><input type="number" min="20" max="20000" value={frequency} onInput={(event) => setFrequency(event.currentTarget.valueAsNumber)} /></label>}

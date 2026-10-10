@@ -6,7 +6,8 @@
 import { AUDIO_231_MAX_INPUT_BYTES, AUDIO_231_MAX_TOTAL_INPUT_BYTES,
   inspectAudioPcm16Source231, type AudioTimelineEdit231 } from "./timeline-231";
 import { renderAudioTimelineDsp231, type AudioDspSettings231,
-  type AudioDspPreview231 } from "./timeline-dsp-231";
+  previewAudioTimelineDsp231, type AudioDspPreview231 } from "./timeline-dsp-231";
+import { importPcmWav036, type PcmImport036 } from "./wav-convert-036";
 
 export interface AudioJob231 {
   readonly kind: "render";
@@ -23,6 +24,14 @@ export interface AudioJobResult231 {
   readonly wav: ArrayBuffer;
   readonly preview: AudioDspPreview231;
   readonly peaks: readonly number[];
+  readonly sourceFormats: readonly Omit<PcmImport036, "wav">[];
+}
+
+export interface AudioPreviewJob036 extends Omit<AudioJob231, "kind"> { readonly kind: "preview"; }
+export interface AudioPreviewResult036 {
+  readonly kind: "preview";
+  readonly preview: AudioDspPreview231;
+  readonly sourceFormats: readonly Omit<PcmImport036, "wav">[];
 }
 
 function fail(code: string, message: string): never { throw new Error(`${code}: ${message}`); }
@@ -59,8 +68,8 @@ export function waveformPeaks231(wav: Uint8Array, bars = 192): number[] {
 }
 
 /** Pure protocol core, so negative corpus tests run without browser mocks. */
-export function renderAudioJob231(job: AudioJob231, signal?: AbortSignal): AudioJobResult231 {
-  if (!job || job.kind !== "render" || !Array.isArray(job.sources) ||
+function prepareAudioJob036(job: AudioJob231 | AudioPreviewJob036, signal?: AbortSignal) {
+  if (!job || (job.kind !== "render" && job.kind !== "preview") || !Array.isArray(job.sources) ||
       job.sources.length < 1 || job.sources.length > 2 || typeof job.secondFirst !== "boolean" ||
       !Number.isFinite(job.startSeconds) || job.startSeconds < 0 ||
       (job.endSeconds !== null && (!Number.isFinite(job.endSeconds) || job.endSeconds <= job.startSeconds)) ||
@@ -68,14 +77,15 @@ export function renderAudioJob231(job: AudioJob231, signal?: AbortSignal): Audio
     fail("AUDIO_231_WORKER_REQUEST", "Malformed PCM timeline job");
   }
   let totalBytes = 0;
-  const sources = job.sources.map((buffer) => {
+  const converted = job.sources.map((buffer) => {
     if (!(buffer instanceof ArrayBuffer) || buffer.byteLength < 44 || buffer.byteLength > AUDIO_231_MAX_INPUT_BYTES) {
       fail("AUDIO_231_INPUT_LIMIT", "One source exceeds allowed RIFF/WAV input bounds");
     }
     totalBytes += buffer.byteLength;
     if (totalBytes > AUDIO_231_MAX_TOTAL_INPUT_BYTES) fail("AUDIO_231_INPUT_LIMIT", "Total source budget exceeded");
-    return new Uint8Array(buffer);
+    return importPcmWav036(new Uint8Array(buffer), signal);
   });
+  const sources = converted.map((part) => part.wav);
   const info = sources.map((source) => inspectAudioPcm16Source231(source, signal));
   const first = info[0]!;
   if (info.some((part) => part.sampleRate !== first.sampleRate || part.channels !== first.channels)) {
@@ -97,16 +107,33 @@ export function renderAudioJob231(job: AudioJob231, signal?: AbortSignal): Audio
   } else if (job.secondFirst) {
     fail("AUDIO_231_WORKER_REQUEST", "Second-first requires two WAV sources");
   }
+  const sourceFormats = converted.map(({ wav: _wav, ...facts }) => facts);
+  return { sources, edits, sourceFormats };
+}
+
+export function previewAudioJob036(job: AudioPreviewJob036, signal?: AbortSignal): AudioPreviewResult036 {
+  if (job?.kind !== "preview") fail("AUDIO_036_PREVIEW_REQUEST", "Preview mode required");
+  const { sources, edits, sourceFormats } = prepareAudioJob036(job, signal);
+  return { kind: "preview", preview: previewAudioTimelineDsp231(sources, edits, job.dsp, signal), sourceFormats };
+}
+
+export function renderAudioJob231(job: AudioJob231, signal?: AbortSignal): AudioJobResult231 {
+  if (job?.kind !== "render") fail("AUDIO_231_WORKER_REQUEST", "Render mode required");
+  const { sources, edits, sourceFormats } = prepareAudioJob036(job, signal);
   const result = renderAudioTimelineDsp231(sources, edits, job.dsp, signal);
   const wav = result.wav.buffer.slice(result.wav.byteOffset, result.wav.byteOffset + result.wav.byteLength) as ArrayBuffer;
-  return { kind: "done", wav, preview: result.preview, peaks: waveformPeaks231(result.wav) };
+  return { kind: "done", wav, preview: result.preview, peaks: waveformPeaks231(result.wav), sourceFormats };
 }
 
 if (typeof self !== "undefined" && typeof document === "undefined") {
-  self.onmessage = (event: MessageEvent<AudioJob231>) => {
+  self.onmessage = (event: MessageEvent<AudioJob231 | AudioPreviewJob036>) => {
     try {
-      const result = renderAudioJob231(event.data);
-      self.postMessage(result, { transfer: [result.wav] });
+      if (event.data?.kind === "preview") {
+        self.postMessage(previewAudioJob036(event.data));
+      } else {
+        const result = renderAudioJob231(event.data);
+        self.postMessage(result, { transfer: [result.wav] });
+      }
     } catch (error) {
       self.postMessage({ kind: "error", message: error instanceof Error ? error.message : "AUDIO_231_WORKER_FAILED" });
     }
