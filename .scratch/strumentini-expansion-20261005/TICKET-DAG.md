@@ -15,7 +15,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **056 — Office-to-PDF and printable export pack**
 - **057 — PDF-to-editable/structured conversion pack**
-- **069 — Cross-format file-size analyzer**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
@@ -29,7 +28,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **19** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **18** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -114,7 +113,7 @@ Exactly **19** incomplete tickets currently have every declared numeric blocker 
 | 066 | blocked | Existing 200 functional-upgrade coverage gate | 050, 053, 060, 061, 062, 063, 064, 110, 297 |
 | 067 | completed | ZIP/GZIP/archive compression + safe extraction | 222, 223, 224 |
 | 068 | completed | DOCX/PPTX/XLSX OOXML compressor | 225, 264 |
-| 069 | ready-for-agent | Cross-format file-size analyzer | 228, 265, 266 |
+| 069 | completed | Cross-format file-size analyzer | 228, 265, 266 |
 | 070 | completed | Result declaration in Tool Manifest | — |
 | 071 | completed | Generated Result v2 inventory projection | 070 |
 | 072 | completed | Result operation state model with partial and warning | 070 |

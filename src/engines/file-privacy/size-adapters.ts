@@ -25,11 +25,31 @@ export function inspectOfficePackageSize(bytes: Uint8Array) {
     compressedMemberBytes: report.totalCompressedMemberBytes,
     uncompressedBytes: report.totalUncompressedBytes,
     zipOverheadBytes: bytes.byteLength - report.totalCompressedMemberBytes,
+    largestEntries: [...report.entries]
+      .sort((a, b) => b.compressedSize - a.compressedSize || a.path.localeCompare(b.path))
+      .slice(0, 10).map((entry) => ({ path: entry.path, group: entry.classification,
+        compressedBytes: entry.compressedSize, uncompressedBytes: entry.uncompressedSize })),
     largestMedia: report.entries.filter((part) => part.classification === "media")
       .sort((a, b) => b.compressedSize - a.compressedSize || a.path.localeCompare(b.path))
       .slice(0, 8).map((entry) => ({ path: entry.path, compressedBytes: entry.compressedSize, uncompressedBytes: entry.uncompressedSize })),
     safety: { macros: "refused", encrypted: "refused", links: "never resolved" },
   };
+}
+
+/** All ZIP totals come from the central directory, never from decompressed file data. */
+export function zipSizeGroups(entries: readonly { path: string; compressedSize: number; uncompressedSize: number }[]) {
+  const types: Record<string, { entryCount: number; compressedBytes: number; uncompressedBytes: number }> = {};
+  for (const entry of entries) {
+    const suffix = /\.([a-z0-9]{1,12})$/iu.exec(entry.path)?.[1]?.toLocaleLowerCase("en-US") ?? "other";
+    const group = types[suffix] ?? { entryCount: 0, compressedBytes: 0, uncompressedBytes: 0 };
+    group.entryCount += 1;
+    group.compressedBytes += entry.compressedSize;
+    group.uncompressedBytes += entry.uncompressedSize;
+    types[suffix] = group;
+  }
+  return Object.entries(types)
+    .map(([extension, totals]) => ({ extension, ...totals }))
+    .sort((a, b) => b.compressedBytes - a.compressedBytes || a.extension.localeCompare(b.extension));
 }
 
 /** Declared PCM RIFF WAVE data only; never infer output audio codec quality. */

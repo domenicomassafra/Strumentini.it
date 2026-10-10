@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 327 / 272 / 55 |
+| All / completed / open | 327 / 273 / 54 |
 | Closed with explicit refusal (NOT shipped) | 18 |
-| DAG-ready (all numeric dependencies closed) | 19 |
-| Ready for assignment (feasibility still to prove) | 11 |
+| DAG-ready (all numeric dependencies closed) | 18 |
+| Ready for assignment (feasibility still to prove) | 10 |
 | Waiting on other tickets | 36 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,14 +21,13 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263, #320
 
-## Ready for assignment (feasibility still to prove) (11)
+## Ready for assignment (feasibility still to prove) (10)
 
 - #033 — PDF conversion/productivity family
 - #036 — Audio file-processing family
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
 - #057 — PDF-to-editable/structured conversion pack
-- #069 — Cross-format file-size analyzer
 - #212 — HEIC AVIF and GIF directional image implementations
 - #234 — Video transform worker core
 - #237 — True PDF redaction with post-export proof

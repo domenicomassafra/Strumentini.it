@@ -607,11 +607,17 @@ export async function analyzeFileSize(input: unknown, signal?: AbortSignal): Pro
     const { inspectPdfSize265 } = await import("../pdf/size-adapter-265");
     const { PDF_LIMITS } = await import("../pdf/types");
     const pdf = inspectPdfSize265(await readBytes(file, signal, PDF_LIMITS.maxBytes), signal);
-    return { ...common, kind: "pdf", pdf,
+    const imageShare = pdf.encodedStreamBytes > 0 ? pdf.imageStreamBytes / pdf.encodedStreamBytes : null;
+    const sizeProfile = pdf.classification === "image-only-page-candidate"
+      ? "scan-page-candidate" : pdf.classification === "text-vector-only-candidate"
+        ? "text-vector-candidate" : pdf.imageStreamBytes >= file.size * 0.55
+          ? "embedded-image-byte-heavy" : "unknown";
+    return { ...common, kind: "pdf", pdf, sizeProfile, imageShareOfEncodedStreams: imageShare,
       evidence: [`${pdf.pageCount} pagine`, `${pdf.encodedStreamBytes} byte di stream codificati`,
-        `${pdf.imageStreamBytes} byte di Image XObject`, `${pdf.structuralRemainderBytes} byte di strutture e altri dati`],
+        `${pdf.imageStreamBytes} byte di Image XObject`, `${pdf.structuralRemainderBytes} byte di strutture e altri dati`,
+        pdf.classificationNote],
       nextActions: ["pdf-compression-lite"], recommendedOptimizer: "pdf-compression-lite",
-      note: "Contributi misurati sui payload degli stream PDF identificati. Nessuna stima di risparmio o diagnosi certa di testo/scansione per pagine complesse; il compressore effettua verifiche e può conservare l'originale." };
+      note: "Quote misurate sugli stream PDF identificati. 'Molte immagini' indica peso dei byte, non prova di scansione. Il compressore PDF leggero agisce su metadati/spazi; non promette di ricodificare le immagini." };
   }
 
   // #266: prefer strict package/video facts to filename claims, never turn
@@ -623,7 +629,8 @@ export async function analyzeFileSize(input: unknown, signal?: AbortSignal): Pro
     if (`.${office.format}` !== extensionOf(file.name)) fail("UNSUPPORTED_INPUT", "File extension does not match inspected Office package kind");
     return { ...common, kind: "office", office,
       evidence: [`${office.entryCount} OOXML ZIP entries`, `${office.groups.media.compressedMemberBytes} bytes media compressi`,
-        `${office.groups.xml.compressedMemberBytes} bytes XML compressi`, `${office.zipOverheadBytes} bytes ZIP overhead`],
+        `${office.groups.xml.compressedMemberBytes} bytes XML compressi`, `${office.zipOverheadBytes} bytes ZIP overhead`,
+        `${office.largestEntries.length} voci più grandi misurate dalla directory ZIP`],
       nextActions: ["ooxml-media-compression"], recommendedOptimizer: "ooxml-media-compression",
       note: "Gruppi ricavati dai byte compressi reali della directory OOXML. Un ottimizzatore locale esiste, ma il risparmio resta sconosciuto finché non viene eseguito." };
   }
@@ -653,21 +660,31 @@ export async function analyzeFileSize(input: unknown, signal?: AbortSignal): Pro
     const header = inspectImageHeader(prefix);
     const metadata = await inspectMetadataRisk({ files: [file] }, signal);
     const metadataFile = Array.isArray(metadata.files) ? metadata.files[0] as Record<string, unknown> | undefined : undefined;
+    const pixels = header.width * header.height;
+    const oversizeSignals = [
+      ...(pixels > 12_000_000 ? ["oltre 12 megapixel: verifica la risoluzione richiesta dalla destinazione"] : []),
+      ...(Math.max(header.width, header.height) > 4096 ? ["un lato oltre 4096 px: per uso web potrebbe essere eccessivo"] : []),
+      ...(file.size > 5 * 1024 * 1024 ? ["file oltre 5 MiB: verifica i limiti di invio o caricamento"] : []),
+    ];
     return {
       ...common,
       kind: "image",
       image: {
         width: header.width,
         height: header.height,
-        pixels: header.width * header.height,
+        pixels,
         encoding: header.mime,
         metadataRiskCount: typeof metadataFile?.riskCount === "number" ? metadataFile.riskCount : 0,
         metadataFields: Array.isArray(metadataFile?.metadataFields) ? metadataFile.metadataFields : [],
+        bytesPerPixel: pixels > 0 ? file.size / pixels : null,
+        oversizeSignals,
+        oversizeStatus: oversizeSignals.length > 0 ? "check-intended-use" : "no-obvious-size-trigger",
       },
       evidence: [
         `${header.width}×${header.height} pixels`,
         `container/signature: ${header.mime}`,
         `${file.size} source bytes`,
+        ...oversizeSignals,
       ],
       nextActions: ["image-metadata-viewer", "image-resize", "image-compression"],
       note: "Dimensioni, encoding e metadati osservabili spiegano il file sorgente; nessuna riduzione viene promessa prima di eseguire un'operazione separata e misurarne l'output.",
@@ -684,6 +701,10 @@ export async function analyzeFileSize(input: unknown, signal?: AbortSignal): Pro
     const methodCounts = Object.fromEntries([...new Set(entries.map((entry) => entry.method))].sort((a, b) => a - b).map((method) => [String(method), entries.filter((entry) => entry.method === method).length]));
     const totalCompressedEntryBytes = entries.reduce((sum, entry) => sum + entry.compressedSize, 0);
     const totalUncompressedBytes = entries.reduce((sum, entry) => sum + entry.uncompressedSize, 0);
+    // ZIP central-directory fields are declarations. A forged directory can
+    // claim more compressed member bytes than exist in the original file.
+    const zipOverheadBytes = totalCompressedEntryBytes <= file.size ? file.size - totalCompressedEntryBytes : null;
+    const { zipSizeGroups } = await import("./size-adapters");
     return {
       ...common,
       kind: "zip",
@@ -693,16 +714,18 @@ export async function analyzeFileSize(input: unknown, signal?: AbortSignal): Pro
         totalUncompressedBytes,
         methodCounts,
         largestEntries,
+        groupsByExtension: zipSizeGroups(entries),
+        zipOverheadBytes,
         hasPathTraversal: inspected.hasPathTraversal === true,
         hasEncryptedEntries: inspected.hasEncryptedEntries === true,
       },
       evidence: [
         `${entries.length} central-directory entries`,
-        `${totalCompressedEntryBytes} compressed entry bytes`,
+        `${totalCompressedEntryBytes} compressed entry bytes declared in central directory`,
         `${totalUncompressedBytes} declared uncompressed bytes`,
       ],
       nextActions: ["zip-contents-inspector", "archive-checksum-manifest"],
-      note: "Il report legge soltanto la directory ZIP: indica quali voci pesano di più ma non stima risparmi futuri e non decomprime contenuti.",
+      note: "Il report legge soltanto la directory ZIP: le dimensioni delle voci sono dichiarazioni dell'archivio, non byte decompattati o convalidati sul payload. Non stima risparmi futuri.",
     };
   }
 

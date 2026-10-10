@@ -15,6 +15,7 @@ import {
   ResultPrimaryAnswer,
   ResultProvenance,
 } from "../shared";
+import { FileSizeAnalysisV2 } from "./FileSizeAnalysisV2";
 
 const TEXT_ENCODER = new TextEncoder();
 
@@ -460,6 +461,7 @@ export function FilePrivacyResultV2({ operation, prepared, onRetry, onReset }: F
           </div>
         }
       />
+      {operation === "file-size-analyzer" && <FileSizeAnalysisV2 result={value} />}
       <div data-result-slot={declaration.class === "file" ? "file-workspace" : declaration.class === "batch" ? "batch-summary" : undefined}>
         {declaration.class === "batch" && (
           <ResultBreakdown label="Stato batch" rows={[
