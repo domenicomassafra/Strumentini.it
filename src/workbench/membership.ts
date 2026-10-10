@@ -23,11 +23,13 @@ export const MEMBERSHIP_EVENT = "strumentini:membership-changed";
 export interface Membership {
   readonly installed: readonly string[];
   readonly recent: readonly RecentToolActivity[];
+  readonly persisted?: boolean;
 }
 
 type Repository = ReturnType<typeof createWorkbenchRepository>;
 
 let repositoryPromise: Promise<Repository> | undefined;
+let recentWriteQueue: Promise<void> = Promise.resolve();
 
 /**
  * The profile a first-time visitor starts from, read from the browser rather
@@ -61,8 +63,8 @@ function broadcast(membership: Membership): void {
 
 export async function loadMembership(): Promise<Membership> {
   const repo = await repository();
-  const { state } = await repo.load();
-  return { installed: [...state.installedTools], recent: [...state.recent] };
+  const { state, persisted } = await repo.load();
+  return { installed: [...state.installedTools], recent: [...state.recent], persisted };
 }
 
 /**
@@ -90,11 +92,27 @@ export function toggleInstalled(toolId: string): Promise<Membership> {
     state.installedTools.includes(toolId) ? removeTool(state, toolId) : installTool(state, toolId));
 }
 
-/** Called by a tool surface when it produces a value, so "recenti" is real. */
+/**
+ * Called only after a completed, current operation. Serializing the full
+ * load→update→save prevents two close completions from losing one recent.
+ * Repository failures retain a session-only copy; never propagate to the tool.
+ */
 export async function noteToolUse(toolId: string): Promise<void> {
-  const repo = await repository();
-  const { state } = await repo.load();
-  await repo.save(recordRecentTool(state, toolId));
+  const update = async (): Promise<void> => {
+    try {
+      const repo = await repository();
+      const { state } = await repo.load();
+      const next = recordRecentTool(state, toolId);
+      if (next === state) return;
+      const { persisted } = await repo.save(next);
+      broadcast({ installed: [...next.installedTools], recent: [...next.recent], persisted });
+    } catch {
+      // Recording metadata must never invalidate a successfully produced file.
+    }
+  };
+  const pending = recentWriteQueue.then(update, update);
+  recentWriteQueue = pending;
+  await pending;
 }
 
 export function subscribeMembership(listener: (membership: Membership) => void): () => void {

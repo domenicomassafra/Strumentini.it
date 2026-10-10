@@ -21,6 +21,8 @@ export interface ReturnMetric {
   readonly eligibleSubjects: number;
   readonly returnedSubjects: number;
   readonly rate: number;
+  /** False means there is no matured consented cohort: 0 is not an observed retention rate. */
+  readonly measurable: boolean;
 }
 
 export interface DistinctToolsMetric {
@@ -137,7 +139,10 @@ function groupSubjects(events: readonly ValidatedTelemetryEvent[]): Map<string, 
     {
       timestamps: subjectEvents,
       ...(() => {
+        // A page view or a search is not a user activation. Use only a
+        // completed operation, explicit setup or a tool added to Workbench.
         const activation = subjectEvents
+          .filter((event) => ["onboarding_completed", "workspace_tool_added", "tool_completed"].includes(event.name))
           .map((event) => Date.parse(event.occurredAt))
           .filter((value) => !Number.isNaN(value))
           .sort((left, right) => left - right)[0];
@@ -152,44 +157,57 @@ function returnMetric(
   nowMs: number,
   windowDays: number,
 ): ReturnMetric {
-  const boundary = nowMs - windowDays * 24 * 60 * 60 * 1000;
+  const windowMs = windowDays * 24 * 60 * 60 * 1000;
   let eligibleSubjects = 0;
   let returnedSubjects = 0;
   for (const subject of subjects.values()) {
     const activation = subject.firstActivation;
-    if (activation === undefined || activation > nowMs) continue;
+    // Do not count a person whose full observation window has not matured.
+    if (activation === undefined || activation + windowMs > nowMs) continue;
     eligibleSubjects += 1;
     const returned = subject.timestamps.some((event) => {
       if (event.name !== "tool_opened" || event.properties.entry_source !== "workbench") return false;
       const at = Date.parse(event.occurredAt);
-      return !Number.isNaN(at) && at > activation && at >= boundary && at <= nowMs;
+      // Same-day page changes are not a return; later unrelated activity
+      // outside the cohort window must never backfill a D7/D30 return.
+      return !Number.isNaN(at) && at >= activation + 24 * 60 * 60 * 1000 && at <= activation + windowMs;
     });
     if (returned) returnedSubjects += 1;
   }
-  return { windowDays, eligibleSubjects, returnedSubjects, rate: ratio(returnedSubjects, eligibleSubjects) };
+  return { windowDays, eligibleSubjects, returnedSubjects, rate: ratio(returnedSubjects, eligibleSubjects), measurable: eligibleSubjects > 0 };
 }
 
 function distinctToolsMetric(subjects: ReadonlyMap<string, SubjectEvents>): DistinctToolsMetric {
   const perSubject: number[] = [];
-  const toolUsage = new Map<string, number>();
+  const reusedTools = new Set<string>();
+  const distinctTools = new Set<string>();
+  let subjectsWithReuse = 0;
   for (const subject of subjects.values()) {
-    const tools = new Set(
-      subject.timestamps
-        .filter((event) => event.name === "tool_completed" || event.name === "tool_opened")
-        .map((event) => propertyString(event.properties, "tool_id"))
-        .filter((value): value is string => value !== undefined),
-    );
-    perSubject.push(tools.size);
-    for (const tool of tools) toolUsage.set(tool, (toolUsage.get(tool) ?? 0) + 1);
+    const counts = new Map<string, number>();
+    for (const event of subject.timestamps) {
+      // Mere opens cannot establish actual reuse of a tool.
+      if (event.name !== "tool_completed") continue;
+      const tool = propertyString(event.properties, "tool_id");
+      if (tool !== undefined) counts.set(tool, (counts.get(tool) ?? 0) + 1);
+    }
+    perSubject.push(counts.size);
+    let reusedThisSubject = false;
+    for (const [tool, times] of counts) {
+      distinctTools.add(tool);
+      if (times < 2) continue;
+      reusedTools.add(tool);
+      reusedThisSubject = true;
+    }
+    if (reusedThisSubject) subjectsWithReuse += 1;
   }
   const totalDistinctTools = perSubject.reduce((sum, value) => sum + value, 0);
   return {
     subjectCount: perSubject.length,
-    distinctToolCount: toolUsage.size,
-    reusedToolCount: [...toolUsage.values()].filter((value) => value >= 2).length,
+    distinctToolCount: distinctTools.size,
+    reusedToolCount: reusedTools.size,
     totalDistinctTools,
     averageDistinctTools: ratio(totalDistinctTools, perSubject.length),
-    subjectsWithReuse: perSubject.filter((value) => value >= 2).length,
+    subjectsWithReuse,
   };
 }
 
@@ -329,7 +347,15 @@ function experimentObservations(metrics: ExperimentMetrics, events: readonly Val
       "EXP-03",
       "Does the Workbench retain users better than a one-off public launch?",
       "Narrow the persistent shell if few activated subjects return through Workbench or public launches dominate repeat use.",
-      { return7dRate: metrics.workbenchReturn7d.rate, return30dRate: metrics.workbenchReturn30d.rate, workbenchLaunchShare: metrics.launchSourceShare.workbench },
+      {
+        return7dRate: metrics.workbenchReturn7d.rate,
+        eligible7d: metrics.workbenchReturn7d.eligibleSubjects,
+        measurable7d: metrics.workbenchReturn7d.measurable ? 1 : 0,
+        return30dRate: metrics.workbenchReturn30d.rate,
+        eligible30d: metrics.workbenchReturn30d.eligibleSubjects,
+        measurable30d: metrics.workbenchReturn30d.measurable ? 1 : 0,
+        workbenchLaunchShare: metrics.launchSourceShare.workbench,
+      },
     ),
     "EXP-04": observation(
       "EXP-04",

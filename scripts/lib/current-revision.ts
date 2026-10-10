@@ -25,6 +25,12 @@ const evidencePrefixes = [
   "scripts/",
   "src/",
   "tests/",
+  // Wrangler's API Worker and its D1 migrations affect the deployed release.
+  // Both must invalidate evidence when changed, including imported helpers and
+  // SQL added after the last receipt. All current consumers compare one global
+  // digest; per-route fingerprints require a future receipt schema and scope
+  // resolver, never an exemption that leaves backend claims apparently fresh.
+  "worker/",
 ];
 
 function isEvidenceSource(path: string): boolean {

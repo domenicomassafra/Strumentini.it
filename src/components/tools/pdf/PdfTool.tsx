@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { TOOL_COPY_IT } from "../../../i18n/it/tool-copy";
 import { friendlyToolErrorIt } from "../../../i18n/it/errors";
@@ -213,6 +214,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   }
 
   async function execute() {
+    // The same submit/retry must not start a second job while the first owns
+    // the controller, or record one physical operation as two successful uses.
+    if (controller.current !== null) return;
     setError("");
     setResult(null);
     setTextExports(null);
@@ -248,6 +252,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         setTextExports({ file, pageExpression: pages, mode: textExtractionMode, exported });
         setResult(prepared);
         setStatus("done");
+        recordCompletedTool(toolId);
         return;
       }
       if (toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort") {
@@ -266,6 +271,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         if (abortController.signal.aborted) throw new DOMException("Operation cancelled", "AbortError");
         setResult(prepared);
         setStatus("done");
+        recordCompletedTool(toolId);
         return;
       }
       if (toolId === "pdf-compression-lite" && compressionProfile === "jpeg-rgb-reencode") {
@@ -282,6 +288,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         if (abortController.signal.aborted) throw new DOMException("Operation cancelled", "AbortError");
         setResult(prepared);
         setStatus("done");
+        recordCompletedTool(toolId);
         return;
       }
       if (toolId === "pdf-compression-lite" && compressionProfile === "scan-flate-to-jpeg") {
@@ -301,6 +308,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         if (abortController.signal.aborted) throw new DOMException("Operation cancelled", "AbortError");
         setResult(prepared);
         setStatus("done");
+        recordCompletedTool(toolId);
         return;
       }
       const run = await toolRuntime.run(toolId, buildInput(), {}, abortController.signal);
@@ -312,6 +320,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
       if (abortController.signal.aborted) throw new DOMException("Operation cancelled", "AbortError");
       setResult(prepared);
       setStatus("done");
+      recordCompletedTool(toolId);
     } catch (caught) {
       setError(caught instanceof DOMException && caught.name === "AbortError"
         ? "Operazione annullata. Non è stato prodotto alcun risultato."

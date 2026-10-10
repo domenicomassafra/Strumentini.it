@@ -105,11 +105,13 @@ export function recordRecentTool(
   toolId: string,
   at = new Date().toISOString(),
 ): WorkbenchState {
+  // Recent is tool metadata only: reject filenames, paths and arbitrary text.
+  if (toolId.length > 64 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(toolId)) return state;
   const previous = state.recent.find((entry) => entry.toolId === toolId);
   const entry: RecentToolActivity = {
     toolId,
     lastUsedAt: at,
-    useCount: (previous?.useCount ?? 0) + 1,
+    useCount: Math.min((previous?.useCount ?? 0) + 1, 1_000_000_000),
   };
   return {
     ...state,

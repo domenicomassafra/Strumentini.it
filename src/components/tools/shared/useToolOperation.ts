@@ -1,6 +1,7 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "preact/hooks";
 import type { ToolRunResult } from "../../../runtime/types";
 import { friendlyToolErrorIt } from "../../../i18n/it/errors";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import {
   focusToolOperationRecovery,
   type AccessibleResultStatus,
@@ -138,6 +139,10 @@ export function useToolOperation<T>(
       const settleOptions: ToolOperationOptions = { cancelledMessage };
       if (formatError !== undefined) settleOptions.formatError = formatError;
       setState(settleToolOperation<T>(result, settleOptions));
+      if (result.ok && typeof document !== "undefined") {
+        const page = document.querySelector<HTMLElement>("[data-tool-page]");
+        recordCompletedTool(page?.dataset.toolPage);
+      }
     } catch (error) {
       if (generation !== generationRef.current) return;
       if (controller.signal.aborted || isAbortError(error)) {

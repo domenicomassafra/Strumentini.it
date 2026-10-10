@@ -1,0 +1,51 @@
+name: Source checks (no deployment)
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# Budget: PRs execute changed-source suites plus check/build; main executes the
+# cumulative test/check/build path. No browser farm, paid service, cloud deploy,
+# receipt generation or release promotion is authorized by this workflow.
+# Physical, independent security and release-readiness gates stay NOT_RUN until
+# externally evidenced; source CI green does NOT mean release ready.
+jobs:
+  changed-source:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required: compare actual base/head, fail if base is absent
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Git change impact + selected source checks
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: npm run ci:scope -- --base="$BASE_SHA" --run
+
+  cumulative-on-main:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run check
+      - run: npm run build

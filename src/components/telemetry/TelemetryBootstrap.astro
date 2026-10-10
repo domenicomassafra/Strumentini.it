@@ -2,31 +2,78 @@
 const cohortEnabled = import.meta.env.PUBLIC_VALIDATION_COHORT === "true";
 const endpointConfigured = typeof import.meta.env.PUBLIC_TELEMETRY_ENDPOINT === "string"
   && import.meta.env.PUBLIC_TELEMETRY_ENDPOINT.trim() !== "";
-const active = cohortEnabled && endpointConfigured;
+const available = cohortEnabled && endpointConfigured;
 ---
 
-<details class="telemetry-disclosure" data-telemetry-disclosure data-telemetry-active={active ? "true" : "false"}>
+<details class="telemetry-disclosure" data-telemetry-disclosure data-telemetry-active="false">
   <summary>Privacy e telemetria di validazione</summary>
   <p>
-    La telemetria di validazione è {active ? "attiva per questa coorte esplicitamente comunicata" : "disattivata per impostazione predefinita"}.
-    Quando è attiva invia solo eventi consentiti e privi del contenuto delle attività.
+    La telemetria di validazione è disattivata per impostazione predefinita.
+    {available
+      ? " Puoi scegliere se inviare eventi tecnici consentiti, senza contenuti dei file o valori inseriti."
+      : " Questa versione non raccoglie eventi tecnici di validazione."}
   </p>
+  {available && (
+    <label class="telemetry-consent-label">
+      <input type="checkbox" data-validation-telemetry-consent />
+      Consento l'invio degli eventi tecnici di validazione da questo browser.
+    </label>
+  )}
+  {available && <p aria-live="polite" data-telemetry-consent-message>La scelta resta sul dispositivo e puoi revocarla in qualsiasi momento.</p>}
 </details>
 
 <script>
   import { createHttpTelemetryTransport } from "../../telemetry/adapter";
   import { configureTelemetry } from "../../telemetry/browser";
+  import {
+    hasValidationTelemetryConsent,
+    saveValidationTelemetryConsent,
+    TELEMETRY_CONSENT_STORAGE_KEY,
+  } from "../../telemetry/consent";
 
   const enabled = import.meta.env.PUBLIC_VALIDATION_COHORT === "true";
   const endpoint = import.meta.env.PUBLIC_TELEMETRY_ENDPOINT?.trim();
   const transport = enabled && endpoint ? createHttpTelemetryTransport(endpoint) : undefined;
+  const disclosure = document.querySelector<HTMLElement>("[data-telemetry-disclosure]");
+  const checkbox = disclosure?.querySelector<HTMLInputElement>("[data-validation-telemetry-consent]");
+  const message = disclosure?.querySelector<HTMLElement>("[data-telemetry-consent-message]");
 
-  configureTelemetry({
-    enabled: enabled && transport !== undefined,
-    disclosed: true,
-    cohort: "validation",
-    ...(transport === undefined ? {} : { transport }),
+  function consentStorage(): Storage | null {
+    try {
+      return window.localStorage;
+    } catch {
+      return null;
+    }
+  }
+
+  function refreshTelemetry(): void {
+    const granted = hasValidationTelemetryConsent(consentStorage());
+    const active = enabled && transport !== undefined && granted;
+    configureTelemetry({
+      enabled: active,
+      disclosed: true,
+      cohort: "validation",
+      ...(transport === undefined ? {} : { transport }),
+    });
+    if (disclosure) disclosure.dataset.telemetryActive = active ? "true" : "false";
+    if (checkbox) checkbox.checked = active;
+    if (message) message.textContent = active
+      ? "Consenso attivo su questo browser. Deseleziona per interrompere l'invio dei nuovi eventi."
+      : "Nessun evento di validazione viene inviato. Puoi dare il consenso qui quando vuoi.";
+  }
+
+  checkbox?.addEventListener("change", () => {
+    const saved = saveValidationTelemetryConsent(consentStorage(), checkbox.checked);
+    refreshTelemetry();
+    if (!saved && message) message.textContent = "Impossibile salvare il consenso: la telemetria rimane disattivata.";
   });
+  window.addEventListener("storage", (event) => {
+    if (event.key === TELEMETRY_CONSENT_STORAGE_KEY || event.key === null) refreshTelemetry();
+  });
+  // The same tab does not receive a native `storage` event for its own clear.
+  // Immediately revoke collection after the local-data reset in Settings.
+  window.addEventListener("strumentini:local-data-cleared", refreshTelemetry);
+  refreshTelemetry();
 </script>
 
 <style>
@@ -46,4 +93,15 @@ const active = cohortEnabled && endpointConfigured;
     max-width: var(--measure-copy);
     margin: var(--space-2) 0 0;
   }
+
+  .telemetry-consent-label {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    max-width: var(--measure-copy);
+    cursor: pointer;
+  }
+
+  .telemetry-consent-label input { margin-top: 0.2rem; }
 </style>

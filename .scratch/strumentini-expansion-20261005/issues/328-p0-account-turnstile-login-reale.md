@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 01 — bounded evidence
+
+Turnstile callback bootstrap, error/expired/timeout recovery and token fail-closed implemented in src/pages/accedi.astro; browser Chromium mocked vendor/API 35 checks PASS jointly with #329; local Worker+D1 auth acceptance 130 PASS. Real Cloudflare Siteverify staging NOT_RUN; original AC remains open.
+
+**Disposition:** Scope implemented and locally verified as stated; this dated note does not check unproven original AC, close the ticket, certify Gold or authorize release. See `docs/IMPLEMENTATION-WAVE-01-2026-10-11.md` for code/test paths and residual gates.

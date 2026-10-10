@@ -141,9 +141,13 @@ describe("experiment reporting", () => {
     const report = deriveExperimentReport(events, { now: "2026-09-24T12:00:00.000Z" });
 
     expect(report.cohortSize).toBe(1);
-    expect(report.metrics.workbenchReturn7d.returnedSubjects).toBe(1);
-    expect(report.metrics.workbenchReturn30d.rate).toBe(1);
-    expect(report.metrics.distinctToolsReused.subjectsWithReuse).toBe(1);
+    // A launch on September 20 is outside D7 for a September 1 cohort.
+    // At September 24 the D30 cohort has not matured: 0 must not masquerade
+    // as measured retention (see .measurable).
+    expect(report.metrics.workbenchReturn7d.returnedSubjects).toBe(0);
+    expect(report.metrics.workbenchReturn7d.measurable).toBe(true);
+    expect(report.metrics.workbenchReturn30d.measurable).toBe(false);
+    expect(report.metrics.distinctToolsReused.subjectsWithReuse).toBe(0);
     expect(report.metrics.distinctToolsReusedCount).toBe(0);
     expect(report.metrics.launchSourceCounts).toEqual({ public: 1, search: 1, workbench: 1 });
     expect(report.metrics.defaultReuse.workweek).toEqual({ applied: 1, overridden: 1 });
@@ -161,5 +165,39 @@ describe("experiment reporting", () => {
     ], { now: fixedNow });
     expect(report.eventCount).toBe(0);
     expect(JSON.stringify(report)).not.toContain("private");
+  });
+
+  it("counts only matured subject activation and actual within-window return, not visits", () => {
+    const report = deriveExperimentReport([
+      event("tool_opened", { tool_id: "business-day", entry_source: "workbench" }, "never-activated", "2026-09-01T00:00:00.000Z"),
+      event("onboarding_completed", { context_id: "office-operations" }, "matured", "2026-09-01T00:00:00.000Z"),
+      event("tool_opened", { tool_id: "business-day", entry_source: "workbench" }, "matured", "2026-09-03T00:00:00.000Z"),
+      event("onboarding_completed", { context_id: "office-operations" }, "not-matured", "2026-09-22T00:00:00.000Z"),
+      event("tool_opened", { tool_id: "business-day", entry_source: "workbench" }, "not-matured", "2026-09-23T00:00:00.000Z"),
+      event("onboarding_completed", { context_id: "office-operations" }, "late-only", "2026-09-01T00:00:00.000Z"),
+      event("tool_opened", { tool_id: "business-day", entry_source: "workbench" }, "late-only", "2026-09-21T00:00:00.000Z"),
+    ], { now: "2026-09-24T12:00:00.000Z" });
+    expect(report.cohortSize).toBe(4);
+    expect(report.metrics.workbenchReturn7d).toEqual({
+      windowDays: 7, eligibleSubjects: 2, returnedSubjects: 1, rate: 0.5, measurable: true,
+    });
+    expect(report.metrics.workbenchReturn30d.measurable).toBe(false);
+    expect(report.metrics.workbenchReturn30d.eligibleSubjects).toBe(0);
+  });
+
+  it("reports actual repeated completion per subject rather than opening two distinct tools", () => {
+    const report = deriveExperimentReport([
+      event("tool_opened", { tool_id: "business-day", entry_source: "public" }, "a"),
+      event("tool_opened", { tool_id: "csv-cleaner", entry_source: "search" }, "a"),
+      event("tool_completed", { tool_id: "business-day", duration_bucket: "100ms-to-1s" }, "a"),
+      event("tool_completed", { tool_id: "business-day", duration_bucket: "100ms-to-1s" }, "a", "2026-09-24T11:00:00.000Z"),
+      event("tool_completed", { tool_id: "csv-cleaner", duration_bucket: "100ms-to-1s" }, "b"),
+      event("tool_completed", { tool_id: "csv-cleaner", duration_bucket: "100ms-to-1s" }, "c"),
+    ], { now: "2026-09-24T12:00:00.000Z" });
+    expect(report.metrics.distinctToolsReused).toMatchObject({
+      subjectCount: 3, distinctToolCount: 2, reusedToolCount: 1,
+      totalDistinctTools: 3, subjectsWithReuse: 1,
+    });
+    expect(report.metrics.distinctToolsReusedCount).toBe(1);
   });
 });

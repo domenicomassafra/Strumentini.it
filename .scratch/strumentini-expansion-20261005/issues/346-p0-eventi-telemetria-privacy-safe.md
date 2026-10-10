@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 01 — bounded evidence
+
+Telemetry opt-in OFF by default and revoked via local clear; denied storage fail-closed; D7/D30 maturation and repeated actual tool use corrected in reporting.ts, focused tests PASS. Real longitudinal cohort/production endpoint unobserved.
+
+**Disposition:** Scope implemented and locally verified as stated; this dated note does not check unproven original AC, close the ticket, certify Gold or authorize release. See `docs/IMPLEMENTATION-WAVE-01-2026-10-11.md` for code/test paths and residual gates.

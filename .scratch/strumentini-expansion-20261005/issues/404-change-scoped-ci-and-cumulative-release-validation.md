@@ -37,3 +37,9 @@
 **Out of scope:** Shipping functionality, buying licenses, changing receipt source fingerprints, broad desktop-only advanced exemptions.
 
 **Execution prompt:** Routed by canonical EXECUTION-PROMPTS.md with gates.
+
+## 2026-10-11 implementation wave 01 — bounded evidence
+
+Git-aware source change-impact and non-deployment GitHub CI workflow created; eight focused tests PASS; GitHub remote workflow and mandatory physical/security/official-source release gates NOT_RUN.
+
+**Disposition:** Scope implemented and locally verified as stated; this dated note does not check unproven original AC, close the ticket, certify Gold or authorize release. See `docs/IMPLEMENTATION-WAVE-01-2026-10-11.md` for code/test paths and residual gates.

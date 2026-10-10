@@ -532,22 +532,25 @@ const unitSystems = [
         <div class="ac-block">
           <h2 class="ac-block-title">Dati su questo dispositivo</h2>
           <p class="ac-block-sub">
-            Questi dati restano nel tuo browser: l'unica cosa che il sito salva sul server sono il tuo account e
-            i preferiti.
+            Questi dati di lavoro restano nel browser. Se usi l'account opzionale, il server
+            conserva i dati di accesso e gli identificativi dei preferiti sincronizzati,
+            non un archivio dei file o dei risultati temporanei.
           </p>
           <ul class="ac-device-list ac-block-body">
             <li>
               <span class="pill pill-brand"><UiIcon name="devices" size={14} /> IndexedDB</span>
               <span class="ac-device-key">utility-workbench</span>
               <span class="ac-block-sub">
-                Strumenti preferiti e installati, profilo di lavoro, righe compatte.
+                Strumenti preferiti e installati, attività recenti, profilo di lavoro e righe compatte;
+                non i file elaborati.
               </span>
             </li>
             <li>
               <span class="pill pill-brand"><UiIcon name="clock" size={14} /> localStorage</span>
               <span class="ac-device-key">{LAST_VALUE_KEY}</span>
               <span class="ac-block-sub">
-                L'ultimo valore prodotto da uno strumento: un numero o una riga breve, mai gli ingressi.
+                Valori di risultato brevi prodotti dagli strumenti, che possono riflettere dati
+                inseriti dall'utente. Non è un salvataggio dei file.
               </span>
             </li>
             <li>
@@ -576,10 +579,23 @@ const unitSystems = [
               Cancella i dati locali
             </button>
           </div>
+          <div class="ac-block-body">
+            <label for="device-config-import">Importa una configurazione JSON esportata da Strumentini</label>
+            <input id="device-config-import" type="file" accept=".json,application/json" data-local-import />
+            <p class="ac-note">Solo preferiti, strumenti, attività recenti e preferenze locali (schema v2, massimo 256 KiB). Non contiene file elaborati, valori degli strumenti o credenziali. L'importazione sostituisce questi dati nel browser; i preferiti dell'account online non vengono modificati.</p>
+            <div class="ac-stack" data-local-import-preview hidden>
+              <p class="ac-block-sub" data-local-import-summary></p>
+              <div class="actions">
+                <button class="btn btn-primary" type="button" data-local-import-confirm>Conferma e sostituisci i dati locali</button>
+                <button class="btn" type="button" data-local-import-cancel>Annulla</button>
+              </div>
+            </div>
+          </div>
           <p class="ac-note">
-            La cancellazione riguarda solo questo browser: l'account e i preferiti salvati sul server restano.
+            La cancellazione riguarda solo questo browser: se hai un account, la sua eliminazione
+            e quella dei preferiti sul server sono operazioni separate.
           </p>
-          <p class="warning" data-local-message hidden></p>
+          <p class="warning" data-local-message role="status" aria-live="polite" tabindex="-1" hidden></p>
         </div>
       </section>
     </div>
@@ -614,12 +630,19 @@ const unitSystems = [
   } from "../components/account/forms";
   import {
     clearDeviceData,
-    downloadWorkbenchConfig,
     loadWorkbenchState,
     savePreferences,
     THEME_KEY,
   } from "../components/account/workbench-store";
   import { subscribeMembership, type Membership } from "../workbench/membership";
+  import {
+    CONFIG_343_MAX_BYTES,
+    applyDeviceConfig343,
+    commitDeviceConfig343,
+    exportDeviceConfig343,
+    previewDeviceConfig343,
+    type DeviceConfig343,
+  } from "../workbench/config-import-343";
   import type { DayCode, WorkProfile } from "../profile/work-profile";
   import type { WorkbenchState } from "../workbench/state";
   import { MESSAGES, PASSWORD_MIN_LENGTH, validateName, validatePassword } from "../../worker/validation";
@@ -1169,6 +1192,111 @@ const unitSystems = [
 
     const localMessage = query<HTMLElement>("[data-local-message]");
     const clearButton = query<HTMLButtonElement>("[data-local-clear]");
+    const importInput = query<HTMLInputElement>("[data-local-import]");
+    const importPreview = query<HTMLElement>("[data-local-import-preview]");
+    const importSummary = query<HTMLElement>("[data-local-import-summary]");
+    const importConfirm = query<HTMLButtonElement>("[data-local-import-confirm]");
+    const importCancel = query<HTMLButtonElement>("[data-local-import-cancel]");
+    const knownToolIds = new Set(index.map((tool) => tool.id));
+    let pendingImport: { config: DeviceConfig343; expected: WorkbenchState } | null = null;
+    let importSelection = 0;
+    let localWriteBusy = false;
+
+    function cancelImport(): void {
+      importSelection += 1;
+      pendingImport = null;
+      if (importPreview !== null) importPreview.hidden = true;
+      if (importInput !== null) importInput.value = "";
+    }
+
+    importInput?.addEventListener("change", () => {
+      if (localWriteBusy) return;
+      const selected = ++importSelection;
+      const file = importInput.files?.item(0);
+      importInput.value = ""; // Choosing the same file again still triggers validation.
+      pendingImport = null;
+      if (importPreview !== null) importPreview.hidden = true;
+      if (file === null || file === undefined) return;
+      void (async () => {
+        if (!/\.json$/iu.test(file.name) || file.size === 0 || file.size > CONFIG_343_MAX_BYTES) {
+          setMessage(localMessage, "Seleziona un file .json non vuoto di massimo 256 KiB. Nessun dato è stato modificato.");
+          return;
+        }
+        try {
+          const loaded = await loadWorkbenchState();
+          if (selected !== importSelection) return;
+          if (!loaded.persisted) {
+            setMessage(localMessage, "Lo spazio locale non è disponibile: impossibile importare in sicurezza.");
+            return;
+          }
+          const content = await file.text();
+          if (selected !== importSelection) return;
+          const parsed = previewDeviceConfig343(content, loaded.state, knownToolIds);
+          if (!parsed.ok) {
+            setMessage(localMessage, parsed.error);
+            return;
+          }
+          pendingImport = { config: parsed.config, expected: loaded.state };
+          if (importSummary !== null) {
+            const changes = parsed.summary;
+            importSummary.textContent = `Anteprima: ${parsed.config.installedTools.length} strumenti, ${changes.added} nuovi, ${changes.removed} rimossi, ${changes.recent} recenti. Profilo e preferenze ${changes.profileChanged ? "modificati" : "invariati"}; pacchetti ${changes.packsChanged ? "modificati" : "invariati"}. Questa conferma sostituisce i dati locali indicati, senza caricarli online.`;
+          }
+          if (importPreview !== null) importPreview.hidden = false;
+          setMessage(localMessage, "Controlla l'anteprima e conferma prima di importare.", "info");
+          importConfirm?.focus();
+        } catch {
+          if (selected !== importSelection) return;
+          setMessage(localMessage, "Non siamo riusciti a leggere il file o la configurazione corrente. Nessun dato è stato importato.");
+        }
+      })();
+    });
+
+    importCancel?.addEventListener("click", () => {
+      if (localWriteBusy) return;
+      cancelImport();
+      setMessage(localMessage, "Importazione annullata: la configurazione locale non è cambiata.", "info");
+      importInput?.focus();
+    });
+
+    importConfirm?.addEventListener("click", () => {
+      const pending = pendingImport;
+      if (pending === null || importConfirm.disabled || localWriteBusy) return;
+      localWriteBusy = true;
+      if (importInput !== null) importInput.disabled = true;
+      if (importCancel !== null) importCancel.disabled = true;
+      if (clearButton !== null) clearButton.disabled = true;
+      setBusy(importConfirm, true, "Importo…");
+      void (async () => {
+        try {
+          const stored = await loadWorkbenchState();
+          if (!stored.persisted || JSON.stringify(stored.state) !== JSON.stringify(pending.expected)) {
+            setMessage(localMessage, "I dati locali sono cambiati dopo l'anteprima, oppure lo spazio non è disponibile. Seleziona nuovamente il file.");
+            return;
+          }
+          const saved = await commitDeviceConfig343(pending.expected, pending.config, knownToolIds);
+          if (!saved) {
+            setMessage(localMessage, "Importazione non riuscita: spazio non disponibile o dati modificati. I dati precedenti restano validi.");
+            return;
+          }
+          // Verify the imported record before claiming success or reloading.
+          const checked = await loadWorkbenchState();
+          if (!checked.persisted || JSON.stringify(checked.state) !== JSON.stringify(applyDeviceConfig343(pending.expected, pending.config))) {
+            setMessage(localMessage, "Verifica dell'importazione non riuscita. Ricarica le impostazioni per controllare i dati locali.");
+            return;
+          }
+          cancelImport();
+          window.location.reload();
+        } catch {
+          setMessage(localMessage, "Importazione non riuscita. Controlla lo spazio disponibile e riprova.");
+        } finally {
+          localWriteBusy = false;
+          if (importInput !== null) importInput.disabled = false;
+          if (importCancel !== null) importCancel.disabled = false;
+          if (clearButton !== null) clearButton.disabled = false;
+          setBusy(importConfirm, false);
+        }
+      })();
+    });
 
     function disarmClear(): void {
       if (clearButton === null) return;
@@ -1177,15 +1305,26 @@ const unitSystems = [
     }
 
     query<HTMLButtonElement>("[data-local-export]")?.addEventListener("click", () => {
-      if (state === null) {
-        setMessage(localMessage, "Non siamo riusciti a leggere i dati di questo dispositivo.", "warning");
-        return;
-      }
-      downloadWorkbenchConfig(state);
-      setMessage(localMessage, "Configurazione esportata in un file JSON.", "info");
+      void (async () => {
+        try {
+          const loaded = await loadWorkbenchState();
+          if (!loaded.persisted) throw new Error("STORAGE_NOT_PERSISTED");
+          const content = exportDeviceConfig343(loaded.state, knownToolIds);
+          const blob = new Blob([content], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const anchor = document.createElement("a");
+          anchor.href = url;
+          anchor.download = "strumentini-config-v2.json";
+          try { anchor.click(); } finally { URL.revokeObjectURL(url); }
+          setMessage(localMessage, "Configurazione v2 esportata: preferiti, recenti e preferenze, senza file o credenziali.", "info");
+        } catch {
+          setMessage(localMessage, "Non siamo riusciti a esportare una configurazione locale valida. Nessun file creato.");
+        }
+      })();
     });
 
     clearButton?.addEventListener("click", () => {
+      if (localWriteBusy) return;
       if (clearButton.dataset.armed !== "true") {
         // Prima pressione: si arma. La seconda cancella davvero.
         clearButton.dataset.armed = "true";
@@ -1193,10 +1332,34 @@ const unitSystems = [
         setMessage(localMessage, "Premi di nuovo per cancellare i dati di questo dispositivo.", "warning");
         return;
       }
+      localWriteBusy = true;
+      if (importInput !== null) importInput.disabled = true;
+      if (importConfirm !== null) importConfirm.disabled = true;
       disarmClear();
       setBusy(clearButton, true, "Cancello…");
-      void clearDeviceData().then(() => {
+      cancelImport();
+      void clearDeviceData().then(async (outcome) => {
+        if (!outcome.persisted) {
+          setMessage(localMessage, "La cancellazione locale non è riuscita completamente. Controlla i permessi di archiviazione e riprova.");
+          return;
+        }
+        const loaded = await loadWorkbenchState();
+        if (!loaded.persisted || loaded.state.recent.length !== 0 || loaded.state.packs.length !== 0 ||
+          loaded.state.installedTools.some((id) => id !== "business-day")) {
+          setMessage(localMessage, "I dati locali non risultano completamente ripristinati. Riprova.");
+          return;
+        }
+        // Inform the active telemetry adapter only after the local deletion
+        // and its IndexedDB verification succeed. Never fire on storage error.
+        window.dispatchEvent(new Event("strumentini:local-data-cleared"));
         window.location.reload();
+      }).catch(() => {
+        setMessage(localMessage, "Non siamo riusciti a cancellare i dati locali. Riprova.");
+      }).finally(() => {
+        localWriteBusy = false;
+        if (importInput !== null) importInput.disabled = false;
+        if (importConfirm !== null) importConfirm.disabled = false;
+        setBusy(clearButton, false);
       });
     });
 

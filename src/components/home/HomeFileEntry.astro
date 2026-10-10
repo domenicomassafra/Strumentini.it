@@ -1,0 +1,271 @@
+---
+import { catalog } from "../../generated/catalog";
+import { isLocalToolRoute } from "../../catalog/manifest";
+import type { LocalFileFormat } from "../../runtime/file-detection";
+
+// Narrow curated routes, still checked against the actual current manifest.
+// Classification recommends a destination; it never validates/opens a file.
+const candidateIds = {
+  pdf: ["pdf-page-count-verifier", "pdf-merge"],
+  png: ["image-compression", "image-resize", "image-format-conversion"],
+  jpeg: ["image-compression", "image-resize", "image-format-conversion"],
+  webp: ["image-compression", "image-resize", "image-format-conversion"],
+  gif: ["image-format-conversion"],
+  zip: ["zip-contents-inspector"],
+} as const satisfies Partial<Record<LocalFileFormat, readonly string[]>>;
+
+const mimeByFormat: Partial<Record<LocalFileFormat, string>> = {
+  pdf: "application/pdf",
+  png: "image/png",
+  jpeg: "image/jpeg",
+  webp: "image/webp",
+  gif: "image/gif",
+  zip: "application/zip",
+};
+
+const suggestions = Object.entries(candidateIds).flatMap(([format, ids]) => {
+  const mime = mimeByFormat[format as LocalFileFormat];
+  return ids.flatMap((id) => {
+    const tool = catalog.find((item) => item.id === id);
+    const inputTypes: readonly string[] = tool?.inputTypes ?? [];
+    return tool !== undefined
+      && isLocalToolRoute(tool.route)
+      && tool.route === "/tools/" + id
+      && tool.runtime.location === "LOCAL"
+      && tool.runtime.network === "forbidden"
+      && mime !== undefined
+      && (inputTypes.includes(mime) || (format === "zip" && inputTypes.includes("zip")))
+      ? [{ format, tool }]
+      : [];
+  });
+});
+---
+
+<section class="home-file-entry" aria-labelledby="home-file-title" data-home-file-entry>
+  <div class="home-file-heading">
+    <div>
+      <h2 id="home-file-title">Hai già un file?</h2>
+      <p id="home-file-help">Sceglilo oppure trascinalo qui per scoprire quali strumenti locali possono aprirlo.</p>
+    </div>
+    <span class="home-file-privacy">Controllo locale, nessun caricamento</span>
+  </div>
+
+  <div class="home-file-dropzone" data-home-file-dropzone>
+    <label for="home-file-picker" class="home-file-picker-label">Scegli un file dal dispositivo</label>
+    <input id="home-file-picker" type="file" class="home-file-picker" data-home-file-picker aria-describedby="home-file-help home-file-status" />
+    <p class="home-file-drop-hint">Oppure trascina un solo file in quest'area.</p>
+  </div>
+
+  <p id="home-file-status" class="home-file-status" role="status" aria-live="polite" aria-atomic="true" data-home-file-status>
+    Il file rimane in questo browser. Nessuna operazione parte automaticamente.
+  </p>
+
+  <div class="home-file-result" data-home-file-result hidden>
+    <h3>Operazioni disponibili per questo formato</h3>
+    <ul class="home-file-actions" data-home-file-actions>
+      {suggestions.map(({ format, tool }) => (
+        <li data-home-file-action-format={format} hidden>
+          <a href={tool.route + "/"}>{tool.name}</a>
+        </li>
+      ))}
+    </ul>
+    <p data-home-file-no-actions hidden>
+      Il formato è riconoscibile, ma non abbiamo confermato una pagina locale compatibile.
+      Puoi cercare uno strumento manualmente.
+    </p>
+    <p class="home-file-caution">
+      Aprendo lo strumento dovrai selezionare di nuovo il file: in questa versione
+      non viene trasferito tra pagine. Il riconoscimento iniziale non garantisce
+      che il contenuto sia elaborabile.
+    </p>
+    <button type="button" class="home-file-reset" data-home-file-reset>Rimuovi la selezione</button>
+  </div>
+</section>
+
+<script>
+  import type { LocalFileRefusalReason } from "../../runtime/file-detection";
+
+  const root = document.querySelector<HTMLElement>("[data-home-file-entry]");
+  const dropzone = root?.querySelector<HTMLElement>("[data-home-file-dropzone]");
+  const picker = root?.querySelector<HTMLInputElement>("[data-home-file-picker]");
+  const status = root?.querySelector<HTMLElement>("[data-home-file-status]");
+  const resultPanel = root?.querySelector<HTMLElement>("[data-home-file-result]");
+  const actions = root?.querySelector<HTMLElement>("[data-home-file-actions]");
+  const noActions = root?.querySelector<HTMLElement>("[data-home-file-no-actions]");
+  const resetButton = root?.querySelector<HTMLButtonElement>("[data-home-file-reset]");
+  let generation = 0;
+  let active: AbortController | null = null;
+
+  const reasonText: Record<LocalFileRefusalReason, string> = {
+    EMPTY: "Il file è vuoto. Scegli un file che contenga dati.",
+    TOO_LARGE: "Questa verifica iniziale accetta file fino a 32 MiB. Nessun file è stato caricato.",
+    UNSUPPORTED: "Formato non riconosciuto dal controllo locale. Usa la ricerca per cercare uno strumento.",
+    MALFORMED: "Il file sembra incompleto o non rispetta la struttura prevista. Nessuna operazione suggerita.",
+    POLYGLOT: "Il file contiene strutture incompatibili o ambigue. Nessuna operazione suggerita.",
+    MIME_MISMATCH: "Il tipo dichiarato non coincide con i dati rilevati. Nessuna operazione suggerita.",
+    EXTENSION_MISMATCH: "L'estensione non coincide con il formato effettivo. Nessuna operazione suggerita.",
+    CANCELLED: "Controllo annullato. Puoi scegliere nuovamente un file.",
+    READ_FAILED: "Impossibile leggere il file in questo browser. Puoi riprovare o cercare uno strumento.",
+  };
+
+  function clearActions(): void {
+    if (resultPanel) resultPanel.hidden = true;
+    for (const option of actions?.querySelectorAll<HTMLElement>("[data-home-file-action-format]") ?? []) {
+      option.hidden = true;
+    }
+    if (noActions) noActions.hidden = true;
+  }
+
+  function clearSelection(): void {
+    generation += 1;
+    active?.abort();
+    active = null;
+    if (picker) picker.value = "";
+    clearActions();
+    if (status) status.textContent = "Selezione rimossa. Puoi scegliere un altro file.";
+    root?.removeAttribute("aria-busy");
+  }
+
+  async function inspect(files: readonly File[]): Promise<void> {
+    const current = ++generation;
+    active?.abort();
+    active = null;
+    clearActions();
+    if (!status) return;
+    if (files.length === 0) {
+      status.textContent = "Nessun file selezionato. Puoi riprovare.";
+      return;
+    }
+    if (files.length !== 1) {
+      status.textContent = "Scegli un solo file alla volta. Nessun file è stato elaborato.";
+      return;
+    }
+    const file = files[0];
+    if (!file) return;
+    const controller = new AbortController();
+    active = controller;
+    status.textContent = "Controllo locale del formato in corso…";
+    root?.setAttribute("aria-busy", "true");
+    try {
+      const { detectLocalFile } = await import("../../runtime/file-detection");
+      if (current !== generation || controller.signal.aborted) return;
+      const detected = await detectLocalFile(file, { signal: controller.signal });
+      if (current !== generation || controller.signal.aborted) return;
+      if (detected.status === "refused") {
+        status.textContent = reasonText[detected.reason];
+        return;
+      }
+      const matches = [...(actions?.querySelectorAll<HTMLElement>("[data-home-file-action-format]") ?? [])]
+        .filter((option) => option.dataset.homeFileActionFormat === detected.format);
+      for (const option of matches) option.hidden = false;
+      if (resultPanel) resultPanel.hidden = false;
+      if (noActions) noActions.hidden = matches.length > 0;
+      status.textContent = "Formato " + detected.format.toUpperCase() + " riconosciuto localmente per “"
+        + file.name + "”. " + matches.length + (matches.length === 1 ? " strumento possibile." : " strumenti possibili.");
+    } catch {
+      if (current !== generation || controller.signal.aborted) return;
+      status.textContent = "Controllo locale non disponibile. Nessuna operazione avviata.";
+    } finally {
+      if (current === generation) {
+        active = null;
+        root?.removeAttribute("aria-busy");
+      }
+    }
+  }
+
+  picker?.addEventListener("change", () => {
+    const files = [...(picker.files ?? [])];
+    picker.value = "";
+    void inspect(files);
+  });
+  resetButton?.addEventListener("click", clearSelection);
+
+  function isFileDrag(event: DragEvent): boolean {
+    return [...(event.dataTransfer?.types ?? [])].includes("Files");
+  }
+
+  function resetDrag(): void {
+    dropzone?.classList.remove("home-file-drag-active");
+  }
+
+  dropzone?.addEventListener("dragenter", (event) => {
+    if (!isFileDrag(event)) return;
+    event.preventDefault();
+    dropzone.classList.add("home-file-drag-active");
+  });
+  dropzone?.addEventListener("dragover", (event) => {
+    if (!isFileDrag(event)) return;
+    event.preventDefault();
+    if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
+  });
+  dropzone?.addEventListener("dragleave", (event) => {
+    if (!dropzone.contains(event.relatedTarget as Node | null)) resetDrag();
+  });
+  dropzone?.addEventListener("drop", (event) => {
+    if (!isFileDrag(event)) return;
+    event.preventDefault();
+    resetDrag();
+    void inspect([...(event.dataTransfer?.files ?? [])]);
+  });
+  window.addEventListener("dragend", resetDrag);
+  window.addEventListener("blur", resetDrag);
+  window.addEventListener("drop", (event) => {
+    resetDrag();
+    if (isFileDrag(event)) event.preventDefault();
+  });
+</script>
+
+<style>
+  .home-file-entry {
+    margin: var(--space-5) 0 var(--space-10);
+    padding: var(--space-6);
+    min-width: 0;
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+  .home-file-entry [hidden] { display: none !important; }
+  .home-file-heading { display: flex; gap: var(--space-4); align-items: start; justify-content: space-between; flex-wrap: wrap; }
+  .home-file-heading h2 { margin: 0; font-size: var(--font-size-h2); }
+  .home-file-heading p { margin: var(--space-2) 0 var(--space-4); color: var(--text-muted); }
+  .home-file-privacy { font-size: var(--font-size-sm); color: var(--text-muted); }
+  .home-file-dropzone {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-md);
+    min-width: 0;
+  }
+  .home-file-drag-active { border-color: var(--brand); background: var(--brand-soft); }
+  .home-file-picker-label { font-weight: var(--font-weight-semibold); }
+  .home-file-picker { display: block; width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; font: inherit; color: var(--text); }
+  .home-file-picker:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+  .home-file-drop-hint { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+  .home-file-status { min-height: 1.5em; color: var(--text-muted); margin: var(--space-4) 0 0; overflow-wrap: anywhere; }
+  .home-file-result { margin-top: var(--space-5); border-top: var(--border-width) solid var(--border); padding-top: var(--space-5); }
+  .home-file-result h3 { margin: 0 0 var(--space-3); font-size: var(--font-size-body-lg); }
+  .home-file-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); list-style: none; padding: 0; margin: 0; }
+  .home-file-actions a, .home-file-reset {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-3);
+    min-height: 44px;
+    border-radius: var(--radius-md);
+    border: var(--border-width) solid var(--border);
+    color: var(--text);
+    background: var(--surface);
+    font: inherit;
+  }
+  .home-file-actions a:hover, .home-file-reset:hover { border-color: var(--brand); }
+  .home-file-caution { font-size: var(--font-size-sm); color: var(--text-muted); }
+  .home-file-reset { cursor: pointer; }
+  @media (max-width: 390px) {
+    .home-file-entry { padding: var(--space-4); }
+    .home-file-actions { display: grid; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-file-entry, .home-file-dropzone { transition: none; }
+  }
+</style>

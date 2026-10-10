@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 01 — bounded evidence
+
+Bounded candidate detector built in src/runtime/file-detection.ts, 18 focused tests PASS for magic/MIME, ZIP/OOXML, oversized, hostile, cancellation and failures. No user-facing integration or full decoder guarantee by this ticket alone.
+
+**Disposition:** Scope implemented and locally verified as stated; this dated note does not check unproven original AC, close the ticket, certify Gold or authorize release. See `docs/IMPLEMENTATION-WAVE-01-2026-10-11.md` for code/test paths and residual gates.

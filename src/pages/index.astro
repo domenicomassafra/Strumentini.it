@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HomeHero from "../components/home/HomeHero.astro";
+import HomeFileEntry from "../components/home/HomeFileEntry.astro";
+import { catalog } from "../generated/catalog";
 import TrustRow from "../components/home/TrustRow.astro";
 import CategoryGrid from "../components/home/CategoryGrid.astro";
 import StarterTools from "../components/home/StarterTools.astro";
@@ -10,11 +12,12 @@ import ClosingBanner from "../components/home/ClosingBanner.astro";
 
 <BaseLayout
   title="Strumenti online gratuiti, nel tuo browser"
-  description="Oltre 200 strumenti online gratuiti per PDF, immagini, CSV, testo e business: senza registrazione, senza caricare i tuoi file su nessun server."
+  description={catalog.length + " strumenti online gratuiti per PDF, immagini, CSV, testo e business. Molte operazioni sono locali nel browser; verifica i dettagli su ogni strumento."}
   imageAlt="Strumentini: strumenti online semplici e gratuiti"
 >
   <HomeHero />
   <div class="home-body">
+    <HomeFileEntry />
     <TrustRow />
     <CategoryGrid />
     <RecentTools />

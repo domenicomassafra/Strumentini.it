@@ -55,11 +55,11 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
   },
   {
     question: "Conservate i miei file?",
-    answer: "No. Non esiste un server che riceve i tuoi file: il lavoro avviene nel browser e il contenuto di un'attività non viene mai trasmesso, nemmeno quando la telemetria di validazione è attiva.",
+    answer: "Gli strumenti locali elaborano i file nel browser, senza archiviarli sul nostro server. Un risultato temporaneo non è un archivio recuperabile dopo aver chiuso la scheda. Se scegli di creare un account, il server conserva i dati dell'account e gli identificativi dei preferiti, non i tuoi documenti.",
   },
   {
     question: "Funziona senza rete?",
-    answer: "Sì, una volta che la pagina è caricata: il calcolo continua anche se la connessione cade, perché avviene nel browser. Non c'è un service worker, quindi senza connessione non puoi aprire una pagina nuova o ricaricarla.",
+    answer: "Le operazioni dichiarate locali possono continuare dopo il caricamento dei loro componenti, ma nuove pagine, account e controlli verso servizi esterni richiedono rete. La possibilità di continuare senza connessione dipende anche dai dati e dalle librerie già caricati.",
   },
   {
     question: "Posso usare i risultati per scopi commerciali?",
@@ -67,7 +67,7 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
   },
   {
     question: "Cosa succede ai miei dati se svuoto il browser?",
-    answer: "Spariscono con la memoria locale: preferiti, strumenti installati, valori recenti e tema vivono solo nel tuo browser. Nessuna copia esiste altrove, quindi non possiamo recuperarli.",
+    answer: "I dati memorizzati solo in questo browser, come recenti, profilo locale, tema e ultimi risultati brevi, possono andare persi. Se hai un account, i dati dell'account e i preferiti già sincronizzati possono restare sul server finché non elimini anche l'account: svuotare il browser non li cancella.",
   },
   {
     question: "Esiste un'API?",
@@ -75,7 +75,7 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
   },
   {
     question: "Perché alcuni strumenti risultano in verifica?",
-    answer: "Ogni strumento è implementato e utilizzabile; solo una parte è già stata certificata contro un oracolo e delle fixture registrate. Gli altri sono dichiarati apertamente «In verifica» finché non superano lo stesso controllo.",
+    answer: "L'indice mostra quali strumenti hanno una certificazione registrata e quali sono ancora in verifica. Una prova precedente non garantisce che ogni variante, browser o nuova versione sia stata verificata: valgono i limiti dichiarati per la singola operazione.",
   },
 ];
 ---
@@ -111,10 +111,10 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
         <section class="resources-section" aria-labelledby="come-funziona">
           <h2 id="come-funziona">Come funziona</h2>
           <p>
-            Questa è una pagina statica: non c'è un'applicazione sempre accesa dietro di te.
-            Quando apri uno strumento, il browser scarica solo il codice di quello strumento,
-            così il resto del sito resta leggero. Il calcolo avviene nel tuo browser e il
-            risultato appare nella pagina: non c'è nessun passaggio intermedio su un server.
+            Le pagine degli strumenti vengono caricate dal sito e il lavoro dichiarato locale
+            viene eseguito nel browser. Account, sincronizzazione dei preferiti e strumenti
+            che interrogano fonti esterne sono funzioni distinte: quando un'operazione richiede
+            la rete, deve essere indicato nello strumento.
           </p>
           <ul class="resources-steps">
             <li>
@@ -134,16 +134,19 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
             </li>
           </ul>
           <p class="resources-note">
-            Se qualcosa resta fermo, ricarica la pagina: il calcolo vive solo nella scheda aperta.
+            Se un'operazione si interrompe, controlla lo stato prima di ricaricare: un risultato
+            ancora solo nella scheda potrebbe non essere recuperabile dopo il caricamento.
           </p>
         </section>
 
         <section class="resources-section" aria-labelledby="privacy">
           <h2 id="privacy">Privacy</h2>
           <p>
-            Non serve un account e nessun file lascia il dispositivo. Quando apri uno strumento
-            il codice viene scaricato, ma i dati che inserisci no: il contenuto di un'attività
-            non viene mai trasmesso da nessuna parte.
+            Non serve un account per usare gli strumenti locali: i file selezionati sono
+            elaborati sul dispositivo quando lo strumento dichiara la modalità locale.
+            L'account opzionale usa il server per autenticazione e preferiti; alcune utility
+            che verificano indirizzi o risorse esterne possono richiedere richieste di rete.
+            Le singole operazioni devono specificare che cosa viene inviato, quando applicabile.
           </p>
 
           <div class="resources-card">
@@ -151,11 +154,11 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
             <ul class="resources-storage">
               <li>
                 <span class="pill pill-brand"><UiIcon name="devices" size={14} /> IndexedDB</span>
-                <p>Il database <code>utility-workbench</code> custodisce l'area di lavoro: preferiti, strumenti installati e il profilo di lavoro.</p>
+                <p>Il database <code>utility-workbench</code> conserva sul browser preferiti, strumenti installati, recenti e profilo di lavoro. Non è un archivio permanente dei file elaborati.</p>
               </li>
               <li>
                 <span class="pill pill-brand"><UiIcon name="clock" size={14} /> localStorage</span>
-                <p>La chiave <code>{LAST_VALUE_STORAGE_KEY}</code> conserva l'ultimo valore prodotto da uno strumento, in tutto al massimo 40 voci brevi: un numero o una riga, mai gli ingressi.</p>
+                <p>La chiave <code>{LAST_VALUE_STORAGE_KEY}</code> può ricordare valori di risultato brevi: non sostituisce il salvataggio volontario di un file. Puoi rimuoverli cancellando i dati del sito.</p>
               </li>
               <li>
                 <span class="pill pill-brand"><UiIcon name="sliders" size={14} /> sessionStorage</span>
@@ -169,12 +172,23 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
           </div>
 
           <div class="resources-card">
+            <h3>Account e preferiti sincronizzati</h3>
+            <p>
+              Con un account vengono conservati sul server i dati necessari all'accesso e gli
+              identificativi degli strumenti preferiti sincronizzati. Non viene creato un archivio
+              online dei file elaborati o dei risultati temporanei. Cancellare i soli dati locali
+              non elimina automaticamente l'account: la cancellazione dell'account è separata.
+            </p>
+          </div>
+
+          <div class="resources-card">
             <h3>Telemetria di validazione</h3>
             <p>
-              È <strong>disattivata per impostazione predefinita</strong>. Si accende solo se la
-              build imposta <code>PUBLIC_VALIDATION_COHORT=true</code> e
-              <code>PUBLIC_TELEMETRY_ENDPOINT</code>; in quel caso invia esclusivamente eventi
-              consentiti e non porta mai con sé il contenuto di un'attività.
+              È <strong>disattivata per impostazione predefinita</strong>. Anche se una build
+              configura <code>PUBLIC_VALIDATION_COHORT=true</code> e
+              <code>PUBLIC_TELEMETRY_ENDPOINT</code>, non invia eventi di validazione fino
+              al consenso esplicito nel pannello Privacy e telemetria. Il consenso è salvato
+              nel browser, revocabile e non include file, nomi o valori inseriti.
             </p>
           </div>
 
@@ -199,9 +213,9 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
         <section class="resources-section" aria-labelledby="qualita">
           <h2 id="qualita">Qualità dei risultati</h2>
           <p>
-            Ogni strumento è implementato e utilizzabile. La differenza è nel controllo:
-            uno strumento certificato è stato provato contro un oracolo indipendente e delle
-            fixture registrate, quindi sappiamo che cosa produce a parità di ingresso.
+            Il catalogo indica le operazioni disponibili e i loro limiti. Una certificazione
+            registrata attesta test eseguiti su specifici casi e revisioni: non garantisce
+            tutte le varianti di formato, ogni dispositivo o una release successiva.
           </p>
 
           <dl class="resources-counts">
@@ -210,25 +224,26 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
               <dd>{totalTools}</dd>
             </div>
             <div>
-              <dt>Certificati contro un oracolo e delle fixture</dt>
+              <dt>Con certificazione registrata nell'indice</dt>
               <dd>{certifiedTools}</dd>
             </div>
             <div>
-              <dt>Implementati e in verifica</dt>
+              <dt>Ancora in verifica nell'indice</dt>
               <dd>{unverifiedTools}</dd>
             </div>
           </dl>
 
           <p class="resources-note">
-            In breve: {certifiedTools} strumenti su {totalTools} sono certificati ({certifiedPercent}%)
-            e i restanti {unverifiedTools} sono implementati ma non ancora certificati.
+            Nell'indice sono registrate certificazioni per {certifiedTools} strumenti su {totalTools}
+            ({certifiedPercent}%); gli altri {unverifiedTools} sono in verifica. La validità sulla
+            versione pubblicata richiede anche il controllo aggiornato delle fonti e delle dipendenze.
           </p>
 
           <p>
             Nella pagina di uno strumento lo stato è dichiarato apertamente: <span class="pill pill-success"><UiIcon name="check-circle" size={14} /> Verificato</span>
-            per i {certifiedTools} certificati, <span class="pill pill-warning"><UiIcon name="alert" size={14} /> In verifica</span> per gli altri.
-            Non è un giudizio sulla qualità del risultato, ma sullo stato della verifica: si sa
-            cosa ci si deve aspettare, e lo si dice.
+            per i {certifiedTools} con prova registrata, <span class="pill pill-warning"><UiIcon name="alert" size={14} /> In verifica</span> per gli altri.
+            Il badge indica lo stato registrato nell'indice, non una garanzia generale di
+            sicurezza, compatibilità o freschezza di tutte le funzioni.
           </p>
 
           <p class="resources-note">
@@ -241,9 +256,10 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
         <section class="resources-section" aria-labelledby="account">
           <h2 id="account">Account</h2>
           <p>
-            L'account è <strong>opzionale</strong>: senza, tutto continua a funzionare in locale e
-            nessuno strumento resta bloccato. Serve solo a riconoscerti fra un dispositivo e
-            l'altro; la pagina di accesso è <a href="/accedi/">/accedi/</a>.
+            L'account è <strong>opzionale</strong>: gli strumenti locali restano accessibili anche
+            senza registrazione. L'accesso gestisce l'identità e la sincronizzazione dei preferiti
+            sui dispositivi; non recupera un file o un risultato rimasto soltanto in una scheda.
+            Per accedere visita <a href="/accedi/">/accedi/</a>.
           </p>
         </section>
       </div>

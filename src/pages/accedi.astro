@@ -95,7 +95,7 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
         >Crea un account</button>
       </div>
 
-      <p class="error" data-access-error hidden></p>
+      <p class="error" data-access-error tabindex="-1" hidden></p>
 
       <div class="ac-connected" data-access-connected hidden>
         <span class="pill pill-success"><UiIcon name="check-circle" size={14} /> Sessione attiva</span>
@@ -160,7 +160,11 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
         </div>
 
         {turnstileSiteKey !== "" && (
-          <div id="turnstile-login" class="ac-turnstile" aria-label="Verifica anti-bot"></div>
+          <div class="ac-challenge">
+            <div id="turnstile-login" class="ac-turnstile" aria-label="Verifica anti-bot per l'accesso"></div>
+            <p class="ac-support" id="turnstile-login-status" data-turnstile-status="login" role="status" aria-live="polite">Caricamento della verifica anti-bot…</p>
+            <button class="text-button" type="button" data-turnstile-retry="login" aria-describedby="turnstile-login-status" hidden>Riprova la verifica</button>
+          </div>
         )}
 
         <button class="btn btn-primary btn-block" type="submit" data-access-submit>
@@ -250,7 +254,11 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
         </div>
 
         {turnstileSiteKey !== "" && (
-          <div id="turnstile-register" class="ac-turnstile" aria-label="Verifica anti-bot"></div>
+          <div class="ac-challenge">
+            <div id="turnstile-register" class="ac-turnstile" aria-label="Verifica anti-bot per la registrazione"></div>
+            <p class="ac-support" id="turnstile-register-status" data-turnstile-status="register" role="status" aria-live="polite">Caricamento della verifica anti-bot…</p>
+            <button class="text-button" type="button" data-turnstile-retry="register" aria-describedby="turnstile-register-status" hidden>Riprova la verifica</button>
+          </div>
         )}
 
         <button class="btn btn-primary btn-block" type="submit" data-access-submit>
@@ -261,7 +269,7 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
 
       <p class="ac-trust">
         <UiIcon name="lock" size={16} />
-        <a href="/risorse/#privacy">I tuoi dati sono sempre al sicuro.</a>
+        <a href="/risorse/#privacy">Come trattiamo i dati del tuo account.</a>
       </p>
     </div>
 
@@ -277,8 +285,44 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
   </div>
 </BaseLayout>
 
+<style>
+  /* The shared --text-faint token is below AA for normal text on white. */
+  .ac-access .ac-support,
+  .ac-access .ac-divider,
+  .ac-access .ac-control-icon { color: var(--text-muted); }
+
+  .ac-challenge { display: grid; gap: var(--space-2); min-width: 0; }
+  .ac-challenge .text-button { justify-self: start; }
+
+  .ac-access .ac-tab:focus-visible,
+  .ac-access .ac-reveal:focus-visible,
+  .ac-access .text-button:focus-visible,
+  .ac-access [data-access-submit]:focus-visible {
+    outline: var(--focus-width) solid var(--focus-ring);
+    outline-offset: var(--focus-offset);
+  }
+
+  .ac-access [data-access-error]:focus { outline: var(--focus-width) solid var(--focus-ring); outline-offset: var(--focus-offset); }
+</style>
+
 {turnstileSiteKey !== "" && (
-  <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+  <>
+    <script is:inline>
+      // The callback must exist before the deferred vendor script executes.
+      // Retain the state when its onload fires before Astro's module starts.
+      window.strumentiniTurnstileLoaded = function () {
+        window.strumentiniTurnstileReady = true;
+        window.dispatchEvent(new Event("strumentini:turnstile-ready"));
+      };
+    </script>
+    <script id="strumentini-turnstile-script" is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=strumentiniTurnstileLoaded" defer></script>
+    <script is:inline>
+      document.getElementById("strumentini-turnstile-script")?.addEventListener("error", function () {
+        window.strumentiniTurnstileFailed = true;
+        window.dispatchEvent(new Event("strumentini:turnstile-error"));
+      });
+    </script>
+  </>
 )}
 
 <script>
@@ -302,7 +346,6 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
 
   type PanelName = "login" | "register";
   interface TurnstileApi {
-    ready(callback: () => void): void;
     render(
       target: string | HTMLElement,
       options: {
@@ -314,6 +357,7 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
         callback(token: string): void;
         "expired-callback"(): void;
         "error-callback"(): void;
+        "timeout-callback"(): void;
       },
     ): string;
     reset(widgetId: string): void;
@@ -321,6 +365,9 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
   declare global {
     interface Window {
       turnstile?: TurnstileApi;
+      strumentiniTurnstileLoaded?: () => void;
+      strumentiniTurnstileReady?: boolean;
+      strumentiniTurnstileFailed?: boolean;
     }
   }
 
@@ -341,6 +388,12 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
     const turnstileSiteKey = root.dataset.turnstileSiteKey ?? "";
     const turnstileTokens: Record<PanelName, string> = { login: "", register: "" };
     const turnstileWidgets: Partial<Record<PanelName, string>> = {};
+    function updateChallenge(panel: PanelName, text: string, retry = false): void {
+      const status = root?.querySelector<HTMLElement>(`[data-turnstile-status="${panel}"]`);
+      const button = root?.querySelector<HTMLButtonElement>(`[data-turnstile-retry="${panel}"]`);
+      if (status != null) status.textContent = text;
+      if (button != null) button.hidden = !retry;
+    }
     async function initializeGoogle(): Promise<void> {
       const config = await readGoogleAuthConfig();
       if (!config.ok || googleButton === null || googleAuth === null || googleDivider === null) return;
@@ -372,34 +425,64 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
     function resetTurnstile(panel: PanelName): void {
       turnstileTokens[panel] = "";
       const id = turnstileWidgets[panel];
-      if (id !== undefined) window.turnstile?.reset(id);
+      if (id !== undefined) {
+        window.turnstile?.reset(id);
+        updateChallenge(panel, "Completa nuovamente la verifica anti-bot.");
+      }
     }
 
     function initializeTurnstile(): void {
       if (turnstileSiteKey === "") return;
+      if (window.strumentiniTurnstileFailed) {
+        updateChallenge(activePanel(), "La verifica anti-bot non è disponibile. Ricarica la pagina per riprovare.");
+        return;
+      }
+      if (!window.strumentiniTurnstileReady) return;
       const api = window.turnstile;
-      if (api === undefined) return;
-      api.ready(() => {
-        for (const panel of ["login", "register"] as const) {
-          const target = document.querySelector<HTMLElement>(`#turnstile-${panel}`);
-          if (target === null || turnstileWidgets[panel] !== undefined) continue;
-          turnstileWidgets[panel] = api.render(target, {
+      if (api === undefined) {
+        updateChallenge(activePanel(), "La verifica anti-bot non è disponibile. Ricarica la pagina per riprovare.");
+        return;
+      }
+      // The other tab is hidden: render it only once it becomes visible.
+      const panel = activePanel();
+      const target = root?.querySelector<HTMLElement>(`#turnstile-${panel}`);
+      if (target == null || turnstileWidgets[panel] !== undefined) return;
+      try {
+        updateChallenge(panel, "Completa la verifica anti-bot per continuare.");
+        turnstileWidgets[panel] = api.render(target, {
             sitekey: turnstileSiteKey,
             action: panel,
             theme: "auto",
             size: "flexible",
             language: "it",
             callback: (token) => {
-              turnstileTokens[panel] = token;
+              turnstileTokens[panel] = typeof token === "string" ? token : "";
+              updateChallenge(panel, turnstileTokens[panel] === "" ? "Completa la verifica anti-bot." : "Verifica anti-bot completata.");
             },
             "expired-callback": () => {
               turnstileTokens[panel] = "";
+              updateChallenge(panel, "La verifica è scaduta. Riprova per continuare.", true);
             },
             "error-callback": () => {
               turnstileTokens[panel] = "";
+              updateChallenge(panel, "La verifica non è riuscita. Riprova per continuare.", true);
             },
-          });
-        }
+            "timeout-callback": () => {
+              turnstileTokens[panel] = "";
+              updateChallenge(panel, "Tempo scaduto per la verifica. Riprova.", true);
+            },
+        });
+      } catch {
+        turnstileTokens[panel] = "";
+        updateChallenge(panel, "La verifica anti-bot non è disponibile. Ricarica la pagina per riprovare.");
+      }
+    }
+
+    for (const retry of root.querySelectorAll<HTMLButtonElement>("[data-turnstile-retry]")) {
+      retry.addEventListener("click", () => {
+        const panel: PanelName = retry.dataset.turnstileRetry === "register" ? "register" : "login";
+        resetTurnstile(panel);
+        setMessage(message, null);
       });
     }
 
@@ -412,6 +495,7 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
       for (const panel of panels) panel.hidden = panel.dataset.accessPanel !== name;
       clearFieldErrors(root);
       setMessage(message, null);
+      initializeTurnstile();
       if (syncHash) {
         const url = new URL(window.location.href);
         url.hash = name === "register" ? "#registrati" : "";
@@ -433,14 +517,18 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
       const link = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-access-tab-link]") : null;
       if (link === null) return;
       event.preventDefault();
-      selectPanel(link.dataset.accessTabLink === "register" ? "register" : "login");
+      const next = link.dataset.accessTabLink === "register" ? "register" : "login";
+      selectPanel(next);
+      tabs.find((tab) => tab.dataset.accessTab === next)?.focus();
     });
 
     tabBar?.addEventListener("keydown", (event) => {
       if (!(event instanceof KeyboardEvent)) return;
       if (!["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
       event.preventDefault();
-      const next: PanelName = activePanel() === "login" ? "register" : "login";
+      const next: PanelName = event.key === "Home" ? "login"
+        : event.key === "End" ? "register"
+        : activePanel() === "login" ? "register" : "login";
       selectPanel(next);
       tabs.find((tab) => tab.dataset.accessTab === next)?.focus();
     });
@@ -464,11 +552,12 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
 
       if (!email.ok) setFieldError(form, "login-email", email.message);
       if (password === "") setFieldError(form, "login-password", MESSAGES.passwordInvalid);
+      if (invalid(form)) return;
       if (turnstileSiteKey !== "" && turnstileTokens.login === "") {
-        setMessage(message, MESSAGES.turnstileRequired);
+        setMessage(message, window.strumentiniTurnstileFailed ? MESSAGES.turnstileUnavailable : MESSAGES.turnstileRequired);
+        message?.focus();
         return;
       }
-      if (invalid(form)) return;
 
       const button = form.querySelector<HTMLButtonElement>("[data-access-submit]");
       if (button !== null) setBusy(button, true);
@@ -476,6 +565,7 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
       if (!result.ok) {
         resetTurnstile("login");
         setMessage(message, result.message);
+        message?.focus();
         if (button !== null) setBusy(button, false);
         return;
       }
@@ -495,11 +585,12 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
       if (!name.ok) setFieldError(form, "register-name", name.message);
       if (!email.ok) setFieldError(form, "register-email", email.message);
       if (!password.ok) setFieldError(form, "register-password", password.message);
+      if (invalid(form)) return;
       if (turnstileSiteKey !== "" && turnstileTokens.register === "") {
-        setMessage(message, MESSAGES.turnstileRequired);
+        setMessage(message, window.strumentiniTurnstileFailed ? MESSAGES.turnstileUnavailable : MESSAGES.turnstileRequired);
+        message?.focus();
         return;
       }
-      if (invalid(form)) return;
 
       const button = form.querySelector<HTMLButtonElement>("[data-access-submit]");
       if (button !== null) setBusy(button, true);
@@ -512,6 +603,7 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
       if (!result.ok) {
         resetTurnstile("register");
         setMessage(message, result.message);
+        message?.focus();
         if (button !== null) setBusy(button, false);
         return;
       }
@@ -538,9 +630,10 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
     }
 
     bindPasswordReveal(root);
+    window.addEventListener("strumentini:turnstile-ready", initializeTurnstile);
+    window.addEventListener("strumentini:turnstile-error", initializeTurnstile);
     initializeTurnstile();
     void initializeGoogle();
-    window.addEventListener("load", initializeTurnstile, { once: true });
 
     window.addEventListener("hashchange", () => {
       selectPanel(window.location.hash === "#registrati" ? "register" : "login", false);

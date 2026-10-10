@@ -55,8 +55,8 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
         <div>
           <h1>Riprendi da dove <span>avevi lasciato.</span></h1>
           <p>
-            Gli strumenti che hai scelto, le ultime attività e i file su cui stavi
-            lavorando, tutto in un unico posto e sempre con te.
+            Ritrova gli strumenti che hai scelto e quelli con cui hai completato
+            un'attività su questo dispositivo. I file non vengono salvati qui.
           </p>
         </div>
         <span class="area-hero-art" aria-hidden="true">
@@ -70,15 +70,20 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
         <div class="section-head">
           <div>
             <h2 class="section-title" id="continua">Continua da dove hai lasciato</h2>
-            <p class="section-sub">Gli ultimi strumenti che hai aperto su questo dispositivo.</p>
+            <p class="section-sub">Gli ultimi strumenti con cui hai completato un'attività su questo dispositivo.</p>
           </div>
           <a class="section-link" href="#recenti">Vedi tutti</a>
         </div>
         <ul class="area-continue" data-area-continue></ul>
         <p class="area-empty" data-area-continue-empty hidden>
-          Non hai ancora usato nessuno strumento da qui. <a href="/strumenti/">Scegline uno dal catalogo</a>.
+          Nessuna operazione completata su questo dispositivo. <a href="/strumenti/">Scegli uno strumento dal catalogo</a>.
         </p>
       </section>
+      <p class="area-empty" role="status" data-area-storage-warning hidden>
+        La memoria del browser non è disponibile: le operazioni recenti potrebbero non comparire
+        qui dopo aver cambiato pagina. I risultati dei tuoi strumenti restano scaricabili dalla
+        rispettiva pagina finché sono disponibili, ma i file non vengono salvati in questa area.
+      </p>
 
       <section class="section" id="preferiti" aria-labelledby="preferiti-title">
         <div class="section-head">
@@ -135,9 +140,7 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
 </BaseLayout>
 
 <script>
-  import { loadMembership, type Membership } from "../workbench/membership";
-  import { readLastValues } from "../components/workbench/last-value";
-  import type { ToolLastValue } from "../components/workbench/last-value";
+  import { loadMembership, subscribeMembership, type Membership } from "../workbench/membership";
 
   interface IndexedTool {
     id: string;
@@ -213,8 +216,9 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
 
     const continueList = document.querySelector<HTMLElement>("[data-area-continue]");
     const continueEmpty = document.querySelector<HTMLElement>("[data-area-continue-empty]");
-    const lastValues = readLastValues();
     const recent = [...membership.recent].sort((a, b) => (a.lastUsedAt < b.lastUsedAt ? 1 : -1));
+    const storageWarning = document.querySelector<HTMLElement>("[data-area-storage-warning]");
+    if (storageWarning !== null) storageWarning.hidden = membership.persisted !== false;
 
     if (continueList !== null) {
       const top = recent.slice(0, 3).map((entry) => byId.get(entry.toolId)).filter((tool): tool is IndexedTool => tool !== undefined);
@@ -230,15 +234,13 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
       const rows = recent.map((entry) => {
         const tool = byId.get(entry.toolId);
         if (tool === undefined) return "";
-        const produced: ToolLastValue | undefined = lastValues[tool.id];
-        const detail = produced === undefined ? "" : ` · ultimo valore ${escapeHtml(produced.value)}`;
         return `<li><span class="icon-tile" style="--tile-tone: var(--tone-${tool.tone})"><span class="area-activity-dot"></span></span>`
           + `<div><a href="${escapeHtml(tool.route)}"><strong>${escapeHtml(tool.name)}</strong></a>`
-          + `<small>${escapeHtml(tool.categoryLabel)} · ${entry.useCount} utilizzi${detail}</small></div>`
+          + `<small>${escapeHtml(tool.categoryLabel)} · ${entry.useCount} operazioni completate</small></div>`
           + `<span class="area-when">${escapeHtml(relative(entry.lastUsedAt))}</span></li>`;
       }).join("");
       activity.innerHTML = rows;
-      if (activityEmpty !== null) activityEmpty.hidden = recent.length > 0;
+      if (activityEmpty !== null) activityEmpty.hidden = rows.length > 0;
     }
 
     const suggest = document.querySelector<HTMLElement>("[data-area-suggest]");
@@ -268,6 +270,7 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
       /* Signed out: the greeting stays generic. */
     }
     await loadIndex();
+    subscribeMembership(render);
     render(await loadMembership());
   })();
 </script>
