@@ -9,8 +9,9 @@ import sharp from "sharp";
 
 const root = resolve(import.meta.dirname, "..");
 const port = 18439;
-const origin = `http://127.0.0.1:${port}`;
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
+const suppliedOrigin = process.env.VIDEO037_ORIGIN?.replace(/\/$/u, "");
+const origin = suppliedOrigin ?? `http://127.0.0.1:${port}`;
+const server = suppliedOrigin ? null : spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
 let browser;
 let checks = 0;
 
@@ -170,5 +171,5 @@ try {
   console.log(`Video frames and webcam opt-in (MOCK camera) acceptance: PASS (${checks} checks), offline red/green video 2 frames, no offsite requests`);
 } finally {
   if (browser) await browser.close();
-  server.kill("SIGTERM");
+  server?.kill("SIGTERM");
 }

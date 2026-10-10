@@ -9,12 +9,12 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 
 ## Current dependency frontier
 
-- **037 — Video inspect/subtitle utilities**
 - **047 — JPEG/PNG/WebP/SVG compression engines**
 - **051 — True PDF compression profiles + target size**
 - **053 — Upgrade existing PDF inspect/extract/compare tools**
 - **056 — Office-to-PDF and printable export pack**
 - **059 — JSON/XML/CSS/HTML/SVG minimizer pack**
+- **069 — Cross-format file-size analyzer**
 - **115 — Italian administrative geography source pack**
 - **117 — Italian fiscal annual source snapshots**
 - **212 — HEIC AVIF and GIF directional image implementations**
@@ -25,13 +25,12 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **237 — True PDF redaction with post-export proof**
 - **241 — PDF signature placement**
 - **246 — Local image OCR**
-- **265 — File-size analyzer PDF adapter**
 - **277 — Physical Android Chrome image-resize acceptance**
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 
-Exactly **21** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **20** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -84,7 +83,7 @@ Exactly **21** incomplete tickets currently have every declared numeric blocker 
 | 034 | completed | Heavy local media/OCR/Office feasibility refresh | — |
 | 035 | blocked | Audio capture/playback utilities | 229, 303, 304 |
 | 036 | blocked | Audio file-processing family | 230, 231 |
-| 037 | ready-for-agent | Video inspect/subtitle utilities | 232, 233, 305 |
+| 037 | completed | Video inspect/subtitle utilities | 232, 233, 305 |
 | 038 | blocked | Video transform family | 234, 306, 307, 308 |
 | 039 | completed | AI-era deterministic helper family | 054, 165, 183, 184, 185, 186, 189 |
 | 040 | blocked | Italy utilities beyond CalcolaTutto | 152, 150 |
@@ -116,7 +115,7 @@ Exactly **21** incomplete tickets currently have every declared numeric blocker 
 | 066 | blocked | Existing 200 functional-upgrade coverage gate | 050, 053, 060, 061, 062, 063, 064, 110, 297 |
 | 067 | completed | ZIP/GZIP/archive compression + safe extraction | 222, 223, 224 |
 | 068 | completed | DOCX/PPTX/XLSX OOXML compressor | 225, 264 |
-| 069 | blocked | Cross-format file-size analyzer | 228, 265, 266 |
+| 069 | ready-for-agent | Cross-format file-size analyzer | 228, 265, 266 |
 | 070 | completed | Result declaration in Tool Manifest | — |
 | 071 | completed | Generated Result v2 inventory projection | 070 |
 | 072 | completed | Result operation state model with partial and warning | 070 |
@@ -312,7 +311,7 @@ Exactly **21** incomplete tickets currently have every declared numeric blocker 
 | 262 | completed | EML and MSG local message viewer | 103, 275 |
 | 263 | completed | EPUB local reader and text export | 103, 275 |
 | 264 | completed — bounded OOXML media core and user-facing browser route; Gold certification separate | OOXML embedded-media compression core | 207, 208, 225 |
-| 265 | ready-for-agent | File-size analyzer PDF adapter | 218, 228 |
+| 265 | completed | File-size analyzer PDF adapter | 218, 228 |
 | 266 | completed | File-size analyzer OOXML and media adapters | 225, 228, 230, 232 |
 | 267 | completed | P7M CMS parser feasibility spike | — |
 | 268 | completed | Image codec and SVG optimizer feasibility spike | — |

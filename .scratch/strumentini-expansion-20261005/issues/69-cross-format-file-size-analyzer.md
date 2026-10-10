@@ -8,7 +8,7 @@
 
 **Blocked by:** 228, 265, 266.
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 - [ ] Image analysis reports dimensions/encoding/metadata and flags obvious oversizing without changing pixels.
 - [ ] PDF analysis distinguishes text/vector-heavy, embedded-image-heavy and scan-heavy documents where detectable.

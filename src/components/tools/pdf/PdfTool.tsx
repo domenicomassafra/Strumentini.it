@@ -94,6 +94,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [pdfImageScale, setPdfImageScale] = useState("2");
   const [compressionProfile, setCompressionProfile] = useState<"structural-only" | "jpeg-rgb-reencode" | "scan-flate-to-jpeg" | "target-best-effort">("structural-only");
   const [compressionJpegQuality, setCompressionJpegQuality] = useState("0.6");
+  const [compressionPreset, setCompressionPreset] = useState<"high-quality" | "balanced" | "strong" | "custom">("balanced");
   const [pdfTargetKiB, setPdfTargetKiB] = useState("300");
   const [pdfTargetUnit, setPdfTargetUnit] = useState<"KiB" | "MiB">("KiB");
   const [scanMaxEdge, setScanMaxEdge] = useState("1600");
@@ -323,6 +324,11 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setPdfImageScale("2");
     setCompressionProfile("structural-only");
     setCompressionJpegQuality("0.6");
+    setCompressionPreset("balanced");
+    setScanMaxEdge("1600");
+    setScanTargetDpi("150");
+    setScanResizePolicy("pixel-edge");
+    setScanGrayscale(false);
     setImageRotations("");
     setShowThumbnails(false);
     setShowVisualCompare(false);
@@ -645,14 +651,14 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
               <>
                 <label class="field"><span>Dimensione massima PDF in {pdfTargetUnit} (1–8192 KiB, massimo 8 MiB)</span>
                   <input type="number" min={pdfTargetUnit === "KiB" ? "1" : "0.0009765625"} max={pdfTargetUnit === "KiB" ? "8192" : "8"} step={pdfTargetUnit === "KiB" ? "1" : "any"} value={pdfTargetKiB}
-                    onInput={(event) => setPdfTargetKiB(event.currentTarget.value)} disabled={isWorking} />
+                    onInput={(event) => { setPdfTargetKiB(event.currentTarget.value); setResult(null); }} disabled={isWorking} />
                 </label>
                 <label class="field"><span>Unità del limite PDF</span>
                   <select aria-label="Unità del limite PDF" value={pdfTargetUnit} disabled={isWorking}
                     onChange={(event) => { const unit = event.currentTarget.value as "KiB" | "MiB";
                       if (unit !== pdfTargetUnit) { const bytes = Number(pdfTargetKiB) * (pdfTargetUnit === "MiB" ? 1024 * 1024 : 1024);
                         setPdfTargetKiB(Number.isFinite(bytes) ? String(bytes / (unit === "MiB" ? 1024 * 1024 : 1024)) : "");
-                        setPdfTargetUnit(unit); } }}>
+                        setPdfTargetUnit(unit); setResult(null); } }}>
                     <option value="KiB">KiB</option><option value="MiB">MiB</option>
                   </select>
                 </label>
@@ -661,14 +667,30 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             )}
             {compressionProfile !== "structural-only" && compressionProfile !== "target-best-effort" && (
               <>
+                <label class="field"><span>Intensità compressione immagine (preset con perdita dichiarata)</span>
+                  <select aria-label="Intensità compressione PDF" value={compressionPreset} disabled={isWorking}
+                    onChange={(event) => {
+                      const chosen = event.currentTarget.value as "high-quality" | "balanced" | "strong" | "custom";
+                      setCompressionPreset(chosen);
+                      if (chosen === "high-quality") { setCompressionJpegQuality("0.85"); setScanMaxEdge("2048"); setScanTargetDpi("300"); }
+                      if (chosen === "balanced") { setCompressionJpegQuality("0.6"); setScanMaxEdge("1600"); setScanTargetDpi("150"); }
+                      if (chosen === "strong") { setCompressionJpegQuality("0.35"); setScanMaxEdge("960"); setScanTargetDpi("96"); }
+                      setResult(null);
+                    }}>
+                    <option value="high-quality">Alta qualità: JPEG 0,85 · scansioni 2048 px / 300 DPI verificati</option>
+                    <option value="balanced">Bilanciato: JPEG 0,60 · scansioni 1600 px / 150 DPI verificati</option>
+                    <option value="strong">Forte: JPEG 0,35 · scansioni 960 px / 96 DPI verificati</option>
+                    <option value="custom">Personalizzato: valori modificati manualmente</option>
+                  </select>
+                </label>
                 <label class="field"><span>Qualità JPEG (0,35–0,85)</span>
                   <input type="number" min="0.35" max="0.85" step="0.05" value={compressionJpegQuality}
-                    onInput={(event) => setCompressionJpegQuality(event.currentTarget.value)} disabled={isWorking} />
+                    onInput={(event) => { setCompressionJpegQuality(event.currentTarget.value); setCompressionPreset("custom"); setResult(null); }} disabled={isWorking} />
                 </label>
                 {compressionProfile === "scan-flate-to-jpeg" ? (
                   <>
                     <label class="field"><span>Politica di ricampionamento</span>
-                      <select value={scanResizePolicy} onChange={(event) => setScanResizePolicy(event.currentTarget.value as "pixel-edge" | "verified-dpi")} disabled={isWorking}>
+                      <select value={scanResizePolicy} onChange={(event) => { setScanResizePolicy(event.currentTarget.value as "pixel-edge" | "verified-dpi"); setResult(null); }} disabled={isWorking}>
                         <option value="pixel-edge">Limite in pixel (compatibile con pagine complesse)</option>
                         <option value="verified-dpi">DPI effettivi certificati solo su immagini semplici</option>
                       </select>
@@ -676,17 +698,17 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
                     {scanResizePolicy === "verified-dpi" ? (
                       <label class="field"><span>DPI massimi di posizionamento (36–600)</span>
                         <input type="number" min="36" max="600" step="1" value={scanTargetDpi}
-                          onInput={(event) => setScanTargetDpi(event.currentTarget.value)} disabled={isWorking} />
+                          onInput={(event) => { setScanTargetDpi(event.currentTarget.value); setCompressionPreset("custom"); setResult(null); }} disabled={isWorking} />
                         <small>Se i DPI non sono ricavabili da tutti i contenuti pagina, il PDF viene rifiutato senza produrre un file. Le immagini ripetute mantengono la risoluzione necessaria al disegno più grande.</small>
                       </label>
                     ) : (
                       <label class="field"><span>Lato lungo massimo dell'immagine (pixel)</span>
                         <input type="number" min="256" max="4096" step="1" value={scanMaxEdge}
-                          onInput={(event) => setScanMaxEdge(event.currentTarget.value)} disabled={isWorking} />
+                          onInput={(event) => { setScanMaxEdge(event.currentTarget.value); setCompressionPreset("custom"); setResult(null); }} disabled={isWorking} />
                       </label>
                     )}
                     <label class="field"><input type="checkbox" checked={scanGrayscale}
-                      onChange={(event) => setScanGrayscale(event.currentTarget.checked)} disabled={isWorking} /> Converti le immagini idonee in grigio</label>
+                      onChange={(event) => { setScanGrayscale(event.currentTarget.checked); setResult(null); }} disabled={isWorking} /> Converti le immagini idonee in grigio</label>
                     <p class="file-note">Solo immagini Flate RGB/grigie a 8 bit, senza maschere. La modalità DPI usa misure effettive verificate e rifiuta PDF con layout complessi; la modalità pixel conserva i limiti dichiarati e non inventa i DPI. JPEG con perdita; testo, vettori e JPEG esistenti non vengono rasterizzati. Se cresce, restituisce l'originale.</p>
                   </>
                 ) : <p class="file-note">Solo JPEG RGB 8 bit con filtro DCT unico e risorse immagine dirette: nessun downsample, grigio, PNG o JBIG2. Maschere, colori speciali e filtri multipli vengono saltati. La compressione JPEG è con perdita; il testo e i vettori vengono copiati senza rasterizzarli.</p>}

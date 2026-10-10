@@ -126,7 +126,16 @@ try {
     assert((await extractPdfText(structural))[0]?.text.includes("BROWSER-VECTOR-TEXT"), "Default mode lost text");
 
     await profile.selectOption("jpeg-rgb-reencode");
+    const preset = page.getByLabel("Intensità compressione PDF");
+    const qualityInput = page.locator('input[type="number"][min="0.35"][max="0.85"]');
+    await preset.selectOption("high-quality");
+    assert(await qualityInput.inputValue() === "0.85", "#51 high-quality preset must set actual encoder quality");
+    await preset.selectOption("strong");
+    assert(await qualityInput.inputValue() === "0.35", "#51 strong preset must set actual encoder quality");
+    await preset.selectOption("balanced");
+    assert(await qualityInput.inputValue() === "0.6", "#51 balanced preset must set actual encoder quality");
     await page.locator('input[type="number"][min="0.35"][max="0.85"]').fill("0.45");
+    assert(await preset.inputValue() === "custom", "#51 manually edited quality must be disclosed as custom, not a misleading preset");
     const lossStart = performance.now();
     await page.locator('form button[type="submit"]').first().click();
     await resultPanel.waitFor({ timeout: 45_000 });
@@ -158,7 +167,10 @@ try {
       name: "scan-with-vector-text.pdf", mimeType: "application/pdf", buffer: Buffer.from(scanPdf),
     });
     await profile.selectOption("scan-flate-to-jpeg");
+    await preset.selectOption("strong");
+    assert(await page.getByLabel("Lato lungo massimo dell'immagine (pixel)").inputValue() === "960", "#51 strong scan preset must set real pixel cap");
     await page.getByLabel("Lato lungo massimo dell'immagine (pixel)").fill("256");
+    assert(await preset.inputValue() === "custom", "#51 custom scan resize must not masquerade as strong preset");
     await page.getByLabel("Converti le immagini idonee in grigio").check();
     await page.locator('form button[type="submit"]').first().click();
     await resultPanel.waitFor({ timeout: 45_000 });

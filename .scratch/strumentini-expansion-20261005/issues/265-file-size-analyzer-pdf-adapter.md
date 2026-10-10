@@ -1,5 +1,7 @@
 # 265 — File-size analyzer PDF adapter
 
+**2026-10-10 FUNCTIONAL ACCEPTANCE COMPLETED:** The public `file-size-analyzer` now reports exact measured encoded PDF stream payload contribution, independently identifiable object IDs, image object dimensions, page count and structural remainder that reconciles with source file length. Its source evidence distinguishes (1) images covering real pages under strict paint/CTM checks, (2) simple text/vector-only PDFs only when every page has verified uncompressed text content/font resources, no image/XObject/inline raster path and no unsupported graphics state, and (3) `unknown` for mixed or unprovable documents. It recommends the *existing compatible* structural PDF optimizer without inventing savings or inferring arbitrary scan types. New engine class was tested with independently parseable 3-page vector/text PDF and a true JPEG-image source. Focused PDF/#266 suites **14/14 PASS**; source-exact clean checkout `ad6ab0d`: **Astro 1893 files 0 errors, 218 Vitest suites all green, build 291 pages, Wrangler dry-run PASS**, and `tests/pdf-size-265.browser.mjs` real compiled Chromium 390px **`PDF_SIZE_265_CHROMIUM_PASS checks=15 source=image-PDF-and-text-vector-PDF no offsite`**, with both file types selected and displayed as `image-only-page-candidate` or `text-vector-only-candidate`, actual no fabricated savings and no remote upload. Parent #218 now functionally completed. This closes *bounded functional ACs*, not arbitrary PDF accounting, physical-device memory tests, Gold or device ticket #280/#281. Unsupported complexity still returns `unknown`.
+
 **What to build:** Extend the size analyzer with PDF page/image/stream/metadata contribution evidence and scan-heavy vs text/vector-heavy classification where detectable.
 
 **Traces to:** US-EXP-04, US-EXP-10
@@ -8,13 +10,13 @@
 
 **Blocked by:** 218, 228.
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** pdf → code-module-design → code-tdd
 
-- [ ] Classification is evidence-based and can return unknown.
-- [ ] Largest contributors link to exact measured structures/images.
-- [ ] Recommendations point to compatible PDF optimizer/compressor actions.
+- [x] Classification is evidence-based: narrow image and text/vector source candidates or explicit unknown.
+- [x] Largest contributors link to actual measured PDF stream object IDs, encoded byte sizes and image geometry, not invented disk or savings estimates.
+- [x] Recommendations point to the existing compatible structural PDF optimizer; output makes no unsupported savings guarantee.
 
 **Verification:** Synthetic text/vector/image/scan-heavy PDFs with known composition.
 
