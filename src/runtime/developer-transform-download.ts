@@ -34,10 +34,11 @@ export function developerTransformDownload(
   const inputBytes = encoder.encode(input).byteLength;
   const outputBytes = encoder.encode(output).byteLength;
   const savedBytes = inputBytes - outputBytes;
+  const svgMode = id === "xml-formatter-validator" && record.mode === "svg-minify";
   return {
     output,
-    filename: `${id}-risultato.${definition.extension}`,
-    mime: definition.mime,
+    filename: `${id}-risultato.${svgMode ? "svg" : definition.extension}`,
+    mime: svgMode ? "image/svg+xml" : definition.mime,
     kind: definition.kind,
     inputBytes,
     outputBytes,

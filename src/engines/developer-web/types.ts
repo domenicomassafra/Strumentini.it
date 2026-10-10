@@ -73,6 +73,8 @@ const ERROR_MESSAGE_IT: Readonly<Record<string, string>> = {
   INVALID_UUID_COUNT: "La quantità di UUID deve essere compresa tra 1 e 1000.",
   INVALID_UUID_VERSION: "Sono supportati soltanto UUIDv4 e UUIDv7.",
   INVALID_XML: "Il documento XML non è valido nel sottoinsieme locale supportato.",
+  INVALID_SVG: "Il file SVG non è valido o supera il sottoinsieme statico ottimizzabile in sicurezza.",
+  SVG_UNSAFE_CONTENT: "SVG dinamico, remoto o con elementi attivi non supportato: nessun file generato.",
   INVALID_XML_ENTITY: "Il riferimento a entità XML non è valido.",
   INVALID_YAML: "Il documento YAML non è valido nel sottoinsieme supportato.",
   JSON_PATH_TOO_DEEP: "Il percorso JSON supera il limite locale di profondità.",

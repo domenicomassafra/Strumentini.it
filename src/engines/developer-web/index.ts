@@ -186,7 +186,12 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
   if (toolId === "json-repair") return jsonRepairOperation(stringField(value, "text", "json", "input"));
   if (toolId === "json-structural-diff") return jsonStructuralDiffOperation(stringField(value, "leftJson", "left", "before"), stringField(value, "rightJson", "right", "after"));
   if (toolId === "json-type-schema-inference") return jsonInferenceOperation(stringField(value, "json", "text", "input"), optionalStringField(value, "typeName", "name") ?? "Root", optionalStringField(value, "mode", "output") ?? "both");
-  if (toolId === "xml-formatter-validator") return xmlOperation(stringField(value, "text", "xml", "input"), optionalStringField(value, "mode", "operation") ?? "prettify", optionalNumberField(value, "indent", "spaces") ?? 2);
+  if (toolId === "xml-formatter-validator") {
+    const mode = optionalStringField(value, "mode", "operation") ?? "prettify";
+    if (mode === "svg-minify") return import("./svg-optimizer-059").then(({ optimizeStaticSvg059 }) =>
+      optimizeStaticSvg059(stringField(value, "text", "xml", "input"), signal));
+    return xmlOperation(stringField(value, "text", "xml", "input"), mode, optionalNumberField(value, "indent", "spaces") ?? 2);
+  }
   if (toolId === "css-minifier") return cssMinifyOperation(stringField(value, "text", "css", "input"), (optionalStringField(value, "mode", "operation") ?? "minify") as "minify" | "prettify");
   if (toolId === "html-minifier") return htmlMinifyOperation(stringField(value, "text", "html", "input"), optionalStringField(value, "mode", "operation") ?? "safe");
   return invalid("UNKNOWN_TOOL", `Unknown developer/web tool: ${String(toolId)}.`);
