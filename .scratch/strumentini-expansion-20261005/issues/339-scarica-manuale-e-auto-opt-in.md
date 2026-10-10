@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 03 — scoped evidence
+
+`src/runtime/download-policy-339.ts` and `StructuredTextResultV2` JSON result UI: opt-in auto-download OFF by default, never re-download already-completed output when enabled, revocable/persistent, manual remains accessible; invalid/oversize/unverified refusal and storage denial fail closed. `tests/download-policy-339.test.ts` 3/3 and real Chromium `tests/acceptance-download-optin-339.mjs` PASS actual JSON bytes, later automatic download exactly once, simulated browser API denial, storage denial, revoke/reload. Only shared structured JSON-result surface integrated: all file formats/UI surfaces not yet audited.
+
+**Disposition:** verified implementation slice only; original unchecked AC and ticket lifecycle remain open for the explicitly unproven capability/device/provider limits. No publication, purchase, credential or release authority.

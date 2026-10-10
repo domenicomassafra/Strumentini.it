@@ -37,3 +37,9 @@
 **Out of scope:** Shipping functionality, buying licenses, changing receipt source fingerprints, broad desktop-only advanced exemptions.
 
 **Execution prompt:** Routed by canonical EXECUTION-PROMPTS.md with gates.
+
+## 2026-10-11 implementation wave 03 — scoped evidence
+
+Read-only `scripts/verify-release-scope-405.ts` with `tests/release-scope-405.test.ts` (8/8 PASS), full source/Worker+D1 fingerprint, scope IDs, Gold/browser/physical/rollback/cumulative/staging receipts and artifact fingerprints all fail closed. Isolated previous→candidate→previous rollback drill has authority LOCAL_FIXTURE_ONLY and refuses tamper/missing/cancel. Actual repo CLI `--scope=pdf-rotate` NO_GO: stale evidence/physical/staging/cumulative missing, worktree dirty. No live stage or promotion; AC-405.3 real canary NOT_RUN.
+
+**Disposition:** verified implementation slice only; original unchecked AC and ticket lifecycle remain open for the explicitly unproven capability/device/provider limits. No publication, purchase, credential or release authority.

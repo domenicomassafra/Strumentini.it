@@ -1,4 +1,13 @@
 import { inflateSync } from "fflate";
+import {
+  checkPdfBytes407,
+  checkTextPart407,
+  checkZipEntryType407,
+  checkZipPath407,
+  FILE_THREAT_LIMITS_407,
+  textPartKind407,
+  type FileThreatFinding407,
+} from "./file-threat-gate-407";
 
 /** #333: candidate routing only, never a file validator, sandbox or decoder. */
 export const FILE_DETECTION_LIMITS = {
@@ -72,6 +81,9 @@ class Refusal extends Error {
 }
 
 function refuse(reason: LocalFileRefusalReason, message: string): never { throw new Refusal(reason, message); }
+function refuseThreat(finding: FileThreatFinding407 | null): void {
+  if (finding) refuse(finding.reason, finding.message);
+}
 function u16(bytes: Uint8Array, offset: number): number {
   if (offset < 0 || offset + 2 > bytes.byteLength) refuse("MALFORMED", "Truncated ZIP metadata.");
   return new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength).getUint16(offset, true);
@@ -135,6 +147,15 @@ async function imageOrPdf(reader: RangeReader, first: Uint8Array, kind: "pdf"|"p
       }
       const end = await reader.range(Math.max(0,size-1024),Math.min(size,1024));
       if (!/%%EOF\s*$/u.test(new TextDecoder().decode(end))) refuse("MALFORMED", "PDF has no final EOF marker.");
+      // Entire PDFs up to 256 KiB are inspected. Larger ones are sampled at
+      // the beginning and end; they remain candidates, never safety proofs.
+      const window = FILE_THREAT_LIMITS_407.maxPdfWindowBytes;
+      if (size <= 2*window) {
+        refuseThreat(checkPdfBytes407(await reader.range(0,size)));
+      } else {
+        refuseThreat(checkPdfBytes407(await reader.range(0,window)));
+        refuseThreat(checkPdfBytes407(await reader.range(size-window,window)));
+      }
       return;
     }
     case "png": {
@@ -200,6 +221,7 @@ function zipPath(bytes: Uint8Array): string {
   if (name.length===0 || name.includes("\\") || name.includes("\u0000") || name.startsWith("/") || /^[A-Za-z]:/u.test(name) || name.split("/").some((part)=>part===".." || part===".")) {
     refuse("MALFORMED", "ZIP contains an unsafe member name.");
   }
+  refuseThreat(checkZipPath407(name));
   return name;
 }
 
@@ -250,11 +272,16 @@ async function inspectZip(reader: RangeReader): Promise<LocalFileFormat> {
     const n=u16(central,cursor+28),ex=u16(central,cursor+30),comment=u16(central,cursor+32);
     const offset=u32(central,cursor+42), end=cursor+46+n+ex+comment;
     if (end>central.length || !n) refuse("MALFORMED", "ZIP entry name/extra is truncated.");
-    if (flags & 1 || flags & 0x40) refuse("UNSUPPORTED", "Encrypted ZIP entries are unsupported.");
+    if (flags & (1 | 0x20 | 0x40 | 0x2000)) refuse("UNSUPPORTED", "Encrypted or modified ZIP entries are unsupported.");
     if (method!==0 && method!==8) refuse("UNSUPPORTED", "ZIP method is outside the supported profile.");
     if (packed===0xffff_ffff || unpacked===0xffff_ffff || offset===0xffff_ffff) refuse("UNSUPPORTED", "ZIP64 entry is unsupported.");
     noZip64(central.subarray(cursor+46+n,cursor+46+n+ex));
     const name=zipPath(central.subarray(cursor+46,cursor+46+n));
+    if (u16(central,cursor+34)!==0) refuse("UNSUPPORTED", "ZIP entry references a different disk.");
+    refuseThreat(checkZipEntryType407(u16(central,cursor+4),u32(central,cursor+38),name));
+    if (/\.(?:zip|7z|rar|tar|gz|bz2|xz|svgz)$/iu.test(name)) {
+      refuse("UNSUPPORTED", "Nested archives require a separate sandboxed resource check.");
+    }
     if (unique.has(name.toLowerCase())) refuse("MALFORMED", "Duplicate ZIP entry paths are ambiguous.");
     unique.add(name.toLowerCase());
     if (offset>=centralOffset) refuse("MALFORMED", "ZIP local member offset is outside data area.");
@@ -289,11 +316,55 @@ async function inspectZip(reader: RangeReader): Promise<LocalFileFormat> {
     const dataStart=entry.offset+30+len+extra;
     if (dataStart+entry.packed>centralOffset) refuse("MALFORMED", "ZIP member overlaps the central directory.");
     entry.dataStart=dataStart;
-    regions.push({start:entry.offset,end:dataStart+entry.packed});
+    let dataEnd=dataStart+entry.packed;
+    if (flags&8) {
+      // Data descriptors follow the compressed stream and may have a PK\x07\x08
+      // signature. They must agree with the central directory, without gaps.
+      const available=Math.min(16,centralOffset-dataEnd);
+      if (available<12) refuse("MALFORMED", "ZIP data descriptor is incomplete.");
+      const descriptor=await reader.range(dataEnd,available);
+      const signed=marker(descriptor,0,"PK\u0007\u0008");
+      const descriptorSize=signed?16:12;
+      if (available<descriptorSize || u32(descriptor,signed?4:0)!==entry.crc ||
+        u32(descriptor,signed?8:4)!==entry.packed || u32(descriptor,signed?12:8)!==entry.unpacked) {
+        refuse("MALFORMED", "ZIP data descriptor and central directory disagree.");
+      }
+      dataEnd+=descriptorSize;
+    }
+    regions.push({start:entry.offset,end:dataEnd});
   }
   if (firstOffset!==0) refuse("POLYGLOT", "ZIP archive has an unexpected leading prefix.");
   regions.sort((a,b)=>a.start-b.start);
-  for(let i=1;i<regions.length;i++) if (regions[i]!.start<regions[i-1]!.end) refuse("POLYGLOT", "ZIP local entries overlap.");
+  for(let i=1;i<regions.length;i++) if (regions[i]!.start!==regions[i-1]!.end) refuse("POLYGLOT", "ZIP local entries overlap or hide unindexed data.");
+  if (regions.at(-1)!.end!==centralOffset) refuse("POLYGLOT", "ZIP contains hidden data ahead of its central directory.");
+
+  // Only a small and fully bounded subset of archive text can be safely
+  // inspected inline. Refuse archives requiring unbounded XML/SVG processing.
+  let textBytes=0,textParts=0;
+  const parsedText=new Map<string,Uint8Array>();
+  for (const entry of entries) {
+    const kind=textPartKind407(entry.name);
+    if (!kind) continue;
+    if (reader.signal?.aborted) refuse("CANCELLED", "File inspection was cancelled.");
+    if (++textParts>FILE_THREAT_LIMITS_407.maxTextParts ||
+      entry.unpacked>FILE_THREAT_LIMITS_407.maxTextPartBytes ||
+      (textBytes+=entry.unpacked)>FILE_THREAT_LIMITS_407.maxTotalTextBytes) {
+      refuse("TOO_LARGE", "ZIP XML/SVG inspection exceeds the bounded text budget.");
+    }
+    const packed=await reader.range(entry.dataStart!,entry.packed);
+    let extracted:Uint8Array;
+    try { extracted=entry.compression===0?packed:inflateSync(packed,{out:new Uint8Array(entry.unpacked+1)}); }
+    catch { refuse("MALFORMED", "ZIP XML/SVG stream could not be decoded."); }
+    if (reader.signal?.aborted) refuse("CANCELLED", "File inspection was cancelled.");
+    if (extracted.length!==entry.unpacked || crc32(extracted)!==entry.crc) {
+      refuse("MALFORMED", "ZIP XML/SVG decompression or CRC mismatches the directory.");
+    }
+    let xml:string;
+    try { xml=textDecoder.decode(extracted); }
+    catch { refuse("MALFORMED", "ZIP XML/SVG is not valid UTF-8."); }
+    refuseThreat(checkTextPart407(xml,kind));
+    parsedText.set(entry.name,extracted);
+  }
 
   const present=(path:string) => entries.some((entry)=>entry.name===path);
   const kinds=Object.entries(OOXML).filter(([,v])=>present(v.root)) as Array<["docx"|"xlsx"|"pptx",{root:string;contentType:string}]>;
@@ -306,9 +377,9 @@ async function inspectZip(reader: RangeReader): Promise<LocalFileFormat> {
     refuse("TOO_LARGE", "OOXML content types are outside the bounded parse profile.");
   }
   let xmlBytes: Uint8Array;
-  const source=await reader.range(content.dataStart!,content.packed);
+  const source=parsedText.get(content.name) ?? await reader.range(content.dataStart!,content.packed);
   try {
-    xmlBytes=content.compression===0 ? source : inflateSync(source, {
+    xmlBytes=parsedText.has(content.name) || content.compression===0 ? source : inflateSync(source, {
       // fflate's default output allocation follows the stream's claims;
       // fix the allocation to the declared (bounded) size plus one byte so
       // an adversarial expansion can be refused without unbounded output.
@@ -355,7 +426,8 @@ function recognized(first:Uint8Array): "pdf"|"png"|"jpeg"|"gif"|"webp"|"zip"|nul
 }
 
 /**
- * No network, upload, eager file.arrayBuffer(), URL creation or decoder execution.
+ * No network, upload, eager file.arrayBuffer(), URL creation or active document rendering.
+ * ZIP text-part inflation is bounded and inspected as untrusted bytes.
  * `File.type` and extension are never evidence sufficient for routing. Returns
  * a refusal for inconsistent claims and structural edge cases; success remains
  * explicitly a candidate requiring a downstream format-specific validation.

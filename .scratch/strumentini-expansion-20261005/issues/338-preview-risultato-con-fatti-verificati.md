@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 03 — scoped evidence
+
+`src/runtime/output-facts-338.ts` and PDF result UI show only bounded output-byte PDF page count/version/dimensions/rotation or PNG IHDR+CRC facts; unavailable preview leaves verified download untouched. 7 focused tests, 20 tests with #337/PdfResult, independent pdfjs/Sharp oracles PASS. Real Chromium PDF Merge generated artifact → factual 2-page UI + download preserved. CSV preview and visual/pixel fidelity outside proof, ticket remains open.
+
+**Disposition:** verified implementation slice only; original unchecked AC and ticket lifecycle remain open for the explicitly unproven capability/device/provider limits. No publication, purchase, credential or release authority.

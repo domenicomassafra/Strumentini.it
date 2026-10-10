@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 03 — scoped evidence
+
+`tests/acceptance-wcag-floor-350.mjs` local Chromium Chrome 154 116 assertions: four pages /,/accedi/,/preferiti/,/tools/rate-converter at 320/390 and 200/400%-equivalent reflow, keyboard/focus, reduced-motion, live status, 44px controls and computed light/dark contrast. `src/styles/global.css` fixed measured `--text-faint` text AA contrast light ~3.35:1 to safer #59667a. Axe not installed/NOT_RUN, actual VoiceOver/TalkBack, physical devices and native browser zoom NOT_RUN, no blanket WCAG certification.
+
+**Disposition:** verified implementation slice only; original unchecked AC and ticket lifecycle remain open for the explicitly unproven capability/device/provider limits. No publication, purchase, credential or release authority.

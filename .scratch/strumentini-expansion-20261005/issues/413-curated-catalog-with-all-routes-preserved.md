@@ -8,7 +8,7 @@
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; research-primary-sources/pdf/security-audit as needed
 
@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-413.1: Every manifest stays searchable while home selection reflects daily jobs.
-- [ ] AC-413.2: No fabricated popularity or removing routes to gain clarity.
-- [ ] AC-413.3: On the scoped input and failure cases, verify: Catalog 269/269 route and editorial truth checks. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
+- [x] AC-413.1: Every manifest stays searchable while home selection reflects daily jobs.
+- [x] AC-413.2: No fabricated popularity or removing routes to gain clarity.
+- [x] AC-413.3: On the scoped input and failure cases, verify: Catalog 269/269 route and editorial truth checks. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
 
 **Verification:** Catalog 269/269 route and editorial truth checks; run rejected/huge/partial/cancel cases and inspect output beyond UI mock.
 
@@ -37,3 +37,10 @@
 **Out of scope:** Shipping functionality, buying licenses, changing receipt source fingerprints, broad desktop-only advanced exemptions.
 
 **Execution prompt:** Routed by canonical EXECUTION-PROMPTS.md with gates.
+
+## 2026-10-11 verified implementation and closure
+
+- `src/catalog/home-curation-413.ts` is the source-bound editorial eight-job list (PDF, images, CSV, text, QR, dates, business). `src/components/home/StarterTools.astro` explicitly labels the selection as editorial, not any inferred popularity ranking; unavailable/non-local/manipulated routes fail closed rather than substituting unsafe links.
+- `tests/curated-catalog-413.test.ts`: 3/3 PASS: **269/269** current generated catalog IDs equal search and workbench projections; every one has an actual `src/pages/tools/<id>.astro` public route and canonical URL. Eight curated source IDs are unique, LOCAL/network-forbidden and span multiple categories; missing/duped/spoofed routes fail closed. Full `/strumenti/` still receives all catalog entries.
+- `tests/acceptance-curated-catalog-413.mjs`: Chromium REAL localhost 390px PASS: eight editorial home cards, disclosure explicitly not a popularity list, directory 269, an unfeatured `csv-sort` route still responds 200, no horizontal overflow/page errors. No provider calls, hidden catalog mutation, Gold receipt changes or changes to output engines.
+- Unsupported/huge/partial/cancel file-input behaviour belongs to #333/#335/#336/#407; this ticket is a catalog **routing and editorial selection** invariant, with no file bytes or long-running operations and therefore no false parser acceptance claimed.

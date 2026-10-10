@@ -169,7 +169,8 @@
 
   --text: #0b1220;
   --text-muted: #55637a;
-  --text-faint: #7c8a9e;
+  /* Supporting copy must remain readable at normal text sizes (AA >= 4.5:1). */
+  --text-faint: #59667a;
   /* Ink for a saturated ground (a tone tile, a gradient chip). White in both
      themes, because the ground it sits on is a tone, not the page. */
   --on-tone: #ffffff;

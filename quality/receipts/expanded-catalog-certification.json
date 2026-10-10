@@ -15416,6 +15416,7 @@
           "tests/image-resize-engine.test.ts",
           "tests/image-result-v2.test.ts",
           "tests/image-visual-tools.test.ts",
+          "tests/release-scope-405.test.ts",
           "tests/release-validation.test.ts"
         ]
       },
@@ -22291,6 +22292,7 @@
           "sha256": "e619e3f64184675c16625e3d9b21dcfc430f1c2ee9dd26b9edd8ff0d7487b951"
         },
         "testFiles": [
+          "tests/explainable-suggestions-344.test.ts",
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts",
           "tests/pdf-form-flatten-audit.test.ts"
@@ -22854,6 +22856,7 @@
         },
         "testFiles": [
           "tests/ephemeral-file-handoff-337.test.ts",
+          "tests/explainable-suggestions-344.test.ts",
           "tests/home-recent-navigation-345.test.ts",
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts",
@@ -24440,7 +24443,8 @@
         "testFiles": [
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts",
-          "tests/pdf-visual-rotation-selection.test.ts"
+          "tests/pdf-visual-rotation-selection.test.ts",
+          "tests/release-scope-405.test.ts"
         ]
       },
       "oracle": {
@@ -24959,6 +24963,7 @@
         },
         "testFiles": [
           "tests/ephemeral-file-handoff-337.test.ts",
+          "tests/explainable-suggestions-344.test.ts",
           "tests/image-format-matrix.test.ts",
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
@@ -33717,6 +33722,7 @@
           "sha256": "88f20dacdf931fbc37cc88812c0532f831f485b421840bfb0baaf47a7f4a96c7"
         },
         "testFiles": [
+          "tests/explainable-suggestions-344.test.ts",
           "tests/home-recent-navigation-345.test.ts"
         ]
       },

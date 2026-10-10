@@ -1,13 +1,39 @@
-import { useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import type { ResultDeclaration } from "../../../catalog/manifest";
 import { createBoundedTextPreview } from "../../../runtime/bounded-preview";
 import { createOutputArtifactDescriptor } from "../../../runtime/output-artifact";
 import { resolveResultActions } from "../../../runtime/result-actions";
+import { AUTO_DOWNLOAD_KEY_339, browserStorage339, planVerifiedDownload339, readAutoDownload339, writeAutoDownload339 } from "../../../runtime/download-policy-339";
 import { BoundedTextResultPreview } from "./BoundedResultPreview";
 import { ResultActions } from "./ResultActions";
 import { ResultBreakdown, ResultPrimaryAnswer, ResultProvenance } from "./ResultPrimitives";
 import { ToolResultPanel } from "./ToolResultPanel";
 import type { AccessibleResultStatus } from "./ResultAccessibility";
+
+/** A browser download request is never evidence that the OS accepted/saved it. */
+function requestDownload339(artifact: ReturnType<typeof createOutputArtifactDescriptor>): boolean {
+  const plan = planVerifiedDownload339(artifact);
+  if (!plan.allowed) return false;
+  let url: string | undefined;
+  try {
+    url = URL.createObjectURL(new Blob([plan.bytes.slice().buffer], { type: plan.mime }));
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = plan.filename;
+    anchor.hidden = true;
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
+    // Browsers may still be reading the blob after click returns; give them
+    // time rather than revoking immediately (especially mobile engines).
+    const temporaryUrl = url;
+    setTimeout(() => URL.revokeObjectURL(temporaryUrl), 15_000);
+    return true;
+  } catch {
+    if (url !== undefined) URL.revokeObjectURL(url);
+    return false;
+  }
+}
 
 export interface StructuredTextMetric {
   readonly label: string;
@@ -70,13 +96,10 @@ export function StructuredTextResultV2({
   onReset,
 }: StructuredTextResultV2Props) {
   const [actionStatus, setActionStatus] = useState("");
-  if (value === null) {
-    return <ToolResultPanel eyebrow={eyebrow} placeholder={placeholder} state={state} busy={state === "running"} />;
-  }
-
-  const serialized = JSON.stringify(value, null, 2);
-  const effectiveMetrics = metrics.length > 0 ? metrics : inferredStructuredMetrics(value);
-  const artifact = createOutputArtifactDescriptor({
+  const [autoDownload, setAutoDownload] = useState(() => readAutoDownload339(browserStorage339()));
+  const autoTriggered = useRef(false);
+  const serialized = value === null ? null : JSON.stringify(value, null, 2);
+  const artifact = serialized === null ? null : createOutputArtifactDescriptor({
     kind: "structured",
     name: filename,
     mime: "application/json",
@@ -89,13 +112,42 @@ export function StructuredTextResultV2({
     fidelity: "structural",
     fidelityNote: "Il file contiene l'intero risultato strutturato prodotto dal motore locale.",
   });
-  JSON.parse(serialized);
-  const preview = createBoundedTextPreview(artifact, 36, "code");
+  if (serialized !== null) JSON.parse(serialized);
+
+  useEffect(() => {
+    if (value === null || state === "running" || state === "idle") autoTriggered.current = false;
+  }, [state, value]);
+  useEffect(() => {
+    if (state !== "success" || !autoDownload || artifact === null || !artifact.download.ready || autoTriggered.current) return;
+    autoTriggered.current = true;
+    if (requestDownload339(artifact)) {
+      setActionStatus("Download automatico richiesto al browser. Se viene bloccato, usa Scarica risultato.");
+    } else {
+      setActionStatus("Download automatico non disponibile. Puoi provare Scarica risultato.");
+    }
+  }, [state, autoDownload, serialized, filename]);
+
+  useEffect(() => {
+    const listener = (event: StorageEvent) => {
+      if (event.key !== AUTO_DOWNLOAD_KEY_339 && event.key !== null) return;
+      autoTriggered.current = state === "success";
+      setAutoDownload(readAutoDownload339(browserStorage339()));
+    };
+    window.addEventListener("storage", listener);
+    return () => window.removeEventListener("storage", listener);
+  }, [state]);
+
+  if (value === null) {
+    return <ToolResultPanel eyebrow={eyebrow} placeholder={placeholder} state={state} busy={state === "running"} />;
+  }
+
+  const effectiveMetrics = metrics.length > 0 ? metrics : inferredStructuredMetrics(value);
+  const preview = createBoundedTextPreview(artifact!, 36, "code");
   const actions = resolveResultActions({
     declaration,
     primary: declaration.capabilities.includes("copy") ? "copy" : declaration.capabilities.includes("download") ? "download" : null,
     hasCopyPayload: serialized !== "",
-    artifact,
+    artifact: artifact!,
     resetReady: true,
   });
 
@@ -105,7 +157,7 @@ export function StructuredTextResultV2({
       return;
     }
     try {
-      await navigator.clipboard.writeText(serialized);
+      await navigator.clipboard.writeText(serialized!);
       setActionStatus("Risultato completo copiato.");
     } catch {
       setActionStatus("Il browser ha bloccato gli appunti. Puoi selezionare il risultato dall'anteprima.");
@@ -113,13 +165,20 @@ export function StructuredTextResultV2({
   }
 
   function download() {
-    if (!artifact.download.ready) return;
-    const url = URL.createObjectURL(new Blob([artifact.bytes.slice().buffer], { type: artifact.mime }));
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = artifact.name;
-    anchor.click();
-    URL.revokeObjectURL(url);
+    if (!requestDownload339(artifact!)) setActionStatus("Download non disponibile: il file non è verificato o il browser lo ha bloccato.");
+    else setActionStatus("Download richiesto al browser. Se non parte, controlla le autorizzazioni ai download.");
+  }
+
+  function chooseAutoDownload(enabled: boolean) {
+    // Selecting auto after a completed result never surprises the user by
+    // downloading that already-visible output. Only subsequent runs qualify.
+    autoTriggered.current = state === "success";
+    const written = writeAutoDownload339(browserStorage339(), enabled);
+    setAutoDownload(written && enabled);
+    setActionStatus(written ? (enabled
+      ? "Download automatico attivo per le prossime operazioni. Puoi disattivarlo in qualsiasi momento."
+      : "Download automatico disattivato. Il download manuale resta disponibile.")
+      : "Impossibile salvare la preferenza nel browser: download automatico disattivato.");
   }
 
   return (
@@ -144,6 +203,13 @@ export function StructuredTextResultV2({
             reset: onReset,
           }}
         />
+        {declaration.capabilities.includes("download") && (
+          <label class="checkbox-field" data-download-optin339>
+            <input type="checkbox" checked={autoDownload} onChange={(event) => chooseAutoDownload(event.currentTarget.checked)} />
+            <span>Scarica automaticamente i prossimi risultati (facoltativo)</span>
+          </label>
+        )}
+        {declaration.capabilities.includes("download") && <p class="file-note">Disattivato inizialmente. Il browser può bloccare download automatici: il pulsante manuale resta sempre disponibile.</p>}
         {actionStatus !== "" && <p class="file-note" role="status">{actionStatus}</p>}
       </div>
     </ToolResultPanel>

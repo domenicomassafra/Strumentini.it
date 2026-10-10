@@ -45,7 +45,7 @@ category identity so a card can be recognised before it is read.
 | `--surface-muted` | `#e4effd` | the third step, progress tracks, hairlines on blue |
 | `--text` | `#0b1220` | headings and body ink |
 | `--text-muted` | `#55637a` | secondary prose, labels, metadata |
-| `--text-faint` | `#7c8a9e` | the quietest legible step: hints, counts, breadcrumbs |
+| `--text-faint` | `#59667a` | restrained but AA-readable supporting ink: hints, counts, breadcrumbs (2026-10-11 scoped measured contrast fix, not a new visual direction) |
 | `--border` | `#e4edf9` | the hairline that makes a card a card |
 | `--border-strong` | `#cfe0f4` | input edges and controls that must read as interactive |
 | `--success` | `#0d7a3c` | verified, success, "done" |

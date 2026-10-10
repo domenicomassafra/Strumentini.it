@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 424,
-    "completed": 284,
+    "completed": 286,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 267,
-    "open": 140,
-    "readyDAG": 41,
-    "ready-for-agent": 34,
-    "dependency-blocked": 99,
+    "completedWithoutExplicitRefusal": 269,
+    "open": 138,
+    "readyDAG": 40,
+    "ready-for-agent": 33,
+    "dependency-blocked": 98,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 0,
@@ -307,7 +307,9 @@
       324,
       325,
       326,
-      327
+      327,
+      344,
+      413
     ],
     "ready-for-agent": [
       47,
@@ -342,8 +344,7 @@
       404,
       406,
       407,
-      408,
-      413
+      408
     ],
     "dependency-blocked": [
       8,
@@ -386,7 +387,6 @@
       341,
       342,
       343,
-      344,
       345,
       349,
       352,
@@ -4033,9 +4033,9 @@
     {
       "id": 344,
       "title": "Area personale con suggerimenti spiegabili",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [
         330,
         335
@@ -4867,9 +4867,9 @@
     {
       "id": 413,
       "title": "Curated catalog with all routes preserved",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false

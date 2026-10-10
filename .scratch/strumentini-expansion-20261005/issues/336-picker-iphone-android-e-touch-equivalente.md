@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 03 — scoped evidence
+
+Separate native image/* Photos and generic Files pickers; 44 px control targets; cancel/read-denied/app-return preserves previous valid selection, no capture/upload/autostart. `tests/acceptance-mobile-picker-336.mjs` Chromium iPhone-like and Pixel-like emulation 320..1440 PASS incl real filechooser, Photos image result and Files PDF path. Physical iOS Safari/Android Chrome picker/permissions AC-336.3 remain NOT_RUN, HEIC detection unsupported.
+
+**Disposition:** verified implementation slice only; original unchecked AC and ticket lifecycle remain open for the explicitly unproven capability/device/provider limits. No publication, purchase, credential or release authority.

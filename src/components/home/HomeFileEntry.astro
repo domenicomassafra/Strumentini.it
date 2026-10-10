@@ -27,15 +27,25 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
   <div class="home-file-heading">
     <div>
       <h2 id="home-file-title">Hai già un file?</h2>
-      <p id="home-file-help">Sceglilo oppure trascinalo qui per scoprire quali strumenti locali possono aprirlo.</p>
+      <p id="home-file-help">Scegli un'immagine da Foto o un file dal dispositivo. Scopri quali strumenti locali possono aprirlo.</p>
     </div>
     <span class="home-file-privacy">Controllo locale, nessun caricamento</span>
   </div>
 
   <div class="home-file-dropzone" data-home-file-dropzone>
-    <label for="home-file-picker" class="home-file-picker-label">Scegli un file dal dispositivo</label>
-    <input id="home-file-picker" type="file" class="home-file-picker" data-home-file-picker aria-describedby="home-file-help home-file-status" />
-    <p class="home-file-drop-hint">Oppure trascina un solo file in quest'area.</p>
+    <div class="home-file-picker-options">
+      <div class="home-file-picker-option">
+        <label for="home-photos-picker" class="home-file-picker-label">Foto e immagini</label>
+        <input id="home-photos-picker" type="file" accept="image/*" class="home-file-picker" data-home-photos-picker aria-describedby="home-file-photos-help home-file-status" />
+        <p id="home-file-photos-help" class="home-file-picker-help">La galleria disponibile dipende dal dispositivo. Il controllo locale riconosce PNG, JPEG, GIF e WebP.</p>
+      </div>
+      <div class="home-file-picker-option">
+        <label for="home-file-picker" class="home-file-picker-label">File dal dispositivo</label>
+        <input id="home-file-picker" type="file" class="home-file-picker" data-home-file-picker aria-describedby="home-file-files-help home-file-status" />
+        <p id="home-file-files-help" class="home-file-picker-help">Apri il selettore File anche per PDF e altri formati. Massimo 32 MiB per il controllo iniziale.</p>
+      </div>
+    </div>
+    <p class="home-file-drop-hint">Oppure trascina un solo file in quest'area, se usi mouse o trackpad. Nessuna foto viene scattata automaticamente.</p>
   </div>
 
   <p id="home-file-status" class="home-file-status" role="status" aria-live="polite" aria-atomic="true" data-home-file-status>
@@ -44,6 +54,9 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
 
   <div class="home-file-result" data-home-file-result hidden>
     <h3>Operazioni disponibili per questo formato</h3>
+    <p class="home-file-caution" data-home-file-prior-notice hidden>
+      Il controllo del nuovo file è in corso. Le operazioni elencate si riferiscono al file precedente.
+    </p>
     <ul class="home-file-actions" data-home-file-actions>
       {suggestions.map(({ format, route, name }) => (
         <li data-home-file-action-format={format} hidden>
@@ -70,13 +83,16 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
   const root = document.querySelector<HTMLElement>("[data-home-file-entry]");
   const dropzone = root?.querySelector<HTMLElement>("[data-home-file-dropzone]");
   const picker = root?.querySelector<HTMLInputElement>("[data-home-file-picker]");
+  const photosPicker = root?.querySelector<HTMLInputElement>("[data-home-photos-picker]");
   const status = root?.querySelector<HTMLElement>("[data-home-file-status]");
   const resultPanel = root?.querySelector<HTMLElement>("[data-home-file-result]");
+  const priorNotice = root?.querySelector<HTMLElement>("[data-home-file-prior-notice]");
   const actions = root?.querySelector<HTMLElement>("[data-home-file-actions]");
   const noActions = root?.querySelector<HTMLElement>("[data-home-file-no-actions]");
   const resetButton = root?.querySelector<HTMLButtonElement>("[data-home-file-reset]");
   let generation = 0;
   let active: AbortController | null = null;
+  const previousOptionsHint = " Le operazioni visualizzate si riferiscono all'ultimo file riconosciuto.";
 
   const reasonText: Record<LocalFileRefusalReason, string> = {
     EMPTY: "Il file è vuoto. Scegli un file che contenga dati.",
@@ -92,6 +108,7 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
 
   function clearActions(): void {
     if (resultPanel) resultPanel.hidden = true;
+    if (priorNotice) priorNotice.hidden = true;
     for (const option of actions?.querySelectorAll<HTMLElement>("[data-home-file-action-format]") ?? []) {
       option.hidden = true;
     }
@@ -103,6 +120,7 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
     active?.abort();
     active = null;
     if (picker) picker.value = "";
+    if (photosPicker) photosPicker.value = "";
     clearActions();
     if (status) status.textContent = "Selezione rimossa. Puoi scegliere un altro file.";
     root?.removeAttribute("aria-busy");
@@ -112,13 +130,14 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
     const current = ++generation;
     active?.abort();
     active = null;
-    clearActions();
     if (!status) return;
     if (files.length === 0) {
-      status.textContent = "Nessun file selezionato. Puoi riprovare.";
+      status.textContent = "Scelta annullata. Puoi riprovare."
+        + (resultPanel && !resultPanel.hidden ? previousOptionsHint : "");
       return;
     }
     if (files.length !== 1) {
+      clearActions();
       status.textContent = "Scegli un solo file alla volta. Nessun file è stato elaborato.";
       return;
     }
@@ -127,6 +146,7 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
     const controller = new AbortController();
     active = controller;
     status.textContent = "Controllo locale del formato in corso…";
+    if (priorNotice) priorNotice.hidden = !resultPanel || resultPanel.hidden;
     root?.setAttribute("aria-busy", "true");
     try {
       const { detectLocalFile } = await import("../../runtime/file-detection");
@@ -134,9 +154,13 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
       const detected = await detectLocalFile(file, { signal: controller.signal });
       if (current !== generation || controller.signal.aborted) return;
       if (detected.status === "refused") {
-        status.textContent = reasonText[detected.reason];
+        const recoverable = detected.reason === "READ_FAILED" || detected.reason === "CANCELLED";
+        if (!recoverable) clearActions();
+        status.textContent = reasonText[detected.reason]
+          + (recoverable && resultPanel && !resultPanel.hidden ? previousOptionsHint : "");
         return;
       }
+      clearActions();
       const matches = [...(actions?.querySelectorAll<HTMLElement>("[data-home-file-action-format]") ?? [])]
         .filter((option) => option.dataset.homeFileActionFormat === detected.format);
       for (const option of matches) option.hidden = false;
@@ -146,20 +170,44 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
         + matches.length + (matches.length === 1 ? " strumento possibile." : " strumenti possibili.");
     } catch {
       if (current !== generation || controller.signal.aborted) return;
-      status.textContent = "Controllo locale non disponibile. Nessuna operazione avviata.";
+      status.textContent = "Controllo locale non disponibile. Nessuna operazione avviata."
+        + (resultPanel && !resultPanel.hidden ? previousOptionsHint : "");
     } finally {
       if (current === generation) {
         active = null;
+        if (priorNotice) priorNotice.hidden = true;
         root?.removeAttribute("aria-busy");
       }
     }
   }
 
-  picker?.addEventListener("change", () => {
-    const files = [...(picker.files ?? [])];
-    picker.value = "";
-    void inspect(files);
-  });
+  function cancelledPicker(message: string): void {
+    resetDrag();
+    if (status) status.textContent = message
+      + (resultPanel && !resultPanel.hidden ? previousOptionsHint : "");
+  }
+
+  for (const input of [picker, photosPicker]) {
+    input?.addEventListener("change", () => {
+      const files = [...(input.files ?? [])];
+      // Reset native inputs so browsers can emit a change event when the same
+      // file is selected again after cancellation or a refusal.
+      input.value = "";
+      if (files.length === 0) {
+        cancelledPicker("Nessun nuovo file ricevuto. Puoi riprovare.");
+        return;
+      }
+      void inspect(files);
+    });
+    input?.addEventListener("cancel", () => {
+      input.value = "";
+      cancelledPicker("Scelta annullata. Puoi aprire di nuovo Foto o File.");
+    });
+    input?.addEventListener("error", () => {
+      input.value = "";
+      cancelledPicker("Impossibile completare la selezione. Controlla gli eventuali permessi e riprova.");
+    });
+  }
   resetButton?.addEventListener("click", clearSelection);
 
   function isFileDrag(event: DragEvent): boolean {
@@ -221,9 +269,13 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
     min-width: 0;
   }
   .home-file-drag-active { border-color: var(--brand); background: var(--brand-soft); }
+  .home-file-picker-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+  .home-file-picker-option { display: grid; align-content: start; gap: var(--space-2); min-width: 0; }
   .home-file-picker-label { font-weight: var(--font-weight-semibold); }
-  .home-file-picker { display: block; width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; font: inherit; color: var(--text); }
+  .home-file-picker { display: block; width: 100%; min-height: 44px; min-width: 0; max-width: 100%; box-sizing: border-box; font: inherit; color: var(--text); }
+  .home-file-picker::file-selector-button { min-height: 44px; border-radius: var(--radius-md); border: var(--border-width) solid var(--border); background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }
   .home-file-picker:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+  .home-file-picker-help { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); overflow-wrap: anywhere; }
   .home-file-drop-hint { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); }
   .home-file-status { min-height: 1.5em; color: var(--text-muted); margin: var(--space-4) 0 0; overflow-wrap: anywhere; }
   .home-file-result { margin-top: var(--space-5); border-top: var(--border-width) solid var(--border); padding-top: var(--space-5); }
@@ -243,6 +295,9 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
   .home-file-actions a:hover, .home-file-reset:hover { border-color: var(--brand); }
   .home-file-caution { font-size: var(--font-size-sm); color: var(--text-muted); }
   .home-file-reset { cursor: pointer; }
+  @media (max-width: 620px) {
+    .home-file-picker-options { grid-template-columns: minmax(0, 1fr); }
+  }
   @media (max-width: 390px) {
     .home-file-entry { padding: var(--space-4); }
     .home-file-actions { display: grid; }

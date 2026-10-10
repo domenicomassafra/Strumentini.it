@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 284 / 140 |
+| All / completed / open | 424 / 286 / 138 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 41 |
-| Ready for assignment (feasibility still to prove) | 34 |
-| Waiting on other tickets | 99 |
+| DAG-ready (all numeric dependencies closed) | 40 |
+| Ready for assignment (feasibility still to prove) | 33 |
+| Waiting on other tickets | 98 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 0 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (34)
+## Ready for assignment (feasibility still to prove) (33)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
@@ -56,9 +56,8 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #406 — Independent PDF redaction attack corpus
 - #407 — Hostile parsers and archive resource safety
 - #408 — Independent output consumer proofs by family
-- #413 — Curated catalog with all routes preserved
 
-## Waiting on other tickets (99)
+## Waiting on other tickets (98)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -100,7 +99,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #341 — Salvataggio locale file volontario (awaiting #338)
 - #342 — Quote e eviction file locali (awaiting #341)
 - #343 — Esporta importa elimina configurazione (awaiting #330)
-- #344 — Area personale con suggerimenti spiegabili (awaiting #330, #335)
 - #345 — Navigazione stabile da task e file (awaiting #330, #334)
 - #349 — File server opt-in TTL delete prova (awaiting #348)
 - #352 — Selezione owner direzione visuale (awaiting #351)

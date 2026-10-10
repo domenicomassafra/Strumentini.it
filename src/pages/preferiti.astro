@@ -118,11 +118,14 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
         <section class="section" aria-labelledby="consigliati">
           <div class="section-head">
             <div>
-              <h2 class="section-title" id="consigliati">Strumenti consigliati per te</h2>
-              <p class="section-sub">Dalle categorie che usi di più, fra gli strumenti verificati.</p>
+              <h2 class="section-title" id="consigliati">Altri strumenti dalle tue attività</h2>
+              <p class="section-sub">Solo dalle categorie in cui hai completato operazioni su questo dispositivo, non da classifiche di popolarità.</p>
             </div>
           </div>
           <ul class="area-suggest" data-area-suggest></ul>
+          <p class="area-empty" data-area-suggest-empty hidden>
+            Nessun suggerimento personalizzato disponibile: completa un'operazione per scoprire altri strumenti della stessa categoria.
+          </p>
         </section>
       </div>
 
@@ -141,6 +144,7 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
 
 <script>
   import { loadMembership, subscribeMembership, type Membership } from "../workbench/membership";
+  import { explainableSuggestions344 } from "../workbench/explainable-suggestions-344";
 
   interface IndexedTool {
     id: string;
@@ -196,10 +200,11 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
     return new Date(then).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
   }
 
-  function card(tool: IndexedTool, action: string, extra = ""): string {
+  function card(tool: IndexedTool, action: string, extra = "", reason = ""): string {
     return `<li class="tool-card" style="--tile-tone: var(--tone-${tool.tone})">`
       + `<div class="tool-card-top"><h3 class="tool-card-name"><a href="${escapeHtml(tool.route)}">${escapeHtml(tool.name)}</a></h3>${extra}</div>`
       + `<p class="tool-card-summary">${escapeHtml(tool.summary)}</p>`
+      + (reason === "" ? "" : `<p class="area-suggestion-why">${escapeHtml(reason)}</p>`)
       + `<div class="tool-card-foot"><span class="tool-card-category">${escapeHtml(tool.categoryLabel)}</span>`
       + `<a class="area-action" href="${escapeHtml(tool.route)}">${escapeHtml(action)} <span aria-hidden="true">→</span></a></div></li>`;
   }
@@ -244,11 +249,11 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
     }
 
     const suggest = document.querySelector<HTMLElement>("[data-area-suggest]");
+    const suggestEmpty = document.querySelector<HTMLElement>("[data-area-suggest-empty]");
     if (suggest !== null) {
-      const installed = new Set(membership.installed);
-      const usedCategories = new Set(recent.map((entry) => byId.get(entry.toolId)?.category).filter((value): value is string => value !== undefined));
-      const pool = index.filter((tool) => !installed.has(tool.id) && (usedCategories.size === 0 || usedCategories.has(tool.category)));
-      suggest.innerHTML = pool.slice(0, 4).map((tool) => card(tool, "Provalo")).join("");
+      const recommendations = explainableSuggestions344(membership.installed, membership.recent, index);
+      suggest.innerHTML = recommendations.map(({ tool, reason }) => card(tool, "Provalo", "", reason)).join("");
+      if (suggestEmpty !== null) suggestEmpty.hidden = recommendations.length > 0;
     }
   }
 
@@ -375,6 +380,7 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
   .area-continue,
   .area-favorites,
   .area-suggest { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .area-suggestion-why { color: var(--text-muted); font-size: var(--font-size-sm); margin: var(--space-2) 0; }
 
   .area-activity { display: grid; gap: var(--space-2); }
 

@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { canOfferPdfPagesHandoff337, receivePdfPagesHandoff337, startPdfPagesHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
+import { readOutputFacts338 } from "../../../runtime/output-facts-338";
+import { deleteSavedPdf341, listSavedPdfs341, loadSavedPdf341, maySavePdf341, savePdf341, type SavedPdfSummary341 } from "../../../workbench/saved-pdf-341";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { TOOL_COPY_IT } from "../../../i18n/it/tool-copy";
@@ -123,6 +125,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [error, setError] = useState("");
   const [status, setStatus] = useState<"idle" | "working" | "done">("idle");
   const [handoffMessage, setHandoffMessage] = useState("");
+  const [savedPdfItems, setSavedPdfItems] = useState<readonly SavedPdfSummary341[]>([]);
+  const [savedPdfStatus, setSavedPdfStatus] = useState("");
+  const [savedPdfBusy, setSavedPdfBusy] = useState(false);
   const pendingPdfHandoff = useRef<(() => void) | null>(null);
   const controller = useRef<AbortController | null>(null);
 
@@ -130,6 +135,14 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     controller.current?.abort();
     pendingPdfHandoff.current?.();
     pendingPdfHandoff.current = null;
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    void listSavedPdfs341().then((items) => { if (active) setSavedPdfItems(items); }).catch(() => {
+      if (active) setSavedPdfStatus("Archivio PDF locale non disponibile: puoi sempre scaricare manualmente i risultati.");
+    });
+    return () => { active = false; };
   }, []);
 
   // #337: the destination consumes ephemeral bytes as a native File. No file
@@ -491,7 +504,74 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     ? result.raw.audit as unknown as PdfFormAnnotationAudit : undefined;
   const flattenVerification = toolId === "pdf-flatten" && result !== null && result.raw.verification
     ? result.raw.verification as unknown as PdfFlattenVerification : undefined;
+  // Independent, bounded inspection of final produced bytes only. This must
+  // never update PreparedPdfResult or the download eligibility on failure.
+  const outputFacts = useMemo(() => result?.artifacts.slice(0, 3).map(({ artifact }) => ({
+    name: artifact.name,
+    facts: readOutputFacts338(artifact),
+  })) ?? [], [result]);
   const handoffPdf = result?.artifacts.length === 1 ? result.artifacts[0]?.artifact : undefined;
+
+  async function saveCurrentPdf341() {
+    if (!maySavePdf341(handoffPdf) || savedPdfBusy) return;
+    setSavedPdfBusy(true);
+    try {
+      await savePdf341(handoffPdf);
+      setSavedPdfItems(await listSavedPdfs341());
+      setSavedPdfStatus("PDF conservato su questo dispositivo. Puoi riaprirlo dopo aver aggiornato la pagina o eliminarlo quando vuoi.");
+    } catch {
+      setSavedPdfStatus("Impossibile conservare il PDF in questo browser (spazio o accesso negato). Il risultato resta scaricabile manualmente qui.");
+    } finally { setSavedPdfBusy(false); }
+  }
+
+  async function openSavedPdf341(id: string) {
+    if (savedPdfBusy || controller.current !== null) return;
+    setSavedPdfBusy(true);
+    try {
+      const file = await loadSavedPdf341(id);
+      if (file === null) throw new Error("not found");
+      setFiles([file]);
+      setResult(null);
+      setTextExports(null);
+      setMergePagePlan(null);
+      setPages("");
+      setOrderHistory([]);
+      setError("");
+      setStatus("idle");
+      setSavedPdfStatus(`PDF conservato riaperto come input: ${file.name}. Scegli le opzioni e avvia l'operazione manualmente.`);
+    } catch {
+      setSavedPdfStatus("Non posso riaprire il PDF: potrebbe essere stato eliminato o modificato dal browser. Nessun file è stato elaborato.");
+    } finally { setSavedPdfBusy(false); }
+  }
+
+  async function downloadSavedPdf341(id: string) {
+    if (savedPdfBusy) return;
+    try {
+      const file = await loadSavedPdf341(id);
+      if (file === null) throw new Error("not found");
+      const url = URL.createObjectURL(file);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = file.name;
+      anchor.hidden = true;
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 15_000);
+      setSavedPdfStatus("Download richiesto al browser. Se non parte, controlla le autorizzazioni.");
+    } catch { setSavedPdfStatus("Download del PDF conservato non disponibile. Il browser potrebbe aver eliminato i dati."); }
+  }
+
+  async function removeSavedPdf341(item: SavedPdfSummary341) {
+    if (savedPdfBusy || !window.confirm(`Eliminare soltanto «${item.name}» dalla memoria locale di questo browser?`)) return;
+    setSavedPdfBusy(true);
+    try {
+      await deleteSavedPdf341(item.id);
+      setSavedPdfItems(await listSavedPdfs341());
+      setSavedPdfStatus("PDF selezionato eliminato dalla memoria locale. Gli altri file sono rimasti invariati.");
+    } catch { setSavedPdfStatus("Impossibile eliminare il PDF. Nessun altro file è stato modificato."); }
+    finally { setSavedPdfBusy(false); }
+  }
 
   function sendPdfResultToPages() {
     if (!canOfferPdfPagesHandoff337(handoffPdf) || controller.current !== null) return;
@@ -840,12 +920,41 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
               onReset={reset}
               onRetry={execute}
             />
+            {outputFacts.length > 0 && (
+              <section class="field" aria-label="Fatti riletti dai file prodotti" data-output-facts-338>
+                <h3>Anteprima dei fatti del file prodotto</h3>
+                <p class="file-note">Dati riletti direttamente dai byte finali, entro 4 MiB per file. Non è una verifica visiva né una stima del risparmio.</p>
+                <ul class="status-list">
+                  {outputFacts.map(({ name, facts }, index) => (
+                    <li key={`${index}:${name}`} data-output-facts-338-state={facts.state}>
+                      <strong>{name}</strong>{" — "}
+                      {facts.state === "unavailable" ? (
+                        <span>Anteprima non disponibile: {facts.message} La disponibilità del download viene valutata separatamente.</span>
+                      ) : facts.format === "pdf" ? (
+                        <span>{facts.pdf.pageCount} {facts.pdf.pageCount === 1 ? "pagina" : "pagine"} · PDF {facts.pdf.version} · {facts.byteLength} byte · prima pagina {facts.pdf.firstPage.width.toFixed(1)} × {facts.pdf.firstPage.height.toFixed(1)} pt, rotazione {facts.pdf.firstPage.rotation}°. {facts.limitations}</span>
+                      ) : (
+                        <span>PNG {facts.png.width} × {facts.png.height} px · {facts.byteLength} byte · colore tipo {facts.png.colorType}. {facts.limitations}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                {result.artifacts.length > outputFacts.length && <p class="file-note">Anteprima limitata ai primi {outputFacts.length} file di {result.artifacts.length}. Gli altri output restano accessibili nella sezione download.</p>}
+              </section>
+            )}
             {canOfferPdfPagesHandoff337(handoffPdf) && toolId !== "pdf-to-images" && (
               <div class="actions" data-pdf-handoff337>
                 <button type="button" onClick={sendPdfResultToPages} disabled={isWorking}>
                   Usa il PDF prodotto in PDF → immagini
                 </button>
                 <small>Si apre una scheda locale. Il PDF viene ricevuto senza nuovo upload o selezione; avvio della conversione sempre manuale. Passaggio valido 30 secondi, massimo 64 MiB.</small>
+              </div>
+            )}
+            {maySavePdf341(handoffPdf) && (
+              <div class="actions" data-saved-pdf341-save>
+                <button type="button" disabled={isWorking || savedPdfBusy} onClick={() => { void saveCurrentPdf341(); }}>
+                  Conserva volontariamente questo PDF nel browser
+                </button>
+                <small>Non è attivo automaticamente. Solo un PDF verificato fino a 8 MiB; massimo 5 PDF e 24 MiB complessivi. Nessun invio all'account o a un server.</small>
               </div>
             )}
             {toolId === "pdf-text-extraction" && textExports !== null && textExports.file === files[0]
@@ -893,6 +1002,23 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         )}
         {handoffMessage !== "" && <p class="file-note" role="status" aria-live="polite" data-pdf-handoff337-status>{handoffMessage}</p>}
       </ToolResultPanel>
+      <section class="tool-form-card" aria-label="PDF conservati volontariamente" data-saved-pdf341>
+        <h3>PDF conservati su questo dispositivo</h3>
+        <p class="file-note">Salvataggio opzionale nel browser, non sincronizzato con l'account. Il browser può eliminare i dati locali; conserva una copia scaricata dei documenti importanti.</p>
+        {savedPdfItems.length === 0 ? <p class="file-note" data-saved-pdf341-empty>Nessun PDF conservato volontariamente.</p> : (
+          <ul class="status-list" data-saved-pdf341-list>
+            {savedPdfItems.map((item) => <li key={item.id}>
+              <strong>{item.name}</strong> ({item.byteLength} byte)
+              <div class="actions">
+                <button type="button" disabled={savedPdfBusy || isWorking} onClick={() => { void openSavedPdf341(item.id); }}>Riapri come input</button>
+                <button type="button" disabled={savedPdfBusy} onClick={() => { void downloadSavedPdf341(item.id); }}>Scarica PDF conservato</button>
+                <button type="button" disabled={savedPdfBusy} onClick={() => { void removeSavedPdf341(item); }}>Elimina PDF conservato</button>
+              </div>
+            </li>)}
+          </ul>
+        )}
+        {savedPdfStatus !== "" && <p class="file-note" role="status" aria-live="polite" data-saved-pdf341-status>{savedPdfStatus}</p>}
+      </section>
     </form>
   );
 }

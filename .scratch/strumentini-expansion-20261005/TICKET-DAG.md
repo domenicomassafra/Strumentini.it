@@ -49,9 +49,8 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **406 — Independent PDF redaction attack corpus**
 - **407 — Hostile parsers and archive resource safety**
 - **408 — Independent output consumer proofs by family**
-- **413 — Curated catalog with all routes preserved**
 
-Exactly **41** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **40** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -411,7 +410,7 @@ Exactly **41** incomplete tickets currently have every declared numeric blocker 
 | 341 | blocked | Salvataggio locale file volontario | 338 |
 | 342 | blocked | Quote e eviction file locali | 341 |
 | 343 | blocked | Esporta importa elimina configurazione | 330 |
-| 344 | blocked | Area personale con suggerimenti spiegabili | 330, 335 |
+| 344 | completed | Area personale con suggerimenti spiegabili | 330, 335 |
 | 345 | blocked | Navigazione stabile da task e file | 330, 334 |
 | 346 | ready-for-agent | P0 Eventi telemetria privacy-safe | — |
 | 347 | ready-for-agent | P0 Badge Gold fingerprint frontend backend | — |
@@ -480,7 +479,7 @@ Exactly **41** incomplete tickets currently have every declared numeric blocker 
 | 410 | blocked | Batch file operations safe collision and cancel | 337 |
 | 411 | blocked | Audio video large file mobile progress and cancel | 363 |
 | 412 | blocked | Editor project schema and forward-safe migrations | 341, 379, 385 |
-| 413 | ready-for-agent | Curated catalog with all routes preserved | — |
+| 413 | completed | Curated catalog with all routes preserved | — |
 | 414 | blocked | Commercial engine vendor proposal and license gate | 366 |
 | 415 | blocked | Per-tool base claim proof and certification coverage | 408 |
 | 416 | blocked | Safe ZIP GZIP archive compression and extraction | 407 |

@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 implementation wave 03 — scoped evidence
+
+NEW `src/workbench/saved-pdf-341.ts` separate bounded IndexedDB: explicit verified PDF save only, <=8MiB each, <=5 files, <=24MiB total, SHA-256 byte readback on open, no over-quota eviction, exact-item confirmed deletion, no server/network/account sync. PdfTool UI lists persisted PDF on reload and can reopen as native input/download again, denied storage falls back to existing manual output download. `tests/saved-pdf-341.test.ts` 3/3 and real Chromium `tests/acceptance-saved-pdf-341.mjs` PASS producer merge→save→reload→reopen/download→five-file quota→sixth denied with five intact→scoped delete→denied IndexedDB fallback. Other PDF output families/multi-artifacts, PNG/CSV opt-in and physical Safari NOT_RUN.
+
+**Disposition:** verified implementation slice only; original unchecked AC and ticket lifecycle remain open for the explicitly unproven capability/device/provider limits. No publication, purchase, credential or release authority.
