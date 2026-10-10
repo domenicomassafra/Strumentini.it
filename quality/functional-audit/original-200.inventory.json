@@ -5974,6 +5974,7 @@
           "class": "text-code",
           "capabilities": [
             "copy",
+            "download",
             "reset"
           ]
         }
