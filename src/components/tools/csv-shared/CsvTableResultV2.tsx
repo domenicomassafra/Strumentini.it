@@ -1,11 +1,13 @@
 import type { ComponentChildren } from "preact";
-import { useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import type { ResultDeclaration } from "../../../catalog/manifest";
 import { parseCsvTable } from "../../../engines/table/csv";
 import { createBoundedTablePreview } from "../../../runtime/bounded-preview";
 import { createOutputArtifactDescriptor } from "../../../runtime/output-artifact";
 import { readOutputFacts338 } from "../../../runtime/output-facts-338";
 import { resolveResultActions } from "../../../runtime/result-actions";
+import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
+import { AUTO_DOWNLOAD_KEY_339, browserStorage339, readAutoDownload339, writeAutoDownload339 } from "../../../runtime/download-policy-339";
 import {
   BoundedTableResultPreview,
   ResultActions,
@@ -63,14 +65,12 @@ export function CsvTableResultV2({
   children,
 }: CsvTableResultV2Props) {
   const [actionStatus, setActionStatus] = useState("");
-  if (output === null) {
-    return <ToolResultPanel eyebrow={eyebrow} placeholder={placeholder} state={state} />;
-  }
-
+  const [autoDownload,setAutoDownload]=useState(()=>readAutoDownload339(browserStorage339()));
+  const autoTriggered=useRef(false);
   const completeOutput = output;
-  const table = parseCsvTable(completeOutput);
-  const bytes = new TextEncoder().encode(completeOutput);
-  const artifact = createOutputArtifactDescriptor({
+  const table = completeOutput === null ? null : parseCsvTable(completeOutput);
+  const bytes = completeOutput === null ? null : new TextEncoder().encode(completeOutput);
+  const artifact = bytes === null ? null : createOutputArtifactDescriptor({
     kind: "structured",
     name: filename,
     mime: "text/csv",
@@ -83,6 +83,29 @@ export function CsvTableResultV2({
     fidelity: "structural",
     fidelityNote: "Il download contiene il CSV completo prodotto dal motore locale.",
   });
+  useEffect(()=>{
+    if(output===null || state==="idle" || state==="running") autoTriggered.current=false;
+  },[output,state]);
+  useEffect(()=>{
+    if(state!=="success" || !autoDownload || artifact===null || !artifact.download.ready || autoTriggered.current) return;
+    autoTriggered.current=true;
+    setActionStatus(requestBrowserDownload339(artifact)
+      ? "Download automatico richiesto al browser. Se bloccato, usa Scarica risultato."
+      : "Download automatico non disponibile. Puoi provare Scarica risultato.");
+  },[state,autoDownload,output,filename]);
+  useEffect(()=>{
+    const onStorage=(event:StorageEvent)=>{
+      if(event.key!==AUTO_DOWNLOAD_KEY_339 && event.key!==null) return;
+      autoTriggered.current=state==="success";
+      setAutoDownload(readAutoDownload339(browserStorage339()));
+    };
+    window.addEventListener("storage",onStorage);
+    return ()=>window.removeEventListener("storage",onStorage);
+  },[state]);
+
+  if (output === null || table === null || artifact === null) {
+    return <ToolResultPanel eyebrow={eyebrow} placeholder={placeholder} state={state} />;
+  }
   const preview = createBoundedTablePreview(artifact, table.header, table.rows, 8);
   const outputFacts = readOutputFacts338(artifact);
   const actions = resolveResultActions({
@@ -102,7 +125,7 @@ export function CsvTableResultV2({
       return;
     }
     try {
-      await navigator.clipboard.writeText(completeOutput);
+      await navigator.clipboard.writeText(completeOutput!);
       setActionStatus("CSV completo copiato.");
     } catch {
       setActionStatus("Il browser ha bloccato gli appunti. Puoi selezionare i dati dall'anteprima.");
@@ -110,13 +133,20 @@ export function CsvTableResultV2({
   }
 
   function download() {
-    if (!artifact.download.ready) return;
-    const url = URL.createObjectURL(new Blob([artifact.bytes.slice().buffer], { type: artifact.mime }));
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = artifact.name;
-    anchor.click();
-    URL.revokeObjectURL(url);
+    setActionStatus(requestBrowserDownload339(artifact)
+      ? "Download richiesto al browser. Se non parte, controlla le autorizzazioni ai download."
+      : "Download non disponibile: file non verificato o rifiutato dal browser.");
+  }
+
+  function chooseAutoDownload(enabled:boolean) {
+    // Never auto-download an already displayed CSV when granting consent.
+    autoTriggered.current=state==="success";
+    const written=writeAutoDownload339(browserStorage339(),enabled);
+    setAutoDownload(written && enabled);
+    setActionStatus(written ? (enabled
+      ? "Download automatico attivo per le prossime operazioni. Puoi disattivarlo in qualsiasi momento."
+      : "Download automatico disattivato. Il download manuale resta disponibile.")
+      : "Impossibile salvare la preferenza nel browser: download automatico disattivato.");
   }
 
   return (
@@ -157,6 +187,13 @@ export function CsvTableResultV2({
             reset: onReset,
           }}
         />
+        {declaration.capabilities.includes("download") && (
+          <label class="checkbox-field" data-download-optin339>
+            <input type="checkbox" checked={autoDownload} onChange={event=>chooseAutoDownload(event.currentTarget.checked)} />
+            <span>Scarica automaticamente i prossimi risultati (facoltativo)</span>
+          </label>
+        )}
+        {declaration.capabilities.includes("download") && <p class="file-note">Disattivato inizialmente. Il browser può bloccare download automatici: il pulsante manuale resta disponibile.</p>}
         {children}
         {actionStatus !== "" && <p class="file-note" role="status">{actionStatus}</p>}
       </div>

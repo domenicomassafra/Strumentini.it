@@ -3,37 +3,13 @@ import type { ResultDeclaration } from "../../../catalog/manifest";
 import { createBoundedTextPreview } from "../../../runtime/bounded-preview";
 import { createOutputArtifactDescriptor } from "../../../runtime/output-artifact";
 import { resolveResultActions } from "../../../runtime/result-actions";
-import { AUTO_DOWNLOAD_KEY_339, browserStorage339, planVerifiedDownload339, readAutoDownload339, writeAutoDownload339 } from "../../../runtime/download-policy-339";
+import { AUTO_DOWNLOAD_KEY_339, browserStorage339, readAutoDownload339, writeAutoDownload339 } from "../../../runtime/download-policy-339";
+import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
 import { BoundedTextResultPreview } from "./BoundedResultPreview";
 import { ResultActions } from "./ResultActions";
 import { ResultBreakdown, ResultPrimaryAnswer, ResultProvenance } from "./ResultPrimitives";
 import { ToolResultPanel } from "./ToolResultPanel";
 import type { AccessibleResultStatus } from "./ResultAccessibility";
-
-/** A browser download request is never evidence that the OS accepted/saved it. */
-function requestDownload339(artifact: ReturnType<typeof createOutputArtifactDescriptor>): boolean {
-  const plan = planVerifiedDownload339(artifact);
-  if (!plan.allowed) return false;
-  let url: string | undefined;
-  try {
-    url = URL.createObjectURL(new Blob([plan.bytes.slice().buffer], { type: plan.mime }));
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = plan.filename;
-    anchor.hidden = true;
-    document.body.append(anchor);
-    anchor.click();
-    anchor.remove();
-    // Browsers may still be reading the blob after click returns; give them
-    // time rather than revoking immediately (especially mobile engines).
-    const temporaryUrl = url;
-    setTimeout(() => URL.revokeObjectURL(temporaryUrl), 15_000);
-    return true;
-  } catch {
-    if (url !== undefined) URL.revokeObjectURL(url);
-    return false;
-  }
-}
 
 export interface StructuredTextMetric {
   readonly label: string;
@@ -120,7 +96,7 @@ export function StructuredTextResultV2({
   useEffect(() => {
     if (state !== "success" || !autoDownload || artifact === null || !artifact.download.ready || autoTriggered.current) return;
     autoTriggered.current = true;
-    if (requestDownload339(artifact)) {
+    if (requestBrowserDownload339(artifact)) {
       setActionStatus("Download automatico richiesto al browser. Se viene bloccato, usa Scarica risultato.");
     } else {
       setActionStatus("Download automatico non disponibile. Puoi provare Scarica risultato.");
@@ -165,7 +141,7 @@ export function StructuredTextResultV2({
   }
 
   function download() {
-    if (!requestDownload339(artifact!)) setActionStatus("Download non disponibile: il file non è verificato o il browser lo ha bloccato.");
+    if (!requestBrowserDownload339(artifact!)) setActionStatus("Download non disponibile: il file non è verificato o il browser lo ha bloccato.");
     else setActionStatus("Download richiesto al browser. Se non parte, controlla le autorizzazioni ai download.");
   }
 

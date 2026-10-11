@@ -22,6 +22,13 @@ try {
   const errors = [];
   page.on("pageerror", (err) => errors.push(err.message));
   assert.equal((await page.goto(`${origin}/tools/bulk-domain-extractor/`))?.status(), 200);
+  // Do not submit against SSR-only markup before the Preact island has
+  // installed onInput handlers; otherwise an empty value can be "completed".
+  const waitHydration=async(target)=>target.waitForFunction(()=>{
+    const island=document.querySelector('astro-island[component-url*="BulkDomainExtractorTool"]');
+    return island && !island.hasAttribute("ssr");
+  },null,{timeout:25_000});
+  await waitHydration(page);
   const input = page.getByRole("textbox", { name: "URL o domini" });
   const run = page.getByRole("button", { name: /Estrai domini/u });
   await input.fill("https://Example.COM/first");
@@ -92,6 +99,7 @@ try {
   });
   const deniedPage = await deniedContext.newPage();
   await deniedPage.goto(`${origin}/tools/bulk-domain-extractor/`, { waitUntil: "networkidle" });
+  await waitHydration(deniedPage);
   await deniedPage.getByRole("textbox", { name: "URL o domini" }).fill("https://denied.example.com/");
   await deniedPage.getByRole("button", { name: /Estrai domini/u }).click();
   const deniedToggle = deniedPage.locator("[data-download-optin339] input[type=checkbox]");
