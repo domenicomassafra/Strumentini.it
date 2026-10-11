@@ -110,7 +110,7 @@ export function buildImpactPlan(changedPaths: readonly string[], availableTests:
   if (sourceDomains.length > 0) gates.add("release-readiness");
   if (domains.includes("frontend")) gates.add("browser-a11y");
   if (domains.includes("worker-auth") || domains.includes("d1") || domains.includes("ci")) gates.add("security-review");
-  if (paths.some((path) => /^src\/(runtime\/(file-detection|artifact-verifier|binary-handoff|ephemeral-file-handoff-337)|telemetry\/consent)/u.test(path))) gates.add("security-review");
+  if (paths.some((path) => /^src\/(runtime\/(file-detection|file-threat-gate-407|artifact-verifier|binary-handoff|ephemeral-file-handoff-337)|telemetry\/consent)/u.test(path))) gates.add("security-review");
   if (domains.includes("worker-auth") || domains.includes("d1")) gates.add("auth-integration");
   if (domains.includes("d1")) gates.add("d1-migration-review");
   if (domains.includes("pdf") || domains.includes("image")) gates.add("physical-device");

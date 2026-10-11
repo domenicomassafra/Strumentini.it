@@ -102,6 +102,12 @@ describe("#404 PR/source impact planning", () => {
     expect(plan.gates.map((gate) => gate.id)).toContain("release-readiness");
   });
 
+  it("requires independent security review for hostile file preflight changes", () => {
+    const plan = buildImpactPlan(["src/runtime/file-threat-gate-407.ts"], suites);
+    expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(plan.gates.map((gate) => gate.id)).toContain("security-review");
+  });
+
   it("requires image/PDF physical gates for the real tool component directories", () => {
     const changed = buildImpactPlan([
       "src/components/tools/image-visual/ImageCompressionTool.tsx",
