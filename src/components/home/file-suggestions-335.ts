@@ -2,7 +2,7 @@ import type { ToolSummary } from "../../catalog/manifest";
 import { isLocalToolRoute } from "../../catalog/manifest";
 import type { LocalFileDetection, LocalFileFormat } from "../../runtime/file-detection";
 
-/** No CSV signature contract in the detector: never infer it from MIME/suffix. */
+/** CSV is eligible only after complete bounded structural inspection. */
 const ROUTABLE_MIMES = {
   pdf: "application/pdf",
   png: "image/png",
@@ -10,6 +10,7 @@ const ROUTABLE_MIMES = {
   webp: "image/webp",
   gif: "image/gif",
   zip: "application/zip",
+  csv: "text/csv",
 } as const satisfies Partial<Record<LocalFileFormat, string>>;
 
 type RoutableFormat = keyof typeof ROUTABLE_MIMES;
@@ -23,6 +24,7 @@ const PREFERRED_IDS: Partial<Record<RoutableFormat, readonly string[]>> = {
   webp: ["image-compression", "image-resize", "image-format-conversion", "exif-remover", "image-metadata-viewer", "image-crop"],
   gif: ["image-format-conversion", "images-to-pdf"],
   zip: ["zip-contents-inspector", "archive-checksum-manifest"],
+  csv: ["csv-cleaner", "csv-dedupe", "csv-column-map", "csv-filter", "csv-column-selector", "csv-group-count"],
 };
 
 export interface HomeFileSuggestion335 {
@@ -56,9 +58,10 @@ export function fileSuggestions335(
     if (!publishedRoutes.has(tool.route)) return false;
     if (tool.runtime?.location !== "LOCAL" || tool.runtime.network !== "forbidden") return false;
     if (tool.result === undefined) return false;
-    if (!(tool.inputTypes.includes(mime) || format === "zip" && tool.inputTypes.includes("zip"))) return false;
+    if (!(tool.inputTypes.includes(mime) || format === "zip" && tool.inputTypes.includes("zip") || format === "csv" && tool.inputTypes.includes("csv"))) return false;
     if (format === "pdf") return tool.engine === "pdf";
     if (format === "zip") return tool.engine === "file-privacy";
+    if (format === "csv") return tool.engine === "table-csv" || tool.engine === "table-operations";
     return tool.engine === "image" || tool.engine === "image-visual"
       || tool.engine === "pdf" && tool.id === "images-to-pdf";
   });

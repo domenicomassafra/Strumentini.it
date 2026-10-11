@@ -1,0 +1,88 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { catalog } from "../generated/catalog";
+import { curateHomeTools413 } from "../catalog/home-curation-413";
+
+// Reuse the exact editorial IDs and canonical routes already printed on the
+// homepage. No independently invented suggestions or popularity measures.
+const editorialExamples = curateHomeTools413(catalog);
+---
+
+<BaseLayout
+  title="Chi siamo e trasparenza"
+  description="Come nasce Strumentini.it, cosa offre il catalogo e quali informazioni sono dichiarate pubblicamente."
+>
+  <main class="about-page">
+    <header>
+      <h1>Chi siamo e trasparenza</h1>
+      <p>
+        Strumentini.it raccoglie piccoli strumenti da usare nel browser. Questa pagina
+        spiega il progetto senza attribuire numeri o risultati che non siano verificabili.
+      </p>
+    </header>
+
+    <section>
+      <h2>Cosa trovi nel sito</h2>
+      <p>
+        Il catalogo completo è disponibile nella pagina strumenti: contiene tutti gli strumenti
+        pubblicati e la relativa documentazione. Non presentiamo il catalogo come una classifica
+        di popolarità e non pubblichiamo statistiche di utilizzo prive di una fonte.
+      </p>
+      <a class="button" href="/strumenti/">Apri il catalogo completo di {catalog.length} strumenti</a>
+    </section>
+
+    <section>
+      <h2>Esempi editoriali</h2>
+      <p>Gli esempi mostrano possibili attività da svolgere con gli strumenti:</p>
+      <ul>
+        {editorialExamples.map(({ tool, job }) => (
+          <li><a href={tool.route + "/"}>{job} — {tool.name}</a></li>
+        ))}
+      </ul>
+    </section>
+
+    <section>
+      <h2>Come descriviamo il progetto</h2>
+      <p>
+        Le informazioni pubblicate indicano ciò che è presente nel sito, i limiti conosciuti e
+        le fonti disponibili. Non attribuiamo il progetto a persone specifiche né dichiariamo
+        dimensioni di una community senza una base pubblica verificabile.
+      </p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .about-page {
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-20);
+  }
+
+  header, section {
+    max-width: var(--measure-copy);
+    margin-bottom: var(--space-10);
+  }
+
+  h1 {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-display);
+  }
+
+  h2 {
+    margin: 0 0 var(--space-3);
+  }
+
+  p, li {
+    color: var(--text-muted);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .button {
+    display: inline-flex;
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-md);
+    background: var(--brand);
+    color: white;
+  }
+</style>

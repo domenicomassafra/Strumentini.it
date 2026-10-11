@@ -66,6 +66,7 @@ export const footerColumns: readonly FooterColumn[] = [
   {
     title: "Risorse",
     items: [
+      { label: "Chi siamo e trasparenza", href: "/chi-siamo/" },
       { label: "Come funziona", href: "/risorse/#come-funziona" },
       { label: "Privacy", href: "/risorse/#privacy" },
       { label: "Domande frequenti", href: "/risorse/#domande-frequenti" },

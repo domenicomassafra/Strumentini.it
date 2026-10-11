@@ -56,7 +56,7 @@ function escapeXml(value: string): string {
 /** The indexable routes that are not a tool page. Pages that opt out of
  *  indexing (search results, the account area) are absent on purpose, and so
  *  are the redirects. */
-export const publicIndexPaths: readonly string[] = ["/", "/strumenti", "/categorie", "/risorse", "/onboarding"];
+export const publicIndexPaths: readonly string[] = ["/", "/strumenti", "/categorie", "/risorse", "/chi-siamo", "/onboarding"];
 
 export function buildSitemapXml(
   tools: readonly DiscoveryTool[],

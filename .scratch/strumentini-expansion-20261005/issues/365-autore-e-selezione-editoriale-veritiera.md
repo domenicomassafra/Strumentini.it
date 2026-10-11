@@ -37,3 +37,7 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 wave 05 — verified transparent editorial slice, original ticket OPEN
+
+`src/pages/chi-siamo.astro` publishes a visible transparency page, real `{catalog.length}` count and exact 8 current `curateHomeTools413(catalog)` editorial entries rather than invented, popular or unmeasured usage examples; footer links the page. `tests/acceptance-author-365.mjs` real Chrome at 390px **PASS**, checks absent invented popularity/registered-user claims, responsive width, complete catalog link and an exact set comparison against the homepage eight currently published editorial routes (trailing slash normalization only). The page explicitly refrains from attributing an author/person without authenticated public evidence. **AC-365.2/.3 are locally supported, but AC-365.1's identified-author portion is NOT verified**, so #365 remains open, with no guessed personal attribution or false close. No deploy or new Gold.

@@ -101,6 +101,68 @@ describe("#338 output facts strictly derived from produced bytes", () => {
     expect(readOutputFacts338(artifact(truncated, png.filename, png.mime, "file"))).toMatchObject({ state: "unavailable", reason: "MALFORMED" });
   });
 
+  it("reopens real CSV bytes for bounded structural facts and rejects malformed rows", () => {
+    const csv = new TextEncoder().encode("name,value\nalpha,1\nbeta,2\n");
+    const source = createOutputArtifactDescriptor({
+      kind: "structured",
+      name: "result.csv",
+      mime: "text/csv",
+      bytes: csv,
+      verification: { state: "verified", verifiedMime: "text/csv", method: "CSV fixture reopened" },
+      fidelity: "structural",
+      fidelityNote: "CSV test artifact",
+    });
+    const facts = readOutputFacts338(source);
+    expect(facts).toMatchObject({
+      state: "available",
+      format: "csv",
+      source: "actual-output-bytes",
+      csv: { columns: 2, rows: 2, header: ["name", "value"] },
+      byteLength: csv.byteLength,
+    });
+    const malformed = new TextEncoder().encode("name,value\nalpha,1,extra\n");
+    expect(readOutputFacts338(createOutputArtifactDescriptor({
+      kind: "structured",
+      name: "bad.csv",
+      mime: "text/csv",
+      bytes: malformed,
+      verification: { state: "verified", verifiedMime: "text/csv", method: "CSV fixture reopened" },
+      fidelity: "structural",
+      fidelityNote: "CSV test artifact",
+    }))).toMatchObject({
+      state: "unavailable",
+      reason: "MALFORMED",
+    });
+  });
+
+  it("counts quoted RFC4180 CSV cells/rows from real bytes without splitting commas or quoted newlines", () => {
+    const fact = (value: string) => readOutputFacts338(createOutputArtifactDescriptor({
+      kind: "structured", name: "quoted.csv", mime: "text/csv",
+      bytes: new TextEncoder().encode(value),
+      verification: { state: "verified", verifiedMime: "text/csv", method: "source fixture" },
+      fidelity: "structural", fidelityNote: "No semantic guarantee",
+    }));
+    expect(fact('"name, display",value\r\n"first\nlast",42\r\n')).toMatchObject({
+      state: "available", format: "csv", csv: { columns: 2, rows: 1, header: ["name, display", "value"] },
+    });
+    expect(fact('"name ""quoted""",value\n"a,b",2\n')).toMatchObject({
+      state: "available", format: "csv", csv: { columns: 2, rows: 1, header: ['name "quoted"', "value"] },
+    });
+    for (const malformed of [
+      'name,value\n"unterminated,2',
+      'name,value\n"ok"junk,2',
+      'name,value\nbad"quote,2',
+      'name,value\nonly-one-field',
+      'name,value\n1,2,extra',
+      'name,value\n1,\u0000',
+      'name,value\n1,2\n\n',
+    ]) {
+      expect(fact(malformed)).toMatchObject({ state: "unavailable", reason: "MALFORMED" });
+    }
+    const oversizeRows = "name,value\n" + "a,1\n".repeat(OUTPUT_FACTS_338_LIMITS.maxCsvRows + 1);
+    expect(fact(oversizeRows)).toMatchObject({ state: "unavailable", reason: "MALFORMED" });
+  });
+
   it("places semantic PDF preview after the existing verified-result/download control and keeps fallback visible", () => {
     const component = readFileSync(new URL("../src/components/tools/pdf/PdfTool.tsx", import.meta.url), "utf8");
     expect(component).toContain('data-output-facts-338');

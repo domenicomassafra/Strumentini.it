@@ -1,4 +1,5 @@
 import { inflateSync } from "fflate";
+import { isBoundedCsvCandidate335 } from "./csv-candidate-335";
 import {
   checkPdfBytes407,
   checkTextPart407,
@@ -21,7 +22,7 @@ export const FILE_DETECTION_LIMITS = {
   maxOoxmlContentCompressedBytes: 16 * 1024,
 } as const;
 
-export type LocalFileFormat = "pdf" | "png" | "jpeg" | "gif" | "webp" | "zip" | "docx" | "xlsx" | "pptx";
+export type LocalFileFormat = "pdf" | "png" | "jpeg" | "gif" | "webp" | "zip" | "docx" | "xlsx" | "pptx" | "csv";
 export type LocalFileRefusalReason =
   | "EMPTY" | "TOO_LARGE" | "UNSUPPORTED" | "MALFORMED" | "POLYGLOT"
   | "MIME_MISMATCH" | "EXTENSION_MISMATCH" | "CANCELLED" | "READ_FAILED";
@@ -63,11 +64,12 @@ const MIME: Readonly<Record<LocalFileFormat, string>> = {
   docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  csv: "text/csv",
 };
 
 const EXT: Readonly<Record<string, LocalFileFormat>> = {
   pdf: "pdf", png: "png", jpg: "jpeg", jpeg: "jpeg", gif: "gif",
-  webp: "webp", zip: "zip", docx: "docx", xlsx: "xlsx", pptx: "pptx",
+  webp: "webp", zip: "zip", docx: "docx", xlsx: "xlsx", pptx: "pptx", csv: "csv",
 };
 // Opaque binary extensions do not claim a parser. Named, unrecognized
 // extensions (such as .exe, .svg or .txt) must not be offered to another engine.
@@ -473,10 +475,27 @@ export async function detectLocalFile(file: LocalFileSource, options: {readonly 
     if (file.size>FILE_DETECTION_LIMITS.maxFileBytes) refuse("TOO_LARGE", "File exceeds the local inspection limit.");
     const first=await reader.range(0,Math.min(64,file.size));
     const found=recognized(first);
-    if (found===null) refuse("UNSUPPORTED", "No supported file signature is present.");
-    let format:LocalFileFormat=found;
-    if (found==="zip") format=await inspectZip(reader);
-    else await imageOrPdf(reader,first,found);
+    let format:LocalFileFormat;
+    if (found===null) {
+      // Unstructured text has no magic number. Do not infer CSV from just its
+      // extension/MIME: require every byte of a bounded, consistent CSV body.
+      const claimedCsv=/\.csv$/iu.test(file.name);
+      const actual=declaredMime(file.type);
+      if (!claimedCsv || (actual && actual!=="text/csv" && actual!=="application/octet-stream")) {
+        refuse("UNSUPPORTED", "No supported file signature is present.");
+      }
+      if (file.size > FILE_DETECTION_LIMITS.maxReadBytes) {
+        refuse("TOO_LARGE", "CSV cannot be checked completely within the local inspection budget.");
+      }
+      if (!isBoundedCsvCandidate335(await reader.range(0,file.size))) {
+        refuse("MALFORMED", "CSV structure is incomplete or ambiguous.");
+      }
+      format="csv";
+    } else {
+      format=found;
+      if (found==="zip") format=await inspectZip(reader);
+      else await imageOrPdf(reader,first,found);
+    }
     const mime=MIME[format];
     const actual=declaredMime(file.type);
     if (actual && actual!=="application/octet-stream" && actual!=="binary/octet-stream" &&

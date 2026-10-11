@@ -2,6 +2,8 @@ export const TELEMETRY_EVENT_NAMES = [
   "tool_opened",
   "tool_completed",
   "tool_failed",
+  /** Anonymous aggregate technical outcome; never carries tool IDs or subject IDs. */
+  "validation_operation_result",
   "workspace_tool_added",
   "workspace_tool_removed",
   "onboarding_completed",
@@ -185,6 +187,7 @@ const REQUIRED_PROPERTIES: Readonly<Record<TelemetryEventName, readonly string[]
   tool_opened: ["tool_id", "entry_source"],
   tool_completed: ["tool_id"],
   tool_failed: ["tool_id", "error_code"],
+  validation_operation_result: ["outcome"],
   workspace_tool_added: ["tool_id"],
   workspace_tool_removed: ["tool_id"],
   onboarding_completed: ["context_id"],
@@ -202,6 +205,7 @@ const OPTIONAL_PROPERTIES: Readonly<Record<TelemetryEventName, readonly string[]
   tool_opened: ["tool_family"],
   tool_completed: ["duration_bucket", "tool_family"],
   tool_failed: ["tool_family"],
+  validation_operation_result: ["tool_family", "duration_bucket", "error_code"],
   workspace_tool_added: [],
   workspace_tool_removed: [],
   onboarding_completed: [],
@@ -244,6 +248,9 @@ function normalizePropertyKey(key: string): string {
 }
 
 function propertyRule(name: TelemetryEventName, key: string): ((value: unknown) => boolean) | undefined {
+  if (name === "validation_operation_result" && key === "outcome") {
+    return (value) => value === "success" || value === "error";
+  }
   if (key === "tool_id" || key === "pack_id" || key === "source_tool_id" || key === "target_tool_id") {
     return isSafeId;
   }
@@ -351,12 +358,22 @@ export function validateTelemetryEvent(
   const occurredAt = timestampFor(normalizedTop.occurredAt, now);
   if (occurredAt === undefined) return invalid("INVALID_VALUE", "Telemetry timestamp is not approved.");
   const subjectId = normalizedTop.subjectId;
+  if (name === "validation_operation_result" && subjectId !== undefined) {
+    return invalid("FORBIDDEN_FIELD", "Anonymous validation outcome cannot identify a person.");
+  }
   if (subjectId !== undefined && !isSafeId(subjectId)) {
     return invalid("INVALID_VALUE", "Telemetry subject identifier is not approved.");
   }
   const cohort = normalizedTop.cohort;
   if (cohort !== undefined && cohort !== "validation") {
     return invalid("INVALID_VALUE", "Telemetry cohort is not approved.");
+  }
+  if (name === "validation_operation_result") {
+    const outcome = properties.outcome;
+    if ((outcome === "error" && properties.error_code === undefined) ||
+        (outcome === "success" && properties.error_code !== undefined)) {
+      return invalid("INVALID_EVENT", "Anonymous validation outcome and error class are inconsistent.");
+    }
   }
 
   return {

@@ -4,6 +4,8 @@ import type { OutputArtifactDescriptor } from "./output-artifact";
 /** #338: preview is opt-in local byte inspection, not output verification. */
 export const OUTPUT_FACTS_338_LIMITS = {
   maxOutputBytes: 4 * 1024 * 1024,
+  maxCsvRows: 1000,
+  maxCsvColumns: 200,
   maxPdfPages: 200,
   maxPngPixels: 1_000_000,
   maxPngChunks: 128,
@@ -11,6 +13,15 @@ export const OUTPUT_FACTS_338_LIMITS = {
 
 export type OutputFacts338Reason = "UNVERIFIED" | "UNSUPPORTED" | "TOO_LARGE" | "MALFORMED";
 export type OutputFacts338 =
+  | {
+      readonly state: "available";
+      readonly source: "actual-output-bytes";
+      readonly filename: string;
+      readonly byteLength: number;
+      readonly format: "csv";
+      readonly csv: { readonly columns: number; readonly rows: number; readonly header: readonly string[] };
+      readonly limitations: string;
+    }
   | {
       readonly state: "available";
       readonly source: "actual-output-bytes";
@@ -47,6 +58,88 @@ function ascii(bytes: Uint8Array, start: number, length: number): string {
   let text = "";
   for (let offset = start; offset < start + length; offset += 1) text += String.fromCharCode(bytes[offset] ?? 0);
   return text;
+}
+
+function inspectCsv(bytes: Uint8Array): { columns: number; rows: number; header: readonly string[] } | null {
+  let text: string;
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    return null;
+  }
+  if (text.length === 0 || /\u0000|\u007f/u.test(text)) return null;
+  // Independent bounded RFC4180 structural readback. Splitting by newlines
+  // or commas is NOT safe: quoted cells may contain either, and escaped quotes
+  // must not alter the column count. This scanner retains only the first-row
+  // headers, never the potentially private cells of subsequent rows.
+  let inQuotes = false;
+  let afterQuote = false;
+  let fieldStart = true;
+  let column = 0;
+  let rowIndex = 0;
+  let columns = 0;
+  let headerCell = "";
+  let endedOnRowBreak = false;
+  const header: string[] = [];
+  const appendHeader = (part: string): boolean => {
+    if (rowIndex !== 0) return true;
+    headerCell += part;
+    return headerCell.length <= 1024;
+  };
+  const endField = (): boolean => {
+    column++;
+    if (column > OUTPUT_FACTS_338_LIMITS.maxCsvColumns) return false;
+    if (rowIndex === 0) header.push(headerCell);
+    headerCell = "";
+    fieldStart = true;
+    afterQuote = false;
+    return true;
+  };
+  const endRow = (): boolean => {
+    if (!endField()) return false;
+    if (rowIndex === 0) {
+      columns = column;
+      if (columns < 1 || header.every((value) => value.length === 0)) return false;
+    } else if (column !== columns) return false;
+    rowIndex++;
+    column = 0;
+    return rowIndex <= OUTPUT_FACTS_338_LIMITS.maxCsvRows + 1;
+  };
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i]!;
+    endedOnRowBreak = false;
+    if (inQuotes) {
+      if (char === '"') {
+        if (text[i + 1] === '"') {
+          if (!appendHeader('"')) return null;
+          i++;
+        } else { inQuotes = false; afterQuote = true; }
+      } else {
+        if ((char < " " && !["\t", "\n", "\r"].includes(char)) || !appendHeader(char)) return null;
+      }
+      continue;
+    }
+    if (char === ",") {
+      if (!endField()) return null;
+      continue;
+    }
+    if (char === "\n" || char === "\r") {
+      if (!endRow()) return null;
+      if (char === "\r" && text[i + 1] === "\n") i++;
+      endedOnRowBreak = true;
+      continue;
+    }
+    if (char === '"') {
+      if (!fieldStart || afterQuote) return null;
+      inQuotes = true;
+      fieldStart = false;
+      continue;
+    }
+    if (afterQuote || (char < " " && char !== "\t") || !appendHeader(char)) return null;
+    fieldStart = false;
+  }
+  if (inQuotes || (!endedOnRowBreak && !endRow())) return null;
+  return { columns, rows: rowIndex - 1, header };
 }
 
 function u32(bytes: Uint8Array, offset: number): number {
@@ -125,6 +218,16 @@ export function readOutputFacts338(artifact: OutputArtifactDescriptor): OutputFa
     }
     if (bytes.byteLength > OUTPUT_FACTS_338_LIMITS.maxOutputBytes) {
       return invalid("TOO_LARGE", "Anteprima non disponibile oltre 4 MiB; il download verificato resta disponibile.");
+    }
+    if (artifact.mime === "text/csv" && artifact.verification.verifiedMime === "text/csv"
+      && artifact.kind === "structured" && /\.csv$/iu.test(artifact.name)) {
+      const csv = inspectCsv(bytes);
+      if (csv === null) return invalid("MALFORMED", "CSV non rileggibile con struttura UTF-8 delimitata coerente.");
+      return {
+        state: "available", source: "actual-output-bytes", filename: artifact.name,
+        byteLength: bytes.byteLength, format: "csv", csv,
+        limitations: "Struttura riletta dai byte prodotti; non calcola qualità dei dati, deduplica o correttezza semantica.",
+      };
     }
     if (artifact.mime === "application/pdf" && artifact.verification.verifiedMime === "application/pdf"
       && artifact.kind === "pdf" && /\.pdf$/iu.test(artifact.name)) {

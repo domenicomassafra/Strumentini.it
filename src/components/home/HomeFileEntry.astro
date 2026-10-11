@@ -11,7 +11,7 @@ const publishedRoutes = new Set(
 );
 const mimeByFormat = {
   pdf: "application/pdf", png: "image/png", jpeg: "image/jpeg",
-  webp: "image/webp", gif: "image/gif", zip: "application/zip",
+  webp: "image/webp", gif: "image/gif", zip: "application/zip", csv: "text/csv",
 } as const;
 const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[]).flatMap((format) =>
   fileSuggestions335({
@@ -42,7 +42,7 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
       <div class="home-file-picker-option">
         <label for="home-file-picker" class="home-file-picker-label">File dal dispositivo</label>
         <input id="home-file-picker" type="file" class="home-file-picker" data-home-file-picker aria-describedby="home-file-files-help home-file-status" />
-        <p id="home-file-files-help" class="home-file-picker-help">Apri il selettore File anche per PDF e altri formati. Massimo 32 MiB per il controllo iniziale.</p>
+        <p id="home-file-files-help" class="home-file-picker-help">Apri il selettore File anche per PDF e altri formati. Massimo 32 MiB per il controllo iniziale; per CSV, verifica strutturale completa fino a 256 KiB.</p>
       </div>
     </div>
     <p class="home-file-drop-hint">Oppure trascina un solo file in quest'area, se usi mouse o trackpad. Nessuna foto viene scattata automaticamente.</p>
@@ -96,7 +96,7 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
 
   const reasonText: Record<LocalFileRefusalReason, string> = {
     EMPTY: "Il file è vuoto. Scegli un file che contenga dati.",
-    TOO_LARGE: "Questa verifica iniziale accetta file fino a 32 MiB. Nessun file è stato caricato.",
+    TOO_LARGE: "File oltre il limite di verifica locale: massimo 32 MiB in generale e 256 KiB per il controllo strutturale CSV. Nessun file è stato caricato.",
     UNSUPPORTED: "Formato non riconosciuto dal controllo locale. Usa la ricerca per cercare uno strumento.",
     MALFORMED: "Il file sembra incompleto o non rispetta la struttura prevista. Nessuna operazione suggerita.",
     POLYGLOT: "Il file contiene strutture incompatibili o ambigue. Nessuna operazione suggerita.",

@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 290 / 134 |
+| All / completed / open | 424 / 293 / 131 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 40 |
-| Ready for assignment (feasibility still to prove) | 33 |
-| Waiting on other tickets | 94 |
+| DAG-ready (all numeric dependencies closed) | 39 |
+| Ready for assignment (feasibility still to prove) | 32 |
+| Waiting on other tickets | 92 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 0 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (33)
+## Ready for assignment (feasibility still to prove) (32)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
@@ -31,11 +31,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #328 — P0 Account Turnstile login reale
 - #329 — P0 Contrasto accesso e errori WCAG
 - #330 — P0 Recenti realmente alimentati
-- #335 — Suggerire solo operazioni file compatibili
 - #336 — Picker iPhone Android e touch equivalente
 - #337 — Typed handoff per catene di tool
-- #338 — Preview risultato con fatti verificati
-- #346 — P0 Eventi telemetria privacy-safe
+- #339 — Scarica manuale e auto opt-in
+- #341 — Salvataggio locale file volontario
 - #347 — P0 Badge Gold fingerprint frontend backend
 - #348 — Server opt-in gratis feasibility
 - #350 — P0 Accessibilità AA di base e advanced
@@ -57,7 +56,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #407 — Hostile parsers and archive resource safety
 - #415 — Per-tool base claim proof and certification coverage
 
-## Waiting on other tickets (94)
+## Waiting on other tickets (92)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -91,9 +90,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #247 — Scanned PDF OCR and searchable text layer (awaiting #246)
 - #279 — Image-resize Gold promotion gate (awaiting #277, #278)
 - #332 — Sync preferiti con rimozioni e conflitti (awaiting #328, #330)
-- #339 — Scarica manuale e auto opt-in (awaiting #338)
-- #340 — Cronologia in-session e cancella task (awaiting #337, #338)
-- #341 — Salvataggio locale file volontario (awaiting #338)
+- #340 — Cronologia in-session e cancella task (awaiting #337)
 - #342 — Quote e eviction file locali (awaiting #341)
 - #343 — Esporta importa elimina configurazione (awaiting #330)
 - #345 — Navigazione stabile da task e file (awaiting #330)
@@ -103,7 +100,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #354 — Redesign home file-first search-first (awaiting #352, #353)
 - #355 — Redesign catalogo ricerca categorie (awaiting #352, #353)
 - #356 — Redesign wrapper e input famiglia (awaiting #352, #353)
-- #357 — Redesign risultati e next-action (awaiting #337, #338, #352, #353)
+- #357 — Redesign risultati e next-action (awaiting #337, #352, #353)
 - #358 — Redesign area settings onboarding (awaiting #330, #352, #353)
 - #359 — Redesign risorse privacy ed errori (awaiting #352, #353)
 - #360 — Motion utile opt-out reduced-motion (awaiting #352, #353)

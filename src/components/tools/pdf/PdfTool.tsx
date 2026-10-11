@@ -932,8 +932,10 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
                         <span>Anteprima non disponibile: {facts.message} La disponibilità del download viene valutata separatamente.</span>
                       ) : facts.format === "pdf" ? (
                         <span>{facts.pdf.pageCount} {facts.pdf.pageCount === 1 ? "pagina" : "pagine"} · PDF {facts.pdf.version} · {facts.byteLength} byte · prima pagina {facts.pdf.firstPage.width.toFixed(1)} × {facts.pdf.firstPage.height.toFixed(1)} pt, rotazione {facts.pdf.firstPage.rotation}°. {facts.limitations}</span>
-                      ) : (
+                      ) : facts.format === "png" ? (
                         <span>PNG {facts.png.width} × {facts.png.height} px · {facts.byteLength} byte · colore tipo {facts.png.colorType}. {facts.limitations}</span>
+                      ) : (
+                        <span>CSV {facts.csv.rows} righe dati × {facts.csv.columns} colonne · {facts.byteLength} byte. {facts.limitations}</span>
                       )}
                     </li>
                   ))}

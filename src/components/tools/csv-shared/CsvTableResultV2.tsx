@@ -4,6 +4,7 @@ import type { ResultDeclaration } from "../../../catalog/manifest";
 import { parseCsvTable } from "../../../engines/table/csv";
 import { createBoundedTablePreview } from "../../../runtime/bounded-preview";
 import { createOutputArtifactDescriptor } from "../../../runtime/output-artifact";
+import { readOutputFacts338 } from "../../../runtime/output-facts-338";
 import { resolveResultActions } from "../../../runtime/result-actions";
 import {
   BoundedTableResultPreview,
@@ -83,6 +84,7 @@ export function CsvTableResultV2({
     fidelityNote: "Il download contiene il CSV completo prodotto dal motore locale.",
   });
   const preview = createBoundedTablePreview(artifact, table.header, table.rows, 8);
+  const outputFacts = readOutputFacts338(artifact);
   const actions = resolveResultActions({
     declaration,
     primary: "download",
@@ -119,7 +121,7 @@ export function CsvTableResultV2({
 
   return (
     <ToolResultPanel eyebrow={eyebrow} placeholder={placeholder} state={state}>
-      <div data-result-class="table">
+      <div data-result-class="table" data-output-facts-338={outputFacts.state === "available" && outputFacts.format === "csv" ? "available" : "unavailable"}>
         <div data-result-slot="summary">
           <ResultPrimaryAnswer label={summaryLabel}>{summaryValue}</ResultPrimaryAnswer>
         </div>
@@ -140,6 +142,11 @@ export function CsvTableResultV2({
         <div data-result-slot="table-preview">
           <BoundedTableResultPreview preview={preview} />
         </div>
+        {outputFacts.state === "available" && outputFacts.format === "csv" && (
+          <p class="file-note" aria-live="polite">
+            CSV riletto: {String(outputFacts.csv.rows)} righe dati, {String(outputFacts.csv.columns)} colonne.
+          </p>
+        )}
         <ResultProvenance>{provenance}</ResultProvenance>
         <ResultActions
           actions={actions}

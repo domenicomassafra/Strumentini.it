@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 424,
-    "completed": 290,
+    "completed": 293,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 273,
-    "open": 134,
-    "readyDAG": 40,
-    "ready-for-agent": 33,
-    "dependency-blocked": 94,
+    "completedWithoutExplicitRefusal": 276,
+    "open": 131,
+    "readyDAG": 39,
+    "ready-for-agent": 32,
+    "dependency-blocked": 92,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 0,
@@ -311,7 +311,10 @@
       331,
       333,
       334,
+      335,
+      338,
       344,
+      346,
       408,
       413
     ],
@@ -324,11 +327,10 @@
       328,
       329,
       330,
-      335,
       336,
       337,
-      338,
-      346,
+      339,
+      341,
       347,
       348,
       350,
@@ -383,9 +385,7 @@
       247,
       279,
       332,
-      339,
       340,
-      341,
       342,
       343,
       345,
@@ -3926,9 +3926,9 @@
     {
       "id": 335,
       "title": "Suggerire solo operazioni file compatibili",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3956,9 +3956,9 @@
     {
       "id": 338,
       "title": "Preview risultato con fatti verificati",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3966,12 +3966,10 @@
     {
       "id": 339,
       "title": "Scarica manuale e auto opt-in",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        338
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -3982,8 +3980,7 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        337,
-        338
+        337
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3991,12 +3988,10 @@
     {
       "id": 341,
       "title": "Salvataggio locale file volontario",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        338
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -4031,8 +4026,7 @@
       "expectedLifecycle": "completed",
       "executionCategory": "completed",
       "unresolvedDependencies": [
-        330,
-        335
+        330
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -4052,9 +4046,9 @@
     {
       "id": 346,
       "title": "P0 Eventi telemetria privacy-safe",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -4182,7 +4176,6 @@
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
         337,
-        338,
         352,
         353
       ],

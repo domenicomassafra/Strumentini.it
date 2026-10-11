@@ -18,6 +18,7 @@ const mimes: Partial<Record<LocalFileFormat, string>> = {
   webp: "image/webp",
   gif: "image/gif",
   zip: "application/zip",
+  csv: "text/csv",
   docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -68,12 +69,23 @@ describe("#335 manifest-grounded home file suggestions", () => {
     expect(ids("zip")).toEqual(["zip-contents-inspector", "archive-checksum-manifest"]);
   });
 
-  it("does not advertise CSV or Office from extensions, nor fake generic file routes", () => {
+  it("recommends published local CSV operations only for structurally inspected CSV", () => {
+    expect(ids("csv")).toEqual([
+      "csv-cleaner", "csv-dedupe", "csv-column-map", "csv-filter", "csv-column-selector", "csv-group-count",
+    ]);
+    expect(fileSuggestions335(detected("csv", "application/pdf"), catalog, liveRoutes)).toEqual([]);
+    for (const suggestion of fileSuggestions335(detected("csv"), catalog, liveRoutes)) {
+      const tool = catalog.find((entry) => entry.id === suggestion.toolId);
+      expect(tool?.inputTypes).toContain("csv");
+      expect(["table-csv", "table-operations"]).toContain(tool?.engine);
+      expect(tool?.runtime).toEqual({ location: "LOCAL", network: "forbidden" });
+    }
+  });
+
+  it("does not advertise Office or fake generic file routes", () => {
     expect(ids("docx")).toEqual([]);
     expect(ids("xlsx")).toEqual([]);
     expect(ids("pptx")).toEqual([]);
-    const fakeCsv = { ...detected("pdf"), format: "csv", mime: "text/csv" } as unknown as LocalFileDetection;
-    expect(fileSuggestions335(fakeCsv, catalog, liveRoutes)).toEqual([]);
     expect(fileSuggestions335(detected("png", "text/csv"), catalog, liveRoutes)).toEqual([]);
     expect(fileSuggestions335(detected("pdf", "image/png"), catalog, liveRoutes)).toEqual([]);
     expect(fileSuggestions335({ status: "refused", reason: "UNSUPPORTED", name: "private.csv", bytes: 10, readBytes: 10, note: "no signature" }, catalog, liveRoutes)).toEqual([]);
