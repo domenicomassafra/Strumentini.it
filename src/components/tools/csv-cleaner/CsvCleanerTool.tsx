@@ -1,8 +1,9 @@
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { CSV_HARD_FILE_BYTES, CSV_SOFT_FILE_BYTES, CsvCleanerError, readBlobText } from "../../../engines/table/csv";
 import { handoffCatalog } from "../../../generated/handoff-catalog";
 import { compatibleHandoffTargets, openHandoffTarget } from "../../../runtime/handoff";
+import { canOfferCsvExportHandoff337, startCsvExportHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { csvCleanerManifest } from "../../../tools/csv-cleaner/manifest";
 import type { CsvCleanerOutput } from "../../../tools/csv-cleaner/types";
@@ -19,6 +20,8 @@ export function CsvCleanerTool() {
   const [handoffStatus, setHandoffStatus] = useState("");
   const controller = useRef<AbortController | null>(null);
   const fileInput = useRef<HTMLInputElement | null>(null);
+  const pendingCsvExport337 = useRef<(() => void) | null>(null);
+  useEffect(() => () => { pendingCsvExport337.current?.(); }, []);
 
   async function clean() {
     if (controller.current !== null) return;
@@ -85,6 +88,22 @@ export function CsvCleanerTool() {
       warnings={result?.warnings}
       provenance="Pulizia eseguita localmente; l'anteprima è limitata, il download usa il CSV completo."
       handoffTargetCount={handoffTargets.length}
+      onFileHandoff337={result === null || processing ? undefined : artifact => {
+        if (!canOfferCsvExportHandoff337(artifact)) {
+          setHandoffStatus("Il CSV non è verificato o supera i limiti del passaggio locale.");
+          return;
+        }
+        pendingCsvExport337.current?.();
+        pendingCsvExport337.current = null;
+        const transfer = startCsvExportHandoff337(artifact, status => {
+          if (status === "received") setHandoffStatus("File CSV acquisito in memoria dalla nuova scheda; attendi la conferma di lettura prima di elaborare o esportare.");
+          if (status === "expired") setHandoffStatus("Passaggio CSV scaduto dopo 30 secondi; ripeti l'azione manualmente.");
+          if (status === "unavailable") setHandoffStatus("La destinazione non ha accettato il CSV; il risultato originale rimane qui.");
+          if (status === "cancelled") setHandoffStatus("Passaggio CSV annullato; il risultato originale rimane qui.");
+        });
+        if (transfer.opened) { pendingCsvExport337.current = transfer.cancel; setHandoffStatus("Attendo la ricezione del CSV nella nuova scheda…"); }
+        else setHandoffStatus(transfer.reason);
+      }}
       onHandoff={handoffTargets[0] === undefined || result === null ? undefined : () => {
         const proposal = handoffTargets[0]!;
         const opened = openHandoffTarget(proposal, result.handoff, { sourceToolId: "csv-cleaner" });

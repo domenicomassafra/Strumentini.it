@@ -1,5 +1,6 @@
 import { createBinaryHandoffEnvelope, isBinaryHandoffEnvelope, isTrustedBinaryHandoffEvent, MAX_BINARY_HANDOFF_BYTES, type BinaryHandoffEnvelope } from "./binary-handoff";
 import type { OutputArtifactDescriptor } from "./output-artifact";
+import { parseCsvTable } from "../engines/table/csv";
 
 /** An audited narrow adapter, NOT a declaration that other catalog tools accept file handoffs. */
 export const PDF_PAGES_HANDOFF_TARGET_337 = {
@@ -15,7 +16,15 @@ export const PNG_COMPRESSION_HANDOFF_TARGET_337 = {
   mime: "image/png",
   format: "png",
 } as const;
-type HandoffTarget337 = typeof PDF_PAGES_HANDOFF_TARGET_337 | typeof PNG_COMPRESSION_HANDOFF_TARGET_337;
+/** The CSV destination declares 10 MiB; do not widen the old 2 MiB table-string transport. */
+export const CSV_EXPORT_HANDOFF_MAX_BYTES_337 = 10 * 1024 * 1024;
+export const CSV_EXPORT_HANDOFF_TARGET_337 = {
+  id: "csv-dedupe",
+  route: "/tools/csv-dedupe",
+  mime: "text/csv",
+  format: "csv",
+} as const;
+type HandoffTarget337 = typeof PDF_PAGES_HANDOFF_TARGET_337 | typeof PNG_COMPRESSION_HANDOFF_TARGET_337 | typeof CSV_EXPORT_HANDOFF_TARGET_337;
 
 export const EPHEMERAL_FILE_HANDOFF_TTL_MS_337 = 30_000;
 const MESSAGE_KIND = "strumentini-ephemeral-file-handoff-337";
@@ -66,6 +75,30 @@ function isPngPayload(envelope: BinaryHandoffEnvelope): boolean {
     && descriptor.mime === "image/png"
     && descriptor.bytes > 0 && descriptor.bytes <= MAX_BINARY_HANDOFF_BYTES
     && /\.png$/iu.test(descriptor.name) && isPngBytes(payload);
+}
+
+function isCsvBytes337(bytes: Uint8Array): boolean {
+  if (bytes.byteLength === 0 || bytes.byteLength > CSV_EXPORT_HANDOFF_MAX_BYTES_337 || bytes.includes(0)) return false;
+  try {
+    const table = parseCsvTable(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+    return table.header.length > 0;
+  } catch { return false; }
+}
+
+function isCsvPayload(envelope: BinaryHandoffEnvelope): boolean {
+  if (!isBinaryHandoffEnvelope(envelope)) return false;
+  const { descriptor, payload } = envelope;
+  return descriptor.type === "file" && descriptor.format === "csv"
+    && descriptor.mime === "text/csv" && /\.csv$/iu.test(descriptor.name)
+    && descriptor.bytes <= CSV_EXPORT_HANDOFF_MAX_BYTES_337 && isCsvBytes337(payload);
+}
+
+export function canOfferCsvExportHandoff337(artifact: OutputArtifactDescriptor | null | undefined): artifact is OutputArtifactDescriptor {
+  return artifact !== null && artifact !== undefined && artifact.kind === "structured"
+    && artifact.download.ready && artifact.verification.state === "verified"
+    && artifact.mime === "text/csv" && artifact.verification.verifiedMime === "text/csv"
+    && /\.csv$/iu.test(artifact.name) && artifact.bytes instanceof Uint8Array
+    && artifact.byteLength === artifact.bytes.byteLength && isCsvBytes337(artifact.bytes);
 }
 
 /** Only locally verified PNG output is eligible for the explicit PNG→compress action. */
@@ -140,6 +173,15 @@ export function startPngCompressionHandoff337(
   return startFileHandoff337(artifact, PNG_COMPRESSION_HANDOFF_TARGET_337, canOfferPngCompressionHandoff337, "Solo un PNG verificato entro 64 MiB può essere trasferito.", onStatus, environment);
 }
 
+export function startCsvExportHandoff337(
+  artifact: OutputArtifactDescriptor,
+  onStatus?: (status: EphemeralHandoffStatus337) => void,
+  environment: EphemeralHandoffEnvironment337 = { window },
+): EphemeralHandoffStart337 {
+  return startFileHandoff337(artifact, CSV_EXPORT_HANDOFF_TARGET_337, canOfferCsvExportHandoff337,
+    "Solo un CSV UTF-8 verificato, valido e fino a 10 MiB può essere trasferito.", onStatus, environment);
+}
+
 function startFileHandoff337(
   artifact: OutputArtifactDescriptor,
   target: HandoffTarget337,
@@ -154,7 +196,7 @@ function startFileHandoff337(
   const sender = environment.window;
   const expiresAt = nowMs(environment) + EPHEMERAL_FILE_HANDOFF_TTL_MS_337;
   let envelope: BinaryHandoffEnvelope | null;
-  try { envelope = createBinaryHandoffEnvelope(target.id === "pdf-to-images" ? "file" : "image", artifact, target.format); }
+  try { envelope = createBinaryHandoffEnvelope(target.id === "image-compression" ? "image" : "file", artifact, target.format); }
   catch { return { opened: false, reason: "Impossibile verificare il file da trasferire." }; }
   const receiver = sender.open(`${target.route}/#handoff337=${token}`, "_blank");
   if (receiver === null) return { opened: false, reason: "Il browser ha bloccato la nuova scheda." };
@@ -208,6 +250,14 @@ export function receivePngCompressionHandoff337(
   onFailure?: (reason: "expired" | "invalid" | "unavailable") => void,
 ): () => void {
   return receiveFileHandoff337(onReceive, PNG_COMPRESSION_HANDOFF_TARGET_337, isPngPayload, environment, onFailure);
+}
+
+export function receiveCsvExportHandoff337(
+  onReceive: (file: File) => unknown,
+  environment: EphemeralHandoffEnvironment337 = { window },
+  onFailure?: (reason: "expired" | "invalid" | "unavailable") => void,
+): () => void {
+  return receiveFileHandoff337(onReceive, CSV_EXPORT_HANDOFF_TARGET_337, isCsvPayload, environment, onFailure);
 }
 
 function receiveFileHandoff337(

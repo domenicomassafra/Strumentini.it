@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import type { ResultDeclaration } from "../../../catalog/manifest";
 import { parseCsvTable } from "../../../engines/table/csv";
 import { createBoundedTablePreview } from "../../../runtime/bounded-preview";
-import { createOutputArtifactDescriptor } from "../../../runtime/output-artifact";
+import { createOutputArtifactDescriptor, type OutputArtifactDescriptor } from "../../../runtime/output-artifact";
 import { readOutputFacts338 } from "../../../runtime/output-facts-338";
 import { resolveResultActions } from "../../../runtime/result-actions";
 import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
@@ -43,6 +43,7 @@ export interface CsvTableResultV2Props {
   readonly provenance: string;
   readonly handoffTargetCount?: number;
   readonly onHandoff?: (() => void) | undefined;
+  readonly onFileHandoff337?: ((artifact: OutputArtifactDescriptor) => void) | undefined;
   readonly onReset: () => void;
   readonly children?: ComponentChildren;
 }
@@ -61,6 +62,7 @@ export function CsvTableResultV2({
   provenance,
   handoffTargetCount = 0,
   onHandoff,
+  onFileHandoff337,
   onReset,
   children,
 }: CsvTableResultV2Props) {
@@ -194,6 +196,11 @@ export function CsvTableResultV2({
             reset: onReset,
           }}
         />
+        {onFileHandoff337 !== undefined && artifact.download.ready && (
+          <button type="button" data-csv-export-handoff-337 onClick={() => onFileHandoff337(artifact)}>
+            Passa il CSV alla deduplicazione ed esportazione
+          </button>
+        )}
         {declaration.capabilities.includes("download") && (
           <label class="checkbox-field" data-download-optin339>
             <input type="checkbox" checked={autoDownload} onChange={event=>chooseAutoDownload(event.currentTarget.checked)} />

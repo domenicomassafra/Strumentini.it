@@ -1,11 +1,16 @@
 import { chromium, firefox, webkit } from "@playwright/test";
 import { spawn } from "node:child_process";
-import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
 import { basename, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
+import { tsImport } from "tsx/esm/api";
+
+// The matrix runs via `node` (including Node 22 CI). Use the installed tsx
+// loader to share the EXACT release/Gold source binding, never a second hash.
+const { currentEvidenceSourceFingerprint, EVIDENCE_SOURCE_SCOPE_VERSION } =
+  await tsImport("../lib/current-revision.ts", import.meta.url);
 
 const root = resolve(import.meta.dirname, "../..");
 const dist = resolve(root, "dist");
@@ -27,28 +32,17 @@ const isExpectedStaticFailure = (url) => {
   }
 };
 
-const evidenceRootFiles = new Set(["astro.config.mjs", "package-lock.json", "package.json", "tsconfig.json", "wrangler.jsonc"]);
-const evidencePrefixes = ["public/", "quality/fixtures/", "quality/oracles/", "scripts/", "src/", "tests/"];
-
-async function currentEvidenceSourceFingerprint() {
-  const raw = execFileSync("git", ["ls-files", "-co", "--exclude-standard", "-z"], { cwd: root, encoding: "utf8" });
-  const paths = raw.split("\0")
-    .filter(Boolean)
-    .filter((path) => !path.startsWith("quality/receipts/") && (evidenceRootFiles.has(path) || evidencePrefixes.some((prefix) => path.startsWith(prefix))))
-    .sort();
-  const hash = createHash("sha256");
-  for (const path of paths) {
-    hash.update(path);
-    hash.update("\0");
-    try {
-      hash.update(await readFile(resolve(root, path)));
-    } catch (error) {
-      if (error?.code !== "ENOENT") throw error;
-      hash.update("<deleted>");
-    }
-    hash.update("\0");
+// Audit only; never starts a browser/server or creates/reissues any evidence.
+if (process.argv.includes("--check")) {
+  const path = resolve(receiptDir, "fresh-browser-matrix.json");
+  const receipt = JSON.parse(await readFile(path, "utf8"));
+  if (receipt?.schemaVersion !== 1 || !/^[a-f0-9]{40}$/u.test(receipt.revision) ||
+      receipt.sourceScopeVersion !== EVIDENCE_SOURCE_SCOPE_VERSION ||
+      receipt.sourceFingerprint !== await currentEvidenceSourceFingerprint(root)) {
+    throw new Error("browser matrix source binding stale or unbound; historical evidence remains NO_GO");
   }
-  return hash.digest("hex");
+  console.log(`browser matrix source binding current (${EVIDENCE_SOURCE_SCOPE_VERSION}); this is NOT browser, physical or release PASS`);
+  process.exit(0);
 }
 
 async function waitForServer() {
@@ -383,7 +377,7 @@ async function runSiblingAcceptance() {
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], { cwd: root, stdio: "ignore" });
 try {
   await waitForServer();
-  const sourceFingerprint = await currentEvidenceSourceFingerprint();
+  const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
   const engineChunkNames = staticData.engineChunks.map((entry) => entry.file);
   const results = [];
   for (const definition of engineDefinitions) results.push(await runEngine(definition, engineChunkNames));
@@ -393,6 +387,7 @@ try {
     generatedAt: new Date().toISOString(),
     revision: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
     sourceFingerprint,
+    sourceScopeVersion: EVIDENCE_SOURCE_SCOPE_VERSION,
     server: { origin, bind: "127.0.0.1", networkPolicy: "external requests aborted before transmission; synthetic task values never sent" },
     staticInspection: staticData,
     browserMatrix: {

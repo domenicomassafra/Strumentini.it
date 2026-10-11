@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
+import { AUTO_DOWNLOAD_KEY_339, browserStorage339, changeAutoDownload339, readAutoDownload339 } from "../../../runtime/download-policy-339";
 import { canOfferPdfPagesHandoff337, receivePdfPagesHandoff337, startPdfPagesHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
 import { readOutputFacts338 } from "../../../runtime/output-facts-338";
 import { deleteSavedPdf341, listSavedPdfs341, loadSavedPdf341, maySavePdf341, savePdf341, type SavedPdfSummary341 } from "../../../workbench/saved-pdf-341";
@@ -124,6 +126,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [result, setResult] = useState<PreparedPdfResult | null>(null);
   const [error, setError] = useState("");
   const [status, setStatus] = useState<"idle" | "working" | "done">("idle");
+  const [autoDownload339, setAutoDownload339] = useState(false);
+  const [downloadStatus339, setDownloadStatus339] = useState("");
+  const autoRunArmed339 = useRef(false);
   const [handoffMessage, setHandoffMessage] = useState("");
   const [savedPdfItems, setSavedPdfItems] = useState<readonly SavedPdfSummary341[]>([]);
   const [savedPdfStatus, setSavedPdfStatus] = useState("");
@@ -133,9 +138,44 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
 
   useEffect(() => () => {
     controller.current?.abort();
+    autoRunArmed339.current = false;
     pendingPdfHandoff.current?.();
     pendingPdfHandoff.current = null;
   }, []);
+
+  useEffect(() => {
+    // Read after Astro hydration: server rendering cannot inspect browser storage.
+    setAutoDownload339(readAutoDownload339(browserStorage339()));
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === AUTO_DOWNLOAD_KEY_339 || event.key === null) setAutoDownload339(readAutoDownload339(browserStorage339()));
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  useEffect(() => {
+    if (result === null) return;
+    const armed = autoRunArmed339.current;
+    autoRunArmed339.current = false;
+    if (!armed || !readAutoDownload339(browserStorage339())) return;
+    // A multi-file PDF, ZIP, text or image result requires explicit manual choice.
+    const artifact = result.artifacts.length === 1 ? result.artifacts[0]?.artifact : undefined;
+    if (artifact?.kind !== "pdf" || artifact.mime !== "application/pdf") return;
+    setDownloadStatus339(requestBrowserDownload339(artifact)
+      ? "Download automatico PDF richiesto al browser. Il salvataggio sul dispositivo non è confermabile."
+      : "Download automatico non disponibile: usa il comando manuale Scarica risultato.");
+  }, [result]);
+
+  function chooseAutoDownload339(enabled: boolean) {
+    const { saved, persistedEnabled } = changeAutoDownload339(browserStorage339(), enabled);
+    setAutoDownload339(persistedEnabled === true);
+    setDownloadStatus339(saved
+      ? enabled ? "Preferenza condivisa attiva per i prossimi risultati supportati (WAV, JSON, CSV e PDF singoli verificati)." : "Preferenza condivisa revocata per tutti gli strumenti supportati; il download manuale resta disponibile."
+      : persistedEnabled === true
+        ? "Impossibile revocare il consenso condiviso: il download automatico è ancora attivo anche negli altri strumenti supportati. Riprova o cancella le preferenze del sito."
+        : enabled ? "Impossibile salvare il consenso: download automatico non attivato."
+          : "Impossibile confermare la revoca. Verifica le preferenze del sito prima di una nuova elaborazione.");
+  }
 
   useEffect(() => {
     let active = true;
@@ -257,6 +297,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     // The same submit/retry must not start a second job while the first owns
     // the controller, or record one physical operation as two successful uses.
     if (controller.current !== null) return;
+    autoRunArmed339.current = false;
+    setDownloadStatus339("");
     setError("");
     setResult(null);
     setTextExports(null);
@@ -271,6 +313,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     }
     const abortController = new AbortController();
     controller.current = abortController;
+    autoRunArmed339.current = autoDownload339 && readAutoDownload339(browserStorage339());
     setStatus("working");
     try {
       if (toolId === "pdf-text-extraction") {
@@ -362,6 +405,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
       setStatus("done");
       recordCompletedTool(toolId);
     } catch (caught) {
+      autoRunArmed339.current = false;
       setError(caught instanceof DOMException && caught.name === "AbortError"
         ? "Operazione annullata. Non è stato prodotto alcun risultato."
         : friendlyToolErrorIt(caught));
@@ -379,6 +423,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
 
   function reset() {
     controller.current?.abort();
+    autoRunArmed339.current = false;
+    setDownloadStatus339("");
     controller.current = null;
     pendingPdfHandoff.current?.();
     pendingPdfHandoff.current = null;
@@ -904,6 +950,12 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         )}
         {error !== "" && <p class="error" role="alert">{error}</p>}
         <div class="actions"><button class="primary" type="submit" disabled={isWorking}>{isWorking ? it(CONTROL.working) : actionLabel}</button>{isWorking && <button type="button" onClick={() => controller.current?.abort()}>{it(CONTROL.cancel)}</button>}<button type="button" onClick={reset} disabled={isWorking}>{it(CONTROL.reset)}</button></div>
+        <label class="checkbox-field" data-download-pdf339>
+          <input type="checkbox" checked={autoDownload339} onChange={(event) => chooseAutoDownload339(event.currentTarget.checked)} />
+          <span>Download automatico condiviso: WAV, JSON, CSV e PDF singoli verificati (facoltativo)</span>
+        </label>
+        <p class="file-note" data-download-pdf339-scope>Preferenza unica per tutti gli strumenti supportati: se hai già dato il consenso per WAV, JSON o CSV, il download automatico è attivo anche per i prossimi PDF singoli verificati. Attivarlo qui vale anche per gli altri formati supportati; disattivarlo qui revoca il consenso per tutti. Predefinito OFF in assenza di consenso. Nessun download retroattivo; per ZIP, più file e altri risultati non supportati scegli il download manuale. Il browser può bloccare la richiesta e non conferma il salvataggio del sistema operativo.</p>
+        {downloadStatus339 !== "" && <p role="status" class="file-note" data-download-pdf339-status>{downloadStatus339}</p>}
       </section>
       <ToolResultPanel
         eyebrow={it(CONTROL.localResult)}

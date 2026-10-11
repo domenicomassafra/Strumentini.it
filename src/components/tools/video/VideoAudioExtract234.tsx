@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import type { VideoAudioResult234 } from "../../../engines/video/audio-extract-234";
 
 /** #234 independent audio-only extraction/trim. The adjacent video transform
@@ -65,6 +66,7 @@ export function VideoAudioExtract234({ file }: { readonly file: File | null }) {
       setOutputUrl(url);
       setOutput(result);
       setStatus("WAV verificato: header RIFF, PCM16, byte e durata del campionamento coerenti.");
+      recordCompletedTool("video-inspector");
     } catch (error) {
       if (!controller.signal.aborted && generation.current === operation) {
         setStatus(error instanceof Error ? error.message : "VIDEO_AUDIO_UNSUPPORTED: Non è possibile verificare l'estrazione.");

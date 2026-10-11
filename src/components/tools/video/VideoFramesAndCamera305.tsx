@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import type { VideoFrame305Result } from "../../../engines/video/frame-extract-305";
 import { VideoContactSheet308 } from "./VideoContactSheet308";
 import { VideoAudioExtract234 } from "./VideoAudioExtract234";
@@ -89,6 +90,7 @@ export function VideoFramesAndCamera305() {
       resultUrl.current = URL.createObjectURL(result.blob);
       setFrame(result);
       setFrameStatus("PNG creato localmente. Il timestamp effettivo è mostrato soltanto se verificato dal browser.");
+      recordCompletedTool("video-inspector");
     } catch (error) {
       if (!abort.signal.aborted && current === generation.current) setFrameStatus(error instanceof Error ? error.message : "Estrazione non disponibile.");
     } finally {
@@ -144,7 +146,7 @@ export function VideoFramesAndCamera305() {
     <p class="file-note">Funzione sperimentale: decodifica nel browser, senza transcoder o caricamenti. Il seek può cadere su un fotogramma vicino: l'esattezza temporale viene dichiarata solo se il browser fornisce un timestamp di presentazione.</p>
     <div class="field-grid">
       <label class="field"><span>Video locale (massimo 50 MiB)</span><input type="file" accept=".mp4,.webm,.m4v,video/mp4,video/webm" onChange={(event) => choose(event.currentTarget.files?.[0] ?? null)} /></label>
-      <label class="field"><span>Timestamp richiesto, secondi</span><input type="number" min="0" step="0.001" value={requested} onInput={(event) => { setRequested(event.currentTarget.value); clearResult(); }} /></label>
+      <label class="field"><span>Timestamp richiesto, secondi</span><input type="number" min="0" step="0.001" value={requested} disabled={busy} onInput={(event) => { generation.current++; extraction.current?.abort(); extraction.current = null; setBusy(false); setRequested(event.currentTarget.value); clearResult(); }} /></label>
     </div>
     <video ref={fileVideo} muted playsInline preload="metadata" style={{ display: "none" }} onLoadedMetadata={() => setLoaded(true)} onError={() => { setLoaded(false); setFrameStatus("Formato o codec non decodificabile da questo browser."); }} />
     {loaded && file && <p class="file-note">Sorgente: {file.name}; durata dichiarata {Number(fileVideo.current?.duration ?? 0).toFixed(3)} s; dimensioni {fileVideo.current?.videoWidth} × {fileVideo.current?.videoHeight}</p>}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import type { ContactSheet308Result } from "../../../engines/video/contact-sheet-308";
 
 /** Additional export mode for the existing #305 decoded-video workspace. */
@@ -43,7 +44,7 @@ export function VideoContactSheet308({ video, file }: { readonly video: HTMLVide
     try {
       const { exportVideoContactSheet308 } = await import("../../../engines/video/contact-sheet-308");
       const exported = await exportVideoContactSheet308(video, file, count, controller.signal);
-      if (controller.signal.aborted) return;
+      if (controller.signal.aborted || abort.current !== controller) return;
       const nextSheet = URL.createObjectURL(exported.sheet);
       const nextZip = URL.createObjectURL(exported.zip);
       urls.current = [nextSheet, nextZip];
@@ -51,6 +52,7 @@ export function VideoContactSheet308({ video, file }: { readonly video: HTMLVide
       setSheetUrl(nextSheet);
       setZipUrl(nextZip);
       setStatus(`Pronto: ${exported.frames.length} PNG, contact sheet e manifest.json in ZIP STORE locale verificato.`);
+      recordCompletedTool("video-inspector");
     } catch (error) {
       if (!controller.signal.aborted) setStatus(error instanceof Error ? error.message : "Esportazione non verificabile in questo browser.");
     } finally {

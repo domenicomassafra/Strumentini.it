@@ -5,6 +5,8 @@ import { canOfferPdfPagesHandoff337, EPHEMERAL_FILE_HANDOFF_TTL_MS_337,
   PDF_PAGES_HANDOFF_TARGET_337, receivePdfPagesHandoff337, startPdfPagesHandoff337,
   canOfferPngCompressionHandoff337, startPngCompressionHandoff337, receivePngCompressionHandoff337,
   PNG_COMPRESSION_HANDOFF_TARGET_337 } from "../src/runtime/ephemeral-file-handoff-337";
+import { canOfferCsvExportHandoff337, startCsvExportHandoff337, receiveCsvExportHandoff337,
+  CSV_EXPORT_HANDOFF_TARGET_337, CSV_EXPORT_HANDOFF_MAX_BYTES_337 } from "../src/runtime/ephemeral-file-handoff-337";
 
 const token = "12345678-1234-4234-8234-123456789abc";
 const bytes = new TextEncoder().encode("%PDF-1.4\n1 0 obj\n<<>>\nendobj\n%%EOF\n");
@@ -376,4 +378,121 @@ describe("#337 authenticated payload rejection releases the sender immediately",
       });
     }
   }
+});
+
+describe("#337 CSV cleaner to CSV dedupe export native-file handoff",()=>{
+  const sourceText="name,amount\nMarta,12\nMarta,12\nLuca,9\n";
+  const sourceBytes=new TextEncoder().encode(sourceText);
+  function csv():OutputArtifactDescriptor {
+    return createOutputArtifactDescriptor({kind:"structured",name:"cleaned.csv",mime:"text/csv",bytes:sourceBytes,
+      verification:{state:"verified",verifiedMime:"text/csv",method:"Parsed CSV serializer output revalidated"},
+      fidelity:"structural",fidelityNote:"CSV from the local cleaner"});
+  }
+  it("transfers actual UTF-8 CSV bytes once as a native File without auto-start and releases sender on receipt",async()=>{
+    const {sender,receiver}=pair();
+    const statuses:string[]=[];
+    const started=startCsvExportHandoff337(csv(),status=>statuses.push(status),{window:sender as unknown as Window,createToken:()=>token});
+    expect(started.opened).toBe(true);
+    expect(receiver.location.pathname).toBe("/tools/csv-dedupe/");
+    const files:File[]=[];
+    const dispose=receiveCsvExportHandoff337(file=>{files.push(file);return true;},{window:receiver as unknown as Window});
+    expect(files).toHaveLength(1);
+    expect(files[0]).toMatchObject({name:"cleaned.csv",type:"text/csv",size:sourceBytes.byteLength});
+    expect(new TextDecoder().decode(await files[0]!.arrayBuffer())).toBe(sourceText);
+    expect(statuses).toEqual(["received"]);
+    expect(receiver.location.hash).toBe("");
+    expect(sender.timers.size).toBe(0);expect(receiver.timers.size).toBe(0);
+    expect(sender.listenerCount).toBe(0);expect(receiver.listenerCount).toBe(0);
+    dispose();
+  });
+
+  it("refuses unverified, mismatched, empty or oversize sources before opening popup",()=>{
+    const {sender}=pair();
+    const valid=csv();
+    expect(canOfferCsvExportHandoff337(valid)).toBe(true);
+    expect(CSV_EXPORT_HANDOFF_MAX_BYTES_337).toBeLessThanOrEqual(MAX_BINARY_HANDOFF_BYTES);
+    for(const invalid of [{...valid,bytes:new Uint8Array()}, {...valid,kind:"image"},
+      {...valid,name:"cleaned.txt"},{...valid,mime:"application/pdf"},
+      {...valid,byteLength:CSV_EXPORT_HANDOFF_MAX_BYTES_337+1},
+      {...valid,verification:{state:"warning"}},
+      {...valid,bytes:new Uint8Array([0xff,0xfe])} ] as OutputArtifactDescriptor[]) {
+      expect(canOfferCsvExportHandoff337(invalid)).toBe(false);
+      expect(startCsvExportHandoff337(invalid,undefined,{window:sender as unknown as Window,createToken:()=>token}).opened).toBe(false);
+    }
+    sender.blockPopup=true;
+    expect(startCsvExportHandoff337(valid,undefined,{window:sender as unknown as Window,createToken:()=>token})).toMatchObject({opened:false,reason:expect.stringContaining("bloccato")});
+    const actualOversize=new Uint8Array(CSV_EXPORT_HANDOFF_MAX_BYTES_337+1).fill(0x61);
+    const oversized=createOutputArtifactDescriptor({kind:"structured",name:"oversize.csv",mime:"text/csv",bytes:actualOversize,
+      verification:{state:"verified",verifiedMime:"text/csv",method:"test oversized source"},
+      fidelity:"unknown",fidelityNote:"Transport bound fixture"});
+    expect(canOfferCsvExportHandoff337(oversized)).toBe(false);
+  });
+
+  it("does not accept a foreign payload or false ACK; rejects a busy destination",()=>{
+    const {sender,receiver}=pair();
+    const statuses:string[]=[];
+    startCsvExportHandoff337(csv(),status=>statuses.push(status),{window:sender as unknown as Window,createToken:()=>token});
+    const messages:string[]=[];
+    sender.addEventListener("message",event=>messages.push(event.data?.phase));
+    // Keep the real opener from sending automatically, then inject adversarial messages.
+    receiver.mutateOutbound=data=>{
+      if(typeof data==="object" && data!==null && (data as {phase?:string}).phase==="payload") return {...data as object,token:"wrong"};
+      return data;
+    };
+    const files:File[]=[];
+    const cleanup=receiveCsvExportHandoff337(file=>{files.push(file);return false;},{window:receiver as unknown as Window});
+    expect(files).toEqual([]);
+    expect(statuses).toEqual([]);
+    const envelope=createBinaryHandoffEnvelope("file",csv(),"csv");
+    const packet={kind:"strumentini-ephemeral-file-handoff-337",phase:"payload",token,
+      targetId:CSV_EXPORT_HANDOFF_TARGET_337.id,expiresAt:Date.now()+5000,envelope};
+    receiver.emit(packet,sender,"https://evil.example");
+    receiver.emit(packet,new FakeWindow(),sender.location.origin);
+    receiver.emit({...packet,targetId:PDF_PAGES_HANDOFF_TARGET_337.id},sender,sender.location.origin);
+    receiver.emit({...packet,token:"wrong"},sender,sender.location.origin);
+    expect(files).toEqual([]);
+    expect(receiver.listenerCount).toBe(1);
+    receiver.emit(packet,sender,sender.location.origin);
+    expect(files).toHaveLength(1);
+    expect(statuses).toEqual(["unavailable"]);
+    expect(messages).toContain("rejected");
+    expect(messages).not.toContain("received");
+    expect(sender.timers.size).toBe(0);
+    expect(receiver.timers.size).toBe(0);
+    cleanup();
+  });
+
+  it("rejects forged cross-origin/window, malformed bytes and expired payload without false ACK; one-use",()=>{
+    for(const failure of ["invalid","expired"] as const) {
+      const {sender,receiver}=pair();
+      let now=1000;
+      const statuses:string[]=[];
+      const failures:string[]=[];
+      const files:File[]=[];
+      const started=startCsvExportHandoff337(csv(),status=>statuses.push(status),{window:sender as unknown as Window,createToken:()=>token,now:()=>now});
+      expect(started.opened).toBe(true);
+      const ack={kind:"strumentini-ephemeral-file-handoff-337",phase:"rejected",targetId:CSV_EXPORT_HANDOFF_TARGET_337.id,token};
+      sender.emit(ack,receiver,"https://evil.example");
+      sender.emit(ack,new FakeWindow(),sender.location.origin);
+      sender.emit(ack,receiver,sender.location.origin); // no send yet
+      expect(statuses).toEqual([]);
+      receiver.mutateOutbound=data=>{
+        if(typeof data!=="object" || data===null || (data as {phase?:string}).phase!=="payload")return data;
+        const msg=data as {expiresAt:number,envelope:{descriptor:{mime:string},payload:Uint8Array}};
+        return failure==="expired"?{...msg,expiresAt:now-1}:{...msg,envelope:{...msg.envelope,payload:new Uint8Array([0xff,0xfe])}};
+      };
+      const dispose=receiveCsvExportHandoff337(file=>{files.push(file);return true;},{window:receiver as unknown as Window,now:()=>now},reason=>failures.push(reason));
+      expect(files).toHaveLength(0);
+      expect(failures).toEqual([failure]);
+      expect(statuses).toEqual(["unavailable"]);
+      expect(sender.listenerCount).toBe(0);expect(receiver.listenerCount).toBe(0);
+      expect(sender.timers.size).toBe(0);expect(receiver.timers.size).toBe(0);
+      receiver.emit({kind:"strumentini-ephemeral-file-handoff-337",phase:"payload",targetId:CSV_EXPORT_HANDOFF_TARGET_337.id,token},sender,sender.location.origin);
+      expect(files).toHaveLength(0);
+      now+=EPHEMERAL_FILE_HANDOFF_TTL_MS_337;
+      sender.expire();receiver.expire();
+      expect(statuses).toEqual(["unavailable"]);
+      dispose();
+    }
+  });
 });

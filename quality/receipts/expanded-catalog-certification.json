@@ -6516,6 +6516,7 @@
         },
         "testFiles": [
           "tests/csv-table-upgrade-60.test.ts",
+          "tests/ephemeral-file-handoff-337.test.ts",
           "tests/table-expansion.test.ts",
           "tests/table-ops-handoff.test.ts"
         ]

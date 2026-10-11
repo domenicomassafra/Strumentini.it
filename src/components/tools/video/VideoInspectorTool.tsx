@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { inspectMp4Local, type Mp4Inspection } from "../../../engines/video/mp4-inspection";
 import { planVideoTargetSize, type VideoSizeUnit, type VideoTargetSizePlan } from "../../../engines/video/target-size";
 import {
@@ -93,6 +94,7 @@ export function VideoInspectorTool() {
       setInspection(result);
       setInspectionStatus("success");
       if (result.durationSeconds !== null) setDurationInput(String(result.durationSeconds));
+      recordCompletedTool("video-inspector");
     } catch (error) {
       if (generation.current !== currentGeneration || pending.signal.aborted) return;
       setInspectionStatus("error");
@@ -134,6 +136,7 @@ export function VideoInspectorTool() {
         durationSeconds, targetSize, unit, audioBitrateBps, reservedOverheadBytes: requestedOverheadBytes,
       });
       setPlan(next);
+      recordCompletedTool("video-inspector");
     } catch (error) {
       setPlanError(error instanceof Error ? error.message : "Impossibile calcolare il budget.");
     }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import type { VideoTransformResult234 } from "../../../engines/video/video-transform-234";
 import type { CompressionPlan38, CompressionReceipt38 } from "../../../engines/video/compression-strategy-38";
 
@@ -102,13 +103,15 @@ export function VideoTransform234({ file, durationSeconds }: { readonly file: Fi
         if (sequence.current === operation && Number.isFinite(value)) setStatus(`Codifica H.264+AAC: ${Math.round(value * 100)}%…`);
       });
       if (controller.signal.aborted || sequence.current !== operation) return;
+      const verifiedReceipt = measureCompression38(candidate, converted.sourceBytes, converted.bytes, converted.duration);
       const nextUrl = URL.createObjectURL(converted.blob);
       currentUrl.current = nextUrl;
       setUrl(nextUrl);
       setResult(converted);
       setPlan(candidate);
-      setReceipt(measureCompression38(candidate, converted.sourceBytes, converted.bytes, converted.duration));
+      setReceipt(verifiedReceipt);
       setStatus("Nuovo MP4 H.264 + AAC generato e metadati ricontrollati; bitrate richiesto approssimativo.");
+      recordCompletedTool("video-inspector");
     } catch (error) {
       if (!controller.signal.aborted && sequence.current === operation) {
         setStatus(error instanceof Error ? error.message : "VIDEO_234_WORKER_FAILED: conversione non riuscita.");

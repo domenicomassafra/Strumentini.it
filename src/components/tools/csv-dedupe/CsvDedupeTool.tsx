@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { CSV_HARD_FILE_BYTES, readBlobText } from "../../../engines/table/csv";
 import { handoffCatalog } from "../../../generated/handoff-catalog";
 import { compatibleHandoffTargets, openHandoffTarget, receiveHandoffFromOpener } from "../../../runtime/handoff";
+import { receiveCsvExportHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { csvDedupeManifest } from "../../../tools/csv-dedupe/manifest";
@@ -10,6 +11,7 @@ import { CsvTableResultV2 } from "../csv-shared/CsvTableResultV2";
 
 export function CsvDedupeTool() {
   const [text, setText] = useState("");
+  const [receivedFile337, setReceivedFile337] = useState<File | null>(null);
   const [sourceName, setSourceName] = useState("");
   const [headers, setHeaders] = useState<string[]>([]);
   const [mode, setMode] = useState<"whole-row" | "key-columns">("whole-row");
@@ -28,6 +30,31 @@ export function CsvDedupeTool() {
     setResult(null);
     setError("");
   }), []);
+
+  useEffect(() => receiveCsvExportHandoff337(file => {
+    if (active.current) return false;
+    revision.current += 1;
+    setText(""); setHeaders([]); setResult(null); setError("");
+    // ACK only after a real File is synchronously staged in component state.
+    setReceivedFile337(file);
+    setSourceName(`CSV locale ricevuto in memoria: ${file.name} (${file.size} byte). Lettura in corso…`);
+    return true;
+  }, { window }, failure => {
+    setError(failure === "expired"
+      ? "Passaggio CSV scaduto dopo 30 secondi: seleziona un file o riprova dalla scheda di origine."
+      : failure === "invalid"
+        ? "Passaggio CSV non valido o oltre i limiti: nessun file acquisito."
+        : "Passaggio CSV non disponibile: nessun file acquisito.");
+  }), []);
+
+  useEffect(() => {
+    if (receivedFile337 === null) return;
+    let mounted = true;
+    void loadFile(receivedFile337).finally(() => {
+      if (mounted) setReceivedFile337(current => current === receivedFile337 ? null : current);
+    });
+    return () => { mounted = false; };
+  }, [receivedFile337]);
 
   async function loadFile(file: File | undefined) {
     if (file === undefined) return;
@@ -66,8 +93,23 @@ export function CsvDedupeTool() {
     }
   }
 
+  function changeDedupeMode(next: "whole-row" | "key-columns") {
+    revision.current += 1;
+    setMode(next);
+    setResult(null);
+    setError("");
+  }
+
+  function changeDedupeKeys(next: number[]) {
+    revision.current += 1;
+    setKeyColumns(next);
+    setResult(null);
+    setError("");
+  }
+
   function reset() {
     revision.current += 1;
+    setReceivedFile337(null);
     setText("");
     setSourceName("");
     setHeaders([]);
@@ -84,11 +126,11 @@ export function CsvDedupeTool() {
     : compatibleHandoffTargets(result.handoff, handoffCatalog).filter(({ target }) => target.id !== csvDedupeManifest.id);
   return <form class="tool-operation" onSubmit={dedupe}>
     <section class="tool-form-card">
-      <label class="field"><span>File CSV</span><input ref={fileInput} aria-label="File CSV" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => void loadFile(event.currentTarget.files?.[0])} /></label>
+      <label class="field"><span>File CSV</span><input ref={fileInput} aria-label="File CSV" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => { setReceivedFile337(null); void loadFile(event.currentTarget.files?.[0]); }} /></label>
       {sourceName && <p class="file-note" role="status">{sourceName}</p>}
-      <p class="file-note">Limite file diretto: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB. Limite passaggio tra strumenti: 2 MiB.</p>
-      <fieldset><legend>Regola per i duplicati</legend><label class="choice-line"><input type="radio" name="dedupe-mode" checked={mode === "whole-row"} onChange={() => setMode("whole-row")} /> Riga intera: stessa sequenza esatta di celle</label><label class="choice-line"><input type="radio" name="dedupe-mode" checked={mode === "key-columns"} onChange={() => setMode("key-columns")} /> Colonne chiave: mantieni la prima riga per ogni chiave selezionata</label></fieldset>
-      {mode === "key-columns" && <fieldset><legend>Colonne chiave</legend><p class="file-note">Le colonne sono identificate dalla posizione, quindi intestazioni duplicate restano distinguibili. Le righe con tutte le celle chiave vuote restano separate.</p>{headers.map((name, index) => <label class="choice-line" key={`${index}-${name}`}><input type="checkbox" checked={keyColumns.includes(index)} onChange={(event) => setKeyColumns(event.currentTarget.checked ? [...keyColumns, index].toSorted((a,b)=>a-b) : keyColumns.filter((value) => value !== index))} /> Colonna {index + 1}: {name || "(intestazione vuota)"}</label>)}</fieldset>}
+      <p class="file-note">Limite file diretto: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB. Passaggio tabella legacy: 2 MiB; passaggio file tipizzato #337: 10 MiB.</p>
+      <fieldset><legend>Regola per i duplicati</legend><label class="choice-line"><input type="radio" name="dedupe-mode" checked={mode === "whole-row"} onChange={() => changeDedupeMode("whole-row")} /> Riga intera: stessa sequenza esatta di celle</label><label class="choice-line"><input type="radio" name="dedupe-mode" checked={mode === "key-columns"} onChange={() => changeDedupeMode("key-columns")} /> Colonne chiave: mantieni la prima riga per ogni chiave selezionata</label></fieldset>
+      {mode === "key-columns" && <fieldset><legend>Colonne chiave</legend><p class="file-note">Le colonne sono identificate dalla posizione, quindi intestazioni duplicate restano distinguibili. Le righe con tutte le celle chiave vuote restano separate.</p>{headers.map((name, index) => <label class="choice-line" key={`${index}-${name}`}><input type="checkbox" checked={keyColumns.includes(index)} onChange={(event) => changeDedupeKeys(event.currentTarget.checked ? [...keyColumns, index].toSorted((a,b)=>a-b) : keyColumns.filter((value) => value !== index))} /> Colonna {index + 1}: {name || "(intestazione vuota)"}</label>)}</fieldset>}
       {error && <p class="error" role="alert">{error}</p>}
       <button class="primary tool-submit" type="submit">Rimuovi duplicati</button>
     </section>

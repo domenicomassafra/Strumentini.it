@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import type { VideoGif306Result } from "../../../engines/video/video-gif-306";
 
 /** Video→animated GIF on the existing local-video selection, lazily on click. */
@@ -65,6 +66,7 @@ export function VideoGif306({ file }: { readonly file: File | null }) {
       setUrl(next);
       setResult(completed);
       setStatus(`GIF89a verificata: ${completed.frames} frame, ${completed.durationSeconds.toFixed(2)} s, ${completed.bytes} byte.`);
+      recordCompletedTool("video-inspector");
     } catch (cause) {
       if (!abort.signal.aborted && generation.current === operation) {
         setStatus(cause instanceof Error ? cause.message : "VIDEO_GIF_306_WORKER: GIF non disponibile.");
