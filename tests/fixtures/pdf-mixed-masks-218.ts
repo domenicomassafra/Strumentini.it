@@ -1,7 +1,7 @@
 /** Independent reproducible actual PDF sources for #218, not mock image dictionaries.
  * /DCTDecode JPEG + /FlateDecode PNG Sub predictor and grayscale/Indexed XObjects.
  */
-import { deflateSync } from "node:zlib";
+import { inflateSync } from "node:zlib";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -21,6 +21,21 @@ const pinnedJpeg218 = {
   safe: "d5c74e27475bda1322d8b8462b503f43ef962cc824c88a40423456c1b2adf8da",
   uniform: "bf76fda59e7c707b4b27c5da7be1827d6c7505663aeed8077a7849e6645fe266",
 } as const;
+const pinnedFlate218Sha = {
+  safe: "f9b4f022da46d6a9c5f0ac3355cb8f8ebe348efd9317b23188cc21c0c4797a71",
+  uniform: "cebcb5a70f69aade7052e571b0d6b938fb4f4613ffa2cc113f7a00214926d995",
+  smask: "f547c0bd7375bd50c7dfa2df060d56fe00b3b4ef96296aca9ba9ea5094368f1c",
+  indexed: "7efbf087dd5d0d45cf0c29a16bd10e572175950b99a6f532c1eb32bc3955f2fc",
+  bomb: "2ce02971eb39e59d6093210fb789d5aa866da5f8d4473d757777a654e936fc62",
+} as const;
+function reproducibleFlate218(variant: keyof typeof pinnedFlate218Sha, raw: Uint8Array): Uint8Array {
+  const bytes = new Uint8Array(readFileSync(resolve(import.meta.dirname, `pdf-mixed-flate-218/${variant}.bin`)));
+  if (createHash("sha256").update(bytes).digest("hex") !== pinnedFlate218Sha[variant] ||
+    !Buffer.from(inflateSync(bytes)).equals(Buffer.from(raw))) {
+    throw new Error(`Pinned #218 Flate stream changed or does not match independently generated pixels: ${variant}`);
+  }
+  return bytes;
+}
 function reproducibleJpeg218(scenario: Mixed218Scenario): Uint8Array {
   const variant = scenario === "uniform" ? "uniform" : "safe";
   const jpeg = new Uint8Array(readFileSync(resolve(import.meta.dirname, `pdf-mixed-jpegs-218/${variant}.jpg`)));
@@ -68,7 +83,7 @@ export async function mixedImagePdf218(scenario: Mixed218Scenario): Promise<Uint
     ColorSpace: pdfName("DeviceRGB"), BitsPerComponent: pdfNumber(8), Filter: pdfName("FlateDecode"),
     DecodeParms: pdfDict({ Predictor: pdfNumber(15), Colors: pdfNumber(3),
       Columns: pdfNumber(MIXED_218_WIDTH), BitsPerComponent: pdfNumber(8) }) }),
-    bytes: new Uint8Array(deflateSync(pngPredictorSub218(raw))) });
+    bytes: reproducibleFlate218(scenario === "uniform" ? "uniform" : "safe", pngPredictorSub218(raw)) });
   // Real 8-bit grayscale alpha soft mask. Its reference is a graph dependency,
   // not a harmless tagged Image XObject. Engines must skip *all* rewrites.
   const alpha = new Uint8Array(MIXED_218_WIDTH * MIXED_218_HEIGHT);
@@ -79,7 +94,7 @@ export async function mixedImagePdf218(scenario: Mixed218Scenario): Promise<Uint
     Type: pdfName("XObject"), Subtype: pdfName("Image"),
     Width: pdfNumber(MIXED_218_WIDTH), Height: pdfNumber(MIXED_218_HEIGHT),
     ColorSpace: pdfName("DeviceGray"), BitsPerComponent: pdfNumber(8), Filter: pdfName("FlateDecode"),
-  }), bytes: new Uint8Array(deflateSync(alpha)) }) : null;
+  }), bytes: reproducibleFlate218("smask", alpha) }) : null;
   const masked = softMask === null ? null : builder.putAuto({ kind: "stream", dictionary: pdfDict({
     Type: pdfName("XObject"), Subtype: pdfName("Image"), Width: pdfNumber(MIXED_218_WIDTH), Height: pdfNumber(MIXED_218_HEIGHT),
     ColorSpace: pdfName("DeviceRGB"), BitsPerComponent: pdfNumber(8), Filter: pdfName("DCTDecode"), SMask: softMask,
@@ -91,7 +106,7 @@ export async function mixedImagePdf218(scenario: Mixed218Scenario): Promise<Uint
     ColorSpace: pdfArray([pdfName("Indexed"), pdfName("DeviceRGB"), pdfNumber(1),
       pdfString(String.fromCharCode(11, 95, 26, 110, 33, 100))]),
     BitsPerComponent: pdfNumber(8), Filter: pdfName("FlateDecode"),
-  }), bytes: new Uint8Array(deflateSync(Uint8Array.from({ length: 256 }, (_, i) => i % 2))) }) : null;
+  }), bytes: reproducibleFlate218("indexed", Uint8Array.from({ length: 256 }, (_, i) => i % 2)) }) : null;
   const subform = scenario === "form" ? builder.putAuto({ kind: "stream", dictionary: pdfDict({
     Type: pdfName("XObject"), Subtype: pdfName("Form"), FormType: pdfNumber(1),
     BBox: pdfArray([0, 0, 120, 90].map(pdfNumber)), Resources: pdfDict({}),
@@ -99,7 +114,7 @@ export async function mixedImagePdf218(scenario: Mixed218Scenario): Promise<Uint
   const huge = scenario === "bomb" ? builder.putAuto({ kind: "stream", dictionary: pdfDict({
     Type: pdfName("XObject"), Subtype: pdfName("Image"), Width: pdfNumber(100_000), Height: pdfNumber(100_000),
     ColorSpace: pdfName("DeviceRGB"), BitsPerComponent: pdfNumber(8), Filter: pdfName("FlateDecode"),
-  }), bytes: new Uint8Array(deflateSync(new Uint8Array([17, 81, 33]))) }) : null;
+  }), bytes: reproducibleFlate218("bomb", new Uint8Array([17, 81, 33])) }) : null;
   const font = builder.putAuto(pdfDict({ Type: pdfName("Font"), Subtype: pdfName("Type1"), BaseFont: pdfName("Helvetica") }));
   const content = builder.putAuto({ kind: "stream", dictionary: pdfDict({}), bytes: new TextEncoder().encode(
     `q 180 0 0 140 0 0 cm /ImJpeg Do Q\nq ${state ? "/BM1 gs " : ""}180 0 0 140 180 0 cm /ImFlate Do Q\n`

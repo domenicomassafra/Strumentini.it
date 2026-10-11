@@ -25,8 +25,8 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          # pdfjs-dist uses Promise.try, available in the supported Node 24 line.
-          node-version: '24'
+          # PDF.js uses Promise.try and Uint8Array.toHex; match the tested Node 26 runtime.
+          node-version: '26'
           cache: npm
       - run: npm ci
       - name: Install pinned independent consumer dependencies
@@ -54,7 +54,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '26'
           cache: npm
       - run: npm ci
       - name: Install pinned independent consumer dependencies
@@ -67,6 +67,9 @@ jobs:
           npm ci --prefix spikes/heavy-local-feasibility --omit=dev
           ffprobe -version | head -1
           .ci-python/bin/python -c 'import PIL,pypdf,pptx; print("INDEPENDENT_CONSUMERS_READY")'
-      - run: npm test -- --maxWorkers=2
+      # Physical PDF/JPEG and OCR consumers are CPU-heavy. Serial workers avoid
+      # timeouts caused by unrelated tests competing for the same runner CPU;
+      # all existing acceptance assertions and timeouts remain unchanged.
+      - run: npm test -- --maxWorkers=1
       - run: npm run check
       - run: npm run build
