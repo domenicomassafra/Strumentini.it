@@ -95,6 +95,13 @@ describe("#404 PR/source impact planning", () => {
     expect(buildImpactPlan([".scratch/strumentini-expansion-20261005/issues/404-note.md"], suites).status).toBe("DOCS_ONLY");
   });
 
+  it("marks ephemeral cross-window file transfer as security sensitive", () => {
+    const plan = buildImpactPlan(["src/runtime/ephemeral-file-handoff-337.ts"], suites);
+    expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(plan.gates.map((gate) => gate.id)).toContain("security-review");
+    expect(plan.gates.map((gate) => gate.id)).toContain("release-readiness");
+  });
+
   it("requires image/PDF physical gates for the real tool component directories", () => {
     const changed = buildImpactPlan([
       "src/components/tools/image-visual/ImageCompressionTool.tsx",
