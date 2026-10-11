@@ -142,6 +142,18 @@ describe("#404 PR/source impact planning", () => {
     }
   });
 
+  it("requires security review for the user-facing private session and batch download panels", () => {
+    for (const path of [
+      "src/components/workbench/SessionChain340.tsx",
+      "src/components/lab/BatchGzipLab410.astro",
+    ]) {
+      const plan = buildImpactPlan([path], suites);
+      expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+      expect(plan.gates).toContainEqual(expect.objectContaining({id:"security-review",status:"NOT_RUN"}));
+      expect(plan.gates).toContainEqual(expect.objectContaining({id:"browser-a11y",status:"NOT_RUN"}));
+    }
+  });
+
   it("requires image/PDF physical gates for the real tool component directories", () => {
     const changed = buildImpactPlan([
       "src/components/tools/image-visual/ImageCompressionTool.tsx",

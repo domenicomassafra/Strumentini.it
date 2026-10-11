@@ -120,7 +120,7 @@ export function buildImpactPlan(changedPaths: readonly string[], availableTests:
   // File-byte processors, private in-memory result chains, and UI entrypoints
   // that now initiate consent-controlled browser downloads also need their
   // own independent privacy/security review; source tests alone are not proof.
-  if (paths.some((path) => /^src\/(?:runtime\/batch-file-410\.ts|workbench\/session-history-340\.ts|components\/tools\/(?:image-visual\/ImageVisualTool|pdf\/PdfTool)\.tsx)$/u.test(path))) {
+  if (paths.some((path) => /^src\/(?:runtime\/batch-file-410\.ts|workbench\/session-history-340\.ts|components\/(?:workbench\/SessionChain340\.tsx|lab\/BatchGzipLab410\.astro|tools\/(?:image-visual\/ImageVisualTool|pdf\/PdfTool)\.tsx))$/u.test(path))) {
     gates.add("security-review");
   }
   if (domains.includes("worker-auth") || domains.includes("d1")) gates.add("auth-integration");
