@@ -8,7 +8,7 @@
 
 **Blocked by:** 408
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; research-primary-sources/pdf/security-audit as needed
 

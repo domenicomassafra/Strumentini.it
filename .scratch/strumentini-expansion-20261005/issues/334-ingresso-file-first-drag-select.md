@@ -8,7 +8,7 @@
 
 **Blocked by:** 333
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 
@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-334.1: File porta a scelta operazione senza auto-run.
-- [ ] AC-334.2: Drag interrotto e keyboard conservano controllo.
-- [ ] AC-334.3: On the scoped input and failure cases, verify: Home→file→tool 320-1440. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
+- [x] AC-334.1: File porta a scelta operazione senza auto-run.
+- [x] AC-334.2: Drag interrotto e keyboard conservano controllo.
+- [x] AC-334.3: On the scoped input and failure cases, verify: Home→file→tool 320-1440. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
 
 **Verification:** Home→file→tool 320-1440; independently inspect output/record and test bounded failures.
 
@@ -37,6 +37,12 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## 2026-10-11 wave 05 — verified real file-first workflow
+
+`src/components/home/HomeFileEntry.astro` already provides real keyboard-focusable file/photo pickers, bounded local format inspection, accessible status and only manifest/published-page-compatible manual operation links, and native HTML drag/drop. Reverified the **built static output** with NEW `tests/acceptance-file-first-334.mjs`: Chrome 320/390/768/1024/1440 px PASS, no horizontal overflow, both picker touch targets >=44px; real file input PDF generates route suggestions without output/autorun; interrupted drag removes drag highlight but preserves previous valid choices; an actual browser `DragEvent` with `DataTransfer` PNG switches only to image routes; reset clears all suggestions; PDF operation link navigates to the actual tool with no file input pre-populated and no result fabricated. No POST, off-origin request, or page error in the tested journey.
+
+**Closure scope:** This confirms AC-334 navigation/control behavior at five tested viewports. The file is deliberately **not** automatically transferred or processed between pages; reselect/execute is user-controlled. The test uses Chrome desktop browser widths and is **not** a physical iPhone/Android Photos/Files receipt (#336 remains open); full parser safety remains #407, all-provider/format suggestions #335. No Gold promotion, release, deployment or uploaded data.
 
 ## 2026-10-11 implementation wave 01 — bounded evidence
 

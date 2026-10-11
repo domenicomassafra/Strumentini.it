@@ -24,7 +24,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **328 — P0 Account Turnstile login reale**
 - **329 — P0 Contrasto accesso e errori WCAG**
 - **330 — P0 Recenti realmente alimentati**
-- **334 — Ingresso file-first drag/select**
 - **335 — Suggerire solo operazioni file compatibili**
 - **336 — Picker iPhone Android e touch equivalente**
 - **337 — Typed handoff per catene di tool**
@@ -49,9 +48,9 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **404 — Change scoped CI and cumulative release validation**
 - **406 — Independent PDF redaction attack corpus**
 - **407 — Hostile parsers and archive resource safety**
-- **408 — Independent output consumer proofs by family**
+- **415 — Per-tool base claim proof and certification coverage**
 
-Exactly **41** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **40** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -401,7 +400,7 @@ Exactly **41** incomplete tickets currently have every declared numeric blocker 
 | 331 | completed | P0 Correggere promesse di file/account | — |
 | 332 | blocked | Sync preferiti con rimozioni e conflitti | 328, 330 |
 | 333 | completed | P0 Riconoscimento formato locale | — |
-| 334 | ready-for-agent | Ingresso file-first drag/select | 333 |
+| 334 | completed | Ingresso file-first drag/select | 333 |
 | 335 | ready-for-agent | Suggerire solo operazioni file compatibili | 333 |
 | 336 | ready-for-agent | Picker iPhone Android e touch equivalente | 333 |
 | 337 | ready-for-agent | Typed handoff per catene di tool | — |
@@ -475,14 +474,14 @@ Exactly **41** incomplete tickets currently have every declared numeric blocker 
 | 405 | blocked | Release scope gates and rollback drill | 347, 404 |
 | 406 | ready-for-agent | Independent PDF redaction attack corpus | — |
 | 407 | ready-for-agent | Hostile parsers and archive resource safety | — |
-| 408 | ready-for-agent | Independent output consumer proofs by family | — |
+| 408 | completed | Independent output consumer proofs by family | — |
 | 409 | blocked | Tax-year review ownership and retrospective versions | 397, 402 |
 | 410 | blocked | Batch file operations safe collision and cancel | 337 |
 | 411 | blocked | Audio video large file mobile progress and cancel | 363 |
 | 412 | blocked | Editor project schema and forward-safe migrations | 341, 379, 385 |
 | 413 | completed | Curated catalog with all routes preserved | — |
 | 414 | blocked | Commercial engine vendor proposal and license gate | 366 |
-| 415 | blocked | Per-tool base claim proof and certification coverage | 408 |
+| 415 | ready-for-agent | Per-tool base claim proof and certification coverage | 408 |
 | 416 | blocked | Safe ZIP GZIP archive compression and extraction | 407 |
 | 417 | blocked | PDF password encrypt decrypt legitimate unlock engine study | 369 |
 | 418 | blocked | PDF repair tolerant recovery bounded and independently proved | 369 |

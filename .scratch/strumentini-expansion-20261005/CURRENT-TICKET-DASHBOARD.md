@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 288 / 136 |
+| All / completed / open | 424 / 290 / 134 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 41 |
-| Ready for assignment (feasibility still to prove) | 34 |
-| Waiting on other tickets | 95 |
+| DAG-ready (all numeric dependencies closed) | 40 |
+| Ready for assignment (feasibility still to prove) | 33 |
+| Waiting on other tickets | 94 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 0 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (34)
+## Ready for assignment (feasibility still to prove) (33)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
@@ -31,7 +31,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #328 — P0 Account Turnstile login reale
 - #329 — P0 Contrasto accesso e errori WCAG
 - #330 — P0 Recenti realmente alimentati
-- #334 — Ingresso file-first drag/select
 - #335 — Suggerire solo operazioni file compatibili
 - #336 — Picker iPhone Android e touch equivalente
 - #337 — Typed handoff per catene di tool
@@ -56,9 +55,9 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #404 — Change scoped CI and cumulative release validation
 - #406 — Independent PDF redaction attack corpus
 - #407 — Hostile parsers and archive resource safety
-- #408 — Independent output consumer proofs by family
+- #415 — Per-tool base claim proof and certification coverage
 
-## Waiting on other tickets (95)
+## Waiting on other tickets (94)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -97,7 +96,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #341 — Salvataggio locale file volontario (awaiting #338)
 - #342 — Quote e eviction file locali (awaiting #341)
 - #343 — Esporta importa elimina configurazione (awaiting #330)
-- #345 — Navigazione stabile da task e file (awaiting #330, #334)
+- #345 — Navigazione stabile da task e file (awaiting #330)
 - #349 — File server opt-in TTL delete prova (awaiting #348)
 - #352 — Selezione owner direzione visuale (awaiting #351)
 - #353 — IA e design system dopo scelta (awaiting #352)
@@ -145,7 +144,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #411 — Audio video large file mobile progress and cancel (awaiting #363)
 - #412 — Editor project schema and forward-safe migrations (awaiting #341, #379, #385)
 - #414 — Commercial engine vendor proposal and license gate (awaiting #366)
-- #415 — Per-tool base claim proof and certification coverage (awaiting #408)
 - #416 — Safe ZIP GZIP archive compression and extraction (awaiting #407)
 - #417 — PDF password encrypt decrypt legitimate unlock engine study (awaiting #369)
 - #418 — PDF repair tolerant recovery bounded and independently proved (awaiting #369)

@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 424,
-    "completed": 288,
+    "completed": 290,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 271,
-    "open": 136,
-    "readyDAG": 41,
-    "ready-for-agent": 34,
-    "dependency-blocked": 95,
+    "completedWithoutExplicitRefusal": 273,
+    "open": 134,
+    "readyDAG": 40,
+    "ready-for-agent": 33,
+    "dependency-blocked": 94,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 0,
@@ -310,7 +310,9 @@
       327,
       331,
       333,
+      334,
       344,
+      408,
       413
     ],
     "ready-for-agent": [
@@ -322,7 +324,6 @@
       328,
       329,
       330,
-      334,
       335,
       336,
       337,
@@ -347,7 +348,7 @@
       404,
       406,
       407,
-      408
+      415
     ],
     "dependency-blocked": [
       8,
@@ -435,7 +436,6 @@
       411,
       412,
       414,
-      415,
       416,
       417,
       418,
@@ -3916,9 +3916,9 @@
     {
       "id": 334,
       "title": "Ingresso file-first drag/select",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -4044,8 +4044,7 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        330,
-        334
+        330
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -4799,9 +4798,9 @@
     {
       "id": 408,
       "title": "Independent output consumer proofs by family",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -4882,12 +4881,10 @@
     {
       "id": 415,
       "title": "Per-tool base claim proof and certification coverage",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        408
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
