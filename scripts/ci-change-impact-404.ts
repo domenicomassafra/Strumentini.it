@@ -117,6 +117,12 @@ export function buildImpactPlan(changedPaths: readonly string[], availableTests:
   if (paths.some((path) => /^src\/(workbench\/saved-pdf-341\.ts|runtime\/(browser-download-339|download-policy-339)\.ts|engines\/image\/(strip-metadata|metadata)\.ts|engines\/file-privacy\/[^/]+|components\/tools\/image-visual\/ExifRemoverTool\.tsx)$/u.test(path))) {
     gates.add("security-review");
   }
+  // File-byte processors, private in-memory result chains, and UI entrypoints
+  // that now initiate consent-controlled browser downloads also need their
+  // own independent privacy/security review; source tests alone are not proof.
+  if (paths.some((path) => /^src\/(?:runtime\/batch-file-410\.ts|workbench\/session-history-340\.ts|components\/tools\/(?:image-visual\/ImageVisualTool|pdf\/PdfTool)\.tsx)$/u.test(path))) {
+    gates.add("security-review");
+  }
   if (domains.includes("worker-auth") || domains.includes("d1")) gates.add("auth-integration");
   if (domains.includes("d1")) gates.add("d1-migration-review");
   if (domains.includes("pdf") || domains.includes("image")) gates.add("physical-device");

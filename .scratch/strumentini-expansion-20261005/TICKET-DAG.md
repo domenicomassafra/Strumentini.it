@@ -26,7 +26,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **330 — P0 Recenti realmente alimentati**
 - **336 — Picker iPhone Android e touch equivalente**
 - **339 — Scarica manuale e auto opt-in**
-- **340 — Cronologia in-session e cancella task**
 - **347 — P0 Badge Gold fingerprint frontend backend**
 - **349 — File server opt-in TTL delete prova**
 - **350 — P0 Accessibilità AA di base e advanced**
@@ -48,7 +47,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **407 — Hostile parsers and archive resource safety**
 - **415 — Per-tool base claim proof and certification coverage**
 
-Exactly **38** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **37** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -404,7 +403,7 @@ Exactly **38** incomplete tickets currently have every declared numeric blocker 
 | 337 | completed | Typed handoff per catene di tool | — |
 | 338 | completed | Preview risultato con fatti verificati | — |
 | 339 | ready-for-agent | Scarica manuale e auto opt-in | 338 |
-| 340 | ready-for-agent | Cronologia in-session e cancella task | 337, 338 |
+| 340 | completed | Cronologia in-session e cancella task | 337, 338 |
 | 341 | completed | Salvataggio locale file volontario | 338 |
 | 342 | completed | Quote e eviction file locali | 341 |
 | 343 | blocked | Esporta importa elimina configurazione | 330 |

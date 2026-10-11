@@ -38,6 +38,16 @@
 
 **Execution prompt:** Routed by canonical EXECUTION-PROMPTS.md with gates.
 
+## 2026-10-11 — Wave 13: current per-route manifest source binding (worker-14)
+
+Documented in docs/PER-TOOL-PROOF-415-WAVE13.md, baseline HEAD cb575662. Found and reproduced a **concrete false VERIFIED** in the receipt probe: even with correct receipt SHA-256/revision/global source fingerprint, the receipt could hold a **stale identities.manifestSha256** not matching the current route's actual manifest bytes. New adversarial synthetic receipts and distinct manifest fixtures proved **RED** (accepted stale source) then **GREEN** after adding independent digest-to-receipt equality and fail-closed missing digest behavior. This is a narrow proof-validator fix; release and receipt producers unchanged.
+
+Scoped Vitest **5/5 PASS**; strict TS es2023 **PASS**. Independently checked **two local real outputs**, no user data: SHA-256 checksum manifest of known.txt + rows.csv against Node crypto, and 219-byte zip-creator output read back using fflate unzipSync, each extracted byte-for-byte matching originals. Actual ZIP SHA-256: 9266d22459e2fa3fb36d46102dd0dbd1c3599d21961854dc32e80341bd46e4ad. Repeated read-only inventory: **269/269 traced, 43 handoff limits, 226 runtime-limit attestations pending, 269 PENDING / 0 VERIFIED**. No generated catalog, certificate or receipt changed; no publish/deploy/commit.
+
+**Disposition:** Original acceptance criteria remain **unchecked** and ticket **OPEN**: this proves one missing receipt-source condition and two local engine samples, **not** 269 independent runtime-job/limit receipts, each route's negative/huge/cancel behavior, full source/engine identities, browser+physical-device results, or a production Gold rollout.
+
+**Retry under shared-host load:** One later Vitest run exceeded the default 5 s timeout during the 269-file read-only audit; identical tests with CLI-only --testTimeout=20000 passed **5/5**, and scoped strict TS passed. No assertions or repository default test timeout were weakened.
+
 ## 2026-10-11 wave 06 — read-only per-tool proof map (slice, NOT closure)
 
 Nuovo `scripts/audit-per-tool-proof-415.ts` inventario `--json` read-only dei 269 ID/route con jobs, input, limiti handoff espliciti o `PENDING_RUNTIME_LIMIT_ATTESTATION`, source manifest/page/module e SHA di tracciabilità, oracolo/famiglie fixture registrati, receipt storico **non** confuso con receipt Gold corrente e filtro corrente source-wide/hash-byte/revision/provenienza. `tests/per-tool-proof-415.test.ts` copre 269/269, ID duplicati, route falsificate, assenza jobs e receipt alterati/stale; campione indipendente PDF/PNG/CSV/DOCX/XLSX/WAV `scripts/verify-output-consumers-408.ts` 6/6 `PASS_LOCAL` di formato. Risultato reale: **269/269 mappati**, 269 riferimenti a registro presenti, 43 limiti handoff dichiarati, 226 privi di limite handoff nel manifest, **0 Gold correnti / 269 PENDING**. Vedi `docs/PER-TOOL-PROOF-415-2026-10-11.md`.

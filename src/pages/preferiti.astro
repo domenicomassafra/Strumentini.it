@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import UiIcon from "../components/icons/UiIcon.astro";
 import MembershipBootstrap from "../components/account/MembershipBootstrap.astro";
+import SessionChain340 from "../components/workbench/SessionChain340";
 import { catalog } from "../generated/catalog";
 import { toneForCategory } from "../catalog/groups";
 import { categoryLabelIt } from "../i18n/it/taxonomy";
@@ -129,6 +130,8 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
         </section>
       </div>
 
+      <SessionChain340 client:load />
+
       <section class="area-band">
         <span class="area-band-icon" aria-hidden="true"><UiIcon name="star" size={26} /></span>
         <div>
@@ -141,6 +144,24 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
   </div>
   <MembershipBootstrap />
 </BaseLayout>
+
+<style is:global>
+  .session340 { padding: var(--space-6); border: var(--border-width) solid var(--border); border-radius: var(--radius-lg); background: var(--surface); margin-block: var(--space-8); min-width: 0; }
+  .session340-notice { color: var(--text-muted); font-size: var(--font-size-sm); line-height: var(--line-height-relaxed); }
+  .session340-label { display: block; font-weight: var(--font-weight-bold); margin: var(--space-4) 0 var(--space-2); }
+  .session340 textarea { display: block; width: 100%; min-width: 0; box-sizing: border-box; border: var(--border-width) solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); background: var(--surface); color: var(--text); font: inherit; }
+  .session340 textarea:focus-visible, .session340 button:focus-visible { outline: var(--focus-width) solid var(--focus-ring); outline-offset: var(--focus-offset); }
+  .session340-list { display: grid; gap: var(--space-3); list-style: decimal; margin: var(--space-5) 0; padding-left: var(--space-6); }
+  .session340-list > li { min-width: 0; padding: var(--space-4); border: var(--border-width) solid var(--border); border-radius: var(--radius-md); }
+  .session340-list p { margin: var(--space-2) 0; font-size: var(--font-size-sm); color: var(--text-muted); }
+  .session340-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .session340 button { padding: var(--space-2) var(--space-3); border: var(--border-width) solid var(--border); border-radius: var(--radius-md); font: inherit; cursor: pointer; background: var(--surface-subtle); color: var(--text); }
+  .session340 button:hover:not(:disabled) { border-color: var(--brand); }
+  .session340 button:disabled { cursor: not-allowed; color: var(--text-faint); }
+  .session340-proof { display: grid; gap: var(--space-2); margin-top: var(--space-3); font-size: var(--font-size-xs); overflow-wrap: anywhere; }
+  .session340-proof code { white-space: normal; overflow-wrap: anywhere; }
+  .session340-clear { margin-top: var(--space-3); }
+</style>
 
 <script>
   import { loadMembership, subscribeMembership, type Membership } from "../workbench/membership";

@@ -128,6 +128,20 @@ describe("#404 PR/source impact planning", () => {
     }
   });
 
+  it("requires independent security review for new batch file bytes, session-memory snapshots and download-consent UI", () => {
+    for (const path of [
+      "src/runtime/batch-file-410.ts",
+      "src/workbench/session-history-340.ts",
+      "src/components/tools/image-visual/ImageVisualTool.tsx",
+      "src/components/tools/pdf/PdfTool.tsx",
+    ]) {
+      const plan = buildImpactPlan([path], suites);
+      expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+      expect(plan.gates.map((gate) => [gate.id, gate.status])).toContainEqual(["security-review", "NOT_RUN"]);
+      expect(plan.gates.map((gate) => gate.id)).toContain("release-readiness");
+    }
+  });
+
   it("requires image/PDF physical gates for the real tool component directories", () => {
     const changed = buildImpactPlan([
       "src/components/tools/image-visual/ImageCompressionTool.tsx",

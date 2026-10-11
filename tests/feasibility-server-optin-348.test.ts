@@ -53,6 +53,16 @@ describe("#348 fail-closed source inventory", () => {
     expect(audit.baselineSafe).toBe(false);
   });
 
+  it("preserves the reviewed /preferiti GET-only auth transport and catches later hidden uploads", () => {
+    const path = "src/pages/preferiti.astro";
+    const reviewed = source(path);
+    expect((reviewed.match(/fetch\s*\(/gu) ?? []).length).toBe(1);
+    expect(reviewed).toContain('fetch("/api/auth/session", { credentials: "same-origin"');
+    expect(transportFingerprintFailure(path, reviewed)).toBeNull();
+    const changed = reviewed + '\n<script>void fetch("/api/private-upload", { method: "POST", body: document.body.textContent });</script>\n';
+    expect(transportFingerprintFailure(path, changed)).toBe(`CHANGED_BROWSER_TRANSPORT:${path}`);
+  });
+
   it("rejects new browser endpoints through fetch, beacon, XHR and dynamic bracket access", () => {
     const path = "src/components/tools/NewUploader.tsx";
     for (const injected of [

@@ -23,12 +23,16 @@ const sha256=(data:Uint8Array | string) => createHash("sha256").update(data).dig
 export interface ProofReceiptProbe415 {
   toolId:string; path:string; content:string; expectedSha256:string;
   fingerprint:string; revision:string;
+  /** Independently SHA-256-hashed bytes of src/tools/<toolId>/manifest.ts. */
+  // Explicit undefined is a valid negative-test input, but never a valid receipt.
+  currentManifestSha256?:string|undefined;
 }
 
 /** Rejects tamper, alien path/identity, stale revision and source scope. */
 export function probeReceipt415(p:ProofReceiptProbe415):boolean {
   if (!RECEIPT_PATH.test(p.path) || !HEX256.test(p.expectedSha256) ||
       !HEX256.test(p.fingerprint) || !HEX160.test(p.revision) ||
+      !HEX256.test(p.currentManifestSha256??"") ||
       sha256(p.content)!==p.expectedSha256) return false;
   try {
     const raw=JSON.parse(p.content) as Record<string,unknown>;
@@ -37,6 +41,9 @@ export function probeReceipt415(p:ProofReceiptProbe415):boolean {
         !Array.isArray(raw.fixtureFamilies) || raw.fixtureFamilies.length===0 ||
         typeof raw.identities!=="object" || raw.identities===null || Object.keys(raw.identities).length===0 ||
         !raw.runtime) return false;
+    // Receipt integrity/revision/global fingerprint alone cannot prove that
+    // this route's job/runtime manifest is the source the receipt tested.
+    if ((raw.identities as Record<string,unknown>).manifestSha256!==p.currentManifestSha256) return false;
     const entry={id:p.toolId,route:`/tools/${p.toolId}`};
     return validateGoldReceipts([entry],[raw as unknown as Parameters<typeof validateGoldReceipts>[1][number]],p.revision,p.fingerprint).length===0;
   } catch { return false; }
@@ -154,6 +161,7 @@ export async function auditCurrentProofMap415(root:string):Promise<ProofMap415> 
   const legacyById=new Map(legacy.tools.map(row=>[row.id,row] as const));
   if(legacyById.size!==legacy.tools.length) throw new Error("DUPLICATE_HISTORICAL_415");
   const sources=new Map<string,SourceProbe415>();
+  const manifestHashes=new Map<string,string>();
   const current=new Map<string,{path:string}>();
   for(const tool of catalog) {
     const old=legacyById.get(tool.id);
@@ -162,6 +170,7 @@ export async function auditCurrentProofMap415(root:string):Promise<ProofMap415> 
     const manifest=await safeRead(root,expectedManifest);
     const page=await safeRead(root,expectedPage);
     const identity=old?.implementation;
+    if(manifest!==null) manifestHashes.set(tool.id,sha256(manifest));
     let historicalHashMatches=!!(manifest && page && identity?.manifest?.sha256 && identity?.page?.sha256 &&
       identity.manifest.path===expectedManifest && identity.page.path===expectedPage &&
       sha256(manifest)===identity.manifest.sha256 && sha256(page)===identity.page.sha256);
@@ -189,8 +198,11 @@ export async function auditCurrentProofMap415(root:string):Promise<ProofMap415> 
     if(parsed.oracleEntryId!==target.gold.oracleEntryId ||
        JSON.stringify(parsed.fixtureFamilies)!==JSON.stringify(target.gold.fixtureFamilies) ||
        JSON.stringify(parsed.runtime)!==JSON.stringify(target.runtime)) continue;
+    const currentManifestSha256=manifestHashes.get(item.toolId);
+    if(currentManifestSha256===undefined) continue; // Missing source identity can never certify a GOLD candidate.
     const probe={toolId:item.toolId,path:item.receiptPath,content:new TextDecoder("utf-8",{fatal:true}).decode(bytes),
-      expectedSha256:item.receiptSha256!,fingerprint,revision};
+      expectedSha256:item.receiptSha256!,fingerprint,revision,
+      currentManifestSha256};
     if(item.sourceFingerprint!==fingerprint || !probeReceipt415(probe)) continue;
     current.set(item.toolId,{path:item.receiptPath});
   }

@@ -51,7 +51,9 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   "src/components/tools/research-knowledge/ViesVerificationPanel.tsx": "8e5032a786b97b117b7c079ffd7077ba2f70118fecf0c735b17bd5a05425e147",
   "src/engines/pdf/pdf-to-pptx-255.ts": "d810c0cbb05f8d59810bcbf04dc070a953e800e12fdba5b94d073493416b2a6c",
   "src/engines/url-marketing/index.ts": "b21ca7a9fe2002ba75e4a40e83a824e40bf06a57833f5eec58a59f09dbfae521",
-  "src/pages/preferiti.astro": "bee66f0338e1594a4c4dbe04b90b87af438122e48f567d8d5d75ea58e229b2c6",
+  // 2026-10-11 reviewed #340 UI-only island/CSS change: the existing single
+  // GET /api/auth/session is unchanged; no new transport API or endpoint.
+  "src/pages/preferiti.astro": "5d5bad4a5109593163396b428bf7d09ce0cfac59ea897b14fc763114d0bb0127",
   "src/telemetry/adapter.ts": "cc00368b762ea6d80d00b5a854764765a84e127b25c15049cf1b30e27cbbf50e",
   "src/telemetry/browser.ts": "2f2ecebad8da951a2329bd8364c727ec5f43f97fdc525ecc6c6077587f40ac1a",
   "src/workbench/membership.ts": "b82d1137427e58fffc0414ff0fc04af2dbc4d883a585982405b2837451833b2a",
