@@ -108,6 +108,26 @@ describe("#404 PR/source impact planning", () => {
     expect(plan.gates.map((gate) => gate.id)).toContain("security-review");
   });
 
+  it("never treats locally saved sensitive PDFs or metadata-sanitizer changes as security-neutral", () => {
+    for (const path of [
+      "src/workbench/saved-pdf-341.ts",
+      "src/runtime/browser-download-339.ts",
+      "src/runtime/download-policy-339.ts",
+      "src/engines/image/strip-metadata.ts",
+      "src/engines/image/metadata.ts",
+      "src/engines/file-privacy/index.ts",
+      "src/components/tools/image-visual/ExifRemoverTool.tsx",
+    ]) {
+      const plan = buildImpactPlan([path], suites);
+      expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+      expect(plan.gates.map((gate) => [gate.id, gate.status])).toContainEqual(["security-review", "NOT_RUN"]);
+      expect(plan.gates.map((gate) => gate.id)).toContain("release-readiness");
+    }
+    for (const path of ["src/workbench/saved-pdf-341.ts", "src/runtime/browser-download-339.ts", "src/runtime/download-policy-339.ts"]) {
+      expect(buildImpactPlan([path], suites).gates.map((gate) => gate.id)).toContain("physical-device");
+    }
+  });
+
   it("requires image/PDF physical gates for the real tool component directories", () => {
     const changed = buildImpactPlan([
       "src/components/tools/image-visual/ImageCompressionTool.tsx",
