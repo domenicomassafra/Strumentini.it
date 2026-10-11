@@ -132,11 +132,19 @@ export function preflightOfficePrint56(file: PrintableOfficeFile56): PrintableSo
 
 function decodeText56(bytes: Uint8Array): string {
   if (bytes.length === 0 || bytes.length > MAX_TEXT_BYTES) fail("PDF56_INPUT_LIMIT", "File oltre il limite locale.");
-  const zip = bytes.length >= 4 && bytes[0] === 0x50 && bytes[1] === 0x4b
-    && [[0x03, 0x04], [0x05, 0x06], [0x07, 0x08]].some(([a, b]) => bytes[2] === a && bytes[3] === b);
-  const ole = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1].every((n, i) => bytes[i] === n);
-  const pdf = [37, 80, 68, 70, 45].every((n, i) => bytes[i] === n);
-  const rtf = String.fromCharCode(...bytes.subarray(0, 6)) === "{\\rtf1";
+  // UTF-8 decoding removes a leading BOM. Inspect the same effective header
+  // that the printable path would read, or BOM-prefixed RTF/PDF/Office files
+  // can evade the binary-format refusal and be printed as misleading text.
+  let headerStart = 0;
+  while (bytes[headerStart] === 0xef && bytes[headerStart + 1] === 0xbb && bytes[headerStart + 2] === 0xbf) {
+    headerStart += 3;
+  }
+  const header = bytes.subarray(headerStart);
+  const zip = header.length >= 4 && header[0] === 0x50 && header[1] === 0x4b
+    && [[0x03, 0x04], [0x05, 0x06], [0x07, 0x08]].some(([a, b]) => header[2] === a && header[3] === b);
+  const ole = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1].every((n, i) => header[i] === n);
+  const pdf = [37, 80, 68, 70, 45].every((n, i) => header[i] === n);
+  const rtf = String.fromCharCode(...header.subarray(0, 6)) === "{\\rtf1";
   if (zip || ole || pdf || rtf) fail("PDF56_BINARY_REFUSED", "File binario o Office rinominato come testo: nessun falso PDF di conversione.");
   if ((bytes[0] === 0xff && bytes[1] === 0xfe) || (bytes[0] === 0xfe && bytes[1] === 0xff)) {
     fail("PDF56_UTF8_REQUIRED", "UTF-16 non supportato, serve UTF-8.");

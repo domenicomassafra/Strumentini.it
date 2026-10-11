@@ -104,6 +104,24 @@ function crc32(bytes: Uint8Array, from = 0, to = bytes.length): number {
   return (crc ^ 0xffffffff) >>> 0;
 }
 
+function adler32(bytes: Uint8Array, signal?: AbortSignal): number {
+  let a = 1;
+  let b = 0;
+  // Accumulate in modest blocks to bound intermediate sums and cancellation
+  // latency for the verified (at most ~4 MiB) decoded PNG scanline buffer.
+  for (let start = 0; start < bytes.length; start += 5552) {
+    running(signal);
+    const end = Math.min(start + 5552, bytes.length);
+    for (let i = start; i < end; i++) {
+      a += bytes[i]!;
+      b += a;
+    }
+    a %= 65521;
+    b %= 65521;
+  }
+  return ((b << 16) | a) >>> 0;
+}
+
 function parsePng47(bytes: Uint8Array, signal?: AbortSignal): PngParts {
   running(signal);
   if (bytes.length < 57 || bytes.length > PNG_47_MAX_INPUT_BYTES ||
@@ -240,6 +258,15 @@ function inflateBounded47(compressed: Uint8Array, expected: number, rowBytes: nu
     fail("INVALID_ZLIB", "IDAT zlib stream could not be decoded");
   }
   if (!finished || written !== expected) fail("MALFORMED", "IDAT bytes do not match PNG scanline dimensions");
+  // fflate's streaming Unzlib inflates bytes but does not validate the zlib
+  // Adler-32 trailer. The outer PNG chunk CRC can be recomputed by a corrupt
+  // producer, so independently validate the decoded IDAT bytes here.
+  const trailer = compressed.length - 4;
+  const suppliedAdler = ((compressed[trailer]! << 24) | (compressed[trailer + 1]! << 16) |
+    (compressed[trailer + 2]! << 8) | compressed[trailer + 3]!) >>> 0;
+  if (adler32(result, signal) !== suppliedAdler) {
+    fail("INVALID_ZLIB", "PNG IDAT stream has an invalid Adler-32 checksum");
+  }
   const stride = 1 + rowBytes;
   for (let row = 0; row < height; row++) {
     if ((row & 127) === 0) running(signal);

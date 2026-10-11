@@ -1,6 +1,6 @@
 import { deflateSync } from "node:zlib";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -12,6 +12,10 @@ import { forensicRedactionGate378, type ForensicPlan378 } from "../scripts/foren
 // Existing genuine, parsable source with visible covered text and an orphan
 // marker. Only the #378 gate is under test: no #237 engine is changed.
 const source = coveredRecoverableSource237();
+// CI uses Linux runners, where macOS PDFKit cannot exist. Never pretend a
+// platform-native independent renderer passed there: the two positive native
+// receipts are explicitly NOT_RUN, while rejection/security tests still run.
+const nativePdfKitAvailable378 = process.platform === "darwin" && existsSync("/usr/bin/swift");
 const plan: ForensicPlan378 = {
   sourceWitnesses: [PRIVATE_MARKER_237, ORPHAN_MARKER_237],
   pages: [{
@@ -67,7 +71,7 @@ function actualImageOnlyPdf378(options: {
 }
 
 describe("#378 independent forensic output gate, not the #237 internal verifier", () => {
-  it("independently reads a real raster-only export with pypdf and native PDFKit black pixels", () => {
+  it.skipIf(!nativePdfKitAvailable378)("independently reads a real raster-only export with pypdf and native PDFKit black pixels", () => {
     const output = actualImageOnlyPdf378();
     expect(output.length).toBeGreaterThan(100);
     expect(Buffer.from(source).includes(Buffer.from(PRIVATE_MARKER_237))).toBe(true);
@@ -109,7 +113,7 @@ describe("#378 independent forensic output gate, not the #237 internal verifier"
       .toThrow(/FORENSIC_378_REFUSED.*renderer/u);
   }, 30_000);
 
-  it("runs the standalone local CLI on real PDF bytes, with a machine-readable limited receipt", () => {
+  it.skipIf(!nativePdfKitAvailable378)("runs the standalone local CLI on real PDF bytes, with a machine-readable limited receipt", () => {
     const dir = mkdtempSync(join(tmpdir(), "forensic378-test-"));
     try {
       const sourcePath = join(dir, "source.pdf");
