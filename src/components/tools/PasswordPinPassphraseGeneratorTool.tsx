@@ -1,4 +1,5 @@
 import { useMemo, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 import { ITALIAN_PASSPHRASE_WORDLIST } from "../../reference-data/italian-passphrase-v1";
 import {
   generateSecret,
@@ -46,11 +47,13 @@ export function PasswordPinPassphraseGeneratorTool() {
     try {
       setError(null);
       setCopyStatus("");
-      setResult(generateSecret(mode === "password"
+      const generated = generateSecret(mode === "password"
         ? { mode, length, lowercase, uppercase, digits, symbols }
         : mode === "pin"
           ? { mode, length }
-          : { mode, wordCount, separator }));
+          : { mode, wordCount, separator });
+      setResult(generated);
+      recordCompletedTool("password-pin-passphrase-generator");
     } catch (cause) {
       setResult(null);
       setError(errorMessage(cause));

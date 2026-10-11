@@ -1,4 +1,5 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 import { CAMPAIGN_FIELDS, parseCampaignFieldOrder, type CampaignNamingPreset } from "../../engines/campaign-url";
 import { createIndexedDbPersistence } from "../../persistence/persistence";
 import { createBoundedTextPreview } from "../../runtime/bounded-preview";
@@ -38,6 +39,8 @@ export function CampaignNameTool() {
   const [result, setResult] = useState<CampaignNameOutput | null>(null);
   const [message, setMessage] = useState("");
   const [actionStatus, setActionStatus] = useState("");
+  const revision = useRef(0);
+  const pending = useRef(false);
 
   useEffect(() => {
     const persistence = createIndexedDbPersistence();
@@ -58,16 +61,21 @@ export function CampaignNameTool() {
 
   async function preview(event: Event) {
     event.preventDefault();
+    if (pending.current) return;
+    pending.current = true;
+    const current = revision.current;
     setMessage("");
     setActionStatus("");
+    setResult(null);
     try {
       const run = await toolRuntime.run("campaign-name", { preset: currentPreset(), values });
+      if (current !== revision.current) return;
       if (!run.ok) throw new Error(run.message);
       setResult(run.value as CampaignNameOutput);
+      recordCompletedTool(campaignNameManifest.id);
     } catch {
-      setResult(null);
-      setMessage("Usa nomi di campo validi e inserisci un valore per ogni campo selezionato.");
-    }
+      if (current === revision.current) setMessage("Usa nomi di campo validi e inserisci un valore per ogni campo selezionato.");
+    } finally { pending.current = false; }
   }
 
   async function savePreset() {
@@ -82,6 +90,7 @@ export function CampaignNameTool() {
   }
 
   function resetTask() {
+    revision.current += 1;
     setValues(Object.fromEntries(CAMPAIGN_FIELDS.map((field) => [field, ""])));
     setResult(null);
     setMessage("");
@@ -120,6 +129,7 @@ export function CampaignNameTool() {
 
   function reuseResult() {
     if (result === null) return;
+    revision.current += 1;
     setValues((current) => ({ ...current, campaign: result.name }));
     setResult(null);
     setActionStatus("Il nome generato è stato riusato nel campo Campagna.");
@@ -129,9 +139,9 @@ export function CampaignNameTool() {
     <form class="tool-operation single-column" onSubmit={preview}>
       <div class="tool-form-card">
         <p class="preset-provenance">{loaded ? (overridden ? "Valore specifico per questa attività — impostazione salvata invariata" : "Dall'impostazione salvata") : "Caricamento dell'impostazione salvata…"}</p>
-        <label class="field"><span>Ordine dei campi</span><input aria-label="Ordine dei campi" value={order} onInput={(e) => setOrder(e.currentTarget.value)} /><small>Valori ammessi: client, channel, campaign, market, date. Sono identificatori tecnici del modello.</small></label>
-        <div class="field-grid"><label class="field"><span>Separatore</span><select aria-label="Separatore" value={separator} onChange={(e) => setSeparator(e.currentTarget.value as CampaignNamingPreset["separator"])}><option value="-">-</option><option value="_">_</option><option value=".">.</option></select></label><label class="field checkbox-field"><span>Maiuscole e minuscole</span><span><input type="checkbox" checked={lowercase} onChange={(e) => setLowercase(e.currentTarget.checked)} /> tutto minuscolo</span></label></div>
-        {CAMPAIGN_FIELDS.map((field) => <label class="field" key={field}><span>{{ client: "Cliente", channel: "Canale", campaign: "Campagna", market: "Mercato", date: "Data" }[field] ?? field}</span><input aria-label={field} value={values[field]} onInput={(e) => setValues({ ...values, [field]: e.currentTarget.value })} /></label>)}
+        <label class="field"><span>Ordine dei campi</span><input aria-label="Ordine dei campi" value={order} onInput={(e) => { revision.current += 1; setOrder(e.currentTarget.value); setResult(null); }} /><small>Valori ammessi: client, channel, campaign, market, date. Sono identificatori tecnici del modello.</small></label>
+        <div class="field-grid"><label class="field"><span>Separatore</span><select aria-label="Separatore" value={separator} onChange={(e) => { revision.current += 1; setSeparator(e.currentTarget.value as CampaignNamingPreset["separator"]); setResult(null); }}><option value="-">-</option><option value="_">_</option><option value=".">.</option></select></label><label class="field checkbox-field"><span>Maiuscole e minuscole</span><span><input type="checkbox" checked={lowercase} onChange={(e) => { revision.current += 1; setLowercase(e.currentTarget.checked); setResult(null); }} /> tutto minuscolo</span></label></div>
+        {CAMPAIGN_FIELDS.map((field) => <label class="field" key={field}><span>{{ client: "Cliente", channel: "Canale", campaign: "Campagna", market: "Mercato", date: "Data" }[field] ?? field}</span><input aria-label={field} value={values[field]} onInput={(e) => { revision.current += 1; setValues({ ...values, [field]: e.currentTarget.value }); setResult(null); }} /></label>)}
         {message && <p role="status">{message}</p>}
         <div class="actions"><button class="primary" type="submit">Mostra anteprima</button><button type="button" onClick={savePreset}>Salva impostazione</button></div>
       </div>

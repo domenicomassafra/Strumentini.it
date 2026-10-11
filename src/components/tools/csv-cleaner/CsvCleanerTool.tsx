@@ -1,4 +1,5 @@
 import { useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { CSV_HARD_FILE_BYTES, CSV_SOFT_FILE_BYTES, CsvCleanerError, readBlobText } from "../../../engines/table/csv";
 import { handoffCatalog } from "../../../generated/handoff-catalog";
 import { compatibleHandoffTargets, openHandoffTarget } from "../../../runtime/handoff";
@@ -20,22 +21,28 @@ export function CsvCleanerTool() {
   const fileInput = useRef<HTMLInputElement | null>(null);
 
   async function clean() {
+    if (controller.current !== null) return;
     if (!file) { setError("Scegli prima un file CSV."); return; }
     setError(""); setResult(null); setProgress(0); setProcessing(true); setHandoffDismissed(false); setHandoffStatus("");
-    controller.current = new AbortController();
+    const active = new AbortController();
+    controller.current = active;
     try {
-      const text = await readBlobText(file, controller.current.signal, setProgress);
-      const run = await toolRuntime.run("csv-cleaner", { text }, {}, controller.current.signal);
+      const text = await readBlobText(file, active.signal, setProgress);
+      const run = await toolRuntime.run("csv-cleaner", { text }, {}, active.signal);
+      if (active.signal.aborted || controller.current !== active) return;
       if (!run.ok) throw new Error(run.message);
       setResult(run.value as CsvCleanerOutput);
+      recordCompletedTool(csvCleanerManifest.id);
     } catch (caught) {
-      if (caught instanceof CsvCleanerError && caught.code === "CANCELLED") setError("Pulizia annullata. Non è stato prodotto alcun risultato.");
+      if (controller.current !== active) return;
+      if (active.signal.aborted || (caught instanceof CsvCleanerError && caught.code === "CANCELLED")) setError("Pulizia annullata. Non è stato prodotto alcun risultato.");
       else setError("La pulizia del CSV non è riuscita. Controlla il file e riprova.");
-    } finally { setProcessing(false); controller.current = null; }
+    } finally { if (controller.current === active) { setProcessing(false); controller.current = null; } }
   }
 
   function reset() {
     controller.current?.abort();
+    controller.current = null;
     setFile(null);
     setResult(null);
     setError("");
@@ -51,7 +58,7 @@ export function CsvCleanerTool() {
   const gutterState = gutterStateFromResult(result, error, processing);
   return <div class="tool-operation">
     <section class="tool-form-card">
-      <label class="field"><span>File CSV</span><input ref={fileInput} aria-label="File CSV" type="file" accept=".csv,text/csv,text/plain" onChange={(event) => { setFile(event.currentTarget.files?.[0] ?? null); setResult(null); setError(""); setHandoffDismissed(false); setHandoffStatus(""); }} /></label>
+      <label class="field"><span>File CSV</span><input ref={fileInput} aria-label="File CSV" type="file" disabled={processing} accept=".csv,text/csv,text/plain" onChange={(event) => { setFile(event.currentTarget.files?.[0] ?? null); setResult(null); setError(""); setHandoffDismissed(false); setHandoffStatus(""); }} /></label>
       {file && <p class="file-note">{file.name} · {(file.size / 1024).toFixed(1)} KiB{file.size > CSV_SOFT_FILE_BYTES ? " · file grande" : ""}</p>}
       <p class="file-note">Dimensione consigliata: 10 MiB · limite massimo: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB.</p>
       {processing && <><progress max={1} value={progress} aria-label="Lettura del CSV in corso" /><button type="button" onClick={() => controller.current?.abort()}>{it(CONTROL.cancel)}</button></>}

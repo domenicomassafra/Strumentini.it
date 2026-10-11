@@ -1,4 +1,5 @@
 import { useState } from "preact/hooks";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 import { estimatePasswordStrength, PASSWORD_STRENGTH_MAX_LENGTH, type PasswordStrengthResult } from "../../tools/password-strength-estimator/module";
 import { InlineError, ResultBreakdown, ResultInterpretation, ResultProvenance, ToolActions, ToolGutter, ToolSurface } from "./shared";
 
@@ -11,7 +12,9 @@ export function PasswordStrengthEstimatorTool() {
   function inspect() {
     try {
       setError(null);
-      setResult(estimatePasswordStrength(password));
+      const estimated = estimatePasswordStrength(password);
+      setResult(estimated);
+      recordCompletedTool("password-strength-estimator");
     } catch (cause) {
       setResult(null);
       setError(cause instanceof Error && cause.message === "PASSWORD_TOO_LONG"

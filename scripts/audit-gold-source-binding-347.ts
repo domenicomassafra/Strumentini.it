@@ -15,7 +15,7 @@ import { lstat, readFile, readdir, realpath } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
-import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
+import { currentEvidenceSourceFingerprint, EVIDENCE_SOURCE_SCOPE_VERSION } from "./lib/current-revision";
 import { validateGoldReceipts, type ToolCertificationReceipt } from "../src/release/validation";
 
 const execFileAsync = promisify(execFile);
@@ -59,7 +59,7 @@ export interface AuditGoldResult347 {
   readonly scope: {
     readonly frontend: "src/generated/quality.ts";
     readonly backendIncludedInFingerprint: readonly ["worker/", "worker/migrations/"];
-    readonly sourceVersion: "canonical-global-sha256";
+    readonly sourceVersion: typeof EVIDENCE_SOURCE_SCOPE_VERSION;
   };
   readonly note: string;
 }
@@ -76,6 +76,29 @@ function validReceiptPath(value: string): boolean {
     !value.includes("\\") && !value.startsWith("/") && !value.includes("//") &&
     !value.split("/").some((part) => part === "." || part === "..") &&
     !/[\u0000-\u001f\u007f]/u.test(value);
+}
+
+/** Guard the two receipt-derived public views against independent tampering. */
+export function assertGoldSearchConsistency347(
+  catalogIds: readonly string[],
+  projected: readonly unknown[],
+  search: readonly unknown[],
+): void {
+  const catalog = new Set(catalogIds);
+  const gold = new Set(projected.map((item) => object(item)?.toolId));
+  const seen = new Set<string>();
+  if (search.length !== catalog.size || catalog.size !== catalogIds.length) {
+    throw new Error("search Gold projection inventory mismatch");
+  }
+  for (const candidate of search) {
+    const item = object(candidate);
+    const id = item?.id;
+    if (typeof id !== "string" || !catalog.has(id) || seen.has(id) ||
+        item?.quality !== (gold.has(id) ? "verified" : "checking")) {
+      throw new Error("search Gold projection does not match generated Gold receipts");
+    }
+    seen.add(id);
+  }
 }
 
 /** Evaluate exactly the IDs a real UI view would have projected as Gold. */
@@ -174,7 +197,7 @@ export function auditGoldSourceBinding347(input: AuditGoldInput347): AuditGoldRe
     scope: {
       frontend: "src/generated/quality.ts",
       backendIncludedInFingerprint: ["worker/", "worker/migrations/"],
-      sourceVersion: "canonical-global-sha256",
+      sourceVersion: EVIDENCE_SOURCE_SCOPE_VERSION,
     },
     note: "Read-only audit. Only source/current-proof-bound badges count; PASS does not certify production or physical acceptance.",
   };
@@ -201,9 +224,14 @@ export async function inspectGoldBinding347(root: string): Promise<AuditGoldResu
     { catalog?: readonly { readonly id: string }[] };
   const qualityModule = await import(pathToFileURL(resolve(root, "src/generated/quality.ts")).href) as
     { qualityIndex?: { tools?: unknown } };
+  const searchModule = await import(pathToFileURL(resolve(root, "src/generated/search-catalog.ts")).href) as
+    { searchCatalog?: unknown };
   if (!Array.isArray(catalogModule.catalog) || !Array.isArray(qualityModule.qualityIndex?.tools)) {
     throw new Error("generated UI catalog or Gold index not available");
   }
+  if (!Array.isArray(searchModule.searchCatalog)) throw new Error("search Gold projection not available");
+  assertGoldSearchConsistency347(catalogModule.catalog.map((entry) => entry.id),
+    qualityModule.qualityIndex.tools, searchModule.searchCatalog);
   const git = (args: string[]) => execFileAsync("git", args, { cwd: root });
   const revision = (await git(["rev-parse", "HEAD"])).stdout.trim();
   const workingTreeDirty = (await git(["status", "--porcelain"])).stdout.trim().length > 0;

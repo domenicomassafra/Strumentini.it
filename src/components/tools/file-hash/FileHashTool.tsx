@@ -1,4 +1,5 @@
 import { useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { FileHashError, checksumMatches, parseExpectedChecksum } from "../../../engines/file-hash";
 import { hashBlobInWorker } from "../../../engines/file-hash/worker-client";
 import {
@@ -49,6 +50,7 @@ export function FileHashTool() {
 
   async function submit(event: Event) {
     event.preventDefault();
+    if (controllerRef.current !== null) return;
     setError("");
     setResult(null);
     setProgress(0);
@@ -72,21 +74,22 @@ export function FileHashTool() {
       const hashed = await hashBlobInWorker(file, {
         signal: controller.signal,
         onProgress(update) {
-          setProgress(update.fraction);
+          if (!controller.signal.aborted && controllerRef.current === controller) setProgress(update.fraction);
         },
       });
       if (controller.signal.aborted) return;
+      if (controllerRef.current !== controller) return;
       setResult({
         digestHex: hashed.digestHex,
         bytesHashed: hashed.bytesHashed,
         matchesExpected: normalizedExpected === null ? null : checksumMatches(hashed.digestHex, normalizedExpected),
       });
       setProgress(1);
+      recordCompletedTool("file-hash");
     } catch (caught) {
-      setError(friendlyError(caught));
+      if (controllerRef.current === controller && !controller.signal.aborted) setError(friendlyError(caught));
     } finally {
-      if (controllerRef.current === controller) controllerRef.current = null;
-      setRunning(false);
+      if (controllerRef.current === controller) { controllerRef.current = null; setRunning(false); }
     }
   }
 

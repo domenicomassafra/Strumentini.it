@@ -10,8 +10,8 @@ import { spawn } from 'node:child_process';
 const root = resolve(import.meta.dirname, '..');
 const dist = resolve(process.env.AUDIO036_DIST ?? join(root, 'dist'));
 const port = Number(process.env.AUDIO036_PORT ?? 18636);
-const origin = `http://127.0.0.1:${port}`;
-const server = spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', dist], { cwd: root, stdio: 'ignore' });
+const origin = process.env.AUDIO036_ORIGIN ?? `http://127.0.0.1:${port}`;
+const server = process.env.AUDIO036_ORIGIN ? null : spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', dist], { cwd: root, stdio: 'ignore' });
 const temp = mkdtempSync(join(tmpdir(), 'strumentini-audio-036-'));
 let checks = 0;
 
@@ -122,7 +122,7 @@ try {
       assert.equal(await panel.locator('[data-audio-timeline-waveform] rect').count(), 192);
       checks += 6;
       const downloadWait = page.waitForEvent('download');
-      await panel.getByRole('link', { name: 'Scarica WAV PCM16 verificato' }).click();
+      await panel.getByRole('button', { name: 'Scarica WAV PCM16 verificato' }).click();
       const download = await downloadWait;
       const content = readFileSync(await download.path());
       assert.equal(content.length, expectedBytes);
@@ -150,6 +150,6 @@ try {
   }
   console.log(`AUDIO036_BROWSER_PASS checks=${checks} browsers=${names.join(',')} real_audio=true preview_cancel=true no_upload=true physical_mobile=NOT_RUN`);
 } finally {
-  if (server.exitCode === null) server.kill('SIGTERM');
+  if (server?.exitCode === null) server.kill('SIGTERM');
   rmSync(temp, { recursive: true, force: true });
 }

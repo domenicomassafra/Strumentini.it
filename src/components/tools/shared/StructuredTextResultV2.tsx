@@ -3,7 +3,7 @@ import type { ResultDeclaration } from "../../../catalog/manifest";
 import { createBoundedTextPreview } from "../../../runtime/bounded-preview";
 import { createOutputArtifactDescriptor } from "../../../runtime/output-artifact";
 import { resolveResultActions } from "../../../runtime/result-actions";
-import { AUTO_DOWNLOAD_KEY_339, browserStorage339, readAutoDownload339, writeAutoDownload339 } from "../../../runtime/download-policy-339";
+import { AUTO_DOWNLOAD_KEY_339, browserStorage339, changeAutoDownload339, readAutoDownload339 } from "../../../runtime/download-policy-339";
 import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
 import { BoundedTextResultPreview } from "./BoundedResultPreview";
 import { ResultActions } from "./ResultActions";
@@ -72,7 +72,8 @@ export function StructuredTextResultV2({
   onReset,
 }: StructuredTextResultV2Props) {
   const [actionStatus, setActionStatus] = useState("");
-  const [autoDownload, setAutoDownload] = useState(() => readAutoDownload339(browserStorage339()));
+  // Match SSR's default-OFF markup; mount effect restores browser consent.
+  const [autoDownload, setAutoDownload] = useState(false);
   const autoTriggered = useRef(false);
   const serialized = value === null ? null : JSON.stringify(value, null, 2);
   const artifact = serialized === null ? null : createOutputArtifactDescriptor({
@@ -104,6 +105,8 @@ export function StructuredTextResultV2({
   }, [state, autoDownload, serialized, filename]);
 
   useEffect(() => {
+    autoTriggered.current = state === "success";
+    setAutoDownload(readAutoDownload339(browserStorage339()));
     const listener = (event: StorageEvent) => {
       if (event.key !== AUTO_DOWNLOAD_KEY_339 && event.key !== null) return;
       autoTriggered.current = state === "success";
@@ -149,12 +152,16 @@ export function StructuredTextResultV2({
     // Selecting auto after a completed result never surprises the user by
     // downloading that already-visible output. Only subsequent runs qualify.
     autoTriggered.current = state === "success";
-    const written = writeAutoDownload339(browserStorage339(), enabled);
-    setAutoDownload(written && enabled);
-    setActionStatus(written ? (enabled
+    const { saved, persistedEnabled } = changeAutoDownload339(browserStorage339(), enabled);
+    setAutoDownload(persistedEnabled === true);
+    setActionStatus(saved ? (enabled
       ? "Download automatico attivo per le prossime operazioni. Puoi disattivarlo in qualsiasi momento."
       : "Download automatico disattivato. Il download manuale resta disponibile.")
-      : "Impossibile salvare la preferenza nel browser: download automatico disattivato.");
+      : persistedEnabled === true
+        ? "Impossibile revocare la preferenza: il download automatico è ancora attivo nel browser. Riprova o cancella le preferenze del sito."
+        : enabled
+          ? "Impossibile salvare la preferenza nel browser: download automatico non attivato."
+          : "Impossibile confermare la revoca nel browser. Controlla le preferenze del sito prima di un'altra operazione.");
   }
 
   return (

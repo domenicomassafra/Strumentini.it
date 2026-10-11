@@ -7,7 +7,7 @@ import { createOutputArtifactDescriptor } from "../../../runtime/output-artifact
 import { readOutputFacts338 } from "../../../runtime/output-facts-338";
 import { resolveResultActions } from "../../../runtime/result-actions";
 import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
-import { AUTO_DOWNLOAD_KEY_339, browserStorage339, readAutoDownload339, writeAutoDownload339 } from "../../../runtime/download-policy-339";
+import { AUTO_DOWNLOAD_KEY_339, browserStorage339, changeAutoDownload339, readAutoDownload339 } from "../../../runtime/download-policy-339";
 import {
   BoundedTableResultPreview,
   ResultActions,
@@ -65,7 +65,8 @@ export function CsvTableResultV2({
   children,
 }: CsvTableResultV2Props) {
   const [actionStatus, setActionStatus] = useState("");
-  const [autoDownload,setAutoDownload]=useState(()=>readAutoDownload339(browserStorage339()));
+  // Keep SSR and hydration initial markup OFF, then read browser storage after mount.
+  const [autoDownload,setAutoDownload]=useState(false);
   const autoTriggered=useRef(false);
   const completeOutput = output;
   const table = completeOutput === null ? null : parseCsvTable(completeOutput);
@@ -94,6 +95,8 @@ export function CsvTableResultV2({
       : "Download automatico non disponibile. Puoi provare Scarica risultato.");
   },[state,autoDownload,output,filename]);
   useEffect(()=>{
+    autoTriggered.current=state==="success";
+    setAutoDownload(readAutoDownload339(browserStorage339()));
     const onStorage=(event:StorageEvent)=>{
       if(event.key!==AUTO_DOWNLOAD_KEY_339 && event.key!==null) return;
       autoTriggered.current=state==="success";
@@ -141,12 +144,16 @@ export function CsvTableResultV2({
   function chooseAutoDownload(enabled:boolean) {
     // Never auto-download an already displayed CSV when granting consent.
     autoTriggered.current=state==="success";
-    const written=writeAutoDownload339(browserStorage339(),enabled);
-    setAutoDownload(written && enabled);
-    setActionStatus(written ? (enabled
+    const { saved, persistedEnabled }=changeAutoDownload339(browserStorage339(),enabled);
+    setAutoDownload(persistedEnabled === true);
+    setActionStatus(saved ? (enabled
       ? "Download automatico attivo per le prossime operazioni. Puoi disattivarlo in qualsiasi momento."
       : "Download automatico disattivato. Il download manuale resta disponibile.")
-      : "Impossibile salvare la preferenza nel browser: download automatico disattivato.");
+      : persistedEnabled === true
+        ? "Impossibile revocare la preferenza: il download automatico è ancora attivo nel browser. Riprova o cancella le preferenze del sito."
+        : enabled
+          ? "Impossibile salvare la preferenza nel browser: download automatico non attivato."
+          : "Impossibile confermare la revoca nel browser. Controlla le preferenze del sito prima di un'altra operazione.");
   }
 
   return (

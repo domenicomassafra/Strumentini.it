@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { AudioJob231, AudioJobResult231, AudioPreviewJob036, AudioPreviewResult036 } from "../../../engines/browser-audio/timeline-worker-231";
+import { inspectAudioPcm16Source231 } from "../../../engines/browser-audio/timeline-231";
+import { createOutputArtifactDescriptor, type OutputArtifactDescriptor } from "../../../runtime/output-artifact";
+import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
+import { AUTO_DOWNLOAD_KEY_339, browserStorage339, changeAutoDownload339, readAutoDownload339 } from "../../../runtime/download-policy-339";
 
 const INPUT_LIMIT = 12 * 1024 * 1024;
 const TOTAL_LIMIT = 24 * 1024 * 1024;
@@ -71,6 +75,11 @@ export function AudioTimelinePanel231() {
   const [status, setStatus] = useState("Seleziona uno o due file WAV PCM16, poi avvia il montaggio locale.");
   const [rendered, setRendered] = useState<AudioJobResult231 | null>(null);
   const [previewed, setPreviewed] = useState<AudioPreviewResult036 | null>(null);
+  const [artifact, setArtifact] = useState<OutputArtifactDescriptor | null>(null);
+  // SSR and the first hydration render must agree. Re-read persisted consent in
+  // the mount effect, forcing a real DOM checkbox update when it is enabled.
+  const [autoDownload, setAutoDownload] = useState(false);
+  const [downloadStatus, setDownloadStatus] = useState("");
   const [outputUrl, setOutputUrl] = useState("");
   const urlRef = useRef("");
   const pending = useRef<AbortController | null>(null);
@@ -82,6 +91,8 @@ export function AudioTimelinePanel231() {
     setOutputUrl("");
     setRendered(null);
     setPreviewed(null);
+    setArtifact(null);
+    setDownloadStatus("");
   }
   function changeSettings() {
     clearOutput();
@@ -111,9 +122,38 @@ export function AudioTimelinePanel231() {
     pending.current?.abort();
     if (urlRef.current) URL.revokeObjectURL(urlRef.current);
   }, []);
+  useEffect(() => {
+    // Astro may render the initial checkbox before browser storage is ready.
+    setAutoDownload(readAutoDownload339(browserStorage339()));
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === AUTO_DOWNLOAD_KEY_339 || event.key === null) setAutoDownload(readAutoDownload339(browserStorage339()));
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  function chooseAutoDownload(enabled: boolean) {
+    const { saved, persistedEnabled } = changeAutoDownload339(browserStorage339(), enabled);
+    setAutoDownload(persistedEnabled === true);
+    setDownloadStatus(saved ? (enabled
+      ? "Download automatico attivo per i prossimi WAV elaborati. Puoi revocare il consenso."
+      : "Download automatico disattivato. Il download manuale resta disponibile.")
+      : persistedEnabled === true
+        ? "Impossibile revocare la preferenza: il download automatico è ancora attivo nel browser. Riprova o cancella le preferenze del sito."
+        : enabled
+          ? "Impossibile salvare la preferenza: download automatico non attivato."
+          : "Impossibile confermare la revoca nel browser. Controlla le preferenze del sito prima di un'altra elaborazione.");
+  }
+
+  function download() {
+    setDownloadStatus(requestBrowserDownload339(artifact)
+      ? "Download richiesto al browser. Il salvataggio sul dispositivo non può essere confermato qui."
+      : "Download non disponibile: il browser lo ha bloccato o il WAV non è verificato. Puoi riprovare manualmente.");
+  }
 
   async function process(mode: "preview" | "render" = "render") {
     if (pending.current || files.length < 1) return;
+    const autoAtStart = autoDownload && readAutoDownload339(browserStorage339());
     clearOutput();
     const controller = new AbortController();
     pending.current = controller;
@@ -146,11 +186,33 @@ export function AudioTimelinePanel231() {
         setStatus("Anteprima tecnica calcolata su campioni reali, senza esportazione. Modifica le soglie e riprova, oppure genera WAV PCM16.");
         return;
       }
-      const url = URL.createObjectURL(new Blob([result.wav], { type: "audio/wav" }));
-      urlRef.current = url;
-      setOutputUrl(url);
+      const bytes = new Uint8Array(result.wav);
+      const verified = inspectAudioPcm16Source231(bytes);
+      if (verified.frames !== result.preview.outputFrames ||
+          verified.sampleRate !== result.preview.timeline.sampleRate ||
+          verified.channels !== result.preview.timeline.channelCount) {
+        throw new Error("AUDIO_231_OUTPUT_VERIFY: Lettura del WAV prodotto non coerente.");
+      }
+      const output = createOutputArtifactDescriptor({
+        kind: "file", name: "montaggio-pcm16.wav", mime: "audio/wav", bytes,
+        verification: { state: "verified", verifiedMime: "audio/wav", method: "RIFF/WAV PCM16 letto e verificato dai byte dopo il Worker" },
+        fidelity: "structural", fidelityNote: "WAV PCM16 effettivamente elaborato, con gain, tagli e velocità applicati.",
+      });
+      try {
+        const url = URL.createObjectURL(new Blob([result.wav], { type: "audio/wav" }));
+        urlRef.current = url;
+        setOutputUrl(url);
+      } catch {
+        setOutputUrl("");
+      }
       setRendered(result);
+      setArtifact(output);
       setStatus("WAV PCM16 generato nel Worker: codec, durata, campioni, dimensione e waveform verificati.");
+      if (autoAtStart && readAutoDownload339(browserStorage339())) {
+        setDownloadStatus(requestBrowserDownload339(output)
+          ? "Download automatico richiesto al browser. Se bloccato, usa Scarica WAV PCM16 verificato."
+          : "Download automatico non disponibile. Puoi provare Scarica WAV PCM16 verificato.");
+      }
     } catch (error) {
       if (!controller.signal.aborted && op === generation.current) {
         setStatus(error instanceof Error ? error.message : "AUDIO_231_WORKER_FAILED");
@@ -191,6 +253,12 @@ export function AudioTimelinePanel231() {
       <button type="button" disabled={!readyFiles || busy} onClick={() => void process()}>Elabora e mostra waveform</button>
       <button type="button" disabled={!busy} onClick={cancel}>Annulla montaggio</button>
     </div>
+    <label class="checkbox-field" data-download-optin339>
+      <input type="checkbox" checked={autoDownload} onChange={(event) => chooseAutoDownload(event.currentTarget.checked)} />
+      <span>Scarica automaticamente i prossimi WAV elaborati (facoltativo)</span>
+    </label>
+    <p class="file-note">Inizialmente disattivato. Non scarica risultati già mostrati; puoi revocare il consenso. Il browser può bloccare i download: il comando manuale resta disponibile.</p>
+    {downloadStatus !== "" && <p role="status" class="file-note" data-download-status339>{downloadStatus}</p>}
     <p role="status" aria-live="polite" data-audio-timeline-status>{status}</p>
     {previewed !== null && <section data-audio-036-preview aria-label="Anteprima tecnica prima dell'esportazione">
       <h4>Anteprima locale: nessun WAV ancora creato</h4>
@@ -203,7 +271,7 @@ export function AudioTimelinePanel231() {
       </dl>
       <p class="file-note">I numeri sono calcolati sui campioni reali della timeline prima di esportare. Per ascoltare e scaricare occorre elaborare il file: l'anteprima non genera un audio fittizio.</p>
     </section>}
-    {rendered !== null && outputUrl !== "" && <section data-audio-timeline-result aria-label="Anteprima WAV realmente elaborato">
+    {rendered !== null && artifact !== null && <section data-audio-timeline-result aria-label="Anteprima WAV realmente elaborato">
       <h4>Ricevuta audio convertito · WAV RIFF PCM16</h4>
       <dl data-audio-036-receipt>
         <dt>Codec/container di uscita</dt><dd>RIFF/WAVE · PCM signed 16-bit LE</dd>
@@ -230,8 +298,9 @@ export function AudioTimelinePanel231() {
         })}
       </svg>
       <p class="file-note">Ascolto solo dopo il tuo clic. Il player riproduce il WAV risultante, non l'originale.</p>
-      <audio controls preload="metadata" src={outputUrl} />
-      <div class="actions"><a href={outputUrl} download="montaggio-pcm16.wav">Scarica WAV PCM16 verificato</a></div>
+      {outputUrl !== "" && <audio controls preload="metadata" src={outputUrl} />}
+      {outputUrl === "" && <p class="file-note">Anteprima audio non disponibile nel browser. I byte WAV verificati restano nel risultato.</p>}
+      <div class="actions"><button type="button" onClick={download}>Scarica WAV PCM16 verificato</button></div>
     </section>}
   </section>;
 }

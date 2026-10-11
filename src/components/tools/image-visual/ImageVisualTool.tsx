@@ -1,5 +1,6 @@
-import { useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
+import { receivePngCompressionHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
 import type { ImageVisualToolId } from "../../../engines/image/visual";
 import { isSvgInput } from "../../../engines/image/svg-export";
 import {
@@ -42,6 +43,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [batchMode, setBatchMode] = useState(false);
   const [pngLossless, setPngLossless] = useState(false);
   const [pngPalette, setPngPalette] = useState<"off" | "exact" | "lossy">("off");
+  const [handoffStatus, setHandoffStatus] = useState("");
   const [colorMode, setColorMode] = useState("convert");
   const operation = useToolOperation<PreparedImageResult>(async (signal) => {
     const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette);
@@ -49,7 +51,31 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     if (!run.ok) return run;
     return { ok: true, tool: run.tool, value: await prepareImageResult(run.value), defaults: run.defaults };
   }, { formatThrownError: () => "L'operazione sull'immagine non è riuscita. Controlla file e parametri." });
+  const operationBusy = useRef(operation.isRunning);
+  operationBusy.current = operation.isRunning;
   const result = operation.result;
+
+  useEffect(() => {
+    if (toolId !== "image-compression") return;
+    return receivePngCompressionHandoff337((received) => {
+      if (operationBusy.current) return false;
+      operation.reset();
+      setFile(received);
+      setFiles([]);
+      setBatchMode(false);
+      setPngLossless(false);
+      setPngPalette("off");
+      setMime("image/png");
+      setHandoffStatus(`PNG locale ricevuto: ${received.name} (${received.size} byte). Scegli le opzioni e avvia manualmente la compressione.`);
+      return true;
+    }, { window }, (failure) => {
+      setHandoffStatus(failure === "expired"
+        ? "Passaggio PNG scaduto dopo 30 secondi. Ripeti l'azione dallo strumento originale."
+        : failure === "invalid"
+          ? "Passaggio PNG non valido o oltre i limiti. Nessuna compressione avviata."
+          : "La scheda originale non è disponibile. Seleziona un PNG manualmente.");
+    });
+  }, [toolId]);
 
   function clearResult() {
     operation.reset();
@@ -85,12 +111,14 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     setPngLossless(false);
     setPngPalette("off");
     setColorMode("convert");
+    setHandoffStatus("");
     clearResult();
   }
 
   function chooseFile(event: Event) {
     const selected = event.currentTarget instanceof HTMLInputElement ? event.currentTarget.files?.[0] ?? null : null;
     setFile(selected);
+    setHandoffStatus("");
     if (!isSvgInput(selected) && mime === "application/pdf") setMime("image/png");
     operation.reset();
   }
@@ -128,6 +156,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
             <small>File elaborati in locale, senza caricamenti né elaborazione remota alternativa.</small>
           </label>
         )}
+        {toolId === "image-compression" && handoffStatus !== "" && <p role="status" data-handoff-337>{handoffStatus}</p>}
         {toolId === "image-compare-slider" && (
           <><label class="field"><span>Seconda immagine</span><input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { const selected = event.currentTarget instanceof HTMLInputElement ? event.currentTarget.files?.[0] ?? null : null; setSecondFile(selected); operation.reset(); }} disabled={operation.isRunning} /></label></>
         )}

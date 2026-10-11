@@ -14,8 +14,21 @@ export function writeAutoDownload339(storage: Pick<Storage, "setItem" | "removeI
     if (!storage) return false;
     if (enabled) storage.setItem(AUTO_DOWNLOAD_KEY_339, ENABLED);
     else storage.removeItem(AUTO_DOWNLOAD_KEY_339);
-    return readAutoDownload339(storage) === enabled;
+    // A failed read is never proof of a successful revocation.
+    return storage.getItem(AUTO_DOWNLOAD_KEY_339) === (enabled ? ENABLED : null);
   } catch { return false; }
+}
+
+/** Return the actual persisted choice after a write attempt, even when it fails.
+ * null means the browser would not let us verify the saved preference. */
+export function changeAutoDownload339(
+  storage: Pick<Storage, "setItem" | "removeItem" | "getItem"> | null | undefined,
+  requested: boolean,
+): { readonly saved: boolean; readonly persistedEnabled: boolean | null } {
+  const saved = writeAutoDownload339(storage, requested);
+  if (!storage) return { saved, persistedEnabled: null };
+  try { return { saved, persistedEnabled: storage.getItem(AUTO_DOWNLOAD_KEY_339) === ENABLED }; }
+  catch { return { saved, persistedEnabled: null }; }
 }
 
 export type DownloadPlan339 =

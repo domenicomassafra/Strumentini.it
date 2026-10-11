@@ -14582,6 +14582,7 @@
           "sha256": "7c5729f10aa5dfb11730b1ecafd33a3c1c9012153ba0ab20c222d463c68ca581"
         },
         "testFiles": [
+          "tests/ephemeral-file-handoff-337.test.ts",
           "tests/image-resize-engine.test.ts",
           "tests/image-visual-tools.test.ts"
         ]
@@ -15413,6 +15414,7 @@
           "sha256": "455b99914670e8a31b0901c3ea66878d274764cfcbf954e3f616e2587dece04c"
         },
         "testFiles": [
+          "tests/ci-change-impact-404.test.ts",
           "tests/image-resize-engine.test.ts",
           "tests/image-result-v2.test.ts",
           "tests/image-visual-tools.test.ts",

@@ -1,5 +1,6 @@
 import type { ComponentChildren } from "preact";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { canOfferPngCompressionHandoff337, startPngCompressionHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
 import { verifyGeneratedArtifact } from "../../../runtime/artifact-verifier";
 import { createFileResultItem, createFileResultWorkspace } from "../../../runtime/file-result";
 import type { OutputArtifactDescriptor } from "../../../runtime/output-artifact";
@@ -453,6 +454,8 @@ function semanticImageRows(toolId: ImageResultToolId, raw: ImageResultValue): re
 
 export function ImageResultV2({ toolId, result, sourceFiles = [], onReset, onRetry }: ImageResultV2Props) {
   const [actionStatus, setActionStatus] = useState("");
+  const pendingPngHandoff = useRef<(() => void) | null>(null);
+  useEffect(() => () => { pendingPngHandoff.current?.(); }, []);
   const declaration = IMAGE_RESULT_DECLARATIONS[toolId];
   const payload = useMemo(() => copyPayload(result.raw), [result.raw]);
 
@@ -479,6 +482,22 @@ export function ImageResultV2({ toolId, result, sourceFiles = [], onReset, onRet
     const comparisonMode = toolId === "color-blindness-image-simulation"
       ? stringField(result.raw.modeLabel) ?? stringField(result.raw.mode) ?? "modalità selezionata"
       : undefined;
+    const canSendPng = toolId !== "image-compression" && canOfferPngCompressionHandoff337(primary?.artifact);
+    function sendPngToCompression() {
+      if (!canSendPng || primary === undefined) return;
+      pendingPngHandoff.current?.();
+      pendingPngHandoff.current = null;
+      const transfer = startPngCompressionHandoff337(primary.artifact, (status) => {
+        if (status === "received") setActionStatus("PNG consegnato alla compressione nella nuova scheda. Avvio manuale richiesto.");
+        if (status === "expired") setActionStatus("Passaggio scaduto dopo 30 secondi. Ripeti l'azione se necessario.");
+        if (status === "cancelled") setActionStatus("Passaggio annullato. L'immagine originale è ancora disponibile.");
+        if (status === "unavailable") setActionStatus("La destinazione non ha accettato il PNG. Il file originale resta disponibile.");
+      });
+      if (transfer.opened) {
+        pendingPngHandoff.current = transfer.cancel;
+        setActionStatus("Passaggio PNG locale in corso…");
+      } else setActionStatus(transfer.reason);
+    }
     return (
       <div data-result-class="image">
         {toolId === "image-compression" && Array.isArray(result.raw.items) && (
@@ -530,6 +549,8 @@ export function ImageResultV2({ toolId, result, sourceFiles = [], onReset, onRet
             }}
           />
         </div>
+        {canSendPng && <button type="button" data-png-compression-handoff-337 onClick={sendPngToCompression}>Comprimi questo PNG in un altro strumento</button>}
+        {canSendPng && actionStatus !== "" && <p role="status" data-png-handoff-status-337>{actionStatus}</p>}
         <ResultActions actions={actions} onAction={{
           ...(primary === undefined ? {} : { download: () => downloadVerified(primary) }),
           ...(onRetry === undefined ? {} : { retry: onRetry }),

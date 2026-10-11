@@ -6,8 +6,9 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
 import { currentEvidenceSourceFingerprint } from "../scripts/lib/current-revision";
-import { buildGoldQualityIndex, buildSourceBoundGoldQualityIndex } from "../src/onboarding/quality";
+import { buildGoldQualityIndex, buildSourceBoundGoldQualityIndex, renderGoldQualitySource } from "../src/onboarding/quality";
 import {
+  assertGoldSearchConsistency347,
   auditGoldSourceBinding347,
   type AuditGoldInput347,
   type ReceiptEvidence347,
@@ -50,9 +51,14 @@ async function withFixture(run: (root: string, fingerprint: string) => Promise<v
   try {
     await execFileAsync("git", ["init", "-q"], { cwd: root });
     await mkdir(join(root, "src", "components"), { recursive: true });
+    await mkdir(join(root, "src", "generated"), { recursive: true });
     await mkdir(join(root, "worker", "migrations"), { recursive: true });
     await mkdir(join(root, "quality", "receipts", "pdf"), { recursive: true });
     await writeFile(join(root, "src", "components", "Card.tsx"), "export const verifiedBadge = true;\n");
+    await writeFile(join(root, "src", "generated", "quality.ts"),
+      renderGoldQualitySource({ schemaVersion: 1, tools: [] }));
+    await writeFile(join(root, "src", "generated", "search-catalog.ts"),
+      'export const searchCatalog = [{"id":"pdf-rotate","quality":"checking"}];\n');
     await writeFile(join(root, "worker", "index.ts"), "import { verify } from './validation'; export const handle=verify;\n");
     await writeFile(join(root, "worker", "validation.ts"), "export const verify=() => true;\n");
     await writeFile(join(root, "worker", "migrations", "0001_init.sql"), "CREATE TABLE sessions(id TEXT PRIMARY KEY);\n");
@@ -172,5 +178,78 @@ describe("#347 Gold badge source binding", () => {
       await writeFile(join(root, "src", "components", "Card.tsx"), "export const verifiedBadge = false;\n");
       expect(codes({ ...input, sourceFingerprint: await currentEvidenceSourceFingerprint(root) })).toContain("GOLD_RECEIPT_SOURCE_STALE");
     });
+  });
+
+  it("reissues a synthetic Gold badge and search verification without changing its certified source identity", async () => {
+    await withFixture(async (root, before) => {
+      const generated = join(root, "src", "generated");
+      await mkdir(generated, { recursive: true });
+      const stale = evidence("a".repeat(64)).raw;
+      expect(buildSourceBoundGoldQualityIndex([stale], catalogIds, before).index.tools).toEqual([]);
+
+      // Synthetic certification ONLY: the real receipt factory is intentionally not run.
+      const { raw, input } = evidence(before);
+      // The real generator binds the digest of receipt bytes after reading JSON.
+      const refreshed = buildSourceBoundGoldQualityIndex(
+        [{ ...raw, receiptSha256: input.receipts[0]!.sha256 }], catalogIds, before,
+      );
+      expect(refreshed.index.tools.map((tool) => tool.toolId)).toEqual(["pdf-rotate"]);
+      await writeFile(join(generated, "quality.ts"), renderGoldQualitySource(refreshed.index));
+      await writeFile(join(generated, "search-catalog.ts"),
+        'export const searchCatalog = [{"id":"pdf-rotate","quality":"verified"}];\n');
+      await writeFile(join(root, "quality", "receipts", "pdf", "pdf-rotate.gold.json"), JSON.stringify(raw));
+
+      expect(await currentEvidenceSourceFingerprint(root)).toBe(before);
+      expect(auditGoldSourceBinding347({ ...input, projected: refreshed.index.tools })).toMatchObject({
+        status: "PASS", safeGoldToolIds: ["pdf-rotate"], projectedGoldWithoutProof: 0,
+      });
+      assertGoldSearchConsistency347(catalogIds, refreshed.index.tools, [
+        { id: "pdf-rotate", quality: "verified" },
+        { id: "image-resize", quality: "checking" },
+      ]);
+      // A second regeneration with the same proof must reach the same fixed point.
+      await writeFile(join(generated, "quality.ts"), renderGoldQualitySource(refreshed.index));
+      expect(await currentEvidenceSourceFingerprint(root)).toBe(before);
+
+      await writeFile(join(generated, "quality.ts"),
+        renderGoldQualitySource(refreshed.index) + "globalThis.unsafeGoldOverride = true;\n");
+      expect(await currentEvidenceSourceFingerprint(root)).not.toBe(before);
+      await writeFile(join(generated, "quality.ts"), renderGoldQualitySource(refreshed.index));
+      expect(await currentEvidenceSourceFingerprint(root)).toBe(before);
+
+      // Altering actual search metadata remains source tampering, even though
+      // toggling its receipt-derived verified label is neutralized.
+      await writeFile(join(generated, "search-catalog.ts"),
+        'export const searchCatalog = [{"id":"different-tool","quality":"verified"}];\n');
+      expect(await currentEvidenceSourceFingerprint(root)).not.toBe(before);
+      await writeFile(join(generated, "search-catalog.ts"),
+        'export const searchCatalog = [{"id":"pdf-rotate","quality":"verified"}];\n');
+      expect(await currentEvidenceSourceFingerprint(root)).toBe(before);
+
+      await mkdir(join(root, "public"), { recursive: true });
+      await writeFile(join(root, "public", "new-worker-asset.svg"), "<svg/>\n");
+      expect(await currentEvidenceSourceFingerprint(root)).not.toBe(before);
+      await unlink(join(root, "public", "new-worker-asset.svg"));
+      expect(await currentEvidenceSourceFingerprint(root)).toBe(before);
+
+      await writeFile(join(root, "worker", "validation.ts"), "export const verify=() => false;\n");
+      const tampered = await currentEvidenceSourceFingerprint(root);
+      expect(tampered).not.toBe(before);
+      expect(buildSourceBoundGoldQualityIndex([raw], catalogIds, tampered).index.tools).toEqual([]);
+      expect(codes({ ...input, projected: refreshed.index.tools, sourceFingerprint: tampered }))
+        .toEqual(expect.arrayContaining(["UI_BADGE_SOURCE_UNBOUND", "GOLD_RECEIPT_SOURCE_STALE"]));
+    });
+  });
+
+  it("rejects a forged search verification even when its quality flag cannot affect the versioned digest", () => {
+    const { input } = evidence("a".repeat(64));
+    expect(() => assertGoldSearchConsistency347(catalogIds, [], [
+      { id: "pdf-rotate", quality: "verified" },
+      { id: "image-resize", quality: "checking" },
+    ])).toThrow(/search.*Gold/u);
+    expect(() => assertGoldSearchConsistency347(catalogIds, input.projected, [
+      { id: "pdf-rotate", quality: "checking" },
+      { id: "image-resize", quality: "checking" },
+    ])).toThrow(/search.*Gold/u);
   });
 });

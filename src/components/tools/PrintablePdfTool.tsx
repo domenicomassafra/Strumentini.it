@@ -1,4 +1,5 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 import type { PrintablePdfResult, PrintableSourceKind, PrintablePageSize, PrintableOrientation } from "../../engines/pdf/printable-document";
 
 const ACCEPTED_EXTENSIONS: Readonly<Record<string, PrintableSourceKind>> = {
@@ -20,6 +21,7 @@ export function PrintablePdfTool() {
   const [previewBlob, setPreviewBlob] = useState<Blob | null>(null);
   const [downloadUrl, setDownloadUrl] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
+  const inFlight = useRef(false);
 
   useEffect(() => {
     if (result === null) { setDownloadUrl(""); return; }
@@ -57,6 +59,8 @@ export function PrintablePdfTool() {
 
   async function submit(event: Event) {
     event.preventDefault();
+    if (inFlight.current) return;
+    inFlight.current = true;
     setError("");
     setResult(null);
     setPreviewBlob(null);
@@ -76,10 +80,12 @@ export function PrintablePdfTool() {
       }
       setPreviewBlob(preview.artifacts[0]!.blob);
       setResult(output);
+      recordCompletedTool("printable-pdf-from-text");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Impossibile creare il PDF.");
     } finally {
       setWorking(false);
+      inFlight.current = false;
     }
   }
 
