@@ -2,7 +2,9 @@
  * /DCTDecode JPEG + /FlateDecode PNG Sub predictor and grayscale/Indexed XObjects.
  */
 import { deflateSync } from "node:zlib";
-import sharp from "sharp";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { PdfBuilder } from "../../src/engines/pdf/writer";
 import { pdfArray, pdfDict, pdfName, pdfNumber, pdfString } from "../../src/engines/pdf/parser";
 
@@ -10,6 +12,23 @@ export const MIXED_218_TEXT = "SEARCHABLE_MIXED_VECTOR_TEXT_218";
 export const MIXED_218_WIDTH = 360;
 export const MIXED_218_HEIGHT = 280;
 export type Mixed218Scenario = "safe" | "smask" | "multiply" | "form" | "indexed" | "bomb" | "uniform";
+
+// The source PDFs are byte-pinned. Different libvips JPEG encoders on Linux
+// and macOS produce different *valid* DCT streams; use the two original pinned
+// JPEG streams for deterministic PDF corpus reconstruction across platforms.
+// SHA checks keep this fixture independent of mutable test/runtime output.
+const pinnedJpeg218 = {
+  safe: "d5c74e27475bda1322d8b8462b503f43ef962cc824c88a40423456c1b2adf8da",
+  uniform: "bf76fda59e7c707b4b27c5da7be1827d6c7505663aeed8077a7849e6645fe266",
+} as const;
+function reproducibleJpeg218(scenario: Mixed218Scenario): Uint8Array {
+  const variant = scenario === "uniform" ? "uniform" : "safe";
+  const jpeg = new Uint8Array(readFileSync(resolve(import.meta.dirname, `pdf-mixed-jpegs-218/${variant}.jpg`)));
+  if (createHash("sha256").update(jpeg).digest("hex") !== pinnedJpeg218[variant]) {
+    throw new Error(`Pinned #218 JPEG source changed: ${variant}`);
+  }
+  return jpeg;
+}
 
 function rgb218(uniform = false): Uint8Array {
   const pixels = new Uint8Array(MIXED_218_WIDTH * MIXED_218_HEIGHT * 3);
@@ -40,8 +59,7 @@ export async function mixedImagePdf218(scenario: Mixed218Scenario): Promise<Uint
   const builder = new PdfBuilder();
   const catalog = builder.reserve(), pages = builder.reserve(), page = builder.reserve();
   const raw = rgb218(scenario === "uniform");
-  const jpeg = new Uint8Array(await sharp(raw, { raw: { width: MIXED_218_WIDTH, height: MIXED_218_HEIGHT, channels: 3 } })
-    .jpeg({ quality: scenario === "uniform" ? 50 : 100, chromaSubsampling: "4:4:4" }).toBuffer());
+  const jpeg = reproducibleJpeg218(scenario);
   const jpegImage = builder.putAuto({ kind: "stream", dictionary: pdfDict({ Type: pdfName("XObject"),
     Subtype: pdfName("Image"), Width: pdfNumber(MIXED_218_WIDTH), Height: pdfNumber(MIXED_218_HEIGHT),
     ColorSpace: pdfName("DeviceRGB"), BitsPerComponent: pdfNumber(8), Filter: pdfName("DCTDecode") }), bytes: jpeg });
