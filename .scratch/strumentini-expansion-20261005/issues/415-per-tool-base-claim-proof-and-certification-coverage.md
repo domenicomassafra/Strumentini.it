@@ -37,3 +37,9 @@
 **Out of scope:** Shipping functionality, buying licenses, changing receipt source fingerprints, broad desktop-only advanced exemptions.
 
 **Execution prompt:** Routed by canonical EXECUTION-PROMPTS.md with gates.
+
+## 2026-10-11 wave 06 — read-only per-tool proof map (slice, NOT closure)
+
+Nuovo `scripts/audit-per-tool-proof-415.ts` inventario `--json` read-only dei 269 ID/route con jobs, input, limiti handoff espliciti o `PENDING_RUNTIME_LIMIT_ATTESTATION`, source manifest/page/module e SHA di tracciabilità, oracolo/famiglie fixture registrati, receipt storico **non** confuso con receipt Gold corrente e filtro corrente source-wide/hash-byte/revision/provenienza. `tests/per-tool-proof-415.test.ts` copre 269/269, ID duplicati, route falsificate, assenza jobs e receipt alterati/stale; campione indipendente PDF/PNG/CSV/DOCX/XLSX/WAV `scripts/verify-output-consumers-408.ts` 6/6 `PASS_LOCAL` di formato. Risultato reale: **269/269 mappati**, 269 riferimenti a registro presenti, 43 limiti handoff dichiarati, 226 privi di limite handoff nel manifest, **0 Gold correnti / 269 PENDING**. Vedi `docs/PER-TOOL-PROOF-415-2026-10-11.md`.
+
+**AC-415.1/.3 non chiuse:** mancano ancora prova e limiti runtime source-bound per ciascun tool e casi per-route negativi/timeout/partial/cancel, oltre a supporto per positività receipt (#347). Gli oracoli di formato non certificano ogni singola route. `AC-415.2` soddisfatto localmente per la negazione (missing/stale non diventano Verified). **Ticket resta OPEN**, senza promozione Gold, push o release.
