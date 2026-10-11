@@ -60,6 +60,30 @@ describe("#407 bounded hostile-format preflight in the actual detector", () => {
     expect(await detectLocalFile(file)).toMatchObject({status:"refused",reason:"UNSUPPORTED"});
   });
 
+  it.each([
+    ["SVG namespace-prefixed script", "graphics/active.svg", '<svg xmlns="http://www.w3.org/2000/svg" xmlns:s="http://www.w3.org/2000/svg"><s:script>alert(1)</s:script></svg>'],
+    ["SVG namespace-prefixed foreignObject", "graphics/active.svg", '<svg xmlns:s="http://www.w3.org/2000/svg"><s:foreignObject><div xmlns="http://www.w3.org/1999/xhtml">danger</div></s:foreignObject></svg>'],
+    ["SVG SMIL animateMotion", "graphics/active.svg", '<svg xmlns="http://www.w3.org/2000/svg"><animateMotion dur="0.001s" repeatCount="indefinite" path="M0 0 L1 1"/></svg>'],
+    ["SVG active content hidden behind an XML extension", "graphics/nested.xml", '<s:svg xmlns:s="http://www.w3.org/2000/svg"><s:animateTransform attributeName="transform" type="rotate" from="0" to="180" dur="1s" repeatCount="indefinite"/></s:svg>'],
+    ["SVG feImage that can fetch an external resource", "graphics/active.svg", '<svg xmlns="http://www.w3.org/2000/svg"><filter id="f"><feImage href="relative-resource.svg"/></filter></svg>'],
+    ["XML entity-obfuscated external relationship", "word/_rels/document.xml.rels", '<Relationships><Relationship Id="rId1" TargetMode="Ex&#x74;ernal" Target="https://attacker.test/item"/></Relationships>'],
+    ["XML external relationship without explicit mode", "word/_rels/document.xml.rels", '<Relationships><Relationship Id="rId1" Target="file:///etc/passwd"/></Relationships>'],
+    ["XML XInclude namespace-alias local file load", "docs/document.xml", '<root xmlns:inc="http://www.w3.org/2001/XInclude"><inc:include href="../../../../etc/passwd" parse="text"/></root>'],
+    ["XML XInclude entity-obfuscated namespace", "docs/document.xml", '<root xmlns:inc="http://www.w3.org/2001/XIncl&#x75;de"><inc:include href="../../../../etc/passwd"/></root>'],
+  ] as const)("rejects active %s before offering the archive", async (_, name, xml) => {
+    expect(await detectLocalFile(asFile("hostile.zip", pack({[name]:bytes(xml)}))))
+      .toMatchObject({status:"refused",reason:"UNSUPPORTED"});
+  });
+
+  it("retains benign prefixed SVG drawing and internal OOXML relationships", async () => {
+    const inert=pack({
+      "graphics/drawing.svg": bytes('<s:svg xmlns:s="http://www.w3.org/2000/svg"><s:path d="M0 0 L10 10"/></s:svg>'),
+      "word/_rels/document.xml.rels": bytes('<Relationships><Relationship Id="rId1" Target="media/image1.png" TargetMode="Internal"/></Relationships>'),
+    });
+    expect(await detectLocalFile(asFile("inert.zip",inert)))
+      .toMatchObject({status:"supported",format:"zip"});
+  });
+
   it("refuses dangerous member names, normalization traversal, device attributes, nested archives and gaps", async () => {
     for (const name of ["../evil", "a/../evil", "a//evil", "a/./b", "a/C:/evil", "a\\b", "a/\u202eevil", "\uff0e\uff0e/evil", "a/evil. ", "a/evil\u0000name"]) {
       expect(checkZipPath407(name)).not.toBeNull();
@@ -90,6 +114,20 @@ describe("#407 bounded hostile-format preflight in the actual detector", () => {
       expect(await detectLocalFile(asFile("device.zip",pack({[name]: bytes("payload")})))).toMatchObject({status:"refused",reason:"MALFORMED"});
     }
     expect(await detectLocalFile(asFile("ordinary.zip",pack({"docs/contact.txt":bytes("safe")})))).toMatchObject({status:"supported",format:"zip"});
+  });
+
+  it("refuses ZIP source-view suffixes, URL delimiters and incompatible filesystem path characters", async () => {
+    for (const name of [
+      "views/render.svg?source", "views/render.svg#source", "views/render.svg%3Fsource",
+      "views/render.svg％3fsource", "views/render.svg？source", "views/render.svg＃source",
+      'docs/file".xml', "docs/a*.svg", "docs/a<1>.svg", "docs/a|b.xml", "docs/a%2f..%2fevil.xml",
+    ]) {
+      expect(checkZipPath407(name),name).not.toBeNull();
+      expect(await detectLocalFile(asFile("path.zip",pack({[name]:bytes('<svg onload="alert(1)"/>')}))))
+        .toMatchObject({status:"refused",reason:"MALFORMED"});
+    }
+    expect(await detectLocalFile(asFile("ordinary.zip",pack({"docs/discount%20offer.txt":bytes("benign")}))))
+      .toMatchObject({status:"supported",format:"zip"});
   });
 
   it("refuses inflated XML beyond the bounded budget and highly compressed zip bombs", async () => {

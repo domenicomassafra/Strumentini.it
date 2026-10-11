@@ -316,13 +316,20 @@ export async function recompressPdfScannedImages(source: Uint8Array, options: Pd
   checkAbort(signal);
   const output = transformed === 0 ? source.slice() : buildPdfFromPages(model.pages.map((page) => ({ document: model, page })),
     { flatten: false, stripMetadata: false, compress: false });
-  const after = inspectPdfBytes(output);
-  const outputModel = parsePdf(output);
-  const beforeText = await extractPdfText(source, signal);
-  const afterText = await extractPdfText(output, signal);
-  if (!samePageGeometry(before, after) || !samePageContentBytes(original, outputModel) ||
-      before.images.length !== after.images.length || JSON.stringify(beforeText) !== JSON.stringify(afterText)) {
-    throw new Error("PDF_OUTPUT_MISMATCH: Scan compression changed page geometry, original page streams, extracted text or image count");
+  if (transformed !== 0) {
+    // Keep all independent preservation checks for a genuinely rewritten PDF.
+    // With zero changes, output is an exact Uint8Array slice of source: every
+    // byte, page, stream, text and image is already identical by construction.
+    // Decoding that same input twice with PDF.js served no independent proof
+    // and caused unnecessary native OCR/PDF startup on refused conversions.
+    const after = inspectPdfBytes(output);
+    const outputModel = parsePdf(output);
+    const beforeText = await extractPdfText(source, signal);
+    const afterText = await extractPdfText(output, signal);
+    if (!samePageGeometry(before, after) || !samePageContentBytes(original, outputModel) ||
+        before.images.length !== after.images.length || JSON.stringify(beforeText) !== JSON.stringify(afterText)) {
+      throw new Error("PDF_OUTPUT_MISMATCH: Scan compression changed page geometry, original page streams, extracted text or image count");
+    }
   }
   checkAbort(signal);
   const grew = output.length >= source.length;

@@ -30,14 +30,11 @@ import {
 import {
   describeMetadataIt,
   diffImageMetadata,
-  scanImageMetadata,
+  scanImageMetadataBlob,
   type MetadataGroup,
   type MetadataInventory,
   type MetadataSegment,
 } from "./metadata";
-
-/** Bound on how much of the input is read for the inventory pass. */
-export const METADATA_SCAN_LIMIT_BYTES = 8 * 1024 * 1024;
 
 export interface StripMetadataResult {
   readonly blob: Blob;
@@ -73,11 +70,7 @@ export interface StripMetadataResult {
   readonly engineVersion: string;
 }
 
-export const METADATA_STRIPPER_VERSION = "image-metadata-strip-v1";
-
-async function bytesOf(blob: Blob): Promise<Uint8Array> {
-  return new Uint8Array(await blob.slice(0, METADATA_SCAN_LIMIT_BYTES).arrayBuffer());
-}
+export const METADATA_STRIPPER_VERSION = "image-metadata-strip-v2";
 
 export async function stripImageMetadataLocal(
   input: unknown,
@@ -90,8 +83,7 @@ export async function stripImageMetadataLocal(
   const file = assertFile(value.file, "image");
   const mime = "image/png" as const;
 
-  const inputBytes = await bytesOf(file.blob);
-  const inputInventory = scanImageMetadata(inputBytes);
+  const inputInventory = await scanImageMetadataBlob(file.blob, signal);
 
   progress?.({ phase: "decode", label: "Decodifica locale" });
   const decoded = await decodeImage(file, signal, progress);
@@ -99,13 +91,9 @@ export async function stripImageMetadataLocal(
     const canvas = bitmapCanvas(decoded.bitmap);
     const sourcePixels = get2d(canvas).getImageData(0, 0, decoded.width, decoded.height).data;
     const blob = await outputBlob(canvas, mime, undefined, decoded.width, decoded.height, signal, progress);
-    const outputBytes = await bytesOf(blob);
-    const outputInventory = scanImageMetadata(outputBytes);
-    if (outputInventory.privacySegmentCount > 0) {
-      throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", "The produced file still carries identifying metadata");
-    }
-    if (outputInventory.format !== "png") {
-      throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", `The produced file is ${outputInventory.format}, expected png`);
+    const outputInventory = await scanImageMetadataBlob(blob, signal);
+    if (outputInventory.format !== "png" || !outputInventory.complete || outputInventory.segments.length > 0) {
+      throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", "Full output PNG inventory is incomplete or contains metadata chunks");
     }
     const outputDecoded = await decodeImage({
       name: "metadata-stripped.png",
@@ -119,6 +107,7 @@ export async function stripImageMetadataLocal(
         throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", "Reopened PNG dimensions do not match the browser-decoded source pixels");
       }
       for (let index = 0; index < sourcePixels.length; index += 1) {
+        if ((index & 0xffff) === 0 && signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
         if (sourcePixels[index] !== reopened.data[index]) {
           throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", `Reopened PNG pixel mismatch at RGBA byte ${index}`);
         }
@@ -144,14 +133,14 @@ export async function stripImageMetadataLocal(
       inputSizeLabel: formatBytes(file.size),
       outputSizeLabel: formatBytes(blob.size),
       metadataFree: true,
-      policyIt: "I pixel vengono ricodificati dal browser in PNG, che non scrive metadati; il file prodotto viene poi analizzato byte per byte e il risultato è dichiarato solo se non contiene più Exif, XMP, IPTC o commenti.",
+      policyIt: `L'immagine viene ricodificata localmente dai pixel in PNG. L'intero file prodotto viene ispezionato fino alla fine: nessun chunk di metadati, inclusi testo, profili, Exif, XMP e chunk sconosciuti. ${inputInventory.complete ? "Inventario sorgente completo." : "Inventario sorgente parziale: solo i segmenti rilevati sono documentati."} Gli eventuali thumbnail Exif non sono inventariati separatamente; l'intero contenitore Exif originale viene escluso dalla nuova immagine.`,
       metadataGroups,
       fidelity: {
         outputFormat: "image/png",
         dimensionsPreserved: true,
         decodedRgbaExact: true,
         verification: "browser-decoded RGBA before vs reopened PNG RGBA",
-        limitation: "The claim is exact for the browser-decoded RGBA raster. Original container bytes, metadata, ICC/profile semantics and pre-decode codec history are not preserved.",
+        limitation: "Exact only for browser-decoded RGBA. Original container, Exif embedded thumbnails, ICC/profile semantics and codec history are not preserved. Pixel steganography or identifying picture content cannot be scrubbed by metadata removal.",
       },
       engineVersion: METADATA_STRIPPER_VERSION,
     };
@@ -163,7 +152,7 @@ export async function stripImageMetadataLocal(
 /** Reports what an image carries, without producing anything. */
 export async function inspectImageMetadataSegments(file: ImageVisualFile, signal?: AbortSignal): Promise<MetadataInventory> {
   if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
-  return scanImageMetadata(await bytesOf(file.blob));
+  return scanImageMetadataBlob(file.blob, signal);
 }
 
 export function summarizeMetadataRemoval(inventory: MetadataInventory): string {

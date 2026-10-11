@@ -95,9 +95,10 @@ export function ExifRemoverTool() {
             </small>
           </label>
           <p class="file-note">
-            Il file viene ricodificato dai pixel già decodificati e quindi riscritto come PNG, che non contiene
-            metadati. Il file prodotto viene poi analizzato byte per byte: se conservasse Exif, XMP, IPTC o commenti,
-            lo strumento fallisce invece di dichiarare un risultato che non può dimostrare.
+            Il file JPEG, PNG o WebP viene ricodificato localmente dai pixel in un nuovo PNG. Il risultato viene
+            ispezionato fino alla fine, anche oltre 8 MiB: se contiene chunk aggiuntivi, metadati o dati finali,
+            non viene consegnato. Le anteprime incorporate in Exif non vengono analizzate singolarmente: l'intero
+            contenitore originale viene escluso. Non sono supportati PDF, SVG o documenti Office.
           </p>
         </ToolFormCard>
         <InlineError message={operation.error} />

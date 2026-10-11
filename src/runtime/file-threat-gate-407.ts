@@ -24,11 +24,16 @@ const reject = (reason: FileThreatFinding407["reason"], message: string): FileTh
 /** No extraction occurs here; refuse names that become dangerous on common file systems. */
 export function checkZipPath407(path: string): FileThreatFinding407 | null {
   const normalized = path.normalize("NFKC");
+  // Query/fragment suffixes can conceal the true SVG/XML extension in a URL;
+  // Windows-forbidden characters and encoded separators are ambiguous too.
+  const specialSyntax = /[?*"<>|#]|%(?:00|2e|2f|3a|3f|23|5c)/iu;
   if (!path || path.length > FILE_THREAT_LIMITS_407.maxZipPathCharacters ||
     path.startsWith("/") || path.includes("\\") || path.includes(":") ||
     /[\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/u.test(path) ||
     /^[A-Za-z]:/u.test(path) || normalized.startsWith("/") || normalized.includes("\\") || normalized.includes(":") ||
-    normalized.includes("//")) return reject("MALFORMED", "ZIP has a dangerous or excessively long member path.");
+    normalized.includes("//") || specialSyntax.test(path) || specialSyntax.test(normalized)) {
+    return reject("MALFORMED", "ZIP has a dangerous or excessively long member path.");
+  }
   const segments = path.endsWith("/") ? path.slice(0, -1).split("/") : path.split("/");
   const normalizedSegments = normalized.endsWith("/") ? normalized.slice(0,-1).split("/") : normalized.split("/");
   if (segments.length > FILE_THREAT_LIMITS_407.maxZipPathDepth ||
@@ -73,17 +78,25 @@ export function textPartKind407(name: string): "xml" | "svg" | "html" | null {
 
 /** Never parse XML with a DOM here: refuse entity resolution and active markup. */
 export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): FileThreatFinding407 | null {
-  if (/<!\s*(?:DOCTYPE|ENTITY)\b|<\?\s*xml-stylesheet\b|<\s*(?:xi:include|xinclude:include)\b/iu.test(source)) {
+  if (/<!\s*(?:DOCTYPE|ENTITY)\b|<\?\s*xml-stylesheet\b|<\s*(?:xi:include|xinclude:include)\b|http:\/\/www\.w3\.org\/2001\/XInclude/iu.test(source) ||
+    /\bxmlns(?::[\w.-]+)?\s*=\s*["'][^"']*&/iu.test(source)) {
     return reject("UNSUPPORTED", "Embedded XML document type, entities, stylesheets or includes are not supported.");
   }
-  if (/\b(?:TargetMode|schemaLocation|noNamespaceSchemaLocation)\s*=\s*["'][^"']*(?:external|https?:\/\/|file:\/\/)/iu.test(source)) {
+  // XML entity references are decoded by downstream parsers: an attribute such
+  // as TargetMode="Ex&#x74;ernal" must not evade an external-link refusal.
+  if (/\b(?:TargetMode|Target|schemaLocation|noNamespaceSchemaLocation|href|src)\s*=\s*["'][^"']*&/iu.test(source) ||
+    /\b(?:TargetMode|schemaLocation|noNamespaceSchemaLocation)\s*=\s*["'][^"']*(?:external|https?:\/\/|file:\/\/)/iu.test(source) ||
+    /\b(?:Target|href|src|schemaLocation|noNamespaceSchemaLocation)\s*=\s*["']\s*(?:https?:|ftp:|file:|data:|javascript:|vbscript:|\/\/|\\\\)/iu.test(source)) {
     return reject("UNSUPPORTED", "External XML package references are outside the local inspection profile.");
   }
-  if (/<\s*(?:script|iframe|object|embed)\b|\bon(?:load|error|click|mouseover|focus|begin|end)\s*=/iu.test(source)) {
+  // XML namespace aliases can give <s:script> exactly the same active meaning
+  // as <script>; inspection cannot assume the element has no prefix.
+  if (/<\s*(?:[a-z_][\w.-]*:)?(?:script|iframe|object|embed)\b|\bon(?:load|error|click|mouseover|focus|begin|end)\s*=/iu.test(source)) {
     return reject("UNSUPPORTED", "Executable XML markup or event handlers are not supported.");
   }
-  if (kind === "svg" || kind === "html" || /<\s*svg\b/iu.test(source)) {
-    if (/<\s*(?:foreignObject|base|link|use|image|style|animate|set)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
+  // A ZIP can store a genuine SVG document under an .xml member name.
+  if (kind === "svg" || kind === "html" || /<\s*(?:[a-z_][\w.-]*:)?svg\b/iu.test(source)) {
+    if (/<\s*(?:[a-z_][\w.-]*:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
       return reject("UNSUPPORTED", "Executable or external SVG/HTML content is outside the inspection profile.");
     }
   }

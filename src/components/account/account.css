@@ -104,7 +104,7 @@
   font-weight: var(--font-weight-semibold);
 }
 
-.ac-tab:hover { color: var(--brand); }
+.ac-tab:hover { color: var(--brand-active); }
 .ac-tab[aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow-card); }
 
 .ac-panel { display: grid; gap: var(--space-5); }
@@ -178,8 +178,8 @@
   text-align: left;
 }
 
-.ac-nav button:hover { background: var(--brand-soft); color: var(--brand); }
-.ac-nav button[aria-selected="true"] { background: var(--brand-soft); color: var(--brand); font-weight: var(--font-weight-semibold); }
+.ac-nav button:hover { background: var(--brand-soft); color: var(--brand-active); }
+.ac-nav button[aria-selected="true"] { background: var(--brand-soft); color: var(--brand-active); font-weight: var(--font-weight-semibold); }
 
 /* --- Panel blocks ---------------------------------------------------------- */
 

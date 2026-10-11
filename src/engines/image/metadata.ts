@@ -11,7 +11,7 @@
  * specification (RIFF chunk types).
  */
 
-export type MetadataCarrier = "exif" | "xmp" | "iptc" | "comment" | "text" | "timestamp" | "icc-profile";
+export type MetadataCarrier = "exif" | "xmp" | "iptc" | "comment" | "text" | "timestamp" | "icc-profile" | "ancillary";
 
 export interface MetadataSegment {
   readonly carrier: MetadataCarrier;
@@ -30,10 +30,11 @@ export const METADATA_CARRIER_IT: Readonly<Record<MetadataCarrier, string>> = {
   text: "testo incorporato",
   timestamp: "data e ora registrate",
   "icc-profile": "profilo colore ICC",
+  ancillary: "chunk PNG aggiuntivo (contenuto non verificato)",
 };
 
 /** Carriers that can carry identifying information and are therefore the target. */
-export const PRIVACY_BEARING_CARRIERS: readonly MetadataCarrier[] = ["exif", "xmp", "iptc", "comment"];
+export const PRIVACY_BEARING_CARRIERS: readonly MetadataCarrier[] = ["exif", "xmp", "iptc", "comment", "ancillary"];
 
 export interface MetadataInventory {
   readonly format: "jpeg" | "png" | "webp" | "unknown";
@@ -75,6 +76,22 @@ const PNG_CHUNKS: Readonly<Record<string, { readonly carrier: MetadataCarrier; r
   tIME: { carrier: "timestamp", segment: "PNG tIME" },
   iCCP: { carrier: "icc-profile", segment: "PNG iCCP" },
 };
+
+const PNG_PIXEL_CHUNKS = new Set(["IHDR", "PLTE", "IDAT", "IEND"]);
+
+function pngMetadataSegment(type: string, payload: Uint8Array, size: number): MetadataSegment | null {
+  const known = PNG_CHUNKS[type];
+  if (known !== undefined) {
+    const isText = known.carrier === "text";
+    // PNG XMP lives inside iTXt (or a legacy textual keyword), not in a
+    // separate chunk type. The null-terminated keyword precedes the data.
+    const keywordEnd = payload.indexOf(0);
+    const keyword = keywordEnd >= 0 ? new TextDecoder().decode(payload.subarray(0, keywordEnd)).toLowerCase() : "";
+    const carrier = isText && (keyword === "xml:com.adobe.xmp" || keyword.includes("xmp")) ? "xmp" : known.carrier;
+    return segment(carrier, known.segment, size);
+  }
+  return PNG_PIXEL_CHUNKS.has(type) ? null : segment("ancillary", `PNG ${type}`, size);
+}
 
 const WEBP_CHUNKS: Readonly<Record<string, { readonly carrier: MetadataCarrier; readonly segment: string }>> = {
   EXIF: { carrier: "exif", segment: "WebP EXIF" },
@@ -159,10 +176,11 @@ function scanPng(bytes: Uint8Array): MetadataInventory {
     }
     if (type === "IEND") {
       sawEnd = true;
+      if (length !== 0 || offset + 12 !== bytes.length) complete = false;
       break;
     }
-    const known = PNG_CHUNKS[type];
-    if (known !== undefined) segments.push(segment(known.carrier, known.segment, length + 12));
+    const item = pngMetadataSegment(type, bytes.subarray(offset + 8, offset + 8 + Math.min(length, 256)), length + 12);
+    if (item !== null) segments.push(item);
     offset += 12 + length;
   }
   if (!sawEnd) complete = false;
@@ -207,6 +225,52 @@ export function scanImageMetadata(bytes: Uint8Array): MetadataInventory {
   if (isJpeg(bytes)) return scanJpeg(bytes);
   if (isWebp(bytes)) return scanWebp(bytes);
   return { format: "unknown", segments: [], bytesTotal: 0, privacySegmentCount: 0, privacyBytes: 0, complete: false };
+}
+
+/**
+ * Full-file PNG inventory with constant-size reads, including chunks beyond a
+ * large IDAT and any trailing payload after IEND. Other formats retain the
+ * explicitly bounded 8 MiB prefix inventory until a streaming parser exists.
+ */
+export async function scanImageMetadataBlob(blob: Blob, signal?: AbortSignal): Promise<MetadataInventory> {
+  const abort = () => {
+    if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+  };
+  const read = async (offset: number, length: number): Promise<Uint8Array> => {
+    abort();
+    const bytes = new Uint8Array(await blob.slice(offset, offset + length).arrayBuffer());
+    abort();
+    return bytes;
+  };
+  const signature = await read(0, 12);
+  if (!isPng(signature)) {
+    const limit = 8 * 1024 * 1024;
+    const inventory = scanImageMetadata(await read(0, Math.min(blob.size, limit)));
+    return blob.size > limit ? { ...inventory, complete: false } : inventory;
+  }
+
+  const segments: MetadataSegment[] = [];
+  let offset = 8;
+  let complete = false;
+  // A valid 40 MiB input cannot require unbounded memory or an unbounded
+  // number of per-chunk reads to inspect its container structure.
+  for (let count = 0; count < 65_536 && offset + 12 <= blob.size; count += 1) {
+    const header = await read(offset, 8);
+    const length = new DataView(header.buffer, header.byteOffset, header.byteLength).getUint32(0);
+    const type = String.fromCharCode(...header.subarray(4, 8));
+    if (offset + 12 + length > blob.size) break;
+    if (type === "IEND") {
+      complete = length === 0 && offset + 12 === blob.size;
+      break;
+    }
+    if (!PNG_PIXEL_CHUNKS.has(type)) {
+      const prefix = await read(offset + 8, Math.min(length, 256));
+      const item = pngMetadataSegment(type, prefix, length + 12);
+      if (item !== null) segments.push(item);
+    }
+    offset += length + 12;
+  }
+  return summarize("png", segments, complete);
 }
 
 function metadataClass(carrier: MetadataCarrier): MetadataGroup["class"] {

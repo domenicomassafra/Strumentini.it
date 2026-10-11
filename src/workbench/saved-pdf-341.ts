@@ -14,6 +14,12 @@ export interface SavedPdfSummary341 {
   readonly createdAt: string;
 }
 
+export interface SavedPdfInventory341 {
+  readonly items: readonly SavedPdfSummary341[];
+  readonly unreadableCount: number;
+  readonly limitExceeded: boolean;
+}
+
 interface SavedPdfRecord341 extends SavedPdfSummary341 {
   readonly schemaVersion: 1;
   readonly mime: "application/pdf";
@@ -71,32 +77,42 @@ function openDatabase(): Promise<IDBDatabase> {
   });
 }
 
-async function readAllRecords(): Promise<readonly SavedPdfRecord341[]> {
+async function readAllRecords(): Promise<{ records: readonly unknown[]; limitExceeded: boolean }> {
   const db = await openDatabase();
   try {
     return await new Promise((resolve, reject) => {
       const tx = db.transaction(STORE, "readonly");
-      const request = tx.objectStore(STORE).getAll();
-      let records: readonly SavedPdfRecord341[] = [];
-      request.onsuccess = () => {
-        const raw: unknown[] = request.result;
-        if (raw.length > SAVED_PDF_MAX_COUNT_341 || raw.some((item) => !isSavedPdfRecord341(item))) {
-          tx.abort(); reject(errorCode("CORRUPT_RECORDS")); return;
-        }
-        records = raw as SavedPdfRecord341[];
-      };
-      tx.oncomplete = () => resolve(records);
+      // A damaged/tampered local DB might contain arbitrarily many records.
+      // Only fetch our five supported entries and one overflow sentinel.
+      const request = tx.objectStore(STORE).getAll(undefined, SAVED_PDF_MAX_COUNT_341 + 1);
+      let records: readonly unknown[] = [];
+      request.onsuccess = () => { records = request.result; };
+      tx.oncomplete = () => resolve({
+        records: records.slice(0, SAVED_PDF_MAX_COUNT_341),
+        limitExceeded: records.length > SAVED_PDF_MAX_COUNT_341,
+      });
       tx.onerror = () => reject(errorCode("READ_FAILED"));
       tx.onabort = () => reject(errorCode("READ_ABORTED"));
     });
   } finally { db.close(); }
 }
 
-/** Metadata for explicit local UI. No readback bytes exposed in the list. */
-export async function listSavedPdfs341(): Promise<readonly SavedPdfSummary341[]> {
-  return (await readAllRecords())
-    .map(({ id, name, byteLength, createdAt }) => ({ id, name, byteLength, createdAt }))
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || a.id.localeCompare(b.id));
+/** Inspect each persisted entry independently; a damaged item must never hide healthy PDFs. */
+export async function inspectSavedPdfs341(): Promise<SavedPdfInventory341> {
+  const { records, limitExceeded: tooMany } = await readAllRecords();
+  const items: SavedPdfSummary341[] = [];
+  let unreadableCount = 0;
+  let checkedBytes = 0;
+  let limitExceeded = tooMany;
+  for (const item of records) {
+    if (!isSavedPdfRecord341(item)) { unreadableCount++; continue; }
+    if (checkedBytes + item.byteLength > SAVED_PDF_MAX_TOTAL_341) { limitExceeded = true; continue; }
+    checkedBytes += item.byteLength;
+    if (await checksum(item.bytes) !== item.sha256) { unreadableCount++; continue; }
+    items.push({ id: item.id, name: item.name, byteLength: item.byteLength, createdAt: item.createdAt });
+  }
+  items.sort((a, b) => b.createdAt.localeCompare(a.createdAt) || a.id.localeCompare(b.id));
+  return { items, unreadableCount, limitExceeded };
 }
 
 /** No overwrite or eviction. Count and byte quota are checked in the same IDB transaction as put. */

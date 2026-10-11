@@ -3,7 +3,7 @@ import { requestBrowserDownload339 } from "../../../runtime/browser-download-339
 import { AUTO_DOWNLOAD_KEY_339, browserStorage339, changeAutoDownload339, readAutoDownload339 } from "../../../runtime/download-policy-339";
 import { canOfferPdfPagesHandoff337, receivePdfPagesHandoff337, startPdfPagesHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
 import { readOutputFacts338 } from "../../../runtime/output-facts-338";
-import { deleteSavedPdf341, listSavedPdfs341, loadSavedPdf341, maySavePdf341, savePdf341, type SavedPdfSummary341 } from "../../../workbench/saved-pdf-341";
+import { deleteSavedPdf341, inspectSavedPdfs341, loadSavedPdf341, maySavePdf341, savePdf341, type SavedPdfSummary341 } from "../../../workbench/saved-pdf-341";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { TOOL_COPY_IT } from "../../../i18n/it/tool-copy";
@@ -179,7 +179,12 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
 
   useEffect(() => {
     let active = true;
-    void listSavedPdfs341().then((items) => { if (active) setSavedPdfItems(items); }).catch(() => {
+    void inspectSavedPdfs341().then(({ items, unreadableCount, limitExceeded }) => {
+      if (!active) return;
+      setSavedPdfItems(items);
+      const notice = savedPdfInventoryNotice341(unreadableCount, limitExceeded);
+      if (notice !== "") setSavedPdfStatus(notice);
+    }).catch(() => {
       if (active) setSavedPdfStatus("Archivio PDF locale non disponibile: puoi sempre scaricare manualmente i risultati.");
     });
     return () => { active = false; };
@@ -558,13 +563,20 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   })) ?? [], [result]);
   const handoffPdf = result?.artifacts.length === 1 ? result.artifacts[0]?.artifact : undefined;
 
+  function savedPdfInventoryNotice341(count: number, limitExceeded: boolean): string {
+    const unreadable = count === 0 ? "" : `${count} PDF locali non leggibili. Non sono stati eliminati; gli altri PDF restano disponibili.`;
+    const overflow = limitExceeded ? "Archivio oltre i limiti di 5 file / 24 MiB: elenco parziale, nessun PDF è stato eliminato automaticamente." : "";
+    return `${unreadable} ${overflow}`.trim();
+  }
+
   async function saveCurrentPdf341() {
     if (!maySavePdf341(handoffPdf) || savedPdfBusy) return;
     setSavedPdfBusy(true);
     try {
       await savePdf341(handoffPdf);
-      setSavedPdfItems(await listSavedPdfs341());
-      setSavedPdfStatus("PDF conservato su questo dispositivo. Puoi riaprirlo dopo aver aggiornato la pagina o eliminarlo quando vuoi.");
+      const inventory = await inspectSavedPdfs341();
+      setSavedPdfItems(inventory.items);
+      setSavedPdfStatus(`PDF conservato su questo dispositivo. Puoi riaprirlo dopo aver aggiornato la pagina o eliminarlo quando vuoi. ${savedPdfInventoryNotice341(inventory.unreadableCount, inventory.limitExceeded)}`.trim());
     } catch {
       setSavedPdfStatus("Impossibile conservare il PDF in questo browser (spazio o accesso negato). Il risultato resta scaricabile manualmente qui.");
     } finally { setSavedPdfBusy(false); }
@@ -613,8 +625,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setSavedPdfBusy(true);
     try {
       await deleteSavedPdf341(item.id);
-      setSavedPdfItems(await listSavedPdfs341());
-      setSavedPdfStatus("PDF selezionato eliminato dalla memoria locale. Gli altri file sono rimasti invariati.");
+      const inventory = await inspectSavedPdfs341();
+      setSavedPdfItems(inventory.items);
+      setSavedPdfStatus(`PDF selezionato eliminato dalla memoria locale. Gli altri file sono rimasti invariati. ${savedPdfInventoryNotice341(inventory.unreadableCount, inventory.limitExceeded)}`.trim());
     } catch { setSavedPdfStatus("Impossibile eliminare il PDF. Nessun altro file è stato modificato."); }
     finally { setSavedPdfBusy(false); }
   }
