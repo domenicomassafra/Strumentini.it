@@ -76,6 +76,12 @@ describe("#407 bounded hostile-format preflight in the actual detector", () => {
     expect(await detectLocalFile(asFile("collision.zip", ambiguous))).toMatchObject({status:"refused", reason:"MALFORMED"});
     const caseCollision = pack({"archive/Report.TXT": bytes("first"), "archive/report.txt": bytes("second")});
     expect(await detectLocalFile(asFile("case.zip",caseCollision))).toMatchObject({status:"refused",reason:"MALFORMED"});
+    const fileDirectory = pack({"docs": bytes("file"), "docs/":bytes("")});
+    expect(await detectLocalFile(asFile("file-directory.zip",fileDirectory))).toMatchObject({status:"refused",reason:"MALFORMED"});
+    const fileParent = pack({"docs": bytes("file"), "docs/readme.txt":bytes("child")});
+    expect(await detectLocalFile(asFile("file-parent.zip",fileParent))).toMatchObject({status:"refused",reason:"MALFORMED"});
+    const validDirectory = pack({"docs/": bytes(""), "docs/readme.txt":bytes("child")});
+    expect(await detectLocalFile(asFile("directory.zip",validDirectory))).toMatchObject({status:"supported",format:"zip"});
   });
 
   it("refuses Windows device names before allowing ZIP entries to reach an extractor", async () => {

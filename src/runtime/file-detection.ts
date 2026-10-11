@@ -296,6 +296,7 @@ async function inspectZip(reader: RangeReader): Promise<LocalFileFormat> {
   const central=await reader.range(centralOffset,centralSize);
   const entries: ZipEntry[]=[];
   const unique=new Set<string>();
+  const canonicalFiles:string[]=[];
   let cursor=0,totalUnpacked=0;
   for(let i=0;i<count;i++) {
     if (!marker(central,cursor,"PK\u0001\u0002") || cursor+46>central.length) refuse("MALFORMED", "ZIP central entry is truncated.");
@@ -316,9 +317,11 @@ async function inspectZip(reader: RangeReader): Promise<LocalFileFormat> {
     }
     // ZIP entry names may be normalized by the eventual extractor/filesystem.
     // Refuse collisions *before* materialization, not just bytewise duplicates.
-    const canonicalName=name.normalize("NFKC").toLowerCase();
+    const canonicalPath=name.normalize("NFKC").toLowerCase();
+    const canonicalName=canonicalPath.endsWith("/") ? canonicalPath.slice(0,-1) : canonicalPath;
     if (unique.has(canonicalName)) refuse("MALFORMED", "Duplicate ZIP entry paths are ambiguous.");
     unique.add(canonicalName);
+    if (!name.endsWith("/")) canonicalFiles.push(canonicalName);
     if (offset>=centralOffset) refuse("MALFORMED", "ZIP local member offset is outside data area.");
     totalUnpacked+=unpacked;
     if (totalUnpacked>FILE_DETECTION_LIMITS.maxZipUncompressedBytes || (packed===0 ? unpacked>0 : unpacked/packed>FILE_DETECTION_LIMITS.maxZipExpansionRatio)) {
@@ -328,6 +331,11 @@ async function inspectZip(reader: RangeReader): Promise<LocalFileFormat> {
     cursor=end;
   }
   if (cursor!==central.length) refuse("MALFORMED", "ZIP directory has unused or unparsed bytes.");
+  // A regular file cannot simultaneously be a parent directory of another
+  // member, even if the archive omits an explicit directory entry.
+  if (canonicalFiles.some((filePath)=>[...unique].some((other)=>other.startsWith(`${filePath}/`)))) {
+    refuse("MALFORMED", "ZIP file member conflicts with a descendant path.");
+  }
   if (count===0) {
     if (eocdOffset!==0) refuse("POLYGLOT", "Empty ZIP has unexpected prefix bytes.");
     return "zip";
