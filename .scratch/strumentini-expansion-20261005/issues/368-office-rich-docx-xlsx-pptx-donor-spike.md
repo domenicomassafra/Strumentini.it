@@ -23,7 +23,7 @@
 ## Acceptance criteria
 
 - [ ] AC-368.1: Prova Libre Convert/ZetaOffice e alternative su documenti realistici.
-- [ ] AC-368.2: License runtime, font, isolation e fidelity error impediscono adozione.
+- [x] AC-368.2: License runtime, font, isolation e fidelity error impediscono adozione.
 - [ ] AC-368.3: On the scoped input and failure cases, verify: Page layout/text/images comparator. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
 
 **Verification:** Page layout/text/images comparator. Test malformed/boundary/cancel and mobile as relevant.
@@ -37,3 +37,84 @@
 **Out of scope:** App implementation now, unapproved vendor spend, deploying incomplete safety features.
 
 **Execution prompt:** Coordinated in EXECUTION-PROMPTS.md.
+
+## 2026-10-12 independent offline rich Office donor experiment (NO_GO)
+
+**Outcome: `NO_GO`, production promotion explicitly false.** New
+`scripts/audit-office-fidelity-368.ts` actually processes three existing,
+editable, realistic OOXML samples **in memory**, then checks their donor
+outputs with separate bounded JSZip and xmldom XML readers. New
+`tests/audit-office-fidelity-368.test.ts` exercises real generation/readback
+and negative refusal. It makes **no requests to an external converter**,
+installs no packages, creates no production routes, and intentionally exits 2
+after printing a structured, reproducible NO_GO outcome. The user-supplied
+originals are never rewritten.
+
+| Format and exact pinned source | Actual installed donor → output | Independent evidence | Material failure |
+| --- | --- | --- | --- |
+| DOCX 201,209 B; SHA-256 `973b551b9ec625584f64b1e475f8c766b5a80cde3fee72fd762d342e7f610dee` | `mammoth@1.13.0` → 681,846-byte HTML | 0 source text fragments missing; **2 of 2 image payload hashes preserved**; source has 1 editable table, 12240×15840 twips page size | HTML cannot certify pagination, native font metrics, image anchors, editable table layout or printed-page geometry |
+| XLSX 171,698 B; SHA-256 `b79b7b703db87eb55a87c023b1f8c6f90530498ca24b3ec7f4be7e6fc02e286f` | `xlsx@0.18.5` SheetJS read→write → **9,303-byte XLSX** | Reopened via independent ZIP/XML; all extracted cell type/value representations matched by cell address, 0 mismatches; **source formula count 0**, so formula fidelity NOT_VERIFIED | **2 of 2 images lost**, **1 of 1 chart lost**, print margins alone do not prove page layout; old `xlsx@0.18.5` production refusal #270 still stands |
+| PPTX 198,595 B; SHA-256 `15f39be12cf28a25abbd9be7d3eda9b380065cf1007690389d8ec060725035ab` | `pptxgenjs@4.0.1` reconstructs actual source text boxes → **44,821-byte PPTX** | Independently reopened: 1 source/1 output slide, all source shape text found, original 9144000×6858000 EMU page size retained; 1 source text shape rectangle matched | **2 of 2 images lost**, **1 chart and embedded workbook lost**; no general PPTX importer, original master, theme, fonts and full geometry are **NOT_VERIFIED** |
+
+The DOCX source retains an image data URI for each original image via Mammoth;
+the script compares actual decoded bytes with independent OOXML media digests.
+For XLSX, the script reads cell values, shared strings, type and formula from
+both OOXML archives without delegating the readback to SheetJS. PPTX slide
+shape text and geometry likewise come from independent slide XML; opaque
+printer-settings bytes are never interpreted. **No
+rendered page images or pixel-difference comparison** was performed; the
+result field is `visualPageFidelity: NOT_VERIFIED` for all three formats,
+and matched shape rectangles do not override that state. Time and Node RSS
+are recorded for every candidate as local snapshots, without claiming physical
+mobile/WASM/peak resource bounds. Externally linked resources are never
+requested by the audit; the script records this limited behavior as
+`NO_URL_FETCH_REQUESTED`, not as an independently inspected network trace.
+
+**Pinned direct donor provenance, all checked against installed package
+metadata and SHA-256 of bundled license notices before conversion:**
+`mammoth@1.13.0` BSD-2-Clause,
+`xlsx@0.18.5` Apache-2.0,
+`pptxgenjs@4.0.1` MIT,
+`jszip@3.10.2` dual MIT/GPL-3.0-or-later (MIT option),
+`@xmldom/xmldom@0.8.15` MIT.
+This is **not** a transitive dependency/license or security certification.
+LibreConvert/LibreOffice and ZetaOffice were **not installed in inspected local
+candidate paths**; their runtime, fonts, vendor rights, outputs, isolation,
+fees and fidelity are **NOT_RUN**. The audit rechecks candidate presence
+without auto-installing or opening proprietary Office providers; even a later
+detected installation remains license gated.
+
+**Negative coverage:** mutated fixture SHA or size prevents conversion;
+missing/wrong package or license SHA blocks the donor; malformed ZIP,
+expanded 17 MiB ZIP bomb, synthetic `vbaProject.bin` active marker,
+path traversal and OOXML kind/part boundaries are refused by the
+independent inspector. Explicit pre-aborted request preserves the original
+byte digest and yields `ABORTED`. Parsing has 2 MiB compressed source,
+256-entry, 16 MiB total expanded, 5 MiB single part, 30-slide and 20,000
+character caps. In-flight cancellation, browser and physical mobile
+memory/performance, malformed vendor software behavior, and full font/layout
+error remain **NOT_RUN/NO_GO**.
+
+**Verification:** TDD first RED (new audit module absent); with real pinned
+source/candidate outputs, final `./node_modules/.bin/vitest run
+tests/audit-office-fidelity-368.test.ts` **5/5 PASS**. Independent test
+capture also reopens the actual DOCX HTML image bytes and generated
+XLSX/PPTX archive bytes outside the reporting function; adjacent
+`tests/office-print-corpus-56.test.ts` stays **3/3 PASS**, combined **8/8**.
+Targeted `tsc --ignoreConfig --noEmit` script+test PASS.
+Whole repository `./node_modules/.bin/astro check` **2027 files:
+0 errors, 0 warnings, 23 unrelated hints**.
+Actual `tsx scripts/audit-office-fidelity-368.ts` ran the installed donors
+and independently reopened the resulting files, printed the metrics above,
+and deliberately ended **exit 2 NO_GO**. No commits, deployment, Gold,
+historical receipts or other ticket files changed.
+
+**AC scope:** AC-368.2 is satisfied only as a tested denial policy: incomplete
+rights, transitive security, fonts, isolation, mobile and measured fidelity
+continue to prevent adoption. **AC-368.1 stays OPEN** because LibreConvert/
+ZetaOffice were unavailable and could not be evaluated against real outputs.
+**AC-368.3 stays OPEN** until an approved page renderer provides comparable
+page layout, source/output text, image placement, independent pixel comparison
+and real device behavior. `Status: ready-for-agent` stays unchanged, and
+this source-only feasibility audit does not release Office-to-PDF conversion
+under #56.
