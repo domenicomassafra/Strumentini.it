@@ -1,4 +1,5 @@
-import { useMemo, useState } from "preact/hooks";
+import { useMemo, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 import {
   COUPON_LENGTH_MAX,
   COUPON_LENGTH_MIN,
@@ -62,6 +63,7 @@ function resultValue(result: RandomUtilityResult | null): string | undefined {
 }
 
 export function RandomPickerTeamCouponGeneratorTool() {
+  const submitGuard = useRef(false);
   const [mode, setMode] = useState<Mode>("number");
   const [randomness, setRandomness] = useState<RandomnessMode>("secure");
   const [seed, setSeed] = useState("demo-205");
@@ -89,19 +91,27 @@ export function RandomPickerTeamCouponGeneratorTool() {
   }
 
   function generate() {
+    // One user activation can synchronously dispatch submit twice. A separate
+    // later activation is a new, legitimate generation and should still count.
+    if (submitGuard.current) return;
+    submitGuard.current = true;
+    queueMicrotask(() => { submitGuard.current = false; });
     try {
       setError(null);
       setCopyStatus("");
       const randomOptions = randomness === "seeded" ? { randomness, seed } as const : { randomness } as const;
+      let generated: RandomUtilityResult;
       if (mode === "number") {
-        setResult(generateRandomNumbers({ minimum, maximum, count, allowDuplicates, ...randomOptions }));
+        generated = generateRandomNumbers({ minimum, maximum, count, allowDuplicates, ...randomOptions });
       } else if (mode === "picker") {
-        setResult(drawRandomItems({ items, count, ...randomOptions }));
+        generated = drawRandomItems({ items, count, ...randomOptions });
       } else if (mode === "teams") {
-        setResult(splitBalancedTeams({ participants, teamCount, ...randomOptions }));
+        generated = splitBalancedTeams({ participants, teamCount, ...randomOptions });
       } else {
-        setResult(generateCouponCodes({ count, length: couponLength, prefix: couponPrefix, alphabet: couponAlphabet, ...randomOptions }));
+        generated = generateCouponCodes({ count, length: couponLength, prefix: couponPrefix, alphabet: couponAlphabet, ...randomOptions });
       }
+      setResult(generated);
+      recordCompletedTool("random-picker-team-coupon-generator");
     } catch (cause) {
       setResult(null);
       setError(errorMessage(cause));
@@ -132,7 +142,7 @@ export function RandomPickerTeamCouponGeneratorTool() {
           entries={result === null ? [] : [
             { label: "Modalità", value: modeLabel },
             { label: "Casualità", value: result.randomness.secure ? "sicura · WebCrypto" : "seeded · non sicura" },
-            { label: "Persistenza", value: "nessuna" },
+            { label: "Persistenza", value: "Risultato solo in memoria; Recenti salva ID e ora" },
           ]}
         >
           {result !== null && <ResultProvenance>{result.randomness.label}</ResultProvenance>}

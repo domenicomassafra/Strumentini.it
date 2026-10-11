@@ -1,0 +1,144 @@
+<section class="batch-410" aria-labelledby="batch-410-title" data-batch-gzip-lab-410>
+    <h2 id="batch-410-title">Laboratorio sperimentale: batch GZIP per testi</h2>
+    <p>Laboratorio sperimentale: scegli da 1 a 8 file TXT, CSV, JSON, MD o LOG (massimo 2 MiB ciascuno e 8 MiB complessivi).
+      Ogni file genera un archivio <code>.gz</code> scaricabile. Il lavoro avviene nel browser, senza inviare i file.</p>
+    <form id="batch-410-form">
+      <label for="batch-410-files">File da comprimere</label>
+      <input id="batch-410-files" name="files" type="file" multiple required
+        accept=".txt,.csv,.json,.md,.log,text/plain,text/csv,application/json" aria-describedby="batch-410-hint" />
+      <p id="batch-410-hint">I duplicati sono numerati automaticamente. I file non supportati vengono saltati; puoi scaricare anche i risultati precedenti dopo un annullamento.</p>
+      <div class="batch-410-actions">
+        <button id="batch-410-start" type="submit">Comprimi localmente</button>
+        <button id="batch-410-cancel" type="button" disabled>Annulla il resto</button>
+      </div>
+    </form>
+    <p id="batch-410-status" role="status" aria-live="polite">Seleziona i file per iniziare.</p>
+    <div class="batch-410-results" aria-labelledby="batch-410-results-title">
+      <h3 id="batch-410-results-title">Risultati per file</h3>
+      <ol id="batch-410-results"></ol>
+    </div>
+</section>
+
+<script>
+  import { runBatchTextGzip410, type Batch410Item } from "../../runtime/batch-file-410";
+  const form = document.querySelector<HTMLFormElement>("#batch-410-form")!;
+  const input = document.querySelector<HTMLInputElement>("#batch-410-files")!;
+  const start = document.querySelector<HTMLButtonElement>("#batch-410-start")!;
+  const cancel = document.querySelector<HTMLButtonElement>("#batch-410-cancel")!;
+  const status = document.querySelector<HTMLElement>("#batch-410-status")!;
+  const results = document.querySelector<HTMLOListElement>("#batch-410-results")!;
+  let controller: AbortController | null = null;
+
+  const labels = {
+    success: "Completato",
+    unsupported: "Rifiutato",
+    error: "Errore",
+    cancelled: "Annullato",
+  } as const;
+  const reasons = {
+    UNSUPPORTED_TYPE: "Solo TXT, CSV, JSON, MD e LOG.",
+    UNSUPPORTED_ENCODING: "Il contenuto non è testo UTF-8 valido.",
+    EMPTY_FILE: "Il file è vuoto.",
+    FILE_TOO_LARGE: "Il file supera 2 MiB.",
+    TOTAL_BYTES_LIMIT: "La selezione supera il budget di 8 MiB.",
+    READ_OR_COMPRESSION_ERROR: "Lettura o verifica dell'archivio non riuscita.",
+    CANCELLED: "File non elaborato dopo l'annullamento.",
+  } as const;
+
+  // Object URLs are created only by explicit click on a successful result.
+  function download(item: Batch410Item) {
+    if (!item.output) return;
+    let href: string | null = null;
+    try {
+      href = URL.createObjectURL(item.output.blob);
+      const link = document.createElement("a");
+      link.href = href;
+      link.download = item.output.name;
+      link.hidden = true;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      const url = href;
+      window.setTimeout(() => URL.revokeObjectURL(url), 15_000);
+    } catch {
+      if (href) URL.revokeObjectURL(href);
+      status.textContent = "Il download non è stato accettato dal browser. Riprova.";
+    }
+  }
+
+  function render(item: Batch410Item) {
+    const row = document.createElement("li");
+    const title = document.createElement("strong");
+    title.textContent = item.sourceName || "File senza nome";
+    row.append(title);
+    const state = document.createElement("span");
+    state.textContent = " — " + labels[item.status] + (item.reason ? ": " + reasons[item.reason] : "");
+    row.append(state);
+    if (item.output) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = "Scarica " + item.output.name + " (" + item.output.bytes + " byte)";
+      button.addEventListener("click", () => download(item));
+      row.append(button);
+    }
+    results.append(row);
+  }
+
+  cancel.addEventListener("click", () => {
+    controller?.abort();
+    cancel.disabled = true;
+    status.textContent = "Annullamento richiesto: i file già completati restano disponibili.";
+  });
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (controller || !input.files?.length) return;
+    const files = Array.from(input.files);
+    results.replaceChildren();
+    controller = new AbortController();
+    input.disabled = true;
+    start.disabled = true;
+    cancel.disabled = false;
+    status.textContent = "Compressione locale in corso…";
+    try {
+      const items = await runBatchTextGzip410(files, {
+        signal: controller.signal,
+        onItem: render,
+      });
+      const succeeded = items.filter((item) => item.status === "success").length;
+      const cancelled = items.filter((item) => item.status === "cancelled").length;
+      status.textContent = String(succeeded) + " file completati su " + String(items.length) +
+        (cancelled ? "; " + String(cancelled) + " annullati." : "; rifiuti ed errori visibili sotto.");
+    } catch {
+      status.textContent = "La selezione non è valida: scegli da 1 a 8 file.";
+    } finally {
+      controller = null;
+      input.disabled = false;
+      start.disabled = false;
+      cancel.disabled = true;
+    }
+  });
+</script>
+
+<style>
+  .batch-410 {
+    width: min(calc(100% - 2rem), 54rem);
+    margin: 0 auto;
+    padding: 2rem 0 5rem;
+    display: grid;
+    gap: 1.25rem;
+    color: var(--ink, inherit);
+  }
+  .batch-410 h2 { font-size: clamp(1.35rem, 3vw, 1.8rem); line-height: 1.2; }
+  .batch-410 h3 { font-size: 1.15rem; }
+  .batch-410 form, .batch-410-results { display: grid; gap: 0.85rem; padding: 1.25rem; border: 1px solid var(--border); border-radius: 0.8rem; }
+  .batch-410 input { width: 100%; max-width: 100%; }
+  .batch-410 label { font-weight: 700; }
+  .batch-410 button { min-height: 44px; padding: 0.6rem 1rem; border: 1px solid currentColor; border-radius: 0.5rem; cursor: pointer; }
+  .batch-410 button:disabled { cursor: not-allowed; opacity: 0.6; }
+  .batch-410 button:focus-visible, .batch-410 a:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+  .batch-410-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .batch-410 ol { display: grid; gap: 0.9rem; padding-left: 1.4rem; }
+  .batch-410 li { overflow-wrap: anywhere; line-height: 1.7; }
+  .batch-410 li button { display: block; margin-top: 0.35rem; max-width: 100%; overflow-wrap: anywhere; text-align: left; }
+  .batch-410 p { max-width: 70ch; line-height: 1.6; }
+</style>

@@ -1,5 +1,6 @@
-import { useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { toolRuntime } from "../../runtime/tool-runtime";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 import { resolveResultActions } from "../../runtime/result-actions";
 import { businessDayManifest } from "../../tools/business-day/manifest";
 import type { DayCode } from "../../engines/date-time/business-days";
@@ -44,6 +45,7 @@ function formatResultDate(isoDate: string, locale: string): string {
 }
 
 export function BusinessDayTool() {
+  const activeRun = useRef<AbortController | null>(null);
   const [mode, setMode] = useState<"add" | "between">("add");
   const [startDate, setStartDate] = useState("");
   const [amount, setAmount] = useState("1");
@@ -66,16 +68,34 @@ export function BusinessDayTool() {
     return formatResultDate(result.resultDate, locale);
   }, [result, locale]);
 
+  function invalidate() {
+    activeRun.current?.abort();
+    activeRun.current = null;
+    setResult(null);
+    setError("");
+    setActionStatus("");
+  }
+
+  useEffect(() => () => {
+    activeRun.current?.abort();
+    activeRun.current = null;
+  }, []);
+
   function toggleWorkday(day: DayCode) {
+    invalidate();
     const current = new Set(workweek);
     if (current.has(day)) current.delete(day);
     else current.add(day);
     setExplicitWorkweek(DAY_LABELS.map(({ code }) => code).filter((code) => current.has(code)));
-    setResult(null);
   }
 
   async function submit(event: Event) {
     event.preventDefault();
+    // A double submit while the same asynchronous job is outstanding is not
+    // a second completed operation. Input edits/Reset invalidate that job.
+    if (activeRun.current !== null) return;
+    const controller = new AbortController();
+    activeRun.current = controller;
     setError("");
     setResult(null);
 
@@ -87,36 +107,45 @@ export function BusinessDayTool() {
       ? { ...shared, mode, amount: Number(amount) }
       : { ...shared, mode, endDate };
 
-    const run = await toolRuntime.run(
-      "business-day",
-      input,
-      {
-        explicit: explicitWorkweek === undefined ? {} : { workweek: explicitWorkweek },
-        profile: { workweek: PROFILE_WORKWEEK, locale },
-      },
-    );
-
-    if (!run.ok) {
-      setError(
-        run.code === "INVALID_INPUT"
-          ? "Controlla le date, la settimana lavorativa e il numero di giorni lavorativi."
-          : "Impossibile completare il calcolo. Controlla i valori inseriti.",
+    try {
+      const run = await toolRuntime.run(
+        businessDayManifest.id,
+        input,
+        {
+          explicit: explicitWorkweek === undefined ? {} : { workweek: explicitWorkweek },
+          profile: { workweek: PROFILE_WORKWEEK, locale },
+        },
+        controller.signal,
       );
-      return;
+
+      if (activeRun.current !== controller || controller.signal.aborted) return;
+      activeRun.current = null;
+
+      if (!run.ok) {
+        setError(
+          run.code === "INVALID_INPUT"
+            ? "Controlla le date, la settimana lavorativa e il numero di giorni lavorativi."
+            : "Impossibile completare il calcolo. Controlla i valori inseriti.",
+        );
+        return;
+      }
+      setResult(run.value as BusinessDayOutput);
+      recordCompletedTool(businessDayManifest.id);
+    } catch {
+      if (activeRun.current !== controller || controller.signal.aborted) return;
+      activeRun.current = null;
+      setError("Impossibile completare il calcolo. Controlla i valori inseriti.");
     }
-    setResult(run.value as BusinessDayOutput);
   }
 
   function reset() {
+    invalidate();
     setMode("add");
     setStartDate("");
     setAmount("1");
     setEndDate("");
     setExcludedDates("");
     setExplicitWorkweek(undefined);
-    setResult(null);
-    setError("");
-    setActionStatus("");
   }
 
   const gutterState = gutterStateFromResult(result, error);
@@ -147,7 +176,7 @@ export function BusinessDayTool() {
               name="mode"
               value="add"
               checked={mode === "add"}
-              onChange={() => setMode("add")}
+              onChange={() => { invalidate(); setMode("add"); }}
             />
             Aggiungi giorni lavorativi
           </label>
@@ -157,7 +186,7 @@ export function BusinessDayTool() {
               name="mode"
               value="between"
               checked={mode === "between"}
-              onChange={() => setMode("between")}
+              onChange={() => { invalidate(); setMode("between"); }}
             />
             Conta tra due date
           </label>
@@ -170,7 +199,7 @@ export function BusinessDayTool() {
               required
               type="date"
               value={startDate}
-              onInput={(event) => setStartDate(event.currentTarget.value)}
+              onInput={(event) => { invalidate(); setStartDate(event.currentTarget.value); }}
               aria-describedby="start-help"
             />
             <small id="start-help">La data iniziale non viene conteggiata.</small>
@@ -184,7 +213,7 @@ export function BusinessDayTool() {
                 type="number"
                 step="1"
                 value={amount}
-                onInput={(event) => setAmount(event.currentTarget.value)}
+                onInput={(event) => { invalidate(); setAmount(event.currentTarget.value); }}
               />
             </label>
           ) : (
@@ -194,7 +223,7 @@ export function BusinessDayTool() {
                 required
                 type="date"
                 value={endDate}
-                onInput={(event) => setEndDate(event.currentTarget.value)}
+                onInput={(event) => { invalidate(); setEndDate(event.currentTarget.value); }}
               />
             </label>
           )}
@@ -220,7 +249,7 @@ export function BusinessDayTool() {
             class="text-button"
             type="button"
             disabled={explicitWorkweek === undefined}
-            onClick={() => setExplicitWorkweek(undefined)}
+            onClick={() => { invalidate(); setExplicitWorkweek(undefined); }}
           >
             Usa il valore predefinito del profilo
           </button>
@@ -231,7 +260,7 @@ export function BusinessDayTool() {
           <textarea
             rows={3}
             value={excludedDates}
-            onInput={(event) => setExcludedDates(event.currentTarget.value)}
+            onInput={(event) => { invalidate(); setExcludedDates(event.currentTarget.value); }}
             placeholder="2026-12-25, 2026-12-31"
             aria-describedby="excluded-help"
           />

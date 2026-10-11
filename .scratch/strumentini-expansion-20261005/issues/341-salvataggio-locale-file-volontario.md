@@ -8,7 +8,7 @@
 
 **Blocked by:** 338
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 
@@ -51,3 +51,7 @@ NEW `src/workbench/saved-pdf-341.ts` separate bounded IndexedDB: explicit verifi
 **Esito:** `./node_modules/.bin/vitest run tests/saved-pdf-341.test.ts` 3/3 PASS. Chromium locale reale con server Astro separato `--ignore-lock` e comando `PDF341_ORIGIN=http://127.0.0.1:19441 node --import tsx tests/acceptance-saved-pdf-341.mjs` PASS: PDF sorgente scaricato identico byte-per-byte al PDF volontariamente conservato e scaricato dopo reload; riapertura come input manuale; quota 5 file rifiuta il sesto senza espulsioni; due record alterati (hash e dimensione) lasciano i tre validi riapribili/scaricabili e cinque record fisici immutati; overflow artificiale di sei record viene segnalato con lavoro limitato; eliminazione esplicita di un record lascia gli altri; IndexedDB negato e cancellazione simulata dell'archivio dopo l'opt-in mantengono scaricabile il risultato corrente; nessun POST e nessun download retroattivo. Il browser non garantisce la sopravvivenza alla vera eviction né il recupero di byte già cancellati: serve una copia scaricata per i file importanti.
 
 **Gate esterni:** Safari fisico NOT_RUN; altri produttori/formati oltre al singolo PDF verificato NOT_RUN. `astro check` eseguito sull'intero worktree condiviso: exit 1 soltanto per errore TypeScript in `tests/metadata-forensic-394.test.ts:65` (modifiche concorrenti ticket #394), nessun diagnostico #341. Nessun commit, push o deploy da questo worker. Le tre caselle qui sopra si riferiscono al percorso Chromium e ai guasti simulati documentati, non a certificazione cross-browser o release.
+
+## 2026-10-11 integration review — closed within documented supported scope
+
+The **three original AC are already checked** and the source-bound browser and storage failure proof has now been independently rerun against the **compiled, inspect-build-accepted, 292-page static site** served by Astro preview on localhost, not only a Vite dev server. `vitest run tests/saved-pdf-341.test.ts tests/ci-change-impact-404.test.ts --maxWorkers=1`: **16/16 PASS**; `PDF341_ORIGIN=http://127.0.0.1:19541 node --import tsx tests/acceptance-saved-pdf-341.mjs`: **PASS**, exact merged-PDF bytes persist through explicit opt-in, reload/reopen/download, 5-entry quota without eviction, damaged/over-limit rows isolated without destroying intact records, individual deletion, IndexedDB denial/eviction fallback, zero POST or retrospective download. **Ticket lifecycle completed for the explicitly supported single verified PDF format and browsers measured.** This is not a general file vault for images/CSV or a guarantee of permanence under actual device eviction. Physical Safari, independent privacy/device gate receipts, security review and release/deployment remain **NOT_RUN/NO_GO** and are not waived by this functional completion.

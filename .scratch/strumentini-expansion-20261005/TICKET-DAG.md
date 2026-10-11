@@ -25,11 +25,10 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **329 — P0 Contrasto accesso e errori WCAG**
 - **330 — P0 Recenti realmente alimentati**
 - **336 — Picker iPhone Android e touch equivalente**
-- **337 — Typed handoff per catene di tool**
 - **339 — Scarica manuale e auto opt-in**
-- **341 — Salvataggio locale file volontario**
+- **340 — Cronologia in-session e cancella task**
 - **347 — P0 Badge Gold fingerprint frontend backend**
-- **348 — Server opt-in gratis feasibility**
+- **349 — File server opt-in TTL delete prova**
 - **350 — P0 Accessibilità AA di base e advanced**
 - **351 — Tre direzioni redesign non cosmetiche**
 - **363 — Budget memoria mobile editor reali**
@@ -49,7 +48,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **407 — Hostile parsers and archive resource safety**
 - **415 — Per-tool base claim proof and certification coverage**
 
-Exactly **39** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **38** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -402,19 +401,19 @@ Exactly **39** incomplete tickets currently have every declared numeric blocker 
 | 334 | completed | Ingresso file-first drag/select | 333 |
 | 335 | completed | Suggerire solo operazioni file compatibili | 333 |
 | 336 | ready-for-agent | Picker iPhone Android e touch equivalente | 333 |
-| 337 | ready-for-agent | Typed handoff per catene di tool | — |
+| 337 | completed | Typed handoff per catene di tool | — |
 | 338 | completed | Preview risultato con fatti verificati | — |
 | 339 | ready-for-agent | Scarica manuale e auto opt-in | 338 |
-| 340 | blocked | Cronologia in-session e cancella task | 337, 338 |
-| 341 | ready-for-agent | Salvataggio locale file volontario | 338 |
-| 342 | blocked | Quote e eviction file locali | 341 |
+| 340 | ready-for-agent | Cronologia in-session e cancella task | 337, 338 |
+| 341 | completed | Salvataggio locale file volontario | 338 |
+| 342 | completed | Quote e eviction file locali | 341 |
 | 343 | blocked | Esporta importa elimina configurazione | 330 |
 | 344 | completed | Area personale con suggerimenti spiegabili | 330, 335 |
 | 345 | blocked | Navigazione stabile da task e file | 330, 334 |
 | 346 | completed | P0 Eventi telemetria privacy-safe | — |
 | 347 | ready-for-agent | P0 Badge Gold fingerprint frontend backend | — |
-| 348 | ready-for-agent | Server opt-in gratis feasibility | — |
-| 349 | blocked | File server opt-in TTL delete prova | 348 |
+| 348 | completed | Server opt-in gratis feasibility | — |
+| 349 | ready-for-agent | File server opt-in TTL delete prova | 348 |
 | 350 | ready-for-agent | P0 Accessibilità AA di base e advanced | — |
 | 351 | ready-for-agent | Tre direzioni redesign non cosmetiche | — |
 | 352 | blocked | Selezione owner direzione visuale | 351 |
@@ -475,7 +474,7 @@ Exactly **39** incomplete tickets currently have every declared numeric blocker 
 | 407 | ready-for-agent | Hostile parsers and archive resource safety | — |
 | 408 | completed | Independent output consumer proofs by family | — |
 | 409 | blocked | Tax-year review ownership and retrospective versions | 397, 402 |
-| 410 | blocked | Batch file operations safe collision and cancel | 337 |
+| 410 | completed | Batch file operations safe collision and cancel | 337 |
 | 411 | blocked | Audio video large file mobile progress and cancel | 363 |
 | 412 | blocked | Editor project schema and forward-safe migrations | 341, 379, 385 |
 | 413 | completed | Curated catalog with all routes preserved | — |

@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 424,
-    "completed": 293,
+    "completed": 298,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 276,
-    "open": 131,
-    "readyDAG": 39,
-    "ready-for-agent": 32,
-    "dependency-blocked": 92,
+    "completedWithoutExplicitRefusal": 281,
+    "open": 126,
+    "readyDAG": 38,
+    "ready-for-agent": 31,
+    "dependency-blocked": 88,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 0,
@@ -312,10 +312,15 @@
       333,
       334,
       335,
+      337,
       338,
+      341,
+      342,
       344,
       346,
+      348,
       408,
+      410,
       413
     ],
     "ready-for-agent": [
@@ -328,11 +333,10 @@
       329,
       330,
       336,
-      337,
       339,
-      341,
+      340,
       347,
-      348,
+      349,
       350,
       351,
       363,
@@ -385,11 +389,8 @@
       247,
       279,
       332,
-      340,
-      342,
       343,
       345,
-      349,
       352,
       353,
       354,
@@ -432,7 +433,6 @@
       403,
       405,
       409,
-      410,
       411,
       412,
       414,
@@ -3946,9 +3946,9 @@
     {
       "id": 337,
       "title": "Typed handoff per catene di tool",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3976,18 +3976,6 @@
     {
       "id": 340,
       "title": "Cronologia in-session e cancella task",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        337
-      ],
-      "gateReason": null,
-      "closedWithRefusal": false
-    },
-    {
-      "id": 341,
-      "title": "Salvataggio locale file volontario",
       "storedStatus": "ready-for-agent",
       "expectedLifecycle": "ready-for-agent",
       "executionCategory": "ready-for-agent",
@@ -3996,14 +3984,22 @@
       "closedWithRefusal": false
     },
     {
+      "id": 341,
+      "title": "Salvataggio locale file volontario",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
       "id": 342,
       "title": "Quote e eviction file locali",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        341
-      ],
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -4066,9 +4062,9 @@
     {
       "id": 348,
       "title": "Server opt-in gratis feasibility",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -4076,12 +4072,10 @@
     {
       "id": 349,
       "title": "File server opt-in TTL delete prova",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        348
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -4175,7 +4169,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        337,
         352,
         353
       ],
@@ -4242,8 +4235,7 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        336,
-        337
+        336
       ],
       "gateReason": null,
       "closedWithRefusal": false
@@ -4592,7 +4584,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        337,
         388,
         390
       ],
@@ -4814,12 +4805,10 @@
     {
       "id": 410,
       "title": "Batch file operations safe collision and cancel",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        337
-      ],
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -4842,7 +4831,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        341,
         379,
         385
       ],

@@ -35688,7 +35688,7 @@
         },
         "page": {
           "path": "src/pages/tools/zip-creator.astro",
-          "sha256": "c71655ec272181c1ce3e47975935ea53d666b977841e6b6122de57330d54e637"
+          "sha256": "b0f489a62dde721837b52fc8eb80b561b1401d447c14a07d7c1bf7e4beab5964"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",

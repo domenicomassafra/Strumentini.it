@@ -8,7 +8,7 @@
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 
@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-337.1: Output passa al tool compatibile senza download/reupload.
-- [ ] AC-337.2: Blob scaduto e limite 64MiB gestiti in modo esplicito.
-- [ ] AC-337.3: On the scoped input and failure cases, verify: PDF→pages e PNG→compress e CSV→export. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
+- [x] AC-337.1: Output passa al tool compatibile senza download/reupload. PDF, PNG e CSV verificati su vere route; l'utente avvia manualmente le operazioni nella destinazione.
+- [x] AC-337.2: Blob scaduto e limite 64MiB gestiti in modo esplicito. Protocollo unitario 25/25: scadenza, false ACK, origine/finestra/token/target falsi, consumo monouso, limiti 64 MiB e 10 MiB per CSV.
+- [x] AC-337.3: On the scoped input and failure cases, verify: PDF→pages e PNG→compress e CSV→export. Matrice browser indipendente 2026-10-11 descritta sotto; prove fisiche mobile NOT_RUN e release NO_GO.
 
 **Verification:** PDF→pages e PNG→compress e CSV→export; independently inspect output/record and test bounded failures.
 
@@ -67,3 +67,9 @@ Controlli effettivi: preflight su kind, MIME, verifica/download ready, firma/hea
 **Status:** `ready-for-agent` e checkbox generali conservati in sospeso: il sotto-percorso CSV→export è concretamente provato, ma la vecchia prova PDF→pages era una verifica Chromium parziale con harness nonzero e non è stata ripetuta su tutte le condizioni #337 in questa tranche. Non segnare AC globali integralmente chiusi finché la matrice PDF, PNG e CSV con failure/expiration non è provata senza lacune. Nessun file PdfTool, image, video, download-policy, Gold, dashboard/index generati o docs condivisi editato per questa tranche; nessun commit/deploy.
 
 **Revisione P1 e verifica finale:** dopo review indipendente il receiver `CsvDedupeTool` ora conserva il `File` nativo nello stato `receivedFile337` *prima* di emettere l'ACK, mentre la lettura/validazione avviene in un effect separato; un errore di `File.stream` appare nell'interfaccia, senza successiva elaborazione o download. Modifiche alla modalità deduplica o alle colonne chiave invalidano subito il risultato precedente e incrementano `revision`, impedendo che un'elaborazione avviata con opzioni precedenti venga pubblicata come corrente o registrata nei Recenti. Il mittente comunica soltanto che il file è **staged in memoria**, non che sia stato già parsato. Test finali: **55/55 PASS** in 7 suite Vitest mirate (#337, CSV e #339); browser su vere pagine Astro **Chromium/Firefox/WebKit 3/3 PASS** anche con invalidazione risultato per modalità/chiavi; caso negativo Chromium di lettura File negata **PASS**; Python `csv.reader` rilegge l'output; `ticket_dashboard.py --check` **PASS** (0 mismatch), `git diff --check` **PASS**. Non è stata eseguita nuova verifica TypeScript verde di repo completo: l'ultima esecuzione segnalava `TS6133 readdir` in test Gold #347 non modificabile in questo write-set. Stato e checkbox generali rimangono OPEN.
+
+## 2026-10-11 wave 11 — original AC completati sul percorso supportato
+
+La lacuna che impediva la chiusura era la vecchia accettazione browser PDF→pages non conclusa. Il nuovo `tests/acceptance-pdf-pages-handoff-337-wave11.browser.mjs` usa **due vere pagine Astro** (`/tools/pdf-merge/` e `/tools/pdf-to-images/`): fonde due PDF reali, trasferisce il singolo artifact verificato con token di finestra temporaneo, dimostra il `File` consumato senza nuova selezione/download/autostart, seleziona manualmente la pagina 1, esporta PNG e lo riapre con **Sharp indipendente** verificandone formato e dimensioni. **Chromium e WebKit PASS** (rispettivamente 40.666 e 45.362 byte scaricati); frammento di capacità eliminato, ACK del mittente, nessun POST, richiesta off-origin o errore JS. Due errori iniziali del *solo harness* (idratato troppo presto e selettore del pulsante non corrispondente alla UI pubblica) sono stati corretti e il test completo è stato eseguito fino all'esito verde, senza modifica al protocollo o al motore.
+
+**Matrice complessiva ripetuta sul sorgente corrente:** `vitest run tests/ephemeral-file-handoff-337.test.ts tests/binary-handoff.test.ts --maxWorkers=2` **25/25 PASS** con scadenza 30 secondi, limiti e attacchi/replay; `node tests/acceptance-ephemeral-file-handoff-337.browser.mjs` **3/3 Chromium/Firefox/WebKit PASS** (PNG→compressione→decoder Sharp e popup bloccato); `node tests/acceptance-csv-export-handoff-337.browser.mjs` **3/3 Chromium/Firefox/WebKit PASS** (CSV reale→deduplica→download→Python `csv.reader`, lettura file negata come prova negativa). Nessun caricamento remoto né download implicito lungo i tre flussi. **I tre AC originali sono completati nel supporto browser misurato.** Le prove su iPhone/Android fisici, l'attestazione di sicurezza indipendente richiesta dal gate #404, il rollback e la promozione Gold/deploy sono **NOT_RUN/NO_GO separati**, non attestati dalla chiusura funzionale #337. Nessuna modifica al runtime protocollo in questa wave.

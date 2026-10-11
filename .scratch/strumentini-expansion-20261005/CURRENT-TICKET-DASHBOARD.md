@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 293 / 131 |
+| All / completed / open | 424 / 298 / 126 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 39 |
-| Ready for assignment (feasibility still to prove) | 32 |
-| Waiting on other tickets | 92 |
+| DAG-ready (all numeric dependencies closed) | 38 |
+| Ready for assignment (feasibility still to prove) | 31 |
+| Waiting on other tickets | 88 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 0 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (32)
+## Ready for assignment (feasibility still to prove) (31)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
@@ -32,11 +32,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #329 — P0 Contrasto accesso e errori WCAG
 - #330 — P0 Recenti realmente alimentati
 - #336 — Picker iPhone Android e touch equivalente
-- #337 — Typed handoff per catene di tool
 - #339 — Scarica manuale e auto opt-in
-- #341 — Salvataggio locale file volontario
+- #340 — Cronologia in-session e cancella task
 - #347 — P0 Badge Gold fingerprint frontend backend
-- #348 — Server opt-in gratis feasibility
+- #349 — File server opt-in TTL delete prova
 - #350 — P0 Accessibilità AA di base e advanced
 - #351 — Tre direzioni redesign non cosmetiche
 - #363 — Budget memoria mobile editor reali
@@ -56,7 +55,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #407 — Hostile parsers and archive resource safety
 - #415 — Per-tool base claim proof and certification coverage
 
-## Waiting on other tickets (92)
+## Waiting on other tickets (88)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -90,22 +89,19 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #247 — Scanned PDF OCR and searchable text layer (awaiting #246)
 - #279 — Image-resize Gold promotion gate (awaiting #277, #278)
 - #332 — Sync preferiti con rimozioni e conflitti (awaiting #328, #330)
-- #340 — Cronologia in-session e cancella task (awaiting #337)
-- #342 — Quote e eviction file locali (awaiting #341)
 - #343 — Esporta importa elimina configurazione (awaiting #330)
 - #345 — Navigazione stabile da task e file (awaiting #330)
-- #349 — File server opt-in TTL delete prova (awaiting #348)
 - #352 — Selezione owner direzione visuale (awaiting #351)
 - #353 — IA e design system dopo scelta (awaiting #352)
 - #354 — Redesign home file-first search-first (awaiting #352, #353)
 - #355 — Redesign catalogo ricerca categorie (awaiting #352, #353)
 - #356 — Redesign wrapper e input famiglia (awaiting #352, #353)
-- #357 — Redesign risultati e next-action (awaiting #337, #352, #353)
+- #357 — Redesign risultati e next-action (awaiting #352, #353)
 - #358 — Redesign area settings onboarding (awaiting #330, #352, #353)
 - #359 — Redesign risorse privacy ed errori (awaiting #352, #353)
 - #360 — Motion utile opt-out reduced-motion (awaiting #352, #353)
 - #361 — Sound design opt-in OFF default (awaiting #352, #353)
-- #362 — Device fisici mobile file-result-share (awaiting #336, #337)
+- #362 — Device fisici mobile file-result-share (awaiting #336)
 - #364 — Canary e rollback design per tranche (awaiting #353, #354, #355, #356, #357, #358, #359)
 - #372 — Editor PDF page workspace (awaiting #369)
 - #373 — PDF editing testo originale font e layout (awaiting #369, #372)
@@ -125,7 +121,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #388 — Table cleaning sort filter transforms (awaiting #387)
 - #389 — Excel workbook editing cells formulas (awaiting #370, #387)
 - #390 — Data compare join split merge (awaiting #387)
-- #391 — Data automation pipeline local typed (awaiting #337, #388, #390)
+- #391 — Data automation pipeline local typed (awaiting #388, #390)
 - #392 — Rich Office fidelity corpus and go-no-go (awaiting #368)
 - #393 — Image codecs multi-frame orientation metadata (awaiting #212, #367)
 - #395 — OCR language confidence and user correction (awaiting #246, #371)
@@ -137,9 +133,8 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #403 — Physical microphone and audio media continuation (awaiting #229)
 - #405 — Release scope gates and rollback drill (awaiting #347, #404)
 - #409 — Tax-year review ownership and retrospective versions (awaiting #397, #402)
-- #410 — Batch file operations safe collision and cancel (awaiting #337)
 - #411 — Audio video large file mobile progress and cancel (awaiting #363)
-- #412 — Editor project schema and forward-safe migrations (awaiting #341, #379, #385)
+- #412 — Editor project schema and forward-safe migrations (awaiting #379, #385)
 - #414 — Commercial engine vendor proposal and license gate (awaiting #366)
 - #416 — Safe ZIP GZIP archive compression and extraction (awaiting #407)
 - #417 — PDF password encrypt decrypt legitimate unlock engine study (awaiting #369)

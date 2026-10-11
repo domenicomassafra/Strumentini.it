@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { receivePngCompressionHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
+import { AUTO_DOWNLOAD_KEY_339, browserStorage339, changeAutoDownload339, readAutoDownload339 } from "../../../runtime/download-policy-339";
+import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
 import type { ImageVisualToolId } from "../../../engines/image/visual";
 import { isSvgInput } from "../../../engines/image/svg-export";
 import {
@@ -45,15 +47,58 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [pngPalette, setPngPalette] = useState<"off" | "exact" | "lossy">("off");
   const [handoffStatus, setHandoffStatus] = useState("");
   const [colorMode, setColorMode] = useState("convert");
+  // One proven output family only: a single verified PNG from image format conversion.
+  // Always render OFF during SSR; mount restores the shared preference without downloads.
+  const [pngAutoDownload, setPngAutoDownload] = useState(false);
+  const [pngDownloadStatus, setPngDownloadStatus] = useState("");
   const operation = useToolOperation<PreparedImageResult>(async (signal) => {
+    if (toolId === "image-format-conversion") setPngDownloadStatus("");
+    // Consent must precede the job and still exist on completion.
+    const autoAtStart = toolId === "image-format-conversion" && mime === "image/png"
+      && readAutoDownload339(browserStorage339());
     const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette);
     const run = await toolRuntime.run(toolId, input, {}, signal);
     if (!run.ok) return run;
-    return { ok: true, tool: run.tool, value: await prepareImageResult(run.value), defaults: run.defaults };
+    const prepared = await prepareImageResult(run.value);
+    const artifact = prepared.artifacts.length === 1 ? prepared.artifacts[0]?.artifact : undefined;
+    if (autoAtStart && !signal.aborted && readAutoDownload339(browserStorage339())
+      && artifact?.kind === "image" && artifact.mime === "image/png"
+      && artifact.verification.state === "verified" && artifact.download.ready) {
+      setPngDownloadStatus(requestBrowserDownload339(artifact)
+        ? "Download automatico PNG richiesto al browser. Se bloccato, usa Scarica nella sezione risultato."
+        : "Download automatico non disponibile. Il PNG verificato resta scaricabile manualmente.");
+    }
+    return { ok: true, tool: run.tool, value: prepared, defaults: run.defaults };
   }, { formatThrownError: () => "L'operazione sull'immagine non è riuscita. Controlla file e parametri." });
   const operationBusy = useRef(operation.isRunning);
   operationBusy.current = operation.isRunning;
   const result = operation.result;
+
+  useEffect(() => {
+    if (toolId !== "image-format-conversion") return;
+    setPngAutoDownload(readAutoDownload339(browserStorage339()));
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === AUTO_DOWNLOAD_KEY_339 || event.key === null) {
+        setPngAutoDownload(readAutoDownload339(browserStorage339()));
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [toolId]);
+
+  function choosePngAutoDownload(enabled: boolean) {
+    const { saved, persistedEnabled } = changeAutoDownload339(browserStorage339(), enabled);
+    setPngAutoDownload(persistedEnabled === true);
+    setPngDownloadStatus(saved
+      ? (enabled
+        ? "Download automatico condiviso attivo per i prossimi PNG verificati; revocabile qui o negli altri strumenti supportati."
+        : "Download automatico disattivato per tutti gli strumenti supportati. Scarica manualmente quando vuoi.")
+      : persistedEnabled === true
+        ? "Impossibile revocare la preferenza: il download automatico è ancora attivo nel browser. Riprova o cancella le preferenze del sito."
+        : enabled
+          ? "Impossibile salvare la preferenza nel browser: download automatico non attivato."
+          : "Impossibile confermare la revoca nel browser. Controlla le preferenze del sito.");
+  }
 
   useEffect(() => {
     if (toolId !== "image-compression") return;
@@ -264,6 +309,16 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
           </fieldset>
         )}
         {toolId === "image-format-conversion" && <p class="file-note">Input: SVG statico con policy restrittiva, JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF e GIF. SVG produce PNG/JPEG/WebP o PDF raster-backed, NON un PDF vettoriale. HEIC/HEIF usa un decoder locale lazy; per GIF viene convertito solo il primo frame. I metadati container non vengono conservati. La modalità SVG è in validazione (Partial), non certificata Gold.</p>}
+        {toolId === "image-format-conversion" && mime === "image/png" && (
+          <div data-download-png339>
+            <label class="field">
+              <input type="checkbox" checked={pngAutoDownload} onChange={(event) => choosePngAutoDownload(event.currentTarget.checked)} />
+              <span>Download automatico condiviso (WAV, JSON, CSV, PDF singolo e prossimo PNG verificato)</span>
+            </label>
+            <p class="file-note">OFF se non hai dato consenso. La scelta è globale e revocabile: disattivarla qui revoca anche gli altri strumenti supportati. Solo conversioni PNG singole iniziate dopo il consenso; mai risultati precedenti, file non verificati, JPEG, WebP o PDF.</p>
+            {pngDownloadStatus !== "" && <p role="status" data-download-png339-status>{pngDownloadStatus}</p>}
+          </div>
+        )}
         <InlineError message={operation.error === "" ? "" : "L'operazione non è riuscita. Controlla i file e i parametri inseriti."} />
         <ToolActions>
           <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Esegui in locale</ToolSubmitButton>

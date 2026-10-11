@@ -23,7 +23,7 @@
 ## Acceptance criteria
 
 - [ ] AC-367.1: Confronto jSquash installed native per JPEG WebP PNG AVIF SVG.
-- [ ] AC-367.2: Alpha/exif/CSP/perf non provati impediscono migrazione.
+- [x] AC-367.2: Alpha/exif/CSP/perf non provati impediscono migrazione.
 - [ ] AC-367.3: On the scoped input and failure cases, verify: Browser fixtures e benchmark memory device. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
 
 **Verification:** Browser fixtures e benchmark memory device. Test malformed/boundary/cancel and mobile as relevant.
@@ -37,3 +37,5 @@
 **Out of scope:** App implementation now, unapproved vendor spend, deploying incomplete safety features.
 
 **Execution prompt:** Coordinated in EXECUTION-PROMPTS.md.
+
+**Feasibility execution 2026-10-11:** Evidence and `NO_ADOPT / NO_GO` decision in `docs/donor-codecs-367-2026-10-11.md`. Isolated harness `scripts/donor-codecs-367.ts --browser`: Chromium, Firefox, WebKit real source output + Sharp/libvips byte/pixel re-open; focused `tests/donor-codecs-367.test.ts` 4/4 PASS. No @jsquash modules installed or measured. WebKit WebP MIME fallback correctly refused; native AVIF experimental 2×2 encode on WebKit only; EXIF retained/added on certain existing paths. AC-367.1 retains missing jSquash apples-to-apples codec benchmark/licensing; AC-367.3 retains real mobile peak memory, larger source corpus and production CSP. **Blocked on physical-device acceptance and rights/asset/provenance proofs. Do not close or migrate.**

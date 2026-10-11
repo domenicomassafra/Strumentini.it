@@ -37,3 +37,9 @@
 **Out of scope:** App implementation now, unapproved vendor spend, deploying incomplete safety features.
 
 **Execution prompt:** Coordinated in EXECUTION-PROMPTS.md.
+
+## 2026-10-11 wave 11 — fail-closed audit, ticket remains OPEN
+
+Source-only feasibility delivered in `docs/donor-provenance-366-2026-10-11.md`, `scripts/donor-provenance-366.ts`, and `tests/donor-provenance-366.test.ts`: direct/transitive npm lock metadata, locked versions, registry SRI shape/source, binary/font/vendor asset SHA-256 pins, and negative tests for unknown/mismatched packages and third-party candidates. The **five focused tests passed**. A separate read-only CLI `--check` intentionally returns **NO_GO** (exit 1) on this real checkout: 366 non-dev lockfile entries, 46 checked-in asset records, 8 donor snapshots classified **NO_ADOPT**, including 7 runtime→dev-only lock references and 53 asset license/source/version fields without sufficient evidence. No artifact was installed, redistributed, changed, or adopted, and no credentials were used.
+
+The matrix is **not** legal clearance: registry SRI metadata was not independently checked against downloaded tarballs, real font/OCR/rightsholder origin is not fully attributable, LGPL/MPL/AGPL obligations in the actually distributed binary graph remain to be independently reviewed, and the donor WASM payload/transitive license notices were not independently rehashed. Therefore AC-366.1/.3 remain unchecked for complete origin-chain proof; AC-366.2's fail-closed policy has executable evidence but global adoption/rights gates are still NO_GO. **Status stays `ready-for-agent`**, not `completed`, and there is no release authorization.

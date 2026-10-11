@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 import { bpmFromTapTimes, generateNoiseSamples, validateAudioGeneratorSettings, type NoiseKind } from "../../engines/browser-audio";
 import { AudioLoudnessPanel307 } from "./audio/AudioLoudnessPanel307";
 import { AudioTimelinePanel231 } from "./audio/AudioTimelinePanel231";
@@ -6,6 +7,7 @@ import { AudioTimelinePanel231 } from "./audio/AudioTimelinePanel231";
 type Mode = "tone" | "metronome" | "noise";
 
 export function AudioGeneratorTool() {
+  const startGuardRef = useRef(false);
   const [mode, setMode] = useState<Mode>("tone");
   const [frequency, setFrequency] = useState(440);
   const [bpm, setBpm] = useState(120);
@@ -65,6 +67,10 @@ export function AudioGeneratorTool() {
   }
 
   function startAudio() {
+    // Two synchronous clicks are one attempted playback, not two uses.
+    if (startGuardRef.current) return;
+    startGuardRef.current = true;
+    queueMicrotask(() => { startGuardRef.current = false; });
     stopAudio("Riavvio audio…");
     if (typeof AudioContext === "undefined") {
       setStatus("Web Audio non è disponibile in questo browser.");
@@ -103,8 +109,18 @@ export function AudioGeneratorTool() {
         timerRef.current = window.setTimeout(() => stopAudio("Durata conclusa."), settings.durationSeconds * 1000);
       }
       setRunning(true);
-      setStatus(`${settings.mode === "metronome" ? `Metronomo ${settings.bpm} BPM` : settings.mode === "tone" ? `Tono ${settings.frequencyHz} Hz` : `Rumore ${settings.noiseKind}`} attivo.`);
+      setStatus("Avvio audio nel browser…");
+      // A scheduled oscillator can exist while AudioContext is still suspended
+      // (autoplay policy). Only the active, truly running context is a success.
+      void context.resume().then(() => {
+        if (contextRef.current !== context || context.state !== "running") return;
+        setStatus(`${settings.mode === "metronome" ? `Metronomo ${settings.bpm} BPM` : settings.mode === "tone" ? `Tono ${settings.frequencyHz} Hz` : `Rumore ${settings.noiseKind}`} attivo.`);
+        recordCompletedTool("audio-generator");
+      }).catch(() => {
+        if (contextRef.current === context) stopAudio("Audio non avviato: il browser ha rifiutato la riproduzione.");
+      });
     } catch (error) {
+      stopAudio();
       setStatus(error instanceof Error ? `Impostazione non valida: ${error.message}` : "Impostazione audio non valida.");
     }
   }

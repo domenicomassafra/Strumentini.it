@@ -4,11 +4,20 @@ import { scanImageMetadata, scanImageMetadataBlob } from "../src/engines/image/m
 
 const cleanPng = new Uint8Array(readFileSync(new URL("../quality/fixtures/image-metadata-segments/clean.png", import.meta.url)));
 
+// A table-based *test fixture* CRC preserves the exact PNG polynomial and
+// bytes. Computing eight bit steps for each of the >8 MiB synthetic IDAT
+// bytes made this unit test time out under a shared/CI CPU load.
+const CRC_TABLE = Uint32Array.from({ length: 256 }, (_, index) => {
+  let value = index;
+  for (let bit = 0; bit < 8; bit += 1) {
+    value = (value >>> 1) ^ ((value & 1) === 1 ? 0xedb88320 : 0);
+  }
+  return value >>> 0;
+});
 function crc32(bytes: Uint8Array): number {
   let crc = 0xffffffff;
   for (const byte of bytes) {
-    crc ^= byte;
-    for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ ((crc & 1) === 1 ? 0xedb88320 : 0);
+    crc = (crc >>> 8) ^ CRC_TABLE[(crc ^ byte) & 0xff]!;
   }
   return (crc ^ 0xffffffff) >>> 0;
 }
@@ -38,6 +47,9 @@ function beforeIend(...extra: Uint8Array[]): Uint8Array {
 }
 
 describe("#394 forensic inventory of exported image bytes", () => {
+  it("pins the test-fixture PNG CRC polynomial against the standard reference vector", () => {
+    expect(crc32(new TextEncoder().encode("123456789"))).toBe(0xcbf43926);
+  });
   it("identifies XMP inside PNG iTXt, other text, and unknown private ancillary chunks", () => {
     const xmp = chunk("iTXt", new TextEncoder().encode("XML:com.adobe.xmp\0\0\0\0\0<x:xmpmeta>synthetic</x:xmpmeta>"));
     const comment = chunk("tEXt", new TextEncoder().encode("Comment\0example"));

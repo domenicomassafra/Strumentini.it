@@ -8,7 +8,7 @@
 
 **Blocked by:** 337,338
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 
@@ -37,3 +37,11 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## Proof parziale del 2026-10-11 — perimetro Workbench
+
+Implementato `src/workbench/session-history-340.ts` come archivio **esclusivamente in memoria di pagina**, senza IDB, sessionStorage, rete o sincronizzazione. Conserva al massimo **tre snapshot binari indipendenti** (1 MiB per risultato, 3 MiB complessivi), SHA-256 verificabile a ogni recupero, legame al digest del risultato precedente, numero massimo di tre task simultanei, cancellazione per task con `AbortSignal`, rifiuto delle risposte tardive, eliminazione esplicita dei soli dati in memoria (`forget`), invalidazione con `dispose`. Quota insufficiente o hash non disponibile lasciano intatti gli snapshot precedenti; nessuna promessa di undo di effetti esterni. Una nuova istanza/reload parte vuota e dichiara `reload: cleared` e `undoSupported: false`.
+
+Test RED iniziale: `npx vitest run tests/session-history-340.test.ts` falliva con `Cannot find module` prima dell'implementazione. Test GREEN: **6/6 PASS** dopo la creazione del modulo. Il caso principale esegue **tre motori locali reali** in catena (`normalizeWhitespace` → `convertTextCase` → `encodeBase64Bytes`) e recupera il risultato finale `QUJD`; il digest SHA-256 del primo risultato `abc` coincide con il noto vettore `ba7816bf…15ad`. Negativi: cancellazione e successo tardivo scartato, digest falsificato e antenato mancante, errore del motore, payload invalido, limite numero/byte, numero massimo di task, memoria scaduta dopo nuova istanza, copia recuperata mutabile senza alterare lo snapshot originale.
+
+**Stato AC:** `AC-340.1` **PARTIAL** (prove con motori locali reali nel modulo, ancora **NOT_RUN** nel percorso UI); `AC-340.2` **PARTIAL** (quota e reload verificati nel modulo, informazione/focus utente **NOT_RUN**); `AC-340.3` **PARTIAL** (catena/cancel/hash con test automatizzati, prova UI/browser reale **NOT_RUN**). **Status invariato:** `ready-for-agent`; criteri originali non spuntati, nessuna prova di integrazione con un tool visibile all'utente. Il modulo è pronto per una successiva integrazione UI isolata, con controllo della semantica della cancellazione e dell'accessibilità, prima di qualsiasi chiusura del ticket.

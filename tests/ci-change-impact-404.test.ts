@@ -202,5 +202,5 @@ describe("#404 PR/source impact planning", () => {
       await expect(execFileAsync(process.execPath, args, { cwd: root })).rejects.toMatchObject({ code: 2 });
       await expect(execFileAsync(process.execPath, [cli, source], { cwd: root })).rejects.toMatchObject({ code: 2 });
     });
-  });
+  }, 20_000); // Four subprocess invocations can exceed Vitest's 5s default on shared CI runners.
 });
