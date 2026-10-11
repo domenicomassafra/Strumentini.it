@@ -71,6 +71,21 @@ describe("#407 bounded hostile-format preflight in the actual detector", () => {
     expect(await detectLocalFile(asFile("gap.zip",withUnindexedGap(pack({"ok.txt":bytes("ok")}))))).toMatchObject({status:"refused",reason:"POLYGLOT"});
   });
 
+  it("rejects archive entry name collisions after Unicode normalization or case-folding", async () => {
+    const ambiguous = pack({"archive/report.txt": bytes("first"), "archive/ｒｅｐｏｒｔ.txt": bytes("second")});
+    expect(await detectLocalFile(asFile("collision.zip", ambiguous))).toMatchObject({status:"refused", reason:"MALFORMED"});
+    const caseCollision = pack({"archive/Report.TXT": bytes("first"), "archive/report.txt": bytes("second")});
+    expect(await detectLocalFile(asFile("case.zip",caseCollision))).toMatchObject({status:"refused",reason:"MALFORMED"});
+  });
+
+  it("refuses Windows device names before allowing ZIP entries to reach an extractor", async () => {
+    for(const name of ["CON", "nul.txt", "folder/AUX.xml", "folder/COM1", "LPT9.log", "folder/prn ", "folder/ＣＯＮ.txt", "folder／file.txt"]) {
+      expect(checkZipPath407(name)).not.toBeNull();
+      expect(await detectLocalFile(asFile("device.zip",pack({[name]: bytes("payload")})))).toMatchObject({status:"refused",reason:"MALFORMED"});
+    }
+    expect(await detectLocalFile(asFile("ordinary.zip",pack({"docs/contact.txt":bytes("safe")})))).toMatchObject({status:"supported",format:"zip"});
+  });
+
   it("refuses inflated XML beyond the bounded budget and highly compressed zip bombs", async () => {
     // Deterministic printable pseudo-random payload avoids accidentally failing
     // only the expansion-ratio check; XML is larger than the configured cap.

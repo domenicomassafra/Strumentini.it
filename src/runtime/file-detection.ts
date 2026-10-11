@@ -314,8 +314,11 @@ async function inspectZip(reader: RangeReader): Promise<LocalFileFormat> {
     if (/\.(?:zip|7z|rar|tar|gz|bz2|xz|svgz)$/iu.test(name)) {
       refuse("UNSUPPORTED", "Nested archives require a separate sandboxed resource check.");
     }
-    if (unique.has(name.toLowerCase())) refuse("MALFORMED", "Duplicate ZIP entry paths are ambiguous.");
-    unique.add(name.toLowerCase());
+    // ZIP entry names may be normalized by the eventual extractor/filesystem.
+    // Refuse collisions *before* materialization, not just bytewise duplicates.
+    const canonicalName=name.normalize("NFKC").toLowerCase();
+    if (unique.has(canonicalName)) refuse("MALFORMED", "Duplicate ZIP entry paths are ambiguous.");
+    unique.add(canonicalName);
     if (offset>=centralOffset) refuse("MALFORMED", "ZIP local member offset is outside data area.");
     totalUnpacked+=unpacked;
     if (totalUnpacked>FILE_DETECTION_LIMITS.maxZipUncompressedBytes || (packed===0 ? unpacked>0 : unpacked/packed>FILE_DETECTION_LIMITS.maxZipExpansionRatio)) {

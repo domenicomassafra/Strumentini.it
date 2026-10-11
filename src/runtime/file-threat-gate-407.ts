@@ -32,7 +32,10 @@ export function checkZipPath407(path: string): FileThreatFinding407 | null {
   const segments = path.endsWith("/") ? path.slice(0, -1).split("/") : path.split("/");
   const normalizedSegments = normalized.endsWith("/") ? normalized.slice(0,-1).split("/") : normalized.split("/");
   if (segments.length > FILE_THREAT_LIMITS_407.maxZipPathDepth ||
-    normalizedSegments.some((part) => !part || part === "." || part === ".." || /[. ]$/u.test(part))) {
+    normalizedSegments.length !== segments.length ||
+    normalizedSegments.length > FILE_THREAT_LIMITS_407.maxZipPathDepth ||
+    normalizedSegments.some((part) => !part || part === "." || part === ".." || /[. ]$/u.test(part) ||
+      /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(part))) {
     return reject("MALFORMED", "ZIP contains path traversal or ambiguous member paths.");
   }
   return null;
