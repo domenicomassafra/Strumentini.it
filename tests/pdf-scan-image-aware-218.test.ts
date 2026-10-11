@@ -223,7 +223,7 @@ describe("#218 scan-mode real Flate-to-JPEG profiles", () => {
     expect(output.artifact.bytes).toEqual(source);
     expect(output.analysis).toMatchObject({ touched: 0, skipped: 1, recommendOriginal: true });
     expect(output.analysis.inventory[0]?.reason).toBe("scan-jpeg-not-meaningfully-smaller");
-  });
+  }, 30_000); // Multiple real raster/JPEG and PDF comparisons exceed 5s on GitHub Ubuntu runners.
 
   it("rejects unsafe options and cancellation", async () => {
     const source = pdfWithScan(rawRaster());
