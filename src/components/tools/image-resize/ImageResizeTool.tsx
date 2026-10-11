@@ -8,6 +8,7 @@ import {
 } from "../../../engines/image/policy";
 import type { ImageResizeProgress } from "../../../tools/image-resize/types";
 import { ToolResultPanel } from "../shared";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { ImageResultV2, prepareImageResult, type PreparedImageResult } from "../image-visual/ImageResultV2";
 
 type ProcessingState = "idle" | "working" | "done";
@@ -186,6 +187,7 @@ export function ImageResizeTool() {
   }
 
   async function runResize() {
+    if (controller.current !== null) return;
     setError("");
     clearOutput();
     if (file === null) {
@@ -237,9 +239,12 @@ export function ImageResizeTool() {
         setProgress,
       );
       if (abortController.signal.aborted) return;
-      setResult(await prepareImageResult(output));
+      const verified = await prepareImageResult(output);
+      if (abortController.signal.aborted || controller.current !== abortController) return;
+      setResult(verified);
       setStatus("done");
       setProgress(null);
+      recordCompletedTool("image-resize");
     } catch (caught) {
       if (controller.current !== abortController) return;
       setStatus("idle");

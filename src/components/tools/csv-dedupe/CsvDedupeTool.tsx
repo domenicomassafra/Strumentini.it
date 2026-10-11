@@ -3,6 +3,7 @@ import { CSV_HARD_FILE_BYTES, readBlobText } from "../../../engines/table/csv";
 import { handoffCatalog } from "../../../generated/handoff-catalog";
 import { compatibleHandoffTargets, openHandoffTarget, receiveHandoffFromOpener } from "../../../runtime/handoff";
 import { toolRuntime } from "../../../runtime/tool-runtime";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { csvDedupeManifest } from "../../../tools/csv-dedupe/manifest";
 import type { CsvDedupeOutput } from "../../../tools/csv-dedupe/types";
 import { CsvTableResultV2 } from "../csv-shared/CsvTableResultV2";
@@ -16,8 +17,11 @@ export function CsvDedupeTool() {
   const [result, setResult] = useState<CsvDedupeOutput | null>(null);
   const [error, setError] = useState("");
   const fileInput = useRef<HTMLInputElement | null>(null);
+  const active = useRef(false);
+  const revision = useRef(0);
 
   useEffect(() => receiveHandoffFromOpener(csvDedupeManifest, (envelope, proposal) => {
+    revision.current += 1;
     setText(envelope.payload);
     setHeaders([...envelope.descriptor.columns]);
     setSourceName(`Ricevuto da un altro strumento · ${proposal.preview}`);
@@ -27,27 +31,43 @@ export function CsvDedupeTool() {
 
   async function loadFile(file: File | undefined) {
     if (file === undefined) return;
+    const current = ++revision.current;
     setError(""); setResult(null);
     try {
       const value = await readBlobText(file);
       const { parseCsvTable } = await import("../../../engines/table/csv");
       const table = parseCsvTable(value);
+      if (current !== revision.current) return;
       setText(value); setHeaders(table.header); setSourceName(`${file.name} · ${(file.size / 1024).toFixed(1)} KiB`); setKeyColumns([]);
     } catch (caught) {
+      if (current !== revision.current) return;
       setError("Impossibile leggere il file CSV.");
     }
   }
 
   async function dedupe(event: Event) {
-    event.preventDefault(); setError(""); setResult(null);
+    event.preventDefault();
+    if (active.current) return;
+    setError(""); setResult(null);
     if (text === "") { setError("Scegli un file CSV oppure ricevi prima una tabella da un altro strumento."); return; }
     if (mode === "key-columns" && keyColumns.length === 0) { setError("Seleziona almeno una colonna chiave."); return; }
-    const run = await toolRuntime.run(csvDedupeManifest.id, { text, mode, ...(mode === "key-columns" ? { keyColumns } : {}) });
-    if (!run.ok) { setError("Impossibile rimuovere i duplicati. Controlla il file e le colonne selezionate."); return; }
-    setResult(run.value as CsvDedupeOutput);
+    active.current = true;
+    const current = ++revision.current;
+    try {
+      const run = await toolRuntime.run(csvDedupeManifest.id, { text, mode, ...(mode === "key-columns" ? { keyColumns } : {}) });
+      if (current !== revision.current) return;
+      if (!run.ok) { setError("Impossibile rimuovere i duplicati. Controlla il file e le colonne selezionate."); return; }
+      setResult(run.value as CsvDedupeOutput);
+      recordCompletedTool(csvDedupeManifest.id);
+    } catch {
+      if (current === revision.current) setError("Impossibile rimuovere i duplicati. Controlla il file e le colonne selezionate.");
+    } finally {
+      active.current = false;
+    }
   }
 
   function reset() {
+    revision.current += 1;
     setText("");
     setSourceName("");
     setHeaders([]);

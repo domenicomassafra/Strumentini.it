@@ -1,9 +1,14 @@
+import { validateGoldReceipts, type ToolCertificationReceipt } from "../release/validation";
+
 export interface GoldToolQuality {
   readonly toolId: string;
   readonly status: "GOLD";
   readonly receiptPath: string;
   readonly oracleEntryIds: readonly string[];
   readonly fixtureFamilies: readonly string[];
+  /** Only the source-bound generator may supply these proof bindings. */
+  readonly sourceFingerprint?: string;
+  readonly receiptSha256?: string;
 }
 
 export interface GoldQualityIndex {
@@ -69,6 +74,56 @@ export function buildGoldQualityIndex(
   }
   return {
     index: { schemaVersion: 1, tools },
+    excludedToolIds: [...excluded].sort(),
+  };
+}
+
+/**
+ * Public projection gate: the historical index builder above remains useful
+ * for fixtures, but the shipped catalog MUST use this source-bound variant.
+ * A Worker/D1-only edit changes the same global fingerprint as a frontend
+ * edit, invalidating all source-wide (not per-route) Gold certifications.
+ */
+export function buildSourceBoundGoldQualityIndex(
+  rawReceipts: readonly unknown[],
+  catalogToolIds: readonly string[],
+  currentSourceFingerprint: string,
+): QualityIndexResult {
+  const catalog = new Set(catalogToolIds);
+  const accepted: GoldToolQuality[] = [];
+  const excluded = new Set<string>();
+  const byId = new Map<string, Record<string, unknown>[]>();
+  for (const raw of rawReceipts) {
+    if (!isRecord(raw) || typeof raw.toolId !== "string" || !catalog.has(raw.toolId)) continue;
+    byId.set(raw.toolId, [...byId.get(raw.toolId) ?? [], raw]);
+    excluded.add(raw.toolId);
+  }
+  const validSource = /^[a-f0-9]{64}$/u.test(currentSourceFingerprint);
+  for (const [toolId, candidates] of byId) {
+    if (!validSource || candidates.length !== 1) continue;
+    const raw = candidates[0]!;
+    const receipt = goldReceipt(raw, catalog);
+    if (!receipt || raw.sourceFingerprint !== currentSourceFingerprint ||
+        !/^[a-f0-9]{64}$/u.test(String(raw.receiptSha256 ?? "")) ||
+        typeof raw.revision !== "string" || !/^[a-f0-9]{40}$/u.test(raw.revision)) continue;
+    if (typeof raw.receiptPath !== "string" ||
+        !/^quality\/receipts\/(?:[a-z0-9_-]+\/)*[a-z0-9_.-]+\.json$/u.test(raw.receiptPath)) continue;
+    const validatorResults = validateGoldReceipts(
+      [{ id: toolId, route: `/tools/${toolId}` }],
+      [raw as unknown as ToolCertificationReceipt],
+      raw.revision,
+      currentSourceFingerprint,
+    );
+    if (validatorResults.length > 0) continue;
+    accepted.push({
+      ...receipt,
+      sourceFingerprint: currentSourceFingerprint,
+      receiptSha256: raw.receiptSha256 as string,
+    });
+    excluded.delete(toolId);
+  }
+  return {
+    index: { schemaVersion: 1, tools: accepted.sort((a, b) => a.toolId.localeCompare(b.toolId)) },
     excludedToolIds: [...excluded].sort(),
   };
 }

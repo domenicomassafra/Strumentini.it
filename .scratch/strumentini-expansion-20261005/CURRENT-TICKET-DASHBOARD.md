@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 286 / 138 |
+| All / completed / open | 424 / 288 / 136 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 40 |
-| Ready for assignment (feasibility still to prove) | 33 |
-| Waiting on other tickets | 98 |
+| DAG-ready (all numeric dependencies closed) | 41 |
+| Ready for assignment (feasibility still to prove) | 34 |
+| Waiting on other tickets | 95 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 0 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (33)
+## Ready for assignment (feasibility still to prove) (34)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
@@ -31,8 +31,9 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #328 — P0 Account Turnstile login reale
 - #329 — P0 Contrasto accesso e errori WCAG
 - #330 — P0 Recenti realmente alimentati
-- #331 — P0 Correggere promesse di file/account
-- #333 — P0 Riconoscimento formato locale
+- #334 — Ingresso file-first drag/select
+- #335 — Suggerire solo operazioni file compatibili
+- #336 — Picker iPhone Android e touch equivalente
 - #337 — Typed handoff per catene di tool
 - #338 — Preview risultato con fatti verificati
 - #346 — P0 Eventi telemetria privacy-safe
@@ -57,7 +58,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #407 — Hostile parsers and archive resource safety
 - #408 — Independent output consumer proofs by family
 
-## Waiting on other tickets (98)
+## Waiting on other tickets (95)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -91,9 +92,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #247 — Scanned PDF OCR and searchable text layer (awaiting #246)
 - #279 — Image-resize Gold promotion gate (awaiting #277, #278)
 - #332 — Sync preferiti con rimozioni e conflitti (awaiting #328, #330)
-- #334 — Ingresso file-first drag/select (awaiting #333)
-- #335 — Suggerire solo operazioni file compatibili (awaiting #333)
-- #336 — Picker iPhone Android e touch equivalente (awaiting #333)
 - #339 — Scarica manuale e auto opt-in (awaiting #338)
 - #340 — Cronologia in-session e cancella task (awaiting #337, #338)
 - #341 — Salvataggio locale file volontario (awaiting #338)
@@ -103,7 +101,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #349 — File server opt-in TTL delete prova (awaiting #348)
 - #352 — Selezione owner direzione visuale (awaiting #351)
 - #353 — IA e design system dopo scelta (awaiting #352)
-- #354 — Redesign home file-first search-first (awaiting #333, #352, #353)
+- #354 — Redesign home file-first search-first (awaiting #352, #353)
 - #355 — Redesign catalogo ricerca categorie (awaiting #352, #353)
 - #356 — Redesign wrapper e input famiglia (awaiting #352, #353)
 - #357 — Redesign risultati e next-action (awaiting #337, #338, #352, #353)

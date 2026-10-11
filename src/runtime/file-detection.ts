@@ -69,6 +69,9 @@ const EXT: Readonly<Record<string, LocalFileFormat>> = {
   pdf: "pdf", png: "png", jpg: "jpeg", jpeg: "jpeg", gif: "gif",
   webp: "webp", zip: "zip", docx: "docx", xlsx: "xlsx", pptx: "pptx",
 };
+// Opaque binary extensions do not claim a parser. Named, unrecognized
+// extensions (such as .exe, .svg or .txt) must not be offered to another engine.
+const OPAQUE_EXTENSIONS = new Set(["bin", "dat", "blob"]);
 
 const OOXML: Readonly<Record<"docx" | "xlsx" | "pptx", { root: string; contentType: string }>> = {
   docx: { root: "word/document.xml", contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml" },
@@ -99,6 +102,19 @@ function marker(bytes: Uint8Array, at: number, text: string): boolean {
 }
 function signature(bytes: Uint8Array, at: number, sequence: readonly number[]): boolean {
   return sequence.every((b,i) => bytes[at+i] === b) && at+sequence.length <= bytes.length;
+}
+
+/** Check an observed contiguous window for an independently complete ZIP. */
+function hasNestedZipContainer(bytes: Uint8Array): boolean {
+  let local = false, central = false, end = false;
+  for (let i=0; i+4<=bytes.length; i++) {
+    if (bytes[i]!==0x50 || bytes[i+1]!==0x4b) continue;
+    if (bytes[i+2]===3 && bytes[i+3]===4) local=true;
+    if (bytes[i+2]===1 && bytes[i+3]===2) central=true;
+    if (bytes[i+2]===5 && bytes[i+3]===6) end=true;
+    if (local && central && end) return true;
+  }
+  return false;
 }
 
 function crc32(bytes: Uint8Array): number {
@@ -151,10 +167,15 @@ async function imageOrPdf(reader: RangeReader, first: Uint8Array, kind: "pdf"|"p
       // the beginning and end; they remain candidates, never safety proofs.
       const window = FILE_THREAT_LIMITS_407.maxPdfWindowBytes;
       if (size <= 2*window) {
-        refuseThreat(checkPdfBytes407(await reader.range(0,size)));
+        const inspected = await reader.range(0,size);
+        if (hasNestedZipContainer(inspected)) refuse("POLYGLOT", "PDF contains a second ZIP container within the inspected bytes.");
+        refuseThreat(checkPdfBytes407(inspected));
       } else {
-        refuseThreat(checkPdfBytes407(await reader.range(0,window)));
-        refuseThreat(checkPdfBytes407(await reader.range(size-window,window)));
+        for (const offset of [0,size-window]) {
+          const inspected = await reader.range(offset,window);
+          if (hasNestedZipContainer(inspected)) refuse("POLYGLOT", "PDF contains a second ZIP container within the inspected bytes.");
+          refuseThreat(checkPdfBytes407(inspected));
+        }
       }
       return;
     }
@@ -179,6 +200,15 @@ async function imageOrPdf(reader: RangeReader, first: Uint8Array, kind: "pdf"|"p
       if (((first[4] ?? 0)<<8 | (first[5] ?? 0))<2) refuse("MALFORMED", "JPEG initial segment has an invalid length.");
       const end = await reader.range(size-2,2);
       if (!signature(end,0,[0xff,0xd9])) refuse("MALFORMED", "JPEG final EOI marker is missing.");
+      // An independent ZIP within inspected JPEG bytes is not a supported
+      // image candidate; image decoding still remains the downstream gate.
+      const window=FILE_THREAT_LIMITS_407.maxPdfWindowBytes;
+      if (size<=window*2) {
+        if (hasNestedZipContainer(await reader.range(0,size))) refuse("POLYGLOT", "JPEG contains a ZIP container.");
+      } else {
+        if (hasNestedZipContainer(await reader.range(0,window)) ||
+          hasNestedZipContainer(await reader.range(size-window,window))) refuse("POLYGLOT", "JPEG contains a ZIP container in inspected bytes.");
+      }
       return;
     }
     case "gif": {
@@ -455,7 +485,7 @@ export async function detectLocalFile(file: LocalFileSource, options: {readonly 
     }
     const match=/\.([^.\\/]+)$/u.exec(file.name);
     const extension=match?.[1]?.toLowerCase() ?? "";
-    if (Object.hasOwn(EXT,extension) && EXT[extension]!==format) {
+    if (extension && (Object.hasOwn(EXT,extension) ? EXT[extension]!==format : !OPAQUE_EXTENSIONS.has(extension))) {
       refuse("EXTENSION_MISMATCH", "File extension disagrees with locally inspected bytes.");
     }
     return {status:"supported",format,mime,name:file.name,bytes:file.size,readBytes:reader.readBytes,

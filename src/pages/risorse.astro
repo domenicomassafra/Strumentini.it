@@ -55,7 +55,7 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
   },
   {
     question: "Conservate i miei file?",
-    answer: "Gli strumenti locali elaborano i file nel browser, senza archiviarli sul nostro server. Un risultato temporaneo non è un archivio recuperabile dopo aver chiuso la scheda. Se scegli di creare un account, il server conserva i dati dell'account e gli identificativi dei preferiti, non i tuoi documenti.",
+    answer: "Gli strumenti locali elaborano i file nel browser, senza archiviarli sul nostro server. I risultati temporanei non sono recuperabili dopo aver chiuso la scheda. Se scegli espressamente «Conserva questo PDF nel browser», una copia resta nel database locale separato finché non la elimini o il browser non la cancella: non viene sincronizzata con l'account. Il server conserva solo dati dell'account e identificativi dei preferiti, non documenti.",
   },
   {
     question: "Funziona senza rete?",
@@ -67,7 +67,7 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
   },
   {
     question: "Cosa succede ai miei dati se svuoto il browser?",
-    answer: "I dati memorizzati solo in questo browser, come recenti, profilo locale, tema e ultimi risultati brevi, possono andare persi. Se hai un account, i dati dell'account e i preferiti già sincronizzati possono restare sul server finché non elimini anche l'account: svuotare il browser non li cancella.",
+    answer: "I dati memorizzati solo in questo browser, inclusi recenti, preferenze, ultimi risultati brevi ed eventuali PDF conservati volontariamente, possono andare persi. I preferiti già sincronizzati e i dati dell'account possono restare sul server finché non elimini anche l'account: svuotare il browser non li cancella.",
   },
   {
     question: "Esiste un'API?",
@@ -155,6 +155,10 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
               <li>
                 <span class="pill pill-brand"><UiIcon name="devices" size={14} /> IndexedDB</span>
                 <p>Il database <code>utility-workbench</code> conserva sul browser preferiti, strumenti installati, recenti e profilo di lavoro. Non è un archivio permanente dei file elaborati.</p>
+              </li>
+              <li>
+                <span class="pill pill-brand"><UiIcon name="devices" size={14} /> IndexedDB · solo su richiesta</span>
+                <p>Il database <code>strumentini-optin-pdf-341</code> conserva solo PDF verificati che scegli esplicitamente di salvare nel browser, al massimo cinque file e 24 MiB complessivi. Non è sincronizzato né garantito contro la pulizia del browser. Puoi eliminarli individualmente dallo strumento PDF o insieme agli altri dati locali nelle impostazioni.</p>
               </li>
               <li>
                 <span class="pill pill-brand"><UiIcon name="clock" size={14} /> localStorage</span>

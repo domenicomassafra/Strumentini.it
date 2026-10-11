@@ -24,8 +24,9 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **328 — P0 Account Turnstile login reale**
 - **329 — P0 Contrasto accesso e errori WCAG**
 - **330 — P0 Recenti realmente alimentati**
-- **331 — P0 Correggere promesse di file/account**
-- **333 — P0 Riconoscimento formato locale**
+- **334 — Ingresso file-first drag/select**
+- **335 — Suggerire solo operazioni file compatibili**
+- **336 — Picker iPhone Android e touch equivalente**
 - **337 — Typed handoff per catene di tool**
 - **338 — Preview risultato con fatti verificati**
 - **346 — P0 Eventi telemetria privacy-safe**
@@ -50,7 +51,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **407 — Hostile parsers and archive resource safety**
 - **408 — Independent output consumer proofs by family**
 
-Exactly **40** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **41** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -397,12 +398,12 @@ Exactly **40** incomplete tickets currently have every declared numeric blocker 
 | 328 | ready-for-agent | P0 Account Turnstile login reale | — |
 | 329 | ready-for-agent | P0 Contrasto accesso e errori WCAG | — |
 | 330 | ready-for-agent | P0 Recenti realmente alimentati | — |
-| 331 | ready-for-agent | P0 Correggere promesse di file/account | — |
+| 331 | completed | P0 Correggere promesse di file/account | — |
 | 332 | blocked | Sync preferiti con rimozioni e conflitti | 328, 330 |
-| 333 | ready-for-agent | P0 Riconoscimento formato locale | — |
-| 334 | blocked | Ingresso file-first drag/select | 333 |
-| 335 | blocked | Suggerire solo operazioni file compatibili | 333 |
-| 336 | blocked | Picker iPhone Android e touch equivalente | 333 |
+| 333 | completed | P0 Riconoscimento formato locale | — |
+| 334 | ready-for-agent | Ingresso file-first drag/select | 333 |
+| 335 | ready-for-agent | Suggerire solo operazioni file compatibili | 333 |
+| 336 | ready-for-agent | Picker iPhone Android e touch equivalente | 333 |
 | 337 | ready-for-agent | Typed handoff per catene di tool | — |
 | 338 | ready-for-agent | Preview risultato con fatti verificati | — |
 | 339 | blocked | Scarica manuale e auto opt-in | 338 |

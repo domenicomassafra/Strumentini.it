@@ -18,6 +18,7 @@ import { createWorkbenchRepository } from "../../workbench/repository";
 import { createDefaultWorkbenchState, type WorkbenchState } from "../../workbench/state";
 import { exportWorkbenchConfig } from "../../workbench/portability";
 import { resetTelemetryAdapter } from "../../telemetry/browser";
+import { SAVED_PDF_DB_341 } from "../../workbench/saved-pdf-341";
 import { LAST_VALUE_STORAGE_KEY } from "../workbench/last-value";
 import { THEME_STORAGE_KEY } from "../shell/theme";
 
@@ -100,6 +101,22 @@ function sweep(storage: Storage | undefined): void {
   }
 }
 
+/** The explicit #341 PDF archive has its own database; clearing Workbench
+ * alone is not an honest "clear local data" operation. A blocked deletion
+ * must never be reported as a successful reset. */
+async function clearVoluntaryPdfArchive(): Promise<boolean> {
+  try {
+    return await new Promise<boolean>((resolve) => {
+      const request = indexedDB.deleteDatabase(SAVED_PDF_DB_341);
+      request.onsuccess = () => resolve(true);
+      request.onerror = () => resolve(false);
+      request.onblocked = () => resolve(false);
+    });
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Removes everything this site keeps on the device: the IndexedDB record, the
  * `strumentini:*` keys in both web storages, and the per-tab telemetry
@@ -124,6 +141,10 @@ export async function clearDeviceData(): Promise<{ readonly persisted: boolean }
   } catch {
     persisted = false;
   }
+  // Independent best-effort deletion even if another storage step failed.
+  // A different tab holding this database open can block deletion: fail closed
+  // rather than claiming the saved documents were erased.
+  persisted = (await clearVoluntaryPdfArchive()) && persisted;
   return { persisted };
 }
 

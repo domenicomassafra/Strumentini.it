@@ -126,18 +126,22 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
     root?.removeAttribute("aria-busy");
   }
 
-  async function inspect(files: readonly File[]): Promise<void> {
+  async function inspect(files: readonly File[], photosOnly = false): Promise<void> {
     const current = ++generation;
     active?.abort();
     active = null;
     if (!status) return;
     if (files.length === 0) {
+      if (priorNotice) priorNotice.hidden = true;
+      root?.removeAttribute("aria-busy");
       status.textContent = "Scelta annullata. Puoi riprovare."
         + (resultPanel && !resultPanel.hidden ? previousOptionsHint : "");
       return;
     }
     if (files.length !== 1) {
       clearActions();
+      if (priorNotice) priorNotice.hidden = true;
+      root?.removeAttribute("aria-busy");
       status.textContent = "Scegli un solo file alla volta. Nessun file è stato elaborato.";
       return;
     }
@@ -158,6 +162,11 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
         if (!recoverable) clearActions();
         status.textContent = reasonText[detected.reason]
           + (recoverable && resultPanel && !resultPanel.hidden ? previousOptionsHint : "");
+        return;
+      }
+      if (photosOnly && !["png", "jpeg", "gif", "webp"].includes(detected.format)) {
+        clearActions();
+        status.textContent = "Il selettore Foto accetta soltanto immagini PNG, JPEG, GIF o WebP. Usa File dal dispositivo per altri formati.";
         return;
       }
       clearActions();
@@ -182,7 +191,12 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
   }
 
   function cancelledPicker(message: string): void {
+    generation += 1;
+    active?.abort();
+    active = null;
     resetDrag();
+    if (priorNotice) priorNotice.hidden = true;
+    root?.removeAttribute("aria-busy");
     if (status) status.textContent = message
       + (resultPanel && !resultPanel.hidden ? previousOptionsHint : "");
   }
@@ -197,7 +211,7 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
         cancelledPicker("Nessun nuovo file ricevuto. Puoi riprovare.");
         return;
       }
-      void inspect(files);
+      void inspect(files, input === photosPicker);
     });
     input?.addEventListener("cancel", () => {
       input.value = "";

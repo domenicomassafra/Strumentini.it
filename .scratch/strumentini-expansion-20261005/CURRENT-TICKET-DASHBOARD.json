@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 424,
-    "completed": 286,
+    "completed": 288,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 269,
-    "open": 138,
-    "readyDAG": 40,
-    "ready-for-agent": 33,
-    "dependency-blocked": 98,
+    "completedWithoutExplicitRefusal": 271,
+    "open": 136,
+    "readyDAG": 41,
+    "ready-for-agent": 34,
+    "dependency-blocked": 95,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 0,
@@ -308,6 +308,8 @@
       325,
       326,
       327,
+      331,
+      333,
       344,
       413
     ],
@@ -320,8 +322,9 @@
       328,
       329,
       330,
-      331,
-      333,
+      334,
+      335,
+      336,
       337,
       338,
       346,
@@ -379,9 +382,6 @@
       247,
       279,
       332,
-      334,
-      335,
-      336,
       339,
       340,
       341,
@@ -3883,9 +3883,9 @@
     {
       "id": 331,
       "title": "P0 Correggere promesse di file/account",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -3906,6 +3906,16 @@
     {
       "id": 333,
       "title": "P0 Riconoscimento formato locale",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
+      "unresolvedDependencies": [],
+      "gateReason": null,
+      "closedWithRefusal": false
+    },
+    {
+      "id": 334,
+      "title": "Ingresso file-first drag/select",
       "storedStatus": "ready-for-agent",
       "expectedLifecycle": "ready-for-agent",
       "executionCategory": "ready-for-agent",
@@ -3914,38 +3924,22 @@
       "closedWithRefusal": false
     },
     {
-      "id": 334,
-      "title": "Ingresso file-first drag/select",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        333
-      ],
-      "gateReason": null,
-      "closedWithRefusal": false
-    },
-    {
       "id": 335,
       "title": "Suggerire solo operazioni file compatibili",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        333
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
     {
       "id": 336,
       "title": "Picker iPhone Android e touch equivalente",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        333
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -4149,7 +4143,6 @@
       "expectedLifecycle": "blocked",
       "executionCategory": "dependency-blocked",
       "unresolvedDependencies": [
-        333,
         352,
         353
       ],

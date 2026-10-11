@@ -1,5 +1,6 @@
-import { useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 import { toolRuntime } from "../../runtime/tool-runtime";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 import { VCF_MAX_BYTES } from "../../tools/vcf-viewer-csv-export/limits";
 import type { VCardParseResult } from "../../tools/vcf-viewer-csv-export/module";
 import { InlineError, ResultProvenance, ToolActions, ToolGutter, ToolSurface } from "./shared";
@@ -27,24 +28,35 @@ export function VcfViewerCsvExportTool() {
   const [result, setResult] = useState<VCardParseResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const active = useRef(false);
+  const revision = useRef(0);
 
   async function inspect() {
+    if (active.current) return;
     if (file === null) { setError("Scegli un file .vcf prima di continuare."); return; }
     if (file.size > VCF_MAX_BYTES) { setError(`Il file supera il limite locale di ${Math.round(VCF_MAX_BYTES / 1024)} KiB.`); return; }
+    active.current = true;
+    const current = ++revision.current;
     setBusy(true); setError(null); setResult(null);
     try {
       const run = await toolRuntime.run("vcf-viewer-csv-export", { text: await file.text() }, {});
+      if (current !== revision.current) return;
       if (!run.ok) throw new Error(run.message);
       if (!isVCardParseResult(run.value)) throw new Error("VCF_RUNTIME_RESULT_INVALID");
       setResult(run.value);
+      recordCompletedTool("vcf-viewer-csv-export");
     } catch (cause) {
+      if (current !== revision.current) return;
       const code = cause instanceof Error ? cause.message : "";
       const message = code.startsWith("VCF_") ? `VCF non valido o non supportato (${code}).` : "Non riesco a leggere questo VCF.";
       setError(message);
-    } finally { setBusy(false); }
+    } finally {
+      active.current = false;
+      setBusy(false);
+    }
   }
 
-  function reset() { setFile(null); setResult(null); setError(null); }
+  function reset() { revision.current += 1; setFile(null); setResult(null); setError(null); }
 
   return (
     <ToolSurface
@@ -70,7 +82,7 @@ export function VcfViewerCsvExportTool() {
             aria-label="File VCF"
             type="file"
             accept=".vcf,text/vcard,text/x-vcard"
-            onChange={(event) => { setFile(event.currentTarget.files?.[0] ?? null); setResult(null); setError(null); }}
+            onChange={(event) => { revision.current += 1; setFile(event.currentTarget.files?.[0] ?? null); setResult(null); setError(null); }}
           />
           <small>Limite locale: {Math.round(VCF_MAX_BYTES / 1024)} KiB.</small>
         </label>

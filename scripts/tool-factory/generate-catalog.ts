@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { dirname, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -13,7 +14,8 @@ import {
   type SearchProjectionDecoration,
 } from "../../src/catalog/projections";
 import type { FixtureIndex, OracleRegistry } from "../../src/tool-factory/manifest";
-import { buildGoldQualityIndex, renderGoldQualitySource } from "../../src/onboarding/quality";
+import { buildSourceBoundGoldQualityIndex, renderGoldQualitySource } from "../../src/onboarding/quality";
+import { currentEvidenceSourceFingerprint } from "../lib/current-revision";
 import { contextTagsForTools } from "../../src/onboarding/membership";
 import { missingItalianToolCopy } from "../../src/i18n/it/tool-copy";
 import { discoverResultV2RendererSeams } from "./result-v2-inventory";
@@ -55,7 +57,12 @@ async function discoverReceipts(directory: string): Promise<unknown[]> {
     if (entry.isDirectory()) receipts.push(...await discoverReceipts(child));
     else if (entry.isFile() && entry.name.endsWith(".json")) {
       try {
-        receipts.push({ ...JSON.parse(await readFile(child, "utf8")) as object, receiptPath: relative(root, child) });
+        const contents = await readFile(child);
+        receipts.push({
+          ...JSON.parse(contents.toString("utf8")) as object,
+          receiptPath: relative(root, child).replaceAll("\\", "/"),
+          receiptSha256: createHash("sha256").update(contents).digest("hex"),
+        });
       } catch {
         continue;
       }
@@ -76,9 +83,10 @@ const missingItalianCopy = missingItalianToolCopy(artifacts.summaries.map(({ id 
 if (missingItalianCopy.length > 0) {
   throw new Error(`catalogo pubblico senza copia italiana: ${missingItalianCopy.join(", ")}`);
 }
-const quality = buildGoldQualityIndex(
+const quality = buildSourceBoundGoldQualityIndex(
   await discoverReceipts(resolve(root, "quality/receipts")),
   artifacts.summaries.map(({ id }) => id),
+  await currentEvidenceSourceFingerprint(root),
 );
 const contextTags = contextTagsForTools(artifacts.summaries);
 const verifiedToolIds = new Set(quality.index.tools.map(({ toolId }) => toolId));

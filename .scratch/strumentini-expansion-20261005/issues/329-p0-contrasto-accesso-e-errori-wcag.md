@@ -43,3 +43,7 @@
 Chromium contrast light 6.08:1, dark 8.35:1; keyboard focus and invalid-field/error tested in account page; physical phone/screen reader matrix NOT_RUN. Original AC remains open.
 
 **Disposition:** Scope implemented and locally verified as stated; this dated note does not check unproven original AC, close the ticket, certify Gold or authorize release. See `docs/IMPLEMENTATION-WAVE-01-2026-10-11.md` for code/test paths and residual gates.
+
+## 2026-10-11 wave 04 — additional source-bound Chrome matrix (not physical)
+
+`tests/acceptance-account-aa-329.mjs` adds 308 real Chrome 154 assertions at 320/390 px on account login/register/errors in both explicitly chosen light/dark themes, minimum measured normal-text ratio 4.588:1 across 64 samples, keyboard focus-visible, label/error association, 503 authentication failure without false login, and equivalent 200/400% reflow without clipping. Existing #328/#329 Turnstile browser regression remains 35 PASS. Native Chrome zoom shortcut, VoiceOver/TalkBack and physical iOS/Android NOT_RUN; original ticket stays open rather than converting simulated responsiveness into screenreader or device certification. No source CSS/token change or deployment.

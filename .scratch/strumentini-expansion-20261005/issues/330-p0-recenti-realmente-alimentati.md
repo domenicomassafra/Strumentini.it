@@ -43,3 +43,7 @@
 Local UTM and PDF successes feed IndexedDB tool ID/time/count; failures, duplicate PDF submission, storage denial and reload tested in real Chromium; custom renderers beyond shared hook/PdfTool not yet covered. Original AC remains open.
 
 **Disposition:** Scope implemented and locally verified as stated; this dated note does not check unproven original AC, close the ticket, certify Gold or authorize release. See `docs/IMPLEMENTATION-WAVE-01-2026-10-11.md` for code/test paths and residual gates.
+
+## 2026-10-11 wave 04 — four additional real custom operation producers
+
+`VcfViewerCsvExportTool`, `CsvDedupeTool`, `TimezoneOverlapTool`, and `ImageResizeTool` now record completed tool IDs, timestamps and use-count via the existing private metadata-only #330 workbench hook **only after actual output success**; cancelled, invalid, duplicated or stale operations do not record completions. `tests/acceptance-recent-custom-330.mjs` exercised real local Chrome routes VCF → CSV dedupe → timezone overlap → image resize, negative controls, duplicate clicks, private file/input sentinel absent from IndexedDB and requests, area `/preferiti/` and reload, plus storage-getter denial with usable tool and explicit warning; PASS, no external data write. Existing 3 focused unit tests PASS. Other bespoke tool result renderers have not been comprehensively inventoried, so this is a verified four-family implementation tranche, NOT universal ticket closure, Gold, or cross-device attestation.

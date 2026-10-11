@@ -1,7 +1,8 @@
-import { useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 import { profileValuesForTool } from "../../profile/work-profile";
 import { resolveResultActions } from "../../runtime/result-actions";
 import { toolRuntime } from "../../runtime/tool-runtime";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 import { timezoneOverlapManifest } from "../../tools/timezone-overlap/manifest";
 import type { TimezoneOverlapOutput } from "../../tools/timezone-overlap/types";
 import { useWorkProfile } from "./client-time-math/work-profile";
@@ -39,6 +40,8 @@ export function TimezoneOverlapTool() {
   const [result, setResult] = useState<TimezoneOverlapOutput | null>(null);
   const [error, setError] = useState("");
   const [actionStatus, setActionStatus] = useState("");
+  const active = useRef(false);
+  const revision = useRef(0);
   const homeTimeZone = homeTimeZoneOverride ?? profile.timezone;
   const homeStart = homeStartOverride ?? DEFAULT_HOURS.start;
   const homeEnd = homeEndOverride ?? DEFAULT_HOURS.end;
@@ -46,8 +49,12 @@ export function TimezoneOverlapTool() {
 
   async function submit(event: Event) {
     event.preventDefault();
+    if (active.current) return;
+    active.current = true;
+    const current = ++revision.current;
     setError("");
     setResult(null);
+    try {
     const run = await toolRuntime.run(
       timezoneOverlapManifest.id,
       { date, otherTimeZone, otherWorkingHours: { start: otherStart, end: otherEnd } },
@@ -59,14 +66,22 @@ export function TimezoneOverlapTool() {
         profile: profileValuesForTool(timezoneOverlapManifest, profile),
       },
     );
+    if (current !== revision.current) return;
     if (!run.ok) {
       setError(errorText(run.message));
       return;
     }
     setResult(run.value as TimezoneOverlapOutput);
+    recordCompletedTool(timezoneOverlapManifest.id);
+    } catch {
+      if (current === revision.current) setError("Controlla data, fusi orari e orari di lavoro.");
+    } finally {
+      active.current = false;
+    }
   }
 
   function reset() {
+    revision.current += 1;
     setDate("");
     setOtherTimeZone("America/New_York");
     setHomeTimeZoneOverride(undefined);
