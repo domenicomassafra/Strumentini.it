@@ -43,3 +43,9 @@
 Git-aware source change-impact and non-deployment GitHub CI workflow created; eight focused tests PASS; GitHub remote workflow and mandatory physical/security/official-source release gates NOT_RUN.
 
 **Disposition:** Scope implemented and locally verified as stated; this dated note does not check unproven original AC, close the ticket, certify Gold or authorize release. See `docs/IMPLEMENTATION-WAVE-01-2026-10-11.md` for code/test paths and residual gates.
+
+## 2026-10-11 follow-up — fail-closed scope mapping, still OPEN
+
+Independent audit identified two holes in the source-change classifier: executable Python/JS ticket validators beneath `.scratch/` were treated as docs-only, while the actual `image-visual/`, `image-resize/` and top-level `Pdf*` tool components were not all mapped to the image/PDF device gates. Regression tests reproduced both false classifications **before** the fix. The path classifier now treats executable ticket generators as CI code (full source regression), and real image/PDF component families as frontend + their engine domain, preserving affected test selection and physical-device `NOT_RUN` gates. `tests/ci-change-impact-404.test.ts`: **10/10 PASS** on the local checkout.
+
+The GitHub branch `main` was read independently via authenticated API and matched local `origin/main` at `d0947cc` before this change. However the updated CI workflow has **not run remotely** and no release candidate or real browser/physical/security gate was approved. `AC-404.1` remains open for cumulative release validation before publication; the scoped test demonstrates correct mapping rather than production readiness. Do not close the ticket, issue a Gold receipt, push or deploy based on this follow-up alone.

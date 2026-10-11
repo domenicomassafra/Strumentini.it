@@ -84,6 +84,30 @@ describe("#404 PR/source impact planning", () => {
     expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
   });
 
+  it("does not mislabel executable ticket generators as docs-only", () => {
+    const generators = buildImpactPlan([
+      ".scratch/strumentini-expansion-20261005/ticket_dashboard.py",
+      ".scratch/strumentini-expansion-20261005/validate_backlog.py",
+    ], suites);
+    expect(generators.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(generators.commands).toContainEqual({ program: "npm", args: ["run", "test"] });
+    expect(generators.gates.map((gate) => gate.id)).toContain("release-readiness");
+    expect(buildImpactPlan([".scratch/strumentini-expansion-20261005/issues/404-note.md"], suites).status).toBe("DOCS_ONLY");
+  });
+
+  it("requires image/PDF physical gates for the real tool component directories", () => {
+    const changed = buildImpactPlan([
+      "src/components/tools/image-visual/ImageCompressionTool.tsx",
+      "src/components/tools/image-resize/ImageResizeTool.tsx",
+      "src/components/tools/PdfMergeTool.tsx",
+    ], suites);
+    expect(changed.domains).toEqual(expect.arrayContaining(["image", "pdf", "frontend"]));
+    expect(changed.gates.map((gate) => gate.id)).toContain("physical-device");
+    expect(changed.selectedTests).toEqual(expect.arrayContaining([
+      "tests/image-resize-engine.test.ts", "tests/pdf-redaction-237.test.ts",
+    ]));
+  });
+
   it("fails closed on unknown path, invalid path, missing tests and release-workflow changes", () => {
     expect(buildImpactPlan(["exotic/secret.ts"], suites).status).toBe("NO_GO");
     expect(buildImpactPlan(["../docs/guide.md"], suites).status).toBe("NO_GO");

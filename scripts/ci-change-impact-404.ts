@@ -54,14 +54,18 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
       path === "tsconfig.json" || path === "vitest.config.ts" || path === "wrangler.toml") return ["ci"];
   if (path === "wrangler.jsonc") return ["worker-auth", "d1", "ci"];
   if (/^(scripts\/(ci-change-impact-404\.ts|validate-release\.ts|lib\/current-revision\.ts|build-certification-index\.ts)|src\/(release\/|quality\/)|tests\/release-validation\.test\.ts)/u.test(path)) return ["ci"];
+  // The ticket archive also contains executable validators/generators. Treating
+  // every .scratch path as docs would allow a change to the release-facing
+  // ticket checks to escape source CI entirely.
+  if (path.startsWith(".scratch/") && /\.(?:py|mjs|cjs|js|ts|tsx|sh|bash)$/u.test(path)) return ["ci"];
   if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
   if (path.startsWith("worker/migrations/")) return ["d1"];
   if (path.startsWith("worker/")) return ["worker-auth"];
   if (/^(tests\/(auth-worker|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347)\.test\.ts|scripts\/acceptance-auth\.mjs)/u.test(path)) return ["worker-auth"];
 
   // Match domain-specific code and fixtures before the broad shared/frontend roots.
-  if (/^src\/(components\/tools\/pdf\/|pages\/tools\/(pdf-|ocr-|ooxml-))/u.test(path)) return ["frontend", "pdf"];
-  if (/^src\/(components\/tools\/image\/|pages\/tools\/(image-|png-|jpg-|jpeg-|svg-|webp-))/u.test(path)) return ["frontend", "image"];
+  if (/^src\/(components\/tools\/(?:pdf\/|Pdf[^/]*|ImagesToPdf[^/]*)|pages\/tools\/(pdf-|ocr-|ooxml-))/u.test(path)) return ["frontend", "pdf"];
+  if (/^src\/(components\/tools\/(?:image(?:\/|-)|Image[^/]*|Images[^/]*)|pages\/tools\/(image-|png-|jpg-|jpeg-|svg-|webp-))/u.test(path)) return ["frontend", "image"];
   if (/^src\/pages\/tools\/(codice-fiscale|partita-iva|iva-|irpef-|forfettario)/u.test(path)) return ["frontend", "italy"];
   if (/^(src\/engines\/(pdf|ocr|ooxml)\/|src\/(tools|pages\/tools)\/(pdf-|ocr-|ooxml-)|tests\/(pdf-|ocr-|ooxml-|printable-pdf)|quality\/fixtures\/(pdf-|ocr-)|scripts\/[^/]*pdf[-.])/u.test(path)) return ["pdf"];
   if (/^(src\/engines\/image\/|src\/(tools|pages\/tools)\/(image-|png-|jpg-|jpeg-|svg-|webp-)|tests\/(image-|svg-)|quality\/fixtures\/image-|scripts\/[^/]*image[-.])/u.test(path)) return ["image"];
