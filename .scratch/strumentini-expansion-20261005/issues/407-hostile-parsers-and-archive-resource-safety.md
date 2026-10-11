@@ -38,6 +38,12 @@
 
 **Execution prompt:** Routed by canonical EXECUTION-PROMPTS.md with gates.
 
+## 2026-10-11 wave 14 — reserved Windows console namespace (worker-14)
+
+Confirmed a novel real ZIP member-path bypass in the bounded detector. Synthetic ZIP with docs/CONOUT$ was classified by **actual detectLocalFile()** as supported/zip before the patch, while checkZipPath407(CONIN$) returned null. Windows console-device names CONIN$ / CONOUT$ were missing from the reserved-name gate. Tests reproduced **RED 25/26** and GREEN with a per-segment, NFKC-aware fail-closed refusal of both console aliases and conservative extension variants. Mixed-case, nested-path and fullwidth aliases refuse; ordinary lookalike names remain candidates. Verified **44/44** Vitest for #407 + #333 detector, strict scoped TypeScript PASS. Full scope and Windows-platform nuance are recorded in docs/FILE-THREAT-WAVE14.md. Only original #407 source/test/ticket/new-doc touched; no extraction, uploads, Gold/receipt edits, commit, push or deploy.
+
+**Disposition:** Original AC-407.1–3 remain **unchecked** and ticket **OPEN**: this hardens one archive-path namespace bypass in a preliminary detector, not all PDF object streams, SVG/XML parser graphs, full archive extraction or cross-platform device/rollback validation.
+
 ## 2026-10-11 implementation wave 03 — scoped evidence
 
 `src/runtime/file-threat-gate-407.ts` integrated with real `src/runtime/file-detection.ts` candidate screening and `tests/file-threat-gate-407.test.ts` 12/12 plus detector 18/18 PASS. Bounded ZIP symlink/traversal/descriptor/gaps/nested compressed XML/SVG/XXE/script, PDF risky tokens observed; signal cancellation/resource caps and no upload. It does not certify deep PDFs >256KiB/unparsed object streams, all parsers, full archive extraction or malicious file handling past detector; no full production Gold.

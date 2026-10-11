@@ -1,10 +1,12 @@
 import type { TargetedKeyboardEvent } from "preact";
 import { useRef, useState } from "preact/hooks";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 import {
   appendKeyboardHistory,
   normalizeKeyboardDiagnosticEvent,
   type KeyboardDiagnosticEvent,
 } from "../../tools/keyboard-event-diagnostic/module";
+import { keyboardEventDiagnosticManifest } from "../../tools/keyboard-event-diagnostic/manifest";
 import { ToolActions, ToolGutter, ToolSurface } from "./shared";
 
 function eventFromKeyboard(event: TargetedKeyboardEvent<HTMLDivElement>): KeyboardDiagnosticEvent {
@@ -26,14 +28,17 @@ export function KeyboardEventDiagnosticTool() {
   const [active, setActive] = useState(false);
   const [history, setHistory] = useState<readonly KeyboardDiagnosticEvent[]>([]);
   const testSurface = useRef<HTMLDivElement>(null);
+  const recordedThisSession = useRef(false);
   const latest = history[0] ?? null;
 
   function start() {
+    if (!active) recordedThisSession.current = false;
     setActive(true);
     requestAnimationFrame(() => testSurface.current?.focus());
   }
 
   function stop() {
+    recordedThisSession.current = false;
     setActive(false);
     testSurface.current?.blur();
   }
@@ -44,6 +49,13 @@ export function KeyboardEventDiagnosticTool() {
     // operating-system shortcuts must keep their normal behavior.
     const normalized = eventFromKeyboard(event);
     setHistory((current) => appendKeyboardHistory(current, normalized));
+    // A diagnostic is completed by its first actually captured keyboard
+    // event, never by activation, keyup/repeats or navigation alone. Persist
+    // only the canonical catalog ID, never keys/modifiers/history.
+    if (!recordedThisSession.current) {
+      recordedThisSession.current = true;
+      recordCompletedTool(keyboardEventDiagnosticManifest.id);
+    }
   }
 
   function reset() {
@@ -71,7 +83,8 @@ export function KeyboardEventDiagnosticTool() {
     >
       <p>
         Gli eventi vengono mostrati solo mentre l'area di prova ha il focus ed è attiva. La cronologia resta in memoria,
-        contiene al massimo 12 eventi e scompare ricaricando la pagina. Non viene salvato il testo digitato in storage o inviato in rete.
+        contiene al massimo 12 eventi e scompare ricaricando la pagina. Il testo digitato non viene salvato in storage o inviato in rete;
+        soltanto l'ID dello strumento e la data/il conteggio d'uso sono registrati in Recenti dopo una cattura reale.
       </p>
       <div
         ref={testSurface}
@@ -82,7 +95,7 @@ export function KeyboardEventDiagnosticTool() {
         aria-label="Area di prova eventi tastiera"
         aria-describedby="keyboard-event-help"
         onFocus={() => active && setActive(true)}
-        onBlur={() => setActive(false)}
+        onBlur={() => { recordedThisSession.current = false; setActive(false); }}
         onKeyDown={capture}
         onKeyUp={capture}
       >

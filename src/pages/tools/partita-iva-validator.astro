@@ -5,4 +5,128 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
 
 <ItalianToolPage toolId="partita-iva-validator">
   <PartitaIvaValidatorTool client:load />
+  <section class="tax396-piva" data-tax396="piva" aria-labelledby="tax396-piva-title">
+    <h2 id="tax396-piva-title">Percorso Partita IVA — simulazione forfettario, solo anno d'imposta 2025</h2>
+    <p>Calcolo locale separato dalla verifica formale della Partita IVA. Quest'ultima <strong>non verifica l'esistenza, il regime fiscale o i requisiti personali</strong>. La simulazione usa esclusivamente il sottoinsieme documentato 2025 con codici <strong>ATECO2007</strong>: nessuna conversione automatica da ATECO2025, nessuna aliquota INPS presunta.</p>
+    <form id="tax396-piva-form" novalidate>
+      <label for="tax396-piva-year">Anno d'imposta</label>
+      <select id="tax396-piva-year" name="taxYear">
+        <option value="2025">2025 — sottoinsieme documentato</option>
+        <option value="2026">2026 — non verificato, rifiutato</option>
+      </select>
+      <label for="tax396-piva-ateco">Codice ATECO2007 (non ATECO2025)</label>
+      <input id="tax396-piva-ateco" type="text" name="atecoCode" maxlength="10" autocomplete="off" placeholder="62.01.00" />
+      <label for="tax396-piva-previous">Ricavi dell'anno precedente (€; massimo 2 decimali)</label>
+      <input id="tax396-piva-previous" type="text" name="priorReceipts" inputmode="decimal" maxlength="15" autocomplete="off" />
+      <label for="tax396-piva-current">Ricavi dell'anno d'imposta (€; massimo 2 decimali)</label>
+      <input id="tax396-piva-current" type="text" name="receipts" inputmode="decimal" maxlength="15" autocomplete="off" />
+      <label for="tax396-piva-contributions">Contributi obbligatori effettivamente versati nell'anno (€; non stimati)</label>
+      <input id="tax396-piva-contributions" type="text" name="paidContributions" inputmode="decimal" maxlength="15" autocomplete="off" />
+      <label class="tax396-piva-checkbox">
+        <input type="checkbox" name="paidContributionsVerified" />
+        Confermo che l'importo dei contributi è già noto e verificato da me, non calcolato da questo strumento.
+      </label>
+      <label for="tax396-piva-rate">Aliquota sostitutiva (scelta dichiarata, non dedotta)</label>
+      <select id="tax396-piva-rate" name="declaredRate">
+        <option value="standard-15">15% — profilo standard dichiarato</option>
+        <option value="startup-5">5% — solo se confermi requisiti aggiuntivi</option>
+      </select>
+      <label class="tax396-piva-checkbox">
+        <input type="checkbox" name="eligible" />
+        Dichiaro sotto la mia responsabilità che i requisiti del regime e le altre esclusioni sono stati verificati esternamente. Il tool non li decide.
+      </label>
+      <label class="tax396-piva-checkbox">
+        <input type="checkbox" name="startupEligible" />
+        Solo per 5%: dichiaro di aver verificato esternamente gli ulteriori requisiti di nuova attività.
+      </label>
+      <button type="submit">Calcola la sola stima 2025 coperta</button>
+    </form>
+    <p role="alert" class="tax396-piva-error" hidden></p>
+    <output id="tax396-piva-output" aria-live="polite"></output>
+    <p class="tax396-piva-note">Ipotesi: soli coefficienti ATECO2007 effettivamente elencati nell'Allegato 2; ricavi entro il limite della fonte 2025; contributi obbligatori già pagati e dichiarati dall'utente. Non calcola INPS, spese, altri regimi, detrazioni, crediti o idoneità. Non è consulenza fiscale individuale né dichiarazione dei redditi.</p>
+    <p class="tax396-piva-note">Fonte con snapshot locale verificato:
+      <a href="https://www.gazzettaufficiale.it/eli/gu/2018/12/31/302/so/62/sg/pdf">Gazzetta Ufficiale, legge 145/2018, Allegato 2 (pagina 218)</a>,
+      <a href="https://www.normattiva.it/eli/id/2014/12/29/14G00203/CONSOLIDATED/20251231">Normattiva, legge 190/2014 consolidata al 2025</a>;
+      copertura fiscale parziale solo 2025.</p>
+    <p><a href="/tools/codice-fiscale/">Percorso separato: privati/dipendenti, IRPEF lorda nazionale 2025/2026</a></p>
+  </section>
 </ItalianToolPage>
+
+<script>
+  import { calculateForfettario133 } from "../../engines/italy/forfettario-133";
+  const root = document.querySelector<HTMLElement>('[data-tax396="piva"]');
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const output = root.querySelector<HTMLOutputElement>("output")!;
+    const error = root.querySelector<HTMLElement>('[role="alert"]')!;
+    const select = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement;
+    const checked = (name: string) => (form.elements.namedItem(name) as HTMLInputElement).checked;
+    const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+    const reset = () => { output.textContent = ""; error.textContent = ""; error.hidden = true; };
+    const decline = (reason: string) => { reset(); error.textContent = reason; error.hidden = false; };
+    const cents = (name: string): number | null => {
+      const text = select(name).value.trim();
+      if (!/^(?:0|[1-9]\d{0,9})(?:\.\d{1,2})?$/u.test(text)) return null;
+      const [euros = "0", decimals = ""] = text.split(".");
+      const value = Number(euros) * 100 + Number(decimals.padEnd(2, "0"));
+      return Number.isSafeInteger(value) && value <= 1_000_000_000_000 ? value : null;
+    };
+    form.addEventListener("input", reset);
+    form.addEventListener("change", reset);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      reset();
+      if (select("taxYear").value !== "2025") return decline("Anno 2026 non verificato: il percorso forfettario supporta soltanto il 2025.");
+      const prior = cents("priorReceipts");
+      const receipts = cents("receipts");
+      const paid = cents("paidContributions");
+      if (prior === null || receipts === null || paid === null) return decline("Importi non validi: inserisci euro non negativi, con massimo due decimali, senza separatori delle migliaia.");
+      if (!checked("paidContributionsVerified")) return decline("Contributi non confermati: dichiarare l'importo effettivamente già versato.");
+      if (!checked("eligible")) return decline("Requisiti del regime non dichiarati: non è possibile presumere l'idoneità fiscale.");
+      const rate = select("declaredRate").value;
+      if (rate === "startup-5" && !checked("startupEligible")) return decline("Per il 5% occorre dichiarare esplicitamente i requisiti ulteriori di nuova attività.");
+      try {
+        const result = calculateForfettario133({
+          taxYear: 2025,
+          atecoVersion: "ATECO2007",
+          atecoCode: select("atecoCode").value.trim(),
+          priorYearReceiptsCents: prior,
+          yearReceiptsCents: receipts,
+          paidMandatoryContributionsCents: paid,
+          declaredRate: rate as "standard-15" | "startup-5",
+          declaresEligible: checked("eligible"),
+          declaresStartupFivePercentRequirements: checked("startupEligible"),
+        });
+        output.textContent = "Anno d'imposta " + result.taxYear +
+          " · Imposta sostitutiva stimata: " + euro(result.substituteTaxCents) +
+          " · Coefficiente ATECO2007: " + result.coefficientPercent + "%" +
+          " · Reddito forfettario stimato: " + euro(result.grossForfettarioIncomeCents) +
+          " · Contributi già pagati dichiarati: " + euro(result.paidMandatoryContributionsCents) +
+          " · Base imponibile modellata: " + euro(result.taxableIncomeCents) +
+          ". Non certifica requisiti, aliquote INPS o imposta effettiva.";
+      } catch (cause) {
+        const code = String(cause);
+        if (code.includes("FORF133_OFFICIAL_COEFFICIENT_MISSING") || code.includes("FORF133_UNSUPPORTED_ATECO")) {
+          return decline("Codice ATECO2007 non coperto dalla tabella ufficiale verificata: nessuna stima.");
+        }
+        if (code.includes("FORF133_OUT_OF_SCOPE")) return decline("Ricavi o contributi fuori dai limiti del modello 2025: nessuna stima.");
+        return decline("Profilo, anno o importi non coperti dalle fonti verificate: nessuna stima.");
+      }
+    });
+  }
+</script>
+
+<style>
+  .tax396-piva { border: 1px solid var(--border); border-radius: 14px; padding: clamp(16px,3vw,28px); margin: 24px 0; max-width: 80ch; display: grid; gap: 12px; }
+  .tax396-piva h2 { font-size: clamp(1.25rem, 3vw, 1.6rem); margin: 0; }
+  .tax396-piva p { margin: 0; }
+  .tax396-piva form { display: grid; gap: 10px; }
+  .tax396-piva input:not([type="checkbox"]), .tax396-piva select { box-sizing: border-box; padding: 10px; width: 100%; min-width: 0; }
+  .tax396-piva-checkbox { display: flex; align-items: flex-start; gap: 10px; }
+  .tax396-piva-checkbox input { flex: 0 0 auto; margin-top: 4px; }
+  .tax396-piva button { padding: 10px 14px; cursor: pointer; }
+  .tax396-piva button:focus-visible, .tax396-piva a:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
+  .tax396-piva output:not(:empty) { display: block; border-left: 3px solid currentColor; padding: 12px; font-weight: 600; }
+  .tax396-piva-error { font-weight: 600; }
+  .tax396-piva-note { color: var(--text-muted); font-size: 0.9rem; }
+</style>

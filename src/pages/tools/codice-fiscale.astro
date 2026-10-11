@@ -15,8 +15,79 @@ import { CodiceFiscaleTool } from "../../components/tools/codice-fiscale/CodiceF
       <p>Tre operazioni nel browser, con limiti storici dichiarati. La generazione non sostituisce l'attribuzione dell'Agenzia delle Entrate.</p>
     </header>
     <CodiceFiscaleTool client:load />
+    <section class="tax396-panel" data-tax396="privati" aria-labelledby="tax396-private-title">
+      <h2 id="tax396-private-title">Percorso privati e dipendenti — IRPEF lorda nazionale</h2>
+      <p>Simulazione anonima dell'IRPEF <strong>lorda nazionale</strong> su un imponibile che conosci già: non calcola stipendio netto, reddito imponibile, detrazioni, crediti, addizionali regionali/comunali o imposta effettivamente dovuta. Non verifica la tua posizione personale.</p>
+      <form id="tax396-private-form" novalidate>
+        <label for="tax396-private-year">Anno d'imposta (non anno della dichiarazione)</label>
+        <select id="tax396-private-year" name="taxYear">
+          <option value="2025">2025 — sottoinsieme nazionale documentato</option>
+          <option value="2026">2026 — sottoinsieme nazionale documentato</option>
+          <option value="2024">2024 — non verificato, rifiutato</option>
+        </select>
+        <label for="tax396-private-income">Reddito imponibile IRPEF già determinato (€; separatore decimale punto)</label>
+        <input id="tax396-private-income" type="text" name="taxableIncome" inputmode="decimal" maxlength="15" value="" autocomplete="off" placeholder="40000.00" />
+        <button type="submit">Calcola solo IRPEF lorda</button>
+      </form>
+      <p role="alert" class="tax396-error" hidden></p>
+      <output id="tax396-private-output" aria-live="polite"></output>
+      <p class="tax396-note">Ipotesi: importo già imponibile in euro; esclusi ogni detrazione, credito, addizionale, contributo, sostitutiva e valutazione di eleggibilità. Il risultato è informativo, non una consulenza fiscale individuale.</p>
+      <p class="tax396-note">Fonti annuali locali con snapshot hash verificato:
+        <a href="https://www.normattiva.it/eli/stato/LEGGE/2024/12/30/207/ORIGINAL">Normattiva, legge 207/2024</a> (2025 e base 2026);
+        <a href="https://www.normattiva.it/eli/stato/LEGGE/2025/12/30/199/CONSOLIDATED">Normattiva, legge 199/2025</a> (modifica 2026).
+        La copertura è soltanto IRPEF lorda nazionale 2025/2026.</p>
+      <p><a href="/tools/partita-iva-validator/">Percorso distinto: Partita IVA e forfettario 2025</a></p>
+    </section>
   </main>
 </BaseLayout>
+
+<script>
+  import { calculateNationalGrossIrpef127 } from "../../engines/italy/irpef-national-127";
+  const root = document.querySelector<HTMLElement>('[data-tax396="privati"]');
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const output = root.querySelector<HTMLOutputElement>("output")!;
+    const error = root.querySelector<HTMLElement>('[role="alert"]')!;
+    const year = form.elements.namedItem("taxYear") as HTMLSelectElement;
+    const income = form.elements.namedItem("taxableIncome") as HTMLInputElement;
+    const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+    const reset = () => { output.textContent = ""; error.textContent = ""; error.hidden = true; };
+    form.addEventListener("input", reset);
+    form.addEventListener("change", reset);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      reset();
+      const yearNumber = Number(year.value);
+      if (yearNumber !== 2025 && yearNumber !== 2026) {
+        error.textContent = "Anno " + year.value + " non verificato: il percorso supporta solo 2025 e 2026.";
+        error.hidden = false;
+        return;
+      }
+      const input = income.value.trim();
+      if (!/^(?:0|[1-9]\d{0,9})(?:\.\d{1,2})?$/u.test(input)) {
+        error.textContent = "Reddito imponibile non valido: inserisci euro non negativi e massimo due decimali.";
+        error.hidden = false;
+        return;
+      }
+      const [units = "0", decimals = ""] = input.split(".");
+      const cents = Number(units) * 100 + Number(decimals.padEnd(2, "0"));
+      if (!Number.isSafeInteger(cents) || cents > 100_000_000_000) {
+        error.textContent = "Reddito imponibile non valido: importo fuori limite.";
+        error.hidden = false;
+        return;
+      }
+      try {
+        const result = calculateNationalGrossIrpef127(yearNumber, cents);
+        output.textContent = "Anno d'imposta " + result.taxYear + " · IRPEF lorda nazionale: " +
+          euro(result.grossNationalTaxCents) + ". Imponibile dichiarato: " + euro(result.taxableIncomeCents) +
+          ". Solo aliquote nazionali verificate per questo anno; non è il netto in busta paga.";
+      } catch {
+        error.textContent = "Anno o imponibile non coperti dalle fonti locali verificate: nessun risultato.";
+        error.hidden = false;
+      }
+    });
+  }
+</script>
 
 <style>
   .cf08-page { width: min(1160px,calc(100% - 32px)); margin: 0 auto; padding: 32px 0 72px; display: grid; gap: 24px; min-width: 0; }
@@ -24,4 +95,14 @@ import { CodiceFiscaleTool } from "../../components/tools/codice-fiscale/CodiceF
   .cf08-page header p { max-width: 72ch; margin: 0; color: var(--text-muted); }
   .cf08-breadcrumb { color: var(--text-muted); font-size: var(--font-size-sm); }
   .cf08-breadcrumb a { color: inherit; }
+  .tax396-panel { border: 1px solid var(--border); border-radius: 14px; padding: clamp(16px, 3vw, 28px); display: grid; gap: 12px; max-width: 80ch; }
+  .tax396-panel h2 { font-size: clamp(1.25rem, 3vw, 1.6rem); margin: 0; }
+  .tax396-panel p { margin: 0; }
+  .tax396-panel form { display: grid; gap: 10px; }
+  .tax396-panel input, .tax396-panel select { min-width: 0; width: 100%; box-sizing: border-box; padding: 10px; }
+  .tax396-panel button { padding: 10px 14px; cursor: pointer; }
+  .tax396-panel button:focus-visible, .tax396-panel a:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
+  .tax396-panel output:not(:empty) { display: block; border-left: 3px solid currentColor; padding: 12px; font-weight: 600; }
+  .tax396-error { font-weight: 600; }
+  .tax396-note { font-size: 0.9rem; color: var(--text-muted); }
 </style>

@@ -181,6 +181,13 @@
 .ac-nav button:hover { background: var(--brand-soft); color: var(--brand-active); }
 .ac-nav button[aria-selected="true"] { background: var(--brand-soft); color: var(--brand-active); font-weight: var(--font-weight-semibold); }
 
+/* Small selected labels and informational pills use a pale blue background.
+   The brighter --brand ink reads only 4.106:1 on --brand-soft in light mode;
+   keep the selected state but use the existing accessible active ink. */
+.ac-shell .pill-brand,
+.ac-shell .segmented label:has(input:checked),
+.ac-shell .weekday-row label:has(input:checked) { color: var(--brand-active); }
+
 /* --- Panel blocks ---------------------------------------------------------- */
 
 .ac-block {
@@ -269,6 +276,11 @@
 .ac-device-list { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
 .ac-device-list li { display: grid; gap: var(--space-1); }
 .ac-device-key { font-family: var(--font-family-mono); font-size: var(--font-size-xs); color: var(--text-muted); overflow-wrap: anywhere; }
+
+/* The browser's native file chooser has an intrinsic width wider than a 320px
+   settings panel. Constrain the control itself so its grid ancestors can reflow
+   without pushing account content or keyboard focus off screen. */
+.ac-shell input[type="file"] { display: block; box-sizing: border-box; width: 100%; min-width: 0; }
 
 /* --- Narrow screens ------------------------------------------------------- */
 

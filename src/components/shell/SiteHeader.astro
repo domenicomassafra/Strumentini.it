@@ -276,6 +276,11 @@ const isCurrent = (href: string): boolean =>
     margin-left: auto;
   }
 
+  /* The authored .btn display overrides the UA [hidden] rule on the account
+     link. Once authenticated, it must stop consuming width and keyboard space,
+     rather than living beside the signed-in account button. */
+  .site-actions :global([data-account-login][hidden]) { display: none; }
+
   .site-menu-button {
     display: grid;
     place-items: center;
@@ -360,11 +365,22 @@ const isCurrent = (href: string): boolean =>
      the header keeps a single row at 320px. */
   @media (max-width: 1059px) {
     .site-actions :global(.theme-toggle) { display: none; }
+    /* The signed-in target was 36px at the 640px (200%-equivalent) rail:
+       retain the same touch floor as menu/search throughout mobile navigation. */
+    .site-actions :global([data-account-toggle]),
+    .site-actions :global([data-account-login]) { min-height: var(--control-height-touch); }
   }
 
   @media (max-width: 560px) {
     .site-header-inner { gap: var(--space-2); }
     .site-brand { gap: var(--space-2); }
     .site-brand-name { font-size: var(--font-size-sm); }
+  }
+
+  @media (max-width: 360px) {
+    /* 320 CSS-px reflow (also 400%-equivalent desktop layout) cannot fit the
+       brand word alongside search, authenticated chip and 44px menu target.
+       Keep the visible logo and full accessible label on .site-brand. */
+    .site-brand-name { display: none; }
   }
 </style>

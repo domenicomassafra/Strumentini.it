@@ -30,7 +30,7 @@ export const METADATA_CARRIER_IT: Readonly<Record<MetadataCarrier, string>> = {
   text: "testo incorporato",
   timestamp: "data e ora registrate",
   "icc-profile": "profilo colore ICC",
-  ancillary: "chunk PNG aggiuntivo (contenuto non verificato)",
+  ancillary: "dati aggiuntivi del contenitore (contenuto non verificato)",
 };
 
 /** Carriers that can carry identifying information and are therefore the target. */
@@ -95,9 +95,11 @@ function pngMetadataSegment(type: string, payload: Uint8Array, size: number): Me
 
 const WEBP_CHUNKS: Readonly<Record<string, { readonly carrier: MetadataCarrier; readonly segment: string }>> = {
   EXIF: { carrier: "exif", segment: "WebP EXIF" },
-  XMP: { carrier: "xmp", segment: "WebP XMP" },
+  // WebP FourCC names occupy exactly four bytes; XMP has a literal space.
+  "XMP ": { carrier: "xmp", segment: "WebP XMP" },
   ICCP: { carrier: "icc-profile", segment: "WebP ICCP" },
 };
+const WEBP_PIXEL_CHUNKS = new Set(["VP8 ", "VP8L", "VP8X", "ALPH", "ANIM", "ANMF"]);
 
 function isJpeg(bytes: Uint8Array): boolean {
   return bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
@@ -123,28 +125,43 @@ function segment(carrier: MetadataCarrier, segmentName: string, size: number): M
 function scanJpeg(bytes: Uint8Array): MetadataInventory {
   const segments: MetadataSegment[] = [];
   let offset = 2;
-  let complete = true;
-  for (;;) {
+  let complete = false;
+  let entropyScan = false;
+  // JPEG metadata markers may appear between successive SOS scans. An SOS is
+  // not an end-of-image marker: walk through entropy-coded data to a real EOI.
+  // Entropy 0xFF00 is a stuffed byte and RST0..RST7 are not segment headers.
+  while (offset < bytes.length) {
+    if (entropyScan) {
+      while (offset < bytes.length && bytes[offset] !== 0xff) offset += 1;
+      if (offset >= bytes.length) break;
+    } else if (bytes[offset] !== 0xff) {
+      break;
+    }
     while (offset < bytes.length && bytes[offset] === 0xff) offset += 1;
     if (offset >= bytes.length) break;
     const marker = bytes[offset]!;
-    if (marker === 0xd9) break;
-    if (marker === 0xda) break;
+    if (entropyScan && (marker === 0x00 || (marker >= 0xd0 && marker <= 0xd7))) {
+      offset += 1;
+      continue;
+    }
+    entropyScan = false;
+    if (marker === 0xd9) {
+      const trailingBytes = bytes.length - offset - 1;
+      if (trailingBytes > 0) segments.push(segment("ancillary", "JPEG trailing payload", trailingBytes));
+      complete = trailingBytes === 0;
+      break;
+    }
+    // A nested start marker or 0xFF00 outside entropy is not a valid segment.
+    if (marker === 0xd8 || marker === 0x00) break;
     if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) {
       offset += 1;
       continue;
     }
-    if (offset + 3 > bytes.length) {
-      complete = false;
-      break;
-    }
+    if (offset + 3 > bytes.length) break;
     // `offset` is on the marker byte, so the two-byte length field that
     // follows the 0xFF marker prefix starts one byte later.
     const length = (bytes[offset + 1]! << 8) | bytes[offset + 2]!;
-    if (length < 2 || offset + 1 + length > bytes.length) {
-      complete = false;
-      break;
-    }
+    if (length < 2 || offset + 1 + length > bytes.length) break;
     const known = JPEG_SEGMENTS[marker];
     if (known !== undefined) {
       // APP1 is shared by Exif and XMP; the payload identifies which.
@@ -157,6 +174,7 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
     // `offset` sits on the marker byte itself (the leading 0xFF was consumed
     // above), so the next marker starts one byte plus the declared length later.
     offset += 1 + length;
+    if (marker === 0xda) entropyScan = true;
   }
   return summarize("jpeg", segments, complete);
 }
@@ -190,20 +208,36 @@ function scanPng(bytes: Uint8Array): MetadataInventory {
 function scanWebp(bytes: Uint8Array): MetadataInventory {
   const segments: MetadataSegment[] = [];
   const riffSize = (bytes[4]! + (bytes[5]! << 8) + (bytes[6]! << 16) + (bytes[7]! << 24)) >>> 0;
-  const limit = Math.min(bytes.length, 8 + riffSize);
+  const declaredEnd = 8 + riffSize;
+  const limit = Math.min(bytes.length, declaredEnd);
   let offset = 12;
-  let complete = true;
-  while (offset + 8 <= limit) {
+  let complete = riffSize >= 4 && declaredEnd === bytes.length;
+  if (declaredEnd < bytes.length) {
+    // Bytes outside the declared RIFF boundary can hide XMP, Exif or private
+    // data while a decoder still opens the image. Never certify them as clean.
+    segments.push(segment("ancillary", "WebP trailing payload", bytes.length - declaredEnd));
+  }
+  while (offset < limit) {
+    if (offset + 8 > limit) {
+      complete = false;
+      break;
+    }
     const type = String.fromCharCode(bytes[offset]!, bytes[offset + 1]!, bytes[offset + 2]!, bytes[offset + 3]!);
     const size = (bytes[offset + 4]! + (bytes[offset + 5]! << 8) + (bytes[offset + 6]! << 16) + (bytes[offset + 7]! << 24)) >>> 0;
-    if (offset + 8 + size > limit) {
+    if (offset + 8 + size + (size % 2) > limit) {
       complete = false;
       break;
     }
     const known = WEBP_CHUNKS[type];
     if (known !== undefined) segments.push(segment(known.carrier, known.segment, size + 8 + (size % 2)));
+    else if (!WEBP_PIXEL_CHUNKS.has(type)) {
+      // Nonstandard RIFF chunks are ignored by some decoders, yet can contain
+      // identifying metadata. Count them instead of asserting a clean export.
+      segments.push(segment("ancillary", `WebP ${type}`, size + 8 + (size % 2)));
+    }
     offset += 8 + size + (size % 2);
   }
+  if (offset !== limit) complete = false;
   return summarize("webp", segments, complete);
 }
 

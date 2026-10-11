@@ -40,7 +40,10 @@ export function checkZipPath407(path: string): FileThreatFinding407 | null {
     normalizedSegments.length !== segments.length ||
     normalizedSegments.length > FILE_THREAT_LIMITS_407.maxZipPathDepth ||
     normalizedSegments.some((part) => !part || part === "." || part === ".." || /[. ]$/u.test(part) ||
-      /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(part))) {
+      // CONIN$ and CONOUT$ refer to Windows console devices even below an
+      // ordinary-looking directory. Reject extension variants conservatively
+      // because behavior depends on the target filesystem/Windows version.
+      /^(?:con|conin\$|conout\$|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(part))) {
     return reject("MALFORMED", "ZIP contains path traversal or ambiguous member paths.");
   }
   return null;

@@ -108,6 +108,38 @@ describe("#404 PR/source impact planning", () => {
     expect(plan.gates.map((gate) => gate.id)).toContain("security-review");
   });
 
+  it("requires independent security review when the irreversible PDF redaction engine changes", () => {
+    const plan = buildImpactPlan(["src/engines/pdf/secure-raster-redaction-237.ts"], suites);
+    expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(plan.domains).toContain("pdf");
+    expect(plan.gates).toContainEqual(expect.objectContaining({ id: "security-review", status: "NOT_RUN" }));
+    expect(plan.gates).toContainEqual(expect.objectContaining({ id: "physical-device", status: "NOT_RUN" }));
+    expect(plan.gates).toContainEqual(expect.objectContaining({ id: "release-readiness", status: "NOT_RUN" }));
+  });
+
+  it("preserves primary-source-year review for the official Italy source auditor and tax journey acceptance", () => {
+    for (const path of ["scripts/validator/audit-397.ts", "tests/audit-397.test.ts", "tests/tax-journeys-396.browser.mjs"]) {
+      const plan = buildImpactPlan([path], suites);
+      expect(plan.domains, path).toContain("italy");
+      expect(plan.gates, path).toContainEqual(expect.objectContaining({ id: "official-source-year", status: "NOT_RUN" }));
+      expect(plan.selectedTests, path).toContain("tests/italy-source-packs.test.ts");
+    }
+  });
+
+  it("does not bypass the independent security gate when forensics or Gold proof audits change", () => {
+    for (const path of ["scripts/forensic-redaction-378.ts", "tests/forensic-redaction-378.test.ts"]) {
+      const plan = buildImpactPlan([path], suites);
+      expect(plan.domains, path).toContain("pdf");
+      expect(plan.gates, path).toContainEqual(expect.objectContaining({ id: "security-review", status: "NOT_RUN" }));
+      expect(plan.gates, path).toContainEqual(expect.objectContaining({ id: "physical-device", status: "NOT_RUN" }));
+    }
+    for (const path of ["scripts/audit-per-tool-proof-415.ts", "tests/per-tool-proof-wave15-415.test.ts"]) {
+      const plan = buildImpactPlan([path], suites);
+      expect(plan.gates, path).toContainEqual(expect.objectContaining({ id: "security-review", status: "NOT_RUN" }));
+      expect(plan.gates, path).toContainEqual(expect.objectContaining({ id: "release-readiness", status: "NOT_RUN" }));
+    }
+  });
+
   it("never treats locally saved sensitive PDFs or metadata-sanitizer changes as security-neutral", () => {
     for (const path of [
       "src/workbench/saved-pdf-341.ts",
@@ -154,6 +186,35 @@ describe("#404 PR/source impact planning", () => {
     }
   });
 
+  it("does not bypass security and device gates for shipped executable OCR vendor assets", () => {
+    for (const path of [
+      "public/ocr-246/vendor/tesseract.esm.min.js",
+      "public/ocr-246/vendor/worker.min.js",
+      "public/ocr-246/core/tesseract-core-lstm.wasm",
+      "public/ocr-246/lang/ita.traineddata.gz",
+    ]) {
+      const plan = buildImpactPlan([path], suites);
+      expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+      expect(plan.domains).toEqual(expect.arrayContaining(["frontend", "pdf"]));
+      expect(plan.selectedTests).toContain("tests/pdf-redaction-237.test.ts");
+      expect(plan.gates).toContainEqual(expect.objectContaining({ id: "security-review", status: "NOT_RUN" }));
+      expect(plan.gates).toContainEqual(expect.objectContaining({ id: "physical-device", status: "NOT_RUN" }));
+    }
+  });
+
+  it("selects OCR suites and independent security review for its browser engine and upload UI", () => {
+    for (const [path, expectedDomain] of [
+      ["src/engines/ocr/local-italian-246.ts", "pdf"],
+      ["src/components/tools/ocr246/LocalItalianOcr246Tool.tsx", "frontend"],
+    ] as const) {
+      const plan = buildImpactPlan([path], suites);
+      expect(plan.domains).toContain(expectedDomain);
+      expect(plan.domains).toContain("pdf");
+      expect(plan.gates).toContainEqual(expect.objectContaining({ id: "security-review", status: "NOT_RUN" }));
+      expect(plan.gates).toContainEqual(expect.objectContaining({ id: "physical-device", status: "NOT_RUN" }));
+    }
+  });
+
   it("requires image/PDF physical gates for the real tool component directories", () => {
     const changed = buildImpactPlan([
       "src/components/tools/image-visual/ImageCompressionTool.tsx",
@@ -193,7 +254,7 @@ describe("#404 PR/source impact planning", () => {
       expect(plan.domains).toContain("pdf");
       expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
     });
-  });
+  }, 20_000); // Git fixture subprocesses may be CPU-contended by concurrent browser lanes.
 
   it("sees both sides of a sensitive rename and rejects missing Git history", async () => {
     await fixture(async (root, _base, head) => {

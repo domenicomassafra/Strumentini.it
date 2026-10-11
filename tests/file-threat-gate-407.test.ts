@@ -116,6 +116,23 @@ describe("#407 bounded hostile-format preflight in the actual detector", () => {
     expect(await detectLocalFile(asFile("ordinary.zip",pack({"docs/contact.txt":bytes("safe")})))).toMatchObject({status:"supported",format:"zip"});
   });
 
+  it("refuses Windows console pseudo-device aliases including NFKC and extension suffix before any extraction", async () => {
+    // CONIN$ and CONOUT$ are Windows console device names in addition to CON.
+    // They can name a special target on extraction instead of a regular file.
+    for (const name of ["CONIN$", "docs/CONOUT$", "assets/conin$.txt", "assets/CONOUT$.xml", "assets/ＣＯＮＩＮ＄.txt"]) {
+      expect(checkZipPath407(name),name).toMatchObject({reason:"MALFORMED"});
+      // The actual entry bytes must be refused via detectLocalFile, not just
+      // through a standalone helper or a mocked archive parser.
+      const result=await detectLocalFile(asFile("device.zip",pack({[name]:bytes("test payload")})));
+      expect(result,name).toMatchObject({status:"refused",reason:"MALFORMED"});
+    }
+    for (const ordinary of ["docs/console.txt", "docs/coninfo.txt", "assets/CONIN-report.txt"]) {
+      expect(checkZipPath407(ordinary)).toBeNull();
+      expect(await detectLocalFile(asFile("ordinary.zip",pack({[ordinary]:bytes("ordinary")}))))
+        .toMatchObject({status:"supported",format:"zip"});
+    }
+  });
+
   it("refuses ZIP source-view suffixes, URL delimiters and incompatible filesystem path characters", async () => {
     for (const name of [
       "views/render.svg?source", "views/render.svg#source", "views/render.svg%3Fsource",

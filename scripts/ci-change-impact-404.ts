@@ -47,6 +47,10 @@ const gateReasons: Record<GateId, string> = {
   "release-readiness": "Cumulative npm test/check/build plus non-writing release validator --require-ready before publication.",
 };
 
+/** Real Tesseract scripts, WebAssembly and the downloaded model are executable
+ * or parser-consumed bytes in the OCR browser pipeline, not decorative assets. */
+const shippedOcrRuntimeAsset = /^public\/ocr-246\/(?:core\/[^/]+\.(?:js|wasm)|vendor\/[^/]+\.js|lang\/[^/]+\.traineddata\.gz)$/u;
+
 /** Only known documentation roots count as docs; never infer from a .md suffix. */
 export function classifyPath(path: string): readonly ChangeDomain[] {
   if (!path || path.startsWith("/") || path.includes("\\") || /[\u0000-\u001f\u007f\ufffd]/u.test(path) || path.split("/").some((part) => part === "." || part === ".." || part === "")) return ["unknown"];
@@ -61,6 +65,20 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
   if (path.startsWith("worker/migrations/")) return ["d1"];
   if (path.startsWith("worker/")) return ["worker-auth"];
+  // The shipped OCR engine is executed in the browser even though its JS,
+  // WASM and trained data live under public/ rather than src/. Changes to
+  // these production bytes must select OCR/PDF tests and device evidence.
+  if (shippedOcrRuntimeAsset.test(path)) return ["frontend", "pdf"];
+  if (path.startsWith("src/engines/ocr/")) return ["pdf"];
+  if (path.startsWith("src/components/tools/ocr246/")) return ["frontend", "pdf"];
+  // The standalone evidence auditor and anonymous tax-journey browser tests
+  // validate official year-scoped rules, even though neither filename follows
+  // the generic `italy-` matcher. They cannot skip primary-source review.
+  if (path === "scripts/validator/audit-397.ts" || path === "tests/audit-397.test.ts") return ["italy"];
+  if (path === "tests/tax-journeys-396.browser.mjs") return ["frontend", "italy"];
+  if (path === "scripts/forensic-redaction-378.ts" || path === "tests/forensic-redaction-378.test.ts") return ["pdf"];
+  // Tool-specific Gold admission must never pass through generic script review.
+  if (path === "scripts/audit-per-tool-proof-415.ts" || path === "tests/per-tool-proof-wave15-415.test.ts") return ["ci"];
   if (/^(tests\/(auth-worker|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347)\.test\.ts|scripts\/acceptance-auth\.mjs)/u.test(path)) return ["worker-auth"];
 
   // Match domain-specific code and fixtures before the broad shared/frontend roots.
@@ -117,10 +135,19 @@ export function buildImpactPlan(changedPaths: readonly string[], availableTests:
   if (paths.some((path) => /^src\/(workbench\/saved-pdf-341\.ts|runtime\/(browser-download-339|download-policy-339)\.ts|engines\/image\/(strip-metadata|metadata)\.ts|engines\/file-privacy\/[^/]+|components\/tools\/image-visual\/ExifRemoverTool\.tsx)$/u.test(path))) {
     gates.add("security-review");
   }
+  // This engine promises irreversible erasure, unlike a visual PDF overlay.
+  // Source changes must never ship solely on generic PDF/device tests.
+  if (paths.includes("src/engines/pdf/secure-raster-redaction-237.ts")) gates.add("security-review");
+  if (paths.some((path) => path === "scripts/forensic-redaction-378.ts" || path === "tests/forensic-redaction-378.test.ts")) gates.add("security-review");
   // File-byte processors, private in-memory result chains, and UI entrypoints
   // that now initiate consent-controlled browser downloads also need their
   // own independent privacy/security review; source tests alone are not proof.
   if (paths.some((path) => /^src\/(?:runtime\/batch-file-410\.ts|workbench\/session-history-340\.ts|components\/(?:workbench\/SessionChain340\.tsx|lab\/BatchGzipLab410\.astro|tools\/(?:image-visual\/ImageVisualTool|pdf\/PdfTool)\.tsx))$/u.test(path))) {
+    gates.add("security-review");
+  }
+  // Never treat vendored OCR script/WASM or its loadable language payload as
+  // an ordinary visual asset: the user runs these third-party bytes locally.
+  if (paths.some((path) => shippedOcrRuntimeAsset.test(path) || path.startsWith("src/engines/ocr/") || path.startsWith("src/components/tools/ocr246/"))) {
     gates.add("security-review");
   }
   if (domains.includes("worker-auth") || domains.includes("d1")) gates.add("auth-integration");

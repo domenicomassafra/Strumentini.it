@@ -47,14 +47,15 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [pngPalette, setPngPalette] = useState<"off" | "exact" | "lossy">("off");
   const [handoffStatus, setHandoffStatus] = useState("");
   const [colorMode, setColorMode] = useState("convert");
-  // One proven output family only: a single verified PNG from image format conversion.
+  // Only a verified single PNG result, from conversion or compression.
   // Always render OFF during SSR; mount restores the shared preference without downloads.
   const [pngAutoDownload, setPngAutoDownload] = useState(false);
   const [pngDownloadStatus, setPngDownloadStatus] = useState("");
   const operation = useToolOperation<PreparedImageResult>(async (signal) => {
-    if (toolId === "image-format-conversion") setPngDownloadStatus("");
+    if (toolId === "image-format-conversion" || toolId === "image-compression") setPngDownloadStatus("");
     // Consent must precede the job and still exist on completion.
-    const autoAtStart = toolId === "image-format-conversion" && mime === "image/png"
+    const autoAtStart = mime === "image/png"
+      && (toolId === "image-format-conversion" || (toolId === "image-compression" && !batchMode && file !== null))
       && readAutoDownload339(browserStorage339());
     const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette);
     const run = await toolRuntime.run(toolId, input, {}, signal);
@@ -62,6 +63,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     const prepared = await prepareImageResult(run.value);
     const artifact = prepared.artifacts.length === 1 ? prepared.artifacts[0]?.artifact : undefined;
     if (autoAtStart && !signal.aborted && readAutoDownload339(browserStorage339())
+      && prepared.zip === undefined && !Array.isArray(prepared.raw.items)
       && artifact?.kind === "image" && artifact.mime === "image/png"
       && artifact.verification.state === "verified" && artifact.download.ready) {
       setPngDownloadStatus(requestBrowserDownload339(artifact)
@@ -75,7 +77,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const result = operation.result;
 
   useEffect(() => {
-    if (toolId !== "image-format-conversion") return;
+    if (toolId !== "image-format-conversion" && toolId !== "image-compression") return;
     setPngAutoDownload(readAutoDownload339(browserStorage339()));
     const onStorage = (event: StorageEvent) => {
       if (event.key === AUTO_DOWNLOAD_KEY_339 || event.key === null) {
@@ -309,14 +311,16 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
           </fieldset>
         )}
         {toolId === "image-format-conversion" && <p class="file-note">Input: SVG statico con policy restrittiva, JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF e GIF. SVG produce PNG/JPEG/WebP o PDF raster-backed, NON un PDF vettoriale. HEIC/HEIF usa un decoder locale lazy; per GIF viene convertito solo il primo frame. I metadati container non vengono conservati. La modalità SVG è in validazione (Partial), non certificata Gold.</p>}
-        {toolId === "image-format-conversion" && mime === "image/png" && (
-          <div data-download-png339>
+        {mime === "image/png" && (toolId === "image-format-conversion" || (toolId === "image-compression" && !batchMode)) && (
+          <div {...(toolId === "image-compression" ? { "data-download-compression339": "" } : { "data-download-png339": "" })}>
             <label class="field">
               <input type="checkbox" checked={pngAutoDownload} onChange={(event) => choosePngAutoDownload(event.currentTarget.checked)} />
               <span>Download automatico condiviso (WAV, JSON, CSV, PDF singolo e prossimo PNG verificato)</span>
             </label>
-            <p class="file-note">OFF se non hai dato consenso. La scelta è globale e revocabile: disattivarla qui revoca anche gli altri strumenti supportati. Solo conversioni PNG singole iniziate dopo il consenso; mai risultati precedenti, file non verificati, JPEG, WebP o PDF.</p>
-            {pngDownloadStatus !== "" && <p role="status" data-download-png339-status>{pngDownloadStatus}</p>}
+            <p class="file-note">OFF se non hai dato consenso. La scelta è globale e revocabile: disattivarla qui revoca anche gli altri strumenti supportati. {toolId === "image-compression"
+              ? "Solo compressioni PNG singole iniziate dopo il consenso; mai risultati precedenti, file non verificati, JPEG, WebP, ZIP o lotti multipli."
+              : "Solo conversioni PNG singole iniziate dopo il consenso; mai risultati precedenti, file non verificati, JPEG, WebP o PDF."}</p>
+            {pngDownloadStatus !== "" && <p role="status" {...(toolId === "image-compression" ? { "data-download-compression339-status": "" } : { "data-download-png339-status": "" })}>{pngDownloadStatus}</p>}
           </div>
         )}
         <InlineError message={operation.error === "" ? "" : "L'operazione non è riuscita. Controlla i file e i parametri inseriti."} />

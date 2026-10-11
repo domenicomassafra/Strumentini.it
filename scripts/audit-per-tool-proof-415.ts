@@ -18,6 +18,7 @@ import { currentEvidenceSourceFingerprint, currentRevision } from "./lib/current
 const HEX256=/^[a-f0-9]{64}$/u;
 const HEX160=/^[a-f0-9]{40}$/u;
 const RECEIPT_PATH=/^quality\/receipts\/(?:[a-z0-9_-]+\/)*[a-z0-9_.-]+\.json$/u;
+const TOOL_ID=/^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const sha256=(data:Uint8Array | string) => createHash("sha256").update(data).digest("hex");
 
 export interface ProofReceiptProbe415 {
@@ -30,7 +31,12 @@ export interface ProofReceiptProbe415 {
 
 /** Rejects tamper, alien path/identity, stale revision and source scope. */
 export function probeReceipt415(p:ProofReceiptProbe415):boolean {
-  if (!RECEIPT_PATH.test(p.path) || !HEX256.test(p.expectedSha256) ||
+  // A correctly hashed receipt cannot be borrowed through another tool's
+  // filename. The canonical Gold receipt leaf is always <toolId>.gold.json,
+  // including when a family directory groups those files.
+  if (!TOOL_ID.test(p.toolId) || !RECEIPT_PATH.test(p.path) ||
+      p.path.split("/").at(-1)!==`${p.toolId}.gold.json` ||
+      !HEX256.test(p.expectedSha256) ||
       !HEX256.test(p.fingerprint) || !HEX160.test(p.revision) ||
       !HEX256.test(p.currentManifestSha256??"") ||
       sha256(p.content)!==p.expectedSha256) return false;

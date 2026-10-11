@@ -80,6 +80,17 @@ export function validateRedactionPlan237(count: number, regions: readonly Redact
 export function assertSupportedSource237(source: Uint8Array): number {
   if (source.length < 8 || source.length > MAX_SOURCE_BYTES) refuse("Dimensione file fuori limite (8 MiB).");
   if (new TextDecoder("ascii").decode(source.subarray(0, 5)) !== "%PDF-") refuse("Firma PDF assente.");
+  // A trailing comment can include a decoy 'trailer <<...>>', masking /Prev
+  // from the in-house parser's last-trailer lookup while PDF.js and independent
+  // viewers still follow the real multi-revision cross-reference chain.
+  // This redaction profile admits one complete PDF revision only, so refuse
+  // ambiguous multiple xref/EOF sections BEFORE trusting any trailer model.
+  const sourceText = new TextDecoder("latin1").decode(source);
+  const xrefSections = sourceText.match(/(?:^|[\r\n])[ \t]*startxref[ \t]*(?=\r?\n)/gu) ?? [];
+  const eofSections = sourceText.match(/(?:^|[\r\n])[ \t]*%%EOF[ \t]*(?=\r?\n|$)/gu) ?? [];
+  if (xrefSections.length !== 1 || eofSections.length !== 1) {
+    refuse("Revisioni incrementali o terminatori PDF ambigui non supportati.");
+  }
   const model = parsePdf(source);
   if (model.encrypted) refuse("PDF cifrato non supportato.");
   // This security-sensitive path must not interpret one revision while PDF.js
