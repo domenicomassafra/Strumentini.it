@@ -50,9 +50,43 @@ function parsePng(bytes: Uint8Array): ImageHeader | null {
   return { mime: "image/png", width, height };
 }
 
+/** Read only the TIFF orientation in a bounded JPEG APP1 Exif segment.
+ * Unknown/malformed metadata is not authority for rotating any pixels.
+ * 5..8 swap displayed axes (including mirrored diagonal orientations).
+ */
+function jpegExifOrientation(bytes: Uint8Array, start: number, end: number): number | null {
+  if (end - start < 14 || !ascii(bytes, start, "Exif\0\0")) return null;
+  const tiff = start + 6;
+  const little = bytes[tiff] === 0x49 && bytes[tiff + 1] === 0x49;
+  const big = bytes[tiff] === 0x4d && bytes[tiff + 1] === 0x4d;
+  if (!little && !big) return null;
+  const read16 = (at: number): number => little
+    ? bytes[at]! | (bytes[at + 1]! << 8)
+    : (bytes[at]! << 8) | bytes[at + 1]!;
+  const read32 = (at: number): number => little
+    ? (bytes[at]! + bytes[at + 1]! * 0x100 + bytes[at + 2]! * 0x10000 + bytes[at + 3]! * 0x1000000) >>> 0
+    : be32(bytes, at);
+  if (read16(tiff + 2) !== 42) return null;
+  const firstIfd = tiff + read32(tiff + 4);
+  if (firstIfd < tiff + 8 || firstIfd > end - 2) return null;
+  const entries = read16(firstIfd);
+  if (entries > Math.floor((end - firstIfd - 2) / 12)) return null;
+  for (let n = 0; n < entries; n += 1) {
+    const at = firstIfd + 2 + n * 12;
+    if (read16(at) !== 0x0112) continue;
+    // TIFF tag 0x0112: SHORT (3), count 1; its value is inline, not a pointer.
+    if (read16(at + 2) !== 3 || read32(at + 4) !== 1) return null;
+    const orientation = read16(at + 8);
+    return orientation >= 1 && orientation <= 8 ? orientation : null;
+  }
+  return null;
+}
+
 function parseJpeg(bytes: Uint8Array): ImageHeader | null {
   if (bytes.length < 3 || bytes[0] !== 0xff || bytes[1] !== 0xd8 || bytes[2] !== 0xff) return null;
   let offset = 2;
+  let orientation: number | null = null;
+  let codedDimensions: { width: number; height: number } | null = null;
   const sofMarkers = new Set([0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf]);
   while (offset < bytes.length) {
     while (offset < bytes.length && bytes[offset] === 0xff) offset += 1;
@@ -63,17 +97,33 @@ function parseJpeg(bytes: Uint8Array): ImageHeader | null {
     if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) continue;
     const segmentLength = be16(bytes, offset);
     if (segmentLength < 2) throw new ImageResizeError("CORRUPT_IMAGE", "JPEG segment length is invalid");
+    ensure(bytes, offset, segmentLength);
+    if (marker === 0xe1) {
+      const parsed = jpegExifOrientation(bytes, offset + 2, offset + segmentLength);
+      if (parsed !== null) {
+        if (orientation !== null && orientation !== parsed) {
+          throw new ImageResizeError("CORRUPT_IMAGE", "JPEG has conflicting Exif orientations");
+        }
+        orientation = parsed;
+      }
+    }
     if (sofMarkers.has(marker)) {
+      if (segmentLength < 7) throw new ImageResizeError("CORRUPT_IMAGE", "JPEG SOF length is invalid");
       ensure(bytes, offset, 7);
       const height = be16(bytes, offset + 3);
       const width = be16(bytes, offset + 5);
       if (width === 0 || height === 0) throw new ImageResizeError("CORRUPT_IMAGE", "JPEG has invalid dimensions");
-      return { mime: "image/jpeg", width, height };
+      if (codedDimensions !== null && (width !== codedDimensions.width || height !== codedDimensions.height)) {
+        throw new ImageResizeError("CORRUPT_IMAGE", "JPEG has conflicting frame dimensions");
+      }
+      codedDimensions = { width, height };
     }
-    ensure(bytes, offset, segmentLength);
     offset += segmentLength;
   }
-  throw new ImageResizeError("CORRUPT_IMAGE", "JPEG dimensions were not found");
+  if (codedDimensions === null) throw new ImageResizeError("CORRUPT_IMAGE", "JPEG dimensions were not found");
+  return orientation !== null && orientation >= 5
+    ? { mime: "image/jpeg", width: codedDimensions.height, height: codedDimensions.width }
+    : { mime: "image/jpeg", ...codedDimensions };
 }
 
 function parseWebp(bytes: Uint8Array): ImageHeader | null {

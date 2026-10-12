@@ -55,3 +55,81 @@ The one-engine correction walks JPEG entropy with 0xFF00 stuffing and RST marker
 **GREEN:** `npx vitest run tests/metadata-trailing-394.test.ts tests/metadata-forensic-394.test.ts tests/image-media-tools.test.ts tests/image-upgrade-cluster.test.ts` **36/36 PASS** (new 6/6, existing 30/30); `npx tsc --noEmit --pretty false` **exit 0**, `git diff --check` **PASS**. No new dependency, vendor, Gold claim, commit/push/deploy. Scope remains only JPEG/WebP container *inspection* and the already implemented PNG export inspector; this does **not** independently verify JPEG/WebP pixel fidelity, erase pixel steganography, inspect nested thumbnail pixels individually, prove all unknown metadata semantics, or deliver document stripping for PDF/OOXML/SVG. Non-PNG `scanImageMetadataBlob` retains the explicit 8 MiB bounded-prefix limit and returns `complete:false` for larger blobs. Original AC-394.1 and AC-394.3 stay unchecked for broader supported document sanitizers, malicious corpus, physical mobile/cross-browser and release rollback. AC-394.2 remains checked only at its previously documented bounded claim scope; no production approval implied.
 
 **Additional live checks / concurrent blocker:** The existing `node tests/metadata-forensic-394.browser.mjs` also **PASS** in real Chromium 390×844, exercising actual PNG export/decoded pixel readback, independent CRC/chunk-walker, injected metadata refusal, unsupported formats, cancellation and oversized input. A later global TypeScript rerun after new concurrent work arrived was **NOT_PASS**: unrelated unowned new `tests/audit-397.test.ts` imports absent `../scripts/validator/audit-397` (`TS2307`) and reports implicit-any parameters (`TS7031`/`TS7006`). The earlier all-clear on typecheck predates those concurrent #397 files; do **not** claim that the latest repo-wide `tsc` is green. #397 files were untouched. Separate `git diff --check` remains **PASS**.
+
+## 2026-10-12 wave21 — output PNG *compressed-stream* forensic boundary (RED→GREEN, partial)
+
+**New substantive counterexample distinct from the existing chunk inventory:** A PNG
+can have only allowed `IHDR/IDAT/IEND` chunks with correct chunk lengths and
+**valid CRCs**, yet an IDAT chunk can contain bytes that are **not part of the
+zlib image stream** after its terminal Adler32. The installed **Sharp decoder
+and real Chromium ImageBitmap both decode the exact original picture**,
+silently ignoring those bytes. The previous `stripImageMetadataLocal` gate
+walked full PNG chunk boundaries and independently checked output RGBA, but
+still returned `metadataFree: true` when the browser encoder callback was
+synthetically modified to return such a tainted PNG. The inserted identifying
+payload was `PRIVATE_EXIF_IPTC_XMP_GPS_NESTED_THUMBNAIL_394_WAVE21`:
+independent Node `inflateSync(..., { info: true }).engine.bytesWritten`
+demonstrated that **fewer compressed bytes were consumed than exist in IDAT**.
+This demonstrates a **real byte-level output-verification bypass under a
+tampered encoder callback**; it does **not** mean ordinary unmodified Chromium
+was observed inserting secrets, and the test does not fabricate a production
+incident.
+
+**Fix within `src/engines/image/strip-metadata.ts` only:** After its
+unchanged complete PNG inventory and before delivering the Blob, the engine
+now parses the actual encoded PNG structure and checks *every chunk CRC*
+incrementally in 64 KiB reads. It enforces a single IHDR, constrained raster
+geometry, contiguous IDAT chunks and terminal IEND, then streams all
+concatenated IDAT compressed bytes through browser
+`DecompressionStream('deflate')`, measuring the exact independently derived
+inflated PNG scanline byte count and Adler32 of those scanlines. Invalid
+framing, surplus compressed bytes, bad CRC, incorrect Adler32, missing
+stream API, unexpected interlace, malformed geometry, or malformed chunks
+cause `OUTPUT_VALIDATION_FAILED` before the result/filename can be returned.
+The existing final reopened RGBA exactness proof is retained.
+
+**Bounded resources and cancellation:** Output PNG size is capped by the
+already-defined **40 MiB** image limit, inflated scanline bytes by
+`height × (1 + ceil(width × channels × depth / 8))` plus the existing
+**16 million-pixel / 8192-pixel per side** constraints. The script streams
+compressed bytes and counts decompressed chunks, stopping immediately on
+excess before buffering all inflated bytes. An AbortSignal is checked between
+reads and also cancels an active stream reader. No new dependency, provider,
+network request or production feature was added; engine evidence version is
+`image-metadata-strip-v3`. Fail-closed older browsers lacking
+`DecompressionStream` are **not** claimed supported.
+
+**Independent browser proof:** NEW
+`tests/image-strip-forensic-394-wave21.browser.mjs` builds the real source
+and runs actual **headless Chromium at 390×844**. A Sharp-encoded JPEG
+contains actual Exif Copyright and XMP bytes plus synthetic IPTC APP13/COM
+carriers. The real unmodified browser PNG export has no source secrets and
+exact source/returned RGBA pixels. The adversarial CRC-valid IDAT
+output is opened with Chromium **and** Sharp with intact pixels and a hidden
+identifying marker; the original code yielded success (**RED**), the new
+checker rejects it with `OUTPUT_VALIDATION_FAILED` (**GREEN**). A benign
+PNG where the Adler32 is split across separate IDAT chunks is accepted,
+preserving valid multi-IDAT behavior. An independently Sharp-decoded
+512×512 incompressible RGB image roundtripped **788,425-byte source →
+902,686-byte real browser output** with exact pixels; one observed desktop
+Chromium execution took **308 ms**. This is a bounded synthetic desktop
+sample, **not** mobile performance/RSS/native-memory or SLA evidence.
+
+**Validation:** New Chromium wave21 script **PASS**; existing real Chromium
+`node tests/metadata-forensic-394.browser.mjs` **PASS**; existing
+`tests/metadata-trailing-394.test.ts`,
+`tests/metadata-forensic-394.test.ts`,
+`tests/image-media-tools.test.ts`,
+`tests/image-upgrade-cluster.test.ts` **36/36 PASS**; focused TypeScript
+`tsc --ignoreConfig --noEmit --target es2023` **PASS**. No edits to the
+existing metadata scanner, visual/UI engine or any #363/#367 WIP; no
+commit/push/deploy/Gold/receipt changes.
+
+**Remaining original AC:** AC-394.2 remains narrowly checked for supported
+PNG raster verification without certifying Exif nested thumbnail parsing,
+pixel steganography or identity in picture content. AC-394.1 still OPEN for
+image/**document** scope; AC-394.3 still OPEN for forensic PDF/OOXML/SVG
+source/output proofs, cross-browser and physical iOS/Android
+memory/cancellation/privacy/rollback evidence. `Status: ready-for-agent`
+remains unchanged. The malicious callback is a regression boundary probe;
+normal browser encoders were observed clean in this sample.

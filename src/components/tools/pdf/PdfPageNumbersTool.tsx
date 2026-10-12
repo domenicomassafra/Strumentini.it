@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { numberPdfPages, planPdfPageNumbers, type PdfNumberFont, type PdfNumberPosition } from "../../../engines/pdf/page-numbers";
 import { openPdfThumbnailSession, pdfThumbnailWindow, type PdfThumbnailSession } from "../../../engines/pdf/thumbnails";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
+import { pdfPageNumbersManifest } from "../../../tools/pdf-page-numbers/manifest";
 
 type Thumb = { page: number; url: string };
 
@@ -32,6 +34,24 @@ export function PdfPageNumbersTool() {
   const [session, setSession] = useState<PdfThumbnailSession | null>(null);
   const [thumbs, setThumbs] = useState<Thumb[]>([]);
   const [previewError, setPreviewError] = useState("");
+  // A submit acquires this lock synchronously, before any RAF or Preact paint.
+  // Changing the input, cancelling or unmounting invalidates the result even
+  // if the previously scheduled async continuation later resolves.
+  const generation = useRef(0);
+  const inFlight = useRef(false);
+
+  function invalidate() {
+    generation.current += 1;
+    inFlight.current = false;
+    setRunning(false);
+    setOutput(null);
+    setWriteError("");
+  }
+
+  useEffect(() => () => {
+    generation.current += 1;
+    inFlight.current = false;
+  }, []);
 
   const options = { pages, startNumber: Number(startNumber), offset: Number(offset),
     position, font, fontSize: Number(fontSize), margin: Number(margin) };
@@ -98,10 +118,9 @@ export function PdfPageNumbersTool() {
 
   function choose(event: Event) {
     const selected = (event.currentTarget as HTMLInputElement).files?.[0] ?? null;
+    invalidate();
     setBytes(null);
     setFile(selected);
-    setOutput(null);
-    setWriteError("");
     setLoadError("");
     setPreviewError("");
     setStart(1);
@@ -109,49 +128,66 @@ export function PdfPageNumbersTool() {
 
   async function submit(event: Event) {
     event.preventDefault();
+    if (inFlight.current) return;
+    if (bytes === null || plan === null) { invalidate(); return; }
+    const operation = ++generation.current;
+    inFlight.current = true;
     setOutput(null);
     setWriteError("");
-    if (bytes === null || plan === null) return;
     setRunning(true);
     try {
       // Yield so the "working" state paints before bounded CPU-only PDF rebuilding.
       await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+      if (operation !== generation.current) return;
       const result = numberPdfPages(bytes, options);
+      if (operation !== generation.current) return;
+      if (!(result.artifact.blob instanceof Blob) || result.artifact.blob.size < 100) {
+        throw new Error("PDF numerato non disponibile");
+      }
       setOutput(result.artifact.blob);
+      // No bytes, file names, options, selected pages or PDF content are stored.
+      recordCompletedTool(pdfPageNumbersManifest.id);
     } catch (error) {
-      setWriteError(error instanceof Error ? error.message : "Impossibile creare PDF numerato");
-    } finally { setRunning(false); }
+      if (operation === generation.current) {
+        setWriteError(error instanceof Error ? error.message : "Impossibile creare PDF numerato");
+      }
+    } finally {
+      if (operation === generation.current) {
+        inFlight.current = false;
+        setRunning(false);
+      }
+    }
   }
 
   return (
     <form class="tool-operation" onSubmit={(event) => { void submit(event); }} data-pdf-page-numbers>
       <label class="field"><span>PDF locale da numerare</span>
-        <input type="file" accept="application/pdf,.pdf" onChange={choose} disabled={running} />
+        <input type="file" accept="application/pdf,.pdf" onChange={choose} />
       </label>
       <p class="file-note">I file restano nel browser. I numeri vengono inseriti in nuovi stream PDF: testo, vettori e immagini originali non sono rasterizzati.</p>
       <div class="field-grid">
         <label class="field"><span>Pagine da numerare</span>
-          <input value={pages} onInput={(event) => { setPages(event.currentTarget.value); setOutput(null); }} placeholder="*, 2-5, 7" disabled={running} />
+          <input value={pages} onInput={(event) => { invalidate(); setPages(event.currentTarget.value); }} placeholder="*, 2-5, 7" />
           <small>* = tutte; es. 2-4,7. Intervalli ripetuti, invertiti o fuori documento sono rifiutati.</small>
         </label>
         <label class="field"><span>Posizione</span>
-          <select value={position} onChange={(event) => { setPosition(event.currentTarget.value as PdfNumberPosition); setOutput(null); }} disabled={running}>
+          <select value={position} onChange={(event) => { invalidate(); setPosition(event.currentTarget.value as PdfNumberPosition); }}>
             {POSITIONS.map(({ value, label }) => <option value={value}>{label}</option>)}
           </select>
         </label>
       </div>
       <div class="field-grid">
-        <label class="field"><span>Numero iniziale</span><input type="number" min="1" max="9999" step="1" value={startNumber} onInput={(event) => { setStartNumber(event.currentTarget.value); setOutput(null); }} disabled={running} /></label>
-        <label class="field"><span>Offset numerazione</span><input type="number" min="-999" max="999" step="1" value={offset} onInput={(event) => { setOffset(event.currentTarget.value); setOutput(null); }} disabled={running} /></label>
+        <label class="field"><span>Numero iniziale</span><input type="number" min="1" max="9999" step="1" value={startNumber} onInput={(event) => { invalidate(); setStartNumber(event.currentTarget.value); }} /></label>
+        <label class="field"><span>Offset numerazione</span><input type="number" min="-999" max="999" step="1" value={offset} onInput={(event) => { invalidate(); setOffset(event.currentTarget.value); }} /></label>
       </div>
       <div class="field-grid">
         <label class="field"><span>Font</span>
-          <select value={font} onChange={(event) => { setFont(event.currentTarget.value as PdfNumberFont); setOutput(null); }} disabled={running}>
+          <select value={font} onChange={(event) => { invalidate(); setFont(event.currentTarget.value as PdfNumberFont); }}>
             <option value="Helvetica">Helvetica</option><option value="Courier">Courier</option><option value="Times-Roman">Times Roman</option>
           </select>
         </label>
-        <label class="field"><span>Dimensione font (pt)</span><input type="number" min="8" max="36" step="1" value={fontSize} onInput={(event) => { setFontSize(event.currentTarget.value); setOutput(null); }} disabled={running} /></label>
-        <label class="field"><span>Margine (pt)</span><input type="number" min="8" max="72" step="1" value={margin} onInput={(event) => { setMargin(event.currentTarget.value); setOutput(null); }} disabled={running} /></label>
+        <label class="field"><span>Dimensione font (pt)</span><input type="number" min="8" max="36" step="1" value={fontSize} onInput={(event) => { invalidate(); setFontSize(event.currentTarget.value); }} /></label>
+        <label class="field"><span>Margine (pt)</span><input type="number" min="8" max="72" step="1" value={margin} onInput={(event) => { invalidate(); setMargin(event.currentTarget.value); }} /></label>
       </div>
       {loadError || planResult.error ? <p role="alert">{loadError || planResult.error}</p> : null}
       {plan !== null ? (
@@ -186,7 +222,10 @@ export function PdfPageNumbersTool() {
           <p class="file-note">Le cifre rosse sono la sovrapposizione di anteprima sulle miniature PDF.js originali; nel PDF finale saranno nere.</p>
         </section>
       ) : null}
-      <div class="actions"><button class="primary" type="submit" disabled={running || plan === null}>{running ? "Numerazione in corso…" : "Applica numerazione"}</button></div>
+      <div class="actions">
+        <button class="primary" type="submit" disabled={running || plan === null}>{running ? "Numerazione in corso…" : "Applica numerazione"}</button>
+        {running ? <button type="button" onClick={invalidate}>Annulla numerazione</button> : null}
+      </div>
       {writeError ? <p role="alert">{writeError}</p> : null}
       {downloadUrl !== "" ? <div class="result-panel" data-state="success"><p role="status">PDF numerato verificato localmente: {plan?.pageCount} pagine, testo originale mantenuto.</p><a href={downloadUrl} download="pdf-numerato.pdf">Scarica PDF numerato</a></div> : null}
     </form>

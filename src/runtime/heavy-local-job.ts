@@ -355,11 +355,19 @@ export function createHeavyLocalJobRunner<TRequest, TResult>(
 
   function start(startOptions: HeavyLocalJobStartOptions<TRequest>): HeavyLocalJobExecution<TResult> {
     if (disposed) throw new HeavyLocalJobError("DISPOSED", "Heavy local-job runner has been disposed.");
-    if (active !== null) cancelRun(active, "Operation superseded by a newer heavy local job");
-    if (startOptions.signal?.aborted) throw abortError();
-
     const ownedResources = startOptions.ownedResources ?? [];
-    const preflight = preflightHeavyLocalJob(policy, startOptions.input, detectCapabilities());
+    if (startOptions.signal?.aborted) {
+      throwCleanupFailure(releaseOwnedResources(ownedResources));
+      throw abortError();
+    }
+
+    let preflight: HeavyJobPreflightResult;
+    try {
+      preflight = preflightHeavyLocalJob(policy, startOptions.input, detectCapabilities());
+    } catch (error) {
+      throwCleanupFailure(releaseOwnedResources(ownedResources));
+      throw error;
+    }
     if (preflight.state === "unsupported") {
       throwCleanupFailure(releaseOwnedResources(ownedResources));
       throw new HeavyLocalJobError(
@@ -369,10 +377,16 @@ export function createHeavyLocalJobRunner<TRequest, TResult>(
       );
     }
 
-    const initialWorkingSetBytes = finiteNonNegative(
-      startOptions.initialWorkingSetBytes ?? startOptions.input.inputBytes,
-      "initialWorkingSetBytes",
-    );
+    let initialWorkingSetBytes: number;
+    try {
+      initialWorkingSetBytes = finiteNonNegative(
+        startOptions.initialWorkingSetBytes ?? startOptions.input.inputBytes,
+        "initialWorkingSetBytes",
+      );
+    } catch (error) {
+      throwCleanupFailure(releaseOwnedResources(ownedResources));
+      throw error;
+    }
     let accountant: HeavyJobResourceAccountant;
     try {
       accountant = createAccountant(policy.limits.hardWorkingSetBytes, initialWorkingSetBytes);
@@ -428,8 +442,6 @@ export function createHeavyLocalJobRunner<TRequest, TResult>(
       progressEvents: 0,
       lastDeterminateFraction: null,
     };
-    active = run;
-
     const failCurrent = (error: unknown) => {
       if (active !== run || run.settled) return;
       settleFailure(run, error);
@@ -504,13 +516,22 @@ export function createHeavyLocalJobRunner<TRequest, TResult>(
       networkPolicy: HEAVY_LOCAL_NETWORK_POLICY,
       payload: startOptions.request,
     };
-    try {
-      workerLease.worker.postMessage(startMessage, startOptions.transfer);
-    } catch (error) {
-      failCurrent(new HeavyLocalJobError(
-        "WORKER_FAILURE",
-        error instanceof Error ? `Unable to start heavy local job: ${error.message}` : "Unable to start heavy local job.",
-      ));
+    // Worker creation and listener installation can synchronously trigger an
+    // AbortSignal. Never post a job that was already cancelled, and never
+    // supersede a valid prior run with an invalid or already-aborted candidate.
+    if (startOptions.signal?.aborted) {
+      cancelRun(run);
+    } else {
+      if (active !== null) cancelRun(active, "Operation superseded by a newer heavy local job");
+      active = run;
+      try {
+        workerLease.worker.postMessage(startMessage, startOptions.transfer);
+      } catch (error) {
+        failCurrent(new HeavyLocalJobError(
+          "WORKER_FAILURE",
+          error instanceof Error ? `Unable to start heavy local job: ${error.message}` : "Unable to start heavy local job.",
+        ));
+      }
     }
 
     return {
