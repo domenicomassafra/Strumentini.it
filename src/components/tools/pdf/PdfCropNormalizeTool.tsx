@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { cropNormalizePdf, planPdfCropNormalize, type PdfCropNormalizeMode, type PdfPageFit, type PdfPageSizePreset } from "../../../engines/pdf/crop-normalize";
 import { openPdfThumbnailSession, pdfThumbnailWindow, type PdfThumbnailSession } from "../../../engines/pdf/thumbnails";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
+import { pdfCropNormalizeManifest } from "../../../tools/pdf-crop-normalize/manifest";
 
 type Thumbnail = { page: number; url: string };
 
@@ -27,6 +29,28 @@ export function PdfCropNormalizeTool() {
   const [busy, setBusy] = useState(false);
   const [artifact, setArtifact] = useState<Blob | null>(null);
   const [downloadUrl, setDownloadUrl] = useState("");
+  // Acquire this lock before the requestAnimationFrame yield, and revoke the
+  // authority of any obsolete completion on file/options changes or cancel.
+  const generation = useRef(0);
+  const inFlight = useRef(false);
+  const currentController = useRef<AbortController | null>(null);
+
+  function invalidate() {
+    generation.current++;
+    inFlight.current = false;
+    currentController.current?.abort();
+    currentController.current = null;
+    setBusy(false);
+    setArtifact(null);
+    setRunError("");
+  }
+
+  useEffect(() => () => {
+    generation.current++;
+    inFlight.current = false;
+    currentController.current?.abort();
+    currentController.current = null;
+  }, []);
 
   const options = { mode, pages, insetLeft: Number(left), insetTop: Number(top), insetRight: Number(right),
     insetBottom: Number(bottom), preset, customWidth: Number(width), customHeight: Number(height), fit, margin: Number(margin) };
@@ -85,26 +109,49 @@ export function PdfCropNormalizeTool() {
     return () => URL.revokeObjectURL(url);
   }, [artifact]);
 
-  function change<T>(setter: (value: T) => void, value: T) { setter(value); setArtifact(null); setRunError(""); }
+  function change<T>(setter: (value: T) => void, value: T) { invalidate(); setter(value); }
   function upload(event: Event) {
     const value = (event.currentTarget as HTMLInputElement).files?.[0] ?? null;
-    setBytes(null); setFile(value); setArtifact(null); setRunError(""); setLoadError(""); setPreviewError(""); setStart(1);
+    invalidate(); setBytes(null); setFile(value); setLoadError(""); setPreviewError(""); setStart(1);
   }
   async function submit(event: Event) {
-    event.preventDefault(); setArtifact(null); setRunError("");
-    if (bytes === null || plan === null) return;
+    event.preventDefault();
+    if (inFlight.current) return;
+    if (bytes === null || plan === null) { invalidate(); return; }
+    const operation = ++generation.current;
+    inFlight.current = true;
+    const controller = new AbortController();
+    currentController.current = controller;
+    setArtifact(null); setRunError("");
     setBusy(true);
     try {
       await new Promise<void>((done) => requestAnimationFrame(() => done()));
-      const result = cropNormalizePdf(bytes, options);
+      if (operation !== generation.current || controller.signal.aborted) return;
+      const result = cropNormalizePdf(bytes, options, controller.signal);
+      if (operation !== generation.current || controller.signal.aborted) return;
+      if (!(result.artifact.blob instanceof Blob) || result.artifact.blob.size < 100) {
+        throw new Error("PDF modificato non disponibile");
+      }
       setArtifact(result.artifact.blob);
-    } catch (error) { setRunError(error instanceof Error ? error.message : "Elaborazione PDF fallita"); }
-    finally { setBusy(false); }
+      // Only canonical tool identity is persisted; no filenames, options,
+      // original PDF content or transformed bytes are passed to Recenti.
+      recordCompletedTool(pdfCropNormalizeManifest.id);
+    } catch (error) {
+      if (operation === generation.current && !controller.signal.aborted) {
+        setRunError(error instanceof Error ? error.message : "Elaborazione PDF fallita");
+      }
+    } finally {
+      if (operation === generation.current) {
+        inFlight.current = false;
+        currentController.current = null;
+        setBusy(false);
+      }
+    }
   }
 
   return <form class="tool-operation" data-pdf-crop-normalize onSubmit={(event) => { void submit(event); }}>
-    <label class="field"><span>PDF locale</span><input type="file" accept="application/pdf,.pdf" onChange={upload} disabled={busy} /></label>
-    <label class="field"><span>Operazione</span><select value={mode} onChange={(event) => change(setMode, event.currentTarget.value as PdfCropNormalizeMode)} disabled={busy}>
+    <label class="field"><span>PDF locale</span><input type="file" accept="application/pdf,.pdf" onChange={upload} /></label>
+    <label class="field"><span>Operazione</span><select value={mode} onChange={(event) => change(setMode, event.currentTarget.value as PdfCropNormalizeMode)}>
       <option value="crop">Ritaglia visivamente (CropBox)</option><option value="normalize">Normalizza dimensioni pagina</option>
     </select></label>
     <p class="file-note" role="note" data-pdf-box-semantics>
@@ -112,7 +159,7 @@ export function PdfCropNormalizeTool() {
         : <strong>Normalizzazione: il contenuto originale viene riposizionato o scalato uniformemente e centrato.</strong>}
       {" "}Gli stream originali del PDF rimangono recuperabili. Non è una funzione di redazione della privacy.
     </p>
-    <label class="field"><span>Pagine</span><input value={pages} onInput={(event) => change(setPages, event.currentTarget.value)} disabled={busy} />
+    <label class="field"><span>Pagine</span><input value={pages} onInput={(event) => change(setPages, event.currentTarget.value)} />
       <small>* tutte; 2-4,6 selezionate. Intervalli invertiti, duplicati e fuori file sono rifiutati.</small></label>
     {mode === "crop" ? <>
       <p class="file-note">Margini da NASCONDERE misurati in punti PDF (pt) dall’attuale CropBox visualizzato, non dalla MediaBox. Sinistra/alto/destra/basso seguono l’orientamento visibile anche su pagine ruotate.</p>
@@ -176,7 +223,8 @@ export function PdfCropNormalizeTool() {
       </div>
       <p class="file-note">Anteprima derivata da PDF.js e dallo stesso piano geometrico dell’output, fino a 4 pagine visibili per volta.</p>
     </section> : null}
-    <div class="actions"><button class="primary" type="submit" disabled={!plan || busy}>{busy ? "Elaborazione…" : mode === "crop" ? "Applica crop visivo" : "Normalizza pagine"}</button></div>
+    <div class="actions"><button class="primary" type="submit" disabled={!plan || busy}>{busy ? "Elaborazione…" : mode === "crop" ? "Applica crop visivo" : "Normalizza pagine"}</button>
+      {busy ? <button type="button" onClick={invalidate}>Annulla modifica PDF</button> : null}</div>
     {runError ? <p role="alert">{runError}</p> : null}
     {downloadUrl ? <div class="result-panel" data-state="success"><p role="status">PDF generato e geometria/stream originali ricontrollati.</p>
       <p>{mode === "crop" ? "Il contenuto nascosto resta recuperabile; il crop NON è redazione." : "Contenuti originali conservati senza rasterizzazione."}</p>

@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import {
   createBooklet251, createInterleave251, planBooklet251, planInterleave251,
   type BookletPaper, type DuplexFlip, type InterleaveBackOrder, type MismatchPolicy,
 } from "../../../engines/pdf/booklet-interleave-251";
 import { inspectPdfBytes } from "../../../engines/pdf";
 import { openPdfThumbnailSession } from "../../../engines/pdf/thumbnails";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
+import { pdfBookletInterleaveManifest } from "../../../tools/pdf-booklet-interleave/manifest";
 
 export function PdfBookletInterleave251Tool() {
   const [mode, setMode] = useState<"booklet" | "interleave">("booklet");
@@ -24,9 +26,32 @@ export function PdfBookletInterleave251Tool() {
   const [result, setResult] = useState<Blob | null>(null);
   const [downloadUrl, setDownloadUrl] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
+  // The formatter yields to PDF.js, so same-turn submits and later edits must
+  // not commit multiple (or outdated) downloadable outputs or Recenti entries.
+  const generation = useRef(0);
+  const inFlight = useRef(false);
+  const controller = useRef<AbortController | null>(null);
+
+  function invalidate() {
+    generation.current += 1;
+    inFlight.current = false;
+    controller.current?.abort();
+    controller.current = null;
+    setWorking(false);
+    setError("");
+    setResult(null);
+  }
+
+  useEffect(() => () => {
+    generation.current += 1;
+    inFlight.current = false;
+    controller.current?.abort();
+    controller.current = null;
+  }, []);
 
   function changed() {
-    setError(""); setResult(null); setShown(1);
+    invalidate();
+    setShown(1);
   }
   useEffect(() => {
     if (frontFile === null) { setFrontCount(0); return; }
@@ -76,38 +101,64 @@ export function PdfBookletInterleave251Tool() {
 
   async function submit(event: Event) {
     event.preventDefault();
-    changed();
+    if (inFlight.current) return;
+    if (!frontFile || !plan) { invalidate(); return; }
+    const operation = ++generation.current;
+    const activeController = new AbortController();
+    inFlight.current = true;
+    controller.current = activeController;
+    setError("");
+    setResult(null);
     setWorking(true);
     try {
-      if (!frontFile || !plan) throw new Error("Piano e file PDF richiesti");
+      // Give the in-progress state an opportunity to paint, while allowing
+      // source/option changes and explicit cancellation during the frame.
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+      if (operation !== generation.current || activeController.signal.aborted) return;
       const output = mode === "booklet"
-        ? await createBooklet251(frontFile, { flip, paper, margin: Number(margin), gap: Number(gap) })
-        : await createInterleave251(frontFile, backFile!, { backOrder, mismatchPolicy });
+        ? await createBooklet251(frontFile, { flip, paper, margin: Number(margin), gap: Number(gap) }, activeController.signal)
+        : await createInterleave251(frontFile, backFile!, { backOrder, mismatchPolicy }, activeController.signal);
+      if (operation !== generation.current || activeController.signal.aborted) return;
+      if (!(output.artifact.blob instanceof Blob) || output.artifact.blob.size < 100) {
+        throw new Error("PDF booklet/interleave non disponibile");
+      }
       setResult(output.artifact.blob);
-    } catch (cause) { setError(cause instanceof Error ? cause.message : "Esportazione fallita"); }
-    finally { setWorking(false); }
+      // The metadata-only workbench stores the catalog ID/time/count, never
+      // document bytes, file names, source text, page order or PDF options.
+      recordCompletedTool(pdfBookletInterleaveManifest.id);
+    } catch (cause) {
+      if (operation === generation.current && !activeController.signal.aborted) {
+        setError(cause instanceof Error ? cause.message : "Esportazione fallita");
+      }
+    } finally {
+      if (operation === generation.current) {
+        inFlight.current = false;
+        controller.current = null;
+        setWorking(false);
+      }
+    }
   }
   const face = plan?.mode === "booklet" ? plan.faces[Math.min(shown, plan.faces.length) - 1] : null;
   const sourcePages = plan?.mode === "interleave" ? plan.pages : [];
   const name = mode === "booklet" ? "pdf-booklet-251.pdf" : "pdf-interleave-251.pdf";
   return <form class="tool-operation" data-pdf-251 onSubmit={(event) => void submit(event)} style={{ maxWidth: "940px", margin: "1rem auto" }}>
-    <label class="field"><span>Operazione</span><select value={mode} disabled={working}
+    <label class="field"><span>Operazione</span><select value={mode}
       onChange={(event) => { setMode(event.currentTarget.value as "booklet" | "interleave"); changed(); }}>
       <option value="booklet">Booklet pieghevole — 2 pagine per facciata</option>
       <option value="interleave">Intercala PDF fronte e PDF retro</option>
     </select></label>
     <label class="field"><span>{mode === "booklet" ? "Documento PDF da piegare" : "Scansione delle pagine fronte"}</span>
-      <input type="file" accept=".pdf,application/pdf" disabled={working} onChange={(event) => { setFrontFile(event.currentTarget.files?.[0] ?? null); setFrontCount(0); changed(); }} />
+      <input type="file" accept=".pdf,application/pdf" onChange={(event) => { setFrontFile(event.currentTarget.files?.[0] ?? null); setFrontCount(0); changed(); }} />
     </label>
     {mode === "interleave" ? <>
-      <label class="field"><span>Scansione delle pagine retro</span><input type="file" accept=".pdf,application/pdf" disabled={working}
+      <label class="field"><span>Scansione delle pagine retro</span><input type="file" accept=".pdf,application/pdf"
         onChange={(event) => { setBackFile(event.currentTarget.files?.[0] ?? null); setBackCount(0); changed(); }} /></label>
       <div class="field-grid">
-        <label class="field"><span>Ordine delle pagine retro</span><select value={backOrder} disabled={working} onChange={(event) => { setBackOrder(event.currentTarget.value as InterleaveBackOrder); changed(); }}>
+        <label class="field"><span>Ordine delle pagine retro</span><select value={backOrder} onChange={(event) => { setBackOrder(event.currentTarget.value as InterleaveBackOrder); changed(); }}>
           <option value="reverse">Retro in ordine inverso (scanner con pila rovesciata)</option>
           <option value="forward">Retro nello stesso ordine dei fronti</option>
         </select></label>
-        <label class="field"><span>Se le due scansioni hanno lunghezze diverse</span><select value={mismatchPolicy} disabled={working}
+        <label class="field"><span>Se le due scansioni hanno lunghezze diverse</span><select value={mismatchPolicy}
           onChange={(event) => { setMismatchPolicy(event.currentTarget.value as MismatchPolicy); changed(); }}>
           <option value="reject">Blocca, non indovinare pagine mancanti</option>
           <option value="pad-shorter">Inserisci pagine bianche nelle posizioni mancanti</option>
@@ -116,14 +167,14 @@ export function PdfBookletInterleave251Tool() {
       <p class="file-note">Conservazione vettoriale dove possibile; l'interleave non riconosce automaticamente l'orientamento dello scanner. Scegli esplicitamente l'ordine dei retro.</p>
     </> : <>
       <div class="field-grid">
-        <label class="field"><span>Carta</span><select value={paper} disabled={working} onChange={(event) => { setPaper(event.currentTarget.value as BookletPaper); changed(); }}>
+        <label class="field"><span>Carta</span><select value={paper} onChange={(event) => { setPaper(event.currentTarget.value as BookletPaper); changed(); }}>
           <option value="a4">A4 orizzontale</option><option value="letter">Letter orizzontale</option>
         </select></label>
-        <label class="field"><span>Duplex: lato di ribaltamento</span><select value={flip} disabled={working} onChange={(event) => { setFlip(event.currentTarget.value as DuplexFlip); changed(); }}>
+        <label class="field"><span>Duplex: lato di ribaltamento</span><select value={flip} onChange={(event) => { setFlip(event.currentTarget.value as DuplexFlip); changed(); }}>
           <option value="short-edge">Lato corto — fronti/retro diretti</option><option value="long-edge">Lato lungo — retro ruotato 180°</option>
         </select></label>
-        <label class="field"><span>Margine esterno (pt)</span><input aria-label="Margine esterno (pt)" type="number" min="0" max="72" value={margin} disabled={working} onInput={(event) => { setMargin(event.currentTarget.value); changed(); }} /></label>
-        <label class="field"><span>Spazio tra pagine (pt)</span><input aria-label="Spazio tra pagine (pt)" type="number" min="0" max="36" value={gap} disabled={working} onInput={(event) => { setGap(event.currentTarget.value); changed(); }} /></label>
+        <label class="field"><span>Margine esterno (pt)</span><input aria-label="Margine esterno (pt)" type="number" min="0" max="72" value={margin} onInput={(event) => { setMargin(event.currentTarget.value); changed(); }} /></label>
+        <label class="field"><span>Spazio tra pagine (pt)</span><input aria-label="Spazio tra pagine (pt)" type="number" min="0" max="36" value={gap} onInput={(event) => { setGap(event.currentTarget.value); changed(); }} /></label>
       </div>
       <p class="file-note" data-251-fidelity><strong>Booklet rasterizzato:</strong> il contenuto viene trasformato in JPEG. Testo selezionabile, vettori, collegamenti e annotazioni non vengono conservati; pagine annotate rifiutate. Disabilita orientamento e riordino automatico del driver di stampa.</p>
     </>}
@@ -156,7 +207,10 @@ export function PdfBookletInterleave251Tool() {
           </li>)}</ol>
       </>}
     </section>}
-    <div class="actions"><button type="submit" class="primary" disabled={!plan || working}>{working ? "Composizione locale…" : "Crea PDF e verifica"}</button></div>
+    <div class="actions">
+      <button type="submit" class="primary" disabled={!plan || working}>{working ? "Composizione locale…" : "Crea PDF e verifica"}</button>
+      {working ? <button type="button" onClick={invalidate}>Annulla composizione</button> : null}
+    </div>
     {downloadUrl && <section data-251-result class="result-panel" data-state="success">
       <p role="status">PDF generato e struttura ricontrollata: {name}.</p>
       {previewUrl && <img data-251-preview src={previewUrl} alt="Prima facciata riaperta e renderizzata localmente con PDF.js" style={{ maxWidth: "min(100%, 300px)" }} />}

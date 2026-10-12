@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { inspectPdfBytes } from "../../../engines/pdf";
 import { openPdfThumbnailSession } from "../../../engines/pdf/thumbnails";
 import { encodeSignatureCanvas241, planVisualSignature241, type VisualSignature241Plan } from "../../../engines/pdf/visual-signature-241";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 
 type Ready241 = { readonly blob: Blob; readonly filename: string; readonly plan: VisualSignature241Plan; readonly previews: readonly { page: number; blob: Blob }[] };
 type Loaded241 = { readonly bytes: Uint8Array; readonly pages: number };
@@ -35,6 +36,8 @@ export function PdfVisualSignature241Tool() {
   const [resetKey, setResetKey] = useState(0);
   const controller = useRef<AbortController | null>(null);
   const generation = useRef(0);
+  const inFlight = useRef(false);
+  const recordedResult = useRef<Ready241 | null>(null);
   const drawCanvas = useRef<HTMLCanvasElement | null>(null);
   const drawing = useRef<number | null>(null);
 
@@ -42,6 +45,7 @@ export function PdfVisualSignature241Tool() {
     generation.current += 1;
     controller.current?.abort();
     controller.current = null;
+    inFlight.current = false;
     setWorking(false);
     setResult(null);
     setProcessProblem("");
@@ -183,7 +187,18 @@ export function PdfVisualSignature241Tool() {
     setDownloadUrl(pdfUrl); setFinalUrls(previews);
     return () => { URL.revokeObjectURL(pdfUrl); for (const { url } of previews) URL.revokeObjectURL(url); };
   }, [result]);
-  useEffect(() => () => { generation.current += 1; controller.current?.abort(); }, []);
+  useEffect(() => () => { generation.current += 1; inFlight.current = false; controller.current?.abort(); }, []);
+
+  // A completed operation is not merely worker output: the verified PDF must
+  // also be reopenable and visibly rendered in every final preview. Store only
+  // the catalog ID, timestamp and count, never name, drawing, PNG or PDF bytes.
+  const resultVisible = result !== null && downloadUrl !== "" && finalUrls.length === result.plan.pages.length
+    && finalUrls.every(({ url }) => loadedFinalUrls.includes(url));
+  useEffect(() => {
+    if (!resultVisible || result === null || recordedResult.current === result) return;
+    recordedResult.current = result;
+    recordCompletedTool("pdf-visual-signature");
+  }, [resultVisible, result]);
 
   // Effect cleanup alone is too late: a new file/page can render with the old
   // thumbnail URL for a frame. Never make that stale image an approval surface.
@@ -194,9 +209,13 @@ export function PdfVisualSignature241Tool() {
 
   async function generate(event: Event) {
     event.preventDefault();
+    // Reserve synchronously, before the first RAF/worker await. A second
+    // submit in the same task must not cancel/restart the first valid run.
+    if (inFlight.current) return;
     invalidate();
     if (!document || !png || !validation.plan || !previewReady) return;
     const current = generation.current;
+    inFlight.current = true;
     const abort = new AbortController();
     controller.current = abort;
     setWorking(true);
@@ -231,7 +250,7 @@ export function PdfVisualSignature241Tool() {
     } catch (reason) {
       if (current === generation.current && !abort.signal.aborted) setProcessProblem(message241(reason));
     } finally {
-      if (current === generation.current) { setWorking(false); controller.current = null; }
+      if (current === generation.current) { inFlight.current = false; setWorking(false); controller.current = null; }
     }
   }
 
@@ -327,8 +346,7 @@ export function PdfVisualSignature241Tool() {
       <button type="button" data-241-reset onClick={clear}>Azzera tutto</button>
     </div>
     {working && <p role="status">Elaborazione locale e riapertura del PDF tramite PDF.js…</p>}
-    {result && downloadUrl && finalUrls.length === result.plan.pages.length
-      && finalUrls.every(({ url }) => loadedFinalUrls.includes(url)) && <section data-241-result class="result-panel" data-state="success">
+    {resultVisible && result && <section data-241-result class="result-panel" data-state="success">
       <p role="status">Firma visiva applicata alla pagina {result.plan.pages.join(", ")} e output PDF verificato, inclusa anteprima finale.</p>
       <p>Questa immagine non firma digitalmente il documento. Il PDF risultante non contiene certificati di firma creati da questo strumento.</p>
       <a data-241-download href={downloadUrl} download={result.filename}>Scarica PDF con firma grafica visiva (NON digitale)</a>
