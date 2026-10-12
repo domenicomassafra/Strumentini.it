@@ -146,6 +146,17 @@
 
 .ac-field-error { margin: var(--space-2) 0 0; color: var(--danger); font-size: var(--font-size-xs); }
 
+/* WebKit can focus an async registration error without scrolling it back from
+   above the viewport after the submit. Sticky only while focused keeps the
+   actual alert and its outline visible below the persistent site header; it
+   resumes normal flow on blur, without obscuring regular form content. */
+.ac-access [data-access-error]:focus {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-3));
+  z-index: 1;
+  scroll-margin-block: var(--space-8);
+}
+
 .ac-submit-arrow { font-weight: var(--font-weight-semibold); }
 [data-busy="true"] .ac-submit-arrow { display: none; }
 

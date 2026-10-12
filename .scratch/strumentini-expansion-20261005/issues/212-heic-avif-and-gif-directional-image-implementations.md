@@ -51,3 +51,85 @@
 **GREEN implementation:** In the existing bounded scanner, count actual LZW sub-block bytes and reject an image with **zero** compressed bytes (necessary structural check, not full LZW validation); check disposal method range at GCE read; parse the fixed 12-byte Plain Text Extension header, skip its bounded text data and clear pending GCE delay/disposal/transparency. Comment extensions still preserve pending GCE; normal GIF first-frame conversions and cancellation still work. No new dependencies or changes to codec routes, `directional-212.ts`, UI, release or Gold policy.
 
 **Current local evidence:** New test ran **RED 3 failures / 2 passes before fix**, then **5/5 PASS**. Alongside original `tests/image-gif-212.test.ts` and `tests/image-directional-212.test.ts`: **18/18 PASS** with Vitest. For present Pillow 12.2.0, independently decoded all four mutated GIF image frames, compared original first-frame and exported PNG RGBA SHA-256 byte-for-byte, verified PNG signature, and independently rejected empty-LZW frame 2; Python/Pillow oracle is optional in the reusable unit test when Pillow is not installed, and is recorded as independently **RUN** on this Mac Studio. Existing `scripts/acceptance-image-directional-212.ts` completed **5/5 Pillow GIF→PNG pixel/alpha proofs** and kept HEIC refused and AVIF fixture-only. `scripts/acceptance-image-directional-212.browser.mjs` completed **102/102 checks** on desktop Chromium/Firefox/WebKit at 390×844 with independent Sharp RGBA comparison, explicit first-frame animation-loss consent, bounded cancel, no remote requests or uncaught errors, `AVIF productionApproved=false`; existing Firefox GIF native renderer's partial-offset discrepancy persists, with Sharp parity correct. Vite logged an incidental unresolved-dependency prebundle warning for unrelated `spikes/heavy-browser` imports but the browser acceptance **exited 0**. All original #212 AC remain OPEN; GIF-preserving animation writing, iPhone-sourced HEIC, physical iOS/Android, device memory/performance and AVIF encoder production approval remain **NOT_RUN/NO_GO**. No commit, push or deploy.
+
+## 2026-10-12 worker-21 wave23 — first-frame GIF89a GCE scope and alpha fidelity (RED → GREEN; OPEN)
+
+**New cross-boundary defect distinct from wave22's container scanner:** In a
+genuinely decodeable GIF89a, a Graphic Control Extension (GCE) with
+transparency can be followed by a valid **Plain Text Extension**, then by
+the **first image descriptor**. Per GIF89a's graphic-rendering block scope,
+the GCE belongs to the intervening plain-text grid, **not** to the later
+first image. The already-correct wave22 `inspectGifStructure` reports
+`transparentFrameCount: 0`, but the isolated
+`src/engines/image/directional-212.ts` first-frame LZW decoder previously
+carried its stale `transparentIndex` forward and emitted a PNG with an
+**incorrect zero-alpha pixel**. It also incorrectly accepted a shifted
+first-frame rectangle by treating the GCE as permission to compose on a
+transparent canvas, although the image itself was now **opaque partial** and
+the background-compositing policy explicitly requires refusal.
+
+**TDD / independent pixels:** New
+`tests/image-directional-212-wave23.test.ts` starts from the repository's
+real 2×2 still-GIF palette/LZW bytes (valid GIF89a header), inserts a
+fully bounded Plain Text Extension containing the single text byte `A`,
+and reopens the *actual directional-engine PNG*. For an independently
+decoded comparison, a bytewise-equivalent GIF with only the GCE removed
+gives the image's correct opaque palette RGB: the second pixel is
+`[0,0,0,255]` rather than transparent `[0,0,0,0]`. **Sharp** decodes
+source/reference and emitted PNG pixels; installed **Pillow** independently
+reopens the PNG and the known opaque first-image control GIF and compares
+the entire RGBA byte array. This exact control avoids claiming Pillow's
+historical GIF Plain Text Extension/GCE scoping is authoritative: the
+structural expectation comes from GIF89a's rendering-block semantics.
+Before the directional patch, **2/5** new tests were RED on genuinely wrong
+alpha and a wrongly accepted opaque partial first frame (three relevant
+positive/refusal tests already green).
+
+**Small scoped source correction:** Only
+`src/engines/image/directional-212.ts` now consumes a pending
+`transparentIndex` on a valid Plain Text Extension, checking its 12-byte
+fixed header and skipping its bounded sub-block chain. Comment and
+Application extensions continue to preserve a pending GCE; a **new GCE
+after** Plain Text correctly re-establishes transparency for the image.
+The pre-existing blanket refusal of nontransparent partial first frames
+now applies correctly. No modifications to frozen `gif-structure.ts`, no
+codec dependencies or route changes, no animation-preserving export.
+
+**GREEN checks:** New test **5/5 PASS** using Sharp/Pillow with standard
+unit execution; with `STRUMENTINI_212_BROWSER_PROOF=1` the new opt-in
+**real desktop Chromium 390×844** case also passes (**6/6**) by bundling
+the genuine engine, reopening its returned PNG with `createImageBitmap`,
+comparing all RGBA bytes against independent Sharp and asserting no
+network requests. Opt-in browser condition prevents default CI runners
+without installed Chromium binaries from falsely claiming they ran it.
+Combined existing `tests/image-directional-212.test.ts`,
+`tests/image-gif-212.test.ts` and frozen
+`tests/gif-structure-212-wave22.test.ts` plus new unit tests:
+**23/23 PASS** before the extra optional browser case. Existing
+`scripts/acceptance-image-directional-212.ts` continues to pass
+**5/5 Pillow GIF→PNG source/output comparisons**, while AVIF remains
+fixture-only, HEIC refused, real iPhone source and mobile devices NOT_RUN.
+Abort/preflight limits and explicit animation-loss consent remain tested.
+
+**Disposition:** Only this first-frame GIF89a conversion bug was corrected.
+The original ticket is still **ready-for-agent / OPEN** and the existing
+unchecked HEIC/AVIF/GIF full-direction AC remain unchecked; no decoder
+license, physical iOS/Android proof, 100% browser matrix, full animation
+compositing or animated PNG/GIF writer is claimed. **NO_GO** to production
+HEIC/AVIF direction promotion; no commit, push, deployment or Gold/receipt
+changes in this worker scope.
+
+**Final gates and test scheduling nuance:** Full
+`./node_modules/.bin/tsc --noEmit --pretty false` **PASS**; full
+`npm run check` **PASS**, Astro **2036 files / 0 errors / 0 warnings /
+24 hints**. Final four focused Vitest suites (existing #212 tests, frozen
+wave22 structure test, new wave23 directional regression) run serially with
+`--maxWorkers=2 --fileParallelism=false --testTimeout=30000`:
+**23/23 PASS plus 1 intentionally skipped optional browser test**.
+That same optional test was run explicitly with
+`STRUMENTINI_212_BROWSER_PROOF=1` and **6/6 PASS** in real Chromium.
+During one intermediate run concurrently with global `npm run check`,
+Pillow subprocess contention exceeded Vitest's default 5000 ms threshold
+in the new and frozen existing tests; all timed-out tests passed on the
+bounded serial rerun. No unrelated test files were modified or claimed
+fixed. Scoped `git diff --check` **PASS**.

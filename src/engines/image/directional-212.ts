@@ -107,6 +107,18 @@ function firstFrameData(gif: Uint8Array, width: number, height: number, signal?:
         transparentIndex = (gif[at + 1]! & 1) ? gif[at + 4]! : null;
         at += 6;
       } else {
+        // GIF89a Plain Text is itself a graphic-rendering block. A preceding
+        // Graphic Control Extension belongs to the text grid, NOT the next
+        // image descriptor. Keeping its transparent index silently corrupts
+        // first-frame alpha (and can bypass opaque partial-frame refusal).
+        // Comments/application extensions are non-rendering and instead
+        // preserve pending GCE scope. Match the structural inspector's
+        // bounded 12-byte fixed-grid requirement without rendering text.
+        if (extension === 0x01) {
+          if (at + 13 > gif.length || gif[at] !== 12) refuse("MALFORMED_GIF", "Invalid plain-text extension");
+          at += 13;
+          transparentIndex = null;
+        }
         while (at < gif.length) {
           const count = gif[at++]!;
           if (!count) break;

@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { createPdfNUp, planPdfNUp, type NUpMode, type NUpOrder, type NUpOrientation, type NUpPaper, type PdfNUpOptions } from "../../../engines/pdf/n-up";
 import { openPdfThumbnailSession } from "../../../engines/pdf/thumbnails";
 import { inspectPdfBytes } from "../../../engines/pdf";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
+import { pdfNUpManifest } from "../../../tools/pdf-n-up/manifest";
 
 export function PdfNUpTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -23,6 +25,29 @@ export function PdfNUpTool() {
   const [resultPreview, setResultPreview] = useState("");
   const [resultPreviewError, setResultPreviewError] = useState("");
   const [downloadUrl, setDownloadUrl] = useState("");
+  // The export itself yields to an animation frame and then PDF.js. Acquire
+  // an immediate lock, and invalidate any result from an obsolete input/job.
+  const generation = useRef(0);
+  const inFlight = useRef(false);
+  const currentController = useRef<AbortController | null>(null);
+
+  function invalidate() {
+    generation.current++;
+    inFlight.current = false;
+    currentController.current?.abort();
+    currentController.current = null;
+    setBusy(false);
+    setResult(null);
+    setError("");
+    setResultPreviewError("");
+  }
+
+  useEffect(() => () => {
+    generation.current++;
+    inFlight.current = false;
+    currentController.current?.abort();
+    currentController.current = null;
+  }, []);
 
   const options: PdfNUpOptions = {
     mode, rows: Number(rows), columns: Number(columns), paper, orientation,
@@ -73,28 +98,51 @@ export function PdfNUpTool() {
   }, [result, shownSheet]);
 
   function changed<T>(setter: (value: T) => void, value: T) {
-    setter(value); setError(""); setResult(null); setResultPreviewError("");
+    invalidate();
+    setter(value);
   }
   async function submit(event: Event) {
     event.preventDefault();
+    if (inFlight.current) return;
+    if (!file || !plan) { invalidate(); return; }
+    const operation = ++generation.current;
+    inFlight.current = true;
+    const controller = new AbortController();
+    currentController.current = controller;
     setResult(null); setError(""); setBusy(true);
     try {
-      if (!file || !plan) throw new Error("PDF e piano n-up richiesti");
       await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-      const created = await createPdfNUp(file, options);
+      if (operation !== generation.current || controller.signal.aborted) return;
+      const created = await createPdfNUp(file, options, controller.signal);
+      if (operation !== generation.current || controller.signal.aborted) return;
+      if (!(created.artifact.blob instanceof Blob) || created.artifact.blob.size < 100) {
+        throw new Error("PDF n-up non disponibile");
+      }
       setResult(created.artifact.blob);
-    } catch (exception) { setError(exception instanceof Error ? exception.message : "Conversione n-up non riuscita"); }
-    finally { setBusy(false); }
+      // Persist catalog identity only after a real, current output exists.
+      // Never pass source filename, raster JPEG/PDF bytes or options to Recenti.
+      recordCompletedTool(pdfNUpManifest.id);
+    } catch (exception) {
+      if (operation === generation.current && !controller.signal.aborted) {
+        setError(exception instanceof Error ? exception.message : "Conversione n-up non riuscita");
+      }
+    } finally {
+      if (operation === generation.current) {
+        inFlight.current = false;
+        currentController.current = null;
+        setBusy(false);
+      }
+    }
   }
 
   const sheet = plan?.sheets[Math.min(shownSheet, plan.sheetCount) - 1];
   return <form class="tool-operation" data-pdf-n-up onSubmit={(event) => { void submit(event); }} style={{ width: "100%", maxWidth: "950px", margin: "0 auto" }}>
-    <label class="field"><span>PDF originale</span><input type="file" accept="application/pdf,.pdf" disabled={busy} onChange={(event) => {
+    <label class="field"><span>PDF originale</span><input type="file" accept="application/pdf,.pdf" onChange={(event) => {
       const next = (event.currentTarget as HTMLInputElement).files?.[0] ?? null;
-      setFile(next); setPageCount(0); setError(""); setResult(null); setShownSheet(1);
+      invalidate(); setFile(next); setPageCount(0); setShownSheet(1);
     }} /></label>
     <div class="field-grid">
-      <label class="field"><span>Impaginazione</span><select value={mode} disabled={busy} onChange={(event) => changed(setMode, event.currentTarget.value as NUpMode)}>
+      <label class="field"><span>Impaginazione</span><select value={mode} onChange={(event) => changed(setMode, event.currentTarget.value as NUpMode)}>
         <option value="2-up">2 pagine su foglio (2×1)</option><option value="4-up">4 pagine su foglio (2×2)</option><option value="custom">Griglia personalizzata</option>
       </select></label>
       {mode === "custom" ? <>
@@ -132,7 +180,10 @@ export function PdfNUpTool() {
       </svg>
       <p class="file-note" data-nup-mapping>{sheet.cells.map((cell) => `Slot ${cell.slot}: ${cell.sourcePage === null ? "vuoto (padding)" : `pagina ${cell.sourcePage}`}`).join(" · ")}</p>
     </section> : null}
-    <div class="actions"><button class="primary" type="submit" disabled={!plan || busy}>{busy ? "Impaginazione locale…" : "Crea PDF n-up"}</button></div>
+    <div class="actions">
+      <button class="primary" type="submit" disabled={!plan || busy}>{busy ? "Impaginazione locale…" : "Crea PDF n-up"}</button>
+      {busy ? <button type="button" onClick={invalidate}>Annulla impaginazione</button> : null}
+    </div>
     {downloadUrl ? <section class="result-panel" data-state="success" data-nup-result>
       <p role="status">PDF n-up generato: {plan?.sheetCount} fogli con MediaBox, immagini JPEG e firma ricontrollati.</p>
       {resultPreviewError ? <p role="alert">{resultPreviewError}</p> : null}

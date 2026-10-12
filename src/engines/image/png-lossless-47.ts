@@ -75,6 +75,7 @@ interface PngParts {
   readonly colorType: 0 | 2 | 3 | 4 | 6;
   readonly bitDepth: 1 | 2 | 4 | 8;
   readonly hasTrnsChunk: boolean;
+  readonly paletteColors: number;
   readonly chunks: readonly Chunk[];
   readonly idat: Uint8Array;
   readonly expectedScanlineBytes: number;
@@ -230,7 +231,7 @@ function parsePng47(bytes: Uint8Array, signal?: AbortSignal): PngParts {
   const idat = new Uint8Array(idatBytes);
   let at = 0;
   for (const chunk of idatSlices) { idat.set(chunk, at); at += chunk.length; }
-  return { width, height, hasAlphaChannel, colorType, bitDepth, hasTrnsChunk,
+  return { width, height, hasAlphaChannel, colorType, bitDepth, hasTrnsChunk, paletteColors,
     chunks, idat, expectedScanlineBytes };
 }
 
@@ -275,6 +276,56 @@ function inflateBounded47(compressed: Uint8Array, expected: number, rowBytes: nu
   return result;
 }
 
+/** CRC and zlib checks prove only the stored filtered byte stream. For
+ * indexed-color PNGs with fewer palette entries than the bit depth permits,
+ * actual pixel samples must also reference defined PLTE entries. Reconstruct
+ * one packed scanline at a time (all five PNG filters, bpp=1 for indexed
+ * colors); this does not quantize, recolor or allocate a full decoded raster.
+ */
+function verifyIndexedPaletteReferences47(
+  filtered: Uint8Array, width: number, height: number,
+  bitDepth: 1 | 2 | 4 | 8, paletteColors: number, signal?: AbortSignal,
+): void {
+  if (paletteColors >= 1 << bitDepth) return;
+  const rowBytes = Math.ceil(width * bitDepth / 8);
+  const stride = rowBytes + 1;
+  let previous = new Uint8Array(rowBytes);
+  let current = new Uint8Array(rowBytes);
+  const mask = (1 << bitDepth) - 1;
+  for (let y = 0; y < height; y += 1) {
+    running(signal);
+    const base = y * stride;
+    const filter = filtered[base]!;
+    for (let i = 0; i < rowBytes; i += 1) {
+      const left = i === 0 ? 0 : current[i - 1]!;
+      const above = previous[i]!;
+      const upperLeft = i === 0 ? 0 : previous[i - 1]!;
+      let predictor = 0;
+      if (filter === 1) predictor = left;
+      else if (filter === 2) predictor = above;
+      else if (filter === 3) predictor = Math.floor((left + above) / 2);
+      else if (filter === 4) {
+        const p = left + above - upperLeft;
+        const a = Math.abs(p - left);
+        const b = Math.abs(p - above);
+        const c = Math.abs(p - upperLeft);
+        predictor = a <= b && a <= c ? left : b <= c ? above : upperLeft;
+      }
+      current[i] = (filtered[base + i + 1]! + predictor) & 255;
+    }
+    for (let x = 0; x < width; x += 1) {
+      const bitOffset = x * bitDepth;
+      const index = (current[bitOffset >>> 3]! >>> (8 - bitDepth - (bitOffset & 7))) & mask;
+      if (index >= paletteColors) {
+        fail("MALFORMED", "Indexed PNG pixel references missing palette entry");
+      }
+    }
+    const swap = previous;
+    previous = current;
+    current = swap;
+  }
+}
+
 function idatChunk47(compressed: Uint8Array): Uint8Array {
   const chunk = new Uint8Array(12 + compressed.length);
   const view = new DataView(chunk.buffer);
@@ -303,6 +354,10 @@ export async function compressPngLossless47(input: Blob, signal?: AbortSignal): 
   const originalPixels = inflateBounded47(parsed.idat, parsed.expectedScanlineBytes,
     rowBytes, parsed.height, signal);
   running(signal);
+  if (parsed.colorType === 3) {
+    verifyIndexedPaletteReferences47(originalPixels, parsed.width, parsed.height,
+      parsed.bitDepth, parsed.paletteColors, signal);
+  }
   const recompressed = zlibSync(originalPixels, { level: 9 });
   running(signal);
   const newIDAT = idatChunk47(recompressed);
