@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 299 / 125 |
+| All / completed / open | 424 / 300 / 124 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 37 |
-| Ready for assignment (feasibility still to prove) | 30 |
+| DAG-ready (all numeric dependencies closed) | 36 |
+| Ready for assignment (feasibility still to prove) | 29 |
 | Waiting on other tickets | 88 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (30)
+## Ready for assignment (feasibility still to prove) (29)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
@@ -38,7 +38,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #350 — P0 Accessibilità AA di base e advanced
 - #351 — Tre direzioni redesign non cosmetiche
 - #363 — Budget memoria mobile editor reali
-- #365 — Autore e selezione editoriale veritiera
 - #366 — Licenze e provenance donor pinning
 - #367 — Codec immagini local vs donor
 - #368 — Office rich DOCX XLSX PPTX donor spike

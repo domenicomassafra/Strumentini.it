@@ -31,7 +31,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **350 — P0 Accessibilità AA di base e advanced**
 - **351 — Tre direzioni redesign non cosmetiche**
 - **363 — Budget memoria mobile editor reali**
-- **365 — Autore e selezione editoriale veritiera**
 - **366 — Licenze e provenance donor pinning**
 - **367 — Codec immagini local vs donor**
 - **368 — Office rich DOCX XLSX PPTX donor spike**
@@ -47,7 +46,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **407 — Hostile parsers and archive resource safety**
 - **415 — Per-tool base claim proof and certification coverage**
 
-Exactly **37** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **36** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -428,7 +427,7 @@ Exactly **37** incomplete tickets currently have every declared numeric blocker 
 | 362 | blocked | Device fisici mobile file-result-share | 336, 337 |
 | 363 | ready-for-agent | Budget memoria mobile editor reali | — |
 | 364 | blocked | Canary e rollback design per tranche | 353, 354, 355, 356, 357, 358, 359 |
-| 365 | ready-for-agent | Autore e selezione editoriale veritiera | — |
+| 365 | completed | Autore e selezione editoriale veritiera | — |
 | 366 | ready-for-agent | Licenze e provenance donor pinning | — |
 | 367 | ready-for-agent | Codec immagini local vs donor | — |
 | 368 | ready-for-agent | Office rich DOCX XLSX PPTX donor spike | — |

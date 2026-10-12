@@ -2,7 +2,7 @@
 // Run: node tests/editorial-truth-365-next.browser.mjs [optional local static origin]
 // Desktop Chrome at 390px: not proof of a physical mobile device or an author identity.
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import { spawn, execFileSync } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 import { chromium } from "@playwright/test";
 import { catalog } from "../src/generated/catalog.ts";
@@ -59,7 +59,13 @@ try {
   assert.equal((await page.goto(origin + "/chi-siamo/", { waitUntil: "domcontentloaded" }))?.status(), 200);
   await documentWidth(page, "about");
   const mainText = await page.locator(".about-page").innerText();
-  assert.match(mainText, /Non attribuiamo il progetto a persone specifiche/u);
+  // Source-bound identification: do not guess author credentials or audience.
+  const author = execFileSync("git", ["log", "-1", "--format=%an"], { encoding: "utf8" }).trim();
+  assert.equal(author, "Domenico Massafra");
+  const authorSection = page.locator("#about-author").locator("..");
+  assert.match(await authorSection.innerText(), /Domenico Massafra/u);
+  assert.match(await authorSection.innerText(), /repository.*privato/su);
+  assert.equal(await authorSection.locator("a[rel~=me]").count(), 1);
   assert.match(mainText, /non pubblichiamo statistiche di utilizzo prive di una fonte/u);
   assert.match(mainText, new RegExp(`catalogo completo di ${catalog.length} strumenti`, "u"));
   assert.doesNotMatch(mainText, /(?:migliaia|milioni) di (?:utenti|persone)|\b\d+[.,]?\d*\s+(?:utenti attivi|recensioni|testimonianze)\b|scelti dagli utenti|il più popolare/iu);
@@ -89,7 +95,7 @@ try {
   assert.match(await page.locator("main").innerText(), new RegExp(`${catalog.length} strumenti`, "u"));
   assert.deepEqual(errors, [], "Public 390px browser exceptions");
   console.log(`#365 PASS real Chrome built site at 390px: ${selected.length} curated published LOCAL routes, manifest jobs, truthful editorial page, no unmeasured testimonials, ${catalog.length} catalog entries, noncurated CSV route, no overflow.`);
-  console.log("#365 Author identity remains unverified: /chi-siamo/ is transparent but cannot establish a named human author.");
+  console.log("#365 author name matched current Git commit identity; public profile verified separately, without audience/credentials claim.");
 } finally {
   await browser?.close();
   server?.kill("SIGTERM");

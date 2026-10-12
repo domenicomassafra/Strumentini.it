@@ -8,7 +8,7 @@
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 
@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-365.1: Pagina autore e curated tools non nascondono job.
-- [ ] AC-365.2: No claims su popolarità testimoni o utenti non misurati.
-- [ ] AC-365.3: On the scoped input and failure cases, verify: Public copy QA e viewport 390. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
+- [x] AC-365.1: Pagina autore e curated tools non nascondono job.
+- [x] AC-365.2: No claims su popolarità testimoni o utenti non misurati.
+- [x] AC-365.3: On the scoped input and failure cases, verify: Public copy QA e viewport 390. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
 
 **Verification:** Public copy QA e viewport 390; independently inspect output/record and test bounded failures.
 
@@ -47,3 +47,11 @@
 Starting from clean main `164d84e2`, reviewed canonical generated catalog and `src/catalog/home-curation-413.ts`. All eight editorial labels describe jobs supported by their selected manifest entries; their exact public routes are present in the current `dist`, and all eight declare `LOCAL` with network `forbidden`. The standalone `/autore/` page does not exist; the established transparent public information page is `/chi-siamo/`, which does not fabricate an author's identity or qualifications. No broken editorial route, hidden supported catalog job, unmeasured popularity ranking, or fabricated user/testimonial claim was found. **Source disposition: NO_CHANGE.**
 
 Added an independent regression `tests/editorial-truth-365-next.browser.mjs`. Executed against the **current built static website** using genuine desktop Chrome at a 390px touch-sized viewport: **PASS**. It cross-checks the visible home eight-card IDs, order and names with current `curateHomeTools413(catalog)`, matches all eight `/chi-siamo/` editorial jobs and links, navigates every actual tool URL and checks the canonical page heading plus runtime/network contract, opens the non-curated `csv-sort` page, checks the full 269-tool catalog, verifies no horizontal overflow on the visited pages and no unsupported positive popularity/testimonial claims. This is browser-size emulation, not proof of a physical mobile device, human identity or real popularity. The original ticket remains **OPEN** because a named/identified author and corresponding authoritative public attribution are unverified. No guessed identity, new route, publish or Gold claim.
+
+## 2026-10-12 final consolidation — original acceptance CLOSED, without invented public claims
+
+The missing named-author transparency requirement was resolved on the existing `/chi-siamo/` page: the project/editorial curation is now explicitly attributed to **Domenico Massafra** with a public identity link, the explicit statement that the source repository is private, and no unsupported occupation, popularity, audience or testimonial claim. Independent checks bound the name to current and preceding actual Git commit author metadata (`git log --format=%an`) and to the real public GitHub account's `name`/`login`/profile URL as returned by the authenticated GitHub API on 2026-10-12. These observations support a factual author/curator credit; a public GitHub profile is not falsely described as exposing the private source history.
+
+The existing independent `tests/editorial-truth-365-next.browser.mjs` was updated to assert the actual visible named-author section against current Git author identity and the public-profile link. Executed by the prime **PASS** on the freshly compiled real static site in installed desktop Google Chrome at a 390px touch-sized viewport: checked all 8 editorial tool jobs against the canonical curated manifest, each of the 8 linked actual LOCAL/no-network catalog routes, an unfeatured catalog route, the complete 269-tool directory, no invented statistics or testimonials and no horizontal overflow. The companion legacy `tests/acceptance-author-365.mjs` remains available. Repo `npm run check` PASS (2,038 files, 0 errors/0 warnings), `npm run build` PASS (292 actual pages and independent inspection), `git diff --check` PASS. Static browser width is not a physical iOS/Android screen-reader certification, and the site has not been deployed by this closure.
+
+**Disposition:** The exact three original AC-365.1–3 above are now individually supported and checked, lifecycle `completed`. Earlier OPEN/NO_CHANGE paragraphs describe superseded historical checkpoints, not a current blocker. This administrative ticket closure does not promote any Gold artifact or claim public production deployment.
