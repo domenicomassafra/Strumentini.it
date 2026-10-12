@@ -156,6 +156,30 @@ const isCurrent = (href: string): boolean =>
         toggle.focus();
       }
     });
+    // The mobile navigation covers the page. Without a bounded Tab sequence,
+    // focus moves from its last link to content hidden *behind* the panel.
+    // Keep a keyboard-only loop between the trigger and visible panel actions;
+    // Escape above remains the explicit way to dismiss the navigation.
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab" || panel.hidden || panel.getClientRects().length === 0) return;
+      const available = [...panel.querySelectorAll<HTMLElement>('summary, a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+        .filter((element) => element.tabIndex >= 0 && element.getClientRects().length > 0
+          && getComputedStyle(element).visibility !== "hidden");
+      const first = available[0];
+      const last = available[available.length - 1];
+      if (first === undefined || last === undefined) return;
+      const focused = document.activeElement;
+      if (event.shiftKey && focused === toggle) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && focused === last) {
+        event.preventDefault();
+        toggle.focus();
+      } else if (focused !== toggle && !panel.contains(focused)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      }
+    });
   }
 </script>
 

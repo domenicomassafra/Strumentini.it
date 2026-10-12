@@ -21069,7 +21069,7 @@
         },
         "page": {
           "path": "src/pages/tools/partita-iva-validator.astro",
-          "sha256": "1b1052d93dc12f8d52d6c759a189ca7185bf629e1d13bbe18ab6fa0c5d672a07"
+          "sha256": "aad180fd787b6c1fc1b607b97f5afac12d4e1ae8252348480f8eaf75dc86a490"
         },
         "testFiles": [
           "tests/partita-iva-validator.test.ts",
@@ -24444,6 +24444,7 @@
           "sha256": "764b4f7dc1950911a62110d87831f13005d906ad990619c13c69929837b680d3"
         },
         "testFiles": [
+          "tests/gold-source-binding-wave20-347.test.ts",
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts",
           "tests/pdf-visual-rotation-selection.test.ts",

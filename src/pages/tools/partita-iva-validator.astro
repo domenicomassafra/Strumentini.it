@@ -39,6 +39,7 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
         <input type="checkbox" name="startupEligible" />
         Solo per 5%: dichiaro di aver verificato esternamente gli ulteriori requisiti di nuova attività.
       </label>
+      <p class="tax396-piva-note">Quando cambi anno d'imposta, importi, codice ATECO e dichiarazioni vengono azzerati per evitare di usare dati di un altro anno. Gli importi devono usare il punto come separatore decimale (es. 1000.50).</p>
       <button type="submit">Calcola la sola stima 2025 coperta</button>
     </form>
     <p role="alert" class="tax396-piva-error" hidden></p>
@@ -64,6 +65,15 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
     const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
     const reset = () => { output.textContent = ""; error.textContent = ""; error.hidden = true; };
     const decline = (reason: string) => { reset(); error.textContent = reason; error.hidden = false; };
+    const taxYear = select("taxYear");
+    let previousYear = taxYear.value;
+    const clearYearScopedInputs = () => {
+      for (const name of ["atecoCode", "priorReceipts", "receipts", "paidContributions"]) select(name).value = "";
+      for (const name of ["paidContributionsVerified", "eligible", "startupEligible"]) {
+        (select(name) as HTMLInputElement).checked = false;
+      }
+      select("declaredRate").value = "standard-15";
+    };
     const cents = (name: string): number | null => {
       const text = select(name).value.trim();
       if (!/^(?:0|[1-9]\d{0,9})(?:\.\d{1,2})?$/u.test(text)) return null;
@@ -72,11 +82,21 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
       return Number.isSafeInteger(value) && value <= 1_000_000_000_000 ? value : null;
     };
     form.addEventListener("input", reset);
-    form.addEventListener("change", reset);
+    form.addEventListener("change", (event) => {
+      reset();
+      if (event.target !== taxYear || taxYear.value === previousYear) return;
+      previousYear = taxYear.value;
+      clearYearScopedInputs();
+      if (taxYear.value === "2025") {
+        decline("Cambio anno: importi e dichiarazioni azzerati. Inserisci e conferma nuovamente solo i dati del 2025.");
+      } else {
+        decline("Anno " + (taxYear.value || "non indicato") + " non verificato: la simulazione copre soltanto il 2025. Importi e dichiarazioni azzerati.");
+      }
+    });
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       reset();
-      if (select("taxYear").value !== "2025") return decline("Anno 2026 non verificato: il percorso forfettario supporta soltanto il 2025.");
+      if (taxYear.value !== "2025") return decline("Anno " + (taxYear.value || "non indicato") + " non verificato: il percorso forfettario supporta soltanto il 2025.");
       const prior = cents("priorReceipts");
       const receipts = cents("receipts");
       const paid = cents("paidContributions");

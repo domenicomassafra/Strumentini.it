@@ -32,6 +32,7 @@ import UiIcon from "../icons/UiIcon.astro";
       <a href="/preferiti/" role="menuitem">Preferiti e recenti</a>
       <button type="button" role="menuitem" data-account-logout>Esci</button>
     </div>
+    <p class="account-logout-error" role="alert" tabindex="-1" data-account-logout-error hidden></p>
   </div>
 </div>
 
@@ -43,6 +44,9 @@ import UiIcon from "../icons/UiIcon.astro";
   const menu = chip?.querySelector<HTMLElement>("[data-account-menu]");
   const trigger = chip?.querySelector<HTMLButtonElement>("[data-account-toggle]");
   const dropdown = chip?.querySelector<HTMLElement>("[data-account-dropdown]");
+  const logoutButton = chip?.querySelector<HTMLButtonElement>("[data-account-logout]");
+  const logoutError = chip?.querySelector<HTMLElement>("[data-account-logout-error]");
+  let logoutPending = false;
 
   function showUser(user: SessionUser): void {
     if (login === null || login === undefined || menu === null || menu === undefined) return;
@@ -71,6 +75,7 @@ import UiIcon from "../icons/UiIcon.astro";
     const open = dropdown.hidden;
     dropdown.hidden = !open;
     trigger.setAttribute("aria-expanded", String(open));
+    if (open && logoutError !== null && logoutError !== undefined) logoutError.hidden = true;
   });
 
   document.addEventListener("click", (event) => {
@@ -82,11 +87,27 @@ import UiIcon from "../icons/UiIcon.astro";
     }
   });
 
-  chip?.querySelector<HTMLButtonElement>("[data-account-logout]")?.addEventListener("click", async () => {
+  logoutButton?.addEventListener("click", async () => {
+    if (logoutPending) return;
+    logoutPending = true;
+    logoutButton.disabled = true;
+    if (logoutError !== null && logoutError !== undefined) logoutError.hidden = true;
     try {
-      await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
-    } finally {
+      const response = await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+      // The Worker returns 204 only after revoking the session. A 200 HTML
+      // fallback, a 5xx error or a failed fetch must not look like sign-out.
+      if (response.status !== 204) throw new Error("Logout was not confirmed by the auth Worker");
       window.location.assign("/");
+    } catch {
+      if (dropdown !== null && dropdown !== undefined) dropdown.hidden = true;
+      trigger?.setAttribute("aria-expanded", "false");
+      if (logoutError !== null && logoutError !== undefined) {
+        logoutError.textContent = "La disconnessione non è riuscita. Sei ancora collegato. Riprova.";
+        logoutError.hidden = false;
+        logoutError.focus();
+      }
+      logoutButton.disabled = false;
+      logoutPending = false;
     }
   });
 
@@ -108,6 +129,21 @@ import UiIcon from "../icons/UiIcon.astro";
   }
 
   .account-menu { position: relative; }
+  .account-logout-error {
+    position: absolute;
+    right: 0;
+    top: calc(100% + var(--space-2));
+    z-index: 50;
+    width: min(280px, 80vw);
+    margin: 0;
+    padding: var(--space-3);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-raised);
+    font-size: var(--font-size-sm);
+  }
 
   .account-trigger {
     display: inline-flex;

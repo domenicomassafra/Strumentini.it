@@ -44,7 +44,10 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
 });
 
 const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze({
-  "src/components/account/AccountChip.astro": "f6f436f30a64406d898efd14717db3508ae7c63f348dbb14530066f668214033",
+  // 2026-10-12 #328 reviewed: same GET /api/auth/session and same POST
+  // /api/auth/logout, now only a confirmed 204 redirects after logout.
+  // Keep full-byte binding so any future unreviewed transport still fails.
+  "src/components/account/AccountChip.astro": "1cca61e9d06940358a3bece7e7bf26232c645dafb774a99181682ce38b571402",
   "src/components/account/MembershipBootstrap.astro": "ada60c9c8bea11b5d937c386f265e396f1cf354dc8cda6664f0fec040d240cca",
   "src/components/account/auth-client.ts": "326bcbe8d7a08aa37c7030b766e128974ebcd68e8cc56c5809a0dd44e6bcc8a0",
   "src/components/tools/ConnectionDeviceInfoTool.tsx": "6d636853c84b76d3c2ee7951bd1d331146a3dac72e8c8e51e8d8c80bf4c454b2",

@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
+import { realpathSync } from "node:fs";
 import { readFile, readdir, mkdir, stat, writeFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 import { promisify } from "node:util";
@@ -8,6 +9,7 @@ import type {
   PublicMetadataSurface,
   PublicSource,
   ReleaseCatalogEntry,
+  ReleaseValidationResult,
   ReleaseValidationInput,
   StaticAssetSurface,
   ToolCertificationReceipt,
@@ -18,6 +20,7 @@ import {
   validateRelease,
 } from "../src/release/validation";
 import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
+import { inspectGoldBinding347, type AuditGoldResult347 } from "./audit-gold-source-binding-347";
 import { publicIndexPaths } from "../src/seo/public-discovery";
 import { groups } from "../src/catalog/groups";
 import { narrowUncataloguedToolPreviews } from "../src/release/preview-boundary";
@@ -208,6 +211,34 @@ async function inventoryHash(files: readonly string[]): Promise<string> {
   return hash.digest("hex");
 }
 
+/** Release must verify the actual public badge and receipt bytes, not just
+ * the receipt's parsed claim of a current source fingerprint. */
+export function mergeReleaseGoldAudit347(
+  result: ReleaseValidationResult,
+  audit: AuditGoldResult347 | Error,
+): ReleaseValidationResult {
+  const invalid = audit instanceof Error ? [] : audit.findings.filter((entry) => entry.projected && !entry.safeToLabelGold);
+  // A dirty worktree without public Gold still has WORKTREE_DIRTY in the
+  // canonical release validator; never invent a Gold failure in that case.
+  if (!(audit instanceof Error) && invalid.length === 0) return result;
+  const finding = audit instanceof Error
+    ? {
+        code: "GOLD_PUBLIC_SOURCE_AUDIT_FAILED", severity: "error" as const,
+        message: `Public Gold projection could not be verified: ${audit.message}`,
+        path: "src/generated/quality.ts",
+      }
+    : {
+        code: "GOLD_PUBLIC_SOURCE_BINDING_FAILED", severity: "error" as const,
+        message: `${invalid.length} public Gold claim(s) lack current source and exact receipt-byte proof: ${invalid.slice(0, 5).map((entry) => `${entry.toolId} (${entry.reasons.join(", ") || "dirty worktree"})`).join("; ")}`,
+        path: "src/generated/quality.ts",
+      };
+  const counts = { ...result.counts, errors: result.counts.errors + 1 };
+  return {
+    ...result, status: "FAIL", counts,
+    findings: [...result.findings, finding].sort((a, b) => a.code.localeCompare(b.code)),
+  };
+}
+
 async function main(): Promise<void> {
   const revision = await git("rev-parse", "HEAD").catch(() => "unknown");
   const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
@@ -263,7 +294,10 @@ async function main(): Promise<void> {
     sourceFingerprint,
     workingTreeDirty,
   };
-  const result = validateRelease(input);
+  const releaseResult = validateRelease(input);
+  const goldAudit = await inspectGoldBinding347(root).catch((error: unknown) =>
+    error instanceof Error ? error : new Error(String(error)));
+  const result = mergeReleaseGoldAudit347(releaseResult, goldAudit);
   const checkStatus = (prefixes: readonly string[], checked: boolean): "PASS" | "FAIL" | "BLOCKED" | "NOT_RUN" => {
     if (!checked) return "NOT_RUN";
     const related = result.findings.filter((item) => prefixes.some((prefix) => item.code.startsWith(prefix)));
@@ -325,4 +359,4 @@ async function main(): Promise<void> {
   if (result.status === "FAIL" || (requireReady && result.status !== "PASS")) process.exitCode = 1;
 }
 
-await main();
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(import.meta.filename)) await main();
