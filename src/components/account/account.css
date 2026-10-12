@@ -224,7 +224,7 @@
 
 /* --- Identity and numbers -------------------------------------------------- */
 
-.ac-identity { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+.ac-identity { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); overflow-wrap: anywhere; }
 
 .ac-avatar {
   display: grid;
