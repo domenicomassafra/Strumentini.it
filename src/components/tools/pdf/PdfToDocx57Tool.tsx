@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { PdfDocx57Result } from "../../../engines/pdf/pdf-to-docx-57";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 
 export function PdfToDocx57Tool() {
   const [file, setFile] = useState<File | null>(null);
@@ -9,6 +10,7 @@ export function PdfToDocx57Tool() {
   const [url, setUrl] = useState("");
   const generation = useRef(0);
   const abort = useRef<AbortController | null>(null);
+  const inFlight = useRef(false);
 
   useEffect(() => {
     if (!result) { setUrl(""); return; }
@@ -22,12 +24,14 @@ export function PdfToDocx57Tool() {
 
   function invalidate() {
     generation.current++;
+    inFlight.current = false;
     abort.current?.abort(); abort.current = null;
     setBusy(false); setResult(null); setError("");
   }
   async function convert(event: Event) {
     event.preventDefault();
-    if (!file || busy) return;
+    if (!file || busy || inFlight.current) return;
+    inFlight.current = true;
     setResult(null); setError(""); setBusy(true);
     const controller = new AbortController();
     const request = ++generation.current;
@@ -35,11 +39,19 @@ export function PdfToDocx57Tool() {
     try {
       const { pdfToDocx57 } = await import("../../../engines/pdf/pdf-to-docx-57");
       const output = await pdfToDocx57(file, controller.signal);
-      if (!controller.signal.aborted && request === generation.current) setResult(output);
+      if (!controller.signal.aborted && request === generation.current && output.bytes.length > 0) {
+        setResult(output);
+        // This optional DOCX mode belongs to the canonical PDF-to-Markdown route.
+        // Only the catalogue ID, use count and timestamp enter Recenti.
+        recordCompletedTool("pdf-to-markdown");
+      }
     } catch (cause) {
       if (!controller.signal.aborted && request === generation.current) setError(cause instanceof Error ? cause.message : "Impossibile convertire PDF in Word.");
     } finally {
-      if (abort.current === controller) abort.current = null;
+      if (abort.current === controller) {
+        abort.current = null;
+        inFlight.current = false;
+      }
       if (request === generation.current) setBusy(false);
     }
   }

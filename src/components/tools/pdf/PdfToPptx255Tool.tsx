@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { PdfPptx255Result } from "../../../engines/pdf/pdf-to-pptx-255";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 
 /**
  * Bounded PDF page-as-slide export in the existing PDF image tool route.
@@ -17,6 +18,7 @@ export function PdfToPptx255Tool() {
   const [previewUrl, setPreviewUrl] = useState("");
   const abortRef = useRef<AbortController | null>(null);
   const generation = useRef(0);
+  const inFlight = useRef(false);
   const urls = useRef<string[]>([]);
 
   function clearOutput() {
@@ -29,6 +31,7 @@ export function PdfToPptx255Tool() {
 
   function cancel() {
     generation.current++;
+    inFlight.current = false;
     abortRef.current?.abort();
     abortRef.current = null;
     clearOutput();
@@ -49,7 +52,8 @@ export function PdfToPptx255Tool() {
 
   async function convert(event: Event) {
     event.preventDefault();
-    if (!file || busy) return;
+    if (!file || busy || inFlight.current) return;
+    inFlight.current = true;
     clearOutput();
     const controller = new AbortController();
     const request = ++generation.current;
@@ -75,13 +79,19 @@ export function PdfToPptx255Tool() {
       setDownloadUrl(pptxUrl);
       setPreviewUrl(pngUrl);
       setStatus(`Pronto: ${output.slideCount} slide con immagini PNG verificate e inserite nel file PPTX.`);
+      // This submode belongs to the canonical public pdf-to-images catalogue route.
+      // Persist only its ID/count/time, never the local PDF/PPTX or page choices.
+      if (output.blob.size > 0) recordCompletedTool("pdf-to-images");
     } catch (error) {
       if (!controller.signal.aborted && request === generation.current) {
         clearOutput();
         setStatus(error instanceof Error ? error.message : "Impossibile creare PowerPoint dalle pagine PDF.");
       }
     } finally {
-      if (abortRef.current === controller) abortRef.current = null;
+      if (abortRef.current === controller) {
+        abortRef.current = null;
+        inFlight.current = false;
+      }
       if (request === generation.current) setBusy(false);
     }
   }
@@ -101,10 +111,10 @@ export function PdfToPptx255Tool() {
       <div class="field-grid">
         <label class="field"><span>Pagine PDF (max 8; vuoto = tutte se entro il limite)</span>
           <input type="text" value={pages} disabled={busy} placeholder="Es. 3,1,2 oppure 1-4"
-            onInput={event => { setPages(event.currentTarget.value); clearOutput(); }} />
+            onInput={event => { cancel(); setPages(event.currentTarget.value); }} />
           <small>Le slide seguono esattamente l'ordine delle pagine selezionate.</small></label>
         <label class="field"><span>Risoluzione immagine</span>
-          <select value={scale} disabled={busy} onChange={event => { setScale(event.currentTarget.value); clearOutput(); }}>
+          <select value={scale} disabled={busy} onChange={event => { cancel(); setScale(event.currentTarget.value); }}>
             <option value="1">72 DPI</option>
             <option value="1.5">108 DPI</option>
             <option value="2">144 DPI</option>
