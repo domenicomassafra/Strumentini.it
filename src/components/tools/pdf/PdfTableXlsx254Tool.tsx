@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { inspectPdfBytes } from "../../../engines/pdf";
 import { openPdfThumbnailSession } from "../../../engines/pdf/thumbnails";
 import type { PdfTablePreview254 } from "../../../engines/pdf/pdf-table-xlsx-254";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
 
 export function PdfTableXlsx254Tool() {
   const [file, setFile] = useState<File | null>(null);
@@ -18,10 +19,25 @@ export function PdfTableXlsx254Tool() {
   const [preview, setPreview] = useState<PdfTablePreview254 | null>(null);
   const [output, setOutput] = useState<Blob | null>(null);
   const [downloadUrl, setDownloadUrl] = useState("");
+  const generation = useRef(0);
+  const inFlight = useRef(false);
+  const controller = useRef<AbortController | null>(null);
   const currentPage = dimensions[Number(page) - 1];
   const region = useMemo(() => ({ x: Number(x), y: Number(y), width: Number(width), height: Number(height) }), [x, y, width, height]);
 
-  function invalidate() { setPreview(null); setOutput(null); setError(""); }
+  function invalidate() {
+    generation.current++;
+    controller.current?.abort();
+    controller.current = null;
+    inFlight.current = false;
+    setBusy(false); setPreview(null); setOutput(null); setError("");
+  }
+  useEffect(() => () => {
+    generation.current++;
+    controller.current?.abort();
+    controller.current = null;
+    inFlight.current = false;
+  }, []);
   useEffect(() => {
     if (!file) { setPageCount(0); setDimensions([]); return; }
     let alive = true;
@@ -59,29 +75,60 @@ export function PdfTableXlsx254Tool() {
   }, [output]);
 
   async function analyze(event: Event) {
-    event.preventDefault(); invalidate(); setBusy(true);
+    event.preventDefault();
+    if (inFlight.current) return;
+    const operation = ++generation.current;
+    const abort = new AbortController();
+    controller.current = abort;
+    inFlight.current = true;
+    setPreview(null); setOutput(null); setError(""); setBusy(true);
     try {
       if (!file || !currentPage) throw new Error("Seleziona prima il PDF");
       const { previewPdfTable254 } = await import("../../../engines/pdf/pdf-table-xlsx-254");
-      setPreview(await previewPdfTable254(file, { page: Number(page), region }));
-    } catch (cause) { setError(cause instanceof Error ? cause.message : "Griglia non identificabile"); }
-    finally { setBusy(false); }
+      if (operation !== generation.current || abort.signal.aborted) return;
+      const found = await previewPdfTable254(file, { page: Number(page), region: { ...region } }, abort.signal);
+      if (operation === generation.current && !abort.signal.aborted) setPreview(found);
+    } catch (cause) {
+      if (operation === generation.current && !abort.signal.aborted)
+        setError(cause instanceof Error ? cause.message : "Griglia non identificabile");
+    } finally {
+      if (controller.current === abort) { controller.current = null; inFlight.current = false; }
+      if (operation === generation.current) setBusy(false);
+    }
   }
   async function exportWorkbook() {
-    setBusy(true); setError("");
+    if (inFlight.current) return;
+    const operation = ++generation.current;
+    const abort = new AbortController();
+    controller.current = abort;
+    inFlight.current = true;
+    setBusy(true); setError(""); setOutput(null);
     try {
       if (!preview) throw new Error("Verifica prima la tabella nell'anteprima");
       const { exportPdfTableXlsx254 } = await import("../../../engines/pdf/pdf-table-xlsx-254");
-      const workbook = await exportPdfTableXlsx254(preview);
+      if (operation !== generation.current || abort.signal.aborted) return;
+      const workbook = await exportPdfTableXlsx254(preview, abort.signal);
+      if (operation !== generation.current || abort.signal.aborted) return;
+      if (!(workbook.blob instanceof Blob) || workbook.blob.size < 80)
+        throw new Error("XLSX non verificato");
       setOutput(workbook.blob);
-    } catch (cause) { setOutput(null); setError(cause instanceof Error ? cause.message : "XLSX non verificato"); }
-    finally { setBusy(false); }
+      // Persist only the registered public tool ID, never source file/cells/bytes.
+      recordCompletedTool("pdf-tables-to-xlsx");
+    } catch (cause) {
+      if (operation === generation.current && !abort.signal.aborted) {
+        setOutput(null);
+        setError(cause instanceof Error ? cause.message : "XLSX non verificato");
+      }
+    } finally {
+      if (controller.current === abort) { controller.current = null; inFlight.current = false; }
+      if (operation === generation.current) setBusy(false);
+    }
   }
 
   return <div data-pdf-table-254 style={{ maxWidth: "960px", margin: "1rem auto" }}>
     <form class="tool-operation" onSubmit={(event) => void analyze(event)}>
       <label class="field"><span>Documento PDF locale (massimo 8 MiB, 12 pagine)</span>
-        <input aria-label="Documento PDF" type="file" accept=".pdf,application/pdf" disabled={busy} onChange={(event) => {
+        <input aria-label="Documento PDF" type="file" accept=".pdf,application/pdf" onChange={(event) => {
           setFile(event.currentTarget.files?.[0] ?? null); setPageCount(0); setThumbnail(""); invalidate();
         }} />
       </label>
@@ -118,7 +165,8 @@ export function PdfTableXlsx254Tool() {
         </figure>}
       </>}
       {error && <p role="alert">{error}</p>}
-      <div class="actions"><button type="submit" class="primary" disabled={busy || !currentPage}>{busy ? "Analisi in locale..." : "Estrai e mostra griglia"}</button></div>
+      <div class="actions"><button type="submit" class="primary" disabled={busy || !currentPage || !pageCount}>{busy ? "Analisi in locale..." : "Estrai e mostra griglia"}</button>
+        <button type="button" data-pdf-table-cancel disabled={!busy} onClick={invalidate}>Annulla operazione</button></div>
     </form>
     {preview && <section data-pdf-table-preview aria-label="Anteprima celle prima dell'esportazione" style={{ margin: "1.5rem auto" }}>
       <h2>Anteprima verificata: {preview.rows} righe × {preview.columns} colonne</h2>

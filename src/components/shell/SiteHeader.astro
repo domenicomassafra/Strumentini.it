@@ -305,6 +305,20 @@ const isCurrent = (href: string): boolean =>
      rather than living beside the signed-in account button. */
   .site-actions :global([data-account-login][hidden]) { display: none; }
 
+  /* AccountChip's authored display:grid likewise overrides the UA [hidden]
+     rule. A closed menu must not show, accept pointer input or enter Tab order. */
+  .site-actions :global([data-account-dropdown][hidden]) { display: none; }
+
+  /* The logout error is anchored to the account button, not the right viewport
+     edge. At 320px its original 80vw width sticks 4px beyond the left edge. */
+  .site-actions :global([data-account-logout-error]) {
+    max-width: calc(100vw - (var(--container-gutter) * 2) - var(--control-height-touch) - var(--space-2));
+  }
+  .site-actions :global([data-account-logout-error]:focus) {
+    outline: var(--focus-width) solid var(--focus-ring);
+    outline-offset: var(--focus-offset);
+  }
+
   .site-menu-button {
     display: grid;
     place-items: center;
