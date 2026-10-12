@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
@@ -39,6 +39,13 @@ async function fixture(run: (root: string, base: string, head: string) => Promis
 }
 
 describe("#404 PR/source impact planning", () => {
+  it("keeps CI-installed Python consumer packages outside the reviewed source tree", async () => {
+    const workflow = await readFile(resolve(".github/workflows/ci.yml"), "utf8");
+    expect(workflow.match(/python3 -m venv "\$RUNNER_TEMP\/strumentini-ci-python"/gu)).toHaveLength(2);
+    expect(workflow).not.toContain("python3 -m venv .ci-python");
+    expect(workflow).not.toContain("$GITHUB_WORKSPACE/.ci-python/bin");
+    expect(workflow).toContain("npm run ci:scope -- --base=\"$BASE_SHA\" --run");
+  });
   it("never lets a docs-only label hide a worker auth or SQL migration", () => {
     const plan = buildImpactPlan(["docs/guide.md", "worker/index.ts", "worker/migrations/0003_auth.sql"], suites);
     expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");

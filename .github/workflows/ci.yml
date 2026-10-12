@@ -33,12 +33,14 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends ffmpeg
-          python3 -m venv .ci-python
-          echo "$GITHUB_WORKSPACE/.ci-python/bin" >> "$GITHUB_PATH"
-          .ci-python/bin/python -m pip install --no-cache-dir 'Pillow==12.2.0' 'pypdf==6.16.1' 'python-pptx==1.0.2'
+          # Keep installer-generated files outside the source checkout: the
+          # fail-closed change-impact gate rejects unknown working-tree paths.
+          python3 -m venv "$RUNNER_TEMP/strumentini-ci-python"
+          echo "$RUNNER_TEMP/strumentini-ci-python/bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/strumentini-ci-python/bin/python" -m pip install --no-cache-dir 'Pillow==12.2.0' 'pypdf==6.16.1' 'python-pptx==1.0.2'
           npm ci --prefix spikes/heavy-local-feasibility --omit=dev
           ffprobe -version | head -1
-          .ci-python/bin/python -c 'import PIL,pypdf,pptx; print("INDEPENDENT_CONSUMERS_READY")'
+          "$RUNNER_TEMP/strumentini-ci-python/bin/python" -c 'import PIL,pypdf,pptx; print("INDEPENDENT_CONSUMERS_READY")'
       - name: Git change impact + selected source checks
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -61,12 +63,12 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends ffmpeg
-          python3 -m venv .ci-python
-          echo "$GITHUB_WORKSPACE/.ci-python/bin" >> "$GITHUB_PATH"
-          .ci-python/bin/python -m pip install --no-cache-dir 'Pillow==12.2.0' 'pypdf==6.16.1' 'python-pptx==1.0.2'
+          python3 -m venv "$RUNNER_TEMP/strumentini-ci-python"
+          echo "$RUNNER_TEMP/strumentini-ci-python/bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/strumentini-ci-python/bin/python" -m pip install --no-cache-dir 'Pillow==12.2.0' 'pypdf==6.16.1' 'python-pptx==1.0.2'
           npm ci --prefix spikes/heavy-local-feasibility --omit=dev
           ffprobe -version | head -1
-          .ci-python/bin/python -c 'import PIL,pypdf,pptx; print("INDEPENDENT_CONSUMERS_READY")'
+          "$RUNNER_TEMP/strumentini-ci-python/bin/python" -c 'import PIL,pypdf,pptx; print("INDEPENDENT_CONSUMERS_READY")'
       # Physical PDF/JPEG and OCR consumers are CPU-heavy. Serial workers avoid
       # timeouts caused by unrelated tests competing for the same runner CPU;
       # all existing acceptance assertions and timeouts remain unchanged.
