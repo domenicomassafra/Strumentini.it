@@ -1,0 +1,15 @@
+#!/bin/sh
+# Owner-approved public-site safety: save change branches to GitHub; merge
+# through a checked PR instead of publishing a direct origin/main push.
+# This guard is local defense-in-depth: GitHub private-repo branch protection
+# is not enabled on the owner's current plan, and --no-verify can bypass hooks.
+
+remote_name="${1:-}"
+while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_name" = "origin" ] && [ "$remote_ref" = "refs/heads/main" ]; then
+    echo 'BLOCKED_PUBLIC_MAIN_PUSH: Strumentini requires a checked GitHub PR into main.' >&2
+    echo 'Push a short-lived review branch and merge after CI/required acceptance.' >&2
+    exit 1
+  fi
+done
+exit 0
