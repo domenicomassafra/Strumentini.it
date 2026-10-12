@@ -114,7 +114,9 @@ export function checkPdfBytes407(bytes: Uint8Array): FileThreatFinding407 | null
   // Latin-1 maps each byte to a code point and does not replace invalid UTF-8.
   const observed = new TextDecoder("iso-8859-1").decode(bytes)
     .replace(/#([0-9a-f]{2})/giu, (_, code: string) => String.fromCharCode(Number.parseInt(code, 16)));
-  if (/\/(?:JavaScript|JS|Launch|EmbeddedFile|RichMedia|XFA|OpenAction|AA|SubmitForm|ImportData|GoToR|GoToE)(?=[\s<>()\[\]{}\/%]|$)/iu.test(observed)) {
+  // PDF annotation actions may live in indirect /A or /Next dictionaries,
+  // without /OpenAction or /AA. URI navigates away; Rendition may load media.
+  if (/\/(?:JavaScript|JS|Launch|EmbeddedFile|RichMedia|XFA|OpenAction|AA|SubmitForm|ImportData|GoToR|GoToE|URI|Rendition)(?=[\s<>()\[\]{}\/%]|$)/iu.test(observed)) {
     return reject("UNSUPPORTED", "Observed PDF contains an active action or embedded content reference.");
   }
   return null;

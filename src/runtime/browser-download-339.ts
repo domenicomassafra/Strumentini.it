@@ -16,8 +16,21 @@ export function requestBrowserDownload339(artifact:OutputArtifactDescriptor | nu
     anchor.download=plan.filename;
     anchor.hidden=true;
     document.body.append(anchor);
-    anchor.click();
-    anchor.remove();
+    // HTMLElement.click() returns void even when a policy/consumer cancels the
+    // click's default action. Observe the dispatched event synchronously so
+    // callers do not report an attempted download as accepted in that case.
+    let clicked:MouseEvent|undefined;
+    const observe=(event:MouseEvent):void=>{if(event.target===anchor) clicked=event;};
+    window.addEventListener("click",observe,true);
+    try { anchor.click(); }
+    finally {
+      window.removeEventListener("click",observe,true);
+      anchor.remove();
+    }
+    if(clicked===undefined || clicked.defaultPrevented) {
+      URL.revokeObjectURL(url);
+      return false;
+    }
     const temporaryUrl=url;
     setTimeout(()=>URL.revokeObjectURL(temporaryUrl),15_000);
     return true;
