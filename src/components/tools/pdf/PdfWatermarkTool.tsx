@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { planPdfWatermark, watermarkPdf, planPdfImageWatermark, watermarkPdfJpeg, type PdfWatermarkPosition } from "../../../engines/pdf/watermark";
 import { openPdfThumbnailSession, pdfThumbnailWindow, type PdfThumbnailSession } from "../../../engines/pdf/thumbnails";
+import { recordCompletedTool } from "../../../workbench/completed-tool";
+import { pdfWatermarkManifest } from "../../../tools/pdf-watermark/manifest";
 import { PdfVisualSignature241Tool } from "./PdfVisualSignature241Tool";
 
 const POSITIONS: readonly { value: PdfWatermarkPosition; label: string }[] = [
@@ -35,6 +37,23 @@ export function PdfWatermarkTool() {
   const [writing, setWriting] = useState(false);
   const [result, setResult] = useState<Blob | null>(null);
   const [downloadUrl, setDownloadUrl] = useState("");
+  // Acquire before yielding to the next frame: even a programmatic double
+  // submit cannot run twice or record two history entries for one PDF.
+  const generation = useRef(0);
+  const inFlight = useRef(false);
+
+  function invalidate() {
+    generation.current += 1;
+    inFlight.current = false;
+    setWriting(false);
+    setResult(null);
+    setWriteError("");
+  }
+
+  useEffect(() => () => {
+    generation.current += 1;
+    inFlight.current = false;
+  }, []);
 
   const options = { pages, text, opacity: Number(opacity), rotation: Number(rotation), scale: Number(scale),
     margin: Number(margin), position };
@@ -111,54 +130,71 @@ export function PdfWatermarkTool() {
   }, [result]);
 
   function update<T>(setter: (value: T) => void, value: T) {
-    setter(value); setResult(null); setWriteError("");
+    invalidate();
+    setter(value);
   }
 
   function choose(event: Event) {
+    invalidate();
     setSource(null);
     setFile((event.currentTarget as HTMLInputElement).files?.[0] ?? null);
-    setResult(null); setLoadError(""); setPreviewError(""); setWriteError(""); setStart(1);
+    setLoadError(""); setPreviewError(""); setStart(1);
   }
 
   async function submit(event: Event) {
     event.preventDefault();
+    if (inFlight.current) return;
+    if (source === null || plan === null) { invalidate(); return; }
+    const operation = ++generation.current;
+    inFlight.current = true;
     setResult(null); setWriteError("");
-    if (source === null || plan === null) return;
     setWriting(true);
     try {
       await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-      setResult(mode === "jpeg" ? watermarkPdfJpeg(source, imageOptions).artifact.blob : watermarkPdf(source, options).artifact.blob);
+      if (operation !== generation.current) return;
+      const pdf = mode === "jpeg" ? watermarkPdfJpeg(source, imageOptions).artifact.blob : watermarkPdf(source, options).artifact.blob;
+      if (operation !== generation.current) return;
+      if (!(pdf instanceof Blob) || pdf.size < 100) throw new Error("PDF con filigrana non disponibile");
+      setResult(pdf);
+      // Persist only the canonical tool ID, timestamp and use-count.
+      // Never include source/output bytes, document name or watermark text.
+      recordCompletedTool(pdfWatermarkManifest.id);
     } catch (error) {
-      setWriteError(error instanceof Error ? error.message : "Filigrana non creata");
-    } finally { setWriting(false); }
+      if (operation === generation.current) setWriteError(error instanceof Error ? error.message : "Filigrana non creata");
+    } finally {
+      if (operation === generation.current) {
+        inFlight.current = false;
+        setWriting(false);
+      }
+    }
   }
 
   return <>
     <form class="tool-operation" data-pdf-watermark onSubmit={(event) => { void submit(event); }}>
-      <label class="field"><span>PDF locale</span><input type="file" accept="application/pdf,.pdf" onChange={choose} disabled={writing} /></label>
+      <label class="field"><span>PDF locale</span><input type="file" accept="application/pdf,.pdf" onChange={choose} /></label>
       <p class="file-note" role="note" data-not-redaction>
         <strong>La filigrana è una sovrapposizione visibile, NON una censura o redazione dei dati.</strong>{" "}
         Non nasconde né elimina il testo originale: informazioni riservate restano recuperabili nel PDF.
       </p>
       <p class="file-note">Filigrana con testo ASCII oppure JPEG RGB baseline incorporato. Nessun caricamento al server; PNG, CMYK e JPEG progressivi sono rifiutati.</p>
-      <label class="field"><span>Tipo di filigrana</span><select value={mode} onChange={(event) => update(setMode, event.currentTarget.value as "text" | "jpeg")} disabled={writing}>
+      <label class="field"><span>Tipo di filigrana</span><select value={mode} onChange={(event) => update(setMode, event.currentTarget.value as "text" | "jpeg")}>
         <option value="text">Testo</option><option value="jpeg">Immagine JPEG</option>
       </select></label>
       <div class="field-grid">
-        {mode === "text" ? <label class="field"><span>Testo filigrana</span><input value={text} maxLength={48} onInput={(event) => update(setText, event.currentTarget.value)} disabled={writing} /><small>1–48 caratteri ASCII stampabili.</small></label>
+        {mode === "text" ? <label class="field"><span>Testo filigrana</span><input value={text} maxLength={48} onInput={(event) => update(setText, event.currentTarget.value)} /><small>1–48 caratteri ASCII stampabili.</small></label>
           : <label class="field"><span>JPEG filigrana</span><input type="file" accept="image/jpeg,.jpg,.jpeg" onChange={(event) => {
             setJpegBytes(null); update(setJpegFile, (event.currentTarget as HTMLInputElement).files?.[0] ?? null);
-          }} disabled={writing} /><small>JPEG RGB baseline a 8 bit, fino a 2 MiB/4 megapixel.</small></label>}
-        <label class="field"><span>Pagine</span><input value={pages} onInput={(event) => update(setPages, event.currentTarget.value)} disabled={writing} /><small>* tutte; 2-4,6 sottoinsieme. Rifiuta duplicati.</small></label>
-        <label class="field"><span>Posizione</span><select value={position} onChange={(event) => update(setPosition, event.currentTarget.value as PdfWatermarkPosition)} disabled={writing}>
+          }} /><small>JPEG RGB baseline a 8 bit, fino a 2 MiB/4 megapixel.</small></label>}
+        <label class="field"><span>Pagine</span><input value={pages} onInput={(event) => update(setPages, event.currentTarget.value)} /><small>* tutte; 2-4,6 sottoinsieme. Rifiuta duplicati.</small></label>
+        <label class="field"><span>Posizione</span><select value={position} onChange={(event) => update(setPosition, event.currentTarget.value as PdfWatermarkPosition)}>
           {POSITIONS.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
         </select></label>
       </div>
       <div class="field-grid">
-        <label class="field"><span>Opacità (0,1–1)</span><input type="number" min="0.1" max="1" step="0.05" value={opacity} onInput={(event) => update(setOpacity, event.currentTarget.value)} disabled={writing} /></label>
-        <label class="field"><span>Rotazione (gradi)</span><input type="number" min="-180" max="180" step="5" value={rotation} onInput={(event) => update(setRotation, event.currentTarget.value)} disabled={writing} /></label>
-        <label class="field"><span>Scala (0,5–3)</span><input type="number" min="0.5" max="3" step="0.1" value={scale} onInput={(event) => update(setScale, event.currentTarget.value)} disabled={writing} /></label>
-        <label class="field"><span>Margine (pt)</span><input type="number" min="12" max="72" step="1" value={margin} onInput={(event) => update(setMargin, event.currentTarget.value)} disabled={writing} /></label>
+        <label class="field"><span>Opacità (0,1–1)</span><input type="number" min="0.1" max="1" step="0.05" value={opacity} onInput={(event) => update(setOpacity, event.currentTarget.value)} /></label>
+        <label class="field"><span>Rotazione (gradi)</span><input type="number" min="-180" max="180" step="5" value={rotation} onInput={(event) => update(setRotation, event.currentTarget.value)} /></label>
+        <label class="field"><span>Scala (0,5–3)</span><input type="number" min="0.5" max="3" step="0.1" value={scale} onInput={(event) => update(setScale, event.currentTarget.value)} /></label>
+        <label class="field"><span>Margine (pt)</span><input type="number" min="12" max="72" step="1" value={margin} onInput={(event) => update(setMargin, event.currentTarget.value)} /></label>
       </div>
       {loadError || calculated.error ? <p role="alert">{loadError || calculated.error}</p> : null}
       {plan !== null ? (
@@ -195,7 +231,10 @@ export function PdfWatermarkTool() {
           <p class="file-note">La posizione e la rotazione usano le dimensioni visibili del PDF. Il PDF finale contiene un overlay separato in grigio.</p>
         </section>
       ) : null}
-      <div class="actions"><button class="primary" type="submit" disabled={writing || plan === null}>{writing ? "Applicazione…" : "Applica filigrana"}</button></div>
+      <div class="actions">
+        <button class="primary" type="submit" disabled={writing || plan === null}>{writing ? "Applicazione…" : "Applica filigrana"}</button>
+        {writing ? <button type="button" onClick={invalidate}>Annulla filigrana</button> : null}
+      </div>
       {writeError ? <p role="alert">{writeError}</p> : null}
       {downloadUrl ? <div class="result-panel" data-state="success"><p role="status">PDF con filigrana generato e stream originali verificati.</p>
         <p>Overlay visibile: non elimina informazioni dal documento.</p><a href={downloadUrl} download="pdf-filigranato.pdf">Scarica PDF con filigrana</a>

@@ -32,12 +32,14 @@ export function inspectGifStructure(bytes: Uint8Array): GifStructure {
   let offset = 13 + ((packed & 0x80) !== 0 ? 3 * (1 << ((packed & 0x07) + 1)) : 0);
   if (offset > bytes.length) invalid("truncated global palette");
 
-  const skipSubBlocks = (): void => {
+  const skipSubBlocks = (): number => {
+    let dataBytes = 0;
     for (;;) {
       if (offset >= bytes.length) invalid("unterminated data sub-blocks");
       const size = bytes[offset++]!;
-      if (size === 0) return;
+      if (size === 0) return dataBytes;
       if (offset + size > bytes.length) invalid("truncated data sub-block");
+      dataBytes += size;
       offset += size;
     }
   };
@@ -68,8 +70,21 @@ export function inspectGifStructure(bytes: Uint8Array): GifStructure {
         const flags = bytes[offset + 1]!;
         delay = short(offset + 2);
         disposal = (flags >> 2) & 0x07;
+        // GIF89a defines disposal methods 0–3. Values 4–7 are reserved;
+        // reporting one as an ordinary supported animation is misleading.
+        if (disposal > 3) invalid("reserved graphic disposal method");
         transparent = (flags & 1) !== 0;
         offset += 6;
+      } else if (label === 0x01) {
+        // Plain text is itself a graphic-rendering block. Its fixed 12-byte
+        // header and data consume a pending Graphic Control Extension, even
+        // when it is followed by a separate image descriptor (GIF89a §12/25).
+        if (offset + 13 > bytes.length || bytes[offset] !== 12) invalid("malformed plain-text extension");
+        offset += 13;
+        skipSubBlocks();
+        delay = 0;
+        disposal = 0;
+        transparent = false;
       } else {
         skipSubBlocks();
       }
@@ -87,7 +102,9 @@ export function inspectGifStructure(bytes: Uint8Array): GifStructure {
     if ((imagePacked & 0x80) !== 0) offset += 3 * (1 << ((imagePacked & 0x07) + 1));
     if (offset >= bytes.length || (bytes[offset] ?? 0) < 2 || (bytes[offset] ?? 0) > 8) invalid("missing palette or invalid LZW code size");
     offset++;
-    skipSubBlocks();
+    // An image with no compressed data cannot contain even its LZW clear/end
+    // codes; it is not a valid animated frame regardless of the descriptors.
+    if (skipSubBlocks() === 0) invalid("image frame has no compressed pixel data");
     if (delays.length === MAX_FRAMES) invalid(`more than ${MAX_FRAMES} frames`);
     delays.push(delay);
     disposalMethods.push(disposal);

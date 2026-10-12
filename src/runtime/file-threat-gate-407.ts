@@ -102,6 +102,32 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
     if (/<\s*(?:[a-z_][\w.-]*:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
       return reject("UNSUPPORTED", "Executable or external SVG/HTML content is outside the inspection profile.");
     }
+    // An SVG <a href="relative.svg"> is not contained by its ZIP parent:
+    // resolving it against the eventual browser/document URL can navigate or
+    // fetch outside the archive. xml:base redirects *even otherwise relative*
+    // references. Keep only same-document #fragment hrefs in this conservative
+    // preflight; ordinary OOXML Relationship Target="media/x.png" is separate.
+    if (/\bxml:base\s*=/iu.test(source)) {
+      return reject("UNSUPPORTED", "SVG/XML base URI can redirect relative links outside the local document.");
+    }
+    for (const link of source.matchAll(/\b(?:href|src)\s*=\s*(["'])([^"']*)\1/giu)) {
+      if (!/^#[a-z_][\w.:-]*$/iu.test(link[2] ?? "")) {
+        return reject("UNSUPPORTED", "SVG/HTML references must remain in the same document, not resolve external resources.");
+      }
+    }
+    // A CSS declaration such as fill:u\72 l(https://host/x.svg) is parsed
+    // by Chromium's CSSOM as fill:url("https://host/x.svg"), while raw
+    // regexes looking only for 'url(' miss it. Decode *bounded* CSS escapes
+    // for the rejection check (not rendering/reconstructing the SVG). A
+    // literal url(#local) remains disallowed, matching the existing policy.
+    if (source.includes("\\")) {
+      const cssDecoded = source.replace(/\\([0-9a-f]{1,6})(?:\r\n|[ \t\r\n\f])?|\\([^\r\n\f0-9a-f])/giu,
+        (_whole, hex: string | undefined, escaped: string | undefined) =>
+          hex ? String.fromCodePoint(Number.parseInt(hex, 16) || 0xfffd) : (escaped ?? ""));
+      if (/\burl\s*\(|@import/iu.test(cssDecoded)) {
+        return reject("UNSUPPORTED", "CSS-escaped external SVG resources are outside the local inspection profile.");
+      }
+    }
   }
   if (/\b(?:javascript|vbscript)\s*:/iu.test(source)) {
     return reject("UNSUPPORTED", "Active script references in an XML package are not supported.");

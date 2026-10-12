@@ -216,7 +216,12 @@ export async function compressImageWithDonor47(input: Blob, options: DonorOption
       }
     } finally { checked.close(); }
 
-    const keptOriginal = header.mime === outputMime && input.size <= candidate.size;
+    // An equal-MIME WebP file is not necessarily the requested lossy VP8
+    // subtype. Retaining a smaller VP8L source would falsely claim this run
+    // produced WebP lossy (and honored its quality hint). If the verified VP8
+    // candidate is larger, return it with *negative* actual savings instead.
+    const originalMatchesMode = outputMime !== "image/webp" || isWebpLossy(headerBytes);
+    const keptOriginal = header.mime === outputMime && originalMatchesMode && input.size <= candidate.size;
     const blob = keptOriginal ? input : candidate;
     const savedBytes = input.size - blob.size;
     return {

@@ -75,3 +75,72 @@ Two independently valid PDF object graphs were offered as `supported/pdf` by the
 `src/runtime/file-threat-gate-407.ts` now refuses the two previously omitted action names in the **observed** PDF window; it retains bounded reads and the explicit candidate-only outcome. The new `tests/file-threat-operational-next-407.test.ts` verifies those real PDF actions, an innocuous internal `/GoTo` annotation, and both hostile and benign large PDFs beyond the 256 KiB full-inspection threshold. No remote URL was contacted or file materialized beyond local test bytes. Focused operational + existing #407 + detector #333 tests were **48/48 PASS** after the change; scoped strict TypeScript passed.
 
 **Disposition: AC-407.1–3 remain UNCHECKED / ticket OPEN / Gold and release NO-GO.** This addresses observed plain-text PDF action names within bounded windows, including name `#xx` escapes and referenced action chains. Compressed object streams, unobserved middle windows, downstream PDF/SVG/XML parsing and full hostile-graph/resource isolation remain outside this evidence.
+
+## 2026-10-12 wave22 — SVG/HTML external-reference and CSS escape boundary (RED→GREEN, original AC still OPEN)
+
+New genuine **pre-materialization fail-open**, distinct from the previous PDF
+`/URI`/`/Rendition`, SVG namespace/script and encoded ZIP-path fixes:
+the real `detectLocalFile` accepted a valid compressed ZIP containing
+`<svg xml:base="https://outside.invalid/resources/"><a href="payload.svg#p">...`
+as `supported/zip`. XML base URI changes how a downstream consumer resolves
+the seemingly relative link: independently resolving the parsed attributes
+produces `https://outside.invalid/resources/payload.svg#p`.
+An SVG `href="../private/tracker.svg#anchor"` also escaped the originating
+member's relative URL boundary without `xml:base`; a `mailto:` SVG hyperlink
+could launch an external protocol handler despite the previous literal
+`http/file/data/javascript` scheme checks. **No such navigation or fetch was
+executed** in these tests: the issue is incorrectly labelling content as an
+eligible local-only candidate before it is passed to an SVG/HTML consumer.
+
+There was a second concrete CSS-grammar evasion:
+`<s:rect style="fill:u\72 l(https://outside.invalid/secret.svg#id)"/>`
+inside a fully namespace-bound `<s:svg>` stored in a ZIP member with a
+`.xml` extension. The preflight previously looked for a literal `url(`,
+but Chromium CSSOM **independently parsed the valid CSS escape as
+`url("https://outside.invalid/...")`** while the preflight returned null.
+The source ZIP entry was valid, fully decompressible and independently XML
+parseable. No remote image was fetched in the CSSOM check.
+
+**TDD evidence:** NEW `tests/file-threat-svg-zip-407-wave22.test.ts`
+generated real DEFLATE ZIP members via root `fflate`, independently
+decompressed them, and parsed SVG/XML using **root-lock-pinned
+`sax@1.6.1` (transitively installed by root `svgo@4.1.0`)**, not the
+gate's own regexes, not the spike's separate `node_modules`, and not a
+network service. The unmodified gate failed **five tests out of six (RED)**,
+including actual `detectLocalFile` fail-open results. The negative test
+also wraps the genuine Blob `slice` calls: every requested read remains
+at or below `FILE_DETECTION_LIMITS.maxReadBytes` and aggregate reads remain
+at or below `maxTotalReadBytes`. Preflight neither uploads nor performs
+external URL resolution/network fetching.
+
+**Owned source-only fix:** In `src/runtime/file-threat-gate-407.ts`,
+SVG/HTML inspection (also activated by namespace-prefixed SVG roots stored
+under `.xml`) now refuses `xml:base` and `href`/`src` values other
+than literal safe same-document `#fragment` references. It also decodes
+bounded CSS hexadecimal/character escapes *only for rejection matching* so
+escaped `url()` or `@import` is refused; it does **not** modify,
+execute, render or sanitize supplied XML. Internal relative
+`<Relationship Target="media/image.png" TargetMode="Internal"/>` in
+ordinary OOXML remains a valid ZIP candidate, as do standalone inert
+SVG paths/rectangles and same-document `href="#shape"` anchors. The previous
+entity, XInclude, active-markup and ZIP path gates are unchanged.
+
+**GREEN:** `vitest run tests/file-threat-svg-zip-407-wave22.test.ts
+tests/file-threat-gate-407.test.ts
+tests/file-threat-operational-next-407.test.ts
+tests/file-detection-333.test.ts` **54/54 PASS** (new 6/6 and existing
+48/48). Strict focused TypeScript `tsc --ignoreConfig --noEmit
+--target es2023` **PASS**. No new direct or transitive
+dependencies were installed, no `file-detection.ts` change, no
+archive extraction, content materialization, provider, production
+deployment or commit/push. All modifications scoped to this original
+ticket, its existing threat helper, and the new test.
+
+**Remaining blockers:** This remains a conservative **candidate-screening**
+helper operating on bounded text members, not a complete XML/CSS/HTML
+sanitizer or an independently verified downstream renderer. It does not
+prove arbitrary SVG namespaces, complex CSS grammar, percent/URL semantics,
+compressed/nested archives, large PDF object streams or all filesystem
+extraction paths safe. No physical-device, release, full hostile-corpus
+or rollback verification occurred. **AC-407.1, AC-407.2 and AC-407.3 remain
+unchecked; original status `ready-for-agent`, owner and Gold NO-GO.**
