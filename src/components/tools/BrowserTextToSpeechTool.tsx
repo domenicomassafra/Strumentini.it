@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { italianVoices, validateSpeechControls } from "../../engines/browser-audio";
+import { recordCompletedTool } from "../../workbench/completed-tool";
 
 export function BrowserTextToSpeechTool() {
   const [text, setText] = useState("Ciao! Questo testo viene consegnato al motore vocale del browser o del sistema operativo.");
@@ -9,6 +10,7 @@ export function BrowserTextToSpeechTool() {
   const [pitch, setPitch] = useState(1);
   const [status, setStatus] = useState("Pronto.");
   const [supported, setSupported] = useState(false);
+  const speechRevision = useRef(0);
   const italian = useMemo(() => italianVoices(voices), [voices]);
 
   useEffect(() => {
@@ -24,6 +26,7 @@ export function BrowserTextToSpeechTool() {
     load();
     window.speechSynthesis.addEventListener("voiceschanged", load);
     return () => {
+      speechRevision.current += 1;
       window.speechSynthesis.cancel();
       window.speechSynthesis.removeEventListener("voiceschanged", load);
     };
@@ -31,6 +34,7 @@ export function BrowserTextToSpeechTool() {
 
   function stop() {
     if (!supported) return;
+    speechRevision.current += 1;
     window.speechSynthesis.cancel();
     setStatus("Lettura fermata.");
   }
@@ -46,17 +50,35 @@ export function BrowserTextToSpeechTool() {
     }
     try {
       const controls = validateSpeechControls({ rate, pitch });
+      const revision = ++speechRevision.current;
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = controls.rate;
       utterance.pitch = controls.pitch;
       const chosen = voices.find((voice) => voice.voiceURI === voiceUri);
       if (chosen !== undefined) utterance.voice = chosen;
-      utterance.onend = () => setStatus("Lettura conclusa.");
-      utterance.onerror = () => setStatus("Il motore vocale del browser/sistema non ha completato la lettura.");
+      let started = false;
+      let settled = false;
+      utterance.onstart = () => {
+        if (revision !== speechRevision.current || settled || started) return;
+        started = true;
+        recordCompletedTool("browser-text-to-speech");
+        setStatus(`Lettura avviata${chosen === undefined ? " con la voce predefinita" : ` con ${chosen.name} (${chosen.lang})`}.`);
+      };
+      utterance.onend = () => {
+        if (revision !== speechRevision.current || settled) return;
+        settled = true;
+        setStatus(started ? "Lettura conclusa." : "Lettura terminata senza avvio.");
+      };
+      utterance.onerror = () => {
+        if (revision !== speechRevision.current || settled) return;
+        settled = true;
+        setStatus("Il motore vocale del browser/sistema non ha completato la lettura.");
+      };
+      setStatus("Lettura richiesta al motore vocale del browser/sistema.");
       window.speechSynthesis.speak(utterance);
-      setStatus(`Lettura avviata${chosen === undefined ? " con la voce predefinita" : ` con ${chosen.name} (${chosen.lang})`}.`);
     } catch (error) {
+      speechRevision.current += 1;
       setStatus(error instanceof Error ? `Controllo non valido: ${error.message}` : "Controlli vocali non validi.");
     }
   }
