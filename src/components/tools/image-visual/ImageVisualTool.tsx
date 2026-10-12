@@ -25,6 +25,8 @@ interface ImageVisualToolProps {
 
 export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [file, setFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [metadataPickerReady, setMetadataPickerReady] = useState(false);
   const [secondFile, setSecondFile] = useState<File | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState("");
@@ -52,12 +54,18 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [pngAutoDownload, setPngAutoDownload] = useState(false);
   const [pngDownloadStatus, setPngDownloadStatus] = useState("");
   const operation = useToolOperation<PreparedImageResult>(async (signal) => {
+    // Astro renders the native input before client:load hydrates the island.
+    // A file picked during that interval is retained by the DOM, but its
+    // change event may precede Preact's listener and leave `file` null.
+    const selectedFile = toolId === "image-metadata-viewer"
+      ? fileInputRef.current?.files?.[0] ?? file
+      : file;
     if (toolId === "image-format-conversion" || toolId === "image-compression") setPngDownloadStatus("");
     // Consent must precede the job and still exist on completion.
     const autoAtStart = mime === "image/png"
       && (toolId === "image-format-conversion" || (toolId === "image-compression" && !batchMode && file !== null))
       && readAutoDownload339(browserStorage339());
-    const input = buildInput(toolId, file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette);
+    const input = buildInput(toolId, selectedFile, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette);
     const run = await toolRuntime.run(toolId, input, {}, signal);
     if (!run.ok) return run;
     const prepared = await prepareImageResult(run.value);
@@ -75,6 +83,10 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const operationBusy = useRef(operation.isRunning);
   operationBusy.current = operation.isRunning;
   const result = operation.result;
+
+  useEffect(() => {
+    if (toolId === "image-metadata-viewer") setMetadataPickerReady(true);
+  }, [toolId]);
 
   useEffect(() => {
     if (toolId !== "image-format-conversion" && toolId !== "image-compression") return;
@@ -136,6 +148,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
 
   function reset() {
     operation.reset();
+    if (toolId === "image-metadata-viewer" && fileInputRef.current) fileInputRef.current.value = "";
     setFile(null);
     setSecondFile(null);
     setFiles([]);
@@ -199,7 +212,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
         {needsFile(toolId) && (
           <label class="field">
             <span>{needsMultipleFiles(toolId) ? "Immagini" : "Immagine"}</span>
-            <input type="file" accept={toolId === "image-format-conversion" ? "image/svg+xml,image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,image/gif,.svg,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.gif" : toolId === "image-compression" && (pngLossless || pngPalette !== "off") ? "image/png,.png" : "image/jpeg,image/png,image/webp"} multiple={batchMode || needsMultipleFiles(toolId)} onChange={batchMode || needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
+            <input ref={fileInputRef} type="file" accept={toolId === "image-format-conversion" ? "image/svg+xml,image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,image/gif,.svg,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.gif" : toolId === "image-compression" && (pngLossless || pngPalette !== "off") ? "image/png,.png" : "image/jpeg,image/png,image/webp"} multiple={batchMode || needsMultipleFiles(toolId)} onChange={batchMode || needsMultipleFiles(toolId) ? chooseFiles : chooseFile} disabled={operation.isRunning} />
             <small>File elaborati in locale, senza caricamenti né elaborazione remota alternativa.</small>
           </label>
         )}
@@ -325,7 +338,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
         )}
         <InlineError message={operation.error === "" ? "" : "L'operazione non è riuscita. Controlla i file e i parametri inseriti."} />
         <ToolActions>
-          <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>Esegui in locale</ToolSubmitButton>
+          <ToolSubmitButton busy={operation.isRunning} disabled={toolId === "image-metadata-viewer" && !metadataPickerReady} busyLabel={it(CONTROL.working)}>Esegui in locale</ToolSubmitButton>
           {operation.isRunning ? <ToolCancelButton onCancel={operation.cancel} /> : <ToolResetButton onClick={reset} />}
         </ToolActions>
       </form>

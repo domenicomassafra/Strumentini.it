@@ -6,8 +6,8 @@
  * This is an audit of traceability, not certification or a release receipt.
  */
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { readFile, realpath } from "node:fs/promises";
+import { isAbsolute, relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { ToolSummary } from "../src/catalog/manifest";
 import { catalog } from "../src/generated/catalog";
@@ -27,6 +27,8 @@ export interface ProofReceiptProbe415 {
   /** Independently SHA-256-hashed bytes of src/tools/<toolId>/manifest.ts. */
   // Explicit undefined is a valid negative-test input, but never a valid receipt.
   currentManifestSha256?:string|undefined;
+  /** When auditing current Gold, bind every claimed family to its actual fixture-file bytes. */
+  currentFixtureSha256ByFamily?:ReadonlyMap<string,string>|undefined;
 }
 
 /** Rejects tamper, alien path/identity, stale revision and source scope. */
@@ -50,6 +52,22 @@ export function probeReceipt415(p:ProofReceiptProbe415):boolean {
     // Receipt integrity/revision/global fingerprint alone cannot prove that
     // this route's job/runtime manifest is the source the receipt tested.
     if ((raw.identities as Record<string,unknown>).manifestSha256!==p.currentManifestSha256) return false;
+    // The manifest alone cannot bind the vectors that supplied expected
+    // outputs. A receipt may be internally SHA-valid while naming withdrawn
+    // fixture bytes under an otherwise current revision/source fingerprint.
+    // The on-disk audit always supplies this map; omission is supported only
+    // for existing callers probing manifest provenance in isolation.
+    if (p.currentFixtureSha256ByFamily!==undefined) {
+      const seen=new Set<string>();
+      for (const family of raw.fixtureFamilies) {
+        if(typeof family!=="string" || !TOOL_ID.test(family) || seen.has(family)) return false;
+        seen.add(family);
+        const sourceHash=p.currentFixtureSha256ByFamily.get(family);
+        if(!sourceHash || !HEX256.test(sourceHash) ||
+           (raw.identities as Record<string,unknown>)[`fixture:${family}:sha256`]!==sourceHash) return false;
+      }
+      if(p.currentFixtureSha256ByFamily.size!==seen.size) return false;
+    }
     const entry={id:p.toolId,route:`/tools/${p.toolId}`};
     return validateGoldReceipts([entry],[raw as unknown as Parameters<typeof validateGoldReceipts>[1][number]],p.revision,p.fingerprint).length===0;
   } catch { return false; }
@@ -149,12 +167,50 @@ export function createProofMap415(
 
 interface LegacyIndex415 {tools:LegacyTool415[]}
 interface Registry415 {entries:{id:string}[]}
-interface Fixtures415 {families:{id:string}[]}
+interface Fixtures415 {families:{id:string;path:string}[]}
 const safeRead=async (root:string,path:string):Promise<Uint8Array|null> => {
   if(!/^(?:src|tests|quality)\/[a-zA-Z0-9_.\/-]+$/u.test(path) || path.includes("..")) return null;
-  try {const bytes=await readFile(resolve(root,path));return bytes;}
+  try {
+    // A lexical root-relative path may still be a symlink outside the tree.
+    const [canonicalRoot,canonicalFile]=await Promise.all([realpath(root),realpath(resolve(root,path))]);
+    const inside=relative(canonicalRoot,canonicalFile);
+    if(!inside || inside===".." || inside.startsWith(`..${sep}`) || isAbsolute(inside)) return null;
+    return await readFile(canonicalFile);
+  }
   catch{return null;}
 };
+
+/** Resolve fixture-family claims to the independently read bytes of their
+ * current indexed files, refusing withdrawn, missing and aliased-outside-root
+ * fixtures. `null` means there is no current source proof for the whole set. */
+export async function readCurrentFixtureHashes415(
+  root:string,
+  families:readonly string[],
+  index:readonly {id:string;path:string}[],
+):Promise<ReadonlyMap<string,string>|null> {
+  const fileById=new Map<string,string>();
+  const duplicated=new Set<string>();
+  for(const entry of index) {
+    if(fileById.has(entry.id)) duplicated.add(entry.id);
+    fileById.set(entry.id,entry.path);
+  }
+  const hashes=new Map<string,string>();
+  const byPath=new Map<string,string>();
+  for(const family of families) {
+    const file=fileById.get(family);
+    if(!TOOL_ID.test(family) || hashes.has(family) || duplicated.has(family) ||
+       !file || !/^quality\/fixtures\/[a-z0-9_-]+\/[a-z0-9_.-]+\.json$/u.test(file)) return null;
+    let digest=byPath.get(file);
+    if(digest===undefined) {
+      const bytes=await safeRead(root,file);
+      if(bytes===null) return null;
+      digest=sha256(bytes);
+      byPath.set(file,digest);
+    }
+    hashes.set(family,digest);
+  }
+  return hashes.size===families.length?hashes:null;
+}
 
 export async function auditCurrentProofMap415(root:string):Promise<ProofMap415> {
   const [legacy,registry,fixtures,fingerprint,revision]=await Promise.all([
@@ -204,11 +260,13 @@ export async function auditCurrentProofMap415(root:string):Promise<ProofMap415> 
     if(parsed.oracleEntryId!==target.gold.oracleEntryId ||
        JSON.stringify(parsed.fixtureFamilies)!==JSON.stringify(target.gold.fixtureFamilies) ||
        JSON.stringify(parsed.runtime)!==JSON.stringify(target.runtime)) continue;
+    const fixtureHashes=await readCurrentFixtureHashes415(root,target.gold.fixtureFamilies,fixtures.families);
+    if(fixtureHashes===null) continue;
     const currentManifestSha256=manifestHashes.get(item.toolId);
     if(currentManifestSha256===undefined) continue; // Missing source identity can never certify a GOLD candidate.
     const probe={toolId:item.toolId,path:item.receiptPath,content:new TextDecoder("utf-8",{fatal:true}).decode(bytes),
       expectedSha256:item.receiptSha256!,fingerprint,revision,
-      currentManifestSha256};
+      currentManifestSha256,currentFixtureSha256ByFamily:fixtureHashes};
     if(item.sourceFingerprint!==fingerprint || !probeReceipt415(probe)) continue;
     current.set(item.toolId,{path:item.receiptPath});
   }

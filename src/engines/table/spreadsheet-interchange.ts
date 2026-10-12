@@ -1,5 +1,7 @@
 import type { SheetData } from "write-excel-file/universal";
+import { inflateSync } from "fflate";
 import { formatMarkdownTable } from "../text-writing";
+import { analyzeOoxmlPackage, OoxmlPackageError, type OoxmlZipEntry } from "../ooxml/package";
 import { parseCsvTable, serializeCsvTable, type CsvTable } from "./csv";
 
 export const SPREADSHEET_INTERCHANGE_LIMITS = {
@@ -27,6 +29,7 @@ export type SpreadsheetInterchangeErrorCode =
   | "INVALID_DATE"
   | "SHEET_SELECTION_REQUIRED"
   | "SHEET_NOT_FOUND"
+  | "UNSUPPORTED_XLSX_FEATURE"
   | "XLSX_READ_FAILED"
   | "XLSX_WRITE_FAILED"
   | "OUTPUT_TOO_LARGE";
@@ -187,12 +190,86 @@ function csvCell(value: unknown): string {
   fail("XLSX_READ_FAILED", "Workbook contains an unsupported cell value.");
 }
 
+// This is an archive *preflight*, not macro extraction or sanitization. The
+// existing OOXML analyzer walks the real ZIP central directory and local
+// headers without inflating workbook cells, bounding member counts, names,
+// expanded sizes and ratios before the general-purpose Excel reader runs.
+const MAX_CONTENT_TYPES_XML_BYTES = 128 * 1024;
+const contentTypesDecoder = new TextDecoder("utf-8", { fatal: true });
+
+function crc32(bytes: Uint8Array): number {
+  let crc = 0xffffffff;
+  for (const value of bytes) {
+    crc ^= value;
+    for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ (-(crc & 1) & 0xedb88320);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function readContentTypes(bytes: ArrayBuffer, entry: OoxmlZipEntry): string {
+  if (entry.uncompressedSize > MAX_CONTENT_TYPES_XML_BYTES || entry.compressedSize > MAX_CONTENT_TYPES_XML_BYTES) {
+    fail("FILE_TOO_LARGE", "XLSX content types declaration exceeds the local inspection budget.");
+  }
+  const view = new DataView(bytes);
+  const offset = entry.localHeaderOffset;
+  const nameLength = view.getUint16(offset + 26, true);
+  const extraLength = view.getUint16(offset + 28, true);
+  const start = offset + 30 + nameLength + extraLength;
+  if (start + entry.compressedSize > bytes.byteLength) fail("XLSX_READ_FAILED", "XLSX content types are truncated.");
+  const compressed = new Uint8Array(bytes, start, entry.compressedSize);
+  let unpacked: Uint8Array;
+  try {
+    unpacked = entry.compressionMethod === 0 ? compressed : inflateSync(compressed, {
+      out: new Uint8Array(entry.uncompressedSize + 1),
+    });
+  } catch {
+    fail("XLSX_READ_FAILED", "XLSX content types could not be decompressed within the declared budget.");
+  }
+  if (unpacked.byteLength !== entry.uncompressedSize || crc32(unpacked) !== entry.crc32) {
+    fail("XLSX_READ_FAILED", "XLSX content types do not match the ZIP directory.");
+  }
+  try {
+    return contentTypesDecoder.decode(unpacked);
+  } catch {
+    fail("XLSX_READ_FAILED", "XLSX content types are not UTF-8.");
+  }
+}
+
+function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
+  let packageAnalysis: ReturnType<typeof analyzeOoxmlPackage>;
+  try {
+    packageAnalysis = analyzeOoxmlPackage(bytes);
+  } catch (error) {
+    if (error instanceof OoxmlPackageError) {
+      if (error.code === "MACRO_PACKAGE_UNSUPPORTED") {
+        fail("UNSUPPORTED_XLSX_FEATURE", "Macro-enabled Excel workbooks cannot be imported as CSV.");
+      }
+      if (error.code === "EXPANSION_LIMIT" || error.code === "PACKAGE_TOO_LARGE") {
+        fail("FILE_TOO_LARGE", "XLSX ZIP member size or expansion exceeds the local limit.");
+      }
+      fail("XLSX_READ_FAILED", `Unsafe or unsupported XLSX ZIP structure: ${error.message}`);
+    }
+    fail("XLSX_READ_FAILED", "XLSX ZIP preflight failed.");
+  }
+  if (packageAnalysis.kind !== "xlsx") fail("XLSX_READ_FAILED", "Input ZIP is not an XLSX workbook.");
+  const manifest = packageAnalysis.entries.find((entry) => entry.path === "[Content_Types].xml");
+  if (!manifest) fail("XLSX_READ_FAILED", "Missing XLSX content types declaration.");
+  const xml = readContentTypes(bytes, manifest).replace(/<!--[\s\S]*?-->/gu, "");
+  // A workbook can declare macro capability even with no vbaProject.bin entry.
+  // This deliberately refuses those declarations while ordinary data-only
+  // spreadsheets (including plain hyperlink text) remain importable.
+  if (/macroEnabled|vbaProject|application\/vnd\.ms-office\.activeX/iu.test(xml)) {
+    fail("UNSUPPORTED_XLSX_FEATURE", "Excel macro or ActiveX content types are not supported in CSV import.");
+  }
+}
+
 export async function xlsxToCsv(
   bytes: ArrayBuffer,
   options: { readonly sheet?: string | number; readonly delimiter?: string } = {},
 ): Promise<SpreadsheetReadResult> {
   if (!(bytes instanceof ArrayBuffer)) fail("INVALID_INPUT", "XLSX input must be an ArrayBuffer.");
   assertInputBytes(bytes.byteLength);
+  assertSafeXlsxArchive(bytes);
   let sheets: Array<{ sheet: string; data: unknown[][] }>;
   try {
     const { default: readXlsxFile } = await import("read-excel-file/universal");

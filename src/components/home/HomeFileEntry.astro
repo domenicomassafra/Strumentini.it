@@ -127,17 +127,16 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
   }
 
   async function inspect(files: readonly File[], photosOnly = false): Promise<void> {
+    if (!status) return;
+    if (files.length === 0) {
+      // An empty drop/change is not a replacement for a file already chosen.
+      // Keep its pending read (and the previous validated result) intact.
+      cancelledPicker("Scelta annullata. Puoi riprovare.");
+      return;
+    }
     const current = ++generation;
     active?.abort();
     active = null;
-    if (!status) return;
-    if (files.length === 0) {
-      if (priorNotice) priorNotice.hidden = true;
-      root?.removeAttribute("aria-busy");
-      status.textContent = "Scelta annullata. Puoi riprovare."
-        + (resultPanel && !resultPanel.hidden ? previousOptionsHint : "");
-      return;
-    }
     if (files.length !== 1) {
       clearActions();
       if (priorNotice) priorNotice.hidden = true;
@@ -191,10 +190,12 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
   }
 
   function cancelledPicker(message: string): void {
-    generation += 1;
-    active?.abort();
-    active = null;
     resetDrag();
+    // The chooser can be opened again while an earlier file is still being
+    // inspected. Dismissing that chooser does not revoke the already selected
+    // File; only a new nonempty selection or Reset supersedes its inspection.
+    if (active) return;
+    generation += 1;
     if (priorNotice) priorNotice.hidden = true;
     root?.removeAttribute("aria-busy");
     if (status) status.textContent = message

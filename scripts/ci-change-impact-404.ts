@@ -18,7 +18,7 @@ import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 
-export type ChangeDomain = "docs" | "frontend" | "shared" | "worker-auth" | "d1" | "pdf" | "image" | "italy" | "ci" | "unknown";
+export type ChangeDomain = "docs" | "frontend" | "shared" | "spreadsheet" | "worker-auth" | "d1" | "pdf" | "image" | "italy" | "ci" | "unknown";
 export type GateId = "security-review" | "d1-migration-review" | "auth-integration" | "physical-device" | "official-source-year" | "browser-a11y" | "release-readiness";
 export type SourceCommand = { readonly program: string; readonly args: readonly string[] };
 export type ImpactPlan = {
@@ -32,7 +32,7 @@ export type ImpactPlan = {
   readonly blockers: readonly string[];
 };
 
-const domainOrder: readonly ChangeDomain[] = ["docs", "frontend", "shared", "worker-auth", "d1", "pdf", "image", "italy", "ci", "unknown"];
+const domainOrder: readonly ChangeDomain[] = ["docs", "frontend", "shared", "spreadsheet", "worker-auth", "d1", "pdf", "image", "italy", "ci", "unknown"];
 const allGates: readonly GateId[] = [
   "security-review", "d1-migration-review", "auth-integration", "physical-device", "official-source-year", "browser-a11y", "release-readiness",
 ];
@@ -50,6 +50,11 @@ const gateReasons: Record<GateId, string> = {
 /** Real Tesseract scripts, WebAssembly and the downloaded model are executable
  * or parser-consumed bytes in the OCR browser pipeline, not decorative assets. */
 const shippedOcrRuntimeAsset = /^public\/ocr-246\/(?:core\/[^/]+\.(?:js|wasm)|vendor\/[^/]+\.js|lang\/[^/]+\.traineddata\.gz)$/u;
+
+/** Browser-worker XLSX import/export and the test seams that constrain it.
+ * Keep the shared domain so all existing source checks continue to run. */
+const spreadsheetBoundary = /^(?:src\/engines\/table\/spreadsheet-interchange\.ts|src\/engines\/office-local\/(?:worker|client|worker-protocol)\.ts|tests\/(?:spreadsheet-interchange|donor-spreadsheets-370)\.test\.ts)$/u;
+const requiredSpreadsheetSuites = ["tests/spreadsheet-interchange.test.ts", "tests/donor-spreadsheets-370.test.ts"] as const;
 
 /** Only known documentation roots count as docs; never infer from a .md suffix. */
 export function classifyPath(path: string): readonly ChangeDomain[] {
@@ -79,6 +84,7 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (path === "scripts/forensic-redaction-378.ts" || path === "tests/forensic-redaction-378.test.ts") return ["pdf"];
   // Tool-specific Gold admission must never pass through generic script review.
   if (path === "scripts/audit-per-tool-proof-415.ts" || path === "tests/per-tool-proof-wave15-415.test.ts") return ["ci"];
+  if (spreadsheetBoundary.test(path)) return ["shared", "spreadsheet"];
   if (/^(tests\/(auth-worker|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347)\.test\.ts|scripts\/acceptance-auth\.mjs)/u.test(path)) return ["worker-auth"];
 
   // Match domain-specific code and fixtures before the broad shared/frontend roots.
@@ -102,6 +108,7 @@ const familyTestMatchers: Partial<Record<ChangeDomain, RegExp>> = {
   pdf: /^tests\/(pdf-|ocr-|ooxml-|printable-pdf)/u,
   image: /^tests\/(image-|svg-)/u,
   italy: /^tests\/(italy-|italian-|vies-)/u,
+  spreadsheet: /^tests\/(?:spreadsheet-interchange|donor-spreadsheets-370|xml-interchange|pdf-table-xlsx-254|ooxml-[^/]+)\.test\.ts$/u,
 };
 
 export function buildImpactPlan(changedPaths: readonly string[], availableTests: readonly string[]): ImpactPlan {
@@ -122,12 +129,19 @@ export function buildImpactPlan(changedPaths: readonly string[], availableTests:
       if (matches.length === 0) blockers.push(`MISSING_AFFECTED_SUITE: ${domain}`);
       for (const path of matches) tests.add(path);
     }
+    // Parser plus independent hostile-workbook donor probes are inseparable:
+    // selecting a different OOXML test cannot substitute for either suite.
+    if (sourceDomains.includes("spreadsheet")) {
+      for (const suite of requiredSpreadsheetSuites) {
+        if (!availableTests.includes(suite)) blockers.push(`MISSING_AFFECTED_SUITE: ${suite}`);
+      }
+    }
   }
   const selectedTests = [...tests].sort();
   const gates = new Set<GateId>();
   if (sourceDomains.length > 0) gates.add("release-readiness");
   if (domains.includes("frontend")) gates.add("browser-a11y");
-  if (domains.includes("worker-auth") || domains.includes("d1") || domains.includes("ci")) gates.add("security-review");
+  if (domains.includes("worker-auth") || domains.includes("d1") || domains.includes("ci") || domains.includes("spreadsheet")) gates.add("security-review");
   if (paths.some((path) => /^src\/(runtime\/(file-detection|file-threat-gate-407|artifact-verifier|binary-handoff|ephemeral-file-handoff-337)|telemetry\/consent)/u.test(path))) gates.add("security-review");
   // Privacy-sensitive byte/storage boundaries must not silently inherit only
   // the generic shared or image/frontend gate. Passing tests here never
@@ -152,7 +166,7 @@ export function buildImpactPlan(changedPaths: readonly string[], availableTests:
   }
   if (domains.includes("worker-auth") || domains.includes("d1")) gates.add("auth-integration");
   if (domains.includes("d1")) gates.add("d1-migration-review");
-  if (domains.includes("pdf") || domains.includes("image")) gates.add("physical-device");
+  if (domains.includes("pdf") || domains.includes("image") || domains.includes("spreadsheet")) gates.add("physical-device");
   if (paths.some((path) => /^src\/(workbench\/saved-pdf-341\.ts|runtime\/(browser-download-339|download-policy-339)\.ts)$/u.test(path))) gates.add("physical-device");
   if (domains.includes("italy")) gates.add("official-source-year");
   const commands: SourceCommand[] = [];

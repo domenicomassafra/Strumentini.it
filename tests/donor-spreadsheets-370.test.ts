@@ -199,14 +199,16 @@ describe("#370 installed CSV/XLSX donor fidelity and refusal probes", () => {
     expect(bytes).toEqual(original);
   });
 
-  it.skipIf(!oraclePython)("records NO_GO: an OOXML macro marker is not rejected by the current public XLSX-to-CSV converter", async () => {
-    // This fixture is not an executable VBA sample. A macro content-type and
-    // vbaProject.bin member are sufficient to disprove a promised refusal.
+  it.skipIf(!oraclePython)("refuses an OOXML macro marker before reading workbook cells", async () => {
+    // This fixture is not an executable VBA sample. Its macro content-type and
+    // vbaProject.bin member must nevertheless be refused before the XLSX reader.
     const bytes = runOracle(pythonSyntheticMacroMarkerWorkbook);
-    const output = await xlsxToCsv(bufferToArrayBuffer(bytes));
-    expect(output.csv).toBe("id\n00123");
-    // Observed acceptance is a security limitation, not permission to market
-    // the current reader as a macro scanner or safe XLSM sanitizer.
+    const original = bytes.slice();
+    await expect(xlsxToCsv(bufferToArrayBuffer(bytes)))
+      .rejects.toMatchObject({ code: "UNSUPPORTED_XLSX_FEATURE" });
+    expect(bytes).toEqual(original);
+    // Rejecting a VBA marker is not a comprehensive XLSX sanitizer or
+    // protection against hostile formulas, links, or archive parser defects.
   });
 
   it.skipIf(!oraclePython)("does not evaluate formulas and may surface stale external cached values", async () => {
