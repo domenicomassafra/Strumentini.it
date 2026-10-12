@@ -38,6 +38,16 @@
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
 
+## 2026-10-12 worker-12 — Browser Text-to-Speech success → Recenti (partial, OPEN)
+
+**Actual operator defect and RED:** On the catalogued `/tools/browser-text-to-speech/` route the speech engine received a valid `Leggi` request and emitted `SpeechSynthesisUtterance.onstart`, yet no entry appeared in `Recenti`: the new real-page browser regression expected one private completion and got `[]`. Previously the bespoke TTS component had no membership-success hook.
+
+**GREEN:** `src/components/tools/BrowserTextToSpeechTool.tsx` now calls the existing metadata-only `recordCompletedTool("browser-text-to-speech")` once on the current utterance's actual native `onstart`. Queued requests, invalid input, browser speech errors before start, cancelled utterances and stale callbacks are excluded by a monotonic revision fence, as are duplicate start callbacks; `Ferma` does not add a use. The visible status now distinguishes a request handed to the browser from actual speech start. The text itself never enters workbench persistence.
+
+**Current-source acceptance:** `node tests/recent-browser-tts-330.browser.mjs http://127.0.0.1:19812` **PASS** in real Chromium at 390px against local Astro page, with deterministic mocked browser speech callbacks (not a physical/audio-output claim). Valid native-start input yielded exactly one private `{toolId,lastUsedAt,useCount}` record, `/preferiti/` and reload retained it, invalid/cancelled/error/duplicate events did not miscount, simulated IndexedDB `SecurityError` left voice controls usable, and no POST/offsite request or page exception was observed. `vitest run tests/browser-audio-utilities.test.ts tests/recent-completions-330.test.ts`: **9/9 PASS**. Speech callback source is intentionally controlled, so audible output, real OS speech services, Safari/iOS/Android, cross-tool producer coverage and native accessibility remain **NOT_RUN**.
+
+**Ticket disposition:** this fixes one reproducible operator-facing production-path bug; overall AC-330.1–3 and original ticket remain **OPEN** for the other tool producers and full user/device acceptance. A reviewed source PR is separate from real production deployment, Gold and release certification.
+
 ## 2026-10-11 implementation wave 01 — bounded evidence
 
 Local UTM and PDF successes feed IndexedDB tool ID/time/count; failures, duplicate PDF submission, storage denial and reload tested in real Chromium; custom renderers beyond shared hook/PdfTool not yet covered. Original AC remains open.
