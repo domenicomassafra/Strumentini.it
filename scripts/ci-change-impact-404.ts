@@ -59,6 +59,9 @@ const requiredSpreadsheetSuites = ["tests/spreadsheet-interchange.test.ts", "tes
 /** Only known documentation roots count as docs; never infer from a .md suffix. */
 export function classifyPath(path: string): readonly ChangeDomain[] {
   if (!path || path.startsWith("/") || path.includes("\\") || /[\u0000-\u001f\u007f\ufffd]/u.test(path) || path.split("/").some((part) => part === "." || part === ".." || part === "")) return ["unknown"];
+  // Git hooks can change what code reaches the public site. Keep this exact
+  // reviewed hook in the CI/security domain, never a docs-only exemption.
+  if (path === ".githooks/pre-push") return ["ci"];
   if (path.startsWith(".github/") || path === "package.json" || path === "package-lock.json" || path === "astro.config.mjs" ||
       path === "tsconfig.json" || path === "vitest.config.ts" || path === "wrangler.toml") return ["ci"];
   if (path === "wrangler.jsonc") return ["worker-auth", "d1", "ci"];

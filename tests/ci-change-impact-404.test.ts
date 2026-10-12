@@ -39,6 +39,13 @@ async function fixture(run: (root: string, base: string, head: string) => Promis
 }
 
 describe("#404 PR/source impact planning", () => {
+  it("treats the local main-push hook as review-sensitive CI code, not unknown or docs", () => {
+    const plan = buildImpactPlan([".githooks/pre-push", "AGENTS.md"], suites);
+    expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(plan.domains).toEqual(["docs", "ci"]);
+    expect(plan.blockers).toEqual([]);
+    expect(plan.gates.map((gate) => gate.id)).toContain("security-review");
+  });
   it("keeps CI-installed Python consumer packages outside the reviewed source tree", async () => {
     const workflow = await readFile(resolve(".github/workflows/ci.yml"), "utf8");
     expect(workflow.match(/python3 -m venv "\$RUNNER_TEMP\/strumentini-ci-python"/gu)).toHaveLength(2);
