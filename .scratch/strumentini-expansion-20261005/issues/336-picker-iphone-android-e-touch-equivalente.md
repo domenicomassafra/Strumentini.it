@@ -73,3 +73,9 @@ In `ImageVisualTool.tsx`, the **metadata viewer only** now disables Submit until
 **Verifiche collaterali:** `node --check tests/picker-336-20261013-early-choice.browser.mjs`, `git diff --check` limitato ai file #336 e `npm run tickets:check` → **PASS**. Il controllo globale `node_modules/.bin/astro check` sulla worktree concorrente → **exit 1, 4 errori, 0 warning, 24 hint**: tutti e quattro gli errori rilevati nel test di un altro worker `tests/pdf-redaction-406-20261013-hybrid-single-revision.test.ts` (variabili potenzialmente `undefined`), senza diagnosi su `HomeFileEntry.astro`; il global check **non** è GREEN e richiede correzione/integrazione separata da #406.
 
 **Residui:** originali AC-336.1–3 **OPEN/unchecked**. Restano **NOT_RUN/NO_GO** la Photo Library Safari su iPhone fisico, Files/Photos di Chrome Android fisico, autorizzazioni negate dal sistema operativo e ritorno da app reale. Nessun consenso fisico, permesso al dispositivo, Gold, PR/merge, release/deploy o accettazione produttiva da questi test.
+
+## Owner round Strumentini — 13 ottobre 2026
+
+Strumentini è un prodotto pubblico per qualsiasi utente. Importazione tramite picker/condivisione standard del browser e del sistema: cartelle/Files, provider personali disponibili nel picker (anche Google Drive), Foto/libreria e documenti ricevuti. Il Drive personale owner e la skill LifeOS non sono requisito né backend del prodotto. Verificare capacità reali iOS/Android/desktop e limiti platform; nessun upload/autenticazione provider impliciti.
+
+Decisione acquisita, non nuova implementation/runtime acceptance; status e checkbox esistenti invariati. Tutto il lavoro autorizzato resta nello scope, riuso prima del codice e gate originali preservati.

@@ -53,3 +53,76 @@
 **Disposition:** Scope-specific independent fail-closed output gate implemented and test-proven; original **AC-378.1–3 remain globally unchecked / NO-GO**, because the new gate has not yet consumed a current live browser-exported #237 artifact and cannot establish full irreversible redaction/security certification across formats, alternate editors or devices. No Gold, release, commit, push or deployment.
 
 **CI cross-platform reconciliation (2026-10-11):** GitHub Actions run `38179043578` on Ubuntu failed specifically in the two *positive native PDFKit* #378 unit/CLI fixtures because Linux has no `/usr/bin/swift`/macOS PDFKit; the security gate correctly refused to attest (`FORENSIC_378_REFUSED`), but the test incorrectly expected an unconditional PASS. The test harness now explicitly marks **only those two positive native-PDFKit demonstrations SKIPPED/NOT_RUN on non-macOS or when `/usr/bin/swift` is absent**. All rejection/adversarial/fail-closed tests continue to run on Linux, and the production gate itself still requires real pypdf **and** native PDFKit; there is no substitute renderer or invented attestation. On the actual Mac Studio those two positive fixtures continue to run and prove real PDFKit independently. This is test portability, not a downgrade of security or a release approval. Original AC remain OPEN and release NO_GO.
+
+## 2026-10-13 worker-17 — unindexed bytes / ignored compressed tails, independent RED → GREEN
+
+**Scope:** Existing standalone `scripts/forensic-redaction-378.ts`, new `tests/forensic-redaction-378-20261013-unindexed-comment.test.ts`, original #378 ticket. Shared branch `fix/wave4-336-370-406-415-integration-20261013`; prime solely owns Git integration. Real PDF bytes produced with existing `PdfBuilder`; existing source witness fixture #237; native macOS PDFKit via `/usr/bin/swift` and independent strict `pypdf 6.16.1` available. No product #237/#406 edits, provider, installation, source witness exposure, release or Gold claims.
+
+**New actual P2 false acceptance (three real-byte variants):** Previous gate established that every xref-indexed object was reachable, but both parsers reopened a PDF with a new **unindexed percent-comment carrying private plaintext immediately before `xref`**, with `startxref` fixed; the gate wrongly returned `INDEPENDENT_SAMPLE_PASS_NOT_RELEASE`. Also reproduced acceptance of (a) private percent-comment inserted **inside the reachable `/Catalog` dictionary** before `endobj`, and (b) private plaintext appended **after a valid zlib end marker inside `/FlateDecode` image-stream bytes**. In each case the source witnesses were absent and masked pixels remained black, while arbitrary recoverable private bytes persisted physically in the output. Actual focused Vitest expectations failed before each respective correction (`expected [Function] to throw an error`): independently demonstrated RED, not a hypothetical validator attack.
+
+**Minimal fail-closed fix:** Inspector now binds parsed xref to actual physical object offsets, requires contiguous canonical object envelopes with no unindexed comments/padding and a canonical classic-xref/trailer footer, and rejects extra bytes inside stream wrappers/dictionaries; it also uses bounded independent zlib decompression to require exact RGB size, zlib EOF and **zero unused/trailing/unconsumed encoded data**, cross-checking pypdf's decoded pixels. Unsupported PDF envelopes refuse. A legitimate raster-only baseline must continue to pass both actual independent parsers, and malicious variants must refuse with `FORENSIC_378_REFUSED`.
+
+**GREEN / limits:** `npx vitest run tests/forensic-redaction-378-20261013-unindexed-comment.test.ts tests/forensic-redaction-378.test.ts tests/pdf-redaction-237.test.ts tests/pdf-redaction-attack-406.test.ts --testTimeout=35000`: **30/30 PASS** on native macOS; baseline pypdf+PDFKit PASS and all three fresh adversarial variants REFUSED. Poppler remains **NOT_RUN** (not installed), current browser #237 output, diverse hybrid/signed PDF corpus, physical devices, security reviewer and external release gates **NOT_RUN**. Original AC-378.1–3 all remain globally OPEN; **NO_GO** for release/Gold.
+
+## 2026-10-13 worker-19 — reachable page-tree privacy and bounded Flate follow-up (NO_GO)
+
+**New independent P2 evidence against Draft PR #28 source SHA
+`e60f18a90510b6938351d8da8f5726ff62eaa034`:** A valid 743-byte image-only
+PDF produced in memory by the existing `PdfBuilder` contained a reachable
+`/Pages` dictionary with the additional key
+`/Private (PRIVATE_UNCHECKED_PAGES_DICTIONARY_378_747474)`. Its RGB mask
+pixels were black, xref was complete, and pypdf strict and native macOS PDFKit
+both reopened it. The independent gate **incorrectly returned**
+`INDEPENDENT_SAMPLE_PASS_NOT_RELEASE` with 1 page and 200 black pixels,
+despite the physically recoverable plaintext. The prior output checks
+restricted `/Catalog`, each `/Page` and its image resource but omitted
+the reachable parent/intermediate `/Pages` dictionaries.
+
+**Separately proven resource P2:** The embedded pypdf inspector called
+`zlib.decompressobj().decompress(image._data, 3*w*h+1)`, then **unbounded**
+`decompressor.flush()`. A real 20×20 RGB raster PDF declaring 1,200 decoded
+bytes but carrying an approximately 366 KiB Flate stream with **80 MiB**
+decoded content was rejected only after large transient inflation. In a
+disposable Python child monitored with OS `ru_maxrss`, the pre-fix test
+observed **211,009,536 B peak RSS**, exceeding a 90 MiB inspection budget.
+macOS cannot enforce that `RLIMIT_AS` change on this host, so the regression
+measures actual child peak RSS on macOS and uses an enforced process
+`RLIMIT_AS` on Linux. No service, production artifact or original PDF was
+modified during these hostile probes.
+
+**Correction limited to `scripts/forensic-redaction-378.ts`:** The
+independent Python inspector now walks the complete bounded `/Pages` tree,
+permits only `/Type`, `/Kids`, `/Count` and the verified `/Parent` link
+on nested tree nodes, verifies direct `/Page` parent links and child counts,
+and refuses extra fields, cycles or malformed descendants. A Flate image is
+decompressed with a strict maximum of expected RGB bytes plus one and must
+reach actual zlib EOF with no unused or unconsumed input. It **never invokes
+unbounded `flush()`**. The previous independent pypdf/PDFKit checks,
+physical envelope scan, stripped source witnesses and NO_GO policy remain.
+
+**Independent RED→GREEN verification:** New
+`tests/forensic-redaction-378-20261013-pages-stream-bound.test.ts` uses
+real `PdfBuilder` output and executes the exact embedded pypdf inspector
+in a disposable child; on macOS it also tests the genuine PDFKit path.
+Both new cases failed before the correction (**2/2 RED**: private `/Pages`
+was accepted; the 80 MiB Flate fixture exceeded memory budget). Following
+the patch, new **2/2 GREEN** and the 30 previously passing
+`#378/#237/#406` tests remain green: **32/32 PASS** from the five focused
+Vitest files. The original legitimate raster PDF still earns only the
+limited `INDEPENDENT_SAMPLE_PASS_NOT_RELEASE` receipt on native macOS.
+Strict targeted `tsc --ignoreConfig --noEmit --strict
+--noUncheckedIndexedAccess` with ESNext bundler/Node types **PASS**.
+The private source witness is never included in a success receipt.
+
+**Gate:** Scope is the standalone independent offline audit, not full PDF
+redaction certification. Original **AC-378.1–3 remain OPEN**, and
+live browser `#237` download, Poppler, physical iOS/Android, independent
+full-forensics and production release remain **NOT_RUN / NO_GO**.
+
+## 2026-10-13 recovery — bounded Contents-stream follow-up (in progress)
+
+Ownership: `scripts/forensic-redaction-378.ts`, one new focused test and this original ticket; existing #328/#369 WIP is read-only. Current integration HEAD `53e3df5bf880dae46f02061aced6a99772d05a55` has the exact same inspector bytes as PR #28 `2ae3d1d3c0187e27b464be76bfc9be30c2a0fe08` (SHA256 `75d048e7cb162cae082d1367f478ce38ad38fa20c6903d920dc93cee2ec438ef`). Investigate the delivered P2 findings: private `/Contents` dictionary fields and ignored bytes after its Flate EOS. Reuse existing `PdfBuilder`, pypdf/PDFKit inspector and stdlib bounded zlib checks; do not replace the parser or install a donor. Upstream pypdf merged PR #3430 (`bb3a690`, BSD-3-Clause; existing installed pypdf 6.16.1) already limits generic decompression, but its tolerant decoding does not attest this owner's exact physical-byte-erasure requirement. Actual upstream `pypdf/filters.py` and Python zlib `max_length`, `eof`, `unused_data`, `unconsumed_tail` documentation were read before the residual delta. Original AC and release/Gold remain OPEN/NO_GO pending real full acceptance.
+
+**Actual RED→GREEN:** `tests/forensic-redaction-378-20261013-contents-private.test.ts` constructs real raster-only PDFs with the existing `PdfBuilder`. On the exact pre-fix inspector both a reachable `/Contents` dictionary carrying private `/Private` + `/Author` values and a valid Flate draw stream with trailing private plaintext were falsely accepted (2 RED; benign uncompressed/complete-Flate control PASS). The minimal owner fix validates the original indirect stream dictionary and bounded exact drawing bytes before `extract_text()` can parse/decompress them: only optional `/Length` and a single `/FlateDecode` filter are admitted, zlib must reach EOF and consume the full input, and decoded output must equal the canonical image draw commands. No unbounded flush, filter chain, extra field or hidden draw operator is admitted. Existing image bounds, physical xref/envelope, pypdf/PDFKit and fail-closed gates remain intact.
+
+**Fresh focused verification:** six Vitest files (new Contents, Pages/stream-bound, unindexed-comment, original #378, #237 and #406) completed **35/35 PASS, zero skip/failure**, with benign raw and complete-Flate output reopened by real macOS PDFKit and pypdf. Scoped strict TypeScript compile and `git diff --check` PASS. This closes the two reproduced offline-inspector findings only. Original AC-378.1–3 remain OPEN; full independent corpus, actual current UI artifact, Poppler and physical devices/release/Gold remain NOT_RUN/NO_GO. Worker did not stage, commit, push, merge or deploy; integrator must update the same PR #28 and perform its final review/CI gates.

@@ -33,8 +33,8 @@ export const METADATA_CARRIER_IT: Readonly<Record<MetadataCarrier, string>> = {
   ancillary: "dati aggiuntivi del contenitore (contenuto non verificato)",
 };
 
-/** Carriers that can carry identifying information and are therefore the target. */
-export const PRIVACY_BEARING_CARRIERS: readonly MetadataCarrier[] = ["exif", "xmp", "iptc", "comment", "ancillary"];
+/** ICC profiles can embed copyright/description text as well as color data. */
+export const PRIVACY_BEARING_CARRIERS: readonly MetadataCarrier[] = ["exif", "xmp", "iptc", "comment", "ancillary", "icc-profile"];
 
 export interface MetadataInventory {
   readonly format: "jpeg" | "png" | "webp" | "unknown";
@@ -124,9 +124,15 @@ function segment(carrier: MetadataCarrier, segmentName: string, size: number): M
 
 function scanJpeg(bytes: Uint8Array): MetadataInventory {
   const segments: MetadataSegment[] = [];
+  const quantizationSegments: { readonly tables: readonly number[]; readonly bytes: number }[] = [];
+  const referencedQuantizationTables = new Set<number>();
+  let sawFrameHeader = false;
+  let quantizationReferencesKnown = true;
   let offset = 2;
   let complete = false;
   let entropyScan = false;
+  let markerCount = 0;
+  const markerLimit = 512;
   // JPEG metadata markers may appear between successive SOS scans. An SOS is
   // not an end-of-image marker: walk through entropy-coded data to a real EOI.
   // Entropy 0xFF00 is a stuffed byte and RST0..RST7 are not segment headers.
@@ -144,6 +150,9 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
       offset += 1;
       continue;
     }
+    // A tiny JPEG can contain arbitrarily many application markers, and a
+    // complete claim cannot follow a partial inventory once this cap is hit.
+    if (++markerCount > markerLimit) break;
     entropyScan = false;
     if (marker === 0xd9) {
       const trailingBytes = bytes.length - offset - 1;
@@ -162,6 +171,42 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
     // follows the 0xFF marker prefix starts one byte later.
     const length = (bytes[offset + 1]! << 8) | bytes[offset + 2]!;
     if (length < 2 || offset + 1 + length > bytes.length) break;
+    if (marker === 0xdb) {
+      // A DQT may define several 8- or 16-bit quantization tables in one
+      // segment. Only tables unused by every SOF component can safely be
+      // classified as unverified extra payload rather than raster data.
+      const end = offset + 1 + length;
+      const tables: number[] = [];
+      let position = offset + 3;
+      while (position < end) {
+        const descriptor = bytes[position++]!;
+        const precision = descriptor >> 4;
+        const table = descriptor & 15;
+        const quantizationBytes = precision === 0 ? 64 : 128;
+        if (precision > 1 || table > 3 || position + quantizationBytes > end) {
+          quantizationReferencesKnown = false;
+          break;
+        }
+        tables.push(table);
+        position += quantizationBytes;
+      }
+      if (tables.length === 0 || position !== end) quantizationReferencesKnown = false;
+      quantizationSegments.push({ tables, bytes: length + 2 });
+    } else if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+      // All JPEG SOF variants declare the quantization table selected by each
+      // component. The SOF can follow DQT, so decide only after reaching EOI.
+      const count = bytes[offset + 8]!;
+      if (length !== 8 + 3 * count || count === 0) {
+        quantizationReferencesKnown = false;
+      } else {
+        sawFrameHeader = true;
+        for (let component = 0; component < count; component += 1) {
+          const table = bytes[offset + 11 + 3 * component]!;
+          if (table > 3) quantizationReferencesKnown = false;
+          referencedQuantizationTables.add(table);
+        }
+      }
+    }
     const known = JPEG_SEGMENTS[marker];
     if (known !== undefined) {
       // APP1 is shared by Exif and XMP; the payload identifies which.
@@ -170,11 +215,62 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
         ? "xmp"
         : known.carrier;
       segments.push(segment(carrier, carrier === "xmp" ? "JPEG APP1 XMP" : known.segment, length + 2));
+    } else if (marker >= 0xe0 && marker <= 0xef) {
+      // APP0..APP15 are application-defined: an otherwise valid JPEG can hide
+      // comments, device identifiers or thumbnail pixels inside any of them.
+      // Only the fully known fixed 1:1 JFIF header is neutral. Even with no
+      // thumbnail, valid variable density fields can encode identifying bytes.
+      const payload = bytes.subarray(offset + 3, offset + 1 + length);
+      const plainJfif = marker === 0xe0 && payload.length === 14 &&
+        ascii(payload, 0, "JFIF\0") && payload[5] === 1 &&
+        (payload[6] === 1 || payload[6] === 2) && payload[7] === 0 &&
+        payload[8] === 0 && payload[9] === 1 &&
+        payload[10] === 0 && payload[11] === 1 &&
+        payload[12] === 0 && payload[13] === 0;
+      if (!plainJfif) {
+        const icc = marker === 0xe2 && ascii(payload, 0, "ICC_PROFILE\0");
+        segments.push(segment(
+          icc ? "icc-profile" : "ancillary",
+          icc ? "JPEG APP2 ICC" : `JPEG APP${marker - 0xe0}`,
+          length + 2,
+        ));
+      }
     }
     // `offset` sits on the marker byte itself (the leading 0xFF was consumed
     // above), so the next marker starts one byte plus the declared length later.
     offset += 1 + length;
     if (marker === 0xda) entropyScan = true;
+  }
+  if (complete && quantizationSegments.length > 0) {
+    if (!sawFrameHeader || !quantizationReferencesKnown) {
+      complete = false;
+    } else {
+      // A later DQT definition can replace an earlier definition with the
+      // same table ID. The earlier table's coefficients remain recoverable
+      // bytes even when every SOF component uses that ID. Flag the superseded
+      // definition's segment, keeping the final raster table neutral.
+      // A repeated ID does not prove private content; count each segment once.
+      const lastDefinitionSegment = new Map<number, number>();
+      const redefinedSegments = new Set<number>();
+      for (const [index, item] of quantizationSegments.entries()) {
+        for (const table of item.tables) {
+          const previous = lastDefinitionSegment.get(table);
+          if (previous !== undefined) {
+            redefinedSegments.add(previous);
+          }
+          lastDefinitionSegment.set(table, index);
+        }
+      }
+      for (const [index, item] of quantizationSegments.entries()) {
+        if (item.tables.some((table) => !referencedQuantizationTables.has(table))) {
+          // These bytes are legal JPEG syntax but are not needed to decode the
+          // image. Their contents are unverified, not proven to be private.
+          segments.push(segment("ancillary", "JPEG DQT unreferenced", item.bytes));
+        } else if (redefinedSegments.has(index)) {
+          segments.push(segment("ancillary", "JPEG DQT redefined", item.bytes));
+        }
+      }
+    }
   }
   return summarize("jpeg", segments, complete);
 }
@@ -308,8 +404,10 @@ export async function scanImageMetadataBlob(blob: Blob, signal?: AbortSignal): P
 }
 
 function metadataClass(carrier: MetadataCarrier): MetadataGroup["class"] {
-  if (PRIVACY_BEARING_CARRIERS.includes(carrier)) return "privacy";
+  // Preserve the color UI category even though ICC bytes can contain privacy
+  // data and are conservatively included in the source privacy summary.
   if (carrier === "icc-profile") return "color";
+  if (PRIVACY_BEARING_CARRIERS.includes(carrier)) return "privacy";
   return "descriptive";
 }
 
@@ -348,5 +446,5 @@ export function describeMetadataIt(inventory: MetadataInventory): string {
       : "Il file sembra troncato: l'inventario è parziale e non può essere considerato completo.";
   }
   const carriers = [...new Set(inventory.segments.map((entry) => entry.carrier))];
-  return `Trovati ${inventory.segments.length} segmenti di metadati (${carriers.join(", ")}), per ${inventory.bytesTotal} byte.`;
+  return `Trovati ${inventory.segments.length} segmenti di metadati (${carriers.join(", ")}), per ${inventory.bytesTotal} byte.${inventory.complete ? "" : " Inventario parziale: la scansione non è completa."}`;
 }

@@ -79,11 +79,149 @@ export function textPartKind407(name: string): "xml" | "svg" | "html" | null {
   return null;
 }
 
+/** Bounded HTML5 start-tag inspection: quotes in unquoted values are literal. */
+function hasUnsafeHtmlNavigation407(source: string): boolean {
+  const space = (character: string | undefined): boolean =>
+    character !== undefined && /[ \t\r\n\f]/u.test(character);
+  const starts = /<\s*(meta|img|image|source|link|video|audio|track|input|a|area)(?=[\s/>])/giu;
+  let start: RegExpExecArray | null;
+  while ((start = starts.exec(source)) !== null) {
+    const tag = start[1]?.toLowerCase();
+    let at = starts.lastIndex;
+    let terminated = false;
+    while (at < source.length) {
+      while (space(source[at])) at++;
+      if (source[at] === ">") { at++; terminated = true; break; }
+      if (source[at] === "/" && source[at + 1] === ">") { at += 2; terminated = true; break; }
+      if (source[at] === "/") { at++; continue; }
+
+      const nameStart = at;
+      while (at < source.length && !space(source[at]) &&
+        source[at] !== "=" && source[at] !== ">" && source[at] !== "/") at++;
+      if (at === nameStart) return true; // Ambiguous malformed start tag: refuse.
+      const name = source.slice(nameStart, at).toLowerCase();
+      while (space(source[at])) at++;
+      if (source[at] !== "=") continue;
+      at++;
+      while (space(source[at])) at++;
+
+      let value: string;
+      if (source[at] === '"' || source[at] === "'") {
+        const quote = source[at++];
+        const valueStart = at;
+        while (at < source.length && source[at] !== quote) at++;
+        if (at === source.length) return true; // Unclosed quote: do not guess.
+        value = source.slice(valueStart, at++);
+      } else {
+        const valueStart = at;
+        // HTML5 unquoted values may contain ' or ": neither opens a quote.
+        while (at < source.length && !space(source[at]) && source[at] !== ">") at++;
+        value = source.slice(valueStart, at);
+      }
+      if (tag === "meta" && name === "http-equiv" && (value.includes("&") || value.trim().toLowerCase() === "refresh")) {
+        return true;
+      }
+      // HTML5 loads responsive-image URLs from srcset on img/source (even when
+      // src= is absent), and from imagesrcset on image-preload links. Relative
+      // URLs also resolve against an eventual browser URL outside this ZIP.
+      // Allow only genuinely empty values: HTML5 srcset whitespace is ASCII;
+      // Unicode spaces such as NBSP are part of a URL, not separators.
+      if (((tag === "img" || tag === "image" || tag === "source") && name === "srcset") ||
+        (tag === "link" && name === "imagesrcset")) {
+        if (/[^ \t\r\n\f]/u.test(value)) return true;
+      }
+      // Ordinary HTML5 media URLs can also be unquoted (or recovered after
+      // malformed quotes and slash-delimited attributes). Checking raw quoted
+      // src=/href= substrings does not cover the browser's actual URL values.
+      // Conservatively refuse nonempty URLs, including relative and entity-
+      // encoded forms whose destination depends on the eventual document URL.
+      const mediaSource = name === "src" &&
+        (tag === "img" || tag === "image" || tag === "source" || tag === "video" ||
+         tag === "audio" || tag === "track" || tag === "input");
+      const videoPoster = tag === "video" && name === "poster";
+      const navigationLink = name === "href" &&
+        (tag === "a" || tag === "area" || tag === "link");
+      if (value.length > 0 && (mediaSource || videoPoster || navigationLink)) {
+        // Same-document anchors never resolve outside this HTML document.
+        if (!navigationLink || !/^#[a-z_][\w.:-]*$/iu.test(value)) return true;
+      }
+    }
+    if (!terminated) return true; // Truncated meta tag is ambiguous.
+    starts.lastIndex = at; // Each inspected byte is visited at most once.
+  }
+  return false;
+}
+
+/** Decode only for conservative CSS resource checks, never for rendering. */
+function decodedCssEscapes407(source: string): string {
+  return source.replace(/\\([0-9a-f]{1,6})(?:\r\n|[ \t\r\n\f])?|\\([^\r\n\f0-9a-f])/giu,
+    (_whole, hex: string | undefined, escaped: string | undefined) => {
+      if (!hex) return escaped ?? "";
+      const codePoint = Number.parseInt(hex, 16);
+      return String.fromCodePoint(codePoint > 0 && codePoint <= 0x10ffff ? codePoint : 0xfffd);
+    });
+}
+
+/** XML/HTML character references are decoded before CSS is parsed. A raw
+ * style="fill:url&#40;...&#41;" therefore becomes an active CSS url() even
+ * though neither the original url() check nor CSS backslash decoding sees it.
+ * Keep this scan linear and inside the detector's bounded text-part budget.
+ */
+function hasUnsafeCssAttribute407(source: string, html5: boolean): boolean {
+  // CSS Images permits remote resources as quoted strings inside image-set(),
+  // without a url() token; CSS-escaped function names work in browsers too.
+  // Inspect only CSS-bearing attributes, not inert text or data-* metadata.
+  if (!source.includes("&") && !/image-set|\\/iu.test(source)) return false;
+  const imageSet = /(?:^|[^\w-])(?:-webkit-)?image-set\s*\(/iu;
+  // HTML5 treats a slash in the before-attribute-name state as a separator,
+  // even without preceding whitespace (<div/style=...>). XML does not.
+  const attributes = /(?:^|[ \t\r\n\f</])(?:style|fill|stroke|filter|clip-path|mask|marker-(?:start|mid|end)|cursor)[ \t\r\n\f]*=/giu;
+  const space = (character: string | undefined): boolean =>
+    character !== undefined && /[ \t\r\n\f]/u.test(character);
+  let match: RegExpExecArray | null;
+  while ((match = attributes.exec(source)) !== null) {
+    if (!html5 && match[0].startsWith("/")) continue;
+    let at = attributes.lastIndex;
+    while (space(source[at])) at++;
+    const start = at;
+    if (source[at] === "'" || source[at] === '"') {
+      const quote = source[at++];
+      while (at < source.length && source[at] !== quote) at++;
+      // Refuse ambiguous CSS-bearing attributes with an unclosed quote.
+      if (at === source.length) return true;
+      at++;
+    } else {
+      // HTML5 treats a quote *inside* an unquoted value as an ordinary
+      // character. XML requires the quoted branch above.
+      while (at < source.length && !space(source[at]) && source[at] !== ">") at++;
+    }
+    const rawValue = source.slice(start, at);
+    if (rawValue.includes("&") || imageSet.test(rawValue) ||
+        (rawValue.includes("\\") && imageSet.test(decodedCssEscapes407(rawValue)))) return true;
+    attributes.lastIndex = at;
+  }
+  // SVG <style> elements are already forbidden by the existing active-element
+  // gate below; HTML <style> raw text does not decode character references.
+  return false;
+}
+
 /** Never parse XML with a DOM here: refuse entity resolution and active markup. */
 export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): FileThreatFinding407 | null {
+  // XML namespace prefixes can use Unicode characters; ASCII \w is not
+  // sufficient to recognize active names in a well-formed SVG/XML ZIP part.
+  // Match through XML name delimiters; never let the HTML meta guard below
+  // regress the existing Unicode-prefix refusal.
   if (/<!\s*(?:DOCTYPE|ENTITY)\b|<\?\s*xml-stylesheet\b|<\s*(?:xi:include|xinclude:include)\b|http:\/\/www\.w3\.org\/2001\/XInclude/iu.test(source) ||
-    /\bxmlns(?::[\w.-]+)?\s*=\s*["'][^"']*&/iu.test(source)) {
+    /\bxmlns(?::[^\t\r\n <>/:=]+)?\s*=\s*["'][^"']*&/iu.test(source)) {
     return reject("UNSUPPORTED", "Embedded XML document type, entities, stylesheets or includes are not supported.");
+  }
+  if (kind === "html") {
+    // Meta refresh and responsive image srcset/imagesrcset load URLs without
+    // src=, href= or CSS url(). HTML5 also recovers malformed attribute quotes.
+    // Entity-bearing http-equiv values remain conservatively unsupported.
+    if (hasUnsafeHtmlNavigation407(source)) {
+      return reject("UNSUPPORTED", "HTML navigation or responsive image sources are outside the local inspection profile.");
+    }
   }
   // XML entity references are decoded by downstream parsers: an attribute such
   // as TargetMode="Ex&#x74;ernal" must not evade an external-link refusal.
@@ -94,12 +232,15 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
   }
   // XML namespace aliases can give <s:script> exactly the same active meaning
   // as <script>; inspection cannot assume the element has no prefix.
-  if (/<\s*(?:[a-z_][\w.-]*:)?(?:script|iframe|object|embed)\b|\bon(?:load|error|click|mouseover|focus|begin|end)\s*=/iu.test(source)) {
+  if (/<\s*(?:[^\t\r\n <>/:]+:)?(?:script|iframe|object|embed)\b|\bon(?:load|error|click|mouseover|focus|begin|end)\s*=/iu.test(source)) {
     return reject("UNSUPPORTED", "Executable XML markup or event handlers are not supported.");
   }
   // A ZIP can store a genuine SVG document under an .xml member name.
-  if (kind === "svg" || kind === "html" || /<\s*(?:[a-z_][\w.-]*:)?svg\b/iu.test(source)) {
-    if (/<\s*(?:[a-z_][\w.-]*:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
+  if (kind === "svg" || kind === "html" || /<\s*(?:[^\t\r\n <>/:]+:)?svg\b/iu.test(source)) {
+    if (hasUnsafeCssAttribute407(source, kind === "html")) {
+      return reject("UNSUPPORTED", "CSS attributes with entities or image-set resources cannot be trusted before XML/HTML/CSS decoding.");
+    }
+    if (/<\s*(?:[^\t\r\n <>/:]+:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
       return reject("UNSUPPORTED", "Executable or external SVG/HTML content is outside the inspection profile.");
     }
     // An SVG <a href="relative.svg"> is not contained by its ZIP parent:
@@ -121,9 +262,7 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
     // for the rejection check (not rendering/reconstructing the SVG). A
     // literal url(#local) remains disallowed, matching the existing policy.
     if (source.includes("\\")) {
-      const cssDecoded = source.replace(/\\([0-9a-f]{1,6})(?:\r\n|[ \t\r\n\f])?|\\([^\r\n\f0-9a-f])/giu,
-        (_whole, hex: string | undefined, escaped: string | undefined) =>
-          hex ? String.fromCodePoint(Number.parseInt(hex, 16) || 0xfffd) : (escaped ?? ""));
+      const cssDecoded = decodedCssEscapes407(source);
       if (/\burl\s*\(|@import/iu.test(cssDecoded)) {
         return reject("UNSUPPORTED", "CSS-escaped external SVG resources are outside the local inspection profile.");
       }

@@ -1,22 +1,27 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import sharp from "sharp";
 import { analyzeFileSize, createZip } from "../src/engines/file-privacy";
 import { createSimplePdf } from "../src/engines/pdf/writer";
 
-function syntheticPng(width: number, height: number): File {
-  const image = new Uint8Array(24);
-  image.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], 0);
-  image.set([0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52], 8);
-  const view = new DataView(image.buffer);
-  view.setUint32(16, width);
-  view.setUint32(20, height);
-  return new File([image], "oversize.png", { type: "image/png" });
+async function solidColorPng(width: number, height: number): Promise<File> {
+  // Use the already installed native encoder, not a 24-byte stub ending inside
+  // IHDR: header preflight correctly requires a complete pre-IDAT structure.
+  const encoded = await sharp({
+    create: { width, height, channels: 3, background: { r: 12, g: 34, b: 56 } },
+  }).png({ compressionLevel: 9 }).toBuffer();
+  return new File([new Uint8Array(encoded)], "oversize.png", { type: "image/png" });
 }
 
 describe("#069 cross-format analyzer acceptance", () => {
   it("flags image pixel dimensions as potential web oversize without changing pixels or claiming savings", async () => {
-    const file = syntheticPng(5000, 4000);
+    const file = await solidColorPng(5000, 4000);
     const before = new Uint8Array(await file.arrayBuffer());
+    // Independent PNG decoder readback proves actual IHDR/IDAT/IEND content,
+    // rather than accepting dimensions inferred from a hand-written stub.
+    expect(await sharp(before).metadata()).toMatchObject({ format: "png", width: 5000, height: 4000 });
+    expect([...await sharp(before).resize(1, 1).raw().toBuffer()]).toEqual([12, 34, 56]);
+    expect(file.size).toBeLessThan(2 * 1024 * 1024);
     const result = await analyzeFileSize({ files: [file] });
     const image = result.image as { pixels: number; oversizeStatus: string; oversizeSignals: string[]; bytesPerPixel: number };
     expect(result).toMatchObject({ kind: "image", estimatedSavingsBytes: null, sourceMutation: "none" });

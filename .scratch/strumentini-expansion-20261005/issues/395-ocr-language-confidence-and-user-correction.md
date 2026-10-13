@@ -37,3 +37,9 @@
 **Out of scope:** Shipping functionality, buying licenses, changing receipt source fingerprints, broad desktop-only advanced exemptions.
 
 **Execution prompt:** Routed by canonical EXECUTION-PROMPTS.md with gates.
+
+## Owner round Strumentini — 13 ottobre 2026
+
+Approvata correzione del testo OCR affiancato alla scansione, con evidenza della zona corrispondente; interazione diretta sul documento come evoluzione. Non certificare OCR affidabile dalla sola UI o inventare confidenza.
+
+Decisione acquisita, non nuova implementation/runtime acceptance; status e checkbox esistenti invariati. Tutto il lavoro autorizzato resta nello scope, riuso prima del codice e gate originali preservati.

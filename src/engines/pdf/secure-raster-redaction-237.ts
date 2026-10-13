@@ -86,10 +86,74 @@ export function assertSupportedSource237(source: Uint8Array): number {
   // This redaction profile admits one complete PDF revision only, so refuse
   // ambiguous multiple xref/EOF sections BEFORE trusting any trailer model.
   const sourceText = new TextDecoder("latin1").decode(source);
-  const xrefSections = sourceText.match(/(?:^|[\r\n])[ \t]*startxref[ \t]*(?=\r?\n)/gu) ?? [];
-  const eofSections = sourceText.match(/(?:^|[\r\n])[ \t]*%%EOF[ \t]*(?=\r?\n|$)/gu) ?? [];
-  if (xrefSections.length !== 1 || eofSections.length !== 1) {
+  // Count complete startxref <offset> %%EOF footers, not bare words. Both
+  // tokens may occur as ordinary visible text in a content stream or comment.
+  // All six PDF whitespace bytes are eligible between footer tokens, including
+  // CR-only and same-line TAB/space declarations read by independent viewers.
+  // Also require exactly one classic xref table: a second real revision must
+  // be refused even when its earlier footer uses unusual lexical separators.
+  // Stop at two matches, never materialize a list from attacker-controlled input.
+  const footers = /(?:^|[\x00\t\n\f\r ])startxref[\x00\t\n\f\r ]+(\d+)[\x00\t\n\f\r ]+%%EOF(?=[\x00\t\n\f\r ]|$)/gu;
+  const tables = /(?:^|[\x00\t\n\f\r ])[ \t]*xref[\x00\t\n\f\r ]+\d+[\x00\t\n\f\r ]+\d+(?=[\x00\t\n\f\r ])/gu;
+  const finalFooter = footers.exec(sourceText);
+  if (!finalFooter || footers.exec(sourceText) ||
+    !tables.exec(sourceText) || tables.exec(sourceText)) {
     refuse("Revisioni incrementali o terminatori PDF ambigui non supportati.");
+  }
+  // The shared lightweight parser scans for the *last text occurrence* of
+  // "trailer", including PDF comments. A real single-revision hybrid xref
+  // table can therefore hide its effective /XRefStm behind a comment decoy
+  // without adding another startxref/EOF. Anchor this restricted admission
+  // profile to the actual classic xref offset and its only trailer line.
+  // Only the startxref belonging to the sole COMPLETE footer can select the
+  // active xref. An earlier incomplete %%EOF may still leave a real classic
+  // table while the final footer points to a new /Type /XRef stream. Scanning
+  // for the first standalone declaration would silently select the old table.
+  const marker = (finalFooter.index ?? 0) + finalFooter[0].indexOf("startxref");
+  // More than one line ending is valid PDF whitespace between startxref and
+  // its decimal offset. Keep the mandatory first EOL and sticky footer binding.
+  const declaration = /startxref[ \t]*(?:\r\n|[\r\n\f])[ \t\r\n\f]*(\d+)[ \t]*(?=\r\n|[\r\n\f])/yu;
+  declaration.lastIndex = marker;
+  const actualDeclaration = declaration.exec(sourceText);
+  if (!actualDeclaration || actualDeclaration[1] !== finalFooter[1]) {
+    refuse("Puntatore startxref ambiguo o non supportato.");
+  }
+  const offset = Number(actualDeclaration[1]);
+  if (!Number.isSafeInteger(offset) || offset < 0 || offset >= marker || sourceText.slice(offset, offset + 4) !== "xref") {
+    refuse("Revisioni incrementali, xref ibridi o puntatori xref non supportati.");
+  }
+  const footer = sourceText.slice(offset, marker);
+  const trailerLines = /(?:^|[\x00\t\n\f\r ])[ \t]*trailer(?=[\x00\t\n\f\r %<])/gu;
+  const trailer = trailerLines.exec(footer);
+  if (!trailer || trailerLines.exec(footer) ||
+    sourceText.lastIndexOf("trailer") !== offset + trailer.index + trailer[0].lastIndexOf("trailer")) {
+    refuse("Trailer PDF ambiguo: riferimenti incrociati non verificabili.");
+  }
+  // There can be no footer markers inside a classic xref table *before* its
+  // trailer. This also refuses a flood of malformed marker candidates there,
+  // without rejecting normal content-stream text or a benign trailer comment.
+  const priorStartxref = footer.indexOf("startxref");
+  const priorEof = footer.indexOf("%%EOF");
+  if ((priorStartxref >= 0 && priorStartxref < trailer.index)
+    || (priorEof >= 0 && priorEof < trailer.index)) {
+    refuse("Sezione xref con terminatori PDF ambigui non supportata.");
+  }
+  // PDF trivia between 'trailer' and its dictionary can include form-feed,
+  // comments, and CR/LF. The shared parser already recognizes all of these;
+  // require the SAME actual keyword to lead to a dictionary, not a decoy.
+  let cursor = trailer.index + trailer[0].length;
+  while (cursor < footer.length) {
+    const code = footer.charCodeAt(cursor);
+    if (code === 0 || code === 9 || code === 10 || code === 12 || code === 13 || code === 32) {
+      cursor += 1;
+    } else if (code === 37) {
+      while (cursor < footer.length && footer[cursor] !== "\n" && footer[cursor] !== "\r") cursor += 1;
+    } else {
+      break;
+    }
+  }
+  if (footer.slice(cursor, cursor + 2) !== "<<") {
+    refuse("Trailer PDF non seguito da un dizionario verificabile.");
   }
   const model = parsePdf(source);
   if (model.encrypted) refuse("PDF cifrato non supportato.");
@@ -135,6 +199,13 @@ export function assertSupportedSource237(source: Uint8Array): number {
     }
   };
   for (const { value } of model.objects.values()) {
+    // A later xref stream may be genuine in PDF.js/pypdf even when its final
+    // %%EOF is truncated or suffixed and our sole complete footer selects an
+    // older classic table. Never admit any parsed cross-reference stream.
+    const type = value.kind === "stream" ? value.dictionary.entries.get("Type") : undefined;
+    if (type?.kind === "name" && type.value === "XRef") {
+      refuse("Revisioni incrementali o xref stream non supportati.");
+    }
     inspectNested(value);
   }
   return model.pages.length;

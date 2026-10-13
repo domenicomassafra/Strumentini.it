@@ -1,6 +1,7 @@
 import type { SheetData } from "write-excel-file/universal";
 import { inflateSync } from "fflate";
 import { formatMarkdownTable } from "../text-writing";
+import { parseXmlDocument, type XmlElement } from "../developer-web/structured-repair";
 import { analyzeOoxmlPackage, OoxmlPackageError, type OoxmlZipEntry } from "../ooxml/package";
 import { parseCsvTable, serializeCsvTable, type CsvTable } from "./csv";
 
@@ -206,16 +207,16 @@ function crc32(bytes: Uint8Array): number {
   return (crc ^ 0xffffffff) >>> 0;
 }
 
-function readContentTypes(bytes: ArrayBuffer, entry: OoxmlZipEntry): string {
+function readBoundedXlsxXml(bytes: ArrayBuffer, entry: OoxmlZipEntry): string {
   if (entry.uncompressedSize > MAX_CONTENT_TYPES_XML_BYTES || entry.compressedSize > MAX_CONTENT_TYPES_XML_BYTES) {
-    fail("FILE_TOO_LARGE", "XLSX content types declaration exceeds the local inspection budget.");
+    fail("FILE_TOO_LARGE", "XLSX XML metadata exceeds the local inspection budget.");
   }
   const view = new DataView(bytes);
   const offset = entry.localHeaderOffset;
   const nameLength = view.getUint16(offset + 26, true);
   const extraLength = view.getUint16(offset + 28, true);
   const start = offset + 30 + nameLength + extraLength;
-  if (start + entry.compressedSize > bytes.byteLength) fail("XLSX_READ_FAILED", "XLSX content types are truncated.");
+  if (start + entry.compressedSize > bytes.byteLength) fail("XLSX_READ_FAILED", "XLSX XML metadata is truncated.");
   const compressed = new Uint8Array(bytes, start, entry.compressedSize);
   let unpacked: Uint8Array;
   try {
@@ -223,16 +224,37 @@ function readContentTypes(bytes: ArrayBuffer, entry: OoxmlZipEntry): string {
       out: new Uint8Array(entry.uncompressedSize + 1),
     });
   } catch {
-    fail("XLSX_READ_FAILED", "XLSX content types could not be decompressed within the declared budget.");
+    fail("XLSX_READ_FAILED", "XLSX XML metadata could not be decompressed within the declared budget.");
   }
   if (unpacked.byteLength !== entry.uncompressedSize || crc32(unpacked) !== entry.crc32) {
-    fail("XLSX_READ_FAILED", "XLSX content types do not match the ZIP directory.");
+    fail("XLSX_READ_FAILED", "XLSX XML metadata does not match the ZIP directory.");
   }
   try {
     return contentTypesDecoder.decode(unpacked);
   } catch {
-    fail("XLSX_READ_FAILED", "XLSX content types are not UTF-8.");
+    fail("XLSX_READ_FAILED", "XLSX XML metadata is not UTF-8.");
   }
+}
+
+// The already installed bounded XML parser rejects DTDs, external entities,
+// malformed XML, excess nodes and nesting. XML attributes remain raw strings;
+// decode ONLY its validated built-in/numeric references, once, with no DTD.
+function checkedXlsxXml(xml: string, rootName: string): XmlElement {
+  try {
+    const root = parseXmlDocument(xml).root;
+    if (root.name.split(":").at(-1) !== rootName) fail("XLSX_READ_FAILED", `Unexpected XLSX ${rootName} XML root.`);
+    return root;
+  } catch {
+    fail("XLSX_READ_FAILED", `Invalid or unsupported XLSX ${rootName} XML metadata.`);
+  }
+}
+
+function decodedXlsxAttribute(element: XmlElement, key: string): string | undefined {
+  return element.attributes.find(({ name }) => name === key)?.value.replace(/&(?:#x[0-9A-Fa-f]+|#[0-9]+|amp|lt|gt|quot|apos);/gu, (entity) => {
+    const value = entity.slice(1, -1);
+    if (value[0] === "#") return String.fromCodePoint(Number.parseInt(value.slice(value[1] === "x" ? 2 : 1), value[1] === "x" ? 16 : 10));
+    return ({ amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" } as Record<string, string>)[value] ?? entity;
+  });
 }
 
 function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
@@ -252,14 +274,38 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
     fail("XLSX_READ_FAILED", "XLSX ZIP preflight failed.");
   }
   if (packageAnalysis.kind !== "xlsx") fail("XLSX_READ_FAILED", "Input ZIP is not an XLSX workbook.");
+  // Workbook-to-workbook dependencies can retain remote targets and stale
+  // external value caches invisible in the extracted CSV. The generic reader
+  // silently discards these parts. Refuse before decoding workbook cells;
+  // ordinary worksheet hyperlink relationships are inert and remain allowed.
+  if (packageAnalysis.entries.some((entry) => /^xl\/externalLinks\//iu.test(entry.path))) {
+    fail("UNSUPPORTED_XLSX_FEATURE", "External workbook dependencies are not supported in CSV import.");
+  }
   const manifest = packageAnalysis.entries.find((entry) => entry.path === "[Content_Types].xml");
   if (!manifest) fail("XLSX_READ_FAILED", "Missing XLSX content types declaration.");
-  const xml = readContentTypes(bytes, manifest).replace(/<!--[\s\S]*?-->/gu, "");
+  const xml = readBoundedXlsxXml(bytes, manifest);
   // A workbook can declare macro capability even with no vbaProject.bin entry.
   // This deliberately refuses those declarations while ordinary data-only
   // spreadsheets (including plain hyperlink text) remain importable.
   if (/macroEnabled|vbaProject|application\/vnd\.ms-office\.activeX/iu.test(xml)) {
     fail("UNSUPPORTED_XLSX_FEATURE", "Excel macro or ActiveX content types are not supported in CSV import.");
+  }
+  const contentTypes = checkedXlsxXml(xml, "Types");
+  if (contentTypes.children.some((child) => child.kind === "element" &&
+      (child.name.split(":").at(-1) === "Override" || child.name.split(":").at(-1) === "Default") &&
+      /(?:externalLink\+xml|macroEnabled|vbaProject|activeX)/iu.test(decodedXlsxAttribute(child, "ContentType") ?? ""))) {
+    fail("UNSUPPORTED_XLSX_FEATURE", "Excel external workbook content types are not supported in CSV import.");
+  }
+  // A genuine external workbook part may be relocated outside xl/externalLinks.
+  // The workbook's relationship Type, unlike its Target filename, is the
+  // source of truth. Worksheet `hyperlink` relations stay inert and allowed.
+  const workbookRels = packageAnalysis.entries.find((entry) => entry.path === "xl/_rels/workbook.xml.rels");
+  if (workbookRels) {
+    const relationships = checkedXlsxXml(readBoundedXlsxXml(bytes, workbookRels), "Relationships");
+    if (relationships.children.some((child) => child.kind === "element" && child.name.split(":").at(-1) === "Relationship" &&
+        /\/(?:externalLink|externalLinkPath)$/iu.test(decodedXlsxAttribute(child, "Type") ?? ""))) {
+      fail("UNSUPPORTED_XLSX_FEATURE", "Excel external workbook relationships are not supported in CSV import.");
+    }
   }
 }
 

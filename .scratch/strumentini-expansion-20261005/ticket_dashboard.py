@@ -19,6 +19,9 @@ from validate_backlog import DAG, ISSUES, ROOT, lifecycle_status, load_tickets, 
 
 OUT_JSON = ROOT / "CURRENT-TICKET-DASHBOARD.json"
 OUT_MD = ROOT / "CURRENT-TICKET-DASHBOARD.md"
+PROJECT_STATUS = ROOT.parents[1] / "PROJECT-STATUS.md"
+STATUS_START = "<!-- tickets:live-status:start -->"
+STATUS_END = "<!-- tickets:live-status:end -->"
 
 # These reasons are supported by the named issue file and its evidence; they
 # cannot be resolved just by closing a numeric predecessor.
@@ -176,6 +179,41 @@ def render(tickets: dict, frontier: list[int]) -> tuple[str, str]:
     return json.dumps(payload, indent=2, ensure_ascii=False) + "\n", "\n".join(lines)
 
 
+def render_project_status(body: str, totals: dict) -> str:
+    """Keep the root status summary derived from the same ticket authority.
+
+    Only the marked panel is generated; historical prose remains untouched.
+    Fail closed when an anchor is missing or duplicated so a document edit
+    cannot silently disable the drift check.
+    """
+    if body.count(STATUS_START) != 1 or body.count(STATUS_END) != 1:
+        raise ValueError("PROJECT-STATUS.md must contain one live-status start/end marker pair")
+    start = body.index(STATUS_START) + len(STATUS_START)
+    end = body.index(STATUS_END)
+    if end < start:
+        raise ValueError("PROJECT-STATUS.md live-status markers are reversed")
+    lines = [
+        "", "## Live ticket execution (generated)", "",
+        "Source of truth: `.scratch/strumentini-expansion-20261005/issues/` and the generated "
+        "[`CURRENT-TICKET-DASHBOARD.md`](.scratch/strumentini-expansion-20261005/CURRENT-TICKET-DASHBOARD.md). "
+        "`npm run tickets:sync` refreshes this panel; `npm run tickets:check` fails on drift.", "",
+        "| Metric | Current count |", "|---|---:|",
+        f"| All tickets | {totals['all']} |",
+        f"| Administratively completed | {totals['completed']} |",
+        f"| Closed with explicit refusal (not shipped) | {totals['completedWithRefusal']} |",
+        f"| Still open | {totals['open']} |",
+        f"| Ready for assignment (acceptance not yet proven) | {totals['ready-for-agent']} |",
+        f"| Dependency-blocked | {totals['dependency-blocked']} |",
+        f"| Official-source-blocked | {totals['external-source-blocked']} |",
+        f"| Physical-device-blocked | {totals['external-device-blocked']} |",
+        f"| Capability-blocked | {totals['capability-blocked']} |",
+        f"| DAG-ready (numeric dependencies only) | {totals['readyDAG']} |",
+        f"| Stored status mismatches | {totals['storedStatusMismatches']} |", "",
+        "Ticket completion, certification, reviewed merge, deployment and physical-device acceptance are separate gates.",
+    ]
+    return body[:start] + "\n".join(lines) + "\n" + body[end:]
+
+
 def sync_statuses(tickets: dict, frontier: list[int]) -> None:
     ready = set(frontier)
     for number, ticket in sorted(tickets.items()):
@@ -209,7 +247,9 @@ def main() -> None:
         frontier = validate(tickets)
     json_text, md_text = render(tickets, frontier)
     dag_text = render_dag(tickets, frontier)
-    expected_files = {OUT_JSON: json_text, OUT_MD: md_text, DAG: dag_text}
+    totals = json.loads(json_text)["totals"]
+    status_text = render_project_status(PROJECT_STATUS.read_text(encoding="utf-8"), totals)
+    expected_files = {OUT_JSON: json_text, OUT_MD: md_text, DAG: dag_text, PROJECT_STATUS: status_text}
     if args.write:
         for path, content in expected_files.items():
             path.write_text(content, encoding="utf-8")
@@ -218,7 +258,6 @@ def main() -> None:
         stale = [str(path) for path, content in expected_files.items() if not path.exists() or path.read_text(encoding="utf-8") != content]
         if mismatched or stale:
             raise SystemExit(f"FAIL stored-status-mismatches={mismatched} stale={stale}")
-    totals = json.loads(json_text)["totals"]
     print("PASS ticket dashboard", json.dumps(totals, sort_keys=True))
     try:
         head = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True).strip()

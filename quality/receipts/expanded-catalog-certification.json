@@ -2508,6 +2508,10 @@
           "tests/client-time-math-profile.test.ts",
           "tests/date-time-engine.test.ts",
           "tests/date-time-modules.test.ts",
+          "tests/gold-source-347-20261013-receipt-owner.test.ts",
+          "tests/per-tool-proof-415-20261013-invalid-fixture.test.ts",
+          "tests/per-tool-proof-415-20261013-oracle-membership.test.ts",
+          "tests/per-tool-proof-415-20261013-page-presence.test.ts",
           "tests/profile-workbench.test.ts",
           "tests/profile.test.ts",
           "tests/runtime.test.ts",
@@ -21069,7 +21073,7 @@
         },
         "page": {
           "path": "src/pages/tools/partita-iva-validator.astro",
-          "sha256": "aad180fd787b6c1fc1b607b97f5afac12d4e1ae8252348480f8eaf75dc86a490"
+          "sha256": "5f9d089a0e55a6fbe34d5cf7cc50743a42e1cd6ee76121626ad428d1cf3df2db"
         },
         "testFiles": [
           "tests/partita-iva-validator.test.ts",

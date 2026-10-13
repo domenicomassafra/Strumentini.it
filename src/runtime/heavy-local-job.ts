@@ -86,6 +86,9 @@ export interface HeavyWorkerPort<TRequest, TResult> {
 
 export interface HeavyWorkerLease<TRequest, TResult> {
   readonly worker: HeavyWorkerPort<TRequest, TResult>;
+  /** Optional for runtimes such as node:worker_threads that expose `exit`.
+   * Native browser Workers have no exit event; no arbitrary job deadline is inferred. */
+  readonly onExit?: (listener: (code: number) => void) => () => void;
   cleanup?(): void;
 }
 
@@ -240,6 +243,7 @@ interface ActiveRun<TRequest, TResult> {
   readonly reject: (reason: unknown) => void;
   readonly signal?: AbortSignal;
   abortListener?: () => void;
+  unsubscribeExit?: () => void;
   readonly onProgress?: (progress: HeavyLocalJobProgress) => void;
   settled: boolean;
   progressEvents: number;
@@ -311,6 +315,14 @@ export function createHeavyLocalJobRunner<TRequest, TResult>(
     const errors: Error[] = [];
     if (run.signal !== undefined && run.abortListener !== undefined) {
       run.signal.removeEventListener("abort", run.abortListener);
+    }
+    if (run.unsubscribeExit !== undefined) {
+      try {
+        run.unsubscribeExit();
+      } catch (error) {
+        errors.push(error instanceof Error ? error : new Error(String(error)));
+      }
+      delete run.unsubscribeExit;
     }
     run.workerLease.worker.onmessage = null;
     run.workerLease.worker.onerror = null;
@@ -459,6 +471,15 @@ export function createHeavyLocalJobRunner<TRequest, TResult>(
     workerLease.worker.onmessage = (event) => {
       if (active !== run || run.settled) return;
       const message = event.data;
+      // A worker can send any structured-clone value at runtime, regardless
+      // of its TypeScript response type. Never dereference a null/primitive
+      // packet outside the guarded failure path: it would strand the worker,
+      // owned previews and its pending promise until an unrelated abort.
+      if (typeof message !== "object" || message === null || Array.isArray(message) ||
+        !Number.isSafeInteger(message.jobId)) {
+        failCurrent(new HeavyLocalJobError("PROTOCOL_ERROR", "Heavy worker sent a malformed message envelope."));
+        return;
+      }
       if (message.jobId !== run.jobId) return;
       try {
         if (message.type === "progress") {
@@ -525,7 +546,21 @@ export function createHeavyLocalJobRunner<TRequest, TResult>(
       if (active !== null) cancelRun(active, "Operation superseded by a newer heavy local job");
       active = run;
       try {
-        workerLease.worker.postMessage(startMessage, startOptions.transfer);
+        // Worker error events do not cover a normal node:worker_threads
+        // exit(0). If the lease can observe exit, settle before an owner-owned
+        // preview or resource reservation is stranded without terminal reply.
+        if (workerLease.onExit !== undefined) {
+          const unsubscribeExit = workerLease.onExit((code) => {
+            failCurrent(new HeavyLocalJobError(
+              "WORKER_FAILURE", `Heavy local worker exited without a terminal reply (code ${code}).`,
+            ));
+          });
+          // A lease adapter may report an already observed exit immediately
+          // during subscription. Do not retain that listener after settlement.
+          if (run.settled) unsubscribeExit();
+          else run.unsubscribeExit = unsubscribeExit;
+        }
+        if (active === run && !run.settled) workerLease.worker.postMessage(startMessage, startOptions.transfer);
       } catch (error) {
         failCurrent(new HeavyLocalJobError(
           "WORKER_FAILURE",

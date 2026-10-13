@@ -1,4 +1,4 @@
-import { validateGoldReceipts, type ToolCertificationReceipt } from "../release/validation";
+import { isEligibleGoldFlag, validateGoldReceipts, type ToolCertificationReceipt } from "../release/validation";
 
 export interface GoldToolQuality {
   readonly toolId: string;
@@ -31,7 +31,7 @@ function stringArray(value: unknown): value is string[] {
 
 function goldReceipt(value: unknown, catalogToolIds: ReadonlySet<string>): GoldToolQuality | undefined {
   if (!isRecord(value)) return undefined;
-  if (value.schemaVersion !== 1 || value.status !== "GOLD" || value.goldEligible === false) return undefined;
+  if (value.schemaVersion !== 1 || value.status !== "GOLD" || !isEligibleGoldFlag(value)) return undefined;
   if (typeof value.toolId !== "string" || !catalogToolIds.has(value.toolId)) return undefined;
   if (typeof value.receiptPath !== "string" || value.receiptPath.trim() === "") return undefined;
   const oracleEntryIds = value.oracleEntryIds === undefined
@@ -107,7 +107,8 @@ export function buildSourceBoundGoldQualityIndex(
         !/^[a-f0-9]{64}$/u.test(String(raw.receiptSha256 ?? "")) ||
         typeof raw.revision !== "string" || !/^[a-f0-9]{40}$/u.test(raw.revision)) continue;
     if (typeof raw.receiptPath !== "string" ||
-        !/^quality\/receipts\/(?:[a-z0-9_-]+\/)*[a-z0-9_.-]+\.json$/u.test(raw.receiptPath)) continue;
+        !/^quality\/receipts\/(?:[a-z0-9_-]+\/)*[a-z0-9_.-]+\.json$/u.test(raw.receiptPath) ||
+        raw.receiptPath.split("/").at(-1) !== `${toolId}.gold.json`) continue;
     const validatorResults = validateGoldReceipts(
       [{ id: toolId, route: `/tools/${toolId}` }],
       [raw as unknown as ToolCertificationReceipt],
