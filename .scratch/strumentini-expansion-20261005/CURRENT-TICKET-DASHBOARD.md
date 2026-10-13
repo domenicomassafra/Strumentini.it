@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 305 / 119 |
+| All / completed / open | 424 / 306 / 118 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 34 |
-| Ready for assignment (feasibility still to prove) | 27 |
+| DAG-ready (all numeric dependencies closed) | 33 |
+| Ready for assignment (feasibility still to prove) | 26 |
 | Waiting on other tickets | 85 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (27)
+## Ready for assignment (feasibility still to prove) (26)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
@@ -49,7 +49,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #404 — Change scoped CI and cumulative release validation
 - #406 — Independent PDF redaction attack corpus
 - #407 — Hostile parsers and archive resource safety
-- #415 — Per-tool base claim proof and certification coverage
 
 ## Waiting on other tickets (85)
 

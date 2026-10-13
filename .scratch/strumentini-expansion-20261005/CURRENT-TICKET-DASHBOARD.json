@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 424,
-    "completed": 305,
+    "completed": 306,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 288,
-    "open": 119,
-    "readyDAG": 34,
-    "ready-for-agent": 27,
+    "completedWithoutExplicitRefusal": 289,
+    "open": 118,
+    "readyDAG": 33,
+    "ready-for-agent": 26,
     "dependency-blocked": 85,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -328,7 +328,8 @@
       365,
       408,
       410,
-      413
+      413,
+      415
     ],
     "ready-for-agent": [
       47,
@@ -356,8 +357,7 @@
       397,
       404,
       406,
-      407,
-      415
+      407
     ],
     "dependency-blocked": [
       8,
@@ -4852,9 +4852,9 @@
     {
       "id": 415,
       "title": "Per-tool base claim proof and certification coverage",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
