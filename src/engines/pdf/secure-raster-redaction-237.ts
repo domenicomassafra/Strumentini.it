@@ -88,8 +88,13 @@ export function assertSupportedSource237(source: Uint8Array): number {
   const sourceText = new TextDecoder("latin1").decode(source);
   // Do not materialize every regex match from untrusted input: stop at two
   // sections, which are already sufficient to refuse this one-revision profile.
-  const xrefSections = /(?:^|[\r\n])[ \t]*startxref[ \t]*(?=\r?\n)/gu;
-  const eofSections = /(?:^|[\r\n])[ \t]*%%EOF[ \t]*(?=\r?\n|$)/gu;
+  // Count standalone markers separated by ANY PDF whitespace (NUL, TAB,
+  // LF, FF, CR, space). Earlier revisions may use CR-only lines or place
+  // their offset on the same line after TAB/space; PDF.js/strict pypdf can
+  // still follow them. The actual admitted declaration below stays stricter.
+  // Conservative extra matches refuse ambiguous sources, never add support.
+  const xrefSections = /(?:^|[\x00\t\n\f\r ])startxref(?=[\x00\t\n\f\r ])/gu;
+  const eofSections = /(?:^|[\x00\t\n\f\r ])%%EOF(?=[\x00\t\n\f\r ]|$)/gu;
   if (!xrefSections.exec(sourceText) || xrefSections.exec(sourceText) ||
     !eofSections.exec(sourceText) || eofSections.exec(sourceText)) {
     refuse("Revisioni incrementali o terminatori PDF ambigui non supportati.");
@@ -99,7 +104,7 @@ export function assertSupportedSource237(source: Uint8Array): number {
   // table can therefore hide its effective /XRefStm behind a comment decoy
   // without adding another startxref/EOF. Anchor this restricted admission
   // profile to the actual classic xref offset and its only trailer line.
-  const declaration = /(?:^|[\r\n])[ \t]*startxref[ \t]*\r?\n[ \t]*(\d+)[ \t]*(?=\r?\n)/u.exec(sourceText);
+  const declaration = /(?:^|[\r\n\f])[ \t]*startxref[ \t]*(?:\r\n|[\r\n\f])[ \t]*(\d+)[ \t]*(?=\r\n|[\r\n\f])/u.exec(sourceText);
   if (!declaration) refuse("Puntatore startxref ambiguo o non supportato.");
   const offset = Number(declaration[1]);
   const marker = (declaration.index ?? 0) + declaration[0].lastIndexOf("startxref");
