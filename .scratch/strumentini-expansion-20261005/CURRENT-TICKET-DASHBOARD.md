@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 304 / 120 |
+| All / completed / open | 424 / 305 / 119 |
 | Closed with explicit refusal (NOT shipped) | 17 |
 | DAG-ready (all numeric dependencies closed) | 34 |
 | Ready for assignment (feasibility still to prove) | 27 |
-| Waiting on other tickets | 86 |
+| Waiting on other tickets | 85 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 0 |
@@ -34,7 +34,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #347 — P0 Badge Gold fingerprint frontend backend
 - #349 — File server opt-in TTL delete prova
 - #350 — P0 Accessibilità AA di base e advanced
-- #351 — Tre direzioni redesign non cosmetiche
+- #352 — Selezione owner direzione visuale
 - #363 — Budget memoria mobile editor reali
 - #366 — Licenze e provenance donor pinning
 - #367 — Codec immagini local vs donor
@@ -51,7 +51,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #407 — Hostile parsers and archive resource safety
 - #415 — Per-tool base claim proof and certification coverage
 
-## Waiting on other tickets (86)
+## Waiting on other tickets (85)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -85,7 +85,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #247 — Scanned PDF OCR and searchable text layer (awaiting #246)
 - #279 — Image-resize Gold promotion gate (awaiting #277, #278)
 - #332 — Sync preferiti con rimozioni e conflitti (awaiting #328)
-- #352 — Selezione owner direzione visuale (awaiting #351)
 - #353 — IA e design system dopo scelta (awaiting #352)
 - #354 — Redesign home file-first search-first (awaiting #352, #353)
 - #355 — Redesign catalogo ricerca categorie (awaiting #352, #353)
