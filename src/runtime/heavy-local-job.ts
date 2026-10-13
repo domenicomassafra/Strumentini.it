@@ -322,7 +322,7 @@ export function createHeavyLocalJobRunner<TRequest, TResult>(
       } catch (error) {
         errors.push(error instanceof Error ? error : new Error(String(error)));
       }
-      run.unsubscribeExit = undefined;
+      delete run.unsubscribeExit;
     }
     run.workerLease.worker.onmessage = null;
     run.workerLease.worker.onerror = null;
