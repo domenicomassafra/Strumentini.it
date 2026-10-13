@@ -8,7 +8,7 @@
 
 **Blocked by:** 330,334
 
-**Status:** blocked
+**Status:** ready-for-agent
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 

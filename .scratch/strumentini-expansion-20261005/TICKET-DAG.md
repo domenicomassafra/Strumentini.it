@@ -23,9 +23,9 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 - **328 — P0 Account Turnstile login reale**
 - **329 — P0 Contrasto accesso e errori WCAG**
-- **330 — P0 Recenti realmente alimentati**
 - **336 — Picker iPhone Android e touch equivalente**
-- **339 — Scarica manuale e auto opt-in**
+- **343 — Esporta importa elimina configurazione**
+- **345 — Navigazione stabile da task e file**
 - **347 — P0 Badge Gold fingerprint frontend backend**
 - **349 — File server opt-in TTL delete prova**
 - **350 — P0 Accessibilità AA di base e advanced**
@@ -392,7 +392,7 @@ Exactly **36** incomplete tickets currently have every declared numeric blocker 
 | 327 | completed | Research dedupe identity and citation export audit | 093, 198, 276 |
 | 328 | ready-for-agent | P0 Account Turnstile login reale | — |
 | 329 | ready-for-agent | P0 Contrasto accesso e errori WCAG | — |
-| 330 | ready-for-agent | P0 Recenti realmente alimentati | — |
+| 330 | completed | P0 Recenti realmente alimentati | — |
 | 331 | completed | P0 Correggere promesse di file/account | — |
 | 332 | blocked | Sync preferiti con rimozioni e conflitti | 328, 330 |
 | 333 | completed | P0 Riconoscimento formato locale | — |
@@ -401,13 +401,13 @@ Exactly **36** incomplete tickets currently have every declared numeric blocker 
 | 336 | ready-for-agent | Picker iPhone Android e touch equivalente | 333 |
 | 337 | completed | Typed handoff per catene di tool | — |
 | 338 | completed | Preview risultato con fatti verificati | — |
-| 339 | ready-for-agent | Scarica manuale e auto opt-in | 338 |
+| 339 | completed | Scarica manuale e auto opt-in | 338 |
 | 340 | completed | Cronologia in-session e cancella task | 337, 338 |
 | 341 | completed | Salvataggio locale file volontario | 338 |
 | 342 | completed | Quote e eviction file locali | 341 |
-| 343 | blocked | Esporta importa elimina configurazione | 330 |
+| 343 | ready-for-agent | Esporta importa elimina configurazione | 330 |
 | 344 | completed | Area personale con suggerimenti spiegabili | 330, 335 |
-| 345 | blocked | Navigazione stabile da task e file | 330, 334 |
+| 345 | ready-for-agent | Navigazione stabile da task e file | 330, 334 |
 | 346 | completed | P0 Eventi telemetria privacy-safe | — |
 | 347 | ready-for-agent | P0 Badge Gold fingerprint frontend backend | — |
 | 348 | completed | Server opt-in gratis feasibility | — |

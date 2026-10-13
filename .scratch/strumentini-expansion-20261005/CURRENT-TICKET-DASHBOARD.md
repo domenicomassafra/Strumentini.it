@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 300 / 124 |
+| All / completed / open | 424 / 302 / 122 |
 | Closed with explicit refusal (NOT shipped) | 17 |
 | DAG-ready (all numeric dependencies closed) | 36 |
 | Ready for assignment (feasibility still to prove) | 29 |
-| Waiting on other tickets | 88 |
+| Waiting on other tickets | 86 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 0 |
@@ -30,9 +30,9 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #246 — Local image OCR
 - #328 — P0 Account Turnstile login reale
 - #329 — P0 Contrasto accesso e errori WCAG
-- #330 — P0 Recenti realmente alimentati
 - #336 — Picker iPhone Android e touch equivalente
-- #339 — Scarica manuale e auto opt-in
+- #343 — Esporta importa elimina configurazione
+- #345 — Navigazione stabile da task e file
 - #347 — P0 Badge Gold fingerprint frontend backend
 - #349 — File server opt-in TTL delete prova
 - #350 — P0 Accessibilità AA di base e advanced
@@ -53,7 +53,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #407 — Hostile parsers and archive resource safety
 - #415 — Per-tool base claim proof and certification coverage
 
-## Waiting on other tickets (88)
+## Waiting on other tickets (86)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -86,16 +86,14 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #235 — Advanced Images to PDF composition (awaiting #212)
 - #247 — Scanned PDF OCR and searchable text layer (awaiting #246)
 - #279 — Image-resize Gold promotion gate (awaiting #277, #278)
-- #332 — Sync preferiti con rimozioni e conflitti (awaiting #328, #330)
-- #343 — Esporta importa elimina configurazione (awaiting #330)
-- #345 — Navigazione stabile da task e file (awaiting #330)
+- #332 — Sync preferiti con rimozioni e conflitti (awaiting #328)
 - #352 — Selezione owner direzione visuale (awaiting #351)
 - #353 — IA e design system dopo scelta (awaiting #352)
 - #354 — Redesign home file-first search-first (awaiting #352, #353)
 - #355 — Redesign catalogo ricerca categorie (awaiting #352, #353)
 - #356 — Redesign wrapper e input famiglia (awaiting #352, #353)
 - #357 — Redesign risultati e next-action (awaiting #352, #353)
-- #358 — Redesign area settings onboarding (awaiting #330, #352, #353)
+- #358 — Redesign area settings onboarding (awaiting #352, #353)
 - #359 — Redesign risorse privacy ed errori (awaiting #352, #353)
 - #360 — Motion utile opt-out reduced-motion (awaiting #352, #353)
 - #361 — Sound design opt-in OFF default (awaiting #352, #353)

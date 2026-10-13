@@ -8,7 +8,7 @@
 
 **Blocked by:** 338
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 
@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-339.1: Download manuale accessibile e auto revocabile.
-- [ ] AC-339.2: Auto OFF default e popup denial gestiti.
-- [ ] AC-339.3: On the scoped input and failure cases, verify: Browser download bytes+prefs. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
+- [x] AC-339.1: Download manuale accessibile e auto revocabile.
+- [x] AC-339.2: Auto OFF default e popup denial gestiti.
+- [x] AC-339.3: On the scoped input and failure cases, verify: Browser download bytes+prefs. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
 
 **Verification:** Browser download bytes+prefs; independently inspect output/record and test bounded failures.
 
@@ -155,3 +155,11 @@ done
 **Integration / remaining gates:** worker-owned files are this issue, `src/runtime/browser-download-339.ts`, and the two new `tests/browser-download-339-20261013.{test.ts,browser.mjs}`. Shared checkout `/Users/domenico/Code/Strumentini.it`, branch `fix/407-339-input-safety-20261013`, HEAD and actual remote origin/main `04fa3d1872102f23ca120b8edf5cfa0794ee4ad0`; remote change branch absent at worker readback, PR/CI NOT_RUN. Work is unstaged WIP for the serial integrator; no worker staging/commit/push/deploy. Concurrent #407 issue/runtime/test diffs belong to the other worker and were preserved. One existing shared worktree, no stash. Canonical fingerprint `scripts/lib/current-revision.ts` covers src/tests, so release/source receipts become stale; source-bound proof suites pass but are not refreshed admission evidence, and release pins/receipts must be handled by the integrator within its authority. Original AC-339.1/2/3 remain unchecked, status stays ready-for-agent/OPEN: all-producer cross-format audit, physical Safari/iOS/Android and OS-save acceptance remain unproven; this runtime/browser request does not attest OS save.
 
 **Final type/SSR check:** after narrowing the captured URL argument to Blob in the new unit fixture, fresh `./node_modules/.bin/astro check` reports **2041 files, 0 errors, 0 warnings, 24 hints**. Earlier intermediate run found that fixture typing error and was corrected; final focused Vitest remains 21/21 GREEN.
+
+## 2026-10-13 — original scoped AC339.1–3 complete after independent browser-byte reconciliation (NO DEPLOY)
+
+**Acceptance boundary:** AC-339.1 requires accessible manual download and revocable automatic opt-in; .2 requires automatic OFF by default and popup-denial handling; .3 requires real browser download bytes and preferences. These original AC do not require enabling automatic downloads for unsupported ZIP/multi-file/OS-provider formats, guaranteeing final OS save dialogs or running native iOS/Android before the *source-scoped ticket* can complete. Unsupported outputs retain manual route and explicit limitations; historical source receipts remain true about those broader unverified cases.
+
+**Exact source and independent current acceptance:** Canonical merged `main` `9f5dacd91669769436399914bb13a39c173d2a05`, clean rebuilt **293-page** static Astro preview. `DOWNLOAD339_PNG_ORIGIN=http://127.0.0.1:19739 DOWNLOAD339_PNG_BROWSER=<engine> node tests/download-policy-wave11-339.browser.mjs`: **PASS Chromium, Firefox and WebKit**, true downloaded 2×2 PNG signature/IHDR/exact current-Blob bytes, reachable manual UI, default OFF, no retroactive download on opt-in, one automatic download on next valid job, cross-session revocation/reload, denied popup/hidden-click/storage write/clear fallback, and zero external/upload requests. Existing source-bounded browser evidence also covers real single verified PDF reopened through PDF.js, PNG compression, WAV/CSV/JSON and cross-tab consent; no false OS-save acknowledgement. The independent reviewer inspected current `download-policy-339.ts` and `browser-download-339.ts` source, including cancellation-safe immediate private Blob URL revocation. Exact-main focused `tests/download-policy-339.test.ts` passes 5/5 (combined #330/#339 scope 18/18).
+
+**AC disposition:** AC-339.1/2/3 checked for original supported scoped use cases; source ticket **completed**. Physical OS final-save confirmation, Safari/iOS/Android hardware and AT, other unverified producers/ZIP/batch, full WCAG review, Gold, rollback and actual deployment all remain **NOT_RUN/NO_GO** separately. Nothing here approves publication or broadens automatic consent beyond the existing supported families.
