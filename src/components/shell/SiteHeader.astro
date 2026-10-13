@@ -150,6 +150,15 @@ const isCurrent = (href: string): boolean =>
     panel.addEventListener("click", (event) => {
       if (event.target instanceof Element && event.target.closest("a") !== null) setOpen(false);
     });
+    // The desktop breakpoint hides this sheet and its trigger with CSS.
+    // Close the actual state as well, otherwise the invisible sheet continues
+    // locking page scrolling and can reappear when returning to mobile.
+    window.matchMedia("(min-width: 1060px)").addEventListener("change", (event) => {
+      if (!event.matches || panel.hidden) return;
+      const focusWasInMobileMenu = document.activeElement === toggle || panel.contains(document.activeElement);
+      setOpen(false);
+      if (focusWasInMobileMenu) document.querySelector<HTMLAnchorElement>(".site-brand")?.focus();
+    });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !panel.hidden) {
         setOpen(false);
