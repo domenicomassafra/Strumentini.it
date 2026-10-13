@@ -80,8 +80,23 @@ async function rotateForOcr246(image: File, degrees: 90 | 180 | 270, width: numb
     ctx.drawImage(bitmap, 0, 0);
     if (signal?.aborted) throw cancelledError();
     const blob = await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((encoded) => encoded?.type === "image/png" && encoded.size > 0
-        ? resolve(encoded) : reject(new Error("OCR246_ROTATION_PNG_ENCODER_UNAVAILABLE")), "image/png");
+      const abort = () => {
+        signal?.removeEventListener("abort", abort);
+        reject(cancelledError());
+      };
+      signal?.addEventListener("abort", abort, { once: true });
+      if (signal?.aborted) { abort(); return; }
+      try {
+        canvas.toBlob((encoded) => {
+          signal?.removeEventListener("abort", abort);
+          if (signal?.aborted) { reject(cancelledError()); return; }
+          if (encoded?.type === "image/png" && encoded.size > 0) resolve(encoded);
+          else reject(new Error("OCR246_ROTATION_PNG_ENCODER_UNAVAILABLE"));
+        }, "image/png");
+      } catch (error) {
+        signal?.removeEventListener("abort", abort);
+        reject(error);
+      }
     });
     if (signal?.aborted) throw cancelledError();
     if (blob.size > IMAGE_OCR_FEASIBILITY.fileHardLimitBytes) throw new Error("OCR246_ROTATED_FILE_LIMIT");
@@ -124,25 +139,6 @@ export async function recognizeLocalItalianOcr246(image: File, options: OcrOptio
   if (rotation !== 0 && rotation !== 90 && rotation !== 180 && rotation !== 270) {
     throw new Error("OCR246_INVALID_ROTATION: choose 0, 90, 180 or 270 degrees");
   }
-  const preflight = await inspectLocalImageOcr(
-    image, options.language ?? "ita", options.signal, options.capabilities ?? detectHeavyJobCapabilities(),
-  );
-  // The existing #271 promotion state is intentionally not overwritten. Its
-  // SAFE preflight validation is reused only for this isolated local runtime.
-  if (preflight.errors.length || preflight.preflight.state !== "supported"
-    || preflight.width === null || preflight.height === null) {
-    throw new Error(preflight.errors.join("; ") || "OCR246_PREFLIGHT_REFUSED");
-  }
-  if (options.signal?.aborted) throw cancelledError();
-  const decoded = await (options.imageDecoder ?? defaultDecoder)(image);
-  if (decoded.width !== preflight.width || decoded.height !== preflight.height) {
-    throw new Error("OCR246_DECODE_DIMENSION_MISMATCH");
-  }
-  if (options.signal?.aborted) throw cancelledError();
-  const workingImage = rotation === 0 ? image
-    : await rotateForOcr246(image, rotation, decoded.width, decoded.height, options.signal);
-  if (options.signal?.aborted) throw cancelledError();
-
   const timeoutMs = options.timeoutMs ?? 90_000;
   if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 120_000) throw new Error("OCR246_INVALID_TIMEOUT");
   let activeWorker: OcrWorker246 | undefined;
@@ -150,6 +146,8 @@ export async function recognizeLocalItalianOcr246(image: File, options: OcrOptio
   let timer: ReturnType<typeof setTimeout> | undefined;
   let rejectStop: ((reason: Error) => void) | undefined;
   let stopped = false;
+  // Covers PNG header reads, native decoding and optional canvas encoding too.
+  const preworkAbort = new AbortController();
   const stopWorker = (worker: OcrWorker246) => {
     cleanupPromise ??= Promise.resolve().then(() => worker.terminate());
     return cleanupPromise;
@@ -159,6 +157,7 @@ export async function recognizeLocalItalianOcr246(image: File, options: OcrOptio
     if (stopped) return;
     stopped = true;
     rejectStop?.(reason);
+    preworkAbort.abort();
     if (activeWorker) void stopWorker(activeWorker).catch(() => undefined);
   };
   const abort = () => stop(cancelledError());
@@ -166,6 +165,28 @@ export async function recognizeLocalItalianOcr246(image: File, options: OcrOptio
   timer = setTimeout(() => stop(new Error("OCR246_TIMEOUT: no output within the bounded local budget")), timeoutMs);
   try {
     if (options.signal?.aborted) throw cancelledError();
+    const preflight = await Promise.race([
+      inspectLocalImageOcr(image, options.language ?? "ita", preworkAbort.signal,
+        options.capabilities ?? detectHeavyJobCapabilities()),
+      stoppedPromise,
+    ]);
+    // The existing #271 promotion state remains refused. Its SAFE preflight
+    // validation is reused only for this isolated local runtime.
+    if (preflight.errors.length || preflight.preflight.state !== "supported"
+      || preflight.width === null || preflight.height === null) {
+      throw new Error(preflight.errors.join("; ") || "OCR246_PREFLIGHT_REFUSED");
+    }
+    if (stopped) throw cancelledError();
+    const decoded = await Promise.race([(options.imageDecoder ?? defaultDecoder)(image), stoppedPromise]);
+    if (decoded.width !== preflight.width || decoded.height !== preflight.height) {
+      throw new Error("OCR246_DECODE_DIMENSION_MISMATCH");
+    }
+    if (stopped) throw cancelledError();
+    const workingImage = rotation === 0 ? image
+      : await Promise.race([
+        rotateForOcr246(image, rotation, decoded.width, decoded.height, preworkAbort.signal), stoppedPromise,
+      ]);
+    if (stopped) throw cancelledError();
     // If aborted while createWorker is loading, its eventual result is
     // immediately terminated even though it was not ready when abort fired.
     const pendingWorker = (options.createWorker ?? (() => loadSameOriginWorker246(options.onProgress)))();
