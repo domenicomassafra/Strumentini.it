@@ -29,6 +29,8 @@ export interface ProofReceiptProbe415 {
   currentManifestSha256?:string|undefined;
   /** When auditing current Gold, bind every claimed family to its actual fixture-file bytes. */
   currentFixtureSha256ByFamily?:ReadonlyMap<string,string>|undefined;
+  /** Independently hash the exact live oracle registry used to resolve the claimed oracle. */
+  currentOracleRegistrySha256?:string|undefined;
 }
 
 /** Rejects tamper, alien path/identity, stale revision and source scope. */
@@ -52,6 +54,12 @@ export function probeReceipt415(p:ProofReceiptProbe415):boolean {
     // Receipt integrity/revision/global fingerprint alone cannot prove that
     // this route's job/runtime manifest is the source the receipt tested.
     if ((raw.identities as Record<string,unknown>).manifestSha256!==p.currentManifestSha256) return false;
+    // A source-wide fingerprint does not independently authenticate the oracle
+    // identity declared inside a receipt. Require current registry bytes for
+    // the full on-disk audit; standalone manifest-only probes stay compatible.
+    if(p.currentOracleRegistrySha256!==undefined &&
+       (!HEX256.test(p.currentOracleRegistrySha256) ||
+        (raw.identities as Record<string,unknown>).oracleRegistrySha256!==p.currentOracleRegistrySha256)) return false;
     // The manifest alone cannot bind the vectors that supplied expected
     // outputs. A receipt may be internally SHA-valid while naming withdrawn
     // fixture bytes under an otherwise current revision/source fingerprint.
@@ -213,12 +221,16 @@ export async function readCurrentFixtureHashes415(
 }
 
 export async function auditCurrentProofMap415(root:string):Promise<ProofMap415> {
-  const [legacy,registry,fixtures,fingerprint,revision]=await Promise.all([
+  const [legacy,registrySource,fixtures,fingerprint,revision]=await Promise.all([
     readFile(resolve(root,"quality/receipts/expanded-catalog-certification.json"),"utf8").then(t=>JSON.parse(t) as LegacyIndex415),
-    readFile(resolve(root,"quality/oracles/registry.json"),"utf8").then(t=>JSON.parse(t) as Registry415),
+    readFile(resolve(root,"quality/oracles/registry.json")).then(bytes=>({
+      value:JSON.parse(bytes.toString("utf8")) as Registry415,
+      sha256:sha256(bytes),
+    })),
     readFile(resolve(root,"quality/fixtures/index.json"),"utf8").then(t=>JSON.parse(t) as Fixtures415),
     currentEvidenceSourceFingerprint(root), currentRevision(root),
   ]);
+  const registry=registrySource.value;
   if(!Array.isArray(legacy.tools) || legacy.tools.length!==catalog.length) throw new Error("LEGACY_COVERAGE_MISMATCH_415");
   const legacyById=new Map(legacy.tools.map(row=>[row.id,row] as const));
   if(legacyById.size!==legacy.tools.length) throw new Error("DUPLICATE_HISTORICAL_415");
@@ -266,7 +278,8 @@ export async function auditCurrentProofMap415(root:string):Promise<ProofMap415> 
     if(currentManifestSha256===undefined) continue; // Missing source identity can never certify a GOLD candidate.
     const probe={toolId:item.toolId,path:item.receiptPath,content:new TextDecoder("utf-8",{fatal:true}).decode(bytes),
       expectedSha256:item.receiptSha256!,fingerprint,revision,
-      currentManifestSha256,currentFixtureSha256ByFamily:fixtureHashes};
+      currentManifestSha256,currentFixtureSha256ByFamily:fixtureHashes,
+      currentOracleRegistrySha256:registrySource.sha256};
     if(item.sourceFingerprint!==fingerprint || !probeReceipt415(probe)) continue;
     current.set(item.toolId,{path:item.receiptPath});
   }
