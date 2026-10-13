@@ -42,9 +42,8 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **404 — Change scoped CI and cumulative release validation**
 - **406 — Independent PDF redaction attack corpus**
 - **407 — Hostile parsers and archive resource safety**
-- **415 — Per-tool base claim proof and certification coverage**
 
-Exactly **34** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **33** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -475,7 +474,7 @@ Exactly **34** incomplete tickets currently have every declared numeric blocker 
 | 412 | blocked | Editor project schema and forward-safe migrations | 341, 379, 385 |
 | 413 | completed | Curated catalog with all routes preserved | — |
 | 414 | blocked | Commercial engine vendor proposal and license gate | 366 |
-| 415 | ready-for-agent | Per-tool base claim proof and certification coverage | 408 |
+| 415 | completed | Per-tool base claim proof and certification coverage | 408 |
 | 416 | blocked | Safe ZIP GZIP archive compression and extraction | 407 |
 | 417 | blocked | PDF password encrypt decrypt legitimate unlock engine study | 369 |
 | 418 | blocked | PDF repair tolerant recovery bounded and independently proved | 369 |
