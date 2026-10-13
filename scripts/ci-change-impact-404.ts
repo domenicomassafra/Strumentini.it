@@ -65,6 +65,10 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (path.startsWith(".github/") || path === "package.json" || path === "package-lock.json" || path === "astro.config.mjs" ||
       path === "tsconfig.json" || path === "vitest.config.ts" || path === "wrangler.toml") return ["ci"];
   if (path === "wrangler.jsonc") return ["worker-auth", "d1", "ci"];
+  // Any implementation/test change to the optional production publishing
+  // boundary must demand independent security review. Generic scripts/tests
+  // otherwise fall into "shared" and omit security-review entirely.
+  if (path === "scripts/prepublish-404.ts" || /^tests\/ci-404-20261013-[a-z0-9-]+\.test\.ts$/u.test(path)) return ["ci"];
   if (/^(scripts\/(ci-change-impact-404\.ts|validate-release\.ts|lib\/current-revision\.ts|build-certification-index\.ts)|src\/(release\/|quality\/)|tests\/release-validation\.test\.ts)/u.test(path)) return ["ci"];
   // Donor provenance reads this JSON as executable audit input, not prose.
   // Altering its package/license records must be reviewed and tested.
@@ -276,7 +280,11 @@ async function main(): Promise<void> {
         } else if (!plan.commands.some((command) => command.program === "npm" && command.args.includes("test"))) {
           await execute({ program: "npm", args: ["run", "test"] }, root);
         }
-        await execute({ program: "node", args: ["node_modules/tsx/dist/cli.mjs", "scripts/validate-release.ts", "--no-write-receipt", "--require-ready"] }, root);
+        // Bind even the explicit source CLI's required admission to the exact
+        // checked-out commit; a changed HEAD, PR ref or dirty tree cannot be
+        // silently treated as a release candidate.
+        const pinnedSha = await commitId(root, "HEAD");
+        await execute({ program: "node", args: ["node_modules/tsx/dist/cli.mjs", "scripts/validate-release.ts", "--no-write-receipt", "--require-ready", `--expected-sha=${pinnedSha}`] }, root);
       }
     }
     const releaseValidated = args.includes("--require-release-ready");

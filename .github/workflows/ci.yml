@@ -62,6 +62,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Require exact event SHA for release admission
+        if: github.event_name == 'workflow_dispatch'
+        run: test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
       - uses: actions/setup-node@v4
         with:
           node-version: '26'
@@ -84,9 +87,32 @@ jobs:
       - run: npm run tickets:test
       - run: npm run check
       - run: npm run build
-      # This dispatch-only job step is an explicit pre-publication prerequisite;
-      # missing/obsolete Gold, rollback, security and physical-device evidence
-      # causes a nonzero exit. The command never generates a replacement receipt.
+      # A queued manual event can become stale while main advances during
+      # the cumulative test/build. Use authoritative remote refs, not local
+      # origin/main tracking state; failure/unreachable origin is NO_GO.
+      - name: Require current remote main for release admission
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          RELEASE_READ_TOKEN: ${{ github.token }}
+        run: |
+          # checkout persist-credentials:false protects the worktree, but this
+          # private repository still needs a read-only ephemeral auth header.
+          test -n "${RELEASE_READ_TOKEN:-}"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$RELEASE_READ_TOKEN" | base64 | tr -d '\r\n')"
+          remote_main="$(git ls-remote --exit-code --refs origin refs/heads/main)"
+          test "$remote_main" = "$(printf '%s\t%s' "$GITHUB_SHA" refs/heads/main)"
+      # Manual source-admission check only; no repo/provider-enforced deploy
+      # dependency exists. Missing/stale Gold, rollback, browser/security and
+      # physical evidence fail closed. It never writes replacement receipts.
       - name: Read-only cumulative release admission
         if: github.event_name == 'workflow_dispatch'
-        run: node node_modules/tsx/dist/cli.mjs scripts/validate-release.ts --no-write-receipt --require-ready
+        env:
+          RELEASE_READ_TOKEN: ${{ github.token }}
+        run: |
+          test -n "${RELEASE_READ_TOKEN:-}"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$RELEASE_READ_TOKEN" | base64 | tr -d '\r\n')"
+          node node_modules/tsx/dist/cli.mjs scripts/validate-release.ts --no-write-receipt --require-ready --expected-sha="$GITHUB_SHA"

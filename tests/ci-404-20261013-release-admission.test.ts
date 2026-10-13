@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import YAML from "yaml";
 
 const workflow = readFileSync(resolve(import.meta.dirname, "../.github/workflows/ci.yml"), "utf8");
 
@@ -30,14 +31,25 @@ function releaseAdmissionFailures(source = workflow): string[] {
   for (const command of ["npm test -- --maxWorkers=1", "npm run tickets:test", "npm run check", "npm run build"]) {
     if (!main.includes(`- run: ${command}`)) failures.push(`MISSING_CUMULATIVE_COMMAND: ${command}`);
   }
-  const gate = /- name: ([^\n]+)\n\s+if: github\.event_name == 'workflow_dispatch'\n\s+run: ([^\n]+)/gu;
-  const steps = [...main.matchAll(gate)];
-  if (!steps.some((match) => {
-    const command = match[2];
-    return typeof command === "string" && command.includes("scripts/validate-release.ts") &&
-      command.includes("--require-ready") && command.includes("--no-write-receipt");
-  })) {
+  // Inspect executable YAML rather than requiring a one-line `run:`. The
+  // private-repo authorization header is deliberately ephemeral per step.
+  type Step = { name?: string; if?: string; run?: string; env?: Record<string, string> };
+  let steps: Step[] = [];
+  try {
+    const document = YAML.parse(source) as { jobs?: Record<string, { steps?: Step[] }> };
+    steps = document?.jobs?.["cumulative-on-main"]?.steps ?? [];
+  } catch { /* Invalid workflow must fail closed. */ }
+  const requiredDispatch = (name: string) => steps.find((step) => step.name === name && step.if === "github.event_name == 'workflow_dispatch'");
+  const admission = requiredDispatch("Read-only cumulative release admission");
+  if (!admission?.run?.includes("scripts/validate-release.ts") ||
+      !admission.run.includes("--require-ready") || !admission.run.includes("--no-write-receipt")) {
     failures.push("CUMULATIVE_RELEASE_VALIDATOR_NOT_MANDATORY");
+  }
+  for (const step of [requiredDispatch("Require current remote main for release admission"), admission]) {
+    if (step?.env?.RELEASE_READ_TOKEN !== "${{ github.token }}" || !step.run?.includes("GIT_CONFIG_VALUE_0")) {
+      failures.push("CUMULATIVE_PRIVATE_REMOTE_AUTH_MISSING");
+      break;
+    }
   }
   return failures;
 }
@@ -57,6 +69,7 @@ describe("#404 cumulative main and explicit release source admission", () => {
       ["npm run tickets:test", "MISSING_CUMULATIVE_COMMAND: npm run tickets:test"],
       ["--require-ready", "CUMULATIVE_RELEASE_VALIDATOR_NOT_MANDATORY"],
       ["--no-write-receipt", "CUMULATIVE_RELEASE_VALIDATOR_NOT_MANDATORY"],
+      ["RELEASE_READ_TOKEN: ${{ github.token }}", "CUMULATIVE_PRIVATE_REMOTE_AUTH_MISSING"],
       ["workflow_dispatch:", "MANUAL_RELEASE_TRIGGER_MISSING"],
       ['test "$GITHUB_REF" = "refs/heads/main"', "RELEASE_DISPATCH_MAIN_REF_NOT_GUARDED"],
     ] as const;
