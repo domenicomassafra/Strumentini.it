@@ -61,9 +61,16 @@ function parsePng(bytes: Uint8Array): ImageHeader | null {
   // therefore differ from the raw IHDR axes for orientations 5..8.
   let orientation: number | null = null;
   let sawExif = false;
-  for (let at = 33; at + 8 <= bytes.length;) {
+  for (let at = 33;;) {
+    // A prefix ending with 0..7 bytes of the next chunk header must not
+    // silently validate coded IHDR dimensions: an unseen pre-IDAT eXIf
+    // could still change the axes seen by the browser's decoder.
+    ensure(bytes, at, 8);
     const chunkLength = be32(bytes, at);
-    if (ascii(bytes, at + 4, "IDAT") || ascii(bytes, at + 4, "IEND")) break;
+    if (ascii(bytes, at + 4, "IDAT")) break;
+    if (ascii(bytes, at + 4, "IEND")) {
+      throw new ImageResizeError("CORRUPT_IMAGE", "PNG has no IDAT before IEND");
+    }
     const end = at + 12 + chunkLength;
     const isExif = ascii(bytes, at + 4, "eXIf");
     if (end > bytes.length) {
