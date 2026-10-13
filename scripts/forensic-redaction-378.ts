@@ -105,6 +105,48 @@ root=pdf.trailer["/Root"]
 if set(root.keys())!={"/Type","/Pages"}: deny("catalog extras/embedded metadata")
 if set(pdf.trailer.keys())-{"/Size","/Root"}: deny("trailer metadata or extra keys")
 if len(pdf.pages)!=len(plan["pages"]): deny("page count mismatch")
+# A reachable /Pages dictionary is not visible in pdf.pages' per-page key
+# checks. Reject private values or metadata hidden in parent/intermediate tree
+# nodes, and verify the exact parent/child/count structure of this raster subset.
+page_tree_seen=set()
+def assert_page_tree(tree_ref,parent_ref=None,depth=0):
+    if not isinstance(tree_ref,IndirectObject) or depth>8:
+        deny("invalid Pages tree reference or depth")
+    key=(tree_ref.idnum,tree_ref.generation)
+    if key in page_tree_seen: deny("cyclic or shared Pages tree")
+    page_tree_seen.add(key)
+    node=tree_ref.get_object()
+    keys={"/Type","/Kids","/Count"}
+    if parent_ref is not None: keys.add("/Parent")
+    if not isinstance(node,DictionaryObject) or set(node.keys())!=keys or node.get("/Type")!="/Pages":
+        deny("unexpected Pages tree dictionary or private fields")
+    if parent_ref is not None:
+        parent=node.raw_get("/Parent")
+        if not isinstance(parent,IndirectObject) or (parent.idnum,parent.generation)!=(parent_ref.idnum,parent_ref.generation):
+            deny("invalid Pages tree parent")
+    kids=node.raw_get("/Kids")
+    count=node.raw_get("/Count")
+    if not isinstance(kids,ArrayObject) or not 1<=len(kids)<=len(plan["pages"]) \
+            or not isinstance(count,int) or not 1<=count<=len(plan["pages"]):
+        deny("invalid Pages tree kids or count")
+    actual=0
+    for child_ref in kids:
+        if not isinstance(child_ref,IndirectObject): deny("non-indirect Pages child")
+        child=child_ref.get_object()
+        if not isinstance(child,DictionaryObject): deny("invalid Pages child")
+        if child.get("/Type")=="/Pages":
+            actual+=assert_page_tree(child_ref,tree_ref,depth+1)
+        elif child.get("/Type")=="/Page":
+            parent=child.raw_get("/Parent")
+            if not isinstance(parent,IndirectObject) or (parent.idnum,parent.generation)!=key:
+                deny("invalid Page parent link")
+            actual+=1
+        else:
+            deny("unexpected Pages child type")
+    if actual!=count: deny("Pages tree count mismatch")
+    return actual
+if assert_page_tree(root.raw_get("/Pages"))!=len(plan["pages"]):
+    deny("Pages tree does not match redaction plan")
 # This is deliberately separate from the product's in-house object list and
 # from page-only extraction. A recoverable stream with a real xref entry but
 # no path from /Root is a privacy failure even when no viewer renders it.
@@ -195,10 +237,12 @@ for page,expected in zip(pdf.pages,plan["pages"]):
     try:
         decompressor=zlib.decompressobj()
         exact_rgb=decompressor.decompress(image._data,3*w*h+1)
-        remainder=decompressor.flush()
     except zlib.error:
         deny("invalid RGB FlateDecode payload")
-    if len(exact_rgb)!=3*w*h or remainder or not decompressor.eof or decompressor.unused_data or decompressor.unconsumed_tail:
+    # Do not call decompressobj.flush(): it has no max-output bound and may
+    # materialize an enormous remainder even after bounded decompress().
+    # EOF proves there is no further decoded data waiting in this stream.
+    if len(exact_rgb)!=3*w*h or not decompressor.eof or decompressor.unused_data or decompressor.unconsumed_tail:
         deny("trailing/unconsumed/oversize private image stream data")
     rgb=image.get_data()
     if rgb!=exact_rgb: deny("decoded image or independent FlateDecode mismatch")
