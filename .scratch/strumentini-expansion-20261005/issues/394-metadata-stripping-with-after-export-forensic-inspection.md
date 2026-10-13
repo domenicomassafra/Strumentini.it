@@ -177,3 +177,59 @@ document PDF/OOXML/SVG malicious corpus, cross-browser and physical mobile,
 security/release/rollback proofs. Nested Exif thumbnails are not individually
 forensically decoded, and identifying pixels/steganography remain outside
 the proven raster metadata-removal boundary.
+
+## 2026-10-13 worker-2 follow-up to independent review — JFIF, ICC privacy, JPEG marker budget (RED → GREEN, OPEN)
+
+**Reviewer counterexamples confirmed with genuine decoded pixels:** On the
+existing branch, a 2×2 JPEG encoded by Sharp remains decodable with unchanged
+RGBA in both Sharp and Pillow after inserting a valid 14-byte JFIF APP0
+header whose four density bytes spell ASCII `GPS!` (the values are otherwise
+valid unsigned 16-bit density fields). The prior general thumbnail-free JFIF
+exception returned `complete:true`, `segments:[]`, `privacySegmentCount:0`
+and falsely declared that no metadata were found. An independent valid JPEG
+with native Sharp sRGB ICC APP2 was given a standard ICC `cprt` copyright
+`mluc` tag containing `PRIVATE_GPS_XMP_NESTED_THUMBNAIL_394_REVIEW`, by
+updating the tag directory and declared ICC profile size. Sharp and Pillow
+both reopened the resulting JPEG, recovered its ICC bytes and preserved
+original pixels. The inventory did report the ICC segment but incorrectly
+reported `privacySegmentCount:0` because `icc-profile` was not considered
+privacy-bearing. Both targeted new regression tests were RED before the fix.
+
+**Corrected classification:** The JPEG scanner now ignores only a byte-exact
+known-neutral JFIF 1.01 APP0 constant (`units=0`, density 1:1, no thumbnail).
+Unlike the previous blanket exclusion, all variable JFIF APP0 fields are
+inventoried as unverified `ancillary`, including the GPS test case. ICC
+profiles remain classified as **color** in grouped metadata and are also
+counted as **potential privacy carriers** across JPEG/PNG/WebP: copyright and
+description fields can hold names and other identifying data. This conservative
+carrier-level count does not assert every ICC profile contains a secret or
+that ICC internals have been forensically decoded. The historical fixture's
+exact neutral JFIF and previously asserted carrier ordering are preserved.
+
+**Additional reviewer P1 resource finding:** A genuinely Sharp/Pillow-decodable
+2×2 JPEG with 1,000 valid zero-payload APP15 segments previously yielded
+`complete:true` and allocated one inventory object per segment. Larger
+adversarial files could use the existing 8 MiB JPEG inventory prefix to
+force millions of synchronous allocations before cancellation. A 512-marker
+budget now bounds scanning/segment allocations; exceeding it returns
+`complete:false`, retains earlier segment findings, and explicitly says
+`Inventario parziale` in the Italian inventory description. JPEG entropy
+byte stuffing and restart markers are not charged against this budget.
+The new test also verifies a normally completed 16-marker JPEG, a 32,768-marker
+(128 KiB) synthetic stress case with bounded inventory, and AbortError on
+pre-aborted blob inspection. This is a bounded source-level budget, not a
+mobile RSS/performance certification.
+
+**Regression proof and limits:** New
+`tests/metadata-394-20261013-jpeg-privacy-review.test.ts` demonstrated
+**2/2 RED** on the two reviewer privacy findings, then **1 additional RED**
+on the marker limit; all **3/3 GREEN**. Together with the prior JPEG APP
+regressions and four existing suites, **42/42 focused Vitest tests PASS**;
+`./node_modules/.bin/tsc --noEmit --pretty false` **PASS**. Both scoped real
+Chromium forensic scripts, `tests/metadata-forensic-394.browser.mjs` and
+`tests/image-strip-forensic-394-wave21.browser.mjs`, **PASS**; they revalidate
+the existing PNG pixel/CRC/IDAT and cancel/size refusal gates, and are not
+presented as live browser proof of every new JPEG counterexample. No changes
+to sanitizer output, PDF/OOXML/SVG, public routes, generated indexes or Gold.
+Original AC-394.1/394.3 and physical/mobile, release, rollback gates remain
+**OPEN**; no worker commit/push/PR/deploy.

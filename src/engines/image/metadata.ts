@@ -33,8 +33,11 @@ export const METADATA_CARRIER_IT: Readonly<Record<MetadataCarrier, string>> = {
   ancillary: "dati aggiuntivi del contenitore (contenuto non verificato)",
 };
 
-/** Carriers that can carry identifying information and are therefore the target. */
-export const PRIVACY_BEARING_CARRIERS: readonly MetadataCarrier[] = ["exif", "xmp", "iptc", "comment", "ancillary"];
+/** Carriers that can carry identifying information and are therefore the target.
+ * ICC profiles are primarily color data, but their copyright/description tags
+ * can embed names or private text. Count them without reclassifying their color role.
+ */
+export const PRIVACY_BEARING_CARRIERS: readonly MetadataCarrier[] = ["exif", "xmp", "iptc", "comment", "icc-profile", "ancillary"];
 
 export interface MetadataInventory {
   readonly format: "jpeg" | "png" | "webp" | "unknown";
@@ -67,6 +70,11 @@ const JPEG_SEGMENTS: Readonly<Record<number, { readonly carrier: MetadataCarrier
   0xed: { carrier: "iptc", segment: "JPEG APP13" },
   0xfe: { carrier: "comment", segment: "JPEG COM" },
 };
+
+// A complete JPEG has no practical need for thousands of container markers.
+// Cap both the synchronous walk and segment allocations; an exhausted budget
+// is an incomplete forensic inventory, never a verified metadata-free claim.
+const MAX_JPEG_MARKERS = 512;
 
 const PNG_CHUNKS: Readonly<Record<string, { readonly carrier: MetadataCarrier; readonly segment: string }>> = {
   tEXt: { carrier: "text", segment: "PNG tEXt" },
@@ -127,6 +135,7 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
   let offset = 2;
   let complete = false;
   let entropyScan = false;
+  let markerCount = 0;
   // JPEG metadata markers may appear between successive SOS scans. An SOS is
   // not an end-of-image marker: walk through entropy-coded data to a real EOI.
   // Entropy 0xFF00 is a stuffed byte and RST0..RST7 are not segment headers.
@@ -144,6 +153,9 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
       offset += 1;
       continue;
     }
+    // Entropy byte stuffing and restart markers are not metadata segments;
+    // only actual container markers consume the bounded forensic budget.
+    if (++markerCount > MAX_JPEG_MARKERS) break;
     entropyScan = false;
     if (marker === 0xd9) {
       const trailingBytes = bytes.length - offset - 1;
@@ -172,12 +184,16 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
       segments.push(segment(carrier, carrier === "xmp" ? "JPEG APP1 XMP" : known.segment, length + 2));
     } else if (marker >= 0xe0 && marker <= 0xef) {
       // APP0..APP15 are application-owned payloads, not JPEG pixel coding.
-      // Ignore only the fixed, thumbnail-free JFIF APP0 header; JFXX, JFIF
-      // thumbnails, unknown APP payloads and private extensions can carry
-      // identifying bytes even when image decoders silently discard them.
-      const plainJfif = marker === 0xe0 && payload.length === 14
-        && ascii(payload, 0, "JFIF\0") && payload[12] === 0 && payload[13] === 0;
-      if (!plainJfif) {
+      // A JFIF header with variable 16-bit density fields can hide arbitrary
+      // private data. Ignore only the *exact* neutral 1:1 no-thumbnail JFIF
+      // 1.01 constant used by the standard fixture: none of its bytes can
+      // carry input-specific information. All other JFIF/APP0 is unverified.
+      const neutralJfif = marker === 0xe0 && payload.length === 14
+        && ascii(payload, 0, "JFIF\0") && payload[5] === 1 && payload[6] === 1
+        && payload[7] === 0 && payload[8] === 0 && payload[9] === 1
+        && payload[10] === 0 && payload[11] === 1
+        && payload[12] === 0 && payload[13] === 0;
+      if (!neutralJfif) {
         const icc = marker === 0xe2 && ascii(payload, 0, "ICC_PROFILE\0");
         segments.push(segment(icc ? "icc-profile" : "ancillary", icc ? "JPEG APP2 ICC" : `JPEG APP${marker - 0xe0}`, length + 2));
       }
@@ -319,8 +335,8 @@ export async function scanImageMetadataBlob(blob: Blob, signal?: AbortSignal): P
 }
 
 function metadataClass(carrier: MetadataCarrier): MetadataGroup["class"] {
-  if (PRIVACY_BEARING_CARRIERS.includes(carrier)) return "privacy";
   if (carrier === "icc-profile") return "color";
+  if (PRIVACY_BEARING_CARRIERS.includes(carrier)) return "privacy";
   return "descriptive";
 }
 
@@ -359,5 +375,6 @@ export function describeMetadataIt(inventory: MetadataInventory): string {
       : "Il file sembra troncato: l'inventario è parziale e non può essere considerato completo.";
   }
   const carriers = [...new Set(inventory.segments.map((entry) => entry.carrier))];
-  return `Trovati ${inventory.segments.length} segmenti di metadati (${carriers.join(", ")}), per ${inventory.bytesTotal} byte.`;
+  const message = `Trovati ${inventory.segments.length} segmenti di metadati (${carriers.join(", ")}), per ${inventory.bytesTotal} byte.`;
+  return inventory.complete ? message : `${message} Inventario parziale: non è possibile certificare i segmenti successivi.`;
 }
