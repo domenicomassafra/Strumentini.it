@@ -24,7 +24,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **328 — P0 Account Turnstile login reale**
 - **329 — P0 Contrasto accesso e errori WCAG**
 - **336 — Picker iPhone Android e touch equivalente**
-- **343 — Esporta importa elimina configurazione**
 - **345 — Navigazione stabile da task e file**
 - **347 — P0 Badge Gold fingerprint frontend backend**
 - **349 — File server opt-in TTL delete prova**
@@ -46,7 +45,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **407 — Hostile parsers and archive resource safety**
 - **415 — Per-tool base claim proof and certification coverage**
 
-Exactly **36** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **35** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -405,7 +404,7 @@ Exactly **36** incomplete tickets currently have every declared numeric blocker 
 | 340 | completed | Cronologia in-session e cancella task | 337, 338 |
 | 341 | completed | Salvataggio locale file volontario | 338 |
 | 342 | completed | Quote e eviction file locali | 341 |
-| 343 | ready-for-agent | Esporta importa elimina configurazione | 330 |
+| 343 | completed | Esporta importa elimina configurazione | 330 |
 | 344 | completed | Area personale con suggerimenti spiegabili | 330, 335 |
 | 345 | ready-for-agent | Navigazione stabile da task e file | 330, 334 |
 | 346 | completed | P0 Eventi telemetria privacy-safe | — |
