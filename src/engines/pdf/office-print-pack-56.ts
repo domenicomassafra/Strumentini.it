@@ -262,6 +262,14 @@ async function verifyPrintedPdf56(result: PrintablePdfResult, request: Printable
     const inspect = verifyEveryPage ? Array.from({ length: pdf.numPages }, (_, i) => i + 1)
       : [...new Set([1, Math.ceil(pdf.numPages / 2), pdf.numPages])];
     let bodyText = false;
+    // #256 uses one fixed Courier baseline grid for all four printable kinds.
+    // Actual PDF.js glyph transforms are independent of the Worker metadata:
+    // a valid PDF can otherwise claim the requested font/margins while the
+    // bytes render with different dimensions and silently pass verification.
+    const topBaseline = expectedHeight - expectedMargin - expectedFont;
+    const lineHeight = expectedFont * 1.35;
+    const characterWidth = expectedFont * 0.6;
+    const bottom = expectedMargin + (request.pageNumbers === false ? 0 : 17);
     for (const number of inspect) {
       aborted(signal);
       const page = await pdf.getPage(number);
@@ -283,8 +291,28 @@ async function verifyPrintedPdf56(result: PrintablePdfResult, request: Printable
         if (request.pageNumbers === false ? footerLine !== "" : footerLine !== `${number} / ${pdf.numPages}`) {
           fail("PDF56_OUTPUT_VERIFY", `Numerazione pagina ${number} diversa dall'opzione richiesta.`);
         }
-        // A page footer alone is never accepted as proof of source rendering.
-        bodyText ||= contents.items.some((item) => "str" in item && Boolean(item.str.trim()) && !/^\d+\s*\/\s*\d+$/u.test(item.str.trim()));
+        // Footer identification is based on where #256 prints it, not on a
+        // numeric pattern: a file containing only "1 / 1" is legitimate body
+        // text, and PDF.js may split its digits into separate text items.
+        for (const item of contents.items) {
+          if (!("str" in item) || !item.str.trim()) continue;
+          const [scaleX, scaleY, , , x, y] = item.transform;
+          if (Math.abs(y! - expectedMargin / 2) < 0.5) continue;
+          const rowsFromTop = (topBaseline - y!) / lineHeight;
+          const glyphPt = Math.hypot(scaleX!, scaleY!);
+          const textColumn = (x! - expectedMargin) / characterWidth;
+          if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(glyphPt)
+            || Math.abs(glyphPt - expectedFont) > 0.1
+            || x! < expectedMargin - 0.2 || x! > expectedWidth - expectedMargin + 0.2
+            || y! < bottom - 0.2 || rowsFromTop < -0.02
+            || Math.abs(rowsFromTop - Math.round(rowsFromTop)) * lineHeight > 0.2
+            // Plain-text/markup glyph positions lie on Courier's fixed-width
+            // grid, even when leading blank lines or spaces are present.
+            || (request.kind !== "csv" && Math.abs(textColumn - Math.round(textColumn)) * characterWidth > 0.2)) {
+            fail("PDF56_OUTPUT_VERIFY", `Geometria o dimensione font del contenuto PDF pagina ${number} diversa dalla richiesta.`);
+          }
+          bodyText = true;
+        }
       } finally { page.cleanup(); }
     }
     aborted(signal);
