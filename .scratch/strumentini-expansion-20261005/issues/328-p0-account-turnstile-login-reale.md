@@ -51,3 +51,52 @@ Baseline clean main `f6afe2d6`, one-source change in `src/components/account/Acc
 New `tests/turnstile-login-wave20-328.browser.mjs` runs against an actual locally rendered Astro page in installed headless Google Chrome at **390×844** with two **independent fake-session cookie contexts A and B** and a disposable per-request auth API fixture. It exercises consecutive 503/200 HTML fallback/network failure without false sign-out, no credential/provider traffic, an accessible error and retry, a double-click during delayed HTTP 204 producing exactly one request, session A revocation with cookie clearing on 204 and preservation of session B after independent reload. **2 consecutive GREEN executions** after a failing RED; zero offsite requests and zero uncaught page errors. The server/browser fixture is local only and uses synthetic email/cookie values, not real authentication or a real Cloudflare challenge. Ancillary `tests/turnstile-worker.test.ts`, `tests/auth-worker.test.ts` and `tests/google-auth-worker.test.ts` total **21/21 PASS**. Existing `tests/account-page-turnstile-328-329.browser.mjs` passes **35 local mock-vendor assertions** (callback, expiry, timeout, unavailable vendor, controls and color contrast). `node --check` and scoped `git diff --check` pass.
 
 **Remaining gates:** No real Cloudflare Turnstile Siteverify staging, provider credentials, production D1, cross-browser or physical iOS/Android login/logout were exercised. The separate #328 challenge acceptance and original AC-328.1–3 remain **OPEN / NOT_RUN for live-provider proof**, notwithstanding the independently reproduced local logout fix. This is not a live authentication or Gold/deployment receipt; no commit/push/deploy by this worker.
+
+## 2026-10-13 worker-19 — same-origin Chrome390 submission race and obsolete session probe
+
+**Actual browser RED:** Existing local `src/pages/accedi.astro` used
+`setBusy()` to disable only the clicked button, but had no pending guard in
+the form `submit` handlers. With the **real locally served Astro page** in
+installed Google Chrome at **390×844**, a mock Turnstile callback supplied a
+synthetic token and the same-origin intercepted `POST /api/auth/login` was
+held pending. Calling the real HTML form's `requestSubmit()` twice while its
+button was already disabled caused **three simultaneous login POSTs** rather
+than one (failing assertion `3 !== 1`); the request could reuse a one-use
+Turnstile token. The registration tab was also able to submit independently
+while login was in flight, and a delayed initial `GET /api/auth/session`
+could render stale signed-in UI after a newer login had returned an error.
+These are local concurrent-state issues, not proof of a Cloudflare bypass.
+
+**Scoped fix/reuse:** The page now shares one synchronous `authPending` guard
+across email login and registration, checked before either handler clears
+errors and set before the asynchronous network request. It keeps the
+existing reusable `setBusy()` function, leaves the success navigation
+pending until the browser navigates, and releases the guard/restores busy
+state on refusal (with the existing Italian focusable alert). It records
+when an explicit authentication attempt starts so a session probe launched
+earlier cannot supersede that newer user action with a stale response.
+Expiry callbacks still clear a challenge token; an expired token cannot
+trigger a second request during the outstanding flight. No API, worker,
+provider, or auth-client code was modified.
+
+**GREEN proof:** New local-only
+`tests/turnstile-328-20261013-submission-race.browser.mjs` stages delayed
+same-origin auth/session replies, a mocked Turnstile vendor loader, actual
+Chrome 390 form submissions including disabled-button `requestSubmit()`,
+cross-panel registration, expiry while in flight, and an obsolete session
+response. It verifies a single POST, zero simultaneous account creation,
+unchanged focusable login rejection, hidden stale connected panel and **no
+offsite/provider calls**; the before-fix duplicate-POST assertion was RED.
+Existing `tests/account-page-turnstile-328-329.browser.mjs` passed **35
+assertions** covering login/registration success, callback, expiry, timeout,
+error focus and light/dark contrast. Existing
+`tests/turnstile-login-wave20-328.browser.mjs` passed the two-session logout
+and failed-acknowledgement Chrome 390 regression. Whole-project
+`./node_modules/.bin/tsc --noEmit`, `node --check` and scoped diff
+whitespace checks passed. No real provider secrets or Cloudflare Siteverify,
+no live D1/session, deployment or production mutation were involved.
+
+**Residual:** This completes only the local race correction, not the
+original acceptance gates. **AC-328.1–3 remain OPEN** pending genuine
+staging Siteverify, independent two-session staging/login/logout and device
+evidence. Production/Gold remains **NO_GO**.
