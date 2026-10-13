@@ -1,0 +1,70 @@
+---
+interface Props { variant: "minimal" | "editorial" | "workspace" }
+const { variant } = Astro.props;
+const jobs = [
+  { id: "pdf", number: "01", title: "Unisci PDF", detail: "Combina due o più PDF, conservando l’ordine dei documenti.", button: "Unisci documenti" },
+  { id: "csv", number: "02", title: "Pulisci CSV", detail: "Normalizza le interruzioni di riga senza cambiare le celle.", button: "Pulisci tabella" },
+  { id: "utm", number: "03", title: "Esporta URL UTM", detail: "Crea un URL tracciato, con parametri e frammento conservati.", button: "Crea URL" },
+] as const;
+---
+
+<div class="job-canvases" data-job-canvases>
+  {jobs.map((job) => (
+    <section class="job-canvas" data-job={job.id} hidden={job.id !== "pdf"} aria-label={`${job.title} — ${variant}`}>
+      <div class="job-entry">
+        <div class="job-overline">Lavoro {job.number} · elaborazione locale</div>
+        <h3>{job.title}</h3>
+        <p class="job-lede">{job.detail}</p>
+        <form data-form novalidate>
+          {job.id === "pdf" && (
+            <label class="input-field">Seleziona almeno due PDF
+              <input type="file" name="pdfFiles" accept=".pdf,application/pdf" multiple aria-label={`Seleziona PDF — ${variant}`} />
+              <small>Ordine di selezione · massimo 50 file; il motore applica i propri limiti di pagine e byte.</small>
+            </label>
+          )}
+          {job.id === "csv" && (
+            <label class="input-field">Seleziona un CSV
+              <input type="file" name="csvFile" accept=".csv,text/csv,text/plain" aria-label={`Seleziona CSV — ${variant}`} />
+              <small>UTF-8 · massimo 50 MiB; testo e struttura verificati localmente.</small>
+            </label>
+          )}
+          {job.id === "utm" && (
+            <div class="utm-fields">
+              <label class="input-field">URL di destinazione
+                <input name="baseUrl" type="url" inputmode="url" placeholder="https://example.org/pagina?ref=ok" autocomplete="off" />
+              </label>
+              <label class="input-field">Sorgente
+                <input name="source" type="text" placeholder="newsletter" autocomplete="off" />
+              </label>
+              <label class="input-field">Mezzo
+                <input name="medium" type="text" placeholder="email" autocomplete="off" />
+              </label>
+              <label class="input-field">Campagna
+                <input name="campaign" type="text" placeholder="autunno 2026" autocomplete="off" />
+              </label>
+            </div>
+          )}
+          <div class="form-actions">
+            <button type="button" class="run-button" data-run>{job.button} <span aria-hidden="true">↗</span></button>
+            <button type="button" class="quiet-button" data-cancel hidden>Annulla</button>
+            <button type="button" class="quiet-button" data-reset>Ricomincia</button>
+          </div>
+        </form>
+        <div class="progress-space" data-progress-wrap hidden>
+          <progress max="100" value="0" data-progress aria-label={`Avanzamento ${job.title}`}></progress>
+        </div>
+        <p class="state-message" data-status role="status" aria-live="polite">Pronto per il tuo file o indirizzo.</p>
+        <p class="error-message" data-error role="alert" hidden></p>
+      </div>
+      <div class="job-output" aria-label={`Risultato ${job.title}`}>
+        <div class="output-header"><span>Risultato verificabile</span><span class="output-local">Solo in questo browser</span></div>
+        <div class="result-empty" data-empty>Il risultato resta qui, accanto al lavoro. Nessun caricamento automatico.</div>
+        <div class="result-content" data-result hidden>
+          <pre data-preview aria-label={`Anteprima ${job.title}`}></pre>
+          <p class="result-bytes" data-bytes></p>
+          <a class="download-button" data-download href="#" download hidden>Scarica risultato <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+    </section>
+  ))}
+</div>
