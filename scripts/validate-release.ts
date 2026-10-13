@@ -34,6 +34,41 @@ const writeReceipts = !args.has("--no-write-receipt");
 const receiptDirectory = resolve(root, process.argv.find((value) => value.startsWith("--receipt-dir="))?.slice("--receipt-dir=".length) ?? "quality/receipts/release");
 const defaultSite = new URL("https://strumentini.it");
 
+/** Exact source identity for source-only release admission. This does not
+ * authorize publishing, and is not a substitute for physical/security proof. */
+export function assertReleaseRevision404(input: {
+  expectedSha?: string | undefined;
+  currentSha: string;
+  githubSha?: string | undefined;
+  githubRef?: string | undefined;
+  dirty?: boolean;
+}): void {
+  if (!input.expectedSha || !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/u.test(input.expectedSha)) {
+    throw new Error("RELEASE_404_EXPECTED_SHA_MISSING_OR_INVALID");
+  }
+  if (input.githubRef !== undefined && input.githubRef !== "refs/heads/main") {
+    throw new Error("RELEASE_404_MAIN_REF_REQUIRED");
+  }
+  if (input.currentSha !== input.expectedSha || (input.githubSha !== undefined && input.githubSha !== input.expectedSha)) {
+    throw new Error("RELEASE_404_SHA_MISMATCH");
+  }
+  if (input.dirty === true) throw new Error("RELEASE_404_WORKTREE_DIRTY");
+}
+
+/** A queued GitHub event SHA is not necessarily today's authoritative main.
+ * Validate one exact read-only git ls-remote row, never a local tracking ref.
+ * This is an admission-time source guard, NOT provider-level deploy locking. */
+export function assertCurrentRemoteMain404(input: {
+  expectedSha: string;
+  remoteListing: string;
+}): void {
+  if (!/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/u.test(input.expectedSha) ||
+      input.remoteListing.trimEnd() !== `${input.expectedSha}\trefs/heads/main` ||
+      input.remoteListing.trimEnd().split(/\r?\n/u).length !== 1) {
+    throw new Error("RELEASE_404_REMOTE_MAIN_SHA_MISMATCH_OR_UNAVAILABLE");
+  }
+}
+
 async function git(...command: string[]): Promise<string> {
   const result = await execFileAsync("git", command, { cwd: root });
   return result.stdout.trim();
@@ -245,6 +280,20 @@ export function mergeReleaseGoldAudit347(
 
 async function main(): Promise<void> {
   const revision = await git("rev-parse", "HEAD").catch(() => "unknown");
+  const expectedShaArgs = process.argv.slice(2).filter((arg) => arg.startsWith("--expected-sha="));
+  if (expectedShaArgs.length > 1 || (process.env.GITHUB_ACTIONS === "true" && requireReady && expectedShaArgs.length !== 1)) {
+    throw new Error("RELEASE_404_EXACT_SHA_REQUIRED_FOR_CI_ADMISSION");
+  }
+  if (expectedShaArgs.length === 1) {
+    // Reject an unpinned or wrong checkout before any output/receipt write.
+    assertReleaseRevision404({
+      expectedSha: expectedShaArgs[0]!.slice("--expected-sha=".length),
+      currentSha: revision,
+      githubSha: process.env.GITHUB_SHA || undefined,
+      githubRef: process.env.GITHUB_REF || undefined,
+      dirty: (await git("status", "--porcelain")).length > 0,
+    });
+  }
   const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
   const workingTreeDirty = (await git("status", "--porcelain").catch(() => "")).length > 0;
   const expectedToolCount = await loadExpectedToolCount();
@@ -302,6 +351,22 @@ async function main(): Promise<void> {
   const goldAudit = await inspectGoldBinding347(root).catch((error: unknown) =>
     error instanceof Error ? error : new Error(String(error)));
   const result = mergeReleaseGoldAudit347(releaseResult, goldAudit);
+  // Last source-identity check just before accepting a GitHub Actions
+  // admission result. A dispatch queued against a former main is NO_GO even
+  // if its GITHUB_SHA still agrees with HEAD. No receipt is written by this
+  // read-only workflow. An external deployer could still bypass the workflow.
+  if (process.env.GITHUB_ACTIONS === "true" && requireReady) {
+    const expectedSha = expectedShaArgs[0]!.slice("--expected-sha=".length);
+    const remoteListing = await git("ls-remote", "--exit-code", "--refs", "origin", "refs/heads/main");
+    assertCurrentRemoteMain404({ expectedSha, remoteListing });
+    assertReleaseRevision404({
+      expectedSha,
+      currentSha: await git("rev-parse", "HEAD"),
+      githubSha: process.env.GITHUB_SHA || undefined,
+      githubRef: process.env.GITHUB_REF || undefined,
+      dirty: (await git("status", "--porcelain")).length > 0,
+    });
+  }
   const checkStatus = (prefixes: readonly string[], checked: boolean): "PASS" | "FAIL" | "BLOCKED" | "NOT_RUN" => {
     if (!checked) return "NOT_RUN";
     const related = result.findings.filter((item) => prefixes.some((prefix) => item.code.startsWith(prefix)));
