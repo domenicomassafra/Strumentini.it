@@ -39,7 +39,7 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
         <input type="checkbox" name="startupEligible" />
         Solo per 5%: dichiaro di aver verificato esternamente gli ulteriori requisiti di nuova attività.
       </label>
-      <p class="tax396-piva-note">Quando cambi anno d'imposta, importi, codice ATECO e dichiarazioni vengono azzerati per evitare di usare dati di un altro anno. Gli importi devono usare il punto come separatore decimale (es. 1000.50).</p>
+      <p class="tax396-piva-note">Quando cambi anno d'imposta, importi, codice ATECO e dichiarazioni vengono azzerati per evitare di usare dati di un altro anno. Gli importi accettano la virgola oppure il punto solo come separatore decimale (es. 1000,50 o 1000.50), senza separatori delle migliaia.</p>
       <button type="submit">Calcola la sola stima 2025 coperta</button>
     </form>
     <p role="alert" class="tax396-piva-error" hidden></p>
@@ -76,8 +76,8 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
     };
     const cents = (name: string): number | null => {
       const text = select(name).value.trim();
-      if (!/^(?:0|[1-9]\d{0,9})(?:\.\d{1,2})?$/u.test(text)) return null;
-      const [euros = "0", decimals = ""] = text.split(".");
+      if (!/^(?:0|[1-9]\d{0,9})(?:[.,]\d{1,2})?$/u.test(text)) return null;
+      const [euros = "0", decimals = ""] = text.split(/[.,]/u);
       const value = Number(euros) * 100 + Number(decimals.padEnd(2, "0"));
       return Number.isSafeInteger(value) && value <= 1_000_000_000_000 ? value : null;
     };
@@ -100,7 +100,7 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
       const prior = cents("priorReceipts");
       const receipts = cents("receipts");
       const paid = cents("paidContributions");
-      if (prior === null || receipts === null || paid === null) return decline("Importi non validi: inserisci euro non negativi, con massimo due decimali, senza separatori delle migliaia.");
+      if (prior === null || receipts === null || paid === null) return decline("Importi non validi: inserisci euro non negativi, con massimo due decimali (virgola o punto), senza separatori delle migliaia.");
       if (!checked("paidContributionsVerified")) return decline("Contributi non confermati: dichiarare l'importo effettivamente già versato.");
       if (!checked("eligible")) return decline("Requisiti del regime non dichiarati: non è possibile presumere l'idoneità fiscale.");
       const rate = select("declaredRate").value;
