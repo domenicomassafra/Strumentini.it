@@ -219,6 +219,14 @@ export async function readCurrentFixtureHashes415(
     if(digest===undefined) {
       const bytes=await safeRead(root,file);
       if(bytes===null) return null;
+      // All indexed family payloads are JSON objects in the canonical fixture
+      // contract. An exact SHA over truncated/invalid bytes proves provenance,
+      // but not the existence of consumable oracle vectors. Keep it PENDING.
+      try {
+        const parsed:unknown=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(bytes));
+        if(parsed===null || typeof parsed!=="object" || Array.isArray(parsed) ||
+           Object.keys(parsed).length===0) return null;
+      } catch { return null; }
       digest=sha256(bytes);
       byPath.set(file,digest);
     }
