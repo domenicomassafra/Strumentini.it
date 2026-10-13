@@ -81,13 +81,23 @@ export function textPartKind407(name: string): "xml" | "svg" | "html" | null {
 
 /** Never parse XML with a DOM here: refuse entity resolution and active markup. */
 export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): FileThreatFinding407 | null {
-  // XML namespace prefixes may contain Unicode letters/combining marks. Match
-  // up to XML name delimiters for refusal, not ASCII \w or JS \s (which
-  // includes U+FEFF, an allowed XML name character). This
-  // deliberately does not attempt to validate the complete XML name grammar.
   if (/<!\s*(?:DOCTYPE|ENTITY)\b|<\?\s*xml-stylesheet\b|<\s*(?:xi:include|xinclude:include)\b|http:\/\/www\.w3\.org\/2001\/XInclude/iu.test(source) ||
-    /\bxmlns(?::[^\t\r\n <>/:=]+)?\s*=\s*["'][^"']*&/iu.test(source)) {
+    /\bxmlns(?::[\w.-]+)?\s*=\s*["'][^"']*&/iu.test(source)) {
     return reject("UNSUPPORTED", "Embedded XML document type, entities, stylesheets or includes are not supported.");
+  }
+  if (kind === "html") {
+    // HTML meta-refresh performs navigation without <script>, href, src or a
+    // CSS url(). Inspect bounded complete start tags, retaining quoted '>' and
+    // either attribute order. Character references are decoded by HTML5
+    // parsers, so an entity in http-equiv is refused rather than guessed at.
+    for (const match of source.matchAll(/<\s*meta(?=[\s/>])(?:[^>"']|"[^"]*"|'[^']*')*>/giu)) {
+      const tag = match[0];
+      const attribute = /[\s/]http-equiv\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/iu.exec(tag);
+      const value = attribute?.[1] ?? attribute?.[2] ?? attribute?.[3];
+      if (value !== undefined && (value.includes("&") || value.trim().toLowerCase() === "refresh")) {
+        return reject("UNSUPPORTED", "HTML meta refresh or entity-obfuscated http-equiv is outside the local inspection profile.");
+      }
+    }
   }
   // XML entity references are decoded by downstream parsers: an attribute such
   // as TargetMode="Ex&#x74;ernal" must not evade an external-link refusal.
@@ -98,12 +108,12 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
   }
   // XML namespace aliases can give <s:script> exactly the same active meaning
   // as <script>; inspection cannot assume the element has no prefix.
-  if (/<\s*(?:[^\t\r\n <>/:]+:)?(?:script|iframe|object|embed)\b|\bon(?:load|error|click|mouseover|focus|begin|end)\s*=/iu.test(source)) {
+  if (/<\s*(?:[a-z_][\w.-]*:)?(?:script|iframe|object|embed)\b|\bon(?:load|error|click|mouseover|focus|begin|end)\s*=/iu.test(source)) {
     return reject("UNSUPPORTED", "Executable XML markup or event handlers are not supported.");
   }
   // A ZIP can store a genuine SVG document under an .xml member name.
-  if (kind === "svg" || kind === "html" || /<\s*(?:[^\t\r\n <>/:]+:)?svg\b/iu.test(source)) {
-    if (/<\s*(?:[^\t\r\n <>/:]+:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
+  if (kind === "svg" || kind === "html" || /<\s*(?:[a-z_][\w.-]*:)?svg\b/iu.test(source)) {
+    if (/<\s*(?:[a-z_][\w.-]*:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
       return reject("UNSUPPORTED", "Executable or external SVG/HTML content is outside the inspection profile.");
     }
     // An SVG <a href="relative.svg"> is not contained by its ZIP parent:

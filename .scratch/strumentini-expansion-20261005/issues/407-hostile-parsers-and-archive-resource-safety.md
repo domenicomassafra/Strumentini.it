@@ -32,10 +32,6 @@
 
 **External / owner gate:** A missing official source, vendor approval, physical device or security review blocks the affected production AC, not drafting/specification.
 
-**2026-10-13 scoped dispatch requirement:** Investigate one new Unicode XML namespace-prefix fail-open through actual `detectLocalFile()`, with independently parsed ZIP/SVG fixtures and RED before any source correction. Ownership is limited to this issue, `src/runtime/file-threat-gate-407.ts` and new `tests/file-threat-407-20261013*.test.ts`; no staging, commit, push, dependency or release-pin changes. Existing bounded SAX/fflate fixture patterns in `tests/file-threat-svg-zip-407-wave22.test.ts` are reusable; global acceptance remains unchecked.
-
-**Reuse/source check before correction:** [W3C XML 1.0 NameStartChar/NameChar](https://www.w3.org/TR/xml/#NT-NameStartChar) explicitly permits Unicode prefixes; [maintained sax-js source](https://github.com/isaacs/sax-js/blob/main/lib/sax.js) and installed `node_modules/sax/lib/sax.js` confirm namespace-aware parsing. Reuse root-lock-pinned `sax@1.6.1` (Blue Oak Model License 1.0.0, existing svgo transitive dependency) solely as the independent test oracle, with installed `fflate@0.8.3` and the existing wave22 fixture pattern. Bounded searches of owner runtime/tests and DStack security/data skill paths found no existing production QName helper; a full SAX parser/DOM or copied XML grammar would expand this conservative rejection gate unnecessarily. The uncovered delta is four ASCII-only prefix matches in the existing helper; use delimiter-bounded prefix matching for refusal, not a new XML validator.
-
 **Rollback / migration:** Keep previous behavior and stored project versions accessible until targeted canary and rollback proof.
 
 **Out of scope:** Shipping functionality, buying licenses, changing receipt source fingerprints, broad desktop-only advanced exemptions.
@@ -149,72 +145,52 @@ extraction paths safe. No physical-device, release, full hostile-corpus
 or rollback verification occurred. **AC-407.1, AC-407.2 and AC-407.3 remain
 unchecked; original status `ready-for-agent`, owner and Gold NO-GO.**
 
-## 2026-10-13 scoped worker — Unicode namespace alias fail-open
+## 2026-10-13 wave4 worker-2 — HTML meta-refresh navigation in ZIP (RED → GREEN; OPEN)
 
-One new shared root cause: the gate matched namespace prefixes using ASCII
-`[a-z_][\w.-]*` / `\w`, while XML permits Unicode names. Actual
-`detectLocalFile()` classified correctly formed ZIPs with SVG-namespace
-`é:script`, `ś:script`, `中:foreignObject` and `é:animateTransform` as
-`supported/zip`. The script fixtures contain `globalThis.__hostile407 = 1`;
-no script was executed. SAX strict namespace-aware parsing independently
-confirms the expanded element identities from locally decompressed ZIP
-members, including an SVG root deliberately stored under `.xml`.
+**New genuine runtime fail-open, distinct from the prior ZIP pathname, SVG link,
+CSS escape and PDF action fixes:** A real CRC-valid DEFLATE ZIP member
+`pages/index.html` can contain a valid HTML5 automatic redirect via
+`<meta http-equiv="refresh" content="0;url=https://outside.invalid/next">`
+without any script, `href`, `src`, stylesheet, DTD or CSS `url()` token. An
+alternate order (`content` first), an HTML numeric character reference in the
+attribute (`http-equiv="ref&#x72;esh"`), and unquoted `http-equiv=refresh`
+are also valid. The installed root-lock-pinned `parse5` HTML5 parser
+independently expands the character reference into `refresh` and recovers the
+external HTTPS target from the actual inflated ZIP member. **No redirect or
+network request was made**, and the recorded vulnerability is a false
+`supported/zip` *candidate* status at the preflight boundary, not proven
+navigation by this app or an exploit of an extraction consumer.
 
-The smallest source correction replaces four prefix matches in the existing
-helper with XML-delimiter-bounded matches. It covers active tags, SVG-root
-recognition and the existing entity-encoded namespace refusal. A further
-RED check proved that JavaScript `\s` cannot delimit XML prefixes: U+FEFF
-is an allowed XML name character but JavaScript treats it as whitespace.
-Prefix matching therefore excludes only XML whitespace (space/tab/CR/LF)
-and markup/name delimiters. No XML parser, DOM, runtime dependency, network
-fetch, upload or renderer was added. Inert Unicode SVG paths still qualify
-only as candidates.
+**Source-bound RED:** New
+`tests/file-threat-407-20261013-html-refresh.test.ts` builds the ZIP using
+the installed `fflate` ZIP encoder, independently decompresses/UTF-8 decodes
+the member, and uses `parse5`, not a copy of the detector regex, to establish
+its HTML attribute semantics. With the gate unmodified, all **three live
+`detectLocalFile()` calls returned `supported/zip`** rather than the required
+`UNSUPPORTED` refusal (**RED 3/4**, benign control GREEN); the same inputs
+also escaped the standalone `checkTextPart407` check.
 
-**Fresh RED/GREEN proof:** baseline HEAD `04fa3d1872102f23ca120b8edf5cfa0794ee4ad0`
-failed **6/9** tests (all observed fail-open refusals), with the benign/quota/
-cancel cases already passing. The U+FEFF follow-up failed **1/10** before its
-delimiter correction. Final focused run passed **64/64 across five files**:
-`./node_modules/.bin/vitest run tests/file-threat-407-20261013-unicode-prefix.test.ts tests/file-threat-gate-407.test.ts tests/file-threat-svg-zip-407-wave22.test.ts tests/file-threat-operational-next-407.test.ts tests/file-detection-333.test.ts`.
-Focused strict TypeScript passed using `tsc --ignoreConfig --noEmit --target
-es2023 --module esnext --moduleResolution bundler --lib es2023,dom --types node
---strict --skipLibCheck` on the owned source and new test. The new suite has
-**10/10 PASS**: five alias variants, inert control, encoded namespace, long
-alias under a 2-second test timeout, oversized text budget and cancellation
-before/during a real Blob range read. Tracked individual and cumulative
-reads stay within the existing detector budgets. This is a quota/time/read
-regression, not an OS-level memory or worker-isolation measurement.
+**Smallest source-only GREEN:** Only `src/runtime/file-threat-gate-407.ts`
+adds a bounded `html`-member `<meta>` tag scan that identifies `http-equiv`
+regardless of attribute order, quoting, case or a `>` inside a quoted
+attribute. It refuses `refresh` and conservatively refuses HTML entity
+references in `http-equiv` values, which HTML5 consumers can decode into
+active navigation semantics. This is a fail-closed detector, **not a DOM
+parser, HTML sanitizer, a browser navigation test or a proof about every
+possible HTML grammar variation**. Ordinary `<meta charset>`, viewport and
+`http-equiv="content-type"` metadata remain supported, as do prior benign
+SVG and internal OOXML relationships. It changes no archive decoding,
+input/read/expansion limits, ownership, file uploads or network policy.
 
-**Consumer and handoff:** `HomeFileEntry.astro` calls this same detector and
-only offers matching candidate actions; it does not render or execute the
-SVG at this boundary. Owned files are this original issue,
-`src/runtime/file-threat-gate-407.ts`, and
-`tests/file-threat-407-20261013-unicode-prefix.test.ts`; all other shared
-#339 worker edits were preserved. Repo `/Users/domenico/Code/Strumentini.it`,
-branch `fix/407-339-input-safety-20261013`; local HEAD, tracking `origin/main`
-and actual remote main were `04fa3d1872102f23ca120b8edf5cfa0794ee4ad0` at readback;
-the remote change branch was absent. This worker did not stage, commit, push,
-open a PR or deploy. One shared worktree, no stash; owned WIP awaits serial
-integrator review/integration. `scripts/lib/current-revision.ts` source
-binding and the existing CI security-review gate remain integrator concerns;
-release pins/receipts were not edited.
-
-**Disposition:** AC-407.1–3 remain **UNCHECKED / OPEN**. Browser rendering,
-compressed/unobserved PDF graphs, downstream parser/extractor isolation,
-physical devices, full hostile corpus, release fingerprint acceptance and
-rollback are **NOT_RUN / NO_GO** in this bounded worker tranche.
-
-Final owned byte hashes (SHA-256): helper
-`15d7b4995936cfb0cfaa7506ea410a4068fc661a5ecf7c1c6fe8a997686b1af0`,
-new test `16af9a7a534d61fcf729f174a12592ccec6df8f2ab5061c49efb8ac342ad614d`.
-Scoped tracked diff and new-file whitespace checks PASS. Shared
-`git status --porcelain` at worker handoff (including unrelated #339 ownership):
-
-```text
- M .scratch/strumentini-expansion-20261005/issues/339-scarica-manuale-e-auto-opt-in.md
- M .scratch/strumentini-expansion-20261005/issues/407-hostile-parsers-and-archive-resource-safety.md
- M src/runtime/browser-download-339.ts
- M src/runtime/file-threat-gate-407.ts
-?? tests/browser-download-339-20261013.browser.mjs
-?? tests/browser-download-339-20261013.test.ts
-?? tests/file-threat-407-20261013-unicode-prefix.test.ts
-```
+**Verification and open gates:** New focused test GREEN 4/4. Together with
+`file-threat-svg-zip-407-wave22`, `file-threat-gate-407`,
+`file-threat-operational-next-407` and `file-detection-333`, the five-suite
+regression is **58/58 PASS**; scoped strict TypeScript on source/new test
+**PASS**. The benign test checks aggregate bounded reads and a pre-aborted
+detector refuses with `CANCELLED`. This is only local preliminary screening
+of the tested ZIP/HTML cases, not proof that all hostile HTML/CSS/XML/ZIP/PDF
+inputs or downstream renderers are contained. Physical/device, comprehensive
+hostile corpus, release/rollback and Gold gates are **NOT_RUN / NO-GO**.
+Original **AC-407.1–3 remain unchecked** and ticket stays OPEN. No new
+dependencies, vendor changes, code changes outside this file/new test/original
+ticket, Git staging/commit/push/PR or production deployment by this worker.
