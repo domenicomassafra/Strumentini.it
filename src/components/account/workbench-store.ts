@@ -85,20 +85,31 @@ export async function savePreferences(
   return { state: next, persisted };
 }
 
-function sweep(storage: Storage | undefined): void {
-  if (storage === undefined) return;
+/** Best-effort removal must never be mistaken for a fully successful reset.
+ * A browser can allow writes but later refuse selected removeItem calls.
+ */
+function sweep(storage: Storage | undefined): boolean {
+  if (storage === undefined) return false;
   const doomed: string[] = [];
   for (let index = 0; index < storage.length; index += 1) {
     const key = storage.key(index);
     if (key !== null && key.startsWith(DEVICE_KEY_PREFIX)) doomed.push(key);
   }
+  let cleared = true;
   for (const key of doomed) {
     try {
       storage.removeItem(key);
     } catch {
-      /* A refused key is a key the page could not have written either. */
+      cleared = false;
     }
   }
+  // Detect silent no-op removal and keys written while the sweep was running.
+  // An exception during enumeration also reaches the caller's failure path.
+  for (let index = 0; index < storage.length; index += 1) {
+    const key = storage.key(index);
+    if (key !== null && key.startsWith(DEVICE_KEY_PREFIX)) cleared = false;
+  }
+  return cleared;
 }
 
 /** The explicit #341 PDF archive has its own database; clearing Workbench
@@ -129,9 +140,17 @@ export async function clearDeviceData(): Promise<{ readonly persisted: boolean }
   } catch {
     persisted = false;
   }
+  // Even when one storage is denied, continue deleting from the other.
+  // Never claim complete erasure if a private consent/theme/history key remains.
   try {
-    sweep(window.localStorage);
-    sweep(window.sessionStorage);
+    const localCleared = sweep(window.localStorage);
+    persisted = localCleared && persisted;
+  } catch {
+    persisted = false;
+  }
+  try {
+    const sessionCleared = sweep(window.sessionStorage);
+    persisted = sessionCleared && persisted;
   } catch {
     persisted = false;
   }
