@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 306 / 118 |
+| All / completed / open | 424 / 307 / 117 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 33 |
-| Ready for assignment (feasibility still to prove) | 26 |
+| DAG-ready (all numeric dependencies closed) | 32 |
+| Ready for assignment (feasibility still to prove) | 25 |
 | Waiting on other tickets | 85 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (26)
+## Ready for assignment (feasibility still to prove) (25)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
@@ -31,7 +31,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #328 — P0 Account Turnstile login reale
 - #329 — P0 Contrasto accesso e errori WCAG
 - #336 — Picker iPhone Android e touch equivalente
-- #347 — P0 Badge Gold fingerprint frontend backend
 - #349 — File server opt-in TTL delete prova
 - #350 — P0 Accessibilità AA di base e advanced
 - #352 — Selezione owner direzione visuale
@@ -123,7 +122,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #401 — TFR accrual revaluation and indicative scope (awaiting #134, #398)
 - #402 — Fiscal rollover source expiry and blocking (awaiting #115, #117, #397)
 - #403 — Physical microphone and audio media continuation (awaiting #229)
-- #405 — Release scope gates and rollback drill (awaiting #347, #404)
+- #405 — Release scope gates and rollback drill (awaiting #404)
 - #409 — Tax-year review ownership and retrospective versions (awaiting #397, #402)
 - #411 — Audio video large file mobile progress and cancel (awaiting #363)
 - #412 — Editor project schema and forward-safe migrations (awaiting #379, #385)

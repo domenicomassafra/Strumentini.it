@@ -24,7 +24,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **328 — P0 Account Turnstile login reale**
 - **329 — P0 Contrasto accesso e errori WCAG**
 - **336 — Picker iPhone Android e touch equivalente**
-- **347 — P0 Badge Gold fingerprint frontend backend**
 - **349 — File server opt-in TTL delete prova**
 - **350 — P0 Accessibilità AA di base e advanced**
 - **352 — Selezione owner direzione visuale**
@@ -43,7 +42,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **406 — Independent PDF redaction attack corpus**
 - **407 — Hostile parsers and archive resource safety**
 
-Exactly **33** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **32** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -406,7 +405,7 @@ Exactly **33** incomplete tickets currently have every declared numeric blocker 
 | 344 | completed | Area personale con suggerimenti spiegabili | 330, 335 |
 | 345 | completed | Navigazione stabile da task e file | 330, 334 |
 | 346 | completed | P0 Eventi telemetria privacy-safe | — |
-| 347 | ready-for-agent | P0 Badge Gold fingerprint frontend backend | — |
+| 347 | completed | P0 Badge Gold fingerprint frontend backend | — |
 | 348 | completed | Server opt-in gratis feasibility | — |
 | 349 | ready-for-agent | File server opt-in TTL delete prova | 348 |
 | 350 | ready-for-agent | P0 Accessibilità AA di base e advanced | — |

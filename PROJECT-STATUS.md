@@ -12,15 +12,15 @@ Source of truth: `.scratch/strumentini-expansion-20261005/issues/` and the gener
 | Metric | Current count |
 |---|---:|
 | All tickets | 424 |
-| Administratively completed | 306 |
+| Administratively completed | 307 |
 | Closed with explicit refusal (not shipped) | 17 |
-| Still open | 118 |
-| Ready for assignment (acceptance not yet proven) | 26 |
+| Still open | 117 |
+| Ready for assignment (acceptance not yet proven) | 25 |
 | Dependency-blocked | 85 |
 | Official-source-blocked | 2 |
 | Physical-device-blocked | 5 |
 | Capability-blocked | 0 |
-| DAG-ready (numeric dependencies only) | 33 |
+| DAG-ready (numeric dependencies only) | 32 |
 | Stored status mismatches | 0 |
 
 Ticket completion, certification, reviewed merge, deployment and physical-device acceptance are separate gates.
