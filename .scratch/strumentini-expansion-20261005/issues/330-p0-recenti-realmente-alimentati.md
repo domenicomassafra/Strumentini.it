@@ -8,7 +8,7 @@
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 
@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-330.1: Operazione reale aggiorna recenti ID e ora.
-- [ ] AC-330.2: Nessuna persistenza di file/risultati sensibili; IndexedDB negato gestito.
-- [ ] AC-330.3: On the scoped input and failure cases, verify: Tool result→preferiti→reload. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
+- [x] AC-330.1: Operazione reale aggiorna recenti ID e ora.
+- [x] AC-330.2: Nessuna persistenza di file/risultati sensibili; IndexedDB negato gestito.
+- [x] AC-330.3: On the scoped input and failure cases, verify: Tool result→preferiti→reload. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
 
 **Verification:** Tool result→preferiti→reload; independently inspect output/record and test bounded failures.
 
@@ -207,3 +207,11 @@ Worker ownership: `src/components/home/RecentTools.astro`, existing `tests/recen
 **Minimal GREEN:** `render` paints the existing storage warning and ancestor visibility synchronously from the canonical membership before awaiting the optional catalog. The native import is caught once as `null`; absence exits without undoing that disclosure. Successful catalog rendering retains revision fencing, existing recent metadata/links and hidden empty healthy history. No new UI strings, store, dependency, generic error system or remote effects.
 
 **Fresh evidence:** Rebuilt the final unchanged source into `/tmp/strumentini-330-recovery-20261013` (293 pages, build exit 0), without overwriting shared `dist`. `RECENT330_DIST=/tmp/strumentini-330-recovery-20261013 node tests/recent-330-20261013-denied-home.browser.mjs` completed **exit 0**: Chrome320/390 and WebKit320/390 all passed both original real UTM→Home→reload privacy/persistence tests and the new denied-storage+actual catalog-fetch-failure+reload cases. No uncaught JS error, POST or offsite request; existing state/history/navigation suites **13/13 PASS**, `node --check` and `git diff --check` PASS. Source scoped Standards/Spec review found no additional consequential defect. Original AC-330.1–3 remain OPEN for full producer inventory and physical/provider/release acceptance; this closes only the reproducible combined-failure warning defect. No worker staging, commit, push, merge or deploy; integrator must update the same PR #22 and run its final gates.
+
+## 2026-10-13 — original scoped AC330.1–3 complete after independent source/browser reconciliation (NO DEPLOY)
+
+**Acceptance boundary, not an all-catalog claim.** Original AC-330.1 explicitly asks that *an actual operation* feeds Recenti with tool ID and time; AC-330.2 asks metadata-only privacy and denied IndexedDB handling; AC-330.3 asks actual result → Preferiti → reload. It does not require certifying all 269 producers or physical devices before closing this scoped source work. Historical partial appendices remain accurate about broader producer coverage, real OS storage and product/release evidence; those are not silently promoted here.
+
+**Exact source and independent current acceptance:** On canonical merged `main` `9f5dacd91669769436399914bb13a39c173d2a05`, an independently built clean 293-page static Astro distribution exercised `RECENT330_DIST=dist node tests/recent-330-20261013-denied-home.browser.mjs` with **PASS** in real Chrome and WebKit at **320/390px**: genuine local `/tools/utm-builder/` output → canonical `{toolId,lastUsedAt,useCount}` persisted → Home/Preferiti/reload; no source UTM/filename/file/result persisted; IndexedDB `SecurityError` displays truthful warning before/after genuine completion and reload, including when the optional catalog import is independently aborted. No offsite/POST, no uncaught browser errors. Independent reviewer inspected the same current source/state and legacy genuine PDF/tool producer receipts; new exact-main `tests/recent-completions-330.test.ts`, `tests/workbench-state.test.ts`, `tests/home-recent-navigation-345.test.ts` all pass (13/13). Source-only keyboard/accessibility proof is not equivalent to physical AT.
+
+**AC disposition:** AC-330.1/2/3 are checked for precisely these original bounded requirements; source ticket **completed**. Remaining full catalog producer inventory, physical iPhone/Android, screenreader/AT and cloud privacy acceptance, rollback and production readiness stay **NOT_RUN/NO_GO** in independent issues/gates (#350/#415 and release). No deploy, new Gold evidence, provider write or claim that unrelated renderers all emit history.
