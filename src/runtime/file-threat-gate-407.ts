@@ -84,8 +84,7 @@ function hasUnsafeHtmlMeta407(source: string): boolean {
   const space = (character: string | undefined): boolean =>
     character !== undefined && /[ \t\r\n\f]/u.test(character);
   const starts = /<\s*meta(?=[\s/>])/giu;
-  let match: RegExpExecArray | null;
-  while ((match = starts.exec(source)) !== null) {
+  while (starts.exec(source) !== null) {
     let at = starts.lastIndex;
     let terminated = false;
     while (at < source.length) {
