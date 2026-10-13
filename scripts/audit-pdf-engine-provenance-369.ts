@@ -134,7 +134,20 @@ function scanImports(root: string, files: readonly string[]): void {
         if (left !== null && right !== null) return left + right;
       }
       if (ts.isNewExpression(input) && ts.isIdentifier(input.expression)
-        && input.expression.text === "URL") return staticValue(input.arguments?.[0], depth + 1);
+        && input.expression.text === "URL") {
+        const address = staticValue(input.arguments?.[0], depth + 1);
+        if (address === null) return null;
+        const base = staticValue(input.arguments?.[1], depth + 1);
+        if (base !== null) {
+          // A relative first argument can still resolve to remote code when
+          // the second argument is a statically known remote base URL.
+          try { return new URL(address, base).href; }
+          catch { /* Invalid static bases are outside URL resolution. */ }
+        }
+        // import.meta.url and runtime bases cannot be evaluated here; preserve
+        // the direct literal check without claiming full runtime coverage.
+        return address;
+      }
       return null;
     };
     const check = (value: ts.Expression | undefined, category: string): void => {

