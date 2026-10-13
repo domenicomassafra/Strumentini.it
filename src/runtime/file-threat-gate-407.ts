@@ -126,6 +126,39 @@ function hasUnsafeHtmlMeta407(source: string): boolean {
   return false;
 }
 
+/** XML/HTML character references are decoded before CSS is parsed. A raw
+ * style="fill:url&#40;...&#41;" therefore becomes an active CSS url() even
+ * though neither the original url() check nor CSS backslash decoding sees it.
+ * Keep this scan linear and inside the detector's bounded text-part budget.
+ */
+function hasEntityInCss407(source: string): boolean {
+  if (!source.includes("&")) return false;
+  const attributes = /(?:^|[ \t\r\n\f<])(?:style|fill|stroke|filter|clip-path|mask|marker-(?:start|mid|end)|cursor)[ \t\r\n\f]*=/giu;
+  const space = (character: string | undefined): boolean =>
+    character !== undefined && /[ \t\r\n\f]/u.test(character);
+  while (attributes.exec(source) !== null) {
+    let at = attributes.lastIndex;
+    while (space(source[at])) at++;
+    const start = at;
+    if (source[at] === "'" || source[at] === '"') {
+      const quote = source[at++];
+      while (at < source.length && source[at] !== quote) at++;
+      // Refuse ambiguous CSS-bearing attributes with an unclosed quote.
+      if (at === source.length) return true;
+      at++;
+    } else {
+      // HTML5 treats a quote *inside* an unquoted value as an ordinary
+      // character. XML requires the quoted branch above.
+      while (at < source.length && !space(source[at]) && source[at] !== ">") at++;
+    }
+    if (source.slice(start, at).includes("&")) return true;
+    attributes.lastIndex = at;
+  }
+  // SVG <style> elements are already forbidden by the existing active-element
+  // gate below; HTML <style> raw text does not decode character references.
+  return false;
+}
+
 /** Never parse XML with a DOM here: refuse entity resolution and active markup. */
 export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): FileThreatFinding407 | null {
   // XML namespace prefixes can use Unicode characters; ASCII \w is not
@@ -159,6 +192,9 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
   }
   // A ZIP can store a genuine SVG document under an .xml member name.
   if (kind === "svg" || kind === "html" || /<\s*(?:[^\t\r\n <>/:]+:)?svg\b/iu.test(source)) {
+    if (hasEntityInCss407(source)) {
+      return reject("UNSUPPORTED", "Entity-bearing CSS attributes or SVG styles cannot be trusted before XML/HTML decoding.");
+    }
     if (/<\s*(?:[^\t\r\n <>/:]+:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
       return reject("UNSUPPORTED", "Executable or external SVG/HTML content is outside the inspection profile.");
     }
