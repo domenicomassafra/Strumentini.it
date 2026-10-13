@@ -137,6 +137,35 @@ try {
           assert.deepEqual(outgoing, [], `${name} ${width}px unconsented POST/upload`);
           console.log(`#330 ${name} ${width}px PASS: real UTM completion/reload + IndexedDB-denied visible Home warning, no upload`);
         } finally { await denied.close(); }
+
+        const unavailable = await browser.newContext({ viewport: { width, height: 844 } });
+        await unavailable.addInitScript(() => {
+          Object.defineProperty(window, "indexedDB", { configurable: true,
+            get() { throw new DOMException("Storage forbidden by browser policy", "SecurityError"); } });
+        });
+        const unavailablePage = await unavailable.newPage();
+        const failedChunks = [], unavailableErrors = [], unavailableWrites = [];
+        unavailablePage.on("pageerror", error => unavailableErrors.push(error.message));
+        unavailablePage.on("request", request => {
+          assert(request.url().startsWith(origin), "Catalog failure must not contact offsite URLs");
+          if (!["GET", "HEAD"].includes(request.method())) unavailableWrites.push(request.method());
+        });
+        await unavailablePage.route("**/*workbench-catalog*", route => {
+          failedChunks.push(route.request().url());
+          return route.abort("failed");
+        });
+        try {
+          assert.equal((await unavailablePage.goto(origin + "/", { waitUntil: "networkidle" }))?.status(), 200);
+          assert(failedChunks.length > 0, "The real optional catalog request must actually fail");
+          await unavailablePage.locator("[data-recent-warning]").waitFor({ state: "visible", timeout: 10_000 });
+          assert.equal(await unavailablePage.locator("[data-recent-section]").isVisible(), true);
+          assert.equal(await unavailablePage.locator("[data-recent-list] li").count(), 0);
+          await unavailablePage.reload({ waitUntil: "networkidle" });
+          assert.equal(await unavailablePage.locator("[data-recent-warning]").isVisible(), true);
+          assert.deepEqual(unavailableErrors, [], "Rejected optional catalog must not leave uncaught errors");
+          assert.deepEqual(unavailableWrites, [], "No upload/write despite denied storage and failed catalog");
+          console.log(`#330 ${name} ${width}px PASS: denied IndexedDB + failed optional catalog retains visible warning on reload`);
+        } finally { await unavailable.close(); }
       }
     } finally { await browser.close(); }
   }
