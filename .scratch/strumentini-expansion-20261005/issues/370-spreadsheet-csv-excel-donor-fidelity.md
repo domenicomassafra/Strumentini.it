@@ -110,3 +110,55 @@ browser/physical mobile performance, vendor rights or release/rollback
 admission is approved by this slice. Audit diagnostics stay `NO_GO` and
 AC-370.1/370.3 remain unchecked. No package/library installation, script,
 lockfile, Gold, CI, PR, Git or deployment action by this worker.
+
+## 2026-10-13 wave4 worker-2 corrective follow-up — independent PR #16 P1 (RED → GREEN; still OPEN)
+
+**Material reviewer counterexample:** The original `xl/externalLinks/` member
+name and unescaped `[Content_Types].xml` substring guards could be bypassed
+by an otherwise valid XLSX. A workbook external-link part and its `.rels`
+were relocated to `xl/links/book1.xml` and `xl/links/_rels/book1.xml.rels`;
+the workbook relationship pointed to `links/book1.xml` with the genuine
+OOXML relationship Type suffix `/externalLink`. Its ContentType value was
+`application/vnd.openxmlformats-officedocument.spreadsheetml.externalL&#x69;nk+xml`:
+XML `&#x69;` is the character `i`. A real 2-row spreadsheet remains decodable,
+Python `zipfile.testzip()` returns `None`, and installed pinned
+`openpyxl==3.1.5` reopens `A2='00123'` and confirms the external workbook
+link to `https://example.invalid/remote.xlsx` with `keep_links=True`.
+The public `xlsxToCsv` previously **accepted** that workbook and silently
+returned `id,value\n00123,safe`. A new focused test proved **RED 1/2**;
+this does **not** establish any network fetch or code execution.
+
+**Bounded correction:** `src/engines/table/spreadsheet-interchange.ts`
+reuses the *installed native* `parseXmlDocument` XML parser (existing DTD,
+non-built-in entity, node-count, depth and malformed-input refusals) on
+ZIP-preflighted, independently inflated, size-bounded, CRC-validated
+`[Content_Types].xml` and `xl/_rels/workbook.xml.rels` parts. Only validated
+XML predefined/numeric attribute references are decoded in one pass; neither
+DTD/entity expansion nor new donor dependencies are enabled. The public
+importer now refuses external workbook relationship `Type` regardless of
+`Target` filename and refuses decoded external-link MIME declarations
+regardless of part location; the previous canonical member guard remains.
+An ordinary external *worksheet hyperlink* Type `/hyperlink` still imports
+visible cell contents inertly. Unexpected/malformed/DTD-containing metadata
+fails closed, and the previous 128 KiB XML-metadata budget and CRC bounds
+remain. This is a refusal gate, **not** XLSX sanitization or formula evaluation.
+
+**Focused verification:** New
+`tests/xlsx-370-20261013-relocated-external-link.test.ts` uses the actual
+installed CSV→XLSX writer, independent Python `zipfile`/ElementTree to
+construct real OOXML parts, and opt-in pinned Python openpyxl to reopen
+the exact bytes with active external relationship (not a mocked digest or
+reader). It also independently tests each detection route by neutralizing
+the other (relationship-only vs encoded content-type-only), a normal
+roundtrip, and refusal of DTD/custom external entity declarations. All
+**5/5 GREEN** with openpyxl and without the optional oracle, so basic CI
+regression does not depend on the Mac-local Python virtual environment.
+Previous #370 test cohorts and donor/ISTAT/large-sheet/size tests continue
+to be required; no new library, lockfile, scripts, CI, generated outputs,
+Gold, branch, PR, Git stage/commit/push, or deployment by this worker.
+
+**Still OPEN / NO_GO:** AC-370.1 and AC-370.3 remain unchecked; wider
+ZIP/XML adversarial corpus, stale formula caches, true formula evaluation,
+rich formatting and media preservation, actual portable perf/mobile/physical
+measurements, owner/vendor rights and release/rollback approval are outside
+this narrow correction.
