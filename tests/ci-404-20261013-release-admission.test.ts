@@ -32,8 +32,11 @@ function releaseAdmissionFailures(source = workflow): string[] {
   }
   const gate = /- name: ([^\n]+)\n\s+if: github\.event_name == 'workflow_dispatch'\n\s+run: ([^\n]+)/gu;
   const steps = [...main.matchAll(gate)];
-  if (!steps.some(([, , command]) => command.includes("scripts/validate-release.ts") &&
-      command.includes("--require-ready") && command.includes("--no-write-receipt"))) {
+  if (!steps.some((match) => {
+    const command = match[2];
+    return typeof command === "string" && command.includes("scripts/validate-release.ts") &&
+      command.includes("--require-ready") && command.includes("--no-write-receipt");
+  })) {
     failures.push("CUMULATIVE_RELEASE_VALIDATOR_NOT_MANDATORY");
   }
   return failures;
