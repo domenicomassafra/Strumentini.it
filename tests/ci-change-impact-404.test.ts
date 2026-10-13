@@ -39,6 +39,22 @@ async function fixture(run: (root: string, base: string, head: string) => Promis
 }
 
 describe("#404 PR/source impact planning", () => {
+  it("classifies the two reviewed root handoff/status documents without bypassing executable ticket scripts", () => {
+    const docs = buildImpactPlan(["HANDOFF.md", "PROJECT-STATUS.md", "README.md"], suites);
+    expect(docs.status).toBe("DOCS_ONLY");
+    expect(docs.domains).toEqual(["docs"]);
+    expect(docs.commands).toEqual([]);
+    const mixed = buildImpactPlan(["HANDOFF.md", ".scratch/strumentini-expansion-20261005/ticket_dashboard.py"], suites);
+    expect(mixed.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(mixed.domains).toEqual(["docs", "ci"]);
+    expect(mixed.gates.map((gate) => gate.id)).toContain("security-review");
+  });
+  it("generates the catalog before any image-domain Vitest suite importing generated modules on fresh CI checkout", () => {
+    const plan = buildImpactPlan(["src/engines/image/compression-donor-047.ts"], suites);
+    expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(plan.commands[0]).toEqual({ program: "npm", args: ["run", "catalog:build"] });
+    expect(plan.commands[1]).toEqual(expect.objectContaining({ program: "node", args: expect.arrayContaining(["run"]) }));
+  });
   it("treats the local main-push hook as review-sensitive CI code, not unknown or docs", () => {
     const plan = buildImpactPlan([".githooks/pre-push", "AGENTS.md"], suites);
     expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");

@@ -66,11 +66,16 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
       path === "tsconfig.json" || path === "vitest.config.ts" || path === "wrangler.toml") return ["ci"];
   if (path === "wrangler.jsonc") return ["worker-auth", "d1", "ci"];
   if (/^(scripts\/(ci-change-impact-404\.ts|validate-release\.ts|lib\/current-revision\.ts|build-certification-index\.ts)|src\/(release\/|quality\/)|tests\/release-validation\.test\.ts)/u.test(path)) return ["ci"];
+  // Donor provenance reads this JSON as executable audit input, not prose.
+  // Altering its package/license records must be reviewed and tested.
+  if (path === "docs/audit-2026-10-10/donor-packages.json") return ["ci"];
+  // These Python unittests are not Vitest and are not part of `npm test`.
+  if (path === "tests/test_ticket_dashboard.py") return ["ci"];
   // The ticket archive also contains executable validators/generators. Treating
   // every .scratch path as docs would allow a change to the release-facing
   // ticket checks to escape source CI entirely.
   if (path.startsWith(".scratch/") && /\.(?:py|mjs|cjs|js|ts|tsx|sh|bash)$/u.test(path)) return ["ci"];
-  if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
+  if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md|HANDOFF\.md|PROJECT-STATUS\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
   if (path.startsWith("worker/migrations/")) return ["d1"];
   if (path.startsWith("worker/")) return ["worker-auth"];
   // The shipped OCR engine is executed in the browser even though its JS,
@@ -174,8 +179,17 @@ export function buildImpactPlan(changedPaths: readonly string[], availableTests:
   if (domains.includes("italy")) gates.add("official-source-year");
   const commands: SourceCommand[] = [];
   if (sourceDomains.length > 0 && blockers.length === 0) {
+    // Selected Vitest suites bypass `npm test`; build ignored catalog modules
+    // before imports on a fresh CI checkout (same reviewed #404 PR #11 fix).
+    if (!needsFullSuite) commands.push({ program: "npm", args: ["run", "catalog:build"] });
     if (needsFullSuite) commands.push({ program: "npm", args: ["run", "test"] });
     else commands.push({ program: "node", args: ["node_modules/vitest/vitest.mjs", "run", ...selectedTests] });
+    // Ticket generator/test changes need the actual Python oracle.  The
+    // full JS suite's tickets:check is not a substitute for this unittest.
+    if (paths.some((path) => path === "tests/test_ticket_dashboard.py" ||
+        /^\.scratch\/strumentini-expansion-20261005\/(?:ticket_dashboard|validate_backlog)\.py$/u.test(path))) {
+      commands.push({ program: "npm", args: ["run", "tickets:test"] });
+    }
     commands.push({ program: "npm", args: ["run", "check"] }, { program: "npm", args: ["run", "build"] });
   }
   const status: ImpactPlan["status"] = blockers.length ? "NO_GO" :
