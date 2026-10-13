@@ -86,17 +86,17 @@ export function assertSupportedSource237(source: Uint8Array): number {
   // This redaction profile admits one complete PDF revision only, so refuse
   // ambiguous multiple xref/EOF sections BEFORE trusting any trailer model.
   const sourceText = new TextDecoder("latin1").decode(source);
-  // Do not materialize every regex match from untrusted input: stop at two
-  // sections, which are already sufficient to refuse this one-revision profile.
-  // Count standalone markers separated by ANY PDF whitespace (NUL, TAB,
-  // LF, FF, CR, space). Earlier revisions may use CR-only lines or place
-  // their offset on the same line after TAB/space; PDF.js/strict pypdf can
-  // still follow them. The actual admitted declaration below stays stricter.
-  // Conservative extra matches refuse ambiguous sources, never add support.
-  const xrefSections = /(?:^|[\x00\t\n\f\r ])startxref(?=[\x00\t\n\f\r ])/gu;
-  const eofSections = /(?:^|[\x00\t\n\f\r ])%%EOF(?=[\x00\t\n\f\r ]|$)/gu;
-  if (!xrefSections.exec(sourceText) || xrefSections.exec(sourceText) ||
-    !eofSections.exec(sourceText) || eofSections.exec(sourceText)) {
+  // Count complete startxref <offset> %%EOF footers, not bare words. Both
+  // tokens may occur as ordinary visible text in a content stream or comment.
+  // All six PDF whitespace bytes are eligible between footer tokens, including
+  // CR-only and same-line TAB/space declarations read by independent viewers.
+  // Also require exactly one classic xref table: a second real revision must
+  // be refused even when its earlier footer uses unusual lexical separators.
+  // Stop at two matches, never materialize a list from attacker-controlled input.
+  const footers = /(?:^|[\x00\t\n\f\r ])startxref[\x00\t\n\f\r ]+\d+[\x00\t\n\f\r ]+%%EOF(?=[\x00\t\n\f\r ]|$)/gu;
+  const tables = /(?:^|[\x00\t\n\f\r ])[ \t]*xref[\x00\t\n\f\r ]+\d+[\x00\t\n\f\r ]+\d+(?=[\x00\t\n\f\r ])/gu;
+  if (!footers.exec(sourceText) || footers.exec(sourceText) ||
+    !tables.exec(sourceText) || tables.exec(sourceText)) {
     refuse("Revisioni incrementali o terminatori PDF ambigui non supportati.");
   }
   // The shared lightweight parser scans for the *last text occurrence* of
@@ -112,11 +112,20 @@ export function assertSupportedSource237(source: Uint8Array): number {
     refuse("Revisioni incrementali, xref ibridi o puntatori xref non supportati.");
   }
   const footer = sourceText.slice(offset, marker);
-  const trailerLines = /(?:^|[\r\n])[ \t]*trailer(?=[\x00\t\n\f\r %<])/gu;
+  const trailerLines = /(?:^|[\x00\t\n\f\r ])[ \t]*trailer(?=[\x00\t\n\f\r %<])/gu;
   const trailer = trailerLines.exec(footer);
   if (!trailer || trailerLines.exec(footer) ||
     sourceText.lastIndexOf("trailer") !== offset + trailer.index + trailer[0].lastIndexOf("trailer")) {
     refuse("Trailer PDF ambiguo: riferimenti incrociati non verificabili.");
+  }
+  // There can be no footer markers inside a classic xref table *before* its
+  // trailer. This also refuses a flood of malformed marker candidates there,
+  // without rejecting normal content-stream text or a benign trailer comment.
+  const priorStartxref = footer.indexOf("startxref");
+  const priorEof = footer.indexOf("%%EOF");
+  if ((priorStartxref >= 0 && priorStartxref < trailer.index)
+    || (priorEof >= 0 && priorEof < trailer.index)) {
+    refuse("Sezione xref con terminatori PDF ambigui non supportata.");
   }
   // PDF trivia between 'trailer' and its dictionary can include form-feed,
   // comments, and CR/LF. The shared parser already recognizes all of these;
