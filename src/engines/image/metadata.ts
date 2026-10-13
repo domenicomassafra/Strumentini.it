@@ -245,11 +245,29 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
     if (!sawFrameHeader || !quantizationReferencesKnown) {
       complete = false;
     } else {
-      for (const item of quantizationSegments) {
+      // A later DQT definition can replace an earlier definition with the
+      // same table ID. The earlier table's coefficients remain recoverable
+      // bytes even when every SOF component uses that ID. Flag the superseded
+      // definition's segment, keeping the final raster table neutral.
+      // A repeated ID does not prove private content; count each segment once.
+      const lastDefinitionSegment = new Map<number, number>();
+      const redefinedSegments = new Set<number>();
+      for (const [index, item] of quantizationSegments.entries()) {
+        for (const table of item.tables) {
+          const previous = lastDefinitionSegment.get(table);
+          if (previous !== undefined) {
+            redefinedSegments.add(previous);
+          }
+          lastDefinitionSegment.set(table, index);
+        }
+      }
+      for (const [index, item] of quantizationSegments.entries()) {
         if (item.tables.some((table) => !referencedQuantizationTables.has(table))) {
           // These bytes are legal JPEG syntax but are not needed to decode the
           // image. Their contents are unverified, not proven to be private.
           segments.push(segment("ancillary", "JPEG DQT unreferenced", item.bytes));
+        } else if (redefinedSegments.has(index)) {
+          segments.push(segment("ancillary", "JPEG DQT redefined", item.bytes));
         }
       }
     }
