@@ -10,13 +10,13 @@
   },
   "totals": {
     "all": 424,
-    "completed": 304,
+    "completed": 306,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 287,
-    "open": 120,
-    "readyDAG": 34,
-    "ready-for-agent": 27,
-    "dependency-blocked": 86,
+    "completedWithoutExplicitRefusal": 289,
+    "open": 118,
+    "readyDAG": 33,
+    "ready-for-agent": 26,
+    "dependency-blocked": 85,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
     "capability-blocked": 0,
@@ -324,10 +324,12 @@
       345,
       346,
       348,
+      351,
       365,
       408,
       410,
-      413
+      413,
+      415
     ],
     "ready-for-agent": [
       47,
@@ -341,7 +343,7 @@
       347,
       349,
       350,
-      351,
+      352,
       363,
       366,
       367,
@@ -355,8 +357,7 @@
       397,
       404,
       406,
-      407,
-      415
+      407
     ],
     "dependency-blocked": [
       8,
@@ -391,7 +392,6 @@
       247,
       279,
       332,
-      352,
       353,
       354,
       355,
@@ -4085,9 +4085,9 @@
     {
       "id": 351,
       "title": "Tre direzioni redesign non cosmetiche",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
@@ -4095,12 +4095,10 @@
     {
       "id": 352,
       "title": "Selezione owner direzione visuale",
-      "storedStatus": "blocked",
-      "expectedLifecycle": "blocked",
-      "executionCategory": "dependency-blocked",
-      "unresolvedDependencies": [
-        351
-      ],
+      "storedStatus": "ready-for-agent",
+      "expectedLifecycle": "ready-for-agent",
+      "executionCategory": "ready-for-agent",
+      "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false
     },
@@ -4854,9 +4852,9 @@
     {
       "id": 415,
       "title": "Per-tool base claim proof and certification coverage",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false

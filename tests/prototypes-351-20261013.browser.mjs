@@ -35,6 +35,27 @@ for (const [browserName, browserType] of [["chromium", chromium], ["webkit", web
     assert.equal(response?.status(), 200, `${browserName} prototype route needs to exist`);
     assert.match(await page.locator('meta[name="robots"]').getAttribute("content"), /noindex/u);
     assert.equal(await page.locator("[data-direction]").count(), 3);
+    // Original AC-351.2/.3: compare genuinely distinct IA/interactions via the
+    // actual visible owner rubric, not merely three different color palettes.
+    const rubric = page.locator(".study-rubric table");
+    assert.equal(await rubric.locator("thead th").count(), 4);
+    assert.deepEqual((await rubric.locator("thead th").allInnerTexts()).map(text => text.trim()),
+      ["Criterio", "Minimal", "Editoriale", "Workspace"]);
+    assert.equal(await rubric.locator("tbody tr").count(), 5);
+    const criteria = await rubric.locator("tbody tr").evaluateAll((rows) => rows.map((row) => ({
+      label: row.querySelector("th")?.textContent?.trim(),
+      options: [...row.querySelectorAll("td")].map((cell) => cell.textContent?.trim() ?? ""),
+    })));
+    assert.deepEqual(criteria.map((criterion) => criterion.label),
+      ["Ingresso", "Orientamento", "Risultato", "Tastiera", "Mobile"]);
+    for (const criterion of criteria) {
+      assert.equal(criterion.options.length, 3, `${browserName}/${criterion.label}: three IA alternatives`);
+      assert.equal(new Set(criterion.options).size, 3,
+        `${browserName}/${criterion.label}: non-cosmetic distinctions, not repeated descriptions`);
+      assert(criterion.options.every((value) => value.length >= 5));
+    }
+    assert.match(await page.locator(".study-rubric").innerText(), /La direzione visiva resta da scegliere/iu,
+      "The comparison is available but owner design selection remains unmade");
     await page.locator('[data-switch="minimal"]').focus();
     await page.keyboard.press("Tab");
     if (browserName === "webkit" && await page.evaluate(() => document.activeElement?.getAttribute("data-switch")) !== "editorial") {

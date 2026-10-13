@@ -8,7 +8,7 @@
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 
@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-351.1: Minimal/editoriale/workspace mostrano gli stessi journey desktop/mobile.
-- [ ] AC-351.2: Confronto include IA/interazioni non solo colori.
-- [ ] AC-351.3: Tre prototipi cliccabili eseguono gli stessi job PDF merge, CSV cleaning e UTM export con stati errore/progresso/risultato, testati a 320/390/768/1024/1440 e confrontati su IA, tastiera e rubrica predefinita.
+- [x] AC-351.1: Minimal/editoriale/workspace mostrano gli stessi journey desktop/mobile.
+- [x] AC-351.2: Confronto include IA/interazioni non solo colori.
+- [x] AC-351.3: Tre prototipi cliccabili eseguono gli stessi job PDF merge, CSV cleaning e UTM export con stati errore/progresso/risultato, testati a 320/390/768/1024/1440 e confrontati su IA, tastiera e rubrica predefinita.
 
 **Verification:** Prototipi e rubric 320/390/1440; independently inspect output/record and test bounded failures.
 
@@ -71,3 +71,13 @@ After the token correction passed 14/14 local tests, updated PR #30 CI failed at
 Scelta del design rinviata alla fine e svolta manualmente dall’owner. Nessuna direzione scelta in questo round; continuare i ticket tecnici indipendenti senza imporre una scelta anticipata.
 
 Decisione acquisita, non nuova implementation/runtime acceptance; status e checkbox esistenti invariati. Tutto il lavoro autorizzato resta nello scope, riuso prima del codice e gate originali preservati.
+
+## 2026-10-13 — original three-prototype feasibility AC351.1–3 accepted, #352 remains unchosen (NO DEPLOY)
+
+**Original study boundary:** The acceptance contract explicitly requires three genuinely different clickable design directions, same executable PDF merge/CSV clean/UTM export jobs, progress/error/result states, real 320/390/768/1024/1440 width checks, keyboard interaction and an IA comparison rubric. The ticket explicitly states owner design selection is a later **#352** decision and hardware/server are **not prerequisites** for this feasibility study. No owner choice or product-wide redesign is inferred from checking the three study ACs.
+
+**Current source and actual artifacts:** The isolated non-indexed `/prototipi/351/` study is source-merged since PR #30. `src/pages/prototipi/351.astro` contains three distinct navigation structures (minimal action index, editorial chapter index and workspace activity rail), each with independent visible `JobCanvas` and download/result state. A real visible 5-criterion, 3-direction rubric compares **Ingresso, Orientamento, Risultato, Tastiera, Mobile**, not superficial colors. CSS draws from the approved existing semantic token sheet, not a fourth competing design system. Canonical build inspection restricts this experimental route exactly, excludes it from catalog/sitemap and rejects indexable/wildcard arbitrary extras.
+
+**Source-bound independent real-browser proof:** Bounded addition to the existing `tests/prototypes-351-20261013.browser.mjs` now inspects actual visible rubric table and checks 4 headings, all five criteria and three independently different IA/interaction descriptions per row; it also asserts the interface honestly says final owner selection remains open. Against freshly rebuilt static Astro 293 pages (build, catalog and certification inspection PASS), **Chromium and WebKit both PASS** the entire previously implemented 3 directions × three true first-party engine jobs: PDF merge from real source bytes independently reopened as four-page output by PDF.js; CSV output preserves quoted and leading-zero values; UTM TXT downloaded bytes equal displayed URL. Both browsers check 320/390/768/1024/1440 widths without horizontal overflow, keyboard activation, reduced motion, cancel/error/resume and prior-valid-output preservation, zero POST/off-origin network. Test is source-accurate, not a mock renderer, and it reuses existing `JobCanvas`/engine production path without changing runtime code. `tests/design-system.test.ts` 14/14 previously PASS and CI PR #30 succeeded at exact integrated source SHA.
+
+**Disposition:** Original **AC351.1/.2/.3** are checked for the explicit feasibility/prototype study. **#351 completed as study only**. The unchosen product-wide design selection (#352), any global redesign rollout (#353), hardware iOS/Android, full WCAG/AT, user-experience/performance lab, Cloudflare preview or production, security/release readiness and Gold remain **NOT_RUN / OPEN** in their distinct downstream gates. This is not a decision among the prototypes, nor a release/deploy authorization.

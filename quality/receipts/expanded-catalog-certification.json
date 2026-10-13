@@ -35697,7 +35697,8 @@
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
-          "tests/file-privacy-modules.test.ts"
+          "tests/file-privacy-modules.test.ts",
+          "tests/per-tool-proof-415-20261013-negative-engine-sample.test.ts"
         ]
       },
       "oracle": {

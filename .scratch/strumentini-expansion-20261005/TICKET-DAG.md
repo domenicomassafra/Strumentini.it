@@ -27,7 +27,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **347 — P0 Badge Gold fingerprint frontend backend**
 - **349 — File server opt-in TTL delete prova**
 - **350 — P0 Accessibilità AA di base e advanced**
-- **351 — Tre direzioni redesign non cosmetiche**
+- **352 — Selezione owner direzione visuale**
 - **363 — Budget memoria mobile editor reali**
 - **366 — Licenze e provenance donor pinning**
 - **367 — Codec immagini local vs donor**
@@ -42,9 +42,8 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **404 — Change scoped CI and cumulative release validation**
 - **406 — Independent PDF redaction attack corpus**
 - **407 — Hostile parsers and archive resource safety**
-- **415 — Per-tool base claim proof and certification coverage**
 
-Exactly **34** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **33** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -411,8 +410,8 @@ Exactly **34** incomplete tickets currently have every declared numeric blocker 
 | 348 | completed | Server opt-in gratis feasibility | — |
 | 349 | ready-for-agent | File server opt-in TTL delete prova | 348 |
 | 350 | ready-for-agent | P0 Accessibilità AA di base e advanced | — |
-| 351 | ready-for-agent | Tre direzioni redesign non cosmetiche | — |
-| 352 | blocked | Selezione owner direzione visuale | 351 |
+| 351 | completed | Tre direzioni redesign non cosmetiche | — |
+| 352 | ready-for-agent | Selezione owner direzione visuale | 351 |
 | 353 | blocked | IA e design system dopo scelta | 352 |
 | 354 | blocked | Redesign home file-first search-first | 333, 352, 353 |
 | 355 | blocked | Redesign catalogo ricerca categorie | 352, 353 |
@@ -475,7 +474,7 @@ Exactly **34** incomplete tickets currently have every declared numeric blocker 
 | 412 | blocked | Editor project schema and forward-safe migrations | 341, 379, 385 |
 | 413 | completed | Curated catalog with all routes preserved | — |
 | 414 | blocked | Commercial engine vendor proposal and license gate | 366 |
-| 415 | ready-for-agent | Per-tool base claim proof and certification coverage | 408 |
+| 415 | completed | Per-tool base claim proof and certification coverage | 408 |
 | 416 | blocked | Safe ZIP GZIP archive compression and extraction | 407 |
 | 417 | blocked | PDF password encrypt decrypt legitimate unlock engine study | 369 |
 | 418 | blocked | PDF repair tolerant recovery bounded and independently proved | 369 |
