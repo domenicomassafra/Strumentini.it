@@ -1,0 +1,46 @@
+import { describe, expect, it } from "vitest";
+import { buildImpactPlan } from "../scripts/ci-change-impact-404";
+
+const tests = [
+  "tests/release-validation.test.ts",
+  "tests/donor-provenance-366.test.ts",
+  "tests/ci-change-impact-404.test.ts",
+];
+
+describe("#404 reviewed source-input coverage rather than docs-only bypass", () => {
+  it("does not skip provenance audit when the exact source donor snapshot changes", () => {
+    const plan = buildImpactPlan(["docs/audit-2026-10-10/donor-packages.json"], tests);
+    expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(plan.domains).toContain("ci");
+    expect(plan.gates).toContainEqual(expect.objectContaining({ id: "security-review", status: "NOT_RUN" }));
+    expect(plan.commands).toContainEqual({ program: "npm", args: ["run", "test"] });
+    expect(buildImpactPlan(["docs/audit-2026-10-10/README.md"], tests).status).toBe("DOCS_ONLY");
+  });
+
+  it("executes actual Python dashboard tests on script and unittest source changes", () => {
+    for (const path of [
+      ".scratch/strumentini-expansion-20261005/ticket_dashboard.py",
+      ".scratch/strumentini-expansion-20261005/validate_backlog.py",
+      "tests/test_ticket_dashboard.py",
+    ]) {
+      const plan = buildImpactPlan([path], tests);
+      expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+      expect(plan.gates).toContainEqual(expect.objectContaining({ id: "security-review", status: "NOT_RUN" }));
+      expect(plan.commands).toContainEqual({ program: "npm", args: ["run", "tickets:test"] });
+    }
+    const docsPR = buildImpactPlan([
+      "PROJECT-STATUS.md", "HANDOFF.md", ".scratch/strumentini-expansion-20261005/ticket_dashboard.py",
+      "tests/test_ticket_dashboard.py",
+    ], tests);
+    expect(docsPR.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(docsPR.commands).toContainEqual({ program: "npm", args: ["run", "tickets:test"] });
+  });
+
+  it("keeps ordinary docs-only paths source-check-free and unknown paths fail-closed", () => {
+    const docs = buildImpactPlan(["docs/notes.md", "README.md"], tests);
+    expect(docs).toMatchObject({ status: "DOCS_ONLY", commands: [], gates: [] });
+    const unknown = buildImpactPlan([".unexpected/loader.sh"], tests);
+    expect(unknown.status).toBe("NO_GO");
+    expect(unknown.commands).toEqual([]);
+  });
+});

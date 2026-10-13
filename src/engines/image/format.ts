@@ -60,6 +60,7 @@ function parsePng(bytes: Uint8Array): ImageHeader | null {
   // Browser decoders honor PNG eXIf before IDAT; the displayed canvas axes
   // therefore differ from the raw IHDR axes for orientations 5..8.
   let orientation: number | null = null;
+  let sawExif = false;
   for (let at = 33; at + 8 <= bytes.length;) {
     const chunkLength = be32(bytes, at);
     if (ascii(bytes, at + 4, "IDAT") || ascii(bytes, at + 4, "IEND")) break;
@@ -71,6 +72,11 @@ function parsePng(bytes: Uint8Array): ImageHeader | null {
       throw new ImageResizeError("TRUNCATED_IMAGE", "PNG metadata before IDAT exceeds the header sample");
     }
     if (isExif) {
+      // PNG allows exactly one eXIf. Native decoders may ignore a later chunk
+      // even when the first TIFF has no usable orientation; never trust the
+      // second chunk as authority for canvas geometry.
+      if (sawExif) throw new ImageResizeError("CORRUPT_IMAGE", "PNG has conflicting or duplicate eXIf chunks");
+      sawExif = true;
       // Invalid ancillary CRC is ignored by native PNG decoders: it must not
       // become authority for a displayed-axis swap in our preflight parser.
       if (pngChunkCrc(bytes, at + 4, end - 4) !== be32(bytes, end - 4)) {
