@@ -8,7 +8,7 @@
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** completed
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 
@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-347.1: Badge fonte-bound copre worker/backend e codice rilevante.
-- [ ] AC-347.2: Worker modificato invalida claim pertinenti.
-- [ ] AC-347.3: On the scoped input and failure cases, verify: Simulated worker diff and badge check. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
+- [x] AC-347.1: Badge fonte-bound copre worker/backend e codice rilevante.
+- [x] AC-347.2: Worker modificato invalida claim pertinenti.
+- [x] AC-347.3: On the scoped input and failure cases, verify: Simulated worker diff and badge check. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
 
 **Verification:** Simulated worker diff and badge check; independently inspect output/record and test bounded failures.
 
@@ -101,3 +101,13 @@ The new `--check` mode exits **before** static build inspection, browser/server 
 **Prove:** primo blocco di test `tests/gold-source-347-20261013-receipt-owner.test.ts`, `tests/gold-source-binding-347.test.ts`, `tests/gold-source-binding-wave20-347.test.ts`, `tests/current-revision-worker-347.test.ts`, `tests/current-revision.test.ts`, `tests/browser-evidence-fingerprint-347.test.ts`, `tests/onboarding.test.ts` → **27/27 PASS**; secondo blocco `tests/gold-official-generator-347.test.ts`, `tests/release-scope-405.test.ts`, `tests/release-validation.test.ts` → **27/27 PASS** (totale 54/54). TypeScript circoscritto `tsc --ignoreConfig --noEmit --skipLibCheck --moduleResolution bundler --module esnext --target es2023 --types node --allowImportingTsExtensions --lib es2023,dom` su sorgente e nuovo test → **PASS**. `tsx scripts/tool-factory/generate-catalog.ts --check` → **PASS, 269 catalog tool, 0 Gold, output invariati**; `npm run tickets:check` → **PASS, zero mismatch**; `git diff --check` sui file in ownership → PASS. Nessun edit a scripts/receipts/registry/catalog/CI/lock, altri worker o Git stage/commit/push/PR da questa tranche.
 
 **Limiti e gate aperti:** il precedente indice Gold `buildGoldQualityIndex` resta intenzionalmente usabile solo per fixture storiche (non percorso pubblico). Il test di successo qui è una *simulazione fonte-corrente controllata*, non un receipt reale di un consumer, né prova globale che ogni contenuto di `identities`, oracle o fixture sia stato validato da un'autorità indipendente. La pipeline attuale continua a pubblicare **0 Gold veri**, e gli AC-347.1/.2/.3 rimangono **unchecked / OPEN** fino alla certificazione source-bound per-tool realmente indipendente, prove fisiche/release/rollback e gate owner. Nessuna approvazione Gold o deploy implicita.
+
+## 2026-10-13 — original source-fingerprint/badge invalidation AC347.1–3 verified (NO GOLD ISSUANCE)
+
+**Narrow original contract, not release certification:** The ACs require a Gold display/fingerprint check bound to relevant frontend, Worker/backend and D1 sources, stale invalidation after a Worker edit, and specifically a **simulated Worker diff + badge check**. These are source-validation *mechanics*. They do not require falsely issuing production Gold receipts or publishing a Cloudflare release when source/provider/physical gates are blocked. The 2026-10-11 historical appendices correctly recorded earlier missing positive test and stale matrix; they do not supersede the exact now-proven original simulated ACs.
+
+**Canonical behavior:** `scripts/lib/current-revision.ts`'s `canonical-global-sha256-v2` hashes current `src/` executable code, Worker entry/helpers, D1 migrations, tests, release/asset/source inputs and dependencies; only strictly validated *derived* Gold output fields are normalized to avoid self-referential cycles. `scripts/tool-factory/generate-catalog.ts` and `src/onboarding/quality.ts` require receipt byte identity, exact source fingerprint and per-tool current candidate gate before a public Gold can appear. The browser matrix `--check` now consumes the SAME canonical v2 scope and refuses historical/stale outputs without writing a receipt.
+
+**Current exact source tests (Chrome not needed for synthetic generator):** On isolated clean source matching main `77168a7a05a84a372637a82c3c3d998de3a733bf`, first `npm run catalog:build` generated 269 tools and **0 current Gold**; then fresh source-bound `vitest run tests/gold-source-binding-347.test.ts tests/current-revision-worker-347.test.ts tests/gold-official-generator-347.test.ts tests/browser-evidence-fingerprint-347.test.ts tests/onboarding.test.ts tests/gold-source-binding-wave20-347.test.ts --maxWorkers=1 --fileParallelism=false --testTimeout=120000` completed **26/26 PASS**. Crucial positive is the **actual official generator**, not a fake UI: in a disposable synthetic Git fixture with a deliberately tagged synthetic receipt, pdf-rotate's source-bound Gold appears in generated quality/search and stays fixed-point under a repeat generation; altering Worker entrypoint or adding a real D1 migration invalidates the generator's check and removes projected Gold from BOTH generated public outputs. `tests/gold-source-binding-wave20-347.test.ts` checks the actual release CLI goes PASS→FAIL after maliciously changing only copied synthetic receipt bytes; browser matrix `--check` rejects source-stale/no-v2 evidence and leaves files untouched. No genuine Gold receipt, tool, D1 migration, vendor code, provider or production file was changed by these tests. `npm run certification:check` 269 catalog PASS.
+
+**Original AC disposition only:** **AC347.1/.2/.3 checked, ticket `completed` as a source-control guard.** Actual live source has **0 independently source-verified Gold** (historical `quality/receipts/expanded-catalog-certification.json` labels are NOT current Gold), and the historical physical browser matrix is **STALE**. Reissuing *actual* per-tool proof, independent security/physical tests, current-source receipts, official-source/year/rights, real release preview/rollback and deployment remain **NOT_RUN/NO_GO** under separate #404/#415/release gates. This closure cannot display a Gold badge, approve another device, or authorize publish.
