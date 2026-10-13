@@ -2,8 +2,9 @@
  * #047 donor-first, isolated browser-only image compression.
  *
  * Actual installed donors: `fflate` (MIT, streamed zlib PNG engine in
- * png-lossless-47.ts) and browser native Canvas JPEG/WebP encoders (browser
- * platform APIs, not MozJPEG/libwebp expert or lossless-encoder promises).
+ * png-lossless-47.ts and bounded exact/lossy palette encoder in
+ * png-palette-lossy-47.ts) and browser native Canvas JPEG/WebP encoders
+ * (browser platform APIs, not MozJPEG/libwebp expert or lossless-encoder promises).
  * `sharp` (Apache-2.0/native libvips) is used by tests for independent output
  * reopening, NEVER shipped as a client codec. @jsquash, pngquant and oxipng
  * WASM codecs are not installed, so those paths MUST remain unavailable.
@@ -18,12 +19,13 @@ export const DONOR_47_CAPABILITIES = Object.freeze({
   pngLossless: { supported: true, codec: "fflate", alpha: "byte-exact", note: "verified original scanlines/palette/tRNS/metadata" },
   jpegLossy: { supported: true, codec: "browser-canvas", alpha: "refuse-transparent", note: "normal/compact quality hints; browser owns encoding specifics" },
   webpLossy: { supported: true, codec: "browser-canvas", alpha: "verify-decoded-exact", note: "VP8 lossy subtype and exact decoded alpha verification, no effort control" },
-  pngPaletteLossy: { supported: false, reason: "No browser-safe palette quantization/repacker installed; original 47 PNG IDAT remains lossless." },
+  pngPaletteExact: { supported: true, codec: "fflate", alpha: "byte-exact", note: "8-bit RGB/RGBA with <=256 colors, metadata gate, strict indexed PNG reparse" },
+  pngPaletteLossy: { supported: true, codec: "fflate", alpha: "byte-exact", note: "8-bit RGB/RGBA quantized RGB <=32 channel error; exact alpha; 4 or fewer alpha levels" },
   webpLossless: { supported: false, reason: "Canvas has no portable WebP lossless/effort API; no @jsquash/webp WASM installed." },
   jpegNativeExpert: { supported: false, reason: "Canvas does not expose quantization tables, progressive, chroma sampling or MozJPEG; no WASM donor installed." },
 });
 
-export type DonorMode47 = "png-lossless" | "jpeg-normal" | "jpeg-compact" | "webp-lossy";
+export type DonorMode47 = "png-lossless" | "png-palette-exact" | "png-palette-lossy" | "jpeg-normal" | "jpeg-compact" | "webp-lossy";
 export interface DonorOptions47 {
   readonly mode: DonorMode47;
   /** Browser quality *hint*, not quantizer/expert/effort guarantee. */
@@ -44,8 +46,11 @@ export interface DonorResult47 {
   readonly keptOriginal: boolean;
   readonly codec: "fflate" | "browser-canvas";
   readonly encoderQualityHint: number | null;
-  readonly verification: "exact-filtered-scanlines" | "independent-browser-redecode-and-alpha";
+  readonly verification: "exact-filtered-scanlines" | "strict-png-reparse-and-alpha" | "independent-browser-redecode-and-alpha";
   readonly alphaPolicy: "exact" | "no-alpha";
+  readonly paletteColors?: number;
+  readonly pixelPolicy?: "exact" | "lossy-rgb" | "original-unmodified";
+  readonly maxObservedChannelError?: number;
   readonly caveats: readonly string[];
 }
 
@@ -146,8 +151,8 @@ function isWebpLossy(bytes: Uint8Array): boolean {
 /** No uploads or server codec; all binary work executes in the caller's browser. */
 export async function compressImageWithDonor47(input: Blob, options: DonorOptions47): Promise<DonorResult47> {
   check(options?.signal);
-  if (!options || !(["png-lossless", "jpeg-normal", "jpeg-compact", "webp-lossy"] as string[]).includes(options.mode)) {
-    error("UNSUPPORTED_MODE", "No portable WebP lossless, JPEG expert or PNG palette quantizer donor installed");
+  if (!options || !(["png-lossless", "png-palette-exact", "png-palette-lossy", "jpeg-normal", "jpeg-compact", "webp-lossy"] as string[]).includes(options.mode)) {
+    error("UNSUPPORTED_MODE", "No portable WebP lossless or JPEG expert codec donor installed");
   }
   if (!(input instanceof Blob) || input.size < 30 || input.size > MAX_BYTES) error("INVALID_INPUT", "Nonempty image <=4 MiB required");
   const headerBytes = new Uint8Array(await input.arrayBuffer());
@@ -172,6 +177,31 @@ export async function compressImageWithDonor47(input: Blob, options: DonorOption
       savedBytes: result.savedBytes, savedPercent: result.savedPercent, keptOriginal: result.keptOriginal,
       codec: "fflate", encoderQualityHint: null, verification: "exact-filtered-scanlines", alphaPolicy: "exact",
       caveats: [result.note] };
+  }
+
+  if (options.mode === "png-palette-exact" || options.mode === "png-palette-lossy") {
+    if (header.mime !== "image/png") error("MODE_MISMATCH", "PNG palette requires a PNG input");
+    if (options.qualityHint !== undefined) error("INVALID_QUALITY", "PNG palette uses exact or bounded RGB quantization, not a browser quality hint");
+    // Reuse the already verified public PNG palette codec; load it only for
+    // explicitly selected modes, without pulling the encoder into JPEG/WebP.
+    const { quantizePngPalette47 } = await import("./png-palette-lossy-47");
+    check(options.signal);
+    const result = await quantizePngPalette47(input, {
+      mode: options.mode === "png-palette-exact" ? "exact" : "lossy",
+      ...(options.signal === undefined ? {} : { signal: options.signal }),
+    });
+    check(options.signal);
+    return {
+      blob: result.blob, mode: options.mode, inputMime: "image/png", outputMime: "image/png",
+      width: result.width, height: result.height,
+      originalBytes: result.originalBytes, outputBytes: result.outputBytes,
+      savedBytes: result.savedBytes, savedPercent: result.savedPercent, keptOriginal: result.keptOriginal,
+      codec: "fflate", encoderQualityHint: null,
+      verification: "strict-png-reparse-and-alpha", alphaPolicy: "exact",
+      paletteColors: result.paletteColors, pixelPolicy: result.pixelPolicy,
+      maxObservedChannelError: result.maxObservedChannelError,
+      caveats: [result.note],
+    };
   }
 
   if (typeof document === "undefined") error("BROWSER_UNAVAILABLE", "JPEG and WebP modes require browser Canvas and ImageBitmap");

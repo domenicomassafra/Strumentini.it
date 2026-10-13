@@ -13,7 +13,8 @@ describe("#047 installed donor adapter, no falsely advertised wasm/expert contro
       pngLossless: { supported: true, codec: "fflate", alpha: "byte-exact" },
       jpegLossy: { supported: true, codec: "browser-canvas", alpha: "refuse-transparent" },
       webpLossy: { supported: true, codec: "browser-canvas", alpha: "verify-decoded-exact" },
-      pngPaletteLossy: { supported: false },
+      pngPaletteExact: { supported: true, codec: "fflate" },
+      pngPaletteLossy: { supported: true, codec: "fflate" },
       webpLossless: { supported: false },
       jpegNativeExpert: { supported: false },
     });
