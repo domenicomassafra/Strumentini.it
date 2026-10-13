@@ -156,8 +156,10 @@ export function createProofMap415(
     const registryBinding=registeredOracleIds.has(tool.gold.oracleEntryId) &&
       tool.gold.fixtureFamilies.every(f=>registeredFixtureIds.has(f))?"REGISTERED":"PENDING_REGISTRY_OR_FIXTURE";
     // Even a byte-valid receipt cannot be current proof for a withdrawn
-    // oracle or fixture registration.
-    const verified=current && registryBinding==="REGISTERED"?current:undefined;
+    // oracle/fixture or a route whose current manifest/page is missing.
+    // Source errors must never coexist with a VERIFIED route claim.
+    const verified=current && source.manifestPresent && source.pagePresent &&
+      registryBinding==="REGISTERED"?current:undefined;
     entries.push({
       toolId:tool.id,route:tool.route,jobs:[...tool.jobs],inputs:[...tool.inputTypes],
       resultClass:tool.result?.class ?? null,limits,
