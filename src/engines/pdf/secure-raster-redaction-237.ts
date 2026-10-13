@@ -86,9 +86,12 @@ export function assertSupportedSource237(source: Uint8Array): number {
   // This redaction profile admits one complete PDF revision only, so refuse
   // ambiguous multiple xref/EOF sections BEFORE trusting any trailer model.
   const sourceText = new TextDecoder("latin1").decode(source);
-  const xrefSections = sourceText.match(/(?:^|[\r\n])[ \t]*startxref[ \t]*(?=\r?\n)/gu) ?? [];
-  const eofSections = sourceText.match(/(?:^|[\r\n])[ \t]*%%EOF[ \t]*(?=\r?\n|$)/gu) ?? [];
-  if (xrefSections.length !== 1 || eofSections.length !== 1) {
+  // Do not materialize every regex match from untrusted input: stop at two
+  // sections, which are already sufficient to refuse this one-revision profile.
+  const xrefSections = /(?:^|[\r\n])[ \t]*startxref[ \t]*(?=\r?\n)/gu;
+  const eofSections = /(?:^|[\r\n])[ \t]*%%EOF[ \t]*(?=\r?\n|$)/gu;
+  if (!xrefSections.exec(sourceText) || xrefSections.exec(sourceText) ||
+    !eofSections.exec(sourceText) || eofSections.exec(sourceText)) {
     refuse("Revisioni incrementali o terminatori PDF ambigui non supportati.");
   }
   // The shared lightweight parser scans for the *last text occurrence* of
@@ -96,18 +99,36 @@ export function assertSupportedSource237(source: Uint8Array): number {
   // table can therefore hide its effective /XRefStm behind a comment decoy
   // without adding another startxref/EOF. Anchor this restricted admission
   // profile to the actual classic xref offset and its only trailer line.
-  const declaration = [...sourceText.matchAll(/(?:^|[\r\n])[ \t]*startxref[ \t]*\r?\n[ \t]*(\d+)[ \t]*(?=\r?\n)/gu)];
-  if (declaration.length !== 1) refuse("Puntatore startxref ambiguo o non supportato.");
-  const offset = Number(declaration[0]![1]);
-  const marker = (declaration[0]!.index ?? 0) + declaration[0]![0].lastIndexOf("startxref");
+  const declaration = /(?:^|[\r\n])[ \t]*startxref[ \t]*\r?\n[ \t]*(\d+)[ \t]*(?=\r?\n)/u.exec(sourceText);
+  if (!declaration) refuse("Puntatore startxref ambiguo o non supportato.");
+  const offset = Number(declaration[1]);
+  const marker = (declaration.index ?? 0) + declaration[0].lastIndexOf("startxref");
   if (!Number.isSafeInteger(offset) || offset < 0 || offset >= marker || sourceText.slice(offset, offset + 4) !== "xref") {
     refuse("Revisioni incrementali, xref ibridi o puntatori xref non supportati.");
   }
   const footer = sourceText.slice(offset, marker);
-  const trailers = [...footer.matchAll(/(?:^|[\r\n])[ \t]*trailer[ \t]*(?=\r?\n|<<)/gu)];
-  if (trailers.length !== 1 ||
-    sourceText.lastIndexOf("trailer") !== offset + (trailers[0]!.index ?? 0) + trailers[0]![0].lastIndexOf("trailer")) {
+  const trailerLines = /(?:^|[\r\n])[ \t]*trailer(?=[\x00\t\n\f\r %<])/gu;
+  const trailer = trailerLines.exec(footer);
+  if (!trailer || trailerLines.exec(footer) ||
+    sourceText.lastIndexOf("trailer") !== offset + trailer.index + trailer[0].lastIndexOf("trailer")) {
     refuse("Trailer PDF ambiguo: riferimenti incrociati non verificabili.");
+  }
+  // PDF trivia between 'trailer' and its dictionary can include form-feed,
+  // comments, and CR/LF. The shared parser already recognizes all of these;
+  // require the SAME actual keyword to lead to a dictionary, not a decoy.
+  let cursor = trailer.index + trailer[0].length;
+  while (cursor < footer.length) {
+    const code = footer.charCodeAt(cursor);
+    if (code === 0 || code === 9 || code === 10 || code === 12 || code === 13 || code === 32) {
+      cursor += 1;
+    } else if (code === 37) {
+      while (cursor < footer.length && footer[cursor] !== "\n" && footer[cursor] !== "\r") cursor += 1;
+    } else {
+      break;
+    }
+  }
+  if (footer.slice(cursor, cursor + 2) !== "<<") {
+    refuse("Trailer PDF non seguito da un dizionario verificabile.");
   }
   const model = parsePdf(source);
   if (model.encrypted) refuse("PDF cifrato non supportato.");
