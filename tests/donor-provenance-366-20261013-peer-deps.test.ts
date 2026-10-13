@@ -126,12 +126,21 @@ describe("#366 read-only runtime peer dependency provenance on authentic npm loc
     expect(outcome.failures).toContain("INVALID_SRI node_modules/preact");
   });
 
-  it.each(["dev", "devOptional"] as const)("refuses a present optional peer marked %s", flag => {
+  it("refuses a present optional peer marked strictly dev", () => {
     const { lock, manifest } = caseGraph({ optional: true });
-    lock.packages[peerPath]![flag] = true;
+    lock.packages[peerPath]!.dev = true;
     expect(auditLockedPackages366(lock, manifest).failures).toContain(
       "DEV_ONLY_PEER node_modules/preact-render-to-string -> node_modules/preact",
     );
+  });
+
+  it("allows a present optional devOptional peer with valid locked provenance", () => {
+    const { lock, manifest } = caseGraph({ optional: true });
+    // npm lock-v3 devOptional is both a dev dependency and an OPTIONAL
+    // dependency of a non-dev consumer, rather than always dev-only.
+    lock.packages[peerPath]!.devOptional = true;
+    expect(auditLockedPackages366(lock, manifest))
+      .toMatchObject({ status: "VERIFIED_METADATA", failures: [] });
   });
 
   it("resolves the closest ancestor sibling peer, not an incompatible top-level peer", () => {

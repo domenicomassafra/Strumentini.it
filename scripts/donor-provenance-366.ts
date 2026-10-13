@@ -114,13 +114,21 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
   }
   const production = Object.entries(entries).filter(([path, entry]) => path && !entry.dev && !entry.devOptional);
   const rows: Row[] = [];
-  for (const [path, entry] of production) {
+  const metadataChecked = new Set<string>();
+  function auditPackageMetadata(path: string, entry: LockEntry): void {
+    if (metadataChecked.has(path)) return;
+    metadataChecked.add(path);
     const name = packageName(path);
     const version = entry.version ?? "";
     if (!/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.+-]+)?$/u.test(version)) failures.push(`UNKNOWN_VERSION ${path}`);
     if (!knownSpdx(entry.license)) failures.push(`UNKNOWN_LICENSE ${path}`);
     if (!validSha512(entry.integrity)) failures.push(`INVALID_SRI ${path}`);
     if (!validSource(name, version, entry.resolved)) failures.push(`UNVERIFIED_SOURCE ${path}`);
+  }
+  for (const [path, entry] of production) {
+    auditPackageMetadata(path, entry);
+    const name = packageName(path);
+    const version = entry.version ?? "";
     rows.push({ name, version, license: entry.license ?? "UNKNOWN", source: entry.resolved ?? "UNKNOWN", integrity: entry.integrity ?? "UNKNOWN", scope: "production" });
     for (const [depName, spec] of Object.entries(entry.dependencies ?? {})) {
       const target = resolveDependency(depName, path, entries);
@@ -146,11 +154,17 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
       // still need valid production provenance and a compatible pinned version.
       if (!target) {
         if (!optional) failures.push("MISSING_PEER " + path + " -> " + peerName);
-      } else if (entries[target]?.dev || entries[target]?.devOptional) {
+      } else if (entries[target]?.dev || (entries[target]?.devOptional && !optional)) {
         failures.push("DEV_ONLY_PEER " + path + " -> " + target);
-      } else if (!lockedVersionSatisfies(spec, entries[target]?.version)) {
-        const label = optional ? "OPTIONAL_PEER_VERSION_MISMATCH" : "PEER_VERSION_MISMATCH";
-        failures.push(label + " " + path + " -> " + target + " (" + spec + " vs " + (entries[target]?.version ?? "UNKNOWN") + ")");
+      } else {
+        // npm lock v3 devOptional denotes a dev dependency that ALSO supplies
+        // an optional runtime peer; it is not necessarily dev-only. Validate
+        // its metadata even though the ordinary production loop skips it.
+        if (optional && entries[target]?.devOptional) auditPackageMetadata(target, entries[target]!);
+        if (!lockedVersionSatisfies(spec, entries[target]?.version)) {
+          const label = optional ? "OPTIONAL_PEER_VERSION_MISMATCH" : "PEER_VERSION_MISMATCH";
+          failures.push(label + " " + path + " -> " + target + " (" + spec + " vs " + (entries[target]?.version ?? "UNKNOWN") + ")");
+        }
       }
     }
   }
