@@ -91,6 +91,24 @@ export function assertSupportedSource237(source: Uint8Array): number {
   if (xrefSections.length !== 1 || eofSections.length !== 1) {
     refuse("Revisioni incrementali o terminatori PDF ambigui non supportati.");
   }
+  // The shared lightweight parser scans for the *last text occurrence* of
+  // "trailer", including PDF comments. A real single-revision hybrid xref
+  // table can therefore hide its effective /XRefStm behind a comment decoy
+  // without adding another startxref/EOF. Anchor this restricted admission
+  // profile to the actual classic xref offset and its only trailer line.
+  const declaration = [...sourceText.matchAll(/(?:^|[\r\n])[ \t]*startxref[ \t]*\r?\n[ \t]*(\d+)[ \t]*(?=\r?\n)/gu)];
+  if (declaration.length !== 1) refuse("Puntatore startxref ambiguo o non supportato.");
+  const offset = Number(declaration[0]![1]);
+  const marker = (declaration[0]!.index ?? 0) + declaration[0]![0].lastIndexOf("startxref");
+  if (!Number.isSafeInteger(offset) || offset < 0 || offset >= marker || sourceText.slice(offset, offset + 4) !== "xref") {
+    refuse("Revisioni incrementali, xref ibridi o puntatori xref non supportati.");
+  }
+  const footer = sourceText.slice(offset, marker);
+  const trailers = [...footer.matchAll(/(?:^|[\r\n])[ \t]*trailer[ \t]*(?=\r?\n|<<)/gu)];
+  if (trailers.length !== 1 ||
+    sourceText.lastIndexOf("trailer") !== offset + (trailers[0]!.index ?? 0) + trailers[0]![0].lastIndexOf("trailer")) {
+    refuse("Trailer PDF ambiguo: riferimenti incrociati non verificabili.");
+  }
   const model = parsePdf(source);
   if (model.encrypted) refuse("PDF cifrato non supportato.");
   // This security-sensitive path must not interpret one revision while PDF.js
