@@ -199,6 +199,13 @@ export function assertSupportedSource237(source: Uint8Array): number {
     }
   };
   for (const { value } of model.objects.values()) {
+    // A later xref stream may be genuine in PDF.js/pypdf even when its final
+    // %%EOF is truncated or suffixed and our sole complete footer selects an
+    // older classic table. Never admit any parsed cross-reference stream.
+    const type = value.kind === "stream" ? value.dictionary.entries.get("Type") : undefined;
+    if (type?.kind === "name" && type.value === "XRef") {
+      refuse("Revisioni incrementali o xref stream non supportati.");
+    }
     inspectNested(value);
   }
   return model.pages.length;
