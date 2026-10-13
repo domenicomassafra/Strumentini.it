@@ -459,6 +459,15 @@ export function createHeavyLocalJobRunner<TRequest, TResult>(
     workerLease.worker.onmessage = (event) => {
       if (active !== run || run.settled) return;
       const message = event.data;
+      // A worker can send any structured-clone value at runtime, regardless
+      // of its TypeScript response type. Never dereference a null/primitive
+      // packet outside the guarded failure path: it would strand the worker,
+      // owned previews and its pending promise until an unrelated abort.
+      if (typeof message !== "object" || message === null || Array.isArray(message) ||
+        !Number.isSafeInteger(message.jobId)) {
+        failCurrent(new HeavyLocalJobError("PROTOCOL_ERROR", "Heavy worker sent a malformed message envelope."));
+        return;
+      }
       if (message.jobId !== run.jobId) return;
       try {
         if (message.type === "progress") {
