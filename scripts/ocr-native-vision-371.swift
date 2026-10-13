@@ -191,7 +191,9 @@ private func run371(_ options: Arguments371) throws -> [String: Any] {
     return [
         "ticket": 371,
         "decision": "NO_GO",
-        "scope": "MACOS_VISION_LOCAL_SINGLE_HOST_SYNTHETIC_IT_ONLY",
+        "scope": options.language == "it-IT"
+            ? "MACOS_VISION_LOCAL_SINGLE_HOST_SYNTHETIC_IT_ONLY"
+            : "MACOS_VISION_LOCAL_SINGLE_HOST_SYNTHETIC_EN_ONLY",
         "engine": "Apple Vision.framework VNRecognizeTextRequest",
         "host": ["platform": "macOS", "architecture": "arm64"],
         "explicitNetworkApiCalls": 0,
