@@ -131,12 +131,16 @@ function hasUnsafeHtmlMeta407(source: string): boolean {
  * though neither the original url() check nor CSS backslash decoding sees it.
  * Keep this scan linear and inside the detector's bounded text-part budget.
  */
-function hasEntityInCss407(source: string): boolean {
+function hasEntityInCss407(source: string, html5: boolean): boolean {
   if (!source.includes("&")) return false;
-  const attributes = /(?:^|[ \t\r\n\f<])(?:style|fill|stroke|filter|clip-path|mask|marker-(?:start|mid|end)|cursor)[ \t\r\n\f]*=/giu;
+  // HTML5 treats a slash in the before-attribute-name state as a separator,
+  // even without preceding whitespace (<div/style=...>). XML does not.
+  const attributes = /(?:^|[ \t\r\n\f</])(?:style|fill|stroke|filter|clip-path|mask|marker-(?:start|mid|end)|cursor)[ \t\r\n\f]*=/giu;
   const space = (character: string | undefined): boolean =>
     character !== undefined && /[ \t\r\n\f]/u.test(character);
-  while (attributes.exec(source) !== null) {
+  let match: RegExpExecArray | null;
+  while ((match = attributes.exec(source)) !== null) {
+    if (!html5 && match[0].startsWith("/")) continue;
     let at = attributes.lastIndex;
     while (space(source[at])) at++;
     const start = at;
@@ -192,7 +196,7 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
   }
   // A ZIP can store a genuine SVG document under an .xml member name.
   if (kind === "svg" || kind === "html" || /<\s*(?:[^\t\r\n <>/:]+:)?svg\b/iu.test(source)) {
-    if (hasEntityInCss407(source)) {
+    if (hasEntityInCss407(source, kind === "html")) {
       return reject("UNSUPPORTED", "Entity-bearing CSS attributes or SVG styles cannot be trusted before XML/HTML decoding.");
     }
     if (/<\s*(?:[^\t\r\n <>/:]+:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
