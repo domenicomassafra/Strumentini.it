@@ -252,6 +252,13 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
     fail("XLSX_READ_FAILED", "XLSX ZIP preflight failed.");
   }
   if (packageAnalysis.kind !== "xlsx") fail("XLSX_READ_FAILED", "Input ZIP is not an XLSX workbook.");
+  // Workbook-to-workbook dependencies can retain remote targets and stale
+  // external value caches invisible in the extracted CSV. The generic reader
+  // silently discards these parts. Refuse before decoding workbook cells;
+  // ordinary worksheet hyperlink relationships are inert and remain allowed.
+  if (packageAnalysis.entries.some((entry) => /^xl\/externalLinks\//iu.test(entry.path))) {
+    fail("UNSUPPORTED_XLSX_FEATURE", "External workbook dependencies are not supported in CSV import.");
+  }
   const manifest = packageAnalysis.entries.find((entry) => entry.path === "[Content_Types].xml");
   if (!manifest) fail("XLSX_READ_FAILED", "Missing XLSX content types declaration.");
   const xml = readContentTypes(bytes, manifest).replace(/<!--[\s\S]*?-->/gu, "");
@@ -260,6 +267,9 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
   // spreadsheets (including plain hyperlink text) remain importable.
   if (/macroEnabled|vbaProject|application\/vnd\.ms-office\.activeX/iu.test(xml)) {
     fail("UNSUPPORTED_XLSX_FEATURE", "Excel macro or ActiveX content types are not supported in CSV import.");
+  }
+  if (/application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.externalLink\+xml/iu.test(xml)) {
+    fail("UNSUPPORTED_XLSX_FEATURE", "Excel external workbook content types are not supported in CSV import.");
   }
 }
 

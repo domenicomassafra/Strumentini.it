@@ -63,3 +63,50 @@
 - **Two substantive RED→GREEN gaps in the new audit:** Initial cell-value-only comparison returned a misleading no-loss assessment for the rich workbook. New test reproduced RED because formula freshness, rich runs and external-link gates were missing; after feature-level independent comparisons the test passed. A separate RED test on the **existing tracked editable `tests/ooxml-68-corpus/complex.xlsx`** proved a second fail-open: the donor silently dropped **2/2 raster images and 1/1 charts** while preserving the 10 sampled typed cells; the initial audit returned zero mismatches. The corrected oracle counts actual ZIP members and now returns `MEDIA_PARTS_LOST:2->0` and `CHART_PARTS_LOST:1->0`. CLI reproduction (2026-10-12): source **171,698 bytes**, SHA-256 `b79b7b703db87eb55a87c023b1f8c6f90530498ca24b3ec7f4be7e6fc02e286f` → genuine donor candidate **9,303 bytes**, SHA-256 `34673f59b4cd00ea9c9777d99583b5b3d8427d278442624f33a0720ada560e77`. Diagnostic CLI intentionally exits **2** for `NO_GO`, with one **21 ms** local donor write/read measurement (one observation, **not** a reliable performance benchmark).
 - **Validation:** New audit **6/6 PASS**. Combined independent tests `tests/audit-xlsx-fidelity-370.test.ts`, `tests/audit-office-fidelity-368.test.ts`, `tests/xlsx-macro-refusal-370-next.test.ts`, `tests/spreadsheet-interchange.test.ts`: **22 PASS / 1 optional environment-gated SKIP**, four suites. Strict scoped TypeScript with `es2023` and `vite/client` **PASS**. No real provider/network requests, purchases, commit, push, deploy, route promotion, or Gold mutation. Browser/mobile/device performance, broad adversarial ZIP/XML fuzzing, legitimate formula recalculation and rich/style/image/chart fidelity remain **NOT_RUN / NO_GO**.
 - **Original AC disposition:** AC-370.1 has new measured evidence for **one** pinned installed donor on real typed/formula sources but still lacks comprehensive per-donor, multi-size/performance comparisons. AC-370.3 now has stronger genuine source/candidate ZIP/openpyxl checks and meaningful fail cases but still lacks physical mobile/runtime and comprehensive safety gates. Both remain **unchecked**. AC-370.2 retains its documented disclosure only. **Original ticket remains OPEN / NO_GO; no approved XLSX donor conversion or Gold.**
+
+## 2026-10-13 wave4 worker-2 — external workbook dependency refusal (RED → GREEN, OPEN)
+
+**New independently verified operational counterexample:** An actual editable XLSX,
+created with the installed pinned `openpyxl==3.1.5`, contains valid
+`xl/externalLinks/externalLink1.xml` and its `.rels` part pointing to
+`https://example.invalid/remote.xlsx` with `TargetMode="External"`.
+Python `zipfile.testzip()` returns `None`, and openpyxl reopens its cell
+`A2="00123"` and confirms one external workbook dependency. Before this fix,
+the public `xlsxToCsv()` preflight accepted the whole workbook and returned
+`id,value\n00123,safe` with no indication of the remote dependency. This is
+not a claim that the reader fetched the URL; the real problem is silently
+representing externally linked workbook content as independently trusted CSV.
+
+**Scope and correction:** Only the public XLSX import preflight in
+`src/engines/table/spreadsheet-interchange.ts` now refuses packages containing
+an `xl/externalLinks/` member or a corresponding externalLink content-type
+declaration, with existing explicit `UNSUPPORTED_XLSX_FEATURE`. It runs before
+the generic installed workbook reader. Genuine ordinary worksheet hyperlinks
+(`Type=.../hyperlink`, `TargetMode="External"`) remain inert and importable;
+the code neither resolves links nor attempts formula computation. The existing
+macro, ActiveX, quota and OOXML central-directory refusals remain in force.
+
+**RED → GREEN proof:** New
+`tests/xlsx-370-20261013-external-workbook.test.ts` starts from authentic
+app-generated CSV→XLSX bytes, uses independent Python standard-library
+`zipfile`/ElementTree to add consistent OOXML external workbook parts and
+relationships, confirms CRCs and reopens the actual package using pinned
+openpyxl when `SPREADSHEET370_PYTHON` is set. The test was **RED 1/3** because
+the importer accepted the package; the normal hyperlink and quota/roundtrip
+controls already passed. With the scoped preflight fix, the test was **3/3
+GREEN** with the independent openpyxl oracle enabled. All five pertinent
+XLSX suites (`xlsx-370-20261013-external-workbook`, `xlsx-macro-refusal-370-next`,
+`spreadsheet-interchange`, `donor-spreadsheets-370`, `audit-xlsx-fidelity-370`)
+were **31/31 PASS**, including official ISTAT XLSX values, 12,006-cell
+benchmark and negative donor/formula cases. Scoped TypeScript check on the
+changed source/new test **PASS**. The full repository TypeScript check was
+**NOT_PASS** due to four errors in concurrently edited unowned
+`tests/pdf-redaction-406-20261013-hybrid-single-revision.test.ts`; that file
+was not changed by this worker.
+
+**Unchanged NO_GO:** Neither XLSX formula cache freshness nor recalculation,
+rich text/layout/media fidelity, all adversarial OOXML XML relationships,
+browser/physical mobile performance, vendor rights or release/rollback
+admission is approved by this slice. Audit diagnostics stay `NO_GO` and
+AC-370.1/370.3 remain unchecked. No package/library installation, script,
+lockfile, Gold, CI, PR, Git or deployment action by this worker.
