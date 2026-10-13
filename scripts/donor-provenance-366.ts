@@ -28,7 +28,7 @@ type LockEntry = {
   dependencies?: Record<string, string>; devDependencies?: Record<string, string>; optionalDependencies?: Record<string, string>;
 };
 type Lock = { lockfileVersion?: number; packages?: Record<string, LockEntry> };
-type Manifest = { dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
+type Manifest = { dependencies?: Record<string, string>; devDependencies?: Record<string, string>; optionalDependencies?: Record<string, string> };
 export type AssetPin366 = { path: string; sha256: string; license: string; version: string; source: string };
 type Candidate = { name?: string; version?: string; license?: string; dist?: { integrity?: string; tarball?: string; shasum?: string }; dependencies?: Record<string, string> | null };
 type Row = { name: string; version: string; license: string; source: string; integrity: string; scope: "production" };
@@ -91,6 +91,9 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
       failures.push("ROOT_DEV_DEPENDENCIES_DIFFER");
     }
   }
+  if (JSON.stringify(entries[""]?.optionalDependencies ?? {}) !== JSON.stringify(manifest.optionalDependencies ?? {})) {
+    failures.push("ROOT_OPTIONAL_DEPENDENCIES_DIFFER");
+  }
   const production = Object.entries(entries).filter(([path, entry]) => path && !entry.dev && !entry.devOptional);
   const rows: Row[] = [];
   for (const [path, entry] of production) {
@@ -120,8 +123,25 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
   for (const [name, spec] of Object.entries(manifest.dependencies ?? {})) {
     const target = entries[`node_modules/${name}`];
     if (!target) failures.push(`MISSING_DIRECT ${name}`);
+    // A direct runtime dependency is necessarily production code even when a
+    // lockfile erroneously marks its node dev/devOptional. Such a marker would
+    // otherwise exclude it from every license, source and integrity check.
+    else if (target.dev || target.devOptional) {
+      failures.push(`DEV_ONLY_DIRECT ${name} -> node_modules/${name}`);
+    }
     else if (!lockedVersionSatisfies(spec, target.version)) {
       failures.push(`DIRECT_VERSION_MISMATCH ${name} (${spec} vs ${target.version ?? "UNKNOWN"})`);
+    }
+  }
+  for (const [name, spec] of Object.entries(manifest.optionalDependencies ?? {})) {
+    const path = `node_modules/${name}`;
+    const target = entries[path];
+    // Optional means the package may be absent. Once present, it is still a
+    // root runtime package and must satisfy its declared constraint.
+    if (!target) continue;
+    if (target.dev || target.devOptional) failures.push(`DEV_ONLY_ROOT_OPTIONAL ${name} -> ${path}`);
+    else if (!lockedVersionSatisfies(spec, target.version)) {
+      failures.push(`ROOT_OPTIONAL_VERSION_MISMATCH ${name} (${spec} vs ${target.version ?? "UNKNOWN"})`);
     }
   }
   rows.sort((a, b) => a.name.localeCompare(b.name) || a.version.localeCompare(b.version));
