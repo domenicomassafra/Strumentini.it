@@ -141,3 +141,44 @@ normal browser encoders were observed clean in this sample.
 **RED → minimal GREEN:** New focused `tests/metadata-394-20261013-jpeg-app-private.test.ts` reproduced **3/3 RED** before editing production source, and **3/3 GREEN** afterward. `src/engines/image/metadata.ts` now inventories previously ignored APP0..APP15 markers as privacy-bearing `ancillary`, except the precisely bounded 14-byte standard `JFIF\0` APP0 header with zero thumbnail dimensions. It classifies a true `ICC_PROFILE\0` APP2 as `icc-profile` (color-profile bytes are counted in the metadata inventory); opaque/mislabelled APP2 remains `ancillary`. The independently decoded image pixels are unchanged. No work was performed in `strip-metadata.ts`, user-facing UI, donor models or production export behavior.
 
 **Validation and limits:** Five focused suites, including original JPEG entropy/trailing, PNG forensic, image-media-tools and image-upgrade tests, **39/39 PASS**; scoped TypeScript `tsc --ignoreConfig --noEmit --target es2023 --module esnext --moduleResolution bundler --types node` **PASS**; native Pillow forensic reopen **PASS**; owned `git diff --check` **PASS**. The original full-document sanitizer/corpus/physical mobile/rollback acceptance remains **OPEN** (AC-394.1 and AC-394.3). AC-394.2 remains its existing narrow verified-no-false-removal-claim status. This is an inventory correction only, with no Gold, provider/network calls, installation, stage/commit/push, branch change or release approval; prime handles integration.
+
+## 2026-10-13 — independent standards review of PR #14 JPEG privacy claims (RED→GREEN, still OPEN)
+
+**Target inspected:** Draft PR #14 remote head
+`13d75ee9938308d8c052ca1f6c7d6c8b3575a2c2`, relative to
+`origin/main` `402774b32a3d8cb6d2f2cbe836734ea1c655a4fa`.
+The exact source blob was
+`824a16e0748efb8a91d75472f08690fcadae5dab` before this worker fix.
+The PR already contained a pending JPEG privacy-review test that exposed
+three substantive contradictions in source behavior. A separate new test
+`tests/metadata-394-20261013-icc-marker-budget.test.ts` independently
+reproduced **3/3 RED** against the exact source: (1) a legitimate 14-byte
+JFIF APP0 header with variable density bytes spelling `GPS!` was treated as
+privacy-free; (2) a genuine Sharp sRGB ICC APP2 with a valid `cprt`/`mluc`
+copyright tag containing private UTF-16BE text was classified only as color,
+with `privacySegmentCount:0`; (3) 1,000 valid zero-payload APP15 markers were
+inventoried without any per-marker bound, yet `complete:true`. In all three
+cases Sharp and independent Pillow reopened identical original pixels; the
+ICC content was also present in both decoded profile representations.
+
+**Minimal source correction:** `src/engines/image/metadata.ts` now recognizes
+only the fully fixed 1:1/no-thumbnail, version-1.1/1.2 JFIF APP0 header as
+the known neutral exception. Variable density and ambiguous JFIF carriers
+are conservatively inventoried as `ancillary`. Because an otherwise valid
+ICC profile can carry author/copyright data, `icc-profile` now contributes
+to the privacy carrier count for source inventories of JPEG, PNG and WebP;
+the presentation grouping retains `class:color`. No unverified ICC profile
+or vendor signature is silently whitelisted as privacy-free. JPEG marker
+processing stops at 512 markers with `complete:false`, preserves already
+found segments and explicitly describes the resulting inventory as partial.
+No pixels, output encoders, provider software, dependencies or image sanitizers
+were changed.
+
+**GREEN:** the new independent three regression tests and prior five JPEG/
+PNG/WebP/image suites combined **42/42 PASS**. Real WebP `XMP ` FourCC remains
+recognized and real Sharp decoding continues to match clean pixels. The
+input JPEGs were verified with Pillow and Sharp, including their ICC profile
+presence. All source-only proof remains bounded: full document forensic
+coverage, PDF/SVG/OOXML corpus, physical mobile/cross-browser and rollback
+are **OPEN** under original AC-394.1 and AC-394.3; no Gold or release gate is
+inferred from the scanner correction.
