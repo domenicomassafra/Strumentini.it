@@ -153,15 +153,20 @@ export function createProofMap415(
     ];
     const current=currentReceiptById.get(tool.id);
     const source=sources.get(tool.id) ?? {manifestPresent:false,pagePresent:false,historicalHashMatches:false};
+    const registryBinding=registeredOracleIds.has(tool.gold.oracleEntryId) &&
+      tool.gold.fixtureFamilies.every(f=>registeredFixtureIds.has(f))?"REGISTERED":"PENDING_REGISTRY_OR_FIXTURE";
+    // Even a byte-valid receipt cannot be current proof for a withdrawn
+    // oracle or fixture registration.
+    const verified=current && registryBinding==="REGISTERED"?current:undefined;
     entries.push({
       toolId:tool.id,route:tool.route,jobs:[...tool.jobs],inputs:[...tool.inputTypes],
       resultClass:tool.result?.class ?? null,limits,
       limitsStatus:limits.length?"DECLARED_HANDOFF_LIMITS_ONLY":"PENDING_RUNTIME_LIMIT_ATTESTATION",
       oracleEntryId:tool.gold.oracleEntryId,fixtureFamilies:[...tool.gold.fixtureFamilies],
-      registryBinding:registeredOracleIds.has(tool.gold.oracleEntryId) && tool.gold.fixtureFamilies.every(f=>registeredFixtureIds.has(f))?"REGISTERED":"PENDING_REGISTRY_OR_FIXTURE",
+      registryBinding,
       source,historicalIndexReceipt: legacy?.certificationReceipt ?? null,
       historicalTestFiles:legacy?.implementation?.testFiles ?? [],
-      currentProof:current?"VERIFIED":"PENDING",currentReceipt:current?.path ?? null,
+      currentProof:verified?"VERIFIED":"PENDING",currentReceipt:verified?.path ?? null,
     });
   }
   entries.sort((a,b)=>a.toolId.localeCompare(b.toolId));
@@ -231,6 +236,7 @@ export async function auditCurrentProofMap415(root:string):Promise<ProofMap415> 
     currentEvidenceSourceFingerprint(root), currentRevision(root),
   ]);
   const registry=registrySource.value;
+  const registeredOracleIds=new Set(registry.entries.map(entry=>entry.id));
   if(!Array.isArray(legacy.tools) || legacy.tools.length!==catalog.length) throw new Error("LEGACY_COVERAGE_MISMATCH_415");
   const legacyById=new Map(legacy.tools.map(row=>[row.id,row] as const));
   if(legacyById.size!==legacy.tools.length) throw new Error("DUPLICATE_HISTORICAL_415");
@@ -266,6 +272,9 @@ export async function auditCurrentProofMap415(root:string):Promise<ProofMap415> 
     if(!bytes) continue;
     const target=catalog.find(tool=>tool.id===item.toolId);
     if(!target) continue;
+    // A current oracle-registry digest authenticates the registry bytes, not
+    // the existence of this particular oracle ID within those bytes.
+    if(!registeredOracleIds.has(target.gold.oracleEntryId)) continue;
     let parsed:Record<string,unknown>;
     try {parsed=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(bytes)) as Record<string,unknown>;}
     catch {continue;}
@@ -284,7 +293,7 @@ export async function auditCurrentProofMap415(root:string):Promise<ProofMap415> 
     current.set(item.toolId,{path:item.receiptPath});
   }
   return createProofMap415(catalog,legacyById,current,sources,
-    new Set(registry.entries.map(x=>x.id)),new Set(fixtures.families.map(x=>x.id)));
+    registeredOracleIds,new Set(fixtures.families.map(x=>x.id)));
 }
 
 if(process.argv[1] && import.meta.url===pathToFileURL(resolve(process.argv[1])).href) {
