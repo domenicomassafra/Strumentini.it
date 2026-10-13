@@ -18,6 +18,8 @@ const semver = createRequire(import.meta.url)("semver") as {
 };
 function lockedVersionSatisfies(spec: unknown, version: unknown): boolean {
   return typeof spec === "string" && typeof version === "string"
+    // semver 6 accepts an empty disjunction branch as a wildcard (e.g. "^9 ||").
+    && spec.split("||").every((alternative) => alternative.trim().length > 0)
     && semver.validRange(spec) !== null && semver.satisfies(version, spec);
 }
 
