@@ -81,8 +81,12 @@ export function textPartKind407(name: string): "xml" | "svg" | "html" | null {
 
 /** Never parse XML with a DOM here: refuse entity resolution and active markup. */
 export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): FileThreatFinding407 | null {
+  // XML namespace prefixes can use Unicode characters; ASCII \w is not
+  // sufficient to recognize active names in a well-formed SVG/XML ZIP part.
+  // Match through XML name delimiters; never let the HTML meta guard below
+  // regress the existing Unicode-prefix refusal.
   if (/<!\s*(?:DOCTYPE|ENTITY)\b|<\?\s*xml-stylesheet\b|<\s*(?:xi:include|xinclude:include)\b|http:\/\/www\.w3\.org\/2001\/XInclude/iu.test(source) ||
-    /\bxmlns(?::[\w.-]+)?\s*=\s*["'][^"']*&/iu.test(source)) {
+    /\bxmlns(?::[^\t\r\n <>/:=]+)?\s*=\s*["'][^"']*&/iu.test(source)) {
     return reject("UNSUPPORTED", "Embedded XML document type, entities, stylesheets or includes are not supported.");
   }
   if (kind === "html") {
@@ -108,12 +112,12 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
   }
   // XML namespace aliases can give <s:script> exactly the same active meaning
   // as <script>; inspection cannot assume the element has no prefix.
-  if (/<\s*(?:[a-z_][\w.-]*:)?(?:script|iframe|object|embed)\b|\bon(?:load|error|click|mouseover|focus|begin|end)\s*=/iu.test(source)) {
+  if (/<\s*(?:[^\t\r\n <>/:]+:)?(?:script|iframe|object|embed)\b|\bon(?:load|error|click|mouseover|focus|begin|end)\s*=/iu.test(source)) {
     return reject("UNSUPPORTED", "Executable XML markup or event handlers are not supported.");
   }
   // A ZIP can store a genuine SVG document under an .xml member name.
-  if (kind === "svg" || kind === "html" || /<\s*(?:[a-z_][\w.-]*:)?svg\b/iu.test(source)) {
-    if (/<\s*(?:[a-z_][\w.-]*:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
+  if (kind === "svg" || kind === "html" || /<\s*(?:[^\t\r\n <>/:]+:)?svg\b/iu.test(source)) {
+    if (/<\s*(?:[^\t\r\n <>/:]+:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
       return reject("UNSUPPORTED", "Executable or external SVG/HTML content is outside the inspection profile.");
     }
     // An SVG <a href="relative.svg"> is not contained by its ZIP parent:

@@ -194,3 +194,14 @@ hostile corpus, release/rollback and Gold gates are **NOT_RUN / NO-GO**.
 Original **AC-407.1–3 remain unchecked** and ticket stays OPEN. No new
 dependencies, vendor changes, code changes outside this file/new test/original
 ticket, Git staging/commit/push/PR or production deployment by this worker.
+
+**2026-10-13 integrator CI reconciliation (PR #10):** The first HTML-refresh
+follow-up copied an older local source variant and accidentally dropped the
+previously proven Unicode XML namespace-prefix refusal from the same gate.
+GitHub changed-source CI reported six real failures in the existing
+`tests/file-threat-407-20261013-unicode-prefix.test.ts`. The integrator
+restored the original delimiter-bounded Unicode namespace checks while
+retaining the new HTML meta-refresh rejection. Both focused regression
+files, historic SVG/ZIP tests and file-detection checks now pass together:
+**6 Vitest files / 68 tests PASS**. This is source regression restoration,
+not a new archive-security acceptance or Gold claim; all original AC stay OPEN.
