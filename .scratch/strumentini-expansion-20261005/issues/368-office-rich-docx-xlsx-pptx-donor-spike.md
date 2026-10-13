@@ -175,3 +175,57 @@ run with V8 heap limited to **128 MiB**. Final scoped suite after this
 correction: #368 original **5/5**, new **4/4**, adjacent Office **3/3**,
 combined **12/12 PASS**. The earlier 11/11 intermediate count above is
 superseded by this final 12/12 proof. Release decision remains `NO_GO`.
+
+## 2026-10-13 raw ZIP duplicate/entry-budget review correction (NO_GO)
+
+An independent read-only review of Draft PR #26 (remote source SHA
+`8d266c7ffadb24774bc80885e4f5ee0a00cf2bc2`) found **two actual P2 false
+acceptances and an entry-cap bypass** in the earlier offline inspector:
+JSZip's `archive.files` map keeps one member when two physical ZIP directory
+entries have the same filename. The prior CRC check and `.rels` inventory only
+visited the surviving member; empty directory entries were excluded from the
+advertised 256-member limit. The separately reproduced originals were:
+
+- Authentic XLSX: a second ZIP member with the *same* raw
+  `xl/worksheets/_rels/sheet1.xml.rels` path shadowed the original external
+  relationship. Python `zipfile.infolist()` + `ElementTree` enumerated two
+  same-named physical XML parts with external-target counts `[1, 0]`, while
+  JSZip-backed `inspectOoxml368` accepted the archive and falsely returned
+  `externalRelationshipCount: 0`.
+- Authentic DOCX: two raw `word/document.xml` central records, first with
+  flipped CRC. Python `zipfile.open(first ZipInfo).read()` raised `BadZipFile`
+  for the corrupt member while the inspector accepted the shadowed package.
+- Authentic DOCX with 9,000 additional directory entries, under the 2 MiB
+  compressed input limit, was accepted despite a 256-member cap. A separate
+  exact boundary probe now accepts 256 physical entries and rejects 257.
+
+New `tests/audit-office-fidelity-368-20261013-duplicate-raw-parts.test.ts`
+builds all evidence in disposable memory using the installed pinned JSZip,
+rewrites local **and** central ZIP names, and independently invokes Python's
+standard-library `zipfile`/`ElementTree`. **4 new adversarial cases were RED
+against the previous implementation**, including an additional Unicode NFKC
+alias collision. The bounded correction in
+`scripts/audit-office-fidelity-368.ts` **reuses the already installed local**
+`src/engines/ooxml/package.ts` central-directory analyzer before invoking
+JSZip. That existing parser verifies physical ZIP32 entry count, duplicate
+and case-folded paths, local/central filename agreement and supported header
+bounds. The audit additionally enforces its tighter 256-member limit
+**including directories**, refuses NFKC/URI-alias paths, and verifies the
+decoded JSZip member count still matches the physical count. The earlier
+streaming per-member actual-byte/CRC checks remain in force.
+
+**Verification:** initial adversarial `vitest` **4/4 RED** (old inspector
+resolved instead of refusing); final focused new **5/5 GREEN** and all
+existing #368 original **5/5**, relationships-integrity **4/4**, adjacent
+Office print corpus **3/3**, **17/17 PASS**. Strict `tsc --ignoreConfig`
+with ESNext/bundler, Node types, `--strict --noUncheckedIndexedAccess` **PASS**.
+Actual three donor conversions on original SHA-pinned DOCX/XLSX/PPTX inputs
+all remain `MEASURED_WITH_FIDELITY_LOSS`, with candidate sizes **681,846 B,
+9,303 B, 44,821 B**, respectively; `productionPromotion: false`,
+`decision: NO_GO`, `visualPageFidelity: NOT_VERIFIED` and
+`transitiveLicenseAndSecurityAcceptance: NOT_VERIFIED` still hold.
+Python `openpyxl` was not installed and was not installed for this task;
+the independent evidence uses standard-library ZIP/XML readers. No new
+dependencies, production paths, original fixtures, or Gold receipts changed.
+Original **AC-368.1 and AC-368.3 remain OPEN**, with vendor, rendering,
+license, physical mobile and fidelity comparisons still gated.

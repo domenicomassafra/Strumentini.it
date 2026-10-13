@@ -14,6 +14,7 @@ import { dirname, resolve } from "node:path";
 import type { Readable } from "node:stream";
 import { fileURLToPath } from "node:url";
 import { crc32 } from "node:zlib";
+import { analyzeOoxmlPackage, OoxmlPackageError } from "../src/engines/ooxml/package";
 
 export type OfficeFormat368 = "docx" | "xlsx" | "pptx";
 type Donor368 = "mammoth" | "xlsx" | "pptxgenjs" | "jszip" | "@xmldom/xmldom";
@@ -190,15 +191,57 @@ function limit368(abort?: AbortSignal): void {
   if (abort?.aborted) throw new Error("ABORTED");
 }
 
+/** Scan physical ZIP32 central entries before JSZip can overwrite duplicate names.
+ * Reuse the production OOXML header/local-name verifier; this audit applies its
+ * own smaller member budget and rejects additional Unicode/URI path aliases.
+ */
+function preflightPhysicalZip368(bytes: Buffer, kind: OfficeFormat368): number {
+  let parsed: ReturnType<typeof analyzeOoxmlPackage>;
+  try {
+    parsed = analyzeOoxmlPackage(bytes);
+  } catch (error: unknown) {
+    if (error instanceof OoxmlPackageError) {
+      if (error.code === "MACRO_PACKAGE_UNSUPPORTED" || error.code === "UNSAFE_PACKAGE_PATH") {
+        throw new Error("ACTIVE_CONTENT_REFUSED");
+      }
+      if (error.code === "EXPANSION_LIMIT") throw new Error("ZIP_EXPANSION_LIMIT");
+      if (error.code === "PACKAGE_TOO_LARGE") throw new Error("ZIP_ENTRY_LIMIT");
+      if (error.code === "CORRUPT_PACKAGE" && error.message.includes("Duplicate OOXML part path")) {
+        throw new Error("ZIP_DUPLICATE_MEMBER");
+      }
+      throw new Error("INVALID_ZIP_CENTRAL_DIRECTORY");
+    }
+    throw error;
+  }
+  if (parsed.entryCount > LIMITS_368.maxArchiveEntries) throw new Error("ZIP_ENTRY_LIMIT");
+  if (parsed.kind !== kind) throw new Error("OOXML_WRONG_KIND");
+  const canonicalPaths = new Set<string>();
+  for (const entry of parsed.entries) {
+    const path = entry.path;
+    // The names are checked against local headers upstream; reject aliases
+    // before any ZIP member can disappear through normalization or case folding.
+    const segments = path.split("/");
+    if (segments.some((segment, index) => segment === "." ||
+      (segment === "" && index !== segments.length - 1)) ||
+      /%(?:2e|2f|5c|00)/iu.test(path)) throw new Error("ACTIVE_CONTENT_REFUSED");
+    const normalized = path.normalize("NFKC").toLocaleLowerCase("en-US").replace(/\/$/u, "");
+    if (canonicalPaths.has(normalized)) throw new Error("ZIP_DUPLICATE_MEMBER");
+    canonicalPaths.add(normalized);
+  }
+  return parsed.entryCount;
+}
+
 async function openZip368(data: Buffer, kind: OfficeFormat368, Zip: ZipConstructor368,
   Xml: Xml368): Promise<Zip368> {
   if (data.length < 32 || data.length > LIMITS_368.maxInputBytes
     || !data.subarray(0, 4).equals(Buffer.from([0x50, 0x4b, 0x03, 0x04]))) {
     throw new Error("INVALID_ZIP_OR_INPUT_LIMIT");
   }
+  const physicalEntries = preflightPhysicalZip368(data, kind);
   let archive: Zip368;
   try { archive = await Zip.loadAsync(data, { checkCRC32: false }); }
   catch { throw new Error("INVALID_ZIP"); }
+  if (Object.keys(archive.files).length !== physicalEntries) throw new Error("ZIP_MEMBER_SET_MISMATCH");
   const entries = Object.entries(archive.files).filter(([, entry]) => !entry.dir);
   if (entries.length > LIMITS_368.maxArchiveEntries) throw new Error("ZIP_ENTRY_LIMIT");
   let total = 0;
