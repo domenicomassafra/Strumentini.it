@@ -1,4 +1,4 @@
-import { validateGoldReceipts, type ToolCertificationReceipt } from "../release/validation";
+import { isEligibleGoldFlag, validateGoldReceipts, type ToolCertificationReceipt } from "../release/validation";
 
 export interface GoldToolQuality {
   readonly toolId: string;
@@ -31,7 +31,7 @@ function stringArray(value: unknown): value is string[] {
 
 function goldReceipt(value: unknown, catalogToolIds: ReadonlySet<string>): GoldToolQuality | undefined {
   if (!isRecord(value)) return undefined;
-  if (value.schemaVersion !== 1 || value.status !== "GOLD" || value.goldEligible === false) return undefined;
+  if (value.schemaVersion !== 1 || value.status !== "GOLD" || !isEligibleGoldFlag(value)) return undefined;
   if (typeof value.toolId !== "string" || !catalogToolIds.has(value.toolId)) return undefined;
   if (typeof value.receiptPath !== "string" || value.receiptPath.trim() === "") return undefined;
   const oracleEntryIds = value.oracleEntryIds === undefined
