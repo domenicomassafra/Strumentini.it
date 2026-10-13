@@ -4,13 +4,16 @@ on:
   pull_request:
   push:
     branches: [main]
+  # Explicit human-invoked release admission; no publish or receipt writing.
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 # Budget: PRs execute changed-source suites plus check/build; main executes the
-# cumulative test/check/build path. No browser farm, paid service, cloud deploy,
-# receipt generation or release promotion is authorized by this workflow.
+# cumulative test/check/build/Python ticket path. An explicit release dispatch
+# also runs the existing fail-closed read-only release validator. No browser farm,
+# paid service, cloud deploy, receipt generation or release promotion occurs here.
 # Physical, independent security and release-readiness gates stay NOT_RUN until
 # externally evidenced; source CI green does NOT mean release ready.
 jobs:
@@ -47,10 +50,15 @@ jobs:
         run: npm run ci:scope -- --base="$BASE_SHA" --run
 
   cumulative-on-main:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
+      # A manually dispatched check on another branch cannot attest main.
+      # Reject the dispatch rather than skipping the job with a green status.
+      - name: Require main revision for manual release admission
+        if: github.event_name == 'workflow_dispatch'
+        run: test "$GITHUB_REF" = "refs/heads/main"
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -73,5 +81,12 @@ jobs:
       # timeouts caused by unrelated tests competing for the same runner CPU;
       # all existing acceptance assertions and timeouts remain unchanged.
       - run: npm test -- --maxWorkers=1
+      - run: npm run tickets:test
       - run: npm run check
       - run: npm run build
+      # This dispatch-only job step is an explicit pre-publication prerequisite;
+      # missing/obsolete Gold, rollback, security and physical-device evidence
+      # causes a nonzero exit. The command never generates a replacement receipt.
+      - name: Read-only cumulative release admission
+        if: github.event_name == 'workflow_dispatch'
+        run: node node_modules/tsx/dist/cli.mjs scripts/validate-release.ts --no-write-receipt --require-ready

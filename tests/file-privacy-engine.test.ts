@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import sharp from "sharp";
 import {
   FilePrivacyError,
   analyzeFileSize,
@@ -158,11 +159,11 @@ describe("file/privacy engine", () => {
   });
 
   it("explains image and ZIP size drivers without mutating bytes or guessing savings", async () => {
-    const png = new Uint8Array(24);
-    png.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], 0);
-    png.set([0x49, 0x48, 0x44, 0x52], 12);
-    png.set([0, 0, 0, 2], 16);
-    png.set([0, 0, 0, 3], 20);
+    // Use a real PNG with a complete 13-byte IHDR and valid chunk checksums:
+    // the old 24-byte header stub was never a decodable image.
+    const png = new Uint8Array(await sharp({
+      create: { width: 2, height: 3, channels: 3, background: { r: 12, g: 34, b: 56 } },
+    }).png().toBuffer());
     const imageFile = file("tiny.png", png, "image/png");
     const imageBefore = new Uint8Array(await imageFile.arrayBuffer());
     const imageResult = await analyzeFileSize({ files: [imageFile] });

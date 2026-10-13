@@ -4,16 +4,32 @@
  * Run: npx tsx scripts/donor-provenance-366.ts --check
  */
 import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, isAbsolute, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
+// Reuse the already installed, production-lock-pinned npm semver 6.3.1.
+// A lock entry's integrity/registry URL is not evidence that its version
+// satisfies the consuming package's actual dependency contract.
+const semver = createRequire(import.meta.url)("semver") as {
+  validRange: (range: string) => string | null;
+  satisfies: (version: string, range: string) => boolean;
+};
+function lockedVersionSatisfies(spec: unknown, version: unknown): boolean {
+  return typeof spec === "string" && typeof version === "string"
+    // semver 6 accepts an empty disjunction branch as a wildcard (e.g. "^9 ||").
+    && spec.split("||").every((alternative) => alternative.trim().length > 0)
+    && semver.validRange(spec) !== null && semver.satisfies(version, spec);
+}
+
 type LockEntry = {
   version?: string; license?: string; integrity?: string; resolved?: string; dev?: boolean; devOptional?: boolean;
   dependencies?: Record<string, string>; devDependencies?: Record<string, string>; optionalDependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>; peerDependenciesMeta?: Record<string, { optional?: boolean }>;
 };
 type Lock = { lockfileVersion?: number; packages?: Record<string, LockEntry> };
-type Manifest = { dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
+type Manifest = { dependencies?: Record<string, string>; devDependencies?: Record<string, string>; optionalDependencies?: Record<string, string> };
 export type AssetPin366 = { path: string; sha256: string; license: string; version: string; source: string };
 type Candidate = { name?: string; version?: string; license?: string; dist?: { integrity?: string; tarball?: string; shasum?: string }; dependencies?: Record<string, string> | null };
 type Row = { name: string; version: string; license: string; source: string; integrity: string; scope: "production" };
@@ -62,6 +78,23 @@ function resolveDependency(name: string, from: string, entries: Record<string, L
   return entries[top] ? top : null;
 }
 
+/** A peer must resolve beside or above its consumer, never inside that consumer. */
+function resolvePeerDependency(name: string, from: string, entries: Record<string, LockEntry>): string | null {
+  let at = from;
+  while (true) {
+    // Each package-lock path is a sequence of node_modules package boundaries.
+    // Skip the consumer's own descendants and (for scoped packages) @scope
+    // folders; only an actual ancestor's node_modules can supply its peer.
+    const boundary = at.lastIndexOf("node_modules/");
+    if (boundary === -1) return null;
+    const ancestor = at.slice(0, boundary);
+    const candidate = ancestor + "node_modules/" + name;
+    if (entries[candidate]) return candidate;
+    if (!ancestor) return null;
+    at = ancestor.endsWith("/") ? ancestor.slice(0, -1) : ancestor;
+  }
+}
+
 /** Every production entry is audited, including nodes reached through nested dependency resolution. */
 export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
   const failures: string[] = [];
@@ -76,28 +109,88 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
       failures.push("ROOT_DEV_DEPENDENCIES_DIFFER");
     }
   }
+  if (JSON.stringify(entries[""]?.optionalDependencies ?? {}) !== JSON.stringify(manifest.optionalDependencies ?? {})) {
+    failures.push("ROOT_OPTIONAL_DEPENDENCIES_DIFFER");
+  }
   const production = Object.entries(entries).filter(([path, entry]) => path && !entry.dev && !entry.devOptional);
   const rows: Row[] = [];
-  for (const [path, entry] of production) {
+  const metadataChecked = new Set<string>();
+  function auditPackageMetadata(path: string, entry: LockEntry): void {
+    if (metadataChecked.has(path)) return;
+    metadataChecked.add(path);
     const name = packageName(path);
     const version = entry.version ?? "";
     if (!/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.+-]+)?$/u.test(version)) failures.push(`UNKNOWN_VERSION ${path}`);
     if (!knownSpdx(entry.license)) failures.push(`UNKNOWN_LICENSE ${path}`);
     if (!validSha512(entry.integrity)) failures.push(`INVALID_SRI ${path}`);
     if (!validSource(name, version, entry.resolved)) failures.push(`UNVERIFIED_SOURCE ${path}`);
+  }
+  for (const [path, entry] of production) {
+    auditPackageMetadata(path, entry);
+    const name = packageName(path);
+    const version = entry.version ?? "";
     rows.push({ name, version, license: entry.license ?? "UNKNOWN", source: entry.resolved ?? "UNKNOWN", integrity: entry.integrity ?? "UNKNOWN", scope: "production" });
-    for (const depName of Object.keys(entry.dependencies ?? {})) {
+    for (const [depName, spec] of Object.entries(entry.dependencies ?? {})) {
       const target = resolveDependency(depName, path, entries);
       if (!target) failures.push(`MISSING_TRANSITIVE ${path} -> ${depName}`);
       else if (entries[target]?.dev || entries[target]?.devOptional) failures.push(`DEV_ONLY_TRANSITIVE ${path} -> ${target}`);
+      else if (!lockedVersionSatisfies(spec, entries[target]?.version)) {
+        failures.push(`TRANSITIVE_VERSION_MISMATCH ${path} -> ${target} (${spec} vs ${entries[target]?.version ?? "UNKNOWN"})`);
+      }
     }
-    for (const depName of Object.keys(entry.optionalDependencies ?? {})) {
+    for (const [depName, spec] of Object.entries(entry.optionalDependencies ?? {})) {
       const target = resolveDependency(depName, path, entries);
       if (target && (entries[target]?.dev || entries[target]?.devOptional)) failures.push(`DEV_ONLY_OPTIONAL ${path} -> ${target}`);
+      else if (target && !lockedVersionSatisfies(spec, entries[target]?.version)) {
+        failures.push(`OPTIONAL_VERSION_MISMATCH ${path} -> ${target} (${spec} vs ${entries[target]?.version ?? "UNKNOWN"})`);
+      }
+    }
+    for (const [peerName, spec] of Object.entries(entry.peerDependencies ?? {})) {
+      // npm peers resolve at or above their consumer; unlike ordinary
+      // dependencies, the consumer's own node_modules cannot satisfy a peer.
+      const target = resolvePeerDependency(peerName, path, entries);
+      const optional = entry.peerDependenciesMeta?.[peerName]?.optional === true;
+      // Only explicitly optional peers may be absent. Present optional peers
+      // still need valid production provenance and a compatible pinned version.
+      if (!target) {
+        if (!optional) failures.push("MISSING_PEER " + path + " -> " + peerName);
+      } else if (entries[target]?.dev || (entries[target]?.devOptional && !optional)) {
+        failures.push("DEV_ONLY_PEER " + path + " -> " + target);
+      } else {
+        // npm lock v3 devOptional denotes a dev dependency that ALSO supplies
+        // an optional runtime peer; it is not necessarily dev-only. Validate
+        // its metadata even though the ordinary production loop skips it.
+        if (optional && entries[target]?.devOptional) auditPackageMetadata(target, entries[target]!);
+        if (!lockedVersionSatisfies(spec, entries[target]?.version)) {
+          const label = optional ? "OPTIONAL_PEER_VERSION_MISMATCH" : "PEER_VERSION_MISMATCH";
+          failures.push(label + " " + path + " -> " + target + " (" + spec + " vs " + (entries[target]?.version ?? "UNKNOWN") + ")");
+        }
+      }
     }
   }
-  for (const name of Object.keys(manifest.dependencies ?? {})) {
-    if (!entries[`node_modules/${name}`]) failures.push(`MISSING_DIRECT ${name}`);
+  for (const [name, spec] of Object.entries(manifest.dependencies ?? {})) {
+    const target = entries[`node_modules/${name}`];
+    if (!target) failures.push(`MISSING_DIRECT ${name}`);
+    // A direct runtime dependency is necessarily production code even when a
+    // lockfile erroneously marks its node dev/devOptional. Such a marker would
+    // otherwise exclude it from every license, source and integrity check.
+    else if (target.dev || target.devOptional) {
+      failures.push(`DEV_ONLY_DIRECT ${name} -> node_modules/${name}`);
+    }
+    else if (!lockedVersionSatisfies(spec, target.version)) {
+      failures.push(`DIRECT_VERSION_MISMATCH ${name} (${spec} vs ${target.version ?? "UNKNOWN"})`);
+    }
+  }
+  for (const [name, spec] of Object.entries(manifest.optionalDependencies ?? {})) {
+    const path = `node_modules/${name}`;
+    const target = entries[path];
+    // Optional means the package may be absent. Once present, it is still a
+    // root runtime package and must satisfy its declared constraint.
+    if (!target) continue;
+    if (target.dev || target.devOptional) failures.push(`DEV_ONLY_ROOT_OPTIONAL ${name} -> ${path}`);
+    else if (!lockedVersionSatisfies(spec, target.version)) {
+      failures.push(`ROOT_OPTIONAL_VERSION_MISMATCH ${name} (${spec} vs ${target.version ?? "UNKNOWN"})`);
+    }
   }
   rows.sort((a, b) => a.name.localeCompare(b.name) || a.version.localeCompare(b.version));
   return { status: failures.length ? "NO_GO" as const : "VERIFIED_METADATA" as const, rows, failures };

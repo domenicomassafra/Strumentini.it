@@ -11,7 +11,10 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
+import type { Readable } from "node:stream";
 import { fileURLToPath } from "node:url";
+import { crc32 } from "node:zlib";
+import { analyzeOoxmlPackage, OoxmlPackageError } from "../src/engines/ooxml/package";
 
 export type OfficeFormat368 = "docx" | "xlsx" | "pptx";
 type Donor368 = "mammoth" | "xlsx" | "pptxgenjs" | "jszip" | "@xmldom/xmldom";
@@ -46,8 +49,9 @@ const FORMATS = ["docx", "xlsx", "pptx"] as const;
 
 interface ZipFile368 {
   dir: boolean;
-  _data?: { uncompressedSize?: number; compressedSize?: number };
+  _data?: { uncompressedSize?: number; compressedSize?: number; crc32?: number };
   async(type: "nodebuffer" | "string"): Promise<Buffer | string>;
+  nodeStream(type: "nodebuffer"): Readable;
 }
 interface Zip368 {
   files: Record<string, ZipFile368>;
@@ -187,14 +191,57 @@ function limit368(abort?: AbortSignal): void {
   if (abort?.aborted) throw new Error("ABORTED");
 }
 
-async function openZip368(data: Buffer, kind: OfficeFormat368, Zip: ZipConstructor368): Promise<Zip368> {
+/** Scan physical ZIP32 central entries before JSZip can overwrite duplicate names.
+ * Reuse the production OOXML header/local-name verifier; this audit applies its
+ * own smaller member budget and rejects additional Unicode/URI path aliases.
+ */
+function preflightPhysicalZip368(bytes: Buffer, kind: OfficeFormat368): number {
+  let parsed: ReturnType<typeof analyzeOoxmlPackage>;
+  try {
+    parsed = analyzeOoxmlPackage(bytes);
+  } catch (error: unknown) {
+    if (error instanceof OoxmlPackageError) {
+      if (error.code === "MACRO_PACKAGE_UNSUPPORTED" || error.code === "UNSAFE_PACKAGE_PATH") {
+        throw new Error("ACTIVE_CONTENT_REFUSED");
+      }
+      if (error.code === "EXPANSION_LIMIT") throw new Error("ZIP_EXPANSION_LIMIT");
+      if (error.code === "PACKAGE_TOO_LARGE") throw new Error("ZIP_ENTRY_LIMIT");
+      if (error.code === "CORRUPT_PACKAGE" && error.message.includes("Duplicate OOXML part path")) {
+        throw new Error("ZIP_DUPLICATE_MEMBER");
+      }
+      throw new Error("INVALID_ZIP_CENTRAL_DIRECTORY");
+    }
+    throw error;
+  }
+  if (parsed.entryCount > LIMITS_368.maxArchiveEntries) throw new Error("ZIP_ENTRY_LIMIT");
+  if (parsed.kind !== kind) throw new Error("OOXML_WRONG_KIND");
+  const canonicalPaths = new Set<string>();
+  for (const entry of parsed.entries) {
+    const path = entry.path;
+    // The names are checked against local headers upstream; reject aliases
+    // before any ZIP member can disappear through normalization or case folding.
+    const segments = path.split("/");
+    if (segments.some((segment, index) => segment === "." ||
+      (segment === "" && index !== segments.length - 1)) ||
+      /%(?:2e|2f|5c|00)/iu.test(path)) throw new Error("ACTIVE_CONTENT_REFUSED");
+    const normalized = path.normalize("NFKC").toLocaleLowerCase("en-US").replace(/\/$/u, "");
+    if (canonicalPaths.has(normalized)) throw new Error("ZIP_DUPLICATE_MEMBER");
+    canonicalPaths.add(normalized);
+  }
+  return parsed.entryCount;
+}
+
+async function openZip368(data: Buffer, kind: OfficeFormat368, Zip: ZipConstructor368,
+  Xml: Xml368): Promise<Zip368> {
   if (data.length < 32 || data.length > LIMITS_368.maxInputBytes
     || !data.subarray(0, 4).equals(Buffer.from([0x50, 0x4b, 0x03, 0x04]))) {
     throw new Error("INVALID_ZIP_OR_INPUT_LIMIT");
   }
+  const physicalEntries = preflightPhysicalZip368(data, kind);
   let archive: Zip368;
   try { archive = await Zip.loadAsync(data, { checkCRC32: false }); }
   catch { throw new Error("INVALID_ZIP"); }
+  if (Object.keys(archive.files).length !== physicalEntries) throw new Error("ZIP_MEMBER_SET_MISMATCH");
   const entries = Object.entries(archive.files).filter(([, entry]) => !entry.dir);
   if (entries.length > LIMITS_368.maxArchiveEntries) throw new Error("ZIP_ENTRY_LIMIT");
   let total = 0;
@@ -216,13 +263,66 @@ async function openZip368(data: Buffer, kind: OfficeFormat368, Zip: ZipConstruct
       throw new Error("ZIP_EXPANSION_LIMIT");
     }
   }
+  // Central-directory sizes are attacker-controlled. Validate the *actual*
+  // expansion and CRC while streaming, ending immediately if a part exceeds
+  // either the declared size or our independent per-part/total budget.
+  let expandedActual = 0;
+  for (const [, entry] of entries) {
+    const declared = entry._data?.uncompressedSize;
+    const expectedCrc = entry._data?.crc32;
+    if (!Number.isSafeInteger(expectedCrc)) throw new Error("INVALID_ZIP_CRC");
+    let actual = 0;
+    let checksum = 0;
+    try {
+      const stream = entry.nodeStream("nodebuffer");
+      // JSZip's bundled readable-stream predates Symbol.asyncIterator.
+      await new Promise<void>((accept, reject) => {
+        let ended = false;
+        const fail = (error: Error): void => {
+          if (ended) return;
+          ended = true;
+          stream.destroy();
+          reject(error);
+        };
+        stream.on("data", (chunk: Buffer) => {
+          if (ended) return;
+          actual += chunk.length;
+          expandedActual += chunk.length;
+          if (actual > declared! || actual > LIMITS_368.maxOnePartBytes
+            || expandedActual > LIMITS_368.maxExpandedBytes) {
+            fail(new Error("ZIP_EXPANSION_LIMIT"));
+            return;
+          }
+          checksum = crc32(chunk, checksum);
+        });
+        stream.on("error", () => fail(new Error("INVALID_ZIP_CRC")));
+        stream.on("end", () => { if (!ended) { ended = true; accept(); } });
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message === "ZIP_EXPANSION_LIMIT") throw error;
+      throw new Error("INVALID_ZIP_CRC");
+    }
+    if (actual !== declared || (checksum >>> 0) !== (expectedCrc! >>> 0)) {
+      throw new Error("INVALID_ZIP_CRC");
+    }
+  }
   if (!archive.file("[Content_Types].xml")) throw new Error("OOXML_CONTENT_TYPES_MISSING");
-  const types = await archive.file("[Content_Types].xml")!.async("string") as string;
+  const types = await part368(archive, "[Content_Types].xml", Xml.DOMParser);
+  const typeNamespace = "http://schemas.openxmlformats.org/package/2006/content-types";
+  if (!types || types.documentElement?.namespaceURI !== typeNamespace
+    || types.documentElement?.localName !== "Types") throw new Error("OOXML_CONTENT_TYPES_INVALID");
   // SheetJS includes a generic "bin" MIME fallback for macro-enabled files
   // even in an ordinary XLSX with no .bin members. Only active *overrides*
-  // or real binary parts are grounds for refusal, not this inert declaration.
-  if (/<Override\b[^>]*ContentType=["'][^"']*(?:macroEnabled|vbaProject|activeX)/iu.test(types)) {
-    throw new Error("ACTIVE_CONTENT_REFUSED");
+  // or a default with matching real parts are grounds for refusal.
+  for (const rule of arr368(types.getElementsByTagNameNS(typeNamespace, "*"))) {
+    if (rule.localName !== "Default" && rule.localName !== "Override") continue;
+    const mime = rule.getAttribute("ContentType");
+    if (!mime) throw new Error("OOXML_CONTENT_TYPES_INVALID");
+    if (/(?:macroEnabled|vbaProject|activeX)/iu.test(mime)) {
+      const extension = rule.getAttribute("Extension")?.toLowerCase();
+      const hasMatchingParts = extension && entries.some(([path]) => path.toLowerCase().endsWith(`.${extension}`));
+      if (rule.localName === "Override" || hasMatchingParts) throw new Error("ACTIVE_CONTENT_REFUSED");
+    }
   }
   const mandatory = { docx: "word/document.xml", xlsx: "xl/workbook.xml", pptx: "ppt/presentation.xml" }[kind];
   if (!archive.file(mandatory)) throw new Error("OOXML_WRONG_KIND");
@@ -237,15 +337,21 @@ async function part368(zip: Zip368, file: string, xml: XmlConstructor368): Promi
 }
 
 async function inventory368(data: Buffer, kind: OfficeFormat368, runtime: Pick<Runtime368, "zip" | "xml">): Promise<PackageInventory368> {
-  const zip = await openZip368(data, kind, runtime.zip);
+  const zip = await openZip368(data, kind, runtime.zip, runtime.xml);
   const names = Object.keys(zip.files);
   const mediaSha256 = await Promise.all(names.filter((name) =>
     new RegExp(`^(?:word|xl|ppt)/media/[^/]+$`, "u").test(name))
     .sort().map(async (name) => sha368(await zip.file(name)!.async("nodebuffer") as Buffer)));
   const chartCount = names.filter((name) => /^(?:word|xl|ppt)\/charts\/chart\d+\.xml$/u.test(name)).length;
+  const relNamespace = "http://schemas.openxmlformats.org/package/2006/relationships";
   const externalRelationshipCount = (await Promise.all(names.filter((name) => name.endsWith(".rels"))
-    .map(async (name) => (await zip.file(name)!.async("string") as string).match(/TargetMode=["']External["']/gu)?.length ?? 0)))
-    .reduce((a, b) => a + b, 0);
+    .map(async (name) => {
+      const rels = await part368(zip, name, runtime.xml.DOMParser);
+      if (!rels || rels.documentElement?.namespaceURI !== relNamespace
+        || rels.documentElement?.localName !== "Relationships") throw new Error("OOXML_RELATIONSHIPS_INVALID");
+      return arr368(rels.getElementsByTagNameNS(relNamespace, "Relationship"))
+        .filter((rel) => rel.getAttribute("TargetMode") === "External").length;
+    }))).reduce((a, b) => a + b, 0);
   const output: PackageInventory368 = {
     kind, text: [], cells: {}, formulaCount: 0, mediaSha256, chartCount, tableCount: 0, slideCount: 0,
     pageGeometry: null, shapeRectangles: [], externalRelationshipCount, unsupported: [],
@@ -386,7 +492,7 @@ async function makeXlsx368(source: Buffer, runtime: Runtime368): Promise<Buffer>
   return Buffer.from(runtime.xlsx.write(workbook, { type: "buffer", bookType: "xlsx", compression: true }));
 }
 async function makePptx368(source: Buffer, original: PackageInventory368, runtime: Runtime368): Promise<Buffer> {
-  const zip = await openZip368(source, "pptx", runtime.zip);
+  const zip = await openZip368(source, "pptx", runtime.zip, runtime.xml);
   const names = sortedNumericParts368(Object.keys(zip.files), /^ppt\/slides\/slide\d+\.xml$/u);
   const pptx = new runtime.pptx();
   const dims = original.pageGeometry?.match(/^(\d+)x(\d+)emu$/u);

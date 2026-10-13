@@ -39,24 +39,77 @@ function ascii(bytes: Uint8Array, offset: number, text: string): boolean {
   return [...text].every((character, index) => bytes[offset + index] === character.charCodeAt(0));
 }
 
+function pngChunkCrc(bytes: Uint8Array, from: number, to: number): number {
+  let crc = 0xffffffff;
+  for (let at = from; at < to; at += 1) {
+    crc ^= bytes[at]!;
+    for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
 function parsePng(bytes: Uint8Array): ImageHeader | null {
   const signature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
   if (bytes.length < signature.length || !signature.every((value, index) => bytes[index] === value)) return null;
   ensure(bytes, 8, 16);
   if (!ascii(bytes, 12, "IHDR")) throw new ImageResizeError("CORRUPT_IMAGE", "PNG is missing IHDR");
+  if (be32(bytes, 8) !== 13) throw new ImageResizeError("CORRUPT_IMAGE", "PNG IHDR length is invalid");
   const width = be32(bytes, 16);
   const height = be32(bytes, 20);
   if (width === 0 || height === 0) throw new ImageResizeError("CORRUPT_IMAGE", "PNG has invalid dimensions");
-  return { mime: "image/png", width, height };
+  // Browser decoders honor PNG eXIf before IDAT; the displayed canvas axes
+  // therefore differ from the raw IHDR axes for orientations 5..8.
+  let orientation: number | null = null;
+  let sawExif = false;
+  for (let at = 33;;) {
+    // A prefix ending with 0..7 bytes of the next chunk header must not
+    // silently validate coded IHDR dimensions: an unseen pre-IDAT eXIf
+    // could still change the axes seen by the browser's decoder.
+    ensure(bytes, at, 8);
+    const chunkLength = be32(bytes, at);
+    if (ascii(bytes, at + 4, "IDAT")) break;
+    if (ascii(bytes, at + 4, "IEND")) {
+      throw new ImageResizeError("CORRUPT_IMAGE", "PNG has no IDAT before IEND");
+    }
+    const end = at + 12 + chunkLength;
+    const isExif = ascii(bytes, at + 4, "eXIf");
+    if (end > bytes.length) {
+      if (isExif) throw new ImageResizeError("TRUNCATED_IMAGE", "PNG eXIf chunk is truncated");
+      // A truncated pre-IDAT chunk could conceal a later eXIf orientation.
+      throw new ImageResizeError("TRUNCATED_IMAGE", "PNG metadata before IDAT exceeds the header sample");
+    }
+    if (isExif) {
+      // PNG allows exactly one eXIf. Native decoders may ignore a later chunk
+      // even when the first TIFF has no usable orientation; never trust the
+      // second chunk as authority for canvas geometry.
+      if (sawExif) throw new ImageResizeError("CORRUPT_IMAGE", "PNG has conflicting or duplicate eXIf chunks");
+      sawExif = true;
+      // Invalid ancillary CRC is ignored by native PNG decoders: it must not
+      // become authority for a displayed-axis swap in our preflight parser.
+      if (pngChunkCrc(bytes, at + 4, end - 4) !== be32(bytes, end - 4)) {
+        throw new ImageResizeError("CORRUPT_IMAGE", "PNG eXIf CRC is invalid");
+      }
+      const parsed = tiffExifOrientation(bytes, at + 8, at + 8 + chunkLength);
+      if (parsed !== null) {
+        if (orientation !== null && orientation !== parsed) {
+          throw new ImageResizeError("CORRUPT_IMAGE", "PNG has conflicting eXIf orientations");
+        }
+        orientation = parsed;
+      }
+    }
+    at = end;
+  }
+  return orientation !== null && orientation >= 5
+    ? { mime: "image/png", width: height, height: width }
+    : { mime: "image/png", width, height };
 }
 
-/** Read only the TIFF orientation in a bounded JPEG APP1 Exif segment.
+/** Read only the TIFF orientation inside a bounded Exif segment.
  * Unknown/malformed metadata is not authority for rotating any pixels.
  * 5..8 swap displayed axes (including mirrored diagonal orientations).
  */
-function jpegExifOrientation(bytes: Uint8Array, start: number, end: number): number | null {
-  if (end - start < 14 || !ascii(bytes, start, "Exif\0\0")) return null;
-  const tiff = start + 6;
+function tiffExifOrientation(bytes: Uint8Array, tiff: number, end: number): number | null {
+  if (end - tiff < 8) return null;
   const little = bytes[tiff] === 0x49 && bytes[tiff + 1] === 0x49;
   const big = bytes[tiff] === 0x4d && bytes[tiff + 1] === 0x4d;
   if (!little && !big) return null;
@@ -80,6 +133,11 @@ function jpegExifOrientation(bytes: Uint8Array, start: number, end: number): num
     return orientation >= 1 && orientation <= 8 ? orientation : null;
   }
   return null;
+}
+
+function jpegExifOrientation(bytes: Uint8Array, start: number, end: number): number | null {
+  if (end - start < 14 || !ascii(bytes, start, "Exif\0\0")) return null;
+  return tiffExifOrientation(bytes, start + 6, end);
 }
 
 function parseJpeg(bytes: Uint8Array): ImageHeader | null {

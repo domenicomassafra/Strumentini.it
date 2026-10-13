@@ -388,6 +388,11 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
     const turnstileSiteKey = root.dataset.turnstileSiteKey ?? "";
     const turnstileTokens: Record<PanelName, string> = { login: "", register: "" };
     const turnstileWidgets: Partial<Record<PanelName, string>> = {};
+    // Disabling a button does not prevent form.requestSubmit() or a different
+    // tab from submitting. A Turnstile token is one-use: only one auth request
+    // may be outstanding across both forms.
+    let authPending = false;
+    let authAttempted = false;
     function updateChallenge(panel: PanelName, text: string, retry = false): void {
       const status = root?.querySelector<HTMLElement>(`[data-turnstile-status="${panel}"]`);
       const button = root?.querySelector<HTMLButtonElement>(`[data-turnstile-retry="${panel}"]`);
@@ -541,7 +546,7 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
 
     async function submitLogin(): Promise<void> {
       const form = loginForm;
-      if (form === null) return;
+      if (form === null || authPending) return;
       clearFieldErrors(form);
       setMessage(message, null);
 
@@ -559,22 +564,32 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
         return;
       }
 
+      authPending = true;
+      authAttempted = true;
       const button = form.querySelector<HTMLButtonElement>("[data-access-submit]");
       if (button !== null) setBusy(button, true);
-      const result = await signIn(email.ok ? email.value : "", password, turnstileTokens.login);
-      if (!result.ok) {
-        resetTurnstile("login");
-        setMessage(message, result.message);
-        message?.focus();
-        if (button !== null) setBusy(button, false);
-        return;
+      let navigating = false;
+      try {
+        const result = await signIn(email.ok ? email.value : "", password, turnstileTokens.login);
+        if (!result.ok) {
+          resetTurnstile("login");
+          setMessage(message, result.message);
+          message?.focus();
+          return;
+        }
+        window.location.assign("/preferiti/");
+        navigating = true;
+      } finally {
+        if (!navigating) {
+          authPending = false;
+          if (button !== null) setBusy(button, false);
+        }
       }
-      window.location.assign("/preferiti/");
     }
 
     async function submitRegister(): Promise<void> {
       const form = registerForm;
-      if (form === null) return;
+      if (form === null || authPending) return;
       clearFieldErrors(form);
       setMessage(message, null);
 
@@ -592,22 +607,32 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
         return;
       }
 
+      authPending = true;
+      authAttempted = true;
       const button = form.querySelector<HTMLButtonElement>("[data-access-submit]");
       if (button !== null) setBusy(button, true);
-      const result = await createAccount(
-        name.ok ? name.value : "",
-        email.ok ? email.value : "",
-        password.ok ? password.value : "",
-        turnstileTokens.register,
-      );
-      if (!result.ok) {
-        resetTurnstile("register");
-        setMessage(message, result.message);
-        message?.focus();
-        if (button !== null) setBusy(button, false);
-        return;
+      let navigating = false;
+      try {
+        const result = await createAccount(
+          name.ok ? name.value : "",
+          email.ok ? email.value : "",
+          password.ok ? password.value : "",
+          turnstileTokens.register,
+        );
+        if (!result.ok) {
+          resetTurnstile("register");
+          setMessage(message, result.message);
+          message?.focus();
+          return;
+        }
+        window.location.assign("/preferiti/");
+        navigating = true;
+      } finally {
+        if (!navigating) {
+          authPending = false;
+          if (button !== null) setBusy(button, false);
+        }
       }
-      window.location.assign("/preferiti/");
     }
 
     loginForm?.addEventListener("submit", (event) => {
@@ -649,7 +674,7 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
       // no account API must look like "not signed in", not like a broken page,
       // so a failed probe stays silent; only the user's own actions report.
       const result = await readSession();
-      if (result.ok && result.data.user !== null) showConnected(result.data.user);
+      if (!authAttempted && result.ok && result.data.user !== null) showConnected(result.data.user);
     })();
   }
 </script>

@@ -133,3 +133,103 @@ source/output proofs, cross-browser and physical iOS/Android
 memory/cancellation/privacy/rollback evidence. `Status: ready-for-agent`
 remains unchanged. The malicious callback is a regression boundary probe;
 normal browser encoders were observed clean in this sample.
+
+## 2026-10-13 — independent JPEG APPn container blind spot (worker-16; source-only, OPEN)
+
+**Genuine new P2 reproduction:** The existing JPEG metadata scanner inventoried only APP1, APP13 and COM markers, although other standards-defined APP0..APP15 application segments may carry private data or embedded thumbnails. A real 12×12 Sharp-exported, terminal-EOI JPEG with a legal APP5 segment containing `PRIVATE_394_GPS_CONTACT_AFTER_EXPORT` was successfully reopened with both installed Sharp 0.35.5 and independent Pillow 12.2.0 (432 decoded RGB bytes), but `scanImageMetadata` falsely returned `complete:true`, `segments:[]` and `privacySegmentCount:0`. A real Sharp `.withIccProfile("srgb")` JPEG contained a legitimate `ICC_PROFILE\0` APP2 chunk, verified by Sharp `.metadata().icc`, which was also completely invisible to the scanner. A spec-shaped APP0 JFIF 1×1 thumbnail with three concealed pixel bytes was independently reopened by Sharp yet was ignored. This is distinct from prior JPEG trailing/EOI entropy and WebP/PNG boundary findings.
+
+**RED → minimal GREEN:** New focused `tests/metadata-394-20261013-jpeg-app-private.test.ts` reproduced **3/3 RED** before editing production source, and **3/3 GREEN** afterward. `src/engines/image/metadata.ts` now inventories previously ignored APP0..APP15 markers as privacy-bearing `ancillary`, except the precisely bounded 14-byte standard `JFIF\0` APP0 header with zero thumbnail dimensions. It classifies a true `ICC_PROFILE\0` APP2 as `icc-profile` (color-profile bytes are counted in the metadata inventory); opaque/mislabelled APP2 remains `ancillary`. The independently decoded image pixels are unchanged. No work was performed in `strip-metadata.ts`, user-facing UI, donor models or production export behavior.
+
+**Validation and limits:** Five focused suites, including original JPEG entropy/trailing, PNG forensic, image-media-tools and image-upgrade tests, **39/39 PASS**; scoped TypeScript `tsc --ignoreConfig --noEmit --target es2023 --module esnext --moduleResolution bundler --types node` **PASS**; native Pillow forensic reopen **PASS**; owned `git diff --check` **PASS**. The original full-document sanitizer/corpus/physical mobile/rollback acceptance remains **OPEN** (AC-394.1 and AC-394.3). AC-394.2 remains its existing narrow verified-no-false-removal-claim status. This is an inventory correction only, with no Gold, provider/network calls, installation, stage/commit/push, branch change or release approval; prime handles integration.
+
+## 2026-10-13 — independent standards review of PR #14 JPEG privacy claims (RED→GREEN, still OPEN)
+
+**Target inspected:** Draft PR #14 remote head
+`13d75ee9938308d8c052ca1f6c7d6c8b3575a2c2`, relative to
+`origin/main` `402774b32a3d8cb6d2f2cbe836734ea1c655a4fa`.
+The exact source blob was
+`824a16e0748efb8a91d75472f08690fcadae5dab` before this worker fix.
+The PR already contained a pending JPEG privacy-review test that exposed
+three substantive contradictions in source behavior. A separate new test
+`tests/metadata-394-20261013-icc-marker-budget.test.ts` independently
+reproduced **3/3 RED** against the exact source: (1) a legitimate 14-byte
+JFIF APP0 header with variable density bytes spelling `GPS!` was treated as
+privacy-free; (2) a genuine Sharp sRGB ICC APP2 with a valid `cprt`/`mluc`
+copyright tag containing private UTF-16BE text was classified only as color,
+with `privacySegmentCount:0`; (3) 1,000 valid zero-payload APP15 markers were
+inventoried without any per-marker bound, yet `complete:true`. In all three
+cases Sharp and independent Pillow reopened identical original pixels; the
+ICC content was also present in both decoded profile representations.
+
+**Minimal source correction:** `src/engines/image/metadata.ts` now recognizes
+only the fully fixed 1:1/no-thumbnail, version-1.1/1.2 JFIF APP0 header as
+the known neutral exception. Variable density and ambiguous JFIF carriers
+are conservatively inventoried as `ancillary`. Because an otherwise valid
+ICC profile can carry author/copyright data, `icc-profile` now contributes
+to the privacy carrier count for source inventories of JPEG, PNG and WebP;
+the presentation grouping retains `class:color`. No unverified ICC profile
+or vendor signature is silently whitelisted as privacy-free. JPEG marker
+processing stops at 512 markers with `complete:false`, preserves already
+found segments and explicitly describes the resulting inventory as partial.
+No pixels, output encoders, provider software, dependencies or image sanitizers
+were changed.
+
+**GREEN:** the new independent three regression tests and prior five JPEG/
+PNG/WebP/image suites combined **42/42 PASS**. Real WebP `XMP ` FourCC remains
+recognized and real Sharp decoding continues to match clean pixels. The
+input JPEGs were verified with Pillow and Sharp, including their ICC profile
+presence. All source-only proof remains bounded: full document forensic
+coverage, PDF/SVG/OOXML corpus, physical mobile/cross-browser and rollback
+are **OPEN** under original AC-394.1 and AC-394.3; no Gold or release gate is
+inferred from the scanner correction.
+
+## 2026-10-13 — JPEG unused DQT private-byte inventory correction (worker-20, partial, OPEN)
+
+**New independent P2 reproduction:** The exact Draft PR #14 source at
+`f52a8d85e1a8b8c53045b7c221825c6c16605136` falsely reported
+`complete:true`, `privacySegmentCount:0`, `segments:[]` and “Nessun segmento di
+metadati trovato nel file” for a genuine 12×12 Sharp-encoded JPEG with one
+additional *unused* legal DQT quantization table ID 3 containing the literal
+`PRIVATE_GPS_CONTACT_394_DQT` in its 64 nonzero coefficients. Both installed
+Sharp and independent Pillow decoded exactly the same picture before and after
+insertion. Pillow independently reported quantization tables [0,1,3], while the
+JPEG frame components use only [0,1]. An unreferenced coding table is permitted
+container data with room for unverified identifying bytes; the test does **not**
+assert ordinary referenced DQT coefficients are private or that the PNG export
+retains them.
+
+**Scoped RED → GREEN:** NEW
+`tests/metadata-394-20261013-unused-dqt-private.test.ts` reproduced the missed
+private bytes and the same concealment in a mixed used/unused DQT marker
+(**2 RED**, with the control for a real remapped JPEG using table ID 3 already
+passing). `src/engines/image/metadata.ts` now enumerates only bounded DQT
+definitions (8-/16-bit, IDs 0–3) and SOF component quantization references,
+then labels a DQT segment containing any unreferenced table `JPEG DQT
+unreferenced` as conservative `ancillary` source inventory. A normally
+referenced table, including a genuine frame using table ID 3, is neutral. When
+DQT or SOF reference structure cannot be verified, it declines a complete
+claim; the pre-existing **512 JPEG marker cap** and partial-inventory semantics
+remain in force. A mixed DQT segment is counted once, not once per table.
+
+**Evidence:** New three-test suite GREEN, combined previous 42 focused
+JPEG/PNG/WebP/image tests **45/45 PASS** across seven suites;
+`tsc --ignoreConfig --noEmit --target es2023 --module esnext --moduleResolution bundler --types node`
+against the owned TypeScript files PASS. Source bytes containing the sentinel,
+Sharp/Pillow matching decoded pixels, and Pillow's independent table-ID readback
+are all asserted. No new dependency, external service, code outside the three
+assigned paths, Git action, Gold receipt or release. This changes the **JPEG
+source inventory warning only**, not metadata removal or byte-level output
+verification. Original AC-394.1 and AC-394.3 stay **OPEN** for document formats,
+malicious forensic corpus, physical devices, independent browser evidence and
+rollback/release acceptance; AC-394.2 retains its previously documented narrow
+scope.
+
+## 2026-10-13 — repeated JPEG DQT table-ID shadowing (worker-17; independent RED → GREEN, partial / OPEN)
+
+**Material P2 before correction:** Draft PR #14 at remote `4694924a6f6520edac2bfcf36785f9b4a0e45438` (same source tree as `3ce455a6dc64102a0a67a0be504441314b9fa557`) reported a Sharp-encoded 12×12 JPEG as `complete:true`, `privacySegmentCount:0`, `segments:[]` despite an inserted first legal DQT definition **table ID 0** containing raw `PRIVATE_GPS_OVERRIDDEN_DQT_394_20261013`, later superseded by the real encoder's DQT ID 0. Real installed Sharp and independent Pillow both decode identical RGB bytes before/after; Pillow reports quantization IDs `[0,1]` for both. A second valid JPEG places two same-ID definitions in one DQT marker and also decodes unchanged. NEW `tests/metadata-394-20261013-redefined-dqt-private.test.ts` proved **2/2 RED** against the prior inventory. This is unverified recoverable coding-table data; it is **not** proof that ordinary referenced DQT coefficients are inherently metadata.
+
+**Minimal fix:** In `src/engines/image/metadata.ts`, the already bounded DQT inventory now retains the latest defining segment per quantization ID. On repeated ID, it conservatively records the **superseded** segment once as `JPEG DQT redefined` (`ancillary`), leaving the final raster definition neutral. This also catches repeated IDs inside one DQT segment and avoids double-counting a mixed used/unused DQT. Existing unused-table recognition, 8-/16-bit parser limits, SOF validation, APP/ICC/JFIF recognition, 512-marker cap and incomplete-inventory semantics are preserved; no new dependency and no JPEG output-stripper changes.
+
+**GREEN:** `npx vitest run tests/metadata-394-20261013-redefined-dqt-private.test.ts tests/metadata-394-20261013-unused-dqt-private.test.ts tests/metadata-394-20261013-icc-marker-budget.test.ts tests/metadata-394-20261013-jpeg-app-private.test.ts tests/metadata-394-20261013-jpeg-app.test.ts tests/metadata-394-20261013-jpeg-privacy-review.test.ts tests/metadata-trailing-394.test.ts tests/metadata-forensic-394.test.ts tests/image-media-tools.test.ts tests/image-upgrade-cluster.test.ts --testTimeout=35000` **47/47 PASS** (45 pre-existing + 2 new; 8 test files). Scoped `npx tsc --ignoreConfig --noEmit --target es2023 --module esnext --moduleResolution bundler --types node --skipLibCheck src/engines/image/metadata.ts tests/metadata-394-20261013-redefined-dqt-private.test.ts` **PASS**; owned source `git diff --check` **PASS**. A separate concurrent repo-wide `npx tsc --noEmit --pretty false` reports **TS2339** at unowned `tests/forensic-redaction-378-20261013-pages-stream-bound.test.ts:104`; global typecheck therefore cannot be claimed green for this shared worktree. Prime alone owns Git integration and Draft PR updates.
+
+**Limits:** This changes only source JPEG metadata *inventory warnings*. It does not remove DQT data, prove all JPEG private bytes are detected, establish output PNG pixel fidelity or certify PDF/SVG/OOXML sanitization. Original AC-394.1 and AC-394.3 remain **OPEN** (malicious document corpus, physical mobile, browser/platform readback, security review and rollback); AC-394.2 remains checked only at its earlier bounded disclosure scope. No Gold, release or production approval.
