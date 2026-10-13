@@ -4,9 +4,22 @@
  * Run: npx tsx scripts/donor-provenance-366.ts --check
  */
 import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, isAbsolute, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+
+// Reuse the already installed, production-lock-pinned npm semver 6.3.1.
+// A lock entry's integrity/registry URL is not evidence that its version
+// satisfies the consuming package's actual dependency contract.
+const semver = createRequire(import.meta.url)("semver") as {
+  validRange: (range: string) => string | null;
+  satisfies: (version: string, range: string) => boolean;
+};
+function lockedVersionSatisfies(spec: unknown, version: unknown): boolean {
+  return typeof spec === "string" && typeof version === "string"
+    && semver.validRange(spec) !== null && semver.satisfies(version, spec);
+}
 
 type LockEntry = {
   version?: string; license?: string; integrity?: string; resolved?: string; dev?: boolean; devOptional?: boolean;
@@ -86,14 +99,20 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
     if (!validSha512(entry.integrity)) failures.push(`INVALID_SRI ${path}`);
     if (!validSource(name, version, entry.resolved)) failures.push(`UNVERIFIED_SOURCE ${path}`);
     rows.push({ name, version, license: entry.license ?? "UNKNOWN", source: entry.resolved ?? "UNKNOWN", integrity: entry.integrity ?? "UNKNOWN", scope: "production" });
-    for (const depName of Object.keys(entry.dependencies ?? {})) {
+    for (const [depName, spec] of Object.entries(entry.dependencies ?? {})) {
       const target = resolveDependency(depName, path, entries);
       if (!target) failures.push(`MISSING_TRANSITIVE ${path} -> ${depName}`);
       else if (entries[target]?.dev || entries[target]?.devOptional) failures.push(`DEV_ONLY_TRANSITIVE ${path} -> ${target}`);
+      else if (!lockedVersionSatisfies(spec, entries[target]?.version)) {
+        failures.push(`TRANSITIVE_VERSION_MISMATCH ${path} -> ${target} (${spec} vs ${entries[target]?.version ?? "UNKNOWN"})`);
+      }
     }
-    for (const depName of Object.keys(entry.optionalDependencies ?? {})) {
+    for (const [depName, spec] of Object.entries(entry.optionalDependencies ?? {})) {
       const target = resolveDependency(depName, path, entries);
       if (target && (entries[target]?.dev || entries[target]?.devOptional)) failures.push(`DEV_ONLY_OPTIONAL ${path} -> ${target}`);
+      else if (target && !lockedVersionSatisfies(spec, entries[target]?.version)) {
+        failures.push(`OPTIONAL_VERSION_MISMATCH ${path} -> ${target} (${spec} vs ${entries[target]?.version ?? "UNKNOWN"})`);
+      }
     }
   }
   for (const name of Object.keys(manifest.dependencies ?? {})) {
