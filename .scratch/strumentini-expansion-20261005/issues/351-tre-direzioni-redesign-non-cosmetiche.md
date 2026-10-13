@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## Owner round Strumentini — 13 ottobre 2026
+
+Scelta del design rinviata alla fine e svolta manualmente dall’owner. Nessuna direzione scelta in questo round; continuare i ticket tecnici indipendenti senza imporre una scelta anticipata.
+
+Decisione acquisita, non nuova implementation/runtime acceptance; status e checkbox esistenti invariati. Tutto il lavoro autorizzato resta nello scope, riuso prima del codice e gate originali preservati.
