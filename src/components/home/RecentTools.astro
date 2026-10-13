@@ -31,12 +31,17 @@
   let sequence = 0;
 
   // The small workbench projection is deferred; never import the full catalog.
-  const catalog = import("../../generated/workbench-catalog");
+  const catalog = import("../../generated/workbench-catalog").catch(() => null);
 
   async function render(membership: Membership): Promise<void> {
     const revision = ++sequence;
-    const { workbenchCatalog } = await catalog;
-    if (revision !== sequence || !list || !section) return;
+    if (!list || !section) return;
+    // Storage disclosure does not depend on the optional catalog download.
+    if (warning) warning.hidden = membership.persisted !== false;
+    section.hidden = list.childElementCount === 0 && membership.persisted !== false;
+    const loaded = await catalog;
+    if (revision !== sequence || loaded === null) return;
+    const { workbenchCatalog } = loaded;
     const recent = selectHomeRecent345(membership.recent, workbenchCatalog);
     const fragment = document.createDocumentFragment();
     for (const tool of recent) {
@@ -68,8 +73,9 @@
       fragment.append(item);
     }
     list.replaceChildren(fragment);
-    section.hidden = recent.length === 0;
-    if (warning) warning.hidden = membership.persisted !== false;
+    // A denied store can leave Recenti empty even after a real completion.
+    // Keep its warning accessible instead of hiding the whole section.
+    section.hidden = recent.length === 0 && membership.persisted !== false;
   }
 
   subscribeMembership((membership) => { void render(membership).catch(() => undefined); });
