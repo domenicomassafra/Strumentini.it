@@ -110,7 +110,9 @@ export function assertSupportedSource237(source: Uint8Array): number {
   // table while the final footer points to a new /Type /XRef stream. Scanning
   // for the first standalone declaration would silently select the old table.
   const marker = (finalFooter.index ?? 0) + finalFooter[0].indexOf("startxref");
-  const declaration = /startxref[ \t]*(?:\r\n|[\r\n\f])[ \t]*(\d+)[ \t]*(?=\r\n|[\r\n\f])/yu;
+  // More than one line ending is valid PDF whitespace between startxref and
+  // its decimal offset. Keep the mandatory first EOL and sticky footer binding.
+  const declaration = /startxref[ \t]*(?:\r\n|[\r\n\f])[ \t\r\n\f]*(\d+)[ \t]*(?=\r\n|[\r\n\f])/yu;
   declaration.lastIndex = marker;
   const actualDeclaration = declaration.exec(sourceText);
   if (!actualDeclaration || actualDeclaration[1] !== finalFooter[1]) {
