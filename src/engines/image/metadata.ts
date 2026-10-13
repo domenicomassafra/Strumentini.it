@@ -162,14 +162,25 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
     // follows the 0xFF marker prefix starts one byte later.
     const length = (bytes[offset + 1]! << 8) | bytes[offset + 2]!;
     if (length < 2 || offset + 1 + length > bytes.length) break;
+    const payload = bytes.subarray(offset + 3, offset + 1 + length);
     const known = JPEG_SEGMENTS[marker];
     if (known !== undefined) {
       // APP1 is shared by Exif and XMP; the payload identifies which.
-      const payload = bytes.subarray(offset + 3, offset + 1 + length);
       const carrier = marker === 0xe1 && (ascii(payload, 0, "http://ns.adobe.com/xap/1.0/") || ascii(payload, 0, "http://ns.adobe.com/xmp/extension/"))
         ? "xmp"
         : known.carrier;
       segments.push(segment(carrier, carrier === "xmp" ? "JPEG APP1 XMP" : known.segment, length + 2));
+    } else if (marker >= 0xe0 && marker <= 0xef) {
+      // APP0..APP15 are application-owned payloads, not JPEG pixel coding.
+      // Ignore only the fixed, thumbnail-free JFIF APP0 header; JFXX, JFIF
+      // thumbnails, unknown APP payloads and private extensions can carry
+      // identifying bytes even when image decoders silently discard them.
+      const plainJfif = marker === 0xe0 && payload.length === 14
+        && ascii(payload, 0, "JFIF\0") && payload[12] === 0 && payload[13] === 0;
+      if (!plainJfif) {
+        const icc = marker === 0xe2 && ascii(payload, 0, "ICC_PROFILE\0");
+        segments.push(segment(icc ? "icc-profile" : "ancillary", icc ? "JPEG APP2 ICC" : `JPEG APP${marker - 0xe0}`, length + 2));
+      }
     }
     // `offset` sits on the marker byte itself (the leading 0xFF was consumed
     // above), so the next marker starts one byte plus the declared length later.

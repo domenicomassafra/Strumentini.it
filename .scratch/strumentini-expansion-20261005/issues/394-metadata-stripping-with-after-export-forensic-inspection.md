@@ -133,3 +133,47 @@ source/output proofs, cross-browser and physical iOS/Android
 memory/cancellation/privacy/rollback evidence. `Status: ready-for-agent`
 remains unchanged. The malicious callback is a regression boundary probe;
 normal browser encoders were observed clean in this sample.
+
+## 2026-10-13 worker-2 — JPEG APP metadata inventory omission (RED → GREEN, partial; OPEN)
+
+**Independent counterexample:** A real 2×2 JPEG encoded by the installed Sharp
+with `.withIccProfile("srgb")` contains an `APP2 ICC_PROFILE` segment. Both Sharp
+and installed Pillow read the embedded ICC profile and independently reopen
+its pixels, but `scanImageMetadata` previously reported `complete: true`,
+`segments: []` and the false summary "Nessun segmento di metadati trovato nel
+file." A second genuinely decodable Sharp JPEG, augmented with a valid `APP15`
+application segment carrying the test sentinel
+`PRIVATE_GPS_XMP_NESTED_THUMBNAIL_394`, retained identical decoded pixels in
+Sharp and reopened in Pillow, but also falsely reported zero privacy segments.
+These are omissions of JPEG application segments, separate from wave14's
+post-EOI/truncation fix and wave21's PNG compressed stream verifier.
+
+**RED → GREEN:** New `tests/metadata-394-20261013-jpeg-app.test.ts` failed
+**2/3** targeted tests before the source correction; the clean JPEG,
+bounded-prefix and pre-aborted controls passed. In
+`src/engines/image/metadata.ts`, the existing JPEG marker walker now
+classifies genuine `APP2 ICC_PROFILE` segments as `icc-profile`, and other
+previously ignored APP0..APP15 payloads as unverified `ancillary`, with one
+specific exception for a fixed, thumbnail-free 14-byte JFIF APP0 header.
+JFIF thumbnail-bearing APP0 and other unknown application segments are not
+declared clean. Known APP1 Exif/XMP, APP13 IPTC and COM classifications are
+unchanged. The converter still re-encodes supported raster pixels as PNG and
+retains its independent output verifier; no document sanitizer or new route
+was introduced.
+
+**Verification:** Five focused Vitest suites, including the new real
+Sharp/Pillow regression, **39/39 PASS**; `./node_modules/.bin/tsc --noEmit
+--pretty false` **PASS**. Both existing true Chromium 390×844 scripts,
+`tests/metadata-forensic-394.browser.mjs` and
+`tests/image-strip-forensic-394-wave21.browser.mjs`, **PASS** with real
+PNG pixel/byte inspection and negative unconsumed-IDAT checks. Over-8-MiB
+JPEG/WebP inventories still disclose `complete:false`; pre-aborted inspection
+throws AbortError. No source JPEG APP15 browser export or physical device
+proof is claimed from this tranche. No commit, push, PR, deploy or Gold
+changes by this worker.
+
+**Remaining original acceptance:** AC-394.1 and AC-394.3 stay **OPEN** for
+document PDF/OOXML/SVG malicious corpus, cross-browser and physical mobile,
+security/release/rollback proofs. Nested Exif thumbnails are not individually
+forensically decoded, and identifying pixels/steganography remain outside
+the proven raster metadata-removal boundary.
