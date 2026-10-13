@@ -10,7 +10,9 @@ export function requestBrowserDownload339(artifact:OutputArtifactDescriptor | nu
   if(!plan.allowed) return false;
   let url:string|undefined;
   try {
-    url=URL.createObjectURL(new Blob([plan.bytes.slice().buffer],{type:plan.mime}));
+    // A native slice can use subclass species or Buffer view semantics and
+    // expose unrelated backing bytes. Copy only the verified Uint8Array view.
+    url=URL.createObjectURL(new Blob([new Uint8Array(plan.bytes).buffer],{type:plan.mime}));
     const anchor=document.createElement("a");
     anchor.href=url;
     anchor.download=plan.filename;
