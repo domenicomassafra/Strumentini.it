@@ -202,18 +202,20 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
       + (resultPanel && !resultPanel.hidden ? previousOptionsHint : "");
   }
 
+  function receivePickerFiles(input: HTMLInputElement): void {
+    const files = [...(input.files ?? [])];
+    // Reset native inputs so browsers can emit a change event when the same
+    // file is selected again after cancellation or a refusal.
+    input.value = "";
+    if (files.length === 0) {
+      cancelledPicker("Nessun nuovo file ricevuto. Puoi riprovare.");
+      return;
+    }
+    void inspect(files, input === photosPicker);
+  }
+
   for (const input of [picker, photosPicker]) {
-    input?.addEventListener("change", () => {
-      const files = [...(input.files ?? [])];
-      // Reset native inputs so browsers can emit a change event when the same
-      // file is selected again after cancellation or a refusal.
-      input.value = "";
-      if (files.length === 0) {
-        cancelledPicker("Nessun nuovo file ricevuto. Puoi riprovare.");
-        return;
-      }
-      void inspect(files, input === photosPicker);
-    });
+    input?.addEventListener("change", () => receivePickerFiles(input));
     input?.addEventListener("cancel", () => {
       input.value = "";
       cancelledPicker("Scelta annullata. Puoi aprire di nuovo Foto o File.");
@@ -222,6 +224,18 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
       input.value = "";
       cancelledPicker("Impossibile completare la selezione. Controlla gli eventuali permessi e riprova.");
     });
+  }
+  // Native file controls are visible before this deferred Astro module loads.
+  // If the OS chooser returned first, its change event was missed; the chosen
+  // File still lives in the input and must take the normal validation path.
+  const earlyFiles = [picker, photosPicker].filter((input): input is HTMLInputElement => Boolean(input?.files?.length));
+  if (earlyFiles.length === 1) {
+    receivePickerFiles(earlyFiles[0]!);
+  } else if (earlyFiles.length > 1) {
+    // Order of two pre-initialization selections is unknowable; require an
+    // explicit new choice instead of guessing which File the user intended.
+    for (const input of earlyFiles) input.value = "";
+    if (status) status.textContent = "Sono presenti due selezioni precedenti. Scegli un solo file per continuare.";
   }
   resetButton?.addEventListener("click", clearSelection);
 
