@@ -177,7 +177,9 @@ function textFromXmlFragment(xml: string, textTagPattern = "(?:w:t|a:t)"): strin
 }
 
 async function loadPackage(input: ArrayBuffer | Uint8Array): Promise<LoadedPackage> {
-  const source = input instanceof Uint8Array ? input : new Uint8Array(input);
+  // Snapshot before the asynchronous unzip: verified raw ZIP bytes must be
+  // the exact bytes consumed even when a caller reuses/mutates its buffer.
+  const source = input instanceof Uint8Array ? input.slice() : new Uint8Array(input.slice(0));
   const analysis = analyzeOoxmlPackage(source);
   const { unzipSync } = await import("fflate");
   let members: Record<string, Uint8Array>;
