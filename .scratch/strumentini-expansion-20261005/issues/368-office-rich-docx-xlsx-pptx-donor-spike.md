@@ -118,3 +118,60 @@ page layout, source/output text, image placement, independent pixel comparison
 and real device behavior. `Status: ready-for-agent` stays unchanged, and
 this source-only feasibility audit does not release Office-to-PDF conversion
 under #56.
+
+## 2026-10-13 ZIP integrity and OOXML relationship evidence hardening (NO_GO)
+
+**Three independently reproduced false acceptances were fixed only in the
+offline inspector.** New test
+`tests/audit-office-fidelity-368-20261013-relationships-integrity.test.ts`
+starts from the original SHA-pinned editable XLSX/DOCX fixture bytes and
+uses the already installed independent JSZip/xmldom readers to construct
+disposable negative variants. Before the patch, **3/3 tests failed**:
+
+- Changing the existing XLSX external hyperlink declaration from
+  `TargetMode="External"` to valid `TargetMode = "External"` left the XML
+  relationship intact (independently verified via DOM), but the regex-based
+  inspector reported **zero** external relationships instead of one. All
+  `.rels` evidence is now XML parsed with its package namespace; malformed
+  relationship XML also fails closed.
+- Changing the existing DOCX main part's ContentType to a macro-enabled MIME
+  with legal spaces around `=` was accepted as an ordinary DOCX. The
+  `[Content_Types].xml` manifest is now namespace-aware XML; active Override
+  declarations and active Default declarations that match actual parts fail
+  with `ACTIVE_CONTENT_REFUSED`. SheetJS's inert `.bin` fallback declaration
+  without a matching binary part remains accepted for measurement only.
+- Flipping the CRC in the existing DOCX central directory for
+  `word/document.xml` left the inspector returning a valid inventory. The
+  archive now validates actual ZIP CRC values **after** compressed and
+  expanded size/entry limits, refusing this corrupt package with
+  `INVALID_ZIP_CRC` without inflating unbounded archives during admission.
+
+**Verification:** isolated regression test prepatch **3 RED**; after the
+minimal parser/CRC change, original #368 **5/5**, new **3/3**, and adjacent
+Office print corpus **3/3**, combined **11/11 PASS**. Strict targeted
+`tsc --ignoreConfig --noEmit` with Node types **exit 0**. Actual installed
+donor CLI still processes all three SHA-pinned originals, reports all as
+`MEASURED_WITH_FIDELITY_LOSS`, retains `visualPageFidelity: NOT_VERIFIED`,
+`transitiveLicenseAndSecurityAcceptance: NOT_VERIFIED`,
+`productionPromotion: false`, and deliberately exits **2 (`NO_GO`)**.
+No packages, original fixture bytes, production routes, historical Gold
+receipts, provider access, or vendor installation changed. Original
+AC-368.1 and AC-368.3 remain **OPEN**; LibreConvert/ZetaOffice, layout
+renderer, device and transitive license gates are still unproven.
+
+**Same-day bounded-inflate correction to the CRC fix:** A fourth new
+regression uses the authentic SHA-pinned DOCX plus an 18 MiB DEFLATE member
+whose local and central ZIP headers falsely advertise 1 KiB; the resulting
+ZIP is below the 2 MiB compressed input cap. Simply asking JSZip to perform
+whole-archive `checkCRC32` after validating the *claimed* sizes was shown
+**RED**: it processed the forged expansion before reporting invalid CRC.
+The final implementation instead streams actual bytes, increments CRC32 per
+chunk, and terminates immediately on real per-part/total size excess or
+disagreement with the claimed size. JSZip's installed readable-stream emits
+`data/end/error` events and does not implement `Symbol.asyncIterator`, so
+the bounded reader uses its native event API. The fabricated 18 MiB case now
+fails promptly as `ZIP_EXPANSION_LIMIT` (**GREEN**), including an isolated
+run with V8 heap limited to **128 MiB**. Final scoped suite after this
+correction: #368 original **5/5**, new **4/4**, adjacent Office **3/3**,
+combined **12/12 PASS**. The earlier 11/11 intermediate count above is
+superseded by this final 12/12 proof. Release decision remains `NO_GO`.
