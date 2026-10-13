@@ -83,7 +83,7 @@ export function textPartKind407(name: string): "xml" | "svg" | "html" | null {
 function hasUnsafeHtmlNavigation407(source: string): boolean {
   const space = (character: string | undefined): boolean =>
     character !== undefined && /[ \t\r\n\f]/u.test(character);
-  const starts = /<\s*(meta|img|image|source|link)(?=[\s/>])/giu;
+  const starts = /<\s*(meta|img|image|source|link|video|audio|track|input|a|area)(?=[\s/>])/giu;
   let start: RegExpExecArray | null;
   while ((start = starts.exec(source)) !== null) {
     const tag = start[1]?.toLowerCase();
@@ -129,6 +129,21 @@ function hasUnsafeHtmlNavigation407(source: string): boolean {
       if (((tag === "img" || tag === "image" || tag === "source") && name === "srcset") ||
         (tag === "link" && name === "imagesrcset")) {
         if (/[^ \t\r\n\f]/u.test(value)) return true;
+      }
+      // Ordinary HTML5 media URLs can also be unquoted (or recovered after
+      // malformed quotes and slash-delimited attributes). Checking raw quoted
+      // src=/href= substrings does not cover the browser's actual URL values.
+      // Conservatively refuse nonempty URLs, including relative and entity-
+      // encoded forms whose destination depends on the eventual document URL.
+      const mediaSource = name === "src" &&
+        (tag === "img" || tag === "image" || tag === "source" || tag === "video" ||
+         tag === "audio" || tag === "track" || tag === "input");
+      const videoPoster = tag === "video" && name === "poster";
+      const navigationLink = name === "href" &&
+        (tag === "a" || tag === "area" || tag === "link");
+      if (value.length > 0 && (mediaSource || videoPoster || navigationLink)) {
+        // Same-document anchors never resolve outside this HTML document.
+        if (!navigationLink || !/^#[a-z_][\w.:-]*$/iu.test(value)) return true;
       }
     }
     if (!terminated) return true; // Truncated meta tag is ambiguous.
