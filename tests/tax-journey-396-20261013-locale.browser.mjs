@@ -67,6 +67,27 @@ try {
   await send();
   assert.equal(await output(), baseline, "Double submission stays idempotent");
 
+  // Independent cents-sensitive 2025 oracle: 10000.99 * 67% = 6700.6633,
+  // rounded to 6700.66; 0.01 already paid leaves 6700.65, then 15% is
+  // 1005.0975, rounded half-up to 1005.10. A parser that drops fractional
+  // cents would return 1005.00 and MUST fail this assertion.
+  const euro = value => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(value);
+  await enter({ receipts: "10000.99", paidContributions: "0.01" });
+  await send();
+  const centsDot = await output();
+  for (const [label, amount] of [
+    ["Reddito forfettario stimato:", 6700.66],
+    ["Contributi già pagati dichiarati:", 0.01],
+    ["Base imponibile modellata:", 6700.65],
+    ["Imposta sostitutiva stimata:", 1005.10],
+  ]) assert(centsDot.includes(`${label} ${euro(amount)}`), `Exact 2025 source-backed cent amount: ${label} ${euro(amount)}`);
+  await enter({ receipts: "10000,99", paidContributions: "0,01" });
+  assert.equal(await output(), "", "Editing fractional input clears stale calculation");
+  await send();
+  assert.equal(await output(), centsDot, "Nonzero fractional cents preserved exactly with either decimal separator");
+  await send();
+  assert.equal(await output(), centsDot, "Repeated fractional submit preserves exact cents");
+
   await enter({ receipts: "10,00", paidContributions: "0,00" });
   await send();
   const rounded = await output();
@@ -99,7 +120,7 @@ try {
   assert.equal(await piva.locator("output").innerText(), "", "No saved tax result survives page reload");
   assert.deepEqual(pageErrors, []);
   assert.deepEqual(badRequests, []);
-  console.log("#396 locale PASS: 2025 comma/dot same cents, half-up rounding, double submit, invalid grouping refusal, stale/year/reset and no network write");
+  console.log("#396 locale PASS: 2025 comma/dot including 10000.99 - 0.01 => taxable 6700.65/tax 1005.10, half-up, double submit, invalid grouping refusal, stale/year/reset and no network write");
 } finally {
   await browser?.close();
   await new Promise(done => server.close(done));
