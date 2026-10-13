@@ -152,13 +152,27 @@ function hasUnsafeHtmlNavigation407(source: string): boolean {
   return false;
 }
 
+/** Decode only for conservative CSS resource checks, never for rendering. */
+function decodedCssEscapes407(source: string): string {
+  return source.replace(/\\([0-9a-f]{1,6})(?:\r\n|[ \t\r\n\f])?|\\([^\r\n\f0-9a-f])/giu,
+    (_whole, hex: string | undefined, escaped: string | undefined) => {
+      if (!hex) return escaped ?? "";
+      const codePoint = Number.parseInt(hex, 16);
+      return String.fromCodePoint(codePoint > 0 && codePoint <= 0x10ffff ? codePoint : 0xfffd);
+    });
+}
+
 /** XML/HTML character references are decoded before CSS is parsed. A raw
  * style="fill:url&#40;...&#41;" therefore becomes an active CSS url() even
  * though neither the original url() check nor CSS backslash decoding sees it.
  * Keep this scan linear and inside the detector's bounded text-part budget.
  */
-function hasEntityInCss407(source: string, html5: boolean): boolean {
-  if (!source.includes("&")) return false;
+function hasUnsafeCssAttribute407(source: string, html5: boolean): boolean {
+  // CSS Images permits remote resources as quoted strings inside image-set(),
+  // without a url() token; CSS-escaped function names work in browsers too.
+  // Inspect only CSS-bearing attributes, not inert text or data-* metadata.
+  if (!source.includes("&") && !/image-set|\\/iu.test(source)) return false;
+  const imageSet = /(?:^|[^\w-])(?:-webkit-)?image-set\s*\(/iu;
   // HTML5 treats a slash in the before-attribute-name state as a separator,
   // even without preceding whitespace (<div/style=...>). XML does not.
   const attributes = /(?:^|[ \t\r\n\f</])(?:style|fill|stroke|filter|clip-path|mask|marker-(?:start|mid|end)|cursor)[ \t\r\n\f]*=/giu;
@@ -181,7 +195,9 @@ function hasEntityInCss407(source: string, html5: boolean): boolean {
       // character. XML requires the quoted branch above.
       while (at < source.length && !space(source[at]) && source[at] !== ">") at++;
     }
-    if (source.slice(start, at).includes("&")) return true;
+    const rawValue = source.slice(start, at);
+    if (rawValue.includes("&") || imageSet.test(rawValue) ||
+        (rawValue.includes("\\") && imageSet.test(decodedCssEscapes407(rawValue)))) return true;
     attributes.lastIndex = at;
   }
   // SVG <style> elements are already forbidden by the existing active-element
@@ -221,8 +237,8 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
   }
   // A ZIP can store a genuine SVG document under an .xml member name.
   if (kind === "svg" || kind === "html" || /<\s*(?:[^\t\r\n <>/:]+:)?svg\b/iu.test(source)) {
-    if (hasEntityInCss407(source, kind === "html")) {
-      return reject("UNSUPPORTED", "Entity-bearing CSS attributes or SVG styles cannot be trusted before XML/HTML decoding.");
+    if (hasUnsafeCssAttribute407(source, kind === "html")) {
+      return reject("UNSUPPORTED", "CSS attributes with entities or image-set resources cannot be trusted before XML/HTML/CSS decoding.");
     }
     if (/<\s*(?:[^\t\r\n <>/:]+:)?(?:foreignObject|base|link|use|image|feImage|style|animate(?:Motion|Transform|Color)?|set|discard|handler)\b|\bon[a-z]{3,}\s*=|\b(?:href|src|xlink:href)\s*=\s*["'][^"']*&|\b(?:href|src|xlink:href)\s*=\s*["']\s*(?:https?:|file:|data:|javascript:|vbscript:|\/\/)|\burl\s*\(|@import/iu.test(source)) {
       return reject("UNSUPPORTED", "Executable or external SVG/HTML content is outside the inspection profile.");
@@ -246,9 +262,7 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
     // for the rejection check (not rendering/reconstructing the SVG). A
     // literal url(#local) remains disallowed, matching the existing policy.
     if (source.includes("\\")) {
-      const cssDecoded = source.replace(/\\([0-9a-f]{1,6})(?:\r\n|[ \t\r\n\f])?|\\([^\r\n\f0-9a-f])/giu,
-        (_whole, hex: string | undefined, escaped: string | undefined) =>
-          hex ? String.fromCodePoint(Number.parseInt(hex, 16) || 0xfffd) : (escaped ?? ""));
+      const cssDecoded = decodedCssEscapes407(source);
       if (/\burl\s*\(|@import/iu.test(cssDecoded)) {
         return reject("UNSUPPORTED", "CSS-escaped external SVG resources are outside the local inspection profile.");
       }
