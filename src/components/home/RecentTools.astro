@@ -68,7 +68,9 @@
       fragment.append(item);
     }
     list.replaceChildren(fragment);
-    section.hidden = recent.length === 0;
+    // A denied store can leave Recenti empty even after a real completion.
+    // Keep its warning accessible instead of hiding the whole section.
+    section.hidden = recent.length === 0 && membership.persisted !== false;
     if (warning) warning.hidden = membership.persisted !== false;
   }
 
