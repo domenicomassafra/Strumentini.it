@@ -84,9 +84,9 @@ function validatePlan(source: Uint8Array, output: Uint8Array, plan: ForensicPlan
 // Self-contained Python, deliberately independent of src/engines/pdf and of
 // the existing #237 fixtures, so it can be run against arbitrary real output.
 const PYTHON_INSPECTOR_378 = String.raw`
-import base64, io, json, math, re, sys
+import base64, io, json, math, re, sys, zlib
 from pypdf import PdfReader
-from pypdf.generic import ArrayObject, DictionaryObject, IndirectObject
+from pypdf.generic import ArrayObject, DictionaryObject, IndirectObject, StreamObject
 
 def deny(msg): raise RuntimeError("pypdf-378: " + msg)
 payload=json.loads(sys.stdin.buffer.read())
@@ -105,6 +105,48 @@ root=pdf.trailer["/Root"]
 if set(root.keys())!={"/Type","/Pages"}: deny("catalog extras/embedded metadata")
 if set(pdf.trailer.keys())-{"/Size","/Root"}: deny("trailer metadata or extra keys")
 if len(pdf.pages)!=len(plan["pages"]): deny("page count mismatch")
+# A reachable /Pages dictionary is not visible in pdf.pages' per-page key
+# checks. Reject private values or metadata hidden in parent/intermediate tree
+# nodes, and verify the exact parent/child/count structure of this raster subset.
+page_tree_seen=set()
+def assert_page_tree(tree_ref,parent_ref=None,depth=0):
+    if not isinstance(tree_ref,IndirectObject) or depth>8:
+        deny("invalid Pages tree reference or depth")
+    key=(tree_ref.idnum,tree_ref.generation)
+    if key in page_tree_seen: deny("cyclic or shared Pages tree")
+    page_tree_seen.add(key)
+    node=tree_ref.get_object()
+    keys={"/Type","/Kids","/Count"}
+    if parent_ref is not None: keys.add("/Parent")
+    if not isinstance(node,DictionaryObject) or set(node.keys())!=keys or node.get("/Type")!="/Pages":
+        deny("unexpected Pages tree dictionary or private fields")
+    if parent_ref is not None:
+        parent=node.raw_get("/Parent")
+        if not isinstance(parent,IndirectObject) or (parent.idnum,parent.generation)!=(parent_ref.idnum,parent_ref.generation):
+            deny("invalid Pages tree parent")
+    kids=node.raw_get("/Kids")
+    count=node.raw_get("/Count")
+    if not isinstance(kids,ArrayObject) or not 1<=len(kids)<=len(plan["pages"]) \
+            or not isinstance(count,int) or not 1<=count<=len(plan["pages"]):
+        deny("invalid Pages tree kids or count")
+    actual=0
+    for child_ref in kids:
+        if not isinstance(child_ref,IndirectObject): deny("non-indirect Pages child")
+        child=child_ref.get_object()
+        if not isinstance(child,DictionaryObject): deny("invalid Pages child")
+        if child.get("/Type")=="/Pages":
+            actual+=assert_page_tree(child_ref,tree_ref,depth+1)
+        elif child.get("/Type")=="/Page":
+            parent=child.raw_get("/Parent")
+            if not isinstance(parent,IndirectObject) or (parent.idnum,parent.generation)!=key:
+                deny("invalid Page parent link")
+            actual+=1
+        else:
+            deny("unexpected Pages child type")
+    if actual!=count: deny("Pages tree count mismatch")
+    return actual
+if assert_page_tree(root.raw_get("/Pages"))!=len(plan["pages"]):
+    deny("Pages tree does not match redaction plan")
 # This is deliberately separate from the product's in-house object list and
 # from page-only extraction. A recoverable stream with a real xref entry but
 # no path from /Root is a privacy failure even when no viewer renders it.
@@ -125,6 +167,49 @@ declared={(number,generation) for generation,entries in pdf.xref.items()
           for number,offset in entries.items() if number>0 and offset>0}
 if not declared or reachable!=declared:
     deny("orphan/unreachable xref object(s) or ambiguous reachability")
+# A PDF can also carry recoverable private bytes that have *no xref entry*:
+# comments, stray objects or arbitrary padding between the last object and
+# xref still reopen in strict pypdf and native PDFKit. Check the physical
+# intervals as well as the parser's logical graph. This gate intentionally
+# accepts only the simple classic-xref, contiguous-object raster subset.
+footer=re.search(rb"startxref\n([0-9]+)\n%%EOF\n$",raw)
+if footer is None: deny("unsupported physical PDF footer")
+xref_start=int(footer.group(1))
+if xref_start<1 or raw[xref_start:xref_start+5]!=b"xref\n":
+    deny("incorrect physical xref offset")
+physical=sorted((offset,number,generation) for generation,entries in pdf.xref.items()
+                for number,offset in entries.items() if number>0 and offset>0)
+if len({offset for offset,_,_ in physical})!=len(physical):
+    deny("overlapping physical xref offsets")
+if not re.fullmatch(rb"%PDF-(?:1\.[0-7]|2\.0)\n%[\x80-\xff]{4,32}\n",raw[:physical[0][0]]):
+    deny("unexpected bytes outside indexed objects before first object")
+for index,(offset,number,generation) in enumerate(physical):
+    stop=physical[index+1][0] if index+1<len(physical) else xref_start
+    part=raw[offset:stop]
+    prefix=f"{number} {generation} obj\n".encode("ascii")
+    if offset>=stop or not part.startswith(prefix) or not part.endswith(b"endobj\n"):
+        deny("unindexed recoverable bytes between xref objects")
+    body=part[len(prefix):]
+    if b"\nstream\n" in body:
+        dictionary,remaining=body.split(b"\nstream\n",1)
+        end=b"\nendstream\nendobj\n"
+        if not re.fullmatch(rb"<<[^\r\n%]*>>",dictionary) or not remaining.endswith(end):
+            deny("unindexed comments or bytes in physical stream wrapper")
+        encoded=remaining[:-len(end)]
+        stream=pdf.get_object(IndirectObject(number,generation,pdf))
+        if not isinstance(stream,StreamObject) or encoded!=stream._data:
+            deny("unindexed bytes disagree with parsed stream payload")
+    elif not re.fullmatch(rb"<<[^\r\n%]*>>\nendobj\n",body):
+        deny("unindexed comments or bytes inside physical object")
+xref_tail=raw[xref_start:]
+xref_table=re.fullmatch(
+    rb"xref\n0 ([0-9]+)\n((?:[0-9]{10} [0-9]{5} [nf] \n)+)"
+    rb"trailer\n<<[^\r\n%]*>>\nstartxref\n([0-9]+)\n%%EOF\n",
+    xref_tail,
+)
+if xref_table is None or int(xref_table.group(1))!=len(xref_table.group(2).splitlines()) \
+        or int(xref_table.group(3))!=xref_start:
+    deny("unindexed recoverable bytes in physical xref/trailer")
 verified=0
 for page,expected in zip(pdf.pages,plan["pages"]):
     if set(page.keys())!={"/Type","/Parent","/MediaBox","/Resources","/Contents"}:
@@ -132,6 +217,25 @@ for page,expected in zip(pdf.pages,plan["pages"]):
     media=list(page.mediabox)
     if [float(v) for v in media]!=[0.,0.,float(expected["pageWidth"]),float(expected["pageHeight"])]:
         deny("geometry mismatch")
+    # Inspect the original stream, before extract_text/get_contents discard its
+    # dictionary or tolerant FlateDecode discards recoverable encoded tails.
+    expected_content=("q\n"+str(expected["pageWidth"])+" 0 0 "+str(expected["pageHeight"])+" 0 0 cm\n/Im0 Do\nQ\n").encode("ascii")
+    contents=page.raw_get("/Contents")
+    if not isinstance(contents,IndirectObject): deny("unsupported Contents reference")
+    contents=contents.get_object()
+    if not isinstance(contents,StreamObject) or set(contents.keys())-{"/Length"} not in (set(),{"/Filter"}):
+        deny("private or unsupported Contents dictionary")
+    draw=contents._data
+    if "/Filter" in contents:
+        if contents["/Filter"]!="/FlateDecode": deny("unsupported Contents filter")
+        try:
+            decoder=zlib.decompressobj()
+            draw=decoder.decompress(draw,len(expected_content)+1)
+        except zlib.error:
+            deny("invalid Contents FlateDecode payload")
+        if not decoder.eof or decoder.unused_data or decoder.unconsumed_tail:
+            deny("trailing/unconsumed/oversize Contents stream data")
+    if draw!=expected_content: deny("noncanonical page draw stream")
     if (page.extract_text() or "").strip(): deny("recoverable output text")
     resources=page["/Resources"]
     if set(resources.keys())!={"/XObject"} or set(resources["/XObject"].keys())!={"/Im0"}:
@@ -145,13 +249,24 @@ for page,expected in zip(pdf.pages,plan["pages"]):
         deny("non-RGB or encoded image metadata")
     w=int(image["/Width"]); h=int(image["/Height"])
     if (w,h)!=(expected["pixelWidth"],expected["pixelHeight"]): deny("raster dimensions mismatch")
+    # FlateDecode commonly ignores bytes after the zlib end marker. Those
+    # discarded bytes are still recoverable from the PDF stream (including
+    # plaintext secrets), even if both independent viewers display only RGB.
+    # Decompress under the declared pixel bound and require full consumption.
+    try:
+        decompressor=zlib.decompressobj()
+        exact_rgb=decompressor.decompress(image._data,3*w*h+1)
+    except zlib.error:
+        deny("invalid RGB FlateDecode payload")
+    # Do not call decompressobj.flush(): it has no max-output bound and may
+    # materialize an enormous remainder even after bounded decompress().
+    # EOF proves there is no further decoded data waiting in this stream.
+    if len(exact_rgb)!=3*w*h or not decompressor.eof or decompressor.unused_data or decompressor.unconsumed_tail:
+        deny("trailing/unconsumed/oversize private image stream data")
     rgb=image.get_data()
-    if len(rgb)!=3*w*h: deny("decoded image length mismatch")
+    if rgb!=exact_rgb: deny("decoded image or independent FlateDecode mismatch")
     for token in plan["sourceWitnesses"]:
         if token.encode("ascii") in rgb: deny("source marker inside decoded RGB")
-    expected_content=("q\n"+str(expected["pageWidth"])+" 0 0 "+str(expected["pageHeight"])+" 0 0 cm\n/Im0 Do\nQ\n").encode("ascii")
-    # The image must be the only drawable content. Fail closed on transforms/text.
-    if page.get_contents().get_data()!=expected_content: deny("noncanonical page draw stream")
     visited=bytearray(w*h)
     for r in expected["regions"]:
         x0=math.floor(r["left"]*w); y0=math.floor(r["top"]*h)
