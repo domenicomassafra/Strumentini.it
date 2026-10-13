@@ -124,6 +124,10 @@ function segment(carrier: MetadataCarrier, segmentName: string, size: number): M
 
 function scanJpeg(bytes: Uint8Array): MetadataInventory {
   const segments: MetadataSegment[] = [];
+  const quantizationSegments: { readonly tables: readonly number[]; readonly bytes: number }[] = [];
+  const referencedQuantizationTables = new Set<number>();
+  let sawFrameHeader = false;
+  let quantizationReferencesKnown = true;
   let offset = 2;
   let complete = false;
   let entropyScan = false;
@@ -167,6 +171,42 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
     // follows the 0xFF marker prefix starts one byte later.
     const length = (bytes[offset + 1]! << 8) | bytes[offset + 2]!;
     if (length < 2 || offset + 1 + length > bytes.length) break;
+    if (marker === 0xdb) {
+      // A DQT may define several 8- or 16-bit quantization tables in one
+      // segment. Only tables unused by every SOF component can safely be
+      // classified as unverified extra payload rather than raster data.
+      const end = offset + 1 + length;
+      const tables: number[] = [];
+      let position = offset + 3;
+      while (position < end) {
+        const descriptor = bytes[position++]!;
+        const precision = descriptor >> 4;
+        const table = descriptor & 15;
+        const quantizationBytes = precision === 0 ? 64 : 128;
+        if (precision > 1 || table > 3 || position + quantizationBytes > end) {
+          quantizationReferencesKnown = false;
+          break;
+        }
+        tables.push(table);
+        position += quantizationBytes;
+      }
+      if (tables.length === 0 || position !== end) quantizationReferencesKnown = false;
+      quantizationSegments.push({ tables, bytes: length + 2 });
+    } else if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+      // All JPEG SOF variants declare the quantization table selected by each
+      // component. The SOF can follow DQT, so decide only after reaching EOI.
+      const count = bytes[offset + 8]!;
+      if (length !== 8 + 3 * count || count === 0) {
+        quantizationReferencesKnown = false;
+      } else {
+        sawFrameHeader = true;
+        for (let component = 0; component < count; component += 1) {
+          const table = bytes[offset + 11 + 3 * component]!;
+          if (table > 3) quantizationReferencesKnown = false;
+          referencedQuantizationTables.add(table);
+        }
+      }
+    }
     const known = JPEG_SEGMENTS[marker];
     if (known !== undefined) {
       // APP1 is shared by Exif and XMP; the payload identifies which.
@@ -200,6 +240,19 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
     // above), so the next marker starts one byte plus the declared length later.
     offset += 1 + length;
     if (marker === 0xda) entropyScan = true;
+  }
+  if (complete && quantizationSegments.length > 0) {
+    if (!sawFrameHeader || !quantizationReferencesKnown) {
+      complete = false;
+    } else {
+      for (const item of quantizationSegments) {
+        if (item.tables.some((table) => !referencedQuantizationTables.has(table))) {
+          // These bytes are legal JPEG syntax but are not needed to decode the
+          // image. Their contents are unverified, not proven to be private.
+          segments.push(segment("ancillary", "JPEG DQT unreferenced", item.bytes));
+        }
+      }
+    }
   }
   return summarize("jpeg", segments, complete);
 }

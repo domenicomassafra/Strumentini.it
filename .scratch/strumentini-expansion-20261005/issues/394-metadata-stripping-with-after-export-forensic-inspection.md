@@ -182,3 +182,44 @@ presence. All source-only proof remains bounded: full document forensic
 coverage, PDF/SVG/OOXML corpus, physical mobile/cross-browser and rollback
 are **OPEN** under original AC-394.1 and AC-394.3; no Gold or release gate is
 inferred from the scanner correction.
+
+## 2026-10-13 — JPEG unused DQT private-byte inventory correction (worker-20, partial, OPEN)
+
+**New independent P2 reproduction:** The exact Draft PR #14 source at
+`f52a8d85e1a8b8c53045b7c221825c6c16605136` falsely reported
+`complete:true`, `privacySegmentCount:0`, `segments:[]` and “Nessun segmento di
+metadati trovato nel file” for a genuine 12×12 Sharp-encoded JPEG with one
+additional *unused* legal DQT quantization table ID 3 containing the literal
+`PRIVATE_GPS_CONTACT_394_DQT` in its 64 nonzero coefficients. Both installed
+Sharp and independent Pillow decoded exactly the same picture before and after
+insertion. Pillow independently reported quantization tables [0,1,3], while the
+JPEG frame components use only [0,1]. An unreferenced coding table is permitted
+container data with room for unverified identifying bytes; the test does **not**
+assert ordinary referenced DQT coefficients are private or that the PNG export
+retains them.
+
+**Scoped RED → GREEN:** NEW
+`tests/metadata-394-20261013-unused-dqt-private.test.ts` reproduced the missed
+private bytes and the same concealment in a mixed used/unused DQT marker
+(**2 RED**, with the control for a real remapped JPEG using table ID 3 already
+passing). `src/engines/image/metadata.ts` now enumerates only bounded DQT
+definitions (8-/16-bit, IDs 0–3) and SOF component quantization references,
+then labels a DQT segment containing any unreferenced table `JPEG DQT
+unreferenced` as conservative `ancillary` source inventory. A normally
+referenced table, including a genuine frame using table ID 3, is neutral. When
+DQT or SOF reference structure cannot be verified, it declines a complete
+claim; the pre-existing **512 JPEG marker cap** and partial-inventory semantics
+remain in force. A mixed DQT segment is counted once, not once per table.
+
+**Evidence:** New three-test suite GREEN, combined previous 42 focused
+JPEG/PNG/WebP/image tests **45/45 PASS** across seven suites;
+`tsc --ignoreConfig --noEmit --target es2023 --module esnext --moduleResolution bundler --types node`
+against the owned TypeScript files PASS. Source bytes containing the sentinel,
+Sharp/Pillow matching decoded pixels, and Pillow's independent table-ID readback
+are all asserted. No new dependency, external service, code outside the three
+assigned paths, Git action, Gold receipt or release. This changes the **JPEG
+source inventory warning only**, not metadata removal or byte-level output
+verification. Original AC-394.1 and AC-394.3 stay **OPEN** for document formats,
+malicious forensic corpus, physical devices, independent browser evidence and
+rollback/release acceptance; AC-394.2 retains its previously documented narrow
+scope.
