@@ -107,7 +107,8 @@ export function buildSourceBoundGoldQualityIndex(
         !/^[a-f0-9]{64}$/u.test(String(raw.receiptSha256 ?? "")) ||
         typeof raw.revision !== "string" || !/^[a-f0-9]{40}$/u.test(raw.revision)) continue;
     if (typeof raw.receiptPath !== "string" ||
-        !/^quality\/receipts\/(?:[a-z0-9_-]+\/)*[a-z0-9_.-]+\.json$/u.test(raw.receiptPath)) continue;
+        !/^quality\/receipts\/(?:[a-z0-9_-]+\/)*[a-z0-9_.-]+\.json$/u.test(raw.receiptPath) ||
+        raw.receiptPath.split("/").at(-1) !== `${toolId}.gold.json`) continue;
     const validatorResults = validateGoldReceipts(
       [{ id: toolId, route: `/tools/${toolId}` }],
       [raw as unknown as ToolCertificationReceipt],
