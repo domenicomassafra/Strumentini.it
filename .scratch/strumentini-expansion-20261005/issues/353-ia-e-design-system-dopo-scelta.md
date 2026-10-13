@@ -37,3 +37,9 @@
 **Out of scope:** New framework, paid acquisition, false Gold, hidden uploads, modifying historical evidence or overriding closed refusals.
 
 **Execution routing:** See EXECUTION-PROMPTS.md in this backlog; currently planning only.
+
+## Owner round Strumentini — 13 ottobre 2026
+
+Controlli professionali: l’integratore espone le azioni necessarie e principali, organizza progressivamente i dettagli secondo il caso. Non nascondere funzionalità essenziali o ridurre lo scope avanzato.
+
+Decisione acquisita, non nuova implementation/runtime acceptance; status e checkbox esistenti invariati. Tutto il lavoro autorizzato resta nello scope, riuso prima del codice e gate originali preservati.

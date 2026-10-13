@@ -37,3 +37,9 @@
 **Out of scope:** Shipping functionality, buying licenses, changing receipt source fingerprints, broad desktop-only advanced exemptions.
 
 **Execution prompt:** Routed by canonical EXECUTION-PROMPTS.md with gates.
+
+## Owner round Strumentini — 13 ottobre 2026
+
+Approvati sia salvataggio locale opt-in sia esportazione esplicita di un progetto portabile per altro dispositivo. Definire allegati/fonti inclusi, schema/versione, file mancanti, ripristino e migrazione non distruttiva; conservare gates privacy e compatibilità.
+
+Decisione acquisita, non nuova implementation/runtime acceptance; status e checkbox esistenti invariati. Tutto il lavoro autorizzato resta nello scope, riuso prima del codice e gate originali preservati.

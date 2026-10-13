@@ -37,3 +37,9 @@
 **Out of scope:** App implementation now, unapproved vendor spend, deploying incomplete safety features.
 
 **Execution prompt:** Coordinated in EXECUTION-PROMPTS.md.
+
+## Owner round Strumentini — 13 ottobre 2026
+
+Preparare un documento da inviare è un primo percorso esemplare, non l’unico deliverable. Scope completo PDF, incluse aggiunta/annotazione e correzione del testo esistente quando tecnicamente supportata; capacità distinte e prove proprie. Parallelizzare ticket ready disgiunti con subagenti nativi entro capacità reale; nessuna falsa promessa di completamento o downgrade a una sola verticalità.
+
+Decisione acquisita, non nuova implementation/runtime acceptance; status e checkbox esistenti invariati. Tutto il lavoro autorizzato resta nello scope, riuso prima del codice e gate originali preservati.
