@@ -81,3 +81,49 @@ The matrix is **not** legal clearance: registry SRI metadata was not independent
 **Authentic metadata RED:** `tests/donor-provenance-366-20261013-optional-root.test.ts` isolates the real `fflate@0.8.3` registry URL, MIT license and installed SHA512-SRI from the production lockfile in an in-memory optional-root graph. A matching root manifest/lock declaration `optionalDependencies: { fflate: "^99.0.0" }` with that **present** incompatible version returned `VERIFIED_METADATA`. Mismatched root optional declarations and malformed dangling-OR specs also escaped source audit. Focused baseline **3 failed / 2 passed**. Both truly missing optional entry and valid `0.8.3` / `^0.8.0` versions correctly passed; no repository metadata was changed by the test.
 
 **Minimal fail-closed GREEN:** `scripts/donor-provenance-366.ts` extends the existing manifest type and root comparison to include `optionalDependencies`, rejects declaration drift as `ROOT_OPTIONAL_DEPENDENCIES_DIFFER`, and checks the same canonical `node_modules/<name>` entry using the existing semver helper when present. An incompatible or malformed present edge yields `ROOT_OPTIONAL_VERSION_MISMATCH`; a present entry marked `dev`/`devOptional` yields `DEV_ONLY_ROOT_OPTIONAL`; an absent optional entry remains permitted. The preceding root direct `DEV_ONLY_DIRECT` P1 guard is retained. The six provenance suites **25/25 PASS** and strict scoped TypeScript **exit 0**. No lockfile, donor, license, vendored bytes or production deployment modified in this scoped task. Existing independent tarball checks, rights review and all original AC-366.1–3 remain **OPEN**; the serial integrator handles PR delivery.
+
+## 2026-10-13 independent peer P2 follow-up — required/present peer provenance (RED → GREEN, AC OPEN)
+
+**Real installed-metadata fail-open:** Draft PR #21 at remote SHA
+7bdc1efa3f49c1f1455de3e436781a4a1de6a9f3 verified direct,
+transitive and optional version constraints but ignored npm peerDependencies
+and peerDependenciesMeta. Real preact-render-to-string@6.7.0 declares a
+required preact peer (range >=10 || >=11.0.0-0), with preact@10.29.8
+installed. Isolated lock records copying the genuine MIT licenses, registry
+tarball URLs and SHA512-SRI were wrongly marked VERIFIED_METADATA with
+zero failures after the required peer was removed or its version replaced by
+incompatible 1.0.0 and a matching well-shaped registry URL.
+
+**Independent RED before source change:** New
+tests/donor-provenance-366-20261013-peer-deps.test.ts uses genuine pinned
+package records in in-memory npm lock graphs. The initial focused run
+produced **9 failures / 2 passing controls** for missing required, wrong
+peer versions, dev/devOptional-hidden peers, optional-present mismatches and
+incorrect nested npm resolution. Independent additional cases cover
+peerDependenciesMeta optional-absent, present-optional metadata validation,
+ancestor shadowing and a scoped npm consumer. No lock, manifest, vendor or
+installed dependency was changed.
+
+**Minimal GREEN:** scripts/donor-provenance-366.ts now checks peerDependencies
+on every audited production entry. An absent peer is allowed only when
+peerDependenciesMeta[name].optional === true; a missing required peer fails
+MISSING_PEER. A present incompatible required or optional peer fails
+PEER_VERSION_MISMATCH or OPTIONAL_PEER_VERSION_MISMATCH, and one marked dev
+or devOptional fails DEV_ONLY_PEER. The existing production metadata audit
+still checks license, npm registry origin and SHA512-SRI shape for present
+peers. Resolution selects the closest valid ancestor node_modules boundary,
+excluding nested directories owned by the consumer, including scoped
+packages. The existing pinned semver implementation is reused; direct
+production root checks, optional-root checks and all other guards remain.
+
+**Verification and limits:** 13/13 new cases and **38/38** across seven
+provenance suites PASS, retaining all preceding 25/25 cases. Strict scoped
+TypeScript exit 0 and owned-file diff check PASS. The actual repository
+read-only --check still exits 1 with NO_GO; 366 production package rows,
+46 pinned assets, 8 donor candidates NO_ADOPT and three newly surfaced
+conservative DEV_ONLY_PEER flags for present, devOptional-marked Vite optional
+peers. These flags require separate reachability/rights review before any
+adoption, rather than automatic clearance. Downloaded tarball authenticity,
+legal rights, vendor/WASM, distribution/physical-device and production
+acceptance remain NOT_RUN/NO_GO. All original AC-366.1/2/3 remain unchecked,
+ticket OPEN; integrator owns commit/push, existing Draft PR #21 and CI.

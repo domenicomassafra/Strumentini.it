@@ -26,6 +26,7 @@ function lockedVersionSatisfies(spec: unknown, version: unknown): boolean {
 type LockEntry = {
   version?: string; license?: string; integrity?: string; resolved?: string; dev?: boolean; devOptional?: boolean;
   dependencies?: Record<string, string>; devDependencies?: Record<string, string>; optionalDependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>; peerDependenciesMeta?: Record<string, { optional?: boolean }>;
 };
 type Lock = { lockfileVersion?: number; packages?: Record<string, LockEntry> };
 type Manifest = { dependencies?: Record<string, string>; devDependencies?: Record<string, string>; optionalDependencies?: Record<string, string> };
@@ -77,6 +78,23 @@ function resolveDependency(name: string, from: string, entries: Record<string, L
   return entries[top] ? top : null;
 }
 
+/** A peer must resolve beside or above its consumer, never inside that consumer. */
+function resolvePeerDependency(name: string, from: string, entries: Record<string, LockEntry>): string | null {
+  let at = from;
+  while (true) {
+    // Each package-lock path is a sequence of node_modules package boundaries.
+    // Skip the consumer's own descendants and (for scoped packages) @scope
+    // folders; only an actual ancestor's node_modules can supply its peer.
+    const boundary = at.lastIndexOf("node_modules/");
+    if (boundary === -1) return null;
+    const ancestor = at.slice(0, boundary);
+    const candidate = ancestor + "node_modules/" + name;
+    if (entries[candidate]) return candidate;
+    if (!ancestor) return null;
+    at = ancestor.endsWith("/") ? ancestor.slice(0, -1) : ancestor;
+  }
+}
+
 /** Every production entry is audited, including nodes reached through nested dependency resolution. */
 export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
   const failures: string[] = [];
@@ -117,6 +135,22 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
       if (target && (entries[target]?.dev || entries[target]?.devOptional)) failures.push(`DEV_ONLY_OPTIONAL ${path} -> ${target}`);
       else if (target && !lockedVersionSatisfies(spec, entries[target]?.version)) {
         failures.push(`OPTIONAL_VERSION_MISMATCH ${path} -> ${target} (${spec} vs ${entries[target]?.version ?? "UNKNOWN"})`);
+      }
+    }
+    for (const [peerName, spec] of Object.entries(entry.peerDependencies ?? {})) {
+      // npm peers resolve at or above their consumer; unlike ordinary
+      // dependencies, the consumer's own node_modules cannot satisfy a peer.
+      const target = resolvePeerDependency(peerName, path, entries);
+      const optional = entry.peerDependenciesMeta?.[peerName]?.optional === true;
+      // Only explicitly optional peers may be absent. Present optional peers
+      // still need valid production provenance and a compatible pinned version.
+      if (!target) {
+        if (!optional) failures.push("MISSING_PEER " + path + " -> " + peerName);
+      } else if (entries[target]?.dev || entries[target]?.devOptional) {
+        failures.push("DEV_ONLY_PEER " + path + " -> " + target);
+      } else if (!lockedVersionSatisfies(spec, entries[target]?.version)) {
+        const label = optional ? "OPTIONAL_PEER_VERSION_MISMATCH" : "PEER_VERSION_MISMATCH";
+        failures.push(label + " " + path + " -> " + target + " (" + spec + " vs " + (entries[target]?.version ?? "UNKNOWN") + ")");
       }
     }
   }
