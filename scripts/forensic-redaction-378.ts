@@ -217,6 +217,25 @@ for page,expected in zip(pdf.pages,plan["pages"]):
     media=list(page.mediabox)
     if [float(v) for v in media]!=[0.,0.,float(expected["pageWidth"]),float(expected["pageHeight"])]:
         deny("geometry mismatch")
+    # Inspect the original stream, before extract_text/get_contents discard its
+    # dictionary or tolerant FlateDecode discards recoverable encoded tails.
+    expected_content=("q\n"+str(expected["pageWidth"])+" 0 0 "+str(expected["pageHeight"])+" 0 0 cm\n/Im0 Do\nQ\n").encode("ascii")
+    contents=page.raw_get("/Contents")
+    if not isinstance(contents,IndirectObject): deny("unsupported Contents reference")
+    contents=contents.get_object()
+    if not isinstance(contents,StreamObject) or set(contents.keys())-{"/Length"} not in (set(),{"/Filter"}):
+        deny("private or unsupported Contents dictionary")
+    draw=contents._data
+    if "/Filter" in contents:
+        if contents["/Filter"]!="/FlateDecode": deny("unsupported Contents filter")
+        try:
+            decoder=zlib.decompressobj()
+            draw=decoder.decompress(draw,len(expected_content)+1)
+        except zlib.error:
+            deny("invalid Contents FlateDecode payload")
+        if not decoder.eof or decoder.unused_data or decoder.unconsumed_tail:
+            deny("trailing/unconsumed/oversize Contents stream data")
+    if draw!=expected_content: deny("noncanonical page draw stream")
     if (page.extract_text() or "").strip(): deny("recoverable output text")
     resources=page["/Resources"]
     if set(resources.keys())!={"/XObject"} or set(resources["/XObject"].keys())!={"/Im0"}:
@@ -248,9 +267,6 @@ for page,expected in zip(pdf.pages,plan["pages"]):
     if rgb!=exact_rgb: deny("decoded image or independent FlateDecode mismatch")
     for token in plan["sourceWitnesses"]:
         if token.encode("ascii") in rgb: deny("source marker inside decoded RGB")
-    expected_content=("q\n"+str(expected["pageWidth"])+" 0 0 "+str(expected["pageHeight"])+" 0 0 cm\n/Im0 Do\nQ\n").encode("ascii")
-    # The image must be the only drawable content. Fail closed on transforms/text.
-    if page.get_contents().get_data()!=expected_content: deny("noncanonical page draw stream")
     visited=bytearray(w*h)
     for r in expected["regions"]:
         x0=math.floor(r["left"]*w); y0=math.floor(r["top"]*h)
