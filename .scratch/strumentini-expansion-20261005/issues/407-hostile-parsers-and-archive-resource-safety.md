@@ -144,3 +144,162 @@ compressed/nested archives, large PDF object streams or all filesystem
 extraction paths safe. No physical-device, release, full hostile-corpus
 or rollback verification occurred. **AC-407.1, AC-407.2 and AC-407.3 remain
 unchecked; original status `ready-for-agent`, owner and Gold NO-GO.**
+
+## 2026-10-13 wave4 worker-2 — HTML meta-refresh navigation in ZIP (RED → GREEN; OPEN)
+
+**New genuine runtime fail-open, distinct from the prior ZIP pathname, SVG link,
+CSS escape and PDF action fixes:** A real CRC-valid DEFLATE ZIP member
+`pages/index.html` can contain a valid HTML5 automatic redirect via
+`<meta http-equiv="refresh" content="0;url=https://outside.invalid/next">`
+without any script, `href`, `src`, stylesheet, DTD or CSS `url()` token. An
+alternate order (`content` first), an HTML numeric character reference in the
+attribute (`http-equiv="ref&#x72;esh"`), and unquoted `http-equiv=refresh`
+are also valid. The installed root-lock-pinned `parse5` HTML5 parser
+independently expands the character reference into `refresh` and recovers the
+external HTTPS target from the actual inflated ZIP member. **No redirect or
+network request was made**, and the recorded vulnerability is a false
+`supported/zip` *candidate* status at the preflight boundary, not proven
+navigation by this app or an exploit of an extraction consumer.
+
+**Source-bound RED:** New
+`tests/file-threat-407-20261013-html-refresh.test.ts` builds the ZIP using
+the installed `fflate` ZIP encoder, independently decompresses/UTF-8 decodes
+the member, and uses `parse5`, not a copy of the detector regex, to establish
+its HTML attribute semantics. With the gate unmodified, all **three live
+`detectLocalFile()` calls returned `supported/zip`** rather than the required
+`UNSUPPORTED` refusal (**RED 3/4**, benign control GREEN); the same inputs
+also escaped the standalone `checkTextPart407` check.
+
+**Smallest source-only GREEN:** Only `src/runtime/file-threat-gate-407.ts`
+adds a bounded `html`-member `<meta>` tag scan that identifies `http-equiv`
+regardless of attribute order, quoting, case or a `>` inside a quoted
+attribute. It refuses `refresh` and conservatively refuses HTML entity
+references in `http-equiv` values, which HTML5 consumers can decode into
+active navigation semantics. This is a fail-closed detector, **not a DOM
+parser, HTML sanitizer, a browser navigation test or a proof about every
+possible HTML grammar variation**. Ordinary `<meta charset>`, viewport and
+`http-equiv="content-type"` metadata remain supported, as do prior benign
+SVG and internal OOXML relationships. It changes no archive decoding,
+input/read/expansion limits, ownership, file uploads or network policy.
+
+**Verification and open gates:** New focused test GREEN 4/4. Together with
+`file-threat-svg-zip-407-wave22`, `file-threat-gate-407`,
+`file-threat-operational-next-407` and `file-detection-333`, the five-suite
+regression is **58/58 PASS**; scoped strict TypeScript on source/new test
+**PASS**. The benign test checks aggregate bounded reads and a pre-aborted
+detector refuses with `CANCELLED`. This is only local preliminary screening
+of the tested ZIP/HTML cases, not proof that all hostile HTML/CSS/XML/ZIP/PDF
+inputs or downstream renderers are contained. Physical/device, comprehensive
+hostile corpus, release/rollback and Gold gates are **NOT_RUN / NO-GO**.
+Original **AC-407.1–3 remain unchecked** and ticket stays OPEN. No new
+dependencies, vendor changes, code changes outside this file/new test/original
+ticket, Git staging/commit/push/PR or production deployment by this worker.
+
+**2026-10-13 integrator CI reconciliation (PR #10):** The first HTML-refresh
+follow-up copied an older local source variant and accidentally dropped the
+previously proven Unicode XML namespace-prefix refusal from the same gate.
+GitHub changed-source CI reported six real failures in the existing
+`tests/file-threat-407-20261013-unicode-prefix.test.ts`. The integrator
+restored the original delimiter-bounded Unicode namespace checks while
+retaining the new HTML meta-refresh rejection. Both focused regression
+files, historic SVG/ZIP tests and file-detection checks now pass together:
+**6 Vitest files / 68 tests PASS**. This is source regression restoration,
+not a new archive-security acceptance or Gold claim; all original AC stay OPEN.
+
+## 2026-10-13 independent P2 repair — HTML5 unquoted quotes hiding meta refresh (RED → GREEN, OPEN)
+
+**Real bypass at Draft PR #10 source SHA dda51b9b:** An HTML5 attribute without
+quotes may contain an apostrophe or a double quote as a recoverable parse
+error. The previous meta regex treated that character as a new balanced
+quoted string, skipped the entire tag and accepted a genuine CRC-valid ZIP
+with pages/index.html containing an external meta refresh after data-x=a'.
+Installed parse5 independently identified http-equiv=refresh and its external
+target; the original Chrome probe intercepted an attempted external GET
+without sending it over the network. Before the repair, the helper returned
+null and actual detectLocalFile() returned supported/zip (candidate only).
+
+**New independently observed RED:** New test
+tests/file-threat-407-20261013-malformed-meta-refresh.test.ts uses installed
+fflate to build/decompress real DEFLATE ZIP bytes and installed parse5 to
+check four browser-valid HTML5 refresh variations: unquoted apostrophe,
+unquoted double quote, quoted > followed by an unquoted apostrophe, and
+entity-encoded http-equiv value after an unquoted apostrophe. All four
+hostile cases failed against the original source (**4 failed / 1 benign
+pass**). The test does not mock the detector or infer semantics from its regex.
+
+**Scoped fix:** src/runtime/file-threat-gate-407.ts now scans HTML5 meta
+start-tag attributes in a linear pass, opening quotes only where an attribute
+value begins with a quote. Quotes embedded in unquoted values remain literal.
+Quoted > does not end the tag; a truncated or ambiguous tag refuses
+conservatively, and entity-bearing http-equiv remains unsupported. The scanner
+is reached only for the ZIP detector's bounded HTML members (128 KiB/member,
+256 KiB combined); no sanitizer, DOM or new dependency was added. Unicode XML
+namespace refusals and ZIP path/entry/resource gates were retained unchanged.
+
+**GREEN / limits:** New test **5/5 PASS**; cumulative seven scoped test files
+**73/73 PASS**, including the prior six files / 68 cases, the original 10
+Unicode namespace cases and 4 meta-refresh cases. Scoped strict TypeScript
+(tsc --ignoreConfig --noEmit --target es2023 --module esnext
+--moduleResolution bundler --strict --skipLibCheck --lib es2023,dom)
+on source and new test **PASS**; scoped git diff --check **PASS**. A separate
+source-bound Chrome readback confirmed that the real ZIP is now refused
+UNSUPPORTED before HTML consumption; its Chrome refusal view issued **zero
+outbound requests**. Browser probe is local headless Chrome, not physical
+device, full downstream renderer or deployment acceptance. **Original
+AC-407.1–3 remain unchecked / ticket OPEN / Gold and release NO-GO.**
+Integrator owns PR #10 commit/push and CI; worker made no Git stage/commit/
+push, provider write or production change.
+
+## 2026-10-13 — independent Draft PR #10 P1 XML/HTML character references hiding CSS URLs (worker-10; RED → GREEN)
+
+**Published-source reader-confirmed RED:** On exact remote Draft PR #10 head `eef624949ecfa82c7340abc47c4c2b4845ab74ad`, an independently inflated, real CRC-valid DEFLATE ZIP containing `graphics/drawing.svg` with `<rect style="fill:url&#40;https://outside.invalid/secret.svg#frame&#41;"/>` was marked `supported/zip` by the actual `detectLocalFile` public preflight and `checkTextPart407` returned null. Strict, namespace-aware installed SAX interpreted the style attribute as `fill:url(https://outside.invalid/secret.svg#frame)`; actual Chromium `DOMParser('image/svg+xml')` and SVG/CSSOM returned the same external CSS URL. Encoded `url&#x28;...&#x29;`, `u&#114;l(...)`, a CSS presentation `fill` attribute, Unicode-prefixed SVG inside `.xml`, and HTML5 `style="background-image:url&#40;..."` and unquoted HTML `style=background-image:u&#114;l(...)` all bypassed the preflight. Installed parse5 independently decoded the HTML attributes and Chromium `DOMParser('text/html')` CSSOM recovered their external `url(...)`. Browser probes intercepted all potential external requests; **zero offsite requests** were made. This proves incorrect candidate admission and parser disagreement, **not** an actual exfiltration or ZIP extraction exploit.
+
+**Minimal owned fix / bounded safety:** `src/runtime/file-threat-gate-407.ts` adds a linear scan of CSS-capable attributes (`style`, SVG `fill`, `stroke`, `filter`, `clip-path`, `mask`, `marker-*`, `cursor`) in an already recognized SVG/HTML or namespace-prefixed SVG-in-XML source. XML/HTML entity-bearing values are refused before downstream character-reference decoding can turn them into executable CSS URLs. The scanner respects quoted attribute values including embedded opposite quotes and treats a quote inside an HTML5 unquoted value literally. It reuses the already enforced **128 KiB/part, 256 KiB total, 32 text-part** limits, with no DOM, CSS renderer, fetch, vendor import, network or unbounded match list. Existing `<style>` SVG elements are separately rejected by the original active-element gate. The existing standalone OOXML internal `<Relationship Target="media/image.png" TargetMode="Internal"/>` path is unchanged.
+
+**Independent RED→GREEN tests:** New `tests/file-threat-407-20261013-xml-css-entities.test.ts` builds and independently decompresses real DEFLATE ZIP members, validates SAX XML namespaces and parse5 HTML5 attribute values, then checks the real bounded `detectLocalFile` decision. Its initial focused run was **7 failures / 9 tests** against the published source; two benign controls passed. Additional cases cover CSS single/double quotes and SVG `<style>` text. After the scoped fix the new suite **11/11 PASS**; all seven earlier #407/#333 suites remain **73/73 PASS**, for **84/84 PASS across eight suites**. Scoped strict TypeScript and whitespace checks were rerun separately. Current changed-source CI `38385478938` SUCCESS applies only to the **earlier** published SHA, not to this new local worker correction.
+
+**Global #407 ticket lifecycle remains OPEN / NO-GO:** Original AC-407.1–3 unchecked. Candidate checks do not guarantee downstream XML/HTML/SVG sandboxing, malicious compressed/nested archives, unobserved PDF object graphs, arbitrary encodings, physical device/peak memory acceptance, Gold certification or production rollback. Prime alone handles scoped GitHub Flow staging/push, next PR #10 head/CI review and any release decision.
+
+
+## 2026-10-13 — independent Draft PR #10 HTML5 slash CSS boundary (RED → GREEN)
+
+**Published-source P2:** Independent second-pass review at Draft PR #10 head 44434aef211845b68adcefcb68ae6a087fb20993 against origin/main 402774b32a3d8cb6d2f2cbe836734ea1c655a4fa proved the CSS numeric-entity scan missed HTML5 slash-separated attributes. Before this correction, the actual ZIP public detector classified a real DEFLATE archive with pages/index.html containing an HTML div whose start tag had /style="background-image:url&#40;https://outside.invalid/steal.svg&#41;" as supported/zip. Installed parse5 independently recovered style=background-image:url(https://outside.invalid/steal.svg) while checkTextPart407 returned null. Variants with whitespace before the slash, repeated slashes, an HTML-embedded SVG rect and an unquoted HTML5 style attribute also escaped.
+
+**Browser and bounded-read evidence:** Real headless Chromium CSSOM decoded the numeric references into background-image and fill url("https://outside.invalid/steal.svg") values, with two requests to the external resource intercepted and aborted: zero actual outgoing requests permitted. A 257-byte real ZIP containing 155 HTML bytes required 556 aggregate inspected read bytes, within the pre-existing 128 KiB text-member cap and bounded reader quotas. This proves external resource-load attempts if unsafe HTML is rendered after false candidate admission, not successful exfiltration. Prior GitHub changed-source CI run 38388096918 was SUCCESS for the vulnerable SHA, not for this unpublished correction.
+
+**Scoped RED → GREEN:** New tests/file-threat-407-20261013-slash-css-entity.test.ts uses fflate CRC-valid ZIP generation and decompression, parse5 HTML5 recovered style attributes, public detectLocalFile and explicit bounded reads. Before the patch: **5 failures / 2 benign passes**. Minimal src/runtime/file-threat-gate-407.ts repair includes slash as a CSS attribute-name boundary **only for the HTML5 text-part kind**; strict XML/SVG keeps its former token boundary rules, including a benign XML attribute containing an inert /style sequence. No parser library, network, model, vendor asset, dependency or route was added. After patch: **7/7 new PASS**, original eight suites **84/84 PASS**, total **91/91 PASS** across nine suites; scoped strict TypeScript PASS. Integrator owns same Draft PR #10 staging, push and new exact-SHA CI readback; worker made no Git stage/commit/switch/push or PR comment.
+
+**Global ticket remains OPEN/NO_GO:** Original AC-407.1–3 are unchecked. A bounded candidate-only ZIP preflight does not certify SVG/HTML sanitization, hidden PDF graphs, nested ZIP and extractor runtime isolation, physical mobile/performance quotas, Gold, source release, rollout or rollback acceptance.
+
+## 2026-10-13 — independent Draft PR #10 HTML responsive-image `srcset` bypass (RED → GREEN)
+
+**Published-source P2:** Independent review at exact remote Draft PR #10 SHA `89c21238eebfda7f4490ada906cc3321dfde0b69` (against `402774b3`) found a new unguarded external-resource attribute. A real 202-byte CRC-valid DEFLATE ZIP containing `pages/index.html` with `<img srcset="https://outside.invalid/pixel.svg 1x">` was independently decompressed using root `fflate` and parsed using installed `parse5`, which recovered the external `srcset` URL. The published `checkTextPart407(html, "html")` returned `null`; the genuine `detectLocalFile` classified the archive `supported/zip` after 446 aggregate inspected bytes. A local headless Chromium probe read the independently inflated HTML, recovered the same `img.srcset`/`currentSrc` URL, and attempted `https://outside.invalid/pixel.svg`. `page.route("**/*", route.abort())` intercepted the request **before network egress**; zero offsite requests were allowed. This establishes a false ZIP candidate admission at the source screening boundary, not application exfiltration or a downstream renderer exploit.
+
+**Scoped correction:** The existing bounded HTML5 start-tag scanner in `src/runtime/file-threat-gate-407.ts` now covers `srcset` on `img`/`source` (also the HTML5 `image` alias) and `imagesrcset` on image-preload `link`. It refuses non-empty responsive-image attributes, including relative targets whose later browser base URL is unknown, entity-bearing values, HTML5 slash delimiters and quotes recovered from unquoted attributes. It preserves genuinely empty attribute values and inert image metadata, using HTML5 ASCII whitespace semantics so Unicode nonbreaking spaces cannot hide URL data. Existing meta refresh, Unicode XML prefixes, CSS entity, external SVG/OOXML and path gates remain in place. No parser dependency, extraction, upload, network call, provider action or materialization beyond local bounded test bytes was introduced.
+
+**Independent RED → GREEN:** New `tests/file-threat-407-20261013-srcset.test.ts` creates/decompresses actual DEFLATE ZIP members, uses `parse5` for the HTML interpretation, verifies public `detectLocalFile` refusal and per-read/total read caps, plus benign controls. Before the source fix **7/11 failed** on actual missing refusals (the `image` alias and preload `link` already refused through previous active-element checks); after correction **11/11 passed**. Full #407/#333 scope is **102/102 PASS across 10 Vitest files** (91 previously published tests plus 11 new), scoped strict TypeScript and `git diff --check` **PASS**. Initial exact remote PR SHA's GitHub `changed-source` CI was **SUCCESS**, demonstrating prior coverage did not include `srcset`; it does not certify the new local correction. Prime owns publication and the next exact-SHA CI readback.
+
+**Lifecycle:** AC-407.1–3 remain unchecked, original ticket **OPEN / NO-GO**. This is preliminary candidate filtering, not full hostile HTML parser or nested archive isolation, Gold certification, physical mobile/performance proof, production release or rollback validation. Worker owns only this original issue append, the threat gate and its new regression; no checkout/stage/commit/push/PR comments by the worker.
+
+
+## 2026-10-13 — PR #10 HTML5 active media source attributes (worker-13, genuine RED → GREEN)
+
+**Original-source independent P2:** Exact Draft PR #10 remote SHA `f664b6babf0cef1a750297bc3ca37d5acc486964` versus `origin/main 402774b32a3d8cb6d2f2cbe836734ea1c655a4fa` passed its preexisting 105/105 focused tests and GitHub changed-source CI, but missed browser-active HTML5 media URL attributes. In real CRC-valid DEFLATE ZIP `pages/index.html`, `<img src=https://outside.invalid/probe.png>`, `<video poster="https://outside.invalid/poster.png">`, `<audio src=https://outside.invalid/sound.mp3 autoplay>`, unquoted `<source src>`, `<track src>` and analogous relative/slash-delimited media attributes were parsed as real URLs by installed `parse5`, while `checkTextPart407` returned null and the public `detectLocalFile` reported `supported/zip`. A genuine Google Chrome headless Chromium probe recovered those attributes and attempted **three requests** (image, poster image, audio media). Every request was intercepted with Playwright `page.route('**/*', route.abort('blockedbyclient'))` before egress; no external traffic was allowed. This is an actual P2 false candidate admission, **not** demonstrated data exfiltration or a claim about downstream exploitation.
+
+**Precise source RED:** New `tests/file-threat-407-20261013-media-attrs.test.ts` uses the real bounded ZIP detector, independent `fflate` DEFLATE roundtrip, `parse5` HTML5 attribute interpretation, and explicit read caps. On the vulnerable source, **12/14 failed** (two benign/existing guarded controls passed), reproducing unquoted `src`, slash-delimited, quote recovered, poster, video/audio/source/track/input media and unquoted anchor `href` bypasses. The independent Chrome evidence above demonstrates active attempts from exactly these resource attributes when consumed, and was not produced by a simulated network mock.
+
+**Minimal bounded GREEN:** Extended the existing linear `hasUnsafeHtmlNavigation407` start-tag scanner in `src/runtime/file-threat-gate-407.ts` (no new parser/dependency) to cover `src` for `img/image/source/video/audio/track/input`, `poster` for `video`, and `href` for navigational `a/area/link`. Nonempty resource URLs—including unquoted, slash-delimited, protocol-relative, relative and entity-bearing attributes—are refused without resolving/fetching URLs; inert media metadata, empty `poster`, and strict same-document `#fragment` anchors remain permitted. Existing srcset/imagesrcset, CSS entities, Unicode XML namespace, meta-refresh, ZIP bounded reads, abort semantics, SVG and PDF gates remain in force. Postfix **12 Vitest suites, 119/119 PASS**, including the 14 new tests and all 105 previously focused tests. Strict scoped TypeScript `--ignoreConfig --noEmit --target es2023 --module esnext --moduleResolution bundler --strict --skipLibCheck --types node --lib es2023,dom` on source and new test **PASS**, scoped `git diff --check` **PASS**. Separate independent real ZIP resource-budget smoke probes (129 KiB single HTML member, 300 KiB across three HTML members, 33 HTML members) all returned `TOO_LARGE` within bounded aggregate and per-read budgets; benign control remained supported. No new assets, extractor, provider network, receipt, registry or release operation; worker did not stage/commit/checkout/push or comment on PR.
+
+**Lifecycle:** Original AC-407.1–3 remain unchecked / ticket **OPEN**, and browser end-to-end downstream renderer, nested archives, encrypted content, physical device and resource/rights acceptance, Gold and product/release remain **NO_GO**. Prime exclusively owns same Draft PR #10 staging, publishing and CI readback on the **next** exact SHA; the old SHA's green changed-source CI does not certify this additional fix.
+
+## 2026-10-13 — CSS image-set string-resource admission bypass (worker-2, RED → GREEN)
+
+**Verified P2 source gap after existing HTML media, srcset, SVG, XML and CSS url/entity fixes:** An actual bounded `pages/index.html` ZIP member with `<div style='background-image:image-set("https://outside.invalid/remote-background.png" 1x)'>` passed the existing `checkTextPart407` even though Chromium CSSOM recognizes `image-set()` with a quoted URL as an active image source, with no `url(`, `@import`, `<img src>` or HTML entity required. A local headless Chromium test observed an attempted image request and aborted it via Playwright route interception *before network egress*; no server or external endpoint was contacted. Also reproduced the `-webkit-image-set()` and CSS-escaped `im\\61 ge-set()` source patterns. This is a real P2 **false candidate admission** in a security preflight, not proof of actual downstream exfiltration.
+
+**Bounded owned correction:** `src/runtime/file-threat-gate-407.ts` reuses the existing linear CSS-bearing-attribute scanner for `style`, SVG paint/filter/mask/marker/cursor, adds a conservative `image-set`/`-webkit-image-set` function check and decodes CSS escapes for this check. Raw prose and ordinary `data-*` attributes mentioning `image-set` remain candidates; benign gradients and ordinary OOXML references remain untouched. XML/HTML entity refusal remains active. CSS escape decoding also treats out-of-range code points as replacement characters rather than throwing. The gate still performs no DOM/CSS rendering, ZIP extraction, remote request or deep archive traversal.
+
+**Focused regression/proof:** New `tests/file-threat-407-20261013-css-image-set.test.ts` used real CRC-valid DEFLATE ZIP generation/decompression, independent `parse5` HTML attributes, current bounded public `detectLocalFile`, and a native Chromium CSSOM/request attempt blocked before egress. The **initial test run was RED: 3/5 failed** because `checkTextPart407` returned null for the three live-style patterns; native browser and benign gradient controls passed. After the fix the new suite **6/6 GREEN**, proving actual ZIP candidate refusal through `detectLocalFile`, including an additional inert text/data-attribute control. Adjacent historical #407/#333 tests plus new suite **122/122 PASS across 12 files**. Scoped strict TypeScript `--ignoreConfig --noEmit --target es2023 --module esnext --moduleResolution bundler --strict --skipLibCheck --types node --lib es2023,dom` PASS; scoped diff whitespace check PASS. No shared catalog/engine, CI, credential, provider, release or Git mutation by this worker.
+
+**Global acceptance still OPEN / NO_GO:** AC-407.1–3 remain unchecked because a bounded candidate preflight cannot certify arbitrary nested/recursive archives and decompression resource isolation, opaque PDF object graphs, XML parser semantics beyond observed bytes, every HTML/CSS/browser feature, downstream materialization, physical-device/resource budgets or full production/security review. Prime owns serial review, Draft PR #10/CI integration and exact-SHA remote readback.
+
+**2026-10-13 prime PR #10 Linux CI reconciliation:** The original real-browser `it` test failed at the GitHub `b40fbeab` changed-source job only because the Linux runner has **no installed Playwright Chromium binary** (`browserType.launch` missing), not because source assertions failed (the same job reported 2,318 passing Vitest cases plus that one infrastructure failure). Following existing repository browser harness convention, the CSSOM attempted-request proof moved unchanged in substance into explicit `tests/file-threat-407-20261013-css-image-set.browser.mjs`. `node` on the already provisioned real macOS Chromium independently passed the CSSOM/aborted-network check; all five portable ZIP/parser/benign tests remain mandatory in `tests/file-threat-407-20261013-css-image-set.test.ts` and pass. This is **not a skipped or simulated browser pass on Linux CI**: it deliberately separates source-only CI from the separate native-browser acceptance run. Fresh PR #10 CI on the new SHA is mandatory; #407 global AC and device/release gates remain OPEN.
