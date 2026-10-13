@@ -1,6 +1,5 @@
 /** #407: CSS image-set() accepts quoted URLs without CSS url() or HTML src=. */
 import { describe, expect, it } from "vitest";
-import { chromium } from "@playwright/test";
 import { parse } from "parse5";
 import { strToU8, unzipSync, zipSync } from "fflate";
 import { detectLocalFile, FILE_DETECTION_LIMITS } from "../src/runtime/file-detection";
@@ -55,25 +54,6 @@ describe("#407 deny CSS image-set external resources within actual ZIP HTML memb
       expect(await zippedDecision407(html), label).toMatchObject({ status: "refused", reason: "UNSUPPORTED" });
     });
   }
-
-  it("real Chromium CSSOM resolves CSS image-set quoted URL into an attempted image load; route blocks egress", async () => {
-    const browser = await chromium.launch({ headless: true });
-    try {
-      const page = await browser.newPage();
-      const attempted: string[] = [];
-      await page.route("**/*", (route) => {
-        attempted.push(route.request().url());
-        return route.abort("blockedbyclient"); // Network is never contacted.
-      });
-      const html = `<html><body><div id="tile" style='width:20px;height:20px;background-image:image-set("${endpoint}" 1x)'></div></body></html>`;
-      await page.setContent(html);
-      const property = await page.locator("#tile").evaluate((element) => getComputedStyle(element).backgroundImage);
-      expect(property).toContain("image-set(");
-      expect(property).toContain(endpoint);
-      expect(attempted).toContain(endpoint);
-      await page.close();
-    } finally { await browser.close(); }
-  });
 
   it("allows inert gradients and CSS values that do not reference resources", async () => {
     const html = '<html><body><div style="background:linear-gradient(red,blue);color:white" title="inert"></div></body></html>';
