@@ -70,7 +70,7 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   // every .scratch path as docs would allow a change to the release-facing
   // ticket checks to escape source CI entirely.
   if (path.startsWith(".scratch/") && /\.(?:py|mjs|cjs|js|ts|tsx|sh|bash)$/u.test(path)) return ["ci"];
-  if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
+  if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md|HANDOFF\.md|PROJECT-STATUS\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
   if (path.startsWith("worker/migrations/")) return ["d1"];
   if (path.startsWith("worker/")) return ["worker-auth"];
   // The shipped OCR engine is executed in the browser even though its JS,
@@ -174,6 +174,11 @@ export function buildImpactPlan(changedPaths: readonly string[], availableTests:
   if (domains.includes("italy")) gates.add("official-source-year");
   const commands: SourceCommand[] = [];
   if (sourceDomains.length > 0 && blockers.length === 0) {
+    // Targeted Vitest runs do not invoke `npm test`, so they must create
+    // gitignored generated catalog modules on a fresh Actions checkout first.
+    // Without this step selected image tests fail at import time even though
+    // the actual image engine is valid. Keep the build within source checks.
+    if (!needsFullSuite) commands.push({ program: "npm", args: ["run", "catalog:build"] });
     if (needsFullSuite) commands.push({ program: "npm", args: ["run", "test"] });
     else commands.push({ program: "node", args: ["node_modules/vitest/vitest.mjs", "run", ...selectedTests] });
     commands.push({ program: "npm", args: ["run", "check"] }, { program: "npm", args: ["run", "build"] });
