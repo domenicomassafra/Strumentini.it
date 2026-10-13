@@ -75,7 +75,7 @@ The aspirational target is domain-level or similarly small annual infrastructure
 
 The checkout contains a static Astro/Preact implementation with **259 generated tool entries**, public static routes, shared local execution seams, and release-validation tooling. At the 2026-10-07 integrated checkpoint the global certification index reports **255 Gold / 2 Partial (`image-resize`, `microphone-recorder`) / 2 Implemented Unverified (`password-strength-estimator`, `xml-formatter-validator`)**. The live machine-readable authority is `quality/receipts/expanded-catalog-certification.json`. The two Partial tools still require genuine physical-device evidence; the two unverified developer tools remain blocked because their current oracles are only medium-confidence. Local or emulated validation never substitutes those missing proofs.
 
-For the current project state, active priorities, Git/WIP closure and UI/UX audit, start with `PROJECT-STATUS.md`, `HANDOFF.md` and `ROADMAP.md`.
+For current ticket execution, use the generated live panel in `PROJECT-STATUS.md` and `.scratch/strumentini-expansion-20261005/CURRENT-TICKET-DASHBOARD.md` (`npm run tickets:check`). `HANDOFF.md` preserves a dated engineering checkpoint; `ROADMAP.md` covers planning priorities. Verify Git/WIP, certification, CI and deployment against their current authorities.
 
 The consolidated validator writes ignored evidence under `quality/receipts/release/` and does not deploy externally:
 
