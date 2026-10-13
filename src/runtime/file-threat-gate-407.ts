@@ -79,6 +79,54 @@ export function textPartKind407(name: string): "xml" | "svg" | "html" | null {
   return null;
 }
 
+/** Bounded HTML5 start-tag inspection: quotes in unquoted values are literal. */
+function hasUnsafeHtmlMeta407(source: string): boolean {
+  const space = (character: string | undefined): boolean =>
+    character !== undefined && /[ \t\r\n\f]/u.test(character);
+  const starts = /<\s*meta(?=[\s/>])/giu;
+  let match: RegExpExecArray | null;
+  while ((match = starts.exec(source)) !== null) {
+    let at = starts.lastIndex;
+    let terminated = false;
+    while (at < source.length) {
+      while (space(source[at])) at++;
+      if (source[at] === ">") { at++; terminated = true; break; }
+      if (source[at] === "/" && source[at + 1] === ">") { at += 2; terminated = true; break; }
+      if (source[at] === "/") { at++; continue; }
+
+      const nameStart = at;
+      while (at < source.length && !space(source[at]) &&
+        source[at] !== "=" && source[at] !== ">" && source[at] !== "/") at++;
+      if (at === nameStart) return true; // Ambiguous malformed start tag: refuse.
+      const name = source.slice(nameStart, at).toLowerCase();
+      while (space(source[at])) at++;
+      if (source[at] !== "=") continue;
+      at++;
+      while (space(source[at])) at++;
+
+      let value: string;
+      if (source[at] === '"' || source[at] === "'") {
+        const quote = source[at++];
+        const valueStart = at;
+        while (at < source.length && source[at] !== quote) at++;
+        if (at === source.length) return true; // Unclosed quote: do not guess.
+        value = source.slice(valueStart, at++);
+      } else {
+        const valueStart = at;
+        // HTML5 unquoted values may contain ' or ": neither opens a quote.
+        while (at < source.length && !space(source[at]) && source[at] !== ">") at++;
+        value = source.slice(valueStart, at);
+      }
+      if (name === "http-equiv" && (value.includes("&") || value.trim().toLowerCase() === "refresh")) {
+        return true;
+      }
+    }
+    if (!terminated) return true; // Truncated meta tag is ambiguous.
+    starts.lastIndex = at; // Each inspected byte is visited at most once.
+  }
+  return false;
+}
+
 /** Never parse XML with a DOM here: refuse entity resolution and active markup. */
 export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): FileThreatFinding407 | null {
   // XML namespace prefixes can use Unicode characters; ASCII \w is not
@@ -91,16 +139,11 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
   }
   if (kind === "html") {
     // HTML meta-refresh performs navigation without <script>, href, src or a
-    // CSS url(). Inspect bounded complete start tags, retaining quoted '>' and
-    // either attribute order. Character references are decoded by HTML5
-    // parsers, so an entity in http-equiv is refused rather than guessed at.
-    for (const match of source.matchAll(/<\s*meta(?=[\s/>])(?:[^>"']|"[^"]*"|'[^']*')*>/giu)) {
-      const tag = match[0];
-      const attribute = /[\s/]http-equiv\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/iu.exec(tag);
-      const value = attribute?.[1] ?? attribute?.[2] ?? attribute?.[3];
-      if (value !== undefined && (value.includes("&") || value.trim().toLowerCase() === "refresh")) {
-        return reject("UNSUPPORTED", "HTML meta refresh or entity-obfuscated http-equiv is outside the local inspection profile.");
-      }
+    // CSS url(). HTML5 recovers quotes inside unquoted attribute values,
+    // so matching only balanced quoted tags misses real browser redirects.
+    // Entity-bearing http-equiv values remain conservatively unsupported.
+    if (hasUnsafeHtmlMeta407(source)) {
+      return reject("UNSUPPORTED", "HTML meta refresh or ambiguous http-equiv is outside the local inspection profile.");
     }
   }
   // XML entity references are decoded by downstream parsers: an attribute such

@@ -205,3 +205,47 @@ retaining the new HTML meta-refresh rejection. Both focused regression
 files, historic SVG/ZIP tests and file-detection checks now pass together:
 **6 Vitest files / 68 tests PASS**. This is source regression restoration,
 not a new archive-security acceptance or Gold claim; all original AC stay OPEN.
+
+## 2026-10-13 independent P2 repair — HTML5 unquoted quotes hiding meta refresh (RED → GREEN, OPEN)
+
+**Real bypass at Draft PR #10 source SHA dda51b9b:** An HTML5 attribute without
+quotes may contain an apostrophe or a double quote as a recoverable parse
+error. The previous meta regex treated that character as a new balanced
+quoted string, skipped the entire tag and accepted a genuine CRC-valid ZIP
+with pages/index.html containing an external meta refresh after data-x=a'.
+Installed parse5 independently identified http-equiv=refresh and its external
+target; the original Chrome probe intercepted an attempted external GET
+without sending it over the network. Before the repair, the helper returned
+null and actual detectLocalFile() returned supported/zip (candidate only).
+
+**New independently observed RED:** New test
+tests/file-threat-407-20261013-malformed-meta-refresh.test.ts uses installed
+fflate to build/decompress real DEFLATE ZIP bytes and installed parse5 to
+check four browser-valid HTML5 refresh variations: unquoted apostrophe,
+unquoted double quote, quoted > followed by an unquoted apostrophe, and
+entity-encoded http-equiv value after an unquoted apostrophe. All four
+hostile cases failed against the original source (**4 failed / 1 benign
+pass**). The test does not mock the detector or infer semantics from its regex.
+
+**Scoped fix:** src/runtime/file-threat-gate-407.ts now scans HTML5 meta
+start-tag attributes in a linear pass, opening quotes only where an attribute
+value begins with a quote. Quotes embedded in unquoted values remain literal.
+Quoted > does not end the tag; a truncated or ambiguous tag refuses
+conservatively, and entity-bearing http-equiv remains unsupported. The scanner
+is reached only for the ZIP detector's bounded HTML members (128 KiB/member,
+256 KiB combined); no sanitizer, DOM or new dependency was added. Unicode XML
+namespace refusals and ZIP path/entry/resource gates were retained unchanged.
+
+**GREEN / limits:** New test **5/5 PASS**; cumulative seven scoped test files
+**73/73 PASS**, including the prior six files / 68 cases, the original 10
+Unicode namespace cases and 4 meta-refresh cases. Scoped strict TypeScript
+(tsc --ignoreConfig --noEmit --target es2023 --module esnext
+--moduleResolution bundler --strict --skipLibCheck --lib es2023,dom)
+on source and new test **PASS**; scoped git diff --check **PASS**. A separate
+source-bound Chrome readback confirmed that the real ZIP is now refused
+UNSUPPORTED before HTML consumption; its Chrome refusal view issued **zero
+outbound requests**. Browser probe is local headless Chrome, not physical
+device, full downstream renderer or deployment acceptance. **Original
+AC-407.1–3 remain unchecked / ticket OPEN / Gold and release NO-GO.**
+Integrator owns PR #10 commit/push and CI; worker made no Git stage/commit/
+push, provider write or production change.
