@@ -80,11 +80,13 @@ export function textPartKind407(name: string): "xml" | "svg" | "html" | null {
 }
 
 /** Bounded HTML5 start-tag inspection: quotes in unquoted values are literal. */
-function hasUnsafeHtmlMeta407(source: string): boolean {
+function hasUnsafeHtmlNavigation407(source: string): boolean {
   const space = (character: string | undefined): boolean =>
     character !== undefined && /[ \t\r\n\f]/u.test(character);
-  const starts = /<\s*meta(?=[\s/>])/giu;
-  while (starts.exec(source) !== null) {
+  const starts = /<\s*(meta|img|image|source|link)(?=[\s/>])/giu;
+  let start: RegExpExecArray | null;
+  while ((start = starts.exec(source)) !== null) {
+    const tag = start[1]?.toLowerCase();
     let at = starts.lastIndex;
     let terminated = false;
     while (at < source.length) {
@@ -116,8 +118,17 @@ function hasUnsafeHtmlMeta407(source: string): boolean {
         while (at < source.length && !space(source[at]) && source[at] !== ">") at++;
         value = source.slice(valueStart, at);
       }
-      if (name === "http-equiv" && (value.includes("&") || value.trim().toLowerCase() === "refresh")) {
+      if (tag === "meta" && name === "http-equiv" && (value.includes("&") || value.trim().toLowerCase() === "refresh")) {
         return true;
+      }
+      // HTML5 loads responsive-image URLs from srcset on img/source (even when
+      // src= is absent), and from imagesrcset on image-preload links. Relative
+      // URLs also resolve against an eventual browser URL outside this ZIP.
+      // Allow only genuinely empty values: HTML5 srcset whitespace is ASCII;
+      // Unicode spaces such as NBSP are part of a URL, not separators.
+      if (((tag === "img" || tag === "image" || tag === "source") && name === "srcset") ||
+        (tag === "link" && name === "imagesrcset")) {
+        if (/[^ \t\r\n\f]/u.test(value)) return true;
       }
     }
     if (!terminated) return true; // Truncated meta tag is ambiguous.
@@ -174,12 +185,11 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
     return reject("UNSUPPORTED", "Embedded XML document type, entities, stylesheets or includes are not supported.");
   }
   if (kind === "html") {
-    // HTML meta-refresh performs navigation without <script>, href, src or a
-    // CSS url(). HTML5 recovers quotes inside unquoted attribute values,
-    // so matching only balanced quoted tags misses real browser redirects.
+    // Meta refresh and responsive image srcset/imagesrcset load URLs without
+    // src=, href= or CSS url(). HTML5 also recovers malformed attribute quotes.
     // Entity-bearing http-equiv values remain conservatively unsupported.
-    if (hasUnsafeHtmlMeta407(source)) {
-      return reject("UNSUPPORTED", "HTML meta refresh or ambiguous http-equiv is outside the local inspection profile.");
+    if (hasUnsafeHtmlNavigation407(source)) {
+      return reject("UNSUPPORTED", "HTML navigation or responsive image sources are outside the local inspection profile.");
     }
   }
   // XML entity references are decoded by downstream parsers: an attribute such
