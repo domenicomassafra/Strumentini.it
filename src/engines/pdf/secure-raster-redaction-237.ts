@@ -93,9 +93,10 @@ export function assertSupportedSource237(source: Uint8Array): number {
   // Also require exactly one classic xref table: a second real revision must
   // be refused even when its earlier footer uses unusual lexical separators.
   // Stop at two matches, never materialize a list from attacker-controlled input.
-  const footers = /(?:^|[\x00\t\n\f\r ])startxref[\x00\t\n\f\r ]+\d+[\x00\t\n\f\r ]+%%EOF(?=[\x00\t\n\f\r ]|$)/gu;
+  const footers = /(?:^|[\x00\t\n\f\r ])startxref[\x00\t\n\f\r ]+(\d+)[\x00\t\n\f\r ]+%%EOF(?=[\x00\t\n\f\r ]|$)/gu;
   const tables = /(?:^|[\x00\t\n\f\r ])[ \t]*xref[\x00\t\n\f\r ]+\d+[\x00\t\n\f\r ]+\d+(?=[\x00\t\n\f\r ])/gu;
-  if (!footers.exec(sourceText) || footers.exec(sourceText) ||
+  const finalFooter = footers.exec(sourceText);
+  if (!finalFooter || footers.exec(sourceText) ||
     !tables.exec(sourceText) || tables.exec(sourceText)) {
     refuse("Revisioni incrementali o terminatori PDF ambigui non supportati.");
   }
@@ -104,10 +105,18 @@ export function assertSupportedSource237(source: Uint8Array): number {
   // table can therefore hide its effective /XRefStm behind a comment decoy
   // without adding another startxref/EOF. Anchor this restricted admission
   // profile to the actual classic xref offset and its only trailer line.
-  const declaration = /(?:^|[\r\n\f])[ \t]*startxref[ \t]*(?:\r\n|[\r\n\f])[ \t]*(\d+)[ \t]*(?=\r\n|[\r\n\f])/u.exec(sourceText);
-  if (!declaration) refuse("Puntatore startxref ambiguo o non supportato.");
-  const offset = Number(declaration[1]);
-  const marker = (declaration.index ?? 0) + declaration[0].lastIndexOf("startxref");
+  // Only the startxref belonging to the sole COMPLETE footer can select the
+  // active xref. An earlier incomplete %%EOF may still leave a real classic
+  // table while the final footer points to a new /Type /XRef stream. Scanning
+  // for the first standalone declaration would silently select the old table.
+  const marker = (finalFooter.index ?? 0) + finalFooter[0].indexOf("startxref");
+  const declaration = /startxref[ \t]*(?:\r\n|[\r\n\f])[ \t]*(\d+)[ \t]*(?=\r\n|[\r\n\f])/yu;
+  declaration.lastIndex = marker;
+  const actualDeclaration = declaration.exec(sourceText);
+  if (!actualDeclaration || actualDeclaration[1] !== finalFooter[1]) {
+    refuse("Puntatore startxref ambiguo o non supportato.");
+  }
+  const offset = Number(actualDeclaration[1]);
   if (!Number.isSafeInteger(offset) || offset < 0 || offset >= marker || sourceText.slice(offset, offset + 4) !== "xref") {
     refuse("Revisioni incrementali, xref ibridi o puntatori xref non supportati.");
   }
