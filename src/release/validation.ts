@@ -31,6 +31,11 @@ export interface ToolCertificationReceipt {
   readonly sourceFingerprint?: string;
 }
 
+/** Schema-v1 receipts may omit this legacy flag; if supplied, only boolean true is Gold. */
+export function isEligibleGoldFlag(receipt: { readonly goldEligible?: unknown }): boolean {
+  return !Object.hasOwn(receipt, "goldEligible") || receipt.goldEligible === true;
+}
+
 export interface PublicMetadataSurface {
   readonly title: string | null;
   readonly description: string | null;
@@ -517,7 +522,7 @@ export function validateGoldReceipts(
     if (candidates.length === 0) missing.push(entry.id);
     else if (candidates.length > 1) duplicate.push(entry.id);
     const receipt = candidates[0];
-    if (receipt !== undefined && (receipt.status !== "GOLD" || receipt.goldEligible === false)) notGold.push(entry.id);
+    if (receipt !== undefined && (receipt.status !== "GOLD" || !isEligibleGoldFlag(receipt))) notGold.push(entry.id);
     if (receipt !== undefined && (receipt.schemaVersion !== 1 || receipt.runtime === undefined || (receipt.oracleEntryId === undefined && (receipt.oracleEntryIds === undefined || receipt.oracleEntryIds.length === 0)) || receipt.fixtureFamilies === undefined || receipt.fixtureFamilies.length === 0 || receipt.identities === undefined || Object.keys(receipt.identities).length === 0)) weakEvidence.push(entry.id);
     if (receipt !== undefined && revision !== undefined && receipt.revision === undefined) unbound.push(entry.id);
     if (receipt !== undefined && sourceFingerprint !== undefined && receipt.sourceFingerprint === undefined) sourceUnbound.push(entry.id);

@@ -12,7 +12,7 @@ import { pathToFileURL } from "node:url";
 import type { ToolSummary } from "../src/catalog/manifest";
 import { catalog } from "../src/generated/catalog";
 import { qualityIndex } from "../src/generated/quality";
-import { validateGoldReceipts } from "../src/release/validation";
+import { isEligibleGoldFlag, validateGoldReceipts } from "../src/release/validation";
 import { currentEvidenceSourceFingerprint, currentRevision } from "./lib/current-revision";
 
 const HEX256=/^[a-f0-9]{64}$/u;
@@ -47,7 +47,7 @@ export function probeReceipt415(p:ProofReceiptProbe415):boolean {
   try {
     const raw=JSON.parse(p.content) as Record<string,unknown>;
     if (raw.toolId!==p.toolId || raw.schemaVersion!==1 || raw.status!=="GOLD" ||
-        raw.goldEligible===false || raw.revision!==p.revision || raw.sourceFingerprint!==p.fingerprint ||
+        !isEligibleGoldFlag(raw) || raw.revision!==p.revision || raw.sourceFingerprint!==p.fingerprint ||
         !Array.isArray(raw.fixtureFamilies) || raw.fixtureFamilies.length===0 ||
         typeof raw.identities!=="object" || raw.identities===null || Object.keys(raw.identities).length===0 ||
         !raw.runtime) return false;
