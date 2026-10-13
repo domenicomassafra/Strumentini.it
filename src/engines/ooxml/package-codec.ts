@@ -66,7 +66,10 @@ function structuralCountsEqual(left: OoxmlPackageAnalysis, right: OoxmlPackageAn
 }
 
 export async function rebuildOoxmlPackage(input: ArrayBuffer | Uint8Array): Promise<OoxmlRebuildResult> {
-  const source = input instanceof Uint8Array ? input : new Uint8Array(input);
+  // Own one immutable-by-caller byte snapshot before the first await. A caller
+  // can otherwise mutate the borrowed ZIP after CRC preflight but before the
+  // dynamic-import/unzip boundary and silently rebuild unverified payloads.
+  const source = input instanceof Uint8Array ? input.slice() : new Uint8Array(input.slice(0));
   const inputAnalysis = analyzeOoxmlPackage(source);
   const { unzipSync, zipSync } = await import("fflate");
   let members: Record<string, Uint8Array>;

@@ -83,7 +83,10 @@ const MEDIA_BUDGET = {
   maxDimension: 4096,
 } as const;
 const utf8 = new TextDecoder("utf-8", { fatal: true });
-const normalize = (input: ArrayBuffer | Uint8Array) => input instanceof Uint8Array ? input : new Uint8Array(input);
+// A borrowed Uint8Array/ArrayBuffer can change after the synchronous ZIP
+// integrity preflight and before the awaited codec import; never share it.
+const normalize = (input: ArrayBuffer | Uint8Array) =>
+  input instanceof Uint8Array ? input.slice() : new Uint8Array(input.slice(0));
 const same = (a: Uint8Array, b: Uint8Array) => a.byteLength === b.byteLength && a.every((value, index) => value === b[index]);
 const exactBuffer = (bytes: Uint8Array): ArrayBuffer => Uint8Array.from(bytes).buffer;
 const error = (message: string): never => { throw new OoxmlPackageError("REBUILD_VERIFICATION_FAILED", message); };
