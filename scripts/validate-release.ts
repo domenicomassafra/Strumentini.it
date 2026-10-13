@@ -105,8 +105,9 @@ async function loadCatalog(): Promise<ReleaseCatalogEntry[]> {
   return entries;
 }
 
-async function loadGoldReceipts(): Promise<ToolCertificationReceipt[]> {
-  const files = await walk(resolve(root, "quality/receipts"));
+/** Read and normalize receipt JSON before canonical Gold validation. */
+export async function loadGoldReceipts(receiptsRoot = resolve(root, "quality/receipts")): Promise<ToolCertificationReceipt[]> {
+  const files = await walk(receiptsRoot);
   const receipts: ToolCertificationReceipt[] = [];
   for (const path of files.filter((file) => file.endsWith(".json"))) {
     const value = await readJson(path);
@@ -127,7 +128,10 @@ async function loadGoldReceipts(): Promise<ToolCertificationReceipt[]> {
       ...(oracleEntryIds === undefined ? {} : { oracleEntryIds }),
       ...(fixtureFamilies === undefined ? {} : { fixtureFamilies }),
       ...(identities === undefined ? {} : { identities }),
-      ...(typeof record.goldEligible === "boolean" ? { goldEligible: record.goldEligible } : {}),
+      // Keep a genuinely absent schema-v1 legacy flag absent. A supplied
+      // malformed value must survive normalization as a refusal, never turn
+      // into the optional/eligible legacy omission.
+      ...(Object.hasOwn(record, "goldEligible") ? { goldEligible: record.goldEligible === true } : {}),
       ...(typeof record.revision === "string" ? { revision: record.revision } : {}),
       ...(typeof record.sourceFingerprint === "string" ? { sourceFingerprint: record.sourceFingerprint } : {}),
     });
