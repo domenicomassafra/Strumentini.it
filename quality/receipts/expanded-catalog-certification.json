@@ -2508,6 +2508,7 @@
           "tests/client-time-math-profile.test.ts",
           "tests/date-time-engine.test.ts",
           "tests/date-time-modules.test.ts",
+          "tests/gold-source-347-20261013-receipt-owner.test.ts",
           "tests/profile-workbench.test.ts",
           "tests/profile.test.ts",
           "tests/runtime.test.ts",
