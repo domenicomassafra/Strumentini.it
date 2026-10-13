@@ -84,9 +84,9 @@ function validatePlan(source: Uint8Array, output: Uint8Array, plan: ForensicPlan
 // Self-contained Python, deliberately independent of src/engines/pdf and of
 // the existing #237 fixtures, so it can be run against arbitrary real output.
 const PYTHON_INSPECTOR_378 = String.raw`
-import base64, io, json, math, re, sys
+import base64, io, json, math, re, sys, zlib
 from pypdf import PdfReader
-from pypdf.generic import ArrayObject, DictionaryObject, IndirectObject
+from pypdf.generic import ArrayObject, DictionaryObject, IndirectObject, StreamObject
 
 def deny(msg): raise RuntimeError("pypdf-378: " + msg)
 payload=json.loads(sys.stdin.buffer.read())
@@ -125,6 +125,49 @@ declared={(number,generation) for generation,entries in pdf.xref.items()
           for number,offset in entries.items() if number>0 and offset>0}
 if not declared or reachable!=declared:
     deny("orphan/unreachable xref object(s) or ambiguous reachability")
+# A PDF can also carry recoverable private bytes that have *no xref entry*:
+# comments, stray objects or arbitrary padding between the last object and
+# xref still reopen in strict pypdf and native PDFKit. Check the physical
+# intervals as well as the parser's logical graph. This gate intentionally
+# accepts only the simple classic-xref, contiguous-object raster subset.
+footer=re.search(rb"startxref\n([0-9]+)\n%%EOF\n$",raw)
+if footer is None: deny("unsupported physical PDF footer")
+xref_start=int(footer.group(1))
+if xref_start<1 or raw[xref_start:xref_start+5]!=b"xref\n":
+    deny("incorrect physical xref offset")
+physical=sorted((offset,number,generation) for generation,entries in pdf.xref.items()
+                for number,offset in entries.items() if number>0 and offset>0)
+if len({offset for offset,_,_ in physical})!=len(physical):
+    deny("overlapping physical xref offsets")
+if not re.fullmatch(rb"%PDF-(?:1\.[0-7]|2\.0)\n%[\x80-\xff]{4,32}\n",raw[:physical[0][0]]):
+    deny("unexpected bytes outside indexed objects before first object")
+for index,(offset,number,generation) in enumerate(physical):
+    stop=physical[index+1][0] if index+1<len(physical) else xref_start
+    part=raw[offset:stop]
+    prefix=f"{number} {generation} obj\n".encode("ascii")
+    if offset>=stop or not part.startswith(prefix) or not part.endswith(b"endobj\n"):
+        deny("unindexed recoverable bytes between xref objects")
+    body=part[len(prefix):]
+    if b"\nstream\n" in body:
+        dictionary,remaining=body.split(b"\nstream\n",1)
+        end=b"\nendstream\nendobj\n"
+        if not re.fullmatch(rb"<<[^\r\n%]*>>",dictionary) or not remaining.endswith(end):
+            deny("unindexed comments or bytes in physical stream wrapper")
+        encoded=remaining[:-len(end)]
+        stream=pdf.get_object(IndirectObject(number,generation,pdf))
+        if not isinstance(stream,StreamObject) or encoded!=stream._data:
+            deny("unindexed bytes disagree with parsed stream payload")
+    elif not re.fullmatch(rb"<<[^\r\n%]*>>\nendobj\n",body):
+        deny("unindexed comments or bytes inside physical object")
+xref_tail=raw[xref_start:]
+xref_table=re.fullmatch(
+    rb"xref\n0 ([0-9]+)\n((?:[0-9]{10} [0-9]{5} [nf] \n)+)"
+    rb"trailer\n<<[^\r\n%]*>>\nstartxref\n([0-9]+)\n%%EOF\n",
+    xref_tail,
+)
+if xref_table is None or int(xref_table.group(1))!=len(xref_table.group(2).splitlines()) \
+        or int(xref_table.group(3))!=xref_start:
+    deny("unindexed recoverable bytes in physical xref/trailer")
 verified=0
 for page,expected in zip(pdf.pages,plan["pages"]):
     if set(page.keys())!={"/Type","/Parent","/MediaBox","/Resources","/Contents"}:
@@ -145,8 +188,20 @@ for page,expected in zip(pdf.pages,plan["pages"]):
         deny("non-RGB or encoded image metadata")
     w=int(image["/Width"]); h=int(image["/Height"])
     if (w,h)!=(expected["pixelWidth"],expected["pixelHeight"]): deny("raster dimensions mismatch")
+    # FlateDecode commonly ignores bytes after the zlib end marker. Those
+    # discarded bytes are still recoverable from the PDF stream (including
+    # plaintext secrets), even if both independent viewers display only RGB.
+    # Decompress under the declared pixel bound and require full consumption.
+    try:
+        decompressor=zlib.decompressobj()
+        exact_rgb=decompressor.decompress(image._data,3*w*h+1)
+        remainder=decompressor.flush()
+    except zlib.error:
+        deny("invalid RGB FlateDecode payload")
+    if len(exact_rgb)!=3*w*h or remainder or not decompressor.eof or decompressor.unused_data or decompressor.unconsumed_tail:
+        deny("trailing/unconsumed/oversize private image stream data")
     rgb=image.get_data()
-    if len(rgb)!=3*w*h: deny("decoded image length mismatch")
+    if rgb!=exact_rgb: deny("decoded image or independent FlateDecode mismatch")
     for token in plan["sourceWitnesses"]:
         if token.encode("ascii") in rgb: deny("source marker inside decoded RGB")
     expected_content=("q\n"+str(expected["pageWidth"])+" 0 0 "+str(expected["pageHeight"])+" 0 0 cm\n/Im0 Do\nQ\n").encode("ascii")
