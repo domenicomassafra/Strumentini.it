@@ -1,8 +1,32 @@
-# Strumentini.it — Current Project Status
+# Strumentini.it — Live ticket execution and historical project snapshot
 
-Date: **2026-10-08**
+Historical project checkpoint: **2026-10-08**. Live ticket counts below are generated from the issue files, independently of that historical checkpoint.
 
-This is the short, live map of the repository. It exists so old worker waves, ticket ledgers and handoffs cannot be mistaken for the current project state.
+For ongoing work, use the live ticket panel, the linked issue files and the current checkout/CI/release receipts. **All remaining sections below the historical divider describe the 2026-10-08 checkpoint, not present-day code, tests, catalog certification, production or Git state.** Do not reuse their counts as current facts.
+
+<!-- tickets:live-status:start -->
+## Live ticket execution (generated)
+
+Source of truth: `.scratch/strumentini-expansion-20261005/issues/` and the generated [`CURRENT-TICKET-DASHBOARD.md`](.scratch/strumentini-expansion-20261005/CURRENT-TICKET-DASHBOARD.md). `npm run tickets:sync` refreshes this panel; `npm run tickets:check` fails on drift.
+
+| Metric | Current count |
+|---|---:|
+| All tickets | 424 |
+| Administratively completed | 300 |
+| Closed with explicit refusal (not shipped) | 17 |
+| Still open | 124 |
+| Ready for assignment (acceptance not yet proven) | 29 |
+| Dependency-blocked | 88 |
+| Official-source-blocked | 2 |
+| Physical-device-blocked | 5 |
+| Capability-blocked | 0 |
+| DAG-ready (numeric dependencies only) | 36 |
+| Stored status mismatches | 0 |
+
+Ticket completion, certification, reviewed merge, deployment and physical-device acceptance are separate gates.
+<!-- tickets:live-status:end -->
+
+## Historical project snapshot — 2026-10-08 (non-authoritative)
 
 ## Canonical repository state
 
