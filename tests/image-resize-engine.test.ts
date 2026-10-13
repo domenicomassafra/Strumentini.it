@@ -89,7 +89,19 @@ describe("image signature and header checks", () => {
     const corrupt = new Uint8Array(
       await readFile(resolve(root, "quality/fixtures/image-metadata/corrupt-truncated.png")),
     );
-    expect(inspectImageHeader(corrupt)).toMatchObject({ mime: "image/png" });
+    // This 24-byte fixture stops INSIDE IHDR, before its CRC or any IDAT;
+    // incomplete pre-IDAT headers cannot prove displayed EXIF geometry.
+    expect(() => inspectImageHeader(corrupt)).toThrow(/TRUNCATED_IMAGE/u);
+    const valid = new Uint8Array(
+      await readFile(resolve(root, "quality/fixtures/image-metadata/synthetic-2x3-rgba-text.png")),
+    );
+    const idatHeader = Buffer.from(valid).indexOf("IDAT") - 4;
+    expect(idatHeader).toBeGreaterThan(33);
+    expect(() => inspectImageHeader(valid.subarray(0, idatHeader + 7))).toThrow(/TRUNCATED_IMAGE/u);
+    // A complete IDAT chunk header is enough for header-only preflight:
+    // its compressed pixels and remaining CRC may still be absent.
+    expect(inspectImageHeader(valid.subarray(0, idatHeader + 8)))
+      .toEqual({ mime: "image/png", width: 2, height: 3 });
     expect(() => inspectImageHeader(new Uint8Array([1, 2, 3, 4]))).toThrow(/UNSUPPORTED_TYPE/u);
   });
 
