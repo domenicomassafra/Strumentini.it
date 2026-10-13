@@ -115,8 +115,12 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
       }
     }
   }
-  for (const name of Object.keys(manifest.dependencies ?? {})) {
-    if (!entries[`node_modules/${name}`]) failures.push(`MISSING_DIRECT ${name}`);
+  for (const [name, spec] of Object.entries(manifest.dependencies ?? {})) {
+    const target = entries[`node_modules/${name}`];
+    if (!target) failures.push(`MISSING_DIRECT ${name}`);
+    else if (!lockedVersionSatisfies(spec, target.version)) {
+      failures.push(`DIRECT_VERSION_MISMATCH ${name} (${spec} vs ${target.version ?? "UNKNOWN"})`);
+    }
   }
   rows.sort((a, b) => a.name.localeCompare(b.name) || a.version.localeCompare(b.version));
   return { status: failures.length ? "NO_GO" as const : "VERIFIED_METADATA" as const, rows, failures };
