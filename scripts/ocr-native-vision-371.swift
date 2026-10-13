@@ -73,10 +73,11 @@ private struct Arguments371 {
     }
 }
 
-/// O_NOFOLLOW + fstat reject symlinks/non-regular objects and enforce the
-/// bounded byte count *before* allocating or decoding user-controlled bytes.
+/// O_NONBLOCK prevents FIFO opens from hanging before fstat; O_NOFOLLOW + fstat
+/// reject symlinks/non-regular objects and enforce the bounded byte count
+/// *before* allocating or decoding user-controlled bytes.
 private func localBytes371(path: String) throws -> Data {
-    let fd = open(path, O_RDONLY | O_NOFOLLOW | O_CLOEXEC)
+    let fd = open(path, O_RDONLY | O_NONBLOCK | O_NOFOLLOW | O_CLOEXEC)
     guard fd >= 0 else { throw Refusal371.unreadableFile }
     defer { close(fd) }
     var info = stat()
