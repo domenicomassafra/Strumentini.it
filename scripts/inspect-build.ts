@@ -26,7 +26,8 @@ const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html:
 // An explicitly scoped, non-catalog experiment may be pre-rendered only while
 // noindex/nofollow, invisible to search/sitemap and visibly bounded. This is
 // NOT a tool promotion or an open-ended allowance for stray public routes.
-const previewOnlyPaths = ["tools/codice-fiscale/index.html", "tools/ocr-italiano-locale-246/index.html"] as const;
+const designStudyPath = "prototipi/351/index.html";
+const previewOnlyPaths = ["tools/codice-fiscale/index.html", "tools/ocr-italiano-locale-246/index.html", designStudyPath] as const;
 for (const previewPath of previewOnlyPaths) {
   const route = `/${previewPath.replace(/\/index\.html$/u, "")}`;
   if (catalog.some((tool) => tool.route.replace(/\/+$/u, "") === route.replace(/\/+$/u, "")) ||
@@ -37,10 +38,17 @@ for (const previewPath of previewOnlyPaths) {
   const sourceSafe = previewPath === "tools/codice-fiscale/index.html"
     ? preview?.includes('data-cf-canonical-route="/tools/codice-fiscale/"') &&
       (preview.includes("copertura geografica") || preview.includes("Copertura geografica"))
-    : preview?.includes('data-ocr246-preview="experimental-local-only"') &&
+    : previewPath === designStudyPath
+      ? ["minimal", "editorial", "workspace"].every((direction) => preview?.includes(`data-direction="${direction}"`)) &&
+        preview?.includes("nessuna scelta approvata") && preview.includes("Studio isolato:") &&
+        /<title>[^<]+<\/title>/u.test(preview) && /<h1\b/u.test(preview)
+      : preview?.includes('data-ocr246-preview="experimental-local-only"') &&
       preview.toLowerCase().includes("sperimentale") &&
       preview.toLowerCase().includes("browser");
-  if (preview === undefined || !/<meta name="robots" content="noindex, nofollow"\s*\/?\s*>/u.test(preview) || !sourceSafe) {
+  const robotsSafe = previewPath === designStudyPath
+    ? /<meta name="robots" content="noindex, nofollow, noarchive"\s*\/?\s*>/u.test(preview ?? "")
+    : /<meta name="robots" content="noindex, nofollow"\s*\/?\s*>/u.test(preview ?? "");
+  if (preview === undefined || !robotsSafe || !sourceSafe) {
     throw new Error(`Expected source-limited, noindex-only preview missing or unsafe: ${previewPath}`);
   }
 }
@@ -71,7 +79,8 @@ for (const { path, html } of htmlPages) {
   const isExpectedRedirect = relative(dist, path).replaceAll("\\", "/") === "library/index.html";
   if (isRedirectStub(html) !== isExpectedRedirect) throw new Error(`Unexpected redirect page: ${path}`);
 }
-const pageMetadata = htmlPages.filter(({ html }) => !isRedirectStub(html)).map(({ path, html }) => ({
+const pageMetadata = htmlPages.filter(({ path, html }) => !isRedirectStub(html) &&
+  relative(dist, path).replaceAll("\\", "/") !== designStudyPath).map(({ path, html }) => ({
   path,
   title: html.match(/<title>([^<]*)<\/title>/u)?.[1] ?? "",
   description: html.match(/<meta name="description" content="([^"]*)"/u)?.[1] ?? "",
