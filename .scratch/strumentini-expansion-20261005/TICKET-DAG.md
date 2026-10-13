@@ -27,7 +27,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **347 — P0 Badge Gold fingerprint frontend backend**
 - **349 — File server opt-in TTL delete prova**
 - **350 — P0 Accessibilità AA di base e advanced**
-- **351 — Tre direzioni redesign non cosmetiche**
+- **352 — Selezione owner direzione visuale**
 - **363 — Budget memoria mobile editor reali**
 - **366 — Licenze e provenance donor pinning**
 - **367 — Codec immagini local vs donor**
@@ -411,8 +411,8 @@ Exactly **34** incomplete tickets currently have every declared numeric blocker 
 | 348 | completed | Server opt-in gratis feasibility | — |
 | 349 | ready-for-agent | File server opt-in TTL delete prova | 348 |
 | 350 | ready-for-agent | P0 Accessibilità AA di base e advanced | — |
-| 351 | ready-for-agent | Tre direzioni redesign non cosmetiche | — |
-| 352 | blocked | Selezione owner direzione visuale | 351 |
+| 351 | completed | Tre direzioni redesign non cosmetiche | — |
+| 352 | ready-for-agent | Selezione owner direzione visuale | 351 |
 | 353 | blocked | IA e design system dopo scelta | 352 |
 | 354 | blocked | Redesign home file-first search-first | 333, 352, 353 |
 | 355 | blocked | Redesign catalogo ricerca categorie | 352, 353 |
