@@ -278,6 +278,48 @@ function containsActualXlsxFormulaTag(xml: string): boolean {
   return false;
 }
 
+function assertFaithfulXlsxNumericCells(xml: string): void {
+  // read-excel-file converts numeric <v> values to JS Number before returning
+  // them. At that point an unsafe integer, lost significant digits or underflow
+  // cannot be recovered from the exported CSV. Inspect original worksheet XML.
+  // Ignore comments/CDATA (and their fake cell tags), as for formula detection.
+  const liveXml = xml.replace(/<!--[^]*?-->|<!\[CDATA\[[^]*?\]\]>/gu, "");
+  const cells = /<(?:[A-Za-z_][\w.-]*:)?c(?=[\s/>])((?:"[^"]*"|'[^']*'|[^'">])*)>([^]*?)<\/(?:[A-Za-z_][\w.-]*:)?c\s*>/gu;
+  for (const cell of liveXml.matchAll(cells)) {
+    const attributes = cell[1] ?? "";
+    const type = /(?:^|\s)t\s*=\s*(?:"([^"]*)"|'([^']*)')/u.exec(attributes);
+    const cellType = type?.[1] ?? type?.[2] ?? "n";
+    if (cellType !== "n") {
+      // Only these OOXML cell types are definitely nonnumeric. XML-encoded
+      // attributes such as t="&#x6e;" may decode to numeric in the downstream
+      // reader; an unrecognized raw type cannot be safely skipped.
+      if (!["s", "inlineStr", "str", "b", "e", "d"].includes(cellType)) {
+        fail("UNSUPPORTED_XLSX_FEATURE", "Unsupported XLSX cell type cannot be safely imported to CSV.");
+      }
+      continue;
+    }
+    const content = cell[2] ?? "";
+    const values = /<(?:[A-Za-z_][\w.-]*:)?v\s*>([^<]*)<\/(?:[A-Za-z_][\w.-]*:)?v\s*>/gu;
+    for (const valueMatch of content.matchAll(values)) {
+      const raw = (valueMatch[1] ?? "").trim();
+      const numeric = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[Ee][+-]?\d+)?$/u.test(raw);
+      const mantissa = raw.split(/[Ee]/u, 1)[0] ?? "";
+      const significantDigits = mantissa.replace(/^[+-]/u, "").replace(".", "").replace(/^0+|0+$/gu, "").length;
+      const parsed = Number(raw);
+      if (!numeric || !Number.isFinite(parsed) || significantDigits > 15 ||
+          (Number.isInteger(parsed) && !Number.isSafeInteger(parsed)) ||
+          (/[1-9]/u.test(mantissa) && (parsed === 0 || Math.abs(parsed) < 2.2251e-308))) {
+        fail("UNSUPPORTED_XLSX_FEATURE", "Workbook numeric cells cannot be converted to CSV without losing decimal precision; keep these cells as text.");
+      }
+    }
+    // Refuse unexpected value-element syntax rather than silently missing
+    // a numeric source cell that a permissive downstream reader might coerce.
+    const valueOpeners = content.match(/<(?:[A-Za-z_][\w.-]*:)?v(?=[\s/>])/gu)?.length ?? 0;
+    const valuesMatched = [...content.matchAll(values)].length;
+    if (valueOpeners !== valuesMatched) fail("UNSUPPORTED_XLSX_FEATURE", "Unsupported numeric XLSX value element.");
+  }
+}
+
 function workbookWorksheetTarget(target: string): string {
   // OPC Targets are relative to xl/workbook.xml unless rooted at the package
   // root. Never silently drop an encoded/external/escaping worksheet target.
@@ -388,6 +430,7 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
     if (containsActualXlsxFormulaTag(worksheetXml)) {
       fail("UNSUPPORTED_XLSX_FEATURE", "Workbook formulas and their unverified cached results cannot be imported as CSV.");
     }
+    assertFaithfulXlsxNumericCells(worksheetXml);
   }
 }
 
