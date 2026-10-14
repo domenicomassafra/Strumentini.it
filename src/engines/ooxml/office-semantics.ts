@@ -1,4 +1,5 @@
 import { analyzeOoxmlPackage, OOXML_PACKAGE_LIMITS, OoxmlPackageError, type OoxmlPackageAnalysis, type OoxmlPackageKind } from "./package";
+import { parseXmlDocument } from "../developer-web/structured-repair";
 import type { Zippable } from "fflate";
 
 const XML_DECODER = new TextDecoder("utf-8", { fatal: true });
@@ -194,12 +195,37 @@ async function loadPackage(input: ArrayBuffer | Uint8Array): Promise<LoadedPacka
 
 function parseRelationships(xml: string): Relationship[] {
   const output: Relationship[] = [];
-  for (const match of xml.matchAll(/<Relationship\b([^>]*)\/?\s*>/giu)) {
-    const attrs = match[1] ?? "";
-    const id = /\bId=["']([^"']+)["']/iu.exec(attrs)?.[1];
-    const target = /\bTarget=["']([^"']+)["']/iu.exec(attrs)?.[1];
-    if (id === undefined || target === undefined) continue;
-    output.push({ id: decodeEntities(id), target: decodeEntities(target), external: /\bTargetMode=["']External["']/iu.test(attrs) });
+  // Real OOXML permits whitespace around = and either attribute quote style.
+  // The old regex silently dropped valid links and accepted malformed XML or
+  // shadowed duplicate IDs; the bounded XML parser rejects both cases.
+  let root: ReturnType<typeof parseXmlDocument>["root"];
+  try {
+    root = parseXmlDocument(xml).root;
+  } catch {
+    fail("Office relationship XML is invalid or exceeds the bounded XML parser limits.");
+  }
+  if (root.name.split(":").at(-1) !== "Relationships") fail("Unexpected OOXML relationships document root.");
+  const rootPrefix = root.name.includes(":") ? root.name.split(":")[0] : null;
+  const xmlnsName = rootPrefix === null ? "xmlns" : `xmlns:${rootPrefix}`;
+  if (root.attributes.find(({ name }) => name === xmlnsName)?.value !== "http://schemas.openxmlformats.org/package/2006/relationships") {
+    fail("OOXML relationships XML has an unsupported namespace.");
+  }
+  const ids = new Set<string>();
+  for (const child of root.children) {
+    if (child.kind !== "element") continue;
+    if (child.name.split(":").at(-1) !== "Relationship") fail("Unexpected element in OOXML relationships XML.");
+    const attribute = (name: string) => child.attributes.find((entry) => entry.name === name)?.value;
+    const id = attribute("Id");
+    const target = attribute("Target");
+    const type = attribute("Type");
+    const mode = attribute("TargetMode");
+    if (!id || !target || !type || (mode !== undefined && mode !== "Internal" && mode !== "External")) {
+      fail("OOXML relationship has missing or unsupported required attributes.");
+    }
+    const decodedId = decodeEntities(id);
+    if (ids.has(decodedId)) fail("OOXML relationship IDs are ambiguous or duplicated.");
+    ids.add(decodedId);
+    output.push({ id: decodedId, target: decodeEntities(target), external: mode === "External" });
   }
   return output;
 }
