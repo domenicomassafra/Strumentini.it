@@ -46,7 +46,7 @@ function releaseAdmissionFailures(source = workflow): string[] {
     failures.push("CUMULATIVE_RELEASE_VALIDATOR_NOT_MANDATORY");
   }
   for (const step of [requiredDispatch("Require current remote main for release admission"), admission]) {
-    if (step?.env?.RELEASE_READ_TOKEN !== "${{ github.token }}" || !step.run?.includes("GIT_CONFIG_VALUE_0")) {
+    if (step?.env?.RELEASE_READ_TOKEN !== "${{ github.token }}" || !step.run?.includes("node node_modules/tsx/dist/cli.mjs")) {
       failures.push("CUMULATIVE_PRIVATE_REMOTE_AUTH_MISSING");
       break;
     }

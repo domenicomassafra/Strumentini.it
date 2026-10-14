@@ -20,6 +20,8 @@ import {
   validateRelease,
 } from "../src/release/validation";
 import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
+import { verifyCurrentGithubMain404 } from "./lib/current-remote-main-404";
+export { assertCurrentRemoteMain404 } from "./lib/current-remote-main-404";
 import { inspectGoldBinding347, type AuditGoldResult347 } from "./audit-gold-source-binding-347";
 import { publicIndexPaths } from "../src/seo/public-discovery";
 import { groups } from "../src/catalog/groups";
@@ -53,20 +55,6 @@ export function assertReleaseRevision404(input: {
     throw new Error("RELEASE_404_SHA_MISMATCH");
   }
   if (input.dirty === true) throw new Error("RELEASE_404_WORKTREE_DIRTY");
-}
-
-/** A queued GitHub event SHA is not necessarily today's authoritative main.
- * Validate one exact read-only git ls-remote row, never a local tracking ref.
- * This is an admission-time source guard, NOT provider-level deploy locking. */
-export function assertCurrentRemoteMain404(input: {
-  expectedSha: string;
-  remoteListing: string;
-}): void {
-  if (!/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/u.test(input.expectedSha) ||
-      input.remoteListing.trimEnd() !== `${input.expectedSha}\trefs/heads/main` ||
-      input.remoteListing.trimEnd().split(/\r?\n/u).length !== 1) {
-    throw new Error("RELEASE_404_REMOTE_MAIN_SHA_MISMATCH_OR_UNAVAILABLE");
-  }
 }
 
 async function git(...command: string[]): Promise<string> {
@@ -357,8 +345,7 @@ async function main(): Promise<void> {
   // read-only workflow. An external deployer could still bypass the workflow.
   if (process.env.GITHUB_ACTIONS === "true" && requireReady) {
     const expectedSha = expectedShaArgs[0]!.slice("--expected-sha=".length);
-    const remoteListing = await git("ls-remote", "--exit-code", "--refs", "origin", "refs/heads/main");
-    assertCurrentRemoteMain404({ expectedSha, remoteListing });
+    await verifyCurrentGithubMain404(expectedSha);
     assertReleaseRevision404({
       expectedSha,
       currentSha: await git("rev-parse", "HEAD"),

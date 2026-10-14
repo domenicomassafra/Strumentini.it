@@ -47,7 +47,7 @@ describe("#404 release admission must bind the exact immutable main SHA", () => 
     }
   });
 
-  it("executes actual YAML dispatch step with a synthetic git-only remote, allowing current SHA and blocking advanced or unreachable main", () => {
+  it("routes both real YAML admission steps to the shared canonical GitHub remote probe", () => {
     type Step = { name?: string; run?: string; if?: string; env?: Record<string, string> };
     const parsed = YAML.parse(workflow) as { jobs: Record<string, { steps: Step[] }> };
     const steps = parsed.jobs["cumulative-on-main"]!.steps;
@@ -61,20 +61,16 @@ describe("#404 release admission must bind the exact immutable main SHA", () => 
     // remote reads must receive a temporary read-only token in the step env.
     expect(step.env?.RELEASE_READ_TOKEN).toBe("${{ github.token }}");
     expect(steps[admissionIndex]?.env?.RELEASE_READ_TOKEN).toBe("${{ github.token }}");
-    expect(steps[admissionIndex]?.run).toContain("GIT_CONFIG_VALUE_0");
-    expect(step.run).toContain("git ls-remote --exit-code --refs origin refs/heads/main");
-    const simulate = (remoteSha: string, exitCode = 0, token = "synthetic-readonly") => {
-      // A shell function intercepts *all* git calls. No git provider/network.
-      const mockGit = `git() { if [ "$*" != "ls-remote --exit-code --refs origin refs/heads/main" ]; then return 9; fi; if [ "$SYNTHETIC_REMOTE_EXIT" != "0" ]; then return "$SYNTHETIC_REMOTE_EXIT"; fi; printf '%s\\t%s\\n' "$SYNTHETIC_REMOTE_SHA" refs/heads/main; }\n`;
-      return spawnSync("bash", ["-euo", "pipefail", "-c", mockGit + step.run], {
-        encoding: "utf8", timeout: 5000,
-        env: { ...process.env, GITHUB_SHA: SHA, RELEASE_READ_TOKEN: token, SYNTHETIC_REMOTE_SHA: remoteSha, SYNTHETIC_REMOTE_EXIT: String(exitCode) },
-      });
-    };
-    expect(simulate(SHA).status).toBe(0);
-    expect(simulate(SHA, 0, "").status).not.toBe(0);
-    expect(simulate("b".repeat(40)).status).not.toBe(0);
-    expect(simulate(SHA, 2).status).not.toBe(0);
+    expect(step.run).toContain('scripts/lib/current-remote-main-404.ts --expected-sha="$GITHUB_SHA"');
+    expect(steps[admissionIndex]?.run).toContain('scripts/validate-release.ts --no-write-receipt --require-ready --expected-sha="$GITHUB_SHA"');
+    const probe = readFileSync(resolve(import.meta.dirname, "../scripts/lib/current-remote-main-404.ts"), "utf8");
+    const validator = readFileSync(resolve(import.meta.dirname, "../scripts/validate-release.ts"), "utf8");
+    expect(probe).toContain("GIT_CONFIG_COUNT: \"1\"");
+    expect(probe).toContain("GIT_CONFIG_NOSYSTEM: \"1\"");
+    expect(probe).not.toContain("...process.env");
+    expect(validator).toContain("await verifyCurrentGithubMain404(expectedSha)");
+    // The separate private-remote-auth suite executes both actual YAML Bash
+    // bodies with a synthetic Git transport and the real release validator.
   });
 
   it("the actual validator CLI refuses a forged immutable SHA before generating any receipt", () => {
