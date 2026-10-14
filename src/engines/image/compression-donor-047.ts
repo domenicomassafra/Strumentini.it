@@ -86,11 +86,19 @@ function rejectAnimation(bytes: Uint8Array, mime: SupportedImageMime): void {
     if (bytes.length < 20 || !ascii(bytes, 0, "RIFF") || !ascii(bytes, 8, "WEBP")) error("INVALID_INPUT", "WebP RIFF header invalid");
     const length = new DataView(bytes.buffer, bytes.byteOffset, 12).getUint32(4, true) + 8;
     if (length !== bytes.length) error("INVALID_INPUT", "WebP RIFF size inconsistent");
+    let hasImageBitstream = false;
     for (let at = 12; at + 8 <= length;) {
       const lengthChunk = new DataView(bytes.buffer, bytes.byteOffset + at, 8).getUint32(4, true);
       if (lengthChunk > length - at - 8) error("INVALID_INPUT", "WebP chunk truncated");
       // RIFF requires a present, zero-valued padding byte for odd chunks.
       if ((lengthChunk & 1) !== 0 && bytes[at + 8 + lengthChunk] !== 0) error("INVALID_INPUT", "WebP chunk padding missing or nonzero");
+      // A still WebP contains exactly one VP8/VP8L image bitstream. Native
+      // decoders may silently ignore an extra one, so decoding alone cannot
+      // establish that retaining the original bytes is safe.
+      if (ascii(bytes, at, "VP8 ") || ascii(bytes, at, "VP8L")) {
+        if (hasImageBitstream) error("INVALID_INPUT", "WebP contains multiple image bitstreams");
+        hasImageBitstream = true;
+      }
       if (ascii(bytes, at, "ANIM") || ascii(bytes, at, "ANMF") ||
         (ascii(bytes, at, "VP8X") && lengthChunk >= 1 && ((bytes[at + 8]! & 0x02) !== 0))) {
         error("ANIMATION_UNSUPPORTED", "Animated WebP must not be reduced to a still image");
