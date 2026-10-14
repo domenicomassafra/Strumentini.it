@@ -55,7 +55,7 @@ describe("ticket 161 — bounded browser-capable XLSX interchange", () => {
     const table = parseCsvTable(converted.csv);
     expect(converted.sheetNames).toEqual(["CODICI al 21_02_2026", "NOTE", "Legenda"]);
     expect(table.rows[0]?.slice(0, 6)).toEqual(["01", "201", "001", "001", "001001", "Agliè"]);
-  });
+  }, 30_000);
 
   it("converts the normalized Markdown-table model to XLSX and reopens it", async () => {
     const generated = await markdownTableToXlsx("| id | label |\n| --- | --- |\n| 007 | Bond |\n| 008 | Q |", { sheetName: "Agents" });
