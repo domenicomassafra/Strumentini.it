@@ -1,13 +1,13 @@
 # Strumentini — original ticket AC not yet accepted (source-bound snapshot)
 
-**Authority:** canonical `.scratch/strumentini-expansion-20261005/CURRENT-TICKET-DASHBOARD.json` and original issue Markdown, not a parallel completion authority. Source `main` commit `c38da86458eec0512721a5b4abc612b1f7b74a67`, 2026-10-13. Recompute from current main before relying on counts after any merge.
+**Authority:** canonical `.scratch/strumentini-expansion-20261005/CURRENT-TICKET-DASHBOARD.json` and original issue Markdown, not a parallel completion authority. Verified `origin/main` commit `317bf371b7575d6534586dd0a681fb2fd6ffc20b`, 2026-10-14 (source-bound snapshot before subsequent unrelated fixes). Recompute from current main before relying on counts after any merge.
 
-**Current at this source SHA:** **307/424 completed**, **117 open** (25 ready-for-agent, 85 dependency-blocked, 5 external-device-blocked, 2 external-source-blocked. The authoritative taxonomy below is calculated); **0 current Gold**, **269 PENDING**. Completing source tests is not deployment, platform device acceptance, licensing or owner approval. For dependency tickets, the exact ID shown is a formal DAG gate; the first unchecked original AC is provided separately. For ready tickets, blocker is the smallest material gap evident from original AC and prior receipts—not a claim that all remaining code is absent. No original checkbox, issue status or ticket ledger is changed by this report.
+**Current at this source SHA:** **307/424 completed**, **117 open** (25 ready-for-agent, 85 dependency-blocked, 5 external-device-blocked, 2 external-source-blocked. The authoritative taxonomy below is calculated); **0 current Gold**, **269 PENDING**. Completing source tests is not deployment, platform device acceptance, licensing or owner approval. For dependency tickets, the exact ID shown is a formal DAG gate; the first unchecked original AC is provided if it exists; seven structurally blocked tickets have no unchecked original AC but still lack the independent prerequisite listed. For ready tickets, blocker is the smallest material gap evident from original AC and prior receipts—not a claim that all remaining code is absent. No original checkbox, issue status or ticket ledger is changed by this report.
 
 
 ## Azionabili ma con AC ancora non dimostrate (25)
 
-| Ticket | Prima AC originale aperta | Precondizione/prova mancante |
+| Ticket | Prima AC originale non spuntata (se presente) | Precondizione/prova mancante |
 |---|---|---|
 | #47 — JPEG/PNG/WebP/SVG compression engines | JPEG has normal/high-compression presets plus expert controls only when the codec exposes them reliably. | Codec avanzati JPEG/WebP, SVG multipass e prove corpus/mobile non complete; subset PNG provato ≠ AC completa |
 | #56 — Office-to-PDF and printable export pack | DOCX/XLSX/PPTX→PDF each have a fidelity corpus and unsupported-feature list before public claims. | Fedeltà layout DOCX/XLSX/PPTX ricchi e verifica fisica non dimostrate; PDF stampabile subset provato |
@@ -37,9 +37,9 @@
 
 ## Sospesi da dipendenze del DAG (85)
 
-| Ticket | Prima AC originale aperta | Precondizione/prova mancante |
+| Ticket | Prima AC originale non spuntata (se presente) | Precondizione/prova mancante |
 |---|---|---|
-| #8 — Codice Fiscale generate/decode | Codice Fiscale generate/decode | Dipendenze originali non complete: #121, #122; AC di base da provare dopo lo sblocco |
+| #8 — Codice Fiscale generate/decode | Nessuna AC originale non spuntata: blocco strutturale/prova esterna | Dipendenze originali non complete: #121, #122; AC di base da provare dopo lo sblocco |
 | #11 — Upgrade IVA + percentage calculator | All percentage modes have distinct labels, examples, formulas and reversible inputs. | Dipendenze originali non complete: #126; AC di base da provare dopo lo sblocco |
 | #12 — IRPEF annual calculator | Tax year is explicit and only supported versions are selectable. | Dipendenze originali non complete: #127, #128; AC di base da provare dopo lo sblocco |
 | #13 — Stipendio netto annual calculator | Inputs state year, RAL, payment months and supported employment/contribution assumptions. | Dipendenze originali non complete: #130; AC di base da provare dopo lo sblocco |
@@ -51,13 +51,13 @@
 | #31 — OCR and document-scan family | Italian OCR path works locally with explicit language/quality state. | Dipendenze originali non complete: #246, #247; AC di base da provare dopo lo sblocco |
 | #32 — PDF edit/security family | Page thumbnails support selecting placement/range for page numbers/watermark/signature/redaction. | Dipendenze originali non complete: #237; AC di base da provare dopo lo sblocco |
 | #35 — Audio capture/playback utilities | Mic/recorder permission and denial states are accessible and recoverable. | Dipendenze originali non complete: #229; AC di base da provare dopo lo sblocco |
-| #40 — Italy utilities beyond CalcolaTutto | Italy utilities beyond CalcolaTutto | Dipendenze originali non complete: #152; AC di base da provare dopo lo sblocco |
+| #40 — Italy utilities beyond CalcolaTutto | Nessuna AC originale non spuntata: blocco strutturale/prova esterna | Dipendenze originali non complete: #152; AC di base da provare dopo lo sblocco |
 | #46 — Full expansion certification + release integration | Original catalog has 200/200 Result v2 coverage proof. | Dipendenze originali non complete: #18, #158, #279, #280, #281; AC di base da provare dopo lo sblocco |
 | #49 — Image conversion matrix + HEIC/AVIF/GIF | HEIC from real iPhone samples is covered on physical iOS/Android/desktop where the promoted path claims support. | Dipendenze originali non complete: #212; AC di base da provare dopo lo sblocco |
-| #58 — PDF↔image directional conversion pack | PDF↔image directional conversion pack | Dipendenze originali non complete: #235; AC di base da provare dopo lo sblocco |
+| #58 — PDF↔image directional conversion pack | Nessuna AC originale non spuntata: blocco strutturale/prova esterna | Dipendenze originali non complete: #235; AC di base da provare dopo lo sblocco |
 | #62 — Upgrade existing business/date functionality | Every existing business/date route gets a concrete mode/assumption/output audit. | Dipendenze originali non complete: #126, #127, #128, #130, #133, #134, #135; AC di base da provare dopo lo sblocco |
 | #121 — Codice Fiscale formal validate and generate engine | Birth municipality/foreign state resolves through versioned source data. | Dipendenze originali non complete: #115; AC di base da provare dopo lo sblocco |
-| #122 — Codice Fiscale decode and omocodia ambiguity | Codice Fiscale decode and omocodia ambiguity | Dipendenze originali non complete: #121; AC di base da provare dopo lo sblocco |
+| #122 — Codice Fiscale decode and omocodia ambiguity | Nessuna AC originale non spuntata: blocco strutturale/prova esterna | Dipendenze originali non complete: #121; AC di base da provare dopo lo sblocco |
 | #126 — IVA add and scorporo with versioned presets | Preset rates link to version/year source metadata. | Dipendenze originali non complete: #117; AC di base da provare dopo lo sblocco |
 | #127 — IRPEF national annual core | Each bracket contribution is visible and sums to gross tax. | Dipendenze originali non complete: #117; AC di base da provare dopo lo sblocco |
 | #128 — IRPEF supported deductions and addizionali tranche | Coverage matrix states supported deduction/locality/year combinations. | Dipendenze originali non complete: #127; AC di base da provare dopo lo sblocco |
@@ -67,7 +67,7 @@
 | #135 — TFR indicative taxation layer | Tax estimate is separable from gross TFR calculation. | Dipendenze originali non complete: #127, #134; AC di base da provare dopo lo sblocco |
 | #152 — Italian invoice stamp-duty reference helper | Rule version/source and assumptions are visible. | Dipendenze originali non complete: #117; AC di base da provare dopo lo sblocco |
 | #158 — Italy source freshness and annual rollover gate | Every annual/time-varying Italy dataset has owner, latest supported version and checked date. | Dipendenze originali non complete: #115, #117; AC di base da provare dopo lo sblocco |
-| #235 — Advanced Images to PDF composition | Advanced Images to PDF composition | Dipendenze originali non complete: #212; AC di base da provare dopo lo sblocco |
+| #235 — Advanced Images to PDF composition | Nessuna AC originale non spuntata: blocco strutturale/prova esterna | Dipendenze originali non complete: #212; AC di base da provare dopo lo sblocco |
 | #247 — Scanned PDF OCR and searchable text layer | Output contains selectable/searchable text on OCRed pages. | Dipendenze originali non complete: #246; AC di base da provare dopo lo sblocco |
 | #279 — Image-resize Gold promotion gate | All required receipts reference compatible/current source fingerprint. | Dipendenze originali non complete: #277, #278; AC di base da provare dopo lo sblocco |
 | #332 — Sync preferiti con rimozioni e conflitti | AC-332.1: Due dispositivi convergono su aggiunta/rimozione. | Dipendenze originali non complete: #328; AC di base da provare dopo lo sblocco |
@@ -127,9 +127,9 @@
 
 ## Dispositivi esterni (5)
 
-| Ticket | Prima AC originale aperta | Precondizione/prova mancante |
+| Ticket | Prima AC originale non spuntata (se presente) | Precondizione/prova mancante |
 |---|---|---|
-| #229 — Microphone test and local recorder | Microphone test and local recorder | Microfono reale/browser OS: permessi, cattura audio e file riapribile |
+| #229 — Microphone test and local recorder | Nessuna AC originale non spuntata: blocco strutturale/prova esterna | Microfono reale/browser OS: permessi, cattura audio e file riapribile |
 | #277 — Physical Android Chrome image-resize acceptance | Receipt identifies real device/browser/build fingerprint. | Android Chrome fisico: image resize/output reale |
 | #278 — Physical iOS Safari image-resize acceptance | Receipt identifies physical iOS/Safari/build fingerprint. | iOS Safari fisico: image resize/output reale |
 | #280 — Physical Android heavy-tool web acceptance lane | Lane records device/browser/build and exact route/input class. | Android dispositivo fisico: strumenti pesanti |
@@ -137,9 +137,9 @@
 
 ## Fonti ufficiali esterne (2)
 
-| Ticket | Prima AC originale aperta | Precondizione/prova mancante |
+| Ticket | Prima AC originale non spuntata (se presente) | Precondizione/prova mancante |
 |---|---|---|
-| #115 — Italian administrative geography source pack | Italian administrative geography source pack | Snapshot e licenze fonte ufficiale geografia amministrativa italiana complete e verificabili |
+| #115 — Italian administrative geography source pack | Nessuna AC originale non spuntata: blocco strutturale/prova esterna | Snapshot e licenze fonte ufficiale geografia amministrativa italiana complete e verificabili |
 | #117 — Italian fiscal annual source snapshots | Each annual rule pack has identifiable taxYear/effective dates and source links. | Snapshot fonti primarie annuali AdE/INPS/ISTAT e data validità ufficiale corrente |
 
 ## Avvertenza di rilascio
