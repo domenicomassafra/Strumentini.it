@@ -176,7 +176,8 @@
   --on-tone: #ffffff;
 
   --border: #e4edf9;
-  --border-strong: #cfe0f4;
+  /* Resting input and control edges must clear 3:1 against their surface. */
+  --border-strong: #7d8ea5;
 
   --success: #0d7a3c;
   --success-soft: #e8f9ef;
@@ -225,7 +226,7 @@
   --text-faint: #78889f;
   --on-tone: #ffffff;
   --border: #1f2c42;
-  --border-strong: #33445f;
+  --border-strong: #5b708c;
   --success: #4ade80;
   --success-soft: #10281d;
   --warning: #fbbf24;

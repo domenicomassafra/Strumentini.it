@@ -75,6 +75,10 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (path === "docs/audit-2026-10-10/donor-packages.json") return ["ci"];
   // These Python unittests are not Vitest and are not part of `npm test`.
   if (path === "tests/test_ticket_dashboard.py") return ["ci"];
+  // design/WORLD.md controls the shipped palette's source contract. It is
+  // reviewed frontend input, not disposable documentation; unknown design
+  // files must still fail closed rather than receive a broad wildcard pass.
+  if (path === "design/WORLD.md") return ["frontend"];
   // The ticket archive also contains executable validators/generators. Treating
   // every .scratch path as docs would allow a change to the release-facing
   // ticket checks to escape source CI entirely.
