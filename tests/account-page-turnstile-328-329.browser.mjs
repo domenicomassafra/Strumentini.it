@@ -25,6 +25,8 @@ let browser;
 let checks = 0;
 let loginCalls = 0;
 let registerCalls = 0;
+let issuedSession = 0;
+const authenticatedCookies = new Map();
 const logs = [];
 server?.stdout.on("data", (chunk) => logs.push(String(chunk).slice(0, 300)));
 server?.stderr.on("data", (chunk) => logs.push(String(chunk).slice(0, 300)));
@@ -90,7 +92,12 @@ async function setup(page, { failVendor = false, delayedVendor = false } = {}) {
   await page.route("**/api/auth/**", async (route) => {
     const request = route.request();
     const path = new URL(request.url()).pathname;
-    if (path === "/api/auth/session") return route.fulfill({ status: 200, contentType: "application/json", body: '{"user":null}' });
+    if (path === "/api/auth/session") {
+      const headers = await request.allHeaders();
+      const token = /(?:^|;\s*)su_session=([^;]+)/u.exec(headers.cookie ?? "")?.[1];
+      const user = authenticatedCookies.get(token) ?? null;
+      return route.fulfill({ status: 200, contentType: "application/json", headers: { "cache-control": "no-store" }, body: JSON.stringify({ user }) });
+    }
     if (path === "/api/auth/google/config") return route.fulfill({ status: 503, contentType: "application/json", body: '{"error":"non configurato"}' });
     if (path === "/api/auth/login" || path === "/api/auth/register") {
       const body = request.postDataJSON();
@@ -101,7 +108,13 @@ async function setup(page, { failVendor = false, delayedVendor = false } = {}) {
       const status = valid ? (action === "register" ? 201 : 200) : 400;
       const payload = valid ? { user: { email: body.email, name: body.name ?? "Fixture", passwordEnabled: true, googleConnected: false } }
         : { error: "La verifica anti-bot non è valida o è scaduta. Riprova." };
-      return route.fulfill({ status, contentType: "application/json", body: JSON.stringify(payload) });
+      const headers = { "cache-control": "no-store" };
+      if (valid) {
+        const token = `fixture-session-${++issuedSession}`;
+        authenticatedCookies.set(token, payload.user);
+        headers["set-cookie"] = `su_session=${token}; HttpOnly; Path=/; SameSite=Lax`;
+      }
+      return route.fulfill({ status, contentType: "application/json", headers, body: JSON.stringify(payload) });
     }
     return route.fulfill({ status: 404, contentType: "application/json", body: '{}' });
   });
