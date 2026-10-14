@@ -30,7 +30,13 @@ function installedPackageGraph(name: typeof packages[number]) {
       },
     },
   };
-  return { path, lock, original };
+  // Preserve the checked mandatory fields in the test fixture's return type;
+  // with exactOptionalPropertyTypes an optional lock entry field must not be
+  // passed explicitly as `undefined` to the donor candidate contract.
+  return { path, lock, original: {
+    version: original.version, license: original.license,
+    integrity: original.integrity, resolved: original.resolved,
+  } };
 }
 
 describe("#366 original npm SPDX expression grammar (no adoption authorization)", () => {
