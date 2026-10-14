@@ -11874,7 +11874,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/file-hash/browser-acceptance.json",
-            "sha256": "10f250fd0f98ae9be89682528b71351f92a0a3c79538cd0550e322b69792658e",
+            "sha256": "a26c9c1318e2b4e0cf94238fa32d09283d606c6dbdcd916c355cce0607a65c6b",
             "status": "PASS"
           }
         ]
@@ -11885,7 +11885,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/file-hash/browser-acceptance.json",
-            "sha256": "10f250fd0f98ae9be89682528b71351f92a0a3c79538cd0550e322b69792658e",
+            "sha256": "a26c9c1318e2b4e0cf94238fa32d09283d606c6dbdcd916c355cce0607a65c6b",
             "status": "PASS"
           }
         ]
@@ -11896,7 +11896,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/file-hash/browser-acceptance.json",
-            "sha256": "10f250fd0f98ae9be89682528b71351f92a0a3c79538cd0550e322b69792658e",
+            "sha256": "a26c9c1318e2b4e0cf94238fa32d09283d606c6dbdcd916c355cce0607a65c6b",
             "status": "PASS"
           }
         ]
@@ -11918,7 +11918,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/file-hash/browser-acceptance.json",
-          "sha256": "10f250fd0f98ae9be89682528b71351f92a0a3c79538cd0550e322b69792658e",
+          "sha256": "a26c9c1318e2b4e0cf94238fa32d09283d606c6dbdcd916c355cce0607a65c6b",
           "status": "PASS"
         }
       ],

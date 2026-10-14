@@ -56,6 +56,11 @@ export function hashBlobInWorker(
       if (settled) return;
       settled = true;
       options.signal?.removeEventListener("abort", onAbort);
+      // Previously queued Worker events may still be delivered after
+      // terminate(). They belong to a settled job and cannot update progress
+      // or publish a second outcome, even when the captured callback runs.
+      worker.onmessage = null;
+      worker.onerror = null;
       worker.terminate();
       callback();
     };
@@ -66,19 +71,43 @@ export function hashBlobInWorker(
       finish(() => reject(new FileHashError("WORKER_FAILURE", event.message || "Hash worker failed.")));
     };
     worker.onmessage = (event) => {
-      const message = event.data;
-      if (message.type === "progress") {
-        options.onProgress?.(message.progress);
+      if (settled) return;
+      // postMessage() data is an unchecked structured clone at runtime:
+      // a TypeScript union does not establish message provenance or bounds.
+      const message = event.data as unknown;
+      const invalid = () => finish(() => reject(new FileHashError("WORKER_FAILURE", "Invalid hash worker response.")));
+      if (message === null || typeof message !== "object") { invalid(); return; }
+      const packet = message as Record<string, unknown>;
+      if (packet.type === "progress") {
+        const progress = packet.progress;
+        if (progress === null || typeof progress !== "object") { invalid(); return; }
+        const update = progress as Record<string, unknown>;
+        if (!Number.isSafeInteger(update.bytesHashed) || !Number.isSafeInteger(update.totalBytes) ||
+            update.totalBytes !== blob.size || (update.bytesHashed as number) < 0 ||
+            (update.bytesHashed as number) > blob.size || typeof update.fraction !== "number" ||
+            !Number.isFinite(update.fraction) || update.fraction < 0 || update.fraction > 1 ||
+            Math.abs(update.fraction - (blob.size === 0 ? 1 : (update.bytesHashed as number) / blob.size)) > 1e-12) {
+          invalid(); return;
+        }
+        options.onProgress?.(update as unknown as HashProgress);
         return;
       }
-      if (message.type === "failure") {
-        const code = message.code === "UNSUPPORTED_ALGORITHM" || message.code === "READ_FAILURE"
-          ? message.code
+      if (packet.type === "failure") {
+        const code = packet.code === "UNSUPPORTED_ALGORITHM" || packet.code === "READ_FAILURE"
+          ? packet.code
           : "WORKER_FAILURE";
-        finish(() => reject(new FileHashError(code, message.message)));
+        finish(() => reject(new FileHashError(code, typeof packet.message === "string" ? packet.message : "Hash worker failed.")));
         return;
       }
-      finish(() => resolve(message.result));
+      if (packet.type !== "success" || packet.result === null || typeof packet.result !== "object") {
+        invalid(); return;
+      }
+      const result = packet.result as Record<string, unknown>;
+      if (result.algorithm !== "SHA-256" || result.bytesHashed !== blob.size ||
+          typeof result.digestHex !== "string" || !/^[0-9a-f]{64}$/u.test(result.digestHex)) {
+        invalid(); return;
+      }
+      finish(() => resolve(result as unknown as HashResult));
     };
 
     const request: HashWorkerRequest = {

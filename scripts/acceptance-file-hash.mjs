@@ -69,6 +69,23 @@ try {
   await sleep(200);
   await page.getByText("Nessun risultato. Compila i campi e avvia lo strumento.").waitFor();
 
+  // Cancellation must neither leak the selected filename nor poison the next
+  // job. A reset abort is different from an explicit Cancel: it clears the
+  // visible error, then a later real Worker hash must still complete.
+  if (JSON.stringify(requestsAfterSelection).includes("cancel-me.bin")) {
+    throw new Error("cancelled file name leaked into request metadata");
+  }
+  await page.getByRole("button", { name: "Reimposta" }).click();
+  if (await page.getByRole("alert").filter({ hasText: "annullato" }).count()) {
+    throw new Error("reset retained stale cancellation error");
+  }
+  await page.locator("form").getByLabel("File").setInputFiles({ name: "retry-private.txt", mimeType: "text/plain", buffer: payload });
+  await page.getByRole("button", { name: "Calcola SHA-256" }).click();
+  await page.getByText(expected, { exact: true }).waitFor();
+  if (JSON.stringify(requestsAfterSelection).includes("retry-private.txt")) {
+    throw new Error("retry private file name leaked into request metadata");
+  }
+
   const receipt = {
     schemaVersion: 1,
     route: "/tools/file-hash/",
@@ -78,6 +95,8 @@ try {
     lazyWorkerRequests: lazyRequests.map((item) => item.url),
     cancellation: "PASS",
     cancellationPayloadBytes: large.length,
+    cancellationRetry: "PASS",
+    cancellationResetClearsError: true,
     horizontalOverflow: false,
   };
   await mkdir(resolve(root, "quality/receipts/file-hash"), { recursive: true });
