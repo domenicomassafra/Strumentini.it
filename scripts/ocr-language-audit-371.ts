@@ -39,6 +39,12 @@ export const OCR_371_SOURCE = {
   modelPackageVersion: "1.0.0",
   modelPackageLicense: "MIT",
   upstreamModelLicense: "Apache-2.0",
+  // Exact Node worker entrypoint shipped by the locally installed
+  // tesseract.js@7.0.0 donor. package.json version alone is not proof of the
+  // executable script used to produce OCR/quality observations.
+  workerRelativePath: "node_modules/tesseract.js/src/worker-script/node/index.js",
+  workerBytes: 771,
+  workerSha256: "a973c23ce067bc752c0bf602297eac843098e531ac03f3ea34cdf694326a6d02",
 } as const;
 
 export interface RecognitionWorker371 {
@@ -248,8 +254,12 @@ async function preflightItalian371(root: string, spike: string, requiredUpstream
       return { error: "IT_MODEL_LICENSE_UNVERIFIED" };
     }
   }
-  const workerPath = resolve(spike, "node_modules/tesseract.js/src/worker-script/node/index.js");
+  const workerPath = resolve(spike, metadata.workerRelativePath);
   if (!existsSync(workerPath)) return { error: "IT_LOCAL_WORKER_MISSING" };
+  const workerSource = await readPinnedSizedFile371(workerPath, metadata.workerBytes);
+  if (workerSource === null || digest(workerSource) !== metadata.workerSha256) {
+    return { error: "IT_LOCAL_WORKER_SHA256_CHANGED" };
+  }
   const dimensions = await sharp(fixture).metadata().catch(() => null);
   if (!dimensions || dimensions.format !== "png"
     || dimensions.width !== 1280 || dimensions.height !== 240
