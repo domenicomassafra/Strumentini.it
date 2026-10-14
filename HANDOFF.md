@@ -1,5 +1,7 @@
 # HANDOFF — Strumentini.it
 
+> **Handoff corrente (14 ottobre 2026):** leggere prima [docs/HANDOFF-2026-10-14-RECONCILIATION.md](docs/HANDOFF-2026-10-14-RECONCILIATION.md). Il contenuto sottostante è storico (2026-10-08); valori come 259 tool/257 Gold e ticket storici NON rappresentano il main corrente. La fonte autorevole è il dashboard generato e le CI sullo SHA attuale.
+
 > **Historical engineering handoff (2026-10-08).** The implementation, certification, test and deployment figures below describe that checkpoint. For current ticket counts use the **generated live panel** at the top of `PROJECT-STATUS.md` (checked by `npm run tickets:check`), followed by the linked issue files. Current catalog/certification and release claims require fresh generated indexes, CI and deployment receipts.
 
 Repository: /Users/domenico/Code/Strumentini.it
