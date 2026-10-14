@@ -58,8 +58,13 @@ exec /usr/bin/git "$@"
 `;
     writeFileSync(path, program, { mode: 0o700 });
     chmodSync(path, 0o700);
+    // The real tsx-based release validator must finish before the synthetic
+    // Git transport is observed. On loaded macOS hosts it can exceed 15 s;
+    // an ETIMEDOUT here means the test never reached the transport, not that
+    // authentication was safely refused. Only that CLI gets a larger budget.
+    const startedAt = performance.now();
     const result = spawnSync("bash", ["-euo", "pipefail", "-c", step.run!], {
-      cwd: root, encoding: "utf8", timeout: 15000,
+      cwd: root, encoding: "utf8", timeout: step === admission ? 30_000 : 15_000,
       env: {
         ...process.env, PATH: `${folder}${delimiter}${process.env.PATH ?? ""}`,
         GITHUB_ACTIONS: "true", GITHUB_REF: "refs/heads/main", GITHUB_SHA: head,
@@ -71,11 +76,41 @@ exec /usr/bin/git "$@"
       },
     });
     const attempted = (() => { try { return readFileSync(log, "utf8").trim().split("\n").length; } catch { return 0; } })();
-    return { ...result, attempted };
+    return { ...result, attempted, elapsedMs: Math.round(performance.now() - startedAt) };
   } finally { rmSync(folder, { recursive: true, force: true }); }
 }
 
+// Do not print stdout, stderr, env or the synthetic secret on a timeout.
+// The transport assertions below retain full hostile-Git coverage.
+type ProcessOutcome = Pick<ReturnType<typeof invoke>, "attempted" | "elapsedMs" | "error" | "status" | "signal" | "stderr">;
+
+function processFacts(result: ProcessOutcome): string {
+  const code = result.error && "code" in result.error ? result.error.code : null;
+  return JSON.stringify({
+    attempted: result.attempted, elapsedMs: result.elapsedMs,
+    code, status: result.status, signal: result.signal,
+    stderrBytes: result.stderr?.length ?? 0,
+  });
+}
+
+function expectRealRefusal(result: ProcessOutcome): void {
+  // A timed-out child has status=null, which is not equal to zero. Treating
+  // that as a successful negative test would fabricate a fail-closed result.
+  expect(result.error, processFacts(result)).toBeUndefined();
+  expect(typeof result.status, processFacts(result)).toBe("number");
+  expect(result.status, processFacts(result)).not.toBe(0);
+}
+
 describe("#404 private GitHub release admission uses no persistent credentials", () => {
+  it("never passes a killed/timeout subprocess as a negative security proof", () => {
+    const timedOut: ProcessOutcome = {
+      attempted: 0, elapsedMs: 15_000,
+      status: null, signal: "SIGTERM", stderr: "",
+      error: Object.assign(new Error("synthetic timeout"), { code: "ETIMEDOUT" }),
+    };
+    expect(() => expectRealRefusal(timedOut)).toThrow();
+  });
+
   it("marks the new authoritative GitHub probe as CI and demands independent security review", () => {
     const suites = readdirSync(join(root, "tests")).filter((item) => item.endsWith(".test.ts")).map((item) => `tests/${item}`);
     const plan = buildImpactPlan(["docs/innocuous.md", "scripts/lib/current-remote-main-404.ts"], suites);
@@ -109,17 +144,17 @@ describe("#404 private GitHub release admission uses no persistent credentials",
 
   it("runs real YAML remote-read Bash and fails closed for obsolete main, missing token and inaccessible origin", () => {
     const current = invoke(remote, "current");
-    expect(current.status, `${current.stderr}\n${current.stdout}`).toBe(0);
-    expect(current.attempted).toBe(1);
+    expect(current.status, processFacts(current)).toBe(0);
+    expect(current.attempted, processFacts(current)).toBe(1);
     for (const sample of [invoke(remote, "advanced"), invoke(remote, "unreachable"), invoke(remote, "current", false)]) {
-      expect(sample.status).not.toBe(0);
+      expectRealRefusal(sample);
     }
-  });
+  }, 30_000);
 
   it("runs the actual read-only validator YAML command with temporary Git authentication and no receipt write", () => {
     const current = invoke(admission, "current");
-    expect(current.attempted).toBe(1);
-    expect(current.stdout, current.stderr).not.toBe("");
+    expect(current.attempted, processFacts(current)).toBe(1);
+    expect(current.stdout, processFacts(current)).not.toBe("");
     const result = JSON.parse(current.stdout) as {
       status: string; receipt: string | null; findings: { code: string }[];
     };
@@ -130,13 +165,14 @@ describe("#404 private GitHub release admission uses no persistent credentials",
     expect(result.findings.map((finding) => finding.code)).toEqual(expect.arrayContaining([
       "GOLD_RECEIPT_MISSING", "PHYSICAL_DEVICE_EVIDENCE_MISSING", "ROLLBACK_UNPROVEN",
     ]));
-    expect(current.status).not.toBe(0);
+    expectRealRefusal(current);
     const advanced = invoke(admission, "advanced");
-    expect(advanced.attempted).toBe(1);
-    expect(`${advanced.stderr}\n${advanced.stdout}`).toMatch(/RELEASE_404_REMOTE_MAIN_SHA_MISMATCH_OR_UNAVAILABLE/u);
-    expect(advanced.status).not.toBe(0);
+    expect(advanced.attempted, processFacts(advanced)).toBe(1);
+    expect(/RELEASE_404_REMOTE_MAIN_SHA_MISMATCH_OR_UNAVAILABLE/u.test(`${advanced.stderr}\n${advanced.stdout}`),
+      processFacts(advanced)).toBe(true);
+    expectRealRefusal(advanced);
     const missingToken = invoke(admission, "current", false);
-    expect(missingToken.attempted).toBe(0);
-    expect(missingToken.status).not.toBe(0);
-  }, 60_000);
+    expect(missingToken.attempted, processFacts(missingToken)).toBe(0);
+    expectRealRefusal(missingToken);
+  }, 120_000);
 });
