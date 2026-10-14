@@ -102,6 +102,17 @@ describe("#404 PR/source impact planning", () => {
     expect(docs.gates).toEqual([]);
   });
 
+  it("treats the canonical design contract as frontend but refuses unknown design paths", () => {
+    const design = buildImpactPlan(["design/WORLD.md"], suites);
+    expect(design.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(design.domains).toEqual(["frontend"]);
+    expect(design.commands).toContainEqual({ program: "npm", args: ["run", "test"] });
+    expect(design.gates).toContainEqual(expect.objectContaining({ id: "browser-a11y", status: "NOT_RUN" }));
+    const unknown = buildImpactPlan(["design/unreviewed-executable.sh"], suites);
+    expect(unknown.status).toBe("NO_GO");
+    expect(unknown.blockers).toContain('UNKNOWN_CHANGE_PATH: "design/unreviewed-executable.sh"');
+  });
+
   it("propagates PDF/image UI and auth-test edits to sensitive gates, not just generic frontend", () => {
     const plan = buildImpactPlan([
       "src/components/tools/pdf/PdfTool.tsx",
