@@ -850,9 +850,14 @@ const unitSystems = [
         return;
       }
       const button = form.querySelector<HTMLButtonElement>("[data-account-submit]");
+      // Disabling the keyboard-activated submit during an async request drops
+      // browser focus to <body>. Return it after completion, but never steal
+      // focus if the visitor has moved to another control while waiting.
+      const keyboardSubmitted = button !== null && document.activeElement === button && button.matches(":focus-visible");
       if (button !== null) setBusy(button, true);
       void updateProfile(name.value).then((result) => {
         if (button !== null) setBusy(button, false);
+        if (keyboardSubmitted && document.activeElement === document.body) button?.focus();
         if (!result.ok) {
           setMessage(message, result.message);
           return;
