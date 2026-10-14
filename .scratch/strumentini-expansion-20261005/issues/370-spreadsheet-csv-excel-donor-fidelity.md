@@ -162,3 +162,44 @@ ZIP/XML adversarial corpus, stale formula caches, true formula evaluation,
 rich formatting and media preservation, actual portable perf/mobile/physical
 measurements, owner/vendor rights and release/rollback approval are outside
 this narrow correction.
+
+## 2026-10-14 worker-2 — source formula-cache and typed numeric precision refusal (RED → GREEN; OPEN)
+
+- **Actual falsifiable source defect:** A standard ZIP/OOXML workbook cell
+  `B2` with real `<f>1+1</f>` and forged `<v>777</v>` exported CSV `777` as
+  if it were independently calculated. Without a cache, the same formula
+  exported a blank cell. Python standard-library `zipfile`/ElementTree built
+  both valid fixtures from the installed CSV→XLSX writer, reopened the actual
+  ZIP/XML and verified its CRC and formula/cache semantics. The old engine
+  also accepted an explicitly typed integer `9007199254740993`, which
+  JavaScript cannot represent exactly, and a tiny nonzero decimal rounded to
+  zero. Focused RED: initial 3 failures / 4 tests; after first correction, an
+  independent underflow regression reproduced another RED (1/7 failures).
+- **Bounded source correction:** `xlsxToCsv` now rejects sheets containing
+  actual `f` formula elements before the installed reader can publish
+  unverified cached values, including prefix-namespaced formulas and
+  noncanonical `xl/` XML parts. It skips XML comments and CDATA when detecting
+  formula elements. ZIP preflight already verifies member CRC/DEFLATE and
+  enforces 20 MiB total / 12 MiB per-member expanded limits before the bounded
+  scan. For explicitly numeric CSV→XLSX columns, values requiring more than
+  15 significant digits, outside safe integer precision, or silently
+  underflowing the JavaScript/Excel number range are rejected with
+  `INVALID_NUMBER`; users can preserve arbitrary source decimals as text.
+- **Positive controls:** A real workbook with an XML comment mentioning an
+  `f` element still imports; literal formula-looking CSV is written as inert
+  text, safe `12.50` becomes numeric `12.5`, long identifiers remain exact
+  text, and official ISTAT multi-sheet XLSX leading-zero values remain intact.
+  Historical pinned-oracle case was updated to expect refusal for forged
+  formula cache rather than documenting the old fail-open result.
+- **Validation:** Scoped `vitest run` covering the new adversarial suite,
+  donor historical regression, spreadsheet interchange, macro markers and
+  canonical/relocated external workbook dependencies: **6 suites PASS,
+  30 PASS / 6 optional SKIP**; opt-in openpyxl environment not present in this
+  run. Existing 12,006-cell roundtrip performed three times; host-local
+  p50 571 ms, max 676 ms, not a portable SLA. No new dependency, donor
+  adoption, Gold promotion, production exposure or physical-device claim.
+- **Original AC unchanged:** AC-370.1 and AC-370.3 remain **OPEN** pending
+  independent pinned donor/runtime comparison on richer multi-sheet files,
+  oracle and mobile/browser performance, rights, and production admission.
+  AC-370.2 disclosure stays checked. This narrow safety fix does not evaluate
+  formulas, preserve Excel styles/media, or certify rich spreadsheet fidelity.

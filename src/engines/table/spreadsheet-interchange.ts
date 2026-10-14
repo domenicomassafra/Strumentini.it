@@ -2,7 +2,7 @@ import type { SheetData } from "write-excel-file/universal";
 import { inflateSync } from "fflate";
 import { formatMarkdownTable } from "../text-writing";
 import { parseXmlDocument, type XmlElement } from "../developer-web/structured-repair";
-import { analyzeOoxmlPackage, OoxmlPackageError, type OoxmlZipEntry } from "../ooxml/package";
+import { analyzeOoxmlPackage, OOXML_PACKAGE_LIMITS, OoxmlPackageError, type OoxmlZipEntry } from "../ooxml/package";
 import { parseCsvTable, serializeCsvTable, type CsvTable } from "./csv";
 
 export const SPREADSHEET_INTERCHANGE_LIMITS = {
@@ -107,6 +107,18 @@ function strictNumber(value: string, row: number, column: number): number {
   if (!/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/u.test(value)) fail("INVALID_NUMBER", `Row ${row}, column ${column} is not an ungrouped decimal number.`);
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) fail("INVALID_NUMBER", `Row ${row}, column ${column} is outside the finite number range.`);
+  // A nonzero source that Number() rounds to zero, or a subnormal below
+  // Excel's supported numeric magnitude, must be exported as literal text.
+  if ((parsed === 0 && /[1-9]/u.test(value)) || (parsed !== 0 && Math.abs(parsed) < 2.2251e-308)) {
+    fail("INVALID_NUMBER", `Row ${row}, column ${column} is too small for a faithful XLSX numeric cell; export it as text.`);
+  }
+  // Excel stores at most 15 significant decimal digits. Coercing a longer
+  // decimal or an unsafe integer would silently change the user's source.
+  // Such values are still supported in the default text column policy.
+  const significantDigits = value.replace(/^-|\./gu, "").replace(/^0+/u, "").replace(/0+$/u, "").length;
+  if (significantDigits > 15 || (Number.isInteger(parsed) && !Number.isSafeInteger(parsed))) {
+    fail("INVALID_NUMBER", `Row ${row}, column ${column} exceeds safe XLSX numeric precision; export it as text.`);
+  }
   return parsed;
 }
 
@@ -207,8 +219,8 @@ function crc32(bytes: Uint8Array): number {
   return (crc ^ 0xffffffff) >>> 0;
 }
 
-function readBoundedXlsxXml(bytes: ArrayBuffer, entry: OoxmlZipEntry): string {
-  if (entry.uncompressedSize > MAX_CONTENT_TYPES_XML_BYTES || entry.compressedSize > MAX_CONTENT_TYPES_XML_BYTES) {
+function readBoundedXlsxXml(bytes: ArrayBuffer, entry: OoxmlZipEntry, budget = MAX_CONTENT_TYPES_XML_BYTES): string {
+  if (entry.uncompressedSize > budget || entry.compressedSize > budget) {
     fail("FILE_TOO_LARGE", "XLSX XML metadata exceeds the local inspection budget.");
   }
   const view = new DataView(bytes);
@@ -255,6 +267,15 @@ function decodedXlsxAttribute(element: XmlElement, key: string): string | undefi
     if (value[0] === "#") return String.fromCodePoint(Number.parseInt(value.slice(value[1] === "x" ? 2 : 1), value[1] === "x" ? 16 : 10));
     return ({ amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" } as Record<string, string>)[value] ?? entity;
   });
+}
+
+function containsActualXlsxFormulaTag(xml: string): boolean {
+  // Comments and CDATA can legitimately describe `<f>` without defining a
+  // worksheet formula. Consume those lexical regions before considering an
+  // opening element with XML local name `f` (including namespace prefixes).
+  const tokens = /<!--[^]*?-->|<!\[CDATA\[[^]*?\]\]>|(<(?:[A-Za-z_][\w.-]*:)?f(?=[\s/>]))/gu;
+  for (const match of xml.matchAll(tokens)) if (match[1] !== undefined) return true;
+  return false;
 }
 
 function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
@@ -305,6 +326,20 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
     if (relationships.children.some((child) => child.kind === "element" && child.name.split(":").at(-1) === "Relationship" &&
         /\/(?:externalLink|externalLinkPath)$/iu.test(decodedXlsxAttribute(child, "Type") ?? ""))) {
       fail("UNSUPPORTED_XLSX_FEATURE", "Excel external workbook relationships are not supported in CSV import.");
+    }
+  }
+  // read-excel-file returns cached formula values (which may be forged or
+  // stale) and blank cells for uncached formulas. Neither is a verified result.
+  // Scan the independently ZIP-verified OOXML XML before letting that reader
+  // produce CSV. Scan all xl XML parts so noncanonical worksheet paths and
+  // hidden sheets are subject to the same refusal policy. The ZIP analyzer
+  // already independently verifies all members under a 20 MiB TOTAL inflated
+  // budget; the per-entry cap below matches its stricter 12 MiB bound.
+  for (const entry of packageAnalysis.entries) {
+    if (!/^xl\/.*\.xml$/iu.test(entry.path)) continue;
+    const worksheetXml = readBoundedXlsxXml(bytes, entry, OOXML_PACKAGE_LIMITS.maxEntryUncompressedBytes);
+    if (containsActualXlsxFormulaTag(worksheetXml)) {
+      fail("UNSUPPORTED_XLSX_FEATURE", "Workbook formulas and their unverified cached results cannot be imported as CSV.");
     }
   }
 }
