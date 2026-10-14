@@ -32,7 +32,8 @@ function withObjectStream(
     let compressed = new Uint8Array(deflateSync(decoded));
     if (tamper === "checksum") {
       compressed = compressed.slice();
-      compressed[compressed.length - 1] ^= 0xff;
+      const last = compressed.length - 1;
+      compressed[last] = (compressed[last] ?? 0) ^ 0xff;
     } else if (tamper === "truncated") {
       compressed = compressed.subarray(0, compressed.length - 2);
     } else if (tamper === "trailing") {
