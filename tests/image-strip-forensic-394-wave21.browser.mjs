@@ -7,7 +7,6 @@
  * Run: node tests/image-strip-forensic-394-wave21.browser.mjs
  */
 import assert from "node:assert/strict";
-import { inflateSync } from "node:zlib";
 import sharp from "sharp";
 import { build } from "esbuild";
 import { chromium } from "@playwright/test";
@@ -200,10 +199,9 @@ try {
   assert.ok(chunks(largeExport).every((item) => ["IHDR", "PLTE", "IDAT", "IEND"].includes(item.type)));
   console.log(`#394 wave21 bounded 512x512 RGB real output: ${largeInput.length}→${largeExport.length} bytes, ${measured.elapsedMs}ms desktop Chromium; exact Sharp pixels`);
 
-  // Baseline ZIP/CRC/chunk inventory isn't enough. Inject private bytes into
-  // the *actual* canvas.toBlob callback, appended beyond the zlib stream's
-  // terminal Adler32 but still inside a correctly CRC'd IDAT. Browser pixel
-  // decoding must succeed; the newly hardened stripper MUST refuse the Blob.
+  // Historical attack forged canvas.toBlob IDAT bytes after the zlib Adler32.
+  // In v6 the native encoder is never used: this verifies the callback is
+  // not invoked and the returned artifact equals clean canonical output.
   const attack = await page.evaluate(async ({ source, sentinel }) => {
     const original = HTMLCanvasElement.prototype.toBlob;
     const crc = (bytes) => {
@@ -272,7 +270,7 @@ try {
     try {
       const file = new File([new Uint8Array(source)], "photo.jpg", { type: "image/jpeg" });
       const result = await window.Metadata394Wave21.stripImageMetadataLocal({ file });
-      return { refused: false, metadataFree: result.metadataFree, bytes: poisoned, browserPixelMatch };
+      return { refused: false, metadataFree: result.metadataFree, bytes: poisoned, browserPixelMatch, delivered: [...new Uint8Array(await result.blob.arrayBuffer())] };
     } catch (error) {
       return { refused: true, code: error.code ?? error.name, bytes: poisoned, browserPixelMatch };
     } finally {
@@ -280,24 +278,15 @@ try {
     }
   }, { source: [...jpeg], sentinel: privatePayload });
   const poisoned = Buffer.from(attack.bytes);
-  assert.equal(attack.browserPixelMatch, true, "Injected PNG must genuinely preserve browser decoded pixels");
-  // Browser toBlob and the delivered canonical encoder may split IDAT into
-  // different valid member counts; require the attack's physical PNG still
-  // consists solely of IHDR, contiguous IDAT and terminal IEND.
-  const poisonedTypes = chunks(poisoned).map((entry) => entry.type);
-  assert.equal(poisonedTypes[0], "IHDR");
-  assert.equal(poisonedTypes.at(-1), "IEND");
-  assert(poisonedTypes.slice(1, -1).length >= 1);
-  assert(poisonedTypes.slice(1, -1).every((item) => item === "IDAT"));
-  assert.ok(poisoned.includes(privateBytes), "Actual exported bytes contain private text inside allowed IDAT");
-  const packed = Buffer.concat(chunks(poisoned).filter((item) => item.type === "IDAT").map((item) => item.data));
-  const native = inflateSync(packed, { info: true });
-  assert.ok(native.engine.bytesWritten < packed.length, "Independent Node zlib proves unconsumed secret data after its terminator");
-  const sharpDecoded = await sharp(poisoned).raw().toBuffer({ resolveWithObject: true });
-  assert.equal(sharpDecoded.info.width, 3, "Independent Sharp decoder opens poisoned PNG");
-  assert.equal(attack.refused, true, "Never deliver a metadataFree:true PNG with unconsumed secret IDAT bytes");
-  assert.equal(attack.code, "OUTPUT_VALIDATION_FAILED");
-  console.log("PASS #394 wave21: real JPEG EXIF/IPTC/XMP→PNG exact browser RGBA, valid CRC IDAT with unconsumed secret refused; independent zlib+Sharp; NO downloaded leak");
+  assert.equal(poisoned.length, 0, "No native PNG encode callback should run on canonical-only path");
+  assert.equal(attack.browserPixelMatch, false);
+  assert.equal(attack.refused, false);
+  assert.equal(attack.metadataFree, true);
+  assert.deepEqual(Buffer.from(attack.delivered), Buffer.from(baseline.bytes));
+  assert.equal(Buffer.from(attack.delivered).includes(privateBytes), false);
+  // Adversarial IDAT readback remains covered by the independent v5→v6
+  // DEFLATE padding script; here the engine's native encoder is unused.
+  console.log("PASS #394 wave21: real JPEG EXIF/IPTC/XMP→canonical PNG exact RGBA; native encoder override unused and no secret delivered");
 } finally {
   await browser.close();
 }

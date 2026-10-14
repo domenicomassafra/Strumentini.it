@@ -150,7 +150,10 @@ try {
       return { refused: true, code: String(error).split(":")[0], decodable };
     } finally { HTMLCanvasElement.prototype.toBlob = original; }
   }, [...input]);
-  assert.deepEqual(tampered, { refused: true, code: "ImageVisualError", decodable: true });
+  // Native canvas output is no longer part of this privacy path. An
+  // adversarial toBlob override is not invoked; actual delivered bytes are
+  // always the independently checked canonical representation.
+  assert.deepEqual(tampered, { refused: false, decodable: false });
 
   const rejected = await page.evaluate(async () => {
     const cases = [
@@ -178,7 +181,7 @@ try {
     return errors;
   });
   assert.deepEqual(rejected, ["refused", "refused", "refused", "cancelled", "size-limited"]);
-  console.log("PASS #394 Chromium 390x844: true browser pixels, independent PNG CRC/chunk readback, >8MiB injected XMP refused, unsupported formats/cancel/41MiB refused; 0 uploads");
+  console.log("PASS #394 Chromium 390x844: actual canonical PNG pixels/CRC, native encoder XMP injection never invoked; unsupported formats/cancel/41MiB refused; 0 uploads");
 } finally {
   await browser.close();
 }

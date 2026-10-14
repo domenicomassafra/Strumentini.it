@@ -89,7 +89,7 @@ for (const engine of [chromium, webkit]) {
     }, { input: [...source], injected: [...tainted] });
     const output = Buffer.from(result.bytes);
     assert.equal(result.verified, true);
-    assert.equal(result.version, "image-metadata-strip-v5");
+    assert.equal(result.version, "image-metadata-strip-v6");
     assert.deepEqual(result.segments, []);
     assert.notDeepEqual(output, tainted, "forged zlib representation MUST NOT be returned");
     assert.deepEqual(await sharp(output).ensureAlpha().raw().toBuffer(), rgba);
