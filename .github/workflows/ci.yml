@@ -94,15 +94,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           RELEASE_READ_TOKEN: ${{ github.token }}
-        run: |
-          # checkout persist-credentials:false protects the worktree, but this
-          # private repository still needs a read-only ephemeral auth header.
-          test -n "${RELEASE_READ_TOKEN:-}"
-          export GIT_CONFIG_COUNT=1
-          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
-          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$RELEASE_READ_TOKEN" | base64 | tr -d '\r\n')"
-          remote_main="$(git ls-remote --exit-code --refs origin refs/heads/main)"
-          test "$remote_main" = "$(printf '%s\t%s' "$GITHUB_SHA" refs/heads/main)"
+        run: node node_modules/tsx/dist/cli.mjs scripts/lib/current-remote-main-404.ts --expected-sha="$GITHUB_SHA"
       # Manual source-admission check only; no repo/provider-enforced deploy
       # dependency exists. Missing/stale Gold, rollback, browser/security and
       # physical evidence fail closed. It never writes replacement receipts.
@@ -110,9 +102,4 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           RELEASE_READ_TOKEN: ${{ github.token }}
-        run: |
-          test -n "${RELEASE_READ_TOKEN:-}"
-          export GIT_CONFIG_COUNT=1
-          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
-          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$RELEASE_READ_TOKEN" | base64 | tr -d '\r\n')"
-          node node_modules/tsx/dist/cli.mjs scripts/validate-release.ts --no-write-receipt --require-ready --expected-sha="$GITHUB_SHA"
+        run: node node_modules/tsx/dist/cli.mjs scripts/validate-release.ts --no-write-receipt --require-ready --expected-sha="$GITHUB_SHA"
