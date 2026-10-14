@@ -37,7 +37,10 @@ jobs:
           "$RUNNER_TEMP/strumentini-ci-python/bin/python" -m pip install --no-cache-dir 'Pillow==12.2.0' 'pypdf==6.16.1' 'python-pptx==1.0.2'
           npm ci --prefix spikes/heavy-local-feasibility --omit=dev
           ffprobe -version | head -1
-      - run: npm test -- --maxWorkers=4
+      # Real installed PDF AST tests had 5 s default timeouts under
+      # contended Ubuntu four-worker CI. Keep all tests, use two workers and
+      # leave explicit test-specific time budgets in the original #369 suite.
+      - run: npm test -- --maxWorkers=2
       - run: npm run tickets:test
       - run: npm run check
       - run: npm run build
