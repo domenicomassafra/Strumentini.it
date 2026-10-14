@@ -79,11 +79,114 @@ export function textPartKind407(name: string): "xml" | "svg" | "html" | null {
   return null;
 }
 
+/** Mask well-terminated HTML5 comments and HTML-context RCDATA bodies before
+ * navigation/CSS/markup inspection. Quotes inside tag attributes cannot open
+ * comments. Text inside <textarea>/<title> cannot create actual DOM elements.
+ * Preserve length and refuse malformed/ambiguous or unclosed structures.
+ */
+function withoutInertHtmlMarkup407(source: string): string | null {
+  // Preserve previous HTML5 acceptance byte-for-byte when there is no
+  // comment/RCDATA syntax to resolve at all.
+  if (!source.includes("<!-") && !/<(?:textarea|title)(?=[\s/>])/iu.test(source)) return source;
+  const pieces: string[] = [];
+  let cursor = 0;
+  let retainedStart = 0;
+  let foreignDepth = 0;
+  while (cursor < source.length) {
+    const opening = source.indexOf("<", cursor);
+    if (opening < 0) break;
+    if (source.startsWith("<!--", opening)) {
+      const close = source.indexOf("-->", opening + 4);
+      // A nested opener or alternate HTML5 error-recovery terminator is
+      // ambiguous; refuse instead of assuming the same recovered DOM.
+      const body = close < 0 ? "" : source.slice(opening + 4, close);
+      if (close < 0 || body.startsWith(">") || body.startsWith("->") ||
+          body.includes("--!>") || body.includes("<!--")) return null;
+      pieces.push(source.slice(retainedStart, opening), " ".repeat(close + 3 - opening));
+      cursor = close + 3;
+      retainedStart = cursor;
+      continue;
+    }
+    if (source.startsWith("<!-", opening)) return null;
+    // Skip a complete ordinary tag, respecting quotes. This ensures a
+    // literal `<!--` in an attribute is not mistaken for an inert comment.
+    let at = opening + 1;
+    if (source[at] === "/" || source[at] === "!" || source[at] === "?") at++;
+    if (!/[a-z]/iu.test(source[at] ?? "")) { cursor = opening + 1; continue; }
+    while (at < source.length) {
+      const char = source[at]!;
+      if (char === ">") break;
+      if (char === "=") {
+        // HTML5 quotes are only delimiters *at the start* of an attribute
+        // value. A quote inside an unquoted value is literal, not an opener.
+        at++;
+        while (at < source.length && /[ \t\r\n\f]/u.test(source[at]!)) at++;
+        if (source[at] === '"' || source[at] === "'") {
+          const quote = source[at++]!;
+          while (at < source.length && source[at] !== quote) at++;
+          if (at === source.length) return null;
+          at++;
+        } else {
+          while (at < source.length && !/[ \t\r\n\f>]/u.test(source[at]!)) at++;
+        }
+        continue;
+      }
+      at++;
+    }
+    if (at === source.length) return null;
+    const foreignTag = /^<(\/)?(?:svg|math)(?=[\s/>])/iu.exec(source.slice(opening, opening + 12));
+    if (foreignTag) {
+      if (foreignTag[1] === "/") foreignDepth = Math.max(0, foreignDepth - 1);
+      else if (source[at - 1] !== "/") foreignDepth++;
+    }
+    const rcdataTag = /^<(textarea|title)(?=[\s/>])/iu.exec(source.slice(opening, opening + 12));
+    if (rcdataTag && foreignDepth === 0) {
+      const bodyStart = at + 1;
+      // HTML5 appropriate end tags close RCDATA even with discarded end-tag
+      // attributes (e.g. </textarea class="note"> or </title id="ref">).
+      // Requiring only whitespace followed immediately by > falsely denies
+      // valid parse5-recovered documents. First match the name boundary,
+      // then consume the bounded end-tag attributes while respecting quotes.
+      const closePattern = rcdataTag[1]!.toLowerCase() === "textarea"
+        ? /<\/textarea(?=[ \t\r\n\f/>])/giu : /<\/title(?=[ \t\r\n\f/>])/giu;
+      closePattern.lastIndex = bodyStart;
+      const close = closePattern.exec(source);
+      if (!close) return null;
+      let closeEnd = closePattern.lastIndex;
+      let closingQuote: string | null = null;
+      while (closeEnd < source.length) {
+        const char = source[closeEnd]!;
+        if (closingQuote !== null) {
+          if (char === closingQuote) closingQuote = null;
+        } else if (char === '"' || char === "'") {
+          closingQuote = char;
+        } else if (char === ">") {
+          closeEnd++;
+          break;
+        } else if (char === "<") {
+          // Recovery from an incomplete end-tag token is ambiguous.
+          return null;
+        }
+        closeEnd++;
+      }
+      if (closingQuote !== null || source[closeEnd - 1] !== ">") return null;
+      pieces.push(source.slice(retainedStart, bodyStart), " ".repeat(close.index - bodyStart));
+      retainedStart = close.index;
+      cursor = closeEnd;
+      continue;
+    }
+    cursor = at + 1;
+  }
+  if (!pieces.length) return source;
+  pieces.push(source.slice(retainedStart));
+  return pieces.join("");
+}
+
 /** Bounded HTML5 start-tag inspection: quotes in unquoted values are literal. */
 function hasUnsafeHtmlNavigation407(source: string): boolean {
   const space = (character: string | undefined): boolean =>
     character !== undefined && /[ \t\r\n\f]/u.test(character);
-  const starts = /<\s*(meta|img|image|source|link|video|audio|track|input|a|area)(?=[\s/>])/giu;
+  const starts = /<\s*(meta|img|image|source|link|video|audio|track|input|a|area|form|button)(?=[\s/>])/giu;
   let start: RegExpExecArray | null;
   while ((start = starts.exec(source)) !== null) {
     const tag = start[1]?.toLowerCase();
@@ -139,9 +242,14 @@ function hasUnsafeHtmlNavigation407(source: string): boolean {
         (tag === "img" || tag === "image" || tag === "source" || tag === "video" ||
          tag === "audio" || tag === "track" || tag === "input");
       const videoPoster = tag === "video" && name === "poster";
-      const navigationLink = name === "href" &&
+      // HTML5 parses unquoted xlink:href on an SVG <a> into a real
+      // namespaced navigation link, even though it is not valid standalone
+      // XML and therefore escapes the XML quoted-attribute scan below.
+      const navigationLink = (name === "href" || name === "xlink:href") &&
         (tag === "a" || tag === "area" || tag === "link");
-      if (value.length > 0 && (mediaSource || videoPoster || navigationLink)) {
+      const formNavigation = (tag === "form" && name === "action") ||
+        ((tag === "button" || tag === "input") && name === "formaction");
+      if (value.length > 0 && (mediaSource || videoPoster || navigationLink || formNavigation)) {
         // Same-document anchors never resolve outside this HTML document.
         if (!navigationLink || !/^#[a-z_][\w.:-]*$/iu.test(value)) return true;
       }
@@ -207,6 +315,13 @@ function hasUnsafeCssAttribute407(source: string, html5: boolean): boolean {
 
 /** Never parse XML with a DOM here: refuse entity resolution and active markup. */
 export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): FileThreatFinding407 | null {
+  if (kind === "html") {
+    const visibleMarkup = withoutInertHtmlMarkup407(source);
+    if (visibleMarkup === null) {
+      return reject("UNSUPPORTED", "Malformed or unterminated HTML comment/RCDATA cannot be safely inspected.");
+    }
+    source = visibleMarkup;
+  }
   // XML namespace prefixes can use Unicode characters; ASCII \w is not
   // sufficient to recognize active names in a well-formed SVG/XML ZIP part.
   // Match through XML name delimiters; never let the HTML meta guard below
@@ -274,14 +389,88 @@ export function checkTextPart407(source: string, kind: "xml" | "svg" | "html"): 
   return null;
 }
 
+/** Bounded PDF lexical pass for additional action subtypes. PDF literal and
+ * hexadecimal strings are *data*, even if their text spells `/S /Named`.
+ * Comments are insignificant between two genuine PDF name tokens. This is
+ * not an object-graph parser and does not certify compressed/unseen streams.
+ */
+function hasUnsafePdfActionSubtype407(source: string): boolean {
+  const active = new Set(["named", "hide", "resetform", "setocgstate", "sound", "movie"]);
+  const blockedNames = new Set([
+    "javascript", "js", "launch", "embeddedfile", "richmedia", "xfa", "openaction", "aa",
+    "submitform", "importdata", "gotor", "gotoe", "uri", "rendition",
+  ]);
+  const delimiter = (char: string): boolean => /[\s\u0000()<>\[\]{}\/%]/u.test(char);
+  let precedingSubtypeKey = false;
+  let at = 0;
+  while (at < source.length) {
+    const current = source[at]!;
+    if (current === "%") {
+      // A PDF comment ends at CR or LF, and is lexical whitespace.
+      while (at < source.length && source[at] !== "\r" && source[at] !== "\n") at++;
+      continue;
+    }
+    if (/\s|\u0000/u.test(current)) { at++; continue; }
+    if (current === "(") {
+      let depth = 1;
+      at++;
+      while (at < source.length && depth > 0) {
+        if (source[at] === "\\") {
+          at += 2; // Escaped parentheses/backslashes are not delimiters.
+        } else if (source[at] === "(") {
+          depth++; at++;
+        } else if (source[at] === ")") {
+          depth--; at++;
+        } else at++;
+      }
+      precedingSubtypeKey = false;
+      continue;
+    }
+    if (current === "<" && source[at + 1] === "<") {
+      // `<<` is a dictionary delimiter, not a hexadecimal string.
+      at += 2;
+      precedingSubtypeKey = false;
+      continue;
+    }
+    if (current === "<") {
+      // The raw bytes of a PDF hexadecimal string aren't name tokens.
+      at++;
+      while (at < source.length && source[at] !== ">") at++;
+      at++;
+      precedingSubtypeKey = false;
+      continue;
+    }
+    if (current === "/") {
+      const start = ++at;
+      while (at < source.length && !delimiter(source[at]!)) at++;
+      // PDF name escapes are *data inside the current NAME token*. Only
+      // unescape after consuming its raw syntax: /a#25b means name /a%b,
+      // not a '%' comment that swallows every subsequent action on the line.
+      const token = source.slice(start, at)
+        .replace(/#([0-9a-f]{2})/giu, (_match, hex: string) => String.fromCharCode(Number.parseInt(hex, 16)))
+        .toLowerCase();
+      if (blockedNames.has(token) || (precedingSubtypeKey && active.has(token))) return true;
+      precedingSubtypeKey = token === "s";
+      continue;
+    }
+    precedingSubtypeKey = false;
+    at++;
+  }
+  return false;
+}
+
 /** Searches observed PDF bytes only. Hidden compressed PDF objects remain unverified. */
 export function checkPdfBytes407(bytes: Uint8Array): FileThreatFinding407 | null {
-  // Latin-1 maps each byte to a code point and does not replace invalid UTF-8.
-  const observed = new TextDecoder("iso-8859-1").decode(bytes)
-    .replace(/#([0-9a-f]{2})/giu, (_, code: string) => String.fromCharCode(Number.parseInt(code, 16)));
+  // Latin-1 maps each byte to a code point and does not replace invalid
+  // UTF-8. Crucially, do NOT decode PDF #xx escapes globally: a name's #25
+  // must never become a raw '%' comment delimiter for the surrounding PDF.
+  const observed = new TextDecoder("iso-8859-1").decode(bytes);
   // PDF annotation actions may live in indirect /A or /Next dictionaries,
-  // without /OpenAction or /AA. URI navigates away; Rendition may load media.
-  if (/\/(?:JavaScript|JS|Launch|EmbeddedFile|RichMedia|XFA|OpenAction|AA|SubmitForm|ImportData|GoToR|GoToE|URI|Rendition)(?=[\s<>()\[\]{}\/%]|$)/iu.test(observed)) {
+  // without /OpenAction or /AA. Named/Print can invoke a viewer command,
+  // Hide changes annotation state and ResetForm/SetOCGState mutate viewer
+  // state without a network URL. Preserve internal-only GoTo actions. Do not
+  // treat arbitrary /Named or /Hide mentions in literal text as actions.
+  if (hasUnsafePdfActionSubtype407(observed)) {
     return reject("UNSUPPORTED", "Observed PDF contains an active action or embedded content reference.");
   }
   return null;
