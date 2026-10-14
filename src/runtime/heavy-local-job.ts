@@ -489,8 +489,12 @@ export function createHeavyLocalJobRunner<TRequest, TResult>(
           return;
         }
         if (message.type === "resource") {
+          if (typeof message.resourceId !== "string" || message.resourceId.length === 0) {
+            throw new HeavyLocalJobError("PROTOCOL_ERROR", "Heavy worker resource id must be a nonempty string.");
+          }
           if (message.action === "reserve") run.accountant.reserve(`worker:${message.resourceId}`, message.bytes);
-          else run.accountant.release(`worker:${message.resourceId}`);
+          else if (message.action === "release") run.accountant.release(`worker:${message.resourceId}`);
+          else throw new HeavyLocalJobError("PROTOCOL_ERROR", "Heavy worker sent an unsupported resource action.");
           return;
         }
         if (message.type === "failure") {
