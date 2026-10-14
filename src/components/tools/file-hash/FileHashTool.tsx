@@ -87,7 +87,10 @@ export function FileHashTool() {
       setProgress(1);
       recordCompletedTool("file-hash");
     } catch (caught) {
-      if (controllerRef.current === controller && !controller.signal.aborted) setError(friendlyError(caught));
+      // Explicit user cancellation is an observable result, not a silent
+      // failure: hashBlobInWorker rejects AbortError after terminating the
+      // worker. Ignore only superseded/reset jobs (different controller).
+      if (controllerRef.current === controller) setError(friendlyError(caught));
     } finally {
       if (controllerRef.current === controller) { controllerRef.current = null; setRunning(false); }
     }

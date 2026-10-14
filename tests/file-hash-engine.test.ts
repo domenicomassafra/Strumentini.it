@@ -7,7 +7,7 @@ import {
   hashBlobWithWebCrypto,
   parseExpectedChecksum,
 } from "../src/engines/file-hash/index";
-import { hashBlobInWorker, type HashWorkerPort } from "../src/engines/file-hash/worker-client";
+import { hashBlobInWorker, type HashWorkerPort, type HashWorkerResponse } from "../src/engines/file-hash/worker-client";
 
 const knownAnswers = JSON.parse(
   readFileSync(new URL("../quality/fixtures/sha2-known-answers/vectors.json", import.meta.url), "utf8"),
@@ -110,6 +110,62 @@ describe("file-hash engine seam", () => {
       code: "WORKER_FAILURE",
     });
     expect(terminated).toBe(true);
+  });
+
+  it("discards queued progress and stale success after an explicit cancellation", async () => {
+    const controller = new AbortController();
+    let terminated = 0;
+    let progressNotifications = 0;
+    const worker: HashWorkerPort = {
+      onmessage: null,
+      onerror: null,
+      postMessage() { /* A real Worker can queue messages before it terminates. */ },
+      terminate() { terminated += 1; },
+    };
+    const pending = hashBlobInWorker(new Blob(["private"]), {
+      signal: controller.signal,
+      createWorker: () => worker,
+      onProgress() { progressNotifications += 1; },
+    });
+    // Capture the callback already queued on the main-thread message loop.
+    const queuedHandler = worker.onmessage;
+    controller.abort();
+    await expect(pending).rejects.toMatchObject({ name: "AbortError" });
+    const queued = queuedHandler as ((event: MessageEvent) => void) | null;
+    queued?.({ data: { type: "progress", progress: { bytesHashed: 1, totalBytes: 1, fraction: 1 } } } as MessageEvent);
+    queued?.({ data: { type: "success", result: { algorithm: "SHA-256", digestHex: "0".repeat(64), bytesHashed: 1 } } } as MessageEvent);
+    expect(progressNotifications).toBe(0);
+    expect(terminated).toBe(1);
+    expect(worker.onmessage).toBeNull();
+    expect(worker.onerror).toBeNull();
+  });
+
+  it.each([
+    ["unknown worker message", { type: "unexpected", result: { algorithm: "SHA-256", digestHex: "a".repeat(64), bytesHashed: 3 } }],
+    ["forged success digest", { type: "success", result: { algorithm: "SHA-256", digestHex: "Z".repeat(64), bytesHashed: 3 } }],
+    ["forged success count", { type: "success", result: { algorithm: "SHA-256", digestHex: "a".repeat(64), bytesHashed: 900 } }],
+  ])("fails closed on %s rather than certifying an unverified checksum", async (_description, forged) => {
+    let ended = 0;
+    const worker: HashWorkerPort = { onmessage: null, onerror: null, postMessage() {}, terminate() { ended += 1; } };
+    const pending = hashBlobInWorker(new Blob(["abc"]), { createWorker: () => worker });
+    worker.onmessage?.({ data: forged } as MessageEvent<HashWorkerResponse>);
+    await expect(pending).rejects.toMatchObject({ code: "WORKER_FAILURE" });
+    expect(ended).toBe(1);
+  });
+
+  it("rejects worker progress exceeding source bytes instead of publishing a false 100%", async () => {
+    let publishedProgress = 0;
+    const worker: HashWorkerPort = { onmessage: null, onerror: null, postMessage() {}, terminate() {} };
+    const pending = hashBlobInWorker(new Blob(["abc"]), {
+      createWorker: () => worker,
+      onProgress() { publishedProgress += 1; },
+    });
+    worker.onmessage?.({ data: { type: "progress", progress: { bytesHashed: 10, totalBytes: 3, fraction: 4 } } } as MessageEvent<HashWorkerResponse>);
+    // A known-good success would otherwise have settled the old fail-open
+    // worker path; the malformed progress must have failed the job first.
+    worker.onmessage?.({ data: { type: "success", result: { algorithm: "SHA-256", digestHex: "a".repeat(64), bytesHashed: 3 } } } as MessageEvent<HashWorkerResponse>);
+    await expect(pending).rejects.toMatchObject({ code: "WORKER_FAILURE" });
+    expect(publishedProgress).toBe(0);
   });
 
   it("normalizes synchronous worker startup failures", async () => {
