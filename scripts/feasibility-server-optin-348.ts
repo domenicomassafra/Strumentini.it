@@ -47,7 +47,9 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // 2026-10-12 #328 reviewed: same GET /api/auth/session and same POST
   // /api/auth/logout, now only a confirmed 204 redirects after logout.
   // Keep full-byte binding so any future unreviewed transport still fails.
-  "src/components/account/AccountChip.astro": "1cca61e9d06940358a3bece7e7bf26232c645dafb774a99181682ce38b571402",
+  // 2026-10-14 #350: mobile-only aria-label, identical session GET and logout
+  // POST/204 semantics; browser Axe detects the icon-only accessible name.
+  "src/components/account/AccountChip.astro": "93d41212427af8611bd3ece42d9d3993725a17139c7da2f256418299472e9a34",
   "src/components/account/MembershipBootstrap.astro": "ada60c9c8bea11b5d937c386f265e396f1cf354dc8cda6664f0fec040d240cca",
   "src/components/account/auth-client.ts": "326bcbe8d7a08aa37c7030b766e128974ebcd68e8cc56c5809a0dd44e6bcc8a0",
   // 2026-10-12 #330 reviewed: external GET remains explicit opt-in, no credentials/referrer, no new endpoint, abort/stale guard.
@@ -57,7 +59,9 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   "src/engines/url-marketing/index.ts": "b21ca7a9fe2002ba75e4a40e83a824e40bf06a57833f5eec58a59f09dbfae521",
   // 2026-10-11 reviewed #340 UI-only island/CSS change: the existing single
   // GET /api/auth/session is unchanged; no new transport API or endpoint.
-  "src/pages/preferiti.astro": "5d5bad4a5109593163396b428bf7d09ce0cfac59ea897b14fc763114d0bb0127",
+  // 2026-10-14 #350: selected nav text now uses existing AA --brand-active
+  // token; the only session GET, credentials and endpoints remain unchanged.
+  "src/pages/preferiti.astro": "d2294aed56d99fd30480b3b34da7bcb07402950fb70850b335ee9111258ce8f7",
   "src/telemetry/adapter.ts": "cc00368b762ea6d80d00b5a854764765a84e127b25c15049cf1b30e27cbbf50e",
   "src/telemetry/browser.ts": "2f2ecebad8da951a2329bd8364c727ec5f43f97fdc525ecc6c6077587f40ac1a",
   "src/workbench/membership.ts": "b82d1137427e58fffc0414ff0fc04af2dbc4d883a585982405b2837451833b2a",
