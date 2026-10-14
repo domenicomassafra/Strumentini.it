@@ -87,7 +87,7 @@ for (const browserType of [chromium, webkit]) {
       try {
         const file = new File([new Uint8Array(encoded)], "clean.png", { type: "image/png" });
         const result = await window.StripMetadata394.stripImageMetadataLocal({ file });
-        return { accepted: true, metadataFree: result.metadataFree, inventory: result.outputInventory, pixels };
+        return { accepted: true, metadataFree: result.metadataFree, inventory: result.outputInventory, bytes: [...new Uint8Array(await result.blob.arrayBuffer())], pixels };
       } catch (error) {
         return { accepted: false, error: String(error), pixels };
       } finally {
@@ -95,9 +95,13 @@ for (const browserType of [chromium, webkit]) {
       }
     }, { encoded: [...source], forged: [...tainted] });
     assert.deepEqual(Buffer.from(actual.pixels), sourceRgba, `${browserType.name()} genuine pixel decoder sees identity`);
-    assert.equal(actual.accepted, false, "PNG image padding contains invisible personal bytes, must refuse");
-    assert.match(actual.error, /OUTPUT_VALIDATION_FAILED/u);
-    console.log(`#394 ${browserType.name()} rejects private PNG grayscale padding; pixel identity/CRC/zlib independently valid`);
+    assert.equal(actual.accepted, true, "PNG pixels must be canonically encoded without native vendor representation");
+    assert.equal(actual.metadataFree, true);
+    assert.deepEqual(actual.inventory.segments, []);
+    const delivered = Buffer.from(actual.bytes);
+    assert.notDeepEqual(delivered, tainted);
+    assert.deepEqual(await sharp(delivered).ensureAlpha().raw().toBuffer(), sourceRgba);
+    console.log(`#394 ${browserType.name()} strips encoded grayscale padding by canonical RGBA delivery`);
   } finally {
     await browser.close();
   }

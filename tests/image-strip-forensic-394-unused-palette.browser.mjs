@@ -86,7 +86,7 @@ for (const browserType of [chromium, webkit]) {
     try {
       const input = new File([new Uint8Array(encoded)], "original.png", { type: "image/png" });
       const output = await window.StripMetadata394.stripImageMetadataLocal({ file: input });
-      return { accepted: true, metadataFree: output.metadataFree, inventory: output.outputInventory, realPixels };
+      return { accepted: true, metadataFree: output.metadataFree, inventory: output.outputInventory, bytes: [...new Uint8Array(await output.blob.arrayBuffer())], realPixels };
     } catch (error) {
       return { accepted: false, error: String(error), realPixels };
     } finally {
@@ -94,9 +94,13 @@ for (const browserType of [chromium, webkit]) {
     }
   }, { encoded: [...source], forged: [...forged] });
   assert.deepEqual(Buffer.from(result.realPixels), native, `${browserType.name()} also decodes forged PLTE to same pixels`);
-  assert.equal(result.accepted, false, "Hidden bytes inside suggested PLTE must fail closed, not metadataFree=true");
-  assert.match(result.error, /OUTPUT_VALIDATION_FAILED/u);
-  console.log(`#394 ${browserType.name()} unused PLTE hidden identity rejected; browser + Sharp verified unchanged pixels`);
+  assert.equal(result.accepted, true, "Canonical RGBA output must not require native PNG serialization");
+  assert.equal(result.metadataFree, true);
+  assert.deepEqual(result.inventory.segments, []);
+  const delivered = Buffer.from(result.bytes);
+  assert.equal(delivered.includes(secret), false, "Delivered canonical PNG must not preserve injected PLTE");
+  assert.deepEqual(await sharp(delivered).ensureAlpha().raw().toBuffer(), native);
+  console.log(`#394 ${browserType.name()} native PLTE spoof ignored, delivered canonical PNG ${delivered.length}B, pixels exact`);
   } finally {
     await browser.close();
   }

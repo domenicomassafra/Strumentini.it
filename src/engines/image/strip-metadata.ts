@@ -24,7 +24,6 @@ import {
   extensionForMime,
   get2d,
   imageDataFromBitmap,
-  outputBlob,
   validateObject,
   type OutputMime,
 } from "./operations";
@@ -72,7 +71,7 @@ export interface StripMetadataResult {
   readonly engineVersion: string;
 }
 
-export const METADATA_STRIPPER_VERSION = "image-metadata-strip-v5";
+export const METADATA_STRIPPER_VERSION = "image-metadata-strip-v6";
 
 // The metadata inventory validates the PNG *chunk names and boundaries*.
 // That alone does not establish that IDAT contains only image data: decoders
@@ -334,37 +333,12 @@ export async function stripImageMetadataLocal(
   try {
     const canvas = bitmapCanvas(decoded.bitmap);
     const sourcePixels = get2d(canvas).getImageData(0, 0, decoded.width, decoded.height).data;
-    const blob = await outputBlob(canvas, mime, undefined, decoded.width, decoded.height, signal, progress);
-    const outputInventory = await scanImageMetadataBlob(blob, signal);
-    if (outputInventory.format !== "png" || !outputInventory.complete || outputInventory.segments.length > 0) {
-      throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", "Full output PNG inventory is incomplete or contains metadata chunks");
-    }
-    await verifyPngIdatStream(blob, decoded.width, decoded.height, signal);
-    const outputDecoded = await decodeImage({
-      name: "metadata-stripped.png",
-      size: blob.size,
-      type: mime,
-      blob,
-    }, signal, progress);
-    try {
-      const reopened = await imageDataFromBitmap(outputDecoded.bitmap, signal);
-      if (reopened.width !== decoded.width || reopened.height !== decoded.height || reopened.data.length !== sourcePixels.length) {
-        throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", "Reopened PNG dimensions do not match the browser-decoded source pixels");
-      }
-      for (let index = 0; index < sourcePixels.length; index += 1) {
-        if ((index & 0xffff) === 0 && signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
-        if (sourcePixels[index] !== reopened.data[index]) {
-          throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", `Reopened PNG pixel mismatch at RGBA byte ${index}`);
-        }
-      }
-    } finally {
-      outputDecoded.bitmap.close();
-    }
-    // The browser-produced PNG was syntax/CRC/Adler/pixel checked above, but
-    // those checks cannot detect secret bytes in unused DEFLATE block-padding
-    // bits or alternative valid encodings of identical pixels. Never return
-    // that container: materialize a new output solely from owned decoded RGBA
-    // and a fixed first-party PNG layout/compressor configuration.
+    // Native WebKit toBlob can add eXIf/sRGB chunks to an otherwise clean
+    // canvas PNG, while DEFLATE also permits recoverable invisible padding
+    // bits. Since the only deliverable is our own canonical PNG, invoking
+    // and inspecting an undistributed native encoder is unnecessary and
+    // falsely refuses Safari. Never serialize via canvas.toBlob here:
+    // re-encode solely from owned decoded RGBA, then fully re-open/attest it.
     const canonicalBlob = canonicalRgbaPng(sourcePixels, decoded.width, decoded.height, signal);
     const canonicalInventory = await scanImageMetadataBlob(canonicalBlob, signal);
     if (canonicalInventory.format !== "png" || !canonicalInventory.complete || canonicalInventory.segments.length > 0) {
@@ -410,7 +384,7 @@ export async function stripImageMetadataLocal(
       inputSizeLabel: formatBytes(file.size),
       outputSizeLabel: formatBytes(canonicalBlob.size),
       metadataFree: true,
-      policyIt: `L'immagine viene ricodificata localmente dai pixel in PNG. Dopo la verifica della ricodifica browser, il file consegnato viene generato di nuovo esclusivamente dall'RGBA decodificato usando PNG canonico RGBA8, righe senza filtro e compressore locale deterministico: non conserva palette, chunk sconosciuti o bit di padding del contenitore originale. Il file finale è ricontrollato su CRC, Adler32, flusso IDAT e pixel. ${inputInventory.complete ? "Inventario sorgente completo." : "Inventario sorgente parziale: solo i segmenti rilevati sono documentati."} Eventuali thumbnail Exif non sono inventariati separatamente; l'intero contenitore Exif originale non viene copiato nella nuova immagine.`,
+      policyIt: `L'immagine viene ricodificata localmente esclusivamente dall'RGBA decodificato usando PNG canonico RGBA8, righe senza filtro e compressore locale deterministico; il contenitore PNG del browser non viene creato né copiato, così i suoi eventuali chunk Exif, palette e bit di padding non entrano nel risultato. Il file finale è ricontrollato su CRC, Adler32, flusso IDAT e pixel. ${inputInventory.complete ? "Inventario sorgente completo." : "Inventario sorgente parziale: solo i segmenti rilevati sono documentati."} Eventuali thumbnail Exif non sono inventariati separatamente; l'intero contenitore Exif originale non viene copiato nella nuova immagine.`,
       metadataGroups,
       fidelity: {
         outputFormat: "image/png",
