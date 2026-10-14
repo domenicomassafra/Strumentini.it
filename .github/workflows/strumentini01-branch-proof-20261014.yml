@@ -1,0 +1,47 @@
+# Independent source CI for the review candidate, without a pull request and
+# without touching public main, paid Codex review, deployment or receipts.
+# This file exists only on the isolated review branch until an authorized PR.
+name: Strumentini01 branch source proof (no deployment)
+
+on:
+  push:
+    branches:
+      - review/strumentini01-clean-candidate-20261014
+
+permissions:
+  contents: read
+
+jobs:
+  source-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Refuse non-review or displaced revision
+        run: |
+          test "$GITHUB_REF" = 'refs/heads/review/strumentini01-clean-candidate-20261014'
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Install independent consumer test dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          python3 -m venv "$RUNNER_TEMP/strumentini-ci-python"
+          echo "$RUNNER_TEMP/strumentini-ci-python/bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/strumentini-ci-python/bin/python" -m pip install --no-cache-dir 'Pillow==12.2.0' 'pypdf==6.16.1' 'python-pptx==1.0.2'
+          npm ci --prefix spikes/heavy-local-feasibility --omit=dev
+          ffprobe -version | head -1
+      - run: npm test -- --maxWorkers=4
+      - run: npm run tickets:test
+      - run: npm run check
+      - run: npm run build
+      - name: Cloudflare package only — no provider deployment
+        run: npm run deploy:check
+      - name: Require source checkout remains clean
+        run: test -z "$(git status --porcelain)"
