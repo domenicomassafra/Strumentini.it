@@ -31,6 +31,14 @@ function defaultWorker(): HashWorkerPort {
   return new Worker(new URL("./worker.ts", import.meta.url), { type: "module" });
 }
 
+function ownedPacket(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function hasOwn(record: Record<string, unknown>, key: string): boolean {
+  return Object.hasOwn(record, key);
+}
+
 export function hashBlobInWorker(
   blob: Blob,
   options: HashBlobInWorkerOptions = {},
@@ -52,6 +60,8 @@ export function hashBlobInWorker(
       return;
     }
     let settled = false;
+    let lastProgressBytes = 0;
+    const requestedAlgorithm = options.algorithm ?? "SHA-256";
     const finish = (callback: () => void) => {
       if (settled) return;
       settled = true;
@@ -67,6 +77,13 @@ export function hashBlobInWorker(
     const onAbort = () => finish(() => reject(new DOMException("Operation cancelled", "AbortError")));
     options.signal?.addEventListener("abort", onAbort, { once: true });
 
+    // A caller-provided Worker factory may synchronously abort while creating
+    // the worker. The first signal check happens before that factory runs.
+    if (options.signal?.aborted) {
+      onAbort();
+      return;
+    }
+
     worker.onerror = (event) => {
       finish(() => reject(new FileHashError("WORKER_FAILURE", event.message || "Hash worker failed.")));
     };
@@ -76,20 +93,27 @@ export function hashBlobInWorker(
       // a TypeScript union does not establish message provenance or bounds.
       const message = event.data as unknown;
       const invalid = () => finish(() => reject(new FileHashError("WORKER_FAILURE", "Invalid hash worker response.")));
-      if (message === null || typeof message !== "object") { invalid(); return; }
+      if (!ownedPacket(message)) { invalid(); return; }
       const packet = message as Record<string, unknown>;
+      if (!hasOwn(packet, "type")) { invalid(); return; }
       if (packet.type === "progress") {
         const progress = packet.progress;
-        if (progress === null || typeof progress !== "object") { invalid(); return; }
+        if (!ownedPacket(progress)) { invalid(); return; }
         const update = progress as Record<string, unknown>;
-        if (!Number.isSafeInteger(update.bytesHashed) || !Number.isSafeInteger(update.totalBytes) ||
-            update.totalBytes !== blob.size || (update.bytesHashed as number) < 0 ||
+        if (!hasOwn(update, "bytesHashed") || !hasOwn(update, "totalBytes") || !hasOwn(update, "fraction") ||
+            !Number.isSafeInteger(update.bytesHashed) || !Number.isSafeInteger(update.totalBytes) ||
+            update.totalBytes !== blob.size || (update.bytesHashed as number) < lastProgressBytes ||
             (update.bytesHashed as number) > blob.size || typeof update.fraction !== "number" ||
             !Number.isFinite(update.fraction) || update.fraction < 0 || update.fraction > 1 ||
             Math.abs(update.fraction - (blob.size === 0 ? 1 : (update.bytesHashed as number) / blob.size)) > 1e-12) {
           invalid(); return;
         }
-        options.onProgress?.(update as unknown as HashProgress);
+        lastProgressBytes = update.bytesHashed as number;
+        try {
+          options.onProgress?.(update as unknown as HashProgress);
+        } catch {
+          invalid();
+        }
         return;
       }
       if (packet.type === "failure") {
@@ -99,11 +123,12 @@ export function hashBlobInWorker(
         finish(() => reject(new FileHashError(code, typeof packet.message === "string" ? packet.message : "Hash worker failed.")));
         return;
       }
-      if (packet.type !== "success" || packet.result === null || typeof packet.result !== "object") {
+      if (packet.type !== "success" || !hasOwn(packet, "result") || !ownedPacket(packet.result)) {
         invalid(); return;
       }
       const result = packet.result as Record<string, unknown>;
-      if (result.algorithm !== "SHA-256" || result.bytesHashed !== blob.size ||
+      if (!hasOwn(result, "algorithm") || !hasOwn(result, "bytesHashed") || !hasOwn(result, "digestHex") ||
+          result.algorithm !== "SHA-256" || result.algorithm !== requestedAlgorithm || result.bytesHashed !== blob.size ||
           typeof result.digestHex !== "string" || !/^[0-9a-f]{64}$/u.test(result.digestHex)) {
         invalid(); return;
       }
@@ -113,7 +138,7 @@ export function hashBlobInWorker(
     const request: HashWorkerRequest = {
       type: "hash",
       blob,
-      algorithm: options.algorithm ?? "SHA-256",
+      algorithm: requestedAlgorithm,
       ...(options.chunkSize === undefined ? {} : { chunkSize: options.chunkSize }),
     };
     try {
