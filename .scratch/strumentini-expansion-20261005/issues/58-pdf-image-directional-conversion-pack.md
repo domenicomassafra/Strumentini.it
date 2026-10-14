@@ -27,3 +27,9 @@
 **Original status and all historical acceptance criteria stay unchanged and OPEN.** New planning crosswalk: #372, #380.
 
 **Next actionable AC:** Verify the original outstanding requirements and dated source evidence before closing. The original acceptance cannot be transferred or marked implemented merely because a new child was planned. Verify actual current source, output, negative cases and physical device when required; retain all gates and source-year/fidelity/security limits.
+
+## 2026-10-14 worker-5 cross-ticket correction — still blocked
+
+An isolated #235 correction changes Images→PDF public/engine behavior to truthful **HEIC/HEIF refusal**, consistent with #268 real-device promotion decision. Previously evidenced desktop HEIC conversion remains only historical/synthetic and is no longer an Images→PDF positive acceptance expectation. Real Chromium public-route refusal and PNG+JPEG independently reparsed two-page PDF **PASS**, updated browser conversion matrix for PNG+JPEG composition, contact sheet, PDF→PNG/ZIP and distinct experimental HEIC→image conversion **PASS**, focused Vitest **17/17 PASS**, scoped strict TypeScript **PASS**. No attempt was made to promote the shared HEIC decoder, modify #212/#268 or fabricate genuine iPhone photos/physical iOS/Android checks (#280/#281 remain NOT_RUN). Parent #58 explicitly asks for actual HEIC→PDF, so **Status: blocked** and original AC/checkboxes remain unchanged. Main/PR/release, Gold source fingerprint and physical mobile ordering/evidence require their independent gates before final closure.
+
+Source-bound certification index for Images→PDF now truthfully reports **releaseGate BLOCKED / goldEligible false / RECEIPT_MANIFEST_IDENTITY_STALE** rather than projecting historical Gold onto changed module and manifest bytes.

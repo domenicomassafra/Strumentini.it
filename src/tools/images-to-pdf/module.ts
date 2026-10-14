@@ -4,6 +4,7 @@ import { createContactSheetLocal } from "../../engines/image/visual-tools";
 import { identifyPortableImage } from "../../engines/image/portable-decode";
 import type { ToolModule } from "../../runtime/types";
 import { requireFiles, resultArtifacts } from "../pdf/shared";
+import { IMAGES_TO_PDF_HEIC_REFUSAL, isDeclaredHeicPdfInput } from "./format-policy";
 import type { ImagesToPdfOutput } from "./types";
 
 const module: ToolModule = {
@@ -42,9 +43,17 @@ const module: ToolModule = {
     const quality = typeof input.quality === "number" ? input.quality : 0.92;
     let prepared: Blob[] = [];
     const conversions: Array<{ name: string; inputMime: string; embeddedAs: "original-jpeg" | "jpeg-reencode"; alphaPolicy: string; background: string | null; framePolicy: string; decoder: string }> = [];
+    // Inspect the full selection before converting any image. A forged .png
+    // with a HEIF ftyp brand must not reach the shared lazy WASM decoder.
+    const identifiedFiles = [];
     for (const file of files) {
+      if (isDeclaredHeicPdfInput(file.filename, file.blob.type)) throw new Error(IMAGES_TO_PDF_HEIC_REFUSAL);
       const head = new Uint8Array(await file.blob.slice(0, 512).arrayBuffer());
       const identified = identifyPortableImage(head, { name: file.filename, type: file.blob.type });
+      if (identified.kind === "heic" || identified.kind === "heif") throw new Error(IMAGES_TO_PDF_HEIC_REFUSAL);
+      identifiedFiles.push({ file, identified });
+    }
+    for (const { file, identified } of identifiedFiles) {
       if (identified.kind === "jpeg") {
         prepared.push(file.blob);
         conversions.push({ name: file.filename, inputMime: identified.mime, embeddedAs: "original-jpeg", alphaPolicy: "opaque-source", background: null, framePolicy: identified.framePolicy, decoder: identified.decoder });

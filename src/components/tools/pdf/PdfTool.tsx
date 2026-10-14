@@ -22,6 +22,7 @@ import { PdfFormAuditDetails } from "./PdfFormAuditDetails";
 import type { PdfFormAnnotationAudit, PdfFlattenVerification } from "../../../engines/pdf";
 import { PdfTextExportDownloads53 } from "./PdfTextExportDownloads53";
 import type { PdfTextExportMode53, ScopedPdfTextExport53 } from "../../../engines/pdf/text-export-53";
+import { IMAGES_TO_PDF_HEIC_REFUSAL, isDeclaredHeicPdfInput } from "../../../tools/images-to-pdf/format-policy";
 
 export type PdfToolId = PdfResultToolId;
 
@@ -225,8 +226,11 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   function choose(event: Event, index = 0) {
     const input = event.currentTarget as HTMLInputElement;
     const selected = input.files === null ? [] : [...input.files];
+    const heicRejected = optionMode === "images-to-pdf"
+      && selected.some((file) => isDeclaredHeicPdfInput(file.name, file.type));
+    if (heicRejected) input.value = "";
     if (inputMode === "multi" || toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort") {
-      setFiles(selected);
+      setFiles(heicRejected ? [] : selected);
     } else {
       setFiles((current) => {
         const next = [...current];
@@ -245,7 +249,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setActiveSelectionGroup(0);
     if (optionMode === "groups") setGroups("");
     if (optionMode === "delete-extract") setPages("");
-    setError("");
+    setError(heicRejected ? IMAGES_TO_PDF_HEIC_REFUSAL : "");
     setStatus("idle");
   }
 
@@ -814,7 +818,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
               <label class="field"><span>Margine (mm)</span><input type="number" min="0" max="100" step="1" value={pdfMarginMm} onInput={(event) => setPdfMarginMm(event.currentTarget.value)} disabled={isWorking} /></label>
             </div>
             <div class="field-grid">
-              <label class="field"><span>Sfondo per trasparenza</span><input type="color" value={imageBackground} onInput={(event) => setImageBackground(event.currentTarget.value)} disabled={isWorking} /><small>PNG/WebP/HEIC con alpha vengono appiattiti su questo colore prima dell'incorporamento nel PDF.</small></label>
+              <label class="field"><span>Sfondo per trasparenza</span><input type="color" value={imageBackground} onInput={(event) => setImageBackground(event.currentTarget.value)} disabled={isWorking} /><small>PNG/WebP/AVIF/GIF con alpha vengono appiattiti su questo colore prima dell'incorporamento nel PDF.</small></label>
               <label class="field"><span>Qualità ricodifica</span><input type="number" min="0.1" max="1" step="0.01" value={imageQuality} onInput={(event) => setImageQuality(event.currentTarget.value)} disabled={isWorking} /><small>I JPEG originali vengono incorporati senza ricodifica; questa qualità vale solo per gli altri formati.</small></label>
             </div>
             {imagePreviewUrl !== "" && (

@@ -69,9 +69,16 @@ try {
         }
       }
       const pngFile = file(pngBytes, "source.png", "image/png");
+      const jpegFile = file(jpgBytes, "source.jpg", "image/jpeg");
       const heicFile = file(heicBytes, "source.heic", "image/heic");
+      let heicPdfRefusal = "";
+      try {
+        await imageToPdf.run({ files: [pngFile, heicFile] }, { defaults: {} });
+      } catch (error) {
+        heicPdfRefusal = error instanceof Error ? error.message : String(error);
+      }
       const pdfResult = await imageToPdf.run({
-        files: [pngFile, heicFile],
+        files: [pngFile, jpegFile],
         background: "#ffffff",
         quality: 0.9,
         order: [2, 1],
@@ -83,7 +90,7 @@ try {
       }, { defaults: {} });
       const pdfArtifact = pdfResult.artifacts[0];
       const pdfInspection = pdfEngine.inspectPdfBytes(pdfArtifact.bytes);
-      const contactResult = await imageToPdf.run({ files: [pngFile, heicFile], background: "#ffffff", quality: 0.9, compositionMode: "contact-sheet", contactSheetColumns: 2, pageSize: "a4", orientation: "portrait", fit: "contain", marginMm: 8 }, { defaults: {} });
+      const contactResult = await imageToPdf.run({ files: [pngFile, jpegFile], background: "#ffffff", quality: 0.9, compositionMode: "contact-sheet", contactSheetColumns: 2, pageSize: "a4", orientation: "portrait", fit: "contain", marginMm: 8 }, { defaults: {} });
       const contactInspection = pdfEngine.inspectPdfBytes(contactResult.artifacts[0].bytes);
       const rendered = await pdfToImages.run({ file: file(pdfBytes, "two-pages.pdf", "application/pdf"), pages: [2, 1], mime: "image/png", scale: 1, quality: 0.9 }, { defaults: {} });
       const renderDims = [];
@@ -94,7 +101,7 @@ try {
       }
       return {
         conversions,
-        imageToPdf: { pageCount: pdfInspection.pageCount, pages: pdfInspection.pages.map((entry) => [entry.width, entry.height]), conversions: pdfResult.conversions, order: pdfResult.order, rotations: pdfResult.rotations, pageSize: pdfResult.pageSize, orientation: pdfResult.orientation, fit: pdfResult.fit, marginMm: pdfResult.marginMm, signature: new TextDecoder().decode(pdfArtifact.bytes.slice(0, 5)) },
+        imageToPdf: { pageCount: pdfInspection.pageCount, pages: pdfInspection.pages.map((entry) => [entry.width, entry.height]), conversions: pdfResult.conversions, order: pdfResult.order, rotations: pdfResult.rotations, pageSize: pdfResult.pageSize, orientation: pdfResult.orientation, fit: pdfResult.fit, marginMm: pdfResult.marginMm, signature: new TextDecoder().decode(pdfArtifact.bytes.slice(0, 5)), heicPdfRefusal },
         contactSheetPdf: { pageCount: contactInspection.pageCount, compositionMode: contactResult.compositionMode, columns: contactResult.contactSheetColumns, contactSheet: contactResult.contactSheet },
         pdfToImages: { selectedPages: rendered.selectedPages, pageCount: rendered.pageCount, renderer: rendered.renderer, dpi: rendered.effectiveDpi, scale: rendered.scale, quality: rendered.quality, renderedImageCount: rendered.renderedImageCount, failures: rendered.failures, dims: renderDims, zipIncluded: rendered.zipIncluded, zipEntries: rendered.zipEntries, artifactMimes: rendered.artifacts.map((entry) => entry.mime) },
       };
@@ -110,7 +117,8 @@ try {
     if (heicResults.length !== 3 || heicResults.some((item) => item.decoder !== "libheif-wasm")) throw new Error(`HEIC did not use local libheif decoder: ${JSON.stringify(heicResults)}`);
     const gifResults = result.conversions.filter((item) => item.id === "gif");
     if (gifResults.some((item) => item.framePolicy !== "first-frame-only")) throw new Error(`GIF frame policy is not explicit: ${JSON.stringify(gifResults)}`);
-    if (result.imageToPdf.pageCount !== 2 || result.imageToPdf.signature !== "%PDF-" || JSON.stringify(result.imageToPdf.order) !== JSON.stringify([2, 1]) || result.imageToPdf.pageSize !== "a4" || result.imageToPdf.orientation !== "landscape" || result.imageToPdf.fit !== "contain" || result.imageToPdf.marginMm !== 12 || result.imageToPdf.pages.some((entry) => Math.abs(entry[0] - 841.89) > 0.02 || Math.abs(entry[1] - 595.28) > 0.02)) throw new Error(`PNG/HEIC to PDF layout failed: ${JSON.stringify(result.imageToPdf)}`);
+    if (result.imageToPdf.pageCount !== 2 || result.imageToPdf.signature !== "%PDF-" || JSON.stringify(result.imageToPdf.order) !== JSON.stringify([2, 1]) || result.imageToPdf.pageSize !== "a4" || result.imageToPdf.orientation !== "landscape" || result.imageToPdf.fit !== "contain" || result.imageToPdf.marginMm !== 12 || result.imageToPdf.pages.some((entry) => Math.abs(entry[0] - 841.89) > 0.02 || Math.abs(entry[1] - 595.28) > 0.02)) throw new Error(`PNG/JPEG to PDF layout failed: ${JSON.stringify(result.imageToPdf)}`);
+    if (!result.imageToPdf.heicPdfRefusal.includes("HEIC/HEIF non sono ancora disponibili")) throw new Error(`HEIC PDF production refusal missing: ${JSON.stringify(result.imageToPdf)}`);
     if (result.contactSheetPdf.pageCount !== 1 || result.contactSheetPdf.compositionMode !== "contact-sheet" || result.contactSheetPdf.columns !== 2 || result.contactSheetPdf.contactSheet?.sourceCount !== 2) throw new Error(`Contact-sheet PDF failed: ${JSON.stringify(result.contactSheetPdf)}`);
     if (result.pdfToImages.renderer !== "pdfjs-local-lazy" || result.pdfToImages.pageCount !== 2 || JSON.stringify(result.pdfToImages.selectedPages) !== JSON.stringify([2, 1]) || result.pdfToImages.dims.some((item) => item[0] !== 612 || item[1] !== 792 || item[2] !== "image/png") || result.pdfToImages.zipIncluded !== true || result.pdfToImages.zipEntries !== 2 || !result.pdfToImages.artifactMimes.includes("application/zip")) throw new Error(`PDF page rendering/ZIP failed: ${JSON.stringify(result.pdfToImages)}`);
 
@@ -122,7 +130,7 @@ try {
       const response = await routePage.goto(`${origin}/tools/${route}/`, { waitUntil: "networkidle" });
       if (response?.status() !== 200) throw new Error(`${route}: HTTP ${String(response?.status())}`);
       if (route === "images-to-pdf") {
-        await routePage.locator('input[type="file"]').setInputFiles([resolve(fixtureDir, "source.png"), resolve(fixtureDir, "source.heic")]);
+        await routePage.locator('input[type="file"]').setInputFiles([resolve(fixtureDir, "source.png"), resolve(fixtureDir, "source.jpg")]);
         await routePage.locator("[data-images-pdf-preview]").waitFor({ state: "visible", timeout: 10_000 });
       }
       capture = true;

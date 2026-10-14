@@ -20,7 +20,11 @@ describe("high-value image/PDF conversion matrix", () => {
   it("advertises the concrete directional intents instead of hiding them behind a generic label", () => {
     expect(conversionManifest.aliases).toEqual(expect.arrayContaining(["jpg to png", "png to jpg", "heic to jpg", "avif to png", "gif to png"]));
     expect(conversionManifest.inputTypes).toEqual(expect.arrayContaining(["image/jpeg", "image/png", "image/webp", "image/avif", "image/heic", "image/heif", "image/gif"]));
-    expect(imagesToPdfManifest.aliases).toEqual(expect.arrayContaining(["jpg to pdf", "png to pdf", "webp to pdf", "heic to pdf"]));
+    expect(imagesToPdfManifest.aliases).toEqual(expect.arrayContaining(["jpg to pdf", "png to pdf", "webp to pdf"]));
+    expect(imagesToPdfManifest.aliases).not.toContain("heic to pdf");
+    expect(imagesToPdfManifest.aliases).not.toContain("heif to pdf");
+    expect(imagesToPdfManifest.inputTypes).not.toContain("image/heic");
+    expect(imagesToPdfManifest.inputTypes).not.toContain("image/heif");
     expect(pdfToImagesManifest.aliases).toEqual(expect.arrayContaining(["pdf to jpg", "pdf to png", "pdf to webp"]));
   });
 });

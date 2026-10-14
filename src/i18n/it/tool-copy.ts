@@ -462,7 +462,7 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   },
   "images-to-pdf": {
     name: "Immagini in PDF",
-    summary: "Trasforma JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF o il primo frame GIF in PDF con ordine, rotazioni, A4/Letter/originale, margini e contain/cover.",
+    summary: "Trasforma JPG/JPEG, PNG, WebP, AVIF o il primo frame GIF in PDF con ordine, rotazioni, A4/Letter/originale, margini e contain/cover. HEIC/HEIF non disponibili finché mancano verifiche su foto iPhone reali e dispositivi mobili.",
   },
   "invisible-character-detector": {
     name: "Trova caratteri invisibili",

@@ -122,8 +122,8 @@
       "IMPLEMENTED_UNVERIFIED": 10
     },
     "certificationGoldCount": 257,
-    "releaseEligibleGoldCount": 255,
-    "releaseBlockedCount": 14,
+    "releaseEligibleGoldCount": 254,
+    "releaseBlockedCount": 15,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 269,
     "fixtureBoundCount": 269,
@@ -15597,16 +15597,16 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/images-to-pdf.gold.json",
-      "releaseGate": "PASS",
-      "goldEligible": true,
+      "releaseGate": "BLOCKED",
+      "goldEligible": false,
       "implementation": {
         "manifest": {
           "path": "src/tools/images-to-pdf/manifest.ts",
-          "sha256": "d9e676be90aedbef228bed26a89dc9386fd021653b09d7b374566a912209cf49"
+          "sha256": "58a68002f6d4e7958d8c6c36b3b669f86c4d23a04c482ebc0cfdfc16a52d627c"
         },
         "module": {
           "path": "src/tools/images-to-pdf/module.ts",
-          "sha256": "432256bdd74379b9167c5122c8b539da5011810be76a2c9ca424181ec777e7a8"
+          "sha256": "d7c51f294b68e8de97eae5bc37a4b0c61b9ee7cf4f1032464762adcaf6d99e23"
         },
         "page": {
           "path": "src/pages/tools/images-to-pdf.astro",
@@ -15614,6 +15614,7 @@
         },
         "testFiles": [
           "tests/image-format-matrix.test.ts",
+          "tests/images-to-pdf-235-heic-refusal.test.ts",
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts"
         ]
@@ -15737,7 +15738,9 @@
           "status": "PASS"
         }
       ],
-      "blockers": [],
+      "blockers": [
+        "RECEIPT_MANIFEST_IDENTITY_STALE"
+      ],
       "coverageGaps": []
     },
     {
