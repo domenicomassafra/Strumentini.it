@@ -132,7 +132,14 @@ const isCurrent = (href: string): boolean =>
   });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-    for (const menu of menus) menu.open = false;
+    for (const menu of menus) {
+      if (!menu.open) continue;
+      const focusWasInside = menu.contains(document.activeElement);
+      menu.open = false;
+      // Closing <details> hides its submenu links. A keyboard user escaping
+      // from one must land on the visible summary, not keep a hidden focus.
+      if (focusWasInside) menu.querySelector("summary")?.focus({ preventScroll: true });
+    }
   });
 
   const toggle = document.querySelector<HTMLButtonElement>("[data-mobile-toggle]");
