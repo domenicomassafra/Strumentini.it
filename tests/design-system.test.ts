@@ -186,6 +186,8 @@ describe("canonical design-system tokens", () => {
       ["text", "surface-subtle", 4.5],
       ["text-muted", "surface", 4.5],
       ["text-faint", "surface", 3],
+      // WCAG 2.2 SC 1.4.11: resting input/control boundaries must be perceptible.
+      ["border-strong", "surface", 3],
       ["brand-ink", "brand", 4.5],
       ["brand", "surface", 3],
       ["success", "success-soft", 4.5],
@@ -205,6 +207,14 @@ describe("canonical design-system tokens", () => {
 });
 
 describe("the sheet's own rules", () => {
+  it("uses the AA-contrast border role for resting form fields", () => {
+    const selectorStart = globalCss.indexOf(".field input,\n.field textarea,");
+    expect(selectorStart).toBeGreaterThan(-1);
+    const declarationEnd = globalCss.indexOf("}", selectorStart);
+    const fields = globalCss.slice(selectorStart, declarationEnd);
+    expect(fields).toContain("border: var(--border-width) solid var(--border-strong);");
+  });
+
   it("self-hosts its faces, subset and swapped, with no CDN", () => {
     const faces = globalCss.match(/@font-face\s*\{[\s\S]*?\}/gu) ?? [];
     expect(faces.length).toBeGreaterThanOrEqual(4);

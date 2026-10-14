@@ -249,6 +249,24 @@ function isPoints(value: unknown): value is Array<{ label: string; value: number
   return Array.isArray(value) && value.every((point) => typeof point === "object" && point !== null && typeof (point as { label?: unknown }).label === "string" && typeof (point as { value?: unknown }).value === "number");
 }
 
+/** A role=img hides its descendants from the accessibility tree: name the data, not only the chart. */
+export function TableAccessibleChart({
+  publicTitle, points, maxPoint,
+}: {
+  readonly publicTitle: string;
+  readonly points: readonly { readonly label: string; readonly value: number }[];
+  readonly maxPoint: number;
+}) {
+  const series = points.map((point) => `${point.label}: ${point.value}`).join("; ");
+  return <div class="table-chart" role="img" aria-label={`Grafico: ${publicTitle}${points.length > 0 ? `. ${series}` : ""}`}>
+    {points.map((point) => <div class="table-chart-row" key={point.label}>
+      <span>{point.label}</span>
+      <div class="table-chart-track"><div class="table-chart-bar" style={{ width: `${Math.max(1, Math.round(Math.abs(point.value) / maxPoint * 100))}%` }} /></div>
+      <strong>{point.value}</strong>
+    </div>)}
+  </div>;
+}
+
 type ProfileColumn = Record<string, unknown> & { name: string };
 type DuplicateGroup = { rowNumber?: number; count: number; values: string[] };
 
@@ -518,7 +536,7 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
           {mode === "compare" && changedCells.length > 0 && <div class="table-preview-scroll"><table class="table-preview"><caption>Celle cambiate · prime 30</caption><thead><tr><th scope="col">Chiave</th><th scope="col">Riga sinistra</th><th scope="col">Riga destra</th><th scope="col">Colonna</th><th scope="col">Prima</th><th scope="col">Dopo</th></tr></thead><tbody>{changedCells.slice(0, 30).map((cell, index) => <tr key={`${cell.leftRow}-${cell.rightRow}-${cell.leftColumnName}-${index}`}><td>{cell.key.join(" · ")}</td><td>{cell.leftRow}</td><td>{cell.rightRow}</td><td>{cell.leftColumnName === cell.rightColumnName ? cell.leftColumnName : `${cell.leftColumnName} ↔ ${cell.rightColumnName}`}</td><td>{cell.leftValue}</td><td>{cell.rightValue}</td></tr>)}</tbody></table></div>}
           {mode === "compare" && ambiguousKeys.length > 0 && <p class="file-note">Chiavi duplicate ambigue: {ambiguousKeys.slice(0, 8).map((entry) => `${entry.key.join(" · ")} (S ${entry.leftRows.join("/") || "—"}; D ${entry.rightRows.join("/") || "—"})`).join(" · ")}{ambiguousKeys.length > 8 ? " · …" : ""}</p>}
           {preferredHandoffTargets.length > 0 && <div><p class="file-note">Continua con un formato/strumento compatibile:</p><div class="actions">{preferredHandoffTargets.slice(0, 12).map((proposal) => <button type="button" key={proposal.target.id} onClick={() => handoffResult(proposal)}>{proposal.target.name}</button>)}</div></div>}
-          {points.length > 0 && <div class="table-chart" role="img" aria-label={`Grafico: ${publicTitle}`}>{points.map((point) => <div class="table-chart-row" key={point.label}><span>{point.label}</span><div class="table-chart-track"><div class="table-chart-bar" style={{ width: `${Math.max(1, Math.round(Math.abs(point.value) / maxPoint * 100))}%` }} /></div><strong>{point.value}</strong></div>)}</div>}
+          {points.length > 0 && <TableAccessibleChart publicTitle={publicTitle} points={points} maxPoint={maxPoint} />}
         </div>
         <ResultActions
           actions={resultActions}
