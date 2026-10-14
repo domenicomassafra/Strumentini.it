@@ -278,6 +278,25 @@ function containsActualXlsxFormulaTag(xml: string): boolean {
   return false;
 }
 
+function workbookWorksheetTarget(target: string): string {
+  // OPC Targets are relative to xl/workbook.xml unless rooted at the package
+  // root. Never silently drop an encoded/external/escaping worksheet target.
+  if (/[\\?#%]/u.test(target) || /^[A-Za-z][\w+.-]*:/u.test(target)) {
+    fail("XLSX_READ_FAILED", "Unsupported XLSX worksheet relationship target.");
+  }
+  const segments = target.startsWith("/") ? [] : ["xl"];
+  for (const segment of target.split("/")) {
+    if (segment === "" || segment === ".") continue;
+    if (segment === "..") {
+      if (segments.length === 0) fail("XLSX_READ_FAILED", "XLSX worksheet target escapes the package root.");
+      segments.pop();
+    } else segments.push(segment);
+  }
+  const path = segments.join("/");
+  if (!/^xl\/.+\.xml$/iu.test(path)) fail("XLSX_READ_FAILED", "Unsupported XLSX worksheet relationship path.");
+  return path;
+}
+
 function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
   let packageAnalysis: ReturnType<typeof analyzeOoxmlPackage>;
   try {
@@ -321,8 +340,9 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
   // The workbook's relationship Type, unlike its Target filename, is the
   // source of truth. Worksheet `hyperlink` relations stay inert and allowed.
   const workbookRels = packageAnalysis.entries.find((entry) => entry.path === "xl/_rels/workbook.xml.rels");
+  let relationships: XmlElement | undefined;
   if (workbookRels) {
-    const relationships = checkedXlsxXml(readBoundedXlsxXml(bytes, workbookRels), "Relationships");
+    relationships = checkedXlsxXml(readBoundedXlsxXml(bytes, workbookRels), "Relationships");
     if (relationships.children.some((child) => child.kind === "element" && child.name.split(":").at(-1) === "Relationship" &&
         /\/(?:externalLink|externalLinkPath)$/iu.test(decodedXlsxAttribute(child, "Type") ?? ""))) {
       fail("UNSUPPORTED_XLSX_FEATURE", "Excel external workbook relationships are not supported in CSV import.");
@@ -330,13 +350,40 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
   }
   // read-excel-file returns cached formula values (which may be forged or
   // stale) and blank cells for uncached formulas. Neither is a verified result.
-  // Scan the independently ZIP-verified OOXML XML before letting that reader
-  // produce CSV. Scan all xl XML parts so noncanonical worksheet paths and
-  // hidden sheets are subject to the same refusal policy. The ZIP analyzer
-  // already independently verifies all members under a 20 MiB TOTAL inflated
-  // budget; the per-entry cap below matches its stricter 12 MiB bound.
-  for (const entry of packageAnalysis.entries) {
-    if (!/^xl\/.*\.xml$/iu.test(entry.path)) continue;
+  // Chart-series <c:f> are cell-range references, NOT cached worksheet-cell
+  // formulas; reading all xl XML caused real chart-bearing workbooks to be
+  // rejected. Identify actual worksheet parts from both the OPC content-type
+  // manifest and workbook relationships, including hidden/relocated sheets.
+  // Require referenced worksheet parts to agree with the manifest, fail closed
+  // on missing parts, and inspect them before the generic workbook reader.
+  const sheetContentType = /\.spreadsheetml\.worksheet\+xml$/iu;
+  const worksheetParts = new Set<string>();
+  for (const child of contentTypes.children) {
+    if (child.kind !== "element" || child.name.split(":").at(-1) !== "Override") continue;
+    if (!sheetContentType.test(decodedXlsxAttribute(child, "ContentType") ?? "")) continue;
+    const part = decodedXlsxAttribute(child, "PartName");
+    if (!part?.startsWith("/")) fail("XLSX_READ_FAILED", "Invalid XLSX worksheet content type part.");
+    worksheetParts.add(workbookWorksheetTarget(part));
+  }
+  const archivedParts = new Map(packageAnalysis.entries.map((entry) => [entry.path, entry]));
+  if (!relationships) fail("XLSX_READ_FAILED", "Missing XLSX workbook relationships for worksheet validation.");
+  let worksheetRelationCount = 0;
+  for (const child of relationships.children) {
+    if (child.kind !== "element" || child.name.split(":").at(-1) !== "Relationship") continue;
+    if (!/\/worksheet$/iu.test(decodedXlsxAttribute(child, "Type") ?? "")) continue;
+    worksheetRelationCount += 1;
+    if (decodedXlsxAttribute(child, "TargetMode") === "External") {
+      fail("UNSUPPORTED_XLSX_FEATURE", "Externally linked worksheets cannot be imported as CSV.");
+    }
+    const target = decodedXlsxAttribute(child, "Target");
+    if (!target) fail("XLSX_READ_FAILED", "Missing XLSX worksheet relationship target.");
+    const part = workbookWorksheetTarget(target);
+    if (!worksheetParts.has(part)) fail("XLSX_READ_FAILED", "XLSX worksheet relationship lacks matching worksheet content type.");
+  }
+  if (worksheetRelationCount === 0 || worksheetParts.size === 0) fail("XLSX_READ_FAILED", "XLSX worksheet declarations are missing.");
+  for (const part of worksheetParts) {
+    const entry = archivedParts.get(part);
+    if (!entry) fail("XLSX_READ_FAILED", "Declared XLSX worksheet part is missing from the archive.");
     const worksheetXml = readBoundedXlsxXml(bytes, entry, OOXML_PACKAGE_LIMITS.maxEntryUncompressedBytes);
     if (containsActualXlsxFormulaTag(worksheetXml)) {
       fail("UNSUPPORTED_XLSX_FEATURE", "Workbook formulas and their unverified cached results cannot be imported as CSV.");
