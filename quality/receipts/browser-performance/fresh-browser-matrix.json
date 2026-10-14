@@ -1,8 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-10T16:34:59.993Z",
-  "revision": "7b2fdc2060948df9ac772783439db623d9cca15e",
-  "sourceFingerprint": "dada050cdde7d0887baf1f7a3dd27d4526d301b0be1d3afb39fdf6541e004a0c",
+  "generatedAt": "2026-10-14T16:55:37.381Z",
+  "revision": "ba2e338cfe9586f6c844487c869662d0786fa1e4",
+  "sourceFingerprint": "0e3b30e6e04c4f11c6651ad124328f228265531ea541877253c3fa6e8475cd47",
+  "sourceScopeVersion": "canonical-global-sha256-v2",
   "server": {
     "origin": "http://127.0.0.1:18220",
     "bind": "127.0.0.1",
@@ -10,9 +11,9 @@
   },
   "staticInspection": {
     "page": "tools/business-day/index.html",
-    "jsAssetCount": 679,
-    "totalJsBytes": 10283142,
-    "totalGzipBytes": 2823134,
+    "jsAssetCount": 693,
+    "totalJsBytes": 10470986,
+    "totalGzipBytes": 2896603,
     "engineChunks": [
       {
         "file": "business-days.BUp9vb-a.js",
@@ -38,282 +39,282 @@
     "implementationAssets": [
       "module.-R2KqBMw.js",
       "module.0HkQQdv6.js",
-      "module.0L2EJuiA.js",
       "module.0QZ_--Ef.js",
-      "module.1D-YWo4j.js",
       "module.2UG-AMwE.js",
+      "module.3XWAEjp_.js",
       "module.3e9t5j4K.js",
-      "module.5KdO4LT9.js",
       "module.75MhZevG.js",
-      "module.7BUksU6y.js",
       "module.7wqzXld5.js",
+      "module.8-Z5l-5C.js",
       "module.9fWZyLyu.js",
       "module.ADyEfsJm.js",
+      "module.B-6kM_NR.js",
       "module.B05kyGUj.js",
-      "module.B4oafq0d.js",
+      "module.B1gmY9Ka.js",
+      "module.B3F-a4R2.js",
+      "module.B3GmIGV3.js",
       "module.B6dGmswN.js",
+      "module.B6xm6bZH.js",
       "module.B7IXgjgV.js",
       "module.B7Wp8DUt.js",
       "module.B7xwnwP0.js",
-      "module.B937dKzA.js",
-      "module.B9Zk5iu9.js",
-      "module.BAPldgDQ.js",
+      "module.B9WCxUvD.js",
+      "module.BABEJwXX.js",
       "module.BARwsk7H.js",
-      "module.BAuPmWqG.js",
       "module.BAyW09y5.js",
       "module.BCcAY0GV.js",
       "module.BCyH85Cq.js",
-      "module.BGUX7h2O.js",
+      "module.BDGWO5VK.js",
       "module.BH3T8cPk.js",
       "module.BH8v6pgk.js",
-      "module.BJ2Ur5wf.js",
-      "module.BJvhZPU2.js",
+      "module.BIIQzJ9W.js",
       "module.BKDptEb4.js",
       "module.BKJFA-aL.js",
       "module.BL9pDBm7.js",
+      "module.BLMkjz99.js",
+      "module.BOLng-_G.js",
       "module.BPY8jvQ-.js",
+      "module.BPgFoTbZ.js",
       "module.BQ7GTAhb.js",
       "module.BQSQfqFK.js",
-      "module.BQoR-KOd.js",
-      "module.BR4o0Hp5.js",
-      "module.BRNHT0Qs.js",
+      "module.BRvjHXvI.js",
       "module.BSUA3weh.js",
+      "module.BSvPiNts.js",
       "module.BTvwyBGm.js",
-      "module.BUKd3y1X.js",
       "module.BVSSxe9N.js",
-      "module.BWG0ewf8.js",
+      "module.BVWWa-gR.js",
       "module.BWPc5lt2.js",
-      "module.BWRP-KZf.js",
       "module.BXoZvADb.js",
-      "module.BZ4L8o5s.js",
-      "module.BZqeLytb.js",
       "module.Bb3oHhNU.js",
       "module.BcN82avr.js",
       "module.Bdbk9a6v.js",
-      "module.BgEOvxQA.js",
+      "module.Bdtv0pzR.js",
       "module.BjYWEWEa.js",
-      "module.BjxdGw8A.js",
       "module.BlFIxUzs.js",
       "module.Blpw1zFE.js",
-      "module.BmoKarR2.js",
       "module.Bn3qZmoc.js",
       "module.BnphK3Ox.js",
-      "module.BofIwUyw.js",
+      "module.BnvgtGxc.js",
       "module.BpBI05Pc.js",
-      "module.Bs5Eaj19.js",
+      "module.Bq_ZplJM.js",
+      "module.Bqvk9HDx.js",
+      "module.Bqwyfm7_.js",
       "module.Bsio-shQ.js",
-      "module.BtjM-ZTS.js",
       "module.BupQaau0.js",
       "module.Buzn49r9.js",
       "module.BvJyrUhr.js",
       "module.BvUtiXDE.js",
-      "module.BvwQh4gM.js",
-      "module.BwdMaHMa.js",
-      "module.By1ZMNR2.js",
+      "module.BwnIViNp.js",
       "module.ByHGBw7z.js",
       "module.ByuyNo6K.js",
+      "module.BzUucMfP.js",
+      "module.C0VRoXTe.js",
       "module.C1Z1ApOK.js",
       "module.C1ddmnW9.js",
-      "module.C1utyvKA.js",
+      "module.C1j1sdG0.js",
+      "module.C1ul2H5U.js",
       "module.C2PUqZRP.js",
       "module.C2scPNGn.js",
       "module.C3m6-PSI.js",
-      "module.C4rSRJRR.js",
+      "module.C3uDZpE9.js",
+      "module.C5nLr72V.js",
+      "module.C6Ctw3EU.js",
+      "module.C6INGtbg.js",
       "module.C6ScA_71.js",
+      "module.C6nHFGCI.js",
       "module.C7-DCT0d.js",
       "module.C77iEfpd.js",
-      "module.C8mRRTIh.js",
-      "module.C9CuX-e6.js",
+      "module.C7C0J91q.js",
+      "module.C8X8_DmV.js",
       "module.C9Q6giqh.js",
       "module.C9xP9iLv.js",
       "module.CCDbAkmP.js",
+      "module.CDTd2BOW.js",
       "module.CDuGRdRB.js",
-      "module.CEOIzFoT.js",
-      "module.CEWdfney.js",
-      "module.CFMwvPEB.js",
-      "module.CI3rOKly.js",
-      "module.CI6pCMjT.js",
+      "module.CELZMo62.js",
+      "module.CFaeJrbB.js",
+      "module.CFueTQwD.js",
+      "module.CGq4DqZH.js",
+      "module.CHfkCsFd.js",
+      "module.CHlUUaFW.js",
       "module.CIidBrB5.js",
       "module.CK53PA3s.js",
       "module.CKhWyRi5.js",
-      "module.CKxWxEAj.js",
       "module.CLiHLdMB.js",
+      "module.CM5ZdZXw.js",
       "module.CMBndmeM.js",
-      "module.CNr8jwD8.js",
-      "module.CQiuLZey.js",
-      "module.CRJ9JsOa.js",
+      "module.CO67ISPo.js",
+      "module.COTHuFF1.js",
+      "module.CP_3h75U.js",
       "module.CSeECdU6.js",
-      "module.CTKgY_d5.js",
+      "module.CTGZLp7i.js",
       "module.CTVIPBGx.js",
       "module.CUROKIyJ.js",
+      "module.CUl2yGJr.js",
       "module.CVJZkbzR.js",
       "module.CVt9VvZb.js",
+      "module.CWIEUWIk.js",
+      "module.CXNWx95Y.js",
+      "module.CYue1siK.js",
       "module.CZ34t2pH.js",
-      "module.CZVx13W7.js",
       "module.CbIEQO_G.js",
       "module.CbcQnj8A.js",
       "module.CdMTvTKl.js",
+      "module.Ce5Tr3-G.js",
       "module.CeEN0AsS.js",
-      "module.CfO0w3Aa.js",
       "module.CfqRbIjz.js",
+      "module.Cfs2uS_l.js",
       "module.CglH-tiW.js",
       "module.Ch6XMU6i.js",
-      "module.Ci8Cv0vO.js",
-      "module.Cid8AzG7.js",
+      "module.ChNPRG42.js",
       "module.Cilj5VA-.js",
+      "module.ClcrvsdI.js",
       "module.Clu5He1A.js",
-      "module.ClwgktvA.js",
-      "module.Cm5e4Auj.js",
-      "module.CmAu7zCT.js",
       "module.CmkVnR9P.js",
       "module.CnxkFgj3.js",
       "module.CoEb16W6.js",
-      "module.CoPDtS2S.js",
       "module.Cos5T292.js",
       "module.Cpv-gbjy.js",
       "module.Cq3IOrZ1.js",
-      "module.Cqrsbiru.js",
       "module.CsTR9X8m.js",
+      "module.CscdraK7.js",
       "module.Csx8gt7v.js",
       "module.Ctpey8yA.js",
+      "module.Cu3p-ioS.js",
       "module.Cwd8rBDw.js",
-      "module.Cwh3fN7A.js",
-      "module.Cwr1zPnm.js",
       "module.Cxq0nBiM.js",
       "module.CybPICNh.js",
-      "module.CyypwNl1.js",
-      "module.Cz8bEwzi.js",
-      "module.CzDhH_Ai.js",
+      "module.CydikVTm.js",
       "module.CzJMWbnw.js",
       "module.CzYKoQLg.js",
+      "module.D-Qbpvbl.js",
       "module.D0woxjJO.js",
       "module.D2an_-Ho.js",
       "module.D3axsoOP.js",
       "module.D4zG6Nit.js",
       "module.D5InHch9.js",
-      "module.D6x_4M6m.js",
+      "module.D5Vwq3Ic.js",
+      "module.D5gtCzyA.js",
+      "module.D6STU6qg.js",
+      "module.D7B90gLM.js",
+      "module.D8JmAaCV.js",
+      "module.D8QSiVaj.js",
       "module.D8rnnaAx.js",
       "module.D8z1dIyM.js",
       "module.D9Nwng1y.js",
-      "module.D9dymcSo.js",
-      "module.DB2GssZW.js",
-      "module.DB4dc2Wo.js",
+      "module.DAVwyPD_.js",
       "module.DCRW_S6r.js",
-      "module.DD-S0gUd.js",
       "module.DEkNMzcA.js",
       "module.DH52sHdS.js",
       "module.DH546zyv.js",
       "module.DHD2a0lb.js",
       "module.DJG7_A47.js",
-      "module.DKzeK4J_.js",
       "module.DL2H14BL.js",
-      "module.DLwPbOou.js",
       "module.DMCn66eG.js",
       "module.DNpiHD3z.js",
       "module.DODuFEAP.js",
+      "module.DOf5k91u.js",
       "module.DPPTFStU.js",
-      "module.DRdPc_Zd.js",
-      "module.DSVFlwcF.js",
+      "module.DS9XJyho.js",
+      "module.DSdUaPGB.js",
       "module.DTNYWDgn.js",
       "module.DTPzVXIw.js",
-      "module.DVFo3_Yx.js",
+      "module.DUrOUE-n.js",
+      "module.DVAyKZFn.js",
       "module.DVRd2IMG.js",
-      "module.DWbGRM5T.js",
+      "module.DWknQBWp.js",
       "module.DXdjLCJO.js",
-      "module.DY0Z7_GS.js",
-      "module.DYIyQbhI.js",
-      "module.DYey_gPa.js",
       "module.DZ-Ihu15.js",
-      "module.DayoRLzv.js",
+      "module.D_9Yukuk.js",
+      "module.D_Q_Tpv1.js",
+      "module.D_b6QS3b.js",
+      "module.D_nDlHUg.js",
+      "module.DbERFEgJ.js",
+      "module.DbJSjcge.js",
       "module.DbTK_ynX.js",
-      "module.Dd4bJyUs.js",
       "module.DdlaPJk3.js",
       "module.Df1hdJ4d.js",
       "module.Df5GsEan.js",
-      "module.Dg6h4BLF.js",
-      "module.Dhp3cqWQ.js",
+      "module.DfNQnnuD.js",
+      "module.DfNcp5eO.js",
+      "module.DgIYlQp4.js",
+      "module.DguV7Rkx.js",
+      "module.DhsUufNy.js",
       "module.Dhy_i75i.js",
       "module.DiXV9aNb.js",
       "module.Dlqk68-X.js",
       "module.DmvG6L3E.js",
-      "module.DnM5uoP-.js",
-      "module.Dnf2Bawp.js",
       "module.DnrUKYEF.js",
       "module.Do-V89u2.js",
       "module.Do4Cyhp-.js",
       "module.DqX3rVnh.js",
-      "module.DsNQRrAs.js",
       "module.DtGv0fOc.js",
+      "module.DuDlTkZ4.js",
       "module.DuPUhoKJ.js",
-      "module.DuVZFZbT.js",
+      "module.Dubbe5ca.js",
       "module.DupbykHC.js",
       "module.DvpVLFSq.js",
       "module.Dw-8HmbH.js",
+      "module.DwO3mo7d.js",
       "module.DwaHh4CX.js",
       "module.DwaRAPO9.js",
       "module.Dxa-4V5G.js",
-      "module.DyZriDsE.js",
       "module.Dyv3Nd03.js",
+      "module.EYvTOQ9g.js",
       "module.FAQEhvCU.js",
-      "module.G5kMIQ26.js",
+      "module.HZ7SrCgp.js",
       "module.IBOhq2Y6.js",
       "module.JJZj3rem.js",
       "module.JYGcB5qA.js",
-      "module.KiNcBJ9G.js",
+      "module.KH3gNNH2.js",
       "module.KmrQC9UC.js",
-      "module.MNmwwxpW.js",
-      "module.NDHIfl5s.js",
+      "module.MgfvxEjY.js",
+      "module.MuPcWrE6.js",
+      "module.N-HbF0x4.js",
+      "module.NZzNB48d.js",
       "module.O0m3lw5m.js",
-      "module.TyxpaZ3e.js",
+      "module.QAZ8vl81.js",
       "module.UvJFJ8KX.js",
-      "module.VOVaFv6H.js",
       "module.VP0ipe81.js",
       "module.VW6yjXez.js",
-      "module.W4LhKD0N.js",
-      "module.XmddRX65.js",
+      "module.X2xG8Qs1.js",
       "module.XzcE53EU.js",
       "module.YObMfmzo.js",
       "module.YVsIKKn8.js",
-      "module.Ye6M2xeD.js",
       "module.Z7vOgkpe.js",
-      "module.ZDL2a3dL.js",
       "module.ZcKwK2gj.js",
       "module.ZfFCOEzx.js",
+      "module._MfvQz4S.js",
       "module.bY1iXZ32.js",
+      "module.blmbodkF.js",
       "module.bt-dqw5C.js",
       "module.c1h0Wupu.js",
-      "module.cKgajWQ6.js",
+      "module.cAhjsqZ5.js",
       "module.d7RQ73ld.js",
-      "module.f9821q23.js",
-      "module.frOa1Fr3.js",
+      "module.fQ1oxb6N.js",
       "module.g0js3-a2.js",
       "module.gcDeBv5S.js",
-      "module.jTqyjCXF.js",
-      "module.jmKEbaaW.js",
       "module.juyTxF8c.js",
-      "module.kt4yglg7.js",
+      "module.nMPX8tgp.js",
       "module.o5fzq32J.js",
-      "module.o7uaA8-Z.js",
-      "module.qW07FlCT.js",
-      "module.qZZ_4lk9.js",
-      "module.rxbyD6za.js",
-      "module.sDkbpwIa.js",
+      "module.prRQTgkF.js",
+      "module.qoD2Y6jB.js",
       "module.sKZ2412-.js",
+      "module.sQFr77s7.js",
       "module.svftet6x.js",
       "module.tFoydfnd.js",
       "module.uT64eSjV.js",
-      "module.x4wxcPGX.js",
-      "module.yM4paYkj.js",
+      "module.zCZO-tQ4.js",
       "module.zkWE8jmp.js"
     ],
     "initialScriptFiles": [
-      "GlobalSearch.astro_astro_type_script_index_0_lang.CXPw7Kol.js",
+      "GlobalSearch.astro_astro_type_script_index_0_lang.C-W1yckC.js",
       "ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
-      "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js",
-      "TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js"
+      "ToolRouteTelemetry.astro_astro_type_script_index_0_lang.Ca82vwXb.js",
+      "TelemetryBootstrap.astro_astro_type_script_index_0_lang.DEMB2Boy.js"
     ],
-    "initialJsBytes": 7144,
-    "initialGzipBytes": 3493,
+    "initialJsBytes": 7915,
+    "initialGzipBytes": 3858,
     "initialEngineReferences": [],
     "eagerImplementationReferences": [],
     "lazyEngineGate": "PASS",
@@ -323,9 +324,9 @@
       "baselineMetric": "historical-total-js-ceiling",
       "baselineJsAssetCount": 6,
       "baselineInitialJsBytes": 32768,
-      "currentInitialJsBytes": 7144,
-      "deltaBytes": -25624,
-      "deltaPercent": -78.1982421875,
+      "currentInitialJsBytes": 7915,
+      "deltaBytes": -24853,
+      "deltaPercent": -75.8453369140625,
       "eagerImplementationReferences": [],
       "gate": "PASS"
     },
@@ -336,8 +337,8 @@
       "timeline-worker-231-QLXakY7o.js",
       "video-gif-worker-306-Dk8uVFnP.js",
       "video-transform-worker-234-CYvq9f7c.js",
-      "visual-signature-worker-241-SASltbWh.js",
-      "visual-signature-worker-client-241.CDzyKXwB.js",
+      "visual-signature-worker-241-BIK6WAgf.js",
+      "visual-signature-worker-client-241.BuegCYkX.js",
       "wav-worker-234-Csr0SJup.js",
       "worker-DP4Ep3z2.js",
       "worker-client.DMtbayWL.js"
@@ -347,21 +348,22 @@
       "qpdf.DPxze0U1.wasm"
     ],
     "staticNetworkApiFiles": [
-      "ConnectionDeviceInfoTool.BfjK6q-u.js",
-      "MembershipBootstrap.astro_astro_type_script_index_0_lang.DGWqB6eM.js",
+      "ConnectionDeviceInfoTool.BrAIOXp1.js",
+      "MembershipBootstrap.astro_astro_type_script_index_0_lang.35GjL-7q.js",
+      "browser.BVBYyk4E.js",
       "csv.4LYogLjy.js",
       "heic-to.Csm9mbVY.js",
-      "index.D0-nxUDr.js",
-      "membership.DQEjITSy.js",
+      "index.wFaeVT51.js",
+      "membership.E2PNrbZy.js",
       "password-worker-320-BW15QIX3.js",
-      "pdf-to-pptx-255.DzH1HdQb.js",
+      "pdf-to-pptx-255.Dn2DHcDg.js",
       "pdf.C7sQYPHb.js",
       "pdf.OlODldHT.js",
       "pdfstudio.BA1CUP7m.js",
-      "preferiti.astro_astro_type_script_index_0_lang.Bby0xKWT.js",
+      "preferiti.astro_astro_type_script_index_0_lang.BzUyQHrf.js",
       "qpdf.CATt98dV.js",
       "url-marketing.D8O0RESv.js",
-      "validation.De12MYq2.js"
+      "validation.BQCg_H1t.js"
     ]
   },
   "browserMatrix": {
@@ -372,8 +374,8 @@
         "requestedExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
         "status": "PASS",
         "classification": "observed",
-        "browserVersion": "154.0.8037.99",
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+        "browserVersion": "155.0.8059.40",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
         "coreRoute": "PASS",
         "homeRoute": "PASS",
         "directoryRoute": "PASS",
@@ -385,8 +387,8 @@
           "directoryOverflow": false
         },
         "lazy": {
-          "initialScripts": 18,
-          "afterActionScripts": 3,
+          "initialScripts": 20,
+          "afterActionScripts": 7,
           "engineChunkNames": [
             "business-days.BUp9vb-a.js",
             "italy.BWrzY-cS.js",
@@ -406,192 +408,213 @@
           "gate": "PASS"
         },
         "networkPrivacy": {
-          "taskRequestCount": 41,
+          "taskRequestCount": 52,
           "externalTaskRequests": 0,
           "externalAttempts": 0,
           "taskContentLeaks": 0,
           "nonGetTaskRequests": 0
         },
         "performance": {
-          "ttfbMs": 0.5,
+          "ttfbMs": 13.5,
           "domContentLoadedMs": null,
           "loadMs": null,
-          "fcpMs": 120,
+          "fcpMs": 256,
           "resources": [
             {
               "name": "http://127.0.0.1:18220/fonts/inter-latin.woff2",
               "initiatorType": "link",
               "transferSize": 48732,
               "decodedBodySize": 48432,
-              "duration": 8.600000008940697
+              "duration": 68.60000002384186
             },
             {
-              "name": "http://127.0.0.1:18220/fonts/inter-latin-ext.woff2",
+              "name": "http://127.0.0.1:18220/_astro/global.BQoMMshP.css",
               "initiatorType": "link",
-              "transferSize": 85572,
-              "decodedBodySize": 85272,
-              "duration": 10.700000002980232
+              "transferSize": 26141,
+              "decodedBodySize": 25841,
+              "duration": 56.19999998807907
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/ItalianToolPage.COxUxQia.css",
+              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BlGzA_PA.css",
               "initiatorType": "link",
-              "transferSize": 5933,
-              "decodedBodySize": 5633,
-              "duration": 12.099999994039536
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BXeU49z5.css",
-              "initiatorType": "link",
-              "transferSize": 43329,
-              "decodedBodySize": 43029,
-              "duration": 12.299999997019768
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.CXPw7Kol.js",
-              "initiatorType": "script",
-              "transferSize": 5917,
-              "decodedBodySize": 5617,
-              "duration": 13.5
+              "transferSize": 18834,
+              "decodedBodySize": 18534,
+              "duration": 59.19999998807907
             },
             {
               "name": "http://127.0.0.1:18220/_astro/tool-surface.BwWaTvnG.css",
               "initiatorType": "link",
               "transferSize": 7448,
               "decodedBodySize": 7148,
-              "duration": 14.299999997019768
+              "duration": 65.79999995231628
+            },
+            {
+              "name": "http://127.0.0.1:18220/fonts/inter-latin-ext.woff2",
+              "initiatorType": "link",
+              "transferSize": 85572,
+              "decodedBodySize": 85272,
+              "duration": 69.39999997615814
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/ItalianToolPage.COxUxQia.css",
+              "initiatorType": "link",
+              "transferSize": 5933,
+              "decodedBodySize": 5633,
+              "duration": 68.40000003576279
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.C-W1yckC.js",
+              "initiatorType": "script",
+              "transferSize": 5917,
+              "decodedBodySize": 5617,
+              "duration": 78.90000003576279
             },
             {
               "name": "http://127.0.0.1:18220/_astro/ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
               "initiatorType": "script",
               "transferSize": 1229,
               "decodedBodySize": 929,
-              "duration": 13.800000011920929
+              "duration": 108.80000001192093
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js",
+              "name": "http://127.0.0.1:18220/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.Ca82vwXb.js",
               "initiatorType": "script",
               "transferSize": 714,
               "decodedBodySize": 414,
-              "duration": 14.900000005960464
+              "duration": 109.69999998807907
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
+              "name": "http://127.0.0.1:18220/_astro/TelemetryBootstrap.astro_astro_type_script_index_0_lang.DEMB2Boy.js",
               "initiatorType": "script",
-              "transferSize": 484,
-              "decodedBodySize": 184,
-              "duration": 14.900000005960464
+              "transferSize": 1255,
+              "decodedBodySize": 955,
+              "duration": 109.80000001192093
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/preload-helper.B3nfOi5I.js",
+              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.CslgyqzY.js",
               "initiatorType": "script",
-              "transferSize": 1664,
-              "decodedBodySize": 1364,
-              "duration": 6
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/tool-icons.BD3UG4Ye.js",
-              "initiatorType": "script",
-              "transferSize": 10345,
-              "decodedBodySize": 10045,
-              "duration": 7.700000002980232
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/search.DJLcN5MY.js",
-              "initiatorType": "script",
-              "transferSize": 1299,
-              "decodedBodySize": 999,
-              "duration": 9
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/manifest.BmmxTcxK.js",
-              "initiatorType": "script",
-              "transferSize": 452,
-              "decodedBodySize": 152,
-              "duration": 9.5
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/events.BpX949VT.js",
-              "initiatorType": "script",
-              "transferSize": 1961,
-              "decodedBodySize": 1661,
-              "duration": 8.400000005960464
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/browser.DS3RFGQK.js",
-              "initiatorType": "script",
-              "transferSize": 9640,
-              "decodedBodySize": 9340,
-              "duration": 9.5
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.B_T18PxA.js",
-              "initiatorType": "script",
-              "transferSize": 6795,
-              "decodedBodySize": 6495,
-              "duration": 7.0999999940395355
+              "transferSize": 7273,
+              "decodedBodySize": 6973,
+              "duration": 61.69999998807907
             },
             {
               "name": "http://127.0.0.1:18220/_astro/client.BQJ46GI4.js",
               "initiatorType": "script",
               "transferSize": 1791,
               "decodedBodySize": 1491,
-              "duration": 7.299999997019768
+              "duration": 71.80000001192093
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/preload-helper.B3nfOi5I.js",
+              "initiatorType": "script",
+              "transferSize": 1664,
+              "decodedBodySize": 1364,
+              "duration": 44.69999998807907
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/tool-icons.BD3UG4Ye.js",
+              "initiatorType": "script",
+              "transferSize": 10345,
+              "decodedBodySize": 10045,
+              "duration": 46.60000002384186
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/search.DJLcN5MY.js",
+              "initiatorType": "script",
+              "transferSize": 1299,
+              "decodedBodySize": 999,
+              "duration": 54
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/manifest.BmmxTcxK.js",
+              "initiatorType": "script",
+              "transferSize": 452,
+              "decodedBodySize": 152,
+              "duration": 63.09999996423721
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/browser.BVBYyk4E.js",
+              "initiatorType": "script",
+              "transferSize": 11428,
+              "decodedBodySize": 11128,
+              "duration": 70.29999995231628
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/events.D0o_CweS.js",
+              "initiatorType": "script",
+              "transferSize": 1961,
+              "decodedBodySize": 1661,
+              "duration": 73.19999998807907
             },
             {
               "name": "http://127.0.0.1:18220/_astro/theme.BedJIwSV.js",
               "initiatorType": "script",
               "transferSize": 460,
               "decodedBodySize": 160,
-              "duration": 8.099999994039536
+              "duration": 56.89999997615814
             },
             {
               "name": "http://127.0.0.1:18220/_astro/hooks.module.BsvH4L0y.js",
               "initiatorType": "script",
               "transferSize": 3094,
               "decodedBodySize": 2794,
-              "duration": 4
+              "duration": 62.19999998807907
             },
             {
               "name": "http://127.0.0.1:18220/_astro/jsxRuntime.module.Bfdc-KV3.js",
               "initiatorType": "script",
               "transferSize": 785,
               "decodedBodySize": 485,
-              "duration": 8.400000005960464
+              "duration": 74.69999998807907
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/shared.V2tSCXZH.js",
+              "name": "http://127.0.0.1:18220/_astro/shared.CThHVU7_.js",
               "initiatorType": "script",
-              "transferSize": 28344,
-              "decodedBodySize": 28044,
-              "duration": 8.5
+              "transferSize": 27891,
+              "decodedBodySize": 27591,
+              "duration": 104.19999998807907
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/tool-runtime.CUk5vq6z.js",
+              "name": "http://127.0.0.1:18220/_astro/tool-runtime.Dpx2TE6i.js",
               "initiatorType": "script",
               "transferSize": 41316,
               "decodedBodySize": 41016,
-              "duration": 8.300000011920929
+              "duration": 132.5
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/completed-tool.BMlVQh0M.js",
+              "initiatorType": "script",
+              "transferSize": 882,
+              "decodedBodySize": 582,
+              "duration": 237.5
             },
             {
               "name": "http://127.0.0.1:18220/_astro/preact.module.Bl7PEaKa.js",
               "initiatorType": "script",
               "transferSize": 10821,
               "decodedBodySize": 10521,
-              "duration": 9.200000002980232
+              "duration": 166.30000001192093
             },
             {
               "name": "http://127.0.0.1:18220/api/auth/session",
               "initiatorType": "fetch",
               "transferSize": 760,
               "decodedBodySize": 460,
-              "duration": 8.5
+              "duration": 222
             },
             {
               "name": "http://127.0.0.1:18220/favicon.svg",
               "initiatorType": "other",
               "transferSize": 687,
               "decodedBodySize": 387,
-              "duration": 2.5999999940395355
+              "duration": 158.4000000357628
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/browser-download-339.DvHjGlvh.js",
+              "initiatorType": "script",
+              "transferSize": 4333,
+              "decodedBodySize": 4033,
+              "duration": 157.39999997615814
             }
           ]
         },
@@ -622,8 +645,8 @@
           "directoryOverflow": false
         },
         "lazy": {
-          "initialScripts": 18,
-          "afterActionScripts": 3,
+          "initialScripts": 20,
+          "afterActionScripts": 7,
           "engineChunkNames": [
             "business-days.BUp9vb-a.js",
             "italy.BWrzY-cS.js",
@@ -643,192 +666,213 @@
           "gate": "PASS"
         },
         "networkPrivacy": {
-          "taskRequestCount": 41,
+          "taskRequestCount": 52,
           "externalTaskRequests": 0,
           "externalAttempts": 0,
           "taskContentLeaks": 0,
           "nonGetTaskRequests": 0
         },
         "performance": {
-          "ttfbMs": 0.5,
+          "ttfbMs": 1.100000023841858,
           "domContentLoadedMs": null,
           "loadMs": null,
-          "fcpMs": null,
+          "fcpMs": 216,
           "resources": [
             {
               "name": "http://127.0.0.1:18220/fonts/inter-latin.woff2",
               "initiatorType": "link",
               "transferSize": 48732,
               "decodedBodySize": 48432,
-              "duration": 11.599999994039536
+              "duration": 37.69999998807907
             },
             {
               "name": "http://127.0.0.1:18220/fonts/inter-latin-ext.woff2",
               "initiatorType": "link",
               "transferSize": 85572,
               "decodedBodySize": 85272,
-              "duration": 15
+              "duration": 37.39999997615814
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BXeU49z5.css",
+              "name": "http://127.0.0.1:18220/_astro/global.BQoMMshP.css",
               "initiatorType": "link",
-              "transferSize": 43329,
-              "decodedBodySize": 43029,
-              "duration": 12.700000002980232
+              "transferSize": 26141,
+              "decodedBodySize": 25841,
+              "duration": 30.80000001192093
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BlGzA_PA.css",
+              "initiatorType": "link",
+              "transferSize": 18834,
+              "decodedBodySize": 18534,
+              "duration": 33.10000002384186
             },
             {
               "name": "http://127.0.0.1:18220/_astro/tool-surface.BwWaTvnG.css",
               "initiatorType": "link",
               "transferSize": 7448,
               "decodedBodySize": 7148,
-              "duration": 13.900000005960464
+              "duration": 37.30000001192093
             },
             {
               "name": "http://127.0.0.1:18220/_astro/ItalianToolPage.COxUxQia.css",
               "initiatorType": "link",
               "transferSize": 5933,
               "decodedBodySize": 5633,
-              "duration": 13.599999994039536
+              "duration": 37.5
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.CXPw7Kol.js",
+              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.C-W1yckC.js",
               "initiatorType": "script",
               "transferSize": 5917,
               "decodedBodySize": 5617,
-              "duration": 16.900000005960464
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js",
-              "initiatorType": "script",
-              "transferSize": 714,
-              "decodedBodySize": 414,
-              "duration": 16.900000005960464
+              "duration": 37.299999952316284
             },
             {
               "name": "http://127.0.0.1:18220/_astro/ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
               "initiatorType": "script",
               "transferSize": 1229,
               "decodedBodySize": 929,
-              "duration": 16.700000002980232
+              "duration": 36.5
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
+              "name": "http://127.0.0.1:18220/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.Ca82vwXb.js",
               "initiatorType": "script",
-              "transferSize": 484,
-              "decodedBodySize": 184,
-              "duration": 17
+              "transferSize": 714,
+              "decodedBodySize": 414,
+              "duration": 37.40000003576279
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.B_T18PxA.js",
+              "name": "http://127.0.0.1:18220/_astro/TelemetryBootstrap.astro_astro_type_script_index_0_lang.DEMB2Boy.js",
               "initiatorType": "script",
-              "transferSize": 6795,
-              "decodedBodySize": 6495,
-              "duration": 4.9000000059604645
+              "transferSize": 1255,
+              "decodedBodySize": 955,
+              "duration": 39.60000002384186
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.CslgyqzY.js",
+              "initiatorType": "script",
+              "transferSize": 7273,
+              "decodedBodySize": 6973,
+              "duration": 4.800000011920929
             },
             {
               "name": "http://127.0.0.1:18220/_astro/client.BQJ46GI4.js",
               "initiatorType": "script",
               "transferSize": 1791,
               "decodedBodySize": 1491,
-              "duration": 5
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/theme.BedJIwSV.js",
-              "initiatorType": "script",
-              "transferSize": 460,
-              "decodedBodySize": 160,
-              "duration": 4.5
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/events.BpX949VT.js",
-              "initiatorType": "script",
-              "transferSize": 1961,
-              "decodedBodySize": 1661,
-              "duration": 6.199999988079071
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/browser.DS3RFGQK.js",
-              "initiatorType": "script",
-              "transferSize": 9640,
-              "decodedBodySize": 9340,
-              "duration": 6.199999988079071
+              "duration": 7.5
             },
             {
               "name": "http://127.0.0.1:18220/_astro/preload-helper.B3nfOi5I.js",
               "initiatorType": "script",
               "transferSize": 1664,
               "decodedBodySize": 1364,
-              "duration": 6.5
+              "duration": 7.799999952316284
             },
             {
               "name": "http://127.0.0.1:18220/_astro/tool-icons.BD3UG4Ye.js",
               "initiatorType": "script",
               "transferSize": 10345,
               "decodedBodySize": 10045,
-              "duration": 7.200000002980232
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/manifest.BmmxTcxK.js",
-              "initiatorType": "script",
-              "transferSize": 452,
-              "decodedBodySize": 152,
-              "duration": 7.9000000059604645
+              "duration": 8.299999952316284
             },
             {
               "name": "http://127.0.0.1:18220/_astro/search.DJLcN5MY.js",
               "initiatorType": "script",
               "transferSize": 1299,
               "decodedBodySize": 999,
-              "duration": 8.5
+              "duration": 9
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/browser.BVBYyk4E.js",
+              "initiatorType": "script",
+              "transferSize": 11428,
+              "decodedBodySize": 11128,
+              "duration": 9.699999988079071
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/manifest.BmmxTcxK.js",
+              "initiatorType": "script",
+              "transferSize": 452,
+              "decodedBodySize": 152,
+              "duration": 10.800000011920929
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/events.D0o_CweS.js",
+              "initiatorType": "script",
+              "transferSize": 1961,
+              "decodedBodySize": 1661,
+              "duration": 11.400000035762787
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/theme.BedJIwSV.js",
+              "initiatorType": "script",
+              "transferSize": 460,
+              "decodedBodySize": 160,
+              "duration": 10.899999976158142
             },
             {
               "name": "http://127.0.0.1:18220/_astro/hooks.module.BsvH4L0y.js",
               "initiatorType": "script",
               "transferSize": 3094,
               "decodedBodySize": 2794,
-              "duration": 3.9000000059604645
+              "duration": 12.300000011920929
             },
             {
               "name": "http://127.0.0.1:18220/_astro/jsxRuntime.module.Bfdc-KV3.js",
               "initiatorType": "script",
               "transferSize": 785,
               "decodedBodySize": 485,
-              "duration": 4.9000000059604645
+              "duration": 14
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/tool-runtime.CUk5vq6z.js",
+              "name": "http://127.0.0.1:18220/_astro/shared.CThHVU7_.js",
+              "initiatorType": "script",
+              "transferSize": 27891,
+              "decodedBodySize": 27591,
+              "duration": 13.400000035762787
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/tool-runtime.Dpx2TE6i.js",
               "initiatorType": "script",
               "transferSize": 41316,
               "decodedBodySize": 41016,
-              "duration": 6.4000000059604645
+              "duration": 13.800000011920929
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/shared.V2tSCXZH.js",
+              "name": "http://127.0.0.1:18220/_astro/completed-tool.BMlVQh0M.js",
               "initiatorType": "script",
-              "transferSize": 28344,
-              "decodedBodySize": 28044,
-              "duration": 6.4000000059604645
+              "transferSize": 882,
+              "decodedBodySize": 582,
+              "duration": 16.900000035762787
             },
             {
               "name": "http://127.0.0.1:18220/_astro/preact.module.Bl7PEaKa.js",
               "initiatorType": "script",
               "transferSize": 10821,
               "decodedBodySize": 10521,
-              "duration": 6.0999999940395355
+              "duration": 16.80000001192093
             },
             {
               "name": "http://127.0.0.1:18220/api/auth/session",
               "initiatorType": "fetch",
               "transferSize": 760,
               "decodedBodySize": 460,
-              "duration": 5.0999999940395355
+              "duration": 10.5
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/browser-download-339.DvHjGlvh.js",
+              "initiatorType": "script",
+              "transferSize": 4333,
+              "decodedBodySize": 4033,
+              "duration": 10.300000011920929
             },
             {
               "name": "http://127.0.0.1:18220/favicon.svg",
               "initiatorType": "other",
               "transferSize": 687,
               "decodedBodySize": 387,
-              "duration": 6.5
+              "duration": 11.199999988079071
             }
           ]
         },
@@ -859,8 +903,8 @@
           "directoryOverflow": false
         },
         "lazy": {
-          "initialScripts": 18,
-          "afterActionScripts": 3,
+          "initialScripts": 20,
+          "afterActionScripts": 7,
           "engineChunkNames": [
             "business-days.BUp9vb-a.js",
             "italy.BWrzY-cS.js",
@@ -880,192 +924,213 @@
           "gate": "PASS"
         },
         "networkPrivacy": {
-          "taskRequestCount": 41,
+          "taskRequestCount": 52,
           "externalTaskRequests": 0,
           "externalAttempts": 0,
           "taskContentLeaks": 0,
           "nonGetTaskRequests": 0
         },
         "performance": {
-          "ttfbMs": 0.4000000059604645,
+          "ttfbMs": 1.300000011920929,
           "domContentLoadedMs": null,
           "loadMs": null,
-          "fcpMs": 112,
+          "fcpMs": 204,
           "resources": [
             {
               "name": "http://127.0.0.1:18220/fonts/inter-latin.woff2",
               "initiatorType": "link",
               "transferSize": 48732,
               "decodedBodySize": 48432,
-              "duration": 9.799999997019768
+              "duration": 18.799999952316284
             },
             {
               "name": "http://127.0.0.1:18220/fonts/inter-latin-ext.woff2",
               "initiatorType": "link",
               "transferSize": 85572,
               "decodedBodySize": 85272,
-              "duration": 9.200000002980232
+              "duration": 30.899999976158142
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BXeU49z5.css",
+              "name": "http://127.0.0.1:18220/_astro/global.BQoMMshP.css",
               "initiatorType": "link",
-              "transferSize": 43329,
-              "decodedBodySize": 43029,
-              "duration": 8
+              "transferSize": 26141,
+              "decodedBodySize": 25841,
+              "duration": 24
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BlGzA_PA.css",
+              "initiatorType": "link",
+              "transferSize": 18834,
+              "decodedBodySize": 18534,
+              "duration": 25.69999998807907
             },
             {
               "name": "http://127.0.0.1:18220/_astro/tool-surface.BwWaTvnG.css",
               "initiatorType": "link",
               "transferSize": 7448,
               "decodedBodySize": 7148,
-              "duration": 8.099999994039536
+              "duration": 26.80000001192093
             },
             {
               "name": "http://127.0.0.1:18220/_astro/ItalianToolPage.COxUxQia.css",
               "initiatorType": "link",
               "transferSize": 5933,
               "decodedBodySize": 5633,
-              "duration": 8.299999997019768
+              "duration": 30.19999998807907
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.CXPw7Kol.js",
+              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.C-W1yckC.js",
               "initiatorType": "script",
               "transferSize": 5917,
               "decodedBodySize": 5617,
-              "duration": 8.700000002980232
+              "duration": 31.30000001192093
             },
             {
               "name": "http://127.0.0.1:18220/_astro/ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
               "initiatorType": "script",
               "transferSize": 1229,
               "decodedBodySize": 929,
-              "duration": 10.299999997019768
+              "duration": 34
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js",
+              "name": "http://127.0.0.1:18220/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.Ca82vwXb.js",
               "initiatorType": "script",
               "transferSize": 714,
               "decodedBodySize": 414,
-              "duration": 10.399999991059303
+              "duration": 38.5
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
+              "name": "http://127.0.0.1:18220/_astro/TelemetryBootstrap.astro_astro_type_script_index_0_lang.DEMB2Boy.js",
               "initiatorType": "script",
-              "transferSize": 484,
-              "decodedBodySize": 184,
-              "duration": 10.399999991059303
+              "transferSize": 1255,
+              "decodedBodySize": 955,
+              "duration": 38.60000002384186
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.B_T18PxA.js",
+              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.CslgyqzY.js",
               "initiatorType": "script",
-              "transferSize": 6795,
-              "decodedBodySize": 6495,
-              "duration": 3.6000000089406967
+              "transferSize": 7273,
+              "decodedBodySize": 6973,
+              "duration": 20.599999964237213
             },
             {
               "name": "http://127.0.0.1:18220/_astro/client.BQJ46GI4.js",
               "initiatorType": "script",
               "transferSize": 1791,
               "decodedBodySize": 1491,
-              "duration": 5.9000000059604645
+              "duration": 20.69999998807907
             },
             {
               "name": "http://127.0.0.1:18220/_astro/preload-helper.B3nfOi5I.js",
               "initiatorType": "script",
               "transferSize": 1664,
               "decodedBodySize": 1364,
-              "duration": 6.5
+              "duration": 7.300000011920929
             },
             {
               "name": "http://127.0.0.1:18220/_astro/tool-icons.BD3UG4Ye.js",
               "initiatorType": "script",
               "transferSize": 10345,
               "decodedBodySize": 10045,
-              "duration": 6.5
+              "duration": 7.399999976158142
             },
             {
               "name": "http://127.0.0.1:18220/_astro/search.DJLcN5MY.js",
               "initiatorType": "script",
               "transferSize": 1299,
               "decodedBodySize": 999,
-              "duration": 6.699999988079071
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/browser.DS3RFGQK.js",
-              "initiatorType": "script",
-              "transferSize": 9640,
-              "decodedBodySize": 9340,
-              "duration": 6.899999991059303
+              "duration": 8.400000035762787
             },
             {
               "name": "http://127.0.0.1:18220/_astro/manifest.BmmxTcxK.js",
               "initiatorType": "script",
               "transferSize": 452,
               "decodedBodySize": 152,
-              "duration": 7
+              "duration": 11.899999976158142
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/events.BpX949VT.js",
+              "name": "http://127.0.0.1:18220/_astro/browser.BVBYyk4E.js",
+              "initiatorType": "script",
+              "transferSize": 11428,
+              "decodedBodySize": 11128,
+              "duration": 13.300000011920929
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/events.D0o_CweS.js",
               "initiatorType": "script",
               "transferSize": 1961,
               "decodedBodySize": 1661,
-              "duration": 7.199999988079071
+              "duration": 16.19999998807907
             },
             {
               "name": "http://127.0.0.1:18220/_astro/theme.BedJIwSV.js",
               "initiatorType": "script",
               "transferSize": 460,
               "decodedBodySize": 160,
-              "duration": 11.099999994039536
+              "duration": 16.599999964237213
             },
             {
               "name": "http://127.0.0.1:18220/_astro/hooks.module.BsvH4L0y.js",
               "initiatorType": "script",
               "transferSize": 3094,
               "decodedBodySize": 2794,
-              "duration": 3
+              "duration": 18.100000023841858
             },
             {
               "name": "http://127.0.0.1:18220/_astro/jsxRuntime.module.Bfdc-KV3.js",
               "initiatorType": "script",
               "transferSize": 785,
               "decodedBodySize": 485,
-              "duration": 3.7000000029802322
+              "duration": 19.30000001192093
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/shared.V2tSCXZH.js",
+              "name": "http://127.0.0.1:18220/_astro/shared.CThHVU7_.js",
               "initiatorType": "script",
-              "transferSize": 28344,
-              "decodedBodySize": 28044,
-              "duration": 5.299999997019768
+              "transferSize": 27891,
+              "decodedBodySize": 27591,
+              "duration": 23.80000001192093
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/tool-runtime.CUk5vq6z.js",
+              "name": "http://127.0.0.1:18220/_astro/tool-runtime.Dpx2TE6i.js",
               "initiatorType": "script",
               "transferSize": 41316,
               "decodedBodySize": 41016,
-              "duration": 8.099999994039536
+              "duration": 31
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/completed-tool.BMlVQh0M.js",
+              "initiatorType": "script",
+              "transferSize": 882,
+              "decodedBodySize": 582,
+              "duration": 69.89999997615814
             },
             {
               "name": "http://127.0.0.1:18220/_astro/preact.module.Bl7PEaKa.js",
               "initiatorType": "script",
               "transferSize": 10821,
               "decodedBodySize": 10521,
-              "duration": 5.299999997019768
+              "duration": 79.19999998807907
             },
             {
               "name": "http://127.0.0.1:18220/api/auth/session",
               "initiatorType": "fetch",
               "transferSize": 760,
               "decodedBodySize": 460,
-              "duration": 3.7999999970197678
+              "duration": 291.4000000357628
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/browser-download-339.DvHjGlvh.js",
+              "initiatorType": "script",
+              "transferSize": 4333,
+              "decodedBodySize": 4033,
+              "duration": 323.39999997615814
             },
             {
               "name": "http://127.0.0.1:18220/favicon.svg",
               "initiatorType": "other",
               "transferSize": 687,
               "decodedBodySize": 387,
-              "duration": 3.699999988079071
+              "duration": 293.9000000357628
             }
           ]
         },
@@ -1096,8 +1161,8 @@
           "directoryOverflow": false
         },
         "lazy": {
-          "initialScripts": 18,
-          "afterActionScripts": 3,
+          "initialScripts": 20,
+          "afterActionScripts": 7,
           "engineChunkNames": [
             "business-days.BUp9vb-a.js",
             "italy.BWrzY-cS.js",
@@ -1117,192 +1182,213 @@
           "gate": "UNSUPPORTED"
         },
         "networkPrivacy": {
-          "taskRequestCount": 41,
+          "taskRequestCount": 52,
           "externalTaskRequests": 0,
           "externalAttempts": 0,
           "taskContentLeaks": 0,
           "nonGetTaskRequests": 0
         },
         "performance": {
-          "ttfbMs": 1,
+          "ttfbMs": 2,
           "domContentLoadedMs": null,
           "loadMs": null,
-          "fcpMs": 175,
+          "fcpMs": 342,
           "resources": [
             {
               "name": "http://127.0.0.1:18220/fonts/inter-latin.woff2",
               "initiatorType": "other",
               "transferSize": 48732,
               "decodedBodySize": 48432,
-              "duration": 30
+              "duration": 153
             },
             {
               "name": "http://127.0.0.1:18220/fonts/inter-latin-ext.woff2",
               "initiatorType": "other",
               "transferSize": 85572,
               "decodedBodySize": 85272,
-              "duration": 32
+              "duration": 154
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BXeU49z5.css",
+              "name": "http://127.0.0.1:18220/_astro/global.BQoMMshP.css",
               "initiatorType": "link",
-              "transferSize": 43329,
-              "decodedBodySize": 43029,
-              "duration": 31
+              "transferSize": 26141,
+              "decodedBodySize": 25841,
+              "duration": 153
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BlGzA_PA.css",
+              "initiatorType": "link",
+              "transferSize": 18834,
+              "decodedBodySize": 18534,
+              "duration": 154
             },
             {
               "name": "http://127.0.0.1:18220/_astro/tool-surface.BwWaTvnG.css",
               "initiatorType": "link",
               "transferSize": 7448,
               "decodedBodySize": 7148,
-              "duration": 32
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.CXPw7Kol.js",
-              "initiatorType": "script",
-              "transferSize": 5917,
-              "decodedBodySize": 5617,
-              "duration": 32
+              "duration": 154
             },
             {
               "name": "http://127.0.0.1:18220/_astro/ItalianToolPage.COxUxQia.css",
               "initiatorType": "link",
               "transferSize": 5933,
               "decodedBodySize": 5633,
-              "duration": 32
+              "duration": 154
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.C-W1yckC.js",
+              "initiatorType": "script",
+              "transferSize": 5917,
+              "decodedBodySize": 5617,
+              "duration": 155
             },
             {
               "name": "http://127.0.0.1:18220/_astro/ThemeToggle.astro_astro_type_script_index_0_lang.C0aw8MuT.js",
               "initiatorType": "script",
               "transferSize": 1229,
               "decodedBodySize": 929,
-              "duration": 33
+              "duration": 155
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js",
+              "name": "http://127.0.0.1:18220/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.Ca82vwXb.js",
               "initiatorType": "script",
               "transferSize": 714,
               "decodedBodySize": 414,
-              "duration": 33
+              "duration": 155
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
+              "name": "http://127.0.0.1:18220/_astro/TelemetryBootstrap.astro_astro_type_script_index_0_lang.DEMB2Boy.js",
               "initiatorType": "script",
-              "transferSize": 484,
-              "decodedBodySize": 184,
-              "duration": 33
+              "transferSize": 1255,
+              "decodedBodySize": 955,
+              "duration": 156
             },
             {
               "name": "http://127.0.0.1:18220/favicon.svg",
               "initiatorType": "other",
               "transferSize": 687,
               "decodedBodySize": 387,
-              "duration": 132
+              "duration": 302
             },
             {
               "name": "http://127.0.0.1:18220/_astro/theme.BedJIwSV.js",
               "initiatorType": "script",
               "transferSize": 460,
               "decodedBodySize": 160,
-              "duration": 67
+              "duration": 23
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/browser.BVBYyk4E.js",
+              "initiatorType": "script",
+              "transferSize": 11428,
+              "decodedBodySize": 11128,
+              "duration": 20
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/events.D0o_CweS.js",
+              "initiatorType": "script",
+              "transferSize": 1961,
+              "decodedBodySize": 1661,
+              "duration": 24
             },
             {
               "name": "http://127.0.0.1:18220/_astro/preload-helper.B3nfOi5I.js",
               "initiatorType": "script",
               "transferSize": 1664,
               "decodedBodySize": 1364,
-              "duration": 70
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/manifest.BmmxTcxK.js",
-              "initiatorType": "script",
-              "transferSize": 452,
-              "decodedBodySize": 152,
-              "duration": 70
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/search.DJLcN5MY.js",
-              "initiatorType": "script",
-              "transferSize": 1299,
-              "decodedBodySize": 999,
-              "duration": 70
+              "duration": 39
             },
             {
               "name": "http://127.0.0.1:18220/_astro/tool-icons.BD3UG4Ye.js",
               "initiatorType": "script",
               "transferSize": 10345,
               "decodedBodySize": 10045,
-              "duration": 70
+              "duration": 40
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/browser.DS3RFGQK.js",
+              "name": "http://127.0.0.1:18220/_astro/search.DJLcN5MY.js",
               "initiatorType": "script",
-              "transferSize": 9640,
-              "decodedBodySize": 9340,
-              "duration": 70
+              "transferSize": 1299,
+              "decodedBodySize": 999,
+              "duration": 41
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/events.BpX949VT.js",
+              "name": "http://127.0.0.1:18220/_astro/manifest.BmmxTcxK.js",
               "initiatorType": "script",
-              "transferSize": 1961,
-              "decodedBodySize": 1661,
-              "duration": 71
+              "transferSize": 452,
+              "decodedBodySize": 152,
+              "duration": 41
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.CslgyqzY.js",
+              "initiatorType": "script",
+              "transferSize": 7273,
+              "decodedBodySize": 6973,
+              "duration": 27
             },
             {
               "name": "http://127.0.0.1:18220/_astro/client.BQJ46GI4.js",
               "initiatorType": "script",
               "transferSize": 1791,
               "decodedBodySize": 1491,
-              "duration": 58
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.B_T18PxA.js",
-              "initiatorType": "script",
-              "transferSize": 6795,
-              "decodedBodySize": 6495,
-              "duration": 58
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/preact.module.Bl7PEaKa.js",
-              "initiatorType": "script",
-              "transferSize": 10821,
-              "decodedBodySize": 10521,
-              "duration": 13
+              "duration": 28
             },
             {
               "name": "http://127.0.0.1:18220/api/auth/session",
               "initiatorType": "fetch",
               "transferSize": 760,
               "decodedBodySize": 460,
-              "duration": 12
+              "duration": 49
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/preact.module.Bl7PEaKa.js",
+              "initiatorType": "script",
+              "transferSize": 10821,
+              "decodedBodySize": 10521,
+              "duration": 26
             },
             {
               "name": "http://127.0.0.1:18220/_astro/hooks.module.BsvH4L0y.js",
               "initiatorType": "script",
               "transferSize": 3094,
               "decodedBodySize": 2794,
-              "duration": 13
+              "duration": 29
             },
             {
               "name": "http://127.0.0.1:18220/_astro/jsxRuntime.module.Bfdc-KV3.js",
               "initiatorType": "script",
               "transferSize": 785,
               "decodedBodySize": 485,
-              "duration": 13
+              "duration": 59
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/shared.V2tSCXZH.js",
+              "name": "http://127.0.0.1:18220/_astro/shared.CThHVU7_.js",
               "initiatorType": "script",
-              "transferSize": 28344,
-              "decodedBodySize": 28044,
-              "duration": 14
+              "transferSize": 27891,
+              "decodedBodySize": 27591,
+              "duration": 59
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/tool-runtime.CUk5vq6z.js",
+              "name": "http://127.0.0.1:18220/_astro/tool-runtime.Dpx2TE6i.js",
               "initiatorType": "script",
               "transferSize": 41316,
               "decodedBodySize": 41016,
-              "duration": 14
+              "duration": 62
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/completed-tool.BMlVQh0M.js",
+              "initiatorType": "script",
+              "transferSize": 882,
+              "decodedBodySize": 582,
+              "duration": 63
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/browser-download-339.DvHjGlvh.js",
+              "initiatorType": "script",
+              "transferSize": 4333,
+              "decodedBodySize": 4033,
+              "duration": 18
             }
           ]
         },
@@ -1333,8 +1419,8 @@
           "directoryOverflow": false
         },
         "lazy": {
-          "initialScripts": 18,
-          "afterActionScripts": 3,
+          "initialScripts": 20,
+          "afterActionScripts": 7,
           "engineChunkNames": [
             "business-days.BUp9vb-a.js",
             "italy.BWrzY-cS.js",
@@ -1354,37 +1440,44 @@
           "gate": "UNSUPPORTED"
         },
         "networkPrivacy": {
-          "taskRequestCount": 40,
+          "taskRequestCount": 51,
           "externalTaskRequests": 0,
           "externalAttempts": 0,
           "taskContentLeaks": 0,
           "nonGetTaskRequests": 0
         },
         "performance": {
-          "ttfbMs": 0,
+          "ttfbMs": 1,
           "domContentLoadedMs": null,
           "loadMs": null,
-          "fcpMs": 205,
+          "fcpMs": 153,
           "resources": [
             {
               "name": "http://127.0.0.1:18220/fonts/inter-latin.woff2",
               "initiatorType": "link",
               "transferSize": 48732,
               "decodedBodySize": 48432,
-              "duration": 9
+              "duration": 19
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/global.BQoMMshP.css",
+              "initiatorType": "link",
+              "transferSize": 26141,
+              "decodedBodySize": 25841,
+              "duration": 21
             },
             {
               "name": "http://127.0.0.1:18220/fonts/inter-latin-ext.woff2",
               "initiatorType": "link",
               "transferSize": 85572,
               "decodedBodySize": 85272,
-              "duration": 23
+              "duration": 22
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BXeU49z5.css",
-              "initiatorType": "link",
-              "transferSize": 43329,
-              "decodedBodySize": 43029,
+              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.C-W1yckC.js",
+              "initiatorType": "script",
+              "transferSize": 5917,
+              "decodedBodySize": 5617,
               "duration": 23
             },
             {
@@ -1392,7 +1485,14 @@
               "initiatorType": "link",
               "transferSize": 7448,
               "decodedBodySize": 7148,
-              "duration": 25
+              "duration": 24
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/BaseLayout.BlGzA_PA.css",
+              "initiatorType": "link",
+              "transferSize": 18834,
+              "decodedBodySize": 18534,
+              "duration": 24
             },
             {
               "name": "http://127.0.0.1:18220/_astro/ItalianToolPage.COxUxQia.css",
@@ -1406,49 +1506,21 @@
               "initiatorType": "script",
               "transferSize": 1229,
               "decodedBodySize": 929,
-              "duration": 25
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/GlobalSearch.astro_astro_type_script_index_0_lang.CXPw7Kol.js",
-              "initiatorType": "script",
-              "transferSize": 5917,
-              "decodedBodySize": 5617,
-              "duration": 26
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.dXxnfpK6.js",
-              "initiatorType": "script",
-              "transferSize": 714,
-              "decodedBodySize": 414,
               "duration": 24
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/TelemetryBootstrap.astro_astro_type_script_index_0_lang.BCo831qE.js",
+              "name": "http://127.0.0.1:18220/_astro/ToolRouteTelemetry.astro_astro_type_script_index_0_lang.Ca82vwXb.js",
               "initiatorType": "script",
-              "transferSize": 484,
-              "decodedBodySize": 184,
+              "transferSize": 714,
+              "decodedBodySize": 414,
               "duration": 25
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.B_T18PxA.js",
+              "name": "http://127.0.0.1:18220/_astro/TelemetryBootstrap.astro_astro_type_script_index_0_lang.DEMB2Boy.js",
               "initiatorType": "script",
-              "transferSize": 6795,
-              "decodedBodySize": 6495,
-              "duration": 3
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/client.BQJ46GI4.js",
-              "initiatorType": "script",
-              "transferSize": 1791,
-              "decodedBodySize": 1491,
-              "duration": 4
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/theme.BedJIwSV.js",
-              "initiatorType": "script",
-              "transferSize": 460,
-              "decodedBodySize": 160,
-              "duration": 4
+              "transferSize": 1255,
+              "decodedBodySize": 955,
+              "duration": 10
             },
             {
               "name": "http://127.0.0.1:18220/_astro/preload-helper.B3nfOi5I.js",
@@ -1479,59 +1551,94 @@
               "duration": 7
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/browser.DS3RFGQK.js",
+              "name": "http://127.0.0.1:18220/_astro/browser.BVBYyk4E.js",
               "initiatorType": "script",
-              "transferSize": 9640,
-              "decodedBodySize": 9340,
+              "transferSize": 11428,
+              "decodedBodySize": 11128,
               "duration": 8
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/events.BpX949VT.js",
+              "name": "http://127.0.0.1:18220/_astro/events.D0o_CweS.js",
               "initiatorType": "script",
               "transferSize": 1961,
               "decodedBodySize": 1661,
               "duration": 8
             },
             {
+              "name": "http://127.0.0.1:18220/_astro/BusinessDayTool.CslgyqzY.js",
+              "initiatorType": "script",
+              "transferSize": 7273,
+              "decodedBodySize": 6973,
+              "duration": 4
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/client.BQJ46GI4.js",
+              "initiatorType": "script",
+              "transferSize": 1791,
+              "decodedBodySize": 1491,
+              "duration": 5
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/theme.BedJIwSV.js",
+              "initiatorType": "script",
+              "transferSize": 460,
+              "decodedBodySize": 160,
+              "duration": 5
+            },
+            {
               "name": "http://127.0.0.1:18220/_astro/hooks.module.BsvH4L0y.js",
               "initiatorType": "script",
               "transferSize": 3094,
               "decodedBodySize": 2794,
-              "duration": 6
+              "duration": 15
             },
             {
               "name": "http://127.0.0.1:18220/_astro/jsxRuntime.module.Bfdc-KV3.js",
               "initiatorType": "script",
               "transferSize": 785,
               "decodedBodySize": 485,
-              "duration": 33
+              "duration": 29
             },
             {
-              "name": "http://127.0.0.1:18220/_astro/tool-runtime.CUk5vq6z.js",
+              "name": "http://127.0.0.1:18220/_astro/shared.CThHVU7_.js",
+              "initiatorType": "script",
+              "transferSize": 27891,
+              "decodedBodySize": 27591,
+              "duration": 29
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/completed-tool.BMlVQh0M.js",
+              "initiatorType": "script",
+              "transferSize": 882,
+              "decodedBodySize": 582,
+              "duration": 31
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/tool-runtime.Dpx2TE6i.js",
               "initiatorType": "script",
               "transferSize": 41316,
               "decodedBodySize": 41016,
-              "duration": 35
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/shared.V2tSCXZH.js",
-              "initiatorType": "script",
-              "transferSize": 28344,
-              "decodedBodySize": 28044,
-              "duration": 36
-            },
-            {
-              "name": "http://127.0.0.1:18220/_astro/preact.module.Bl7PEaKa.js",
-              "initiatorType": "script",
-              "transferSize": 10821,
-              "decodedBodySize": 10521,
-              "duration": 41
+              "duration": 31
             },
             {
               "name": "http://127.0.0.1:18220/api/auth/session",
               "initiatorType": "fetch",
               "transferSize": 760,
               "decodedBodySize": 460,
+              "duration": 35
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/preact.module.Bl7PEaKa.js",
+              "initiatorType": "script",
+              "transferSize": 10821,
+              "decodedBodySize": 10521,
+              "duration": 40
+            },
+            {
+              "name": "http://127.0.0.1:18220/_astro/browser-download-339.DvHjGlvh.js",
+              "initiatorType": "script",
+              "transferSize": 4333,
+              "decodedBodySize": 4033,
               "duration": 4
             }
           ]
@@ -1567,7 +1674,7 @@
     {
       "command": "npm run build",
       "status": "PASS",
-      "evidence": "lazyEngineGate=PASS; 679 JS assets; 10283142 B total"
+      "evidence": "lazyEngineGate=PASS; 693 JS assets; 10470986 B total"
     },
     {
       "command": "node scripts/acceptance/browser-performance-matrix.mjs (chrome)",
@@ -1597,12 +1704,12 @@
     {
       "command": "npm run acceptance:browser",
       "status": "PASS",
-      "evidence": "browser acceptance PASS: lazy scripts after action=3, task-content network requests=0"
+      "evidence": "browser acceptance PASS: lazy scripts after action=7, task-content network requests=0"
     },
     {
       "command": "npm run acceptance:onboarding",
-      "status": "PASS",
-      "evidence": "receipt: quality/receipts/onboarding/browser-acceptance.json"
+      "status": "FAIL",
+      "evidence": "Node.js v26.10.0"
     },
     {
       "command": "npm run acceptance:telemetry",
@@ -1646,8 +1753,8 @@
     },
     {
       "command": "node scripts/acceptance-file-hash.mjs",
-      "status": "PASS",
-      "evidence": "}"
+      "status": "FAIL",
+      "evidence": "Node.js v26.10.0"
     }
   ]
 }

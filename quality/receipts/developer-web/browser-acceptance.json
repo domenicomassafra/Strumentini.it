@@ -60,74 +60,74 @@
   "results": [
     {
       "toolId": "json-formatter",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "yaml-formatter",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "toml-formatter",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "json-yaml-converter",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "url-codec",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "html-entity-codec",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "base64-codec",
-      "lazyScriptCount": 7,
-      "taskRequestCount": 8,
+      "lazyScriptCount": 10,
+      "taskRequestCount": 11,
       "horizontalOverflow": false
     },
     {
       "toolId": "jwt-inspector",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "uuid-generator",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "hash-generator",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "hmac-generator",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "regex-tester",
-      "lazyScriptCount": 13,
-      "taskRequestCount": 14,
+      "lazyScriptCount": 16,
+      "taskRequestCount": 17,
       "horizontalOverflow": false,
       "regexIsolation": {
         "status": "PASS",
@@ -138,50 +138,50 @@
     },
     {
       "toolId": "cron-explainer",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "cron-next-run",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "unix-timestamp",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "http-status-reference",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "mime-type-lookup",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "user-agent-parser",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "query-string-editor",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     },
     {
       "toolId": "json-path-playground",
-      "lazyScriptCount": 10,
-      "taskRequestCount": 11,
+      "lazyScriptCount": 13,
+      "taskRequestCount": 14,
       "horizontalOverflow": false
     }
   ]
