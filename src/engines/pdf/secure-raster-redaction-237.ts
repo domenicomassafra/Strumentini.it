@@ -155,7 +155,11 @@ export function assertSupportedSource237(source: Uint8Array): number {
   if (footer.slice(cursor, cursor + 2) !== "<<") {
     refuse("Trailer PDF non seguito da un dizionario verificabile.");
   }
-  const model = parsePdf(source);
+  // Do not expand untrusted /ObjStm streams while deciding whether the source
+  // is safe to rasterize. The normal parser can inflate up to 50 MiB through
+  // a JS number[] for a <32 KiB source even though this redaction profile
+  // forbids object streams. Inspect physical dictionaries first, then refuse.
+  const model = parsePdf(source, { expandObjectStreams: false });
   if (model.encrypted) refuse("PDF cifrato non supportato.");
   // This security-sensitive path must not interpret one revision while PDF.js
   // displays another. Classic incremental/hybrid xrefs and linearized sources
@@ -203,8 +207,8 @@ export function assertSupportedSource237(source: Uint8Array): number {
     // %%EOF is truncated or suffixed and our sole complete footer selects an
     // older classic table. Never admit any parsed cross-reference stream.
     const type = value.kind === "stream" ? value.dictionary.entries.get("Type") : undefined;
-    if (type?.kind === "name" && type.value === "XRef") {
-      refuse("Revisioni incrementali o xref stream non supportati.");
+    if (type?.kind === "name" && (type.value === "XRef" || type.value === "ObjStm")) {
+      refuse("Object stream o xref stream non supportati per la redazione.");
     }
     inspectNested(value);
   }
@@ -292,7 +296,15 @@ async function inflateExact237(compressed: Uint8Array, expected: number, signal?
   try {
     while (true) {
       check(signal);
-      const next = await reader.read();
+      // A browser's DecompressionStream correctly rejects junk after the
+      // first zlib EOS, but its raw TypeError must remain an explicit,
+      // actionable refusal. Preserve AbortError when cancellation caused it.
+      let next: ReadableStreamReadResult<Uint8Array>;
+      try { next = await reader.read(); }
+      catch {
+        check(signal);
+        refuse("Stream Flate esportato incompleto o con byte aggiuntivi.");
+      }
       if (next.done) break;
       used += next.value.length;
       if (used > expected) refuse("Immagine esportata decompressa oltre il limite atteso.");
@@ -315,7 +327,10 @@ export async function verifySecureRedaction237(
 ): Promise<RedactionProof237> {
   if (output.length < 100 || output.length > MAX_OUTPUT_BYTES) refuse("PDF finale fuori limite.");
   if (!new TextDecoder("ascii").decode(output.subarray(-6)).endsWith("%%EOF\n")) refuse("Byte finali dopo EOF.");
-  const model = parsePdf(output);
+  // Output is allowed to contain ONLY our fixed raster-only object graph.
+  // Never decompress a forged /ObjStm before checking the graph's whitelist:
+  // an extra 12 MiB compressed object stream can exhaust a small heap first.
+  const model = parsePdf(output, { expandObjectStreams: false });
   if (model.info !== null || model.encrypted || model.root === null || model.pages.length !== pages.length
     || model.objects.size !== 2 + pages.length * 3 || model.trailer.entries.has("Prev")) {
     refuse("Struttura PDF esportata diversa dallo schema consentito.");

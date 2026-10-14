@@ -380,7 +380,10 @@ function expandObjectStreams(objects: Map<number, PdfObject>): void {
   }
 }
 
-export function parsePdf(bytes: Uint8Array): PdfDocumentModel {
+export function parsePdf(
+  bytes: Uint8Array,
+  options: { readonly expandObjectStreams?: boolean } = {},
+): PdfDocumentModel {
   if (bytes.byteLength < 8) throw new Error("INVALID_INPUT: PDF is too small");
   if (bytes.byteLength > PDF_LIMITS.maxBytes) throw new Error("PDF_LIMIT: PDF exceeds the local byte limit");
   const text = new TextDecoder("latin1").decode(bytes);
@@ -413,7 +416,10 @@ export function parsePdf(bytes: Uint8Array): PdfDocumentModel {
     cursor = end;
   }
   if (objects.size === 0) throw new Error("MALFORMED_PDF: no indirect objects found");
-  expandObjectStreams(objects);
+  // Security admission paths that need only the physical source objects can
+  // inspect the /ObjStm dictionaries before any untrusted Flate inflation.
+  // Normal PDF consumers retain the existing object-stream expansion.
+  if (options.expandObjectStreams !== false) expandObjectStreams(objects);
   const trailer = findTrailer(text, objects);
   const root = asReference(trailer.entries.get("Root"));
   const info = asReference(trailer.entries.get("Info"));
