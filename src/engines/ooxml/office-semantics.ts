@@ -204,16 +204,33 @@ function parseRelationships(xml: string): Relationship[] {
   } catch {
     fail("Office relationship XML is invalid or exceeds the bounded XML parser limits.");
   }
+  const packageNamespace = "http://schemas.openxmlformats.org/package/2006/relationships";
+  // XML prefixes are aliases, not identities. Resolve the namespace URI in
+  // scope for EACH relationship, including declarations overridden on a child.
+  // Otherwise <evil:Relationship> in a foreign namespace can forge a DOCX href.
+  const namespace = (
+    qualifiedName: string,
+    attributes: readonly { readonly name: string; readonly value: string }[],
+    inherited: readonly { readonly name: string; readonly value: string }[] = [],
+  ): string | null => {
+    const parts = qualifiedName.split(":");
+    if (parts.length > 2 || parts.some((part) => part === "")) return null;
+    const declaration = parts.length === 2 ? `xmlns:${parts[0]}` : "xmlns";
+    const defined = attributes.find((entry) => entry.name === declaration)
+      ?? inherited.find((entry) => entry.name === declaration);
+    return defined === undefined ? null : decodeEntities(defined.value);
+  };
   if (root.name.split(":").at(-1) !== "Relationships") fail("Unexpected OOXML relationships document root.");
-  const rootPrefix = root.name.includes(":") ? root.name.split(":")[0] : null;
-  const xmlnsName = rootPrefix === null ? "xmlns" : `xmlns:${rootPrefix}`;
-  if (root.attributes.find(({ name }) => name === xmlnsName)?.value !== "http://schemas.openxmlformats.org/package/2006/relationships") {
+  if (namespace(root.name, root.attributes) !== packageNamespace) {
     fail("OOXML relationships XML has an unsupported namespace.");
   }
   const ids = new Set<string>();
   for (const child of root.children) {
     if (child.kind !== "element") continue;
-    if (child.name.split(":").at(-1) !== "Relationship") fail("Unexpected element in OOXML relationships XML.");
+    if (child.name.split(":").at(-1) !== "Relationship" ||
+      namespace(child.name, child.attributes, root.attributes) !== packageNamespace) {
+      fail("OOXML relationship element has an unsupported or unbound namespace.");
+    }
     const attribute = (name: string) => child.attributes.find((entry) => entry.name === name)?.value;
     const id = attribute("Id");
     const target = attribute("Target");

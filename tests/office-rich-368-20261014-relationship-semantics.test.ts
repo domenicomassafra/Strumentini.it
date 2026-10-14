@@ -46,6 +46,36 @@ with zipfile.ZipFile(src) as archive,zipfile.ZipFile(dst,'w',compression=zipfile
                 data=ET.tostring(root,encoding='utf-8',xml_declaration=True)
                 root=ET.fromstring(data)
                 assert sum(r.get('Id')=='rId11' for r in root)==2
+            elif mode in ('foreign-prefix','foreign-default','unbound-prefix','valid-prefixed-root','valid-prefixed-child'):
+                proper='http://schemas.openxmlformats.org/package/2006/relationships'
+                if mode=='foreign-prefix':
+                    data=data.replace(b'<Relationships xmlns=',b'<Relationships xmlns:evil="urn:other-package" xmlns=',1)
+                    data=data.replace(b'<Relationship Id="rId11"',b'<evil:Relationship Id="rId11"',1)
+                    data=data.replace(b'https://example.invalid/office-no-fetch',b'https://attacker.invalid/spoofed',1)
+                if mode=='foreign-default':
+                    data=data.replace(b'<Relationship Id="rId11"',b'<Relationship xmlns="urn:other-package" Id="rId11"',1)
+                if mode=='unbound-prefix':
+                    data=data.replace(b'<Relationship Id="rId11"',b'<evil:Relationship Id="rId11"',1)
+                if mode=='valid-prefixed-root':
+                    data=data.replace(b'<Relationships xmlns="'+proper.encode()+b'">',b'<r:Relationships xmlns:r="'+proper.encode()+b'">',1)
+                    data=data.replace(b'<Relationship ',b'<r:Relationship ')
+                    data=data.replace(b'</Relationships>',b'</r:Relationships>',1)
+                if mode=='valid-prefixed-child':
+                    data=data.replace(b'<Relationship Id="rId11"',b'<r:Relationship xmlns:r="'+proper.encode()+b'" Id="rId11"',1)
+                if mode=='unbound-prefix':
+                    try:
+                        ET.fromstring(data)
+                        raise AssertionError('Unbound prefixed XML unexpectedly valid')
+                    except ET.ParseError: pass
+                else:
+                    root=ET.fromstring(data)
+                    genuine=[n for n in root if n.tag=='{'+proper+'}Relationship' and n.get('Id')=='rId11']
+                    if mode.startswith('valid-'):
+                        assert len(genuine)==1, genuine
+                        assert genuine[0].get('Target')=='https://example.invalid/office-no-fetch'
+                    else:
+                        assert len(genuine)==0, genuine
+                        assert len([n for n in root if n.get('Id')=='rId11'])==1
             else: raise AssertionError(mode)
         result.writestr(part,data)
 out=dst.getvalue()
@@ -58,7 +88,7 @@ with zipfile.ZipFile(io.BytesIO(out)) as check:
 sys.stdout.buffer.write(out)
 `;
 
-function realOfficeFixture(mode: "valid-whitespace" | "valid-entity-comment" | "malformed" | "duplicate"): Uint8Array {
+function realOfficeFixture(mode: "valid-whitespace" | "valid-entity-comment" | "malformed" | "duplicate" | "foreign-prefix" | "foreign-default" | "unbound-prefix" | "valid-prefixed-root" | "valid-prefixed-child"): Uint8Array {
   const child = spawnSync("python3", ["-c", pythonZip, mode], {
     input: ORIGINAL, timeout: 10_000, maxBuffer: 4 * 1024 * 1024,
   });
@@ -106,4 +136,28 @@ describe("#368 Office-rich real DOCX relationship fidelity", () => {
     expect(result.markdown).toContain(`[Source](${TARGET})`);
     expect((await inspectOfficeStructure(new Uint8Array(ORIGINAL))).externalRelationshipCount).toBe(1);
   });
+
+  it.each(["foreign-prefix", "foreign-default", "unbound-prefix"] as const)(
+    "refuses forged non-OOXML relationship namespace: %s",
+    async mode => {
+      const forged = realOfficeFixture(mode);
+      const unchanged = forged.slice();
+      // ElementTree independently confirms a foreign/unbound namespace. A
+      // forged external href must never become a semantically trusted link.
+      await expect(inspectOfficeStructure(forged)).rejects.toMatchObject({ code: "REBUILD_VERIFICATION_FAILED" });
+      await expect(extractDocxSemantics(forged)).rejects.toMatchObject({ code: "REBUILD_VERIFICATION_FAILED" });
+      expect(forged).toEqual(unchanged);
+    },
+  );
+
+  it.each(["valid-prefixed-root", "valid-prefixed-child"] as const)(
+    "preserves genuine correctly namespace-bound links: %s",
+    async mode => {
+      const valid = realOfficeFixture(mode);
+      expect((await inspectOfficeStructure(valid)).externalRelationshipCount).toBe(1);
+      const semantic = await extractDocxSemantics(valid);
+      expect(semantic.markdown).toContain(`[Source](${TARGET})`);
+      expect(semantic.html).toContain(`<a href="${TARGET}" rel="noreferrer">Source</a>`);
+    },
+  );
 });
