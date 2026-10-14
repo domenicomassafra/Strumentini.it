@@ -36,6 +36,7 @@ import {
   type MetadataInventory,
   type MetadataSegment,
 } from "./metadata";
+import { Zlib } from "fflate";
 
 export interface StripMetadataResult {
   readonly blob: Blob;
@@ -71,7 +72,7 @@ export interface StripMetadataResult {
   readonly engineVersion: string;
 }
 
-export const METADATA_STRIPPER_VERSION = "image-metadata-strip-v3";
+export const METADATA_STRIPPER_VERSION = "image-metadata-strip-v5";
 
 // The metadata inventory validates the PNG *chunk names and boundaries*.
 // That alone does not establish that IDAT contains only image data: decoders
@@ -89,6 +90,74 @@ const PNG_CRC_TABLE = Uint32Array.from({ length: 256 }, (_, entry) => {
   for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
   return crc >>> 0;
 });
+
+/** Canonical output is a deterministic function of the *decoded* RGBA.
+ * A PNG can otherwise encode invisible private data in DEFLATE block
+ * padding, harmless empty blocks or unused PNG palette entries, even with a
+ * perfect CRC/Adler and exactly matching rendered pixels. Such encoder bytes
+ * can be checked for valid syntax but cannot be certified free of hidden
+ * identity. We never deliver them: use our own fixed PNG structure, filter
+ * 0, and pinned local Zlib stream over independently checked source pixels.
+ * This is pixel canonicalization, not evidence of stripping steganography
+ * from visible RGBA values themselves.
+ */
+function canonicalRgbaPng(
+  rgba: Uint8ClampedArray,
+  width: number,
+  height: number,
+  signal?: AbortSignal,
+): Blob {
+  const reject = (message: string): never => {
+    throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", message);
+  };
+  if (width < 1 || height < 1 || width > IMAGE_VISUAL_LIMITS.maxDimension ||
+      height > IMAGE_VISUAL_LIMITS.maxDimension ||
+      width * height > IMAGE_VISUAL_LIMITS.maxPixels || rgba.length !== width * height * 4) {
+    reject("Decoded RGBA geometry is outside the canonical PNG profile");
+  }
+  const pngChunk = (name: string, bytes: Uint8Array): Uint8Array<ArrayBuffer> => {
+    const output = new Uint8Array(bytes.length + 12);
+    const view = new DataView(output.buffer);
+    view.setUint32(0, bytes.length, false);
+    for (let index = 0; index < 4; index++) output[4 + index] = name.charCodeAt(index);
+    output.set(bytes, 8);
+    let crc = 0xffffffff;
+    for (let index = 4; index < bytes.length + 8; index++) {
+      crc = PNG_CRC_TABLE[(crc ^ output[index]!) & 255]! ^ (crc >>> 8);
+    }
+    view.setUint32(bytes.length + 8, (crc ^ 0xffffffff) >>> 0, false);
+    return output;
+  };
+  const header = new Uint8Array(13);
+  const dims = new DataView(header.buffer);
+  dims.setUint32(0, width, false);
+  dims.setUint32(4, height, false);
+  header[8] = 8; // exact 8-bit channel precision
+  header[9] = 6; // RGBA, no palette or unused pixel-bit padding
+
+  const parts: Uint8Array<ArrayBuffer>[] = [];
+  let total = 8 + 25 + 12; // signature, IHDR, IEND
+  let finalOutput = false;
+  const compressor = new Zlib({ level: 6 }, (packed, final) => {
+    if (packed.length > 0) {
+      total += 12 + packed.length;
+      if (total > IMAGE_VISUAL_LIMITS.maxFileBytes) reject("Canonical PNG exceeds the bounded output budget");
+      parts.push(pngChunk("IDAT", packed));
+    }
+    if (final) finalOutput = true;
+  });
+  for (let y = 0; y < height; y++) {
+    if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+    const row = new Uint8Array(1 + width * 4);
+    row.set(rgba.subarray(y * width * 4, (y + 1) * width * 4), 1);
+    compressor.push(row, y === height - 1);
+  }
+  if (!finalOutput || parts.length === 0) reject("Canonical PNG compressor did not finish");
+  return new Blob(
+    [new Uint8Array(PNG_MAGIC), pngChunk("IHDR", header), ...parts, pngChunk("IEND", new Uint8Array())],
+    { type: "image/png" },
+  );
+}
 
 async function verifyPngIdatStream(
   blob: Blob,
@@ -134,7 +203,13 @@ async function verifyPngIdatStream(
     if (next > blob.size) reject("PNG chunk extends beyond the output file");
     if (chunks === 0 && (type !== "IHDR" || length !== 13)) reject("PNG must start with a 13-byte IHDR");
     if (chunks > 0 && type === "IHDR") reject("PNG contains multiple IHDR headers");
-    if (!["IHDR", "PLTE", "IDAT", "IEND"].includes(type)) reject("PNG contains an unverified chunk");
+    // PLTE is not proof of visible pixels: even a fully decodable truecolor
+    // RGBA PNG may carry a suggested palette whose entries are never used,
+    // including hidden identifiers. A metadata-stripped artifact must not
+    // preserve unverifiable palette-only bytes and call them metadata-free.
+    // Browser encoders normally emit truecolor PNG for the RGBA canvas; an
+    // indexed encoder is conservatively refused rather than falsely attested.
+    if (!["IHDR", "IDAT", "IEND"].includes(type)) reject("PNG contains a non-raster or unverified palette chunk");
 
     let crc = 0xffffffff;
     for (let position = offset + 4; position < next - 4;) {
@@ -152,25 +227,23 @@ async function verifyPngIdatStream(
       const encodedHeight = dimensions.getUint32(4, false);
       const depth = ihdr[8]!;
       const color = ihdr[9]!;
-      const channels: Record<number, number> = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 };
-      const allowedDepth: Record<number, readonly number[]> = {
-        0: [1, 2, 4, 8, 16], 2: [8, 16], 3: [1, 2, 4, 8], 4: [8, 16], 6: [8, 16],
-      };
+      // An otherwise valid 1/2/4-bit grayscale PNG has unused scanline
+      // padding bits; with a width of 1 only one bit is visible and seven
+      // bits per row can carry a recoverable private identifier despite a
+      // correct Adler32, CRC, and pixel-perfect browser decode. Require
+      // exact 8-bit RGBA canvas output for this forensic *export* boundary;
+      // input PNG formats are still decoded and re-encoded normally.
       if (encodedWidth !== width || encodedHeight !== height
         || encodedWidth * encodedHeight > IMAGE_VISUAL_LIMITS.maxPixels
-        || !allowedDepth[color]?.includes(depth)
+        || depth !== 8 || color !== 6
         || ihdr[10] !== 0 || ihdr[11] !== 0 || ihdr[12] !== 0) {
         reject("PNG IHDR raster format, dimensions or interlace cannot be certified");
       }
-      expectedInflatedBytes = height * (1 + Math.ceil(width * channels[color]! * depth / 8));
+      expectedInflatedBytes = height * (1 + width * 4);
       if (expectedInflatedBytes > IMAGE_VISUAL_LIMITS.maxPixels * 8 + IMAGE_VISUAL_LIMITS.maxDimension) {
         reject("PNG inflated scanlines exceed the verified pixel budget");
       }
       seenHeader = true;
-    } else if (type === "PLTE") {
-      if (!seenHeader || seenData || length < 3 || length > 768 || length % 3 !== 0) {
-        reject("PNG palette ordering/size is invalid");
-      }
     } else if (type === "IDAT") {
       if (!seenHeader || finishedData) reject("PNG IDAT stream must be contiguous");
       seenData = true;
@@ -287,10 +360,42 @@ export async function stripImageMetadataLocal(
     } finally {
       outputDecoded.bitmap.close();
     }
+    // The browser-produced PNG was syntax/CRC/Adler/pixel checked above, but
+    // those checks cannot detect secret bytes in unused DEFLATE block-padding
+    // bits or alternative valid encodings of identical pixels. Never return
+    // that container: materialize a new output solely from owned decoded RGBA
+    // and a fixed first-party PNG layout/compressor configuration.
+    const canonicalBlob = canonicalRgbaPng(sourcePixels, decoded.width, decoded.height, signal);
+    const canonicalInventory = await scanImageMetadataBlob(canonicalBlob, signal);
+    if (canonicalInventory.format !== "png" || !canonicalInventory.complete || canonicalInventory.segments.length > 0) {
+      throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", "Canonical output still contains unverified metadata");
+    }
+    await verifyPngIdatStream(canonicalBlob, decoded.width, decoded.height, signal);
+    const canonicalDecoded = await decodeImage({
+      name: "metadata-stripped-canonical.png",
+      size: canonicalBlob.size,
+      type: mime,
+      blob: canonicalBlob,
+    }, signal, progress);
+    try {
+      const canonicalRgba = await imageDataFromBitmap(canonicalDecoded.bitmap, signal);
+      if (canonicalRgba.width !== decoded.width || canonicalRgba.height !== decoded.height ||
+          canonicalRgba.data.length !== sourcePixels.length) {
+        throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", "Canonical PNG dimensions or decoded length changed");
+      }
+      for (let at = 0; at < sourcePixels.length; at++) {
+        if ((at & 0xffff) === 0 && signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+        if (canonicalRgba.data[at] !== sourcePixels[at]) {
+          throw new ImageVisualError("OUTPUT_VALIDATION_FAILED", `Canonical PNG RGBA mismatch at byte ${at}`);
+        }
+      }
+    } finally {
+      canonicalDecoded.bitmap.close();
+    }
     const removed = inputInventory.segments;
-    const metadataGroups = diffImageMetadata(inputInventory, outputInventory);
+    const metadataGroups = diffImageMetadata(inputInventory, canonicalInventory);
     return {
-      blob,
+      blob: canonicalBlob,
       filename: `${normalizeName(file.name)}-senza-metadati.${extensionForMime(mime)}`,
       inputMime: inputInventory.format === "unknown" ? "image/*" : `image/${inputInventory.format}`,
       outputMime: mime,
@@ -298,14 +403,14 @@ export async function stripImageMetadataLocal(
       height: decoded.height,
       dimensionsPreserved: true,
       inputInventory,
-      outputInventory,
+      outputInventory: canonicalInventory,
       removed,
       privacySegmentCount: inputInventory.privacySegmentCount,
       privacyBytes: inputInventory.privacyBytes,
       inputSizeLabel: formatBytes(file.size),
-      outputSizeLabel: formatBytes(blob.size),
+      outputSizeLabel: formatBytes(canonicalBlob.size),
       metadataFree: true,
-      policyIt: `L'immagine viene ricodificata localmente dai pixel in PNG. L'intero file prodotto viene ispezionato fino alla fine: nessun chunk di metadati, inclusi testo, profili, Exif, XMP e chunk sconosciuti; vengono inoltre verificati CRC e intero flusso compresso IDAT senza byte extra. ${inputInventory.complete ? "Inventario sorgente completo." : "Inventario sorgente parziale: solo i segmenti rilevati sono documentati."} Gli eventuali thumbnail Exif non sono inventariati separatamente; l'intero contenitore Exif originale viene escluso dalla nuova immagine.`,
+      policyIt: `L'immagine viene ricodificata localmente dai pixel in PNG. Dopo la verifica della ricodifica browser, il file consegnato viene generato di nuovo esclusivamente dall'RGBA decodificato usando PNG canonico RGBA8, righe senza filtro e compressore locale deterministico: non conserva palette, chunk sconosciuti o bit di padding del contenitore originale. Il file finale è ricontrollato su CRC, Adler32, flusso IDAT e pixel. ${inputInventory.complete ? "Inventario sorgente completo." : "Inventario sorgente parziale: solo i segmenti rilevati sono documentati."} Eventuali thumbnail Exif non sono inventariati separatamente; l'intero contenitore Exif originale non viene copiato nella nuova immagine.`,
       metadataGroups,
       fidelity: {
         outputFormat: "image/png",

@@ -165,7 +165,11 @@ try {
   }, { source: [...jpeg], exported: [...split] });
   assert.equal(benignSplit.accepted, true, JSON.stringify(benignSplit).slice(0, 200));
   assert.equal(benignSplit.metadataFree, true);
-  assert.deepEqual(Buffer.from(benignSplit.bytes), split);
+  // The new forensic delivery boundary is a deterministic function of RGBA,
+  // not a copy of otherwise valid encoder bytes. A split Adler32 must still
+  // be accepted, but its output is canonicalized to the baseline PNG.
+  assert.notDeepEqual(Buffer.from(benignSplit.bytes), split);
+  assert.deepEqual(Buffer.from(benignSplit.bytes), Buffer.from(baseline.bytes));
 
   // A moderate but incompressible real PNG crosses the verifier's 64 KiB
   // CRC read boundaries without allocating a full inflated PNG in its code.
@@ -277,7 +281,14 @@ try {
   }, { source: [...jpeg], sentinel: privatePayload });
   const poisoned = Buffer.from(attack.bytes);
   assert.equal(attack.browserPixelMatch, true, "Injected PNG must genuinely preserve browser decoded pixels");
-  assert.deepEqual(chunks(poisoned).map((entry) => entry.type), baselineChunks);
+  // Browser toBlob and the delivered canonical encoder may split IDAT into
+  // different valid member counts; require the attack's physical PNG still
+  // consists solely of IHDR, contiguous IDAT and terminal IEND.
+  const poisonedTypes = chunks(poisoned).map((entry) => entry.type);
+  assert.equal(poisonedTypes[0], "IHDR");
+  assert.equal(poisonedTypes.at(-1), "IEND");
+  assert(poisonedTypes.slice(1, -1).length >= 1);
+  assert(poisonedTypes.slice(1, -1).every((item) => item === "IDAT"));
   assert.ok(poisoned.includes(privateBytes), "Actual exported bytes contain private text inside allowed IDAT");
   const packed = Buffer.concat(chunks(poisoned).filter((item) => item.type === "IDAT").map((item) => item.data));
   const native = inflateSync(packed, { info: true });
