@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-14T18:12:58.913Z",
+  "generatedAt": "2026-10-14T19:02:53.576Z",
   "status": "PASS",
   "toolImplementationAssets": [
     "module.-R2KqBMw.js",
@@ -398,8 +398,8 @@
       },
       "gate": "PASS",
       "navigationBaseline": {
-        "domContentLoadedMs": 30.600000023841858,
-        "loadMs": 31
+        "domContentLoadedMs": 48.200000047683716,
+        "loadMs": 48.700000047683716
       }
     },
     "categoryPage": {
