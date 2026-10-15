@@ -22,7 +22,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
 - **328 — P0 Account Turnstile login reale**
-- **329 — P0 Contrasto accesso e errori WCAG**
 - **336 — Picker iPhone Android e touch equivalente**
 - **349 — File server opt-in TTL delete prova**
 - **350 — P0 Accessibilità AA di base e advanced**
@@ -41,7 +40,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **406 — Independent PDF redaction attack corpus**
 - **407 — Hostile parsers and archive resource safety**
 
-Exactly **31** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **30** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -386,7 +385,7 @@ Exactly **31** incomplete tickets currently have every declared numeric blocker 
 | 326 | completed | File privacy secret and metadata-risk upgrades | 096 |
 | 327 | completed | Research dedupe identity and citation export audit | 093, 198, 276 |
 | 328 | ready-for-agent | P0 Account Turnstile login reale | — |
-| 329 | ready-for-agent | P0 Contrasto accesso e errori WCAG | — |
+| 329 | completed (scoped account AA contrast/native zoom/focus only; NOT global WCAG/Gold/release) | P0 Contrasto accesso e errori WCAG | — |
 | 330 | completed | P0 Recenti realmente alimentati | — |
 | 331 | completed | P0 Correggere promesse di file/account | — |
 | 332 | blocked | Sync preferiti con rimozioni e conflitti | 328, 330 |
