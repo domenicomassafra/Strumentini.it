@@ -30,7 +30,11 @@ export const FREE_CLOUDFLARE_LIMITS_2026_10_11 = Object.freeze({
 // and all first-party browser files that currently expose a transport primitive.
 // Source changes require new review and re-baselining instead of silent adoption.
 const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
-  "worker/auth.ts": "664b94e8fa8a4e616fff3a8b9a616093398add78adf401a4a00e94eb8caab772",
+  // 2026-10-15 #328: reviewed native Workers 100k WebCrypto PBKDF2 limit,
+  // fixed RFC8018-compatible 600k software fallback, independently compared
+  // with Node crypto and verified on the real nonproduction Worker. No KDF
+  // downgrade, new auth route or network transport is authorized by this pin.
+  "worker/auth.ts": "b1ee708fa4108821945055a8945d445b07b9d1a2917712e8206400ebc8f9d224",
   "worker/bindings.d.ts": "7ffff0bb60450e06b6acaec8b3d43e747e44ef711b1abf48a274bd812e18355e",
   "worker/db.ts": "6ee1f3935d551fd557a71c6fb776fbaff17517d6d4f270beb3823c2d42d88abd",
   "worker/google.ts": "09ee69a8ab31e4eabac118bb2b3d4cdd579d655c260aa452fb8e359f32cba2db",
@@ -41,6 +45,10 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   "worker/turnstile.ts": "bd7434f8233b9fe0e99fc42bdc5a4b11f919649364b58258b6ae77f0fcf32124",
   "worker/validation.ts": "1b82c7b041b17959ed31f6e6d61e34ab1fd7cbc91f1519eea3a91d889a5519f3",
   "worker/vies.ts": "344c9deae1b7dde4eaa374e713252fb7b9d4987e40e8bf717f9e31b761eb2d04",
+  // A second, explicitly nonproduction Wrangler file is itself executable
+  // deployment policy. Exact bytes are pinned so routes, assets or D1 cannot
+  // silently acquire production resources under a harmless config filename.
+  "worker/wrangler.staging.jsonc": "0eddaac84f098342fa4a31c5539486edde3da7c24773bcfe09c99f873614a56f",
 });
 
 const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze({

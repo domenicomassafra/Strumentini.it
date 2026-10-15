@@ -44,6 +44,23 @@ describe("#348 fail-closed source inventory", () => {
     expect(audit.violations).toContain("SERVER_ROUTE_DRIFT");
     expect(audit.violations).toContain("CHANGED_WORKER_SOURCE:worker/index.ts");
   });
+  it("rebinds only the independently reviewed #328 staging/KDF bytes and rejects either hostile drift", () => {
+    const auth = source("worker/auth.ts");
+    expect(auth).toContain("MAX_NATIVE_WORKER_PBKDF2_ITERATIONS = 100_000");
+    expect(auth).toContain("pbkdf2(sha256, encoder.encode(password), salt");
+    const staging = source("worker/wrangler.staging.jsonc");
+    expect(staging).toContain('"routes": []');
+    expect(staging).toContain('"database_name": "strumentini-328-staging-20261015"');
+    expect(staging).not.toContain("3351c8bf-31fc-4716-9d92-2b07c4d8fd2a");
+    const changedWorker = auth.replace("MAX_NATIVE_WORKER_PBKDF2_ITERATIONS = 100_000", "MAX_NATIVE_WORKER_PBKDF2_ITERATIONS = 1_000_000");
+    expect(changedWorker).not.toBe(auth);
+    expect(auditStaticSurface(project, (path) => path === "worker/auth.ts" ? changedWorker : source(path)).violations)
+      .toContain("CHANGED_WORKER_SOURCE:worker/auth.ts");
+    const changedConfig = staging.replace('"routes": []', '"routes": [{"pattern":"strumentini.it","custom_domain":true}]');
+    expect(changedConfig).not.toBe(staging);
+    expect(auditStaticSurface(project, (path) => path === "worker/wrangler.staging.jsonc" ? changedConfig : source(path)).violations)
+      .toContain("CHANGED_WORKER_SOURCE:worker/wrangler.staging.jsonc");
+  });
 
   it("rejects hidden uploads injected into a previously reviewed client transport", () => {
     const path = "src/components/tools/research-knowledge/ViesVerificationPanel.tsx";
