@@ -12,7 +12,7 @@
  * iteration count, key length) can be raised later without a schema change:
  * a record carrying an unknown algorithm prefix simply fails verification.
  */
-import { pbkdf2 } from "@noble/hashes/pbkdf2.js";
+import { pbkdf2Async } from "@noble/hashes/pbkdf2.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 
 const PASSWORD_ALGORITHM = "pbkdf2-sha256";
@@ -100,10 +100,14 @@ async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>, iterat
   // unlike Node and local workerd. The audited MIT noble implementation
   // computes exactly the same RFC 8018 PBKDF2-HMAC-SHA256 bytes as WebCrypto;
   // it is not six serial PBKDF2 calls and it does not reduce the work factor.
+  // Yield periodically so a single real authentication does not monopolize
+  // the event loop while other requests are waiting. This does NOT reduce
+  // billed CPU; launch still requires provider CPU budget review.
   if (iterations > MAX_NATIVE_WORKER_PBKDF2_ITERATIONS) {
-    return pbkdf2(sha256, encoder.encode(password), salt, {
+    return await pbkdf2Async(sha256, encoder.encode(password), salt, {
       c: iterations,
       dkLen: PASSWORD_KEY_BITS / 8,
+      asyncTick: 3,
     });
   }
   const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);

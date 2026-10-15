@@ -37,14 +37,31 @@ describe("#328 dedicated Cloudflare staging boundaries", () => {
   });
 
   it("routes staging configuration edits through the existing auth and security CI gates", () => {
-    expect(classifyPath("worker/wrangler.staging.jsonc")).toEqual(["worker-auth"]);
+    expect(classifyPath("worker/wrangler.staging.jsonc")).toEqual(["worker-auth", "d1", "ci"]);
     const plan = buildImpactPlan(
       ["worker/wrangler.staging.jsonc"],
-      ["tests/auth-worker.test.ts", "tests/release-validation.test.ts"],
+      ["tests/auth-worker.test.ts", "tests/release-validation.test.ts", "tests/staging-isolation-328.test.ts", "tests/auth-worker-cloudflare-kdf-328.test.ts", "tests/feasibility-server-optin-348.test.ts"],
     );
     expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
     expect(plan.blockers).toEqual([]);
     expect(plan.gates.map((gate) => gate.id)).toContain("security-review");
     expect(plan.gates.map((gate) => gate.id)).toContain("auth-integration");
+    expect(plan.gates.map((gate) => gate.id)).toContain("d1-migration-review");
+    expect(plan.commands).toContainEqual({ program: "npm", args: ["run", "test"] });
+    expect(plan.selectedTests).toEqual(expect.arrayContaining([
+      "tests/staging-isolation-328.test.ts", "tests/auth-worker-cloudflare-kdf-328.test.ts", "tests/feasibility-server-optin-348.test.ts",
+    ]));
+  });
+
+  it("requires auth, security and browser gates for the public Turnstile site-key", () => {
+    expect(classifyPath("src/config/security.ts")).toEqual(["frontend", "worker-auth"]);
+    const plan = buildImpactPlan(["src/config/security.ts"], [
+      "tests/auth-worker.test.ts", "tests/release-validation.test.ts",
+    ]);
+    expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(plan.gates.map((gate) => gate.id)).toEqual(expect.arrayContaining([
+      "security-review", "auth-integration", "browser-a11y",
+    ]));
+    expect(plan.commands).toContainEqual({ program: "npm", args: ["run", "test"] });
   });
 });

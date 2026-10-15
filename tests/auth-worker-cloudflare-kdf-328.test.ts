@@ -21,7 +21,7 @@ describe("#328 real edge PBKDF2 100k-per-call compatibility", () => {
     expect(await verifyPassword(password, previousRecord)).toBe(true);
     expect(await verifyPassword("different", previousRecord)).toBe(false);
     expect(needsRehash(previousRecord)).toBe(false);
-  });
+  }, 30_000);
 
   it("keeps all newly minted hashes at 600k, identical to independent Node PBKDF2", async () => {
     const password = "synthetic-staging-test-not-a-user-password";
@@ -31,7 +31,7 @@ describe("#328 real edge PBKDF2 100k-per-call compatibility", () => {
     const digest = pbkdf2Sync(password, salt, 600_000, 32, "sha256");
     expect(record.hash).toBe(`pbkdf2-sha256$${digest.toString("base64url")}`);
     expect(await verifyPassword(password, record)).toBe(true);
-  });
+  }, 30_000);
 
   it("preserves native 100k and lower legacy verification without implicit cost downgrade", async () => {
     const old = await hashPassword("synthetic-older-factor", 100_000);
@@ -40,4 +40,10 @@ describe("#328 real edge PBKDF2 100k-per-call compatibility", () => {
     expect(parseStoredPassword({ ...old, iterations: 1_000_001 })).toBeNull();
     await expect(hashPassword("no", 1_000_001)).rejects.toThrow("Unsupported password iteration factor");
   });
+  it("yields to other requests while the full 600k-iteration hash is computing", async () => {
+    const completion = hashPassword("synthetic-probe-not-a-real-password");
+    const nextEventLoopTurn = new Promise<"yield">((resolve) => setTimeout(() => resolve("yield"), 0));
+    expect(await Promise.race([completion.then(() => "complete"), nextEventLoopTurn])).toBe("yield");
+    expect((await completion).iterations).toBe(600_000);
+  }, 30_000);
 });

@@ -34,7 +34,7 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   // fixed RFC8018-compatible 600k software fallback, independently compared
   // with Node crypto and verified on the real nonproduction Worker. No KDF
   // downgrade, new auth route or network transport is authorized by this pin.
-  "worker/auth.ts": "b1ee708fa4108821945055a8945d445b07b9d1a2917712e8206400ebc8f9d224",
+  "worker/auth.ts": "0199d1f3f2568c94f6ae4b5e21b4d787932e4ffe18b252452153b1b974a586dc",
   "worker/bindings.d.ts": "7ffff0bb60450e06b6acaec8b3d43e747e44ef711b1abf48a274bd812e18355e",
   "worker/db.ts": "6ee1f3935d551fd557a71c6fb776fbaff17517d6d4f270beb3823c2d42d88abd",
   "worker/google.ts": "09ee69a8ab31e4eabac118bb2b3d4cdd579d655c260aa452fb8e359f32cba2db",

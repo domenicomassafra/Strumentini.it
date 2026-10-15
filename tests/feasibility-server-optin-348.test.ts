@@ -47,7 +47,7 @@ describe("#348 fail-closed source inventory", () => {
   it("rebinds only the independently reviewed #328 staging/KDF bytes and rejects either hostile drift", () => {
     const auth = source("worker/auth.ts");
     expect(auth).toContain("MAX_NATIVE_WORKER_PBKDF2_ITERATIONS = 100_000");
-    expect(auth).toContain("pbkdf2(sha256, encoder.encode(password), salt");
+    expect(auth).toContain("pbkdf2Async(sha256, encoder.encode(password), salt");
     const staging = source("worker/wrangler.staging.jsonc");
     expect(staging).toContain('"routes": []');
     expect(staging).toContain('"database_name": "strumentini-328-staging-20261015"');
