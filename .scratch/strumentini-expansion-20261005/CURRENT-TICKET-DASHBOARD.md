@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 308 / 116 |
+| All / completed / open | 424 / 309 / 115 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 31 |
-| Ready for assignment (feasibility still to prove) | 24 |
+| DAG-ready (all numeric dependencies closed) | 30 |
+| Ready for assignment (feasibility still to prove) | 23 |
 | Waiting on other tickets | 85 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (24)
+## Ready for assignment (feasibility still to prove) (23)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
@@ -29,7 +29,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #237 — True PDF redaction with post-export proof
 - #246 — Local image OCR
 - #328 — P0 Account Turnstile login reale
-- #329 — P0 Contrasto accesso e errori WCAG
 - #336 — Picker iPhone Android e touch equivalente
 - #349 — File server opt-in TTL delete prova
 - #350 — P0 Accessibilità AA di base e advanced
