@@ -67,6 +67,9 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   // Both Cloudflare deploy contracts can route the Worker or bind D1, so
   // staging config is just as review-sensitive as the production contract.
   if (path === "wrangler.jsonc" || path === "worker/wrangler.staging.jsonc") return ["worker-auth", "d1", "ci"];
+  // The staging publisher and its refusal test can change deployment targets;
+  // never reduce an isolated edit to generic shared-source checks.
+  if (path === "scripts/deploy-staging-328.ts" || path === "tests/deploy-staging-328.test.ts") return ["worker-auth", "d1", "ci"];
   // This public site-key is the browser half of real Turnstile Siteverify:
   // a change requires auth, browser, and security gates, not generic shared.
   if (path === "src/config/security.ts") return ["frontend", "worker-auth"];
@@ -124,8 +127,8 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
 }
 
 const familyTestMatchers: Partial<Record<ChangeDomain, RegExp>> = {
-  "worker-auth": /^tests\/(auth-worker|auth-worker-cloudflare-kdf-328|staging-isolation-328|feasibility-server-optin-348|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347|release-validation)\.test\.ts$/u,
-  d1: /^tests\/(auth-worker|auth-worker-cloudflare-kdf-328|staging-isolation-328|feasibility-server-optin-348|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347|release-validation)\.test\.ts$/u,
+  "worker-auth": /^tests\/(auth-worker|auth-worker-cloudflare-kdf-328|staging-isolation-328|deploy-staging-328|feasibility-server-optin-348|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347|release-validation)\.test\.ts$/u,
+  d1: /^tests\/(auth-worker|auth-worker-cloudflare-kdf-328|staging-isolation-328|deploy-staging-328|feasibility-server-optin-348|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347|release-validation)\.test\.ts$/u,
   pdf: /^tests\/(pdf-|ocr-|ooxml-|printable-pdf)/u,
   image: /^tests\/(image-|svg-)/u,
   italy: /^tests\/(italy-|italian-|vies-)/u,
