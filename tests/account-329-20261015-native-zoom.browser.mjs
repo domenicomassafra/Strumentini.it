@@ -17,6 +17,12 @@ assert.equal(new URL(origin).hostname, "127.0.0.1");
 // of silently substituting page viewport emulation for native browser zoom.
 const desktopWidth = Number(process.env.ACCOUNT329_DESKTOP_WIDTH ?? 1280);
 assert([1280,1560].includes(desktopWidth), "Native zoom baseline must be 1280 or 1560 desktop pixels");
+// Debug only the previously timed-out remote 503/focus seam without rerunning
+// the full native zoom/contrast matrix already proved for this exact source.
+const remote503Seam = process.env.ACCOUNT329_REMOTE_503_SEAM === "1";
+const themes = remote503Seam ? ["light"] : ["light", "dark"];
+const factors = remote503Seam ? [4] : [4, 2, 1];
+const panels = ["login", "register", "profile"];
 const temporary = await mkdtemp(join(tmpdir(), "strumentini329-zoom-"));
 const reports = [], errors = [], offsite = [], submissions = [];
 let context, control, tabId;
@@ -76,7 +82,15 @@ async function audit(page, state) {
 
 async function focused(page, selector) {
   await page.waitForTimeout(250); // Native focus scrolling may finish after the key event.
-  const result = await page.locator(selector).evaluate(el => {
+  // Evaluate against the current document in one shot. On the prior remote
+  // preview, locator.evaluate timed out despite a preceding :visible wait;
+  // avoiding a second locator resolution makes that seam directly falsifiable.
+  // This read is deliberately non-retrying: a missing/ambiguous target fails,
+  // rather than accepting an earlier page's focus state.
+  const result = await page.evaluate(selector => {
+    const matches = document.querySelectorAll(selector);
+    if (matches.length !== 1) throw Error(`Expected one current-document focus target for ${selector}, got ${matches.length}`);
+    const el = matches[0];
     const css = getComputedStyle(el), r = el.getBoundingClientRect();
     const nav=el.closest("[data-settings-nav]");
     const hit=document.elementFromPoint((r.left+r.right)/2,(r.top+r.bottom)/2);
@@ -85,7 +99,7 @@ async function focused(page, selector) {
       nav:nav ? {left:nav.scrollLeft,width:nav.clientWidth,scroll:nav.scrollWidth} : null,
       unoccluded:el.contains(hit),hit:hit?.outerHTML.slice(0,250),
       width:innerWidth, height:innerHeight, text:el.textContent.trim() };
-  });
+  }, selector);
   assert(result.active && result.visible && result.outline !== "none" && result.outlineWidth >= 2, `Visible keyboard focus ${JSON.stringify(result)}`);
   assert(result.left >= 0 && result.right <= result.width + 1 && result.top >= 0 && result.bottom <= result.height + 1,
     `Focused target visible in actual zoom viewport ${JSON.stringify(result)}`);
@@ -109,6 +123,15 @@ try {
   await writeFile(join(temporary, "control.html"), "<!doctype html><title>Local zoom control</title>");
   context = await chromium.launchPersistentContext("", { headless:true, channel:"chromium", viewport:null,
     args:["--screen-info={1920x1200}",`--window-size=${desktopWidth},1000`, `--disable-extensions-except=${temporary}`, `--load-extension=${temporary}`] });
+  if (process.env.ACCOUNT329_FOCUS_FAULT === "drop-alert-focus") {
+    await context.addInitScript(() => {
+      const original = HTMLElement.prototype.focus;
+      HTMLElement.prototype.focus = function (...args) {
+        if (this.matches("[data-access-error]")) return;
+        return original.apply(this, args);
+      };
+    });
+  }
   const worker = context.serviceWorkers()[0] ?? await context.waitForEvent("serviceworker");
   control = await context.newPage();
   await control.goto(`chrome-extension://${new URL(worker.url()).host}/control.html`);
@@ -131,7 +154,7 @@ try {
   page.on("pageerror", error => errors.push(error.message));
   assert.equal((await page.goto(`${origin}/accedi/`))?.status(),200);
   tabId = await control.evaluate(async url => (await chrome.tabs.query({url:`${url}/*`}))[0].id, origin);
-  for (const theme of ["light","dark"]) for (const factor of [4,2,1]) {
+  for (const theme of themes) for (const factor of factors) {
     await control.evaluate(async id => { await chrome.tabs.setZoom(id,1); },tabId);
     await page.waitForFunction(width=>innerWidth===width,desktopWidth,{timeout:8000});
     const base = await page.evaluate(() => ({width:innerWidth,dpr:devicePixelRatio}));
@@ -142,7 +165,7 @@ try {
     await zoomState(page,base,factor);
     assert.equal(base.width,desktopWidth,"Actual desktop window width before native zoom");
     await page.evaluate(value => localStorage.setItem("strumentini:theme:v1",value),theme);
-    for (const panel of ["login","register","profile"]) {
+    for (const panel of panels) {
       signedIn=panel==="profile";
       assert.equal((await page.goto(`${origin}${signedIn ? '/impostazioni/' : '/accedi/'}`,{waitUntil:"domcontentloaded"}))?.status(),200);
       await zoomState(page,base,factor);
@@ -188,7 +211,8 @@ try {
       await audit(page,{...state,stage:"503"}); reports.push({...state,...await zoomState(page,base,factor)});
     }
   }
-  assert.equal(reports.length,18); assert.equal(submissions.length,18);
+  const expectedStates = themes.length * factors.length * panels.length;
+  assert.equal(reports.length,expectedStates); assert.equal(submissions.length,remote503Seam ? expectedStates : 18);
   assert.deepEqual(errors,[]); assert.deepEqual(offsite,[]);
   const sourceFiles=["src/components/account/account.css","src/components/account/auth-client.ts","src/pages/accedi.astro","src/pages/impostazioni.astro","src/components/shell/SiteHeader.astro","src/styles/global.css"];
   const sourceHashes=Object.fromEntries(await Promise.all(sourceFiles.map(async file=>[file,createHash("sha256").update(await readFile(file)).digest("hex")])));
