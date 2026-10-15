@@ -356,6 +356,14 @@
   .ac-shell .actions > * { flex: 1 1 100%; }
 }
 
+/* At native 400% zoom a desktop window may be under 300 CSS px tall.
+   Keeping a second sticky bar below the site header then covers the focused
+   profile submit control, even though it has a visible focus ring. Let the
+   section tabs scroll with the page in short viewports instead. */
+@media (max-width: 899px) and (max-height: 360px) {
+  .ac-side { position: static; }
+}
+
 /* --- Breakpoint 1: the desk ------------------------------------------------ */
 
 @media (min-width: 900px) {

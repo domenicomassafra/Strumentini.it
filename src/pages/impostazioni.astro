@@ -727,10 +727,13 @@ const unitSystems = [
       event.preventDefault();
       const active = tabs.findIndex((tab) => tab.getAttribute("aria-selected") === "true");
       const step = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : -1;
-      const next = tabs[(Math.max(active, 0) + step + tabs.length) % tabs.length];
+      const nextIndex = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1
+        : (Math.max(active, 0) + step + tabs.length) % tabs.length;
+      const next = tabs[nextIndex];
       if (next === undefined) return;
       selectPanel(panelNameOf(next.dataset.settingsTab));
       next.focus();
+      next.scrollIntoView({ block: "nearest", inline: "nearest" });
     });
 
     function hashPanel(): PanelName | undefined {
@@ -857,13 +860,14 @@ const unitSystems = [
       if (button !== null) setBusy(button, true);
       void updateProfile(name.value).then((result) => {
         if (button !== null) setBusy(button, false);
-        if (keyboardSubmitted && document.activeElement === document.body) button?.focus();
         if (!result.ok) {
           setMessage(message, result.message);
-          return;
+        } else {
+          paintIdentity(result.data);
+          setMessage(message, "Nome aggiornato.", "success");
         }
-        paintIdentity(result.data);
-        setMessage(message, "Nome aggiornato.", "success");
+        // Render the message before native focus scrolls the retry into view.
+        if (keyboardSubmitted && document.activeElement === document.body) button?.focus();
       });
     });
 
