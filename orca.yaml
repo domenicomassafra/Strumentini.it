@@ -1,0 +1,9 @@
+scripts:
+  setup: |
+    #!/usr/bin/env bash
+    set -euo pipefail
+    npm ci
+    npm ci --prefix spikes/heavy-local-feasibility
+    npm ci --prefix spikes/heavy-browser
+    bash scripts/install-public-git-hooks.sh
+setupAgentStartupPolicy: wait-for-setup
