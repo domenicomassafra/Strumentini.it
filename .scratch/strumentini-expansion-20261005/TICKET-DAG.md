@@ -34,7 +34,6 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **369 — Motore PDF editor proprietary-safe confronto**
 - **370 — Spreadsheet CSV Excel donor fidelity**
 - **371 — OCR multilingual donor and quality study**
-- **378 — True redaction security independent gate**
 - **394 — Metadata stripping with after-export forensic inspection**
 - **396 — Two Italian tax journeys privati PIVA**
 - **397 — Official annual tax source inventory**
@@ -42,7 +41,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **406 — Independent PDF redaction attack corpus**
 - **407 — Hostile parsers and archive resource safety**
 
-Exactly **32** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **31** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -436,7 +435,7 @@ Exactly **32** incomplete tickets currently have every declared numeric blocker 
 | 375 | blocked | PDF immagini oggetti posizionati | 372 |
 | 376 | blocked | PDF form input edit e flatten | 372 |
 | 377 | blocked | PDF OCR searchable scansioni | 247, 371 |
-| 378 | ready-for-agent | True redaction security independent gate | — |
+| 378 | completed (bounded independent #378 forensic subset only; NOT Gold/release) | True redaction security independent gate | — |
 | 379 | blocked | PDF progetto history e undo | 372 |
 | 380 | blocked | PDF editor export source-bound | 373, 374, 375, 376, 379 |
 | 381 | blocked | Image editor canvas e layers | 363, 367 |
