@@ -1,13 +1,13 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
+  "$schema": "../node_modules/wrangler/config-schema.json",
   "name": "strumentini-328-staging-20261015",
   "compatibility_date": "2026-09-24",
-  "main": "worker/index.ts",
+  "main": "index.ts",
   // This file deliberately has NO production custom-domain route.
   "workers_dev": true,
   "routes": [],
   "assets": {
-    "directory": "./dist",
+    "directory": "../dist",
     "binding": "ASSETS",
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
@@ -17,7 +17,7 @@
       "binding": "AUTH_DB",
       "database_name": "strumentini-328-staging-20261015",
       "database_id": "807467ce-5366-4104-9509-8c012f836e2a",
-      "migrations_dir": "worker/migrations"
+      "migrations_dir": "migrations"
     }
   ]
 }
