@@ -17,6 +17,10 @@ describe("#328 staging publish refuses production build/binding", () => {
     const wrongD1 = config.replace("807467ce-5366-4104-9509-8c012f836e2a", "3351c8bf-31fc-4716-9d92-2b07c4d8fd2a");
     expect(() => assertStagingConfig(wrongD1)).toThrow(/isolated/u);
     expect(() => assertStagingConfig(config.replace('"routes": []', '"routes": [], "unsafe_extra": 1'))).toThrow(/unreviewed/u);
+    expect(() => assertStagingConfig(config.replace('"binding": "ASSETS"', '"binding": "ASSETS", "run_worker_first": true'))).toThrow(/isolated/u);
+    expect(() => assertStagingConfig(config.replace('"binding": "AUTH_DB"', '"binding": "AUTH_DB", "extra_db": true'))).toThrow(/isolated/u);
+    expect(() => assertStagingConfig(config.replace('"class_name": "PasswordKdf"', '"class_name": "PasswordKdf", "script_name": "foreign"'))).toThrow(/isolated/u);
+    expect(() => assertStagingConfig(config.replace('"storage": "sqlite"', '"storage": "kv"'))).toThrow(/isolated/u);
   });
   it("keeps the staging publisher in the strict Worker/D1/CI review lane", () => {
     for (const path of ["scripts/deploy-staging-328.ts", "tests/deploy-staging-328.test.ts"]) {

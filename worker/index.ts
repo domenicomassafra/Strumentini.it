@@ -28,10 +28,12 @@ import {
   clearFavorites,
   countLoginAttempts,
   createSession,
+  createSessionForPasswordCredential,
   createUser,
   deleteAllSessionsForUser,
   deleteSession,
   deleteUser,
+  deleteUserIfSessionCredentialUnchanged,
   findUserByGoogleSubject,
   findSessionByToken,
   findUserByEmail,
@@ -40,10 +42,11 @@ import {
   listFavoriteSync,
   listSessions,
   recordLoginAttempt,
+  reserveKdfAttempt,
   removeFavorite,
   touchSession,
   updateUserName,
-  updateUserPassword,
+  updateUserPasswordIfUnchanged,
 } from "./db";
 import type { SessionRow, UserRow } from "./db";
 import {
@@ -56,10 +59,18 @@ import {
 import { isLocalTurnstileHost, verifyTurnstileToken } from "./turnstile";
 import { MESSAGES, normalizeEmail, validateEmail, validateName, validatePassword, validateToolId } from "./validation";
 import { checkViesVat } from "./vies";
+import { PasswordKdfUnavailable, remotePasswordDeriver } from "./kdf-client";
+import type { PrivateKdfNamespace } from "./kdf-client";
+
+// Cloudflare's internal-only SQLite-backed Durable Object. Never HTTP-routed.
+export { PasswordKdf } from "./password-kdf";
 
 export interface Env {
   readonly ASSETS: Fetcher;
   readonly AUTH_DB: D1Database;
+  readonly PASSWORD_KDF?: PrivateKdfNamespace;
+  readonly KDF_IP_LIMIT?: { limit(input: { key: string }): Promise<{ success: boolean }> };
+  readonly KDF_COLO_LIMIT?: { limit(input: { key: string }): Promise<{ success: boolean }> };
   readonly TURNSTILE_SECRET?: string;
   readonly GOOGLE_CLIENT_ID?: string;
 }
@@ -212,6 +223,31 @@ async function recordFailure(env: Env, request: Request, now: Date): Promise<voi
   await recordLoginAttempt(env.AUTH_DB, clientIp(request), now.toISOString(), pruneBefore);
 }
 
+/** Admission before every expensive server-side KDF flow. This is a secondary
+ * limit, not an exact quota counter: Cloudflare counters are colo-local and
+ * eventually consistent. The existing durable D1 failure ledger still applies.
+ */
+async function kdfAdmission(context: RouteContext): Promise<Response | null> {
+  const host = new URL(context.request.url).hostname;
+  if (!context.env.KDF_IP_LIMIT || !context.env.KDF_COLO_LIMIT) {
+    // Offline/local test fixtures do not have provider rate-limit bindings.
+    return isLocalTurnstileHost(host) ? null : errorResponse(503, MESSAGES.internal);
+  }
+  try {
+    const ip = await context.env.KDF_IP_LIMIT.limit({ key: clientIp(context.request) });
+    if (!ip.success) return errorResponse(429, MESSAGES.rateLimited, { "retry-after": "60" });
+    const colo = await context.env.KDF_COLO_LIMIT.limit({ key: "password-kdf-v1" });
+    if (!colo.success) return errorResponse(429, MESSAGES.rateLimited, { "retry-after": "60" });
+    const now = new Date();
+    const reserved = await reserveKdfAttempt(context.env.AUTH_DB, clientIp(context.request),
+      nowIso(now), nowIso(new Date(now.getTime() - 60_000)));
+    if (!reserved) return errorResponse(429, MESSAGES.rateLimited, { "retry-after": "60" });
+    return null;
+  } catch {
+    return errorResponse(503, MESSAGES.internal);
+  }
+}
+
 async function requireHuman(
   context: RouteContext,
   body: Record<string, unknown>,
@@ -284,16 +320,31 @@ function sanitizeUserAgent(request: Request): string {
   return (request.headers.get("user-agent") ?? "").replace(/[\u0000-\u001F\u007F]/gu, "").slice(0, MAX_USER_AGENT_LENGTH);
 }
 
-async function startSession(context: RouteContext, userId: string): Promise<string> {
+async function startSession(context: RouteContext, userId: string): Promise<string>;
+async function startSession(
+  context: RouteContext,
+  userId: string,
+  expectedPassword: { readonly hash: string; readonly salt: string; readonly iterations: number },
+): Promise<string | null>;
+async function startSession(
+  context: RouteContext,
+  userId: string,
+  expectedPassword?: { readonly hash: string; readonly salt: string; readonly iterations: number },
+): Promise<string | null> {
   const token = await createSessionToken();
-  await createSession(context.env.AUTH_DB, {
+  const session = {
     id: newId(),
     tokenHash: token.tokenHash,
     userId,
     createdAt: nowIso(context.now),
     expiresAt: sessionExpiryIso(context.now),
     userAgent: sanitizeUserAgent(context.request),
-  });
+  };
+  if (expectedPassword) {
+    if (!await createSessionForPasswordCredential(context.env.AUTH_DB, session, expectedPassword)) return null;
+  } else {
+    await createSession(context.env.AUTH_DB, session);
+  }
   return token.token;
 }
 
@@ -322,9 +373,17 @@ async function handleRegister(context: RouteContext): Promise<Response> {
   if (!email.ok) return await registrationError(context, email.message);
   if (!name.ok) return await registrationError(context, name.message);
   if (!password.ok) return await registrationError(context, password.message);
+  // The uniqueness constraint remains the race authority. This prelookup
+  // avoids spending a 600k KDF on an account already known to exist.
+  if (await findUserByEmail(context.env.AUTH_DB, email.value) !== null) {
+    await recordFailure(context.env, context.request, context.now);
+    return errorResponse(409, MESSAGES.emailTaken);
+  }
+  const admission = await kdfAdmission(context);
+  if (admission !== null) return admission;
 
   const createdAt = nowIso(context.now);
-  const stored = await hashPassword(password.value);
+  const stored = await hashPassword(password.value, PASSWORD_ITERATIONS, remotePasswordDeriver(context.env.PASSWORD_KDF));
   const created = await createUser(context.env.AUTH_DB, {
     id: newId(),
     email: email.value,
@@ -339,7 +398,7 @@ async function handleRegister(context: RouteContext): Promise<Response> {
     return errorResponse(409, MESSAGES.emailTaken);
   }
 
-  let token: string;
+  let token: string | null;
   try {
     token = await startSession(context, created.id);
   } catch (error) {
@@ -347,6 +406,7 @@ async function handleRegister(context: RouteContext): Promise<Response> {
     await deleteUser(context.env.AUTH_DB, created.id);
     throw error;
   }
+  if (token === null) throw new Error("Unexpected missing registration session");
   return jsonResponse({ user: sessionUser(created) }, 201, setCookieHeader(sessionCookie(token)));
 }
 
@@ -363,12 +423,19 @@ async function handleLogin(context: RouteContext): Promise<Response> {
 
   const email = normalizeEmail(parsed.body.email);
   const password = readString(parsed.body, "password");
+  if (password.length > 256) {
+    await recordFailure(context.env, context.request, context.now);
+    return errorResponse(401, MESSAGES.invalidCredentials);
+  }
   const user = email === null || email === "" ? null : await findUserByEmail(context.env.AUTH_DB, email);
+  const admission = await kdfAdmission(context);
+  if (admission !== null) return admission;
   const valid = await verifyPassword(
     password,
     user === null || user.password_login_enabled !== 1
       ? DUMMY_PASSWORD
       : { hash: user.password_hash, salt: user.password_salt, iterations: user.password_iterations },
+    remotePasswordDeriver(context.env.PASSWORD_KDF),
   );
   if (user === null || user.password_login_enabled !== 1 || !valid) {
     await recordFailure(context.env, context.request, context.now);
@@ -383,17 +450,22 @@ async function handleLogin(context: RouteContext): Promise<Response> {
     salt: user.password_salt,
     iterations: user.password_iterations,
   };
+  let currentCredential = storedPassword;
   if (needsRehash(storedPassword)) {
-    const upgraded = await hashPassword(password);
-    await updateUserPassword(
+    const upgraded = await hashPassword(password, PASSWORD_ITERATIONS, remotePasswordDeriver(context.env.PASSWORD_KDF));
+    const updated = await updateUserPasswordIfUnchanged(
       context.env.AUTH_DB,
       user.id,
       { hash: upgraded.hash, salt: upgraded.salt, iterations: upgraded.iterations },
+      { ...storedPassword, loginEnabled: 1 },
       nowIso(context.now),
     );
+    if (!updated) return errorResponse(401, MESSAGES.invalidCredentials);
+    currentCredential = upgraded;
   }
 
-  const token = await startSession(context, user.id);
+  const token = await startSession(context, user.id, currentCredential);
+  if (token === null) return errorResponse(401, MESSAGES.invalidCredentials);
   return jsonResponse({ user: sessionUser(user) }, 200, setCookieHeader(sessionCookie(token)));
 }
 
@@ -561,8 +633,11 @@ async function handlePasswordChange(context: RouteContext): Promise<Response> {
   const parsed = await readJsonObject(context.request);
   if (!parsed.ok) return parsed.response;
   const currentPassword = readString(parsed.body, "currentPassword");
+  if (currentPassword.length > 256) return errorResponse(401, MESSAGES.currentPasswordWrong);
   const newPassword = validatePassword(parsed.body.newPassword);
   if (!newPassword.ok) return errorResponse(400, newPassword.message);
+  const admission = await kdfAdmission(context);
+  if (admission !== null) return admission;
 
   if (auth.user.password_login_enabled === 1) {
     if (currentPassword === "") return errorResponse(400, MESSAGES.currentPasswordRequired);
@@ -570,17 +645,21 @@ async function handlePasswordChange(context: RouteContext): Promise<Response> {
       hash: auth.user.password_hash,
       salt: auth.user.password_salt,
       iterations: auth.user.password_iterations,
-    });
+    }, remotePasswordDeriver(context.env.PASSWORD_KDF));
     if (!currentValid) return errorResponse(401, MESSAGES.currentPasswordWrong);
   }
 
-  const stored = await hashPassword(newPassword.value);
-  await updateUserPassword(
+  const stored = await hashPassword(newPassword.value, PASSWORD_ITERATIONS, remotePasswordDeriver(context.env.PASSWORD_KDF));
+  const updated = await updateUserPasswordIfUnchanged(
     context.env.AUTH_DB,
     auth.user.id,
     { hash: stored.hash, salt: stored.salt, iterations: stored.iterations },
-    nowIso(context.now),
+    { hash: auth.user.password_hash, salt: auth.user.password_salt,
+      iterations: auth.user.password_iterations, loginEnabled: auth.user.password_login_enabled },
+    nowIso(new Date()),
+    auth.session.id,
   );
+  if (!updated) return errorResponse(409, MESSAGES.currentPasswordWrong);
   // Every other device is signed out; the caller keeps their own session.
   await deleteAllSessionsForUser(context.env.AUTH_DB, auth.user.id, auth.session.id);
   return noContent();
@@ -623,17 +702,23 @@ async function handleAccountDelete(context: RouteContext): Promise<Response> {
   const parsed = await readJsonObject(context.request);
   if (!parsed.ok) return parsed.response;
   const password = readString(parsed.body, "password");
+  if (password.length > 256) return errorResponse(401, MESSAGES.currentPasswordWrong);
   if (auth.user.password_login_enabled === 1) {
+    const admission = await kdfAdmission(context);
+    if (admission !== null) return admission;
     if (password === "") return errorResponse(400, MESSAGES.currentPasswordRequired);
     const valid = await verifyPassword(password, {
       hash: auth.user.password_hash,
       salt: auth.user.password_salt,
       iterations: auth.user.password_iterations,
-    });
+    }, remotePasswordDeriver(context.env.PASSWORD_KDF));
     if (!valid) return errorResponse(401, MESSAGES.currentPasswordWrong);
   }
 
-  await deleteUser(context.env.AUTH_DB, auth.user.id);
+  const deleted = await deleteUserIfSessionCredentialUnchanged(context.env.AUTH_DB, auth.user.id, auth.session.id,
+    { hash: auth.user.password_hash, salt: auth.user.password_salt,
+      iterations: auth.user.password_iterations, loginEnabled: auth.user.password_login_enabled }, nowIso(new Date()));
+  if (!deleted) return errorResponse(401, MESSAGES.unauthenticated);
   return noContent(setCookieHeader(clearSessionCookie()));
 }
 
@@ -825,6 +910,9 @@ export default {
     try {
       return await handleApiRequest(request, env, execution);
     } catch (error) {
+      if (error instanceof PasswordKdfUnavailable) {
+        return errorResponse(503, MESSAGES.internal);
+      }
       console.error("api request failed", error);
       return errorResponse(500, MESSAGES.internal);
     }

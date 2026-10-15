@@ -30,25 +30,27 @@ export const FREE_CLOUDFLARE_LIMITS_2026_10_11 = Object.freeze({
 // and all first-party browser files that currently expose a transport primitive.
 // Source changes require new review and re-baselining instead of silent adoption.
 const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
-  // 2026-10-15 #328: reviewed native Workers 100k WebCrypto PBKDF2 limit,
-  // fixed RFC8018-compatible 600k software fallback, independently compared
-  // with Node crypto and verified on the real nonproduction Worker. No KDF
-  // downgrade, new auth route or network transport is authorized by this pin.
-  "worker/auth.ts": "0199d1f3f2568c94f6ae4b5e21b4d787932e4ffe18b252452153b1b974a586dc",
-  "worker/bindings.d.ts": "7ffff0bb60450e06b6acaec8b3d43e747e44ef711b1abf48a274bd812e18355e",
-  "worker/db.ts": "6ee1f3935d551fd557a71c6fb776fbaff17517d6d4f270beb3823c2d42d88abd",
+  // 2026-10-15 #328 candidate reviewed in source: internal-only Durable Object
+  // 600k PBKDF2 with no credential persistence and no auth route. Unit/mock
+  // coverage + Wrangler dry-run do NOT prove the actual Free plan CPU budget,
+  // quota or AC328.1–.3; serverMode remains NO_GO until live staging proof.
+  "worker/auth.ts": "d6417e29feec2be74b7768e6f35e871bc68099ddc19cc7bcd4beb3a35ed17141",
+  "worker/bindings.d.ts": "6728f6a0b231d4b1b390434cf79d21d827f84116a5a55bd70a8322c6479c7e4d",
+  "worker/db.ts": "453f90e89fce362878f078caa28d1027dc11a7c5fbcd67394dce40594764cb24",
   "worker/google.ts": "09ee69a8ab31e4eabac118bb2b3d4cdd579d655c260aa452fb8e359f32cba2db",
-  "worker/index.ts": "cd1694a762c9bc28534ca21d747b51b6bc2af0914a2bea108eeb5b3da10387e7",
+  "worker/index.ts": "a7ba9393dd0de9701c1e44c2dd025f4c6c36a9df975fcd37f0e686ed2e09d26f",
+  "worker/kdf-client.ts": "57b905d331fb73bbe1408673c3f9fc878685566be8050599e2ad6f13fd432246",
   "worker/migrations/0001_init.sql": "5402f41511baf4b74f4bf6b8bb46621d663a00d8352746c6acd1089c4c3f7417",
   "worker/migrations/0002_google_auth.sql": "80f0a007030410b018863ec36ca31fc6dff99ce52762979a071bc4c9af1fa6b9",
   "worker/migrations/0003_favorite_sync.sql": "b9e02301f5b76766039487dab65c57bf06b3c982c23cac3bcfc48dfa1747b6ea",
+  "worker/password-kdf.ts": "871aaa3142cbe2f51925105fcf99fd65f1d8a1a743c4535ae94bd3b0934e2f54",
   "worker/turnstile.ts": "bd7434f8233b9fe0e99fc42bdc5a4b11f919649364b58258b6ae77f0fcf32124",
   "worker/validation.ts": "1b82c7b041b17959ed31f6e6d61e34ab1fd7cbc91f1519eea3a91d889a5519f3",
   "worker/vies.ts": "344c9deae1b7dde4eaa374e713252fb7b9d4987e40e8bf717f9e31b761eb2d04",
   // A second, explicitly nonproduction Wrangler file is itself executable
   // deployment policy. Exact bytes are pinned so routes, assets or D1 cannot
   // silently acquire production resources under a harmless config filename.
-  "worker/wrangler.staging.jsonc": "0eddaac84f098342fa4a31c5539486edde3da7c24773bcfe09c99f873614a56f",
+  "worker/wrangler.staging.jsonc": "4f6454fbd712d8d539522a7741a73711d7480bb25a91947fdf4a59a8ba802950",
 });
 
 const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze({
@@ -198,7 +200,10 @@ export function auditStaticSurface(root: string, readSource?: ReadSource): Stati
     const databases = config.d1_databases;
     const routesConfig = config.routes;
     const configKeys = Object.keys(config).filter((k) => k !== "$schema").sort().join(",");
-    if (configKeys !== "assets,compatibility_date,d1_databases,main,name,routes" ||
+    const kdfBinding = config.durable_objects as Record<string, unknown> | undefined;
+    const kdfExports = config.exports as Record<string, unknown> | undefined;
+    const kdfRate = config.ratelimits;
+    if (configKeys !== "assets,compatibility_date,d1_databases,durable_objects,exports,main,name,ratelimits,routes" ||
       config.name !== "strumentini" || config.main !== "worker/index.ts" ||
       config.compatibility_date !== "2026-09-24" ||
       !assets || Object.keys(assets).sort().join(",") !== "binding,directory,html_handling,not_found_handling" ||
@@ -211,7 +216,13 @@ export function auditStaticSurface(root: string, readSource?: ReadSource): Stati
       databases[0]?.binding !== "AUTH_DB" || databases[0]?.database_name !== "strumentini-auth" ||
       databases[0]?.migrations_dir !== "worker/migrations" ||
       databases[0]?.database_id !== "3351c8bf-31fc-4716-9d92-2b07c4d8fd2a" ||
-      Object.keys(databases[0]).sort().join(",") !== "binding,database_id,database_name,migrations_dir") record("WRANGLER_CONFIG_DRIFT");
+      Object.keys(databases[0]).sort().join(",") !== "binding,database_id,database_name,migrations_dir" ||
+      JSON.stringify(kdfBinding) !== JSON.stringify({ bindings: [{ name: "PASSWORD_KDF", class_name: "PasswordKdf" }] }) ||
+      JSON.stringify(kdfExports) !== JSON.stringify({ PasswordKdf: { type: "durable-object", storage: "sqlite" } }) ||
+      JSON.stringify(kdfRate) !== JSON.stringify([
+        { name: "KDF_IP_LIMIT", namespace_id: "32820263", simple: { limit: 8, period: 60 } },
+        { name: "KDF_COLO_LIMIT", namespace_id: "32820264", simple: { limit: 30, period: 60 } },
+      ])) record("WRANGLER_CONFIG_DRIFT");
   } catch { record("WRANGLER_CONFIG_UNREADABLE"); }
   return { baselineSafe: violations.length === 0, serverMode: "NO_GO", inspectedFiles: paths.length, routes, violations };
 }

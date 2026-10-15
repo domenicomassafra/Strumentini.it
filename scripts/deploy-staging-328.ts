@@ -20,7 +20,7 @@ const STAGING_CONFIG = "worker/wrangler.staging.jsonc";
 
 export function assertStagingConfig(source: string): void {
   const config = JSON.parse(source.replace(/^\s*\/\/[^\n]*(?:\n|$)/gmu, "")) as Record<string, any>;
-  const reviewedKeys = ["$schema", "assets", "compatibility_date", "d1_databases", "main", "name", "routes", "workers_dev"];
+  const reviewedKeys = ["$schema", "assets", "compatibility_date", "d1_databases", "durable_objects", "exports", "main", "name", "ratelimits", "routes", "workers_dev"];
   if (Object.keys(config).sort().join("|") !== reviewedKeys.join("|")) {
     throw new Error("#328 refusal: unreviewed staging deployment configuration fields");
   }
@@ -28,14 +28,24 @@ export function assertStagingConfig(source: string): void {
       config.compatibility_date !== "2026-09-24" ||
       !Array.isArray(config.routes) || config.routes.length !== 0 ||
       config.main !== "index.ts" ||
+      Object.keys(config.assets ?? {}).sort().join(",") !== "binding,directory,html_handling,not_found_handling" ||
       config.assets?.directory !== "../dist" ||
       config.assets?.binding !== "ASSETS" ||
+      config.assets?.html_handling !== "auto-trailing-slash" ||
+      config.assets?.not_found_handling !== "404-page" ||
       !Array.isArray(config.d1_databases) || config.d1_databases.length !== 1 ||
+      Object.keys(config.d1_databases[0] ?? {}).sort().join(",") !== "binding,database_id,database_name,migrations_dir" ||
       config.d1_databases[0]?.binding !== "AUTH_DB" ||
       config.d1_databases[0]?.database_id !== STAGING_D1_ID ||
       config.d1_databases[0]?.database_id === PRODUCTION_D1_ID ||
       config.d1_databases[0]?.database_name !== STAGING_WORKER ||
-      config.d1_databases[0]?.migrations_dir !== "migrations") {
+      config.d1_databases[0]?.migrations_dir !== "migrations" ||
+      JSON.stringify(config.durable_objects) !== JSON.stringify({ bindings: [{ name: "PASSWORD_KDF", class_name: "PasswordKdf" }] }) ||
+      JSON.stringify(config.exports) !== JSON.stringify({ PasswordKdf: { type: "durable-object", storage: "sqlite" } }) ||
+      JSON.stringify(config.ratelimits) !== JSON.stringify([
+        { name: "KDF_IP_LIMIT", namespace_id: "32820261", simple: { limit: 8, period: 60 } },
+        { name: "KDF_COLO_LIMIT", namespace_id: "32820262", simple: { limit: 30, period: 60 } },
+      ])) {
     throw new Error("#328 refusal: staging is not isolated from production");
   }
 }

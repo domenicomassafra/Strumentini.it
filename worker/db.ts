@@ -150,6 +150,28 @@ export async function createSession(db: D1Database, session: NewSession): Promis
     .run();
 }
 
+/**
+ * Atomic login barrier: issuing a session and checking the password credential
+ * occur in the same SQLite statement. A password change cannot finish between
+ * a stale KDF verification and a subsequently issued new login session.
+ */
+export async function createSessionForPasswordCredential(
+  db: D1Database,
+  session: NewSession,
+  expected: { readonly hash: string; readonly salt: string; readonly iterations: number },
+): Promise<boolean> {
+  const result = await db.prepare(
+    `INSERT INTO sessions (id, token_hash, user_id, created_at, expires_at, last_seen_at, user_agent)
+     SELECT ?1, ?2, u.id, ?3, ?4, ?3, ?5 FROM users u
+     WHERE u.id = ?6 AND u.password_hash = ?7 AND u.password_salt = ?8
+       AND u.password_iterations = ?9 AND u.password_login_enabled = 1`,
+  ).bind(
+    session.id, session.tokenHash, session.createdAt, session.expiresAt,
+    session.userAgent, session.userId, expected.hash, expected.salt, expected.iterations,
+  ).run();
+  return result.meta.changes === 1;
+}
+
 /** Resolves a session (and its owner) by the SHA-256 hash of the raw token. */
 export async function findSessionByToken(db: D1Database, tokenHash: string): Promise<SessionWithUser | null> {
   const row = await db
@@ -231,18 +253,45 @@ export interface PasswordUpdate {
   readonly iterations: number;
 }
 
-export async function updateUserPassword(
+/** Compare-and-swap password mutation. Stale rehash/change cannot overwrite
+ * credentials written by another login, password change or reset in flight. */
+export async function updateUserPasswordIfUnchanged(
   db: D1Database,
   userId: string,
   password: PasswordUpdate,
+  expected: { readonly hash: string; readonly salt: string; readonly iterations: number; readonly loginEnabled: number },
   updatedAt: string,
-): Promise<void> {
-  await db
-    .prepare(
-      "UPDATE users SET password_hash = ?1, password_salt = ?2, password_iterations = ?3, password_login_enabled = 1, updated_at = ?4 WHERE id = ?5",
-    )
-    .bind(password.hash, password.salt, password.iterations, updatedAt, userId)
-    .run();
+  currentSessionId: string | null = null,
+): Promise<boolean> {
+  const result = await db.prepare(
+    `UPDATE users SET password_hash = ?1, password_salt = ?2, password_iterations = ?3,
+      password_login_enabled = 1, updated_at = ?4
+     WHERE id = ?5 AND password_hash = ?6 AND password_salt = ?7
+       AND password_iterations = ?8 AND password_login_enabled = ?9
+       AND (?10 IS NULL OR EXISTS (SELECT 1 FROM sessions s
+          WHERE s.id = ?10 AND s.user_id = users.id AND s.expires_at > ?4))`,
+  ).bind(password.hash, password.salt, password.iterations, updatedAt, userId,
+    expected.hash, expected.salt, expected.iterations, expected.loginEnabled, currentSessionId).run();
+  return result.meta.changes === 1;
+}
+
+/** Account deletion is authorized against the same live session and credential
+ * originally checked, so a revoked session/stale async KDF cannot delete it. */
+export async function deleteUserIfSessionCredentialUnchanged(
+  db: D1Database,
+  userId: string,
+  sessionId: string,
+  expected: { readonly hash: string; readonly salt: string; readonly iterations: number; readonly loginEnabled: number },
+  at: string,
+): Promise<boolean> {
+  const result = await db.prepare(
+    `DELETE FROM users WHERE id = ?1 AND password_hash = ?2 AND password_salt = ?3
+     AND password_iterations = ?4 AND password_login_enabled = ?5
+     AND EXISTS (SELECT 1 FROM sessions s WHERE s.id = ?6
+       AND s.user_id = users.id AND s.expires_at > ?7)`,
+  ).bind(userId, expected.hash, expected.salt, expected.iterations,
+    expected.loginEnabled, sessionId, at).run();
+  return result.meta.changes === 1;
 }
 
 /** Deletes the user and every session they own. */
@@ -266,6 +315,20 @@ export async function countLoginAttempts(db: D1Database, scope: string, since: s
     .bind(scope, since)
     .first<{ readonly count: number; readonly oldest: string | null }>();
   return { count: row?.count ?? 0, oldest: row?.oldest ?? null };
+}
+
+/** Atomic one-minute compute reservation. Unlike edge-colo rate limits, the
+ * INSERT predicate is serialized by D1 and includes concurrent in-flight KDF
+ * jobs. Reservations count even on KDF outage to protect the Free CPU quota.
+ * This scope uses a prefix distinct from legacy failed-login counters.
+ */
+export async function reserveKdfAttempt(db: D1Database, ip: string, at: string, since: string): Promise<boolean> {
+  const row = await db.prepare(
+    `INSERT INTO login_attempts (scope, attempted_at)
+     SELECT ?1, ?2 WHERE (SELECT COUNT(*) FROM login_attempts
+       WHERE scope = ?1 AND attempted_at >= ?3) < 8 RETURNING id`,
+  ).bind(`kdf-ip:${ip}`, at, since).first<{ readonly id: number }>();
+  return row !== null;
 }
 
 /**

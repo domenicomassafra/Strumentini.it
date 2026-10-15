@@ -115,6 +115,22 @@ describe("#348 fail-closed source inventory", () => {
     const audit = auditStaticSurface(project, (path) => path === "wrangler.jsonc" ? changed : source(path));
     expect(audit.violations).toContain("WRANGLER_CONFIG_DRIFT");
   });
+  it("pins the reviewed internal-only SQLite KDF binding without granting a public DO or provider bypass", () => {
+    const prod = source("wrangler.jsonc");
+    expect(prod).toContain('"name": "PASSWORD_KDF"');
+    expect(prod).toContain('"storage": "sqlite"');
+    for (const changed of [
+      prod.replace('"storage": "sqlite"', '"storage": "kv"'),
+      prod.replace('"name": "PASSWORD_KDF"', '"name": "EXTERNAL_KDF"'),
+      prod.replace('"class_name": "PasswordKdf"', '"class_name": "PasswordKdf", "script_name": "foreign"'),
+      prod.replace('"routes": [', '"unsafe_extra": true, "routes": ['),
+    ]) {
+      expect(changed).not.toBe(prod);
+      expect(auditStaticSurface(project, (path) => path === "wrangler.jsonc" ? changed : source(path)).violations)
+        .toContain("WRANGLER_CONFIG_DRIFT");
+    }
+    expect(auditStaticSurface(project).serverMode).toBe("NO_GO");
+  });
 });
 
 describe("#348 hypothetical opt-in budget only, with local/unavailable refusal", () => {

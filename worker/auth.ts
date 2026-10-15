@@ -57,6 +57,13 @@ export interface StoredPassword {
   readonly iterations: number;
 }
 
+/** Internal-only KDF backend. The HTTP Worker must not perform 600k CPU work. */
+export type PasswordDeriver = (
+  password: string,
+  salt: Uint8Array<ArrayBuffer>,
+  iterations: number,
+) => Promise<Uint8Array>;
+
 function toBase64Url(bytes: Uint8Array): string {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
@@ -120,9 +127,14 @@ async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>, iterat
 }
 
 /** Hashes a password with a fresh random salt. */
-export async function hashPassword(password: string, iterations = PASSWORD_ITERATIONS): Promise<StoredPassword> {
+export async function hashPassword(
+  password: string,
+  iterations = PASSWORD_ITERATIONS,
+  derive: PasswordDeriver = deriveKey,
+): Promise<StoredPassword> {
   const salt = randomBytes(PASSWORD_SALT_BYTES);
-  const key = await deriveKey(password, salt, iterations);
+  const key = await derive(password, salt, iterations);
+  if (key.length !== PASSWORD_KEY_BITS / 8) throw new Error("Invalid KDF result length");
   return {
     hash: `${PASSWORD_ALGORITHM}${PASSWORD_HASH_SEPARATOR}${toBase64Url(key)}`,
     salt: toBase64Url(salt),
@@ -157,16 +169,23 @@ export function parseStoredPassword(stored: StoredPassword): PasswordRecord | nu
  * Verifies a candidate password against a stored record. Unknown algorithms
  * and malformed records fail closed (returns `false`), never throw.
  */
-export async function verifyPassword(password: string, stored: StoredPassword): Promise<boolean> {
+export async function verifyPassword(
+  password: string,
+  stored: StoredPassword,
+  derive: PasswordDeriver = deriveKey,
+): Promise<boolean> {
   const record = parseStoredPassword(stored);
   if (record === null || record.algorithm !== PASSWORD_ALGORITHM) return false;
   const salt = fromBase64Url(record.salt);
   const expected = fromBase64Url(record.hash);
   if (salt === null || expected === null) return false;
   try {
-    const actual = await deriveKey(password, salt, record.iterations);
+    const actual = await derive(password, salt, record.iterations);
     return timingSafeEqual(actual, expected);
-  } catch {
+  } catch (error) {
+    // A remote backend outage is NOT an invalid password. Propagate so no
+    // account can be locked out or issued a session on an infrastructure error.
+    if (derive !== deriveKey) throw error;
     return false;
   }
 }
