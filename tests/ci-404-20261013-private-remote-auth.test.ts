@@ -118,18 +118,23 @@ describe("#404 private GitHub release admission uses no persistent credentials",
 
   it("runs the actual read-only validator YAML command with temporary Git authentication and no receipt write", () => {
     const current = invoke(admission, "current");
-    expect(current.attempted).toBe(1);
+    expect(current.attempted, `${current.stderr}\n${current.stdout}`).toBe(1);
     expect(current.stdout, current.stderr).not.toBe("");
     const result = JSON.parse(current.stdout) as {
       status: string; receipt: string | null; findings: { code: string }[];
     };
     expect(result.receipt).toBeNull();
     expect(result.status).not.toBe("PASS");
-    // In this isolated unbuilt checkout FAIL (missing dist) is expected; a
-    // complete production candidate would still be blocked by real evidence.
-    expect(result.findings.map((finding) => finding.code)).toEqual(expect.arrayContaining([
-      "GOLD_RECEIPT_MISSING", "PHYSICAL_DEVICE_EVIDENCE_MISSING", "ROLLBACK_UNPROVEN",
+    // Both supported local receipt conditions refuse publication: a fresh
+    // explicitly UNPROVEN rollback and a prior receipt whose source is stale.
+    // This test is about fail-closed source admission, not the incidental
+    // fingerprint of whichever isolated checkout it runs within.
+    const findings = result.findings.map((finding) => finding.code);
+    expect(findings).toEqual(expect.arrayContaining([
+      "GOLD_RECEIPT_MISSING", "PHYSICAL_DEVICE_EVIDENCE_MISSING",
     ]));
+    expect(findings.some((code) => code === "ROLLBACK_UNPROVEN" || code === "ROLLBACK_SOURCE_STALE"),
+      `Expected a concrete rollback blocker, got ${findings.join(",")}`).toBe(true);
     expect(current.status).not.toBe(0);
     const advanced = invoke(admission, "advanced");
     expect(advanced.attempted).toBe(1);
