@@ -10,12 +10,12 @@
   },
   "totals": {
     "all": 424,
-    "completed": 310,
+    "completed": 311,
     "completedWithRefusal": 17,
-    "completedWithoutExplicitRefusal": 293,
-    "open": 114,
-    "readyDAG": 30,
-    "ready-for-agent": 23,
+    "completedWithoutExplicitRefusal": 294,
+    "open": 113,
+    "readyDAG": 29,
+    "ready-for-agent": 22,
     "dependency-blocked": 84,
     "external-source-blocked": 2,
     "external-device-blocked": 5,
@@ -330,6 +330,7 @@
       351,
       365,
       378,
+      406,
       408,
       410,
       413,
@@ -357,7 +358,6 @@
       396,
       397,
       404,
-      406,
       407
     ],
     "dependency-blocked": [
@@ -4749,9 +4749,9 @@
     {
       "id": 406,
       "title": "Independent PDF redaction attack corpus",
-      "storedStatus": "ready-for-agent",
-      "expectedLifecycle": "ready-for-agent",
-      "executionCategory": "ready-for-agent",
+      "storedStatus": "completed (scope-limited original attack-corpus acceptance, no prod/Gold)",
+      "expectedLifecycle": "completed",
+      "executionCategory": "completed",
       "unresolvedDependencies": [],
       "gateReason": null,
       "closedWithRefusal": false

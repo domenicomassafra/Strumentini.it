@@ -5,10 +5,10 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 310 / 114 |
+| All / completed / open | 424 / 311 / 113 |
 | Closed with explicit refusal (NOT shipped) | 17 |
-| DAG-ready (all numeric dependencies closed) | 30 |
-| Ready for assignment (feasibility still to prove) | 23 |
+| DAG-ready (all numeric dependencies closed) | 29 |
+| Ready for assignment (feasibility still to prove) | 22 |
 | Waiting on other tickets | 84 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
@@ -21,7 +21,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 #150, #207, #208, #209, #222, #223, #224, #230, #242, #244, #245, #253, #257, #258, #259, #262, #263
 
-## Ready for assignment (feasibility still to prove) (23)
+## Ready for assignment (feasibility still to prove) (22)
 
 - #047 — JPEG/PNG/WebP/SVG compression engines
 - #056 — Office-to-PDF and printable export pack
@@ -44,7 +44,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #396 — Two Italian tax journeys privati PIVA
 - #397 — Official annual tax source inventory
 - #404 — Change scoped CI and cumulative release validation
-- #406 — Independent PDF redaction attack corpus
 - #407 — Hostile parsers and archive resource safety
 
 ## Waiting on other tickets (84)

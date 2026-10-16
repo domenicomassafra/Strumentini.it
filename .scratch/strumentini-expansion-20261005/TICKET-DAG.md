@@ -37,10 +37,9 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **396 — Two Italian tax journeys privati PIVA**
 - **397 — Official annual tax source inventory**
 - **404 — Change scoped CI and cumulative release validation**
-- **406 — Independent PDF redaction attack corpus**
 - **407 — Hostile parsers and archive resource safety**
 
-Exactly **30** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
+Exactly **29** incomplete tickets currently have every declared numeric blocker completed. This is **not** evidence that the feature is feasible: see `CURRENT-TICKET-DASHBOARD.md` for execution-ready, source/device-gated and capability-refused groups.
 
 ## Key decomposition rules
 
@@ -462,7 +461,7 @@ Exactly **30** incomplete tickets currently have every declared numeric blocker 
 | 403 | blocked | Physical microphone and audio media continuation | 229 |
 | 404 | ready-for-agent | Change scoped CI and cumulative release validation | — |
 | 405 | blocked | Release scope gates and rollback drill | 347, 404 |
-| 406 | ready-for-agent | Independent PDF redaction attack corpus | — |
+| 406 | completed (scope-limited original attack-corpus acceptance, no prod/Gold) | Independent PDF redaction attack corpus | — |
 | 407 | ready-for-agent | Hostile parsers and archive resource safety | — |
 | 408 | completed | Independent output consumer proofs by family | — |
 | 409 | blocked | Tax-year review ownership and retrospective versions | 397, 402 |
