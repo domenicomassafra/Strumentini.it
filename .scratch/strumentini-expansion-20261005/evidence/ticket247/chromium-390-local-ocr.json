@@ -1,6 +1,7 @@
 {
   "ticket": 247,
-  "date": "2026-10-10",
+  "observedAt": "2026-10-16T23:17:45.299Z",
+  "revision": "e1a8e507f09da513575cbd0731d3b0f207700044",
   "status": "LOCAL_EXPERIMENTAL_PASS",
   "browser": "chromium",
   "viewport": {
