@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "strumentini-private-kdf-probe-20261016",
+  "compatibility_date": "2026-09-24",
+  "main": "kdf-private-20261016.ts",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "durable_objects": {
+    "bindings": [{ "name": "KDF_PROBE", "class_name": "PrivateKdfProbe" }]
+  },
+  "exports": {
+    "PrivateKdfProbe": { "type": "durable-object", "storage": "sqlite" }
+  },
+  "triggers": {
+    "crons": []
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}
