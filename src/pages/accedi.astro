@@ -161,7 +161,7 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
 
         {turnstileSiteKey !== "" && (
           <div class="ac-challenge">
-            <div id="turnstile-login" class="ac-turnstile" aria-label="Verifica anti-bot per l'accesso"></div>
+            <div id="turnstile-login" class="ac-turnstile"></div>
             <p class="ac-support" id="turnstile-login-status" data-turnstile-status="login" role="status" aria-live="polite">Caricamento della verifica anti-bot…</p>
             <button class="text-button" type="button" data-turnstile-retry="login" aria-describedby="turnstile-login-status" hidden>Riprova la verifica</button>
           </div>
@@ -255,7 +255,7 @@ const turnstileSiteKey: string = TURNSTILE_SITE_KEY;
 
         {turnstileSiteKey !== "" && (
           <div class="ac-challenge">
-            <div id="turnstile-register" class="ac-turnstile" aria-label="Verifica anti-bot per la registrazione"></div>
+            <div id="turnstile-register" class="ac-turnstile"></div>
             <p class="ac-support" id="turnstile-register-status" data-turnstile-status="register" role="status" aria-live="polite">Caricamento della verifica anti-bot…</p>
             <button class="text-button" type="button" data-turnstile-retry="register" aria-describedby="turnstile-register-status" hidden>Riprova la verifica</button>
           </div>
