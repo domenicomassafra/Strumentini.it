@@ -12,6 +12,8 @@
  * iteration count, key length) can be raised later without a schema change:
  * a record carrying an unknown algorithm prefix simply fails verification.
  */
+import { pbkdf2Async } from "@noble/hashes/pbkdf2.js";
+import { sha256 } from "@noble/hashes/sha2.js";
 
 const PASSWORD_ALGORITHM = "pbkdf2-sha256";
 const PASSWORD_HASH_SEPARATOR = "$";
@@ -22,14 +24,16 @@ const PASSWORD_HASH_SEPARATOR = "$";
  * every existing credential keeps verifying and can be re-hashed on next login
  * (see `needsRehash`).
  *
- * Cost note for the deployment: 600k iterations is real CPU. It fits well
- * inside the Workers Paid CPU allowance and does not fit comfortably inside the
- * Free plan's per-request CPU budget, so the account API is a Paid-plan
- * component. The site itself does not need it: everything else is static.
+ * Production Workers restricts WebCrypto PBKDF2 calls to 100k iterations.
+ * Higher factors use the equivalent standard PBKDF2 implementation below;
+ * the stored hash format and 600k work factor stay unchanged. This still
+ * requires measuring CPU on the deployed Worker before enabling accounts.
  */
 export const PASSWORD_ITERATIONS = 600_000;
 export const PASSWORD_SALT_BYTES = 16;
 export const PASSWORD_KEY_BITS = 256;
+const MAX_NATIVE_WORKER_PBKDF2_ITERATIONS = 100_000;
+const MAX_STORED_PASSWORD_ITERATIONS = 1_000_000;
 
 export const SESSION_TOKEN_BYTES = 32;
 export const SESSION_COOKIE_NAME = "su_session";
@@ -52,6 +56,13 @@ export interface StoredPassword {
   readonly salt: string;
   readonly iterations: number;
 }
+
+/** Internal-only KDF backend. The HTTP Worker must not perform 600k CPU work. */
+export type PasswordDeriver = (
+  password: string,
+  salt: Uint8Array<ArrayBuffer>,
+  iterations: number,
+) => Promise<Uint8Array>;
 
 function toBase64Url(bytes: Uint8Array): string {
   let binary = "";
@@ -89,6 +100,23 @@ export function timingSafeEqual(left: Uint8Array, right: Uint8Array): boolean {
 }
 
 async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>, iterations: number): Promise<Uint8Array> {
+  if (!Number.isSafeInteger(iterations) || iterations <= 0 || iterations > MAX_STORED_PASSWORD_ITERATIONS) {
+    throw new Error("Unsupported password iteration factor");
+  }
+  // The real Cloudflare edge throws for native PBKDF2 iterations >100,000,
+  // unlike Node and local workerd. The audited MIT noble implementation
+  // computes exactly the same RFC 8018 PBKDF2-HMAC-SHA256 bytes as WebCrypto;
+  // it is not six serial PBKDF2 calls and it does not reduce the work factor.
+  // Yield periodically so a single real authentication does not monopolize
+  // the event loop while other requests are waiting. This does NOT reduce
+  // billed CPU; launch still requires provider CPU budget review.
+  if (iterations > MAX_NATIVE_WORKER_PBKDF2_ITERATIONS) {
+    return await pbkdf2Async(sha256, encoder.encode(password), salt, {
+      c: iterations,
+      dkLen: PASSWORD_KEY_BITS / 8,
+      asyncTick: 3,
+    });
+  }
   const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
   const bits = await crypto.subtle.deriveBits(
     { name: "PBKDF2", hash: "SHA-256", salt, iterations },
@@ -99,9 +127,14 @@ async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>, iterat
 }
 
 /** Hashes a password with a fresh random salt. */
-export async function hashPassword(password: string, iterations = PASSWORD_ITERATIONS): Promise<StoredPassword> {
+export async function hashPassword(
+  password: string,
+  iterations = PASSWORD_ITERATIONS,
+  derive: PasswordDeriver = deriveKey,
+): Promise<StoredPassword> {
   const salt = randomBytes(PASSWORD_SALT_BYTES);
-  const key = await deriveKey(password, salt, iterations);
+  const key = await derive(password, salt, iterations);
+  if (key.length !== PASSWORD_KEY_BITS / 8) throw new Error("Invalid KDF result length");
   return {
     hash: `${PASSWORD_ALGORITHM}${PASSWORD_HASH_SEPARATOR}${toBase64Url(key)}`,
     salt: toBase64Url(salt),
@@ -127,7 +160,7 @@ export function parseStoredPassword(stored: StoredPassword): PasswordRecord | nu
   if (separator <= 0) return null;
   const algorithm = stored.hash.slice(0, separator);
   const hash = stored.hash.slice(separator + 1);
-  if (!Number.isInteger(stored.iterations) || stored.iterations <= 0) return null;
+  if (!Number.isSafeInteger(stored.iterations) || stored.iterations <= 0 || stored.iterations > MAX_STORED_PASSWORD_ITERATIONS) return null;
   if (hash === "" || stored.salt === "") return null;
   return { algorithm, iterations: stored.iterations, salt: stored.salt, hash };
 }
@@ -136,16 +169,23 @@ export function parseStoredPassword(stored: StoredPassword): PasswordRecord | nu
  * Verifies a candidate password against a stored record. Unknown algorithms
  * and malformed records fail closed (returns `false`), never throw.
  */
-export async function verifyPassword(password: string, stored: StoredPassword): Promise<boolean> {
+export async function verifyPassword(
+  password: string,
+  stored: StoredPassword,
+  derive: PasswordDeriver = deriveKey,
+): Promise<boolean> {
   const record = parseStoredPassword(stored);
   if (record === null || record.algorithm !== PASSWORD_ALGORITHM) return false;
   const salt = fromBase64Url(record.salt);
   const expected = fromBase64Url(record.hash);
   if (salt === null || expected === null) return false;
   try {
-    const actual = await deriveKey(password, salt, record.iterations);
+    const actual = await derive(password, salt, record.iterations);
     return timingSafeEqual(actual, expected);
-  } catch {
+  } catch (error) {
+    // A remote backend outage is NOT an invalid password. Propagate so no
+    // account can be locked out or issued a session on an infrastructure error.
+    if (derive !== deriveKey) throw error;
     return false;
   }
 }

@@ -44,3 +44,10 @@ interface ExecutionContext {
   waitUntil(promise: Promise<unknown>): void;
   passThroughOnException(): void;
 }
+
+/** Runtime-supplied DurableObject base, not a bundled or paid dependency. */
+declare module "cloudflare:workers" {
+  export class DurableObject {
+    constructor(ctx: unknown, env: unknown);
+  }
+}

@@ -25,5 +25,15 @@
       "database_id": "3351c8bf-31fc-4716-9d92-2b07c4d8fd2a",
       "migrations_dir": "worker/migrations"
     }
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "PASSWORD_KDF", "class_name": "PasswordKdf" }]
+  },
+  "exports": {
+    "PasswordKdf": { "type": "durable-object", "storage": "sqlite" }
+  },
+  "ratelimits": [
+    { "name": "KDF_IP_LIMIT", "namespace_id": "32820263", "simple": { "limit": 8, "period": 60 } },
+    { "name": "KDF_COLO_LIMIT", "namespace_id": "32820264", "simple": { "limit": 30, "period": 60 } }
   ]
 }

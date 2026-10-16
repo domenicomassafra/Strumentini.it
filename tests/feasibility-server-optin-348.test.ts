@@ -44,6 +44,23 @@ describe("#348 fail-closed source inventory", () => {
     expect(audit.violations).toContain("SERVER_ROUTE_DRIFT");
     expect(audit.violations).toContain("CHANGED_WORKER_SOURCE:worker/index.ts");
   });
+  it("rebinds only the independently reviewed #328 staging/KDF bytes and rejects either hostile drift", () => {
+    const auth = source("worker/auth.ts");
+    expect(auth).toContain("MAX_NATIVE_WORKER_PBKDF2_ITERATIONS = 100_000");
+    expect(auth).toContain("pbkdf2Async(sha256, encoder.encode(password), salt");
+    const staging = source("worker/wrangler.staging.jsonc");
+    expect(staging).toContain('"routes": []');
+    expect(staging).toContain('"database_name": "strumentini-328-staging-20261015"');
+    expect(staging).not.toContain("3351c8bf-31fc-4716-9d92-2b07c4d8fd2a");
+    const changedWorker = auth.replace("MAX_NATIVE_WORKER_PBKDF2_ITERATIONS = 100_000", "MAX_NATIVE_WORKER_PBKDF2_ITERATIONS = 1_000_000");
+    expect(changedWorker).not.toBe(auth);
+    expect(auditStaticSurface(project, (path) => path === "worker/auth.ts" ? changedWorker : source(path)).violations)
+      .toContain("CHANGED_WORKER_SOURCE:worker/auth.ts");
+    const changedConfig = staging.replace('"routes": []', '"routes": [{"pattern":"strumentini.it","custom_domain":true}]');
+    expect(changedConfig).not.toBe(staging);
+    expect(auditStaticSurface(project, (path) => path === "worker/wrangler.staging.jsonc" ? changedConfig : source(path)).violations)
+      .toContain("CHANGED_WORKER_SOURCE:worker/wrangler.staging.jsonc");
+  });
 
   it("rejects hidden uploads injected into a previously reviewed client transport", () => {
     const path = "src/components/tools/research-knowledge/ViesVerificationPanel.tsx";
@@ -97,6 +114,22 @@ describe("#348 fail-closed source inventory", () => {
       '"html_handling": "auto-trailing-slash", "run_worker_first": true');
     const audit = auditStaticSurface(project, (path) => path === "wrangler.jsonc" ? changed : source(path));
     expect(audit.violations).toContain("WRANGLER_CONFIG_DRIFT");
+  });
+  it("pins the reviewed internal-only SQLite KDF binding without granting a public DO or provider bypass", () => {
+    const prod = source("wrangler.jsonc");
+    expect(prod).toContain('"name": "PASSWORD_KDF"');
+    expect(prod).toContain('"storage": "sqlite"');
+    for (const changed of [
+      prod.replace('"storage": "sqlite"', '"storage": "kv"'),
+      prod.replace('"name": "PASSWORD_KDF"', '"name": "EXTERNAL_KDF"'),
+      prod.replace('"class_name": "PasswordKdf"', '"class_name": "PasswordKdf", "script_name": "foreign"'),
+      prod.replace('"routes": [', '"unsafe_extra": true, "routes": ['),
+    ]) {
+      expect(changed).not.toBe(prod);
+      expect(auditStaticSurface(project, (path) => path === "wrangler.jsonc" ? changed : source(path)).violations)
+        .toContain("WRANGLER_CONFIG_DRIFT");
+    }
+    expect(auditStaticSurface(project).serverMode).toBe("NO_GO");
   });
 });
 
