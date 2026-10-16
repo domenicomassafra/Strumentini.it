@@ -10,6 +10,7 @@ import { resolve, relative } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createServer } from "vite";
 import { chromium, firefox, webkit } from "@playwright/test";
+import type { Page } from "@playwright/test";
 import sharp from "sharp";
 import { makeCodecCorpus367, verifyCodecReadback367 } from "./donor-codecs-367";
 import { enforceLocalNetwork367 } from "./codec-browser-network-367";
@@ -18,6 +19,11 @@ const root = resolve(import.meta.dirname, "..");
 const donorRelative = ".scratch/local-codec-367-20261016/node_modules";
 const donorRoot = resolve(root, donorRelative);
 const packages = ["jpeg", "webp", "oxipng", "avif"] as const;
+const sourceModule367 = `/${donorRelative}/@jsquash/jpeg/index.js`;
+const wasmPath367 = `/${donorRelative}/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm`;
+// Committed, independently decoded 2026-10-16 inventory: never learn pins from
+// the installed vendor bytes (or a mutable benchmark run).
+const pinnedReceiptSha256367 = "c9c24dd7ee6989c69ae427ffa2265ec5974175727c90404ef2da3c7e217a98ad";
 const hash = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 const asBase64 = (bytes: Uint8Array) => Buffer.from(bytes).toString("base64");
 const median = (values: number[]) => {
@@ -30,8 +36,60 @@ const median = (values: number[]) => {
 /** A measured refusal is useful evidence but never a green codec parity run.
  * This gate deliberately operates on the actual emitted report structure.
  */
+export function assertCspProof367(run: {
+  engine: string;
+  positiveControl: unknown;
+  strictCsp: unknown;
+  evalBlockedCsp: unknown;
+  noConnectCsp: unknown;
+}, moduleUrl: string, wasmPath: string): void {
+  const positive = run.positiveControl;
+  if (!positive || typeof positive !== "object" || !("status" in positive) ||
+      positive.status !== "DONOR_ENCODED" || !("moduleUrl" in positive) ||
+      positive.moduleUrl !== moduleUrl || !("wasmPath" in positive) ||
+      positive.wasmPath !== wasmPath || !("size" in positive) ||
+      typeof positive.size !== "number" || positive.size < 1 ||
+      !("moduleHttpStatus" in positive) || positive.moduleHttpStatus !== 200 ||
+      !("wasmHttpStatus" in positive) || positive.wasmHttpStatus !== 200) {
+    throw new Error(`CODEC_367_CSP_POSITIVE_CONTROL_MISSING: ${run.engine} ${JSON.stringify(positive)}`);
+  }
+  for (const [label, observation] of [
+    ["strict", run.strictCsp], ["eval-blocked", run.evalBlockedCsp], ["connect-blocked", run.noConnectCsp],
+  ] as const) {
+    if (!observation || typeof observation !== "object" || !("status" in observation) ||
+        observation.status !== "REFUSED") {
+      throw new Error(`CODEC_367_CSP_UNEXPECTED_SUCCESS: ${run.engine} ${label} ${JSON.stringify(observation)}`);
+    }
+    const expectedDirective = label === "eval-blocked" ? "script-src" : "connect-src";
+    const sameModule = "moduleUrl" in observation && observation.moduleUrl === positive.moduleUrl;
+    const eventVerified = sameModule &&
+      "violations" in observation && Array.isArray(observation.violations) &&
+      observation.violations.some((candidate: unknown) => {
+        if (!candidate || typeof candidate !== "object" ||
+            !("effectiveDirective" in candidate) || !("blockedURI" in candidate) ||
+            !("disposition" in candidate) || candidate.disposition !== "enforce" ||
+            candidate.effectiveDirective !== expectedDirective || typeof candidate.blockedURI !== "string") return false;
+        return expectedDirective === "connect-src"
+          ? candidate.blockedURI.includes(wasmPath)
+          : ["wasm-eval", "eval"].includes(candidate.blockedURI);
+      });
+    // WebKit 26.6 throws an explicit WASM CompileError naming the CSP policy
+    // but emits no SecurityPolicyViolationEvent for that specific compile.
+    // This narrow exception is corroborated by the same-module HTTP 200/WASM
+    // 200 positive control; generic Failed to fetch/404 can never pass.
+    const wasmCompilerVerified = sameModule && label === "eval-blocked" &&
+      "message" in observation && typeof observation.message === "string" &&
+      /\bCompileError\b/u.test(observation.message) &&
+      /(?:Content Security Policy|\bCSP\b)/iu.test(observation.message) &&
+      /(?:WebAssembly|wasm-unsafe-eval)/iu.test(observation.message) &&
+      /script-src 'self'/u.test(observation.message);
+    if (!eventVerified && !wasmCompilerVerified) throw new Error(`CODEC_367_CSP_CAUSE_UNPROVEN: ${run.engine} ${label} ${JSON.stringify(observation)}`);
+  }
+}
+
 export function assertDonorRun367(run: {
   engine: string;
+  positiveControl: unknown;
   strictCsp: unknown;
   evalBlockedCsp: unknown;
   noConnectCsp: unknown;
@@ -40,14 +98,7 @@ export function assertDonorRun367(run: {
   blockedOffsiteRequests: string[];
   errors: string[];
 }): void {
-  for (const [label, observation] of [
-    ["strict", run.strictCsp], ["eval-blocked", run.evalBlockedCsp], ["connect-blocked", run.noConnectCsp],
-  ] as const) {
-    if (!observation || typeof observation !== "object" || !("status" in observation) ||
-        observation.status !== "REFUSED") {
-      throw new Error(`CODEC_367_CSP_UNEXPECTED_SUCCESS: ${run.engine} ${label} ${JSON.stringify(observation)}`);
-    }
-  }
+  assertCspProof367(run, sourceModule367, wasmPath367);
   if (run.errors.length || run.remoteRequests.length || run.blockedOffsiteRequests.length) {
     throw new Error(`CODEC_367_BROWSER_EGRESS_OR_ERROR: ${run.engine} ${JSON.stringify({
       errors: run.errors, observed: run.remoteRequests, blocked: run.blockedOffsiteRequests,
@@ -61,6 +112,44 @@ export function assertDonorRun367(run: {
       throw new Error(`CODEC_367_MISSING_DECODER_PROOF: ${run.engine} ${name} ${JSON.stringify(result)}`);
     }
   }
+}
+
+/** Direct browser event instrumentation: no error-string heuristics. */
+export async function probeCspInBrowser367(page: Page, origin: string, moduleUrl: string, policyPath: string) {
+  await page.goto(`${origin}${policyPath}`);
+  return page.evaluate(async (sourceModule) => {
+    const violations: { effectiveDirective: string; blockedURI: string; disposition: string }[] = [];
+    document.addEventListener("securitypolicyviolation", (event) => {
+      violations.push({ effectiveDirective: event.effectiveDirective, blockedURI: event.blockedURI,
+        disposition: event.disposition });
+    });
+    let result: { status: string; size?: number; message?: string };
+    try {
+      const { encode } = await import(/* @vite-ignore */ sourceModule);
+      const encoded = await encode(new ImageData(new Uint8ClampedArray(16).fill(255), 2, 2));
+      result = { status: "UNEXPECTED_SUCCESS", size: encoded.byteLength };
+    } catch (error) { result = { status: "REFUSED", message: String(error).slice(0, 350) }; }
+    // CSP violation dispatch can follow a rejected fetch/compile promise. This
+    // is bounded, not an unbounded wait or a substitute for the actual event.
+    await new Promise<void>((resolve) => setTimeout(resolve, 150));
+    return { ...result, moduleUrl: sourceModule, violations };
+  }, moduleUrl);
+}
+
+/** Fail closed if locally installed WASM bytes/licenses/versions have drifted
+ * from the committed prior receipt. The comparison is set-complete and cannot
+ * silently accept an extra, omitted or substituted binary.
+ */
+export function assertDonorInventory367(actual: unknown, pinned: unknown): void {
+  function normalized(value: unknown): string {
+    if (!value || typeof value !== "object" || !("packages" in value) || !("wasm" in value) ||
+        !Array.isArray(value.packages) || !Array.isArray(value.wasm)) throw new Error("CODEC_367_INVENTORY_INVALID");
+    const groups = [value.packages, value.wasm].map((records) => records
+      .map((record) => JSON.stringify(record))
+      .sort());
+    return JSON.stringify(groups);
+  }
+  if (normalized(actual) !== normalized(pinned)) throw new Error("CODEC_367_DONOR_PIN_MISMATCH");
 }
 
 async function inventory() {
@@ -90,6 +179,10 @@ async function inventory() {
 async function run() {
   for (const name of packages) await access(resolve(donorRoot, "@jsquash", name, "index.js"));
   const assets = await inventory();
+  const pinnedReceiptBytes = await readFile(resolve(root, "docs/codec-jsquash-367-2026-10-16.json"));
+  if (hash(pinnedReceiptBytes) !== pinnedReceiptSha256367) throw new Error("CODEC_367_RECEIPT_PIN_MISMATCH");
+  const pinnedReceipt = JSON.parse(pinnedReceiptBytes.toString("utf8"));
+  assertDonorInventory367(assets, pinnedReceipt.assets);
   const corpus = await makeCodecCorpus367();
   const smallAlpha = await sharp(corpus.alphaPng).resize(128, 96).png().toBuffer();
   const sources = {
@@ -119,6 +212,8 @@ async function run() {
     limits: "desktop headless only; no mobile hardware, battery, native RSS, WASM peak or production CSP",
     cspDecision: "strict rejects fetch or WASM compilation; script-src wasm-unsafe-eval and connect-src self both required and NOT approved for production",
     licenses: "npm wrappers and included LICENSE hashed, compiled codec license/source obligations not independently resolved",
+    pinProvenance: { receipt: "docs/codec-jsquash-367-2026-10-16.json", sha256: pinnedReceiptSha256367,
+      contract: "versions, included LICENSE sha256, transitive deps, exact 10 WASM names/sizes/sha256 matched before any browser probe; JS wrapper bytes not separately pinned" },
     assets, engines: [] as unknown[],
     svg: "jSquash has no SVG encoder: product SVG allowlist + svgo installed, not an equivalent jSquash codec",
   };
@@ -130,10 +225,10 @@ async function run() {
     for (const engine of [chromium, firefox, webkit]) {
       const browser = await engine.launch({ headless: true });
       const engineResult: {
-        engine: string; browserVersion: string; strictCsp: unknown; evalBlockedCsp: unknown; noConnectCsp: unknown; cases: unknown[];
+        engine: string; browserVersion: string; positiveControl: unknown; strictCsp: unknown; evalBlockedCsp: unknown; noConnectCsp: unknown; cases: unknown[];
         remoteRequests: string[]; blockedOffsiteRequests: string[];
         wasmResponses: { path: string; status: number; responseLengthHeader: string | null }[]; errors: string[];
-      } = { engine: engine.name(), browserVersion: browser.version(), strictCsp: null, evalBlockedCsp: null, noConnectCsp: null,
+      } = { engine: engine.name(), browserVersion: browser.version(), positiveControl: null, strictCsp: null, evalBlockedCsp: null, noConnectCsp: null,
         cases: [], remoteRequests: [], blockedOffsiteRequests: [], wasmResponses: [], errors: [] };
       try {
         const context = await browser.newContext({
@@ -148,42 +243,35 @@ async function run() {
             engineResult.remoteRequests.push(request.url());
           }
         });
+        const httpResponses: { path: string; status: number }[] = [];
         page.on("response", (response) => {
           const pathname = new URL(response.url()).pathname;
+          httpResponses.push({ path: pathname, status: response.status() });
           if (pathname.endsWith(".wasm")) {
             engineResult.wasmResponses.push({ path: pathname, status: response.status(),
               responseLengthHeader: response.headers()["content-length"] ?? null });
           }
         });
         page.on("pageerror", (error) => engineResult.errors.push(String(error).slice(0, 400)));
-        await page.goto(`${origin}/__strict367`);
-        engineResult.strictCsp = await page.evaluate(async () => {
+        // Same exact module under the permissive CSP is a mandatory positive
+        // control BEFORE any negative probes: a missing module/WASM cannot be
+        // misreported as proof of a CSP refusal.
+        await page.goto(`${origin}/__wasm367`);
+        const positive = await page.evaluate(async (moduleUrl) => {
           try {
-            const sourceModule = "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/index.js";
-            const { encode } = await import(/* @vite-ignore */ sourceModule);
-            const source = new ImageData(new Uint8ClampedArray(16).fill(255), 2, 2);
-            const encoded = await encode(source);
-            return { status: "UNEXPECTED_SUCCESS", size: encoded.byteLength };
-          } catch (error) { return { status: "REFUSED", message: String(error).slice(0, 350) }; }
-        });
-        await page.goto(`${origin}/__eval_block367`);
-        engineResult.evalBlockedCsp = await page.evaluate(async () => {
-          try {
-            const sourceModule = "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/index.js";
-            const { encode } = await import(/* @vite-ignore */ sourceModule);
+            const { encode } = await import(/* @vite-ignore */ moduleUrl);
             const encoded = await encode(new ImageData(new Uint8ClampedArray(16).fill(255), 2, 2));
-            return { status: "UNEXPECTED_SUCCESS", size: encoded.byteLength };
-          } catch (error) { return { status: "REFUSED", message: String(error).slice(0, 350) }; }
-        });
-        await page.goto(`${origin}/__no_connect367`);
-        engineResult.noConnectCsp = await page.evaluate(async () => {
-          try {
-            const sourceModule = "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/index.js";
-            const { encode } = await import(/* @vite-ignore */ sourceModule);
-            const encoded = await encode(new ImageData(new Uint8ClampedArray(16).fill(255), 2, 2));
-            return { status: "UNEXPECTED_SUCCESS", size: encoded.byteLength };
-          } catch (error) { return { status: "REFUSED", message: String(error).slice(0, 350) }; }
-        });
+            return { status: "DONOR_ENCODED", size: encoded.byteLength, moduleUrl };
+          } catch (error) { return { status: "CONTROL_FAILED", message: String(error).slice(0, 350), moduleUrl }; }
+        }, sourceModule367);
+        engineResult.positiveControl = { ...positive, wasmPath: wasmPath367,
+          moduleHttpStatus: httpResponses.find((r) => r.path === sourceModule367)?.status ?? 0,
+          wasmHttpStatus: httpResponses.find((r) => r.path === wasmPath367)?.status ?? 0 };
+        // Listener installed synchronously before import; the browser's CSP
+        // events (not the generic catch) are our cause-specific oracle.
+        engineResult.strictCsp = await probeCspInBrowser367(page, origin, sourceModule367, "/__strict367");
+        engineResult.evalBlockedCsp = await probeCspInBrowser367(page, origin, sourceModule367, "/__eval_block367");
+        engineResult.noConnectCsp = await probeCspInBrowser367(page, origin, sourceModule367, "/__no_connect367");
         // Fresh realm avoids retaining the Emscripten aborted singleton after
         // the strict-CSP negative test.
         await page.goto(`${origin}/__wasm367`);

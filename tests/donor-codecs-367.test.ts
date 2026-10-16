@@ -1,24 +1,63 @@
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import sharp from "sharp";
 import { compressImageWithDonor47 } from "../src/engines/image/compression-donor-047";
 import { makeCodecCorpus367, verifyCodecReadback367 } from "../scripts/donor-codecs-367";
-import { assertDonorRun367 } from "../scripts/compare-jsquash-367";
+import { assertDonorInventory367, assertDonorRun367 } from "../scripts/compare-jsquash-367";
 
 const fixture = (name: string) => resolve(import.meta.dirname, `../quality/fixtures/image-metadata/${name}`);
 
 describe("#367 real codec byte readback at a public output seam", () => {
+  it("pins the prior receipt by SHA256 and rejects missing/substituted WASM inventory bytes", async () => {
+    const receiptBytes = await readFile(resolve(import.meta.dirname, "../docs/codec-jsquash-367-2026-10-16.json"));
+    expect(createHash("sha256").update(receiptBytes).digest("hex"))
+      .toBe("c9c24dd7ee6989c69ae427ffa2265ec5974175727c90404ef2da3c7e217a98ad");
+    const { assets } = JSON.parse(receiptBytes.toString("utf8"));
+    expect(assets.wasm).toHaveLength(10);
+    expect(() => assertDonorInventory367(assets, assets)).not.toThrow();
+    expect(() => assertDonorInventory367({ ...assets, wasm: assets.wasm.slice(1) }, assets))
+      .toThrow(/DONOR_PIN_MISMATCH/u);
+    expect(() => assertDonorInventory367({ ...assets, wasm: assets.wasm.map((w: { sha256: string }, i: number) => i ? w : { ...w, sha256: "0".repeat(64) }) }, assets))
+      .toThrow(/DONOR_PIN_MISMATCH/u);
+    expect(() => assertDonorInventory367({ ...assets, packages: assets.packages.map((p: { version: string }, i: number) => i ? p : { ...p, version: "unreviewed" }) }, assets))
+      .toThrow(/DONOR_PIN_MISMATCH/u);
+  });
+
   it("refuses a false-green donor comparison even if a report contains other successful codecs", () => {
+    const moduleUrl = "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/index.js";
+    const wasmPath = "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm";
+    const connectionViolation = { effectiveDirective: "connect-src", blockedURI: `http://127.0.0.1:1234${wasmPath}`, disposition: "enforce" };
+    const wasmViolation = { effectiveDirective: "script-src", blockedURI: "wasm-eval", disposition: "enforce" };
     const passed = {
       engine: "fixture-engine",
-      strictCsp: { status: "REFUSED" },
-      evalBlockedCsp: { status: "REFUSED" },
-      noConnectCsp: { status: "REFUSED" },
+      positiveControl: { status: "DONOR_ENCODED", size: 256, moduleUrl, wasmPath, moduleHttpStatus: 200, wasmHttpStatus: 200 },
+      strictCsp: { status: "REFUSED", moduleUrl, violations: [connectionViolation] },
+      evalBlockedCsp: { status: "REFUSED", moduleUrl, violations: [wasmViolation] },
+      noConnectCsp: { status: "REFUSED", moduleUrl, violations: [connectionViolation] },
       cases: ["jpeg", "webp", "oxipng", "avif"].map((name) => ({ name, status: "DONOR_BYTES_REOPENED" })),
       remoteRequests: [] as string[], blockedOffsiteRequests: [] as string[], errors: [] as string[],
     };
     expect(() => assertDonorRun367(passed)).not.toThrow();
+    for (const label of ["strictCsp", "evalBlockedCsp", "noConnectCsp"] as const) {
+      expect(() => assertDonorRun367({ ...passed, [label]: { status: "REFUSED", moduleUrl, message: "404 Not Found", violations: [] } }))
+        .toThrow(/CSP_CAUSE_UNPROVEN/u);
+      expect(() => assertDonorRun367({ ...passed, [label]: { status: "REFUSED", moduleUrl,
+        violations: [{ effectiveDirective: "img-src", blockedURI: "http://127.0.0.1:1234/img.png", disposition: "enforce" }] } }))
+        .toThrow(/CSP_CAUSE_UNPROVEN/u);
+      expect(() => assertDonorRun367({ ...passed, [label]: { status: "REFUSED", moduleUrl: "/different-module.js",
+        violations: [connectionViolation, wasmViolation] } })).toThrow(/CSP_CAUSE_UNPROVEN/u);
+    }
+    expect(() => assertDonorRun367({ ...passed, positiveControl: { ...passed.positiveControl, wasmHttpStatus: 404 } }))
+      .toThrow(/CSP_POSITIVE_CONTROL_MISSING/u);
+    expect(() => assertDonorRun367({ ...passed, strictCsp: { status: "REFUSED", moduleUrl, violations: [wasmViolation] } }))
+      .toThrow(/CSP_CAUSE_UNPROVEN/u);
+    expect(() => assertDonorRun367({ ...passed, evalBlockedCsp: { status: "REFUSED", moduleUrl, violations: [],
+      message: "CompileError: Refused to create a WebAssembly object because 'wasm-unsafe-eval' is not an allowed source of script in the Content Security Policy directive: \"script-src 'self'\"." } }))
+      .not.toThrow();
+    expect(() => assertDonorRun367({ ...passed, evalBlockedCsp: { status: "REFUSED", moduleUrl, violations: [],
+      message: "TypeError: Failed to fetch" } })).toThrow(/CSP_CAUSE_UNPROVEN/u);
     expect(() => assertDonorRun367({ ...passed, evalBlockedCsp: { status: "UNEXPECTED_SUCCESS" } }))
       .toThrow(/CSP_UNEXPECTED_SUCCESS/u);
     expect(() => assertDonorRun367({ ...passed,
