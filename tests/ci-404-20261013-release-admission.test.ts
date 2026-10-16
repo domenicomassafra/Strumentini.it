@@ -1,7 +1,8 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import YAML from "yaml";
+import { buildImpactPlan } from "../scripts/ci-change-impact-404";
 
 const workflow = readFileSync(resolve(import.meta.dirname, "../.github/workflows/ci.yml"), "utf8");
 
@@ -55,6 +56,25 @@ function releaseAdmissionFailures(source = workflow): string[] {
 }
 
 describe("#404 cumulative main and explicit release source admission", () => {
+  it("cannot bypass independent Gold/security admission review by editing its directly imported audit executable", () => {
+    const source = readFileSync(resolve(import.meta.dirname, "../scripts/validate-release.ts"), "utf8");
+    expect(source).toContain('from "./audit-gold-source-binding-347"');
+    expect(source).toContain("await inspectGoldBinding347(root)");
+    const availableTests = readdirSync(resolve(import.meta.dirname))
+      .filter((file) => file.endsWith(".test.ts")).map((file) => `tests/${file}`);
+    const plan = buildImpactPlan(["docs/readme.md", "scripts/audit-gold-source-binding-347.ts"], availableTests);
+    expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(plan.domains).toContain("ci");
+    expect(plan.gates).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: "security-review", status: "NOT_RUN" }),
+      expect.objectContaining({ id: "release-readiness", status: "NOT_RUN" }),
+    ]));
+    expect(plan.commands.map((command) => command.args.join(" "))).toEqual(expect.arrayContaining([
+      "run test", "run check", "run build",
+    ]));
+    expect(buildImpactPlan(["docs/readme.md"], availableTests).status).toBe("DOCS_ONLY");
+  });
+
   it("runs actual Python ticket oracle in main cumulative CI and both suites on release dispatch", () => {
     expect(releaseAdmissionFailures(workflow)).toEqual([]);
     expect(workflow).toContain("branches: [main]");

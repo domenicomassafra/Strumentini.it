@@ -1,0 +1,150 @@
+{
+  "fixture": "SYNTHETIC_WASM_NOT_DONOR",
+  "policy": "loopback, headless desktop, same module and WASM",
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "153.0.8010.12",
+      "positiveControl": {
+        "status": "DONOR_ENCODED",
+        "size": 4,
+        "moduleUrl": "/__fixture367/module.js",
+        "wasmPath": "/__fixture367/fixture.wasm",
+        "moduleHttpStatus": 200,
+        "wasmHttpStatus": 200
+      },
+      "rejected404": true,
+      "strictCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: Failed to fetch",
+        "moduleUrl": "/__fixture367/module.js",
+        "violations": [
+          {
+            "effectiveDirective": "connect-src",
+            "blockedURI": "http://127.0.0.1:51343/__fixture367/fixture.wasm",
+            "disposition": "enforce"
+          }
+        ]
+      },
+      "evalBlockedCsp": {
+        "status": "REFUSED",
+        "message": "CompileError: WebAssembly.compile(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: \"script-src 'self'\".",
+        "moduleUrl": "/__fixture367/module.js",
+        "violations": [
+          {
+            "effectiveDirective": "script-src",
+            "blockedURI": "wasm-eval",
+            "disposition": "enforce"
+          }
+        ]
+      },
+      "noConnectCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: Failed to fetch",
+        "moduleUrl": "/__fixture367/module.js",
+        "violations": [
+          {
+            "effectiveDirective": "connect-src",
+            "blockedURI": "http://127.0.0.1:51343/__fixture367/fixture.wasm",
+            "disposition": "enforce"
+          }
+        ]
+      },
+      "offsite": []
+    },
+    {
+      "browser": "firefox",
+      "version": "155.0",
+      "positiveControl": {
+        "status": "DONOR_ENCODED",
+        "size": 4,
+        "moduleUrl": "/__fixture367/module.js",
+        "wasmPath": "/__fixture367/fixture.wasm",
+        "moduleHttpStatus": 200,
+        "wasmHttpStatus": 200
+      },
+      "rejected404": true,
+      "strictCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: NetworkError when attempting to fetch resource.",
+        "moduleUrl": "/__fixture367/module.js",
+        "violations": [
+          {
+            "effectiveDirective": "connect-src",
+            "blockedURI": "http://127.0.0.1:51343/__fixture367/fixture.wasm",
+            "disposition": "enforce"
+          }
+        ]
+      },
+      "evalBlockedCsp": {
+        "status": "REFUSED",
+        "message": "CompileError: call to WebAssembly.compile() blocked by CSP",
+        "moduleUrl": "/__fixture367/module.js",
+        "violations": [
+          {
+            "effectiveDirective": "script-src",
+            "blockedURI": "wasm-eval",
+            "disposition": "enforce"
+          }
+        ]
+      },
+      "noConnectCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: NetworkError when attempting to fetch resource.",
+        "moduleUrl": "/__fixture367/module.js",
+        "violations": [
+          {
+            "effectiveDirective": "connect-src",
+            "blockedURI": "http://127.0.0.1:51343/__fixture367/fixture.wasm",
+            "disposition": "enforce"
+          }
+        ]
+      },
+      "offsite": []
+    },
+    {
+      "browser": "webkit",
+      "version": "26.6",
+      "positiveControl": {
+        "status": "DONOR_ENCODED",
+        "size": 4,
+        "moduleUrl": "/__fixture367/module.js",
+        "wasmPath": "/__fixture367/fixture.wasm",
+        "moduleHttpStatus": 200,
+        "wasmHttpStatus": 200
+      },
+      "rejected404": true,
+      "strictCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: Load failed",
+        "moduleUrl": "/__fixture367/module.js",
+        "violations": [
+          {
+            "effectiveDirective": "connect-src",
+            "blockedURI": "http://127.0.0.1:51343/__fixture367/fixture.wasm",
+            "disposition": "enforce"
+          }
+        ]
+      },
+      "evalBlockedCsp": {
+        "status": "REFUSED",
+        "message": "CompileError: Refused to create a WebAssembly object because 'unsafe-eval' or 'wasm-unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: \"script-src 'self'\".\n (evaluating 'WebAssembly.compile(await response.arrayBuffer())')",
+        "moduleUrl": "/__fixture367/module.js",
+        "violations": []
+      },
+      "noConnectCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: Load failed",
+        "moduleUrl": "/__fixture367/module.js",
+        "violations": [
+          {
+            "effectiveDirective": "connect-src",
+            "blockedURI": "http://127.0.0.1:51343/__fixture367/fixture.wasm",
+            "disposition": "enforce"
+          }
+        ]
+      },
+      "offsite": []
+    }
+  ]
+}

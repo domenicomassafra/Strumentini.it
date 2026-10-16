@@ -81,7 +81,7 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   // boundary must demand independent security review. Generic scripts/tests
   // otherwise fall into "shared" and omit security-review entirely.
   if (path === "scripts/prepublish-404.ts" || /^tests\/ci-404-20261013-[a-z0-9-]+\.test\.ts$/u.test(path)) return ["ci"];
-  if (/^(scripts\/(ci-change-impact-404\.ts|validate-release\.ts|lib\/(?:current-revision|current-remote-main-404)\.ts|build-certification-index\.ts)|src\/(release\/|quality\/)|tests\/release-validation\.test\.ts)/u.test(path)) return ["ci"];
+  if (/^(scripts\/(ci-change-impact-404\.ts|validate-release\.ts|audit-gold-source-binding-347\.ts|lib\/(?:current-revision|current-remote-main-404)\.ts|build-certification-index\.ts)|src\/(release\/|quality\/)|tests\/release-validation\.test\.ts)/u.test(path)) return ["ci"];
   // Donor provenance reads this JSON as executable audit input, not prose.
   // Altering its package/license records must be reviewed and tested.
   if (path === "docs/audit-2026-10-10/donor-packages.json") return ["ci"];
