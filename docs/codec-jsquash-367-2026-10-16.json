@@ -1,0 +1,516 @@
+{
+  "timestamp": "2026-10-16T11:43:17.771Z",
+  "source": "isolated npm packages in ignored scratch; product dependencies unchanged",
+  "host": "darwin/arm64",
+  "node": "v26.10.0",
+  "sourcePixels": "synthetic 512x384 PNG alpha/JPEG textured; AVIF 128x96 derived from same fixture",
+  "limits": "desktop headless only; no mobile hardware, battery, native RSS, WASM peak or production CSP",
+  "cspDecision": "strict rejects fetch or WASM compilation; script-src wasm-unsafe-eval and connect-src self both required and NOT approved for production",
+  "licenses": "npm wrappers and included LICENSE hashed, compiled codec license/source obligations not independently resolved",
+  "assets": {
+    "packages": [
+      {
+        "name": "jpeg",
+        "version": "1.6.0",
+        "declaredLicense": "Apache-2.0",
+        "includedLicenseSha256": "8c3690b09c168f196446cf5904332023bbc15eb92b6a7cee470ac829e6a65d20",
+        "dependencies": {}
+      },
+      {
+        "name": "webp",
+        "version": "1.5.0",
+        "declaredLicense": "Apache-2.0",
+        "includedLicenseSha256": "8c3690b09c168f196446cf5904332023bbc15eb92b6a7cee470ac829e6a65d20",
+        "dependencies": {
+          "wasm-feature-detect": "^1.2.11"
+        }
+      },
+      {
+        "name": "oxipng",
+        "version": "2.3.0",
+        "declaredLicense": "Apache-2.0",
+        "includedLicenseSha256": "8c3690b09c168f196446cf5904332023bbc15eb92b6a7cee470ac829e6a65d20",
+        "dependencies": {
+          "wasm-feature-detect": "^1.2.11"
+        }
+      },
+      {
+        "name": "avif",
+        "version": "2.1.1",
+        "declaredLicense": "Apache-2.0",
+        "includedLicenseSha256": "8c3690b09c168f196446cf5904332023bbc15eb92b6a7cee470ac829e6a65d20",
+        "dependencies": {
+          "wasm-feature-detect": "^1.2.11"
+        }
+      }
+    ],
+    "wasm": [
+      {
+        "package": "jpeg",
+        "file": ".scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/dec/mozjpeg_dec.wasm",
+        "bytes": 166470,
+        "sha256": "a7c4b12169817e779ff4af137981393ae924944e167ad1bd95747c9199162d3e"
+      },
+      {
+        "package": "jpeg",
+        "file": ".scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+        "bytes": 251524,
+        "sha256": "24d4177f1c4963e2058b107189249651c61fdef125570e79b1dfb63c8bb49326"
+      },
+      {
+        "package": "webp",
+        "file": ".scratch/local-codec-367-20261016/node_modules/@jsquash/webp/codec/dec/webp_dec.wasm",
+        "bytes": 137960,
+        "sha256": "30fb52fa2a80166d25ba7debf902218904ba1f05ccce9f959f722beff9e2f344"
+      },
+      {
+        "package": "webp",
+        "file": ".scratch/local-codec-367-20261016/node_modules/@jsquash/webp/codec/enc/webp_enc.wasm",
+        "bytes": 281261,
+        "sha256": "b6085bb6702f144e9dc6016d58d230b34a84976bf0d080b7390b4b4b137d6ab7"
+      },
+      {
+        "package": "webp",
+        "file": ".scratch/local-codec-367-20261016/node_modules/@jsquash/webp/codec/enc/webp_enc_simd.wasm",
+        "bytes": 345584,
+        "sha256": "39c279269ec1163b987b6d69749458e3d5b03b9585f58b6ca5455b76b504a305"
+      },
+      {
+        "package": "oxipng",
+        "file": ".scratch/local-codec-367-20261016/node_modules/@jsquash/oxipng/codec/pkg/squoosh_oxipng_bg.wasm",
+        "bytes": 164172,
+        "sha256": "5ea3e53c0b4fc1b4e8d1511d35b89329d9376bec75a9c4d3c054774487e5f9a3"
+      },
+      {
+        "package": "oxipng",
+        "file": ".scratch/local-codec-367-20261016/node_modules/@jsquash/oxipng/codec/pkg-parallel/squoosh_oxipng_bg.wasm",
+        "bytes": 236042,
+        "sha256": "2f579c4be8d88aaa44ee5db950df97e15c49738f92c690bb6aa9cbf49caaa8eb"
+      },
+      {
+        "package": "avif",
+        "file": ".scratch/local-codec-367-20261016/node_modules/@jsquash/avif/codec/dec/avif_dec.wasm",
+        "bytes": 1170930,
+        "sha256": "5c35dde23dfd862088a49a6b8a9fe81f9f9a1a46aaa27de7efd7baa7611c4b47"
+      },
+      {
+        "package": "avif",
+        "file": ".scratch/local-codec-367-20261016/node_modules/@jsquash/avif/codec/enc/avif_enc.wasm",
+        "bytes": 3485872,
+        "sha256": "d9f2a95164362af48558d176e619becfd49dd97b50b86c679b47100860522b3d"
+      },
+      {
+        "package": "avif",
+        "file": ".scratch/local-codec-367-20261016/node_modules/@jsquash/avif/codec/enc/avif_enc_mt.wasm",
+        "bytes": 3534665,
+        "sha256": "202d7ec9fb7d658df7cbf17fd85d83da724ac9551818c2d5161c858353a683a4"
+      }
+    ]
+  },
+  "engines": [
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "strictCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: Failed to fetch"
+      },
+      "evalBlockedCsp": {
+        "status": "REFUSED",
+        "message": "RuntimeError: Aborted(CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: \"script-src 'self'\".). Build with -sASSERTIONS for more info."
+      },
+      "noConnectCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: Failed to fetch"
+      },
+      "cases": [
+        {
+          "name": "jpeg",
+          "sourceBytes": 146802,
+          "sourceSha256": "3cfbfa5819456b4ad2c9d11cd186c8e60122e0b474daf09feb4a8310c23ccccc",
+          "elapsedMs": [
+            212.80000007152557,
+            122.70000004768372
+          ],
+          "medianMs": 167.75000005960464,
+          "jsHeapSample": {
+            "beforeBytes": 2945252,
+            "afterBytes": 5653836,
+            "metric": "CHROMIUM_CDP_JS_ONLY_NOT_PEAK"
+          },
+          "status": "DONOR_BYTES_REOPENED",
+          "width": 512,
+          "height": 384,
+          "byteLength": 126358,
+          "sha256": "2121db7aa15cb25e8ef6c3de43b39a4a8ca7e446a1d6256629cfff7e19aa976f",
+          "exifBytes": 0,
+          "alphaExact": true,
+          "pixelsExact": false,
+          "rgbMeanAbsoluteDelta": 13.349177042643229
+        },
+        {
+          "name": "webp",
+          "sourceBytes": 701861,
+          "sourceSha256": "561626763c743b4a6cab663d336f879a8a0581bb4516aa8cbec180a147fa3fdc",
+          "elapsedMs": [
+            412,
+            182.79999995231628
+          ],
+          "medianMs": 297.39999997615814,
+          "jsHeapSample": {
+            "beforeBytes": 5653836,
+            "afterBytes": 28221284,
+            "metric": "CHROMIUM_CDP_JS_ONLY_NOT_PEAK"
+          },
+          "status": "DONOR_BYTES_REOPENED",
+          "width": 512,
+          "height": 384,
+          "byteLength": 91512,
+          "sha256": "42ec325b1bd4f5bdd21a3f815e6e77a791fcaa3f2dd1c05e2470b5fe0a70a6d4",
+          "exifBytes": 0,
+          "alphaExact": true,
+          "pixelsExact": false,
+          "rgbMeanAbsoluteDelta": 18.283793131510418
+        },
+        {
+          "name": "oxipng",
+          "sourceBytes": 701861,
+          "sourceSha256": "561626763c743b4a6cab663d336f879a8a0581bb4516aa8cbec180a147fa3fdc",
+          "elapsedMs": [
+            347.2999999523163,
+            179.19999992847443
+          ],
+          "medianMs": 263.24999994039536,
+          "jsHeapSample": {
+            "beforeBytes": 28221284,
+            "afterBytes": 33210224,
+            "metric": "CHROMIUM_CDP_JS_ONLY_NOT_PEAK"
+          },
+          "status": "DONOR_BYTES_REOPENED",
+          "width": 512,
+          "height": 384,
+          "byteLength": 23445,
+          "sha256": "467e8ac84db51b53ec1827eb87204db9e6c93d1f19296ec38008c039039041d5",
+          "exifBytes": 0,
+          "alphaExact": true,
+          "pixelsExact": true,
+          "rgbMeanAbsoluteDelta": 0
+        },
+        {
+          "name": "avif",
+          "sourceBytes": 43131,
+          "sourceSha256": "4a8c1abd80827f33f3d4e5ce921747a3fcb51644c8311b30657b042748735453",
+          "elapsedMs": [
+            183.09999990463257,
+            18.200000047683716
+          ],
+          "medianMs": 100.64999997615814,
+          "jsHeapSample": {
+            "beforeBytes": 33210224,
+            "afterBytes": 6902224,
+            "metric": "CHROMIUM_CDP_JS_ONLY_NOT_PEAK"
+          },
+          "status": "DONOR_BYTES_REOPENED",
+          "outputBytes": 7564,
+          "outputSha256": "30e274f7a88ae82307be428b01ea7de83cd0a6a442ee3ce7c14d629ff442e071",
+          "alphaMismatches": 8471,
+          "decoder": "Sharp/libvips heif/AV1"
+        }
+      ],
+      "remoteRequests": [],
+      "blockedOffsiteRequests": [],
+      "wasmResponses": [
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "251524"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "251524"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "251524"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/webp/codec/enc/webp_enc_simd.wasm",
+          "status": 200,
+          "responseLengthHeader": "345584"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/oxipng/codec/pkg/squoosh_oxipng_bg.wasm",
+          "status": 200,
+          "responseLengthHeader": "164172"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/avif/codec/enc/avif_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "3485872"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "engine": "firefox",
+      "browserVersion": "155.0",
+      "strictCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: NetworkError when attempting to fetch resource."
+      },
+      "evalBlockedCsp": {
+        "status": "REFUSED",
+        "message": "RuntimeError: Aborted(CompileError: call to WebAssembly.instantiate() blocked by CSP). Build with -sASSERTIONS for more info."
+      },
+      "noConnectCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: NetworkError when attempting to fetch resource."
+      },
+      "cases": [
+        {
+          "name": "jpeg",
+          "sourceBytes": 146802,
+          "sourceSha256": "3cfbfa5819456b4ad2c9d11cd186c8e60122e0b474daf09feb4a8310c23ccccc",
+          "elapsedMs": [
+            303,
+            156
+          ],
+          "medianMs": 229.5,
+          "jsHeapSample": "NOT_AVAILABLE",
+          "status": "DONOR_BYTES_REOPENED",
+          "width": 512,
+          "height": 384,
+          "byteLength": 126358,
+          "sha256": "2121db7aa15cb25e8ef6c3de43b39a4a8ca7e446a1d6256629cfff7e19aa976f",
+          "exifBytes": 0,
+          "alphaExact": true,
+          "pixelsExact": false,
+          "rgbMeanAbsoluteDelta": 13.349177042643229
+        },
+        {
+          "name": "webp",
+          "sourceBytes": 701861,
+          "sourceSha256": "561626763c743b4a6cab663d336f879a8a0581bb4516aa8cbec180a147fa3fdc",
+          "elapsedMs": [
+            589,
+            272
+          ],
+          "medianMs": 430.5,
+          "jsHeapSample": "NOT_AVAILABLE",
+          "status": "DONOR_BYTES_REOPENED",
+          "width": 512,
+          "height": 384,
+          "byteLength": 76418,
+          "sha256": "9bf3376e497cf9dfb6a6a4ed1c65d8904fc6c81fbefe38bb5b208d16dd00176a",
+          "exifBytes": 0,
+          "alphaExact": true,
+          "pixelsExact": false,
+          "rgbMeanAbsoluteDelta": 18.283647325303818
+        },
+        {
+          "name": "oxipng",
+          "sourceBytes": 701861,
+          "sourceSha256": "561626763c743b4a6cab663d336f879a8a0581bb4516aa8cbec180a147fa3fdc",
+          "elapsedMs": [
+            390,
+            349
+          ],
+          "medianMs": 369.5,
+          "jsHeapSample": "NOT_AVAILABLE",
+          "status": "DONOR_BYTES_REOPENED",
+          "width": 512,
+          "height": 384,
+          "byteLength": 23445,
+          "sha256": "467e8ac84db51b53ec1827eb87204db9e6c93d1f19296ec38008c039039041d5",
+          "exifBytes": 0,
+          "alphaExact": true,
+          "pixelsExact": true,
+          "rgbMeanAbsoluteDelta": 0
+        },
+        {
+          "name": "avif",
+          "sourceBytes": 43131,
+          "sourceSha256": "4a8c1abd80827f33f3d4e5ce921747a3fcb51644c8311b30657b042748735453",
+          "elapsedMs": [
+            117,
+            28
+          ],
+          "medianMs": 72.5,
+          "jsHeapSample": "NOT_AVAILABLE",
+          "status": "DONOR_BYTES_REOPENED",
+          "outputBytes": 7573,
+          "outputSha256": "a654d2cd0211501a61be355f8e4e84066886d96553657abcc2a3a5f2df9f7076",
+          "alphaMismatches": 8471,
+          "decoder": "Sharp/libvips heif/AV1"
+        }
+      ],
+      "remoteRequests": [],
+      "blockedOffsiteRequests": [],
+      "wasmResponses": [
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "251524"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "251524"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "251524"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/webp/codec/enc/webp_enc_simd.wasm",
+          "status": 200,
+          "responseLengthHeader": "345584"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/oxipng/codec/pkg/squoosh_oxipng_bg.wasm",
+          "status": 200,
+          "responseLengthHeader": "164172"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/avif/codec/enc/avif_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "3485872"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "strictCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: Load failed"
+      },
+      "evalBlockedCsp": {
+        "status": "REFUSED",
+        "message": "RuntimeError: Aborted(CompileError: Refused to create a WebAssembly object because 'unsafe-eval' or 'wasm-unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: \"script-src 'self'\".\n). Build with -sASSERTIONS for more info."
+      },
+      "noConnectCsp": {
+        "status": "REFUSED",
+        "message": "TypeError: Load failed"
+      },
+      "cases": [
+        {
+          "name": "jpeg",
+          "sourceBytes": 146802,
+          "sourceSha256": "3cfbfa5819456b4ad2c9d11cd186c8e60122e0b474daf09feb4a8310c23ccccc",
+          "elapsedMs": [
+            653,
+            125
+          ],
+          "medianMs": 389,
+          "jsHeapSample": "NOT_AVAILABLE",
+          "status": "DONOR_BYTES_REOPENED",
+          "width": 512,
+          "height": 384,
+          "byteLength": 126563,
+          "sha256": "5e13448dd6734ef8d83476db34603370388b43fbf2e4cf49fa336fe0634ac9d3",
+          "exifBytes": 0,
+          "alphaExact": true,
+          "pixelsExact": false,
+          "rgbMeanAbsoluteDelta": 13.676272922092014
+        },
+        {
+          "name": "webp",
+          "sourceBytes": 701861,
+          "sourceSha256": "561626763c743b4a6cab663d336f879a8a0581bb4516aa8cbec180a147fa3fdc",
+          "elapsedMs": [
+            354,
+            188
+          ],
+          "medianMs": 271,
+          "jsHeapSample": "NOT_AVAILABLE",
+          "status": "DONOR_BYTES_REOPENED",
+          "width": 512,
+          "height": 384,
+          "byteLength": 91512,
+          "sha256": "42ec325b1bd4f5bdd21a3f815e6e77a791fcaa3f2dd1c05e2470b5fe0a70a6d4",
+          "exifBytes": 0,
+          "alphaExact": true,
+          "pixelsExact": false,
+          "rgbMeanAbsoluteDelta": 18.283793131510418
+        },
+        {
+          "name": "oxipng",
+          "sourceBytes": 701861,
+          "sourceSha256": "561626763c743b4a6cab663d336f879a8a0581bb4516aa8cbec180a147fa3fdc",
+          "elapsedMs": [
+            283,
+            183
+          ],
+          "medianMs": 233,
+          "jsHeapSample": "NOT_AVAILABLE",
+          "status": "DONOR_BYTES_REOPENED",
+          "width": 512,
+          "height": 384,
+          "byteLength": 23445,
+          "sha256": "467e8ac84db51b53ec1827eb87204db9e6c93d1f19296ec38008c039039041d5",
+          "exifBytes": 0,
+          "alphaExact": true,
+          "pixelsExact": true,
+          "rgbMeanAbsoluteDelta": 0
+        },
+        {
+          "name": "avif",
+          "sourceBytes": 43131,
+          "sourceSha256": "4a8c1abd80827f33f3d4e5ce921747a3fcb51644c8311b30657b042748735453",
+          "elapsedMs": [
+            198,
+            79
+          ],
+          "medianMs": 138.5,
+          "jsHeapSample": "NOT_AVAILABLE",
+          "status": "DONOR_BYTES_REOPENED",
+          "outputBytes": 7530,
+          "outputSha256": "93193983e422b3018123af940a5c40dd293eec0bdcf9537db4673300e4e21cc6",
+          "alphaMismatches": 8471,
+          "decoder": "Sharp/libvips heif/AV1"
+        }
+      ],
+      "remoteRequests": [],
+      "blockedOffsiteRequests": [],
+      "wasmResponses": [
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "251524"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "251524"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "251524"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/webp/codec/enc/webp_enc_simd.wasm",
+          "status": 200,
+          "responseLengthHeader": "345584"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/oxipng/codec/pkg/squoosh_oxipng_bg.wasm",
+          "status": 200,
+          "responseLengthHeader": "164172"
+        },
+        {
+          "path": "/.scratch/local-codec-367-20261016/node_modules/@jsquash/avif/codec/enc/avif_enc.wasm",
+          "status": 200,
+          "responseLengthHeader": "3485872"
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "svg": "jSquash has no SVG encoder: product SVG allowlist + svgo installed, not an equivalent jSquash codec"
+}
