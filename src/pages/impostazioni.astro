@@ -67,6 +67,10 @@ const unitSystems = [
     <header class="ac-page-head">
       <h1>Impostazioni</h1>
       <p>Il tuo account, il profilo di lavoro, il tema e i dati su questo dispositivo.</p>
+      <nav class="ac-start-links" aria-label="Percorsi per iniziare">
+        <a class="btn btn-primary" href="/onboarding/">Primo utilizzo: scegli gli strumenti</a>
+        <a class="btn btn-ghost" href="#preferenze">Personalizza le preferenze</a>
+      </nav>
     </header>
 
     <aside class="ac-side">
@@ -699,6 +703,13 @@ const unitSystems = [
 
     const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-settings-tab]"));
     const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-settings-panel]"));
+    const settingsNav = query<HTMLElement>("[data-settings-nav]");
+    const desktopLayout = window.matchMedia("(min-width: 900px)");
+    function updateNavigationOrientation(): void {
+      settingsNav?.setAttribute("aria-orientation", desktopLayout.matches ? "vertical" : "horizontal");
+    }
+    updateNavigationOrientation();
+    desktopLayout.addEventListener("change", updateNavigationOrientation);
 
     function panelNameOf(value: string | undefined): PanelName {
       return PANELS.find((name) => name === value) ?? "profilo";
