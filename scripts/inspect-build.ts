@@ -27,7 +27,13 @@ const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html:
 // noindex/nofollow, invisible to search/sitemap and visibly bounded. This is
 // NOT a tool promotion or an open-ended allowance for stray public routes.
 const designStudyPath = "prototipi/351/index.html";
-const previewOnlyPaths = ["tools/codice-fiscale/index.html", "tools/ocr-italiano-locale-246/index.html", designStudyPath] as const;
+const previewOnlyPaths = [
+  "tools/codice-fiscale/index.html",
+  "tools/irpef-annuale/index.html",
+  "tools/stipendio-netto/index.html",
+  "tools/ocr-italiano-locale-246/index.html",
+  designStudyPath,
+] as const;
 for (const previewPath of previewOnlyPaths) {
   const route = `/${previewPath.replace(/\/index\.html$/u, "")}`;
   if (catalog.some((tool) => tool.route.replace(/\/+$/u, "") === route.replace(/\/+$/u, "")) ||
@@ -38,6 +44,12 @@ for (const previewPath of previewOnlyPaths) {
   const sourceSafe = previewPath === "tools/codice-fiscale/index.html"
     ? preview?.includes('data-cf-canonical-route="/tools/codice-fiscale/"') &&
       (preview.includes("copertura geografica") || preview.includes("Copertura geografica"))
+    : previewPath === "tools/irpef-annuale/index.html"
+      ? preview?.includes("data-irpef12") && preview.includes("IRPEF lorda") &&
+        preview.includes("Non inclusi nel risultato") && preview.includes("2025") && preview.includes("2026")
+    : previewPath === "tools/stipendio-netto/index.html"
+      ? preview?.includes("data-salary13") && preview.includes("Contributi dipendente ipotizzati") &&
+        preview.includes("Limiti accanto al risultato") && preview.includes("2025") && preview.includes("2026")
     : previewPath === designStudyPath
       ? ["minimal", "editorial", "workspace"].every((direction) => preview?.includes(`data-direction="${direction}"`)) &&
         preview?.includes("nessuna scelta approvata") && preview.includes("Studio isolato:") &&
