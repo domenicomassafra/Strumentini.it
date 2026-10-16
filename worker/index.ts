@@ -729,12 +729,20 @@ async function requireSession(context: RouteContext): Promise<AuthSession | Resp
   return auth ?? errorResponse(401, MESSAGES.unauthenticated);
 }
 
-/** Reject cross-origin mutations even when a browser happens to send a cookie. */
-function favoriteMutationOrigin(context: RouteContext): Response | null {
-  const origin = context.request.headers.get("origin");
-  if (origin !== null && origin !== new URL(context.request.url).origin) return errorResponse(403, "Origine non consentita.");
-  if (context.request.headers.get("sec-fetch-site") === "cross-site") return errorResponse(403, "Origine non consentita.");
+/** Cookie-authenticated mutations must reject sibling subdomains as well as
+ * cross-site requests, including simple text/plain requests carrying JSON.
+ * Missing browser metadata stays usable for non-browser same-origin clients.
+ */
+function mutationOrigin(request: Request): Response | null {
+  const origin = request.headers.get("origin");
+  if (origin !== null && origin !== new URL(request.url).origin) return errorResponse(403, "Origine non consentita.");
+  const fetchSite = request.headers.get("sec-fetch-site");
+  if (fetchSite === "cross-site" || fetchSite === "same-site") return errorResponse(403, "Origine non consentita.");
   return null;
+}
+
+function favoriteMutationOrigin(context: RouteContext): Response | null {
+  return mutationOrigin(context.request);
 }
 
 async function handleFavoriteSyncList(context: RouteContext): Promise<Response> {
@@ -899,6 +907,12 @@ async function handleApiRequest(
     return errorResponse(405, MESSAGES.methodNotAllowed, {
       allow: match.routes.map((candidate) => candidate.method).join(", "),
     });
+  }
+  // Apply before any handler can touch D1, a cookie or a private KDF. This
+  // includes Google-only password bootstrap and all other auth mutations.
+  if (request.method !== "GET" && normalizePath(new URL(request.url).pathname).startsWith("/api/auth/")) {
+    const denied = mutationOrigin(request);
+    if (denied !== null) return denied;
   }
   return await handler.handle({ request, env, execution, params: match.params, now: new Date() });
 }

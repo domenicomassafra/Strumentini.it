@@ -9,6 +9,9 @@ export class PasswordKdfUnavailable extends Error {
   constructor() { super("Password KDF backend unavailable"); }
 }
 
+/** Bound remote stalls without moving the expensive KDF back to HTTP Workers. */
+const REMOTE_KDF_TIMEOUT_MS = 20_000;
+
 export function remotePasswordDeriver(binding: PrivateKdfNamespace | undefined): PasswordDeriver {
   return async (password, salt, iterations) => {
     if (!binding) throw new PasswordKdfUnavailable();
@@ -20,6 +23,7 @@ export function remotePasswordDeriver(binding: PrivateKdfNamespace | undefined):
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ password, salt: [...salt], iterations }),
+        signal: AbortSignal.timeout(REMOTE_KDF_TIMEOUT_MS),
       }));
       if (!result.ok) throw new PasswordKdfUnavailable();
       const value: unknown = await result.json();

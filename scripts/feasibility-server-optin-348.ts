@@ -36,10 +36,10 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   // quota or AC328.1–.3; serverMode remains NO_GO until live staging proof.
   "worker/auth.ts": "d6417e29feec2be74b7768e6f35e871bc68099ddc19cc7bcd4beb3a35ed17141",
   "worker/bindings.d.ts": "6728f6a0b231d4b1b390434cf79d21d827f84116a5a55bd70a8322c6479c7e4d",
-  "worker/db.ts": "453f90e89fce362878f078caa28d1027dc11a7c5fbcd67394dce40594764cb24",
+  "worker/db.ts": "4ba712236ea72ba5e75afb8650b3998bac1e1f25dce0b5b76a79b8459cd72427",
   "worker/google.ts": "09ee69a8ab31e4eabac118bb2b3d4cdd579d655c260aa452fb8e359f32cba2db",
-  "worker/index.ts": "a7ba9393dd0de9701c1e44c2dd025f4c6c36a9df975fcd37f0e686ed2e09d26f",
-  "worker/kdf-client.ts": "57b905d331fb73bbe1408673c3f9fc878685566be8050599e2ad6f13fd432246",
+  "worker/index.ts": "3fe5eaca245a51cfaecbe8fe71745365b6ed9985454a25f461d75e0096a02849",
+  "worker/kdf-client.ts": "d2aa12fce473bbbc598eedc7c957a4f67c5484ce9a03afabafea62e59b4cf539",
   "worker/migrations/0001_init.sql": "5402f41511baf4b74f4bf6b8bb46621d663a00d8352746c6acd1089c4c3f7417",
   "worker/migrations/0002_google_auth.sql": "80f0a007030410b018863ec36ca31fc6dff99ce52762979a071bc4c9af1fa6b9",
   "worker/migrations/0003_favorite_sync.sql": "b9e02301f5b76766039487dab65c57bf06b3c982c23cac3bcfc48dfa1747b6ea",

@@ -328,6 +328,13 @@ export async function reserveKdfAttempt(db: D1Database, ip: string, at: string, 
      SELECT ?1, ?2 WHERE (SELECT COUNT(*) FROM login_attempts
        WHERE scope = ?1 AND attempted_at >= ?3) < 8 RETURNING id`,
   ).bind(`kdf-ip:${ip}`, at, since).first<{ readonly id: number }>();
+  // Successes and backend outages also reserve slots, so relying on failed
+  // login cleanup would retain them indefinitely. Prune globally every 16th
+  // reservation; the scope prefix keeps unrelated failure evidence intact.
+  if (row !== null && row.id % 16 === 0) {
+    await db.prepare("DELETE FROM login_attempts WHERE scope GLOB 'kdf-ip:*' AND attempted_at < ?1")
+      .bind(since).run();
+  }
   return row !== null;
 }
 

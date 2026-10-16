@@ -12,6 +12,8 @@ function testNamespace(overrides?: { status?: number; key?: unknown; reject?: bo
         async fetch(request) {
           expect(request.method).toBe("POST");
           expect(new URL(request.url).pathname).toBe("/derive");
+          expect(request.signal).toBeInstanceOf(AbortSignal);
+          expect(request.signal.aborted).toBe(false);
           if (overrides?.reject) throw new Error("backend unavailable");
           const data = await request.json() as { password: string; salt: number[]; iterations: number };
           const key = overrides && "key" in overrides
