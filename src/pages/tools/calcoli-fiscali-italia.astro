@@ -1,0 +1,166 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Calcoli fiscali italiani — strumenti indicativi" description="Stipendio, regime forfettario, TFR e bollo: simulazioni locali con anno, ipotesi e fonti dichiarate." noindex>
+  <main class="fiscal-tools" data-fiscal-t1>
+    <nav aria-label="Percorso"><a href="/">Home</a> / <a href="/strumenti/">Strumenti</a> / Calcoli fiscali italiani</nav>
+    <h1>Calcoli fiscali italiani</h1>
+    <p>Quattro percorsi indipendenti. Le fonti valgono per gli anni e i profili indicati; i risultati sono stime informative nel browser, senza invio di dati personali.</p>
+
+    <section aria-labelledby="net130-title">
+      <h2 id="net130-title">Stipendio netto annuo — dipendente agricolo 2026</h2>
+      <p>Solo operaio agricolo ordinario OTD/OTI, base contributiva FPLD uguale alla RAL dichiarata e fino a 56.224 €. Mostra separatamente contributi INPS del lavoratore, quota datoriale e IRPEF lorda nazionale, poi ripartisce lo stesso netto annuo su 12, 13 o 14 rate.</p>
+      <form data-action="net130">
+        <label>RAL e base FPLD 2026 (€) <input name="ral" inputmode="decimal" placeholder="30000,00" required /></label>
+        <label>Mensilità <select name="payments"><option>12</option><option>13</option><option>14</option></select></label>
+        <label class="check"><input type="checkbox" name="baseConfirmed" required /> Confermo il profilo OTD/OTI ordinario e che la base FPLD coincide con la RAL inserita.</label>
+        <button type="submit">Stima il netto annuo</button>
+        <p role="alert" hidden></p><output aria-live="polite"></output>
+      </form>
+      <p class="source">Fonti 2026: <a href="https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2026/04/Circolare_15228/Allegati/16697_Circolare-numero-43-del-07-04-2026.pdf">INPS, circ. 43/2026</a>; <a href="https://www.normattiva.it/eli/stato/LEGGE/2025/12/30/199/CONSOLIDATED">IRPEF, legge 199/2025</a>. Esclude detrazioni, addizionali, altri contributi e bonus.</p>
+    </section>
+
+    <section aria-labelledby="forf133-title">
+      <h2 id="forf133-title">Regime forfettario 2025 — professionisti Gestione Separata</h2>
+      <p>Coefficienti per i soli codici ATECO2007 della tabella ufficiale, con profilo INPS professionale 2025 dichiarato. La contribuzione stimata e quella già pagata sono mostrate separatamente: soltanto la seconda viene dedotta dall'imponibile dell'imposta sostitutiva.</p>
+      <form data-action="forf133">
+        <label>Codice ATECO2007 <input name="ateco" placeholder="62.01.00" required /></label>
+        <label>Ricavi anno precedente 2024 (€) <input name="prior" inputmode="decimal" required /></label>
+        <label>Ricavi 2025 (€) <input name="revenue" inputmode="decimal" required /></label>
+        <label>Contributi previdenziali obbligatori già versati nel 2025 (€) <input name="paid" inputmode="decimal" required /></label>
+        <label>INPS 2025 <select name="inps"><option value="gs-2025-exclusive">Professionista Gestione Separata senza altra copertura — 26,07%</option><option value="gs-2025-other-coverage">Professionista pensionato o con altra copertura obbligatoria — 24%</option></select></label>
+        <label>Imposta sostitutiva <select name="rate"><option value="standard-15">15% ordinaria dichiarata</option><option value="startup-5">5% startup dichiarata</option></select></label>
+        <label class="check"><input name="eligible" type="checkbox" required /> Dichiaro di aver verificato i requisiti di accesso al regime forfettario.</label>
+        <label class="check"><input name="paidVerified" type="checkbox" required /> Confermo l'importo dei contributi effettivamente già pagati, distinto dalla previsione INPS.</label>
+        <label class="check"><input name="startup" type="checkbox" /> Solo se seleziono 5%: confermo i requisiti specifici per la nuova attività.</label>
+        <button type="submit">Calcola imposte e contributi</button>
+        <p role="alert" hidden></p><output aria-live="polite"></output>
+      </form>
+      <p class="source">Fonti: <a href="https://www.gazzettaufficiale.it/eli/gu/2018/12/31/302/so/62/sg/pdf">Gazzetta, allegato coefficienti ATECO</a>; <a href="https://www.normattiva.it/eli/id/2014/12/29/14G00203/CONSOLIDATED/20251231">legge 190/2014 al 2025</a>; <a href="https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2025/01/Circolare_14807/Allegati/15871_Circolare-numero-27-del-30-01-2025.pdf">INPS circ. 27/2025</a>. Sono escluse altre casse, categorie speciali, versamenti/acconti e requisiti individuali non verificati.</p>
+    </section>
+
+    <section aria-labelledby="tfr134-title">
+      <h2 id="tfr134-title">TFR maturato e rivalutazione — riferimento dicembre 2025</h2>
+      <p>Quota maturata = retribuzione utile 2025 / 13,5. Rivalutazione distinta sul TFR accantonato al 31/12/2024, usando il coefficiente 2,311148% ricavato dall'indice ISTAT FOI di dicembre 2025. Per periodi diversi il risultato rimane parziale.</p>
+      <form data-action="tfr134">
+        <label>TFR pregresso al 31/12/2024 (€) <input name="prior" inputmode="decimal" required /></label>
+        <label>Retribuzione effettivamente utile maturata nel 2025 (€) <input name="salary" inputmode="decimal" required /></label>
+        <label>Mesi di servizio nel 2025 <input name="months" type="number" min="1" max="12" value="12" required /></label>
+        <label class="check"><input name="december" type="checkbox" checked /> Rivalutazione di fine dicembre 2025 (non per cessazione infrannuale).</label>
+        <fieldset>
+          <legend>Tassazione separata indicativa, opzionale</legend>
+          <label>Reddito annuo storico di riferimento verificato (€; lascia vuoto senza documentazione) <input name="historical" inputmode="decimal" /></label>
+          <label>Anni di storico verificato <input name="historyYears" type="number" min="0" value="0" /></label>
+        </fieldset>
+        <button type="submit">Calcola TFR e imposta indicativa</button>
+        <p role="alert" hidden></p><output aria-live="polite"></output>
+      </form>
+      <p class="source">Fonti: <a href="https://servizi2.inps.it/servizi/Bussola/VisualizzaDoc.aspx?sVirtualURL=%2FCircolari%2FCircolare+numero+70+del+3-4-2007.htm">INPS, art. 2120 c.c., maturazione e rivalutazione</a>; <a href="https://www.istat.it/comunicato-stampa/prezzi-al-consumo-dicembre-2025/">ISTAT, FOI dicembre 2025</a>. La quota teorica esclude riduzione contributiva 0,50%, anticipi, conferimenti, imposta sulla rivalutazione e liquidazione aziendale. L'imposta illustrativa usa la sola IRPEF lorda nazionale sul reddito storico dichiarato: non è la tassazione separata ufficiale.</p>
+    </section>
+
+    <section aria-labelledby="bollo152-title">
+      <h2 id="bollo152-title">Bollo in fattura — guida Agenzia Entrate 2024</h2>
+      <p>Per una fattura elettronica ordinaria con una sola riga, senza esenzioni speciali: le nature N2.2, N3.6 e N4 con importo superiore a 77,47 € rientrano nel riferimento di 2 € della guida dell'Agenzia. A 77,47 € esatti il riferimento è zero. Le fatture miste, le esenzioni e le altre annualità richiedono una verifica specifica.</p>
+      <form data-action="bollo152" novalidate>
+        <label>Anno documento <select name="year"><option value="2024">2024 — guida consultata</option><option value="2025">2025 — non attestato</option><option value="2026">2026 — non attestato</option></select></label>
+        <label>Importo unica operazione (€) <input name="amount" inputmode="decimal" required /></label>
+        <label>Natura operazione <select name="nature"><option value="N2.2">N2.2 — non soggetta</option><option value="N3.6">N3.6 — non imponibile</option><option value="N4">N4 — esente</option><option value="OTHER">Altra natura</option></select></label>
+        <label class="check"><input name="single" type="checkbox" required /> È una fattura elettronica ordinaria con una sola riga.</label>
+        <label class="check"><input name="noExempt" type="checkbox" required /> Ho verificato che non vi sono esenzioni speciali (NB1, NB2, NB3 o altre).</label>
+        <button type="submit">Controlla il riferimento bollo</button>
+        <p role="alert" hidden></p><output aria-live="polite"></output>
+      </form>
+      <p class="source">Fonte e versione: <a href="https://www1.agenziaentrate.gov.it/web_app_entrate/bollo_fatture_2024.html">Agenzia delle Entrate, guida novembre 2024, elenco B</a>. Il risultato è un riferimento descrittivo e non certifica un obbligo legale individuale.</p>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  import { calculateStipendioNetto130 } from "../../engines/italy/stipendio-netto-130";
+  import { calculateForfettarioWithInps133 } from "../../engines/italy/forfettario-133";
+  import { calculateTfr134, estimateTfrTax135 } from "../../engines/italy/tfr-134-135";
+  import { getInvoiceStampReference152 } from "../../engines/italy/invoice-stamp-reference-152";
+
+  const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+  const money = (form: HTMLFormElement, name: string): number => {
+    const raw = (form.elements.namedItem(name) as HTMLInputElement).value.trim();
+    if (!/^(?:0|[1-9]\d{0,8})(?:[.,]\d{1,2})?$/u.test(raw)) throw new Error("Usa euro non negativi, massimo due decimali, senza separatori delle migliaia.");
+    const [whole = "0", decimal = ""] = raw.split(/[.,]/u);
+    return Number(whole) * 100 + Number(decimal.padEnd(2, "0"));
+  };
+  const value = (form: HTMLFormElement, name: string) => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
+  const checked = (form: HTMLFormElement, name: string) => (form.elements.namedItem(name) as HTMLInputElement).checked;
+  document.querySelectorAll<HTMLFormElement>("[data-fiscal-t1] form[data-action]").forEach((form) => {
+    const output = form.querySelector("output")!;
+    const alert = form.querySelector<HTMLElement>('[role="alert"]')!;
+    const reset = () => { output.textContent = ""; alert.textContent = ""; alert.hidden = true; };
+    form.addEventListener("input", reset);
+    form.addEventListener("change", reset);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      reset();
+      try {
+        if (form.dataset.action === "net130") {
+          const result = calculateStipendioNetto130({ taxYear: 2026, profile: "agricultural-worker-general",
+            ralCents: money(form, "ral"), payments: Number(value(form, "payments")) as 12 | 13 | 14,
+            declaresFpldBaseEqualsRal: checked(form, "baseConfirmed") });
+          output.textContent = `RAL: ${euro(result.ralCents)}. Contributi INPS a carico lavoratore: ${euro(result.workerContributionsCents)}; a carico datore (fuori dalla RAL): ${euro(result.employerContributionsCents)}. Imponibile IRPEF nazionale: ${euro(result.taxableCents)}. IRPEF lorda nazionale: ${euro(result.nationalIrpefCents)}. Netto annuo illustrativo: ${euro(result.annualNetCents)}. ${result.installmentsCents.length} rate: ${result.installmentsCents.map(euro).join(" + ")}. ${result.limitations}`;
+        } else if (form.dataset.action === "forf133") {
+          if (!checked(form, "paidVerified")) throw new Error("Conferma i contributi effettivamente pagati.");
+          const result = calculateForfettarioWithInps133({
+            taxYear: 2025, atecoVersion: "ATECO2007", atecoCode: value(form, "ateco").trim(),
+            priorYearReceiptsCents: money(form, "prior"), yearReceiptsCents: money(form, "revenue"),
+            paidMandatoryContributionsCents: money(form, "paid"),
+            inpsProfile: value(form, "inps") as "gs-2025-exclusive" | "gs-2025-other-coverage",
+            declaredRate: value(form, "rate") as "standard-15" | "startup-5",
+            declaresEligible: checked(form, "eligible"),
+            declaresStartupFivePercentRequirements: checked(form, "startup"),
+          });
+          output.textContent = `Ricavi 2025: ${euro(result.yearReceiptsCents)}. Coefficiente ATECO2007: ${result.coefficientPercent}% (riga ${result.coefficientTableRow}). Reddito forfettario: ${euro(result.grossForfettarioIncomeCents)}. INPS 2025 stimata ${result.forecastContributionRatePercent}%: ${euro(result.forecastContributionsCents)}. Contributi già pagati dichiarati: ${euro(result.paidMandatoryContributionsCents)}. Imponibile imposta: ${euro(result.taxableIncomeCents)}. Sostitutiva ${result.declaredTaxRatePercent}%: ${euro(result.substituteTaxCents)}. Disponibile indicativo dopo imposta e INPS stimata: ${euro(result.forecastNetAfterTaxAndInpsCents)}. ${result.inpsLimitations}`;
+        } else if (form.dataset.action === "tfr134") {
+          const result = calculateTfr134({ referenceYear: 2025, priorTfrCents: money(form, "prior"),
+            eligibleAnnualSalaryCents: money(form, "salary"), serviceMonthsThisYear: Number(value(form, "months")),
+            officialDecemberIndexAvailable: checked(form, "december") });
+          if (result.state !== "DECEMBER_2025_REFERENCE") {
+            output.textContent = `Quota maturata teorica: ${euro(result.annualAccrualCents)}. Rivalutazione: non determinabile. ${result.reason}`;
+            return;
+          }
+          const hist = value(form, "historical").trim();
+          const tax = estimateTfrTax135({ taxYear: 2025,
+            eligibleTfrBaseCents: result.priorTfrCents + result.annualAccrualCents,
+            historicalAnnualReferenceIncomeCents: hist ? money(form, "historical") : null,
+            verifiedYearsOfHistory: Number(value(form, "historyYears")) });
+          output.textContent = `TFR pregresso: ${euro(result.priorTfrCents)}. Maturato 2025: ${euro(result.annualAccrualCents)}. Rivalutazione dicembre 2025 (2,311148%): ${euro(result.revaluationCents!)}. Totale TFR lordo teorico: ${euro(result.grossTfrCents!)}. ${tax.state === "ILLUSTRATIVE_TAX_ONLY"
+            ? `Imposta indicativa SEPARATA sul TFR pregresso+maturato, senza rivalutazione: ${euro(tax.taxCents!)} (aliquota media illustrativa ${tax.ratePercent!.toFixed(2)}%). Netto aritmetico di questa sola base: ${euro(result.priorTfrCents + result.annualAccrualCents - tax.taxCents!)}. ${tax.limitations}`
+            : `Imposta indicativa: non determinata. ${tax.reason}`} ${result.limitations}`;
+        } else if (form.dataset.action === "bollo152") {
+          const result = getInvoiceStampReference152({ sourceYear: Number(value(form, "year")),
+            amountCents: money(form, "amount"), nature: value(form, "nature"),
+            ordinarySingleLine: checked(form, "single"), declaresNoSpecialExemptions: checked(form, "noExempt") });
+          output.textContent = result.state === "REFERENCE"
+            ? `Riferimento guida Agenzia 2024: bollo ${euro(result.referenceStampCents!)} per il caso dichiarato. Non è una certificazione fiscale o legale.`
+            : "Fuori perimetro della guida 2024 verificata per questo modello: non si può stabilire un importo di riferimento.";
+        }
+      } catch (error) {
+        alert.textContent = error instanceof Error ? `Dati o situazione non supportati: ${error.message}` : "Dati non validi.";
+        alert.hidden = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  .fiscal-tools { max-width: 920px; margin: 0 auto; padding: clamp(16px, 4vw, 48px); display: grid; gap: 24px; }
+  .fiscal-tools section { border: 1px solid var(--border); background: var(--surface); padding: clamp(16px, 3vw, 28px); border-radius: 14px; }
+  .fiscal-tools h2 { margin-top: 0; }
+  .fiscal-tools form { display: grid; gap: 12px; }
+  .fiscal-tools form label { display: grid; gap: 6px; font-weight: 600; }
+  .fiscal-tools form label.check { display: flex; align-items: flex-start; gap: 10px; font-weight: 400; }
+  .fiscal-tools form input:not([type="checkbox"]), .fiscal-tools form select { width: 100%; min-width: 0; box-sizing: border-box; padding: 11px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); }
+  .fiscal-tools form button { padding: 12px 18px; cursor: pointer; border-radius: 8px; border: 1px solid currentColor; background: var(--brand); color: white; justify-self: start; }
+  .fiscal-tools form :is(input, select, button):focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+  .fiscal-tools output:not(:empty), .fiscal-tools [role="alert"]:not([hidden]) { display: block; padding: 12px; border-left: 3px solid currentColor; overflow-wrap: anywhere; }
+  .fiscal-tools fieldset { display: grid; gap: 10px; border: 1px solid var(--border); }
+  .fiscal-tools .source { font-size: 0.9rem; color: var(--text-muted); }
+</style>
