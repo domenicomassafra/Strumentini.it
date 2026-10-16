@@ -1,0 +1,28 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { GeographySources115 } from "../components/tools/GeographySources115";
+import { ITALIAN_GEOGRAPHY_115_METADATA as meta } from "../reference-data/italy/geography-115";
+import { getItalySourcePackDecision } from "../reference-data/italy/source-packs";
+const pack = getItalySourcePackDecision(115);
+---
+<BaseLayout title="Comuni, province e Stati esteri — fonti ISTAT" description="Cerca nei dati comunali ISTAT e nei dati storici SITUAS con codici verificabili, versioni e limiti dichiarati.">
+  <main class="source-page">
+    <p><a href="/strumenti/">← Strumenti</a> · <a href="/fonti-fiscali-italia/">Fonti fiscali annuali</a></p>
+    <h1>Comuni, province e Stati esteri</h1>
+    <p>Consulta la copia locale di dati ISTAT e SITUAS, con codici e data della fonte. I comuni attuali permettono anche di leggere il codice di provincia ISTAT dalle prime tre cifre del codice comunale.</p>
+    <dl class="facts">
+      <div><dt>Comuni attuali</dt><dd>{meta.coverage.currentMunicipalityRows}</dd></div>
+      <div><dt>Eventi comuni soppressi</dt><dd>{meta.coverage.suppressedEventRows}</dd></div>
+      <div><dt>Righe Stati esteri</dt><dd>{meta.coverage.foreignRows}</dd></div>
+      <div><dt>Versione verificabile</dt><dd>{meta.version}</dd></div>
+    </dl>
+    <GeographySources115 client:load />
+    <h2>Provenienza e aggiornabilità</h2>
+    <p>La ricerca utilizza uno snapshot versionato ({pack.decisionVersion}) con impronta SHA-256 e data di controllo; le modifiche agli archivi richiedono di rigenerare e verificare la copia ufficiale. Le fonti originali sono consultabili qui:</p>
+    <ul>{pack.candidateOfficialSources?.map(source => <li><a href={source.url} target="_blank" rel="noopener noreferrer">{source.authority} — {source.title}</a></li>)}</ul>
+    <p>Copertura storica incompleta: {meta.coverage.suppressedDistinctMunicipalitiesWithoutCode} comuni soppressi senza codice catastale ufficiale, {meta.coverage.foreignRowsWithoutCode} righe estere senza codice, storia estera dal 1990. Per queste righe il risultato rimane «non disponibile». La validità di un codice rispetto a una specifica data di nascita non è certificata, quindi non usarlo da solo per generare un codice fiscale storico.</p>
+  </main>
+</BaseLayout>
+<style>
+  .source-page{max-width:1100px;margin:0 auto;padding:30px 22px 80px}.source-page p{line-height:1.65}.source-page .facts{display:flex;flex-wrap:wrap;gap:16px}.source-page .facts div{border:1px solid var(--border);padding:12px;border-radius:12px}.source-page .facts dt{color:var(--text-muted)}.source-page .facts dd{font-weight:700;margin:4px 0 0}
+</style>

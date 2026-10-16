@@ -97,3 +97,16 @@ export function lookupItalianGeography115(kind: ItalianGeographyKind115, istatCo
     candidates: candidates.map((candidate) => ({ ...candidate })),
   };
 }
+
+/** Local name/ISTAT-code search over the exact pinned official rows; never substitutes missing Belfiore codes. */
+export function searchItalianGeography115(kind: ItalianGeographyKind115, query: string, limit = 20): readonly ItalianGeographyCandidate115[] {
+  if (kind !== "current" && kind !== "suppressed" && kind !== "foreign") throw new Error("INVALID_GEOGRAPHY_KIND");
+  if (!Number.isInteger(limit) || limit < 1 || limit > 50) throw new Error("INVALID_GEOGRAPHY_LIMIT");
+  const normalized = (text: string) => text.normalize("NFD").replace(/\p{Mark}/gu, "").toLocaleLowerCase("it-IT");
+  const needle = normalized(query.trim());
+  if (needle.length < 2 || needle.length > 80) return [];
+  const candidates = [...indexed[kind].values()].flat();
+  return candidates.filter((row) => normalized(row.name).includes(needle) || row.istatCode.startsWith(needle))
+    .sort((a, b) => a.name.localeCompare(b.name, "it") || a.istatCode.localeCompare(b.istatCode))
+    .slice(0, limit);
+}
