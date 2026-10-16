@@ -32,6 +32,9 @@ let holdNextAuth = false;
 let releaseAuth;
 let guestContext;
 let offlineAuthContext;
+let raceAuthContext;
+let raceAuthCalls = 0;
+const raceAuthRelease = [];
 const account = "browser-fixture-account";
 const snapshot = () => ({
   version: 1, account, revision,
@@ -56,6 +59,10 @@ async function context(browser) {
     return route.abort("blockedbyclient");
   });
   await ctx.route("**/api/auth/session", async (route) => {
+    if (ctx === raceAuthContext && ++raceAuthCalls <= 2) {
+      await new Promise((resolve) => raceAuthRelease.push(resolve));
+      return route.abort("internetdisconnected");
+    }
     if (ctx === offlineAuthContext) {
       return route.abort("internetdisconnected");
     }
@@ -206,11 +213,22 @@ try {
   offlineAuthContext = undefined;
   await a.evaluate(() => { window.__onlineFixture = true; window.dispatchEvent(new Event("online")); });
   await expect.poll(() => snapshot().tools.includes(toolId)).toBe(false);
+  // Reconnection can arrive while initial session GET is unresolved. The
+  // listener must enqueue a retry instead of dropping the only online event.
+  raceAuthContext = ctxA;
+  raceAuthCalls = 0;
+  await a.reload({ waitUntil: "domcontentloaded" });
+  await expect.poll(() => raceAuthCalls).toBeGreaterThanOrEqual(2);
+  await expect(btnA).toBeDisabled();
+  await a.evaluate(() => { window.__onlineFixture = true; window.dispatchEvent(new Event("online")); });
+  raceAuthContext = undefined;
+  for (const release of raceAuthRelease.splice(0)) release();
+  await expect(btnA).toBeEnabled({ timeout: 7000 });
   assert.deepEqual(errors, [], "No uncaught browser errors");
   assert.deepEqual(blockedEgress, [], "No page attempted third-party network egress");
   console.log(JSON.stringify({ kind: "#332-real-chromium-isolated-processes", page: "/strumenti/ and /preferiti/",
     source: "current compiled dist", browserProcesses: 2, accountBackend: "deterministic fixture", toolId,
-    checks: ["add/converge", "remove/converge", "offline-newer-tombstone", "delayed-auth-initial-controls-disabled", "touch-targets-44", "online-reconnect-replay", "signed-out-favorites-private", "same-tab-offline-reload-and-reconnect", "zero-pageerrors", "zero-external-requests"],
+    checks: ["add/converge", "remove/converge", "offline-newer-tombstone", "delayed-auth-initial-controls-disabled", "touch-targets-44", "online-reconnect-replay", "signed-out-favorites-private", "same-tab-offline-reload-and-reconnect", "online-during-pending-auth-retry", "zero-pageerrors", "zero-external-requests"],
     result: "PASS", actualAuthenticatedStaging: "NOT_RUN" }));
 } finally {
   for (const browser of browsers) await browser.close().catch(() => undefined);
