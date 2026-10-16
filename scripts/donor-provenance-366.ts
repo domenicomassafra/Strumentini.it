@@ -43,9 +43,31 @@ const SPDX_IDS = new Set([
 ]);
 function knownSpdx(value: unknown): value is string {
   if (typeof value !== "string" || !value.trim()) return false;
-  const tokens = value.replace(/[()]/g, " ").split(/\s+(?:AND|OR|WITH)\s+|\s+/u).filter(Boolean);
-  return tokens.length > 0 && tokens.every((token) => SPDX_IDS.has(token)) &&
-    /^[A-Za-z0-9.()+-]+(?:\s+(?:AND|OR)\s+[A-Za-z0-9.()+-]+)*$/u.test(value);
+  // Metadata must contain a valid expression, not just permitted identifiers.
+  // Stripping parentheses previously accepted malformed declarations such as
+  // `MIT(`, `MIT()` and `MIT(Apache-2.0)` as VERIFIED_METADATA. The allowlist
+  // remains intentionally narrow; WITH exceptions and unknown ids are NO_GO.
+  const tokens = value.match(/\(|\)|[A-Za-z0-9.+-]+/gu) ?? [];
+  if (!tokens.length || tokens.join("") !== value.replace(/\s+/gu, "")) return false;
+  let index = 0;
+  function operand(): boolean {
+    const token = tokens[index++];
+    if (token === "(") {
+      if (!expression() || tokens[index] !== ")") return false;
+      index++;
+      return true;
+    }
+    return token !== undefined && SPDX_IDS.has(token);
+  }
+  function expression(): boolean {
+    if (!operand()) return false;
+    while (tokens[index] === "AND" || tokens[index] === "OR") {
+      index++;
+      if (!operand()) return false;
+    }
+    return true;
+  }
+  return expression() && index === tokens.length;
 }
 function validSha512(value: unknown): value is string {
   if (typeof value !== "string" || !value.startsWith("sha512-")) return false;

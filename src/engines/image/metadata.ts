@@ -126,8 +126,13 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
   const segments: MetadataSegment[] = [];
   const quantizationSegments: { readonly tables: readonly number[]; readonly bytes: number }[] = [];
   const referencedQuantizationTables = new Set<number>();
+  const huffmanSegments: { readonly tables: readonly number[]; readonly bytes: number }[] = [];
+  const currentHuffmanTable = new Map<number, number>();
+  const usedHuffmanTables = new Set<string>();
   let sawFrameHeader = false;
   let quantizationReferencesKnown = true;
+  let sawScanHeader = false;
+  let huffmanReferencesKnown = true;
   let offset = 2;
   let complete = false;
   let entropyScan = false;
@@ -171,7 +176,66 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
     // follows the 0xFF marker prefix starts one byte later.
     const length = (bytes[offset + 1]! << 8) | bytes[offset + 2]!;
     if (length < 2 || offset + 1 + length > bytes.length) break;
-    if (marker === 0xdb) {
+    if (marker === 0xc4) {
+      // DHT tables contain arbitrary Huffman symbol bytes. A completely
+      // unused or subsequently overwritten table can carry a recoverable
+      // private marker while Sharp/Pillow and browsers decode identical
+      // pixels. Record table *definitions*, not merely their numeric IDs:
+      // a later DHT may replace one before the SOS that consumes it.
+      const end = offset + 1 + length;
+      const tables: number[] = [];
+      let position = offset + 3;
+      while (position < end) {
+        if (position + 17 > end) { huffmanReferencesKnown = false; break; }
+        const selector = bytes[position]!;
+        const tableClass = selector >>> 4;
+        const tableId = selector & 15;
+        let symbolCount = 0;
+        for (let index = 1; index <= 16; index++) symbolCount += bytes[position + index]!;
+        if (tableClass > 1 || tableId > 3 || symbolCount < 1 ||
+            symbolCount > 256 || position + 17 + symbolCount > end) {
+          huffmanReferencesKnown = false;
+          break;
+        }
+        tables.push(tableClass * 4 + tableId);
+        position += 17 + symbolCount;
+      }
+      if (tables.length === 0 || position !== end) huffmanReferencesKnown = false;
+      const segmentIndex = huffmanSegments.length;
+      huffmanSegments.push({ tables, bytes: length + 2 });
+      if (huffmanReferencesKnown) {
+        for (const table of tables) currentHuffmanTable.set(table, segmentIndex);
+      }
+    } else if (marker === 0xda) {
+      const count = bytes[offset + 3]!;
+      if (!count || length !== 6 + 2 * count) {
+        huffmanReferencesKnown = false;
+      } else {
+        sawScanHeader = true;
+        const spectralStart = bytes[offset + 4 + 2 * count]!;
+        const highApproximation = bytes[offset + 6 + 2 * count]! >>> 4;
+        for (let component = 0; component < count; component++) {
+          const selector = bytes[offset + 5 + 2 * component]!;
+          const dc = selector >>> 4;
+          const ac = selector & 15;
+          if (dc > 3 || ac > 3) { huffmanReferencesKnown = false; break; }
+          // Progressive JPEG DC-refinement scans have no Huffman-coded
+          // coefficients. AC scans use their AC table even when refining.
+          const keys = spectralStart === 0
+            ? (highApproximation === 0 ? [dc] : [])
+            : [4 + ac];
+          for (const key of keys) {
+            const definition = currentHuffmanTable.get(key);
+            if (definition !== undefined) usedHuffmanTables.add(`${definition}/${key}`);
+          }
+          // Sequential JPEG scans use DC and AC Huffman tables together.
+          if (spectralStart === 0 && bytes[offset + 5 + 2 * count] === 63) {
+            const definition = currentHuffmanTable.get(4 + ac);
+            if (definition !== undefined) usedHuffmanTables.add(`${definition}/${4 + ac}`);
+          }
+        }
+      }
+    } else if (marker === 0xdb) {
       // A DQT may define several 8- or 16-bit quantization tables in one
       // segment. Only tables unused by every SOF component can safely be
       // classified as unverified extra payload rather than raster data.
@@ -268,6 +332,21 @@ function scanJpeg(bytes: Uint8Array): MetadataInventory {
           segments.push(segment("ancillary", "JPEG DQT unreferenced", item.bytes));
         } else if (redefinedSegments.has(index)) {
           segments.push(segment("ancillary", "JPEG DQT redefined", item.bytes));
+        }
+      }
+    }
+  }
+  if (complete && huffmanSegments.length > 0) {
+    if (!sawScanHeader || !huffmanReferencesKnown) {
+      complete = false;
+    } else {
+      for (const [index, item] of huffmanSegments.entries()) {
+        // A single DHT segment can bundle several independent tables; using
+        // one does not make the private bytes of another table pixel data.
+        // Duplicate IDs inside one marker likewise supersede prior symbols.
+        if (new Set(item.tables).size !== item.tables.length ||
+            item.tables.some((table) => !usedHuffmanTables.has(`${index}/${table}`))) {
+          segments.push(segment("ancillary", "JPEG DHT unused", item.bytes));
         }
       }
     }

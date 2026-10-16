@@ -35,7 +35,12 @@ function filenameExtension(file: Pick<ImageVisualFile, "name">): string {
 
 function bmffBrands(bytes: Uint8Array): string[] {
   if (bytes.length < 16 || !ascii(bytes, 4, "ftyp")) return [];
-  const boxLength = Math.min(bytes.length, Math.max(16, Math.min(256, ((bytes[0] ?? 0) << 24) + ((bytes[1] ?? 0) << 16) + ((bytes[2] ?? 0) << 8) + (bytes[3] ?? 0))));
+  const boxLength = (bytes[0]! * 0x1000000 + bytes[1]! * 0x10000 + bytes[2]! * 0x100 + bytes[3]!) >>> 0;
+  // Never silently truncate the compatible-brand list: an unseen 'avis'
+  // could make an AVIF sequence look like an ordinary single still image.
+  if (boxLength < 16 || boxLength % 4 !== 0 || boxLength > bytes.length) {
+    throw new ImageVisualError("UNVERIFIED_BMFF_BRANDS", "Image ftyp brands are incomplete or malformed");
+  }
   const brands: string[] = [];
   for (let offset = 8; offset + 4 <= boxLength; offset += offset === 8 ? 8 : 4) {
     brands.push(String.fromCharCode(...bytes.subarray(offset, offset + 4)));
@@ -60,7 +65,13 @@ export function identifyPortableImage(bytes: Uint8Array, file?: Pick<ImageVisual
   const brands = bmffBrands(bytes);
   const declared = file?.type.toLowerCase() ?? "";
   const extension = file === undefined ? "" : filenameExtension(file);
-  const avif = brands.some((brand) => brand === "avif" || brand === "avis") || declared === "image/avif" || extension === "avif";
+  // AVIF image sequences carry multiple timed frames. The browser may decode
+  // frame 1, but this still-only conversion path cannot preserve animation.
+  // The isolated #212 AVIF capability probe already refuses this 'avis' brand.
+  if (brands.includes("avis")) {
+    throw new ImageVisualError("UNSUPPORTED_AVIF_SEQUENCE", "Animated AVIF sequences require an approved animation-preserving converter");
+  }
+  const avif = brands.includes("avif") || declared === "image/avif" || extension === "avif";
   if (avif) return { kind: "avif", mime: "image/avif", framePolicy: "single-image", decoder: "browser" };
 
   const heifBrand = brands.some((brand) => ["heic", "heix", "hevc", "hevx", "heim", "heis", "mif1", "msf1"].includes(brand));
