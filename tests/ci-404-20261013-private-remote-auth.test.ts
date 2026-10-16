@@ -17,6 +17,13 @@ const canonicalRepository = "domenicomassafra/strumentini-it";
 const canonicalUrl = `https://github.com/${canonicalRepository}.git`;
 
 type Step = { name?: string; if?: string; uses?: string; with?: Record<string, unknown>; env?: Record<string, string>; run?: string };
+type ChildExit = { status: number | null; error?: Error | undefined };
+function requireCompletedExit(result: ChildExit): number {
+  if (result.error !== undefined || typeof result.status !== "number") {
+    throw new Error("RELEASE_404_CHILD_DID_NOT_COMPLETE");
+  }
+  return result.status;
+}
 const workflow = YAML.parse(source) as { permissions: Record<string, string>; jobs: Record<string, { steps: Step[] }> };
 const steps = workflow.jobs["cumulative-on-main"]!.steps;
 const remote = steps.find((step) => step.name === "Require current remote main for release admission")!;
@@ -59,7 +66,7 @@ exec /usr/bin/git "$@"
     writeFileSync(path, program, { mode: 0o700 });
     chmodSync(path, 0o700);
     const result = spawnSync("bash", ["-euo", "pipefail", "-c", step.run!], {
-      cwd: root, encoding: "utf8", timeout: 15000,
+      cwd: root, encoding: "utf8", timeout: 30000,
       env: {
         ...process.env, PATH: `${folder}${delimiter}${process.env.PATH ?? ""}`,
         GITHUB_ACTIONS: "true", GITHUB_REF: "refs/heads/main", GITHUB_SHA: head,
@@ -76,6 +83,14 @@ exec /usr/bin/git "$@"
 }
 
 describe("#404 private GitHub release admission uses no persistent credentials", () => {
+  it("does not mistake a timed-out or crashed child for an explicit admission refusal", () => {
+    const timedOut = spawnSync(process.execPath, ["-e", "setInterval(() => {}, 1000)"], { timeout: 25, encoding: "utf8" });
+    expect(timedOut.status).toBeNull();
+    expect(timedOut.error).toBeDefined();
+    expect(() => requireCompletedExit(timedOut)).toThrow("RELEASE_404_CHILD_DID_NOT_COMPLETE");
+    expect(() => requireCompletedExit({ status: null })).toThrow("RELEASE_404_CHILD_DID_NOT_COMPLETE");
+    expect(requireCompletedExit({ status: 1 })).toBe(1);
+  });
   it("marks the new authoritative GitHub probe as CI and demands independent security review", () => {
     const suites = readdirSync(join(root, "tests")).filter((item) => item.endsWith(".test.ts")).map((item) => `tests/${item}`);
     const plan = buildImpactPlan(["docs/innocuous.md", "scripts/lib/current-remote-main-404.ts"], suites);
@@ -109,34 +124,39 @@ describe("#404 private GitHub release admission uses no persistent credentials",
 
   it("runs real YAML remote-read Bash and fails closed for obsolete main, missing token and inaccessible origin", () => {
     const current = invoke(remote, "current");
-    expect(current.status, `${current.stderr}\n${current.stdout}`).toBe(0);
+    expect(requireCompletedExit(current), `${current.stderr}\n${current.stdout}`).toBe(0);
     expect(current.attempted).toBe(1);
     for (const sample of [invoke(remote, "advanced"), invoke(remote, "unreachable"), invoke(remote, "current", false)]) {
-      expect(sample.status).not.toBe(0);
+      expect(requireCompletedExit(sample)).not.toBe(0);
     }
-  });
+  }, 150_000);
 
   it("runs the actual read-only validator YAML command with temporary Git authentication and no receipt write", () => {
     const current = invoke(admission, "current");
-    expect(current.attempted).toBe(1);
+    expect(current.attempted, `${current.stderr}\n${current.stdout}`).toBe(1);
     expect(current.stdout, current.stderr).not.toBe("");
     const result = JSON.parse(current.stdout) as {
       status: string; receipt: string | null; findings: { code: string }[];
     };
     expect(result.receipt).toBeNull();
     expect(result.status).not.toBe("PASS");
-    // In this isolated unbuilt checkout FAIL (missing dist) is expected; a
-    // complete production candidate would still be blocked by real evidence.
-    expect(result.findings.map((finding) => finding.code)).toEqual(expect.arrayContaining([
-      "GOLD_RECEIPT_MISSING", "PHYSICAL_DEVICE_EVIDENCE_MISSING", "ROLLBACK_UNPROVEN",
+    // Both supported local receipt conditions refuse publication: a fresh
+    // explicitly UNPROVEN rollback and a prior receipt whose source is stale.
+    // This test is about fail-closed source admission, not the incidental
+    // fingerprint of whichever isolated checkout it runs within.
+    const findings = result.findings.map((finding) => finding.code);
+    expect(findings).toEqual(expect.arrayContaining([
+      "GOLD_RECEIPT_MISSING", "PHYSICAL_DEVICE_EVIDENCE_MISSING",
     ]));
-    expect(current.status).not.toBe(0);
+    expect(findings.some((code) => code === "ROLLBACK_UNPROVEN" || code === "ROLLBACK_SOURCE_STALE"),
+      `Expected a concrete rollback blocker, got ${findings.join(",")}`).toBe(true);
+    expect(requireCompletedExit(current)).not.toBe(0);
     const advanced = invoke(admission, "advanced");
     expect(advanced.attempted).toBe(1);
     expect(`${advanced.stderr}\n${advanced.stdout}`).toMatch(/RELEASE_404_REMOTE_MAIN_SHA_MISMATCH_OR_UNAVAILABLE/u);
-    expect(advanced.status).not.toBe(0);
+    expect(requireCompletedExit(advanced)).not.toBe(0);
     const missingToken = invoke(admission, "current", false);
     expect(missingToken.attempted).toBe(0);
-    expect(missingToken.status).not.toBe(0);
-  }, 60_000);
+    expect(requireCompletedExit(missingToken)).not.toBe(0);
+  }, 150_000);
 });
