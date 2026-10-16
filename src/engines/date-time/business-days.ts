@@ -6,6 +6,10 @@ export type DayCode = (typeof DAY_CODES)[number];
 export interface BusinessCalendar {
   workweek: readonly DayCode[];
   excludedDates?: readonly string[];
+  /** Count the first date when computing the interval. Defaults to false. */
+  inclusiveStart?: boolean;
+  /** Count the last date when computing the interval. Defaults to true. */
+  inclusiveEnd?: boolean;
 }
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/u;
@@ -79,15 +83,18 @@ export function businessDaysBetween(
   const start = parseIsoDate(startDate);
   const end = parseIsoDate(endDate);
   const normalized = normalizeCalendar(calendar);
+  const inclusiveStart = calendar.inclusiveStart ?? false;
+  const inclusiveEnd = calendar.inclusiveEnd ?? true;
+  if (typeof inclusiveStart !== "boolean" || typeof inclusiveEnd !== "boolean") throw new Error("INVALID_DATE_BOUNDS");
 
-  if (start.getTime() === end.getTime()) return 0;
+  if (start.getTime() === end.getTime()) return inclusiveStart && inclusiveEnd && isBusinessDay(start, normalized) ? 1 : 0;
   const direction = end > start ? 1 : -1;
   const cursor = new Date(start);
-  let count = 0;
+  let count = inclusiveStart && isBusinessDay(start, normalized) ? direction : 0;
 
   while (cursor.getTime() !== end.getTime()) {
     cursor.setUTCDate(cursor.getUTCDate() + direction);
-    if (isBusinessDay(cursor, normalized)) count += direction;
+    if ((cursor.getTime() !== end.getTime() || inclusiveEnd) && isBusinessDay(cursor, normalized)) count += direction;
   }
 
   return count;

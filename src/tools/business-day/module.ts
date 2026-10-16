@@ -20,6 +20,8 @@ function validateInput(value: unknown): BusinessDayInput {
   if (candidate.excludedDates !== undefined && !Array.isArray(candidate.excludedDates)) {
     throw new Error("INVALID_INPUT");
   }
+  if (candidate.inclusiveStart !== undefined && typeof candidate.inclusiveStart !== "boolean") throw new Error("INVALID_INPUT");
+  if (candidate.inclusiveEnd !== undefined && typeof candidate.inclusiveEnd !== "boolean") throw new Error("INVALID_INPUT");
   return candidate as BusinessDayInput;
 }
 
@@ -33,9 +35,9 @@ const module: ToolModule = {
     const assumptions = {
       workweek,
       excludedDates,
-      inclusiveStart: false,
-      inclusiveEnd: true,
-    } as const;
+      inclusiveStart: input.mode === "between" ? input.inclusiveStart ?? false : false,
+      inclusiveEnd: input.mode === "between" ? input.inclusiveEnd ?? true : true,
+    };
 
     if (input.mode === "add") {
       return {

@@ -2497,7 +2497,7 @@
         },
         "module": {
           "path": "src/tools/business-day/module.ts",
-          "sha256": "6954a5cbd03abbbf7de74c29df703fcae4ac214b959bd57bb18adefde20612bb"
+          "sha256": "b7b9e6add8053405c57393a31e9ead916933abf1aa98877ce203d664cd01bcea"
         },
         "page": {
           "path": "src/pages/tools/business-day.astro",

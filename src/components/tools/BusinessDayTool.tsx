@@ -50,6 +50,8 @@ export function BusinessDayTool() {
   const [startDate, setStartDate] = useState("");
   const [amount, setAmount] = useState("1");
   const [endDate, setEndDate] = useState("");
+  const [inclusiveStart, setInclusiveStart] = useState(false);
+  const [inclusiveEnd, setInclusiveEnd] = useState(true);
   const [excludedDates, setExcludedDates] = useState("");
   const [explicitWorkweek, setExplicitWorkweek] = useState<readonly DayCode[] | undefined>();
   const [result, setResult] = useState<BusinessDayOutput | null>(null);
@@ -105,7 +107,7 @@ export function BusinessDayTool() {
     };
     const input = mode === "add"
       ? { ...shared, mode, amount: Number(amount) }
-      : { ...shared, mode, endDate };
+      : { ...shared, mode, endDate, inclusiveStart, inclusiveEnd };
 
     try {
       const run = await toolRuntime.run(
@@ -144,6 +146,8 @@ export function BusinessDayTool() {
     setStartDate("");
     setAmount("1");
     setEndDate("");
+    setInclusiveStart(false);
+    setInclusiveEnd(true);
     setExcludedDates("");
     setExplicitWorkweek(undefined);
   }
@@ -202,7 +206,7 @@ export function BusinessDayTool() {
               onInput={(event) => { invalidate(); setStartDate(event.currentTarget.value); }}
               aria-describedby="start-help"
             />
-            <small id="start-help">La data iniziale non viene conteggiata.</small>
+            <small id="start-help">{mode === "add" ? "La data iniziale non viene conteggiata." : "Scegli qui sotto se includere la data iniziale nel conteggio."}</small>
           </label>
 
           {mode === "add" ? (
@@ -228,6 +232,21 @@ export function BusinessDayTool() {
             </label>
           )}
         </div>
+
+        {mode === "between" && (
+          <fieldset class="workweek-fieldset">
+            <legend>Estremi del conteggio</legend>
+            <label>
+              <input type="checkbox" checked={inclusiveStart} onChange={(event) => { invalidate(); setInclusiveStart(event.currentTarget.checked); }} />
+              Includi data iniziale
+            </label>
+            <label>
+              <input type="checkbox" checked={inclusiveEnd} onChange={(event) => { invalidate(); setInclusiveEnd(event.currentTarget.checked); }} />
+              Includi data finale
+            </label>
+            <small>Le date sono giorni di calendario ISO; nessuna conversione di fuso orario modifica il giorno scelto.</small>
+          </fieldset>
+        )}
 
         <fieldset class="workweek-fieldset">
           <legend>
@@ -284,12 +303,12 @@ export function BusinessDayTool() {
           <div data-result-class="calculator">
             <ResultExplanation
               primary={<div data-result-slot="primary"><ResultPrimaryAnswer label={result.mode === "add" ? "Data lavorativa" : "Giorni lavorativi"}><PreviousValue value={resultText} className="" /></ResultPrimaryAnswer></div>}
-              interpretation={<div data-result-slot="interpretation"><ResultInterpretation state="success">{result.mode === "add" ? "Data ottenuta applicando la settimana lavorativa e le esclusioni indicate." : "Conteggio ottenuto con data iniziale esclusa e data finale inclusa."}</ResultInterpretation></div>}
+              interpretation={<div data-result-slot="interpretation"><ResultInterpretation state="success">{result.mode === "add" ? "Data ottenuta applicando la settimana lavorativa e le esclusioni indicate." : "Conteggio ottenuto con gli estremi selezionati e le esclusioni indicate."}</ResultInterpretation></div>}
               breakdown={<div data-result-slot="breakdown"><ResultBreakdown rows={result.mode === "add" ? [{ label: "Data ISO", value: result.resultDate }, { label: "Giorni aggiunti", value: String(result.amount) }] : [{ label: "Giorni lavorativi", value: String(result.businessDays) }]} /></div>}
               assumptions={<div data-result-slot="assumptions"><ResultAssumptions items={[
                 { label: "Settimana lavorativa", value: result.assumptions.workweek.map((day) => DAY_LABELS.find(({ code }) => code === day)?.label ?? day).join(", ") },
                 { label: "Date escluse", value: result.assumptions.excludedDates.length === 0 ? "Nessuna" : result.assumptions.excludedDates.join(", ") },
-                { label: "Estremi", value: "Data iniziale esclusa · data finale inclusa" },
+                { label: "Estremi", value: `Data iniziale ${result.assumptions.inclusiveStart ? "inclusa" : "esclusa"} · data finale ${result.assumptions.inclusiveEnd ? "inclusa" : "esclusa"}` },
               ]} /></div>}
               provenance={<div data-result-slot="provenance"><ResultProvenance>Calcolo locale; non viene interrogato alcun servizio esterno di festività.</ResultProvenance></div>}
             />
