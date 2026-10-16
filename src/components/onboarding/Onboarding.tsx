@@ -481,13 +481,11 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
                   {saving ? COPY.onboarding.saving : COPY.onboarding.save}
                 </button>
               </div>
-              {completed && <div class={styles.panel} role="status">
-                <p class="success">{COPY.onboarding.saved}</p>
-                <div class={styles.actions}>
-                  <a class="btn btn-primary" href="/strumenti/">Apri gli strumenti</a>
-                  <a class="btn btn-ghost" href="/impostazioni/#preferenze">Personalizza le preferenze</a>
-                </div>
-              </div>}
+              <p class={styles.muted}>
+                Dopo il salvataggio torni alla home. Potrai modificare le scelte da
+                {" "}<a href="/impostazioni/#preferenze">Impostazioni e preferenze</a>, oppure sfogliare il
+                {" "}<a href="/strumenti/">catalogo degli strumenti</a>.
+              </p>
             </div>
           )}
         </section>
