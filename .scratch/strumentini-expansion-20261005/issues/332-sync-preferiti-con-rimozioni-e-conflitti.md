@@ -2,6 +2,8 @@
 
 **What to build:** Due dispositivi convergono su aggiunta/rimozione.
 
+**Decisione owner 2026-10-16:** verificare due browser autenticati sullo staging: aggiunta in A visibile in B, rimozione in B visibile in A, modifica offline sincronizzata alla riconnessione. Non richiedere VoiceOver o iPhone fisico.
+
 **Traces to:** OWN-09 OWN-12; decisioni OWN canoniche del 2026-10-10.
 
 **Constraints:** Scope planning; app local-first, account optional, data protection, proprietary licensing, 0 additional cost initially, mobile base+advanced and WCAG 2.2 AA. Preserve historical AC and no upload implicit.
@@ -30,7 +32,7 @@
 
 **Failure and recovery:** Explicit support/size/timeout limits; cancel/retry must preserve prior good state and must not duplicate side effects.
 
-**Owner or external gate:** Only actual source/consent/security/physical requirements of this scoped ticket; no owner visual-selection blocker applies to an independent bug or engine change. This planning ticket does not approve deploy.
+**Owner or external gate:** Only actual source, consent and security requirements of this scoped ticket; no owner visual-selection blocker applies to an independent bug or engine change. This planning ticket does not approve deploy.
 
 **Rollback:** Scope-limited undo keeping route, local state and former valid receipt. No production deploy in this ticket preparation.
 
