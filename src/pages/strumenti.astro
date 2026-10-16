@@ -23,6 +23,7 @@ const verifiedCount = catalog.filter((tool) => verifiedIds.has(tool.id)).length;
 >
   <DirectoryHero total={catalog.length} verified={verifiedCount} />
   <JobRoutes />
+  <p style="margin: 0 auto 24px; width: min(100% - 40px, 1120px)"><a href="/calcoli-essenziali/">13 calcoli essenziali: codice fiscale, IVA, mutuo, TFR e altri →</a></p>
   <CatalogDirectory tools={catalog} verifiedIds={verifiedIds} />
   <DirectoryBand />
 </BaseLayout>

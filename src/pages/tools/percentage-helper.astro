@@ -5,4 +5,62 @@ import { PercentageHelperTool } from "../../components/tools/business-math/Perce
 
 <ItalianToolPage toolId="percentage-helper">
   <PercentageHelperTool client:load />
+  <section class="vat126-panel" aria-labelledby="vat126-heading" data-vat-calculator>
+    <h2 id="vat126-heading">IVA: aggiunta e scorporo</h2>
+    <p>Inserisci l'aliquota applicabile alla tua operazione. Il calcolo è locale, con arrotondamento ai centesimi; non determina quale aliquota sia dovuta.</p>
+    <form data-vat-form novalidate>
+      <label>Operazione <select name="operation"><option value="add">Aggiungi IVA al netto</option><option value="scorporo">Scorpora IVA dal lordo</option></select></label>
+      <label>Importo (€) <input name="amount" inputmode="decimal" placeholder="100,00" required /></label>
+      <label>Aliquota IVA scelta (%) <input name="rate" inputmode="decimal" placeholder="22" required /></label>
+      <button type="submit">Calcola IVA</button>
+    </form>
+    <p role="alert" data-vat-error hidden></p>
+    <output aria-live="polite" data-vat-result></output>
+  </section>
 </ItalianToolPage>
+
+<script>
+  import { calculateVat126 } from "../../engines/italy/vat-126";
+  const panel = document.querySelector<HTMLElement>("[data-vat-calculator]");
+  if (panel) {
+    const form = panel.querySelector<HTMLFormElement>("[data-vat-form]")!;
+    const result = panel.querySelector<HTMLOutputElement>("[data-vat-result]")!;
+    const error = panel.querySelector<HTMLElement>("[data-vat-error]")!;
+    const format = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+    const clear = () => { result.textContent = ""; error.textContent = ""; error.hidden = true; };
+    form.addEventListener("input", clear);
+    form.addEventListener("change", clear);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      clear();
+      const data = new FormData(form);
+      const rawAmount = String(data.get("amount") ?? "").trim();
+      const rawRate = String(data.get("rate") ?? "").trim();
+      if (!/^(?:0|[1-9]\d{0,9})(?:[.,]\d{1,2})?$/u.test(rawAmount)) {
+        error.textContent = "Inserisci un importo non negativo, senza separatori delle migliaia e con massimo due decimali.";
+        error.hidden = false;
+        return;
+      }
+      const [whole = "0", fractional = ""] = rawAmount.split(/[.,]/u);
+      const amountCents = Number(whole) * 100 + Number(fractional.padEnd(2, "0"));
+      try {
+        const response = calculateVat126({
+          operation: data.get("operation") === "scorporo" ? "scorporo" : "add",
+          amountCents,
+          rate: { kind: "custom", percent: rawRate },
+        });
+        result.textContent = `Imponibile: ${format(response.netCents)} · IVA (${response.ratePercent}%): ${format(response.vatCents)} · Lordo: ${format(response.grossCents)}. Aliquota scelta dall'utente; ${response.rounding}.`;
+      } catch {
+        error.textContent = "Aliquota non valida: inserisci una percentuale fra 0 e 100, con massimo quattro decimali.";
+        error.hidden = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .vat126-panel { display: grid; gap: 12px; margin-top: 32px; padding: 20px; border: 1px solid var(--border); border-radius: 12px; }
+  .vat126-panel form { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; }
+  .vat126-panel label { display: grid; gap: 6px; min-width: min(100%, 180px); }
+  .vat126-panel input, .vat126-panel select { padding: 9px; max-width: 100%; }
+</style>

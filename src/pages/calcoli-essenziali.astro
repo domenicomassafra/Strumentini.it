@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { calcolatuttoParity018 } from "../catalog/calcolatutto-parity-018";
+---
+
+<BaseLayout title="13 calcoli essenziali" description="Codice fiscale, IVA, mutuo, stipendio, TFR, percentuali, IBAN e altri strumenti utilizzabili direttamente nel browser.">
+  <main class="essential-calculators">
+    <nav aria-label="Percorso"><a href="/">Home</a> / <a href="/strumenti/">Strumenti</a> / Calcoli essenziali</nav>
+    <h1>13 calcoli essenziali</h1>
+    <p>Scegli l'operazione. Per i calcoli fiscali, controlla gli anni, i casi e le ipotesi dichiarati in ogni strumento.</p>
+    <ul>
+      {calcolatuttoParity018.map(({ job, route }) => <li><a href={route}>{job}</a></li>)}
+    </ul>
+  </main>
+</BaseLayout>
+
+<style>
+  .essential-calculators { max-width: 1040px; margin: 0 auto; padding: 40px 20px 72px; }
+  .essential-calculators ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; list-style: none; padding: 0; }
+  .essential-calculators li { border: 1px solid var(--border); border-radius: 12px; }
+  .essential-calculators li a { display: block; padding: 18px; font-weight: 650; }
+</style>
