@@ -157,6 +157,89 @@ export function assertSupportedSource237(source: Uint8Array): number {
   }
   const model = parsePdf(source);
   if (model.encrypted) refuse("PDF cifrato non supportato.");
+  // The shared parser may fall back to scanning Page objects when it cannot
+  // resolve the actual Catalog. In particular, a legal form-feed before an
+  // xref-indexed Catalog object header can make its text scan skip that object,
+  // while PDF.js/PDFKit/pypdf still follow the Catalog (including /Perms and
+  // /DocMDP signatures). Never authorize rasterization from fallback pages.
+  const catalog = model.root === null ? undefined : model.objects.get(model.root.id);
+  const catalogType = catalog?.value.kind === "dict" ? catalog.value.entries.get("Type") : undefined;
+  const pagesReference = catalog?.value.kind === "dict" ? catalog.value.entries.get("Pages") : undefined;
+  const pagesTree = pagesReference?.kind === "ref" ? model.objects.get(pagesReference.id) : undefined;
+  if (!catalog || catalog.generation !== model.root?.generation
+    || catalogType?.kind !== "name" || catalogType.value !== "Catalog"
+    || pagesReference?.kind !== "ref" || !pagesTree
+    || pagesTree.generation !== pagesReference.generation) {
+    refuse("Catalog e albero delle pagine PDF non verificabili.");
+  }
+  // A forged, unreferenced Catalog can also satisfy the text scan while the
+  // real xref points at a second Catalog after a form-feed. Detect duplicate
+  // indirect declarations of the active root, including all PDF whitespace
+  // separators, before trusting the parser's chosen Catalog dictionary.
+  if (!Number.isSafeInteger(model.root.id) || !Number.isSafeInteger(model.root.generation)) {
+    refuse("Identificatore Catalog PDF ambiguo.");
+  }
+  const rootHeaders = new RegExp(
+    `(?:^|[\\x00\\t\\n\\f\\r ])${model.root.id}[\\x00\\t\\n\\f\\r ]+${model.root.generation}[\\x00\\t\\n\\f\\r ]+obj(?=[\\x00\\t\\n\\f\\r ])`,
+    "gu",
+  );
+  const rootHeader = rootHeaders.exec(sourceText);
+  if (!rootHeader || rootHeaders.exec(sourceText)) {
+    refuse("Dichiarazioni Catalog PDF duplicate o non verificabili.");
+  }
+  const rootHeaderOffset = rootHeader.index + rootHeader[0].indexOf(String(model.root.id));
+  // Cross-check the real classic xref's active root entry instead of merely
+  // trusting the lightweight parser's first matching textual object. An xref
+  // may point to a different object even if an unindexed benign Catalog looks
+  // plausible. This source profile accepts bounded classic entries only.
+  const xrefBody = footer.slice(4, trailer.index);
+  const subsection = /(\d+)[ \t]+(\d+)(?=[\x00\t\n\f\r ])/gy;
+  const record = /(\d{10})[ \t]+(\d{5})[ \t]+([nf])(?=[\x00\t\n\f\r ])/gy;
+  let at = 0;
+  let indexedRootOffset: number | null = null;
+  let totalEntries = 0;
+  const skipXrefTrivia = (): void => {
+    while (at < xrefBody.length) {
+      const code = xrefBody.charCodeAt(at);
+      if (code === 0 || code === 9 || code === 10 || code === 12 || code === 13 || code === 32) at += 1;
+      else if (code === 37) {
+        while (at < xrefBody.length && xrefBody[at] !== "\n" && xrefBody[at] !== "\r") at += 1;
+      } else break;
+    }
+  };
+  while (at < xrefBody.length) {
+    skipXrefTrivia();
+    if (at >= xrefBody.length) break;
+    subsection.lastIndex = at;
+    const section = subsection.exec(xrefBody);
+    const firstId = section ? Number(section[1]) : NaN;
+    const count = section ? Number(section[2]) : NaN;
+    if (!Number.isSafeInteger(firstId) || !Number.isSafeInteger(count) || count < 1
+      || count > 10_000 - totalEntries || firstId + count > 100_000) {
+      refuse("Tabella xref del Catalog non verificabile.");
+    }
+    at = subsection.lastIndex;
+    for (let index = 0; index < count; index += 1) {
+      skipXrefTrivia();
+      record.lastIndex = at;
+      const entry = record.exec(xrefBody);
+      if (!entry) refuse("Voce xref PDF non canonica.");
+      if (firstId + index === model.root.id) {
+        const generation = Number(entry[2]);
+        const pointer = Number(entry[1]);
+        if (indexedRootOffset !== null || entry[3] !== "n" || generation !== model.root.generation
+          || !Number.isSafeInteger(pointer) || pointer < 0 || pointer >= offset) {
+          refuse("Catalog xref duplicato o non valido.");
+        }
+        indexedRootOffset = pointer;
+      }
+      at = record.lastIndex;
+      totalEntries += 1;
+    }
+  }
+  if (indexedRootOffset !== rootHeaderOffset) {
+    refuse("Il Catalog PDF differisce dal puntatore xref effettivo.");
+  }
   // This security-sensitive path must not interpret one revision while PDF.js
   // displays another. Classic incremental/hybrid xrefs and linearized sources
   // need separate independent corpus review before admission.
