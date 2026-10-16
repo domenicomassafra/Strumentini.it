@@ -34,13 +34,13 @@ describe("ticket #397 offline source-year ledger (official snapshots only)", () 
         expect(source.url).toMatch(/^https:\/\//u);
         expect(source.checkedHash).toBe(true);
         expect(source.manifestCheckedAt).toBe(sourceReviewDates.get(source.path) ?? null);
-        expect(source.manifestIndex).toBe(sourceReviewDates.has(source.path) ? "MATCHED" : "UNLISTED");
+        expect(source.manifestIndex).toBe("MATCHED");
         expect(source.liveUrlCheck).toBe("NOT_RUN");
       }
     }
     expect(result.verified.find(({ ruleId }) => ruleId === "italy.vat-declared-2025-window")?.sources)
-      .toEqual([expect.objectContaining({ manifestCheckedAt: null, manifestIndex: "UNLISTED", checkedHash: true }),
-        expect.objectContaining({ manifestCheckedAt: null, manifestIndex: "UNLISTED", checkedHash: true })]);
+      .toEqual([expect.objectContaining({ manifestCheckedAt: "2026-10-09", manifestIndex: "MATCHED", checkedHash: true }),
+        expect.objectContaining({ manifestCheckedAt: "2026-10-09", manifestIndex: "MATCHED", checkedHash: true })]);
     expect(resolveAnnualOfficialRule397(result, "italy.irpef-national-gross", "2026-07-01")).toMatchObject({
       status: "VERIFIED_SUBSET", record: { taxYear: 2026, validFrom: "2026-01-01", validTo: "2026-12-31" },
     });
