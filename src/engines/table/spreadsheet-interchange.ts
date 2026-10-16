@@ -2,7 +2,7 @@ import type { SheetData } from "write-excel-file/universal";
 import { inflateSync } from "fflate";
 import { formatMarkdownTable } from "../text-writing";
 import { parseXmlDocument, type XmlElement } from "../developer-web/structured-repair";
-import { analyzeOoxmlPackage, OoxmlPackageError, type OoxmlZipEntry } from "../ooxml/package";
+import { analyzeOoxmlPackage, OOXML_PACKAGE_LIMITS, OoxmlPackageError, type OoxmlZipEntry } from "../ooxml/package";
 import { parseCsvTable, serializeCsvTable, type CsvTable } from "./csv";
 
 export const SPREADSHEET_INTERCHANGE_LIMITS = {
@@ -107,6 +107,18 @@ function strictNumber(value: string, row: number, column: number): number {
   if (!/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/u.test(value)) fail("INVALID_NUMBER", `Row ${row}, column ${column} is not an ungrouped decimal number.`);
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) fail("INVALID_NUMBER", `Row ${row}, column ${column} is outside the finite number range.`);
+  // A nonzero source that Number() rounds to zero, or a subnormal below
+  // Excel's supported numeric magnitude, must be exported as literal text.
+  if ((parsed === 0 && /[1-9]/u.test(value)) || (parsed !== 0 && Math.abs(parsed) < 2.2251e-308)) {
+    fail("INVALID_NUMBER", `Row ${row}, column ${column} is too small for a faithful XLSX numeric cell; export it as text.`);
+  }
+  // Excel stores at most 15 significant decimal digits. Coercing a longer
+  // decimal or an unsafe integer would silently change the user's source.
+  // Such values are still supported in the default text column policy.
+  const significantDigits = value.replace(/^-|\./gu, "").replace(/^0+/u, "").replace(/0+$/u, "").length;
+  if (significantDigits > 15 || (Number.isInteger(parsed) && !Number.isSafeInteger(parsed))) {
+    fail("INVALID_NUMBER", `Row ${row}, column ${column} exceeds safe XLSX numeric precision; export it as text.`);
+  }
   return parsed;
 }
 
@@ -207,8 +219,8 @@ function crc32(bytes: Uint8Array): number {
   return (crc ^ 0xffffffff) >>> 0;
 }
 
-function readBoundedXlsxXml(bytes: ArrayBuffer, entry: OoxmlZipEntry): string {
-  if (entry.uncompressedSize > MAX_CONTENT_TYPES_XML_BYTES || entry.compressedSize > MAX_CONTENT_TYPES_XML_BYTES) {
+function readBoundedXlsxXml(bytes: ArrayBuffer, entry: OoxmlZipEntry, budget = MAX_CONTENT_TYPES_XML_BYTES): string {
+  if (entry.uncompressedSize > budget || entry.compressedSize > budget) {
     fail("FILE_TOO_LARGE", "XLSX XML metadata exceeds the local inspection budget.");
   }
   const view = new DataView(bytes);
@@ -257,6 +269,76 @@ function decodedXlsxAttribute(element: XmlElement, key: string): string | undefi
   });
 }
 
+function containsActualXlsxFormulaTag(xml: string): boolean {
+  // Comments and CDATA can legitimately describe `<f>` without defining a
+  // worksheet formula. Consume those lexical regions before considering an
+  // opening element with XML local name `f` (including namespace prefixes).
+  const tokens = /<!--[^]*?-->|<!\[CDATA\[[^]*?\]\]>|(<(?:[A-Za-z_][\w.-]*:)?f(?=[\s/>]))/gu;
+  for (const match of xml.matchAll(tokens)) if (match[1] !== undefined) return true;
+  return false;
+}
+
+function assertFaithfulXlsxNumericCells(xml: string): void {
+  // read-excel-file converts numeric <v> values to JS Number before returning
+  // them. At that point an unsafe integer, lost significant digits or underflow
+  // cannot be recovered from the exported CSV. Inspect original worksheet XML.
+  // Ignore comments/CDATA (and their fake cell tags), as for formula detection.
+  const liveXml = xml.replace(/<!--[^]*?-->|<!\[CDATA\[[^]*?\]\]>/gu, "");
+  const cells = /<(?:[A-Za-z_][\w.-]*:)?c(?=[\s/>])((?:"[^"]*"|'[^']*'|[^'">])*)>([^]*?)<\/(?:[A-Za-z_][\w.-]*:)?c\s*>/gu;
+  for (const cell of liveXml.matchAll(cells)) {
+    const attributes = cell[1] ?? "";
+    const type = /(?:^|\s)t\s*=\s*(?:"([^"]*)"|'([^']*)')/u.exec(attributes);
+    const cellType = type?.[1] ?? type?.[2] ?? "n";
+    if (cellType !== "n") {
+      // Only these OOXML cell types are definitely nonnumeric. XML-encoded
+      // attributes such as t="&#x6e;" may decode to numeric in the downstream
+      // reader; an unrecognized raw type cannot be safely skipped.
+      if (!["s", "inlineStr", "str", "b", "e", "d"].includes(cellType)) {
+        fail("UNSUPPORTED_XLSX_FEATURE", "Unsupported XLSX cell type cannot be safely imported to CSV.");
+      }
+      continue;
+    }
+    const content = cell[2] ?? "";
+    const values = /<(?:[A-Za-z_][\w.-]*:)?v\s*>([^<]*)<\/(?:[A-Za-z_][\w.-]*:)?v\s*>/gu;
+    for (const valueMatch of content.matchAll(values)) {
+      const raw = (valueMatch[1] ?? "").trim();
+      const numeric = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[Ee][+-]?\d+)?$/u.test(raw);
+      const mantissa = raw.split(/[Ee]/u, 1)[0] ?? "";
+      const significantDigits = mantissa.replace(/^[+-]/u, "").replace(".", "").replace(/^0+|0+$/gu, "").length;
+      const parsed = Number(raw);
+      if (!numeric || !Number.isFinite(parsed) || significantDigits > 15 ||
+          (Number.isInteger(parsed) && !Number.isSafeInteger(parsed)) ||
+          (/[1-9]/u.test(mantissa) && (parsed === 0 || Math.abs(parsed) < 2.2251e-308))) {
+        fail("UNSUPPORTED_XLSX_FEATURE", "Workbook numeric cells cannot be converted to CSV without losing decimal precision; keep these cells as text.");
+      }
+    }
+    // Refuse unexpected value-element syntax rather than silently missing
+    // a numeric source cell that a permissive downstream reader might coerce.
+    const valueOpeners = content.match(/<(?:[A-Za-z_][\w.-]*:)?v(?=[\s/>])/gu)?.length ?? 0;
+    const valuesMatched = [...content.matchAll(values)].length;
+    if (valueOpeners !== valuesMatched) fail("UNSUPPORTED_XLSX_FEATURE", "Unsupported numeric XLSX value element.");
+  }
+}
+
+function workbookWorksheetTarget(target: string): string {
+  // OPC Targets are relative to xl/workbook.xml unless rooted at the package
+  // root. Never silently drop an encoded/external/escaping worksheet target.
+  if (/[\\?#%]/u.test(target) || /^[A-Za-z][\w+.-]*:/u.test(target)) {
+    fail("XLSX_READ_FAILED", "Unsupported XLSX worksheet relationship target.");
+  }
+  const segments = target.startsWith("/") ? [] : ["xl"];
+  for (const segment of target.split("/")) {
+    if (segment === "" || segment === ".") continue;
+    if (segment === "..") {
+      if (segments.length === 0) fail("XLSX_READ_FAILED", "XLSX worksheet target escapes the package root.");
+      segments.pop();
+    } else segments.push(segment);
+  }
+  const path = segments.join("/");
+  if (!/^xl\/.+\.xml$/iu.test(path)) fail("XLSX_READ_FAILED", "Unsupported XLSX worksheet relationship path.");
+  return path;
+}
+
 function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
   let packageAnalysis: ReturnType<typeof analyzeOoxmlPackage>;
   try {
@@ -300,12 +382,55 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
   // The workbook's relationship Type, unlike its Target filename, is the
   // source of truth. Worksheet `hyperlink` relations stay inert and allowed.
   const workbookRels = packageAnalysis.entries.find((entry) => entry.path === "xl/_rels/workbook.xml.rels");
+  let relationships: XmlElement | undefined;
   if (workbookRels) {
-    const relationships = checkedXlsxXml(readBoundedXlsxXml(bytes, workbookRels), "Relationships");
+    relationships = checkedXlsxXml(readBoundedXlsxXml(bytes, workbookRels), "Relationships");
     if (relationships.children.some((child) => child.kind === "element" && child.name.split(":").at(-1) === "Relationship" &&
         /\/(?:externalLink|externalLinkPath)$/iu.test(decodedXlsxAttribute(child, "Type") ?? ""))) {
       fail("UNSUPPORTED_XLSX_FEATURE", "Excel external workbook relationships are not supported in CSV import.");
     }
+  }
+  // read-excel-file returns cached formula values (which may be forged or
+  // stale) and blank cells for uncached formulas. Neither is a verified result.
+  // Chart-series <c:f> are cell-range references, NOT cached worksheet-cell
+  // formulas; reading all xl XML caused real chart-bearing workbooks to be
+  // rejected. Identify actual worksheet parts from both the OPC content-type
+  // manifest and workbook relationships, including hidden/relocated sheets.
+  // Require referenced worksheet parts to agree with the manifest, fail closed
+  // on missing parts, and inspect them before the generic workbook reader.
+  const sheetContentType = /\.spreadsheetml\.worksheet\+xml$/iu;
+  const worksheetParts = new Set<string>();
+  for (const child of contentTypes.children) {
+    if (child.kind !== "element" || child.name.split(":").at(-1) !== "Override") continue;
+    if (!sheetContentType.test(decodedXlsxAttribute(child, "ContentType") ?? "")) continue;
+    const part = decodedXlsxAttribute(child, "PartName");
+    if (!part?.startsWith("/")) fail("XLSX_READ_FAILED", "Invalid XLSX worksheet content type part.");
+    worksheetParts.add(workbookWorksheetTarget(part));
+  }
+  const archivedParts = new Map(packageAnalysis.entries.map((entry) => [entry.path, entry]));
+  if (!relationships) fail("XLSX_READ_FAILED", "Missing XLSX workbook relationships for worksheet validation.");
+  let worksheetRelationCount = 0;
+  for (const child of relationships.children) {
+    if (child.kind !== "element" || child.name.split(":").at(-1) !== "Relationship") continue;
+    if (!/\/worksheet$/iu.test(decodedXlsxAttribute(child, "Type") ?? "")) continue;
+    worksheetRelationCount += 1;
+    if (decodedXlsxAttribute(child, "TargetMode") === "External") {
+      fail("UNSUPPORTED_XLSX_FEATURE", "Externally linked worksheets cannot be imported as CSV.");
+    }
+    const target = decodedXlsxAttribute(child, "Target");
+    if (!target) fail("XLSX_READ_FAILED", "Missing XLSX worksheet relationship target.");
+    const part = workbookWorksheetTarget(target);
+    if (!worksheetParts.has(part)) fail("XLSX_READ_FAILED", "XLSX worksheet relationship lacks matching worksheet content type.");
+  }
+  if (worksheetRelationCount === 0 || worksheetParts.size === 0) fail("XLSX_READ_FAILED", "XLSX worksheet declarations are missing.");
+  for (const part of worksheetParts) {
+    const entry = archivedParts.get(part);
+    if (!entry) fail("XLSX_READ_FAILED", "Declared XLSX worksheet part is missing from the archive.");
+    const worksheetXml = readBoundedXlsxXml(bytes, entry, OOXML_PACKAGE_LIMITS.maxEntryUncompressedBytes);
+    if (containsActualXlsxFormulaTag(worksheetXml)) {
+      fail("UNSUPPORTED_XLSX_FEATURE", "Workbook formulas and their unverified cached results cannot be imported as CSV.");
+    }
+    assertFaithfulXlsxNumericCells(worksheetXml);
   }
 }
 

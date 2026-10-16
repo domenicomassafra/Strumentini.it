@@ -134,16 +134,17 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
       cancelledPicker("Scelta annullata. Puoi riprovare.");
       return;
     }
+    if (files.length !== 1) {
+      // Multiple dropped files are not an accepted new selection. Do not
+      // supersede a valid in-flight read or discard a previously verified
+      // suggestion merely because an unsupported drop was attempted.
+      status.textContent = "Scegli un solo file alla volta. Nessun nuovo file è stato elaborato."
+        + (resultPanel && !resultPanel.hidden ? previousOptionsHint : "");
+      return;
+    }
     const current = ++generation;
     active?.abort();
     active = null;
-    if (files.length !== 1) {
-      clearActions();
-      if (priorNotice) priorNotice.hidden = true;
-      root?.removeAttribute("aria-busy");
-      status.textContent = "Scegli un solo file alla volta. Nessun file è stato elaborato.";
-      return;
-    }
     const file = files[0];
     if (!file) return;
     const controller = new AbortController();

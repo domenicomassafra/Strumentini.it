@@ -49,7 +49,11 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // Keep full-byte binding so any future unreviewed transport still fails.
   "src/components/account/AccountChip.astro": "1cca61e9d06940358a3bece7e7bf26232c645dafb774a99181682ce38b571402",
   "src/components/account/MembershipBootstrap.astro": "ada60c9c8bea11b5d937c386f265e396f1cf354dc8cda6664f0fec040d240cca",
-  "src/components/account/auth-client.ts": "326bcbe8d7a08aa37c7030b766e128974ebcd68e8cc56c5809a0dd44e6bcc8a0",
+  // 2026-10-14 #328 independently reviewed: login/register still POST only
+  // same-origin auth endpoints; success now requires a fresh cookie-backed
+  // GET /api/auth/session. No new upload, remote host or transport primitive.
+  // Keep this exact-byte pin and reject any subsequent unreviewed change.
+  "src/components/account/auth-client.ts": "b32363ed352edf1a2b97c5f1cfc4650c0d46d55731cdf2e11e2fc354fb8b8f21",
   // 2026-10-12 #330 reviewed: external GET remains explicit opt-in, no credentials/referrer, no new endpoint, abort/stale guard.
   "src/components/tools/ConnectionDeviceInfoTool.tsx": "fe92363d300ef4ac5e1e73d55f28ddb06eade2d46b218be6e73d3670b92acc84",
   "src/components/tools/research-knowledge/ViesVerificationPanel.tsx": "8e5032a786b97b117b7c079ffd7077ba2f70118fecf0c735b17bd5a05425e147",

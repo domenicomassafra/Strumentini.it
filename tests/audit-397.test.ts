@@ -19,6 +19,13 @@ describe("ticket #397 offline source-year ledger (official snapshots only)", () 
     expect(result.gaps.map(({ ruleId }) => ruleId)).toEqual(expect.arrayContaining([
       "italy.annual-full-fiscal", "italy.istat-historical-birth-date", "italy.inps-general-employee",
     ]));
+    const sourceReviewDates = new Map<string, string>();
+    for (const name of ["115-administrative-geography", "117-fiscal-annual", "118-inps-annual"]) {
+      const evidence = JSON.parse((await pinned(`quality/reference-data/italy/${name}-evidence.json`)).toString("utf8"));
+      for (const source of [...evidence.artifacts, ...(evidence.frozenOfficialBulkArtifacts ?? [])]) {
+        sourceReviewDates.set(source.path, evidence.checkedAt);
+      }
+    }
     for (const rule of result.verified) {
       expect(rule.sources.length).toBeGreaterThan(0);
       for (const source of rule.sources) {
@@ -26,8 +33,14 @@ describe("ticket #397 offline source-year ledger (official snapshots only)", () 
         expect(source.sha256).toBe("sha256:" + createHash("sha256").update(bytes).digest("hex"));
         expect(source.url).toMatch(/^https:\/\//u);
         expect(source.checkedHash).toBe(true);
+        expect(source.manifestCheckedAt).toBe(sourceReviewDates.get(source.path) ?? null);
+        expect(source.manifestIndex).toBe(sourceReviewDates.has(source.path) ? "MATCHED" : "UNLISTED");
+        expect(source.liveUrlCheck).toBe("NOT_RUN");
       }
     }
+    expect(result.verified.find(({ ruleId }) => ruleId === "italy.vat-declared-2025-window")?.sources)
+      .toEqual([expect.objectContaining({ manifestCheckedAt: null, manifestIndex: "UNLISTED", checkedHash: true }),
+        expect.objectContaining({ manifestCheckedAt: null, manifestIndex: "UNLISTED", checkedHash: true })]);
     expect(resolveAnnualOfficialRule397(result, "italy.irpef-national-gross", "2026-07-01")).toMatchObject({
       status: "VERIFIED_SUBSET", record: { taxYear: 2026, validFrom: "2026-01-01", validTo: "2026-12-31" },
     });
@@ -35,7 +48,13 @@ describe("ticket #397 offline source-year ledger (official snapshots only)", () 
     expect(resolveAnnualOfficialRule397(result, "italy.istat-current-municipalities", "2026-02-21").status).toBe("VERIFIED_SUBSET");
     expect(result.references.find(({ ruleId }) => ruleId === "italy.ade-invoice-stamp-2024")).toMatchObject({
       authority: "Agenzia delle Entrate", validFrom: null, validTo: null,
+      sources: [expect.objectContaining({ liveUrlCheck: "NOT_RUN" })],
     });
+    for (const reference of result.references) for (const source of reference.sources) {
+      expect(source.manifestCheckedAt).toBe(sourceReviewDates.get(source.path) ?? null);
+      expect(source.manifestIndex).toBe(sourceReviewDates.has(source.path) ? "MATCHED" : "UNLISTED");
+      expect(source.liveUrlCheck).toBe("NOT_RUN");
+    }
   });
 
   it("fails closed when physical INPS snapshot bytes are mutated, even if metadata advertises a matching URL", async () => {

@@ -17,11 +17,14 @@ export function PrintablePdfTool() {
   const [pageNumbers, setPageNumbers] = useState(true);
   const [error, setError] = useState("");
   const [working, setWorking] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<PrintablePdfResult | null>(null);
   const [previewBlob, setPreviewBlob] = useState<Blob | null>(null);
   const [downloadUrl, setDownloadUrl] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const inFlight = useRef(false);
+  // A stale File.arrayBuffer() resolution cannot replace a newer user edit.
+  const uploadEpoch = useRef(0);
 
   useEffect(() => {
     if (result === null) { setDownloadUrl(""); return; }
@@ -39,27 +42,34 @@ export function PrintablePdfTool() {
   function clearResult() { setResult(null); setPreviewBlob(null); setError(""); }
 
   async function upload(file: File | undefined) {
-    if (file === undefined) return;
+    const epoch = ++uploadEpoch.current;
+    if (file === undefined) { setUploading(false); return; }
     clearResult();
     const extension = file.name.split(".").at(-1)?.toLowerCase() ?? "";
     const format = ACCEPTED_EXTENSIONS[extension];
     if (format === undefined || file.size > 512 * 1024) {
+      setUploading(false);
       setError("Sono accettati file .txt, .md, .html e .csv fino a 512 KiB.");
       return;
     }
+    setUploading(true);
     try {
       const bytes = new Uint8Array(await file.arrayBuffer());
+      if (epoch !== uploadEpoch.current) return;
       const decoded = new TextDecoder("utf-8", { fatal: true }).decode(bytes).replace(/^\ufeff/u, "");
       setKind(format);
       setSource(decoded);
     } catch {
-      setError("Il file deve contenere testo UTF-8 valido, senza caratteri sostituiti.");
+      if (epoch === uploadEpoch.current) setError("Il file deve contenere testo UTF-8 valido, senza caratteri sostituiti.");
+    } finally {
+      if (epoch === uploadEpoch.current) setUploading(false);
     }
   }
 
   async function submit(event: Event) {
     event.preventDefault();
-    if (inFlight.current) return;
+    if (inFlight.current || uploading) return;
+    ++uploadEpoch.current;
     inFlight.current = true;
     setError("");
     setResult(null);
@@ -90,6 +100,8 @@ export function PrintablePdfTool() {
   }
 
   function reset() {
+    ++uploadEpoch.current;
+    setUploading(false);
     clearResult();
     setSource("");
     setKind("txt");
@@ -110,7 +122,7 @@ export function PrintablePdfTool() {
               onChange={(event) => void upload(event.currentTarget.files?.[0])} disabled={working} />
           </label>
           <label class="field"><span>Tipo del contenuto</span>
-            <select aria-label="Tipo del contenuto" value={kind} onChange={(event) => { setKind(event.currentTarget.value as PrintableSourceKind); clearResult(); }} disabled={working}>
+            <select aria-label="Tipo del contenuto" value={kind} onChange={(event) => { ++uploadEpoch.current; setUploading(false); setKind(event.currentTarget.value as PrintableSourceKind); clearResult(); }} disabled={working}>
               <option value="txt">TXT — righe e paragrafi</option>
               <option value="markdown">Markdown — struttura in testo stampabile</option>
               <option value="html">HTML — testo passivo, senza script o risorse esterne</option>
@@ -119,7 +131,7 @@ export function PrintablePdfTool() {
           </label>
           <label class="field"><span>Contenuto</span>
             <textarea aria-label="Contenuto" rows={11} value={source}
-              onInput={(event) => { setSource(event.currentTarget.value); clearResult(); }}
+              onInput={(event) => { ++uploadEpoch.current; setUploading(false); setSource(event.currentTarget.value); clearResult(); }}
               placeholder="Incolla testo, Markdown, HTML o CSV..." disabled={working} />
           </label>
         </section>
@@ -149,7 +161,7 @@ export function PrintablePdfTool() {
             onChange={(event) => { setPageNumbers(event.currentTarget.checked); clearResult(); }} disabled={working} /> Numera le pagine</label>
           <p class="printable-note">Font Courier con codifica WinAnsi: accenti italiani supportati. Emoji, CJK e simboli non rappresentabili vengono rifiutati esplicitamente. HTML viene analizzato come testo inerte; CSS e immagini non vengono scaricati.</p>
           <div class="printable-actions">
-            <button type="submit" class="btn btn-primary" disabled={working}>{working ? "Verifica PDF..." : "Genera e verifica PDF"}</button>
+            <button type="submit" class="btn btn-primary" disabled={working || uploading}>{working ? "Verifica PDF..." : uploading ? "Caricamento file..." : "Genera e verifica PDF"}</button>
             <button type="button" class="btn" onClick={reset} disabled={working}>Azzera</button>
           </div>
         </section>

@@ -53,6 +53,45 @@ export interface OcrResult246 {
 
 const cancelledError = () => new DOMException("OCR italiano annullato", "AbortError");
 
+/**
+ * A PNG signature and valid IHDR do not imply a still image: genuine APNG
+ * decoders may show alternating pages while native bitmap/Tesseract OCR reads
+ * only the first. Scan the bounded whole container BEFORE loading the large
+ * OCR runtime. This is a structural animation refusal, not a PNG sanitizer.
+ */
+async function refuseAnimatedPng246(image: File, signal: AbortSignal): Promise<void> {
+  if (signal.aborted) throw cancelledError();
+  // Called only after the 5 MiB/2 MP PNG preflight. No model/WASM is in memory
+  // yet, and the additional transient buffer is capped by the same file limit.
+  const bytes = new Uint8Array(await image.arrayBuffer());
+  if (signal.aborted) throw cancelledError();
+  if (bytes.length !== image.size || bytes.length < 45 ||
+    bytes[0] !== 137 || bytes[1] !== 80 || bytes[2] !== 78 || bytes[3] !== 71) {
+    throw new Error("OCR246_INVALID_PNG_CONTAINER");
+  }
+  const view = new DataView(bytes.buffer);
+  let offset = 8;
+  let chunks = 0;
+  let ended = false;
+  while (offset + 12 <= bytes.length && chunks++ < 16_384) {
+    if ((chunks & 255) === 0 && signal.aborted) throw cancelledError();
+    const length = view.getUint32(offset, false);
+    if (length > bytes.length - offset - 12) throw new Error("OCR246_INVALID_PNG_CONTAINER");
+    const type = String.fromCharCode(...bytes.subarray(offset + 4, offset + 8));
+    if (type === "acTL" || type === "fcTL" || type === "fdAT") {
+      throw new Error("OCR246_ANIMATED_PNG_UNSUPPORTED: il file contiene frame animati; questa anteprima supporta soltanto immagini statiche");
+    }
+    offset += 12 + length;
+    if (type === "IEND") {
+      if (length !== 0 || offset !== bytes.length) throw new Error("OCR246_INVALID_PNG_CONTAINER");
+      ended = true;
+      break;
+    }
+  }
+  if (!ended || chunks > 16_384) throw new Error("OCR246_INVALID_PNG_CONTAINER");
+  if (signal.aborted) throw cancelledError();
+}
+
 async function defaultDecoder(image: File): Promise<{ width: number; height: number }> {
   const bitmap = await createImageBitmap(image);
   try { return { width: bitmap.width, height: bitmap.height }; }
@@ -176,6 +215,8 @@ export async function recognizeLocalItalianOcr246(image: File, options: OcrOptio
       || preflight.width === null || preflight.height === null) {
       throw new Error(preflight.errors.join("; ") || "OCR246_PREFLIGHT_REFUSED");
     }
+    if (stopped) throw cancelledError();
+    await Promise.race([refuseAnimatedPng246(image, preworkAbort.signal), stoppedPromise]);
     if (stopped) throw cancelledError();
     const decoded = await Promise.race([(options.imageDecoder ?? defaultDecoder)(image), stoppedPromise]);
     if (decoded.width !== preflight.width || decoded.height !== preflight.height) {

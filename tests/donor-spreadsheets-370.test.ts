@@ -211,11 +211,11 @@ describe("#370 installed CSV/XLSX donor fidelity and refusal probes", () => {
     // protection against hostile formulas, links, or archive parser defects.
   });
 
-  it.skipIf(!oraclePython)("does not evaluate formulas and may surface stale external cached values", async () => {
+  it.skipIf(!oraclePython)("refuses stale cached formula values instead of exporting an incorrect result", async () => {
     const bytes = runOracle(pythonStaleCachedFormulaWorkbook);
-    const output = await xlsxToCsv(bufferToArrayBuffer(bytes));
-    // A1+A1 would yield 2; the injected cached value 777 is deliberately wrong.
-    expect(output.csv).toBe("calc\n777");
+    // The formula yields 2, but the attacker-controlled cache claims 777.
+    await expect(xlsxToCsv(bufferToArrayBuffer(bytes)))
+      .rejects.toMatchObject({ code: "UNSUPPORTED_XLSX_FEATURE" });
   });
 
   it.skipIf(!oraclePython)("independent pinned openpyxl reopens all 12,006 benchmark cells within the local timeout", async () => {

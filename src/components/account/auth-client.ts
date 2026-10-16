@@ -81,6 +81,10 @@ type Method = "GET" | "POST" | "PATCH" | "DELETE";
 async function request<T>(path: string, method: Method, json?: unknown): Promise<ApiResult<T>> {
   const headers: Record<string, string> = { accept: "application/json" };
   const init: RequestInit = { method, headers, credentials: "same-origin" };
+  // A previous user's cached response cannot attest the session established
+  // by a new login or registration. The Worker also sends Cache-Control:
+  // no-store, but enforce it on the client-side session probe as well.
+  if (path === "/api/auth/session") init.cache = "no-store";
   if (json !== undefined) {
     headers["content-type"] = "application/json";
     init.body = JSON.stringify(json);
@@ -127,8 +131,31 @@ export async function readSession(): Promise<ApiResult<{ readonly user: SessionU
   return { ok: true, status: result.status, data: { user: asUser(result.data?.user) } };
 }
 
+const SESSION_UNCONFIRMED =
+  "Non riusciamo a confermare una sessione attiva in questo browser. Controlla i cookie e riprova l'accesso.";
+
+/** A 2xx user-shaped POST is not proof that the browser received a session
+ * cookie. Confirm it through the separate authenticated same-origin endpoint
+ * before a login/registration caller may navigate as if signed in.
+ */
+async function confirmCookieBackedAuth(
+  path: "/api/auth/login" | "/api/auth/register",
+  data: unknown,
+  expectedEmail: string,
+): Promise<ApiResult<SessionUser>> {
+  const result = await userRequest(path, "POST", data);
+  if (!result.ok) return result;
+  const session = await readSession();
+  if (!session.ok || session.data.user === null ||
+      session.data.user.email.toLowerCase() !== expectedEmail.toLowerCase() ||
+      result.data.email.toLowerCase() !== expectedEmail.toLowerCase()) {
+    return { ok: false, status: 503, message: SESSION_UNCONFIRMED };
+  }
+  return { ok: true, status: result.status, data: session.data.user };
+}
+
 export function signIn(email: string, password: string, turnstileToken = ""): Promise<ApiResult<SessionUser>> {
-  return userRequest("/api/auth/login", "POST", { email, password, turnstileToken });
+  return confirmCookieBackedAuth("/api/auth/login", { email, password, turnstileToken }, email);
 }
 
 export function createAccount(
@@ -137,7 +164,7 @@ export function createAccount(
   password: string,
   turnstileToken = "",
 ): Promise<ApiResult<SessionUser>> {
-  return userRequest("/api/auth/register", "POST", { name, email, password, turnstileToken });
+  return confirmCookieBackedAuth("/api/auth/register", { name, email, password, turnstileToken }, email);
 }
 
 export interface GoogleAuthConfig {
