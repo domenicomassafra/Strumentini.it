@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 269,
+  "entry_count": 270,
   "entries": [
     {
       "id": "cand-001",
@@ -12032,6 +12032,22 @@
       "cross_check": { "usable": true, "implementation": "independent PDF.js text extraction, annotation count and screenshot pixel sampling plus source byte comparison", "role": "bounded subset acceptance, not general PDF editing or Gold certification" },
       "confidence": "medium",
       "unresolved_gaps": ["IMPLEMENTED_UNVERIFIED, no Gold receipt", "general editable annotations and form fields remain unsupported", "physical iOS/Android and larger independent PDF corpus not verified"]
+    },
+    {
+      "id": "cand-270",
+      "candidate": "Annual Italian TFR accrual and prior-reserve FOI revaluation estimate",
+      "tool_family": "business-math",
+      "maintenance_class": "R",
+      "truth_sources": ["legge-297-1982", "istat-foi", "fixture-policy"],
+      "standard_or_official_example": "Article 2120 Civil Code as amended by Law 297/1982; synthetic 2023–2025 remuneration and annual FOI figures; exact annual cents independently calculated.",
+      "invariants": ["new annual accrual is not revalued until the next year", "previous reserve receives statutory 1.5% plus 75% annual FOI change", "a missing official FOI value blocks gross reserve while keeping known accrual", "optional 0–0.5% IVS reduction is stated explicitly"],
+      "adversarial_cases": ["missing FOI for middle year", "nonconsecutive or future calendar years", "noncent currency", "unsupported IVS reduction", "negative earnings", "invalid FOI percentage"],
+      "expected_output_strategy": "Literal independent hand-calculated cents fixtures plus tests/tfr-15.test.ts and browser result/download visibility; no Gold certification by this test alone.",
+      "security_privacy_edges": ["LOCAL computation", "no external lookup of financial data", "gross estimate disclosed; tax and transfers excluded"],
+      "portability_browser_edges": ["responsive page and keyboard-accessible form", "real physical mobile device acceptance remains pending"],
+      "cross_check": { "usable": true, "implementation": "Hand-calculated annual gross and reserve fixture", "role": "Independent exact numeric and missing-data baseline" },
+      "confidence": "medium",
+      "unresolved_gaps": ["Full-month precision, tax, funds, advances and partial employment periods excluded", "Real employment ledger and physical devices unverified", "No Gold receipt"]
     }
   ]
 }

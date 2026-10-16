@@ -1,0 +1,20 @@
+{
+  "source": "Legge 297/1982 art. 1, art. 2120 codice civile, dec-to-dec annual FOI supplied by the user",
+  "scope": "Full consecutive calendar years, gross reserve before tax, IVS reduction explicit",
+  "vectors": [
+    {
+      "input": "2023;27000;\n2024;27000;4\n2025;27000;2",
+      "reductionPercent": 0.5,
+      "annualAccrualCents": [186500, 186500, 186500],
+      "annualRevaluationCents": [0, 8393, 11442],
+      "annualReserveCents": [186500, 381393, 579335],
+      "totalGrossCents": 579335
+    },
+    {
+      "input": "2023;30000;\n2024;30000;\n2025;30000;2",
+      "reductionPercent": 0.5,
+      "missingFoiYears": [2024],
+      "totalGrossCents": null
+    }
+  ]
+}

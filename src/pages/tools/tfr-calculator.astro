@@ -1,16 +1,16 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { TfrCalculator15 } from "../../components/tools/TfrCalculator15";
 ---
 
-<BaseLayout title="Calcola TFR lordo e rivalutazione" description="Simula il TFR accantonato per ogni anno e la rivalutazione FOI, distinguendo quote e rivalutazioni con fonti e limiti chiari.">
+<ItalianToolPage toolId="tfr-calculator">
   <main class="tfr-page">
     <p><a href="/strumenti/">← Tutti gli strumenti</a></p>
     <h1>Calcola TFR lordo e rivalutazione</h1>
     <p>Inserisci le retribuzioni utili per ciascun anno e la variazione annuale dell'indice FOI. Il risultato è locale al browser e usa i valori che hai indicato.</p>
     <TfrCalculator15 client:load />
   </main>
-</BaseLayout>
+</ItalianToolPage>
 
 <style>
   .tfr-page { max-width: 1000px; padding: 30px 22px 84px; margin: auto; }

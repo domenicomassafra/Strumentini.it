@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-10-04",
-  "family_count": 96,
+  "family_count": 97,
   "families": [
     {
       "id": "archive-checksum-manifest",
@@ -2351,6 +2351,15 @@
         "mixed repeated nested and heterogeneous ambiguity refusal",
         "DTD and external-entity refusal"
       ]
+    },
+    {
+      "id": "tfr-accrual-15",
+      "candidate_families": ["Annual Italian TFR accrual and prior-reserve FOI revaluation estimate"],
+      "path": "quality/fixtures/tfr-accrual-15/vectors.json",
+      "format": "json",
+      "provenance": { "kind": "hand-worked", "license_or_rights": "Synthetic monetary and annual-index values authored for Strumentini.it; no personal or third-party data" },
+      "truth_sources": ["legge-297-1982", "istat-foi", "fixture-policy"],
+      "coverage": ["Annual reserve revaluation and separate accrual", "Missing FOI fail-closed", "Explicit IVS reduction"]
     }
   ]
 }
