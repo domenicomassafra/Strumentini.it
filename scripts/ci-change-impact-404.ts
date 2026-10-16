@@ -64,9 +64,10 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (path === ".githooks/pre-push" || path === "orca.yaml") return ["ci"];
   if (path.startsWith(".github/") || path === "package.json" || path === "package-lock.json" || path === "astro.config.mjs" ||
       path === "tsconfig.json" || path === "vitest.config.ts" || path === "wrangler.toml") return ["ci"];
-  // Both Cloudflare deploy contracts can route the Worker or bind D1, so
-  // staging config is just as review-sensitive as the production contract.
-  if (path === "wrangler.jsonc" || path === "worker/wrangler.staging.jsonc") return ["worker-auth", "d1", "ci"];
+  // Every explicitly reviewed Cloudflare deploy contract can route the Worker
+  // or bind resources; isolated #349 file staging remains security-sensitive.
+  if (path === "wrangler.jsonc" || path === "worker/wrangler.staging.jsonc" ||
+      path === "wrangler.file-staging.jsonc") return ["worker-auth", "d1", "ci"];
   // The staging publisher and its refusal test can change deployment targets;
   // never reduce an isolated edit to generic shared-source checks.
   if (path === "scripts/deploy-staging-328.ts" || path === "tests/deploy-staging-328.test.ts") return ["worker-auth", "d1", "ci"];

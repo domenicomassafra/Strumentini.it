@@ -39,6 +39,16 @@ async function fixture(run: (root: string, base: string, head: string) => Promis
 }
 
 describe("#404 PR/source impact planning", () => {
+  it("classifies the isolated #349 upload staging configuration as deploy-sensitive", () => {
+    const plan = buildImpactPlan(["wrangler.file-staging.jsonc"], suites);
+    expect(plan.domains).toEqual(["worker-auth", "d1", "ci"]);
+    expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(plan.gates.map((gate) => gate.id)).toEqual(expect.arrayContaining([
+      "security-review", "auth-integration", "d1-migration-review", "release-readiness",
+    ]));
+    expect(plan.blockers).toEqual([]);
+    expect(buildImpactPlan(["wrangler.unreviewed.jsonc"], suites).status).toBe("NO_GO");
+  });
   it("treats standalone #328 KDF and real browser tests as sensitive security contracts", () => {
     for (const path of ["tests/auth-worker-cloudflare-kdf-328.test.ts", "tests/auth-csrf-328.test.ts", "tests/password-kdf-328.test.ts", "tests/staging-isolation-328.test.ts", "tests/feasibility-server-optin-348.test.ts"]) {
       const plan = buildImpactPlan([path], [...suites, "tests/password-kdf-328.test.ts"]);
