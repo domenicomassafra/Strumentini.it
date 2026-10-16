@@ -1,0 +1,28 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { OfficeMarkdownProductivityTool } from "../components/tools/office/OfficeMarkdownProductivityTool";
+---
+
+<BaseLayout title="Converti DOCX e Markdown" description="Apri un documento DOCX o Markdown nel browser e scarica un file DOCX o Markdown verificato e modificabile.">
+  <main class="documents-workspace">
+    <nav aria-label="Percorso"><a href="/">Home</a> / <a href="/strumenti/">Strumenti</a> / Documenti e Markdown</nav>
+    <header><h1>Apri e converti documenti e Markdown</h1><p>Da Markdown a documento Word modificabile e da DOCX a Markdown. Il documento resta sul dispositivo.</p></header>
+    <OfficeMarkdownProductivityTool client:load />
+    <aside aria-label="Altre conversioni">
+      <h2>Altri formati</h2>
+      <p><a href="/tools/printable-pdf-from-text/">DOCX, Markdown, TXT e HTML → PDF stampabile</a> · <a href="/tools/text-markup-converter/">Markdown ↔ HTML e testo</a> · <a href="/tools/ooxml-media-compression/">Riduci immagini incorporate in documenti Office</a></p>
+    </aside>
+  </main>
+</BaseLayout>
+
+<style>
+  .documents-workspace { max-width: 1080px; padding: 36px 20px 80px; margin: auto; display: grid; gap: 22px; }
+  .documents-workspace header p { max-width: 76ch; }
+  .documents-workspace :global(.office-markdown-workspace) { display: grid; gap: 20px; padding: clamp(14px, 3vw, 28px); border: 1px solid var(--border); border-radius: 16px; min-width: 0; }
+  .documents-workspace :global(.office-markdown-workspace form) { display: grid; gap: 16px; }
+  .documents-workspace :global(.office-markdown-workspace .field) { display: grid; gap: 7px; min-width: 0; }
+  .documents-workspace :global(.office-markdown-workspace input), .documents-workspace :global(.office-markdown-workspace textarea), .documents-workspace :global(.office-markdown-workspace select) { max-width: 100%; width: 100%; box-sizing: border-box; padding: 10px; }
+  .documents-workspace :global(.office-markdown-workspace .actions) { display: flex; gap: 12px; flex-wrap: wrap; }
+  .documents-workspace :global(.office-markdown-workspace [data-office-result]) { min-width: 0; overflow-wrap: anywhere; }
+  .documents-workspace :global(.office-markdown-workspace pre) { max-height: 360px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px; border: 1px solid var(--border); border-radius: 8px; }
+</style>
