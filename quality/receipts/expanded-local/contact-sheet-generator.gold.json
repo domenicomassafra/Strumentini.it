@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "df1f7f7bcef0c88068f5d1c1069f8e072cfde703",
+  "revision": "60688358059d2e7af14cfa6675c0596f8f64cec7",
   "sourceFingerprint": "675438a972f5de1401d8137b691f840e763d9828fd422f3d2298fea4ce0722a6",
   "toolId": "contact-sheet-generator",
   "runtime": {
@@ -36,7 +36,7 @@
   ],
   "browserContract": {
     "assertion": "Colonne|columns|Righe|rows",
-    "outputSha256": "9c1af566c4399ea53bddba9b4dcfffd19648bb94f91c934d884a7a81c55943a1",
+    "outputSha256": "158b875d702203f1aaf6abbbf8b9ae659eaf5ad11fb33afe8f436b0e9960f595",
     "locality": "zero external/non-GET/task-body requests",
     "lazyLoad": "implementation script observed after submit",
     "mobile": "390px without horizontal overflow",
@@ -54,7 +54,7 @@
     "manifestSha256": "1648d20c03802ae8198d69ccec49e6f69c3c65a1522279d01e176abf68817178",
     "fixtureIndexSha256": "f0db027f15fa0beaf7574b160f01e5d7473883a9a5b2c801c58d2a6cc025e876",
     "oracleRegistrySha256": "0a3e59022e6a65068c21cee44122f579f1c061a1325cbd5af22c52b6c1acbbf8",
-    "browserAcceptanceSha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
+    "browserAcceptanceSha256": "8e249f0df602c798acee24b96e88fbab00057be3444550dd0f2289d7fa445149",
     "acceptanceScriptSha256": "4d7fe6332bd0c478f0ee808e289a7b90e92b76e1e1d796eef4cc10f79791d2ef",
     "unitTestsSha256": "28083cf5c78e70ef4ceb491f4b7b5810c995742a739e6256c3343dd91e5aca36",
     "fixture:image-metadata:sha256": "2c17827167b30b7716825e4974c17f6dbd595d07ca64b1d8feaac06472926c7d",

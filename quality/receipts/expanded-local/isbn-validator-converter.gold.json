@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "df1f7f7bcef0c88068f5d1c1069f8e072cfde703",
+  "revision": "60688358059d2e7af14cfa6675c0596f8f64cec7",
   "sourceFingerprint": "675438a972f5de1401d8137b691f840e763d9828fd422f3d2298fea4ce0722a6",
   "toolId": "isbn-validator-converter",
   "runtime": {
@@ -45,7 +45,7 @@
     "manifestSha256": "d143a130f3a42c537d0ebe94a7a0c4e1a708d9133c92ecad1e6b7b2089accd62",
     "fixtureIndexSha256": "f0db027f15fa0beaf7574b160f01e5d7473883a9a5b2c801c58d2a6cc025e876",
     "oracleRegistrySha256": "0a3e59022e6a65068c21cee44122f579f1c061a1325cbd5af22c52b6c1acbbf8",
-    "browserAcceptanceSha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
+    "browserAcceptanceSha256": "8e249f0df602c798acee24b96e88fbab00057be3444550dd0f2289d7fa445149",
     "acceptanceScriptSha256": "4d7fe6332bd0c478f0ee808e289a7b90e92b76e1e1d796eef4cc10f79791d2ef",
     "unitTestsSha256": "59dfaeb6ec2edc378bb386f229b8c48fc8abb3b3b95aabb53b94ba294939001d",
     "fixture:isbn:sha256": "3ce8d937183d81664e1511f4e60c831c9008dd610db7ab66700e7de4bb52ecdc"
