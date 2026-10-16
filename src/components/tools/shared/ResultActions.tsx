@@ -51,26 +51,26 @@ function NativeShareAction({ shareFile }: { readonly shareFile: ShareableResultF
 
 export function ResultActions({ actions, onAction, shareFile }: ResultActionsProps) {
   if (actions.length === 0 && shareFile === undefined) return null;
+  const actionButtons = actions.map((action) => {
+    const handler = onAction[action.id];
+    if (handler === undefined) return null;
+    return (
+      <button
+        key={action.id}
+        type="button"
+        class={action.primary ? "primary" : undefined}
+        aria-label={action.primary ? action.label + " — azione principale" : action.label}
+        data-result-action={action.id}
+        data-primary-action={action.primary ? "true" : "false"}
+        onClick={() => void handler()}
+      >
+        {action.label}
+      </button>
+    );
+  });
   return (
-      <div class="actions" aria-label="Azioni sul risultato">
-        {actions.map((action) => {
-          const handler = onAction[action.id];
-          if (handler === undefined) return null;
-          return (
-            <button
-              key={action.id}
-              type="button"
-              class={action.primary ? "primary" : undefined}
-              aria-label={action.primary ? action.label + " — azione principale" : action.label}
-              data-result-action={action.id}
-              data-primary-action={action.primary ? "true" : "false"}
-              onClick={() => void handler()}
-            >
-              {action.label}
-            </button>
-          );
-        })}
-        {shareFile !== undefined && <NativeShareAction shareFile={shareFile} />}
-      </div>
+    <div class="actions" aria-label="Azioni sul risultato">
+      {shareFile === undefined ? actionButtons : [...actionButtons, <NativeShareAction key="native-share" shareFile={shareFile} />]}
+    </div>
   );
 }
