@@ -27,6 +27,43 @@ const originalNodeExitCode = process.exitCode;
 afterAll(() => { process.exitCode = originalNodeExitCode; });
 
 describe("ticket 320: actual local password-supplied AES PDF decryption", () => {
+  it("STR-032 creates a password-required AES-256 PDF that reopens with the user password", async () => {
+    const donor = await createPdfToolkit();
+    const before = digest(realPlain);
+    const result = await passwordModule.run({ file: asBlob(realPlain), mode: "protect", password: "correct-horse-2026" }, { defaults: {} }) as PdfPasswordCheckOutput;
+    expect(result).toMatchObject({ mode: "protect", encrypted: true });
+    if (result.mode !== "protect") throw new Error("Expected protected output");
+    const artifact = result.artifact.artifacts[0]!;
+    expect(artifact.filename).toBe("pdf-protetto-aes256.pdf");
+    expect(artifact.pageCount).toBe(2);
+    expect(await donor.isEncrypted(artifact.bytes)).toBe(true);
+    expect(await donor.requiresPassword(artifact.bytes)).toBe(true);
+    expect(inspectPdfBytes(artifact.bytes).encrypted).toBe(true);
+    expect((await donor.getInfo(artifact.bytes, { password: "correct-horse-2026" })).encryption).toMatchObject({ bits: 256, method: "AESv3" });
+    const reopened = getDocument({ data: Uint8Array.from(artifact.bytes), password: "correct-horse-2026", useSystemFonts: true });
+    try {
+      const pdf = await reopened.promise;
+      expect(pdf.numPages).toBe(2);
+      const page = await pdf.getPage(1);
+      expect((await page.getTextContent()).items.length).toBeGreaterThan(0);
+    } finally { await reopened.destroy(); }
+    expect(digest(realPlain)).toBe(before);
+  });
+
+  it("STR-032 refuses existing encryption, unsafe passwords and already aborted requests", async () => {
+    const donor = await createPdfToolkit();
+    const locked = await donor.lock(realPlain, { userPassword: "already-locked", keyLength: 256 });
+    await expect(passwordModule.run({ file: asBlob(locked), mode: "protect", password: "safe-password-2026" }, { defaults: {} }))
+      .rejects.toThrow(/PDF_ALREADY_ENCRYPTED/u);
+    for (const password of ["short", "unsafe\npassword", "x".repeat(129)]) {
+      await expect(passwordModule.run({ file: asBlob(realPlain), mode: "protect", password }, { defaults: {} }))
+        .rejects.toThrow(/PDF_PROTECTION_PASSWORD_INVALID/u);
+    }
+    const abort = new AbortController();
+    abort.abort();
+    await expect(passwordModule.run({ file: asBlob(realPlain), mode: "protect", password: "safe-password-2026" }, { defaults: {} }, abort.signal))
+      .rejects.toMatchObject({ name: "AbortError" });
+  });
   it("preserves marker-only inspection but refuses to treat it as proof of decryption", async () => {
     const blob = asBlob(markerOnly);
     expect((await checkPdfPassword(blob)).encrypted).toBe(true);
