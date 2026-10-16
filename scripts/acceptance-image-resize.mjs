@@ -2,6 +2,7 @@ import { chromium, webkit } from "@playwright/test";
 import { spawn } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { crc32 } from "node:zlib";
 
 const root = resolve(import.meta.dirname, "..");
 const port = 18129;
@@ -238,12 +239,16 @@ try {
     throw new Error("Corrupt image did not produce the recoverable decode error");
   }
 
-  const oversizedPngHeader = Buffer.alloc(24);
-  Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).copy(oversizedPngHeader, 0);
-  oversizedPngHeader.writeUInt32BE(13, 8);
-  oversizedPngHeader.write("IHDR", 12, "ascii");
+  // Keep a complete PNG chunk structure and valid IHDR CRC. A 24-byte
+  // fragment is correctly refused as truncated before dimension preflight.
+  // The original IDAT is deliberately small: the 9000px header must be
+  // rejected by our resource bounds before a browser decoder sees it.
+  const oversizedPngHeader = Buffer.from(await readFile(
+    resolve(root, "quality/fixtures/image-metadata/synthetic-2x3-rgba-text.png"),
+  ));
   oversizedPngHeader.writeUInt32BE(9000, 16);
   oversizedPngHeader.writeUInt32BE(9000, 20);
+  oversizedPngHeader.writeUInt32BE(crc32(oversizedPngHeader.subarray(12, 29)), 29);
   await page.locator("#image-resize-file").setInputFiles({
     name: "oversized.png",
     mimeType: "image/png",
