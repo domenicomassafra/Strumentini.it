@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-406.1: Adversarial signed/hybrid/incremental metadata PDFs produce safe refusal or proven post-export erasure.
-- [ ] AC-406.2: No recovery via alternate parser viewer byte grep or thumbnail.
-- [ ] AC-406.3: On the scoped input and failure cases, verify: PDFKit PDFium Poppler forensic differential. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
+- [x] AC-406.1: Adversarial signed/hybrid/incremental metadata PDFs produce safe refusal or proven post-export erasure. **PASS_SCOPED (PR #178)** for the dated, independently parsed signed/metadata/hybrid/incremental/hidden-object corpus and verified supported-source exports documented below; not universal PDF or production acceptance.
+- [x] AC-406.2: No recovery via alternate parser viewer byte grep or thumbnail. **PASS_SCOPED (PR #178)** for the two actual DEV UI PDF downloads on commit `4e150318`: independent PDF.js, strict pypdf, pdfminer, PDFKit/CoreGraphics copy/print, PDFium and Poppler reparse/thumbnail, plus raw-byte and black/unmasked pixel checks; exact SHA256 receipts below.
+- [x] AC-406.3: On the scoped input and failure cases, verify: PDFKit PDFium Poppler forensic differential. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent. **PASS_SCOPED (PR #178)**: actual PDFKit + PDFium on current source/output and Poppler 26.01.0 via owner MiniPC stdin on original hostile PDFs and the same two UI exports. Physical iOS/Android, hosted release and arbitrary unseen PDF inputs are not asserted.
 
 **Verification:** PDFKit PDFium Poppler forensic differential; run rejected/huge/partial/cancel cases and inspect output beyond UI mock.
 
