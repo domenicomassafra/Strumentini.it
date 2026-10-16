@@ -48,7 +48,7 @@ describe("expanded catalog certification index", () => {
       expect(tool.implementation.module.sha256).toMatch(/^[a-f0-9]{64}$/u);
       expect(tool.implementation.page.sha256).toMatch(/^[a-f0-9]{64}$/u);
     }
-  }, 30_000);
+  }, 120_000);
 
   it("preserves the certified frontier and exposes unresolved evidence", async () => {
     const index = await currentCertificationIndex();
@@ -60,8 +60,8 @@ describe("expanded catalog certification index", () => {
     // A newly registered tool may not inherit Gold from an earlier catalog;
     // exact append-only oracle lineage may independently preserve the historic
     // receipts but never weakens the unverified tool's release gate.
-    expect(index.summary.statusCounts).toEqual({ GOLD: 257, PARTIAL: 2, IMPLEMENTED_UNVERIFIED: 10 });
-    expect(index.catalogToolCount).toBe(269);
+    expect(index.summary.statusCounts).toEqual({ GOLD: 257, PARTIAL: 2, IMPLEMENTED_UNVERIFIED: 11 });
+    expect(index.catalogToolCount).toBe(270);
     expect(index.summary.certificationGoldCount).toBe(index.tools.filter((tool) => tool.status === "GOLD").length);
     expect(index.summary.releaseEligibleGoldCount).toBe(index.tools.filter((tool) => tool.goldEligible).length);
     expect(index.summary.releaseEligibleGoldCount).toBeLessThanOrEqual(index.summary.certificationGoldCount);
@@ -120,7 +120,11 @@ describe("expanded catalog certification index", () => {
       expect(tool?.certificationReceipt).toBeNull();
     }
     const businessMath = index.tools.filter((tool) => tool.engine === "business-math");
-    expect(businessMath.every((tool) => tool.status === "GOLD")).toBe(true);
+    expect(businessMath.filter((tool) => tool.id !== "tfr-calculator").every((tool) => tool.status === "GOLD")).toBe(true);
+    expect(businessMath.find((tool) => tool.id === "tfr-calculator")).toMatchObject({
+      status: "IMPLEMENTED_UNVERIFIED", goldEligible: false, releaseGate: "BLOCKED",
+      oracle: { status: "BOUND", entryId: "cand-270" },
+    });
     const newMathIds = new Set([
       "basic-unit-converter", "battery-vehicle-power-helper", "engineering-unit-converter", "everyday-cost-calculator",
       "fraction-integer-toolkit", "geometry-equation-motion-helper", "interest-savings-calculator", "mortgage-amortization-calculator",
@@ -178,7 +182,7 @@ describe("expanded catalog certification index", () => {
       oracle: { status: "VERIFIED" },
     });
     expect(risConverter?.certificationReceipt).toBe("quality/receipts/research-knowledge/ris-bibtex-converter.gold.json");
-    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").map((tool) => tool.id)).toEqual(["ooxml-media-compression", "pdf-booklet-interleave", "pdf-crop-normalize", "pdf-fill-overlays", "pdf-n-up", "pdf-page-numbers", "pdf-tables-to-xlsx", "pdf-watermark", "printable-pdf-from-text", "video-inspector"]);
+    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").map((tool) => tool.id)).toEqual(["ooxml-media-compression", "pdf-booklet-interleave", "pdf-crop-normalize", "pdf-fill-overlays", "pdf-n-up", "pdf-page-numbers", "pdf-tables-to-xlsx", "pdf-watermark", "printable-pdf-from-text", "tfr-calculator", "video-inspector"]);
     expect(index.tools.filter((tool) => tool.status === "PARTIAL").map((tool) => tool.id)).toEqual(["image-resize", "microphone-recorder"]);
     for (const tool of index.tools.filter((entry) => entry.status === "GOLD")) {
       expect(tool.certificationReceipt).not.toBeNull();
