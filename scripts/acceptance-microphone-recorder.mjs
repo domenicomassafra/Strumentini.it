@@ -1,5 +1,5 @@
 import { chromium } from "@playwright/test";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 
@@ -7,9 +7,10 @@ const root = resolve(import.meta.dirname, "..");
 const port = Number(process.env.STRUMENTINI_MIC_ACCEPTANCE_PORT ?? 18183);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error(`invalid acceptance port: ${String(port)}`);
 const origin = `http://127.0.0.1:${port}`;
+const staticDirectory = process.env.STRUMENTINI_MIC_ACCEPTANCE_DIST ?? "dist";
 const server = spawn(
   "python3",
-  ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"],
+  ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", staticDirectory],
   { cwd: root, stdio: "ignore" },
 );
 const sleep = (ms) => new Promise((resolvePromise) => setTimeout(resolvePromise, ms));
@@ -131,13 +132,13 @@ try {
 
   await page.getByRole("button", { name: "Registra", exact: true }).click();
   await page.getByText(/Formato scelto dal runtime: audio\/webm/u).waitFor();
-  await page.waitForTimeout(40);
+  await page.waitForTimeout(400);
   await page.getByRole("button", { name: "Pausa", exact: true }).click();
   await page.getByText("Registrazione in pausa.", { exact: true }).waitFor();
   await page.waitForTimeout(30);
   await page.getByRole("button", { name: "Riprendi", exact: true }).click();
   await page.getByText("Registrazione ripresa.", { exact: true }).waitFor();
-  await page.waitForTimeout(40);
+  await page.waitForTimeout(400);
   await page.getByRole("button", { name: "Ferma registrazione", exact: true }).click();
 
   const result = page.getByRole("region", { name: "Registrazione locale" });
@@ -153,6 +154,30 @@ try {
   const filename = await download.getAttribute("download");
   if (!href?.startsWith("blob:") || filename !== "registrazione-audio.webm") {
     throw new Error(`local download mismatch: href=${href} filename=${filename}`);
+  }
+  const playback = result.locator("audio");
+  await playback.evaluate(async (audio) => {
+    await audio.play();
+    await new Promise((resolvePlayback, rejectPlayback) => {
+      const timeout = setTimeout(() => rejectPlayback(new Error("recorded audio did not advance")), 3_000);
+      const check = () => {
+        if (audio.currentTime > 0) {
+          clearTimeout(timeout);
+          resolvePlayback();
+        } else {
+          requestAnimationFrame(check);
+        }
+      };
+      check();
+    });
+    audio.pause();
+  });
+  const downloadedEvent = page.waitForEvent("download");
+  await download.click();
+  const downloaded = await downloadedEvent;
+  const bytes = await readFile(await downloaded.path());
+  if (downloaded.suggestedFilename() !== filename || bytes.length < 100 || bytes.subarray(0, 4).toString("hex") !== "1a45dfa3") {
+    throw new Error(`downloaded audio is missing or invalid: filename=${downloaded.suggestedFilename()} size=${bytes.length}`);
   }
   if ((await page.evaluate(() => window.__trackStops)) < 2) throw new Error("microphone tracks were not released after revoke/stop");
 
@@ -204,7 +229,7 @@ try {
   const receiptDir = resolve(root, "quality/receipts/microphone-recorder");
   await mkdir(receiptDir, { recursive: true });
   await writeFile(resolve(receiptDir, "browser-acceptance.json"), `${JSON.stringify(receipt, null, 2)}\n`);
-  console.log("microphone recorder acceptance PASS: explicit permission + deny/revoke recovery + runtime MIME/Blob + no external network + 390px");
+  console.log("microphone recorder acceptance PASS: explicit permission + deny/revoke recovery + runtime MIME/Blob + real playback + downloaded WebM bytes + no external network + 390px");
 } finally {
   server.kill("SIGTERM");
 }
