@@ -8,7 +8,7 @@
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** completed (real isolated staging registration/login, failure recovery and independent-session logout; no production release)
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → code-tdd → qa-browser; add inclusive-design, security-audit, pdf, primary-sources as required.
 
@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-328.1: Registrazione/login con challenge funzionante.
-- [ ] AC-328.2: API assente, challenge negata o timeout non danno falso login.
-- [ ] AC-328.3: On the scoped input and failure cases, verify: Browser staging 2 sessioni e prova di logout. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
+- [x] AC-328.1: Registrazione/login con challenge funzionante.
+- [x] AC-328.2: API assente, challenge negata o timeout non danno falso login.
+- [x] AC-328.3: On the scoped input and failure cases, verify: Browser staging 2 sessioni e prova di logout. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
 
 **Verification:** Browser staging 2 sessioni e prova di logout; independently inspect output/record and test bounded failures.
 
@@ -100,3 +100,43 @@ no live D1/session, deployment or production mutation were involved.
 original acceptance gates. **AC-328.1–3 remain OPEN** pending genuine
 staging Siteverify, independent two-session staging/login/logout and device
 evidence. Production/Gold remains **NO_GO**.
+
+## 2026-10-16 — Real isolated staging acceptance and cleanup
+
+All three original criteria pass on the same isolated staging Worker version
+`f237375f-dc74-405c-9804-d71c6441c13e` (provider deployment readback100%).
+The exact deployed Worker content retrieved from Cloudflare equals the fresh
+Wrangler bundle of reviewed source `6312d5109c7bf24f7e6ff6e159afdd2bf5248e94`:
+86941 bytes, SHA256 `d2a0860d01bee21287a8aa8d3c42ea0177fd70afb07bbb5438e49978b1684a6e`.
+The actual browser-fetched access page equals the built page (SHA256
+`bcba1d1ddb686b00a78389c43a10b6dc32adf885511f53bcba48c72c25343856`).
+The main setup merge and this receipt do not change those accepted auth bytes.
+
+- **AC328.1:** native Chrome in the verified owner profile completed genuine
+  Turnstile automatically for registration, then navigated to the authenticated
+  workspace. An independent Incognito context completed a second genuine
+  Turnstile and password login to the same synthetic account. D1 readback
+  progressed from one user/one session to one user/two sessions. No vendor mock,
+  injected success callback, copied cookie or owner credential was used.
+- **AC328.2:** actual invalid challenge returned HTTP400 and the subsequent
+  session read remained anonymous. Controlled negative fault injection into the
+  actual deployed frontend invoked its real timeout/error callbacks: each
+  cleared its token, announced the Italian error, stayed on the access page and
+  submitted zero auth POSTs. A controlled unavailable transport rejected one
+  login request; the app showed its connection error, stayed anonymous,
+  preserved the access page and re-enabled retry. These negative faults are
+  explicitly controlled probes, not claims of a provider outage or refusal.
+- **AC328.3:** actual UI logout in context A revoked only A; after independent
+  reload A remained anonymous, B remained authenticated, and D1 contained one
+  remaining session. No cookie values were inspected or transported.
+
+After acceptance, the app's supported account deletion flow removed only the
+synthetic account. Authoritative scoped D1 SELECT readback: zero test users, zero
+test sessions and zero user for the negative registration case; probes wrote
+zero database rows. The optional account never touched production D1 or routes.
+The prior independently measured Free DO600k CPU proof remains supporting
+evidence; successful registration/login also exercised the real auth KDF path.
+
+This closes the original three-criterion **staging** ticket. Source integration,
+production deployment, optional server-mode admission (#348), global Gold,
+physical devices and unrelated account features remain separate gates.
