@@ -12,11 +12,11 @@ Source of truth: `.scratch/strumentini-expansion-20261005/issues/` and the gener
 | Metric | Current count |
 |---|---:|
 | All tickets | 424 |
-| Administratively completed | 309 |
+| Administratively completed | 310 |
 | Closed with explicit refusal (not shipped) | 17 |
-| Still open | 115 |
+| Still open | 114 |
 | Ready for assignment (acceptance not yet proven) | 23 |
-| Dependency-blocked | 85 |
+| Dependency-blocked | 84 |
 | Official-source-blocked | 2 |
 | Physical-device-blocked | 5 |
 | Capability-blocked | 0 |

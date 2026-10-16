@@ -5,11 +5,11 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 
 | Metric | Count |
 |---|---:|
-| All / completed / open | 424 / 309 / 115 |
+| All / completed / open | 424 / 310 / 114 |
 | Closed with explicit refusal (NOT shipped) | 17 |
 | DAG-ready (all numeric dependencies closed) | 30 |
 | Ready for assignment (feasibility still to prove) | 23 |
-| Waiting on other tickets | 85 |
+| Waiting on other tickets | 84 |
 | Waiting on official sources | 2 |
 | Waiting on physical evidence | 5 |
 | Blocked by unapproved capability | 0 |
@@ -28,7 +28,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #212 — HEIC AVIF and GIF directional image implementations
 - #237 — True PDF redaction with post-export proof
 - #246 — Local image OCR
-- #328 — P0 Account Turnstile login reale
+- #332 — Sync preferiti con rimozioni e conflitti
 - #336 — Picker iPhone Android e touch equivalente
 - #349 — File server opt-in TTL delete prova
 - #350 — P0 Accessibilità AA di base e advanced
@@ -47,7 +47,7 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #406 — Independent PDF redaction attack corpus
 - #407 — Hostile parsers and archive resource safety
 
-## Waiting on other tickets (85)
+## Waiting on other tickets (84)
 
 - #008 — Codice Fiscale generate/decode (awaiting #121, #122)
 - #011 — Upgrade IVA + percentage calculator (awaiting #126)
@@ -80,7 +80,6 @@ This is a backlog/triage dashboard, **not** a release readiness or Gold certific
 - #235 — Advanced Images to PDF composition (awaiting #212)
 - #247 — Scanned PDF OCR and searchable text layer (awaiting #246)
 - #279 — Image-resize Gold promotion gate (awaiting #277, #278)
-- #332 — Sync preferiti con rimozioni e conflitti (awaiting #328)
 - #353 — IA e design system dopo scelta (awaiting #352)
 - #354 — Redesign home file-first search-first (awaiting #352, #353)
 - #355 — Redesign catalogo ricerca categorie (awaiting #352, #353)

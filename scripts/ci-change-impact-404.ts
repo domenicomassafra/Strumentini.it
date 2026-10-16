@@ -64,7 +64,19 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (path === ".githooks/pre-push" || path === "orca.yaml") return ["ci"];
   if (path.startsWith(".github/") || path === "package.json" || path === "package-lock.json" || path === "astro.config.mjs" ||
       path === "tsconfig.json" || path === "vitest.config.ts" || path === "wrangler.toml") return ["ci"];
-  if (path === "wrangler.jsonc") return ["worker-auth", "d1", "ci"];
+  // Both Cloudflare deploy contracts can route the Worker or bind D1, so
+  // staging config is just as review-sensitive as the production contract.
+  if (path === "wrangler.jsonc" || path === "worker/wrangler.staging.jsonc") return ["worker-auth", "d1", "ci"];
+  // The staging publisher and its refusal test can change deployment targets;
+  // never reduce an isolated edit to generic shared-source checks.
+  if (path === "scripts/deploy-staging-328.ts" || path === "tests/deploy-staging-328.test.ts") return ["worker-auth", "d1", "ci"];
+  // These tests carry the CPU-bound password/auth and Turnstile trust contract.
+  // An isolated test-only edit must still demand independent auth/security proof.
+  if (/^tests\/(?:auth-worker-cloudflare-kdf-328|auth-password-race-328|auth-csrf-328|password-kdf-328|staging-isolation-328|feasibility-server-optin-348)\.test\.ts$/u.test(path)) return ["worker-auth", "d1"];
+  if (/^tests\/(?:turnstile-328-20261013-submission-race|turnstile-login-wave20-328|account-page-turnstile-328-329)\.browser\.mjs$/u.test(path)) return ["frontend", "worker-auth"];
+  // This public site-key is the browser half of real Turnstile Siteverify:
+  // a change requires auth, browser, and security gates, not generic shared.
+  if (path === "src/config/security.ts") return ["frontend", "worker-auth"];
   // Any implementation/test change to the optional production publishing
   // boundary must demand independent security review. Generic scripts/tests
   // otherwise fall into "shared" and omit security-review entirely.
@@ -119,8 +131,8 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
 }
 
 const familyTestMatchers: Partial<Record<ChangeDomain, RegExp>> = {
-  "worker-auth": /^tests\/(auth-worker|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347|release-validation)\.test\.ts$/u,
-  d1: /^tests\/(auth-worker|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347|release-validation)\.test\.ts$/u,
+  "worker-auth": /^tests\/(auth-worker|auth-worker-cloudflare-kdf-328|auth-password-race-328|auth-csrf-328|password-kdf-328|staging-isolation-328|deploy-staging-328|feasibility-server-optin-348|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347|release-validation)\.test\.ts$/u,
+  d1: /^tests\/(auth-worker|auth-worker-cloudflare-kdf-328|auth-password-race-328|auth-csrf-328|password-kdf-328|staging-isolation-328|deploy-staging-328|feasibility-server-optin-348|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347|release-validation)\.test\.ts$/u,
   pdf: /^tests\/(pdf-|ocr-|ooxml-|printable-pdf)/u,
   image: /^tests\/(image-|svg-)/u,
   italy: /^tests\/(italy-|italian-|vies-)/u,

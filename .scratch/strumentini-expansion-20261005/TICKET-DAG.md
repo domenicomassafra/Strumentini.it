@@ -21,7 +21,7 @@ This DAG is the scheduling authority. Parent tickets that depend on targeted chi
 - **278 — Physical iOS Safari image-resize acceptance**
 - **280 — Physical Android heavy-tool web acceptance lane**
 - **281 — Physical iOS Safari heavy-tool web acceptance lane**
-- **328 — P0 Account Turnstile login reale**
+- **332 — Sync preferiti con rimozioni e conflitti**
 - **336 — Picker iPhone Android e touch equivalente**
 - **349 — File server opt-in TTL delete prova**
 - **350 — P0 Accessibilità AA di base e advanced**
@@ -384,11 +384,11 @@ Exactly **30** incomplete tickets currently have every declared numeric blocker 
 | 325 | completed | Robots canonical campaign and naming helper upgrades | 099, 104 |
 | 326 | completed | File privacy secret and metadata-risk upgrades | 096 |
 | 327 | completed | Research dedupe identity and citation export audit | 093, 198, 276 |
-| 328 | ready-for-agent | P0 Account Turnstile login reale | — |
+| 328 | completed (real isolated staging registration/login, failure recovery and independent-session logout; no production release) | P0 Account Turnstile login reale | — |
 | 329 | completed (scoped account AA contrast/native zoom/focus only; NOT global WCAG/Gold/release) | P0 Contrasto accesso e errori WCAG | — |
 | 330 | completed | P0 Recenti realmente alimentati | — |
 | 331 | completed | P0 Correggere promesse di file/account | — |
-| 332 | blocked | Sync preferiti con rimozioni e conflitti | 328, 330 |
+| 332 | ready-for-agent | Sync preferiti con rimozioni e conflitti | 328, 330 |
 | 333 | completed | P0 Riconoscimento formato locale | — |
 | 334 | completed | Ingresso file-first drag/select | 333 |
 | 335 | completed | Suggerire solo operazioni file compatibili | 333 |

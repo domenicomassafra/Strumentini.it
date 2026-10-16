@@ -39,6 +39,18 @@ async function fixture(run: (root: string, base: string, head: string) => Promis
 }
 
 describe("#404 PR/source impact planning", () => {
+  it("treats standalone #328 KDF and real browser tests as sensitive security contracts", () => {
+    for (const path of ["tests/auth-worker-cloudflare-kdf-328.test.ts", "tests/auth-csrf-328.test.ts", "tests/password-kdf-328.test.ts", "tests/staging-isolation-328.test.ts", "tests/feasibility-server-optin-348.test.ts"]) {
+      const plan = buildImpactPlan([path], [...suites, "tests/password-kdf-328.test.ts"]);
+      expect(plan.domains, path).toContain("worker-auth");
+      expect(plan.gates.map((gate) => gate.id), path).toEqual(expect.arrayContaining(["security-review", "auth-integration"]));
+    }
+    for (const path of ["tests/turnstile-328-20261013-submission-race.browser.mjs", "tests/turnstile-login-wave20-328.browser.mjs", "tests/account-page-turnstile-328-329.browser.mjs"]) {
+      const plan = buildImpactPlan([path], suites);
+      expect(plan.domains, path).toEqual(expect.arrayContaining(["frontend", "worker-auth"]));
+      expect(plan.gates.map((gate) => gate.id), path).toEqual(expect.arrayContaining(["security-review", "auth-integration", "browser-a11y"]));
+    }
+  });
   it("classifies the two reviewed root handoff/status documents without bypassing executable ticket scripts", () => {
     const docs = buildImpactPlan(["HANDOFF.md", "PROJECT-STATUS.md", "README.md"], suites);
     expect(docs.status).toBe("DOCS_ONLY");
