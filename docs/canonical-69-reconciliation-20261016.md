@@ -77,3 +77,23 @@ Classificazione: 43 file di source/test utili assegnati alle PR #183–#188; 15 
 | `tests/turnstile-328-20261014-cookie-session.browser.mjs` | [PR #188](https://github.com/domenicomassafra/strumentini-it/pull/188) | WIP utile recuperato nel gruppo verificato, con semantica aggiornata su main. |
 | `tests/xlsx-370-20261014-formula-precision.test.ts` | [PR #185](https://github.com/domenicomassafra/strumentini-it/pull/185) | WIP utile recuperato nel gruppo verificato, con semantica aggiornata su main. |
 | `tests/xlsx-370-20261014-import-numeric-worker6.test.ts` | [PR #185](https://github.com/domenicomassafra/strumentini-it/pull/185) | WIP utile recuperato nel gruppo verificato, con semantica aggiornata su main. |
+
+## Chiusura verificata — 16 ottobre 2026
+
+Le sette PR **#183–#189 sono MERGED dopo `changed-source` SUCCESS**. Commit di merge su `origin/main`:
+
+| PR | Merge SHA |
+|---|---|
+| #183 | `1771aa5bd7a681ccad4376eb2d5ce1c750e98ff0` |
+| #184 | `18bd10d981c8ce283466a0eff7d717fd1b1d420c` |
+| #185 | `6b4778fa20a2ca720a3ff1865ff6b03bdbc35fa7` |
+| #186 | `fc697a43552161931c5e5cb4384eae0cade280c6` |
+| #187 | `45c83a6b5785e31dc522320e8f98c0564b074509` |
+| #188 | `ef76272654c3ff11c4a8a374a29a22889ff80f88` |
+| #189 | `14535eeab5a3088e8713818002eda5bf698960af` |
+
+Head canonico finale `ef76272654c3ff11c4a8a374a29a22889ff80f88`, esattamente uguale al readback remoto. Sul `main` finale: `npm run check` **2.138 file, 0 errori, 0 warning, 34 hint**; `npm run build` **293 pagine PASS**; `npx vitest run` **373 file PASS, 2.636 test PASS, 14 SKIP**. Prova browser PDF #56: lettura effettiva pypdf/pdfminer/PDFKit, solo il file approvato, **zero** richieste esterne; #336: Chromium + WebKit, multi-drop ignorato preservando la selezione valida.
+
+Il vecchio branch `docs/lane01-wave001-handoff-20261015` è stato ritirato dopo aver verificato che è antenato del WIP conservato; undici branch mirati del 14 ottobre, con modifiche già assorbite o superate dalle verifiche nuove, sono stati rimossi localmente e su GitHub. `fix/047-webp-duplicate-image-20261014` contiene **due file unici fuori dai 69 di questo ticket**: resta per evitare perdita di sorgente. Il worktree attivo e la PR Draft #179 (#332 preferiti) restano al relativo owner.
+
+Le note scartate #328/#406 sono cronologia storica non corrente, preservata in `f0dbdc2f` senza riaprire accettazioni già evolute. Nessun deploy pubblico o promozione Gold è implicato dal merge del WIP.
