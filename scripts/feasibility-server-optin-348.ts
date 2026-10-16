@@ -65,7 +65,9 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   "src/components/account/AccountChip.astro": "93d41212427af8611bd3ece42d9d3993725a17139c7da2f256418299472e9a34",
   // #332: browser bootstrap retries reconnection and preserves account-scoped state.
   "src/components/account/MembershipBootstrap.astro": "ace5b0f626105a65fd4586102688fcfeec032dc32043dd2ae6b407083708e956",
-  "src/components/account/auth-client.ts": "326bcbe8d7a08aa37c7030b766e128974ebcd68e8cc56c5809a0dd44e6bcc8a0",
+  // #328: login/register now require a fresh same-origin cookie-backed session
+  // probe before reporting success. Any future byte drift still fails closed.
+  "src/components/account/auth-client.ts": "b32363ed352edf1a2b97c5f1cfc4650c0d46d55731cdf2e11e2fc354fb8b8f21",
   // 2026-10-12 #330 reviewed: external GET remains explicit opt-in, no credentials/referrer, no new endpoint, abort/stale guard.
   "src/components/tools/ConnectionDeviceInfoTool.tsx": "fe92363d300ef4ac5e1e73d55f28ddb06eade2d46b218be6e73d3670b92acc84",
   "src/components/tools/research-knowledge/ViesVerificationPanel.tsx": "8e5032a786b97b117b7c079ffd7077ba2f70118fecf0c735b17bd5a05425e147",
