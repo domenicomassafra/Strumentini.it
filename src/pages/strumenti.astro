@@ -23,6 +23,25 @@ const verifiedCount = catalog.filter((tool) => verifiedIds.has(tool.id)).length;
 >
   <DirectoryHero total={catalog.length} verified={verifiedCount} />
   <JobRoutes />
+  <section class="fiscal-journeys" aria-labelledby="fiscal-journeys-title">
+    <h2 id="fiscal-journeys-title">Calcoli fiscali italiani con copertura dichiarata</h2>
+    <p>Simulazioni locali con fonti e limiti visibili: controlla l'anno e le ipotesi prima di interpretare il risultato.</p>
+    <ul>
+      <li><a href="/tools/codice-fiscale/">Codice fiscale: genera, verifica, decodifica (copertura storica limitata)</a></li>
+      <li><a href="/tools/percentage-helper/">Percentuali e IVA: aggiunta o scorporo con aliquota inserita</a></li>
+      <li><a href="/tools/irpef-annuale/">IRPEF annua nazionale 2025/2026 per scaglioni</a></li>
+      <li><a href="/tools/stipendio-netto/">Stima del netto da RAL con contributi ipotizzati</a></li>
+      <li><a href="/tools/partita-iva-validator/">Partita IVA e simulazione forfettario 2025</a></li>
+    </ul>
+  </section>
   <CatalogDirectory tools={catalog} verifiedIds={verifiedIds} />
   <DirectoryBand />
 </BaseLayout>
+
+<style>
+  .fiscal-journeys { width:min(calc(100% - var(--container-gutter) * 2),var(--container-max)); margin:0 auto var(--space-8); padding:var(--space-4); border:1px solid var(--border); border-radius:var(--radius-md); }
+  .fiscal-journeys h2 { margin:0 0 var(--space-2); font-size:var(--font-size-h2); }
+  .fiscal-journeys p { margin:0 0 var(--space-3); }
+  .fiscal-journeys ul { margin:0; padding-left:var(--space-5); display:grid; gap:var(--space-2); }
+  .fiscal-journeys a:focus-visible { outline:3px solid currentColor; outline-offset:2px; }
+</style>
