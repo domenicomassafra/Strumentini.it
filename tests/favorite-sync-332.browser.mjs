@@ -31,6 +31,7 @@ let offline = false;
 let holdNextAuth = false;
 let releaseAuth;
 let guestContext;
+let offlineAuthContext;
 const account = "browser-fixture-account";
 const snapshot = () => ({
   version: 1, account, revision,
@@ -55,6 +56,9 @@ async function context(browser) {
     return route.abort("blockedbyclient");
   });
   await ctx.route("**/api/auth/session", async (route) => {
+    if (ctx === offlineAuthContext) {
+      return route.abort("internetdisconnected");
+    }
     if (holdNextAuth && ctx === deferredContext) {
       holdNextAuth = false;
       await new Promise((resolve) => { releaseAuth = resolve; });
@@ -184,11 +188,29 @@ try {
   await a.goto(`${origin}/strumenti/`, { waitUntil: "domcontentloaded" });
   await expect(btnA).toBeEnabled();
   await expect(btnA).toHaveAttribute("aria-pressed", "true");
+  // Offline same-tab reload: an earlier authenticated A account with a
+  // durable per-tool baseline stays locally editable despite auth GET outage.
+  // An ordinary signed-out GET above revoked the old trust marker; this new
+  // successful login issued a fresh tab-local marker for the current account.
+  await ctxA.addInitScript(() => {
+    Object.defineProperty(navigator, "onLine", { configurable: true, get: () => window.__onlineFixture ?? false });
+  });
+  offlineAuthContext = ctxA;
+  await a.reload({ waitUntil: "domcontentloaded" });
+  await expect(btnA).toBeEnabled();
+  await expect(btnA).toHaveAttribute("aria-pressed", "true");
+  const offlineWrites = writes.length;
+  await btnA.click();
+  await expect(btnA).toHaveAttribute("aria-pressed", "false");
+  assert.equal(writes.length, offlineWrites, "Offline click should stay local until reconnect");
+  offlineAuthContext = undefined;
+  await a.evaluate(() => { window.__onlineFixture = true; window.dispatchEvent(new Event("online")); });
+  await expect.poll(() => snapshot().tools.includes(toolId)).toBe(false);
   assert.deepEqual(errors, [], "No uncaught browser errors");
   assert.deepEqual(blockedEgress, [], "No page attempted third-party network egress");
   console.log(JSON.stringify({ kind: "#332-real-chromium-isolated-processes", page: "/strumenti/ and /preferiti/",
     source: "current compiled dist", browserProcesses: 2, accountBackend: "deterministic fixture", toolId,
-    checks: ["add/converge", "remove/converge", "offline-newer-tombstone", "delayed-auth-initial-controls-disabled", "touch-targets-44", "online-reconnect-replay", "signed-out-favorites-private", "zero-pageerrors", "zero-external-requests"],
+    checks: ["add/converge", "remove/converge", "offline-newer-tombstone", "delayed-auth-initial-controls-disabled", "touch-targets-44", "online-reconnect-replay", "signed-out-favorites-private", "same-tab-offline-reload-and-reconnect", "zero-pageerrors", "zero-external-requests"],
     result: "PASS", actualAuthenticatedStaging: "NOT_RUN" }));
 } finally {
   for (const browser of browsers) await browser.close().catch(() => undefined);

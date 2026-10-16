@@ -51,6 +51,17 @@
   let signedIn = false;
   let ready = false;
   let loading = false;
+  const verifiedTabKey = "strumentini:favorites-verified-tab:v1";
+
+  function readVerifiedTab(): string | null {
+    try { return sessionStorage.getItem(verifiedTabKey); } catch { return null; }
+  }
+  function writeVerifiedTab(account: string | null): void {
+    try {
+      if (account === null) sessionStorage.removeItem(verifiedTabKey);
+      else sessionStorage.setItem(verifiedTabKey, account);
+    } catch { /* Storage unavailable: require online verification. */ }
+  }
 
   function controlsReady(value: boolean): void {
     ready = value;
@@ -91,20 +102,32 @@
     loading = true;
     controlsReady(false);
     document.dispatchEvent(new Event("strumentini:membership-loading"));
+    let sessionUnavailable = false;
+    let confirmedAnonymous = false;
     try {
       const response = await fetch("/api/auth/session", { credentials: "same-origin", headers: { accept: "application/json" } });
       if (response.ok) {
         const body = await response.json() as { user?: unknown };
         signedIn = Boolean(body.user);
+        confirmedAnonymous = !signedIn;
       } else {
         signedIn = false;
+        sessionUnavailable = true;
       }
     } catch {
       signedIn = false;
+      sessionUnavailable = true;
     }
     const membership = signedIn ? await syncMembershipWithAccount() : undefined;
     const baselineOwner = await membershipBaselineOwner();
-    const localIsPrivate = !signedIn && baselineOwner !== undefined;
+    if (signedIn && membership !== undefined && baselineOwner !== undefined) writeVerifiedTab(baselineOwner);
+    if (confirmedAnonymous) writeVerifiedTab(null);
+    // A real offline tab can keep working from its previously verified account
+    // baseline. The trust marker is scoped to this tab and is cleared on an
+    // authoritative anonymous session. A different/unverified tab stays gated.
+    const trustedOffline = !signedIn && sessionUnavailable && !navigator.onLine
+      && baselineOwner !== undefined && readVerifiedTab() === baselineOwner;
+    const localIsPrivate = !signedIn && baselineOwner !== undefined && !trustedOffline;
     const cannotVerify = signedIn && membership === undefined;
     const accessible = !localIsPrivate && !cannotVerify;
     const shown = accessible ? membership ?? await loadMembership() : { installed: [], recent: [] };

@@ -61,7 +61,7 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // /api/auth/logout, now only a confirmed 204 redirects after logout.
   // Keep full-byte binding so any future unreviewed transport still fails.
   "src/components/account/AccountChip.astro": "1cca61e9d06940358a3bece7e7bf26232c645dafb774a99181682ce38b571402",
-  "src/components/account/MembershipBootstrap.astro": "a60c9bda9a79ad8a725070454ab9b07cf531dc856698e3b1f0ad6dc92876d8f1",
+  "src/components/account/MembershipBootstrap.astro": "738ff5e1fc8af341738fdec4897f2803162cea70f62d1bdf0fa3e5fe383d08e7",
   "src/components/account/auth-client.ts": "326bcbe8d7a08aa37c7030b766e128974ebcd68e8cc56c5809a0dd44e6bcc8a0",
   // 2026-10-12 #330 reviewed: external GET remains explicit opt-in, no credentials/referrer, no new endpoint, abort/stale guard.
   "src/components/tools/ConnectionDeviceInfoTool.tsx": "fe92363d300ef4ac5e1e73d55f28ddb06eade2d46b218be6e73d3670b92acc84",
