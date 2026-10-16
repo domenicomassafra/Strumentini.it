@@ -61,6 +61,8 @@ import { MESSAGES, normalizeEmail, validateEmail, validateName, validatePassword
 import { checkViesVat } from "./vies";
 import { PasswordKdfUnavailable, remotePasswordDeriver } from "./kdf-client";
 import type { PrivateKdfNamespace } from "./kdf-client";
+import { temporaryFileRequest349 } from "./temporary-files-349";
+import type { TemporaryFileBucket349 } from "./temporary-files-349";
 
 // Cloudflare's internal-only SQLite-backed Durable Object. Never HTTP-routed.
 export { PasswordKdf } from "./password-kdf";
@@ -68,6 +70,10 @@ export { PasswordKdf } from "./password-kdf";
 export interface Env {
   readonly ASSETS: Fetcher;
   readonly AUTH_DB: D1Database;
+  readonly TEMPORARY_FILES?: TemporaryFileBucket349;
+  readonly TEMP_FILE_UPLOAD_ENABLED?: string;
+  readonly TEMP_FILE_IP_LIMIT?: { limit(input: { key: string }): Promise<{ success: boolean }> };
+  readonly TEMP_FILE_COLO_LIMIT?: { limit(input: { key: string }): Promise<{ success: boolean }> };
   readonly PASSWORD_KDF?: PrivateKdfNamespace;
   readonly KDF_IP_LIMIT?: { limit(input: { key: string }): Promise<{ success: boolean }> };
   readonly KDF_COLO_LIMIT?: { limit(input: { key: string }): Promise<{ success: boolean }> };
@@ -820,6 +826,28 @@ async function handleViesCheck(context: RouteContext): Promise<Response> {
   return jsonResponse(result, 200);
 }
 
+async function handleTemporaryFile349(context: RouteContext): Promise<Response> {
+  const bucket = context.env.TEMP_FILE_UPLOAD_ENABLED === "enabled" ? context.env.TEMPORARY_FILES : undefined;
+  if (context.request.method === "POST" && bucket !== undefined) {
+    // Every anonymous upload is an expensive R2 write. Admission is restricted
+    // independently of the cheap GET/DELETE paths so users can always delete.
+    const ipLimiter = context.env.TEMP_FILE_IP_LIMIT;
+    const coloLimiter = context.env.TEMP_FILE_COLO_LIMIT;
+    if (!ipLimiter || !coloLimiter) return errorResponse(503, "Upload temporaneo non disponibile.");
+    if (mutationOrigin(context.request) !== null) return errorResponse(403, "Origine non consentita.");
+    if (context.request.headers.get("x-temporary-file-consent") !== "yes") return errorResponse(403, "Consenso esplicito richiesto.");
+    try {
+      if (!(await ipLimiter.limit({ key: clientIp(context.request) })).success ||
+          !(await coloLimiter.limit({ key: "temporary-files-v1" })).success) {
+        return errorResponse(429, "Troppi caricamenti: riprova tra un minuto.", { "retry-after": "60" });
+      }
+    } catch {
+      return errorResponse(503, "Limite dei caricamenti non disponibile.");
+    }
+  }
+  return await temporaryFileRequest349(context.request, bucket, context.params[0] ?? "", context.now.getTime());
+}
+
 /* ------------------------------------------------------------- routing -- */
 
 const ROUTES: readonly Route[] = [
@@ -842,6 +870,9 @@ const ROUTES: readonly Route[] = [
   { pattern: "/api/favorites/:toolId", method: "PUT", handle: handleFavoritePut },
   { pattern: "/api/favorites/:toolId", method: "DELETE", handle: handleFavoriteDelete },
   { pattern: "/api/vies/check", method: "POST", handle: handleViesCheck },
+  { pattern: "/api/temporary-files/:id", method: "POST", handle: handleTemporaryFile349 },
+  { pattern: "/api/temporary-files/:id", method: "GET", handle: handleTemporaryFile349 },
+  { pattern: "/api/temporary-files/:id", method: "DELETE", handle: handleTemporaryFile349 },
 ];
 
 function buildRouteTable(): ReadonlyMap<string, readonly Route[]> {

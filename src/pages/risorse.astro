@@ -55,7 +55,7 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
   },
   {
     question: "Conservate i miei file?",
-    answer: "Gli strumenti locali elaborano i file nel browser, senza archiviarli sul nostro server. I risultati temporanei non sono recuperabili dopo aver chiuso la scheda. Se scegli espressamente «Conserva questo PDF nel browser», una copia resta nel database locale separato finché non la elimini o il browser non la cancella: non viene sincronizzata con l'account. Il server conserva solo dati dell'account e identificativi dei preferiti, non documenti.",
+    answer: "Gli strumenti locali elaborano i file nel browser, senza archiviarli sul server. Se scegli espressamente «Conserva questo PDF nel browser», una copia resta nel database locale finché non la elimini o il browser non la cancella. La funzione separata e sperimentale «File temporaneo» permette invece, solo con consenso per il singolo file, un upload server fino a 1 MiB e scadenza dopo 24 ore. È disabilitata nell'ambiente pubblico finché non viene approvata.",
   },
   {
     question: "Funziona senza rete?",
@@ -167,6 +167,10 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
               <li>
                 <span class="pill pill-brand"><UiIcon name="sliders" size={14} /> sessionStorage</span>
                 <p>La chiave <code>strumentini:workbench-context:v1</code> tiene il contesto di ricerca — gli identificativi degli strumenti installati e recenti — solo per la durata della scheda.</p>
+              </li>
+              <li>
+                <span class="pill pill-brand"><UiIcon name="clock" size={14} /> R2 · solo consenso</span>
+                <p>La <a href="/file-temporaneo/">funzione sperimentale File temporaneo</a> carica espressamente un singolo file (massimo 1 MiB) sul server, con scadenza di accesso dopo 24 ore e cancellazione anticipata su richiesta. La rimozione automatica fisica può richiedere ulteriori 24 ore; la funzione è disabilitata nel sito pubblico in attesa di approvazione.</p>
               </li>
               <li>
                 <span class="pill pill-brand"><UiIcon name="sun" size={14} /> localStorage</span>

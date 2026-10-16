@@ -3,6 +3,7 @@ import BrandMark from "./BrandMark.astro";
 import { footerColumns } from "./navigation";
 
 const year = new Date().getFullYear();
+const temporaryFilePage = Astro.url.pathname.replace(/\/+$/u, "") === "/file-temporaneo";
 ---
 
 <footer class="site-footer">
@@ -16,8 +17,9 @@ const year = new Date().getFullYear();
         </span>
       </a>
       <p class="site-footer-note">
-        Gli strumenti girano nel tuo browser. I file che apri non vengono caricati
-        su nessun server e non lasciano il tuo dispositivo.
+        {temporaryFilePage
+          ? "Questa funzione invia il file al server solo quando dai consenso e premi Carica. Puoi eliminarlo subito dopo."
+          : "Gli strumenti del catalogo elaborano i file nel browser. La funzione separata File temporaneo richiede il consenso esplicito per un invio al server."}
       </p>
     </div>
 

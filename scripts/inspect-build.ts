@@ -29,7 +29,8 @@ const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html:
 const designStudyPath = "prototipi/351/index.html";
 const fiscalBoundedPath = "tools/calcoli-fiscali-italia/index.html";
 const pdfOcr247Path = "tools/pdf-scansionato-ocr-247/index.html";
-const previewOnlyPaths = ["tools/codice-fiscale/index.html", "tools/ocr-italiano-locale-246/index.html", pdfOcr247Path, designStudyPath, fiscalBoundedPath] as const;
+const temporaryFilePath = "file-temporaneo/index.html";
+const previewOnlyPaths = ["tools/codice-fiscale/index.html", "tools/ocr-italiano-locale-246/index.html", pdfOcr247Path, designStudyPath, fiscalBoundedPath, temporaryFilePath] as const;
 for (const previewPath of previewOnlyPaths) {
   const route = `/${previewPath.replace(/\/index\.html$/u, "")}`;
   if (catalog.some((tool) => tool.route.replace(/\/+$/u, "") === route.replace(/\/+$/u, "")) ||
@@ -40,6 +41,10 @@ for (const previewPath of previewOnlyPaths) {
   const sourceSafe = previewPath === "tools/codice-fiscale/index.html"
     ? preview?.includes('data-cf-canonical-route="/tools/codice-fiscale/"') &&
       (preview.includes("copertura geografica") || preview.includes("Copertura geografica"))
+    : previewPath === temporaryFilePath
+      ? preview?.includes("Carica questo file sul server") &&
+        preview?.includes("temporary-consent") &&
+        preview?.includes("Elimina definitivamente il file")
     : previewPath === fiscalBoundedPath
       ? preview?.includes('data-fiscal-t1') &&
         preview.includes("Stipendio netto annuo") &&

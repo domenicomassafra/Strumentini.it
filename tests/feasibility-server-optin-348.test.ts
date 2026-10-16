@@ -27,7 +27,7 @@ describe("#348 fail-closed source inventory", () => {
     const audit = auditStaticSurface(project);
     expect(audit.violations).toEqual([]);
     expect(audit.baselineSafe).toBe(true);
-    expect(audit.routes).toHaveLength(19);
+    expect(audit.routes).toHaveLength(22);
     expect(audit.inspectedFiles).toBeGreaterThan(100);
     expect(audit.serverMode).toBe("NO_GO");
   });

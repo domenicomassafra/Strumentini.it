@@ -1,0 +1,177 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout
+  title="File temporaneo"
+  description="Carica un file sul server solo quando lo scegli esplicitamente. Puoi scaricarlo o cancellarlo e scade entro 24 ore."
+  noindex
+>
+  <section class="temporary-page">
+    <p class="eyebrow">Archivio temporaneo · sperimentale</p>
+    <h1>Un file sul server, solo se lo decidi tu.</h1>
+    <p>Le altre utility di Strumentini continuano a lavorare sul dispositivo. Questa funzione separata permette di conservare temporaneamente <strong>un file alla volta</strong> sul server Cloudflare R2.</p>
+    <form id="temporary-form">
+      <label for="temporary-file">Scegli il file da inviare (JPEG, PNG, WebP, PDF o TXT, massimo 1 MiB)</label>
+      <input id="temporary-file" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,text/plain" required />
+      <label class="consent">
+        <input id="temporary-consent" type="checkbox" required />
+        <span>Acconsento all'invio di <strong>questo file</strong> sul server per un massimo di 24 ore di accessibilità. Posso cancellarlo prima. La pulizia fisica automatica del bucket può richiedere fino a 24 ore aggiuntive.</span>
+      </label>
+      <button id="temporary-upload" type="submit">Carica questo file sul server</button>
+    </form>
+    <p id="temporary-message" role="status" aria-live="polite">Nessun file inviato.</p>
+    <section id="temporary-saved" hidden aria-label="File temporaneo salvato">
+      <p id="temporary-detail"></p>
+      <div class="actions">
+        <button type="button" id="temporary-download">Scarica dal server</button>
+        <button type="button" id="temporary-delete">Elimina definitivamente il file</button>
+      </div>
+    </section>
+    <p class="privacy-note">Il collegamento di accesso rimane solo in questa scheda/sessione browser. Non viene pubblicato né associato all'account. Se chiudi la sessione, la scadenza automatica resta attiva.</p>
+  </section>
+</BaseLayout>
+
+<script>
+  interface SavedFile {
+    id: string;
+    token: string;
+    filename: string;
+    bytes: number;
+    expiresAt: string;
+  }
+  const storageKey = "strumentini:temporary-file-349";
+  const form = document.querySelector<HTMLFormElement>("#temporary-form")!;
+  const input = document.querySelector<HTMLInputElement>("#temporary-file")!;
+  const consent = document.querySelector<HTMLInputElement>("#temporary-consent")!;
+  const upload = document.querySelector<HTMLButtonElement>("#temporary-upload")!;
+  const message = document.querySelector<HTMLElement>("#temporary-message")!;
+  const section = document.querySelector<HTMLElement>("#temporary-saved")!;
+  const detail = document.querySelector<HTMLElement>("#temporary-detail")!;
+  const download = document.querySelector<HTMLButtonElement>("#temporary-download")!;
+  const remove = document.querySelector<HTMLButtonElement>("#temporary-delete")!;
+  let saved: SavedFile | null = null;
+  let pending: { id: string; token: string; file: File } | null = null;
+
+  function hex(bytes: Uint8Array): string {
+    return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  }
+  function randomId(): string {
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+    bytes[6] = (bytes[6]! & 15) | 64;
+    bytes[8] = (bytes[8]! & 63) | 128;
+    const s = hex(bytes);
+    return `${s.slice(0, 8)}-${s.slice(8, 12)}-${s.slice(12, 16)}-${s.slice(16, 20)}-${s.slice(20)}`;
+  }
+  function status(text: string) { message.textContent = text; }
+  function render() {
+    section.hidden = saved === null;
+    if (saved !== null) {
+      detail.textContent = `${saved.filename} · ${saved.bytes} byte · scadenza: ${new Date(saved.expiresAt).toLocaleString("it-IT")}`;
+    }
+  }
+  function remember(value: SavedFile | null) {
+    saved = value;
+    if (value === null) sessionStorage.removeItem(storageKey);
+    else sessionStorage.setItem(storageKey, JSON.stringify(value));
+    render();
+  }
+  try {
+    const old = sessionStorage.getItem(storageKey);
+    if (old) {
+      const parsed = JSON.parse(old) as SavedFile;
+      if (parsed.id && parsed.token && Date.parse(parsed.expiresAt) > Date.now()) remember(parsed);
+      else remember(null);
+    }
+  } catch { remember(null); }
+  render();
+  input.addEventListener("change", () => { pending = null; });
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const file = input.files?.[0];
+    if (!file || !consent.checked) return;
+    if (!["image/jpeg", "image/png", "image/webp", "application/pdf", "text/plain"].includes(file.type) ||
+        file.size < 1 || file.size > 1_048_576 || !/^[\w .()-]{1,100}$/.test(file.name) || file.name.startsWith(".")) {
+      status("Formato, nome o dimensione non validi (limite 1 MiB).");
+      return;
+    }
+    // Keep the same identifier and capability during retry of the same file.
+    if (!pending || pending.file !== file) pending = { id: randomId(), token: hex(crypto.getRandomValues(new Uint8Array(32))), file };
+    upload.disabled = true;
+    status("Caricamento in corso...");
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20_000);
+    try {
+      const response = await fetch(`/api/temporary-files/${pending.id}`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/octet-stream",
+          "x-temporary-file-token": pending.token,
+          "x-temporary-file-type": file.type,
+          "x-temporary-file-name": file.name,
+          "x-temporary-file-consent": "yes",
+        },
+        body: file,
+        cache: "no-store",
+        credentials: "omit",
+        signal: controller.signal,
+      });
+      const data = await response.json() as { error?: string; bytes?: number; expiresAt?: string };
+      if (!response.ok || data.expiresAt === undefined || data.bytes === undefined) throw new Error(data.error ?? "Invio non riuscito.");
+      remember({ id: pending.id, token: pending.token, filename: file.name, bytes: data.bytes, expiresAt: data.expiresAt });
+      status("Il file è sul server. Puoi scaricarlo o eliminarlo.");
+      pending = null;
+    } catch (error) {
+      status(`Invio non confermato: ${error instanceof Error ? error.message : "errore di rete"}. Puoi riprovare.`);
+    } finally { clearTimeout(timeout); upload.disabled = false; }
+  });
+
+  download.addEventListener("click", async () => {
+    if (saved === null) return;
+    download.disabled = true;
+    try {
+      const response = await fetch(`/api/temporary-files/${saved.id}`, {
+        headers: { "x-temporary-file-token": saved.token },
+        cache: "no-store", credentials: "omit",
+      });
+      if (!response.ok) throw new Error("File non più disponibile.");
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url; anchor.download = saved.filename;
+      document.body.append(anchor); anchor.click(); anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
+      status("Download avviato.");
+    } catch (error) { status(error instanceof Error ? error.message : "Download non riuscito."); }
+    finally { download.disabled = false; }
+  });
+  remove.addEventListener("click", async () => {
+    if (saved === null) return;
+    remove.disabled = true;
+    try {
+      const response = await fetch(`/api/temporary-files/${saved.id}`, {
+        method: "DELETE", headers: { "x-temporary-file-token": saved.token },
+        credentials: "omit", cache: "no-store",
+      });
+      if (response.status !== 204 && response.status !== 404) throw new Error("Cancellazione non riuscita.");
+      remember(null);
+      status("File cancellato dal server.");
+    } catch (error) { status(error instanceof Error ? error.message : "Errore di cancellazione."); }
+    finally { remove.disabled = false; }
+  });
+</script>
+
+<style>
+  .temporary-page { width: min(720px, calc(100% - 2rem)); margin: 3rem auto; line-height: 1.65; }
+  .temporary-page h1 { font-size: clamp(1.7rem, 4vw, 2.7rem); line-height: 1.2; }
+  .eyebrow { text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
+  #temporary-form { display: grid; gap: 1rem; padding: 1.5rem; border: 1px solid var(--line); border-radius: 1rem; }
+  #temporary-file { max-width: 100%; }
+  .consent { display: flex; gap: .75rem; align-items: flex-start; }
+  .consent input { flex: 0 0 auto; width: 1.2rem; height: 1.2rem; margin-top: .3rem; }
+  button { padding: .8rem 1.1rem; cursor: pointer; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface, #fff); color: inherit; font: inherit; }
+  button:disabled { opacity: .6; cursor: wait; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--brand-active, #006aff); outline-offset: 3px; }
+  .actions { display: flex; gap: .8rem; flex-wrap: wrap; }
+  #temporary-saved { padding: 1rem; border: 1px solid var(--line); border-radius: .8rem; }
+  .privacy-note { font-size: .9rem; opacity: .85; }
+</style>

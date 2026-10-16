@@ -38,7 +38,10 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   "worker/bindings.d.ts": "6728f6a0b231d4b1b390434cf79d21d827f84116a5a55bd70a8322c6479c7e4d",
   "worker/db.ts": "4ba712236ea72ba5e75afb8650b3998bac1e1f25dce0b5b76a79b8459cd72427",
   "worker/google.ts": "09ee69a8ab31e4eabac118bb2b3d4cdd579d655c260aa452fb8e359f32cba2db",
-  "worker/index.ts": "3fe5eaca245a51cfaecbe8fe71745365b6ed9985454a25f461d75e0096a02849",
+  // #349: narrowly scoped binary upload, owner-only capability download/delete
+  // and TTL, enabled only in the isolated staging configuration.
+  "worker/index.ts": "059a3dcfbe9120d34aceb9d8f3f4429fb3dfb17758ec00bc95eb5cd667266a67",
+  "worker/temporary-files-349.ts": "c0d1494d569d659cd2fa303f4bcbfab69ec5bbfeeea936055c035eeca614a888",
   "worker/kdf-client.ts": "d2aa12fce473bbbc598eedc7c957a4f67c5484ce9a03afabafea62e59b4cf539",
   "worker/migrations/0001_init.sql": "5402f41511baf4b74f4bf6b8bb46621d663a00d8352746c6acd1089c4c3f7417",
   "worker/migrations/0002_google_auth.sql": "80f0a007030410b018863ec36ca31fc6dff99ce52762979a071bc4c9af1fa6b9",
@@ -54,6 +57,8 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
 });
 
 const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze({
+  // #349: one-file consent gate, upload, read and delete endpoints only.
+  "src/pages/file-temporaneo.astro": "849c3f40251f92502b0eed0d99744ff3659bd576cdab5640e1f4cdd93eb8824c",
   // 2026-10-12 #328 reviewed: same GET /api/auth/session and same POST
   // /api/auth/logout, now only a confirmed 204 redirects after logout.
   // Keep full-byte binding so any future unreviewed transport still fails.
@@ -87,6 +92,9 @@ const ALLOWED_ROUTES: ReadonlySet<string> = new Set([
   "GET /api/favorites", "DELETE /api/favorites", "GET /api/favorites/sync",
   "POST /api/favorites/sync", "PUT /api/favorites/:toolId", "DELETE /api/favorites/:toolId",
   "POST /api/vies/check",
+  "POST /api/temporary-files/:id",
+  "GET /api/temporary-files/:id",
+  "DELETE /api/temporary-files/:id",
 ]);
 
 const TRANSPORT_PATTERN = /\b(?:fetch|fetchImpl|fetcher|XMLHttpRequest|WebSocket|EventSource|sendBeacon)\s*\(|\.fetch\s*\(|\bnew\s+(?:XMLHttpRequest|WebSocket|EventSource)\b|\[\s*["'](?:fetch|sendBeacon)["']\s*\]\s*\(|<form\b[^>]*\baction\s*=/u;
