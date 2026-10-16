@@ -21,12 +21,13 @@ try {
   page.on("pageerror", (err) => errors.push(err.message));
   const response = await page.goto(`${origin}/tools/codice-fiscale/`, { waitUntil: "domcontentloaded", timeout: 120000 });
   assert.equal(response?.status(), 200);
+  await page.locator('astro-island[component-url*="CodiceFiscaleTool"]:not([ssr])').waitFor({ timeout: 60000 });
   assert.equal(await page.locator('[data-cf-public-tool="08"]').count(), 1);
   assert.match(await page.locator("h1").first().innerText(), /Codice fiscale/iu);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, nofollow");
   mark("canonical 200, exactly one public component, noindex until catalog integration");
 
-  assert.match(await page.locator(".cf08-notice").innerText(), /21\/02\/2026/u);
+  assert.match(await page.locator(".cf08-notice").innerText(), /ANPR/u);
   assert.match(await page.locator(".cf08-notice").innerText(), /Agenzia delle Entrate/u);
   await page.locator("#cf08-surname").fill("Rossi");
   await page.locator("#cf08-name").fill("Mario");
