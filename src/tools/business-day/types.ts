@@ -14,6 +14,8 @@ export type BusinessDayInput =
       endDate: string;
       workweek?: readonly DayCode[];
       excludedDates?: readonly string[];
+      inclusiveStart?: boolean;
+      inclusiveEnd?: boolean;
     };
 
 export type BusinessDayOutput =
@@ -32,6 +34,6 @@ export type BusinessDayOutput =
 export interface BusinessDayAssumptions {
   workweek: readonly DayCode[];
   excludedDates: readonly string[];
-  inclusiveStart: false;
-  inclusiveEnd: true;
+  inclusiveStart: boolean;
+  inclusiveEnd: boolean;
 }
