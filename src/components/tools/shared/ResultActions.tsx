@@ -13,12 +13,12 @@ export interface ResultActionsProps {
   readonly shareFile?: ShareableResultFile | undefined;
 }
 
-export function ResultActions({ actions, onAction, shareFile }: ResultActionsProps) {
+function NativeShareAction({ shareFile }: { readonly shareFile: ShareableResultFile }) {
   const [canShareFile, setCanShareFile] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
 
   useEffect(() => {
-    if (shareFile === undefined || typeof navigator.share !== "function") {
+    if (typeof navigator.share !== "function") {
       setCanShareFile(false);
       return;
     }
@@ -28,10 +28,10 @@ export function ResultActions({ actions, onAction, shareFile }: ResultActionsPro
     } catch {
       setCanShareFile(false);
     }
-  }, [shareFile?.blob, shareFile?.filename]);
+  }, [shareFile.blob, shareFile.filename]);
 
   async function share(): Promise<void> {
-    if (!canShareFile || shareFile === undefined) return;
+    if (!canShareFile) return;
     try {
       const file = new File([shareFile.blob], shareFile.filename, { type: shareFile.blob.type });
       await navigator.share({ files: [file], title: shareFile.filename });
@@ -43,9 +43,15 @@ export function ResultActions({ actions, onAction, shareFile }: ResultActionsPro
     }
   }
 
-  if (actions.length === 0 && !canShareFile) return null;
+  return <>
+    {canShareFile && <button type="button" data-result-action="share" onClick={() => void share()}>Condividi file</button>}
+    {shareStatus !== "" && <p class="file-note" role="status">{shareStatus}</p>}
+  </>;
+}
+
+export function ResultActions({ actions, onAction, shareFile }: ResultActionsProps) {
+  if (actions.length === 0 && shareFile === undefined) return null;
   return (
-    <>
       <div class="actions" aria-label="Azioni sul risultato">
         {actions.map((action) => {
           const handler = onAction[action.id];
@@ -64,9 +70,7 @@ export function ResultActions({ actions, onAction, shareFile }: ResultActionsPro
             </button>
           );
         })}
-        {canShareFile && <button type="button" data-result-action="share" onClick={() => void share()}>Condividi file</button>}
+        {shareFile !== undefined && <NativeShareAction shareFile={shareFile} />}
       </div>
-      {shareStatus !== "" && <p class="file-note" role="status">{shareStatus}</p>}
-    </>
   );
 }
