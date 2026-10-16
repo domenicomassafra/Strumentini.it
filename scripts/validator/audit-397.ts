@@ -287,6 +287,7 @@ export async function auditAnnualOfficialSources397(options: AuditOptions397 = {
   for (const row of candidates) {
     let trusted = row.sources.length > 0 && row.tickets.every(ticket => evidence.has(ticket));
     if (row.sources.length === 0) report("UNPINNED_SOURCE", row.ruleId, "No unique official artifact in canonical snapshot");
+    const unlistedPaths: string[] = [];
     const checked: AuditedSource397[] = [];
     for (const source of row.sources) {
       const samePath = row.tickets.flatMap(ticket => {
@@ -297,6 +298,12 @@ export async function auditAnnualOfficialSources397(options: AuditOptions397 = {
       });
       const manifestMatch = samePath.filter(({ entry }) => entry.authority === source.authority &&
         entry.url === source.url && entry.sha256 === source.sha256);
+      // An engine-local hash is insufficient to certify an annual official rule
+      // unless the same URL, authority and bytes are in the authenticated ledger.
+      if (samePath.length === 0) {
+        trusted = false;
+        unlistedPaths.push(source.path);
+      }
       if (samePath.length !== 0 && manifestMatch.length !== 1) {
         report("MANIFEST_SOURCE_CONFLICT", source.path, "Source URL/authority/hash conflicts with authenticated manifest");
         trusted = false;
@@ -318,8 +325,11 @@ export async function auditAnnualOfficialSources397(options: AuditOptions397 = {
       references.push({ ruleId: row.ruleId, authority: row.authority, validFrom: null, validTo: null,
         scope: row.scope, sources: checked });
     } else {
-      gaps.push({ ruleId: row.ruleId, reason: "SOURCE_BYTES_NOT_AUTHENTICATED_OR_RANGE_INVALID",
-        scope: "Untrusted source/evidence or invalid interval; no rule promoted: " + row.scope });
+      gaps.push({ ruleId: row.ruleId,
+        reason: unlistedPaths.length ? "SOURCE_MISSING_FROM_AUTHENTICATED_LEDGER" : "SOURCE_BYTES_NOT_AUTHENTICATED_OR_RANGE_INVALID",
+        scope: unlistedPaths.length
+          ? `Missing annual source provenance: ${unlistedPaths.join(", ")}; no rule promoted`
+          : "Untrusted source/evidence or invalid interval; no rule promoted: " + row.scope });
     }
   }
   return { status: "PARTIAL_NO_GO", mode: "OFFLINE_PINNED_BYTES_ONLY", verified, references, gaps, violations };
