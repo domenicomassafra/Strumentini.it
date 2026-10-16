@@ -1,6 +1,6 @@
 /** #350 scoped axe-core 4.14 browser audit of actual compiled site.
- * TEMPORARY diagnostic in isolated clone. Not full WCAG, physical touch, or AT.
- * Run with `node tests/axe-350-20261014-built.browser.mjs` after `npm run build`.
+ * Not full WCAG, physical touch, or AT.
+ * Run after `npm ci` and `npm run build`; axe-core is a pinned devDependency.
  */
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -10,7 +10,7 @@ import { chromium } from "@playwright/test";
 
 const port = 19850;
 const origin = `http://127.0.0.1:${port}`;
-const axePath = resolve(".axe-350-tool/node_modules/axe-core/axe.min.js");
+const axePath = resolve("node_modules/axe-core/axe.min.js");
 const server = spawn("./node_modules/.bin/astro", ["preview", "--host", "127.0.0.1", "--port", String(port), "--strictPort"],
   { cwd: process.cwd(), stdio: ["ignore", "pipe", "pipe"] });
 const logs = [];
