@@ -22,6 +22,11 @@ const verifiedCount = catalog.filter((tool) => verifiedIds.has(tool.id)).length;
   description={`Il catalogo completo: ${catalog.length} strumenti online gratuiti per PDF, immagini, CSV, testo, date e lavoro d'ufficio, con filtri per categoria, tipo di ingresso e stato della verifica.`}
 >
   <DirectoryHero total={catalog.length} verified={verifiedCount} />
+  <aside style="max-width: 1100px; margin: 12px auto 24px; padding: 16px 20px; border: 1px solid var(--border); border-radius: 12px;">
+    <strong>Nuovo calcolo italiano:</strong>{" "}
+    <a href="/tools/tfr-calculator/">TFR lordo e rivalutazione per anno</a>.
+    <span> Usa le retribuzioni e gli indici FOI che inserisci; il risultato è indicativo.</span>
+  </aside>
   <JobRoutes />
   <CatalogDirectory tools={catalog} verifiedIds={verifiedIds} />
   <DirectoryBand />
