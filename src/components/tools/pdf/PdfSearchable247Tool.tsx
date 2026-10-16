@@ -50,6 +50,16 @@ export function PdfSearchable247Tool() {
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
   };
+  const downloadText = () => {
+    if (!result) return;
+    const text = result.pages.map((page) => `Pagina ${page.page}\n${page.text}`).join("\n\n");
+    const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = result.filename.replace(/\.pdf$/iu, ".txt");
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
 
   return <section class="ocr247" aria-label="PDF scansionato con testo ricercabile (esperimento)">
     <label for="ocr247-file"><strong>PDF da questo dispositivo</strong> (max 8 MiB; fino a 3 pagine, 2 scansioni)</label>
@@ -73,6 +83,11 @@ export function PdfSearchable247Tool() {
           : "testo PDF originale preservato, nessun nuovo OCR"}.
         Pixel modificati: {(page.differentPixelsRatio * 100).toFixed(4)}%; differenza massima {page.maxChannelDifference}/255.
       </li>)}</ul>
+      {result.pages.map((page) => <label key={page.page} class="ocr247-text-page">
+        <strong>Testo pagina {page.page} ({page.state === "OCR_ADDED" ? "riconosciuto dall'immagine" : "già presente nel PDF"})</strong>
+        <textarea readOnly rows={5} aria-label={`Testo pagina ${page.page}`} value={page.text} />
+      </label>)}
+      <button type="button" onClick={downloadText}>Scarica testo TXT con numeri di pagina</button>
       <button type="button" onClick={download}>Scarica PDF OCR verificato</button>
     </div>}
     <p>Prototipo italiano per testo stampato orientato correttamente. Il livello OCR è creato soltanto se Tesseract restituisce coordinate valide, confidenza pagina almeno 75/100 e confidenza di ciascuna parola almeno 45/100; anche questi indicatori sono non calibrati e il testo potrebbe essere sbagliato. I PDF firmati, cifrati, ruotati o complessi vengono rifiutati. Le pagine con testo digitale preesistente vengono conservate e non ricevono OCR, anche quando contengono immagini con scritte.</p>

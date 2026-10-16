@@ -44,6 +44,11 @@ try {
     assert.match(receipt, /OCR inserito/u);
     assert.match(receipt, /Pixel modificati: 0\.0000%/u);
     assert.match(receipt, /differenza massima 0\/255/u);
+    assert.match(await page.getByRole("textbox", { name: "Testo pagina 1" }).inputValue(), /Fattura numero 12345/u);
+    const textDownloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Scarica testo TXT con numeri di pagina" }).click();
+    const textDownload = await textDownloadPromise;
+    assert.match(await readFile(await textDownload.path(), "utf8"), /Pagina 1\nFattura numero 12345/u);
     if (pages === 2) assert.match(receipt, /testo PDF originale preservato/u);
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("button", { name: "Scarica PDF OCR verificato" }).click();
