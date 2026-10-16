@@ -254,6 +254,7 @@ export function assertSupportedSource237(source: Uint8Array): number {
   }
   const headerAt = /^(\d+)[\x00\t\n\f\r ]+(\d+)[\x00\t\n\f\r ]+obj(?=[\x00\t\n\f\r ])/u;
   const endObject = /(?:^|[\x00\t\n\f\r ])endobj(?=[\x00\t\n\f\r ]|$)/gu;
+  const streamOpen = /(?:^|[\x00\t\n\f\r ])stream(?:\r\n|[\r\n])/gu;
   for (let index = 0; index < ordered.length; index += 1) {
     const entry = ordered[index]!;
     const next = ordered[index + 1]?.pointer ?? offset;
@@ -263,8 +264,40 @@ export function assertSupportedSource237(source: Uint8Array): number {
     if (!header || Number(header[1]) !== entry.id || Number(header[2]) !== entry.generation) {
       refuse("L'oggetto PDF effettivo differisce dal suo puntatore xref.");
     }
-    const closing = endObject.exec(block);
-    if (!closing || endObject.exec(block)) refuse("Oggetto PDF ambiguo o non terminato.");
+    // A content stream is a length-bounded binary payload, not PDF grammar.
+    // In particular its text or pixels may contain whitespace-delimited
+    // `endobj` bytes without closing the enclosing indirect object. Only
+    // ignore those tokens after independently binding the physical payload
+    // length/bytes to the already parsed stream. Nonstream decoy objects still
+    // have multiple out-of-stream closing tokens and remain refused.
+    const parsedValue = model.objects.get(entry.id)?.value;
+    let streamStart = -1;
+    let streamEnd = -1;
+    if (parsedValue?.kind === "stream") {
+      const length = numberFrom(parsedValue.dictionary.entries.get("Length"));
+      streamOpen.lastIndex = header[0].length;
+      const opening = streamOpen.exec(block);
+      if (!opening || !Number.isSafeInteger(length) || length < 0 ||
+        length !== parsedValue.bytes.length) {
+        refuse("Stream PDF senza lunghezza fisica verificabile.");
+      }
+      streamStart = opening.index + opening[0].length;
+      streamEnd = streamStart + length;
+      if (streamEnd > block.length ||
+        !source.subarray(entry.pointer + streamStart, entry.pointer + streamEnd)
+          .every((byte, offsetInStream) => byte === parsedValue.bytes[offsetInStream]) ||
+        !/^(?:\r\n|[\r\n])?endstream(?=[\x00\t\n\f\r ])/u.test(block.slice(streamEnd))) {
+        refuse("Stream PDF non conforme alla lunghezza e ai byte dichiarati.");
+      }
+    }
+    let closing: RegExpExecArray | null = null;
+    for (let candidate = endObject.exec(block); candidate; candidate = endObject.exec(block)) {
+      const token = candidate.index + candidate[0].lastIndexOf("endobj");
+      if (streamStart >= 0 && token >= streamStart && token < streamEnd) continue;
+      if (closing) refuse("Oggetto PDF ambiguo o non terminato.");
+      closing = candidate;
+    }
+    if (!closing) refuse("Oggetto PDF ambiguo o non terminato.");
     let tail = closing.index + closing[0].length;
     while (tail < block.length) {
       const code = block.charCodeAt(tail);

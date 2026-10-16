@@ -63,6 +63,23 @@ function ordinaryLiteralHeader406(): Uint8Array {
   });
 }
 
+function ordinaryLiteralEndObject406(): Uint8Array {
+  return withClassicXref406((body) => {
+    const original = `(${PRIVATE_MARKER_237}) Tj`;
+    const replacement = `(${PRIVATE_MARKER_237}\nendobj\n) Tj`;
+    const start = body.indexOf("4 0 obj\n");
+    const finish = body.indexOf("endobj\n", start);
+    const chunk = body.slice(start, finish);
+    const length = /\/Length\s+(\d+)/u.exec(chunk);
+    if (start < 0 || finish < 0 || !length || !chunk.includes(original)) {
+      throw Error("Source content stream has changed");
+    }
+    const increased = chunk.replace(original, replacement).replace(/\/Length\s+\d+/u,
+      `/Length ${Number(length[1]) + Buffer.byteLength(replacement, "latin1") - Buffer.byteLength(original, "latin1")}`);
+    return body.slice(0, start) + increased + body.slice(finish);
+  });
+}
+
 const strictPython = [
   "from io import BytesIO",
   "from pypdf import PdfReader",
@@ -120,6 +137,23 @@ function nativeViewers406(source: Uint8Array, annotations: number): void {
 }
 
 describe("#406 effective classic xref applies to every PDF object, without scanning inside content", () => {
+  it("accepts a real single-revision PDF with a literal endobj token INSIDE a length-bounded content stream", async () => {
+    const source = ordinaryLiteralEndObject406();
+    const independent = pypdf406(source);
+    expect(independent).toMatchObject({ pages: 1, warnings: [], annotations: [] });
+    expect(independent.text).toContain("endobj");
+    nativeViewers406(source, 0);
+    const loader = getDocument({ data: Uint8Array.from(source), disableFontFace: true, useSystemFonts: true });
+    try {
+      const pdf = await loader.promise;
+      expect(pdf.numPages).toBe(1);
+      const page = await pdf.getPage(1);
+      const text = (await page.getTextContent()).items.map((x) => "str" in x ? x.str : "").join(" ");
+      expect(text).toContain(PRIVATE_MARKER_237);
+    } finally { await loader.destroy(); }
+    expect(assertSupportedSource237(source)).toBe(1);
+  }, 25_000);
+
   it("refuses a real xref-indexed annotated Page5 shadowed by an earlier benign Page5", async () => {
     const source = hiddenIndexedPage406();
     const independent = pypdf406(source);
