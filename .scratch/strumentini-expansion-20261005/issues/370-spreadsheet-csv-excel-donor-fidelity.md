@@ -162,3 +162,60 @@ ZIP/XML adversarial corpus, stale formula caches, true formula evaluation,
 rich formatting and media preservation, actual portable perf/mobile/physical
 measurements, owner/vendor rights and release/rollback approval are outside
 this narrow correction.
+
+## 2026-10-14 worker-2 — source formula-cache and typed numeric precision refusal (RED → GREEN; OPEN)
+
+- **Actual falsifiable source defect:** A standard ZIP/OOXML workbook cell
+  `B2` with real `<f>1+1</f>` and forged `<v>777</v>` exported CSV `777` as
+  if it were independently calculated. Without a cache, the same formula
+  exported a blank cell. Python standard-library `zipfile`/ElementTree built
+  both valid fixtures from the installed CSV→XLSX writer, reopened the actual
+  ZIP/XML and verified its CRC and formula/cache semantics. The old engine
+  also accepted an explicitly typed integer `9007199254740993`, which
+  JavaScript cannot represent exactly, and a tiny nonzero decimal rounded to
+  zero. Focused RED: initial 3 failures / 4 tests; after first correction, an
+  independent underflow regression reproduced another RED (1/7 failures).
+- **Bounded source correction:** `xlsxToCsv` now rejects sheets containing
+  actual `f` formula elements before the installed reader can publish
+  unverified cached values, including prefix-namespaced formulas and
+  noncanonical `xl/` XML parts. It skips XML comments and CDATA when detecting
+  formula elements. ZIP preflight already verifies member CRC/DEFLATE and
+  enforces 20 MiB total / 12 MiB per-member expanded limits before the bounded
+  scan. For explicitly numeric CSV→XLSX columns, values requiring more than
+  15 significant digits, outside safe integer precision, or silently
+  underflowing the JavaScript/Excel number range are rejected with
+  `INVALID_NUMBER`; users can preserve arbitrary source decimals as text.
+- **Positive controls:** A real workbook with an XML comment mentioning an
+  `f` element still imports; literal formula-looking CSV is written as inert
+  text, safe `12.50` becomes numeric `12.5`, long identifiers remain exact
+  text, and official ISTAT multi-sheet XLSX leading-zero values remain intact.
+  Historical pinned-oracle case was updated to expect refusal for forged
+  formula cache rather than documenting the old fail-open result.
+- **Validation:** Scoped `vitest run` covering the new adversarial suite,
+  donor historical regression, spreadsheet interchange, macro markers and
+  canonical/relocated external workbook dependencies: **6 suites PASS,
+  30 PASS / 6 optional SKIP**; opt-in openpyxl environment not present in this
+  run. Existing 12,006-cell roundtrip performed three times; host-local
+  p50 571 ms, max 676 ms, not a portable SLA. No new dependency, donor
+  adoption, Gold promotion, production exposure or physical-device claim.
+- **Original AC unchanged:** AC-370.1 and AC-370.3 remain **OPEN** pending
+  independent pinned donor/runtime comparison on richer multi-sheet files,
+  oracle and mobile/browser performance, rights, and production admission.
+  AC-370.2 disclosure stays checked. This narrow safety fix does not evaluate
+  formulas, preserve Excel styles/media, or certify rich spreadsheet fidelity.
+
+## 2026-10-14 worker-2 independent review P1 correction — chart formula references are not cell formulas (OPEN)
+
+**P1 reproduced on exact published `aaa11de5`:** the authentic tracked, CRC-valid, editable `tests/ooxml-68-corpus/complex.xlsx` has **zero** worksheet cell `<f>` formulas and **two** chart-series `<c:f>` references (`Sales!$A$2:$A$4`, `Sales!$B$2:$B$4`). Independent Python `zipfile.testzip()`/ElementTree verified both facts. The new `xl/**/*.xml` lexical formula detector mistakenly treated the chart's range references as cached calculation formulas, returning `UNSUPPORTED_XLSX_FEATURE`. The prior main source, loaded from exact original commit `9906d6a6` in memory, returned legitimate values-only CSV with **3 rows / 4 columns**, so this was a regression introduced by the first #370 formula fix. Dedicated new positive regression was **RED 1/9** while hidden/noncanonical worksheet formula negatives and the other existing cases passed.
+
+**Bounded fail-closed fix:** `src/engines/table/spreadsheet-interchange.ts` now derives actual worksheet part paths from *both* the size/CRC-verified `[Content_Types].xml` `spreadsheetml.worksheet+xml` Overrides and `xl/_rels/workbook.xml.rels` Type `/worksheet` targets; it normalizes package-relative paths and checks that each referenced worksheet has a matching content-type entry and that declared parts exist. It scans those worksheets for actual `<f>` elements before the installed generic reader, not drawings/charts containing different `<c:f>` reference semantics. A missing/mismatched/escaping worksheet relationship refuses instead of silently skipping formula detection. Genuine hidden sheet formulas and relocated noncanonical worksheet XML paths remain in scope, not only the selected visible sheet. Source document bytes are not mutated and no new provider/donor packages were added.
+
+**Proof:** `tests/xlsx-370-20261014-formula-precision.test.ts` now constructs actual two-sheet ZIP workbooks using installed writer and independent Python ZIP/ElementTree mutation/reopen: one hidden second sheet with stale `<f>1+1</f><v>777</v>`, one second sheet relocated to `xl/nonstandard/hidden-values.xml` with matching OOXML relationship and content-type declarations; both **refuse** before CSV export even when the first, unmodified visible sheet is selected. The tracked chart-rich positive imports as exactly `Quarter,Value,,Reference\nQ1,10,,Editable format\nQ2,23,,\nQ3,31,,`. Other original forged/uncached formula and decimal-precision refusals stay intact. Original ticket AC-370.1 and AC-370.3 **OPEN**, AC-370.2 disclosure still checked; no Office-rich fidelity, physical device, donor rights, approval, Gold or deployment claimed.
+
+## 2026-10-14 worker-6 independent XLSX numeric-import fidelity correction (RED → GREEN, original AC OPEN)
+
+**Actual P1 underflow and precision loss in XLSX→CSV:** The earlier `strictNumber` guard protected **CSV→XLSX** typed numeric exports only. A real values-only numeric Excel cell with XML `<v>9007199254740993</v>` passed the public `xlsxToCsv` importer and was emitted as `9007199254740992`. Likewise `0.1234567890123456789` was shortened to `0.12345678901234568`, and a nonzero decimal with 400 leading fractional zeros was exported as `0`. Another real XML attribute `t="&#x6e;"` decodes to the ordinary numeric type `n` and initially bypassed a plain-string type check. New independent `tests/xlsx-370-20261014-import-numeric-worker6.test.ts` uses the installed XLSX writer, re-zips real worksheet XML, then verifies each resulting ZIP CRC, parsed cell/type and original exact nonzero `Decimal` with **independent Python zipfile, ElementTree and decimal.Decimal**. Before source correction, the first focused run was **RED 5/7**; the encoded-type additional RED was **1/8** after the first fix.
+
+**Scoped correction:** `src/engines/table/spreadsheet-interchange.ts` examines raw worksheet numeric cell values **before** the general-purpose XLSX reader converts them into imprecise JavaScript numbers. It refuses a numeric cell with more than 15 significant digits, unsafe integer precision, nonfinite numeric value, nonzero underflow or subnormal magnitude, and refuses unknown/encoded XML cell-type declarations instead of assuming they are text. It restricts inspection to genuinely declared worksheet parts (including hidden and relocated sheets), ignoring comment/CDATA fake tags and nonnumeric OOXML shared strings, inline strings, dates, booleans and errors. Ordinary numeric scientific notation `1.25E+3` imports as `1250`, long text IDs remain exact, and the original chart-rich workbook and official ISTAT workbook still import. Source bytes are unchanged after refusal.
+
+**Final focused validation:** `./node_modules/.bin/vitest run tests/xlsx-370-20261014-import-numeric-worker6.test.ts tests/xlsx-370-20261014-formula-precision.test.ts tests/xlsx-370-20261013-relocated-external-link.test.ts tests/xlsx-370-20261013-external-workbook.test.ts tests/xlsx-macro-refusal-370-next.test.ts tests/donor-spreadsheets-370.test.ts tests/audit-xlsx-fidelity-370.test.ts tests/spreadsheet-interchange.test.ts tests/pdf-table-xlsx-254.test.ts tests/ooxml-package-rebuild.test.ts --testTimeout=20000` returned **9 suites PASS, 1 entirely skipped optional donor-oracle suite; 52 PASS / 12 SKIP**. Scoped strict `tsc --ignoreConfig --noEmit --target es2023 --module esnext --moduleResolution bundler --strict --skipLibCheck --types node,vite/client --lib es2023,dom` on the changed source/new test passed. This proves a source-level fail-closed importer boundary only: complete donor fidelity/benchmark, formula evaluation, styles/charts/media preservation, real devices, vendor rights, external security acceptance, Gold and release remain **NOT_RUN / NO_GO**. Original **AC-370.1 and AC-370.3 remain unchecked; AC-370.2 stays checked.** Worker made no Git/index/commit/push, provider, deployment or release mutation; prime handles integration.
