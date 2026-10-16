@@ -4,7 +4,7 @@ import { calculateTfr15, parseTfrRows15, TFR_15_SOURCES, type TfrEstimate15 } fr
 const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
 
 export function TfrCalculator15() {
-  const [annual, setAnnual] = useState("2023;30000;\n2024;32000;1,1\n2025;35000;1,08153078");
+  const [annual, setAnnual] = useState("2023;30000;\n2024;32000;1,1\n2025;35000;1,08");
   const [reduction, setReduction] = useState("0,5");
   const [result, setResult] = useState<TfrEstimate15 | null>(null);
   const [error, setError] = useState("");
