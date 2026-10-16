@@ -45,8 +45,8 @@ try {
   assert.equal(await page.locator("[data-cf-copy]").count(), 0);
   await page.locator("[data-cf-submit]").click();
   assert.equal(await page.locator("[data-cf-generated] [data-cf-code]").innerText(), "RSSMRA80A01H501U");
-  assert.match(await page.locator("[data-cf-historical-warning]").innerText(), /non è verificata/u);
-  mark("date change clears old export, historical candidate is explicitly uncertain");
+  assert.match(await page.locator("[data-cf-historical-warning]").innerText(), /ANPR conferma/u);
+  mark("date change clears old export, historical birthplace anchored to ANPR");
 
   await page.locator("#cf08-date").fill("2026-02-21");
   await page.locator("#cf08-place-kind").selectOption("foreign");

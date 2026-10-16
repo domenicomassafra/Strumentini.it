@@ -4,6 +4,7 @@ import {
   type ItalianGeographyCandidate115,
   type ItalianGeographyKind115,
 } from "../../reference-data/italy/geography-115";
+import { ANPR_HISTORICAL_115_METADATA, lookupAnprHistoricalMunicipality115 } from "../../reference-data/italy/geography-115-anpr-history";
 
 /**
  * #121 / DM Finanze 23 dicembre 1976, artt. 3-7 (GU n.345 del 29/12/1976).
@@ -39,9 +40,11 @@ export type CodiceFiscaleGeneration121 =
   | {
     readonly status: "GENERATED_CANDIDATE";
     readonly code: string;
-    readonly geography: ItalianGeographyCandidate115;
+    readonly geography: ItalianGeographyCandidate115 | (Omit<ItalianGeographyCandidate115, "provenance"> & {
+      readonly provenance: "ANPR_OFFICIAL_ARCHIVE_2023_10_03";
+    });
     readonly geographyVersion: string;
-    readonly geographyAtBirth: "SNAPSHOT_DATE_ONLY" | "NOT_VERIFIED";
+    readonly geographyAtBirth: "SNAPSHOT_DATE_ONLY" | "ANPR_ADMINISTRATIVE_INTERVAL_VERIFIED" | "NOT_VERIFIED";
     readonly identityConfirmed: false;
     readonly officialAssignment: false;
     readonly limitations: readonly string[];
@@ -215,28 +218,51 @@ export function generateCodiceFiscale121(input: CodiceFiscalePerson121): CodiceF
   if (!date) return refusal("INVALID_DATE", "Data di nascita impossibile o fuori dall'intervallo esplicito 1900–2099.");
   const location = lookupItalianGeography115(input.birthPlace.kind, input.birthPlace.istatCode);
   if (location.status === "INVALID_IDENTIFIER") return refusal("GEOGRAPHY_INVALID_ID", "Codice territoriale ISTAT malformato.");
-  if (location.status === "NOT_IN_SNAPSHOT") return refusal("GEOGRAPHY_NOT_IN_SNAPSHOT", "Luogo assente dagli snapshot ufficiali disponibili.");
-  if (location.status === "OFFICIAL_CODE_UNAVAILABLE") return refusal("GEOGRAPHY_CODE_UNAVAILABLE", "Codice catastale ufficiale ND/assente: non viene dedotto dal comune successore.");
-  const codes = [...new Set(location.candidates.map(({ belfiore }) => belfiore).filter((v): v is string => v !== null))];
-  if (codes.length !== 1) return refusal("GEOGRAPHY_AMBIGUOUS", "Più codici incompatibili per lo stesso identificativo storico.");
-  // #115 identifies a Belfiore code, but does not establish its validity for
-  // arbitrary birth dates. A clearly labelled *candidate* is still useful:
-  // absence of historical evidence must never be presented as confirmation.
-  const geographyAtBirth = input.birthPlace.kind === "current" &&
-    input.birthDate === ITALIAN_GEOGRAPHY_115_METADATA.currentMunicipalitiesAsOf
-    ? "SNAPSHOT_DATE_ONLY" as const : "NOT_VERIFIED" as const;
+  // ANPR contains actual administrative intervals through 2023. For covered
+  // dates, use its dated code even if SITUAS has ND or a later different code;
+  // refuse an unproven historical match instead of borrowing a modern code.
+  const historical = input.birthPlace.kind !== "foreign" && input.birthDate <= ANPR_HISTORICAL_115_METADATA.coverageUpperBound;
+  const anpr = historical ? lookupAnprHistoricalMunicipality115(input.birthPlace.istatCode, input.birthDate) : null;
+  let selected: Extract<CodiceFiscaleGeneration121, { status: "GENERATED_CANDIDATE" }>["geography"];
+  let geographyVersion: string;
+  let geographyAtBirth: Extract<CodiceFiscaleGeneration121, { status: "GENERATED_CANDIDATE" }>["geographyAtBirth"];
+  if (anpr) {
+    if (anpr.status === "OFFICIAL_CODE_UNAVAILABLE") {
+      return refusal("GEOGRAPHY_CODE_UNAVAILABLE", "Codice catastale storico ND/assente anche nella fonte ANPR: nessun codice dedotto.");
+    }
+    if (anpr.status !== "OFFICIAL_ADMINISTRATIVE_INTERVAL_MATCH" || anpr.candidates.length !== 1 || !anpr.candidates[0]!.belfiore) {
+      return refusal("GEOGRAPHY_TEMPORAL_UNVERIFIED", "ANPR non attesta un unico luogo con codice catastale alla data di nascita dichiarata.");
+    }
+    const matched = anpr.candidates[0]!;
+    selected = { istatCode: matched.istatCode, name: matched.name, belfiore: matched.belfiore,
+      sourceRow: matched.sourceRow, provenance: "ANPR_OFFICIAL_ARCHIVE_2023_10_03" };
+    geographyVersion = anpr.version;
+    geographyAtBirth = "ANPR_ADMINISTRATIVE_INTERVAL_VERIFIED";
+  } else {
+    if (location.status === "NOT_IN_SNAPSHOT") return refusal("GEOGRAPHY_NOT_IN_SNAPSHOT", "Luogo assente dagli snapshot ufficiali disponibili.");
+    if (location.status === "OFFICIAL_CODE_UNAVAILABLE") return refusal("GEOGRAPHY_CODE_UNAVAILABLE", "Codice catastale ufficiale ND/assente: non viene dedotto dal comune successore.");
+    const codes = [...new Set(location.candidates.map(({ belfiore }) => belfiore).filter((v): v is string => v !== null))];
+    if (codes.length !== 1) return refusal("GEOGRAPHY_AMBIGUOUS", "Più codici incompatibili per lo stesso identificativo storico.");
+    selected = { ...location.candidates.find((candidate) => candidate.belfiore === codes[0])! };
+    geographyVersion = location.version;
+    geographyAtBirth = input.birthPlace.kind === "current" &&
+      input.birthDate === ITALIAN_GEOGRAPHY_115_METADATA.currentMunicipalitiesAsOf
+      ? "SNAPSHOT_DATE_ONLY" : "NOT_VERIFIED";
+  }
   const first15 = threeLetters(surname, false) + threeLetters(name, true) + String(date.year).slice(-2)
     + MONTH_CODES[date.month - 1]!
     + String(date.day + (input.sex === "F" ? 40 : 0)).padStart(2, "0")
-    + codes[0];
+    + selected.belfiore!;
   const code = first15 + codiceFiscaleChecksum121(first15);
   return {
     status: "GENERATED_CANDIDATE", code,
-    geography: { ...location.candidates[0]! }, geographyVersion: location.version, geographyAtBirth,
+    geography: selected, geographyVersion, geographyAtBirth,
     identityConfirmed: false, officialAssignment: false,
     limitations: [
       "Codice calcolato localmente da dati dichiarati, non assegnato né verificato dall'Agenzia delle Entrate.",
-      geographyAtBirth === "NOT_VERIFIED"
+      geographyAtBirth === "ANPR_ADMINISTRATIVE_INTERVAL_VERIFIED"
+        ? "ANPR attesta il codice catastale nell'intervallo amministrativo della nascita; non è una verifica di attribuzione del codice fiscale."
+        : geographyAtBirth === "NOT_VERIFIED"
         ? "Il codice catastale è documentato nella fonte citata, ma la sua validità alla data di nascita non è verificata: controllare storicamente prima dell'uso."
         : "Il codice del Comune corrisponde allo snapshot ISTAT del 21/02/2026.",
       "Possibili omocodie e codici attribuiti dall'autorità non possono essere ricostruiti dai dati dichiarati.",

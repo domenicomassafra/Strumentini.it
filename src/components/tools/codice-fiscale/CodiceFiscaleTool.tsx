@@ -20,7 +20,7 @@ type Outcome =
   | { mode: "validate"; value: CodiceFiscaleValidation121; decoded: CodiceFiscaleDecoding122 }
   | { mode: "decode"; value: CodiceFiscaleDecoding122 };
 
-const sourceLabel = "ISTAT, elenco comuni del 21/02/2026; SITUAS per codici soppressi ed esteri";
+const sourceLabel = "ISTAT, elenco comuni del 21/02/2026; SITUAS per soppressi ed esteri; ANPR archivio comuni fino al 03/10/2023";
 const kinds: Record<GeoKind, string> = {
   current: "Comune italiano corrente",
   suppressed: "Comune storico o soppresso",
@@ -148,8 +148,8 @@ export function CodiceFiscaleTool() {
   return (
     <section class="cf08-tool" data-cf-public-tool="08" aria-label="Codice fiscale locale">
       <div class="cf08-notice" role="note">
-        <strong>Luoghi da dati ISTAT/SITUAS — snapshot del 21/02/2026.</strong>
-        <p>Puoi ottenere un <strong>codice candidato</strong> per date precedenti, comuni storici e Stati esteri quando la fonte contiene un unico codice catastale. Per queste date la validità storica del codice <strong>non è certificata</strong>: controlla il luogo alla nascita prima di usarlo.</p>
+        <strong>Luoghi da fonti ISTAT/SITUAS e archivio ANPR — versione dichiarata.</strong>
+        <p>Per i Comuni italiani con data fino al 03/10/2023 il codice candidato richiede un riscontro storico ANPR per il giorno di nascita. Per altre date e Stati esteri il risultato segnala esplicitamente quando manca una prova di validità storica. Non è un'attribuzione fiscale ufficiale.</p>
         <p>Calcolo solo nel browser. Non è un'identificazione, una verifica anagrafica né un'attribuzione ufficiale dell'Agenzia delle Entrate.</p>
       </div>
 
@@ -206,7 +206,7 @@ export function CodiceFiscaleTool() {
                   <input id="cf08-istat" inputMode="numeric" maxLength={6} value={istatCode}
                     placeholder={kind === "foreign" ? "201" : "058091"}
                     onInput={(e) => { setIstatCode(e.currentTarget.value); dirty(); }} /></label>
-                <p class="cf08-hint">Il codice deve appartenere alla fonte #115. Un codice assente/ND viene rifiutato; un codice presente ma non verificato alla nascita è segnalato come candidato.</p>
+                <p class="cf08-hint">Sono accettati codici territoriali esatti delle fonti #115: ANPR consente anche Comuni soppressi quando attesta il codice nella data scelta. Codici ND, ambigui o storicamente non dimostrati sono rifiutati.</p>
               </>
             ) : (
               <label class="field" for="cf08-code"><span>Codice fiscale (16 caratteri)</span>
@@ -235,7 +235,7 @@ export function CodiceFiscaleTool() {
               <output class="cf08-code" data-cf-code>{result.value.code}</output>
               <p>Comune: <strong>{result.value.geography.name}</strong> ({result.value.geography.istatCode}), Belfiore {result.value.geography.belfiore}.</p>
               <p class="cf08-hint">Fonte: {result.value.geography.provenance}. Non sono noti eventuali codici omocodici assegnati dall'autorità.</p>
-              <p class="cf08-hint" data-cf-historical-warning>{result.value.geographyAtBirth === "NOT_VERIFIED" ? "ATTENZIONE: la validità del luogo alla data di nascita non è verificata; il codice è solo un'ipotesi da controllare." : "Il codice catastale corrisponde allo snapshot ISTAT del 21/02/2026."}</p>
+              <p class="cf08-hint" data-cf-historical-warning>{result.value.geographyAtBirth === "ANPR_ADMINISTRATIVE_INTERVAL_VERIFIED" ? "ANPR conferma l'intervallo amministrativo e il codice catastale alla data di nascita; non conferma l'attribuzione fiscale personale." : result.value.geographyAtBirth === "NOT_VERIFIED" ? "ATTENZIONE: la validità del luogo alla data di nascita non è verificata; il codice è solo un'ipotesi da controllare." : "Il codice catastale corrisponde allo snapshot ISTAT del 21/02/2026."}</p>
             </div>
           )}
           {result?.mode === "validate" && result.value.status === "FORMALLY_VALID" && (
@@ -283,7 +283,7 @@ export function CodiceFiscaleTool() {
       </div>
       <footer class="cf08-source">
         <strong>Fonte delle regole:</strong> DM Finanze 23 dicembre 1976, artt. 3–7. <strong>Fonte dei codici:</strong> {sourceLabel}, versione {ITALIAN_GEOGRAPHY_115_METADATA.version}.
-        <p>Copertura incompleta: 16 comuni soppressi senza codice, 23 territori esteri senza codice, storia estera dal 1990 e intervalli storici alla nascita non attestati. Nessuna verifica su archivi di persone.</p>
+        <p>Copertura incompleta: alcuni Comuni soppressi e 23 territori esteri rimangono senza codice; ANPR copre intervalli amministrativi fino al 03/10/2023, non l'attribuzione alle persone né gli intervalli esteri. Nessuna verifica su archivi di persone.</p>
       </footer>
     </section>
   );
