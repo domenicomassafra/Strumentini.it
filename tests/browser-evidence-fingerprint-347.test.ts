@@ -95,13 +95,18 @@ describe("#347 canonical browser matrix source evidence", () => {
     });
   }, 40_000);
 
-  it("historic production receipt stays stale and byte-identical under --check", async () => {
+  it("repository browser receipt stays byte-identical under --check and is accepted only when truly source-current", async () => {
     const receipt = resolve(sourceRoot, receiptPath);
     const before = await readFile(receipt, "utf8");
-    const historical = JSON.parse(before) as { sourceFingerprint: string };
-    expect(historical.sourceFingerprint).not.toBe(await currentEvidenceSourceFingerprint(sourceRoot));
+    const observed = JSON.parse(before) as { sourceFingerprint?: string; sourceScopeVersion?: string };
+    const actuallyCurrent = observed.sourceFingerprint === await currentEvidenceSourceFingerprint(sourceRoot)
+      && observed.sourceScopeVersion === EVIDENCE_SOURCE_SCOPE_VERSION;
     const result = await sourceCheck(sourceRoot);
-    expect(result.exitCode).not.toBe(0);
+    // This regression used to assert the particular 2026-10-10 receipt must
+    // always remain stale, which would incorrectly reject the genuine fresh
+    // evidence producer after it was executed on a reviewed source SHA.
+    // Old/unbound evidence is still refused by the two adversarial tests above.
+    expect(result.exitCode === 0).toBe(actuallyCurrent);
     expect(await readFile(receipt, "utf8")).toBe(before);
   }, 25_000);
 });
