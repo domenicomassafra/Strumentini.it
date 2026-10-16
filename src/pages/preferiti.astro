@@ -282,6 +282,16 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
   const greeting = document.querySelector<HTMLElement>("[data-area-greeting]");
   const initial = document.querySelector<HTMLElement>("[data-area-initial]");
 
+  let verifiedMembership: Membership | undefined;
+  document.addEventListener("strumentini:membership-loading", () => {
+    verifiedMembership = undefined;
+    if (index.length > 0) render({ installed: [], recent: [] });
+  });
+  document.addEventListener("strumentini:membership-ready", (event) => {
+    verifiedMembership = (event as CustomEvent<Membership>).detail;
+    if (index.length > 0) render(verifiedMembership);
+  });
+
   void (async () => {
     try {
       const response = await fetch("/api/auth/session", { credentials: "same-origin", headers: { accept: "application/json" } });
@@ -297,8 +307,10 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
       /* Signed out: the greeting stays generic. */
     }
     await loadIndex();
-    subscribeMembership(render);
-    render(await loadMembership());
+    subscribeMembership((membership) => {
+      if (verifiedMembership !== undefined) render(membership);
+    });
+    if (verifiedMembership !== undefined) render(verifiedMembership);
   })();
 </script>
 
@@ -443,6 +455,8 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
     font: inherit;
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
+    min-width: 44px;
+    min-height: 44px;
   }
   :global([data-area-favorites] .tool-card) { scroll-margin-top: 110px; }
 

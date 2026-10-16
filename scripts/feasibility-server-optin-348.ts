@@ -61,7 +61,7 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // /api/auth/logout, now only a confirmed 204 redirects after logout.
   // Keep full-byte binding so any future unreviewed transport still fails.
   "src/components/account/AccountChip.astro": "1cca61e9d06940358a3bece7e7bf26232c645dafb774a99181682ce38b571402",
-  "src/components/account/MembershipBootstrap.astro": "ada60c9c8bea11b5d937c386f265e396f1cf354dc8cda6664f0fec040d240cca",
+  "src/components/account/MembershipBootstrap.astro": "a60c9bda9a79ad8a725070454ab9b07cf531dc856698e3b1f0ad6dc92876d8f1",
   "src/components/account/auth-client.ts": "326bcbe8d7a08aa37c7030b766e128974ebcd68e8cc56c5809a0dd44e6bcc8a0",
   // 2026-10-12 #330 reviewed: external GET remains explicit opt-in, no credentials/referrer, no new endpoint, abort/stale guard.
   "src/components/tools/ConnectionDeviceInfoTool.tsx": "fe92363d300ef4ac5e1e73d55f28ddb06eade2d46b218be6e73d3670b92acc84",
@@ -70,10 +70,10 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   "src/engines/url-marketing/index.ts": "b21ca7a9fe2002ba75e4a40e83a824e40bf06a57833f5eec58a59f09dbfae521",
   // 2026-10-11 reviewed #340 UI-only island/CSS change: the existing single
   // GET /api/auth/session is unchanged; no new transport API or endpoint.
-  "src/pages/preferiti.astro": "1fd9829f8ca46a98c77bde9e3270575ecbe6bb3746b283a87aae0066948715be",
+  "src/pages/preferiti.astro": "0453f0d266c7fcb8c7bc4b7bbfa695a19e76b399985f2f8300b4a5ff781cc22a",
   "src/telemetry/adapter.ts": "cc00368b762ea6d80d00b5a854764765a84e127b25c15049cf1b30e27cbbf50e",
   "src/telemetry/browser.ts": "2f2ecebad8da951a2329bd8364c727ec5f43f97fdc525ecc6c6077587f40ac1a",
-  "src/workbench/membership.ts": "b3c9dd70132f842dfe4718fbbf019fca5720d92e8449bca3e2ddd76771824028",
+  "src/workbench/membership.ts": "388f065b92d835c6b8cbef93d220a5959ca31a84caf3f9d9a88305c499f9c788",
 });
 
 const ALLOWED_ROUTES: ReadonlySet<string> = new Set([

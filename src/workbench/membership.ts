@@ -259,6 +259,13 @@ async function loadBaseline(): Promise<FavoriteSyncBaseline | undefined> {
   }
 }
 
+/** The shared IndexedDB list may belong to a previously signed-in account.
+ * Only expose it while signed into that same account; on anonymous/shared
+ * devices keep it hidden until the verified account baseline is available. */
+export async function membershipBaselineOwner(): Promise<string | undefined> {
+  return (await loadBaseline())?.account;
+}
+
 async function persistBaseline(baseline: FavoriteSyncBaseline): Promise<boolean> {
   sessionBaseline = baseline;
   try {

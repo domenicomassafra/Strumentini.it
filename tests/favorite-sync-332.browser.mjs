@@ -28,6 +28,9 @@ const tools = new Map();
 const writes = [];
 const blockedEgress = [];
 let offline = false;
+let holdNextAuth = false;
+let releaseAuth;
+let guestContext;
 const account = "browser-fixture-account";
 const snapshot = () => ({
   version: 1, account, revision,
@@ -51,9 +54,14 @@ async function context(browser) {
     blockedEgress.push(url);
     return route.abort("blockedbyclient");
   });
-  await ctx.route("**/api/auth/session", (route) => route.fulfill({
-    status: 200, contentType: "application/json", body: JSON.stringify({ user: { email: "browser@example.test" } }),
-  }));
+  await ctx.route("**/api/auth/session", async (route) => {
+    if (holdNextAuth && ctx === deferredContext) {
+      holdNextAuth = false;
+      await new Promise((resolve) => { releaseAuth = resolve; });
+    }
+    return route.fulfill({ status: 200, contentType: "application/json",
+      body: JSON.stringify({ user: ctx === guestContext ? null : { email: "browser@example.test" } }) });
+  });
   await ctx.route("**/api/favorites/sync", async (route) => {
     if (offline && ctx === offlineContext) return route.abort("internetdisconnected");
     const request = route.request();
@@ -72,6 +80,7 @@ async function context(browser) {
   return ctx;
 }
 let offlineContext;
+let deferredContext;
 
 try {
   for (let tries = 0; tries < 80; tries++) {
@@ -84,6 +93,7 @@ try {
   browsers.push(first, second);
   const ctxA = await context(first);
   const ctxB = await context(second);
+  deferredContext = ctxA;
   offlineContext = ctxB;
   const a = await ctxA.newPage();
   const b = await ctxB.newPage();
@@ -95,6 +105,9 @@ try {
   assert.equal((await b.goto(`${origin}/strumenti/`, { waitUntil: "domcontentloaded" }))?.status(), 200);
   const btnA = a.locator("button[data-membership-toggle]:visible").first();
   await expect(btnA).toHaveAttribute("aria-pressed", "false");
+  await expect(btnA).toBeEnabled();
+  assert.ok((await btnA.boundingBox()).width >= 44 && (await btnA.boundingBox()).height >= 44,
+    "Catalog heart must meet the 44px touch target");
   const toolId = await btnA.getAttribute("data-membership-toggle");
   assert.ok(toolId, "The actual catalog must expose a favorite button");
   const btnB = b.locator(`button[data-membership-toggle="${toolId}"]`);
@@ -108,6 +121,8 @@ try {
   const removeButton = b.locator(`button[data-membership-toggle="${toolId}"]`);
   await expect(removeButton).toBeVisible();
   await expect(removeButton).toHaveAttribute("aria-pressed", "true");
+  assert.ok((await removeButton.boundingBox()).width >= 44 && (await removeButton.boundingBox()).height >= 44,
+    "Remove button must meet the 44px touch target");
   assert.equal(await removeButton.evaluate((button) => getComputedStyle(button.closest(".tool-card").querySelector(".tool-card-name a"), "::after").content), "none",
     "Remove must be clickable separately from the card's stretched title link");
   await removeButton.click({ timeout: 7000 });
@@ -129,11 +144,51 @@ try {
   await expect(btnB).toHaveAttribute("aria-pressed", "false");
   assert.equal(writes.length, before, "Stale browser must not resurrect an independently deleted item");
   assert.equal(snapshot().tools.includes(toolId), false);
+  // A clicked control must not race the initial account/session read. Hold the
+  // actual auth HTTP response, verify disabled UI, then release and click.
+  holdNextAuth = true;
+  const authRequest = a.waitForRequest((request) => request.url().endsWith("/api/auth/session"));
+  await a.reload({ waitUntil: "domcontentloaded" });
+  await authRequest;
+  await expect(btnA).toBeDisabled();
+  const beforeAuthRelease = writes.length;
+  await expect.poll(() => typeof releaseAuth).toBe("function");
+  assert.equal(writes.length, beforeAuthRelease);
+  releaseAuth();
+  await expect(btnA).toBeEnabled();
+  await btnA.click();
+  await expect.poll(() => snapshot().tools.includes(toolId)).toBe(true);
+  assert.equal(writes.length, beforeAuthRelease + 1);
+
+  // After a reconnect event, replay a distinct tool's offline intent using
+  // its unchanged baseline; no artificial page reload is required.
+  const nextButton = b.locator("button[data-membership-toggle]:visible").nth(1);
+  const anotherId = await nextButton.getAttribute("data-membership-toggle");
+  assert.ok(anotherId && anotherId !== toolId);
+  offline = true;
+  await nextButton.click();
+  await expect(nextButton).toHaveAttribute("aria-pressed", "true");
+  assert.equal(snapshot().tools.includes(anotherId), false);
+  offline = false;
+  await b.evaluate(() => window.dispatchEvent(new Event("online")));
+  await expect.poll(() => snapshot().tools.includes(anotherId)).toBe(true);
+  // A signed-out visitor must not see persisted favorites that were created
+  // while another account was authenticated in this same browser profile.
+  guestContext = ctxA;
+  await a.reload({ waitUntil: "domcontentloaded" });
+  await expect(btnA).toBeDisabled();
+  await expect(btnA).toHaveAttribute("aria-pressed", "false");
+  await a.goto(`${origin}/preferiti/`, { waitUntil: "domcontentloaded" });
+  await expect(a.locator("[data-area-favorites] [data-membership-toggle]")).toHaveCount(0);
+  guestContext = undefined;
+  await a.goto(`${origin}/strumenti/`, { waitUntil: "domcontentloaded" });
+  await expect(btnA).toBeEnabled();
+  await expect(btnA).toHaveAttribute("aria-pressed", "true");
   assert.deepEqual(errors, [], "No uncaught browser errors");
   assert.deepEqual(blockedEgress, [], "No page attempted third-party network egress");
   console.log(JSON.stringify({ kind: "#332-real-chromium-isolated-processes", page: "/strumenti/ and /preferiti/",
     source: "current compiled dist", browserProcesses: 2, accountBackend: "deterministic fixture", toolId,
-    checks: ["add/converge", "remove/converge", "offline-newer-tombstone", "zero-pageerrors", "zero-external-requests"],
+    checks: ["add/converge", "remove/converge", "offline-newer-tombstone", "delayed-auth-initial-controls-disabled", "touch-targets-44", "online-reconnect-replay", "signed-out-favorites-private", "zero-pageerrors", "zero-external-requests"],
     result: "PASS", actualAuthenticatedStaging: "NOT_RUN" }));
 } finally {
   for (const browser of browsers) await browser.close().catch(() => undefined);
