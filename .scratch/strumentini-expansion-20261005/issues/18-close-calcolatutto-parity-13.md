@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 18 — Close CalcolaTutto 13/13 parity
 
 **What to build:** Add a machine-readable parity test/report proving every one of the 13 CalcolaTutto jobs captured on 2026-10-05 is either implemented as a new route or explicitly satisfied by an upgraded existing route, including Base64, color conversion, and percentage/IVA presentation parity.

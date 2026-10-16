@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 115 — Italian administrative geography source pack
 
 **What to build:** Pin a versioned official source pack for Comuni/Belfiore and foreign-state codes, including historical/suppressed status and stable identifiers needed by Codice Fiscale and administrative lookups.

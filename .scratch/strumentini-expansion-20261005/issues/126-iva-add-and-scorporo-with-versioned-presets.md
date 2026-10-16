@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 126 — IVA add and scorporo with versioned presets
 
 **What to build:** Add IVA calculation/scorporo using user-selectable sourced year/rate presets plus explicit custom rate, showing imponibile, IVA and totale with reproducible rounding.

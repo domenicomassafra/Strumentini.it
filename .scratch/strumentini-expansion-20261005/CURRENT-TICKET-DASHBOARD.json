@@ -1,5 +1,6 @@
 {
   "schemaVersion": 1,
+  "migrated_to": "GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.",
   "definitions": {
     "readyDAG": "Open tickets with all numeric dependencies completed; not proof of feasibility",
     "readyForAgent": "Assignable to investigate or implement; NOT a demonstrated passing capability",

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 11 — Upgrade IVA + percentage calculator
 
 **What to build:** Upgrade the existing percentage/math capability into explicit human jobs for IVA add/scorporo and percentage modes: X% of Y, X is what % of Y, increase/decrease, variation, reverse discount, with an answer-first breakdown instead of a generic formula dump.

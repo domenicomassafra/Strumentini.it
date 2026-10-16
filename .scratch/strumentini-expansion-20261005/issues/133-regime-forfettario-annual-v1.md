@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 133 — Regime forfettario annual v1
 
 **What to build:** Implement fatturato→coefficiente→reddito→contributi→imponibile→imposta→netto for bounded supported activity/INPS profiles, with 5%/15% tax eligibility entered explicitly rather than inferred.

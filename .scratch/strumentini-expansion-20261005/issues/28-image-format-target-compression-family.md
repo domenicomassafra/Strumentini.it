@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 28 — Image format + target-compression family
 
 **What to build:** Integrate the format-specific compressor and conversion work from tickets 47–49 into the public image family, with coherent route aliases, shared workspace/handoffs and one capability matrix; do not build a second codec path here.

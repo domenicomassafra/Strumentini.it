@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 277 — Physical Android Chrome image-resize acceptance
 
 **What to build:** Run the existing image-resize physical-device acceptance on a real Android Chrome device, capture current-build evidence and file/output verification, and record failure honestly if the path is not green.

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 46 — Full expansion certification + release integration
 
 **What to build:** Close the future program with one machine-readable integration report proving Result v2 coverage for the original 200, CalcolaTutto 13/13 parity, every accepted new route's oracle/fixture/maintenance/runtime declaration, privacy/network behavior, mobile/browser acceptance, performance budgets, and discoverability.

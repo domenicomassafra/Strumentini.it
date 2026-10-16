@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 279 — Image-resize Gold promotion gate
 
 **What to build:** Re-evaluate image-resize from Partial to Gold only after current desktop/browser evidence and both required physical-device receipts are valid on the same source fingerprint.

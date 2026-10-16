@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 328 — P0 Account Turnstile login reale
 
 **What to build:** Registrazione/login con challenge funzionante.

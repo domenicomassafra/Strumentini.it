@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 47 — JPEG/PNG/WebP/SVG compression engines
 
 **What to build:** Replace the current one-size-fits-all canvas re-encode model with format-aware local compression for JPEG, PNG, WebP and SVG: JPEG-native lossy controls, PNG lossless + palette/lossy modes, WebP lossy/lossless controls, and SVGO-style vector optimization.

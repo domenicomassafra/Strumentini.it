@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 24 — Office/Markdown productivity family
 
 **What to build:** Integrate the detailed document-conversion work into the broader Office productivity surface, then add the remaining non-conversion jobs: Office viewers, metadata cleanup, embedded-image compression, VCF→CSV, EML/MSG inspection and EPUB reading/export where the feasibility gate approves them.

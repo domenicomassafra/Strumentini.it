@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 381 — Image editor canvas e layers
 
 **What to build:** Composizione locale multi-layer con opacità ordine visibilità

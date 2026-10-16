@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 212 — HEIC AVIF and GIF directional image implementations
 
 **What to build:** After the codec feasibility decision, implement only accepted directional HEIC/HEIF decode, AVIF encode/decode and GIF still/animated conversion jobs with explicit fidelity/animation rules.

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 392 — Rich Office fidelity corpus and go-no-go
 
 **What to build:** Rich DOCX XLSX PPTX converter accepted only for provably faithful subset

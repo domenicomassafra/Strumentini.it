@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 409 — Tax-year review ownership and retrospective versions
 
 **What to build:** Annual source owner and change log manage effective/retroactive amendments

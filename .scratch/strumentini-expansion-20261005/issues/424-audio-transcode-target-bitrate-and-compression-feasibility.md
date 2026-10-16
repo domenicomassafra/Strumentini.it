@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 424 — Audio transcode target bitrate and compression feasibility
 
 **What to build:** Compare browser native/installed/donor codecs and device acceptable size/quality.

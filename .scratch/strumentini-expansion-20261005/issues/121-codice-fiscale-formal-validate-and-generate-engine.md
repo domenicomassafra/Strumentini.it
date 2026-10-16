@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 121 — Codice Fiscale formal validate and generate engine
 
 **What to build:** Implement local formal validation and generation from declared personal fields, using official month/sex/date/checksum rules and the versioned geography pack; result must say it is not official assignment.

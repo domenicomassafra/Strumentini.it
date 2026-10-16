@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 130 — Stipendio netto annual v1
 
 **What to build:** Compose supported employee contributions and IRPEF into RAL→contributions→tax→net annual/monthly, separating tax math from 12/13/14-payment presentation and avoiding payroll-cert accuracy claims.

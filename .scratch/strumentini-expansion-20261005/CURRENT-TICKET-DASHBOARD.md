@@ -1,7 +1,9 @@
-# Strumentini.it — execution dashboard (generated)
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
 
-Machine source: ticket issue files + `ticket_dashboard.py`. Rebuild with `python3 .scratch/strumentini-expansion-20261005/ticket_dashboard.py --write`; validate with `--check`.
-This is a backlog/triage dashboard, **not** a release readiness or Gold certificate.
+# Strumentini.it — execution dashboard (archivio legacy)
+
+Snapshot storico dei ticket nei file; lo stato aggiornato è soltanto su GitHub Issues. `--check` verifica l'integrità di questo snapshot; `--write` è disabilitato.
+Questi conteggi sono storici, **non** una fotografia corrente o una certificazione Gold.
 
 | Metric | Count |
 |---|---:|
