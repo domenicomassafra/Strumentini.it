@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 379 — PDF progetto history e undo
 
 **What to build:** Progetti edit PDF opt-in con undo redo e restore

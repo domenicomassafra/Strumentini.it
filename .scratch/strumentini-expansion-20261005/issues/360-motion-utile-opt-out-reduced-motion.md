@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 360 — Motion utile opt-out reduced-motion
 
 **What to build:** Motion orienta progress/cambio senza nascondere contenuto.

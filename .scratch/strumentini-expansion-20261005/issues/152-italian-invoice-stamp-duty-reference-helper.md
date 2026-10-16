@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 152 — Italian invoice stamp-duty reference helper
 
 **What to build:** Create a bounded reference calculator/checklist for supported Italian invoice stamp-duty conditions using versioned primary-source rules, with clear scope and non-legal-cert language.

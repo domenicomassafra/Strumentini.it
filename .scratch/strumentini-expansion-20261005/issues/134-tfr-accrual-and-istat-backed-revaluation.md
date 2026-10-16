@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 134 — TFR accrual and ISTAT-backed revaluation
 
 **What to build:** Implement gross TFR accrual and revaluation with explicit historical input/data coverage and versioned reference indices where required.

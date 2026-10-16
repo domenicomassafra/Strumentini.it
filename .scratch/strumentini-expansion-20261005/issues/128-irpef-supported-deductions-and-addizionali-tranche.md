@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 128 — IRPEF supported deductions and addizionali tranche
 
 **What to build:** Add only specifically sourced deduction/regional/municipal components with declared locality/year coverage, returning partial rather than invented values when data is missing.

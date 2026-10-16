@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 278 — Physical iOS Safari image-resize acceptance
 
 **What to build:** Run the existing image-resize acceptance on real iOS Safari, capture current-build evidence and output verification, and record any Safari-specific limitations instead of substituting simulator/desktop evidence.

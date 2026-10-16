@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 12 — IRPEF annual calculator
 
 **What to build:** Add a year-scoped Italian IRPEF calculator whose rates, brackets, supported deductions/addizionali and assumptions come from versioned official reference data and whose result shows a reproducible calculation breakdown.

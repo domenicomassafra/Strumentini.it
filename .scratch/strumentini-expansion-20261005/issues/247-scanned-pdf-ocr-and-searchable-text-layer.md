@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 247 — Scanned PDF OCR and searchable text layer
 
 **What to build:** Apply the accepted OCR stack to scanned PDF pages and produce selectable/searchable text-layer output while preserving page appearance within declared tolerance.

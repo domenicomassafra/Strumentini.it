@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 350 — P0 Accessibilità AA di base e advanced
 
 **What to build:** Input/result/touch/keyboard/screenreader passano floor WCAG 2.2 AA.

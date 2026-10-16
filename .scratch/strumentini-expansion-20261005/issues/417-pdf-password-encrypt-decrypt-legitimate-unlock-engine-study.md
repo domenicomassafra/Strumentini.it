@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 417 — PDF password encrypt decrypt legitimate unlock engine study
 
 **What to build:** Compare approved encryption/decryption engine for supplied valid password only.

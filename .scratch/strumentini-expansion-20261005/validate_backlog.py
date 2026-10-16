@@ -9,6 +9,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 ISSUES = ROOT / "issues"
 DAG = ROOT / "TICKET-DAG.md"
+MIGRATION_URL = "https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue"
+MIGRATION_NOTICE = (
+    f"MIGRATO su GitHub Issues il 17/10/2026: {MIGRATION_URL}. "
+    "Non aggiornare più questo file."
+)
 ALLOWED_STATUSES = frozenset({"blocked", "completed", "ready-for-agent"})
 
 
@@ -117,14 +122,16 @@ def validate(tickets: dict[int, Ticket]) -> list[int]:
 
 def render_dag(tickets: dict[int, Ticket], frontier: list[int]) -> str:
     lines = [
+        MIGRATION_NOTICE,
+        "",
         "# Strumentini.it future expansion — ticket DAG",
         "",
-        "Status: **future implementation queue; ticket planning only**",
+        "Status: **archivio legacy congelato il 17/10/2026**",
         "Origin: `docs/10-tool-expansion-result-system-v2.md` + `docs/11-format-operation-matrix.md`",
-        "Generated from issue metadata; refresh with `python3 .scratch/strumentini-expansion-20261005/ticket_dashboard.py --write`.",
+        "Archivio storico dei file ticket: aggiornamenti e nuove richieste esclusivamente su GitHub Issues.",
         f"Coverage: **{len(tickets)} tickets, IDs 01–{max(tickets):03d}, continuous, acyclic**",
         "",
-        "This DAG is the scheduling authority. Parent tickets that depend on targeted children are integration/closure gates; implement the children first. Skill routing lives in `SKILL-ROUTING.md`, and tickets 70–327 also carry ticket-specific `Suggested skills`.",
+        "Le dipendenze qui sotto sono uno snapshot storico. L'unico tracker aggiornato è GitHub Issues. Skill routing legacy in `SKILL-ROUTING.md`.",
         "",
         "## Current dependency frontier",
         "",

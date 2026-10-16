@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 158 — Italy source freshness and annual rollover gate
 
 **What to build:** Add a CI/report gate that enumerates every time-varying Italy source pack/tool, its supported latest year/effective date and next-review condition so stale fiscal/admin data cannot silently ship.

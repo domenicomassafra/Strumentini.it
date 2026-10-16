@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 421 — EML MSG offline viewer and safe attachment handling
 
 **What to build:** Locally parse supported email formats and safely export message/attachments.

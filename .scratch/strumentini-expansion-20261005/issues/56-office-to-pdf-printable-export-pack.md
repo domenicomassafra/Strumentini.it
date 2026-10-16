@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 56 — Office-to-PDF and printable export pack
 
 **What to build:** Add DOCX→PDF, XLSX→PDF, PPTX→PDF where rendering fidelity passes the feasibility gate, plus deterministic TXT/Markdown/HTML/CSV→PDF printable exports with explicit page size, orientation, margins, fonts, wrapping and page-number controls.

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 407 — Hostile parsers and archive resource safety
 
 **What to build:** File parsers refuse dangerous zip SVG XML PDF object graphs before materializing

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 135 — TFR indicative taxation layer
 
 **What to build:** Add a separate indicative taxation layer over gross/revalued TFR with explicit history inputs and scope limits; never imply employer settlement or official liquidation.

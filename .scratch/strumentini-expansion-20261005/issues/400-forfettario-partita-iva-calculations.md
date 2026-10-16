@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 400 — Forfettario partita IVA calculations
 
 **What to build:** Coefficient rates INPS and taxes year pinned for supported business cases

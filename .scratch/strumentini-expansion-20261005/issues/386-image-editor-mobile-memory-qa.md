@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 386 — Image editor mobile memory QA
 
 **What to build:** Touch pan zoom e export iPhone Android con budget misurato

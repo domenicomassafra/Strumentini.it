@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 369 — Motore PDF editor proprietary-safe confronto
 
 **What to build:** Confronta existing PDF libs, MuPDF alternative e licenze

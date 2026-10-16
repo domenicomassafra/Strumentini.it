@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 349 — File server opt-in TTL delete prova
 
 **What to build:** Se approvato upload esplicito ha retention/cancellazione verificabile.

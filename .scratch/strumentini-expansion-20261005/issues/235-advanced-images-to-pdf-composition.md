@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 235 — Advanced Images to PDF composition
 
 **What to build:** Upgrade images→PDF with reorder/rotate, A4/Letter/original geometry, margins, fit/fill, orientation and one-image/page vs contact-sheet modes.

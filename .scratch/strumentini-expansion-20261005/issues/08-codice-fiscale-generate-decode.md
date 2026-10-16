@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 08 — Codice Fiscale generate/decode
 
 **What to build:** Add local Codice Fiscale generation, checksum validation, and decode from an existing code, with municipality/Belfiore lookup, foreign-birth support where the maintained dataset permits it, and explicit handling of omocodia limits.

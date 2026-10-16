@@ -1,15 +1,15 @@
-# Strumentini.it — Live ticket execution and historical project snapshot
+# Strumentini.it — Archivio ticket e storico del progetto
 
-Historical project checkpoint: **2026-10-08**. Live ticket counts below are generated from the issue files, independently of that historical checkpoint.
+Checkpoint storico del progetto: **2026-10-08**. I conteggi legacy qui sotto sono congelati al **17/10/2026**; il tracker attuale è [GitHub Issues](https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue).
 
-For ongoing work, use the live ticket panel, the linked issue files and the current checkout/CI/release receipts. **All remaining sections below the historical divider describe the 2026-10-08 checkpoint, not present-day code, tests, catalog certification, production or Git state.** Do not reuse their counts as current facts.
+Per il lavoro corrente consulta GitHub Issues, il codice e la CI. **Le sezioni sotto il separatore storico descrivono il checkpoint 2026-10-08**, senza attestare lo stato attuale di codice, test, produzione o Git.
 
 <!-- tickets:live-status:start -->
-## Live ticket execution (generated)
+## Archivio ticket al 17/10/2026
 
-Source of truth: `.scratch/strumentini-expansion-20261005/issues/` and the generated [`CURRENT-TICKET-DASHBOARD.md`](.scratch/strumentini-expansion-20261005/CURRENT-TICKET-DASHBOARD.md). `npm run tickets:sync` refreshes this panel; `npm run tickets:check` fails on drift.
+Fonte attuale dei ticket: [GitHub Issues](https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue). La tabella qui sotto è uno snapshot legacy del 17/10/2026 conservato per consultazione; `npm run tickets:check` verifica soltanto l'archivio, `tickets:sync` è disabilitato.
 
-| Metric | Current count |
+| Metric | Snapshot 17/10/2026 |
 |---|---:|
 | All tickets | 424 |
 | Administratively completed | 311 |

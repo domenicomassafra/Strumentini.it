@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 364 — Canary e rollback design per tranche
 
 **What to build:** Refactor visual conserva SEO/route e output.

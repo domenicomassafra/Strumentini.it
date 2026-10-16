@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 376 — PDF form input edit e flatten
 
 **What to build:** Compilazione campi e flatten esplicito con esito verificato

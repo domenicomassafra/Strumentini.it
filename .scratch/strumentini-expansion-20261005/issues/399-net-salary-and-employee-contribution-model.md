@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 399 — Net salary and employee contribution model
 
 **What to build:** Yearly salary net produces assumptions on contributions/deductions

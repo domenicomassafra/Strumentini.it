@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 13 — Stipendio netto annual calculator
 
 **What to build:** Add an annual RAL-to-net salary estimator built on the year-scoped IRPEF/reference framework, with explicit employment assumptions, contribution inputs, monthly-payment convention and a transparent gross-to-net bridge.
