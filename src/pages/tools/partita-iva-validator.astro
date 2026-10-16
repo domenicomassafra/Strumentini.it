@@ -119,11 +119,15 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
         });
         output.textContent = "Anno d'imposta " + result.taxYear +
           " · Imposta sostitutiva stimata: " + euro(result.substituteTaxCents) +
+          " · Ricavi dichiarati: " + euro(result.yearReceiptsCents) +
+          " · Settore: " + result.coefficientSector + " (riga fonte " + result.coefficientTableRow + ")" +
           " · Coefficiente ATECO2007: " + result.coefficientPercent + "%" +
           " · Reddito forfettario stimato: " + euro(result.grossForfettarioIncomeCents) +
           " · Contributi già pagati dichiarati: " + euro(result.paidMandatoryContributionsCents) +
           " · Base imponibile modellata: " + euro(result.taxableIncomeCents) +
-          ". Non certifica requisiti, aliquote INPS o imposta effettiva.";
+          " · Aliquota imposta dichiarata: " + result.declaredTaxRatePercent + "%" +
+          " · Netto stimato dopo contributi dichiarati e imposta: " + euro(result.estimatedNetAfterTaxAndContributionsCents) +
+          ". Questo netto non sottrae spese effettive; contributi INPS e requisiti non sono calcolati o certificati.";
       } catch (cause) {
         const code = String(cause);
         if (code.includes("FORF133_OFFICIAL_COEFFICIENT_MISSING") || code.includes("FORF133_UNSUPPORTED_ATECO")) {

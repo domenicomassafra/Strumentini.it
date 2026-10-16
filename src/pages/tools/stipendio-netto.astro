@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Stipendio netto da RAL — stima annua 2025/2026" description="Simula il netto annuo da RAL con contributi dichiarati e IRPEF nazionale verificata, mostrando tutte le ipotesi." noindex>
+  <main class="salary13" data-salary13>
+    <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / Stipendio netto</nav>
+    <h1>Stima stipendio netto annuale da RAL</h1>
+    <p>Simulazione locale semplificata per dipendenti. Il contributo a carico del dipendente è un'ipotesi che inserisci tu: contratto, gestione INPS e condizioni individuali possono cambiarlo. L'IRPEF nazionale usa le fonti annuali indicate sotto.</p>
+    <form novalidate>
+      <label for="salary13-year">Anno d'imposta</label>
+      <select id="salary13-year" name="year"><option value="2025">2025</option><option value="2026">2026</option></select>
+      <label for="salary13-ral">RAL lorda (€; senza separatori delle migliaia)</label>
+      <input id="salary13-ral" name="ral" type="text" inputmode="decimal" placeholder="35000,00" required />
+      <label for="salary13-contributions">Contributi dipendente ipotizzati (%) — verifica l'aliquota sul tuo cedolino</label>
+      <input id="salary13-contributions" name="contributions" type="text" inputmode="decimal" placeholder="9,19" required />
+      <label for="salary13-payments">Mensilità per presentare il risultato</label>
+      <select id="salary13-payments" name="payments"><option value="12">12</option><option value="13" selected>13</option><option value="14">14</option></select>
+      <button type="submit">Stima netto e mostra i passaggi</button>
+    </form>
+    <p class="error" role="alert" hidden></p>
+    <output aria-live="polite"></output>
+    <p class="scope"><strong>Limiti accanto al risultato:</strong> nessuna detrazione, credito, addizionale regionale/comunale, trattamento integrativo, benefit o caso contrattuale speciale è calcolato. Il netto risultante è una stima nazionale parziale e può differire dal cedolino reale.</p>
+    <p class="scope">Fonti: <a href="https://www.normattiva.it/eli/stato/LEGGE/2024/12/30/207/ORIGINAL">Legge 207/2024 (IRPEF 2025)</a> e <a href="https://www.normattiva.it/eli/stato/LEGGE/2025/12/30/199/CONSOLIDATED">legge 199/2025 (IRPEF 2026)</a>. L'aliquota contributiva non proviene da queste fonti: è sempre dichiarata dall'utente.</p>
+    <p><a href="/tools/irpef-annuale/">Vedi il calcolo IRPEF annua per scaglioni</a></p>
+  </main>
+</BaseLayout>
+<script>
+  import { calculateStipendioNetto13 } from "../../engines/italy/stipendio-netto-13";
+  const root = document.querySelector<HTMLElement>("[data-salary13]");
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const output = root.querySelector<HTMLOutputElement>("output")!;
+    const error = root.querySelector<HTMLElement>(".error")!;
+    const field = (name: string) => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
+    const eur = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+    const parseMoney = (value: string): number | null => {
+      if (!/^(?:0|[1-9]\d{0,8})(?:[.,]\d{1,2})?$/u.test(value)) return null;
+      const [whole = "0", decimals = ""] = value.split(/[.,]/u);
+      return Number(whole) * 100 + Number(decimals.padEnd(2, "0"));
+    };
+    form.addEventListener("input", () => { output.textContent = ""; error.hidden = true; });
+    form.addEventListener("change", () => { output.textContent = ""; error.hidden = true; });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      output.replaceChildren(); error.hidden = true;
+      const ralCents = parseMoney(field("ral").trim());
+      if (ralCents === null) { error.textContent = "RAL non valida: usa euro e al massimo due decimali."; error.hidden = false; return; }
+      try {
+        const result = calculateStipendioNetto13({ taxYear: Number(field("year")), ralCents,
+          contributionRatePercent: field("contributions"), paymentsPerYear: Number(field("payments")) as 12 | 13 | 14 });
+        const heading = document.createElement("h2"); heading.textContent = `Stima parziale del netto annuo ${result.taxYear}: ${eur(result.annualNetBeforeUnmodeledTaxesCents)}`;
+        const payment = document.createElement("p"); payment.textContent = `${result.paymentsPerYear} mensilità: circa ${eur(result.indicativePaymentCents)} per mensilità. La scelta delle mensilità non cambia imposte o netto annuale.`;
+        const breakdown = document.createElement("ol");
+        for (const item of [
+          `RAL lorda: ${eur(result.ralCents)}`,
+          `Contributi dipendente (${result.employeeContributionRatePercent}% dichiarati): −${eur(result.employeeContributionsCents)}`,
+          `Imponibile IRPEF nazionale modellato: ${eur(result.taxableIncomeCents)}`,
+          ...result.irpefLines.map((line) => `Scaglione al ${(line.rateBasisPoints / 100).toLocaleString("it-IT")}%: ${eur(line.taxableBandCents)} × aliquota = ${eur(line.taxCents)}`),
+          `IRPEF lorda nazionale: −${eur(result.nationalGrossIrpefCents)}`,
+          `Netto annuale stimato prima delle voci non modellate: ${eur(result.annualNetBeforeUnmodeledTaxesCents)}`,
+        ]) { const li = document.createElement("li"); li.textContent = item; breakdown.append(li); }
+        const caveat = document.createElement("p"); caveat.textContent = result.limitations;
+        output.append(heading, payment, breakdown, caveat);
+      } catch { error.textContent = "Anno, importi o percentuale non supportati: controlla i campi (percentuale tra 0 e 100)."; error.hidden = false; }
+    });
+  }
+</script>
+<style>
+  .salary13 { width: min(740px,calc(100% - 32px)); margin: 32px auto 72px; display:grid; gap: 16px; min-width:0; }
+  .salary13 h1, .salary13 h2, .salary13 p { margin:0; }
+  .salary13 form { display:grid; gap:10px; border:1px solid var(--border); border-radius:12px; padding:20px; }
+  .salary13 input,.salary13 select,.salary13 button { padding:10px; min-width:0; box-sizing:border-box; width:100%; }
+  .salary13 button { cursor:pointer; }
+  .salary13 button:focus-visible,.salary13 a:focus-visible { outline:3px solid currentColor; outline-offset:2px; }
+  .salary13 output:not(:empty) { border-left:3px solid currentColor; padding:16px; display:grid; gap:12px; }
+  .salary13 .scope { color:var(--text-muted); }
+</style>

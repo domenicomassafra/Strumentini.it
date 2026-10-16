@@ -5,4 +5,61 @@ import { PercentageHelperTool } from "../../components/tools/business-math/Perce
 
 <ItalianToolPage toolId="percentage-helper">
   <PercentageHelperTool client:load />
+  <section class="vat11" data-vat11 aria-labelledby="vat11-heading">
+    <h2 id="vat11-heading">Aggiungi IVA o scorpora IVA dal totale</h2>
+    <p>Calcolo matematico dell'IVA con aliquota indicata da te; non stabilisce l'aliquota legalmente applicabile. Per i calcoli percentuali generali usa lo strumento sopra.</p>
+    <form novalidate>
+      <label for="vat11-operation">Operazione</label>
+      <select name="operation" id="vat11-operation"><option value="add">Aggiungi IVA all'imponibile</option><option value="scorporo">Scorpora IVA dal totale lordo</option></select>
+      <label for="vat11-amount">Importo in euro (senza separatori delle migliaia)</label>
+      <input id="vat11-amount" name="amount" type="text" inputmode="decimal" placeholder="122,00" required />
+      <label for="vat11-rate">Aliquota IVA dichiarata (%) — es. 22, 10, 5, 4</label>
+      <input id="vat11-rate" name="rate" type="text" inputmode="decimal" placeholder="22" required />
+      <button type="submit">Calcola IVA e mostra i passaggi</button>
+    </form>
+    <p role="alert" class="vat11-error" hidden></p>
+    <output aria-live="polite"></output>
+    <p class="vat11-note">Anno e classificazione dell'operazione fiscale non verificati: l'aliquota è personalizzata, non un preset normativo. Calcolo al centesimo in locale; lo scorporo arrotonda l'imponibile e determina l'IVA per differenza. <a href="https://www.normattiva.it/eli/id/1972/10/26/072U0633/CONSOLIDATED">Riferimento: DPR 633/1972</a>.</p>
+  </section>
 </ItalianToolPage>
+<script>
+  import { calculateVat126 } from "../../engines/italy/vat-126";
+  const root = document.querySelector<HTMLElement>("[data-vat11]");
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const output = root.querySelector<HTMLOutputElement>("output")!;
+    const error = root.querySelector<HTMLElement>("[role=alert]")!;
+    const field = (name: string) => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value.trim();
+    const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+    form.addEventListener("input", () => { output.textContent = ""; error.hidden = true; });
+    form.addEventListener("change", () => { output.textContent = ""; error.hidden = true; });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault(); output.replaceChildren(); error.hidden = true;
+      const raw = field("amount");
+      if (!/^(?:0|[1-9]\d{0,9})(?:[.,]\d{1,2})?$/u.test(raw)) {
+        error.textContent = "Importo non valido: euro non negativi, massimo due decimali, senza separatori delle migliaia."; error.hidden = false; return;
+      }
+      const [whole = "0", fraction = ""] = raw.split(/[.,]/u);
+      const amountCents = Number(whole) * 100 + Number(fraction.padEnd(2, "0"));
+      try {
+        const result = calculateVat126({ operation: field("operation") as "add" | "scorporo", amountCents, rate: { kind: "custom", percent: field("rate") } });
+        const title = document.createElement("strong"); title.textContent = `Totale: ${euro(result.grossCents)}`;
+        const detail = document.createElement("p"); detail.textContent = `Imponibile: ${euro(result.netCents)} · Aliquota dichiarata: ${result.ratePercent}% · IVA: ${euro(result.vatCents)} · Totale lordo: ${euro(result.grossCents)}.`;
+        const formula = document.createElement("p"); formula.textContent = field("operation") === "add"
+          ? "Formula: IVA = imponibile × aliquota / 100; totale = imponibile + IVA."
+          : "Formula: imponibile = totale / (1 + aliquota / 100); IVA = totale − imponibile.";
+        output.append(title, detail, formula);
+      } catch { error.textContent = "Aliquota non valida: indica una percentuale da 0 a 100 con massimo quattro decimali."; error.hidden = false; }
+    });
+  }
+</script>
+<style>
+  .vat11 { border:1px solid var(--border); border-radius:14px; padding:clamp(16px,3vw,28px); margin:24px 0; display:grid; gap:12px; max-width:80ch; }
+  .vat11 h2,.vat11 p { margin:0; }
+  .vat11 form { display:grid; gap:10px; }
+  .vat11 input,.vat11 select,.vat11 button { min-width:0; width:100%; box-sizing:border-box; padding:10px; }
+  .vat11 button { cursor:pointer; }
+  .vat11 button:focus-visible,.vat11 a:focus-visible { outline:3px solid currentColor; outline-offset:2px; }
+  .vat11 output:not(:empty) { display:grid; gap:8px; padding:12px; border-left:3px solid currentColor; }
+  .vat11-note { color:var(--text-muted); font-size:0.9rem; }
+</style>

@@ -1,0 +1,66 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Calcolatore IRPEF annua 2025 e 2026" description="Calcola l'IRPEF lorda nazionale annua per scaglioni, con fonti e limiti del modello." noindex>
+  <main class="irpef12" data-irpef12>
+    <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / IRPEF annua</nav>
+    <h1>Calcolo IRPEF annua: scaglioni e passaggi</h1>
+    <p>Parti dal reddito <strong>già imponibile IRPEF</strong>, dopo gli oneri deducibili applicabili. Il calcolo copre le aliquote nazionali lorde 2025 e 2026, senza ricostruire la dichiarazione o l'imponibile individuale.</p>
+    <form novalidate>
+      <label for="irpef12-year">Anno d'imposta</label>
+      <select name="year" id="irpef12-year"><option value="2025">2025</option><option value="2026">2026</option></select>
+      <label for="irpef12-income">Reddito imponibile annuo in euro (senza separatori delle migliaia)</label>
+      <input id="irpef12-income" name="income" type="text" inputmode="decimal" placeholder="40000,00" required />
+      <button type="submit">Calcola IRPEF e mostra gli scaglioni</button>
+    </form>
+    <p class="error" role="alert" hidden></p>
+    <output aria-live="polite"></output>
+    <p class="scope"><strong>Non inclusi nel risultato:</strong> detrazioni per lavoro e carichi familiari, crediti e bonus, addizionali comunali/regionali, imposte sostitutive e altre condizioni individuali. Sono esplicitamente pari a «non calcolato», non a zero. L'imposta effettiva dovuta può essere diversa.</p>
+    <p class="scope">Fonti: <a href="https://www.normattiva.it/eli/stato/LEGGE/2024/12/30/207/ORIGINAL">Legge 207/2024 (anno 2025 e base 2026)</a>; <a href="https://www.normattiva.it/eli/stato/LEGGE/2025/12/30/199/CONSOLIDATED">legge 199/2025 (modifica 2026)</a>. Estratti ufficiali identificati per anno nel repository.</p>
+    <p><a href="/tools/stipendio-netto/">Stima separata del netto da RAL</a></p>
+  </main>
+</BaseLayout>
+<script>
+  import { calculateNationalGrossIrpef127 } from "../../engines/italy/irpef-national-127";
+  const root = document.querySelector<HTMLElement>("[data-irpef12]");
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const output = root.querySelector<HTMLOutputElement>("output")!;
+    const error = root.querySelector<HTMLElement>(".error")!;
+    const field = (name: string) => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value.trim();
+    const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+    form.addEventListener("input", () => { output.textContent = ""; error.hidden = true; });
+    form.addEventListener("change", () => { output.textContent = ""; error.hidden = true; });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault(); output.replaceChildren(); error.hidden = true;
+      const raw = field("income");
+      if (!/^(?:0|[1-9]\d{0,9})(?:[.,]\d{1,2})?$/u.test(raw)) {
+        error.textContent = "Reddito non valido: inserisci euro non negativi con massimo due decimali e senza separatori delle migliaia."; error.hidden = false; return;
+      }
+      const [units = "0", decimals = ""] = raw.split(/[.,]/u);
+      try {
+        const result = calculateNationalGrossIrpef127(Number(field("year")), Number(units) * 100 + Number(decimals.padEnd(2, "0")));
+        const heading = document.createElement("h2"); heading.textContent = `IRPEF lorda nazionale ${result.taxYear}: ${euro(result.grossNationalTaxCents)}`;
+        const intro = document.createElement("p"); intro.textContent = `Reddito imponibile: ${euro(result.taxableIncomeCents)}. Applicazione progressiva di ogni aliquota al solo reddito di quello scaglione:`;
+        const lines = document.createElement("ol");
+        for (const line of result.lines) {
+          const item = document.createElement("li");
+          item.textContent = `${euro(line.taxableBandCents)} × ${(line.rateBasisPoints / 100).toLocaleString("it-IT")}% = ${euro(line.taxCents)} (limite dello scaglione ${line.upperBoundCents === null ? "oltre €50.000" : euro(line.upperBoundCents)})`;
+          lines.append(item);
+        }
+        const total = document.createElement("p"); total.textContent = `Somma imposte per scaglione (IRPEF lorda): ${euro(result.grossNationalTaxCents)}. Detrazioni: non calcolate. Addizionali: non calcolate. Imposta finale individuale: non calcolabile con questi dati.`;
+        output.append(heading, intro, lines, total);
+      } catch { error.textContent = "Anno o reddito fuori dal perimetro verificato (solo 2025 e 2026)."; error.hidden = false; }
+    });
+  }
+</script>
+<style>
+  .irpef12 { width:min(740px,calc(100% - 32px)); margin:32px auto 72px; display:grid; gap:16px; min-width:0; }
+  .irpef12 h1,.irpef12 h2,.irpef12 p { margin:0; }
+  .irpef12 form { display:grid; gap:10px; border:1px solid var(--border); border-radius:12px; padding:20px; }
+  .irpef12 input,.irpef12 select,.irpef12 button { padding:10px; min-width:0; box-sizing:border-box; width:100%; }
+  .irpef12 button { cursor:pointer; }
+  .irpef12 button:focus-visible,.irpef12 a:focus-visible { outline:3px solid currentColor; outline-offset:2px; }
+  .irpef12 output:not(:empty) { display:grid; gap:12px; padding:16px; border-left:3px solid currentColor; }
+  .irpef12 .scope { color:var(--text-muted); }
+</style>
