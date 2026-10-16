@@ -172,32 +172,21 @@ export function assertSupportedSource237(source: Uint8Array): number {
     || pagesTree.generation !== pagesReference.generation) {
     refuse("Catalog e albero delle pagine PDF non verificabili.");
   }
-  // A forged, unreferenced Catalog can also satisfy the text scan while the
-  // real xref points at a second Catalog after a form-feed. Detect duplicate
-  // indirect declarations of the active root, including all PDF whitespace
-  // separators, before trusting the parser's chosen Catalog dictionary.
+  // The shared text-scanning parser may also index an unreferenced benign
+  // Page while the actual xref points to a SECOND, unsafe Page definition.
+  // Validate every effective xref object, not merely the Catalog. Conversely,
+  // object-looking text inside a page's literal string/stream is not another
+  // indirect object: do not globally grep for its header.
   if (!Number.isSafeInteger(model.root.id) || !Number.isSafeInteger(model.root.generation)) {
     refuse("Identificatore Catalog PDF ambiguo.");
   }
-  const rootHeaders = new RegExp(
-    `(?:^|[\\x00\\t\\n\\f\\r ])${model.root.id}[\\x00\\t\\n\\f\\r ]+${model.root.generation}[\\x00\\t\\n\\f\\r ]+obj(?=[\\x00\\t\\n\\f\\r ])`,
-    "gu",
-  );
-  const rootHeader = rootHeaders.exec(sourceText);
-  if (!rootHeader || rootHeaders.exec(sourceText)) {
-    refuse("Dichiarazioni Catalog PDF duplicate o non verificabili.");
-  }
-  const rootHeaderOffset = rootHeader.index + rootHeader[0].indexOf(String(model.root.id));
-  // Cross-check the real classic xref's active root entry instead of merely
-  // trusting the lightweight parser's first matching textual object. An xref
-  // may point to a different object even if an unindexed benign Catalog looks
-  // plausible. This source profile accepts bounded classic entries only.
   const xrefBody = footer.slice(4, trailer.index);
   const subsection = /(\d+)[ \t]+(\d+)(?=[\x00\t\n\f\r ])/gy;
   const record = /(\d{10})[ \t]+(\d{5})[ \t]+([nf])(?=[\x00\t\n\f\r ])/gy;
   let at = 0;
-  let indexedRootOffset: number | null = null;
   let totalEntries = 0;
+  const indexed: { id: number; generation: number; pointer: number }[] = [];
+  const activeIds = new Set<number>();
   const skipXrefTrivia = (): void => {
     while (at < xrefBody.length) {
       const code = xrefBody.charCodeAt(at);
@@ -224,21 +213,67 @@ export function assertSupportedSource237(source: Uint8Array): number {
       record.lastIndex = at;
       const entry = record.exec(xrefBody);
       if (!entry) refuse("Voce xref PDF non canonica.");
-      if (firstId + index === model.root.id) {
+      if (entry[3] === "n") {
+        const id = firstId + index;
         const generation = Number(entry[2]);
         const pointer = Number(entry[1]);
-        if (indexedRootOffset !== null || entry[3] !== "n" || generation !== model.root.generation
-          || !Number.isSafeInteger(pointer) || pointer < 0 || pointer >= offset) {
-          refuse("Catalog xref duplicato o non valido.");
+        const parsed = model.objects.get(id);
+        if (id < 1 || activeIds.has(id) || indexed.length >= 1000 || !parsed
+          || parsed.generation !== generation || !Number.isSafeInteger(pointer)
+          || pointer < 0 || pointer >= offset) {
+          refuse("Oggetto xref attivo assente, duplicato o non valido.");
         }
-        indexedRootOffset = pointer;
+        activeIds.add(id);
+        indexed.push({ id, generation, pointer });
       }
       at = record.lastIndex;
       totalEntries += 1;
     }
   }
-  if (indexedRootOffset !== rootHeaderOffset) {
-    refuse("Il Catalog PDF differisce dal puntatore xref effettivo.");
+  if (indexed.length !== model.objects.size || !activeIds.has(model.root.id)) {
+    refuse("La mappa xref differisce dagli oggetti del parser PDF.");
+  }
+  // Physical xref offsets split this limited classic layout into bounded,
+  // independently indexed object intervals. Each interval must contain a
+  // single complete indirect definition ending in endobj plus PDF trivia.
+  // An unindexed decoy before an effective, form-feed-hidden definition then
+  // leaves extra object bytes in the preceding interval and is refused.
+  // Only inspect these indexed intervals: content-stream strings that happen
+  // to spell "6 0 obj" cannot manufacture phantom xref records.
+  const ordered = indexed.sort((left, right) => left.pointer - right.pointer);
+  const preamble = sourceText.slice(0, ordered[0]?.pointer ?? 0);
+  const versionLine = /^%PDF-\d\.\d(?:\r\n|[\r\n])/u.exec(preamble);
+  if (!versionLine) refuse("Intestazione PDF prima degli oggetti non verificabile.");
+  let preambleAt = versionLine[0].length;
+  while (preambleAt < preamble.length) {
+    const code = preamble.charCodeAt(preambleAt);
+    if (code === 0 || code === 9 || code === 10 || code === 12 || code === 13 || code === 32) preambleAt += 1;
+    else if (code === 37) {
+      while (preambleAt < preamble.length && preamble[preambleAt] !== "\n" && preamble[preambleAt] !== "\r") preambleAt += 1;
+    } else refuse("Oggetto PDF non indicizzato prima della tabella xref.");
+  }
+  const headerAt = /^(\d+)[\x00\t\n\f\r ]+(\d+)[\x00\t\n\f\r ]+obj(?=[\x00\t\n\f\r ])/u;
+  const endObject = /(?:^|[\x00\t\n\f\r ])endobj(?=[\x00\t\n\f\r ]|$)/gu;
+  for (let index = 0; index < ordered.length; index += 1) {
+    const entry = ordered[index]!;
+    const next = ordered[index + 1]?.pointer ?? offset;
+    if (next <= entry.pointer || next > offset) refuse("Puntatori xref sovrapposti.");
+    const block = sourceText.slice(entry.pointer, next);
+    const header = headerAt.exec(block);
+    if (!header || Number(header[1]) !== entry.id || Number(header[2]) !== entry.generation) {
+      refuse("L'oggetto PDF effettivo differisce dal suo puntatore xref.");
+    }
+    const closing = endObject.exec(block);
+    if (!closing || endObject.exec(block)) refuse("Oggetto PDF ambiguo o non terminato.");
+    let tail = closing.index + closing[0].length;
+    while (tail < block.length) {
+      const code = block.charCodeAt(tail);
+      if (code === 0 || code === 9 || code === 10 || code === 12 || code === 13 || code === 32) tail += 1;
+      else if (code === 37) {
+        while (tail < block.length && block[tail] !== "\r" && block[tail] !== "\n") tail += 1;
+      } else refuse("Byte estranei tra oggetti PDF indicizzati.");
+    }
+    endObject.lastIndex = 0;
   }
   // This security-sensitive path must not interpret one revision while PDF.js
   // displays another. Classic incremental/hybrid xrefs and linearized sources
