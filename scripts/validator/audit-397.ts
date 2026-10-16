@@ -14,7 +14,7 @@ import { ITALY_SOURCE_PACK_DECISIONS } from "../../src/reference-data/italy/sour
 
 const DEFAULT_ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const MAX_BYTES = 16 * 1024 * 1024;
-type SourcePin397 = { authority: string; title: string; url: string; path: string; sha256: string };
+type SourcePin397 = { authority: string; title: string; url: string; path: string; sha256: string; checkedAt?: string };
 type Evidence397 = { ticket: number; datasetId: string; checkedAt: string; artifacts: SourcePin397[]; frozenOfficialBulkArtifacts?: SourcePin397[] };
 export type AuditedSource397 = SourcePin397 & {
   checkedHash: boolean;
@@ -116,7 +116,8 @@ export function validOfficialEvidence397(
     if (typeof entry.authority !== "string" || typeof entry.title !== "string" || !entry.title.trim() ||
       typeof entry.url !== "string" || !officialUrl(entry.authority, entry.url) ||
       scopedPath397(DEFAULT_ROOT, entry.path) === null ||
-      typeof entry.sha256 !== "string" || !/^sha256:[0-9a-f]{64}$/u.test(entry.sha256)) return false;
+      typeof entry.sha256 !== "string" || !/^sha256:[0-9a-f]{64}$/u.test(entry.sha256) ||
+      (entry.checkedAt !== undefined && (!validDate(entry.checkedAt) || entry.checkedAt < checkedAt))) return false;
     if (paths.has(entry.path!)) return false;
     paths.add(entry.path!);
   }
@@ -294,7 +295,7 @@ export async function auditAnnualOfficialSources397(options: AuditOptions397 = {
         const item = evidence.get(ticket);
         const artifacts = [...(item?.artifacts ?? []), ...(item?.frozenOfficialBulkArtifacts ?? [])];
         const checkedAt = ITALY_SOURCE_PACK_DECISIONS.find(pack => pack.ticket === ticket)?.checkedAt;
-        return artifacts.filter(entry => entry.path === source.path).map(entry => ({ entry, checkedAt }));
+        return artifacts.filter(entry => entry.path === source.path).map(entry => ({ entry, checkedAt: entry.checkedAt ?? checkedAt }));
       });
       const manifestMatch = samePath.filter(({ entry }) => entry.authority === source.authority &&
         entry.url === source.url && entry.sha256 === source.sha256);
