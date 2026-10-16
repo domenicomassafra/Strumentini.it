@@ -221,12 +221,13 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
     return new Date(then).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
   }
 
-  function card(tool: IndexedTool, action: string, extra = "", reason = ""): string {
+  function card(tool: IndexedTool, action: string, extra = "", reason = "", removable = false): string {
     return `<li class="tool-card" style="--tile-tone: var(--tone-${tool.tone})">`
       + `<div class="tool-card-top"><h3 class="tool-card-name"><a href="${escapeHtml(tool.route)}">${escapeHtml(tool.name)}</a></h3>${extra}</div>`
       + `<p class="tool-card-summary">${escapeHtml(tool.summary)}</p>`
       + (reason === "" ? "" : `<p class="area-suggestion-why">${escapeHtml(reason)}</p>`)
       + `<div class="tool-card-foot"><span class="tool-card-category">${escapeHtml(tool.categoryLabel)}</span>`
+      + (removable ? `<button class="area-action" type="button" data-membership-toggle="${escapeHtml(tool.id)}" data-installed="true" aria-pressed="true" aria-label="Rimuovi dai tuoi strumenti">Rimuovi</button>` : "")
       + `<a class="area-action" href="${escapeHtml(tool.route)}">${escapeHtml(action)} <span aria-hidden="true">→</span></a></div></li>`;
   }
 
@@ -236,7 +237,7 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
       favorites.innerHTML = membership.installed
         .map((id) => byId.get(id))
         .filter((tool): tool is IndexedTool => tool !== undefined)
-        .map((tool) => card(tool, "Apri"))
+        .map((tool) => card(tool, "Apri", "", "", true))
         .join("");
     }
 
@@ -433,6 +434,17 @@ const categories = [...new Set(catalog.map((tool) => tool.category))].map((categ
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
   }
+  :global([data-area-favorites] .tool-card-name a::after) { content: none; }
+  :global([data-area-favorites] [data-membership-toggle]) {
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    border: 0;
+    font: inherit;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+  }
+  :global([data-area-favorites] .tool-card) { scroll-margin-top: 110px; }
 
   .area-empty { color: var(--text-muted); font-size: var(--font-size-sm); }
 

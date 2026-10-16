@@ -766,11 +766,21 @@ async function handleFavoriteSyncChange(context: RouteContext): Promise<Response
   if (typeof body.installed !== "boolean" || !Number.isSafeInteger(body.baseRevision) || (body.baseRevision as number) < 0) {
     return errorResponse(400, MESSAGES.invalidBody);
   }
-  const changed = await changeFavoriteIfCurrent(
-    context.env.AUTH_DB, auth.user.id, toolId.value, body.installed, body.baseRevision as number, nowIso(context.now),
+  // A cookie may change while an earlier fetch/reconcile is still in flight.
+  // Verify the account pinned by the client before its first D1 mutation.
+  if (typeof body.expectedAccount !== "string" || body.expectedAccount !== auth.user.id) {
+    return errorResponse(409, "La sessione è cambiata: aggiorna i preferiti.");
+  }
+  if (typeof body.operationId !== "string" || !/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/u.test(body.operationId)) {
+    return errorResponse(400, MESSAGES.invalidBody);
+  }
+  const appliedRevision = await changeFavoriteIfCurrent(
+    context.env.AUTH_DB, auth.user.id, toolId.value, body.installed, body.baseRevision as number,
+    body.operationId, nowIso(context.now),
   );
   const snapshot = await listFavoriteSync(context.env.AUTH_DB, auth.user.id);
-  return jsonResponse({ version: 1, account: auth.user.id, ...snapshot, applied: changed }, changed ? 200 : 409);
+  return jsonResponse({ version: 1, account: auth.user.id, ...snapshot, applied: appliedRevision !== null,
+    ...(appliedRevision === null ? {} : { appliedRevision }) }, appliedRevision === null ? 409 : 200);
 }
 
 async function handleFavoritesList(context: RouteContext): Promise<Response> {

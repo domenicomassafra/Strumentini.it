@@ -5,6 +5,7 @@ import { inputTypeLabelIt } from "../../i18n/it/taxonomy";
 import { iconSvgMarkup } from "../../ui/tool-icons";
 import UiIcon from "../icons/UiIcon.astro";
 import ToolCard from "../tools/ToolCard.astro";
+import MembershipBootstrap from "../account/MembershipBootstrap.astro";
 
 /**
  * The whole catalog: three views, a facet sidebar, a sort control and real
@@ -206,7 +207,7 @@ const groupedTools = groups.map((group) => ({
               </span>
               <a class="section-link" href={`/categorie/${group.slug}/`}>Apri la categoria</a>
             </li>
-            {groupTools.map((tool) => <ToolCard tool={tool} variant="card" />)}
+            {groupTools.map((tool) => <ToolCard tool={tool} variant="card" membership />)}
           </>
         ))}
       </ul>
@@ -223,6 +224,7 @@ const groupedTools = groups.map((group) => ({
     </div>
   </div>
 
+  <MembershipBootstrap />
   <script type="application/json" data-tool-meta set:html={metaJson}></script>
 
   <script is:inline>
