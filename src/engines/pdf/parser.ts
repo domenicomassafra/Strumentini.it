@@ -76,6 +76,10 @@ const WHITESPACE = new Set([0, 9, 10, 12, 13, 32]);
 const DELIMITERS = new Set([0, 9, 10, 12, 13, 32, 40, 41, 60, 62, 91, 93, 123, 125, 47, 37]);
 const MAX_VALUE_DEPTH = 128;
 const MAX_COLLECTION_ITEMS = 100_000;
+const MAX_OBJECT_STREAM_INFLATED_BYTES = 4 * 1024 * 1024;
+const MAX_TOTAL_OBJECT_STREAM_INFLATED_BYTES = 8 * 1024 * 1024;
+const MAX_OBJECT_STREAM_ENTRIES = 4_096;
+const MAX_OBJECT_STREAM_COUNT = 128;
 
 function isWhitespace(code: number): boolean {
   return WHITESPACE.has(code);
@@ -350,19 +354,34 @@ function hasFlateFilter(dictionary: PdfDictionary): boolean {
 
 function expandObjectStreams(objects: Map<number, PdfObject>): void {
   const streams = [...objects.values()].filter((object) => object.value.kind === "stream" && nameValue(object.value.dictionary.entries.get("Type")) === "ObjStm");
+  if (streams.length > MAX_OBJECT_STREAM_COUNT) throw new Error("PDF_LIMIT: too many compressed object streams");
+  let decodedTotal = 0;
   for (const object of streams) {
     if (object.value.kind !== "stream") continue;
     if (!hasFlateFilter(object.value.dictionary)) throw new Error("UNSUPPORTED_CAPABILITY: PDF object stream uses an unsupported filter");
-    const inflated = inflatePdfStream(object.value.bytes);
-    const text = new TextDecoder("latin1").decode(inflated);
     const countValue = object.value.dictionary.entries.get("N");
     const firstValue = object.value.dictionary.entries.get("First");
     const count = countValue?.kind === "literal" ? Number(countValue.value) : Number.NaN;
     const first = firstValue?.kind === "literal" ? Number(firstValue.value) : Number.NaN;
-    if (!Number.isInteger(count) || count < 0 || count > PDF_LIMITS.maxObjects || !Number.isInteger(first) || first < 0 || first > inflated.length) throw new Error("PDF_LIMIT: object stream header exceeds the local safety limit");
+    if (!Number.isSafeInteger(count) || count < 0 || count > MAX_OBJECT_STREAM_ENTRIES ||
+      !Number.isSafeInteger(first) || first < 0 || first > MAX_OBJECT_STREAM_INFLATED_BYTES) {
+      throw new Error("PDF_LIMIT: object stream header exceeds the local safety limit");
+    }
+    const budget = Math.min(MAX_OBJECT_STREAM_INFLATED_BYTES, MAX_TOTAL_OBJECT_STREAM_INFLATED_BYTES - decodedTotal);
+    if (budget < 1 || first > budget) throw new Error("PDF_LIMIT: compressed object streams exceed the aggregate budget");
+    const inflated = inflatePdfStream(object.value.bytes, budget);
+    decodedTotal += inflated.length;
+    const text = new TextDecoder("latin1").decode(inflated);
+    if (first > inflated.length) throw new Error("MALFORMED_PDF: object stream header exceeds the decoded payload");
     const header = text.slice(0, first);
-    const pairs = [...header.matchAll(/(\d+)\s+(\d+)/gu)];
-    if (pairs.length < count) throw new Error("MALFORMED_PDF: incomplete object stream header");
+    const pairs: RegExpExecArray[] = [];
+    const pairPattern = /(\d+)\s+(\d+)/gu;
+    let pair: RegExpExecArray | null;
+    while ((pair = pairPattern.exec(header)) !== null) {
+      if (pairs.length >= count) throw new Error("MALFORMED_PDF: excess object stream index entries");
+      pairs.push(pair);
+    }
+    if (pairs.length !== count) throw new Error("MALFORMED_PDF: incomplete object stream header");
     for (let index = 0; index < count; index += 1) {
       const pair = pairs[index];
       if (pair === undefined) throw new Error("MALFORMED_PDF: missing object stream pair");
@@ -380,7 +399,10 @@ function expandObjectStreams(objects: Map<number, PdfObject>): void {
   }
 }
 
-export function parsePdf(bytes: Uint8Array): PdfDocumentModel {
+export function parsePdf(
+  bytes: Uint8Array,
+  options: { readonly expandObjectStreams?: boolean } = {},
+): PdfDocumentModel {
   if (bytes.byteLength < 8) throw new Error("INVALID_INPUT: PDF is too small");
   if (bytes.byteLength > PDF_LIMITS.maxBytes) throw new Error("PDF_LIMIT: PDF exceeds the local byte limit");
   const text = new TextDecoder("latin1").decode(bytes);
@@ -413,7 +435,10 @@ export function parsePdf(bytes: Uint8Array): PdfDocumentModel {
     cursor = end;
   }
   if (objects.size === 0) throw new Error("MALFORMED_PDF: no indirect objects found");
-  expandObjectStreams(objects);
+  // Security admission paths that need only the physical source objects can
+  // inspect the /ObjStm dictionaries before any untrusted Flate inflation.
+  // Normal PDF consumers retain the existing object-stream expansion.
+  if (options.expandObjectStreams !== false) expandObjectStreams(objects);
   const trailer = findTrailer(text, objects);
   const root = asReference(trailer.entries.get("Root"));
   const info = asReference(trailer.entries.get("Info"));

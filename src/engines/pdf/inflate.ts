@@ -118,13 +118,39 @@ function dynamicTables(reader: BitReader): { readonly literals: HuffmanTable; re
   return { literals: buildHuffman(lengths.slice(0, literalCount)), distances: buildHuffman(lengths.slice(literalCount)) };
 }
 
-function appendBytes(output: number[], bytes: Uint8Array, start: number, length: number): void {
-  if (length < 0 || start < 0 || start + length > bytes.length) throw new Error("MALFORMED_PDF: invalid stored block");
-  for (let index = 0; index < length; index += 1) output.push(bytes[start + index] ?? 0);
+interface BoundedOutput {
+  bytes: Uint8Array;
+  used: number;
+  readonly limit: number;
 }
 
-function inflateRaw(reader: BitReader): Uint8Array {
-  const output: number[] = [];
+function reserveOutput(output: BoundedOutput, additional: number): void {
+  const required = output.used + additional;
+  if (!Number.isSafeInteger(required) || required > output.limit) {
+    throw new Error("PDF_LIMIT: decompressed stream exceeds the local limit");
+  }
+  if (required <= output.bytes.length) return;
+  const larger = new Uint8Array(Math.min(output.limit, Math.max(required, output.bytes.length * 2)));
+  larger.set(output.bytes.subarray(0, output.used));
+  output.bytes = larger;
+}
+
+function appendBytes(output: BoundedOutput, bytes: Uint8Array, start: number, length: number): void {
+  if (length < 0 || start < 0 || start + length > bytes.length) throw new Error("MALFORMED_PDF: invalid stored block");
+  reserveOutput(output, length);
+  output.bytes.set(bytes.subarray(start, start + length), output.used);
+  output.used += length;
+}
+
+function inflateRaw(reader: BitReader, maxOutputBytes: number): Uint8Array {
+  // A JS number[] uses several bytes per decoded PDF byte and can exhaust the
+  // V8 heap long before its byte-count limit. Grow a typed buffer under the
+  // caller's explicit cap, even for tiny high-ratio compressed object streams.
+  const output: BoundedOutput = {
+    bytes: new Uint8Array(Math.min(maxOutputBytes, Math.max(1024, Math.min(reader.bytes.length * 4, 65_536)))),
+    used: 0,
+    limit: maxOutputBytes,
+  };
   let final = false;
   while (!final) {
     final = readBits(reader, 1) === 1;
@@ -138,7 +164,6 @@ function inflateRaw(reader: BitReader): Uint8Array {
       if ((length ^ 0xffff) !== complement) throw new Error("MALFORMED_PDF: stored block length check failed");
       appendBytes(output, reader.bytes, reader.offset, length);
       reader.offset += length;
-      if (output.length > MAX_OUTPUT_BYTES) throw new Error("PDF_LIMIT: decompressed stream exceeds the local limit");
       continue;
     }
     if (type === 3) throw new Error("MALFORMED_PDF: reserved compressed block type");
@@ -147,8 +172,8 @@ function inflateRaw(reader: BitReader): Uint8Array {
       const symbol = decodeSymbol(reader, tables.literals);
       if (symbol < 0 || symbol > 285) throw new Error("MALFORMED_PDF: invalid literal/length symbol");
       if (symbol < 256) {
-        output.push(symbol);
-        if (output.length > MAX_OUTPUT_BYTES) throw new Error("PDF_LIMIT: decompressed stream exceeds the local limit");
+        reserveOutput(output, 1);
+        output.bytes[output.used++] = symbol;
         continue;
       }
       if (symbol === 256) break;
@@ -157,13 +182,18 @@ function inflateRaw(reader: BitReader): Uint8Array {
       const distanceSymbol = decodeSymbol(reader, tables.distances);
       if (distanceSymbol < 0 || distanceSymbol >= DISTANCE_BASE.length) throw new Error("MALFORMED_PDF: invalid distance symbol");
       const distance = (DISTANCE_BASE[distanceSymbol] ?? 0) + readBits(reader, DISTANCE_EXTRA[distanceSymbol] ?? 0);
-      if (distance > output.length) throw new Error("MALFORMED_PDF: distance exceeds output window");
-      const start = output.length - distance;
-      for (let index = 0; index < length; index += 1) output.push(output[start + index] ?? 0);
-      if (output.length > MAX_OUTPUT_BYTES) throw new Error("PDF_LIMIT: decompressed stream exceeds the local limit");
+      if (distance > output.used) throw new Error("MALFORMED_PDF: distance exceeds output window");
+      reserveOutput(output, length);
+      const start = output.used - distance;
+      // Bytewise forward copy is intentional: DEFLATE allows overlapping
+      // distance references that repeat bytes emitted earlier in this match.
+      for (let index = 0; index < length; index += 1) {
+        output.bytes[output.used + index] = output.bytes[start + index]!;
+      }
+      output.used += length;
     }
   }
-  return Uint8Array.from(output);
+  return output.bytes.slice(0, output.used);
 }
 
 function adler32(bytes: Uint8Array): number {
@@ -176,22 +206,26 @@ function adler32(bytes: Uint8Array): number {
   return ((b << 16) | a) >>> 0;
 }
 
-export function inflateZlib(bytes: Uint8Array): Uint8Array {
+export function inflateZlib(bytes: Uint8Array, maxOutputBytes = MAX_OUTPUT_BYTES): Uint8Array {
   if (bytes.length < 6) throw new Error("MALFORMED_PDF: truncated Flate stream");
+  if (!Number.isSafeInteger(maxOutputBytes) || maxOutputBytes < 1 || maxOutputBytes > MAX_OUTPUT_BYTES) {
+    throw new Error("PDF_LIMIT: invalid decompression budget");
+  }
   const cmf = bytes[0] ?? 0;
   const flg = bytes[1] ?? 0;
   if ((cmf & 0x0f) !== 8 || ((cmf << 8) | flg) % 31 !== 0) throw new Error("MALFORMED_PDF: unsupported Flate header");
   const reader: BitReader = { bytes, offset: 2, bitBuffer: 0, bitCount: 0 };
-  const output = inflateRaw(reader);
+  const output = inflateRaw(reader, maxOutputBytes);
   alignReader(reader);
-  if (reader.offset + 4 <= bytes.length) {
-    const expected = ((bytes[reader.offset] ?? 0) << 24) | ((bytes[reader.offset + 1] ?? 0) << 16) | ((bytes[reader.offset + 2] ?? 0) << 8) | (bytes[reader.offset + 3] ?? 0);
-    const actual = adler32(output);
-    if (expected >>> 0 !== actual) throw new Error("MALFORMED_PDF: Flate checksum failed");
-  }
+  // An incomplete Adler-32 footer or unconsumed bytes after it are recoverable
+  // in the input and cannot be treated as a validated compressed stream.
+  if (reader.offset + 4 !== bytes.length) throw new Error("MALFORMED_PDF: Flate stream has missing or trailing bytes");
+  const expected = ((bytes[reader.offset] ?? 0) << 24) | ((bytes[reader.offset + 1] ?? 0) << 16) | ((bytes[reader.offset + 2] ?? 0) << 8) | (bytes[reader.offset + 3] ?? 0);
+  const actual = adler32(output);
+  if (expected >>> 0 !== actual) throw new Error("MALFORMED_PDF: Flate checksum failed");
   return output;
 }
 
-export function inflatePdfStream(bytes: Uint8Array): Uint8Array {
-  return inflateZlib(bytes);
+export function inflatePdfStream(bytes: Uint8Array, maxOutputBytes = MAX_OUTPUT_BYTES): Uint8Array {
+  return inflateZlib(bytes, maxOutputBytes);
 }
