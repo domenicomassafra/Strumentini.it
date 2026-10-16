@@ -28,7 +28,8 @@ const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html:
 // NOT a tool promotion or an open-ended allowance for stray public routes.
 const designStudyPath = "prototipi/351/index.html";
 const fiscalBoundedPath = "tools/calcoli-fiscali-italia/index.html";
-const previewOnlyPaths = ["tools/codice-fiscale/index.html", "tools/ocr-italiano-locale-246/index.html", designStudyPath, fiscalBoundedPath] as const;
+const pdfOcr247Path = "tools/pdf-scansionato-ocr-247/index.html";
+const previewOnlyPaths = ["tools/codice-fiscale/index.html", "tools/ocr-italiano-locale-246/index.html", pdfOcr247Path, designStudyPath, fiscalBoundedPath] as const;
 for (const previewPath of previewOnlyPaths) {
   const route = `/${previewPath.replace(/\/index\.html$/u, "")}`;
   if (catalog.some((tool) => tool.route.replace(/\/+$/u, "") === route.replace(/\/+$/u, "")) ||
@@ -46,6 +47,9 @@ for (const previewPath of previewOnlyPaths) {
         preview.includes("TFR maturato e rivalutazione") &&
         preview.includes("Bollo in fattura") &&
         preview.includes("Le fonti valgono per gli anni")
+    : previewPath === pdfOcr247Path
+      ? preview?.includes('data-ocr247-preview="experimental-local-only"') &&
+        preview.includes("PDF scansionato con testo selezionabile")
     : previewPath === designStudyPath
       ? ["minimal", "editorial", "workspace"].every((direction) => preview?.includes(`data-direction="${direction}"`)) &&
         preview?.includes("nessuna scelta approvata") && preview.includes("Studio isolato:") &&
