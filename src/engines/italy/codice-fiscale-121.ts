@@ -41,6 +41,7 @@ export type CodiceFiscaleGeneration121 =
     readonly code: string;
     readonly geography: ItalianGeographyCandidate115;
     readonly geographyVersion: string;
+    readonly geographyAtBirth: "SNAPSHOT_DATE_ONLY" | "NOT_VERIFIED";
     readonly identityConfirmed: false;
     readonly officialAssignment: false;
     readonly limitations: readonly string[];
@@ -218,9 +219,12 @@ export function generateCodiceFiscale121(input: CodiceFiscalePerson121): CodiceF
   if (location.status === "OFFICIAL_CODE_UNAVAILABLE") return refusal("GEOGRAPHY_CODE_UNAVAILABLE", "Codice catastale ufficiale ND/assente: non viene dedotto dal comune successore.");
   const codes = [...new Set(location.candidates.map(({ belfiore }) => belfiore).filter((v): v is string => v !== null))];
   if (codes.length !== 1) return refusal("GEOGRAPHY_AMBIGUOUS", "Più codici incompatibili per lo stesso identificativo storico.");
-  if (input.birthPlace.kind !== "current" || input.birthDate !== ITALIAN_GEOGRAPHY_115_METADATA.currentMunicipalitiesAsOf) {
-    return refusal("GEOGRAPHY_TEMPORAL_UNVERIFIED", "Le fonti #115 non attestano il codice catastale alla data richiesta; nessuna sostituzione storica automatica.");
-  }
+  // #115 identifies a Belfiore code, but does not establish its validity for
+  // arbitrary birth dates. A clearly labelled *candidate* is still useful:
+  // absence of historical evidence must never be presented as confirmation.
+  const geographyAtBirth = input.birthPlace.kind === "current" &&
+    input.birthDate === ITALIAN_GEOGRAPHY_115_METADATA.currentMunicipalitiesAsOf
+    ? "SNAPSHOT_DATE_ONLY" as const : "NOT_VERIFIED" as const;
   const first15 = threeLetters(surname, false) + threeLetters(name, true) + String(date.year).slice(-2)
     + MONTH_CODES[date.month - 1]!
     + String(date.day + (input.sex === "F" ? 40 : 0)).padStart(2, "0")
@@ -228,11 +232,13 @@ export function generateCodiceFiscale121(input: CodiceFiscalePerson121): CodiceF
   const code = first15 + codiceFiscaleChecksum121(first15);
   return {
     status: "GENERATED_CANDIDATE", code,
-    geography: { ...location.candidates[0]! }, geographyVersion: location.version,
+    geography: { ...location.candidates[0]! }, geographyVersion: location.version, geographyAtBirth,
     identityConfirmed: false, officialAssignment: false,
     limitations: [
       "Codice calcolato localmente da dati dichiarati, non assegnato né verificato dall'Agenzia delle Entrate.",
-      "Codice del Comune verificato soltanto alla data esatta dello snapshot ISTAT del 21/02/2026.",
+      geographyAtBirth === "NOT_VERIFIED"
+        ? "Il codice catastale è documentato nella fonte citata, ma la sua validità alla data di nascita non è verificata: controllare storicamente prima dell'uso."
+        : "Il codice del Comune corrisponde allo snapshot ISTAT del 21/02/2026.",
       "Possibili omocodie e codici attribuiti dall'autorità non possono essere ricostruiti dai dati dichiarati.",
     ],
   };

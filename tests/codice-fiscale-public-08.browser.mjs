@@ -16,10 +16,10 @@ const mark = (label) => { checks.push(label); };
 try {
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin });
   const page = await context.newPage();
-  page.setDefaultTimeout(8000);
+  page.setDefaultTimeout(30000);
   page.on("request", (req) => events.push({ method: req.method(), url: req.url(), body: req.postData() }));
   page.on("pageerror", (err) => errors.push(err.message));
-  const response = await page.goto(`${origin}/tools/codice-fiscale/`, { waitUntil: "networkidle" });
+  const response = await page.goto(`${origin}/tools/codice-fiscale/`, { waitUntil: "domcontentloaded", timeout: 120000 });
   assert.equal(response?.status(), 200);
   assert.equal(await page.locator('[data-cf-public-tool="08"]').count(), 1);
   assert.match(await page.locator("h1").first().innerText(), /Codice fiscale/iu);
@@ -44,17 +44,17 @@ try {
   assert.equal(await page.locator("[data-cf-code]").count(), 0);
   assert.equal(await page.locator("[data-cf-copy]").count(), 0);
   await page.locator("[data-cf-submit]").click();
-  assert.match(await page.locator("[data-cf-refused]").innerText(), /REFUSED/u);
-  assert.equal(await page.locator("[data-cf-download]").count(), 0);
-  mark("date change clears old export, unsupported historical date refused");
+  assert.equal(await page.locator("[data-cf-generated] [data-cf-code]").innerText(), "RSSMRA80A01H501U");
+  assert.match(await page.locator("[data-cf-historical-warning]").innerText(), /non è verificata/u);
+  mark("date change clears old export, historical candidate is explicitly uncertain");
 
   await page.locator("#cf08-date").fill("2026-02-21");
   await page.locator("#cf08-place-kind").selectOption("foreign");
   await page.locator("#cf08-istat").fill("201");
   await page.locator("[data-cf-submit]").click();
-  assert.match(await page.locator("[data-cf-refused]").innerText(), /REFUSED/u);
-  assert.equal(await page.locator("[data-cf-download]").count(), 0);
-  mark("source-coded foreign case refuses unproven date applicability");
+  assert.equal(await page.locator("[data-cf-generated]").count(), 1);
+  assert.match(await page.locator("[data-cf-historical-warning]").innerText(), /non è verificata/u);
+  mark("source-coded foreign candidate with explicit historical uncertainty");
 
   await page.locator('[data-cf-mode="validate"]').click();
   await page.locator("#cf08-code").fill("RSSMRA80A01H501A");

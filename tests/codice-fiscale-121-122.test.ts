@@ -21,14 +21,15 @@ describe("#121 formal checksum, bounded local generation, provenance and refusal
     });
   });
 
-  it("generates from independently pinned ISTAT Roma and only on proven current-snapshot date", () => {
+  it("generates a candidate for Roma with dated provenance and flags older birth dates", () => {
     expect(generateCodiceFiscale121(basic)).toMatchObject({
       status: "GENERATED_CANDIDATE", code: "RSSMRA26B21H501N",
       geography: { name: "Roma", belfiore: "H501", provenance: "ISTAT_CURRENT_2026_02_21" },
       identityConfirmed: false,
     });
     expect(generateCodiceFiscale121({ ...basic, birthDate: "1980-01-01" })).toMatchObject({
-      status: "REFUSED", reasonCode: "GEOGRAPHY_TEMPORAL_UNVERIFIED",
+      status: "GENERATED_CANDIDATE", code: "RSSMRA80A01H501U",
+      geographyAtBirth: "NOT_VERIFIED", identityConfirmed: false,
     });
   });
 
@@ -56,10 +57,10 @@ describe("#121 formal checksum, bounded local generation, provenance and refusal
       status: "REFUSED", reasonCode: "GEOGRAPHY_CODE_UNAVAILABLE",
     });
     expect(generateCodiceFiscale121({ ...basic, birthPlace: { kind: "suppressed", istatCode: "024027" } })).toMatchObject({
-      status: "REFUSED", reasonCode: "GEOGRAPHY_TEMPORAL_UNVERIFIED",
+      status: "GENERATED_CANDIDATE", geographyAtBirth: "NOT_VERIFIED",
     });
     expect(generateCodiceFiscale121({ ...basic, birthPlace: { kind: "foreign", istatCode: "201" } })).toMatchObject({
-      status: "REFUSED", reasonCode: "GEOGRAPHY_TEMPORAL_UNVERIFIED",
+      status: "GENERATED_CANDIDATE", geographyAtBirth: "NOT_VERIFIED",
     });
   });
 

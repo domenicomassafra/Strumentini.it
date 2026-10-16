@@ -148,14 +148,14 @@ export function CodiceFiscaleTool() {
   return (
     <section class="cf08-tool" data-cf-public-tool="08" aria-label="Codice fiscale locale">
       <div class="cf08-notice" role="note">
-        <strong>Copertura geografica rigorosamente limitata — fonte ISTAT del 21/02/2026.</strong>
-        <p>La generazione è supportata <strong>solo per nati il 21/02/2026 in un comune presente nello snapshot corrente</strong>. Per altre date, comuni soppressi e Stati esteri, la validità alla nascita non è dimostrata: il sistema rifiuta il calcolo, senza inventare un codice.</p>
+        <strong>Luoghi da dati ISTAT/SITUAS — snapshot del 21/02/2026.</strong>
+        <p>Puoi ottenere un <strong>codice candidato</strong> per date precedenti, comuni storici e Stati esteri quando la fonte contiene un unico codice catastale. Per queste date la validità storica del codice <strong>non è certificata</strong>: controlla il luogo alla nascita prima di usarlo.</p>
         <p>Calcolo solo nel browser. Non è un'identificazione, una verifica anagrafica né un'attribuzione ufficiale dell'Agenzia delle Entrate.</p>
       </div>
 
       <div class="cf08-tabs" role="group" aria-label="Operazione codice fiscale">
         {([
-          ["generate", "Genera (limitato)"],
+          ["generate", "Genera candidato"],
           ["validate", "Verifica formale"],
           ["decode", "Decodifica"],
         ] as const).map(([key, label]) => (
@@ -206,7 +206,7 @@ export function CodiceFiscaleTool() {
                   <input id="cf08-istat" inputMode="numeric" maxLength={6} value={istatCode}
                     placeholder={kind === "foreign" ? "201" : "058091"}
                     onInput={(e) => { setIstatCode(e.currentTarget.value); dirty(); }} /></label>
-                <p class="cf08-hint">Il codice deve appartenere alla fonte #115. Per luoghi storici/esteri il motore segnala perché non può provarne la validità alla data scelta.</p>
+                <p class="cf08-hint">Il codice deve appartenere alla fonte #115. Un codice assente/ND viene rifiutato; un codice presente ma non verificato alla nascita è segnalato come candidato.</p>
               </>
             ) : (
               <label class="field" for="cf08-code"><span>Codice fiscale (16 caratteri)</span>
@@ -214,7 +214,7 @@ export function CodiceFiscaleTool() {
                   placeholder="RSSMRA80A01H501U" onInput={(e) => { setCode(e.currentTarget.value); dirty(); }} /></label>
             )}
             <button class="btn btn-primary cf08-submit" type="submit" data-cf-submit>
-              {mode === "generate" ? "Calcola solo se verificabile" : mode === "validate" ? "Verifica struttura e controllo" : "Decodifica senza identificare"}
+              {mode === "generate" ? "Calcola codice candidato" : mode === "validate" ? "Verifica struttura e controllo" : "Decodifica senza identificare"}
             </button>
           </form>
         </section>
@@ -235,6 +235,7 @@ export function CodiceFiscaleTool() {
               <output class="cf08-code" data-cf-code>{result.value.code}</output>
               <p>Comune: <strong>{result.value.geography.name}</strong> ({result.value.geography.istatCode}), Belfiore {result.value.geography.belfiore}.</p>
               <p class="cf08-hint">Fonte: {result.value.geography.provenance}. Non sono noti eventuali codici omocodici assegnati dall'autorità.</p>
+              <p class="cf08-hint" data-cf-historical-warning>{result.value.geographyAtBirth === "NOT_VERIFIED" ? "ATTENZIONE: la validità del luogo alla data di nascita non è verificata; il codice è solo un'ipotesi da controllare." : "Il codice catastale corrisponde allo snapshot ISTAT del 21/02/2026."}</p>
             </div>
           )}
           {result?.mode === "validate" && result.value.status === "FORMALLY_VALID" && (
