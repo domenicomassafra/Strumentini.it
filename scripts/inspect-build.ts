@@ -71,6 +71,8 @@ const expectedPaths = new Set([
   "cerca/index.html",
   "impostazioni/index.html",
   "preferiti/index.html",
+  "codici-geografici-italia/index.html",
+  "fonti-fiscali-italia/index.html",
   ...groups.map((group) => `categorie/${group.slug}/index.html`),
   "library/index.html",
   ...previewOnlyPaths,
