@@ -20,6 +20,7 @@ export default defineConfig({
   },
   integrations: [preact()],
   vite: {
+    ...(process.env.STRUMENTINI_DEV_LINKED_DEPS ? { server: { fs: { allow: [process.cwd(), process.env.STRUMENTINI_DEV_LINKED_DEPS] } } } : {}),
     build: {
       sourcemap: true
     }
