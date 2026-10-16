@@ -39,7 +39,7 @@ try {
     return route.continue();
   });
   assert.equal((await page.goto(origin + "/tools/calcoli-fiscali-italia/", { waitUntil: "networkidle" }))?.status(), 200);
-  const form = action => page.locator(`form[data-action="${action}"]`);
+  const form = action => page.locator(`form[data-calculator="${action}"]`);
   const input = (f, name) => f.locator(`[name="${name}"]`);
   const send = f => f.locator('[type="submit"]').click();
   const output = f => f.locator("output").innerText();

@@ -11,7 +11,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     <section aria-labelledby="net130-title">
       <h2 id="net130-title">Stipendio netto annuo — dipendente agricolo 2026</h2>
       <p>Solo operaio agricolo ordinario OTD/OTI, base contributiva FPLD uguale alla RAL dichiarata e fino a 56.224 €. Mostra separatamente contributi INPS del lavoratore, quota datoriale e IRPEF lorda nazionale, poi ripartisce lo stesso netto annuo su 12, 13 o 14 rate.</p>
-      <form data-action="net130">
+      <form data-calculator="net130">
         <label>RAL e base FPLD 2026 (€) <input name="ral" inputmode="decimal" placeholder="30000,00" required /></label>
         <label>Mensilità <select name="payments"><option>12</option><option>13</option><option>14</option></select></label>
         <label class="check"><input type="checkbox" name="baseConfirmed" required /> Confermo il profilo OTD/OTI ordinario e che la base FPLD coincide con la RAL inserita.</label>
@@ -24,7 +24,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     <section aria-labelledby="forf133-title">
       <h2 id="forf133-title">Regime forfettario 2025 — professionisti Gestione Separata</h2>
       <p>Coefficienti per i soli codici ATECO2007 della tabella ufficiale, con profilo INPS professionale 2025 dichiarato. La contribuzione stimata e quella già pagata sono mostrate separatamente: soltanto la seconda viene dedotta dall'imponibile dell'imposta sostitutiva.</p>
-      <form data-action="forf133">
+      <form data-calculator="forf133">
         <label>Codice ATECO2007 <input name="ateco" placeholder="62.01.00" required /></label>
         <label>Ricavi anno precedente 2024 (€) <input name="prior" inputmode="decimal" required /></label>
         <label>Ricavi 2025 (€) <input name="revenue" inputmode="decimal" required /></label>
@@ -43,7 +43,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     <section aria-labelledby="tfr134-title">
       <h2 id="tfr134-title">TFR maturato e rivalutazione — riferimento dicembre 2025</h2>
       <p>Quota maturata = retribuzione utile 2025 / 13,5. Rivalutazione distinta sul TFR accantonato al 31/12/2024, usando il coefficiente 2,311148% ricavato dall'indice ISTAT FOI di dicembre 2025. Per periodi diversi il risultato rimane parziale.</p>
-      <form data-action="tfr134">
+      <form data-calculator="tfr134">
         <label>TFR pregresso al 31/12/2024 (€) <input name="prior" inputmode="decimal" required /></label>
         <label>Retribuzione effettivamente utile maturata nel 2025 (€) <input name="salary" inputmode="decimal" required /></label>
         <label>Mesi di servizio nel 2025 <input name="months" type="number" min="1" max="12" value="12" required /></label>
@@ -62,7 +62,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     <section aria-labelledby="bollo152-title">
       <h2 id="bollo152-title">Bollo in fattura — guida Agenzia Entrate 2024</h2>
       <p>Per una fattura elettronica ordinaria con una sola riga, senza esenzioni speciali: le nature N2.2, N3.6 e N4 con importo superiore a 77,47 € rientrano nel riferimento di 2 € della guida dell'Agenzia. A 77,47 € esatti il riferimento è zero. Le fatture miste, le esenzioni e le altre annualità richiedono una verifica specifica.</p>
-      <form data-action="bollo152" novalidate>
+      <form data-calculator="bollo152" novalidate>
         <label>Anno documento <select name="year"><option value="2024">2024 — guida consultata</option><option value="2025">2025 — non attestato</option><option value="2026">2026 — non attestato</option></select></label>
         <label>Importo unica operazione (€) <input name="amount" inputmode="decimal" required /></label>
         <label>Natura operazione <select name="nature"><option value="N2.2">N2.2 — non soggetta</option><option value="N3.6">N3.6 — non imponibile</option><option value="N4">N4 — esente</option><option value="OTHER">Altra natura</option></select></label>
@@ -91,7 +91,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
   };
   const value = (form: HTMLFormElement, name: string) => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
   const checked = (form: HTMLFormElement, name: string) => (form.elements.namedItem(name) as HTMLInputElement).checked;
-  document.querySelectorAll<HTMLFormElement>("[data-fiscal-t1] form[data-action]").forEach((form) => {
+  document.querySelectorAll<HTMLFormElement>("[data-fiscal-t1] form[data-calculator]").forEach((form) => {
     const output = form.querySelector("output")!;
     const alert = form.querySelector<HTMLElement>('[role="alert"]')!;
     const reset = () => { output.textContent = ""; alert.textContent = ""; alert.hidden = true; };
@@ -101,12 +101,12 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       event.preventDefault();
       reset();
       try {
-        if (form.dataset.action === "net130") {
+        if (form.dataset.calculator === "net130") {
           const result = calculateStipendioNetto130({ taxYear: 2026, profile: "agricultural-worker-general",
             ralCents: money(form, "ral"), payments: Number(value(form, "payments")) as 12 | 13 | 14,
             declaresFpldBaseEqualsRal: checked(form, "baseConfirmed") });
           output.textContent = `RAL: ${euro(result.ralCents)}. Contributi INPS a carico lavoratore: ${euro(result.workerContributionsCents)}; a carico datore (fuori dalla RAL): ${euro(result.employerContributionsCents)}. Imponibile IRPEF nazionale: ${euro(result.taxableCents)}. IRPEF lorda nazionale: ${euro(result.nationalIrpefCents)}. Netto annuo illustrativo: ${euro(result.annualNetCents)}. ${result.installmentsCents.length} rate: ${result.installmentsCents.map(euro).join(" + ")}. ${result.limitations}`;
-        } else if (form.dataset.action === "forf133") {
+        } else if (form.dataset.calculator === "forf133") {
           if (!checked(form, "paidVerified")) throw new Error("Conferma i contributi effettivamente pagati.");
           const result = calculateForfettarioWithInps133({
             taxYear: 2025, atecoVersion: "ATECO2007", atecoCode: value(form, "ateco").trim(),
@@ -118,7 +118,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
             declaresStartupFivePercentRequirements: checked(form, "startup"),
           });
           output.textContent = `Ricavi 2025: ${euro(result.yearReceiptsCents)}. Coefficiente ATECO2007: ${result.coefficientPercent}% (riga ${result.coefficientTableRow}). Reddito forfettario: ${euro(result.grossForfettarioIncomeCents)}. INPS 2025 stimata ${result.forecastContributionRatePercent}%: ${euro(result.forecastContributionsCents)}. Contributi già pagati dichiarati: ${euro(result.paidMandatoryContributionsCents)}. Imponibile imposta: ${euro(result.taxableIncomeCents)}. Sostitutiva ${result.declaredTaxRatePercent}%: ${euro(result.substituteTaxCents)}. Disponibile indicativo dopo imposta e INPS stimata: ${euro(result.forecastNetAfterTaxAndInpsCents)}. ${result.inpsLimitations}`;
-        } else if (form.dataset.action === "tfr134") {
+        } else if (form.dataset.calculator === "tfr134") {
           const result = calculateTfr134({ referenceYear: 2025, priorTfrCents: money(form, "prior"),
             eligibleAnnualSalaryCents: money(form, "salary"), serviceMonthsThisYear: Number(value(form, "months")),
             officialDecemberIndexAvailable: checked(form, "december") });
@@ -134,7 +134,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
           output.textContent = `TFR pregresso: ${euro(result.priorTfrCents)}. Maturato 2025: ${euro(result.annualAccrualCents)}. Rivalutazione dicembre 2025 (2,311148%): ${euro(result.revaluationCents!)}. Totale TFR lordo teorico: ${euro(result.grossTfrCents!)}. ${tax.state === "ILLUSTRATIVE_TAX_ONLY"
             ? `Imposta indicativa SEPARATA sul TFR pregresso+maturato, senza rivalutazione: ${euro(tax.taxCents!)} (aliquota media illustrativa ${tax.ratePercent!.toFixed(2)}%). Netto aritmetico di questa sola base: ${euro(result.priorTfrCents + result.annualAccrualCents - tax.taxCents!)}. ${tax.limitations}`
             : `Imposta indicativa: non determinata. ${tax.reason}`} ${result.limitations}`;
-        } else if (form.dataset.action === "bollo152") {
+        } else if (form.dataset.calculator === "bollo152") {
           const result = getInvoiceStampReference152({ sourceYear: Number(value(form, "year")),
             amountCents: money(form, "amount"), nature: value(form, "nature"),
             ordinarySingleLine: checked(form, "single"), declaresNoSpecialExemptions: checked(form, "noExempt") });
