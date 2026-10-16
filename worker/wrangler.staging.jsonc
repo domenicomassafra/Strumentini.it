@@ -1,0 +1,33 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "strumentini-328-staging-20261015",
+  "compatibility_date": "2026-09-24",
+  "main": "index.ts",
+  // This file deliberately has NO production custom-domain route.
+  "workers_dev": true,
+  "routes": [],
+  "assets": {
+    "directory": "../dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "d1_databases": [
+    {
+      "binding": "AUTH_DB",
+      "database_name": "strumentini-328-staging-20261015",
+      "database_id": "807467ce-5366-4104-9509-8c012f836e2a",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "PASSWORD_KDF", "class_name": "PasswordKdf" }]
+  },
+  "exports": {
+    "PasswordKdf": { "type": "durable-object", "storage": "sqlite" }
+  },
+  "ratelimits": [
+    { "name": "KDF_IP_LIMIT", "namespace_id": "32820261", "simple": { "limit": 8, "period": 60 } },
+    { "name": "KDF_COLO_LIMIT", "namespace_id": "32820262", "simple": { "limit": 30, "period": 60 } }
+  ]
+}

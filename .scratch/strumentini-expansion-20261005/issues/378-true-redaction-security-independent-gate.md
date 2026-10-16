@@ -8,7 +8,7 @@
 
 **Blocked by:** None
 
-**Status:** ready-for-agent
+**Status:** completed (bounded independent #378 forensic subset only; NOT Gold/release)
 
 **Suggested skills:** plan-spec → plan-tickets → code-architecture-review → security-audit → code-tdd → qa-browser; domain skills as needed
 
@@ -22,9 +22,9 @@
 
 ## Acceptance criteria
 
-- [ ] AC-378.1: Rimozione irreversibile verificata su sottinsieme esplicito.
-- [ ] AC-378.2: Firmato/hybrid/metadata/orfani rifiutati se incerti.
-- [ ] AC-378.3: On the scoped input and failure cases, verify: Independent PDFKit/Poppler forensic. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
+- [x] AC-378.1: Rimozione irreversibile verificata su sottinsieme esplicito.
+- [x] AC-378.2: Firmato/hybrid/metadata/orfani rifiutati se incerti.
+- [x] AC-378.3: On the scoped input and failure cases, verify: Independent PDFKit/Poppler forensic. Record the current source/date, independently checked outcome and NOT_RUN/NO_GO where evidence is absent.
 
 **Verification:** Independent PDFKit/Poppler forensic. Test malformed/boundary/cancel and mobile as relevant.
 
@@ -126,3 +126,78 @@ Ownership: `scripts/forensic-redaction-378.ts`, one new focused test and this or
 **Actual RED→GREEN:** `tests/forensic-redaction-378-20261013-contents-private.test.ts` constructs real raster-only PDFs with the existing `PdfBuilder`. On the exact pre-fix inspector both a reachable `/Contents` dictionary carrying private `/Private` + `/Author` values and a valid Flate draw stream with trailing private plaintext were falsely accepted (2 RED; benign uncompressed/complete-Flate control PASS). The minimal owner fix validates the original indirect stream dictionary and bounded exact drawing bytes before `extract_text()` can parse/decompress them: only optional `/Length` and a single `/FlateDecode` filter are admitted, zlib must reach EOF and consume the full input, and decoded output must equal the canonical image draw commands. No unbounded flush, filter chain, extra field or hidden draw operator is admitted. Existing image bounds, physical xref/envelope, pypdf/PDFKit and fail-closed gates remain intact.
 
 **Fresh focused verification:** six Vitest files (new Contents, Pages/stream-bound, unindexed-comment, original #378, #237 and #406) completed **35/35 PASS, zero skip/failure**, with benign raw and complete-Flate output reopened by real macOS PDFKit and pypdf. Scoped strict TypeScript compile and `git diff --check` PASS. This closes the two reproduced offline-inspector findings only. Original AC-378.1–3 remain OPEN; full independent corpus, actual current UI artifact, Poppler and physical devices/release/Gold remain NOT_RUN/NO_GO. Worker did not stage, commit, push, merge or deploy; integrator must update the same PR #28 and perform its final review/CI gates.
+
+## 2026-10-14 — Scoped original #378 closure: actual UI bytes + genuinely signed refusal + native Poppler
+
+**Independent bounded acceptance, not broad PDF security certification:** The original #378
+capability is an *explicit restricted raster-only local subset*, with an independent
+output gate and conservative input refusals. This acceptance does **not** promote
+#237/#406 global PDF redaction, arbitrary editors, physical mobile or Gold.
+Existing `scripts/forensic-redaction-378.ts` had already implemented the owned
+independent physical-byte inspector; this closeout adds a cryptographically
+authentic signed-document refusal regression, not a new vendor/parser.
+
+- **AC-378.1 VERIFIED, supported subset only:** On actual current canonical
+  source `main` HEAD `9906d6a6e4332ad2db79389750fb8f0f1d5b483f` plus
+  separately owned uncommitted #406 parser hardening (not silently attributed to
+  main), the existing DEV-only browser producer generated two real downloaded
+  PDF artifacts. For the one-page hidden selectable text + xref-orphan + source
+  document Info sample, original PDF 1,113 bytes SHA256
+  `df6f74cd46031329fe58cd17da87b509bdfa7218200f36e0631471d9968181a9`,
+  newly exported raster PDF 1,005 bytes SHA256
+  `213cd101e31deb9462e459de47180a26d1db850b2011bdfba99d6eb2886af45a`.
+  The **real standalone** `node --import tsx scripts/forensic-redaction-378.ts`
+  CLI independently consumed those exact source/output bytes and an explicit
+  one-page mask with **two positive original source witnesses**. It returned
+  `INDEPENDENT_SAMPLE_PASS_NOT_RELEASE`, `pages:1`, `blackPixels:28350`,
+  `outputBytes:1005`, `witnessesChecked:2`, `parsers:[pypdf-strict,macOS-PDFKit]`.
+  The output has no original source witness in raw bytes or copied text; the
+  actual 8,670-byte two-page ordinary UI export likewise retained no text
+  objects or original source words. Both exports were independently reopened
+  by PDF.js, strict pypdf, pdfminer, native PDFKit/CoreGraphics copy/print/reopen;
+  visual coverage and unredacted witnesses were checked.
+- **AC-378.2 VERIFIED for uncertain hostile inputs:** Existing actual source
+  gate/entrypoint tests `tests/pdf-redaction-malicious-corpus-237.test.ts`,
+  `tests/pdf-redaction-attack-406.test.ts` and the hybrid/ObjStm #406 tests
+  prove refusal **before** production of an artifact for independently readable
+  genuine `/Prev` multi-revision and `/XRefStm` hybrid formats, signed-looking
+  `/ByteRange`/`DocMDP` structures, unsupported metadata/object graphs and
+  compressed ObjStm attack cases. The #378 inspector's own tests deliberately
+  forge recoverable xref orphans, `Info`, `Pages`, `Contents`, unindexed bytes,
+  trailing Flate payload and invalid pixels and prove `FORENSIC_378_REFUSED`.
+  Additional new `tests/forensic-redaction-378-20261014-authentic-signed.test.ts`
+  **independently generates a true cryptographic detached CMS signature** with
+  ephemeral OpenSSL RSA/X.509 identity, verifies the actual PDF `/ByteRange` via
+  strict pypdf and CMS verification (`openssl cms -verify`, exit 0), verifies
+  a tampered signed segment fails CMS verification, then checks both the public
+  source gate and actual `redactPdfRaster237(File, regions)` **refuse** the
+  genuinely signed PDF before rasterizing. Synthetic key, certificate, signed
+  bytes and CMS are removed in the test `finally`; no private source uploaded.
+- **AC-378.3 VERIFIED, genuine native reader differential on the above bounded
+  source/output:** macOS PDFKit independently reopened and printed the actual
+  download; MiniPC native Linux Poppler **26.01.0** (`/usr/bin/pdfinfo`,
+  `/usr/bin/pdftotext`, `/usr/bin/pdftoppm`) independently received the exact
+  source and output by `ssh minipc` **stdin**, no remote files or install. All
+  calls exited 0. Original source `pdftotext` extracts **43 characters** despite
+  a visually black overlay and its raw bytes contain both source-only markers;
+  exported PDF extraction is **zero characters**, with **zero source markers**
+  in raw bytes. Native `pdftoppm -png` output independently decoded via Pillow
+  at **500×389 pixels**: covered center-top RGB `(0,0,0)` and outside-bottom
+  RGB `(0,0,255)` before and after. PDFium 153.0.7999.0 also independently
+  reopened/rendered the same exported bytes and extracted zero characters.
+  The second two-page output also reopens cleanly via Poppler and PDFKit, has
+  zero extractable text and top black mask with unredacted pixels retained.
+
+**Test and delivery gates:** Fresh bounded Mac canonical focused #378/#237/#406
+regression **57/57 PASS** (six original #378/#237/#406 suites 35/35 plus
+three hostile fixture suites 22/22); independent isolated `main` clone
+`/Users/domenico/Code/Strumentini-378-closure-20261014-worker1` with the new
+real signed negative fixture: **eight Vitest suites, 51/51 PASS**, strict scoped
+TypeScript including `--noUncheckedIndexedAccess` PASS, no production source
+change. This closes **only the three explicitly bounded original #378 AC**,
+not original #406, whole-corpus/redaction Gold, a live deployment or any
+unsupported PDF subtype. Authentic third-party certified signatures, arbitrary
+metadata variants, mobile iOS/Android, physical memory and release rollback
+remain **NOT_RUN / NO_GO for broader publication**. No receipt/Gold source
+fingerprint is rebased; this ticket's acceptance never authorizes production.
+Windows requirements remain `PENDING-ON-BOOT`; no Windows operation was made.

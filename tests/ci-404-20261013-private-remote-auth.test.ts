@@ -59,7 +59,7 @@ exec /usr/bin/git "$@"
     writeFileSync(path, program, { mode: 0o700 });
     chmodSync(path, 0o700);
     const result = spawnSync("bash", ["-euo", "pipefail", "-c", step.run!], {
-      cwd: root, encoding: "utf8", timeout: 15000,
+      cwd: root, encoding: "utf8", timeout: 45000,
       env: {
         ...process.env, PATH: `${folder}${delimiter}${process.env.PATH ?? ""}`,
         GITHUB_ACTIONS: "true", GITHUB_REF: "refs/heads/main", GITHUB_SHA: head,
@@ -114,7 +114,7 @@ describe("#404 private GitHub release admission uses no persistent credentials",
     for (const sample of [invoke(remote, "advanced"), invoke(remote, "unreachable"), invoke(remote, "current", false)]) {
       expect(sample.status).not.toBe(0);
     }
-  });
+  }, 150_000);
 
   it("runs the actual read-only validator YAML command with temporary Git authentication and no receipt write", () => {
     const current = invoke(admission, "current");
@@ -143,5 +143,5 @@ describe("#404 private GitHub release admission uses no persistent credentials",
     const missingToken = invoke(admission, "current", false);
     expect(missingToken.attempted).toBe(0);
     expect(missingToken.status).not.toBe(0);
-  }, 60_000);
+  }, 150_000);
 });

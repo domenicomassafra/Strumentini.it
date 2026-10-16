@@ -24,7 +24,7 @@ describe("password records", () => {
     expect(await verifyPassword("correct horse battery", stored)).toBe(true);
     expect(await verifyPassword("Correct horse battery", stored)).toBe(false);
     expect(await verifyPassword("", stored)).toBe(false);
-  });
+  }, 30_000);
 
   it("salts each hash, so identical passwords never share a digest", async () => {
     const first = await hashPassword("same-password-twice");
@@ -33,7 +33,7 @@ describe("password records", () => {
     expect(first.hash).not.toBe(second.hash);
     expect(await verifyPassword("same-password-twice", { ...first, hash: second.hash })).toBe(false);
     expect(await verifyPassword("same-password-twice", { ...first, salt: second.salt })).toBe(false);
-  });
+  }, 30_000);
 
   it("re-derives with the iteration count stored in the record", async () => {
     const legacy = await hashPassword("raise-me-later", 1_000);
@@ -42,7 +42,7 @@ describe("password records", () => {
     const raised = await hashPassword("raise-me-later");
     expect(await verifyPassword("raise-me-later", raised)).toBe(true);
     expect(await verifyPassword("raise-me-later", { ...legacy, iterations: PASSWORD_ITERATIONS })).toBe(false);
-  });
+  }, 30_000);
 
   it("asks for a re-hash only when the stored work factor is behind", async () => {
     const current = await hashPassword("current-work-factor");

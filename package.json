@@ -21,6 +21,8 @@
     "test": "npm run tickets:check && npm run format:coverage:check && npm run catalog:build && npm run certification:check && npm run audit:original-200:final && vitest run",
     "check": "npm run tickets:check && npm run format:coverage:check && npm run catalog:build && npm run certification:check && astro check",
     "build": "npm run tickets:check && npm run format:coverage:check && npm run catalog:build && npm run certification:check && astro build && tsx scripts/inspect-build.ts",
+    "staging:build:328": "tsx scripts/deploy-staging-328.ts --build-only",
+    "staging:deploy:328": "tsx scripts/deploy-staging-328.ts --deploy",
     "gold:business-day": "npm run catalog:build && tsx scripts/gold-certify.ts",
     "gold:sabotage": "npm run catalog:build && node scripts/verify-gold-sabotage.mjs",
     "acceptance:browser": "node scripts/browser-acceptance.mjs",
@@ -101,6 +103,7 @@
   },
   "dependencies": {
     "@astrojs/preact": "6.0.5",
+    "@noble/hashes": "2.4.0",
     "astro": "7.3.4",
     "css-tree": "^3.2.1",
     "fflate": "0.8.3",
