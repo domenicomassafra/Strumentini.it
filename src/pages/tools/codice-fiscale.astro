@@ -25,12 +25,13 @@ import { CodiceFiscaleTool } from "../../components/tools/codice-fiscale/CodiceF
           <option value="2026">2026 — sottoinsieme nazionale documentato</option>
           <option value="2024">2024 — non verificato, rifiutato</option>
         </select>
-        <label for="tax396-private-income">Reddito imponibile IRPEF già determinato (€; separatore decimale punto)</label>
+        <label for="tax396-private-income">Reddito imponibile IRPEF già determinato (€; virgola o punto decimale, senza separatori delle migliaia)</label>
         <input id="tax396-private-income" type="text" name="taxableIncome" inputmode="decimal" maxlength="15" value="" autocomplete="off" placeholder="40000.00" />
         <button type="submit">Calcola solo IRPEF lorda</button>
       </form>
       <p role="alert" class="tax396-error" hidden></p>
       <output id="tax396-private-output" aria-live="polite"></output>
+      <p class="tax396-note">Il cambio dell'anno d'imposta azzera l'imponibile: inserisci di nuovo l'importo già determinato per quell'anno.</p>
       <p class="tax396-note">Ipotesi: importo già imponibile in euro; esclusi ogni detrazione, credito, addizionale, contributo, sostitutiva e valutazione di eleggibilità. Il risultato è informativo, non una consulenza fiscale individuale.</p>
       <p class="tax396-note">Fonti annuali locali con snapshot hash verificato:
         <a href="https://www.normattiva.it/eli/stato/LEGGE/2024/12/30/207/ORIGINAL">Normattiva, legge 207/2024</a> (2025 e base 2026);
@@ -52,8 +53,18 @@ import { CodiceFiscaleTool } from "../../components/tools/codice-fiscale/CodiceF
     const income = form.elements.namedItem("taxableIncome") as HTMLInputElement;
     const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
     const reset = () => { output.textContent = ""; error.textContent = ""; error.hidden = true; };
+    let previousYear = year.value;
     form.addEventListener("input", reset);
-    form.addEventListener("change", reset);
+    form.addEventListener("change", (event) => {
+      reset();
+      if (event.target !== year || year.value === previousYear) return;
+      previousYear = year.value;
+      income.value = "";
+      error.textContent = year.value === "2025" || year.value === "2026"
+        ? "Cambio anno: imponibile azzerato. Inserisci l'importo già determinato per l'anno selezionato."
+        : "Anno " + (year.value || "non indicato") + " non verificato: imponibile azzerato; sono supportati solo 2025 e 2026.";
+      error.hidden = false;
+    });
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       reset();
@@ -64,12 +75,12 @@ import { CodiceFiscaleTool } from "../../components/tools/codice-fiscale/CodiceF
         return;
       }
       const input = income.value.trim();
-      if (!/^(?:0|[1-9]\d{0,9})(?:\.\d{1,2})?$/u.test(input)) {
-        error.textContent = "Reddito imponibile non valido: inserisci euro non negativi e massimo due decimali.";
+      if (!/^(?:0|[1-9]\d{0,9})(?:[.,]\d{1,2})?$/u.test(input)) {
+        error.textContent = "Reddito imponibile non valido: inserisci euro non negativi con massimo due decimali (virgola o punto), senza separatori delle migliaia.";
         error.hidden = false;
         return;
       }
-      const [units = "0", decimals = ""] = input.split(".");
+      const [units = "0", decimals = ""] = input.split(/[.,]/u);
       const cents = Number(units) * 100 + Number(decimals.padEnd(2, "0"));
       if (!Number.isSafeInteger(cents) || cents > 100_000_000_000) {
         error.textContent = "Reddito imponibile non valido: importo fuori limite.";
