@@ -70,7 +70,7 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   "src/engines/url-marketing/index.ts": "b21ca7a9fe2002ba75e4a40e83a824e40bf06a57833f5eec58a59f09dbfae521",
   // 2026-10-11 reviewed #340 UI-only island/CSS change: the existing single
   // GET /api/auth/session is unchanged; no new transport API or endpoint.
-  "src/pages/preferiti.astro": "0453f0d266c7fcb8c7bc4b7bbfa695a19e76b399985f2f8300b4a5ff781cc22a",
+  "src/pages/preferiti.astro": "8bdca8408e8e116a026d726258d157edd47fdafe935fa1bab198241c73c3342e",
   "src/telemetry/adapter.ts": "cc00368b762ea6d80d00b5a854764765a84e127b25c15049cf1b30e27cbbf50e",
   "src/telemetry/browser.ts": "2f2ecebad8da951a2329bd8364c727ec5f43f97fdc525ecc6c6077587f40ac1a",
   "src/workbench/membership.ts": "388f065b92d835c6b8cbef93d220a5959ca31a84caf3f9d9a88305c499f9c788",
