@@ -16,7 +16,13 @@ const DEFAULT_ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const MAX_BYTES = 16 * 1024 * 1024;
 type SourcePin397 = { authority: string; title: string; url: string; path: string; sha256: string };
 type Evidence397 = { ticket: number; datasetId: string; checkedAt: string; artifacts: SourcePin397[]; frozenOfficialBulkArtifacts?: SourcePin397[] };
-export type AuditedSource397 = SourcePin397 & { checkedHash: boolean };
+export type AuditedSource397 = SourcePin397 & {
+  checkedHash: boolean;
+  /** Present only when this exact URL, authority and SHA are in the authenticated evidence manifest. */
+  manifestCheckedAt: string | null;
+  manifestIndex: "MATCHED" | "UNLISTED";
+  liveUrlCheck: "NOT_RUN";
+};
 export type AuditedRule397 = {
   ruleId: string; authority: string; taxYear: number | null;
   validFrom: string; validTo: string; scope: string; sources: AuditedSource397[];
@@ -27,7 +33,7 @@ export type Reference397 = {
 };
 export type Gap397 = { ruleId: string; reason: string; scope: string };
 export type Violation397 = {
-  code: "HASH_MISMATCH" | "MISSING_SNAPSHOT" | "UNSAFE_PATH" | "UNTRUSTED_URL" | "MALFORMED_EVIDENCE" | "UNPINNED_SOURCE";
+  code: "HASH_MISMATCH" | "MISSING_SNAPSHOT" | "UNSAFE_PATH" | "UNTRUSTED_URL" | "MALFORMED_EVIDENCE" | "UNPINNED_SOURCE" | "MANIFEST_SOURCE_CONFLICT";
   path: string; message: string;
 };
 export type AnnualAudit397 = {
@@ -283,11 +289,25 @@ export async function auditAnnualOfficialSources397(options: AuditOptions397 = {
     if (row.sources.length === 0) report("UNPINNED_SOURCE", row.ruleId, "No unique official artifact in canonical snapshot");
     const checked: AuditedSource397[] = [];
     for (const source of row.sources) {
+      const samePath = row.tickets.flatMap(ticket => {
+        const item = evidence.get(ticket);
+        const artifacts = [...(item?.artifacts ?? []), ...(item?.frozenOfficialBulkArtifacts ?? [])];
+        const checkedAt = ITALY_SOURCE_PACK_DECISIONS.find(pack => pack.ticket === ticket)?.checkedAt;
+        return artifacts.filter(entry => entry.path === source.path).map(entry => ({ entry, checkedAt }));
+      });
+      const manifestMatch = samePath.filter(({ entry }) => entry.authority === source.authority &&
+        entry.url === source.url && entry.sha256 === source.sha256);
+      if (samePath.length !== 0 && manifestMatch.length !== 1) {
+        report("MANIFEST_SOURCE_CONFLICT", source.path, "Source URL/authority/hash conflicts with authenticated manifest");
+        trusted = false;
+      }
+      const manifestCheckedAt = manifestMatch.length === 1 ? manifestMatch[0]!.checkedAt ?? null : null;
       const urlTrusted = officialUrl(source.authority, source.url);
       if (!urlTrusted) report("UNTRUSTED_URL", source.path, "Host does not match official authority allowlist");
       const checkedHash = urlTrusted && await authenticate(source.path, source.sha256);
       if (!checkedHash) trusted = false;
-      checked.push({ ...source, checkedHash });
+      checked.push({ ...source, checkedHash, manifestCheckedAt,
+        manifestIndex: manifestMatch.length === 1 ? "MATCHED" : "UNLISTED", liveUrlCheck: "NOT_RUN" });
     }
     if (trusted && row.validFrom && row.validTo && validDate(row.validFrom) && validDate(row.validTo) &&
       row.validFrom <= row.validTo &&
