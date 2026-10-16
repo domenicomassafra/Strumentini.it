@@ -280,6 +280,7 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
               </span>
               <h1 id="welcome-title" class={styles.welcomeTitle}>{COPY.onboarding.title}</h1>
               <p class={styles.welcomeLede}>{COPY.onboarding.lede}</p>
+              <p class={styles.muted}>In 4 passaggi scegli cosa fai, ricevi strumenti consigliati e salvi la selezione su questo dispositivo. Puoi cambiarla in seguito.</p>
               <div class={styles.actions}>
                 <button class="btn btn-primary btn-lg" type="button" data-onboarding-action="start" onClick={() => goTo(2)}>
                   {COPY.onboarding.start}
@@ -480,7 +481,13 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
                   {saving ? COPY.onboarding.saving : COPY.onboarding.save}
                 </button>
               </div>
-              {completed && <p class="success" role="status">{COPY.onboarding.saved}</p>}
+              {completed && <div class={styles.panel} role="status">
+                <p class="success">{COPY.onboarding.saved}</p>
+                <div class={styles.actions}>
+                  <a class="btn btn-primary" href="/strumenti/">Apri gli strumenti</a>
+                  <a class="btn btn-ghost" href="/impostazioni/#preferenze">Personalizza le preferenze</a>
+                </div>
+              </div>}
             </div>
           )}
         </section>
