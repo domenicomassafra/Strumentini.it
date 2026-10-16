@@ -189,6 +189,7 @@ export function CsvTableResultV2({
         <ResultProvenance>{provenance}</ResultProvenance>
         <ResultActions
           actions={actions}
+          shareFile={artifact.download.ready ? { blob: new Blob([completeOutput ?? ""], { type: "text/csv" }), filename } : undefined}
           onAction={{
             copy,
             download,

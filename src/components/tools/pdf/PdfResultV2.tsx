@@ -618,7 +618,7 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
           ...(primary === undefined ? {} : { download: () => downloadVerified(primary) }),
           ...(onRetry === undefined ? {} : { retry: onRetry }),
           reset: onReset,
-        }} />
+        }} shareFile={primary?.artifact.download.ready === true ? { blob: primary.blob, filename: primary.artifact.download.filename } : undefined} />
         <SecondaryRaw raw={result.raw} />
       </div>
     );

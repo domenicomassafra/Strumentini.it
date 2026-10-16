@@ -555,7 +555,11 @@ export function ImageResultV2({ toolId, result, sourceFiles = [], onReset, onRet
           ...(primary === undefined ? {} : { download: () => downloadVerified(primary) }),
           ...(onRetry === undefined ? {} : { retry: onRetry }),
           reset: onReset,
-        }} />
+        }} shareFile={primary?.artifact.download.ready === true
+          ? { blob: primary.blob, filename: primary.artifact.download.filename }
+          : result.zip?.artifact.download.ready === true
+            ? { blob: result.zip.blob, filename: result.zip.artifact.download.filename }
+            : undefined} />
       </div>
     );
   }
