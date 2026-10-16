@@ -27,12 +27,14 @@ const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html:
 // noindex/nofollow, invisible to search/sitemap and visibly bounded. This is
 // NOT a tool promotion or an open-ended allowance for stray public routes.
 const designStudyPath = "prototipi/351/index.html";
+const fiscalBoundedPath = "tools/calcoli-fiscali-italia/index.html";
 const previewOnlyPaths = [
   "tools/codice-fiscale/index.html",
   "tools/iva-calcolo/index.html",
   "tools/irpef-componenti/index.html",
   "tools/ocr-italiano-locale-246/index.html",
   designStudyPath,
+  fiscalBoundedPath,
 ] as const;
 for (const previewPath of previewOnlyPaths) {
   const route = `/${previewPath.replace(/\/index\.html$/u, "")}`;
@@ -48,10 +50,17 @@ for (const previewPath of previewOnlyPaths) {
       ? preview?.includes("data-tax-iva") && preview.includes("13") &&
         preview.includes("dicembre 2025") && preview.includes("categorie") &&
         preview.includes("Calcolo locale")
-      : previewPath === "tools/irpef-componenti/index.html"
-        ? preview?.includes("data-irpef-components") && preview.includes("2025") &&
-          preview.includes("Puglia") && preview.includes("Bari") &&
-          preview.includes("risultato parziale")
+    : previewPath === "tools/irpef-componenti/index.html"
+      ? preview?.includes("data-irpef-components") && preview.includes("2025") &&
+        preview.includes("Puglia") && preview.includes("Bari") &&
+        preview.includes("risultato parziale")
+    : previewPath === fiscalBoundedPath
+      ? preview?.includes('data-fiscal-t1') &&
+        preview.includes("Stipendio netto annuo") &&
+        preview.includes("Regime forfettario 2025") &&
+        preview.includes("TFR maturato e rivalutazione") &&
+        preview.includes("Bollo in fattura") &&
+        preview.includes("Le fonti valgono per gli anni")
     : previewPath === designStudyPath
       ? ["minimal", "editorial", "workspace"].every((direction) => preview?.includes(`data-direction="${direction}"`)) &&
         preview?.includes("nessuna scelta approvata") && preview.includes("Studio isolato:") &&
