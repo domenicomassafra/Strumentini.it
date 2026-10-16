@@ -62,6 +62,15 @@ describe("#404 PR/source impact planning", () => {
     expect(plan.blockers).toEqual([]);
     expect(plan.gates.map((gate) => gate.id)).toContain("security-review");
   });
+  it("requires full source and security checks for executable Orca workspace setup", () => {
+    const plan = buildImpactPlan(["docs/agents/issue-tracker.md", "orca.yaml"], suites);
+    expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(plan.domains).toEqual(["docs", "ci"]);
+    expect(plan.blockers).toEqual([]);
+    expect(plan.commands).toContainEqual({ program: "npm", args: ["run", "test"] });
+    expect(plan.gates.map((gate) => gate.id)).toEqual(expect.arrayContaining(["security-review", "release-readiness"]));
+    expect(buildImpactPlan(["other-orca.yaml"], suites).status).toBe("NO_GO");
+  });
   it("keeps CI-installed Python consumer packages outside the reviewed source tree", async () => {
     const workflow = await readFile(resolve(".github/workflows/ci.yml"), "utf8");
     expect(workflow.match(/python3 -m venv "\$RUNNER_TEMP\/strumentini-ci-python"/gu)).toHaveLength(2);
