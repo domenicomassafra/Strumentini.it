@@ -150,7 +150,9 @@ async function acceptTool(context, testCase) {
   try {
     const response = await page.goto(`${origin}/tools/${testCase.id}/`, { waitUntil: "networkidle" });
     if (response?.status() !== 200) throw new Error(`${testCase.id}: HTTP ${response?.status()}`);
-    const form = page.locator("form").last();
+    // An accepted tool page may append independent experimental forms (e.g.
+    // GZIP on the ZIP creator route). Always submit the tool operation itself.
+    const form = page.locator("[data-tool-operation] form").first();
     await form.waitFor();
     await testCase.setup(page, form);
     const submit = form.locator("button[type='submit']");

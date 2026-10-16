@@ -759,7 +759,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -770,7 +770,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -781,7 +781,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -797,13 +797,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/aspect-ratio-calculator.gold.json",
-          "sha256": "e9c8a6274b3878ae886d6819471ee2ffec06889125d09781cb713312ed32fda1",
+          "sha256": "26971ebad89732febb17d63260ea4c8b2b9a905656089774c5745f406e1c5030",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -1535,7 +1535,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -1546,7 +1546,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -1557,7 +1557,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -1573,13 +1573,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/batch-checksum-manifest.gold.json",
-          "sha256": "1b22fe8d1e7316b2dba82ed7e76c4a55ecafd369dad3f803c2bfb2b4da114df3",
+          "sha256": "191a5490258d52986ca049c96d67b136a6db3ce36dfa3a80bbe89ffaba7d6e3a",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -2428,7 +2428,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -2439,7 +2439,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -2450,7 +2450,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -2466,13 +2466,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/bulk-domain-extractor.gold.json",
-          "sha256": "3b834fbd3d1723674e2ed98471a51502b84543b9b5a6993e340eca1436fc2d10",
+          "sha256": "340900325a9caaa25977257dd1b5519f16beac4c6d42eb81c93a9158570adcb1",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -2974,7 +2974,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -2985,7 +2985,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -2996,7 +2996,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -3012,13 +3012,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/canonical-url-helper.gold.json",
-          "sha256": "bd9cc0e8c1922f1d705a8aa11bfafa7f8821ce561229dd063beb0b5c9835d3b3",
+          "sha256": "b1b9dd92ef618573740474aff65b1176f644f298642648f81e50a13dcf5fd898",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -3355,7 +3355,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -3366,7 +3366,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -3377,7 +3377,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -3393,13 +3393,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/checksum-verifier.gold.json",
-          "sha256": "de95736cacf6e233d6b08eaa566ce8de1b4df02b650d2502ce9d26887ca6f941",
+          "sha256": "ea29cf6f72864fe31d9826d502449fa0cb36943ccba835adf9fe7c1536a7f441",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -4020,7 +4020,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4031,7 +4031,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4042,7 +4042,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4058,13 +4058,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/clean-zip-creator.gold.json",
-          "sha256": "1b75bf07f0bb17decb636bb845e5912e11a8ae5bf19e790153fda35113f14388",
+          "sha256": "c5d74b7a747beea0a378d944148caba98705599d36de6d75d1f4b238dbdffaf2",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -4153,7 +4153,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4164,7 +4164,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4175,7 +4175,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4191,13 +4191,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/client-handoff-index-generator.gold.json",
-          "sha256": "2c88f43b5192c2b282bc9b77db5d36907ebaf102bc7b5395a331f6af576d6708",
+          "sha256": "7dad49fed72a296db7782886e7999085a5bff6d970e48951f4a72aa89fcdedcc",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -4427,7 +4427,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4438,7 +4438,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4449,7 +4449,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4465,13 +4465,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/color-converter.gold.json",
-          "sha256": "467b47aafbf4a209c012474a93bd945aa6f52621d7a7a80bc589fed511175f48",
+          "sha256": "595120b459e97aa23e88b35fb88de2ff8628c9ad438820d51ec7d9849a508bd4",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -4563,7 +4563,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4574,7 +4574,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4585,7 +4585,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4601,13 +4601,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/color-picker.gold.json",
-          "sha256": "913fee4d13b5fe4d7b74eccd85ce27b08edb589df96f738442fb74f4939bd3c5",
+          "sha256": "70851c91c7f052c1b070e9083d9981fff7ebe127e043884655526fecb24d0702",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -4973,7 +4973,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4984,7 +4984,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -4995,7 +4995,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -5011,13 +5011,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/contact-sheet-generator.gold.json",
-          "sha256": "cdc6799bb4c184d4dbd67abafb81ac03e2ab2fb8f135720b681750da29bb11de",
+          "sha256": "4c2b2f93e3016964949d210f66a211cd4cceac30ce3284c0f1e53ce04302ab39",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -5110,7 +5110,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -5121,7 +5121,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -5132,7 +5132,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -5148,13 +5148,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/contrast-checker.gold.json",
-          "sha256": "571d3ad33f86207c820df26004caa3e98a537b427dc86fb1325cbc5ce8f2af0f",
+          "sha256": "bcb311ee0a4bb311c45c9333ba4ea930a2b1802e83a01c65cbcf4e46113d3606",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -5232,7 +5232,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -5243,7 +5243,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -5254,7 +5254,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -5270,13 +5270,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/conversion-rate-scenario.gold.json",
-          "sha256": "121a4978f081c895d18a7ca0f79d47e40e44acdedb7a9b6392ba1b1e128c46ee",
+          "sha256": "e8978b4fedcefcb257c710de42e4a3bb20d54ae70f420e6ac6277a54627b451d",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -5354,7 +5354,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -5365,7 +5365,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -5376,7 +5376,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -5392,13 +5392,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/cpa-cpc-cpm-calculator.gold.json",
-          "sha256": "9abe9fcaabf96a1f7b05e83517f1a2d3106af8d6656e674014ab1d2e3a3ce5be",
+          "sha256": "26b1055cd032424084212d20e036d9ab2e7d1535b9fcadc2b461ee9e109319f6",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -9376,7 +9376,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9387,7 +9387,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9398,7 +9398,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9414,13 +9414,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/doi-link-builder.gold.json",
-          "sha256": "9950bdb32ffede28c06d6f4848b6ae54e1692f134a016b1a8e2bf92ca432e199",
+          "sha256": "386e5bb84d4352f249916142bc92de6cb2bca5448b5c1ff2d402d4686e41d4e4",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -9501,7 +9501,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9512,7 +9512,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9523,7 +9523,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9539,13 +9539,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/doi-normalizer.gold.json",
-          "sha256": "2e223436b46b3d5297cbacdc634a82928e0a397aec6d6728134753df6f2132f7",
+          "sha256": "529874621e67b78d66c20a45db5853c3d53c4c0138882f28416ba807b6bbc6eb",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -9758,7 +9758,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9769,7 +9769,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9780,7 +9780,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9796,13 +9796,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/domain-subdomain-grouper.gold.json",
-          "sha256": "1ed0666139f1e456dd848f96da39068f6a89b3604a22505244f75ee5c1b063a7",
+          "sha256": "2544e57bae99556910b283000dc9f70ecc6202ca89d9aebbf77a4df513dcb530",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -9895,7 +9895,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9906,7 +9906,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9917,7 +9917,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -9933,13 +9933,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/dominant-color-extractor.gold.json",
-          "sha256": "237fd49f5ebc1703aa3fe9b463cab48314cd3d2ff0bc1b25e5749a68d8cd0f18",
+          "sha256": "b643eff9ec31d5ba1c709dd8ceb73addc028723540773c0c726c4fc5fdf9057e",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -10018,7 +10018,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -10029,7 +10029,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -10040,7 +10040,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -10056,13 +10056,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/duplicate-file-finder.gold.json",
-          "sha256": "dfcb799172669b788a5b33706665a609edecc07392a5247bd4da779e0cd878c8",
+          "sha256": "64ebb65d7fa2f97157a6887e73006b41f5dfb741e46f17fc8b51d7590c41fff4",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -10551,7 +10551,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -10562,7 +10562,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -10573,7 +10573,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -10589,13 +10589,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/email-domain-extractor.gold.json",
-          "sha256": "23e43b3c2c9e82030fc7948c0455a2dedbae59e7e31c0127fbcffd74020aac0b",
+          "sha256": "68eae997845a0c4548faff2ae34a1565f8cf5639211d177bfac56409882df249",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -11741,7 +11741,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -11752,7 +11752,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -11763,7 +11763,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -11779,13 +11779,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/favicon-app-icon-size-generator.gold.json",
-          "sha256": "97dd9cc364ccf28dff5fa67179d407baac00f1b4be5925cb3c45040af4b31b40",
+          "sha256": "e686075f68409028885c501538e0dd8296b1699ccb62db018258809ee57614ed",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -12007,7 +12007,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12018,7 +12018,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12029,7 +12029,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12045,13 +12045,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/file-list-diff.gold.json",
-          "sha256": "4e42b0249597c55750bbda3526db773996ebd8f1aeab8a19683e752321287a8f",
+          "sha256": "ce1b5573d9d8d9840fe00fb5d5be28bf78c65f0c599c8eda5bf185f0cfda7a59",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -12137,7 +12137,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12148,7 +12148,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12159,7 +12159,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12175,13 +12175,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/file-signature-detector.gold.json",
-          "sha256": "95c40fb5f03a989d90b272fced890c83dd6e19e5ab2701ef5835b1685a63dc8a",
+          "sha256": "f397f489d998ccecdae9c71582bd169b178921aaa6d4d88911411e460233aacf",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -12401,7 +12401,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12412,7 +12412,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12423,7 +12423,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12439,13 +12439,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/filename-sanitizer.gold.json",
-          "sha256": "816730def380d67bb431015fee53148187c0ec5c38601bd42e06c2e367317610",
+          "sha256": "1c1a15febf0bef2a8887cdd9a26ec41a761e5d8da0e38e49d7e6de6146afaad7",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -12802,7 +12802,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12813,7 +12813,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12824,7 +12824,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12840,13 +12840,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/folder-inventory.gold.json",
-          "sha256": "07f4374cb3b580377ea7a71e3dba4bb08aff98783ef884df079edbac976821ce",
+          "sha256": "7cbe4122a35e71ab5633f34c2065f67819e3e388b8020d980a035a7ae32df059",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -12928,7 +12928,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12939,7 +12939,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12950,7 +12950,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -12966,13 +12966,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/folder-size-type-summary.gold.json",
-          "sha256": "c3b9ba0ea4a422827c60d535b49f55eb9a8a78f05b67921fe01769845be01ce3",
+          "sha256": "1f25a25b6b61a12c965647f85150e5bd5b0256b73838796671d4be0d9deee980",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -14511,7 +14511,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14522,7 +14522,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14533,7 +14533,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14549,13 +14549,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-compare-slider.gold.json",
-          "sha256": "616cfe2e5fbfcd45d76220a5c1358189ab566c0a7fec2ae3eee7cd0738f9f0c3",
+          "sha256": "4de899c6180c80e025890a808182d1446562c91a3b71f6d8f779f6ed03e95b98",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -14649,7 +14649,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14660,7 +14660,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14671,7 +14671,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14687,13 +14687,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-compression.gold.json",
-          "sha256": "28725a0bce8b71396073f04af214aec8fe017612fbf72aa342364d748e287d84",
+          "sha256": "bffa6e7992821fc21022c1e5c7abd7f6f9f9d9fab35af7511ce9fa0a0eeba403",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -14789,7 +14789,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14800,7 +14800,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14811,7 +14811,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14827,13 +14827,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-crop.gold.json",
-          "sha256": "27ca078a1f6230c0273eaffa446f83a5d78daa9a17c218d60c2882097d464f73",
+          "sha256": "805d94d63b8f153bfd77b30a201c26e7c283b3b2a9460d4b72caf9cccbc521a3",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -14926,7 +14926,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14937,7 +14937,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14948,7 +14948,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -14964,13 +14964,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-dimensions-batch-inspector.gold.json",
-          "sha256": "8d1746325776d67f509ab9b9a55a85e62c46c58112d727795de2ed8fb06c5a67",
+          "sha256": "20531f8e1f58c304dc9e3bc5804bc9a3b2721d192e56992c488d52f7d0d38ccd",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -15068,7 +15068,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -15079,7 +15079,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -15090,7 +15090,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -15106,13 +15106,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-format-conversion.gold.json",
-          "sha256": "b70941da1bd3a64e7ce422310b0037c3887b612c0bcdca88cddbebd2595c876f",
+          "sha256": "76bf7928a948a18dddf6d3c64cceb7cb5b252cd48f292694df598413bc376799",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -15206,7 +15206,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -15217,7 +15217,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -15228,7 +15228,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -15244,13 +15244,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-metadata-viewer.gold.json",
-          "sha256": "0abf5b8fe4960f045948a182e480545ad641561e5e81dacd34a820bf3f37e0d2",
+          "sha256": "666a058f4fdc2098789611487f41deaf4ff66a6a9139fce92461453f62bb44cc",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -15343,7 +15343,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -15354,7 +15354,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -15365,7 +15365,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -15381,13 +15381,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/image-rename-batch-preview.gold.json",
-          "sha256": "42a8cd66e2f640e9b15f7fbb2eddacb4f75b212132898dced52066ca9bb6d740",
+          "sha256": "fe74087cc3b5f81ed5c8ea2fe39f9cfcf3f820a9de32e7bbc4ffb59f10d74646",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -16440,7 +16440,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -16451,7 +16451,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -16462,7 +16462,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -16478,13 +16478,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/isbn-validator-converter.gold.json",
-          "sha256": "e5cc4064b8b00a7f3b7cfa8439d5538b97abfcfd4a4429f17f1ab63736c9874b",
+          "sha256": "5fe1fc658b9fd18d9dda308992950a5fd33deb95367d4210b3aef6a1337768aa",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -21000,7 +21000,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -21011,7 +21011,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -21022,7 +21022,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -21038,13 +21038,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/palette-extractor.gold.json",
-          "sha256": "f96534f9f50b4251b356a90b2e3dd7e481b2de36baede0b6339ce3205aac6a64",
+          "sha256": "46394aed1cb0259aaf03413595ede8f5a861f977f7a0aa474a8875a94b966afd",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -25560,7 +25560,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -25571,7 +25571,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -25582,7 +25582,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -25598,13 +25598,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/perceptual-duplicate-finder.gold.json",
-          "sha256": "8896a13e66ed471b728cf175576d3b451fece527b3d14d8e6d5833709b72ad07",
+          "sha256": "7fec23eb6d7067801613a13b338db48dad825f029d93811de35296d6b21c4aa8",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -27214,7 +27214,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -27225,7 +27225,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -27236,7 +27236,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -27252,13 +27252,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/quote-counter.gold.json",
-          "sha256": "22a82d99bb2f31291a10b1ebffc5b629a396ed77b06240e52fa3e6fce57e7aa1",
+          "sha256": "cfe223695c249a55046b934a2d26313634629ae354e3ca5b27db8ae4dcb75ba8",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -28010,7 +28010,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -28021,7 +28021,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -28032,7 +28032,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -28048,13 +28048,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/redirect-chain-inspector.gold.json",
-          "sha256": "7217c5b20cd697485906071d6dcc2650caeeccaea777d5e53d890bbd0ffbf1f9",
+          "sha256": "7e202a41dad258b9d17124c9e38c0e496f358d109e5f4a60ccc6e7ee8a38d251",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -28659,7 +28659,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -28670,7 +28670,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -28681,7 +28681,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -28697,13 +28697,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/research-url-cleaner.gold.json",
-          "sha256": "45ee60f8bb5e5f841baf555b4f669e1e148fdec3706620a7b841e501926bc319",
+          "sha256": "691af3667dd1acd409fb8fcfe9cdd865f09bdfe4adec9a113d4690f5b8bbadb5",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -29046,7 +29046,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29057,7 +29057,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29068,7 +29068,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29084,13 +29084,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/roas-calculator.gold.json",
-          "sha256": "c46b73b02a8702e807921531bb2ab149da49f4c7182f36b5e4a354303911456f",
+          "sha256": "f2a696569b94f2225b1c9991d1dd83a57d46ed8b336c3c51a02cf80830fcb187",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -29179,7 +29179,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29190,7 +29190,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29201,7 +29201,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29217,13 +29217,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/robots-directive-helper.gold.json",
-          "sha256": "dfddc9fb29c51bd1f6f9858b4dd7f51c899b7d0b687c4c8ad8ffb5c719c646e1",
+          "sha256": "28fce8008efee5e6dc5315cd67836efe98e2277feaa965f846282bffe1badd3d",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -29315,7 +29315,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29326,7 +29326,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29337,7 +29337,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29353,13 +29353,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/safe-share-checklist.gold.json",
-          "sha256": "bf6755285e3990e762168ced852c4db51f72dfffec45d2133c9a4e855f040f79",
+          "sha256": "a4a1ea3ae6de6288975d8d6d77f366b3d88faf4c3fc0fb56ea4d4b2098e2fb55",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -29700,7 +29700,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29711,7 +29711,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29722,7 +29722,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29738,13 +29738,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/screenshot-border-background-helper.gold.json",
-          "sha256": "c71076c4d585c19f74298fd8e7aec1952724bed6ef3fe5b6b68c385ade9561a1",
+          "sha256": "201ea1ed316ce596b2f4011cb84b1adf406091e4e03adb9a19f0714a7fe78e9a",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -29833,7 +29833,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29844,7 +29844,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29855,7 +29855,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -29871,13 +29871,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/secret-token-pattern-scanner.gold.json",
-          "sha256": "f546ebada024701795d57636b5290e7b891c6d63e2e6876b6aabc840e6267442",
+          "sha256": "681f366529beacc91d1cce57aab5bbdea4890353135ecc2617481a4982a91b3a",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -32015,7 +32015,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -32026,7 +32026,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -32037,7 +32037,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -32053,13 +32053,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/timeline-sorter.gold.json",
-          "sha256": "23c63b633bd568f59a8703f222b8fa803c1f5a44ea4f00b5954ffdbad3764635",
+          "sha256": "155d9692c2ebd25a63de65e14a04217e1b9901d758c1adc77419be45fe6749cb",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -33231,7 +33231,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -33242,7 +33242,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -33253,7 +33253,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -33269,13 +33269,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/url-bulk-normalizer.gold.json",
-          "sha256": "7c64952ca7efa8859e234be64e5b8a2d0537702716a2457b779b8073675c23ba",
+          "sha256": "a74681b2f05c2b39e981831d26a5f1c24f9afd59d13d8c79ec5981da84382a9c",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -34021,7 +34021,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -34032,7 +34032,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -34043,7 +34043,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -34059,13 +34059,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/utm-parser.gold.json",
-          "sha256": "29389dc840c48f7b6b3fbd030c1bf576f0c5306cb40ae5979bff5c7484b943ee",
+          "sha256": "ebc2e92ea2ca36c6e6fe9a2db6231390de649abb739baf8927d81758c2f5138f",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -35592,7 +35592,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -35603,7 +35603,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -35614,7 +35614,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -35630,13 +35630,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/zero-byte-orphan-finder.gold.json",
-          "sha256": "5a1d82fd960cc7785065020c2ef15ec30a609d0bcb4d2a1c0018bb9a2006f6a7",
+          "sha256": "8f1f0cab17fedce6be2f0aaf02041154bdbc8095844e44bb97ff300293bec5af",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -35716,7 +35716,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -35727,7 +35727,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -35738,7 +35738,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -35754,13 +35754,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/zip-contents-inspector.gold.json",
-          "sha256": "4291390726562bd4c2f60bb5c60a641abe60dc7a12bd847e24b43dac3e38dcab",
+          "sha256": "0110830844a423db5880d7763b38dd11a2aae81af48be4a5ae26c5e94bd9ba73",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
@@ -35841,7 +35841,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -35852,7 +35852,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -35863,7 +35863,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/expanded-local/browser-acceptance.json",
-            "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+            "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
             "status": "PASS"
           }
         ]
@@ -35879,13 +35879,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/expanded-local/zip-creator.gold.json",
-          "sha256": "02511a6f84dfc7c86b2932bdd30255b77226c515649c020f83f71fec8fe861ee",
+          "sha256": "a40e6ac47e623da17eb4ba1293a1637a75fe7d18757a837c4fb9f50523e8322e",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/expanded-local/browser-acceptance.json",
-          "sha256": "4555ad287bac05435abab0d6f48e82dce59bacd561b9327b3db662458ea675a2",
+          "sha256": "f673fddaf60df7372e9b5f98aa9f985c5f70616fc17a50297c2b5174c88b9a45",
           "status": "PASS"
         }
       ],
