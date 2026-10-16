@@ -155,7 +155,9 @@ export function assertSupportedSource237(source: Uint8Array): number {
   if (footer.slice(cursor, cursor + 2) !== "<<") {
     refuse("Trailer PDF non seguito da un dizionario verificabile.");
   }
-  const model = parsePdf(source);
+  // Inspect physical dictionaries without inflating untrusted object streams.
+  // This redaction profile rejects /ObjStm before interpreting any content.
+  const model = parsePdf(source, { expandObjectStreams: false });
   if (model.encrypted) refuse("PDF cifrato non supportato.");
   // The shared parser may fall back to scanning Page objects when it cannot
   // resolve the actual Catalog. In particular, a legal form-feed before an
@@ -354,8 +356,8 @@ export function assertSupportedSource237(source: Uint8Array): number {
     // %%EOF is truncated or suffixed and our sole complete footer selects an
     // older classic table. Never admit any parsed cross-reference stream.
     const type = value.kind === "stream" ? value.dictionary.entries.get("Type") : undefined;
-    if (type?.kind === "name" && type.value === "XRef") {
-      refuse("Revisioni incrementali o xref stream non supportati.");
+    if (type?.kind === "name" && (type.value === "XRef" || type.value === "ObjStm")) {
+      refuse("Object stream o xref stream non supportati per la redazione.");
     }
     inspectNested(value);
   }
@@ -443,7 +445,12 @@ async function inflateExact237(compressed: Uint8Array, expected: number, signal?
   try {
     while (true) {
       check(signal);
-      const next = await reader.read();
+      let next: ReadableStreamReadResult<Uint8Array>;
+      try { next = await reader.read(); }
+      catch {
+        check(signal);
+        refuse("Stream Flate esportato incompleto o con byte aggiuntivi.");
+      }
       if (next.done) break;
       used += next.value.length;
       if (used > expected) refuse("Immagine esportata decompressa oltre il limite atteso.");
@@ -466,7 +473,9 @@ export async function verifySecureRedaction237(
 ): Promise<RedactionProof237> {
   if (output.length < 100 || output.length > MAX_OUTPUT_BYTES) refuse("PDF finale fuori limite.");
   if (!new TextDecoder("ascii").decode(output.subarray(-6)).endsWith("%%EOF\n")) refuse("Byte finali dopo EOF.");
-  const model = parsePdf(output);
+  // A forged export cannot consume memory expanding an object stream before
+  // the fixed output whitelist rejects it.
+  const model = parsePdf(output, { expandObjectStreams: false });
   if (model.info !== null || model.encrypted || model.root === null || model.pages.length !== pages.length
     || model.objects.size !== 2 + pages.length * 3 || model.trailer.entries.has("Prev")) {
     refuse("Struttura PDF esportata diversa dallo schema consentito.");
