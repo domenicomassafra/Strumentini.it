@@ -22,6 +22,9 @@ const verifiedCount = catalog.filter((tool) => verifiedIds.has(tool.id)).length;
   description={`Il catalogo completo: ${catalog.length} strumenti online gratuiti per PDF, immagini, CSV, testo, date e lavoro d'ufficio, con filtri per categoria, tipo di ingresso e stato della verifica.`}
 >
   <DirectoryHero total={catalog.length} verified={verifiedCount} />
+  <p style="max-width:1100px;margin:12px auto 24px;padding:0 20px;">
+    Fonti italiane consultabili: <a href="/codici-geografici-italia/">comuni, province e Stati esteri ISTAT</a> · <a href="/fonti-fiscali-italia/">norme fiscali ufficiali per anno</a>.
+  </p>
   <JobRoutes />
   <CatalogDirectory tools={catalog} verifiedIds={verifiedIds} />
   <DirectoryBand />

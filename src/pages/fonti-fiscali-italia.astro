@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getItalySourcePackDecision } from "../reference-data/italy/source-packs";
+import { VERIFIED_IRPEF_EXCERPTS_117 as irpef, VERIFIED_FORFETTARIO_COEFFICIENTS_2025_117 as coeff, INVOICE_STAMP_REFERENCE_2024_117 as bollo } from "../reference-data/italy/fiscal-annual-117";
+const pack = getItalySourcePackDecision(117);
+---
+<BaseLayout title="Fonti fiscali ufficiali italiane per anno" description="Consulta fonti e intervalli di validità verificati per IRPEF, forfettario e bollo con riferimenti normativi e limiti aggiornati.">
+  <main class="sources-fiscal">
+    <p><a href="/strumenti/">← Strumenti</a> · <a href="/codici-geografici-italia/">Comuni e Stati esteri</a></p>
+    <h1>Fonti fiscali ufficiali per anno</h1>
+    <p>Archivi con intervalli, aliquote e riferimenti verificabili. Il pacchetto completo annuale IVA–IRPEF–forfettario richiede ancora fonti di dettaglio: ogni tabella sotto dichiara esattamente quale sottoinsieme è documentato.</p>
+    <p>Revisione delle fonti: <strong>{pack.checkedAt}</strong> · Identificativo: <code>{pack.decisionVersion}</code> · Aggiornamenti quando cambiano la norma o l'anno fiscale.</p>
+    {irpef.map(year => <section class="fiscal-year">
+      <h2>Anno fiscale {year.taxYear} — IRPEF nazionale lorda</h2>
+      <p>Validità {year.effectiveFrom} / {year.effectiveTo}. Solo scaglioni nazionali lordi; detrazioni e addizionali richiedono verifiche separate.</p>
+      <table><thead><tr><th>Reddito imponibile fino a</th><th>Aliquota</th></tr></thead><tbody>
+        {year.bands.map(band => <tr><td>{band.upToCents === null ? "Oltre lo scaglione precedente" : new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR"}).format(band.upToCents/100)}</td><td>{(band.rateBasisPoints/100).toLocaleString("it-IT")}%</td></tr>)}
+      </tbody></table>
+      <p>Documenti: {year.sources.map((source, i) => <span>{i > 0 ? " · " : ""}<a href={source.url} target="_blank" rel="noopener noreferrer">{source.authority}, copia identificata da SHA-256</a></span>)}</p>
+    </section>)}
+    <section class="fiscal-year"><h2>Anno fiscale 2025 — coefficienti forfettario ATECO 2007</h2>
+      <p>Validità {coeff.effectiveFrom} / {coeff.effectiveTo}. Nove righe ufficiali; l'ammissibilità al regime, i contributi e il passaggio ad ATECO 2025 richiedono verifiche separate.</p>
+      <table><thead><tr><th>Settore nella tabella ufficiale</th><th>Coefficiente</th></tr></thead><tbody>{coeff.rows.map(row => <tr><td>{row.sectorLabel}</td><td>{row.coefficientPercent}%</td></tr>)}</tbody></table>
+      <p>{coeff.sources.map((source, i) => <span>{i > 0 ? " · " : ""}<a href={source.url} target="_blank" rel="noopener noreferrer">{source.authority}{source.pageNumber ? `, pagina ${source.pageNumber}` : ""}</a></span>)}</p>
+    </section>
+    <section class="fiscal-year"><h2>Anno 2024 — riferimento bollo fatture</h2>
+      <p>Guida archiviata e limitata all'anno indicato. <a href={bollo.source.url} target="_blank" rel="noopener noreferrer">Agenzia delle Entrate, documento originale</a>.</p>
+    </section>
+    <h2>Fonti candidate ancora da completare</h2>
+    <p>Per aliquote IVA applicabili alle singole operazioni e per un modello annuale completo del forfettario, il catalogo mantiene i riferimenti con stato di copertura insufficiente.</p>
+    <ul>{pack.candidateOfficialSources?.map(source => <li><a href={source.url} target="_blank" rel="noopener noreferrer">{source.authority} — {source.title}</a>: {source.limitation}</li>)}</ul>
+    <p>Nessun anno non supportato eredita automaticamente aliquote o coefficienti da un altro anno.</p>
+  </main>
+</BaseLayout>
+<style>
+  .sources-fiscal{max-width:1000px;margin:0 auto;padding:30px 22px 80px}.sources-fiscal p{line-height:1.65}.sources-fiscal .fiscal-year{border:1px solid var(--border);border-radius:14px;padding:18px;margin:24px 0}.sources-fiscal table{width:100%;border-collapse:collapse}.sources-fiscal th,.sources-fiscal td{text-align:left;padding:9px;border-bottom:1px solid var(--border)}
+</style>
