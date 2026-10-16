@@ -933,6 +933,44 @@ legend, .field > span, .field > label {
   min-height: auto;
 }
 
+/* All file tools (PDF, images, tables) share one native picker treatment.
+   Keep the real input available to keyboard, touch and the browser file dialog. */
+.tool-page .field input[type="file"] {
+  padding: var(--space-2);
+  max-width: 100%;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.tool-page .field input[type="file"]::file-selector-button {
+  min-height: var(--control-height);
+  max-width: 100%;
+  margin-right: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-subtle);
+  color: var(--text);
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.tool-page .field input[type="file"]:disabled,
+.tool-page .field input[type="file"]:disabled::file-selector-button {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.tool-page .field :is(input, textarea, select)[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.tool-page .field :is(input, textarea, select)[aria-invalid="true"]:focus-visible {
+  outline: 2px solid var(--danger);
+  outline-offset: 2px;
+}
+
 .choice-line { display: flex; align-items: center; gap: var(--space-2); }
 
 .field-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
