@@ -26,7 +26,7 @@ export async function simpleDocxToPrintableText56(input: ArrayBuffer | Uint8Arra
     extracted.blocks.some((block) => block.type === "table" || block.links.length !== 0)) {
     throw new Error("PDF56_DOCX_UNSUPPORTED: contenuto DOCX non incluso nella stampa semantica");
   }
-  const text = extracted.blocks.map((block) => block.text).filter(Boolean).join("\n\n");
+  const text = extracted.blocks.map((block) => block.type === "table" ? "" : block.text).filter(Boolean).join("\n\n");
   if (!text.trim() || !text.trim().length) throw new Error("PDF56_DOCX_EMPTY: il documento non contiene testo stampabile");
   return text;
 }
