@@ -164,6 +164,7 @@
       "url": "https://def.giustiziatributaria.gov.it/DocTribFrontend/executePrintArticolo.do?FROM_SEARCH=true&codiceOrdinamento=0000000000000160000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&id=%7BA4A3F97F-082C-4930-AE96-32738FA78FE7%7D&idAttoNormativo=%7B75A4827C-3766-4ECC-9C45-00C8D6CDC552%7D&numeroArticolo=Articolo+16",
       "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/def-dpr633-article16-2016-2026.pdf",
       "sha256": "sha256:e509df3a14694174938c2f4a6ebc21ae087ad222a41fa53f30c7d845baa4e8bc",
+      "checkedAt": "2026-10-16",
       "classification": "SUFFICIENT_FOR_USER_CONFIRMED_2025_12_13_TO_2025_12_31_VAT_SUBSET_ONLY",
       "liveUrlCheck": "NOT_RUN"
     },
@@ -174,6 +175,7 @@
       "url": "https://def.giustiziatributaria.gov.it/DocTribFrontend/executePrintArticolo.do?FROM_SEARCH=true&codiceOrdinamento=0010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&id=%7BFD8245B8-AD26-42C5-9BD2-17E636B89FDD%7D&idAttoNormativo=%7B75A4827C-3766-4ECC-9C45-00C8D6CDC552%7D&numeroArticolo=Tabella+A",
       "path": "quality/reference-data/italy/artifacts/117-fiscal-annual/def-dpr633-tabella-a-2025-12-13-full.pdf",
       "sha256": "sha256:a29e69bd448a1355e462bb301f7166b0c7563cd0b338ccbad698f3fe051db412",
+      "checkedAt": "2026-10-16",
       "classification": "SUFFICIENT_FOR_USER_CONFIRMED_2025_12_13_TO_2025_12_31_VAT_SUBSET_ONLY",
       "liveUrlCheck": "NOT_RUN"
     },

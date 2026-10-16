@@ -23,7 +23,7 @@ describe("ticket #397 offline source-year ledger (official snapshots only)", () 
     for (const name of ["115-administrative-geography", "117-fiscal-annual", "118-inps-annual"]) {
       const evidence = JSON.parse((await pinned(`quality/reference-data/italy/${name}-evidence.json`)).toString("utf8"));
       for (const source of [...evidence.artifacts, ...(evidence.frozenOfficialBulkArtifacts ?? [])]) {
-        sourceReviewDates.set(source.path, evidence.checkedAt);
+        sourceReviewDates.set(source.path, source.checkedAt ?? evidence.checkedAt);
       }
     }
     for (const rule of result.verified) {
@@ -39,8 +39,8 @@ describe("ticket #397 offline source-year ledger (official snapshots only)", () 
       }
     }
     expect(result.verified.find(({ ruleId }) => ruleId === "italy.vat-declared-2025-window")?.sources)
-      .toEqual([expect.objectContaining({ manifestCheckedAt: "2026-10-09", manifestIndex: "MATCHED", checkedHash: true }),
-        expect.objectContaining({ manifestCheckedAt: "2026-10-09", manifestIndex: "MATCHED", checkedHash: true })]);
+      .toEqual([expect.objectContaining({ manifestCheckedAt: "2026-10-16", manifestIndex: "MATCHED", checkedHash: true }),
+        expect.objectContaining({ manifestCheckedAt: "2026-10-16", manifestIndex: "MATCHED", checkedHash: true })]);
     expect(resolveAnnualOfficialRule397(result, "italy.irpef-national-gross", "2026-07-01")).toMatchObject({
       status: "VERIFIED_SUBSET", record: { taxYear: 2026, validFrom: "2026-01-01", validTo: "2026-12-31" },
     });
@@ -145,6 +145,9 @@ describe("ticket #397 offline source-year ledger (official snapshots only)", () 
     expect(validOfficialEvidence397(evidence, 118, "inps-contributions-annual", "2026-10-07")).toBe(true);
     expect(validOfficialEvidence397({ ...evidence, artifacts: [{ ...artifact, path: null }] }, 118, "inps-contributions-annual", "2026-10-07")).toBe(false);
     expect(validOfficialEvidence397({ ...evidence, artifacts: [{ ...artifact, url: "https://evil.example/a.pdf" }] }, 118, "inps-contributions-annual", "2026-10-07")).toBe(false);
+    expect(validOfficialEvidence397({ ...evidence, artifacts: [{ ...artifact, checkedAt: "2026-09-30" }] }, 118, "inps-contributions-annual", "2026-10-07")).toBe(false);
+    expect(validOfficialEvidence397({ ...evidence, artifacts: [{ ...artifact, checkedAt: "2026-02-30" }] }, 118, "inps-contributions-annual", "2026-10-07")).toBe(false);
+    expect(validOfficialEvidence397({ ...evidence, artifacts: [{ ...artifact, checkedAt: "2026-10-16" }] }, 118, "inps-contributions-annual", "2026-10-07")).toBe(true);
     expect(validOfficialEvidence397({ ...evidence, artifacts: [artifact, { ...artifact }] }, 118, "inps-contributions-annual", "2026-10-07")).toBe(false);
     expect(validOfficialEvidence397({ ...evidence, artifacts: [{ ...artifact, path: "../outside" }] }, 118, "inps-contributions-annual", "2026-10-07")).toBe(false);
     expect(validOfficialEvidence397({ ...evidence, artifacts: [null] }, 118, "inps-contributions-annual", "2026-10-07")).toBe(false);
