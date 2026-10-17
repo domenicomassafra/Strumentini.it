@@ -1,0 +1,98 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { IRPEF_128_COVERAGE, IRPEF_128_LIABILITY_SOURCES } from "../../engines/italy/irpef-components-128";
+---
+<BaseLayout title="IRPEF: scaglioni, detrazioni e addizionali supportate" description="IRPEF lorda per scaglioni 2025 e 2026 e componenti documentate 2025 per il lavoro dipendente e per Puglia e Bari." noindex>
+  <main class="tax-tool" data-irpef-components>
+    <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / IRPEF</nav>
+    <h1>IRPEF: scaglioni, detrazioni e addizionali</h1>
+    <p>Parti dal reddito imponibile IRPEF già determinato. L'imposta lorda nazionale è disponibile per 2025 e 2026; le altre componenti sono documentate soltanto per i casi 2025 indicati.</p>
+    <form novalidate>
+      <label for="irpef-c-year">Anno d'imposta</label>
+      <select id="irpef-c-year" name="year"><option value="2025">2025</option><option value="2026">2026 (solo nazionale)</option></select>
+      <label for="irpef-c-income">Reddito imponibile in euro, senza separatori delle migliaia</label>
+      <input id="irpef-c-income" name="income" type="text" inputmode="decimal" placeholder="40000,00" required />
+      <label for="irpef-c-region">Regione per addizionale</label>
+      <select id="irpef-c-region" name="region"><option value="unknown">Non disponibile / altra regione</option><option value="puglia">Puglia (solo 2025)</option></select>
+      <label for="irpef-c-city">Comune per addizionale</label>
+      <select id="irpef-c-city" name="city"><option value="unknown">Non disponibile / altro Comune</option><option value="bari">Bari (solo 2025, con Regione Puglia)</option></select>
+      <label class="confirm"><input type="checkbox" name="employee" /> Applica detrazione ordinaria da lavoro dipendente 2025: confermo lavoro dipendente tutto l'anno (365 giorni), reddito complessivo pari all'imponibile inserito, assenza di condizioni speciali. Non sono considerate altre detrazioni.</label>
+      <button type="submit">Mostra scaglioni e componenti supportate</button>
+    </form>
+    <p role="alert" class="error" hidden></p>
+    <output aria-live="polite"></output>
+    <section aria-label="Copertura e fonti">
+      <h2>Copertura delle componenti</h2>
+      <p>Detrazione lavoro dipendente: solo 2025, anno intero e condizioni confermate. Addizionale regionale: Puglia 2025 (quattro scaglioni, escluse detrazioni familiari speciali). Addizionale comunale: Bari 2025 (0,8%, esenzione integrale fino a €15.000). Gli altri casi producono un risultato parziale: la componente sconosciuta non viene trattata come zero.</p>
+      <p>Le due addizionali si applicano solo se risulta dovuta IRPEF nazionale al netto di detrazioni e crediti. In questa simulazione, se la detrazione confermata azzera l'IRPEF nazionale, entrambe sono zero. Senza conferma delle condizioni della detrazione, il netto e le addizionali restano non determinati; altre detrazioni e crediti esclusi possono comunque modificare il risultato.</p>
+      <ul>{Object.values(IRPEF_128_COVERAGE).map((item) => <li><a href={item.source.url}>{item.source.provision}</a> — versione {item.source.version}</li>)}</ul>
+      <ul>{IRPEF_128_LIABILITY_SOURCES.map((source) => <li><a href={source.url}>{source.provision}</a> — versione al 31/12/2025</li>)}</ul>
+      <p>IRPEF nazionale: <a href="https://www.normattiva.it/eli/stato/LEGGE/2024/12/30/207/ORIGINAL">legge 207/2024</a> (2025) e <a href="https://www.normattiva.it/eli/stato/LEGGE/2025/12/30/199/CONSOLIDATED">legge 199/2025</a> (2026). Il risultato non costituisce una dichiarazione fiscale personale.</p>
+    </section>
+  </main>
+</BaseLayout>
+<script>
+  import { calculateIrpefComponents128 } from "../../engines/italy/irpef-components-128";
+  const root = document.querySelector<HTMLElement>("[data-irpef-components]");
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const output = root.querySelector<HTMLOutputElement>("output")!;
+    const error = root.querySelector<HTMLElement>(".error")!;
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement;
+    const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+    const clear = () => { output.replaceChildren(); error.hidden = true; };
+    form.addEventListener("input", clear); form.addEventListener("change", clear);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault(); clear();
+      const raw = field("income").value.trim();
+      if (!/^(?:0|[1-9]\d{0,9})(?:[.,]\d{1,2})?$/u.test(raw)) {
+        error.textContent = "Reddito non valido: euro non negativi, massimo due decimali, senza separatori delle migliaia.";
+        error.hidden = false; return;
+      }
+      const [whole = "0", decimal = ""] = raw.split(/[.,]/u);
+      try {
+        const result = calculateIrpefComponents128({ taxYear: Number(field("year").value),
+          taxableIncomeCents: Number(whole) * 100 + Number(decimal.padEnd(2, "0")),
+          region: field("region").value as "puglia" | "unknown",
+          municipality: field("city").value as "bari" | "unknown",
+          employeeFullYearConfirmed: (field("employee") as HTMLInputElement).checked });
+        const heading = document.createElement("h2");
+        heading.textContent = `IRPEF lorda nazionale: ${euro(result.national.grossNationalTaxCents)} (anno ${result.national.taxYear})`;
+        const bands = document.createElement("ol");
+        for (const band of result.national.lines) {
+          const item = document.createElement("li");
+          item.textContent = `Imponibile scaglione ${euro(band.taxableBandCents)} × ${band.rateBasisPoints / 100}% = ${euro(band.taxCents)}`;
+          bands.append(item);
+        }
+        const breakdown = document.createElement("ul");
+        for (const item of result.components) {
+          const li = document.createElement("li");
+          li.textContent = `${item.id}: ${euro(item.cents)} — ${item.source.provision} (versione ${item.source.version}). Dettaglio: ${item.breakdown.map((band) => `${band.description}: ${euro(band.taxableCents)}${band.rateBasisPoints === undefined ? "" : " × " + (band.rateBasisPoints / 100) + "%"} → ${euro(band.taxCents)}`).join("; ")}`;
+          breakdown.append(li);
+        }
+        const title = document.createElement("p");
+        title.textContent = result.nationalAfterSelectedDeductionCents === null || result.selectedComponentsEstimateCents === null
+          ? "IRPEF nazionale netta e somma delle componenti non determinate: mancano le condizioni della detrazione. Resta disponibile solo l'imposta lorda nazionale, NON l'imposta individuale dovuta."
+          : `IRPEF nazionale dopo la detrazione selezionata: ${euro(result.nationalAfterSelectedDeductionCents)}. Somma nazionale e componenti selezionate: ${euro(result.selectedComponentsEstimateCents)}. È una stima parziale, NON l'imposta individuale definitiva.`;
+        const omitted = document.createElement("p");
+        omitted.textContent = result.unsupported.length ? `Componenti NON calcolate: ${result.unsupported.join(" ")}` : "Tutti e tre i componenti selezionati sono calcolati; restano fuori le altre voci fiscali.";
+        const limit = document.createElement("p"); limit.textContent = result.limitations;
+        output.append(heading, bands, breakdown, title, omitted, limit);
+      } catch {
+        error.textContent = "Anno o importo non coperto: sono supportati 2025 e 2026 per la sola IRPEF nazionale.";
+        error.hidden = false;
+      }
+    });
+  }
+</script>
+<style>
+  .tax-tool { width:min(850px,calc(100% - 32px)); margin:32px auto 72px; display:grid; gap:18px; min-width:0; }
+  .tax-tool h1,.tax-tool h2,.tax-tool p { margin:0; }
+  .tax-tool form { border:1px solid var(--border); border-radius:12px; padding:20px; display:grid; gap:12px; }
+  .tax-tool input:not([type=checkbox]),.tax-tool select,.tax-tool button { box-sizing:border-box; min-width:0; width:100%; padding:10px; }
+  .tax-tool .confirm { display:flex; align-items:flex-start; gap:8px; }
+  .tax-tool button { cursor:pointer; }
+  .tax-tool :focus-visible { outline:3px solid currentColor; outline-offset:2px; }
+  .tax-tool output:not(:empty) { display:grid; gap:12px; border-left:3px solid currentColor; padding:16px; }
+  .tax-tool .error { font-weight:600; }
+</style>

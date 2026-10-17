@@ -21,14 +21,16 @@ describe("#121 formal checksum, bounded local generation, provenance and refusal
     });
   });
 
-  it("generates from independently pinned ISTAT Roma and only on proven current-snapshot date", () => {
+  it("generates a candidate for Roma with dated provenance and flags older birth dates", () => {
     expect(generateCodiceFiscale121(basic)).toMatchObject({
       status: "GENERATED_CANDIDATE", code: "RSSMRA26B21H501N",
       geography: { name: "Roma", belfiore: "H501", provenance: "ISTAT_CURRENT_2026_02_21" },
       identityConfirmed: false,
     });
     expect(generateCodiceFiscale121({ ...basic, birthDate: "1980-01-01" })).toMatchObject({
-      status: "REFUSED", reasonCode: "GEOGRAPHY_TEMPORAL_UNVERIFIED",
+      status: "GENERATED_CANDIDATE", code: "RSSMRA80A01H501U",
+      geographyAtBirth: "ANPR_ADMINISTRATIVE_INTERVAL_VERIFIED",
+      geography: { provenance: "ANPR_OFFICIAL_ARCHIVE_2023_10_03" }, identityConfirmed: false,
     });
   });
 
@@ -56,11 +58,25 @@ describe("#121 formal checksum, bounded local generation, provenance and refusal
       status: "REFUSED", reasonCode: "GEOGRAPHY_CODE_UNAVAILABLE",
     });
     expect(generateCodiceFiscale121({ ...basic, birthPlace: { kind: "suppressed", istatCode: "024027" } })).toMatchObject({
-      status: "REFUSED", reasonCode: "GEOGRAPHY_TEMPORAL_UNVERIFIED",
+      status: "GENERATED_CANDIDATE", geographyAtBirth: "NOT_VERIFIED",
     });
     expect(generateCodiceFiscale121({ ...basic, birthPlace: { kind: "foreign", istatCode: "201" } })).toMatchObject({
-      status: "REFUSED", reasonCode: "GEOGRAPHY_TEMPORAL_UNVERIFIED",
+      status: "GENERATED_CANDIDATE", geographyAtBirth: "NOT_VERIFIED",
     });
+  });
+  it("uses ANPR for a historically dated municipality even where SITUAS has ND, and rejects an unproven interval", () => {
+    const oldFilago = generateCodiceFiscale121({
+      ...basic, birthDate: "1928-01-25",
+      birthPlace: { kind: "suppressed", istatCode: "016828" },
+    });
+    expect(oldFilago).toMatchObject({
+      status: "GENERATED_CANDIDATE", geographyAtBirth: "ANPR_ADMINISTRATIVE_INTERVAL_VERIFIED",
+      geography: { belfiore: "D588", provenance: "ANPR_OFFICIAL_ARCHIVE_2023_10_03" },
+    });
+    expect(generateCodiceFiscale121({
+      ...basic, birthDate: "1928-01-26",
+      birthPlace: { kind: "suppressed", istatCode: "016828" },
+    })).toMatchObject({ status: "REFUSED", reasonCode: "GEOGRAPHY_TEMPORAL_UNVERIFIED" });
   });
 
   it("refuses non-code checksum input, while checksum is recalculated for every legal omocode", () => {
