@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 237 — True PDF redaction with post-export proof
 
 **What to build:** Add page-region redaction only when underlying content can be proven removed/inactivated; covering rectangles alone never count, and unsupported cases must refuse.

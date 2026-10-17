@@ -17,6 +17,11 @@ export interface ItalianToolCopy {
 }
 
 export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
+  "tfr-calculator": {
+    name: "Calcola TFR lordo e rivalutazione",
+    summary: "Stima per anno la quota TFR e la rivalutazione FOI del fondo, distinguendo gli importi con ipotesi esplicite.",
+    searchTerms: ["calcolo tfr", "trattamento fine rapporto", "rivalutazione tfr"],
+  },
   "add-subtract-days": {
     name: "Aggiungi o sottrai giorni",
     summary: "Sposta una data ISO di un numero positivo o negativo di giorni senza fare supposizioni sul fuso orario.",

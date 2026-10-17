@@ -51,4 +51,20 @@ describe("business-day engine seam", () => {
     expect(() => addBusinessDays("2026-02-30", 1, { workweek: ["MON"] })).toThrow("INVALID_DATE");
     expect(() => addBusinessDays("2026-09-23", 1, { workweek: [] })).toThrow("INVALID_WORKWEEK");
   });
+
+  it("makes start and end inclusion configurable without altering the historical default", () => {
+    const workweek = ["MON", "TUE", "WED", "THU", "FRI"] as const;
+    const start = "2026-10-16"; // Friday
+    const end = "2026-10-20"; // Tuesday, Saturday/Sunday are not working days
+    expect(businessDaysBetween(start, end, { workweek })).toBe(2);
+    expect(businessDaysBetween(start, end, { workweek, inclusiveStart: true })).toBe(3);
+    expect(businessDaysBetween(start, end, { workweek, inclusiveEnd: false })).toBe(1);
+    expect(businessDaysBetween(start, end, { workweek, inclusiveStart: true, inclusiveEnd: false })).toBe(2);
+    expect(businessDaysBetween(end, start, { workweek, inclusiveStart: true, inclusiveEnd: false })).toBe(-2);
+    expect(businessDaysBetween(start, start, { workweek, inclusiveStart: true, inclusiveEnd: true })).toBe(1);
+    expect(businessDaysBetween(start, start, { workweek })).toBe(0);
+    expect(businessDaysBetween(start, end, { workweek, inclusiveStart: true, excludedDates: [start] })).toBe(2);
+    expect(businessDaysBetween("2026-10-17", "2026-10-17", { workweek, inclusiveStart: true })).toBe(0);
+    expect(() => businessDaysBetween(start, end, { workweek, inclusiveEnd: "no" as unknown as boolean })).toThrow("INVALID_DATE_BOUNDS");
+  });
 });

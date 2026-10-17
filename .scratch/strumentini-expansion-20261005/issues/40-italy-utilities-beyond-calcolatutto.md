@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 40 — Italy utilities beyond CalcolaTutto
 
 **What to build:** Add the broader Italy utility pack captured in research: ponti/ferie optimizer, FatturaPA XML reader, batch FatturaPA→table, P7M document extraction/inspection where supported, invoice stamp-duty reference helper, CAP↔comune lookup, identity-document/passport expiry helper, enriched Italian holiday/bridge views, and vehicle-registration-period estimate only if a reliable bounded source is approved.

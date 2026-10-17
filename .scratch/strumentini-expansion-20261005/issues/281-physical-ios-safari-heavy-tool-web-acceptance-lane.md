@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 281 — Physical iOS Safari heavy-tool web acceptance lane
 
 **What to build:** Define the reusable real iOS Safari lane for accepted heavy local routes, including file picker, memory/resource limits, cancel/retry and download/share behavior.

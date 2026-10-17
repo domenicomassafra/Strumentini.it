@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 405 — Release scope gates and rollback drill
 
 **What to build:** Promotion requires current source receipt for chosen scope and proven rollback

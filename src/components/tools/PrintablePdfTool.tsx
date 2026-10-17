@@ -8,6 +8,7 @@ const ACCEPTED_EXTENSIONS: Readonly<Record<string, PrintableSourceKind>> = {
 };
 
 export function PrintablePdfTool() {
+  const [hydrated, setHydrated] = useState(false);
   const [kind, setKind] = useState<PrintableSourceKind>("txt");
   const [source, setSource] = useState("");
   const [pageSize, setPageSize] = useState<PrintablePageSize>("a4");
@@ -18,6 +19,7 @@ export function PrintablePdfTool() {
   const [error, setError] = useState("");
   const [working, setWorking] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [wordSource, setWordSource] = useState(false);
   const [result, setResult] = useState<PrintablePdfResult | null>(null);
   const [previewBlob, setPreviewBlob] = useState<Blob | null>(null);
   const [downloadUrl, setDownloadUrl] = useState("");
@@ -25,6 +27,8 @@ export function PrintablePdfTool() {
   const inFlight = useRef(false);
   // A stale File.arrayBuffer() resolution cannot replace a newer user edit.
   const uploadEpoch = useRef(0);
+
+  useEffect(() => setHydrated(true), []);
 
   useEffect(() => {
     if (result === null) { setDownloadUrl(""); return; }
@@ -47,20 +51,24 @@ export function PrintablePdfTool() {
     clearResult();
     const extension = file.name.split(".").at(-1)?.toLowerCase() ?? "";
     const format = ACCEPTED_EXTENSIONS[extension];
-    if (format === undefined || file.size > 512 * 1024) {
+    if ((format === undefined && extension !== "docx") || file.size > 512 * 1024) {
       setUploading(false);
-      setError("Sono accettati file .txt, .md, .html e .csv fino a 512 KiB.");
+      setError("Sono accettati file .txt, .md, .html, .csv e DOCX semplici fino a 512 KiB.");
       return;
     }
     setUploading(true);
     try {
       const bytes = new Uint8Array(await file.arrayBuffer());
       if (epoch !== uploadEpoch.current) return;
-      const decoded = new TextDecoder("utf-8", { fatal: true }).decode(bytes).replace(/^\ufeff/u, "");
-      setKind(format);
+      const decoded = extension === "docx"
+        ? await (await import("../../engines/pdf/simple-docx-print-56")).simpleDocxToPrintableText56(bytes)
+        : new TextDecoder("utf-8", { fatal: true }).decode(bytes).replace(/^\ufeff/u, "");
+      if (epoch !== uploadEpoch.current) return;
+      setWordSource(extension === "docx");
+      setKind(format ?? "txt");
       setSource(decoded);
-    } catch {
-      if (epoch === uploadEpoch.current) setError("Il file deve contenere testo UTF-8 valido, senza caratteri sostituiti.");
+    } catch (cause) {
+      if (epoch === uploadEpoch.current) setError(cause instanceof Error ? cause.message : "Il documento non è stampabile nel formato supportato.");
     } finally {
       if (epoch === uploadEpoch.current) setUploading(false);
     }
@@ -104,6 +112,7 @@ export function PrintablePdfTool() {
     setUploading(false);
     clearResult();
     setSource("");
+    setWordSource(false);
     setKind("txt");
     setPageSize("a4");
     setOrientation("portrait");
@@ -117,12 +126,13 @@ export function PrintablePdfTool() {
       <form onSubmit={(event) => void submit(event)}>
         <section class="printable-card">
           <h2>Documento sorgente</h2>
-          <label class="field"><span>Carica un file locale (max 512 KiB)</span>
-            <input type="file" accept=".txt,.text,.md,.markdown,.html,.htm,.csv,text/plain,text/markdown,text/html,text/csv"
-              onChange={(event) => void upload(event.currentTarget.files?.[0])} disabled={working} />
+          <label class="field"><span>Carica un file locale (max 512 KiB; DOCX solo testo semplice)</span>
+            <input type="file" accept=".txt,.text,.md,.markdown,.html,.htm,.csv,.docx,text/plain,text/markdown,text/html,text/csv,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              onChange={(event) => void upload(event.currentTarget.files?.[0])} disabled={working || !hydrated} />
           </label>
+          {wordSource && <p class="printable-note" role="status">DOCX importato come testo semplice. Stili Word, immagini, tabelle e impaginazione originale non vengono riprodotti. Controlla il contenuto prima di generare il PDF.</p>}
           <label class="field"><span>Tipo del contenuto</span>
-            <select aria-label="Tipo del contenuto" value={kind} onChange={(event) => { ++uploadEpoch.current; setUploading(false); setKind(event.currentTarget.value as PrintableSourceKind); clearResult(); }} disabled={working}>
+              <select aria-label="Tipo del contenuto" value={kind} onChange={(event) => { ++uploadEpoch.current; setUploading(false); setWordSource(false); setKind(event.currentTarget.value as PrintableSourceKind); clearResult(); }} disabled={working}>
               <option value="txt">TXT — righe e paragrafi</option>
               <option value="markdown">Markdown — struttura in testo stampabile</option>
               <option value="html">HTML — testo passivo, senza script o risorse esterne</option>
@@ -131,7 +141,7 @@ export function PrintablePdfTool() {
           </label>
           <label class="field"><span>Contenuto</span>
             <textarea aria-label="Contenuto" rows={11} value={source}
-              onInput={(event) => { ++uploadEpoch.current; setUploading(false); setSource(event.currentTarget.value); clearResult(); }}
+              onInput={(event) => { ++uploadEpoch.current; setUploading(false); setWordSource(false); setSource(event.currentTarget.value); clearResult(); }}
               placeholder="Incolla testo, Markdown, HTML o CSV..." disabled={working} />
           </label>
         </section>

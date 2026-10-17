@@ -595,7 +595,9 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
     ].slice(0, 14);
     return (
       <div data-result-class={displayDeclaration.class}>
-        {displayDeclaration.class === "pdf" ? <PdfPagePreview outputs={result.artifacts} /> : null}
+        {displayDeclaration.class === "pdf" && toolId === "pdf-password-check-remove" && result.raw.mode === "protect"
+          ? <p role="note">Anteprima del PDF cifrato non disponibile senza password. Scarica il file e aprilo in un lettore PDF compatibile con AES-256.</p>
+          : displayDeclaration.class === "pdf" ? <PdfPagePreview outputs={result.artifacts} /> : null}
         {displayDeclaration.class === "pdf" ? <div data-result-slot="operation-summary"><ResultBreakdown label="Riepilogo operazione" rows={rows} /></div> : null}
         {targetMode ? <ResultInterpretation state={result.raw.allMet === true ? "success" : "warning"}>
           {result.raw.allMet === true ? "Ogni PDF elaborato rispetta la soglia esatta sui byte del file finale." :
@@ -618,7 +620,7 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
           ...(primary === undefined ? {} : { download: () => downloadVerified(primary) }),
           ...(onRetry === undefined ? {} : { retry: onRetry }),
           reset: onReset,
-        }} />
+        }} shareFile={primary?.artifact.download.ready === true ? { blob: primary.blob, filename: primary.artifact.download.filename } : undefined} />
         <SecondaryRaw raw={result.raw} />
       </div>
     );

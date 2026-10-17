@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 380 — PDF editor export source-bound
 
 **What to build:** PDF export valido per altri viewer e semanticamente corretto

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 401 — TFR accrual revaluation and indicative scope
 
 **What to build:** Accrual uses verified annual/ISTAT indexes and period breakdown

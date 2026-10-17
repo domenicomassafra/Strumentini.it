@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 15 — TFR calculator
 
 **What to build:** Add an Italian TFR calculator that separates accrual, eligible revaluation and indicative tax treatment, with year/source metadata and an explanation of what cannot be derived from the provided inputs.

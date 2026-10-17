@@ -66,6 +66,7 @@ function resultEntries(value: Record<string, unknown>): Array<[string, unknown]>
     "scheduleRows",
     "schedulePreview",
     "scheduleCsv",
+    "scenarioRows",
   ].includes(key));
 }
 
@@ -456,6 +457,24 @@ interface SchedulePreviewRow {
   readonly balance: string;
 }
 
+interface ScenarioRow {
+  readonly label: string;
+  readonly units: string;
+  readonly revenue: string;
+  readonly totalCosts: string;
+  readonly profit: string;
+}
+
+function scenarioComparisonRows(value: unknown, currency: string): Array<{ label: string; value: string }> {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (item === null || typeof item !== "object" || Array.isArray(item)) return [];
+    const row = item as Partial<ScenarioRow>;
+    if ([row.label, row.units, row.revenue, row.totalCosts, row.profit].some((entry) => typeof entry !== "string")) return [];
+    return [{ label: `${row.label} (${row.units} unità)`, value: `Ricavi ${currency} ${row.revenue} · costi ${currency} ${row.totalCosts} · utile ${currency} ${row.profit}` }];
+  });
+}
+
 function schedulePreviewRows(value: unknown, currency: string): Array<{ label: string; value: string }> {
   if (!Array.isArray(value)) return [];
   return value.flatMap((candidate) => {
@@ -548,6 +567,9 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
   const scheduleRows = result === null
     ? []
     : schedulePreviewRows(result.schedulePreview, typeof result.currency === "string" ? result.currency : currency);
+  const scenarioRows = result === null
+    ? []
+    : scenarioComparisonRows(result.scenarioRows, typeof result.currency === "string" ? result.currency : currency);
   const resultActions = result === null
     ? []
     : resolveResultActions({
@@ -677,6 +699,7 @@ export function BusinessMathTool({ config }: { config: BusinessToolConfig }) {
                           .map(([key, value]) => ({ label: RESULT_LABEL_IT[key] ?? key, value: displayValue(value) })),
                       ]} />
                       {scheduleRows.length > 0 && <ResultBreakdown label="Anteprima piano di ammortamento" rows={scheduleRows} />}
+                      {scenarioRows.length > 0 && <ResultBreakdown label="Confronto scenari di pareggio" rows={scenarioRows} />}
                     </>
               }
               assumptions={

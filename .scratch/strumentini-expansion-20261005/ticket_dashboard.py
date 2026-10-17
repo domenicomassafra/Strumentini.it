@@ -15,7 +15,10 @@ import re
 import subprocess
 from pathlib import Path
 
-from validate_backlog import DAG, ISSUES, ROOT, lifecycle_status, load_tickets, render_dag, validate
+from validate_backlog import (
+    DAG, ISSUES, MIGRATION_NOTICE, MIGRATION_URL, ROOT,
+    lifecycle_status, load_tickets, render_dag, validate,
+)
 
 OUT_JSON = ROOT / "CURRENT-TICKET-DASHBOARD.json"
 OUT_MD = ROOT / "CURRENT-TICKET-DASHBOARD.md"
@@ -112,6 +115,7 @@ def render(tickets: dict, frontier: list[int]) -> tuple[str, str]:
         })
     payload = {
         "schemaVersion": 1,
+        "migrated_to": f"GitHub Issues il 17/10/2026: {MIGRATION_URL}. Non aggiornare più questo file.",
         "definitions": {
             "readyDAG": "Open tickets with all numeric dependencies completed; not proof of feasibility",
             "readyForAgent": "Assignable to investigate or implement; NOT a demonstrated passing capability",
@@ -142,9 +146,10 @@ def render(tickets: dict, frontier: list[int]) -> tuple[str, str]:
         "capability-blocked": "Blocked by unapproved capability",
     }
     lines = [
-        "# Strumentini.it — execution dashboard (generated)", "",
-        "Machine source: ticket issue files + `ticket_dashboard.py`. Rebuild with `python3 .scratch/strumentini-expansion-20261005/ticket_dashboard.py --write`; validate with `--check`.",
-        "This is a backlog/triage dashboard, **not** a release readiness or Gold certificate.", "",
+        MIGRATION_NOTICE, "",
+        "# Strumentini.it — execution dashboard (archivio legacy)", "",
+        "Snapshot storico dei ticket nei file; lo stato aggiornato è soltanto su GitHub Issues. `--check` verifica l'integrità di questo snapshot; `--write` è disabilitato.",
+        "Questi conteggi sono storici, **non** una fotografia corrente o una certificazione Gold.", "",
         "| Metric | Count |", "|---|---:|",
         f"| All / completed / open | {len(tickets)} / {len(groups['completed'])} / {len(tickets) - len(groups['completed'])} |",
         f"| Closed with explicit refusal (NOT shipped) | {len(refused)} |",
@@ -193,11 +198,11 @@ def render_project_status(body: str, totals: dict) -> str:
     if end < start:
         raise ValueError("PROJECT-STATUS.md live-status markers are reversed")
     lines = [
-        "", "## Live ticket execution (generated)", "",
-        "Source of truth: `.scratch/strumentini-expansion-20261005/issues/` and the generated "
-        "[`CURRENT-TICKET-DASHBOARD.md`](.scratch/strumentini-expansion-20261005/CURRENT-TICKET-DASHBOARD.md). "
-        "`npm run tickets:sync` refreshes this panel; `npm run tickets:check` fails on drift.", "",
-        "| Metric | Current count |", "|---|---:|",
+        "", "## Archivio ticket al 17/10/2026", "",
+        f"Fonte attuale dei ticket: [GitHub Issues]({MIGRATION_URL}). "
+        "La tabella qui sotto è uno snapshot legacy del 17/10/2026 conservato per consultazione; "
+        "`npm run tickets:check` verifica soltanto l'archivio, `tickets:sync` è disabilitato.", "",
+        "| Metric | Snapshot 17/10/2026 |", "|---|---:|",
         f"| All tickets | {totals['all']} |",
         f"| Administratively completed | {totals['completed']} |",
         f"| Closed with explicit refusal (not shipped) | {totals['completedWithRefusal']} |",
@@ -239,6 +244,12 @@ def main() -> None:
     actions.add_argument("--write", action="store_true", help="Synchronize actionable statuses and regenerate dashboard/DAG")
     actions.add_argument("--check", action="store_true", help="Fail on stale ticket statuses/dashboard/DAG")
     args = parser.parse_args()
+    if args.write and OUT_JSON.exists():
+        legacy_snapshot = json.loads(OUT_JSON.read_text(encoding="utf-8"))
+        if legacy_snapshot.get("migrated_to"):
+            raise SystemExit(
+                f"Archivio ticket congelato il 17/10/2026. Aggiorna solo GitHub Issues: {MIGRATION_URL}"
+            )
     tickets = load_tickets()
     frontier = validate(tickets)
     if args.write:

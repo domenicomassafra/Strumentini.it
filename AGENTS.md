@@ -4,8 +4,8 @@
 
 ## Canonical context
 
-- The canonical integration branch is `origin/main`; develop user-visible fixes and features on short-lived `fix/<ticket>` or `feat/<ticket>` branches, not unreviewed direct pushes to `main`. Before mutation, verify `git status`, ongoing file ownership, and the original ticket in `.scratch/strumentini-expansion-20261005/` plus current project state (`PROJECT-STATUS.md`, relevant docs). Keep each branch scoped to a reviewable change, not a multi-week bucket of unrelated worker diffs.
-- The live dashboard `npm run tickets:check` is the ticket authority. Do not infer an original ticket DONE from an isolated worker regression or from a tool-specific Gold fixture. New work must close existing ticket acceptance or explain the exact outstanding gate.
+- The canonical integration branch is `origin/main`; develop user-visible fixes and features on short-lived `fix/<ticket>` or `feat/<ticket>` branches, not unreviewed direct pushes to `main`. Before mutation, verify `git status`, ongoing file ownership, the corresponding ticket in [GitHub Issues](https://github.com/domenicomassafra/strumentini-it/issues), and the current project state (`PROJECT-STATUS.md`, relevant docs). Keep each branch scoped to a reviewable change, not a multi-week bucket of unrelated worker diffs.
+- **From 17/10/2026 GitHub Issues is the sole ticket tracker.** The `.scratch/strumentini-expansion-20261005/issues/` records and generated dashboard/DAG are frozen historical snapshots. `npm run tickets:check` validates the snapshot only; `npm run tickets:sync` is disabled. Update status and acceptance in GitHub Issues, retaining real proof before closing a ticket.
 - Browser, PDF, file, mobile-device, authenticity and release claims require the relevant native real-consumer evidence; a synthetic engine fixture cannot replace physical iOS/Android, true PDF reparse or current deployed source fingerprint. Never silently promote experimental/noncatalog routes into Gold or production.
 
 ## Worker → remote PR → reviewed main → separately controlled release

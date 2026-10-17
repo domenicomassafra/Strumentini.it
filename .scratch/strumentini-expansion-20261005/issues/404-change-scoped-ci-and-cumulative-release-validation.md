@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 404 — Change scoped CI and cumulative release validation
 
 **What to build:** Affected engine and integration tests run each batch, cumulated release gates before publish

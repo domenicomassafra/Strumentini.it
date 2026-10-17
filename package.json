@@ -52,6 +52,7 @@
     "acceptance:date-time": "node scripts/acceptance-date-time.mjs",
     "acceptance:data-table": "node scripts/acceptance-data-table.mjs",
     "acceptance:pdf": "node scripts/acceptance-pdf.mjs",
+    "acceptance:pdf-ocr-searchable": "node --import tsx tests/ocr-247-local-browser.acceptance.mjs",
     "acceptance:discovery": "node scripts/acceptance-directory.mjs",
     "acceptance:family-matrix": "node scripts/acceptance-family-matrix.mjs",
     "acceptance:browser-performance": "node scripts/acceptance/browser-performance-matrix.mjs",

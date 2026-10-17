@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 423 — P7M legally scoped verification and extraction feasibility
 
 **What to build:** Evaluate CMS/P7M valid signed payload and verify vs merely extract contents.

@@ -15,6 +15,19 @@ import { goldToolIds } from "../onboarding/quality";
  */
 const verifiedIds = goldToolIds(qualityIndex);
 const verifiedCount = catalog.filter((tool) => verifiedIds.has(tool.id)).length;
+const italianUtilityIds = [
+  "fatturapa-reader",
+  "fatturapa-batch-csv",
+  "ponti-ferie-optimizer",
+  "italian-document-expiry",
+  "inps-artigiani-commercianti",
+  "gestione-separata-contributi",
+] as const;
+const italianUtilities = italianUtilityIds.map((id) => {
+  const tool = catalog.find((item) => item.id === id);
+  if (!tool) throw new Error(`Utility italiana mancante dal catalogo: ${id}`);
+  return tool;
+});
 ---
 
 <BaseLayout
@@ -22,7 +35,34 @@ const verifiedCount = catalog.filter((tool) => verifiedIds.has(tool.id)).length;
   description={`Il catalogo completo: ${catalog.length} strumenti online gratuiti per PDF, immagini, CSV, testo, date e lavoro d'ufficio, con filtri per categoria, tipo di ingresso e stato della verifica.`}
 >
   <DirectoryHero total={catalog.length} verified={verifiedCount} />
+  <p style="max-width:1100px;margin:12px auto 24px;padding:0 20px;">
+    Fonti italiane consultabili: <a href="/codici-geografici-italia/">comuni, province e Stati esteri ISTAT</a> · <a href="/fonti-fiscali-italia/">norme fiscali ufficiali per anno</a>.
+  </p>
   <JobRoutes />
+  <p style="margin: 0 auto 24px; width: min(100% - 40px, 1120px)"><a href="/calcoli-essenziali/">13 calcoli essenziali: codice fiscale, IVA, mutuo, TFR e altri →</a></p>
+  <p style="margin: 0 auto 24px; width: min(100% - 40px, 1120px)"><a href="/documenti-markdown/">Documenti e Markdown: apri DOCX e scarica file convertiti →</a></p>
+  <section class="italian-utilities" aria-labelledby="italian-utilities-heading" data-italian-utilities>
+    <h2 id="italian-utilities-heading">Strumenti pratici per l'Italia</h2>
+    <p>Consulta FatturaPA XML, esporta più fatture in CSV, trova ponti e ferie, verifica scadenze dei documenti e calcola i contributi. Apri lo strumento senza account.</p>
+    <ul>
+      {italianUtilities.map((tool) => (
+        <li data-italian-tool={tool.id}>
+          <a href={`${tool.route}/`}>{tool.name}</a>
+          <p>{tool.summary}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
   <CatalogDirectory tools={catalog} verifiedIds={verifiedIds} />
   <DirectoryBand />
 </BaseLayout>
+
+<style>
+  .italian-utilities { width: min(100% - 40px, 1120px); margin: 0 auto 32px; }
+  .italian-utilities h2 { font-size: clamp(1.35rem, 2vw, 1.7rem); margin: 0 0 8px; }
+  .italian-utilities > p { max-width: 75ch; line-height: 1.6; }
+  .italian-utilities ul { list-style: none; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+  .italian-utilities li { padding: 16px; border: 1px solid var(--line); border-radius: 12px; }
+  .italian-utilities li a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+  .italian-utilities li p { line-height: 1.5; margin: 8px 0 0; }
+</style>

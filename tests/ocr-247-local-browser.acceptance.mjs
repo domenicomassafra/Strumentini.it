@@ -1,5 +1,6 @@
 /** Actual browser #247 acceptance against the experimental Astro route; no mocked OCR text. */
 import { strict as assert } from "node:assert";
+import { spawn, execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -9,6 +10,8 @@ import { buildPdfFromJpegs, buildPdfFromPages, createSimplePdf, parseJpeg } from
 import { parsePdf } from "../src/engines/pdf/parser.ts";
 
 const base = process.env.OCR247_TEST_BASE_URL ?? "http://127.0.0.1:4379";
+const ownsServer = process.env.OCR247_TEST_BASE_URL === undefined;
+const server = ownsServer ? spawn("python3", ["-m", "http.server", "4379", "--bind", "127.0.0.1", "--directory", "dist"], { stdio: "ignore" }) : null;
 const browserName = process.env.OCR247_BROWSER ?? "chromium";
 const browserType = { chromium, firefox, webkit }[browserName];
 if (!browserType) throw new Error("OCR247_BROWSER must be chromium, firefox or webkit");
@@ -25,6 +28,21 @@ const mixedBytes = buildPdfFromPages([{ document: image, page: image.pages[0] },
   { document: digital, page: digital.pages[0] }]);
 let browser;
 try {
+  if (server !== null) {
+    let ready = false;
+    for (let attempt = 0; attempt < 40; attempt += 1) {
+      if (server.exitCode !== null) throw new Error("OCR247 static server exited before it was ready");
+      try {
+        const reply = await fetch(new URL("/tools/pdf-scansionato-ocr-247/", base));
+        if (reply.ok && (await reply.text()).includes('data-ocr247-preview="experimental-local-only"')) {
+          ready = true;
+          break;
+        }
+      } catch {}
+      await new Promise((resolveWait) => setTimeout(resolveWait, 200));
+    }
+    if (!ready) throw new Error("OCR247 static route was not ready: run npm run build first");
+  }
   browser = await browserType.launch({ headless: true, ...(browserName === "chromium" ? { args: ["--no-sandbox", "--disable-dev-shm-usage"] } : {}) });
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
   const requests = [], errors = [];
@@ -44,6 +62,11 @@ try {
     assert.match(receipt, /OCR inserito/u);
     assert.match(receipt, /Pixel modificati: 0\.0000%/u);
     assert.match(receipt, /differenza massima 0\/255/u);
+    assert.match(await page.getByRole("textbox", { name: "Testo pagina 1" }).inputValue(), /Fattura numero 12345/u);
+    const textDownloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Scarica testo TXT con numeri di pagina" }).click();
+    const textDownload = await textDownloadPromise;
+    assert.match(await readFile(await textDownload.path(), "utf8"), /Pagina 1\nFattura numero 12345/u);
     if (pages === 2) assert.match(receipt, /testo PDF originale preservato/u);
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("button", { name: "Scarica PDF OCR verificato" }).click();
@@ -69,7 +92,7 @@ try {
     } finally { await task.destroy(); }
     accepted.push({ source: name, pageCount: pages, searched: ["Fattura", "numero", "12345", "678,90"],
       pixelsChangedPercent: 0, maxChannelDifference: 0, digitalDuplicate: false });
-    if (browserName === "chromium") {
+    if (browserName === "chromium" && process.env.OCR247_CAPTURE_SCREENSHOTS === "1") {
       await mkdir(evidenceDir, { recursive: true });
       await page.screenshot({ path: resolve(evidenceDir, `chromium-390-${name.replace(".pdf", "")}.png`), fullPage: true });
     }
@@ -118,7 +141,7 @@ try {
   assert.deepEqual(requests.filter((url) => url.startsWith("http") && new URL(url).origin !== path.origin), [], "no offsite requests");
   assert.deepEqual(errors, [], "no browser errors");
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth), false, "390px layout must not overflow");
-  const receipt = { ticket: 247, date: "2026-10-10", status: "LOCAL_EXPERIMENTAL_PASS", browser: browserName,
+  const receipt = { ticket: 247, observedAt: new Date().toISOString(), revision: execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim(), status: "LOCAL_EXPERIMENTAL_PASS", browser: browserName,
     viewport: { width: 390, height: 844 }, realOcrEngine: "tesseract.js@7.0.0 same-origin",
     fixtureSha256: "1bfc71b54560679f6b6d0e8f978201b2ca27fdfcd84d47ef9344d41db0a2f27b",
     accepted, refused: ["interactive preflight before model", "born-digital-only", "rotated raster unreliable OCR"],
@@ -129,4 +152,7 @@ try {
   await mkdir(evidenceDir, { recursive: true });
   await writeFile(resolve(evidenceDir, `${browserName}-390-local-ocr.json`), JSON.stringify(receipt, null, 2) + "\n");
   console.log(`#247 REAL_BROWSER_PASS ${browserName}: scanned+mixed, no duplicated digital text, actual Tesseract word boxes, pixel identity, interactive preflight/sideways refusal, active Worker cancellation/closure, no external requests, 390px desktop viewport`);
-} finally { if (browser) await browser.close(); }
+} finally {
+  if (browser) await browser.close();
+  server?.kill("SIGTERM");
+}

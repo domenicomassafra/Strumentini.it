@@ -4697,6 +4697,24 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md"
   },
   {
+    "toolId": "tfr-calculator",
+    "engine": "business-math",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "TfrCalculator15",
+      "source": "src/components/tools/TfrCalculator15.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "calculator",
+      "capabilities": [
+        "reset",
+        "provenance"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
+  },
+  {
     "toolId": "timeline-sorter",
     "engine": "research-knowledge",
     "rendererSeam": {

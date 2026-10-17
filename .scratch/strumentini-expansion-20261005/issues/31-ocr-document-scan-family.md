@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 31 — OCR and document-scan family
 
 **What to build:** Add local OCR for images/scanned PDFs, text extraction with confidence/page references where the engine exposes them, and a searchable-PDF path that keeps the visual page while adding a selectable text layer when technically reliable.

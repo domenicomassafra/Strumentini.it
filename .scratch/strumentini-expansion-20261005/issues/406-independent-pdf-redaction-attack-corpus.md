@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 406 — Independent PDF redaction attack corpus
 
 **What to build:** Adversarial signed/hybrid/incremental metadata PDFs produce safe refusal or proven post-export erasure

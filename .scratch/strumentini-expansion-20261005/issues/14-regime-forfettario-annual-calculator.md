@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 14 — Regime forfettario annual calculator
 
 **What to build:** Add a year-versioned regime forfettario calculator covering activity coefficient, supported INPS management, 15%/5% substitute tax and a clear fatturato→reddito→contributi→imponibile→imposta→netto chain.

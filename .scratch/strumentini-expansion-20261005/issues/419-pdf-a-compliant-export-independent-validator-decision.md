@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 419 — PDF/A compliant export independent validator decision
 
 **What to build:** Evaluate PDF/A profile and candidate exporter with full validator before offering route.

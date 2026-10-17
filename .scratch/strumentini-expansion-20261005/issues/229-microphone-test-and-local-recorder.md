@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 229 — Microphone test and local recorder
 
 **What to build:** Add user-gesture mic permission, live level/device health, record/pause/resume/play/download using actual MediaRecorder-supported MIME and strictly local Blob handling.

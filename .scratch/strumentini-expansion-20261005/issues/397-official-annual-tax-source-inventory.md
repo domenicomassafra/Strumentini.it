@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 397 — Official annual tax source inventory
 
 **What to build:** Maps official AdE INPS ISTAT rules to source URL snapshot hash and effective range

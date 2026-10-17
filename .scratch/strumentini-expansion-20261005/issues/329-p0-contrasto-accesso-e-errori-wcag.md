@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 329 — P0 Contrasto accesso e errori WCAG
 
 **What to build:** Etichette/errori account superano contrasto AA.
