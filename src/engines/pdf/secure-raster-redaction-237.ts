@@ -1,4 +1,5 @@
-import { parsePdf, pdfArray, pdfDict, pdfName, pdfNumber, type PdfValue } from "./parser";
+import { parsePdf, pdfArray, pdfDict, pdfName, pdfNumber, resolveReference, type PdfValue } from "./parser";
+import { inflatePdfStream } from "./inflate";
 import { PdfBuilder } from "./writer";
 import type { PdfArtifact } from "./types";
 
@@ -40,6 +41,8 @@ const MAX_PIXELS_PER_PAGE = 1_600_000;
 const MAX_PIXEL_EDGE = 2200;
 const MAX_OUTPUT_BYTES = 24 * 1024 * 1024;
 const MAX_REGIONS = 12;
+const MAX_NON_IMAGE_FLATE_STREAM_BYTES = 8 * 1024 * 1024;
+const MAX_NON_IMAGE_FLATE_TOTAL_BYTES = 12 * 1024 * 1024;
 const FORBIDDEN = new Set([
   "Encrypt", "Annots", "AcroForm", "XFA", "Names", "OpenAction", "AA",
   "A", "JS", "JavaScript", "EmbeddedFiles", "Filespec", "AF", "RichMedia",
@@ -335,7 +338,7 @@ export function assertSupportedSource237(source: Uint8Array): number {
         refuse("Sorgente firmata o certificata non supportata.");
       }
     }
-    const subtype = dictionary.entries.get("Subtype");
+    const subtype = resolveReference(model, dictionary.entries.get("Subtype"));
     if (subtype?.kind === "name" && subtype.value === "Image") {
       const width = numberFrom(dictionary.entries.get("Width"));
       const height = numberFrom(dictionary.entries.get("Height"));
@@ -351,6 +354,18 @@ export function assertSupportedSource237(source: Uint8Array): number {
       inspectNested(nested, depth + 1);
     }
   };
+  // Contents is executable page data even if an attacker labels the stream
+  // as an Image XObject. Its actual page use must keep the content budget.
+  const pageContentStreams = new Set<PdfValue>();
+  for (const { object } of model.pages) {
+    const dictionary = object.value.kind === "dict" ? object.value : null;
+    const contents = resolveReference(model, dictionary?.entries.get("Contents"));
+    for (const item of contents?.kind === "array" ? contents.items : [contents]) {
+      const stream = resolveReference(model, item);
+      if (stream?.kind === "stream") pageContentStreams.add(stream);
+    }
+  }
+  let decodedNonImageFlateBytes = 0;
   for (const { value } of model.objects.values()) {
     // A later xref stream may be genuine in PDF.js/pypdf even when its final
     // %%EOF is truncated or suffixed and our sole complete footer selects an
@@ -358,6 +373,26 @@ export function assertSupportedSource237(source: Uint8Array): number {
     const type = value.kind === "stream" ? value.dictionary.entries.get("Type") : undefined;
     if (type?.kind === "name" && (type.value === "XRef" || type.value === "ObjStm")) {
       refuse("Object stream o xref stream non supportati per la redazione.");
+    }
+    if (value.kind === "stream") {
+      const subtype = resolveReference(model, value.dictionary.entries.get("Subtype"));
+      const filterValue = resolveReference(model, value.dictionary.entries.get("Filter"));
+      const filter = filterValue?.kind === "array" && filterValue.items.length === 1
+        ? resolveReference(model, filterValue.items[0]) : filterValue;
+      const directFlate = filter?.kind === "name" && (filter.value === "FlateDecode" || filter.value === "Fl");
+      if (directFlate
+        && !(subtype?.kind === "name" && subtype.value === "Image" && !pageContentStreams.has(value))) {
+        let decodedLength = 0;
+        try {
+          decodedLength = inflatePdfStream(value.bytes, MAX_NON_IMAGE_FLATE_STREAM_BYTES).length;
+        } catch {
+          refuse("Stream Flate non immagine oltre il limite o non valido.");
+        }
+        decodedNonImageFlateBytes += decodedLength;
+        if (decodedNonImageFlateBytes > MAX_NON_IMAGE_FLATE_TOTAL_BYTES) {
+          refuse("Stream Flate non immagine oltre il budget aggregato.");
+        }
+      }
     }
     inspectNested(value);
   }
