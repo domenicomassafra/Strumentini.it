@@ -148,7 +148,7 @@ export function CodiceFiscaleTool() {
   return (
     <section class="cf08-tool" data-cf-public-tool="08" aria-label="Codice fiscale locale">
       <div class="cf08-notice" role="note">
-        <strong>Luoghi da fonti ISTAT/SITUAS e archivio ANPR — versione dichiarata.</strong>
+        <strong>Copertura geografica: fonti ISTAT/SITUAS e archivio ANPR — versione dichiarata.</strong>
         <p>Per i Comuni italiani con data fino al 03/10/2023 il codice candidato richiede un riscontro storico ANPR per il giorno di nascita. Per altre date e Stati esteri il risultato segnala esplicitamente quando manca una prova di validità storica. Non è un'attribuzione fiscale ufficiale.</p>
         <p>Calcolo solo nel browser. Non è un'identificazione, una verifica anagrafica né un'attribuzione ufficiale dell'Agenzia delle Entrate.</p>
       </div>
@@ -206,7 +206,7 @@ export function CodiceFiscaleTool() {
                   <input id="cf08-istat" inputMode="numeric" maxLength={6} value={istatCode}
                     placeholder={kind === "foreign" ? "201" : "058091"}
                     onInput={(e) => { setIstatCode(e.currentTarget.value); dirty(); }} /></label>
-                <p class="cf08-hint">Sono accettati codici territoriali esatti delle fonti #115: ANPR consente anche Comuni soppressi quando attesta il codice nella data scelta. Codici ND, ambigui o storicamente non dimostrati sono rifiutati.</p>
+                <p class="cf08-hint">Sono accettati codici territoriali esatti delle fonti #115: ANPR consente anche Comuni soppressi quando attesta il codice nella data scelta. Codici ND o ambigui sono rifiutati. Entro il 03/10/2023 serve il riscontro ANPR; negli altri casi la validità storica non provata è segnalata.</p>
               </>
             ) : (
               <label class="field" for="cf08-code"><span>Codice fiscale (16 caratteri)</span>

@@ -27,6 +27,7 @@ try {
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, nofollow");
   mark("canonical 200, exactly one public component, noindex until catalog integration");
 
+  assert.match(await page.locator(".cf08-notice").innerText(), /Copertura geografica/u);
   assert.match(await page.locator(".cf08-notice").innerText(), /ANPR/u);
   assert.match(await page.locator(".cf08-notice").innerText(), /Agenzia delle Entrate/u);
   await page.locator("#cf08-surname").fill("Rossi");
