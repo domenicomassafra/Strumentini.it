@@ -27,6 +27,7 @@ try {
   await page.locator("#iva-amount").fill("100");
   await page.locator("#iva-date").fill("2025-12-20");
   await page.locator("#iva-category").selectOption("tabA-ii-3-fresh-milk");
+  assert.match(await page.locator("[data-category-scope]").innerText(), /Latte fresco.*non concentrato.*regime speciale agricolo/su);
   await page.locator('[name="scopeConfirmed"]').check();
   await page.locator('[name="taxableConfirmed"]').check();
   await page.locator('[data-tax-iva] button[type="submit"]').click();
