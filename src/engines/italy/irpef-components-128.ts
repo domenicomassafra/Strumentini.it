@@ -23,6 +23,14 @@ export const IRPEF_128_COVERAGE = Object.freeze({
   } },
 });
 
+/** Both surtaxes require national IRPEF due after deductions/credits; 2025 provisions. */
+export const IRPEF_128_LIABILITY_SOURCES = Object.freeze([
+  { provision: "D.Lgs. 446/1997, art. 50 comma 2 — presupposto addizionale regionale",
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1997;446~art50!vig=2025-12-31" },
+  { provision: "D.Lgs. 360/1998, art. 1 comma 4 — presupposto addizionale comunale",
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1998;360~art1!vig=2025-12-31" },
+]);
+
 export type FiscalComponent128 = {
   id: "employee-deduction" | "puglia-regional" | "bari-municipal";
   cents: number;
@@ -85,26 +93,42 @@ export function calculateIrpefComponents128(input: {
       source: IRPEF_128_COVERAGE.deduction.source,
       breakdown: [{ description: "Detrazione lavoro dipendente (anno intero), limitata all'imposta lorda", taxableCents: input.taxableIncomeCents, taxCents: Math.min(cents, national.grossNationalTaxCents) }] });
   } else unsupported.push("Detrazione lavoro: manca anno 2025 o conferma esplicita delle condizioni; non calcolata.");
+  const deduction = components.find((c) => c.id === "employee-deduction");
+  // Unknown deduction is not zero. Gross zero, unlike missing conditions, proves
+  // no national liability even without a selected deduction.
+  const nationalAfterSelectedDeductionCents = deduction ? national.grossNationalTaxCents - deduction.cents
+    : national.grossNationalTaxCents === 0 ? 0 : null;
   if (supportedYear && input.region === "puglia") {
-    const regional = regionalPuglia2025(input.taxableIncomeCents);
-    components.push({ id: "puglia-regional", cents: regional.cents, source: IRPEF_128_COVERAGE.region.source, breakdown: regional.breakdown });
+    if (nationalAfterSelectedDeductionCents === null) {
+      unsupported.push("Addizionale regionale: IRPEF netta non determinata senza conferma delle condizioni della detrazione; non calcolata.");
+    } else {
+      const regional = nationalAfterSelectedDeductionCents === 0
+        ? { cents: 0, breakdown: [{ description: "Non dovuta: IRPEF nazionale azzerata nella simulazione", taxableCents: input.taxableIncomeCents, taxCents: 0 }] }
+        : regionalPuglia2025(input.taxableIncomeCents);
+      components.push({ id: "puglia-regional", cents: regional.cents, source: IRPEF_128_COVERAGE.region.source, breakdown: regional.breakdown });
+    }
   } else unsupported.push("Addizionale regionale: combinazione regione/anno non coperta.");
   if (supportedYear && input.region === "puglia" && input.municipality === "bari") {
-    const cents = input.taxableIncomeCents <= 1_500_000
-      ? 0 : roundHalfUp(BigInt(input.taxableIncomeCents) * 80n, 10_000n);
-    components.push({ id: "bari-municipal", cents, source: IRPEF_128_COVERAGE.municipality.source,
-      breakdown: [{ description: "Esenzione integrale per reddito fino a 15.000 €; altrimenti 0,8% dell'intero imponibile",
-        taxableCents: input.taxableIncomeCents, rateBasisPoints: input.taxableIncomeCents <= 1_500_000 ? 0 : 80, taxCents: cents }] });
+    if (nationalAfterSelectedDeductionCents === null) {
+      unsupported.push("Addizionale comunale: IRPEF netta non determinata senza conferma delle condizioni della detrazione; non calcolata.");
+    } else {
+      const exempt = nationalAfterSelectedDeductionCents === 0 || input.taxableIncomeCents <= 1_500_000;
+      const cents = exempt ? 0 : roundHalfUp(BigInt(input.taxableIncomeCents) * 80n, 10_000n);
+      components.push({ id: "bari-municipal", cents, source: IRPEF_128_COVERAGE.municipality.source,
+        breakdown: [{ description: nationalAfterSelectedDeductionCents === 0
+          ? "Non dovuta: IRPEF nazionale azzerata nella simulazione"
+          : "Esenzione integrale per reddito fino a 15.000 €; altrimenti 0,8% dell'intero imponibile",
+          taxableCents: input.taxableIncomeCents, rateBasisPoints: exempt ? 0 : 80, taxCents: cents }] });
+    }
   } else unsupported.push("Addizionale comunale: combinazione Comune/anno non coperta.");
-  const deduction = components.find((c) => c.id === "employee-deduction")?.cents ?? 0;
   const surtaxes = components.filter((c) => c.id !== "employee-deduction").reduce((n, c) => n + c.cents, 0);
   return {
     status: unsupported.length ? "PARTIAL" as const : "SUPPORTED_COMPONENTS_ONLY" as const,
     national,
     components,
     unsupported,
-    nationalAfterSelectedDeductionCents: national.grossNationalTaxCents - deduction,
-    selectedComponentsEstimateCents: national.grossNationalTaxCents - deduction + surtaxes,
+    nationalAfterSelectedDeductionCents,
+    selectedComponentsEstimateCents: nationalAfterSelectedDeductionCents === null ? null : nationalAfterSelectedDeductionCents + surtaxes,
     limitations: "Simulazione di sole componenti supportate: non è l'IRPEF personale dovuta. Reddito complessivo, reddito imponibile e giorni di lavoro possono differire. Esclusi altre detrazioni, carichi familiari, bonus, crediti, acconti e condizioni speciali.",
   };
 }

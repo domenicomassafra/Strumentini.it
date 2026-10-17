@@ -28,6 +28,34 @@ describe("#128 explicitly sourced 2025 selected components", () => {
       region: "puglia", municipality: "bari", employeeFullYearConfirmed: true });
     expect(bonus.components.find((c) => c.id === "employee-deduction")!.cents).toBe(180119);
   });
+  it.each([500_000, 850_000, 850_002])("does not charge surtaxes when the confirmed deduction cancels national IRPEF (%i cents)", (taxableIncomeCents) => {
+    const result = calculateIrpefComponents128({ taxYear: 2025, taxableIncomeCents,
+      region: "puglia", municipality: "bari", employeeFullYearConfirmed: true });
+    expect(result.nationalAfterSelectedDeductionCents).toBe(0);
+    expect(result.components.filter((c) => c.id !== "employee-deduction").map((c) => [c.id, c.cents]))
+      .toEqual([["puglia-regional", 0], ["bari-municipal", 0]]);
+    expect(result.selectedComponentsEstimateCents).toBe(0);
+    for (const c of result.components) {
+      expect(c.breakdown.reduce((sum, row) => sum + row.taxCents, 0)).toBe(c.cents);
+    }
+  });
+  it("starts the regional estimate only once the simulated national net becomes positive", () => {
+    const result = calculateIrpefComponents128({ taxYear: 2025, taxableIncomeCents: 850_003,
+      region: "puglia", municipality: "bari", employeeFullYearConfirmed: true });
+    expect(result.nationalAfterSelectedDeductionCents).toBe(1);
+    expect(result.components.find((c) => c.id === "puglia-regional")?.cents).toBe(11305);
+    expect(result.components.find((c) => c.id === "bari-municipal")?.cents).toBe(0);
+  });
+  it.each([500_000, 4_000_000])("keeps net and surtaxes unknown without confirmed deduction conditions (%i cents)", (taxableIncomeCents) => {
+    const result = calculateIrpefComponents128({ taxYear: 2025, taxableIncomeCents,
+      region: "puglia", municipality: "bari", employeeFullYearConfirmed: false });
+    expect(result.status).toBe("PARTIAL");
+    expect(result.national.grossNationalTaxCents).toBeGreaterThan(0);
+    expect(result.nationalAfterSelectedDeductionCents).toBeNull();
+    expect(result.selectedComponentsEstimateCents).toBeNull();
+    expect(result.components).toEqual([]);
+    expect(result.unsupported.join(" ")).toMatch(/IRPEF netta/u);
+  });
   it("missing locality and unsupported 2026 leave sourced national intact and components unknown", () => {
     const partial = calculateIrpefComponents128({ taxYear: 2025, taxableIncomeCents: 4_000_000,
       region: "unknown", municipality: "unknown", employeeFullYearConfirmed: false });
