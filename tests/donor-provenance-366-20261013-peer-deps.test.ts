@@ -82,14 +82,24 @@ describe("#366 read-only runtime peer dependency provenance on authentic npm loc
     );
   });
 
-  it.each(["dev", "devOptional"] as const)("refuses a required peer hidden by the %s lock marker", flag => {
+  it("refuses a required peer hidden by the dev lock marker", () => {
     const { lock, manifest } = caseGraph();
-    lock.packages[peerPath]![flag] = true;
+    lock.packages[peerPath]!.dev = true;
     const outcome = auditLockedPackages366(lock, manifest);
     expect(outcome.status).toBe("NO_GO");
     expect(outcome.failures).toContain(
       "DEV_ONLY_PEER node_modules/preact-render-to-string -> node_modules/preact",
     );
+  });
+
+  it("verifies a present devOptional required peer and refuses a missing one", () => {
+    const { lock, manifest } = caseGraph();
+    lock.packages[peerPath]!.devOptional = true;
+    expect(auditLockedPackages366(lock, manifest))
+      .toMatchObject({ status: "VERIFIED_METADATA", failures: [] });
+    delete lock.packages[peerPath];
+    expect(auditLockedPackages366(lock, manifest).failures)
+      .toContain("MISSING_PEER node_modules/preact-render-to-string -> preact");
   });
 
   it("allows an absent explicitly optional peer but checks a present compatible one", () => {

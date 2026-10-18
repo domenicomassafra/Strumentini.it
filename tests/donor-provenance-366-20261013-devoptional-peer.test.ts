@@ -96,12 +96,14 @@ describe("#366 actual npm devOptional + Vite optional peer semantics", () => {
     },
   );
 
-  it("retains refusal when a devOptional peer is REQUIRED rather than optional", () => {
+  it("audits a present required devOptional peer and rejects it when absent", () => {
     const { lock, manifest } = graph();
     delete lock.packages[vitePath]!.peerDependenciesMeta!.tsx;
     const audit = auditLockedPackages366(lock, manifest);
-    expect(audit.status).toBe("NO_GO");
-    expect(audit.failures).toContain("DEV_ONLY_PEER node_modules/vite -> node_modules/tsx");
+    expect(audit).toMatchObject({ status: "VERIFIED_METADATA", failures: [] });
+    delete lock.packages["node_modules/tsx"];
+    expect(auditLockedPackages366(lock, manifest).failures)
+      .toContain("MISSING_PEER node_modules/vite -> tsx");
   });
 
   it("retains refusal for a truly dev-only optional peer", () => {
@@ -114,15 +116,15 @@ describe("#366 actual npm devOptional + Vite optional peer semantics", () => {
     expect(audit.failures).toContain("DEV_ONLY_PEER node_modules/vite -> node_modules/tsx");
   });
 
-  it("does not change the real repository's NO_GO rights/provenance posture", () => {
+  it("removes genuine devOptional metadata false positives without claiming rights", () => {
     const manifest = JSON.parse(readFileSync(resolve("package.json"), "utf8")) as {
       dependencies: Record<string, string>; devDependencies: Record<string, string>;
     };
     const audit = auditLockedPackages366(source, manifest);
-    expect(audit.status).toBe("NO_GO");
+    expect(audit.status).toBe("VERIFIED_METADATA");
     expect(audit.failures.some(failure => failure.startsWith("DEV_ONLY_PEER node_modules/vite -> ")))
       .toBe(false);
     expect(audit.failures.some(failure => failure.startsWith("DEV_ONLY_TRANSITIVE ")))
-      .toBe(true);
+      .toBe(false);
   });
 });

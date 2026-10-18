@@ -13,6 +13,7 @@ Production direct package pins (versions determined from the current lockfile, n
 | Package | Version | Declared SPDX | Directly installed? | Primary metadata |
 | --- | --- | --- | --- | --- |
 | @astrojs/preact | 6.0.5 | MIT | yes | https://registry.npmjs.org/@astrojs/preact/6.0.5 |
+| @noble/hashes | 2.4.0 | MIT | yes | https://registry.npmjs.org/@noble/hashes/2.4.0 |
 | astro | 7.3.4 | MIT | yes | https://registry.npmjs.org/astro/7.3.4 |
 | css-tree | 3.2.1 | MIT | yes | https://registry.npmjs.org/css-tree/3.2.1 |
 | fflate | 0.8.3 | MIT | yes | https://registry.npmjs.org/fflate/0.8.3 |
@@ -24,7 +25,7 @@ Production direct package pins (versions determined from the current lockfile, n
 | svgo | 4.1.0 | MIT | yes | https://registry.npmjs.org/svgo/4.1.0 |
 | write-excel-file | 4.1.1 | MIT | yes | https://registry.npmjs.org/write-excel-file/4.1.1 |
 
-The transitive matrix is generated from the checked-in lockfile by `auditLockedPackages366`, and the exact 366 entries (name, version, license, integrity and primary npm tarball URL) are available through the checker's machine-readable `--matrix` mode (redirect locally if a retained JSON evidence copy is needed). The checker tests metadata completeness and dependency references; it does **not** run legal compatibility analysis, verify built artifacts' inclusion of notices, validate remote SRI against fetched tarballs, or decide license compatibility on the owner's behalf. Notable production obligations: `heic-to` and some transitive packages declare LGPL-3.0 or LGPL-3.0-or-later; the lockfile also contains MPL-2.0 entries and non-MIT licenses. These require distribution-specific review, especially static/WASM bundling and corresponding source notices. The current lockfile has **seven anomalous runtime dependency references** that point to entries tagged `dev` / `devOptional` (WASM runtime/tslib and optional sharp); the conservative checker refuses these until a reproducible fresh-install/package graph review resolves the classification.
+The transitive matrix is generated from the checked-in lockfile by `auditLockedPackages366`, and the exact 367 production entries on `origin/main` of 2026-10-18 (name, version, license, integrity and primary npm tarball URL) are available through `--matrix`, together with a **separate 13-entry installed optional-runtime matrix**. The checker tests metadata completeness and dependency references; it does **not** perform legal compatibility analysis, verify built notices, authenticate fetched tarballs or grant redistribution rights. `heic-to` and transitive packages declare LGPL-3.0 or LGPL-3.0-or-later; MPL-2.0 and other licenses also need bundle-specific review. Seven historical `devOptional` lock edges were incorrectly refused as dev-only; corrected #366 checks the actual installed optional tree and its dependencies. See [current evidence](donor-provenance-366-active-2026-10-18.md).
 
 ## Donor candidates and third-party codec decisions
 
@@ -45,7 +46,7 @@ Snapshot source: npm `dist.tarball`, `dist.integrity`, declared `license`, `depe
 
 Complete checked-in asset scope: `public/ocr-246`, `public/fonts`, `src/engines/video/vendor`, `src/engines/pdf/vendor`. The exact 46 checked-in files below are pinned to their current SHA-256 to expose drift, removal or previously undocumented additions. **These pins are local observations, not independent source attestations.** The `UNKNOWN` fields are deliberate refusals, including fonts with no corresponding checked-in upstream license/provenance ledger. OCR core package version and complete corpus chain of custody remain unverified. Some .d.ts files are locally authored and require separate authored provenance, not donor redistribution claims.
 
-File register format: `path<TAB>sha256<TAB>SPDX<TAB>version<TAB>source`. The source is an exact npm tarball URL when supported by a prior checked-in attribution; `UNKNOWN` means no proved distribution identity. See [pdfstudio vendor provenance](../src/engines/pdf/vendor/pdfstudio/PROVENANCE.md), [Mediabunny vendor provenance](../src/engines/video/vendor/mediabunny-mpl-1.61.3/README.md), and [gifenc vendor provenance](../src/engines/video/vendor/gifenc-mit-1.0.3/README.md). Each is a local attribution requiring independent tarball readback for full clearance.
+File register format: `path<TAB>sha256<TAB>SPDX-or-LOCAL_AUTHORED<TAB>version-or-GIT<TAB>source`. For third-party assets source is a canonical npm tarball URL if recorded; `UNKNOWN` means missing proof. Exactly four authored Strumentini notes/declarations are `LOCAL_AUTHORED GIT git:<commit-sha1>:<blob-sha1>` with fixed per-path source references, validated against the file's current Git blob identity and SHA-256. Historical commit/path/tree membership is **recorded but not independently reauthenticated** by the offline checker (shallow CI lacks ancestor objects); this is a byte-identity classification, not author identity or legal ownership proof, and never extends to adjacent donor payloads. See [pdfstudio provenance](../src/engines/pdf/vendor/pdfstudio/PROVENANCE.md), [Mediabunny provenance](../src/engines/video/vendor/mediabunny-mpl-1.61.3/README.md) and [gifenc provenance](../src/engines/video/vendor/gifenc-mit-1.0.3/README.md).
 
 <!-- ASSET-PINS-366-BEGIN -->
 public/fonts/archivo-latin-ext.woff2	a999e009fdcd0f939c138e04043b3b2ad083b26252b644e8f94c083d48b77af0	UNKNOWN	UNKNOWN	UNKNOWN
@@ -72,7 +73,7 @@ public/ocr-246/vendor/tesseract.min.js.LICENSE.txt	cdf963ced7d25a0f98901a547647b
 public/ocr-246/vendor/worker.min.js	576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d	Apache-2.0	7.0.0	https://registry.npmjs.org/tesseract.js/-/tesseract.js-7.0.0.tgz
 public/ocr-246/vendor/worker.min.js.LICENSE.txt	45f54171aeaa1d10c0c1a66f374b7bba1f02472b1487fbe892eec04f840002ac	Apache-2.0	7.0.0	https://registry.npmjs.org/tesseract.js/-/tesseract.js-7.0.0.tgz
 src/engines/pdf/vendor/pdfstudio/LICENSE	cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30	Apache-2.0	0.4.0	https://registry.npmjs.org/pdfstudio/-/pdfstudio-0.4.0.tgz
-src/engines/pdf/vendor/pdfstudio/PROVENANCE.md	1066bdef0bda479ef70feeb432377c5cd3e7bbca0f2724a40e5359316a294093	UNKNOWN	UNKNOWN	UNKNOWN
+src/engines/pdf/vendor/pdfstudio/PROVENANCE.md	1066bdef0bda479ef70feeb432377c5cd3e7bbca0f2724a40e5359316a294093	LOCAL_AUTHORED	GIT	git:c0f099557839b377471f4321edd0f87106a66c9d:4bb455d6cb1ebca50a06d7f65a37ba2711e894e7
 src/engines/pdf/vendor/pdfstudio/errors.d.ts	ecbb9f74423c378e351d57a12b4d9666a47e981a75f5798ac903f18ff7eb113a	Apache-2.0	0.4.0	https://registry.npmjs.org/pdfstudio/-/pdfstudio-0.4.0.tgz
 src/engines/pdf/vendor/pdfstudio/errors.js	2e34b66ad9b645f488cf89c6b49b5c8b64a8f567f9c7a4d61f327aadce146383	Apache-2.0	0.4.0	https://registry.npmjs.org/pdfstudio/-/pdfstudio-0.4.0.tgz
 src/engines/pdf/vendor/pdfstudio/images.d.ts	04a9a2f49fc32dfbccd3813e48a6aadcd80d0eb6c59391e9df6ec099b58803e6	Apache-2.0	0.4.0	https://registry.npmjs.org/pdfstudio/-/pdfstudio-0.4.0.tgz
@@ -87,18 +88,22 @@ src/engines/pdf/vendor/pdfstudio/wasm/qpdf.d.ts	d4110a11d0bcf3bbd2d6160c01e33c54
 src/engines/pdf/vendor/pdfstudio/wasm/qpdf.js	30f0a3407e6f6058def17d6080f94a797a53c03afd6b93f2e9ebf29881dce037	Apache-2.0	0.4.0	https://registry.npmjs.org/pdfstudio/-/pdfstudio-0.4.0.tgz
 src/engines/pdf/vendor/pdfstudio/wasm/qpdf.wasm	48a6044e2b5abb32295fa1682e26f20338181bb2423b2ab6e8456b7c4a8c9756	Apache-2.0	0.4.0	https://registry.npmjs.org/pdfstudio/-/pdfstudio-0.4.0.tgz
 src/engines/video/vendor/gifenc-mit-1.0.3/LICENSE.md	1610b01533a777ff952669a7d4fcb1e03b0d088c3409fd606d130f2d97cb017f	MIT	1.0.3	https://registry.npmjs.org/gifenc/-/gifenc-1.0.3.tgz
-src/engines/video/vendor/gifenc-mit-1.0.3/README.md	021ac8f1473bfd69396de7fe8d7707a4b61c19af336606ee94f6d2946121d512	UNKNOWN	UNKNOWN	UNKNOWN
-src/engines/video/vendor/gifenc-mit-1.0.3/index.d.mts	1cf412cc89e9a70fe682e2f63aa5f33e44d7d68984616ef1a2dba05c755c8581	UNKNOWN	UNKNOWN	UNKNOWN
+src/engines/video/vendor/gifenc-mit-1.0.3/README.md	021ac8f1473bfd69396de7fe8d7707a4b61c19af336606ee94f6d2946121d512	LOCAL_AUTHORED	GIT	git:9b394fdfbf4d37bf54678bba762b79e7c66b3304:06cac3d38f9646465516b05b18a572d57a67c39b
+src/engines/video/vendor/gifenc-mit-1.0.3/index.d.mts	1cf412cc89e9a70fe682e2f63aa5f33e44d7d68984616ef1a2dba05c755c8581	LOCAL_AUTHORED	GIT	git:9b394fdfbf4d37bf54678bba762b79e7c66b3304:e11bd8fec69d3067fc6edec7a9a95e5607387628
 src/engines/video/vendor/gifenc-mit-1.0.3/index.mjs	217761244379253ba5815510d3048a4fb1f4c4dbe9fb51a5cfbfe26f34eec093	MIT	1.0.3	https://registry.npmjs.org/gifenc/-/gifenc-1.0.3.tgz
 src/engines/video/vendor/mediabunny-mpl-1.61.3/LICENSE	3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04	MPL-2.0	1.61.3	https://registry.npmjs.org/mediabunny/-/mediabunny-1.61.3.tgz
-src/engines/video/vendor/mediabunny-mpl-1.61.3/README.md	70677829c34cc3684b67a2a918dfff5b7bc509fed83067147adaedbd521fb254	UNKNOWN	UNKNOWN	UNKNOWN
+src/engines/video/vendor/mediabunny-mpl-1.61.3/README.md	70677829c34cc3684b67a2a918dfff5b7bc509fed83067147adaedbd521fb254	LOCAL_AUTHORED	GIT	git:d1be7c10122c8103bcbba9e179eda3640b1b2d04:15d62331471498f7bd3f3674682d04195c6e2c58
 src/engines/video/vendor/mediabunny-mpl-1.61.3/index.d.mts	34a6fe8a7df0db2609da691ef40fe7f8bfce6f04f0d8284aba0de9f0a3baae42	MPL-2.0	1.61.3	https://registry.npmjs.org/mediabunny/-/mediabunny-1.61.3.tgz
 src/engines/video/vendor/mediabunny-mpl-1.61.3/index.mjs	d7b3a90e82158a7022729cbd4f861daf73cbb4f69d23349d2aefc9c8281cf70c	MPL-2.0	1.61.3	https://registry.npmjs.org/mediabunny/-/mediabunny-1.61.3.tgz
 <!-- ASSET-PINS-366-END -->
 
+Current source-bound usage, unresolved real distribution rights, and the
+2026-10-18 fake npm-origin regression are recorded separately in
+[the current active dependency and asset audit](donor-provenance-366-active-2026-10-18.md).
+
 ## Blocking evidence / recovery
 
-1. **NO_GO**: recover official upstream license and exact npm/Git artifact identity for all 8 font binaries; pin the matching distribution bytes and license/notice obligations. Check OCR core version, lang model rights and package SHA against the original distribution (vendor path does not imply independent verification). Resolve the seven runtime-to-dev edge classifications with a controlled reproducible npm installation audit.
+1. **NO_GO**: recover official upstream license and exact npm/Git artifact identity for all 8 font binaries; pin matching distribution bytes and notices. Check OCR core version, model rights and package SHA against authentic upstream archives. The seven runtime-to-`devOptional` metadata false refusals are corrected, but that is not tarball/rights clearance.
 2. **NO_ADOPT**: for each potential jSquash and MuPDF candidate, retrieve official tarball, verify SHA-512 against registry `dist.integrity`, enumerate all transitive dependencies, inspect each codec/WASM licensing notice, and independently compare embedded artifact SHA-256 before reconsidering integration. The existing 2026-10-10 `donor-wasm-sizes.json` contains sizes, not hashes.
 3. **REVIEW REQUIRED**: independently review installed LGPL/MPL/AGPL/copyleft requirements, PDFStudio/QPDF additional licenses, bundled notices and corresponding-source fulfillment in the actual distributed assets. No trademark, sublicensing or commercial-use approval is inferred.
 4. **Rollback**: do not install/rewrite donors during feasibility. Any future change must keep the current engine and original bytes until it has passed public output, offline/privacy, memory/mobile and cancellation checks. Re-run `--check` before release and ensure receipts are retained.

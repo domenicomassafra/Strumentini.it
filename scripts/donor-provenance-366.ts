@@ -8,6 +8,9 @@ import { createRequire } from "node:module";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, isAbsolute, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { expectedAssetDistribution366 } from "./donor-asset-distributions-366";
+import { knownSpdx366 as knownSpdx } from "./donor-spdx-366";
+import { isLocalAuthored366, verifyLocalAuthored366 } from "./donor-local-authored-366";
 
 // Reuse the already installed, production-lock-pinned npm semver 6.3.1.
 // A lock entry's integrity/registry URL is not evidence that its version
@@ -32,43 +35,8 @@ type Lock = { lockfileVersion?: number; packages?: Record<string, LockEntry> };
 type Manifest = { dependencies?: Record<string, string>; devDependencies?: Record<string, string>; optionalDependencies?: Record<string, string> };
 export type AssetPin366 = { path: string; sha256: string; license: string; version: string; source: string };
 type Candidate = { name?: string; version?: string; license?: string; dist?: { integrity?: string; tarball?: string; shasum?: string }; dependencies?: Record<string, string> | null };
-type Row = { name: string; version: string; license: string; source: string; integrity: string; scope: "production" };
+type Row = { name: string; version: string; license: string; source: string; integrity: string; scope: "production" | "optional-runtime" };
 
-// Whitelist of well-formed SPDX identifiers observed in this exact lockfile.
-// New/compound expressions require review, not automatic acceptance.
-const SPDX_IDS = new Set([
-  "MIT", "Apache-2.0", "ISC", "BSD-2-Clause", "BSD-3-Clause",
-  "Python-2.0", "CC-BY-4.0", "CC0-1.0", "BlueOak-1.0.0",
-  "MPL-2.0", "LGPL-3.0", "LGPL-3.0-or-later", "AGPL-3.0-or-later",
-]);
-function knownSpdx(value: unknown): value is string {
-  if (typeof value !== "string" || !value.trim()) return false;
-  // Metadata must contain a valid expression, not just permitted identifiers.
-  // Stripping parentheses previously accepted malformed declarations such as
-  // `MIT(`, `MIT()` and `MIT(Apache-2.0)` as VERIFIED_METADATA. The allowlist
-  // remains intentionally narrow; WITH exceptions and unknown ids are NO_GO.
-  const tokens = value.match(/\(|\)|[A-Za-z0-9.+-]+/gu) ?? [];
-  if (!tokens.length || tokens.join("") !== value.replace(/\s+/gu, "")) return false;
-  let index = 0;
-  function operand(): boolean {
-    const token = tokens[index++];
-    if (token === "(") {
-      if (!expression() || tokens[index] !== ")") return false;
-      index++;
-      return true;
-    }
-    return token !== undefined && SPDX_IDS.has(token);
-  }
-  function expression(): boolean {
-    if (!operand()) return false;
-    while (tokens[index] === "AND" || tokens[index] === "OR") {
-      index++;
-      if (!operand()) return false;
-    }
-    return true;
-  }
-  return expression() && index === tokens.length;
-}
 function validSha512(value: unknown): value is string {
   if (typeof value !== "string" || !value.startsWith("sha512-")) return false;
   const encoded = value.slice(7);
@@ -135,7 +103,16 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
     failures.push("ROOT_OPTIONAL_DEPENDENCIES_DIFFER");
   }
   const production = Object.entries(entries).filter(([path, entry]) => path && !entry.dev && !entry.devOptional);
+  // npm lock v3 devOptional means both dev AND optional runtime, not dev-only.
+  // Audit only those present nodes reachable from an actual non-dev entry;
+  // don't automatically promote unrelated devOptional packages to production.
+  const pending = [...production.map(([path]) => path),
+    ...Object.keys(manifest.optionalDependencies ?? {})
+      .map((name) => `node_modules/${name}`)
+      .filter((path) => entries[path]?.devOptional && !entries[path]?.dev)];
+  const visited = new Set<string>();
   const rows: Row[] = [];
+  const optionalInstalled: Row[] = [];
   const metadataChecked = new Set<string>();
   function auditPackageMetadata(path: string, entry: LockEntry): void {
     if (metadataChecked.has(path)) return;
@@ -147,25 +124,34 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
     if (!validSha512(entry.integrity)) failures.push(`INVALID_SRI ${path}`);
     if (!validSource(name, version, entry.resolved)) failures.push(`UNVERIFIED_SOURCE ${path}`);
   }
-  for (const [path, entry] of production) {
+  for (let index = 0; index < pending.length; index++) {
+    const path = pending[index]!;
+    if (visited.has(path)) continue;
+    visited.add(path);
+    const entry = entries[path]!;
     auditPackageMetadata(path, entry);
     const name = packageName(path);
     const version = entry.version ?? "";
-    rows.push({ name, version, license: entry.license ?? "UNKNOWN", source: entry.resolved ?? "UNKNOWN", integrity: entry.integrity ?? "UNKNOWN", scope: "production" });
+    const row: Row = { name, version, license: entry.license ?? "UNKNOWN", source: entry.resolved ?? "UNKNOWN", integrity: entry.integrity ?? "UNKNOWN", scope: entry.devOptional ? "optional-runtime" : "production" };
+    (entry.devOptional ? optionalInstalled : rows).push(row);
     for (const [depName, spec] of Object.entries(entry.dependencies ?? {})) {
       const target = resolveDependency(depName, path, entries);
       if (!target) failures.push(`MISSING_TRANSITIVE ${path} -> ${depName}`);
-      else if (entries[target]?.dev || entries[target]?.devOptional) failures.push(`DEV_ONLY_TRANSITIVE ${path} -> ${target}`);
-      else if (!lockedVersionSatisfies(spec, entries[target]?.version)) {
-        failures.push(`TRANSITIVE_VERSION_MISMATCH ${path} -> ${target} (${spec} vs ${entries[target]?.version ?? "UNKNOWN"})`);
+      else if (entries[target]?.dev) failures.push(`DEV_ONLY_TRANSITIVE ${path} -> ${target}`);
+      else {
+        if (entries[target]?.devOptional) pending.push(target);
+        if (!lockedVersionSatisfies(spec, entries[target]?.version)) {
+          failures.push(`TRANSITIVE_VERSION_MISMATCH ${path} -> ${target} (${spec} vs ${entries[target]?.version ?? "UNKNOWN"})`);
+        }
       }
     }
     for (const [depName, spec] of Object.entries(entry.optionalDependencies ?? {})) {
       const target = resolveDependency(depName, path, entries);
-      if (target && (entries[target]?.dev || entries[target]?.devOptional)) failures.push(`DEV_ONLY_OPTIONAL ${path} -> ${target}`);
+      if (target && entries[target]?.dev) failures.push(`DEV_ONLY_OPTIONAL ${path} -> ${target}`);
       else if (target && !lockedVersionSatisfies(spec, entries[target]?.version)) {
         failures.push(`OPTIONAL_VERSION_MISMATCH ${path} -> ${target} (${spec} vs ${entries[target]?.version ?? "UNKNOWN"})`);
       }
+      if (target && !entries[target]?.dev && entries[target]?.devOptional) pending.push(target);
     }
     for (const [peerName, spec] of Object.entries(entry.peerDependencies ?? {})) {
       // npm peers resolve at or above their consumer; unlike ordinary
@@ -176,13 +162,12 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
       // still need valid production provenance and a compatible pinned version.
       if (!target) {
         if (!optional) failures.push("MISSING_PEER " + path + " -> " + peerName);
-      } else if (entries[target]?.dev || (entries[target]?.devOptional && !optional)) {
+      } else if (entries[target]?.dev) {
         failures.push("DEV_ONLY_PEER " + path + " -> " + target);
       } else {
-        // npm lock v3 devOptional denotes a dev dependency that ALSO supplies
-        // an optional runtime peer; it is not necessarily dev-only. Validate
-        // its metadata even though the ordinary production loop skips it.
-        if (optional && entries[target]?.devOptional) auditPackageMetadata(target, entries[target]!);
+        // A present optional-runtime peer must satisfy both the metadata
+        // checks and its declared semver even if the peer is required here.
+        if (entries[target]?.devOptional) pending.push(target);
         if (!lockedVersionSatisfies(spec, entries[target]?.version)) {
           const label = optional ? "OPTIONAL_PEER_VERSION_MISMATCH" : "PEER_VERSION_MISMATCH";
           failures.push(label + " " + path + " -> " + target + " (" + spec + " vs " + (entries[target]?.version ?? "UNKNOWN") + ")");
@@ -209,13 +194,14 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
     // Optional means the package may be absent. Once present, it is still a
     // root runtime package and must satisfy its declared constraint.
     if (!target) continue;
-    if (target.dev || target.devOptional) failures.push(`DEV_ONLY_ROOT_OPTIONAL ${name} -> ${path}`);
+    if (target.dev) failures.push(`DEV_ONLY_ROOT_OPTIONAL ${name} -> ${path}`);
     else if (!lockedVersionSatisfies(spec, target.version)) {
       failures.push(`ROOT_OPTIONAL_VERSION_MISMATCH ${name} (${spec} vs ${target.version ?? "UNKNOWN"})`);
     }
   }
   rows.sort((a, b) => a.name.localeCompare(b.name) || a.version.localeCompare(b.version));
-  return { status: failures.length ? "NO_GO" as const : "VERIFIED_METADATA" as const, rows, failures };
+  optionalInstalled.sort((a, b) => a.name.localeCompare(b.name) || a.version.localeCompare(b.version));
+  return { status: failures.length ? "NO_GO" as const : "VERIFIED_METADATA" as const, rows, optionalInstalled, failures };
 }
 
 const HASH_256 = /^[a-f0-9]{64}$/u;
@@ -225,6 +211,11 @@ function safeAssetPath(root: string, name: string): string | null {
   return full.startsWith(resolve(root) + sep) ? full : null;
 }
 function validAssetSource(asset: AssetPin366): boolean {
+  const distribution = expectedAssetDistribution366(asset.path);
+  if (VENDORED_DIRS_366.some((dir) => asset.path.startsWith(dir + "/"))) {
+    return !!distribution && validSource(distribution, asset.version, asset.source);
+  }
+  // Preserve generic fixture behavior for callers auditing their own dirs.
   if (!URL.canParse(asset.source)) return false;
   const url = new URL(asset.source);
   return url.protocol === "https:" && url.hostname === "registry.npmjs.org" &&
@@ -251,9 +242,14 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
       failures.push(`INVALID_ASSET_PATH ${asset.path}`); continue;
     }
     pinned.add(asset.path);
-    if (!knownSpdx(asset.license)) failures.push(`UNKNOWN_ASSET_LICENSE ${asset.path}`);
-    if (!/^\d+\.\d+\.\d+(?:[-+][\w.-]+)?$/u.test(asset.version)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
-    if (!validAssetSource(asset)) failures.push(`UNKNOWN_ASSET_SOURCE ${asset.path}`);
+    const authored = isLocalAuthored366(asset.path);
+    if (!authored && !knownSpdx(asset.license)) failures.push(`UNKNOWN_ASSET_LICENSE ${asset.path}`);
+    if (!authored && !/^\d+\.\d+\.\d+(?:[-+][\w.-]+)?$/u.test(asset.version)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
+    if (!authored && !validAssetSource(asset)) failures.push(`UNKNOWN_ASSET_SOURCE ${asset.path}`);
+    // Do not allow arbitrary vendor paths to claim first-party provenance.
+    if (!authored && (asset.license === "LOCAL_AUTHORED" || asset.version === "GIT" || asset.source.startsWith("git:"))) {
+      failures.push(`INVALID_LOCAL_AUTHORED ${asset.path}`);
+    }
     if (!HASH_256.test(asset.sha256)) failures.push(`INVALID_ASSET_PIN ${asset.path}`);
     if (!existsSync(full)) { failures.push(`MISSING_ASSET ${asset.path}`); continue; }
     const stat = lstatSync(full);
@@ -261,7 +257,9 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
     if (!stat.isFile() || stat.size > 64 * 1024 * 1024) {
       failures.push(`UNSAFE_ASSET_TYPE_OR_SIZE ${asset.path}`); continue;
     }
-    const digest = createHash("sha256").update(readFileSync(full)).digest("hex");
+    const bytes = readFileSync(full);
+    if (authored && !verifyLocalAuthored366(asset, bytes)) failures.push(`INVALID_LOCAL_AUTHORED ${asset.path}`);
+    const digest = createHash("sha256").update(bytes).digest("hex");
     if (digest !== asset.sha256) failures.push(`ASSET_HASH_MISMATCH ${asset.path}`);
   }
   for (const dir of dirs) {
@@ -332,8 +330,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const report = auditRepository366(root);
   if (process.argv.includes("--matrix")) {
     console.log(JSON.stringify({ status: report.status, installedProduction: report.packages.rows,
+      installedOptionalRuntime: report.packages.optionalInstalled,
       vendoredAssets: report.assets, candidates: report.candidates }, null, 2));
   } else console.log(JSON.stringify({ status: report.status, productionPackages: report.packages.rows.length,
+    optionalRuntimePackages: report.packages.optionalInstalled.length,
     assetFiles: report.assets.files, donorCandidates: report.candidates.map(({ name, version, license, decision, failures }) =>
       ({ name, version, license, decision, failures })),
     failures: [...report.packages.failures, ...report.assets.failures] }, null, 2));
