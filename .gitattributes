@@ -7,3 +7,6 @@ quality/reference-data/italy/artifacts/115-administrative-geography/anpr-archivi
 # Third-party OCR runtime/core/model and bundled license notices are verbatim,
 # SHA-256-pinned upstream artifacts. Never normalize minified JS/newlines.
 public/ocr-246/** -text -diff
+# Official Google Fonts OFL copies have upstream whitespace/CRLF and must
+# remain byte-identical to their verified immutable Git sources.
+public/fonts/*-OFL-1.1.txt -text -diff
