@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SettingsStartLinks from "../components/account/SettingsStartLinks.astro";
+import SettingsNavigation358 from "../components/account/SettingsNavigation358.astro";
 import UiIcon from "../components/icons/UiIcon.astro";
 import { catalog } from "../generated/catalog";
 import { groupForCategory } from "../catalog/groups";
@@ -20,13 +21,6 @@ import "../components/account/account.css";
  * data di creazione dell'account né un endpoint per cambiare l'email — il
  * controllo non viene disegnato invece di essere inventato.
  */
-const panelNav = [
-  { id: "profilo", label: "Profilo", icon: "user" as const },
-  { id: "preferenze", label: "Preferenze", icon: "sliders" as const },
-  { id: "tema", label: "Tema", icon: "sun" as const },
-  { id: "privacy", label: "Privacy e sicurezza", icon: "shield" as const },
-];
-
 const profileCopy = COPY.workProfile;
 const firstRunProfile = createDefaultWorkProfile({ locale: "it-IT", timezone: "UTC" });
 
@@ -71,30 +65,7 @@ const unitSystems = [
       <SettingsStartLinks />
     </header>
 
-    <aside class="ac-side">
-      <div
-        class="ac-nav"
-        role="tablist"
-        aria-orientation="vertical"
-        aria-label="Sezioni delle impostazioni"
-        data-settings-nav
-      >
-        {panelNav.map((panel) => (
-          <button
-            type="button"
-            role="tab"
-            id={`tab-${panel.id}`}
-            aria-controls={`panel-${panel.id}`}
-            aria-selected={panel.id === "profilo" ? "true" : "false"}
-            tabindex={panel.id === "profilo" ? 0 : -1}
-            data-settings-tab={panel.id}
-          >
-            <UiIcon name={panel.icon} size={18} />
-            {panel.label}
-          </button>
-        ))}
-      </div>
-    </aside>
+    <SettingsNavigation358 />
 
     <div class="ac-shell-main">
       <!-- Profilo ------------------------------------------------------------ -->
