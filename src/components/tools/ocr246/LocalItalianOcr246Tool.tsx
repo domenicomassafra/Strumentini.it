@@ -78,6 +78,7 @@ export function LocalItalianOcr246Tool() {
           if (degrees === 0 || degrees === 90 || degrees === 180 || degrees === 270) {
             setRotation(degrees);
             setResult(null);
+            setStatus("Orientamento modificato: riesegui l'OCR italiano prima di usare il testo.");
           }
         }}>
         <option value="0">Nessuna rotazione</option>

@@ -22,6 +22,7 @@ try {
   page.on("pageerror", (err) => runtimeErrors.push(err.message));
   const route = new URL("/tools/ocr-italiano-locale-246/", base);
   await page.goto(route.href, { waitUntil: "networkidle", timeout: 25_000 });
+  await page.waitForFunction(() => [...document.querySelectorAll("astro-island")].every((island) => !island.hasAttribute("ssr")), null, { timeout: 25_000 });
   assert.match(await page.title(), /OCR immagini in italiano/u);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, nofollow");
   assert.equal(allRequests.filter((u) => u.includes("/ocr-246/")).length, 0,
@@ -46,6 +47,13 @@ try {
   const download = await downloaded;
   assert.equal(download.suggestedFilename(), "ocr-italiano-246.txt");
   assert.equal((await readFile(await download.path(), "utf8")).replace(/\s+/gu, " ").trim(), expected);
+
+  // A changed orientation invalidates the old text AND its success status.
+  await page.locator("#ocr246-rotation").selectOption("90");
+  assert.equal(await page.locator("[data-ocr-result]").count(), 0,
+    "changing orientation must hide results obtained with the previous rotation");
+  assert.match(await page.locator("[data-ocr-status]").innerText(), /orientamento.*riesegui/iu,
+    "do not leave a stale OCR-completed announcement after changing orientation");
 
   // Reproduce the independently observed RAW-90 failure input, then correct
   // orientation only by explicit user choice (270 clockwise); never claim
