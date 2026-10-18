@@ -1,0 +1,134 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-annual-117";
+---
+
+<BaseLayout title="Calcolo IRPEF annua lorda per scaglioni" description="Calcola l'IRPEF nazionale lorda per gli anni fiscali 2025 e 2026 con il dettaglio di ogni scaglione e le fonti normative, senza presumere detrazioni e addizionali." noindex>
+  <main class="irpef-annual" data-irpef-annuale>
+    <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / IRPEF annua</nav>
+    <h1>Calcolo IRPEF annua per scaglioni</h1>
+    <p>Calcola la sola <strong>IRPEF lorda nazionale</strong> sul reddito imponibile annuo che hai già determinato, al netto degli eventuali oneri deducibili. Sono disponibili esclusivamente gli anni d'imposta con scaglioni nazionali verificati: 2025 e 2026.</p>
+    <aside class="scope" aria-label="Limiti del calcolo">
+      <p><strong>Calcolo parziale:</strong> detrazioni, crediti d'imposta e addizionali regionali e comunali <strong>non calcolate</strong>. Non sono valori pari a zero. Questo risultato <strong>non è l'imposta netta individuale dovuta</strong> e non è una dichiarazione fiscale.</p>
+    </aside>
+
+    <section class="input-panel" aria-labelledby="calculator-heading">
+      <h2 id="calculator-heading">Dati per il calcolo</h2>
+      <form novalidate>
+        <label for="irpef-annual-year">Anno d'imposta</label>
+        <select id="irpef-annual-year" name="year" required>
+          {VERIFIED_IRPEF_EXCERPTS_117.map((pack) => <option value={pack.taxYear}>{pack.taxYear}</option>)}
+        </select>
+        <label for="irpef-annual-income">Reddito imponibile IRPEF annuo (€)</label>
+        <input id="irpef-annual-income" name="income" type="text" inputmode="decimal" placeholder="40000,00" autocomplete="off" aria-describedby="income-help" required />
+        <p class="hint" id="income-help">Inserisci euro senza separatori delle migliaia, con al massimo due decimali (es. 40000,50). Reddito massimo modellato: 1 miliardo di euro.</p>
+        <button type="submit">Calcola IRPEF lorda</button>
+      </form>
+      <p class="error" role="alert" hidden></p>
+    </section>
+
+    <output aria-live="polite" aria-label="Risultato del calcolo IRPEF"></output>
+
+    <section class="sources" aria-labelledby="sources-heading">
+      <h2 id="sources-heading">Scaglioni e fonti per anno</h2>
+      <p>Le aliquote qui utilizzate provengono da estratti normativi locali versionati e verificati. La fonte del 2026 integra la legge precedente con la modifica della seconda aliquota.</p>
+      {VERIFIED_IRPEF_EXCERPTS_117.map((pack) => <div class="source-year">
+        <h3>Anno d'imposta {pack.taxYear}</h3>
+        <p>Validità {pack.effectiveFrom} – {pack.effectiveTo}. {pack.bands.map((band) => `${(band.rateBasisPoints / 100).toLocaleString("it-IT")}%${band.upToCents === null ? " oltre l'ultimo limite" : ` fino a ${(band.upToCents / 100).toLocaleString("it-IT")} €`}`).join(" · ")}.</p>
+        <p>Fonti: {pack.sources.map((source, i) => <span>{i > 0 ? " · " : ""}<a href={source.url} target="_blank" rel="noopener noreferrer">{source.authority}, normativa {pack.taxYear}</a></span>)}</p>
+      </div>)}
+      <p>Consulta anche il <a href="/fonti-fiscali-italia/">registro delle fonti fiscali per anno</a>. Per detrazioni o addizionali con condizioni documentate specifiche è disponibile il <a href="/tools/irpef-componenti/">calcolo delle componenti IRPEF</a>: la sua copertura è distinta e più ristretta.</p>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  import { calculateNationalGrossIrpef127 } from "../../engines/italy/irpef-national-127";
+
+  const root = document.querySelector<HTMLElement>("[data-irpef-annuale]");
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const output = root.querySelector<HTMLOutputElement>("output")!;
+    const error = root.querySelector<HTMLElement>(".error")!;
+    const income = form.elements.namedItem("income") as HTMLInputElement;
+    const year = form.elements.namedItem("year") as HTMLSelectElement;
+    const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+    const reset = () => { output.replaceChildren(); error.hidden = true; error.textContent = ""; };
+    const paragraph = (content: string) => { const element = document.createElement("p"); element.textContent = content; return element; };
+    form.addEventListener("input", reset);
+    form.addEventListener("change", reset);
+    year.addEventListener("change", () => { income.value = ""; });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault(); reset();
+      const raw = income.value.trim();
+      if (!/^(?:0|[1-9]\d{0,9})(?:[.,]\d{1,2})?$/u.test(raw)) {
+        error.textContent = "Reddito non valido: inserisci euro non negativi, al massimo due decimali, senza separatori delle migliaia.";
+        error.hidden = false; return;
+      }
+      const [whole = "0", fraction = ""] = raw.split(/[.,]/u);
+      try {
+        const calculated = calculateNationalGrossIrpef127(Number(year.value), Number(whole) * 100 + Number(fraction.padEnd(2, "0")));
+        const heading = document.createElement("h2");
+        heading.textContent = `IRPEF lorda nazionale: ${euro(calculated.grossNationalTaxCents)} (anno ${calculated.taxYear})`;
+        const introduction = paragraph(`Reddito imponibile dichiarato: ${euro(calculated.taxableIncomeCents)}. Ogni scaglione tassa soltanto la propria quota, senza applicare l'aliquota massima a tutto il reddito.`);
+        const tableBox = document.createElement("div"); tableBox.className = "result-table-scroll"; tableBox.tabIndex = 0;
+        tableBox.setAttribute("aria-label", "Dettaglio scaglioni: scorri orizzontalmente se necessario");
+        const table = document.createElement("table");
+        const caption = document.createElement("caption"); caption.textContent = "Dettaglio riproducibile delle fasce IRPEF";
+        const head = document.createElement("thead"); const headings = document.createElement("tr");
+        for (const label of ["Intervallo imponibile", "Quota tassata", "Aliquota e imposta", "Fonte normativa"]) {
+          const cell = document.createElement("th"); cell.scope = "col"; cell.textContent = label; headings.append(cell);
+        }
+        head.append(headings);
+        const body = document.createElement("tbody");
+        let lower = 0;
+        for (const band of calculated.lines) {
+          const row = document.createElement("tr");
+          const range = document.createElement("th"); range.scope = "row";
+          range.textContent = band.upperBoundCents === null ? `Oltre ${euro(lower)}` : `${euro(lower)} – ${euro(band.upperBoundCents)}`;
+          const taxable = document.createElement("td"); taxable.textContent = euro(band.taxableBandCents);
+          const math = document.createElement("td"); math.textContent = `${euro(band.taxableBandCents)} × ${band.rateBasisPoints / 100}% = ${euro(band.taxCents)}`;
+          const sources = document.createElement("td");
+          for (const [index, source] of calculated.sources.entries()) {
+            if (index > 0) sources.append(document.createTextNode(" · "));
+            const link = document.createElement("a"); link.href = source.url; link.textContent = source.authority;
+            link.target = "_blank"; link.rel = "noopener noreferrer"; sources.append(link);
+          }
+          row.append(range, taxable, math, sources); body.append(row);
+          if (band.upperBoundCents !== null) lower = band.upperBoundCents;
+        }
+        table.append(caption, head, body); tableBox.append(table);
+        const limitations = paragraph("Detrazioni, crediti d'imposta e addizionali regionali e comunali: non calcolate (non sono zero). IRPEF netta individuale: non determinata. L'IRPEF lorda nazionale non corrisponde necessariamente all'imposta dovuta.");
+        limitations.className = "result-limits";
+        output.append(heading, introduction, tableBox, limitations);
+      } catch {
+        error.textContent = "Anno non supportato o importo non coperto: solo il 2025 e il 2026 sono verificati, fino a 1 miliardo di euro.";
+        error.hidden = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .irpef-annual { width:min(860px,calc(100% - 32px)); min-width:0; margin:32px auto 72px; display:grid; gap:20px; }
+  .irpef-annual h1,.irpef-annual h2,.irpef-annual h3,.irpef-annual p { margin:0; }
+  .irpef-annual p { line-height:1.65; }
+  .irpef-annual nav { font-size:.9rem; }
+  .scope { border-inline-start:4px solid currentColor; padding:12px 16px; border-radius:6px; background:var(--surface,transparent); }
+  .input-panel,.sources { border:1px solid var(--border); border-radius:14px; padding:20px; display:grid; gap:14px; min-width:0; }
+  .irpef-annual form { display:grid; gap:12px; }
+  .irpef-annual label { font-weight:650; }
+  .irpef-annual input,.irpef-annual select,.irpef-annual button { box-sizing:border-box; min-width:0; width:100%; padding:12px; border-radius:8px; }
+  .irpef-annual button { cursor:pointer; }
+  .irpef-annual :focus-visible { outline:3px solid currentColor; outline-offset:2px; }
+  .hint { font-size:.88rem; }
+  .error { font-weight:650; }
+  .irpef-annual output:not(:empty) { display:grid; gap:16px; min-width:0; border:1px solid var(--border); border-radius:14px; padding:20px; }
+  .irpef-annual .result-table-scroll { max-width:100%; overflow-x:auto; }
+  .irpef-annual table { width:100%; min-width:640px; border-collapse:collapse; text-align:left; }
+  .irpef-annual caption { text-align:left; font-weight:650; margin-bottom:10px; }
+  .irpef-annual th,.irpef-annual td { padding:10px; border-bottom:1px solid var(--border); vertical-align:top; }
+  .irpef-annual .result-limits { font-weight:650; }
+  .source-year { display:grid; gap:8px; padding:12px 0; border-top:1px solid var(--border); }
+  @media(max-width:480px) { .irpef-annual { margin-top:20px; } .input-panel,.sources,.irpef-annual output:not(:empty) { padding:14px; } }
+</style>
