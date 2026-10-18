@@ -74,6 +74,8 @@ try {
   assert(links.some(link => /normattiva\.it/u.test(link.href) && /2025/u.test(link.label)));
   const employeeLink = piva.locator('a[href="/tools/codice-fiscale/"]');
   assert.equal(await employeeLink.count(), 1);
+  const salaryLink = piva.locator('a[href="/tools/stipendio-netto/"]');
+  assert.equal(await salaryLink.count(), 1, "PIVA handoff must lead directly to the employee salary journey");
 
   // Independent 2025 calculation: 30,000 * 67% = 20,100;
   // 20,100 - 1,000 already paid = 19,100 taxable, * 15% = 2,865.
@@ -147,7 +149,24 @@ try {
   await submit(piva);
   assert.equal(await rendered(piva), first, "Explicit valid 2025 inputs recover the expected answer");
 
-  // The other journey must still be navigable and sourced separately.
+  // From the PIVA panel, employee salary must be one direct navigation,
+  // with no prefilled personal rate and a return to the PIVA path.
+  await salaryLink.click();
+  await page.waitForURL("**/tools/stipendio-netto/");
+  const salary = page.locator("[data-salary-estimate-13]");
+  assert.equal(await salary.count(), 1);
+  assert.match(await salary.innerText(), /contributi.*ipotizzat/iu);
+  assert.equal(await salary.locator('[name="ral"]').inputValue(), "");
+  assert.equal(await salary.locator('[name="rate"]').inputValue(), "");
+  assert.deepEqual(await salary.locator('[name="year"] option').evaluateAll(options => options.map(option => option.value)), ["2025", "2026"]);
+  const pivaReturn = salary.locator('a[href="/tools/partita-iva-validator/"]');
+  assert.equal(await pivaReturn.count(), 1, "Employee handoff must offer a direct return to the PIVA journey");
+  await pivaReturn.click();
+  await page.waitForURL("**/tools/partita-iva-validator/");
+  assert.equal(await piva.locator('[name="taxYear"]').inputValue(), "2025");
+  assert.equal(await piva.locator('[name="receipts"]').inputValue(), "", "Cross-journey return starts anonymous and empty");
+
+  // The taxable-income route is still available for private taxpayers.
   await employeeLink.click();
   await page.waitForURL("**/tools/codice-fiscale/");
   const employee = page.locator('[data-tax396="privati"]');
