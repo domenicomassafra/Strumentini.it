@@ -76,10 +76,12 @@ try {
   await send();
   const centsDot = await output();
   for (const [label, amount] of [
+    ["Ricavi dell'anno d'imposta:", 10000.99],
     ["Reddito forfettario stimato:", 6700.66],
     ["Contributi già pagati dichiarati:", 0.01],
     ["Base imponibile modellata:", 6700.65],
     ["Imposta sostitutiva stimata:", 1005.10],
+    ["Netto stimato dopo imposta e contributi pagati:", 8995.88],
   ]) assert(centsDot.includes(`${label} ${euro(amount)}`), `Exact 2025 source-backed cent amount: ${label} ${euro(amount)}`);
   await enter({ receipts: "10000,99", paidContributions: "0,01" });
   assert.equal(await output(), "", "Editing fractional input clears stale calculation");
@@ -87,6 +89,21 @@ try {
   assert.equal(await output(), centsDot, "Nonzero fractional cents preserved exactly with either decimal separator");
   await send();
   assert.equal(await output(), centsDot, "Repeated fractional submit preserves exact cents");
+
+  // Switching to the 5% user-declared startup mode must require a fresh
+  // explicit declaration and show the entire reproducible 2025 chain.
+  await input("declaredRate").selectOption("startup-5");
+  await send();
+  assert.equal(await output(), "", "No 5% calculation without explicit startup declaration");
+  assert.match(await error(), /5%.*requisiti/iu);
+  await input("startupEligible").check();
+  await send();
+  const startup = await output();
+  assert(startup.includes(`Imposta sostitutiva stimata: ${euro(335.03)}`), "5% tax on 6700.65 taxable income");
+  assert(startup.includes(`Netto stimato dopo imposta e contributi pagati: ${euro(9665.95)}`), "5% net subtracts already-paid contribution and computed tax");
+  await input("declaredRate").selectOption("standard-15");
+  await send();
+  assert.equal(await output(), centsDot, "15% mode restores the original exact-cent net");
 
   await enter({ receipts: "10,00", paidContributions: "0,00" });
   await send();
