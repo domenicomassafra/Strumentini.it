@@ -74,6 +74,27 @@ try {
   assert.equal(await pdf.isChecked(), true);
   assert.equal(await query.inputValue(), 'pdf');
 
+  // A user can select a filter before the 120ms search debounce settles.
+  // The live query must survive the synchronous re-render that follows.
+  for (const action of ['facet', 'sort', 'tab']) {
+    await page.goto(origin + '/strumenti/', { waitUntil: 'domcontentloaded' });
+    await query.fill('eta');
+    if (action === 'facet') await pdf.check();
+    else if (action === 'sort') await page.locator('[data-directory-sort]').selectOption('za');
+    else await page.locator('[data-tab="verificati"]').click();
+    await page.waitForTimeout(220);
+    const state = new URL(page.url()).searchParams;
+    assert.equal(state.get('q'), 'eta', `instant ${action} must preserve pending query in URL`);
+    assert.equal(await query.inputValue(), 'eta', `instant ${action} must preserve visible query`);
+    if (action === 'facet') assert.equal(state.get('gruppo'), 'pdf');
+    if (action === 'sort') assert.equal(state.get('ordine'), 'za');
+    if (action === 'tab') assert.equal(state.get('qualita'), 'verificato');
+    await page.goBack({ waitUntil: 'domcontentloaded', timeout: 5000 });
+    await page.goForward({ waitUntil: 'domcontentloaded', timeout: 5000 });
+    assert.equal(new URL(page.url()).searchParams.get('q'), 'eta',
+      `Back/Forward must restore instant ${action} query`);
+  }
+
   for (const width of [320, 390, 1440]) {
     await page.setViewportSize({ width, height: 850 });
     const dims = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
