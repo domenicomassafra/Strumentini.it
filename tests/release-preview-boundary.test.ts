@@ -6,7 +6,8 @@ const cfHtml = '<meta name="robots" content="noindex, nofollow"/><main data-cf-c
 const signatureSource = 'export function getStaticPaths() { return import.meta.env.DEV ? [{ params: { route: undefined } }] : []; }\n<BaseLayout noindex><p>Development-only</p></BaseLayout>';
 const ocrSource = '<BaseLayout title="OCR" noindex><main data-ocr246-preview="experimental-local-only">OCR italiano sperimentale</main></BaseLayout>';
 const ocrHtml = '<meta name="robots" content="noindex, nofollow"/><main data-ocr246-preview="experimental-local-only">OCR italiano sperimentale</main>';
-const pdfOcr247Source = 'export function getStaticPaths() { return import.meta.env.DEV ? [{ params: { route: undefined } }] : []; }\n<BaseLayout title="PDF OCR" noindex><main data-ocr247-preview="experimental-local-only">PDF OCR sperimentale</main></BaseLayout>';
+const pdfOcr247Source = '<BaseLayout title="PDF OCR" noindex><main data-ocr247-preview="experimental-local-only">PDF OCR sperimentale</main></BaseLayout>';
+const pdfOcr247Html = '<meta name="robots" content="noindex, nofollow"/><main data-ocr247-preview="experimental-local-only">PDF scansionato con testo selezionabile</main>';
 const redactionSource = 'export function getStaticPaths() { return import.meta.env.DEV ? [{ params: { route: undefined } }] : []; }\n<BaseLayout title="PDF redaction" noindex><main data-redaction237-preview="experimental-local-only">Redazione sperimentale</main></BaseLayout>';
 const allPages = ["src/pages/tools/pdf-visual-signature/[...route].astro", "src/pages/tools/codice-fiscale.astro", "src/pages/tools/public-tool.astro"];
 const allStatic = ["tools/codice-fiscale/index.html", "tools/public-tool/index.html"];
@@ -76,18 +77,22 @@ describe("noncatalog preview release boundary", () => {
     }
   });
 
-  it("excludes dev-only #247 PDF OCR from public tool count solely when no build, catalog or discovery surface exists", () => {
-    const sourcePath = "src/pages/tools/pdf-scansionato-ocr-247/[...route].astro";
+  it("keeps #247 PDF OCR as a bounded noindex browser route outside catalog and sitemap", () => {
+    const sourcePath = "src/pages/tools/pdf-scansionato-ocr-247.astro";
     const staticPath = "tools/pdf-scansionato-ocr-247/index.html";
-    const selected = { ...options, toolPageFiles: [...allPages, sourcePath], pdfOcr247Source };
+    const selected = { ...options, toolPageFiles: [...allPages, sourcePath],
+      staticFiles: [...allStatic, staticPath], pdfOcr247Source, pdfOcr247Html };
     const accepted = narrowUncataloguedToolPreviews(selected);
     expect(accepted.safePreviewNames).toContain("pdf-scansionato-ocr-247");
     expect(accepted.toolPageFiles).not.toContain(sourcePath);
+    expect(accepted.staticFiles).not.toContain(staticPath);
     for (const override of [
-      { pdfOcr247Source: pdfOcr247Source.replace("import.meta.env.DEV", "true") },
       { pdfOcr247Source: pdfOcr247Source.replace("noindex", "") },
       { pdfOcr247Source: pdfOcr247Source.replace("experimental-local-only", "production") },
-      { staticFiles: [...allStatic, staticPath] },
+      { pdfOcr247Html: pdfOcr247Html.replace("noindex, nofollow", "index, follow") },
+      { pdfOcr247Html: pdfOcr247Html.replace("experimental-local-only", "production") },
+      { pdfOcr247Html: pdfOcr247Html.replace("PDF scansionato con testo selezionabile", "PDF OCR") },
+      { staticFiles: allStatic },
       { sitemapXml: selected.sitemapXml + "<loc>https://strumentini.it/tools/pdf-scansionato-ocr-247/</loc>" },
       { catalogRoutes: [...selected.catalogRoutes, "/tools/pdf-scansionato-ocr-247"] },
     ]) {

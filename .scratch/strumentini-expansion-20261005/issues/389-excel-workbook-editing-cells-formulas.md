@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 389 — Excel workbook editing cells formulas
 
 **What to build:** Edits supported cells and formula graph with accurate export

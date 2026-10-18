@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 367 — Codec immagini local vs donor
 
 **What to build:** Confronto jSquash installed native per JPEG WebP PNG AVIF SVG

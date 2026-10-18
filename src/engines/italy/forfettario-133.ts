@@ -139,3 +139,30 @@ export function calculateForfettario133(input: ForfettarioPreflight133 & {
     limitations: "Source-bound 2025 income approximation, not eligibility certification or a tax return. No 2025 INPS rate or benefit calculation: only user-verified mandatory contributions already paid. Expenses, other regimes, special exclusions and credits are not modeled.",
   };
 }
+
+/** Limited 2025 INPS Gestione Separata professional path from INPS circular 27/2025.
+ * Contributions due are a forecast; only contributions the user actually paid
+ * in 2025 may be deducted from the substitute-tax base above.
+ * https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2025/01/Circolare_14807/Allegati/15871_Circolare-numero-27-del-30-01-2025.pdf
+ */
+export function calculateForfettarioWithInps133(input: Parameters<typeof calculateForfettario133>[0] & {
+  readonly inpsProfile: "gs-2025-exclusive" | "gs-2025-other-coverage";
+}) {
+  const result = calculateForfettario133(input);
+  if (input.inpsProfile !== "gs-2025-exclusive" && input.inpsProfile !== "gs-2025-other-coverage") {
+    throw new Error("FORF133_UNSUPPORTED_INPS_PROFILE");
+  }
+  const rateBasisPoints = input.inpsProfile === "gs-2025-exclusive" ? 2607 : 2400;
+  // 2025 INPS maximum base €120607; supported ATECO income is below that ceiling.
+  const forecastContributionsCents = Number(
+    (BigInt(result.grossForfettarioIncomeCents) * BigInt(rateBasisPoints) + 5000n) / 10000n);
+  return {
+    ...result,
+    inpsProfile: input.inpsProfile,
+    forecastContributionRatePercent: rateBasisPoints / 100,
+    forecastContributionsCents,
+    forecastNetAfterTaxAndInpsCents: result.yearReceiptsCents - forecastContributionsCents - result.substituteTaxCents,
+    inpsSource: "https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2025/01/Circolare_14807/Allegati/15871_Circolare-numero-27-del-30-01-2025.pdf",
+    inpsLimitations: "Solo professionisti ordinari Gestione Separata 2025 (26,07% esclusiva; 24% pensionato/altra copertura). La quota INPS è una previsione su reddito forfettario, non prova di avvenuto versamento o saldo/acconto; 2025 niente casistiche speciali o altre casse. Ai fini dell'imposta si sottraggono SOLO i contributi già pagati dichiarati dall'utente.",
+  };
+}

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 280 — Physical Android heavy-tool web acceptance lane
 
 **What to build:** Define the reusable physical Android Chrome lane for accepted heavy image/PDF/Office/OCR/audio/video routes with file selection, progress/cancel, memory failure and download evidence.

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 422 — EPUB offline reader and text export safety
 
 **What to build:** Read EPUB chapters/text offline with encoding and navigation.

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 356 — Redesign wrapper e input famiglia
 
 **What to build:** Input di PDF/image/data/math usano shared contract e stati.

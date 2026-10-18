@@ -137,6 +137,20 @@ describe("business/independent-work deterministic engine", () => {
     });
   });
 
+  it("compares loss, break-even, profit and current sales using exact scenario arithmetic", () => {
+    const result = calculateBreakEven({ fixedCosts: "1000", unitPrice: "25", unitVariableCost: "15", units: "120" });
+    expect(result.scenarioRows).toEqual([
+      { label: "Senza vendite", units: "0", revenue: "0.00", totalCosts: "1000.00", profit: "-1000.00" },
+      { label: "Un'unità prima del pareggio", units: "99", revenue: "2475.00", totalCosts: "2485.00", profit: "-10.00" },
+      { label: "Punto di pareggio", units: "100", revenue: "2500.00", totalCosts: "2500.00", profit: "0.00" },
+      { label: "Un'unità dopo il pareggio", units: "101", revenue: "2525.00", totalCosts: "2515.00", profit: "10.00" },
+      { label: "Unità attuali", units: "120", revenue: "3000.00", totalCosts: "2800.00", profit: "200.00" },
+    ]);
+    const noFixedCosts = calculateBreakEven({ fixedCosts: "0", unitPrice: "10", unitVariableCost: "4", units: "1" });
+    expect(noFixedCosts.scenarioRows[0]?.label).toBe("Punto di pareggio");
+    expect(noFixedCosts.scenarioRows.map(({ units }) => units)).toEqual(["0", "1"]);
+  });
+
   it("grosses up a payment fee rather than multiplying it", () => {
     expect(grossUpForFee({ targetNet: "100", feePercent: "3" })).toMatchObject({ gross: "103.09", fee: "3.09", feeRate: "0.03" });
   });

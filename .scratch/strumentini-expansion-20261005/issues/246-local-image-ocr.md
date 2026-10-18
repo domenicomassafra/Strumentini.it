@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 246 — Local image OCR
 
 **What to build:** Implement local OCR for supported image formats/languages after the OCR feasibility gate, exposing language, confidence where provided and page/image provenance without cloud upload.

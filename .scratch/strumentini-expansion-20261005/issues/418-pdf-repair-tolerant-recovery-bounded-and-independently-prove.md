@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 418 — PDF repair tolerant recovery bounded and independently proved
 
 **What to build:** Safe salvage explicitly possible cases with reconstructed bytes and losses disclosed.

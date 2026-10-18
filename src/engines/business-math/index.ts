@@ -521,6 +521,13 @@ export interface BreakEvenResult {
   readonly currentUnits: string;
   readonly currentRevenue: string;
   readonly currentProfit: string;
+  readonly scenarioRows: readonly {
+    readonly label: string;
+    readonly units: string;
+    readonly revenue: string;
+    readonly totalCosts: string;
+    readonly profit: string;
+  }[];
   readonly formulas: {
     readonly contributionPerUnit: "unit price − unit variable cost";
     readonly breakEvenUnits: "fixed costs ÷ contribution per unit, rounded up";
@@ -536,6 +543,21 @@ export function calculateBreakEven(input: BreakEvenInput): BreakEvenResult {
   if (compareZero(contribution) <= 0) throw new Error("INVALID_CONTRIBUTION_MARGIN");
   const currentUnits = nonNegative(optional(input.units, "0"), "INVALID_UNITS");
   const breakEvenUnits = ceilRational(divide(fixedCosts, contribution, "INVALID_CONTRIBUTION_MARGIN"));
+  const scenarios = new Map<string, { label: string; count: Rational }>();
+  const addScenario = (label: string, count: Rational) => {
+    const key = exact(count);
+    if (!scenarios.has(key)) scenarios.set(key, { label, count });
+  };
+  addScenario(breakEvenUnits === 0n ? "Punto di pareggio" : "Senza vendite", rational(0n, 1n));
+  if (breakEvenUnits > 0n) addScenario("Un'unità prima del pareggio", rational(breakEvenUnits - 1n, 1n));
+  addScenario("Punto di pareggio", rational(breakEvenUnits, 1n));
+  addScenario("Un'unità dopo il pareggio", rational(breakEvenUnits + 1n, 1n));
+  addScenario("Unità attuali", currentUnits);
+  const scenarioRows = [...scenarios.values()].map(({ label, count }) => {
+    const revenue = multiply(count, unitPrice);
+    const totalCosts = add(fixedCosts, multiply(count, variableCost));
+    return { label, units: exact(count), revenue: money(revenue), totalCosts: money(totalCosts), profit: money(subtract(revenue, totalCosts)) };
+  });
   return {
     fixedCosts: money(fixedCosts),
     unitPrice: money(unitPrice),
@@ -548,6 +570,7 @@ export function calculateBreakEven(input: BreakEvenInput): BreakEvenResult {
     currentUnits: exact(currentUnits),
     currentRevenue: money(multiply(currentUnits, unitPrice)),
     currentProfit: money(subtract(multiply(currentUnits, unitPrice), add(fixedCosts, multiply(currentUnits, variableCost)))),
+    scenarioRows,
     formulas: {
       contributionPerUnit: "unit price − unit variable cost",
       breakEvenUnits: "fixed costs ÷ contribution per unit, rounded up",

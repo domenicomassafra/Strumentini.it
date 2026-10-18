@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 32 — PDF edit/security family
 
 **What to build:** Add local PDF signing/placement, page numbers, text/image watermarking, true redaction, password protection/encryption, crop, and basic fill/write overlays with page thumbnails and direct manipulation where the underlying PDF library can preserve document integrity.

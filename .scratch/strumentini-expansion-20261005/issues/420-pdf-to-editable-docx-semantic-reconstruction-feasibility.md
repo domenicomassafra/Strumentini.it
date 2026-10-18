@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 420 — PDF to editable DOCX semantic reconstruction feasibility
 
 **What to build:** Compare legitimate reconstruction paths text/tables/layout with disclosure of editable subset.

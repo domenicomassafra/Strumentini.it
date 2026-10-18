@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 402 — Fiscal rollover source expiry and blocking
 
 **What to build:** Outdated annual values are blocked and dated version presented

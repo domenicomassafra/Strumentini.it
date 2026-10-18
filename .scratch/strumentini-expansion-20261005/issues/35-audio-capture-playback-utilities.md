@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 35 — Audio capture/playback utilities
 
 **What to build:** Add browser-native microphone test, voice recorder with pause/playback/download, tone generator, metronome with tap tempo, white/pink/brown noise generator with timer, and browser TTS with available Italian voices/speed/pitch controls.

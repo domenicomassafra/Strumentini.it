@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 391 — Data automation pipeline local typed
 
 **What to build:** Chain filters join export replicabile e spiegata

@@ -72,23 +72,23 @@ export const ANNUAL_VAT_2025_WINDOW_117 = Object.freeze({
   categories: [
     {
       id: "art16-ordinary-taxable", ratePercent: 22, legalReference: "DPR633/1972 art.16 c.1",
-      exactScopeToDeclare: "Ordinary taxable Italian VAT operation not covered by any exemption, reduced rate, special regime or other derogation.",
-      exclusions: "Does not infer ordinary applicability. User must have independently excluded every alternative including no-scope, special regimes, reverse charge and art.34.",
+      exactScopeToDeclare: "Operazione imponibile IVA italiana ordinaria non soggetta a esenzioni, aliquote ridotte, regimi speciali o altre deroghe.",
+      exclusions: "L'applicabilità ordinaria non è dedotta. Occorre aver escluso autonomamente ogni alternativa, incluse operazioni fuori campo, regimi speciali, inversione contabile e art.34.",
     },
     {
       id: "tabA-ii-3-fresh-milk", ratePercent: 4, legalReference: "Tabella A parte II n.3",
-      exactScopeToDeclare: "Fresh non-concentrated, unsweetened milk for food consumption, packaged for retail and pasteurized or otherwise treated as provided by sanitary laws.",
-      exclusions: "NOT any generic milk, powdered milk, mixed milk preparation, non-food item or operation under special agriculture art.34.",
+      exactScopeToDeclare: "Latte fresco non concentrato né zuccherato, destinato all'alimentazione, confezionato per la vendita al minuto e pastorizzato o sottoposto agli altri trattamenti previsti dalle leggi sanitarie.",
+      exclusions: "Non si applica a latte generico, latte in polvere, preparati misti a base di latte, prodotti non alimentari o operazioni nel regime speciale agricolo dell'art.34.",
     },
     {
       id: "tabA-iibis-1bis-fresh-herbs", ratePercent: 5, legalReference: "Tabella A parte II-bis n.1-bis",
-      exactScopeToDeclare: "Fresh basil, rosemary or sage, or oregano on branches or separated for food use, including the particular living-plant variants stated in the printed entry.",
-      exclusions: "Not generic dried herbs, products other than printed plants, or any unverified prepared mixture.",
+      exactScopeToDeclare: "Basilico, rosmarino o salvia freschi, oppure origano a rametti o sgranato per uso alimentare, incluse le specifiche varianti di piante vive indicate nella voce della tabella.",
+      exclusions: "Sono escluse erbe essiccate generiche, piante diverse da quelle elencate e miscele preparate non verificate.",
     },
     {
       id: "tabA-iii-121-serving-food-drink", ratePercent: 10, legalReference: "Tabella A parte III n.121",
-      exactScopeToDeclare: "Taxable supply/serving of food and beverages, including qualifying vending machines and contracts of services involving food/beverage supply.",
-      exclusions: "Do not apply automatically to supermarkets/retail food products; qualifying canteens in Part II n.37 may instead be 4%; other exemptions/special regimes must be ruled out.",
+      exactScopeToDeclare: "Somministrazione imponibile di alimenti e bevande, inclusi i distributori automatici e i contratti di servizi comprendenti la somministrazione che soddisfano le condizioni della voce.",
+      exclusions: "Non si applica automaticamente a supermercati o prodotti alimentari al dettaglio; le mense della parte II n.37 possono invece rientrare nel 4%; occorre escludere altre esenzioni e regimi speciali.",
     },
   ] as const satisfies readonly AnnualVatLegalCategory117[],
 });

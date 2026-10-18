@@ -160,7 +160,7 @@ export const ITALY_SOURCE_PACK_DECISIONS = Object.freeze([
     checkedAt: "2026-10-09",
     evidenceSnapshot: {
       path: "quality/reference-data/italy/117-fiscal-annual-evidence.json",
-      sha256: "sha256:6e2cbf5f9fafdb031f63cc7e92a0f1bd609052eeec2d481b1d5fbee14c19bdb8",
+      sha256: "sha256:091e38aa8f007777d35e5d65fa06c63b9d39fc9fb261ef86138a718dfbccb57e",
     },
     freshness: {
       mode: "annual-rollover",

@@ -1,0 +1,117 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { ANNUAL_VAT_2025_WINDOW_117 } from "../../reference-data/italy/fiscal-annual-vat-117";
+---
+<BaseLayout title="Calcolo IVA: aggiungi o scorpora" description="Calcolo IVA al centesimo con aliquota personalizzata o categorie ufficiali verificate nel periodo 13–31 dicembre 2025." noindex>
+  <main class="tax-tool" data-tax-iva>
+    <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / IVA</nav>
+    <h1>IVA: aggiungi o scorpora dal totale</h1>
+    <p>Calcolo locale senza inviare importi al server. Seleziona una percentuale dichiarata da te oppure una delle categorie legali documentate nel periodo coperto dalle fonti.</p>
+    <form novalidate>
+      <label for="iva-operation">Operazione</label>
+      <select id="iva-operation" name="operation"><option value="add">Aggiungi IVA all'imponibile</option><option value="scorporo">Scorpora dal totale lordo</option></select>
+      <label for="iva-amount">Importo in euro, senza separatori delle migliaia</label>
+      <input id="iva-amount" name="amount" type="text" inputmode="decimal" placeholder="100,00" required />
+      <label for="iva-mode">Origine dell'aliquota</label>
+      <select id="iva-mode" name="mode"><option value="custom">Aliquota indicata da me</option><option value="preset">Categoria documentata, anno 2025</option></select>
+      <div data-custom class="fields">
+        <label for="iva-custom-rate">Aliquota dichiarata (%), massimo quattro decimali</label>
+        <input id="iva-custom-rate" name="rate" type="text" inputmode="decimal" value="22" />
+        <p>Aliquota personalizzata: la percentuale non è una classificazione fiscale verificata.</p>
+      </div>
+      <div data-preset class="fields" hidden>
+        <label for="iva-date">Data operazione nel periodo verificato (13–31/12/2025)</label>
+        <input id="iva-date" name="date" type="date" min="2025-12-13" max="2025-12-31" value="2025-12-13" />
+        <label for="iva-category">Categoria legale esplicita</label>
+        <select id="iva-category" name="category">
+          {ANNUAL_VAT_2025_WINDOW_117.categories.map((category) =>
+            <option value={category.id}>{category.ratePercent}% — {category.legalReference}: {category.exactScopeToDeclare}</option>)}
+        </select>
+        <p data-category-scope></p>
+        <label class="confirmation"><input name="scopeConfirmed" type="checkbox" /> Confermo che l'operazione rientra esattamente nella categoria descritta e nelle sue condizioni/esclusioni.</label>
+        <label class="confirmation"><input name="taxableConfirmed" type="checkbox" /> Confermo che è un'operazione imponibile e che non si applicano esenzioni o regimi speciali.</label>
+      </div>
+      <button type="submit">Calcola imponibile, IVA e totale</button>
+    </form>
+    <p class="error" role="alert" hidden></p>
+    <output aria-live="polite"></output>
+    <p>Arrotondamento: mezzo centesimo per eccesso. Nell'aggiunta, IVA = imponibile × percentuale; nello scorporo, imponibile = totale ÷ (1 + percentuale), IVA = differenza. L'inversione può variare di 1 centesimo.</p>
+    <p>Fonti per le categorie ufficiali: {ANNUAL_VAT_2025_WINDOW_117.sources.map((source) =>
+      <span><a href={source.url}>{source.title}</a> (validità della versione: {source.printedEffectiveFrom}–{source.printedEffectiveToExclusive}, SHA archiviato nel repository). </span>)}
+      Sono documentate soltanto le categorie elencate e il periodo 13–31 dicembre 2025. Le aliquote non sono scelte automaticamente per un bene o servizio.</p>
+  </main>
+</BaseLayout>
+<script>
+  import { calculateVat126 } from "../../engines/italy/vat-126";
+  import { ANNUAL_VAT_2025_WINDOW_117, calculateVerifiedAnnualVatWindow117 } from "../../reference-data/italy/fiscal-annual-vat-117";
+  const root = document.querySelector<HTMLElement>("[data-tax-iva]");
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const error = root.querySelector<HTMLElement>(".error")!;
+    const output = root.querySelector<HTMLOutputElement>("output")!;
+    const get = (key: string) => form.elements.namedItem(key) as HTMLInputElement | HTMLSelectElement;
+    const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+    const parseAmount = (value: string): number | null => {
+      if (!/^(?:0|[1-9]\d{0,9})(?:[.,]\d{1,2})?$/u.test(value.trim())) return null;
+      const [whole = "", decimals = ""] = value.trim().split(/[.,]/u);
+      return Number(whole) * 100 + Number(decimals.padEnd(2, "0"));
+    };
+    const clear = () => { output.replaceChildren(); error.textContent = ""; error.hidden = true; };
+    const sync = () => {
+      const preset = get("mode").value === "preset";
+      root.querySelector<HTMLElement>("[data-custom]")!.hidden = preset;
+      root.querySelector<HTMLElement>("[data-preset]")!.hidden = !preset;
+      const category = ANNUAL_VAT_2025_WINDOW_117.categories.find((c) => c.id === get("category").value);
+      root.querySelector<HTMLElement>("[data-category-scope]")!.textContent = category
+        ? `Ambito: ${category.exactScopeToDeclare} Esclusioni: ${category.exclusions}` : "";
+      clear();
+    };
+    form.addEventListener("input", clear);
+    form.addEventListener("change", sync);
+    sync();
+    form.addEventListener("submit", (event) => {
+      event.preventDefault(); clear();
+      const amountCents = parseAmount(get("amount").value);
+      if (amountCents === null) {
+        error.textContent = "Importo non valido: euro positivi o zero, massimo due decimali, senza separatori delle migliaia.";
+        error.hidden = false; return;
+      }
+      try {
+        const operation = get("operation").value as "add" | "scorporo";
+        const isPreset = get("mode").value === "preset";
+        const result = isPreset
+          ? calculateVerifiedAnnualVatWindow117({
+              operation, amountCents, taxYear: 2025, transactionDate: get("date").value,
+              categoryId: get("category").value, confirmsExactLegalCategory: (get("scopeConfirmed") as HTMLInputElement).checked,
+              confirmsTaxableAndNotExempt: (get("taxableConfirmed") as HTMLInputElement).checked,
+            })
+          : calculateVat126({ operation, amountCents, rate: { kind: "custom", percent: get("rate").value } });
+        const head = document.createElement("h2");
+        head.textContent = `Totale lordo: ${euro(result.grossCents)}`;
+        const detail = document.createElement("p");
+        detail.textContent = `Imponibile ${euro(result.netCents)} + IVA ${euro(result.vatCents)} = totale ${euro(result.grossCents)}; aliquota ${result.ratePercent}%.`;
+        const provenance = document.createElement("p");
+        provenance.textContent = isPreset
+          ? "Categoria fiscale dichiarata esplicitamente, fonte annuale MEF 2025, 13–31/12/2025. Verifica autonoma necessaria."
+          : "Aliquota personalizzata dall'utente: nessuna validazione fiscale di categoria o periodo.";
+        output.append(head, detail, provenance);
+      } catch {
+        error.textContent = "Calcolo non disponibile: verifica importo, aliquota (0–100%, massimo quattro decimali), data verificata e conferme delle condizioni legali.";
+        error.hidden = false;
+      }
+    });
+  }
+</script>
+<style>
+  .tax-tool { width:min(820px,calc(100% - 32px)); margin:32px auto 72px; display:grid; gap:16px; min-width:0; }
+  .tax-tool h1,.tax-tool h2,.tax-tool p { margin:0; }
+  .tax-tool form,.tax-tool .fields { display:grid; gap:12px; }
+  .tax-tool form { border:1px solid var(--border); border-radius:12px; padding:20px; }
+  .tax-tool input:not([type=checkbox]),.tax-tool select,.tax-tool button { box-sizing:border-box; width:100%; min-width:0; padding:10px; }
+  .tax-tool .confirmation { display:flex; align-items:flex-start; gap:8px; }
+  .tax-tool button { cursor:pointer; }
+  .tax-tool :focus-visible { outline:3px solid currentColor; outline-offset:2px; }
+  .tax-tool output:not(:empty) { display:grid; gap:12px; padding:16px; border-left:3px solid currentColor; }
+  .tax-tool [hidden] { display:none !important; }
+  .tax-tool .error { font-weight:600; }
+</style>

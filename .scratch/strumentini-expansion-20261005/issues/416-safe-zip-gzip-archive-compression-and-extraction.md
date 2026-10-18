@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 416 — Safe ZIP GZIP archive compression and extraction
 
 **What to build:** ZIP/GZIP known supported archive handling with real compression and per-entry outcome.

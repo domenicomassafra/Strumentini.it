@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 49 — Image conversion matrix + HEIC/AVIF/GIF
 
 **What to build:** Complete high-value directional image conversion routes backed by shared codecs: JPG/PNG/WebP/AVIF, HEIC/HEIF→JPG/PNG/WebP/PDF, SVG→raster/PDF at chosen dimensions, and GIF static-frame/animated conversion modes where proven.

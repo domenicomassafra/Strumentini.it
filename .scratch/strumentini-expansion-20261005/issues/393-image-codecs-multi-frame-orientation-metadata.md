@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 393 — Image codecs multi-frame orientation metadata
 
 **What to build:** Gif multi-frame HEIC AVIF metadata orientation each tracked by direction

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 58 — PDF↔image directional conversion pack
 
 **What to build:** Upgrade existing Images→PDF and PDF→images into discoverable high-intent routes with real options: JPG/PNG/WebP/HEIC→PDF and PDF→JPG/PNG/WebP, with ordering, page range, DPI/scale, quality, page size, margins, fit/fill and ZIP output.

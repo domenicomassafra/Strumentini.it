@@ -27,7 +27,17 @@ const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html:
 // noindex/nofollow, invisible to search/sitemap and visibly bounded. This is
 // NOT a tool promotion or an open-ended allowance for stray public routes.
 const designStudyPath = "prototipi/351/index.html";
-const previewOnlyPaths = ["tools/codice-fiscale/index.html", "tools/ocr-italiano-locale-246/index.html", designStudyPath] as const;
+const fiscalBoundedPath = "tools/calcoli-fiscali-italia/index.html";
+const pdfOcr247Path = "tools/pdf-scansionato-ocr-247/index.html";
+const previewOnlyPaths = [
+  "tools/codice-fiscale/index.html",
+  "tools/iva-calcolo/index.html",
+  "tools/irpef-componenti/index.html",
+  "tools/ocr-italiano-locale-246/index.html",
+  pdfOcr247Path,
+  designStudyPath,
+  fiscalBoundedPath,
+] as const;
 for (const previewPath of previewOnlyPaths) {
   const route = `/${previewPath.replace(/\/index\.html$/u, "")}`;
   if (catalog.some((tool) => tool.route.replace(/\/+$/u, "") === route.replace(/\/+$/u, "")) ||
@@ -37,7 +47,25 @@ for (const previewPath of previewOnlyPaths) {
   const preview = htmlPages.find(({ path }) => relative(dist, path).replaceAll("\\", "/") === previewPath)?.html;
   const sourceSafe = previewPath === "tools/codice-fiscale/index.html"
     ? preview?.includes('data-cf-canonical-route="/tools/codice-fiscale/"') &&
-      (preview.includes("copertura geografica") || preview.includes("Copertura geografica"))
+      preview.includes("ANPR") && preview.includes("Agenzia delle Entrate")
+    : previewPath === "tools/iva-calcolo/index.html"
+      ? preview?.includes("data-tax-iva") && preview.includes("13") &&
+        preview.includes("dicembre 2025") && preview.includes("categorie") &&
+        preview.includes("Calcolo locale")
+    : previewPath === "tools/irpef-componenti/index.html"
+      ? preview?.includes("data-irpef-components") && preview.includes("2025") &&
+        preview.includes("Puglia") && preview.includes("Bari") &&
+        preview.includes("risultato parziale")
+    : previewPath === fiscalBoundedPath
+      ? preview?.includes('data-fiscal-t1') &&
+        preview.includes("Stipendio netto annuo") &&
+        preview.includes("Regime forfettario 2025") &&
+        preview.includes("TFR maturato e rivalutazione") &&
+        preview.includes("Bollo in fattura") &&
+        preview.includes("Le fonti valgono per gli anni")
+    : previewPath === pdfOcr247Path
+      ? preview?.includes('data-ocr247-preview="experimental-local-only"') &&
+        preview.includes("PDF scansionato con testo selezionabile")
     : previewPath === designStudyPath
       ? ["minimal", "editorial", "workspace"].every((direction) => preview?.includes(`data-direction="${direction}"`)) &&
         preview?.includes("nessuna scelta approvata") && preview.includes("Studio isolato:") &&
@@ -63,6 +91,8 @@ const expectedPaths = new Set([
   "cerca/index.html",
   "impostazioni/index.html",
   "preferiti/index.html",
+  "codici-geografici-italia/index.html",
+  "fonti-fiscali-italia/index.html",
   ...groups.map((group) => `categorie/${group.slug}/index.html`),
   "library/index.html",
   ...previewOnlyPaths,

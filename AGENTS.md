@@ -1,18 +1,76 @@
-# Strumentini.it agent contract
+# Strumentini.it
 
-**Owner-global instruction priority:** before changing this project, load the shared DStack coding-agent contract from `~/.dstack/contracts/shared-root/AGENTS.md`. It controls delivery across Codex/Pi/OMP and overrides any weaker local shipping convention. This file specializes its **public-facing application / GitHub Flow** exception: saving a reviewed change branch remotely is mandatory, but merging into `main` and deploying to production require separate acceptance. Never equate a local commit, successful CI or a live-site release.
+## Prodotto e tracker
 
-## Canonical context
+Strumentini.it è un workspace di utility web italiano-first e local-first.
+Repo e issue: `https://github.com/domenicomassafra/strumentini-it`.
+Checkout principale: `/Users/domenico/Code/Strumentini.it`.
+GitHub Issues è il tracker corrente. `.scratch/strumentini-expansion-20261005/` è uno snapshot storico/operativo: consultalo solo quando l'issue corrente lo richiama e non creare ticket duplicati.
 
-- The canonical integration branch is `origin/main`; develop user-visible fixes and features on short-lived `fix/<ticket>` or `feat/<ticket>` branches, not unreviewed direct pushes to `main`. Before mutation, verify `git status`, ongoing file ownership, and the original ticket in `.scratch/strumentini-expansion-20261005/` plus current project state (`PROJECT-STATUS.md`, relevant docs). Keep each branch scoped to a reviewable change, not a multi-week bucket of unrelated worker diffs.
-- The live dashboard `npm run tickets:check` is the ticket authority. Do not infer an original ticket DONE from an isolated worker regression or from a tool-specific Gold fixture. New work must close existing ticket acceptance or explain the exact outstanding gate.
-- Browser, PDF, file, mobile-device, authenticity and release claims require the relevant native real-consumer evidence; a synthetic engine fixture cannot replace physical iOS/Android, true PDF reparse or current deployed source fingerprint. Never silently promote experimental/noncatalog routes into Gold or production.
+## Architettura e ordine di lettura
 
-## Worker → remote PR → reviewed main → separately controlled release
+1. Astro 7 + Preact + TypeScript generano il sito statico in `dist/`.
+2. I tool sono dichiarati in `src/tools/**`; il Tool Factory genera catalogo e indici in `src/generated/**`.
+3. I tool normali girano nel browser e mantengono file e risultati locali.
+4. `quality/**` contiene fixture, oracle, ricevute e gate di certificazione.
+5. `worker/**` è il backend Cloudflare opzionale per `/api/**`, auth e sync; il sito statico deve restare utilizzabile senza backend.
 
-- Delegated workers own disjoint explicit files and report proof to a single integrator. The integrator commits **only owned paths**, pushes the exact branch to GitHub and creates/updates its PR. Use Draft PR while CI, source fingerprint, preview or required manual/physical checks are outstanding; never leave completed worker work as local-only WIP, and never start the next discretionary wave before integration or exact blocker triage.
-- CI `changed-source` runs on PR; the heavier cumulative suite runs on push to `main`. For a change affecting production behavior, use an approved isolated **Cloudflare Workers Preview** (not an assumed Cloudflare Pages preview) if available, with no live D1/production bindings or unapproved actions. Otherwise record `PREVIEW_UNAVAILABLE` and the exact missing acceptance; do not pretend a localhost fixture is a public preview.
-- **Owner finds a bug before merge:** keep the same PR open/Draft; reproduce on that exact preview or browser, fix on that branch, add a regression, push, rerun CI and obtain required real-device/manual readback. **Owner finds a production bug:** restore the known-good Worker deployment when necessary, open an urgent `fix/` PR, and reverify the new deployed SHA and behavior. Never rewrite `main` history or fake Gold certification.
-- Use `python3 ~/.dstack/scripts/verify_main_delivery.py --repo . --review-check` on an already-pushed change branch: `REMOTE_BRANCH_SAVED` only proves Git storage, **not** a PR, CI pass or acceptance. After reviewed merge use `--check` on canonical `main`, confirm GitHub CI and report the final SHA. A doc-only change that cannot affect the running app may use a narrower check; never require the owner to manually approve every trivial documentation fix.
-- The current repository is **GitHub private** despite its public-facing website. Do not change repository visibility to unlock branch protection; where unavailable, enforce PR discipline through the agent workflow and verified CI, and report that GitHub cannot yet enforce it. Source merge and public Cloudflare release remain independent: never bypass stale Gold receipts, physical-device evidence, security/source provenance or rollback requirements to make a deploy green.
-- **Local enforcement for private GitHub:** on each owner-controlled Strumentini checkout run `bash scripts/install-public-git-hooks.sh` once; it installs the reviewed `core.hooksPath=.githooks` only when no executable hook exists at Git's default hooks path and no conflicting effective system/global/local `core.hooksPath` is active. This preserves earlier hooks (Codex review P2, PR #3) rather than silently disabling them. The native `.githooks/pre-push` rejects pushes targeting `origin/main`, while short-lived PR branches still push normally. This is a local safeguard, **not** server-side protection: another clone or Git's `--no-verify` can bypass it. Do not bypass it to save time; merge through GitHub after CI. A blocked hook is an escalation, not an invitation to turn it off.
+Leggi nell'ordine: issue GitHub e commenti → `README.md` → `PROJECT-STATUS.md` → `PRODUCT.md`/`PRODUCT-SPEC.md` se cambia il comportamento → `DESIGN.md`/`design/WORLD.md` se cambia la UI → sorgenti e test della superficie interessata. In `PROJECT-STATUS.md` il pannello live iniziale è corrente; le sezioni marcate come historical non lo sono.
+
+## Comandi
+
+Runtime: Node 26. Python 3 serve ai tool ticket/consumer ed è senza minor fissato; i test consumer usano anche `ffprobe`. Rust non è richiesto.
+
+Setup di un checkout:
+
+```sh
+npm ci
+npm ci --prefix spikes/heavy-local-feasibility --omit=dev
+bash scripts/install-public-git-hooks.sh
+```
+
+Test mirati alla modifica, usando lo stesso selettore della CI PR:
+
+```sh
+npm run ci:scope -- --base="$(git merge-base HEAD origin/main)" --run
+```
+
+Build:
+
+```sh
+npm run build
+```
+
+Gate finale locale prima della consegna:
+
+```sh
+npm test -- --maxWorkers=1
+npm run tickets:test
+npm run check
+npm run build
+npm run deploy:check
+```
+
+`npm test`, `npm run check` e `npm run build` eseguono `catalog:build` e possono aggiornare file generati; rivedi sempre il diff dopo i gate. `npm run deploy:check` è un dry-run Cloudflare e non pubblica.
+
+Deploy produzione, solo dopo merge e accettazione esplicita della release, da checkout pulito con `HEAD == origin/main`:
+
+```sh
+npm run deploy:production:guarded -- --expected-sha="$(git rev-parse origin/main)"
+```
+
+Il wrapper ripete test/check/build/dry-run, richiede release admission valida e solo allora esegue `wrangler deploy`; se una prova manca termina `NO_GO` prima della pubblicazione.
+
+## Consegna e installazione
+
+Lavora da `origin/main` su un branch breve `feat/<ticket>` o `fix/<ticket>`; per sola documentazione va bene `docs/<ticket>`. Prima del push riallinea con `git pull --rebase origin main`, poi push del branch e PR verso `main`. La CI PR esegue i controlli scoped; merge solo con CI verde e criteri del ticket provati. Il pre-push locale blocca `origin/main`; non aggirarlo. Dopo il merge rileggi lo SHA remoto di `main` e verifica la CI cumulativa. La merge non fa deploy.
+
+La produzione è Cloudflare Worker `strumentini` sul custom domain `strumentini.it`, con asset da `dist/`; `/api/**` usa il Worker e D1 `AUTH_DB`. Il deploy produzione è la fase separata descritta sopra.
+
+## Non toccare
+
+- Non modificare a mano file generati quando esiste il generatore sorgente.
+- Non falsare o riscrivere a mano receipt, fingerprint, prove fisiche o stato Gold.
+- Non usare preview, emulatori o fixture sintetiche come prova di dispositivo fisico o autenticità del formato.
+- Non cambiare binding/risorse Cloudflare o D1 come effetto collaterale di un ticket applicativo.
+- Non fare deploy produzione per chiudere una normale PR se la release non è esplicitamente richiesta e ammessa dai gate.

@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 383 — Image editor color resize adjustment
 
 **What to build:** Curves/levels/resize e color profiles dichiarati

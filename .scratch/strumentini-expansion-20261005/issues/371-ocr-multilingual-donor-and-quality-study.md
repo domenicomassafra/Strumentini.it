@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 371 — OCR multilingual donor and quality study
 
 **What to build:** Misura OCR IT EN con motore esistente e alternative

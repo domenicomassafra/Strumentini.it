@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 117 — Italian fiscal annual source snapshots
 
 **What to build:** Create annual source snapshots for the tax rules used by IVA, IRPEF and forfettario calculations, with exact authority, effective interval, checked date and boundary metadata rather than constants embedded in calculators.

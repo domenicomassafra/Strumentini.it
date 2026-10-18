@@ -1,3 +1,5 @@
+MIGRATO su GitHub Issues il 17/10/2026: https://github.com/domenicomassafra/strumentini-it/issues?q=is%3Aissue. Non aggiornare più questo file.
+
 # 372 — Editor PDF page workspace
 
 **What to build:** Manipola pagine e thumbnails in vista unica mobile
