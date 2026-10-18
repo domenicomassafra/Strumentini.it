@@ -9,5 +9,10 @@ import { qualityIndex } from "../generated/quality";
   title="Prepara il tuo set di strumenti"
   description="Costruisci un piccolo set iniziale, locale e modificabile, a partire dal tuo contesto di lavoro e dalle attività che si ripetono."
 >
+  <noscript>
+    <p class="warning" role="note">
+      Per completare i quattro passaggi del primo utilizzo e salvare gli strumenti, abilita JavaScript nel browser.
+    </p>
+  </noscript>
   <Onboarding tools={catalog} quality={qualityIndex} client:load />
 </BaseLayout>
