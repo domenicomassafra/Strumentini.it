@@ -79,7 +79,7 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   // Any implementation/test change to the optional production publishing
   // boundary must demand independent security review. Generic scripts/tests
   // otherwise fall into "shared" and omit security-review entirely.
-  if (path === "scripts/prepublish-404.ts" || /^tests\/ci-404-20261013-[a-z0-9-]+\.test\.ts$/u.test(path)) return ["ci"];
+  if (path === "scripts/prepublish-404.ts" || /^tests\/ci-404-2026\d{4}-[a-z0-9-]+\.test\.ts$/u.test(path)) return ["ci"];
   if (/^(scripts\/(ci-change-impact-404\.ts|validate-release\.ts|audit-gold-source-binding-347\.ts|lib\/(?:current-revision|current-remote-main-404)\.ts|build-certification-index\.ts)|src\/(release\/|quality\/)|tests\/release-validation\.test\.ts)/u.test(path)) return ["ci"];
   // Donor provenance reads this JSON as executable audit input, not prose.
   // Altering its package/license records must be reviewed and tested.
@@ -132,9 +132,13 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
 const familyTestMatchers: Partial<Record<ChangeDomain, RegExp>> = {
   "worker-auth": /^tests\/(auth-worker|auth-worker-cloudflare-kdf-328|auth-password-race-328|auth-csrf-328|password-kdf-328|staging-isolation-328|deploy-staging-328|feasibility-server-optin-348|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347|release-validation)\.test\.ts$/u,
   d1: /^tests\/(auth-worker|auth-worker-cloudflare-kdf-328|auth-password-race-328|auth-csrf-328|password-kdf-328|staging-isolation-328|deploy-staging-328|feasibility-server-optin-348|google-auth-worker|turnstile-worker|vies-worker|current-revision-worker-347|release-validation)\.test\.ts$/u,
-  pdf: /^tests\/(pdf-|ocr-|ooxml-|printable-pdf)/u,
-  image: /^tests\/(image-|svg-)/u,
-  italy: /^tests\/(italy-|italian-|vies-)/u,
+  // Prefix families alone are not enough: real suites for an engine do not
+  // always share its filename prefix. Each added alternative below is an
+  // existing suite that directly reads the named engine or script, so an
+  // affected change must run it (AC-404.1). Selection only ever grows.
+  pdf: /^tests\/(pdf-|ocr-|ooxml-|printable-pdf|forensic-redaction-|audit-pdf-engine-provenance-)/u,
+  image: /^tests\/(image-|svg-|metadata-)/u,
+  italy: /^tests\/(italy-|italian-|vies-|codice-fiscale-|partita-iva-|stipendio-netto-|fatturapa-|inps-|irpef-|tax-|audit-397)/u,
   spreadsheet: /^tests\/(?:spreadsheet-interchange|donor-spreadsheets-370|xml-interchange|pdf-table-xlsx-254|ooxml-[^/]+)\.test\.ts$/u,
 };
 
