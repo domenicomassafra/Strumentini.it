@@ -134,7 +134,7 @@
   "src/engines/research-knowledge/index.ts": 63398,
   "src/engines/table/advanced.ts": 25122,
   "src/engines/table/operations.ts": 58503,
-  "src/engines/table/spreadsheet-interchange.ts": 25279,
+  "src/engines/table/spreadsheet-interchange.ts": 24799,
   "src/engines/text-markup-conversion/index.ts": 34773,
   "src/engines/text-writing/expansion.ts": 28785,
   "src/engines/text-writing/index.ts": 46352,

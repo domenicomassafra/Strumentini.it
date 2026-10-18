@@ -4,6 +4,7 @@ import { formatMarkdownTable } from "../text-writing";
 import { parseXmlDocument, type XmlElement } from "../developer-web/structured-repair";
 import { analyzeOoxmlPackage, OOXML_PACKAGE_LIMITS, OoxmlPackageError, type OoxmlZipEntry } from "../ooxml/package";
 import { parseCsvTable, serializeCsvTable, type CsvTable } from "./csv";
+import { assertSpreadsheetTableBounds370 } from "./spreadsheet-table-bounds-370";
 
 export const SPREADSHEET_INTERCHANGE_LIMITS = {
   maxInputBytes: 10 * 1024 * 1024,
@@ -75,12 +76,7 @@ function assertInputBytes(bytes: number): void {
 }
 
 function assertTableBounds(table: Pick<CsvTable, "header" | "rows">): void {
-  const rowCount = table.rows.length + 1;
-  const columnCount = Math.max(table.header.length, ...table.rows.map((row) => row.length), 0);
-  const cellCount = table.header.length + table.rows.reduce((sum, row) => sum + row.length, 0);
-  if (rowCount > SPREADSHEET_INTERCHANGE_LIMITS.maxRows) fail("TABLE_TOO_LARGE", "Spreadsheet row count exceeds the local limit.");
-  if (columnCount > SPREADSHEET_INTERCHANGE_LIMITS.maxColumns) fail("TABLE_TOO_LARGE", "Spreadsheet column count exceeds the local limit.");
-  if (cellCount > SPREADSHEET_INTERCHANGE_LIMITS.maxCells) fail("TABLE_TOO_LARGE", "Spreadsheet cell count exceeds the local limit.");
+  assertSpreadsheetTableBounds370(table, SPREADSHEET_INTERCHANGE_LIMITS, fail);
 }
 
 function normalizedSheetName(value: string | undefined): string {
