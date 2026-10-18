@@ -27,6 +27,8 @@
   letter-spacing: var(--tracking-heading);
 }
 .ac-page-head p { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+.ac-start-links { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-2); }
+.ac-start-links a { min-height: var(--control-height-touch); }
 
 /* Stack a set of blocks that share one parent outside the panel grid. */
 .ac-stack { display: grid; gap: var(--space-5); }
@@ -296,6 +298,8 @@
 /* --- Narrow screens ------------------------------------------------------- */
 
 @media (max-width: 899px) {
+  .ac-start-links { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .ac-start-links a { justify-content: center; text-align: center; }
   .ac-access,
   .ac-shell {
     gap: var(--space-5);
