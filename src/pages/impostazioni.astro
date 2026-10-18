@@ -1,5 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import SettingsStartLinks from "../components/account/SettingsStartLinks.astro";
+import SettingsNavigation358 from "../components/account/SettingsNavigation358.astro";
 import UiIcon from "../components/icons/UiIcon.astro";
 import { catalog } from "../generated/catalog";
 import { groupForCategory } from "../catalog/groups";
@@ -19,13 +21,6 @@ import "../components/account/account.css";
  * data di creazione dell'account né un endpoint per cambiare l'email — il
  * controllo non viene disegnato invece di essere inventato.
  */
-const panelNav = [
-  { id: "profilo", label: "Profilo", icon: "user" as const },
-  { id: "preferenze", label: "Preferenze", icon: "sliders" as const },
-  { id: "tema", label: "Tema", icon: "sun" as const },
-  { id: "privacy", label: "Privacy e sicurezza", icon: "shield" as const },
-];
-
 const profileCopy = COPY.workProfile;
 const firstRunProfile = createDefaultWorkProfile({ locale: "it-IT", timezone: "UTC" });
 
@@ -67,32 +62,10 @@ const unitSystems = [
     <header class="ac-page-head">
       <h1>Impostazioni</h1>
       <p>Il tuo account, il profilo di lavoro, il tema e i dati su questo dispositivo.</p>
+      <SettingsStartLinks />
     </header>
 
-    <aside class="ac-side">
-      <div
-        class="ac-nav"
-        role="tablist"
-        aria-orientation="vertical"
-        aria-label="Sezioni delle impostazioni"
-        data-settings-nav
-      >
-        {panelNav.map((panel) => (
-          <button
-            type="button"
-            role="tab"
-            id={`tab-${panel.id}`}
-            aria-controls={`panel-${panel.id}`}
-            aria-selected={panel.id === "profilo" ? "true" : "false"}
-            tabindex={panel.id === "profilo" ? 0 : -1}
-            data-settings-tab={panel.id}
-          >
-            <UiIcon name={panel.icon} size={18} />
-            {panel.label}
-          </button>
-        ))}
-      </div>
-    </aside>
+    <SettingsNavigation358 />
 
     <div class="ac-shell-main">
       <!-- Profilo ------------------------------------------------------------ -->
@@ -699,6 +672,13 @@ const unitSystems = [
 
     const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-settings-tab]"));
     const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-settings-panel]"));
+    const settingsNav = query<HTMLElement>("[data-settings-nav]");
+    const desktopLayout = window.matchMedia("(min-width: 900px)");
+    function updateNavigationOrientation(): void {
+      settingsNav?.setAttribute("aria-orientation", desktopLayout.matches ? "vertical" : "horizontal");
+    }
+    updateNavigationOrientation();
+    desktopLayout.addEventListener("change", updateNavigationOrientation);
 
     function panelNameOf(value: string | undefined): PanelName {
       return PANELS.find((name) => name === value) ?? "profilo";
