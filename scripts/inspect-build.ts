@@ -33,6 +33,7 @@ const previewOnlyPaths = [
   "tools/codice-fiscale/index.html",
   "tools/iva-calcolo/index.html",
   "tools/irpef-componenti/index.html",
+  "tools/stipendio-netto/index.html",
   "tools/ocr-italiano-locale-246/index.html",
   pdfOcr247Path,
   designStudyPath,
@@ -52,6 +53,10 @@ for (const previewPath of previewOnlyPaths) {
       ? preview?.includes("data-tax-iva") && preview.includes("13") &&
         preview.includes("dicembre 2025") && preview.includes("categorie") &&
         preview.includes("Calcolo locale")
+    : previewPath === "tools/stipendio-netto/index.html"
+      ? preview?.includes("data-salary-estimate-13") && preview.includes("stima parziale") &&
+        preview.includes("cedolino") && preview.includes("IRPEF") &&
+        preview.includes("2025") && preview.includes("2026")
     : previewPath === "tools/irpef-componenti/index.html"
       ? preview?.includes("data-irpef-components") && preview.includes("2025") &&
         preview.includes("Puglia") && preview.includes("Bari") &&
