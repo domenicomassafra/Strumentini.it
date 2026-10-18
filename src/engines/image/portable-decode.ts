@@ -93,16 +93,19 @@ async function readIdentification(file: ImageVisualFile, signal?: AbortSignal): 
 async function bitmapFromBlob(blob: Blob, signal?: AbortSignal): Promise<ImageBitmap> {
   abortIfNeeded(signal);
   if (typeof createImageBitmap !== "function") throw new ImageVisualError("UNSUPPORTED_BROWSER", "This browser does not expose local image decoding");
+  let bitmap: ImageBitmap | undefined;
   try {
-    const bitmap = await createImageBitmap(blob, { imageOrientation: "from-image" });
+    bitmap = await createImageBitmap(blob, { imageOrientation: "from-image" });
     abortIfNeeded(signal);
     if (bitmap.width < 1 || bitmap.height < 1 || bitmap.width > IMAGE_VISUAL_LIMITS.maxDimension || bitmap.height > IMAGE_VISUAL_LIMITS.maxDimension) {
-      bitmap.close();
       throw new ImageVisualError("PIXEL_LIMIT", "The decoded image dimensions exceed the local limit");
     }
     assertPixels(bitmap.width, bitmap.height);
     return bitmap;
   } catch (error) {
+    // The native decoder already allocated this surface. Release it on every
+    // rejection, including pixel-count limits and aborts after decode settles.
+    bitmap?.close();
     abortIfNeeded(signal);
     if (error instanceof ImageVisualError) throw error;
     throw new ImageVisualError("DECODE_FAILED", "This browser cannot decode the selected image format locally");
