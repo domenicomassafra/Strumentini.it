@@ -8,6 +8,7 @@ import { createRequire } from "node:module";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, isAbsolute, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { expectedAssetDistribution366 } from "./donor-asset-distributions-366";
 
 // Reuse the already installed, production-lock-pinned npm semver 6.3.1.
 // A lock entry's integrity/registry URL is not evidence that its version
@@ -225,6 +226,11 @@ function safeAssetPath(root: string, name: string): string | null {
   return full.startsWith(resolve(root) + sep) ? full : null;
 }
 function validAssetSource(asset: AssetPin366): boolean {
+  const distribution = expectedAssetDistribution366(asset.path);
+  if (VENDORED_DIRS_366.some((dir) => asset.path.startsWith(dir + "/"))) {
+    return !!distribution && validSource(distribution, asset.version, asset.source);
+  }
+  // Preserve generic fixture behavior for callers auditing their own dirs.
   if (!URL.canParse(asset.source)) return false;
   const url = new URL(asset.source);
   return url.protocol === "https:" && url.hostname === "registry.npmjs.org" &&
