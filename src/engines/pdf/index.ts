@@ -59,7 +59,7 @@ import { redactUrl, redactUrlCredentials } from "../url-marketing";
 import { validatePdfMergePagePlan, type PdfMergePageRef } from "./merge-page-plan";
 import { alignPdfEvidence } from "./compare-alignment";
 import { auditPdfFormAnnotations, type PdfFormAnnotationAudit } from "./form-annotation-audit";
-import { auditPdfEmbeddedImageMetadata, metadataIsEmpty, PDF_NESTED_METADATA_RESIDUAL_ERROR } from "./metadata-residual-394";
+import { auditPdfEmbeddedImageMetadata, metadataIsEmpty, unsafeJpeg394, PDF_NESTED_METADATA_RESIDUAL_ERROR } from "./metadata-residual-394";
 
 export * from "./types";
 export { buildPdfFromJpegs, buildPdfFromPages, createSimplePdf, parseJpeg };
@@ -1202,9 +1202,9 @@ export async function removePdfMetadataVerified(
   abortIfNeeded(signal);
   const after = inspectPdfBytes(artifact.bytes);
   const metadataRemoved = metadataIsEmpty(after.metadata);
-  if (!metadataRemoved) throw new PdfError("WRITE_FAILURE", "PDF output retains /Info or XMP /Metadata after export.");
+  if (!metadataRemoved) throw new PdfError("WRITE_FAILURE", "PDF retains /Info or XMP /Metadata after export.");
   const embeddedImageAudit = auditPdfEmbeddedImageMetadata(parseDocument(artifact.bytes));
-  if (embeddedImageAudit.privacyFindings.length) throw new PdfError("UNSUPPORTED_CAPABILITY", PDF_NESTED_METADATA_RESIDUAL_ERROR);
+  if (unsafeJpeg394(embeddedImageAudit)) throw new PdfError("UNSUPPORTED_CAPABILITY", PDF_NESTED_METADATA_RESIDUAL_ERROR);
   const pageStable = before.pageCount === after.pageCount;
   if (!pageStable) throw new PdfError("WRITE_FAILURE", `PDF pages changed: ${before.pageCount}→${after.pageCount}.`);
   let textBaseline: PdfMetadataRemovalVerification["textBaseline"];
