@@ -94,7 +94,7 @@
   "scripts/verify-output-consumers-408.ts": 21745,
   "spikes/heavy-local-feasibility/src/main.js": 26516,
   "src/components/catalog/CatalogDirectory.astro": 32182,
-  "src/components/onboarding/Onboarding.tsx": 21689,
+  "src/components/onboarding/Onboarding.tsx": 21476,
   "src/components/tools/DeveloperWebTool.tsx": 39131,
   "src/components/tools/audio/AudioTimelinePanel231.tsx": 21322,
   "src/components/tools/business-math/BusinessMathTool.tsx": 33158,
