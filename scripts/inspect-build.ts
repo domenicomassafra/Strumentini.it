@@ -32,6 +32,7 @@ const pdfOcr247Path = "tools/pdf-scansionato-ocr-247/index.html";
 const previewOnlyPaths = [
   "tools/codice-fiscale/index.html",
   "tools/iva-calcolo/index.html",
+  "tools/irpef-annuale/index.html",
   "tools/irpef-componenti/index.html",
   "tools/stipendio-netto/index.html",
   "tools/ocr-italiano-locale-246/index.html",
@@ -53,6 +54,11 @@ for (const previewPath of previewOnlyPaths) {
       ? preview?.includes("data-tax-iva") && preview.includes("13") &&
         preview.includes("dicembre 2025") && preview.includes("categorie") &&
         preview.includes("Calcolo locale")
+    : previewPath === "tools/irpef-annuale/index.html"
+      ? preview?.includes("data-irpef-annuale") && preview.includes("IRPEF lorda nazionale") &&
+        preview.includes("2025") && preview.includes("2026") &&
+        preview.includes("detrazioni") && preview.includes("addizionali") &&
+        preview.includes("non calcolate") && preview.includes("Normattiva")
     : previewPath === "tools/stipendio-netto/index.html"
       ? preview?.includes("data-salary-estimate-13") && preview.includes("stima parziale") &&
         preview.includes("cedolino") && preview.includes("IRPEF") &&
