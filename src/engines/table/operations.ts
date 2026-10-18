@@ -1,4 +1,5 @@
 import Papa from "papaparse";
+import { rowValue } from "./sort-key";
 import {
   CSV_HARD_FILE_BYTES,
   CsvCleanerError,
@@ -776,24 +777,6 @@ export function filterTable(table: CsvTable, options: { column: number; operator
   };
 }
 
-interface SortValue {
-  missing: boolean;
-  key: string | number;
-}
-
-function rowValue(value: string, comparator: TableSortComparator, caseSensitive: boolean, nullPolicy: TableNullPolicy): SortValue {
-  if (isPolicyNull(value, nullPolicy)) return { missing: true, key: "" };
-  if (comparator === "numeric") {
-    const key = Number(value);
-    return { missing: !Number.isFinite(key), key };
-  }
-  if (comparator === "date") {
-    const key = Date.parse(value);
-    return { missing: Number.isNaN(key), key };
-  }
-  return { missing: false, key: caseSensitive ? value : value.toLowerCase() };
-}
-
 export function sortTable(table: CsvTable, options: { column: number; direction?: "asc" | "desc"; comparator?: TableSortComparator; nulls?: "first" | "last"; caseSensitive?: boolean; nullTokens?: readonly string[]; emptyAsNull?: boolean }): TableSortResult {
   const column = options.column;
   if (!Number.isInteger(column) || column < 0 || column >= table.header.length) throw new Error("INVALID_COLUMN");
@@ -804,8 +787,8 @@ export function sortTable(table: CsvTable, options: { column: number; direction?
   const nullPolicy = normalizedNullPolicy(options.nullTokens, options.emptyAsNull ?? true);
   const indexed = table.rows.map((row, index) => ({ row, index }));
   indexed.sort((left, right) => {
-    const leftValue = rowValue(left.row[column] ?? "", comparator, caseSensitive, nullPolicy);
-    const rightValue = rowValue(right.row[column] ?? "", comparator, caseSensitive, nullPolicy);
+    const leftValue = rowValue(left.row[column] ?? "", comparator, caseSensitive, nullPolicy, isPolicyNull);
+    const rightValue = rowValue(right.row[column] ?? "", comparator, caseSensitive, nullPolicy, isPolicyNull);
     if (leftValue.missing !== rightValue.missing) return nulls === "first" ? (leftValue.missing ? -1 : 1) : (leftValue.missing ? 1 : -1);
     if (leftValue.missing && rightValue.missing) return left.index - right.index;
     let comparison = 0;
@@ -830,7 +813,7 @@ export function sortTable(table: CsvTable, options: { column: number; direction?
     selectedColumn: columnDisclosure(table, [column])[0]!,
     nullPolicy,
     invalidValues: "as-null",
-    policySummary: `Ordinamento ${comparator}; valori non validi per il tipo ordinati come NULL; ${nullPolicySummary(nullPolicy)}; NULL ${nulls === "first" ? "prima" : "dopo"}.`,
+    policySummary: `Ordinamento ${comparator}${comparator === "numeric" ? " (punto o virgola decimale, senza separatori delle migliaia)" : ""}; valori non validi per il tipo ordinati come NULL; ${nullPolicySummary(nullPolicy)}; NULL ${nulls === "first" ? "prima" : "dopo"}.`,
     engineVersion: TABLE_ENGINE_VERSION,
   };
 }

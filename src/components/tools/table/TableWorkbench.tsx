@@ -299,6 +299,7 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
   const [options, setOptions] = useState<Record<string, OptionValue>>(() => defaultOptions(mode));
   const initialOptions = useMemo(() => defaultOptions(mode), [mode]);
   const operation = useToolOperation<WorkbenchResult>((signal) => toolRuntime.run(toolId, inputFor(mode, text, secondaryText, bytes, sourceBlob, options), {}, signal));
+  function invalidate() { operation.reset(); setActionStatus(""); }
 
   useEffect(() => {
     setOptions(initialOptions);
@@ -311,19 +312,18 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
     setBytes(null);
     setSourceBlob(null);
     setFileName(`Tabella ricevuta · ${envelope.descriptor.rowCount} righe`);
-    setActionStatus("");
-    operation.reset();
+    invalidate();
   }), [manifest, operation]);
 
   function setOption(key: string, value: OptionValue) {
     setOptions((current) => ({ ...current, [key]: value }));
+    invalidate();
   }
 
   async function loadFile(file: File | undefined) {
     if (file === undefined) return;
     setFileError("");
-    setActionStatus("");
-    operation.reset();
+    invalidate();
     try {
       if (mode === "split") {
         setSourceBlob(file);
@@ -354,9 +354,8 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
     setSourceBlob(null);
     setFileName("");
     setFileError("");
-    setActionStatus("");
+    invalidate();
     setOptions(initialOptions);
-    operation.reset();
   }
 
   function submit(event: Event) {
@@ -457,9 +456,8 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
     setSecondaryText("");
     setBytes(null);
     setSourceBlob(null);
-    setActionStatus("");
+    invalidate();
     setFileName("Risultato completo riutilizzato come nuovo input locale.");
-    operation.reset();
   }
 
   function handoffResult(proposal = preferredHandoffTargets[0]) {
@@ -478,8 +476,8 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
     <ToolFormCard>
       <form onSubmit={submit}>
         <p class="file-note">{publicDescription}</p>
-        <label class="field"><span>{primaryInputLabel}</span><textarea rows={8} value={text} onInput={(event) => { setText(event.currentTarget.value); setBytes(null); setSourceBlob(null); }} placeholder="Incolla un testo tabellare oppure scegli un file." /></label>
-        {(mode === "join" || mode === "compare") && <label class="field"><span>Seconda tabella CSV</span><textarea rows={8} value={secondaryText} onInput={(event) => setSecondaryText(event.currentTarget.value)} placeholder="Incolla la seconda tabella CSV." /></label>}
+        <label class="field"><span>{primaryInputLabel}</span><textarea rows={8} value={text} onInput={(e) => { setText(e.currentTarget.value); setBytes(null); setSourceBlob(null); invalidate(); }} placeholder="Incolla un testo tabellare oppure scegli un file." /></label>
+        {(mode === "join" || mode === "compare") && <label class="field"><span>Seconda tabella CSV</span><textarea rows={8} value={secondaryText} onInput={(e) => { setSecondaryText(e.currentTarget.value); invalidate(); }} placeholder="Incolla la seconda tabella CSV." /></label>}
         <label class="field"><span>File · facoltativo</span><input type="file" accept={mode === "encoding" ? ".csv,.txt,.tsv,text/plain" : mode === "from-json" ? ".json,application/json" : ".csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain,application/json"} onChange={(event) => void loadFile(event.currentTarget.files?.[0])} /></label>
         {fileName && <p class="file-note" role="status">{fileName}</p>}
         {mode === "selector" && <label class="field"><span>Posizioni colonne (da zero, separate da virgola)</span><input value={String(options.columns ?? "")} onInput={(event) => setOption("columns", event.currentTarget.value)} /></label>}
