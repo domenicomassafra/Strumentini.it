@@ -1,16 +1,7 @@
 /**
- * Onboarding — four steps, one card.
- *
- * 1. Benvenuto: the mark, what happens next, one action.
- * 2. Cosa vuoi fare? — the work-context packs, at most three.
- * 3. Quali categorie usi di più? — the recurring jobs, unlimited.
- * 4. Ecco i tuoi strumenti consigliati! — the reviewable starter set.
- *
- * The work profile is no longer collected here: /impostazioni/ owns it under
- * Preferenze. The save still writes a complete profile, so a tool that declares
- * a field never asks the same question twice. The answers are drafted into the
- * same local database as the workbench, so re-entering the flow pre-fills
- * instead of starting over — and nothing in it ever leaves the device.
+ * Four-step onboarding: welcome, work context, recurring jobs and starter set.
+ * /impostazioni/ owns the work profile. Draft answers prefill future visits
+ * from the local workbench database; none leave this device.
  */
 
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
@@ -212,7 +203,10 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
   function goTo(next: OnboardingStage): void {
     if (next === 4) setReview(generatedReview);
     setStage(next);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // CSS reduced-motion rules cannot override an explicit JS smooth scroll.
+    // Recheck on each step so a changed OS preference applies immediately.
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
   }
 
   function updateReview(next: StarterReview): void {
