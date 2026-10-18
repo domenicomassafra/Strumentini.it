@@ -135,11 +135,19 @@ const SYNC_BASELINE_KEY = "membership/favorites-sync:v1";
 const TOOL_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const MAX_LOCAL_FAVORITES = 500;
 const MAX_REMOTE_ENTRIES = 2000;
+const OPERATION_ID = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/u;
 
 export interface FavoriteRemoteEntry {
   readonly toolId: string;
   readonly installed: boolean;
   readonly revision: number;
+  readonly operationId?: string;
+}
+
+interface FavoritePendingOperation {
+  readonly toolId: string;
+  readonly installed: boolean;
+  readonly operationId: string;
 }
 
 export interface FavoriteRemoteSnapshot {
@@ -154,6 +162,12 @@ export interface FavoriteSyncBaseline {
   readonly account: string;
   readonly revision: number;
   readonly tools: readonly string[];
+  /** Server-confirmed writes after the last full local reconciliation. These
+   * per-tool revisions must not advance the revision of unrelated tombstones. */
+  readonly acknowledged?: readonly FavoriteRemoteEntry[];
+  /** Locally recorded before POST: survives a committed write whose HTTP
+   * acknowledgement is lost. The server echoes the ID in durable D1 state. */
+  readonly inflight?: readonly FavoritePendingOperation[];
 }
 
 function validToolId(value: unknown): value is string {
@@ -178,6 +192,7 @@ function parseSnapshot(raw: unknown): FavoriteRemoteSnapshot | undefined {
     if (!isRecord(entry) || !validToolId(entry.toolId) || seen.has(entry.toolId)
       || typeof entry.installed !== "boolean" || !Number.isSafeInteger(entry.revision)
       || (entry.revision as number) < 1 || (entry.revision as number) > (raw.revision as number)) return undefined;
+    if (entry.operationId !== undefined && (typeof entry.operationId !== "string" || !OPERATION_ID.test(entry.operationId))) return undefined;
     seen.add(entry.toolId);
     if (entry.installed) enabled.push(entry.toolId);
   }
@@ -190,6 +205,29 @@ function parseBaseline(raw: unknown): FavoriteSyncBaseline | undefined {
   if (!isRecord(raw) || raw.version !== 1 || typeof raw.account !== "string"
     || !/^[a-zA-Z0-9-]{1,128}$/u.test(raw.account) || !Number.isSafeInteger(raw.revision)
     || (raw.revision as number) < 0 || !validToolList(raw.tools)) return undefined;
+  if (raw.acknowledged !== undefined) {
+    // 500 removals followed by 500 unrelated additions can be acknowledged
+    // before a final GET. Tombstones count toward the 2000-entry server cap.
+    if (!Array.isArray(raw.acknowledged) || raw.acknowledged.length > MAX_REMOTE_ENTRIES) return undefined;
+    const seen = new Set<string>();
+    for (const entry of raw.acknowledged) {
+      if (!isRecord(entry) || !validToolId(entry.toolId) || seen.has(entry.toolId)
+        || typeof entry.installed !== "boolean" || !Number.isSafeInteger(entry.revision)
+        || (entry.revision as number) <= (raw.revision as number)) return undefined;
+      seen.add(entry.toolId);
+      if (raw.tools.includes(entry.toolId) !== entry.installed) return undefined;
+    }
+  }
+  if (raw.inflight !== undefined) {
+    if (!Array.isArray(raw.inflight) || raw.inflight.length > MAX_LOCAL_FAVORITES) return undefined;
+    const seen = new Set<string>();
+    for (const entry of raw.inflight) {
+      if (!isRecord(entry) || !validToolId(entry.toolId) || seen.has(entry.toolId)
+        || typeof entry.installed !== "boolean" || typeof entry.operationId !== "string"
+        || !OPERATION_ID.test(entry.operationId)) return undefined;
+      seen.add(entry.toolId);
+    }
+  }
   return raw as unknown as FavoriteSyncBaseline;
 }
 
@@ -203,8 +241,10 @@ export function pendingFavoriteChanges(
   const before = new Set(baseline.tools);
   const after = new Set(local);
   const revisions = new Map(remote.entries.map((entry) => [entry.toolId, entry.revision]));
+  const acknowledgements = new Map(baseline.acknowledged?.map((entry) => [entry.toolId, entry.revision]));
   return [...new Set([...baseline.tools, ...local])]
-    .filter((id) => before.has(id) !== after.has(id) && (revisions.get(id) ?? 0) <= baseline.revision)
+    .filter((id) => before.has(id) !== after.has(id)
+      && (revisions.get(id) ?? 0) <= (acknowledgements.get(id) ?? baseline.revision))
     .map((toolId) => ({ toolId, installed: after.has(toolId) }));
 }
 
@@ -217,6 +257,13 @@ async function loadBaseline(): Promise<FavoriteSyncBaseline | undefined> {
   } catch {
     return sessionBaseline;
   }
+}
+
+/** The shared IndexedDB list may belong to a previously signed-in account.
+ * Only expose it while signed into that same account; on anonymous/shared
+ * devices keep it hidden until the verified account baseline is available. */
+export async function membershipBaselineOwner(): Promise<string | undefined> {
+  return (await loadBaseline())?.account;
 }
 
 async function persistBaseline(baseline: FavoriteSyncBaseline): Promise<boolean> {
@@ -241,6 +288,17 @@ function sameTools(left: readonly string[], right: readonly string[]): boolean {
   return left.length === right.length && left.every((toolId) => right.includes(toolId));
 }
 
+function confirmFavorite(baseline: FavoriteSyncBaseline, entry: FavoriteRemoteEntry): FavoriteSyncBaseline {
+  const tools = new Set(baseline.tools);
+  if (entry.installed) tools.add(entry.toolId);
+  else tools.delete(entry.toolId);
+  return {
+    ...baseline, tools: [...tools],
+    acknowledged: [...(baseline.acknowledged ?? []).filter((row) => row.toolId !== entry.toolId), entry],
+    inflight: (baseline.inflight ?? []).filter((row) => row.toolId !== entry.toolId),
+  };
+}
+
 async function reconcileWithAccount(): Promise<Membership | undefined> {
   try {
     const remote = await fetchFavoriteSnapshot();
@@ -252,26 +310,58 @@ async function reconcileWithAccount(): Promise<Membership | undefined> {
     const baseline: FavoriteSyncBaseline = stored?.account === remote.account ? stored : {
       version: 1, account: remote.account, revision: 0, tools: [],
     };
+    let confirmed = baseline;
+    // Recovery after a server commit with lost HTTP response. Only a matching
+    // durable operation ID establishes that THIS device authored the remote
+    // revision; an unrelated device's tombstone still takes precedence.
+    for (const pending of baseline.inflight ?? []) {
+      const entry = remote.entries.find((row) => row.toolId === pending.toolId);
+      const lastKnown = confirmed.acknowledged?.find((row) => row.toolId === pending.toolId)?.revision ?? confirmed.revision;
+      if (entry?.operationId === pending.operationId && entry.installed === pending.installed) {
+        confirmed = confirmFavorite(confirmed, entry);
+      } else if ((entry?.revision ?? 0) > lastKnown
+        || local.installed.includes(pending.toolId) !== pending.installed) {
+        confirmed = { ...confirmed, inflight: (confirmed.inflight ?? []).filter((row) => row.toolId !== pending.toolId) };
+      }
+    }
+    if (confirmed !== baseline && !await persistBaseline(confirmed)) return undefined;
     const changes = stored?.account === remote.account
-      ? pendingFavoriteChanges(local.installed, baseline, remote)
+      ? pendingFavoriteChanges(local.installed, confirmed, remote)
       : [];
     for (const change of changes) {
+      const baseRevision = confirmed.acknowledged?.find((entry) => entry.toolId === change.toolId)?.revision
+        ?? baseline.revision;
+      const operationId = confirmed.inflight?.find((entry) => entry.toolId === change.toolId)?.operationId
+        ?? crypto.randomUUID();
+      confirmed = { ...confirmed, inflight: [...(confirmed.inflight ?? []).filter((entry) => entry.toolId !== change.toolId),
+        { ...change, operationId }] };
+      if (!await persistBaseline(confirmed)) return undefined;
       const response = await fetch("/api/favorites/sync", {
         method: "POST", credentials: "same-origin",
         headers: { "content-type": "application/json", accept: "application/json" },
-        body: JSON.stringify({ ...change, baseRevision: baseline.revision }),
+        body: JSON.stringify({ ...change, baseRevision, operationId, expectedAccount: remote.account }),
       });
       if (response.status === 409) {
         const conflict = parseSnapshot(await response.json());
         // 409 from a newer edit is resolved by the server; a quota/corrupt
         // response with no newer edit leaves this local intent pending.
         if (conflict === undefined || conflict.account !== remote.account
-          || (conflict.entries.find((entry) => entry.toolId === change.toolId)?.revision ?? 0) <= baseline.revision) return undefined;
+          || (conflict.entries.find((entry) => entry.toolId === change.toolId)?.revision ?? 0) <= baseRevision) return undefined;
       } else if (!response.ok) {
         return undefined;
       } else {
-        const acknowledged = parseSnapshot(await response.json());
-        if (acknowledged === undefined || acknowledged.account !== remote.account) return undefined;
+        const raw = await response.json();
+        const acknowledged = parseSnapshot(raw);
+        const appliedRevision = isRecord(raw) ? raw.appliedRevision : undefined;
+        const actual = acknowledged?.entries.find((entry) => entry.toolId === change.toolId);
+        if (acknowledged === undefined || acknowledged.account !== remote.account
+          || !Number.isSafeInteger(appliedRevision) || (appliedRevision as number) <= baseRevision
+          || actual?.revision !== appliedRevision || actual?.installed !== change.installed
+          || actual.operationId !== operationId) return undefined;
+        confirmed = confirmFavorite(confirmed, actual);
+        // Persist each successful server write before any later network call:
+        // a second local click or fetch failure cannot erase its CAS anchor.
+        if (!await persistBaseline(confirmed)) return undefined;
       }
     }
     const final = changes.length > 0 ? await fetchFavoriteSnapshot() : remote;

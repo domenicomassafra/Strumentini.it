@@ -38,6 +38,8 @@ const { tool, variant = "row", tone = toneForCategory(tool.category), membership
         type="button"
         data-membership-toggle={tool.id}
         data-installed="false"
+        disabled
+        aria-busy="true"
         aria-pressed="false"
         aria-label="Aggiungi ai tuoi strumenti"
         title="Aggiungi ai tuoi strumenti"
@@ -73,8 +75,8 @@ const { tool, variant = "row", tone = toneForCategory(tool.category), membership
     z-index: 1;
     display: grid;
     place-items: center;
-    width: 34px;
-    height: 34px;
+    width: 44px;
+    height: 44px;
     padding: 0;
     border: var(--border-width) solid var(--border);
     border-radius: var(--radius-pill);

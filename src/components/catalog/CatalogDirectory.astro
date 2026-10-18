@@ -5,21 +5,12 @@ import { inputTypeLabelIt } from "../../i18n/it/taxonomy";
 import { iconSvgMarkup } from "../../ui/tool-icons";
 import UiIcon from "../icons/UiIcon.astro";
 import ToolCard from "../tools/ToolCard.astro";
+import MembershipBootstrap from "../account/MembershipBootstrap.astro";
 
 /**
- * The whole catalog: three views, a facet sidebar, a sort control and real
- * pagination.
- *
- * Every tool is rendered on the server — the full grid in one
- * `<ul class="tool-grid">` — so the catalogue is complete with JavaScript
- * switched off. The inline script then reads and writes the URL query (`q`,
- * `gruppo`, `tipo`, `qualita`, `ordine`, `pagina`, `vista`), moves the cards
- * that are already on the page, and never fetches anything.
- *
- * `ToolCard` owns its own `<li>` and takes no extra attributes, so the per-tool
- * metadata (category, group, input types, quality) ships as one server-rendered
- * JSON map keyed by route and is projected onto each card as `data-*` attributes
- * before the first filter runs. The markup stays a valid list.
+ * Server-rendered tool list with three layouts, facets and pagination. The
+ * client adjusts the existing cards from URL query parameters without fetching.
+ * The JSON metadata map adds filtering data attributes without changing `<li>`.
  */
 interface Props {
   tools: readonly ToolSummary[];
@@ -206,7 +197,7 @@ const groupedTools = groups.map((group) => ({
               </span>
               <a class="section-link" href={`/categorie/${group.slug}/`}>Apri la categoria</a>
             </li>
-            {groupTools.map((tool) => <ToolCard tool={tool} variant="card" />)}
+            {groupTools.map((tool) => <ToolCard tool={tool} variant="card" membership />)}
           </>
         ))}
       </ul>
@@ -223,6 +214,7 @@ const groupedTools = groups.map((group) => ({
     </div>
   </div>
 
+  <MembershipBootstrap />
   <script type="application/json" data-tool-meta set:html={metaJson}></script>
 
   <script is:inline>

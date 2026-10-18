@@ -358,6 +358,7 @@ export interface FavoriteSyncEntry {
   readonly toolId: string;
   readonly installed: boolean;
   readonly revision: number;
+  readonly operationId?: string;
 }
 
 export interface FavoriteSyncSnapshot {
@@ -370,6 +371,7 @@ interface FavoriteSyncRow {
   readonly tool_id: string;
   readonly installed: number;
   readonly revision: number;
+  readonly operation_id: string | null;
 }
 
 /** The durable state table carries every tombstone/revision. Keep only the
@@ -389,7 +391,7 @@ async function pruneFavoriteEvents(db: D1Database, userId: string): Promise<void
 /** Includes tombstones; the client must see deletions as well as additions. */
 export async function listFavoriteSync(db: D1Database, userId: string): Promise<FavoriteSyncSnapshot> {
   const result = await db.prepare(
-    "SELECT tool_id, installed, revision FROM favorite_sync_state WHERE user_id = ?1 ORDER BY revision DESC LIMIT 2001",
+    "SELECT tool_id, installed, revision, operation_id FROM favorite_sync_state WHERE user_id = ?1 ORDER BY revision DESC LIMIT 2001",
   ).bind(userId).all<FavoriteSyncRow>();
   if (result.results.length > 2000) throw new Error("FAVORITE_SYNC_CAP_EXCEEDED");
   if (result.results.some((row) => !Number.isSafeInteger(row.revision) || row.revision < 1 || (row.installed !== 0 && row.installed !== 1))) {
@@ -397,7 +399,8 @@ export async function listFavoriteSync(db: D1Database, userId: string): Promise<
   }
   return {
     revision: result.results[0]?.revision ?? 0,
-    entries: result.results.map((row) => ({ toolId: row.tool_id, installed: row.installed === 1, revision: row.revision })),
+    entries: result.results.map((row) => ({ toolId: row.tool_id, installed: row.installed === 1, revision: row.revision,
+      ...(row.operation_id === null ? {} : { operationId: row.operation_id }) })),
     tools: result.results.filter((row) => row.installed === 1).map((row) => row.tool_id),
   };
 }
@@ -411,20 +414,22 @@ export async function changeFavoriteIfCurrent(
   toolId: string,
   installed: boolean,
   baseRevision: number,
+  operationId: string,
   at: string,
-): Promise<boolean> {
+): Promise<number | null> {
   const row = await db.prepare(`
-    INSERT INTO favorite_sync_events (user_id, tool_id, installed, created_at)
-    SELECT ?1, ?2, ?3, ?4
+    INSERT INTO favorite_sync_events (user_id, tool_id, installed, created_at, operation_id)
+    SELECT ?1, ?2, ?3, ?4, ?6
     WHERE COALESCE((SELECT revision FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2), 0) <= ?5
+      AND NOT EXISTS (SELECT 1 FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2 AND operation_id = ?6)
       AND ((SELECT COUNT(*) FROM favorite_sync_state WHERE user_id = ?1) < 2000
            OR EXISTS (SELECT 1 FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2))
       AND (?3 = 0 OR (SELECT COUNT(*) FROM favorite_sync_state WHERE user_id = ?1 AND installed = 1) < 500
            OR EXISTS (SELECT 1 FROM favorite_sync_state WHERE user_id = ?1 AND tool_id = ?2 AND installed = 1))
     RETURNING id
-  `).bind(userId, toolId, installed ? 1 : 0, at, baseRevision).first<{ id: number }>();
+  `).bind(userId, toolId, installed ? 1 : 0, at, baseRevision, operationId).first<{ id: number }>();
   if (row !== null) await pruneFavoriteEvents(db, userId);
-  return row !== null;
+  return row?.id ?? null;
 }
 
 /** Legacy PUT: pre-migration accounts may have unrecorded deletions. Permit

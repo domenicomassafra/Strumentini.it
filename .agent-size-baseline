@@ -93,7 +93,7 @@
   "scripts/validator/audit-397.ts": 20759,
   "scripts/verify-output-consumers-408.ts": 21745,
   "spikes/heavy-local-feasibility/src/main.js": 26516,
-  "src/components/catalog/CatalogDirectory.astro": 32598,
+  "src/components/catalog/CatalogDirectory.astro": 32182,
   "src/components/onboarding/Onboarding.tsx": 21689,
   "src/components/tools/DeveloperWebTool.tsx": 39131,
   "src/components/tools/audio/AudioTimelinePanel231.tsx": 21322,
@@ -145,7 +145,7 @@
   "src/pages/accedi.astro": 26838,
   "src/pages/cerca.astro": 23344,
   "src/pages/impostazioni.astro": 63407,
-  "src/pages/preferiti.astro": 21134,
+  "src/pages/preferiti.astro": 20235,
   "src/pages/prototipi/351.astro": 36550,
   "src/pages/risorse.astro": 22558,
   "src/quality/certification.ts": 71778,
@@ -171,5 +171,5 @@
   "tests/qr-local-engine.test.ts": 26040,
   "tests/research-knowledge-engine.test.ts": 32050,
   "tests/url-marketing-tools.test.ts": 24715,
-  "worker/index.ts": 38600
+  "worker/index.ts": 38049
 }

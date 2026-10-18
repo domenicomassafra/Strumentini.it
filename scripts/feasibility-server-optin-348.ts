@@ -36,13 +36,17 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   // quota or AC328.1–.3; serverMode remains NO_GO until live staging proof.
   "worker/auth.ts": "d6417e29feec2be74b7768e6f35e871bc68099ddc19cc7bcd4beb3a35ed17141",
   "worker/bindings.d.ts": "6728f6a0b231d4b1b390434cf79d21d827f84116a5a55bd70a8322c6479c7e4d",
-  "worker/db.ts": "4ba712236ea72ba5e75afb8650b3998bac1e1f25dce0b5b76a79b8459cd72427",
+  // #332 independently reviewed: account-pinned favorite writes carry durable
+  // operation identifiers for loss-of-ACK recovery, without new public routes.
+  "worker/db.ts": "7a304affb8eb46130b69a0e5c905809d51a65f6673dfc77655326aeb3d06e3d3",
+  "worker/favorite-sync-change.ts": "89f17d0d7b495c75fb6983334151ad883edb158c53e30be609b050f217ccccaa",
   "worker/google.ts": "09ee69a8ab31e4eabac118bb2b3d4cdd579d655c260aa452fb8e359f32cba2db",
-  "worker/index.ts": "3fe5eaca245a51cfaecbe8fe71745365b6ed9985454a25f461d75e0096a02849",
+  "worker/index.ts": "0724d713a4ab20f68a351644e6b05d6415211572b1da4e2eb7642a8ff56df205",
   "worker/kdf-client.ts": "d2aa12fce473bbbc598eedc7c957a4f67c5484ce9a03afabafea62e59b4cf539",
   "worker/migrations/0001_init.sql": "5402f41511baf4b74f4bf6b8bb46621d663a00d8352746c6acd1089c4c3f7417",
   "worker/migrations/0002_google_auth.sql": "80f0a007030410b018863ec36ca31fc6dff99ce52762979a071bc4c9af1fa6b9",
   "worker/migrations/0003_favorite_sync.sql": "b9e02301f5b76766039487dab65c57bf06b3c982c23cac3bcfc48dfa1747b6ea",
+  "worker/migrations/0004_favorite_operation_ids.sql": "19c9a58d9f5e6deb5fab6dafe671fd1a8a9d0c0ad653c285fedbfbc3b8ed1aad",
   "worker/password-kdf.ts": "871aaa3142cbe2f51925105fcf99fd65f1d8a1a743c4535ae94bd3b0934e2f54",
   "worker/turnstile.ts": "bd7434f8233b9fe0e99fc42bdc5a4b11f919649364b58258b6ae77f0fcf32124",
   "worker/validation.ts": "1b82c7b041b17959ed31f6e6d61e34ab1fd7cbc91f1519eea3a91d889a5519f3",
@@ -60,7 +64,8 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // 2026-10-14 #350: mobile-only aria-label, identical session GET and logout
   // POST/204 semantics; browser Axe detects the icon-only accessible name.
   "src/components/account/AccountChip.astro": "93d41212427af8611bd3ece42d9d3993725a17139c7da2f256418299472e9a34",
-  "src/components/account/MembershipBootstrap.astro": "ada60c9c8bea11b5d937c386f265e396f1cf354dc8cda6664f0fec040d240cca",
+  // #332: browser bootstrap retries reconnection and preserves account-scoped state.
+  "src/components/account/MembershipBootstrap.astro": "ace5b0f626105a65fd4586102688fcfeec032dc32043dd2ae6b407083708e956",
   // #328: login/register now require a fresh same-origin cookie-backed session
   // probe before reporting success. Any future byte drift still fails closed.
   "src/components/account/auth-client.ts": "b32363ed352edf1a2b97c5f1cfc4650c0d46d55731cdf2e11e2fc354fb8b8f21",
@@ -73,10 +78,11 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // GET /api/auth/session is unchanged; no new transport API or endpoint.
   // 2026-10-14 #350: selected nav text now uses existing AA --brand-active
   // token; the only session GET, credentials and endpoints remain unchanged.
-  "src/pages/preferiti.astro": "d2294aed56d99fd30480b3b34da7bcb07402950fb70850b335ee9111258ce8f7",
+  // #332 additions retain per-tool removal, tombstones and verified hydration.
+  "src/pages/preferiti.astro": "3e849ac21c096ac8e4e4e9f33827615848171ff749cd224995581b72d94f79d7",
   "src/telemetry/adapter.ts": "cc00368b762ea6d80d00b5a854764765a84e127b25c15049cf1b30e27cbbf50e",
   "src/telemetry/browser.ts": "2f2ecebad8da951a2329bd8364c727ec5f43f97fdc525ecc6c6077587f40ac1a",
-  "src/workbench/membership.ts": "b82d1137427e58fffc0414ff0fc04af2dbc4d883a585982405b2837451833b2a",
+  "src/workbench/membership.ts": "388f065b92d835c6b8cbef93d220a5959ca31a84caf3f9d9a88305c499f9c788",
 });
 
 const ALLOWED_ROUTES: ReadonlySet<string> = new Set([

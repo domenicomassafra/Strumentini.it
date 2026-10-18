@@ -11,6 +11,7 @@
 <script>
   import {
     loadMembership,
+    membershipBaselineOwner,
     pushMembershipChange,
     subscribeMembership,
     syncMembershipWithAccount,
@@ -48,6 +49,34 @@
   }
 
   let signedIn = false;
+  let ready = false;
+  let loading = false;
+  let onlineRetryQueued = false;
+  const verifiedTabKey = "strumentini:favorites-verified-tab:v1";
+
+  function readVerifiedTab(): string | null {
+    try { return sessionStorage.getItem(verifiedTabKey); } catch { return null; }
+  }
+  function writeVerifiedTab(account: string | null): void {
+    try {
+      if (account === null) sessionStorage.removeItem(verifiedTabKey);
+      else sessionStorage.setItem(verifiedTabKey, account);
+    } catch { /* Storage unavailable: require online verification. */ }
+  }
+
+  function controlsReady(value: boolean): void {
+    ready = value;
+    for (const toggle of toggles()) {
+      toggle.disabled = !value;
+      toggle.setAttribute("aria-busy", String(!value));
+      if (!value) toggle.setAttribute("title", "Attendi la verifica dei preferiti");
+    }
+  }
+
+  // The session/account and its remote baseline must be known before the first
+  // click. Otherwise a quick local add may be silently replaced by the first
+  // authenticated GET. Buttons are disabled in server markup until hydrated.
+  controlsReady(false);
 
   document.addEventListener("click", (event) => {
     const toggle = event.target instanceof Element
@@ -55,6 +84,7 @@
       : null;
     if (toggle === null) return;
     event.preventDefault();
+    if (!ready || toggle.disabled) return;
     const toolId = toggle.dataset.membershipToggle;
     if (toolId === undefined) return;
     const wasInstalled = toggle.dataset.installed === "true";
@@ -64,19 +94,65 @@
     });
   });
 
-  subscribeMembership(paint);
+  subscribeMembership((membership) => {
+    if (ready) paint(membership);
+  });
 
-  void (async () => {
-    try {
-      const response = await fetch("/api/auth/session", { credentials: "same-origin", headers: { accept: "application/json" } });
-      if (response.ok) {
-        const body = await response.json() as { user?: unknown };
-        signedIn = Boolean(body.user);
-      }
-    } catch {
-      signedIn = false;
+  async function initialize(): Promise<void> {
+    if (loading) {
+      // A reconnect arriving before the initial session request settles must
+      // be replayed: otherwise that failed request can leave buttons gated
+      // forever even though the account is reachable again.
+      onlineRetryQueued = true;
+      return;
     }
-    const membership = signedIn ? await syncMembershipWithAccount() : undefined;
-    paint(membership ?? await loadMembership());
-  })();
+    loading = true;
+    try {
+      controlsReady(false);
+      document.dispatchEvent(new Event("strumentini:membership-loading"));
+      let sessionUnavailable = false;
+      let confirmedAnonymous = false;
+      try {
+        const response = await fetch("/api/auth/session", { credentials: "same-origin", headers: { accept: "application/json" } });
+        if (response.ok) {
+          const body = await response.json() as { user?: unknown };
+          signedIn = Boolean(body.user);
+          confirmedAnonymous = !signedIn;
+        } else {
+          signedIn = false;
+          sessionUnavailable = true;
+        }
+      } catch {
+        signedIn = false;
+        sessionUnavailable = true;
+      }
+      const membership = signedIn ? await syncMembershipWithAccount() : undefined;
+      const baselineOwner = await membershipBaselineOwner();
+      if (signedIn && membership !== undefined && baselineOwner !== undefined) writeVerifiedTab(baselineOwner);
+      if (confirmedAnonymous) writeVerifiedTab(null);
+      // A real offline tab can keep working from its previously verified account
+      // baseline. The trust marker is scoped to this tab and is cleared on an
+      // authoritative anonymous session. A different/unverified tab stays gated.
+      const trustedOffline = !signedIn && sessionUnavailable && !navigator.onLine
+        && baselineOwner !== undefined && readVerifiedTab() === baselineOwner;
+      const localIsPrivate = !signedIn && baselineOwner !== undefined && !trustedOffline;
+      const cannotVerify = signedIn && membership === undefined;
+      const accessible = !localIsPrivate && !cannotVerify;
+      const shown = accessible ? membership ?? await loadMembership() : { installed: [], recent: [] };
+      paint(shown);
+      controlsReady(accessible);
+      document.dispatchEvent(new CustomEvent<Membership>("strumentini:membership-ready", { detail: shown }));
+    } finally {
+      loading = false;
+      if (onlineRetryQueued) {
+        onlineRetryQueued = false;
+        void initialize();
+      }
+    }
+  }
+
+  // A network reconnection is an opportunity to send queued offline changes;
+  // the existing sync serial queue and per-tool CAS preserve remote tombstones.
+  window.addEventListener("online", () => { void initialize(); });
+  void initialize();
 </script>

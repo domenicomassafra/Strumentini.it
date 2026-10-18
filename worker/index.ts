@@ -24,7 +24,6 @@ import {
 import type { StoredPassword } from "./auth";
 import {
   addFavorite,
-  changeFavoriteIfCurrent,
   clearFavorites,
   countLoginAttempts,
   createSession,
@@ -61,6 +60,7 @@ import { MESSAGES, normalizeEmail, validateEmail, validateName, validatePassword
 import { checkViesVat } from "./vies";
 import { PasswordKdfUnavailable, remotePasswordDeriver } from "./kdf-client";
 import type { PrivateKdfNamespace } from "./kdf-client";
+import { applyFavoriteSyncChange } from "./favorite-sync-change";
 
 // Cloudflare's internal-only SQLite-backed Durable Object. Never HTTP-routed.
 export { PasswordKdf } from "./password-kdf";
@@ -752,7 +752,6 @@ async function handleFavoriteSyncList(context: RouteContext): Promise<Response> 
   return jsonResponse({ version: 1, account: auth.user.id, ...snapshot }, 200);
 }
 
-/** A stale write on the same tool gets 409 and the authoritative state. */
 async function handleFavoriteSyncChange(context: RouteContext): Promise<Response> {
   const auth = await requireSession(context);
   if (auth instanceof Response) return auth;
@@ -760,17 +759,8 @@ async function handleFavoriteSyncChange(context: RouteContext): Promise<Response
   if (originError !== null) return originError;
   const parsed = await readJsonObject(context.request);
   if (!parsed.ok) return parsed.response;
-  const { body } = parsed;
-  const toolId = validateToolId(body.toolId);
-  if (!toolId.ok) return errorResponse(400, toolId.message);
-  if (typeof body.installed !== "boolean" || !Number.isSafeInteger(body.baseRevision) || (body.baseRevision as number) < 0) {
-    return errorResponse(400, MESSAGES.invalidBody);
-  }
-  const changed = await changeFavoriteIfCurrent(
-    context.env.AUTH_DB, auth.user.id, toolId.value, body.installed, body.baseRevision as number, nowIso(context.now),
-  );
-  const snapshot = await listFavoriteSync(context.env.AUTH_DB, auth.user.id);
-  return jsonResponse({ version: 1, account: auth.user.id, ...snapshot, applied: changed }, changed ? 200 : 409);
+  const change = await applyFavoriteSyncChange(context.env.AUTH_DB, auth.user.id, parsed.body, nowIso(context.now));
+  return jsonResponse(change.body, change.status);
 }
 
 async function handleFavoritesList(context: RouteContext): Promise<Response> {
