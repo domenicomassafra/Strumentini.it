@@ -1,0 +1,19 @@
+/* WCAG 2.2 AA: compact controls own at least a 24 CSS-px target. */
+.choice-line input[type="checkbox"],
+.choice-line input[type="radio"] {
+  flex: none;
+  width: 24px;
+  height: 24px;
+}
+
+/* A standalone next-step link is a target, not prose embedded in a sentence. */
+.tool-page p > a:only-child {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+/* Existing hover token reaches >= 4.5:1 over --brand-soft in either theme. */
+.weekday-row label:has(input:checked) {
+  color: var(--brand-hover);
+}
