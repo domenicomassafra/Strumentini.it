@@ -51,12 +51,23 @@ try {
   mark("date change clears old export, historical birthplace anchored to ANPR");
 
   await page.locator("#cf08-date").fill("2026-02-21");
+  await page.locator("#cf08-place-kind").selectOption("suppressed");
+  await page.locator("#cf08-place-search").fill("Castegnero");
+  await page.locator(".cf08-options button").filter({ hasText: "Castegnero" }).first().click();
+  assert.equal(await page.locator("#cf08-istat").inputValue(), "024027");
+  await page.locator("[data-cf-submit]").click();
+  assert.match(await page.locator("[data-cf-generated]").innerText(), /Castegnero.*C056/su);
+  assert.match(await page.locator("[data-cf-historical-warning]").innerText(), /non è verificata/u);
+  mark("suppressed municipality discoverable by name with source-specific historical caveat");
+
   await page.locator("#cf08-place-kind").selectOption("foreign");
-  await page.locator("#cf08-istat").fill("201");
+  await page.locator("#cf08-place-search").fill("Albania");
+  await page.locator(".cf08-options button").filter({ hasText: "Albania" }).first().click();
+  assert.equal(await page.locator("#cf08-istat").inputValue(), "201");
   await page.locator("[data-cf-submit]").click();
   assert.equal(await page.locator("[data-cf-generated]").count(), 1);
   assert.match(await page.locator("[data-cf-historical-warning]").innerText(), /non è verificata/u);
-  mark("source-coded foreign candidate with explicit historical uncertainty");
+  mark("source-coded foreign candidate discoverable by name with explicit historical uncertainty");
 
   await page.locator('[data-cf-mode="validate"]').click();
   await page.locator("#cf08-code").fill("RSSMRA80A01H501A");
@@ -109,6 +120,21 @@ try {
   const viewport = await page.evaluate(() => ({ width: window.innerWidth, scrollWidth: document.documentElement.scrollWidth }));
   assert.ok(viewport.scrollWidth <= viewport.width + 1, `mobile horizontal overflow: ${JSON.stringify(viewport)}`);
   mark("390px mobile route without horizontal overflow");
+
+  await page.locator('[data-cf-mode="generate"]').click();
+  await page.locator("#cf08-place-kind").selectOption("foreign");
+  await page.locator("#cf08-place-search").fill("Albania");
+  assert.equal(await page.locator('.cf08-options[aria-label="Luoghi trovati"]').count(), 1);
+  await page.locator("#cf08-place-search").focus();
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Enter");
+  assert.equal(await page.locator("#cf08-istat").inputValue(), "201");
+  for (const width of [320, 1280]) {
+    await page.setViewportSize({ width, height: 844 });
+    const layout = await page.evaluate(() => ({ width: window.innerWidth, scrollWidth: document.documentElement.scrollWidth }));
+    assert.ok(layout.scrollWidth <= layout.width + 1, `${width}px horizontal overflow: ${JSON.stringify(layout)}`);
+  }
+  mark("320/1280px reflow and keyboard selection of foreign birthplace from local search");
 
   console.log(`PASS #008 Chromium ${checks.length} public-route end-to-end checks at 390px`, checks.join(" | "));
 } finally {

@@ -9,7 +9,7 @@ import {
   decodeCodiceFiscale122,
   type CodiceFiscaleDecoding122,
 } from "../../../engines/italy/codice-fiscale-122";
-import { ITALIAN_GEOGRAPHY_115_METADATA } from "../../../reference-data/italy/geography-115";
+import { ITALIAN_GEOGRAPHY_115_METADATA, searchItalianGeography115 } from "../../../reference-data/italy/geography-115";
 import geography from "../../../reference-data/italy/geography-115.snapshot.json";
 import "./codice-fiscale.css";
 
@@ -56,7 +56,16 @@ export function CodiceFiscaleTool() {
   const [feedback, setFeedback] = useState("");
 
   const options = useMemo(() => {
-    if (kind !== "current" || normalizedSearch(placeQuery).length < 2) return [];
+    if (normalizedSearch(placeQuery).length < 2) return [];
+    if (kind !== "current") {
+      const seen = new Set<string>();
+      return searchItalianGeography115(kind, placeQuery, 50).filter((candidate) => {
+        const key = `${candidate.istatCode}:${candidate.name}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      }).slice(0, 8);
+    }
     const query = normalizedSearch(placeQuery);
     return geography.current.filter((candidate) => normalizedSearch(candidate.name).includes(query)
       || candidate.istatCode.startsWith(placeQuery.trim()))
@@ -83,9 +92,9 @@ export function CodiceFiscaleTool() {
     dirty();
   }
 
-  function selectPlace(candidate: (typeof geography.current)[number]): void {
+  function selectPlace(candidate: { readonly istatCode: string; readonly name: string; readonly province?: string }): void {
     setIstatCode(candidate.istatCode);
-    setPlaceQuery(`${candidate.name} (${candidate.province})`);
+    setPlaceQuery(candidate.province ? `${candidate.name} (${candidate.province})` : candidate.name);
     dirty();
   }
 
@@ -188,20 +197,18 @@ export function CodiceFiscaleTool() {
                   <select id="cf08-place-kind" value={kind} onChange={(e) => changeKind(e.currentTarget.value as GeoKind)}>
                     {(Object.keys(kinds) as GeoKind[]).map((key) => <option value={key} key={key}>{kinds[key]}</option>)}
                   </select></label>
-                {kind === "current" && (
-                  <div class="cf08-place-search">
-                    <label class="field" for="cf08-place-search"><span>Cerca comune ISTAT (solo dati ufficiali in locale)</span>
-                      <input id="cf08-place-search" type="search" value={placeQuery} placeholder="Es. Roma" autoComplete="off"
+                <div class="cf08-place-search">
+                    <label class="field" for="cf08-place-search"><span>{kind === "foreign" ? "Cerca Stato o territorio estero" : kind === "suppressed" ? "Cerca Comune storico o soppresso" : "Cerca Comune ISTAT corrente"} (solo dati delle fonti locali)</span>
+                      <input id="cf08-place-search" type="search" value={placeQuery} placeholder={kind === "foreign" ? "Es. Albania" : kind === "suppressed" ? "Es. Castegnero" : "Es. Roma"} autoComplete="off"
                         onInput={(e) => { setPlaceQuery(e.currentTarget.value); setIstatCode(""); dirty(); }} /></label>
                     {options.length > 0 && !istatCode && (
-                      <ul class="cf08-options" aria-label="Comuni trovati">
-                        {options.map((candidate) => <li key={candidate.istatCode}>
-                          <button type="button" onClick={() => selectPlace(candidate)}>{candidate.name} ({candidate.province}) — {candidate.istatCode}</button>
+                      <ul class="cf08-options" aria-label="Luoghi trovati">
+                        {options.map((candidate) => <li key={`${candidate.istatCode}:${candidate.name}`}>
+                          <button type="button" onClick={() => selectPlace(candidate)}>{candidate.name}{"province" in candidate && candidate.province ? ` (${candidate.province})` : ""} — {candidate.istatCode}</button>
                         </li>)}
                       </ul>
                     )}
-                  </div>
-                )}
+                </div>
                 <label class="field" for="cf08-istat"><span>Codice ISTAT {kind === "foreign" ? "estero (3 cifre)" : "comune (6 cifre)"}</span>
                   <input id="cf08-istat" inputMode="numeric" maxLength={6} value={istatCode}
                     placeholder={kind === "foreign" ? "201" : "058091"}
