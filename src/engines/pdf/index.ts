@@ -59,6 +59,7 @@ import { redactUrl, redactUrlCredentials } from "../url-marketing";
 import { validatePdfMergePagePlan, type PdfMergePageRef } from "./merge-page-plan";
 import { alignPdfEvidence } from "./compare-alignment";
 import { auditPdfFormAnnotations, type PdfFormAnnotationAudit } from "./form-annotation-audit";
+import { auditPdfEmbeddedImageMetadata, metadataIsEmpty, PDF_NESTED_METADATA_RESIDUAL_ERROR } from "./metadata-residual-394";
 
 export * from "./types";
 export { buildPdfFromJpegs, buildPdfFromPages, createSimplePdf, parseJpeg };
@@ -1178,13 +1179,6 @@ export async function extractPdfImagesScoped(input: PdfInput, options: PdfImageE
   return { artifacts, provenance, unsupported, selectedPages, deduplicated, mode: "embedded-original-compressed-bytes" };
 }
 
-function metadataIsEmpty(metadata: PdfMetadata): boolean {
-  return Object.keys(metadata.recognizedInfo).length === 0
-    && Object.keys(metadata.unknownInfo).length === 0
-    && metadata.xmpObjectIds.length === 0
-    && !metadata.hasXmp;
-}
-
 async function textBaselineFor(bytes: Uint8Array, signal?: AbortSignal): Promise<{ status: "verified"; pages: PdfTextPage[] } | { status: "unavailable"; reason: string }> {
   try {
     return { status: "verified", pages: await extractPdfText(bytes, signal) };
@@ -1208,15 +1202,17 @@ export async function removePdfMetadataVerified(
   abortIfNeeded(signal);
   const after = inspectPdfBytes(artifact.bytes);
   const metadataRemoved = metadataIsEmpty(after.metadata);
-  if (!metadataRemoved) throw new PdfError("WRITE_FAILURE", "Produced PDF still exposes metadata through a recognized Info entry, unknown Info entry, or XMP metadata stream.");
+  if (!metadataRemoved) throw new PdfError("WRITE_FAILURE", "PDF output retains /Info or XMP /Metadata after export.");
+  const embeddedImageAudit = auditPdfEmbeddedImageMetadata(parseDocument(artifact.bytes));
+  if (embeddedImageAudit.privacyFindings.length) throw new PdfError("UNSUPPORTED_CAPABILITY", PDF_NESTED_METADATA_RESIDUAL_ERROR);
   const pageStable = before.pageCount === after.pageCount;
-  if (!pageStable) throw new PdfError("WRITE_FAILURE", `Metadata removal changed page count from ${before.pageCount} to ${after.pageCount}.`);
+  if (!pageStable) throw new PdfError("WRITE_FAILURE", `PDF pages changed: ${before.pageCount}→${after.pageCount}.`);
   let textBaseline: PdfMetadataRemovalVerification["textBaseline"];
   if (beforeText.status === "unavailable") {
     textBaseline = { status: "unavailable", stable: null, changedPages: [], reason: beforeText.reason };
   } else {
     const afterText = await textBaselineFor(artifact.bytes, signal);
-    if (afterText.status === "unavailable") throw new PdfError("WRITE_FAILURE", "Produced PDF no longer supports the source document's bounded text baseline extraction.");
+    if (afterText.status === "unavailable") throw new PdfError("WRITE_FAILURE", "PDF output no longer supports bounded source text extraction.");
     const changedPages = beforeText.pages
       .filter((page, index) => page.text !== afterText.pages[index]?.text)
       .map((page) => page.page);
@@ -1224,7 +1220,7 @@ export async function removePdfMetadataVerified(
       for (let page = Math.min(beforeText.pages.length, afterText.pages.length) + 1; page <= Math.max(beforeText.pages.length, afterText.pages.length); page += 1) changedPages.push(page);
     }
     const stable = changedPages.length === 0;
-    if (!stable) throw new PdfError("WRITE_FAILURE", `Metadata removal changed the bounded extracted-text baseline on pages ${changedPages.join(", ")}.`);
+    if (!stable) throw new PdfError("WRITE_FAILURE", `PDF export changed extracted text on pages ${changedPages.join(", ")}.`);
     textBaseline = { status: "verified", stable: true, changedPages: [] };
   }
   return {
@@ -1234,6 +1230,7 @@ export async function removePdfMetadataVerified(
     verification: {
       reparsed: true,
       metadataRemoved,
+      embeddedImageAudit,
       pageCount: { before: before.pageCount, after: after.pageCount, stable: true },
       textBaseline,
     },
