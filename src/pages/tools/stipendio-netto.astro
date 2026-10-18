@@ -8,6 +8,7 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
     <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / Stipendio netto da RAL</nav>
     <h1>Stima parziale dello stipendio netto da RAL</h1>
     <p>Inserisci la RAL e <strong>una percentuale di contributi a tuo carico ricavata dal cedolino</strong>: non assumiamo alcuna aliquota INPS o inquadramento contrattuale. Calcoliamo soltanto l'IRPEF <strong>lorda nazionale</strong> su quell'imponibile; non è il netto in busta paga.</p>
+    <noscript><p data-salary-noscript>Per calcolare localmente occorre JavaScript abilitato: senza script il modulo è disattivato e non invia la RAL.</p></noscript>
     <form novalidate>
       <label for="salary-year">Anno d'imposta verificato</label>
       <select id="salary-year" name="year"><option value="2025">2025</option><option value="2026">2026</option></select>
@@ -17,7 +18,7 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
       <input id="salary-rate" name="rate" type="text" inputmode="decimal" placeholder="Inserisci l'aliquota, es. 9,19" autocomplete="off" required />
       <label for="salary-months">Mensilità di presentazione</label>
       <select id="salary-months" name="months"><option value="12">12</option><option value="13" selected>13</option><option value="14">14</option></select>
-      <button type="submit">Calcola scenario nazionale parziale</button>
+      <button type="submit" disabled>Calcola scenario nazionale parziale</button>
     </form>
     <p class="error" role="alert" hidden></p>
     <output aria-live="polite" data-salary-result-13></output>
@@ -73,6 +74,7 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
         error.hidden = false;
       }
     });
+    form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = false;
   }
 </script>
 
