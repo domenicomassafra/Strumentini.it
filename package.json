@@ -38,6 +38,7 @@
     "acceptance:result-v2-performance": "node scripts/acceptance-result-v2-performance.mjs",
     "acceptance:result-v2-privacy": "tsx scripts/acceptance-result-v2-privacy-network.ts",
     "acceptance:auth": "node scripts/acceptance-auth.mjs",
+    "acceptance:favorites:local": "node scripts/acceptance-favorites-332-local.mjs",
     "acceptance:onboarding": "node scripts/acceptance-onboarding.mjs",
     "acceptance:telemetry": "node scripts/acceptance-telemetry.mjs",
     "acceptance:business-math": "node scripts/acceptance-business-math.mjs",
