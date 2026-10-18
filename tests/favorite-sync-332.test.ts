@@ -226,37 +226,37 @@ describe("#332 two independent devices and tombstones", () => {
     expect(service.writes).toHaveLength(3);
   });
 
-  it("keeps a newer foreign tombstone after a lost removal acknowledgement and an offline re-add", async () => {
+  it("keeps the newer tombstone after a lost ACK and stale re-add", async () => {
     const service = fakeSyncService();
     vi.stubGlobal("fetch", service.fetchMock);
     const a = await isolatedDevice();
     const b = await isolatedDevice();
     await a.syncMembershipWithAccount();
     await b.syncMembershipWithAccount();
-    await a.setInstalled("business-day", true);
+    await a.setInstalled("x", true);
     await a.syncMembershipWithAccount();
     await b.syncMembershipWithAccount();
-    await a.setInstalled("business-day", false);
+    await a.setInstalled("x", false);
     service.loseNextPostAcknowledgement();
     expect(await a.syncMembershipWithAccount()).toBeUndefined();
     await b.syncMembershipWithAccount();
-    await b.setInstalled("business-day", true);
+    await b.setInstalled("x", true);
     await b.syncMembershipWithAccount();
-    await b.setInstalled("business-day", false);
+    await b.setInstalled("x", false);
     await b.syncMembershipWithAccount();
-    await a.setInstalled("business-day", true); // stale offline intent
+    await a.setInstalled("x", true);
     const writes = service.writes.length;
     expect((await a.syncMembershipWithAccount())?.installed).toEqual([]);
     expect(service.writes).toHaveLength(writes);
     expect(service.snapshot().tools).toEqual([]);
   });
 
-  it("replaces the previous account's local favorites without uploading them to a new account", async () => {
+  it("does not copy favorites across accounts", async () => {
     const firstAccount = fakeSyncService();
     vi.stubGlobal("fetch", firstAccount.fetchMock);
     const a = await isolatedDevice();
     await a.syncMembershipWithAccount();
-    await a.setInstalled("business-day", true);
+    await a.setInstalled("x", true);
     await a.syncMembershipWithAccount();
 
     const secondAccount = fakeSyncService();
@@ -266,7 +266,7 @@ describe("#332 two independent devices and tombstones", () => {
     expect(secondAccount.writes).toHaveLength(0);
     expect(secondAccount.snapshot().tools).toEqual([]);
     vi.stubGlobal("fetch", firstAccount.fetchMock);
-    expect((await a.syncMembershipWithAccount())?.installed).toEqual(["business-day"]);
+    expect((await a.syncMembershipWithAccount())?.installed).toEqual(["x"]);
     expect(firstAccount.writes).toHaveLength(1);
   });
 
