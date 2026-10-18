@@ -93,7 +93,7 @@
   "scripts/validator/audit-397.ts": 20759,
   "scripts/verify-output-consumers-408.ts": 21745,
   "spikes/heavy-local-feasibility/src/main.js": 26516,
-  "src/components/catalog/CatalogDirectory.astro": 32182,
+  "src/components/catalog/CatalogDirectory.astro": 32152,
   "src/components/onboarding/Onboarding.tsx": 20592,
   "src/components/tools/DeveloperWebTool.tsx": 39131,
   "src/components/tools/audio/AudioTimelinePanel231.tsx": 21322,
