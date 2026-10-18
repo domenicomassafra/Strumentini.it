@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import SettingsStartLinks from "../components/account/SettingsStartLinks.astro";
 import UiIcon from "../components/icons/UiIcon.astro";
 import { catalog } from "../generated/catalog";
 import { groupForCategory } from "../catalog/groups";
@@ -67,10 +68,7 @@ const unitSystems = [
     <header class="ac-page-head">
       <h1>Impostazioni</h1>
       <p>Il tuo account, il profilo di lavoro, il tema e i dati su questo dispositivo.</p>
-      <nav class="ac-start-links" aria-label="Percorsi per iniziare">
-        <a class="btn btn-primary" href="/onboarding/">Primo utilizzo: scegli gli strumenti</a>
-        <a class="btn btn-ghost" href="#preferenze">Personalizza le preferenze</a>
-      </nav>
+      <SettingsStartLinks />
     </header>
 
     <aside class="ac-side">

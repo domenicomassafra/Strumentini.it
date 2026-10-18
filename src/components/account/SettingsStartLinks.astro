@@ -1,0 +1,12 @@
+<!-- With JavaScript enabled the hash-change handler opens the Preferences tab.
+     Without it, the same anchor targets an honest fallback instead of silently
+     pointing to a hidden panel and promising an action that cannot work. -->
+<nav class="ac-start-links" aria-label="Percorsi per iniziare">
+  <a class="btn btn-primary" href="/onboarding/">Primo utilizzo: scegli gli strumenti</a>
+  <a class="btn btn-ghost" href="#preferenze">Personalizza le preferenze</a>
+</nav>
+<noscript>
+  <p id="preferenze" class="ac-note" role="note">
+    Per modificare le preferenze e salvarle su questo dispositivo devi abilitare JavaScript nel browser.
+  </p>
+</noscript>
