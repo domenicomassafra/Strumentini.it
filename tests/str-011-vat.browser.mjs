@@ -46,7 +46,21 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `no horizontal overflow at ${width}px`);
   }
   await page.close();
-  console.log("STR-011 browser PASS: add/scorporo primary answer, disclosure, invalid state; 320/390/768/1440");
+  const noJs = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  const noJsPage = await noJs.newPage();
+  const navigations = [];
+  noJsPage.on("request", (request) => { if (request.isNavigationRequest()) navigations.push(request.url()); });
+  await noJsPage.goto(address);
+  const noJsForm = noJsPage.locator("[data-vat-form]");
+  assert.equal(await noJsPage.locator("[data-vat-noscript]").isVisible(), true, "no-JS disclosure is visible");
+  assert.equal(await noJsForm.getByRole("button", { name: /Calcola IVA/u }).isDisabled(), true, "no-JS submit is disabled");
+  await noJsForm.locator('[name="amount"]').fill("1234,56");
+  await noJsForm.locator('[name="rate"]').fill("22");
+  await noJsForm.locator('[name="rate"]').press("Enter");
+  assert.equal(new URL(noJsPage.url()).search, "", "no-JS Enter must not expose entered amount in URL");
+  assert.deepEqual(navigations.filter((url) => new URL(url).search !== ""), [], "no-JS never sends entered values via navigation");
+  await noJs.close();
+  console.log("STR-011 browser PASS: IVA add/scorporo, rounding, invalid states, 320/390/768/1440 and no-JS privacy");
 } finally {
   if (browser) await browser.close();
   server?.kill("SIGTERM");

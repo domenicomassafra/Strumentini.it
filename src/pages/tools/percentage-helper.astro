@@ -8,11 +8,12 @@ import { PercentageHelperTool } from "../../components/tools/business-math/Perce
   <section class="vat126-panel" aria-labelledby="vat126-heading" data-vat-calculator>
     <h2 id="vat126-heading">IVA: aggiunta e scorporo</h2>
     <p>Inserisci l'aliquota applicabile alla tua operazione. Il calcolo è locale, con arrotondamento ai centesimi; non determina quale aliquota sia dovuta.</p>
+    <noscript><p data-vat-noscript>Per calcolare localmente serve JavaScript abilitato; senza JavaScript il modulo resta disattivato e non invia importi.</p></noscript>
     <form data-vat-form novalidate>
       <label>Operazione <select name="operation"><option value="add">Aggiungi IVA al netto</option><option value="scorporo">Scorpora IVA dal lordo</option></select></label>
       <label>Importo (€) <input name="amount" inputmode="decimal" placeholder="100,00" required /></label>
       <label>Aliquota IVA scelta (%) <input name="rate" inputmode="decimal" placeholder="22" required /></label>
-      <button type="submit">Calcola IVA</button>
+      <button type="submit" disabled>Calcola IVA</button>
     </form>
     <p role="alert" data-vat-error hidden></p>
     <output aria-live="polite" aria-atomic="true" data-vat-result></output>
@@ -70,6 +71,7 @@ import { PercentageHelperTool } from "../../components/tools/business-math/Perce
         error.hidden = false;
       }
     });
+    form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = false;
   }
 </script>
 
