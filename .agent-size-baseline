@@ -147,7 +147,7 @@
   "src/pages/impostazioni.astro": 63051,
   "src/pages/preferiti.astro": 20235,
   "src/pages/prototipi/351.astro": 36550,
-  "src/pages/risorse.astro": 22558,
+  "src/pages/risorse.astro": 22464,
   "src/quality/certification.ts": 71778,
   "src/reference-data/italy/source-packs.ts": 20242,
   "src/release/validation.ts": 47372,

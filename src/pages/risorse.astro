@@ -1,12 +1,5 @@
 ---
-/**
- * Risorse — the single hub behind the header's "Risorse" link.
- *
- * Four references point here by anchor (`#come-funziona`, `#privacy`,
- * `#domande-frequenti`, `#qualita`) from `navigation.ts` plus `#account`.
- * Every identifier below is the one the code actually uses; every count is
- * read from the generated authorities at build time, never written by hand.
- */
+/** Risorse hub: navigation anchors and build-generated quality counts. */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import UiIcon from "../components/icons/UiIcon.astro";
 import { catalog } from "../generated/catalog";
@@ -468,6 +461,12 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
     margin: 0;
     padding-top: var(--space-1);
     font-size: var(--font-size-sm);
+  }
+
+  @media (max-width: 480px) {
+    .resources-storage li { grid-template-columns: minmax(0, 1fr); }
+    .resources-storage li > span { justify-self: start; }
+    .resources-storage p { padding-top: 0; }
   }
 
   .resources-faq {

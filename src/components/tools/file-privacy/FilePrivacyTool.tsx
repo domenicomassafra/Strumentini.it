@@ -71,6 +71,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
   const [result, setResult] = useState<PreparedFilePrivacyResult | null>(null);
   const [error, setError] = useState("");
   const [running, setRunning] = useState(false);
+  const [cancelled, setCancelled] = useState(false);
   const controllerRef = useRef<AbortController | null>(null);
 
   // A completed result belongs to the exact input/options that produced it.
@@ -78,6 +79,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
   function invalidateResult() {
     setResult(null);
     setError("");
+    setCancelled(false);
   }
 
   function reset() {
@@ -95,6 +97,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
     setResult(null);
     setError("");
     setRunning(false);
+    setCancelled(false);
   }
 
   function buildInput(): Record<string, unknown> {
@@ -118,6 +121,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
     if (controllerRef.current !== null) return;
     setError("");
     setResult(null);
+    setCancelled(false);
     const controller = new AbortController();
     controllerRef.current = controller;
     setRunning(true);
@@ -137,6 +141,14 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
     }
   }
 
+  function cancelOperation() {
+    if (controllerRef.current === null) return;
+    controllerRef.current.abort();
+    controllerRef.current = null;
+    setRunning(false);
+    setCancelled(true);
+  }
+
   async function submit(event: Event) {
     event.preventDefault();
     await runOperation();
@@ -147,7 +159,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
   const showPastedText = operation === "secret-token-pattern-scanner" || operation === "ai-code-fence-bundle";
   const showNames = operationUsesNames(operation);
   const showExpected = operation === "checksum-verifier";
-  const gutterState = running ? "running" : error !== "" ? "error" : result === null ? "idle" : "success";
+  const gutterState = running ? "running" : cancelled ? "cancelled" : error !== "" ? "error" : result === null ? "idle" : "success";
   const publicCopy = TOOL_COPY_IT[operation];
   const publicTitle = publicCopy?.name ?? title;
   const publicDescription = publicCopy?.summary ?? description;
@@ -240,11 +252,11 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
         <InlineError message={error} />
         <ToolActions>
           <ToolSubmitButton busy={running} busyLabel={it(CONTROL.working)}>Esegui in locale</ToolSubmitButton>
-          {running && <ToolCancelButton onCancel={() => controllerRef.current?.abort()} />}
+          {running && <ToolCancelButton onCancel={cancelOperation} />}
           <ToolResetButton onClick={reset} />
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow={`${publicTitle} — risultato`} placeholder={publicDescription} busy={running} state={gutterState}>
+      <ToolResultPanel eyebrow={`${publicTitle} — risultato`} placeholder={cancelled ? "Operazione annullata. Nessun risultato è stato prodotto; puoi riprovare." : publicDescription} busy={running} state={gutterState}>
         {result !== null && <FilePrivacyResultV2 operation={operation} prepared={result} onRetry={runOperation} onReset={reset} />}
       </ToolResultPanel>
     </ToolOperation>
