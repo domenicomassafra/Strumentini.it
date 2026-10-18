@@ -8,6 +8,7 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
   <section class="tax396-piva" data-tax396="piva" aria-labelledby="tax396-piva-title">
     <h2 id="tax396-piva-title">Percorso Partita IVA — simulazione forfettario, solo anno d'imposta 2025</h2>
     <p>Calcolo locale separato dalla verifica formale della Partita IVA. Quest'ultima <strong>non verifica l'esistenza, il regime fiscale o i requisiti personali</strong>. La simulazione usa esclusivamente il sottoinsieme documentato 2025 con codici <strong>ATECO2007</strong>: nessuna conversione automatica da ATECO2025, nessuna aliquota INPS presunta.</p>
+    <noscript><p data-forf-noscript>La stima locale richiede JavaScript: senza script il modulo resta disattivato e non invia ricavi o contributi.</p></noscript>
     <form id="tax396-piva-form" novalidate>
       <label for="tax396-piva-year">Anno d'imposta</label>
       <select id="tax396-piva-year" name="taxYear">
@@ -40,7 +41,7 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
         Solo per 5%: dichiaro di aver verificato esternamente gli ulteriori requisiti di nuova attività.
       </label>
       <p class="tax396-piva-note">Quando cambi anno d'imposta, importi, codice ATECO e dichiarazioni vengono azzerati per evitare di usare dati di un altro anno. Gli importi accettano la virgola oppure il punto solo come separatore decimale (es. 1000,50 o 1000.50), senza separatori delle migliaia.</p>
-      <button type="submit">Calcola la sola stima 2025 coperta</button>
+      <button type="submit" disabled>Calcola la sola stima 2025 coperta</button>
     </form>
     <p role="alert" class="tax396-piva-error" hidden></p>
     <output id="tax396-piva-output" aria-live="polite"></output>
@@ -136,6 +137,7 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
         return decline("Profilo, anno o importi non coperti dalle fonti verificate: nessuna stima.");
       }
     });
+    form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = false;
   }
 </script>
 
