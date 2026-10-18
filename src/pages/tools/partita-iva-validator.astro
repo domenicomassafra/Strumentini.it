@@ -119,11 +119,13 @@ import { PartitaIvaValidatorTool } from "../../components/tools/research-knowled
           declaresStartupFivePercentRequirements: checked("startupEligible"),
         });
         output.textContent = "Anno d'imposta " + result.taxYear +
-          " · Imposta sostitutiva stimata: " + euro(result.substituteTaxCents) +
+          " · Ricavi dell'anno d'imposta: " + euro(result.yearReceiptsCents) +
           " · Coefficiente ATECO2007: " + result.coefficientPercent + "%" +
           " · Reddito forfettario stimato: " + euro(result.grossForfettarioIncomeCents) +
           " · Contributi già pagati dichiarati: " + euro(result.paidMandatoryContributionsCents) +
           " · Base imponibile modellata: " + euro(result.taxableIncomeCents) +
+          " · Imposta sostitutiva stimata: " + euro(result.substituteTaxCents) +
+          " · Netto stimato dopo imposta e contributi pagati: " + euro(result.estimatedNetAfterTaxAndContributionsCents) +
           ". Non certifica requisiti, aliquote INPS o imposta effettiva.";
       } catch (cause) {
         const code = String(cause);
