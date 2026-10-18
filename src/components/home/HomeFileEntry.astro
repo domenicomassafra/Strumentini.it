@@ -51,6 +51,10 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
   <p id="home-file-status" class="home-file-status" role="status" aria-live="polite" aria-atomic="true" data-home-file-status>
     Il file rimane in questo browser. Nessuna operazione parte automaticamente.
   </p>
+  <p class="home-file-fallback">
+    Non trovi il formato o l'operazione che cerchi?
+    <a href="/strumenti/" data-home-file-fallback>Sfoglia tutti gli strumenti</a>.
+  </p>
 
   <div class="home-file-result" data-home-file-result hidden>
     <h3>Operazioni disponibili per questo formato</h3>
@@ -308,6 +312,9 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
   .home-file-picker-help { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); overflow-wrap: anywhere; }
   .home-file-drop-hint { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); }
   .home-file-status { min-height: 1.5em; color: var(--text-muted); margin: var(--space-4) 0 0; overflow-wrap: anywhere; }
+  .home-file-fallback { margin: var(--space-2) 0 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+  .home-file-fallback a { color: var(--brand); text-underline-offset: 0.2em; }
+  .home-file-fallback a:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
   .home-file-result { margin-top: var(--space-5); border-top: var(--border-width) solid var(--border); padding-top: var(--space-5); }
   .home-file-result h3 { margin: 0 0 var(--space-3); font-size: var(--font-size-body-lg); }
   .home-file-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); list-style: none; padding: 0; margin: 0; }

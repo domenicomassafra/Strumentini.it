@@ -28,8 +28,9 @@ page.on("pageerror", (error) => pageErrors.push(error.message));
 const requestsWithFileContents = [];
 const sentinel = "PRIVATE_HOME_FILE_SECRET_334";
 page.on("request", (request) => {
-  if (request.method() === "GET" || request.method() === "HEAD") return;
-  if ((request.postData() ?? "").includes(sentinel)) requestsWithFileContents.push(request.url());
+  if (request.url().includes(sentinel) || (
+    request.method() !== "GET" && request.method() !== "HEAD" && (request.postData() ?? "").includes(sentinel)
+  )) requestsWithFileContents.push(request.url());
 });
 
 async function resetHome() {
@@ -54,6 +55,12 @@ async function visibleActions() {
 try {
   await resetHome();
   assert(await page.locator("[data-search-open]").count() > 0, "search-first control still exists");
+  await page.locator("[data-search-open]").click();
+  assert(await page.locator("[data-search-dialog]").isVisible(), "anonymous search opens a real dialog");
+  await page.locator("[data-search-input]").fill("pdf");
+  await page.locator("[data-search-results] a[href^='/tools/']").first().waitFor();
+  await page.locator("[data-search-input]").press("Escape");
+  assert(await page.locator("[data-search-dialog]").isHidden(), "search closes with keyboard");
   assert(await page.locator("[data-home-file-picker]").isVisible(), "picker available without drag");
   assert(await page.locator("[data-home-file-result]").isHidden(), "no recommendations before selection");
 
@@ -64,9 +71,12 @@ try {
       scrollWidth: document.documentElement.scrollWidth,
       viewport: window.innerWidth,
       picker: document.querySelector("[data-home-file-picker]")?.getBoundingClientRect().width,
+      searchBottom: document.querySelector(".home-hero-search")?.getBoundingClientRect().bottom,
+      fileTop: document.querySelector("[data-home-file-entry]")?.getBoundingClientRect().top,
     }));
     assert(result.picker > 0 && result.scrollWidth <= result.viewport + 1,
       "home overflows or picker missing at width " + width + ": " + JSON.stringify(result));
+    assert(result.searchBottom < result.fileTop, "home search/file hierarchy inverted at width " + width);
   }
   await page.setViewportSize({ width: 390, height: 844 });
   await page.locator("[data-home-file-picker]").focus();
@@ -85,7 +95,7 @@ try {
   assert.match(await page.locator("[data-home-file-result]").innerText(), /selezionare di nuovo il file/u);
   assert.equal(await page.locator("[data-home-file-picker]").inputValue(), "", "file cleared immediately after local check");
 
-  await page.locator('[data-home-file-action-format="pdf"]:visible a').first().click();
+  await page.locator('[data-home-file-action-format="pdf"]:visible a').first().click({ noWaitAfter: true });
   await page.waitForURL(/\/tools\/pdf-page-count-verifier\/?/u);
   assert.equal(await page.locator('input[type="file"]').first().inputValue(), "", "no implicit transfer to destination");
   await resetHome();
@@ -119,8 +129,22 @@ try {
   assert.deepEqual(await visibleActions(), [], "Office must not show unverified routes");
 
   await select(Buffer.from("colonna,valore\n1," + sentinel), "privato.csv", "text/csv");
+  assert.match(await page.locator("[data-home-file-status]").innerText(), /CSV riconosciuto localmente/u);
+  assert.deepEqual((await visibleActions()).map((action) => action.href), [
+    "/tools/csv-cleaner/", "/tools/csv-dedupe/", "/tools/csv-column-map/",
+    "/tools/csv-filter/", "/tools/csv-column-selector/", "/tools/csv-group-count/",
+  ]);
+  assert.equal(requestsWithFileContents.length, 0, "CSV content must stay local");
+
+  await select(Buffer.from("unknown " + sentinel), "privato.txt", "text/plain");
   assert.match(await page.locator("[data-home-file-status]").innerText(), /Formato non riconosciuto/u);
   assert(await page.locator("[data-home-file-result]").isHidden());
+  const fallback = page.locator("[data-home-file-fallback]");
+  assert(await fallback.isVisible(), "unsupported file must expose a nearby catalog fallback");
+  await fallback.focus();
+  await fallback.press("Enter");
+  await page.waitForURL(/\/strumenti\/?$/u);
+  await resetHome();
   assert.equal(requestsWithFileContents.length, 0, "file content must never be uploaded");
 
   await select(png, "sbagliato.pdf", "image/png");
@@ -153,13 +177,27 @@ try {
     zone.dispatchEvent(new DragEvent("drop", { bubbles: true, cancelable: true, dataTransfer: transfer }));
   });
   assert.match(await page.locator("[data-home-file-status]").innerText(), /un solo file alla volta/u);
-  assert(await page.locator("[data-home-file-result]").isHidden());
+  assert(await page.locator("[data-home-file-result]").isVisible(), "invalid multi-drop retains prior approved suggestions");
+  assert.equal((await visibleActions())[0]?.href, "/tools/pdf-page-count-verifier/");
 
   const seo = await page.locator('meta[name="description"]').getAttribute("content");
   assert(!seo?.includes("Oltre 200"), "stale SEO copy must be gone");
-  assert(/269 strumenti/u.test(seo ?? ""), "catalog count must reflect current projection");
+  const catalogSource = await readFile("src/generated/catalog.ts", "utf8");
+  const expectedCount = [...catalogSource.matchAll(/^    "id": /gmu)].length;
+  assert(expectedCount > 0, "generated catalog must contain tool IDs");
+  assert(seo?.includes(`${expectedCount} strumenti`), "SEO count must match generated catalog (" + expectedCount + ")");
   assert.equal(requestsWithFileContents.length, 0, "no request carried private file contents");
-  console.log("PASS #334 Chrome local 320/390/768/1024/1440 picker, PDF/PNG/GIF, failure states, drop/cancel/multiple, routes, no auto-transfer or upload, SEO.");
+  const noScript = await browser.newContext({ viewport: { width: 320, height: 850 }, javaScriptEnabled: false });
+  try {
+    const fallbackPage = await noScript.newPage();
+    await fallbackPage.goto(base + "/", { waitUntil: "domcontentloaded" });
+    assert(await fallbackPage.locator("[data-home-file-fallback]").isVisible(), "catalog fallback must render without JavaScript");
+    await fallbackPage.locator("[data-home-file-fallback]").click();
+    await fallbackPage.waitForURL(/\/strumenti\/?$/u);
+  } finally {
+    await noScript.close();
+  }
+  console.log("PASS #334 Chrome local 320/390/768/1024/1440 search, native picker, PDF/PNG/GIF/ZIP/CSV, failures, fallback without JS, no auto-transfer or upload, SEO.");
 } finally {
   await browser.close();
 }
