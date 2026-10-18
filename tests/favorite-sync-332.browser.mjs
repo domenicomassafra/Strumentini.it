@@ -99,8 +99,10 @@ try {
     if (tries === 79) throw new Error("Static server unavailable");
     await sleep(180);
   }
-  const first = await chromium.launch({ headless: true });
-  const second = await chromium.launch({ headless: true });
+  const chromePath = process.env.STRUMENTINI_CHROME_EXECUTABLE;
+  const launch = { headless: true, ...(chromePath ? { executablePath: chromePath } : {}) };
+  const first = await chromium.launch(launch);
+  const second = await chromium.launch(launch);
   browsers.push(first, second);
   const ctxA = await context(first);
   const ctxB = await context(second);

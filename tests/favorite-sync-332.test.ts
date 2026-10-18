@@ -226,6 +226,50 @@ describe("#332 two independent devices and tombstones", () => {
     expect(service.writes).toHaveLength(3);
   });
 
+  it("keeps a newer foreign tombstone after a lost removal acknowledgement and an offline re-add", async () => {
+    const service = fakeSyncService();
+    vi.stubGlobal("fetch", service.fetchMock);
+    const a = await isolatedDevice();
+    const b = await isolatedDevice();
+    await a.syncMembershipWithAccount();
+    await b.syncMembershipWithAccount();
+    await a.setInstalled("business-day", true);
+    await a.syncMembershipWithAccount();
+    await b.syncMembershipWithAccount();
+    await a.setInstalled("business-day", false);
+    service.loseNextPostAcknowledgement();
+    expect(await a.syncMembershipWithAccount()).toBeUndefined();
+    await b.syncMembershipWithAccount();
+    await b.setInstalled("business-day", true);
+    await b.syncMembershipWithAccount();
+    await b.setInstalled("business-day", false);
+    await b.syncMembershipWithAccount();
+    await a.setInstalled("business-day", true); // stale offline intent
+    const writes = service.writes.length;
+    expect((await a.syncMembershipWithAccount())?.installed).toEqual([]);
+    expect(service.writes).toHaveLength(writes);
+    expect(service.snapshot().tools).toEqual([]);
+  });
+
+  it("replaces the previous account's local favorites without uploading them to a new account", async () => {
+    const firstAccount = fakeSyncService();
+    vi.stubGlobal("fetch", firstAccount.fetchMock);
+    const a = await isolatedDevice();
+    await a.syncMembershipWithAccount();
+    await a.setInstalled("business-day", true);
+    await a.syncMembershipWithAccount();
+
+    const secondAccount = fakeSyncService();
+    secondAccount.switchAccount("account-2");
+    vi.stubGlobal("fetch", secondAccount.fetchMock);
+    expect((await a.syncMembershipWithAccount())?.installed).toEqual([]);
+    expect(secondAccount.writes).toHaveLength(0);
+    expect(secondAccount.snapshot().tools).toEqual([]);
+    vi.stubGlobal("fetch", firstAccount.fetchMock);
+    expect((await a.syncMembershipWithAccount())?.installed).toEqual(["business-day"]);
+    expect(firstAccount.writes).toHaveLength(1);
+  });
+
   it("refuses writes to a different account when a cookie changes between two pending POSTs", async () => {
     const service = fakeSyncService();
     vi.stubGlobal("fetch", service.fetchMock);
