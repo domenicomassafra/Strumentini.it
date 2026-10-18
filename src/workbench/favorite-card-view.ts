@@ -14,21 +14,37 @@ export const escapeHtml = (value: string): string => value.replace(/[&<>"']/gu, 
 })[character] ?? character);
 
 export function relative(at: string): string {
-  const then = new Date(at).getTime();
+  const date = new Date(at);
+  const then = date.getTime();
   if (!Number.isFinite(then)) return "";
-  const minutes = Math.round((Date.now() - then) / 60000);
+  const now = Date.now();
+  if (then > now) {
+    const remaining = then - now;
+    if (remaining < 60_000) return "tra meno di un minuto";
+    const minutes = Math.ceil(remaining / 60_000);
+    if (minutes < 60) return `tra ${minutes} ${minutes === 1 ? "minuto" : "minuti"}`;
+    const hours = Math.ceil(remaining / 3_600_000);
+    if (hours < 24) return `tra ${hours} ${hours === 1 ? "ora" : "ore"}`;
+    const days = Math.ceil(remaining / 86_400_000);
+    return `tra ${days} ${days === 1 ? "giorno" : "giorni"}`;
+  }
+
+  // Calendar days in local time, unaffected by daylight-saving transitions.
+  const calendarDay = (value: Date): number => Date.UTC(value.getFullYear(), value.getMonth(), value.getDate()) / 86_400_000;
+  const days = calendarDay(new Date(now)) - calendarDay(date);
+  if (days === 1) return `ieri alle ${date.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}`;
+  if (days > 1) {
+    if (days < 7) return `${days} giorni fa`;
+    const weeks = Math.round(days / 7);
+    if (weeks < 5) return `${weeks} ${weeks === 1 ? "settimana" : "settimane"} fa`;
+    return date.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+  }
+
+  const minutes = Math.round((now - then) / 60_000);
   if (minutes < 1) return "adesso";
   if (minutes < 60) return `${minutes} ${minutes === 1 ? "minuto" : "minuti"} fa`;
   const hours = Math.round(minutes / 60);
-  if (hours < 24) {
-    const day = new Date(then);
-    return `ieri alle ${day.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}`;
-  }
-  const days = Math.round(hours / 24);
-  if (days < 7) return `${days} ${days === 1 ? "giorno" : "giorni"} fa`;
-  const weeks = Math.round(days / 7);
-  if (weeks < 5) return `${weeks} ${weeks === 1 ? "settimana" : "settimane"} fa`;
-  return new Date(then).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+  return `${hours} ${hours === 1 ? "ora" : "ore"} fa`;
 }
 
 export function card(tool: IndexedTool, action: string, extra = "", reason = "", removable = false): string {
