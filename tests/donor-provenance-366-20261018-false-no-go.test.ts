@@ -61,6 +61,7 @@ describe("#366 false refusals versus real provenance blockers", () => {
     const original = pins.find((item) => item.path === authored[0])!;
     const attacks = [
       { ...original, source: "git:" + "a".repeat(40) + ":" + "b".repeat(40) },
+      { ...original, source: "git:" + "f".repeat(40) + ":" + original.source.split(":")[2] },
       { ...original, license: "MIT" },
       { ...original, sha256: "a".repeat(64) },
       { ...original, path: "src/engines/pdf/vendor/pdfstudio/wasm/qpdf.wasm" },

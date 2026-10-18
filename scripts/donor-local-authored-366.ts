@@ -1,7 +1,9 @@
 /** Exact first-party evidence: Git source commit and blob (SHA-1) plus
  * the separate SHA-256 asset register. Only these four files are authored
  * locally; nothing in this list grants rights over adjacent donor payloads.
- * A Git object pin proves content identity, not legal ownership. */
+ * The historical commit:path relation was recorded from Git, but is not
+ * reauthenticated in shallow CI checkouts. Blob/content identity is checked;
+ * neither commit-tree membership nor legal ownership is certified here. */
 import { createHash } from "node:crypto";
 
 const GIT_PINS: ReadonlyMap<string, readonly [string, string]> = new Map([
