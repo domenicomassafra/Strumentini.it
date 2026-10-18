@@ -21073,7 +21073,7 @@
         },
         "page": {
           "path": "src/pages/tools/partita-iva-validator.astro",
-          "sha256": "f6d58b3ad279f4e63d7a6b481dd8db86bf5ee310cee919c1b7ca76aa2e491ccf"
+          "sha256": "5f6a4eb54fd635a02a5ac20c42b90fe194ff14e78efaa665ce3d22dcd9fb9abc"
         },
         "testFiles": [
           "tests/partita-iva-validator.test.ts",
