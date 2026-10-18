@@ -85,6 +85,67 @@ describe("STR-366 primary source assets: offline fail-closed evidence", () => {
     }
   });
 
+  it("refuses two symlinked shipped asset directories even when every upstream byte matches", () => {
+    const temp = mkdtempSync(resolve(tmpdir(), "str-366-parent-symlink-"));
+    try {
+      mkdirSync(resolve(temp, "public"));
+      symlinkSync(resolve(root, "public/fonts"), resolve(temp, "public/fonts"), "dir");
+      symlinkSync(resolve(root, "public/ocr-246"), resolve(temp, "public/ocr-246"), "dir");
+      const report = verifyPrimarySource366(temp, original);
+      expect(report.failures).toContain("UNSAFE_ASSET_DIRECTORY public/fonts");
+      expect(report.failures).toContain("UNSAFE_ASSET_DIRECTORY public/ocr-246");
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects a nested OCR directory symlink without reading its target", () => {
+    const temp = mkdtempSync(resolve(tmpdir(), "str-366-nested-symlink-"));
+    try {
+      mkdirSync(resolve(temp, "public/ocr-246"), { recursive: true });
+      mkdirSync(resolve(temp, "public/fonts"), { recursive: true });
+      symlinkSync(resolve(root, "public/ocr-246/core"), resolve(temp, "public/ocr-246/core"), "dir");
+      expect(verifyPrimarySource366(temp, original).failures)
+        .toContain("UNSAFE_ASSET_PATH public/ocr-246/core");
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects a symlinked public ancestor before visiting either shipped asset subtree", () => {
+    const temp = mkdtempSync(resolve(tmpdir(), "str-366-public-symlink-"));
+    try {
+      symlinkSync(resolve(root, "public"), resolve(temp, "public"), "dir");
+      const report = verifyPrimarySource366(temp, original);
+      expect(report.failures).toContain("UNSAFE_ASSET_DIRECTORY public/fonts");
+      expect(report.failures).toContain("UNSAFE_ASSET_DIRECTORY public/ocr-246");
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects a symlinked evidence manifest before attempting to read external bytes", () => {
+    const temp = mkdtempSync(resolve(tmpdir(), "str-366-manifest-symlink-"));
+    try {
+      mkdirSync(resolve(temp, "quality/reference-data"), { recursive: true });
+      symlinkSync(resolve(root, PRIMARY_SOURCE_366_MANIFEST), resolve(temp, PRIMARY_SOURCE_366_MANIFEST));
+      expect(verifyPrimarySource366(temp).failures).toContain("UNSAFE_SOURCE_MANIFEST");
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects a symlinked root rather than trusting an external manifest and assets", () => {
+    const temp = mkdtempSync(resolve(tmpdir(), "str-366-root-symlink-"));
+    try {
+      symlinkSync(root, resolve(temp, "project"), "dir");
+      expect(verifyPrimarySource366(resolve(temp, "project"), original).failures)
+        .toContain("UNSAFE_ASSET_ROOT");
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
   it("disallows an unrecognized upstream tarball integrity or license source", () => {
     const altered = structuredClone(original);
     altered.primaryNpmTarballs["tesseract-core"]!.integrity = "sha512-not-an-authentic-hash";

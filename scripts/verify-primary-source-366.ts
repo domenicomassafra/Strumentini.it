@@ -8,8 +8,8 @@
  * copies, their mandatory font notices, and the fail-closed license status.
  */
 import { createHash } from "node:crypto";
-import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
-import { dirname, relative, resolve, sep } from "node:path";
+import { lstatSync, readFileSync, readdirSync, realpathSync } from "node:fs";
+import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const PRIMARY_SOURCE_366_MANIFEST = "quality/reference-data/primary-source-366-2026-10-18.json";
@@ -55,26 +55,74 @@ function sha256(bytes: Uint8Array): string {
   return createHash("sha256").update(bytes).digest("hex");
 }
 
-function shippedFiles(root: string): string[] {
+/** Validate each component before reading it. lstat on the final asset alone
+ * misses symlinked parents (public/fonts, public/ocr-246/core, etc.). */
+function safeLocalPath(root: string, canonicalRoot: string, path: string, type: "file" | "directory"): boolean {
+  if (!path || isAbsolute(path) || path.split("/").some((part) => !part || part === "." || part === "..")) {
+    return false;
+  }
+  let current = root;
+  const parts = path.split("/");
+  for (const [index, part] of parts.entries()) {
+    current = resolve(current, part);
+    try {
+      const stat = lstatSync(current);
+      if (stat.isSymbolicLink() || (index < parts.length - 1 && !stat.isDirectory()) ||
+          (index === parts.length - 1 && !(type === "directory" ? stat.isDirectory() : stat.isFile()))) return false;
+      const real = realpathSync(current);
+      const inside = relative(canonicalRoot, real);
+      if (inside === ".." || inside.startsWith(`..${sep}`) || isAbsolute(inside)) return false;
+    } catch {
+      return false;
+    }
+  }
+  return true;
+}
+
+function shippedFiles(root: string, canonicalRoot: string): { paths: string[]; failures: string[] } {
   const paths: string[] = [];
+  const failures: string[] = [];
   function visit(folder: string): void {
+    if (!safeLocalPath(root, canonicalRoot, folder, "directory")) {
+      failures.push(`UNSAFE_ASSET_DIRECTORY ${folder}`);
+      return; // Never readdir through an unchecked ancestor.
+    }
     for (const item of readdirSync(resolve(root, folder), { withFileTypes: true })) {
       const path = `${folder}/${item.name}`;
       if (item.isDirectory()) visit(path);
-      else if (item.isFile() || item.isSymbolicLink()) paths.push(path);
+      else if (item.isFile()) paths.push(path);
+      else {
+        paths.push(path);
+        failures.push(`UNSAFE_ASSET_PATH ${path}`);
+      }
     }
   }
   visit("public/fonts");
   visit("public/ocr-246");
-  return paths.toSorted();
+  return { paths: paths.toSorted(), failures };
 }
 
 export function verifyPrimarySource366(
   root: string,
   injected?: PrimarySource366Manifest,
 ): { decision: "NO_GO"; files: number; exactUpstream: number; unresolved: number; failures: string[] } {
-  const manifest = injected ?? JSON.parse(readFileSync(resolve(root, PRIMARY_SOURCE_366_MANIFEST), "utf8")) as PrimarySource366Manifest;
   const failures: string[] = [];
+  // Resolve and check the nominated root *before* reading a manifest or a
+  // directory: an external symlinked root must not inherit trusted assets.
+  const absoluteRoot = resolve(root);
+  let canonicalRoot: string;
+  try {
+    if (!lstatSync(absoluteRoot).isDirectory() || lstatSync(absoluteRoot).isSymbolicLink()) {
+      throw new Error("Symlink or non-directory root");
+    }
+    canonicalRoot = realpathSync(absoluteRoot);
+  } catch {
+    return { decision: "NO_GO", files: 0, exactUpstream: 0, unresolved: 0, failures: ["UNSAFE_ASSET_ROOT"] };
+  }
+  if (!injected && !safeLocalPath(absoluteRoot, canonicalRoot, PRIMARY_SOURCE_366_MANIFEST, "file")) {
+    return { decision: "NO_GO", files: 0, exactUpstream: 0, unresolved: 0, failures: ["UNSAFE_SOURCE_MANIFEST"] };
+  }
+  const manifest = injected ?? JSON.parse(readFileSync(resolve(absoluteRoot, PRIMARY_SOURCE_366_MANIFEST), "utf8")) as PrimarySource366Manifest;
   const paths = new Set<string>();
   const commit = manifest.upstreamGoogleFontsGitCommit;
   if (manifest.schemaVersion !== 1 || manifest.decision !== "NO_GO" || !/^[0-9a-f]{40}$/u.test(commit)) {
@@ -89,7 +137,9 @@ export function verifyPrimarySource366(
         !/^sha512-[a-zA-Z0-9+/]+=*$/u.test(integrity) ||
         Buffer.from(integrity.slice(7), "base64").length !== 64) failures.push(`INVALID_NPM_SOURCE ${id}`);
   }
-  const actualPaths = new Set(shippedFiles(root));
+  const shipped = shippedFiles(absoluteRoot, canonicalRoot);
+  failures.push(...shipped.failures);
+  const actualPaths = new Set(shipped.paths);
   let exactUpstream = 0;
   let unresolved = 0;
   for (const asset of manifest.assets) {
@@ -103,7 +153,7 @@ export function verifyPrimarySource366(
       failures.push(`OUT_OF_SCOPE_ASSET ${asset.path}`);
       continue;
     }
-    if (!actualPaths.has(asset.path) || !existsSync(normalized) || !lstatSync(normalized).isFile()) {
+    if (!actualPaths.has(asset.path) || !safeLocalPath(absoluteRoot, canonicalRoot, asset.path, "file")) {
       failures.push(`MISSING_OR_NONREGULAR_ASSET ${asset.path}`);
       continue;
     }
