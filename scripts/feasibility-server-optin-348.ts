@@ -39,8 +39,9 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   // #332 independently reviewed: account-pinned favorite writes carry durable
   // operation identifiers for loss-of-ACK recovery, without new public routes.
   "worker/db.ts": "7a304affb8eb46130b69a0e5c905809d51a65f6673dfc77655326aeb3d06e3d3",
+  "worker/favorite-sync-change.ts": "89f17d0d7b495c75fb6983334151ad883edb158c53e30be609b050f217ccccaa",
   "worker/google.ts": "09ee69a8ab31e4eabac118bb2b3d4cdd579d655c260aa452fb8e359f32cba2db",
-  "worker/index.ts": "cdbb5c8eee4a863f23723f07e1167cd6fcd78417888488ed1e8a070ab141b63f",
+  "worker/index.ts": "0724d713a4ab20f68a351644e6b05d6415211572b1da4e2eb7642a8ff56df205",
   "worker/kdf-client.ts": "d2aa12fce473bbbc598eedc7c957a4f67c5484ce9a03afabafea62e59b4cf539",
   "worker/migrations/0001_init.sql": "5402f41511baf4b74f4bf6b8bb46621d663a00d8352746c6acd1089c4c3f7417",
   "worker/migrations/0002_google_auth.sql": "80f0a007030410b018863ec36ca31fc6dff99ce52762979a071bc4c9af1fa6b9",
@@ -78,7 +79,7 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // 2026-10-14 #350: selected nav text now uses existing AA --brand-active
   // token; the only session GET, credentials and endpoints remain unchanged.
   // #332 additions retain per-tool removal, tombstones and verified hydration.
-  "src/pages/preferiti.astro": "a6fed99e8df4db6ebb96f684815167a2d5a8bd3d458d54d52c7ea5110373d14d",
+  "src/pages/preferiti.astro": "3e849ac21c096ac8e4e4e9f33827615848171ff749cd224995581b72d94f79d7",
   "src/telemetry/adapter.ts": "cc00368b762ea6d80d00b5a854764765a84e127b25c15049cf1b30e27cbbf50e",
   "src/telemetry/browser.ts": "2f2ecebad8da951a2329bd8364c727ec5f43f97fdc525ecc6c6077587f40ac1a",
   "src/workbench/membership.ts": "388f065b92d835c6b8cbef93d220a5959ca31a84caf3f9d9a88305c499f9c788",
