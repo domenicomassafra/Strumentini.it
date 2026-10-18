@@ -57,6 +57,8 @@ describe("#366 false refusals versus real provenance blockers", () => {
     expect(report.failures.filter((failure) => failure.includes("public/ocr-246/")).length).toBe(17);
   });
 
+  // Five negative cases each rehash the entire pinned vendor corpus; under CI
+  // contention their combined I/O can exceed Vitest's default 5 s timeout.
   it("rejects forged or repurposed LOCAL_AUTHORED attribution", () => {
     const original = pins.find((item) => item.path === authored[0])!;
     const attacks = [
@@ -74,5 +76,5 @@ describe("#366 false refusals versus real provenance blockers", () => {
         failure.startsWith("ASSET_HASH_MISMATCH") || failure.startsWith("INVALID_ASSET_PATH") ||
         failure.startsWith("UNPINNED_ASSET")), JSON.stringify(attack)).toBe(true);
     }
-  });
+  }, 30_000);
 });
